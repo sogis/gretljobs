@@ -1,0 +1,11 @@
+["PARAMETER"]
+# Globale Validator Einstellungen
+validation="on"
+
+["PlanerischerGewaesserschutz_LV95_V1_1.GWSZonen.RechtsvorschriftGWSAreal.Rechtsvorschrift"]
+multiplicity="off"
+target="off"
+
+["PlanerischerGewaesserschutz_LV95_V1_1.GWSZonen.RechtsvorschriftGWSZone.Rechtsvorschrift"]
+multiplicity="off"
+target="off"
