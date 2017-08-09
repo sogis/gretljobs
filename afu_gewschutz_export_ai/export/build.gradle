@@ -12,9 +12,9 @@ buildscript {
     }
 }
 
-def dbUrl = 'jdbc:postgresql://192.168.56.2:5432/sogis'
-def dbUser = 'godfather'
-def dbPass = '$$'
+def dbUrl = 'jdbc:postgresql://geodb.verw.rootso.org/sogis'
+def dbUser = 'datasync'
+def dbPass = 'datasync'
 
 def bereichDelete = '/home/bjsvwjek/IdeaProjects/gretljobs/afu_gewschutz_export_ai/export/gsbereich_delete.sql'
 def bereichInsert = '/home/bjsvwjek/IdeaProjects/gretljobs/afu_gewschutz_export_ai/export/gsbereich_insert.sql'
@@ -39,6 +39,9 @@ task stageGsZone(type: SqlExecutorTask){
 task stageGsAreal(type: SqlExecutorTask){
     database = [dbUrl, dbUser, dbPass]
     sqlFiles = [arealDelete, arealInsert]
+}
+
+task stageAll(dependsOn: [stageGsBereich, stageGsAreal, stageGsZone]){
 }
 
 task clearStagingRows(type: SqlExecutorTask, dependsOn: [stageGsBereich, stageGsAreal, stageGsZone]){

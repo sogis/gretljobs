@@ -1,7 +1,7 @@
 WITH gszustr as
 (
 	SELECT aww_gszustr.ogc_fid, aww_gszustr.wkb_geometry, aww_gszustr.typ, aww_gszustr.name
-	FROM aww_gszustr where archive = 0
+	FROM aww_gszustr where archive = 0 AND im_kanton = 1
 ),
 singlepoly_gszu as
 (
