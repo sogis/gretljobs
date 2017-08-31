@@ -1,14 +1,14 @@
 import ch.so.agi.gretl.steps.*
 
 
-def bereichDelete = '/home/bjsvwjek/IdeaProjects/gretljobs/afu_gewschutz_export_ai/export/gsbereich_delete.sql'
-def bereichInsert = '/home/bjsvwjek/IdeaProjects/gretljobs/afu_gewschutz_export_ai/export/gsbereich_insert.sql'
+def bereichDelete = 'gsbereich_delete.sql'
+def bereichInsert = 'gsbereich_insert.sql'
 
-def zoneDelete = '/home/bjsvwjek/IdeaProjects/gretljobs/afu_gewschutz_export_ai/export/gszone_delete.sql'
-def zoneInsert = '/home/bjsvwjek/IdeaProjects/gretljobs/afu_gewschutz_export_ai/export/gszone_insert.sql'
+def zoneDelete = 'gszone_delete.sql'
+def zoneInsert = 'gszone_insert.sql'
 
-def arealDelete = '/home/bjsvwjek/IdeaProjects/gretljobs/afu_gewschutz_export_ai/export/gsareal_delete.sql'
-def arealInsert = '/home/bjsvwjek/IdeaProjects/gretljobs/afu_gewschutz_export_ai/export/gsareal_insert.sql'
+def arealDelete = 'gsareal_delete.sql'
+def arealInsert = 'gsareal_insert.sql'
 
 
 task stageGsBereich(type: SqlExecutorTask){
