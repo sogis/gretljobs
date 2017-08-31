@@ -11,6 +11,8 @@ def arealDelete = 'gsareal_delete.sql'
 def arealInsert = 'gsareal_insert.sql'
 
 
+defaultTasks 'clearStagingRows'
+
 task stageGsBereich(type: SqlExecutorTask){
     database = [dbUrl, dbUser, dbPass]
     sqlFiles = [bereichDelete, bereichInsert]
