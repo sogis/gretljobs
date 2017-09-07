@@ -1,30 +1,17 @@
 import ch.so.agi.gretl.steps.*
 
-buildscript {
 
-    repositories {
-        mavenLocal()
-        mavenCentral()
-    }
+def bereichDelete = 'gsbereich_delete.sql'
+def bereichInsert = 'gsbereich_insert.sql'
 
-    dependencies {
-        classpath group: 'gretl', name: 'gretl',  version: '0.9'
-    }
-}
+def zoneDelete = 'gszone_delete.sql'
+def zoneInsert = 'gszone_insert.sql'
 
-def dbUrl = 'jdbc:postgresql://geodb.verw.rootso.org/sogis'
-def dbUser = 'datasync'
-def dbPass = 'datasync'
+def arealDelete = 'gsareal_delete.sql'
+def arealInsert = 'gsareal_insert.sql'
 
-def bereichDelete = '/home/bjsvwjek/IdeaProjects/gretljobs/afu_gewschutz_export_ai/export/gsbereich_delete.sql'
-def bereichInsert = '/home/bjsvwjek/IdeaProjects/gretljobs/afu_gewschutz_export_ai/export/gsbereich_insert.sql'
 
-def zoneDelete = '/home/bjsvwjek/IdeaProjects/gretljobs/afu_gewschutz_export_ai/export/gszone_delete.sql'
-def zoneInsert = '/home/bjsvwjek/IdeaProjects/gretljobs/afu_gewschutz_export_ai/export/gszone_insert.sql'
-
-def arealDelete = '/home/bjsvwjek/IdeaProjects/gretljobs/afu_gewschutz_export_ai/export/gsareal_delete.sql'
-def arealInsert = '/home/bjsvwjek/IdeaProjects/gretljobs/afu_gewschutz_export_ai/export/gsareal_insert.sql'
-
+defaultTasks 'clearStagingRows'
 
 task stageGsBereich(type: SqlExecutorTask){
     database = [dbUrl, dbUser, dbPass]
