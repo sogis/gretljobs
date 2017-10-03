@@ -32,3 +32,8 @@ Example build command (when you have placed init.gradle directly in your home di
 export dbUrl=jdbc:postgresql://mydbservername/mydbname
 gradle -I ~/init.gradle -b ch.so.afu.gewaesserschutz_export/build.gradle
 ```
+Or, if you place init.gradle in the ~/.gradle/ directory, the init script is found automatically. Thus the example build command is:
+```
+export dbUrl=jdbc:postgresql://mydbservername/mydbname
+gradle -b ch.so.afu.gewaesserschutz_export/build.gradle
+```
