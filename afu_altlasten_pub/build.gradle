@@ -1,0 +1,11 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferAfuAltlasten'
+
+task transferAfuAltlasten(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('afu_altlasten_pub_altlasten_belastete_standorte_internet.sql', 'afu_altlasten_pub.altlasten_belastete_standorte_internet', true)
+    ];        
+}

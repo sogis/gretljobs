@@ -1,0 +1,12 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferAgiHoheitsgrenzen'
+
+task transferAgiHoheitsgrenzen(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('av_mopublic_mopublic_grundstueck.sql', 'av_mopublic.mopublic_grundstueck', true),
+            new TransferSet('av_mopublic_mopublic_grundstueck_proj.sql', 'av_mopublic.mopublic_grundstueck_proj', true),
+    ];        
+}

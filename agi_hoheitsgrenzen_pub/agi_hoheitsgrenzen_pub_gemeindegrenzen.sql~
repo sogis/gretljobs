@@ -1,0 +1,490 @@
+--Gemeindegrenze
+DELETE FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze;
+
+WITH 
+  overlaps_to_gaps AS (
+    SELECT 
+      ROW_NUMBER() OVER() AS id,
+      gem_bfs, 
+      COALESCE(
+        ST_Difference(
+          geometrie, 
+          (
+            SELECT 
+              ST_Union(b.geometrie)
+            FROM 
+              av_avdpool_ng.gemeindegrenzen_gemeindegrenze b
+            WHERE 
+              ST_Intersects(a.geometrie, b.geometrie)
+              AND 
+              a.gem_bfs != b.gem_bfs
+          )
+        ),
+        a.geometrie
+      ) AS geom
+    FROM 
+      av_avdpool_ng.gemeindegrenzen_gemeindegrenze a
+  ),
+
+  gemeinde_multipolygon_gaps AS (
+    SELECT 
+      geom, 
+      ROW_NUMBER() OVER() AS id
+    FROM ( 
+      SELECT
+        st_union(geom) AS geom
+      FROM 
+        overlaps_to_gaps) AS query
+  ),
+
+
+  kantonsgeometrie AS (
+    SELECT
+      ST_Union(geom) AS geom, 
+      ROW_NUMBER() OVER() AS id
+    FROM (
+	SELECT 
+	  ST_MakePolygon(
+	    ST_ExteriorRing(subquery.geom)) AS geom,
+	  1 AS id
+	FROM ( 
+	  SELECT 
+	    (ST_Dump(ST_Union(geometrie))).geom, 
+	    1 AS id
+	  FROM av_avdpool_ng.gemeindegrenzen_gemeindegrenze) AS subquery
+	GROUP BY
+	  id,
+	  subquery.geom) AS query
+),
+
+  gaps AS (
+    SELECT 
+      *,
+      ROW_NUMBER() OVER() AS id 
+    FROM (
+      SELECT DISTINCT
+        (ST_Dump(differenz.st_difference)).geom, 
+        ST_AsText((st_dump(differenz.st_difference)).geom)
+      FROM 
+        kantonsgeometrie, (
+        SELECT DISTINCT 
+          ST_Difference(kantonsgeometrie.geom, gemeinde_multipolygon_gaps.geom), 
+          ST_AsText(ST_Difference(kantonsgeometrie.geom, gemeinde_multipolygon_gaps.geom))
+        FROM 
+          kantonsgeometrie, 
+          gemeinde_multipolygon_gaps
+        ) differenz
+    ) AS query
+  ) ,
+
+  flaechenmass_gemeinden AS (
+    SELECT 
+      gem_bfs, 
+      geom, 
+      ST_Area(geom)
+    FROM
+      overlaps_to_gaps
+  ),
+
+  area AS (
+    SELECT DISTINCT 
+      st_intersects(gaps.geom, flaechenmass_gemeinden.geom), 
+      gem_bfs, 
+      st_area, 
+      gaps.geom, 
+      gaps.id
+    FROM 
+      flaechenmass_gemeinden, 
+      gaps
+    WHERE
+      st_intersects(gaps.geom, flaechenmass_gemeinden.geom)=True
+  ),
+
+  zugehoerigkeit AS (
+    SELECT DISTINCT
+      CASE
+        WHEN a.st_area > b.st_area THEN a.gem_bfs
+        WHEN a.st_area < b.st_area THEN b.gem_bfs
+        WHEN a.st_area = b.st_area THEN a.gem_bfs
+      END AS groesser,
+      a.geom
+    FROM
+      area a, 
+      area b
+    WHERE 
+      a.id=b.id 
+      AND 
+      a.gem_bfs<>b.gem_bfs
+  ),
+
+  gaps_multipolygon AS (
+    SELECT DISTINCT
+      st_collect(geom) AS geometrie, 
+      groesser AS gem_bfs
+    FROM 
+      zugehoerigkeit
+    GROUP BY groesser
+  ),
+
+  corrected_polygons AS (
+    SELECT
+      overlaps_to_gaps.gem_bfs,
+      st_union(gaps_multipolygon.geometrie, overlaps_to_gaps.geom) as geom
+    FROM 
+      gaps_multipolygon, 
+      overlaps_to_gaps
+    WHERE 
+      gaps_multipolygon.gem_bfs=overlaps_to_gaps.gem_bfs
+  )
+
+
+INSERT INTO agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze (gemeindename, bfs_gemeindenummer, bezirksname, kantonsname, geometrie)  
+SELECT 
+  name, 
+  geometry.gem_bfs, 
+  bezirksname,
+  kantonsname,
+  geom
+FROM (SELECT  
+  gem_bfs, 
+  ST_MULTI(ST_Union(geom)) as geom
+FROM 
+  overlaps_to_gaps
+WHERE 
+ gem_bfs NOT IN (
+   SELECT 
+     gem_bfs 
+   FROM
+     corrected_polygons)
+GROUP BY
+  gem_bfs
+UNION
+SELECT 
+  gem_bfs,
+  ST_MULTI(ST_Union(geom)) as geom
+FROM 
+  corrected_polygons
+GROUP BY
+  gem_bfs) geometry
+LEFT JOIN av_avdpool_ng.gemeindegrenzen_gemeinde
+ ON gemeindegrenzen_gemeinde.gem_bfs=geometry.gem_bfs
+LEFT JOIN agi_hoheitsgrenzen.hoheitsgrenzen_gemeinde
+ ON hoheitsgrenzen_gemeinde.bfs_gemeindenummer=geometry.gem_bfs
+LEFT JOIN agi_hoheitsgrenzen.hoheitsgrenzen_bezirk
+ ON hoheitsgrenzen_bezirk.t_id=hoheitsgrenzen_gemeinde.bezirk
+LEFT JOIN agi_hoheitsgrenzen.hoheitsgrenzen_kanton
+ ON hoheitsgrenzen_kanton.t_id=hoheitsgrenzen_bezirk.kanton;
+
+-- Gemeindegrenze generalisiert
+
+DELETE FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze_generalisiert;
+
+WITH 
+  polygons AS (
+    SELECT 
+      bfs_gemeindenummer, 
+      (ST_Dump(geometrie)).*
+    FROM 
+      agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze),
+  rings AS (
+    SELECT
+      ST_ExteriorRing((ST_DumpRings(geom)).geom) as geom
+    FROM 
+      polygons),
+  simplerings AS (
+    SELECT
+      ST_SimplifyPreserveTopology(ST_LineMerge(St_Union(geom)),50) as geom
+    FROM
+      rings),
+  simplelines AS (
+    SELECT
+      (ST_Dump(geom)).geom
+    FROM 
+      simplerings),
+  simplepolys AS (
+    SELECT 
+      (ST_Dump(ST_Polygonize(DISTINCT geom))).geom as geom
+    FROM 
+      simplelines),
+  simplegemeinde AS (
+    SELECT 
+      gemeindename,
+      bfs_gemeindenummer,
+      bezirksname,
+      kantonsname,
+      geom
+    FROM
+      agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze, 
+      simplepolys
+    WHERE
+      ST_Intersects(hoheitsgrenzen_gemeindegrenze.geometrie, simplepolys.geom)
+      AND
+      ST_Area(ST_Intersection(simplepolys.geom, hoheitsgrenzen_gemeindegrenze.geometrie))/ST_Area(simplepolys.geom) > 0.5)
+
+INSERT INTO agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze_generalisiert(gemeindename, bfs_gemeindenummer, bezirksname, kantonsname, geometrie)
+SELECT 
+  gemeindename,
+  bfs_gemeindenummer,
+  bezirksname,
+  kantonsname,
+  ST_Collect(geom) as geom
+FROM 
+  simplegemeinde
+GROUP BY
+  bfs_gemeindenummer,
+  gemeindename, 
+  bezirksname,
+  kantonsname;
+
+ 
+-- Gemeinden Beschriftung (A4)
+DELETE FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindename_a4;
+INSERT INTO agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindename_a4 (
+  bfs_gemeindenummer,
+  gemeindename,
+  ori,
+  hali,
+  vali,
+  beschriftungstext,
+  pos)
+SELECT 
+  bfs_gemeindenummer,
+  name,
+  ori,
+  hali,
+  vali,
+  beschriftungstext,
+  pos
+FROM agi_hoheitsgrenzen.hoheitsgrenzen_gemeindename_pos
+LEFT JOIN
+  agi_hoheitsgrenzen.hoheitsgrenzen_gemeinde
+  ON hoheitsgrenzen_gemeinde.t_id=hoheitsgrenzen_gemeindename_pos.gemeinde
+LEFT JOIN
+  av_avdpool_ng.gemeindegrenzen_gemeinde
+  ON gemeindegrenzen_gemeinde.gem_bfs=bfs_gemeindenummer
+WHERE format='A4';
+
+
+-- Gemeinden Beschriftung A3
+
+DELETE FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindename_a3;
+INSERT INTO agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindename_a3 (
+  bfs_gemeindenummer,
+  gemeindename,
+  ori,
+  hali,
+  vali,
+  beschriftungstext,
+  pos)
+SELECT 
+  bfs_gemeindenummer,
+  name,
+  ori,
+  hali,
+  vali,
+  beschriftungstext,
+  pos
+FROM agi_hoheitsgrenzen.hoheitsgrenzen_gemeindename_pos
+LEFT JOIN
+  agi_hoheitsgrenzen.hoheitsgrenzen_gemeinde
+  ON hoheitsgrenzen_gemeinde.t_id=hoheitsgrenzen_gemeindename_pos.gemeinde
+LEFT JOIN
+  av_avdpool_ng.gemeindegrenzen_gemeinde
+  ON gemeindegrenzen_gemeinde.gem_bfs=bfs_gemeindenummer
+WHERE format='A3';
+
+
+--Bezirksgrenze
+
+DELETE FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksgrenze;
+INSERT INTO agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksgrenze (
+ bezirksname, 
+ bezirksnummer, 
+ kantonsname, 
+ geometrie)
+SELECT 
+  hoheitsgrenzen_gemeindegrenze.bezirksname,
+  bezirksnummer,
+  hoheitsgrenzen_gemeindegrenze.kantonsname,
+  ST_Multi(ST_Union(geometrie))
+FROM
+  agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze
+LEFT JOIN
+  agi_hoheitsgrenzen.hoheitsgrenzen_bezirk
+  ON hoheitsgrenzen_bezirk.bezirksname=hoheitsgrenzen_gemeindegrenze.bezirksname    
+GROUP BY
+  hoheitsgrenzen_gemeindegrenze.bezirksname, 
+  bezirksnummer, 
+  hoheitsgrenzen_gemeindegrenze.kantonsname;
+
+--Bezirksgrenze generalisiert
+
+DELETE FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksgrenze_generalisiert;
+INSERT INTO agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksgrenze_generalisiert (
+ bezirksname, 
+ bezirksnummer, 
+ kantonsname, 
+ geometrie)
+SELECT 
+  hoheitsgrenzen_gemeindegrenze_generalisiert.bezirksname,
+  bezirksnummer,
+  hoheitsgrenzen_gemeindegrenze_generalisiert.kantonsname,
+  ST_Multi(ST_Union(geometrie))
+FROM
+  agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze_generalisiert
+LEFT JOIN
+  agi_hoheitsgrenzen.hoheitsgrenzen_bezirk
+  ON hoheitsgrenzen_bezirk.bezirksname=hoheitsgrenzen_gemeindegrenze_generalisiert.bezirksname
+    
+GROUP BY
+  hoheitsgrenzen_gemeindegrenze_generalisiert.bezirksname, 
+  bezirksnummer, 
+  hoheitsgrenzen_gemeindegrenze_generalisiert.kantonsname;
+
+--Bezirke Beschriftung (A4)
+
+DELETE FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksname_a4;
+INSERT INTO agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksname_a4 (
+  bezirksnummer,
+  bezirksname,
+  ori,
+  hali,
+  vali,
+  beschriftungstext,
+  pos)
+SELECT 
+  bezirksnummer,
+  bezirksname,
+  ori,
+  hali,
+  vali,
+  beschriftungstext,
+  pos
+FROM agi_hoheitsgrenzen.hoheitsgrenzen_bezirksname_pos
+LEFT JOIN
+  agi_hoheitsgrenzen.hoheitsgrenzen_bezirk
+  ON hoheitsgrenzen_bezirk.t_id=hoheitsgrenzen_bezirksname_pos.bezirk
+WHERE format='A4';
+
+
+--Bezirke Beschriftung A3
+
+DELETE FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksname_a3;
+INSERT INTO agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksname_a3 (
+  bezirksnummer,
+  bezirksname,
+  ori,
+  hali,
+  vali,
+  beschriftungstext,
+  pos)
+SELECT 
+  bezirksnummer,
+  bezirksname,
+  ori,
+  hali,
+  vali,
+  beschriftungstext,
+  pos
+FROM agi_hoheitsgrenzen.hoheitsgrenzen_bezirksname_pos
+LEFT JOIN
+  agi_hoheitsgrenzen.hoheitsgrenzen_bezirk
+  ON hoheitsgrenzen_bezirk.t_id=hoheitsgrenzen_bezirksname_pos.bezirk
+WHERE format='A3';
+
+--Kantonsgrenze
+
+DELETE FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze;
+INSERT INTO agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze (
+ kantonsname, 
+ kantonskuerzel,
+ kantonsnummer, 
+ geometrie)
+SELECT 
+  hoheitsgrenzen_gemeindegrenze.kantonsname,
+  'SO' as kantonskuerzel,
+  kantonsnummer,
+  ST_Multi(ST_Union(geometrie))
+FROM
+  agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze
+LEFT JOIN
+  agi_hoheitsgrenzen.hoheitsgrenzen_kanton
+  ON hoheitsgrenzen_kanton.kantonsname=hoheitsgrenzen_gemeindegrenze.kantonsname    
+GROUP BY
+  hoheitsgrenzen_gemeindegrenze.kantonsname,
+  kantonsnummer,
+  kantonskuerzel;
+
+
+--Kantonsgrenze generalisiert
+
+DELETE FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze_generalisiert;
+INSERT INTO agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze_generalisiert (
+ kantonsname, 
+ kantonskuerzel,
+ kantonsnummer, 
+ geometrie)
+SELECT 
+  hoheitsgrenzen_gemeindegrenze_generalisiert.kantonsname,
+  'SO' as kantonskuerzel,
+  kantonsnummer,
+  ST_Multi(ST_Union(geometrie))
+FROM
+  agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze_generalisiert
+LEFT JOIN
+  agi_hoheitsgrenzen.hoheitsgrenzen_kanton
+  ON hoheitsgrenzen_kanton.kantonsname=hoheitsgrenzen_gemeindegrenze_generalisiert.kantonsname 
+GROUP BY
+  hoheitsgrenzen_gemeindegrenze_generalisiert.kantonsname,
+  kantonsnummer,
+  kantonskuerzel;
+
+-- Beschriftung Kanton (A4) 
+
+DELETE FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsname_a4;
+INSERT INTO agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsname_a4 (
+  kantonsnummer,
+  kantonsname,
+  ori,
+  hali,
+  vali,
+  beschriftungstext,
+  pos)
+SELECT 
+  kantonsnummer,
+  kantonsname,
+  ori,
+  hali,
+  vali,
+  beschriftungstext,
+  pos
+FROM agi_hoheitsgrenzen.hoheitsgrenzen_kantonsname_pos
+LEFT JOIN
+  agi_hoheitsgrenzen.hoheitsgrenzen_kanton
+  ON hoheitsgrenzen_kanton.t_id=hoheitsgrenzen_kantonsname_pos.kanton
+WHERE format='A4';
+
+-- Beschriftung Kanton (A3)
+
+DELETE FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsname_a3;
+INSERT INTO agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsname_a3 (
+  kantonsnummer,
+  kantonsname,
+  ori,
+  hali,
+  vali,
+  beschriftungstext,
+  pos)
+SELECT 
+  kantonsnummer,
+  kantonsname,
+  ori,
+  hali,
+  vali,
+  beschriftungstext,
+  pos
+FROM agi_hoheitsgrenzen.hoheitsgrenzen_kantonsname_pos
+LEFT JOIN
+  agi_hoheitsgrenzen.hoheitsgrenzen_kanton
+  ON hoheitsgrenzen_kanton.t_id=hoheitsgrenzen_kantonsname_pos.kanton
+WHERE format='A3';
