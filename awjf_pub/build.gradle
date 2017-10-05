@@ -1,0 +1,11 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferAwjf'
+
+task transferAwjf(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('awjf_pub_wald_uebersicht.sql', 'awjf_pub.wald_uebersicht', true)
+    ];        
+}
