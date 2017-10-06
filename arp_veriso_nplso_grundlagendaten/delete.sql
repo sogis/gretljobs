@@ -1,0 +1,8 @@
+DELETE FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze;
+DELETE FROM av_avdpool_ng.bodenbedeckung_boflaeche;
+DELETE FROM av_avdpool_ng.einzelobjekte_einzelobjekt;
+DELETE FROM av_avdpool_ng.einzelobjekte_flaechenelement;
+DELETE FROM av_avdpool_ng.einzelobjekte_linienelement;
+DELETE FROM av_avdpool_ng.liegenschaften_grundstueck;
+DELETE FROM av_avdpool_ng.liegenschaften_liegenschaft;
+DELETE FROM av_avdpool_ng.liegenschaften_lsnachfuehrung;
