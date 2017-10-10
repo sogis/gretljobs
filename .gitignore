@@ -7,3 +7,9 @@
 
 # exclude .gradle directories
 **/.gradle/
+
+# exclude .vagrant directory
+**/.vagrant/
+
+# exclude *.retry files
+**/*.retry
