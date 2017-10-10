@@ -1,7 +1,7 @@
 # gretljobs
-Contains all job configuration files (*.gradle, *.sql, ...) of the jobs that are run by gretl and all files needed to set up a virtual gretl runtime environment
+Contains all job configuration files (\*.gradle, \*.sql, ...) of the jobs that are run by gretl and all files needed to set up a virtual gretl runtime environment
 
-Instructions to build the virtual gretl runtime environment
+**Instructions to build the virtual gretl runtime environment**
 
 As a requirement to run gretl virtual environment you have to define 4 environment variables in your .bashrc
 To run the gretljobs you need a source DB and a target DB (possibly a virtual environment too).
