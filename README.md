@@ -1,39 +1,29 @@
 # gretljobs
-Contains all job configuration files (*.gradle, *.sql, ...) of the jobs that are run by gretl
+Contains all job configuration files (*.gradle, *.sql, ...) of the jobs that are run by gretl and all files needed to set up a virtual gretl runtime environment
 
-In addition to the Gradle build file a global init script is needed. It must not be checked in the repository. An example init script looks like this:
+Instructions to build the virtual gretl runtime environment
+
+As a requirement to run gretl virtual environment you have to define 4 environment variables in your .bashrc
+To run the gretljobs you need a source DB and a target DB (possibly a virtual environment too).
+Maybe you have to change pg_hba.conf of source DB or target DB
 ```
-allprojects {
-    buildscript {
-        repositories {
-            mavenCentral()
-            maven {
-                name 'Repository name here'
-                url 'https://agi.jfrog.io/agi/libs-release'
-                credentials {
-                    username 'myusername'
-                    password 'mypassword'
-                }
-            }   
-        }
-        dependencies {
-            classpath group: 'ch.so.agi', name: 'gretl',  version: '1.0.+'
-        }
-        ext {
-            dbUrl = System.env.dbUrl
-            dbUser = 'mydbusername'
-            dbPass = 'mydbpassword'
-        }
-    }
-}
+export sourceDbUser=username for source DB
+export sourceDbPass=password for source DB 
+export targetDbUrl= username for target DB (for example jdbc:postgresql://192.168.56.21/sogis (example for a virtual DB server))
+export targetDbPass=password for gretl user in target DB
 ```
-Example build command (when you have placed init.gradle directly in your home directory):
+After defining the environment variables you can build the virtual server
 ```
-export dbUrl=jdbc:postgresql://mydbservername/mydbname
-gradle -I ~/init.gradle -b ch.so.afu.gewaesserschutz_export/build.gradle
+git clone https://github.com/sogis/gretljobs.git
+cd gretljobs
+vagrant up
 ```
-Or, if you place init.gradle in the ~/.gradle/ directory, the init script is found automatically. Thus the example build command is:
+Login on the virtual server with
 ```
-export dbUrl=jdbc:postgresql://mydbservername/mydbname
-gradle -b ch.so.afu.gewaesserschutz_export/build.gradle
+vagrant ssh
+```
+
+Example build command 
+```
+gradle -b /vagrant/ch.so.afu.gewaesserschutz_export/build.gradle
 ```
