@@ -12,7 +12,8 @@ export sourceDbPass=password for source DB
 export targetDbUrl= username for target DB (for example jdbc:postgresql://192.168.56.21/sogis (example for a virtual DB server))
 export targetDbPass=password for gretl user in target DB
 ```
-After defining the environment variables you can build the virtual server
+After defining the environment variables you can build the virtual server.
+Please make a new branch for working with gretljobs.
 ```
 git clone https://github.com/sogis/gretljobs.git
 cd gretljobs
