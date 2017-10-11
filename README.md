@@ -17,6 +17,7 @@ Please make a new branch for working with gretljobs.
 ```
 git clone https://github.com/sogis/gretljobs.git
 cd gretljobs
+git checkout -b branchname
 vagrant up
 ```
 Login on the virtual server with
