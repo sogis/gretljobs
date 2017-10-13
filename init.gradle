@@ -8,14 +8,14 @@ allprojects {
             }   
         }
         dependencies {
-            classpath group: 'ch.so.agi', name: 'gretl',  version: '1.0.+'
+            classpath group: 'ch.so.agi', name: 'gretl',  version: '1.0.2'
         }
         ext {
-            sourceDbUrl = 'jdbc:postgresql://geodb.verw.rootso.org/sogis'
+            sourceDbUrl = System.env.sourceDbUrl
             sourceDbUser = System.env.sourceDbUser
             sourceDbPass = System.env.sourceDbPass
             targetDbUrl = System.env.targetDbUrl
-            targetDbUser = 'gretl'
+            targetDbUser = System.env.targetDbUser
             targetDbPass = System.env.targetDbPass
         }
     }
