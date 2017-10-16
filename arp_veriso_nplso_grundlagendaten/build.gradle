@@ -1,8 +1,6 @@
 import ch.so.agi.gretl.steps.*
 
 
-// deleteData only needed as a workaround
-def deleteData = 'delete.sql'
 def gemeindegrenze = 'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze.sql'
 def boflaeche = 'av_avdpool_ng.bodenbedeckung_boflaeche.sql'
 def einzelobjekt = 'av_avdpool_ng.einzelobjekte_einzelobjekt.sql'
@@ -13,15 +11,10 @@ def liegenschaft = 'av_avdpool_ng.liegenschaften_liegenschaft.sql'
 def lsnachfuehrung = 'av_avdpool_ng.liegenschaften_lsnachfuehrung.sql'
 
 
-defaultTasks 'updateVerisoNplsoBaseData'
+defaultTasks 'updateBaseData'
 
-// deleteBaseData onle needed as a workaround
-task deleteBaseData(type: SqlExecutorTask){
-    database = [targetDbUrl, targetDbUser, targetDbPass]
-    sqlFiles = [deleteData]
-}
 
-task updateVerisoNplsoBaseData(type: Db2DbTask, dependsOn: [deleteBaseData]){
+task updateBaseData(type: Db2DbTask){
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [

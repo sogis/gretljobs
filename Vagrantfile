@@ -9,10 +9,12 @@ $set_environment_variables = <<SCRIPT
 tee "/etc/profile.d/myvars.sh" > "/dev/null" <<EOF
 
 # AWS environment variables.
+export sourceDbUrl=#{ENV['sourceDbUrl']}
 export sourceDbUser=#{ENV['sourceDbUser']}
 export sourceDbPass=#{ENV['sourceDbPass']}
-export targetDbPass=#{ENV['targetDbPass']}
 export targetDbUrl=#{ENV['targetDbUrl']}
+export targetDbUser=#{ENV['targetDbUser']}
+export targetDbPass=#{ENV['targetDbPass']}
 EOF
 SCRIPT
 
