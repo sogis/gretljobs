@@ -1,0 +1,93 @@
+import ch.so.agi.gretl.steps.*
+import ch.so.agi.gretl.tasks.*
+import de.undercouch.gradle.tasks.download.Download
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+        //Todo: URL umstellen!
+        //maven { url "https://plugins.gradle.org/m2/" }
+        maven { url 'http://sogeo.services:8081/artifactory/libs-snapshot' }
+        maven { url 'http://jars.interlis.ch' }
+    }
+    dependencies {
+        classpath "de.undercouch:gradle-download-task:3.3.0"
+        //todo: umstellen!
+        //classpath "ch.so.agi.gretl:gradle-gretl.plugin:1.0.0"
+        classpath 'ch.so.agi:gretl:1.0.+'
+    }
+}
+
+apply plugin: "de.undercouch.download"
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'removeFiles'
+
+def nameOfZipWithBoundaries = 'swissBOUNDARIES3D_LV95.zip'
+def outputDir = rootProject.projectDir
+def xtfFilePath = outputDir.toString() + '/swissBOUNDARIES3D_LV95/INTERLIS_2_LV95_LN02/swissBOUNDARIES3D_1_3.xtf'
+
+
+task download(type: Download) {
+
+    description = "Download swissBoundaries3D from swisstopo"
+    doLast {
+        //Todo: Change path
+        println "File downloaded to: " + '/vagrant/agi_ch_gemeinden/' // System.getProperty("java.io.tmpdir")
+    }
+    src 'https://data.geo.admin.ch/ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill/data.zip'
+    //Todo: Change path
+    dest '/vagrant/agi_ch_gemeinden/' //System.getProperty("java.io.tmpdir")
+    overwrite true
+}
+
+task unzipData(type: Copy, dependsOn: 'download') {
+    description = "Unzip a single zip file."
+    doLast {
+        println "File unzipped to directory: " + rootProject.projectDir
+    }
+    from zipTree(file("data.zip"))
+    into file(outputDir)
+
+    include nameOfZipWithBoundaries
+
+}
+
+
+task unzipSwissBoundaries3D(type: Copy, dependsOn: 'unzipData') {
+    description = "Unzip a single zip file."
+    doLast {
+        println "File unzipped to directory: " + rootProject.projectDir
+    }
+
+    from zipTree(file(nameOfZipWithBoundaries))
+    into file(outputDir)
+
+    include "**/*.xtf"
+}
+
+
+task dbImport(type: Ili2pgImport, dependsOn: 'unzipSwissBoundaries3D'){
+
+
+    database = [targetDbUrl, targetDbUser, targetDbPass]
+    dbschema = "test_swissboundaries"
+    models = "swissBOUNDARIES3D_ili2_LV95_V1_3"
+    disableValidation = false
+    dataFile = xtfFilePath
+
+}
+
+/* task umbau*/
+
+
+task removeFiles(type: Delete, dependsOn:'dbImport') {
+    //unnecessairy statement in case execution of task dbImport fails? Because job fails...
+    /*onlyIf{
+        dbImport.state.failure = null
+    }*/
+    delete 'data.zip', nameOfZipWithBoundaries, 'swissBOUNDARIES3D_LV95'
+
+}
+
