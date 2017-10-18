@@ -1,0 +1,11 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferAfuBaugrundklassen'
+
+task transferAfuBaugrundklassen(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('afu_baugrundklassen_pub_baugrundklasse.sql', 'afu_baugrundklassen_pub.baugrundklasse', true)
+    ];
+}

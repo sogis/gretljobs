@@ -1,8 +1,8 @@
 import ch.so.agi.gretl.steps.*
 
-defaultTasks 'transferAgiHoheitsgrenzen'
+defaultTasks 'transferAvMopublic'
 
-task transferAgiHoheitsgrenzen(type: Db2DbTask){
+task transferAvMopublic(type: Db2DbTask){
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
