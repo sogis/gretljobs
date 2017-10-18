@@ -4,12 +4,6 @@
  * unbefriedigend und alt.
  */
 
-/*
- * PLZ/Ortschaft wird noch nicht berücksichtigt.
- * Datenablage/-organisation in sogis-DB ist noch
- * unbefriedigend und alt.
- */
-
 WITH strassenname AS (
     SELECT 
         lok.tid AS lok_tid,
