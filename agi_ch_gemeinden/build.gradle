@@ -6,14 +6,15 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral()
-        //Todo: URL umstellen!
+        //Todo: change as soon as the plugin is available
         //maven { url "https://plugins.gradle.org/m2/" }
+
         maven { url 'http://sogeo.services:8081/artifactory/libs-snapshot' }
         maven { url 'http://jars.interlis.ch' }
     }
     dependencies {
         classpath "de.undercouch:gradle-download-task:3.3.0"
-        //todo: umstellen!
+        //todo: change as soon as the plugin is available
         //classpath "ch.so.agi.gretl:gradle-gretl.plugin:1.0.0"
         classpath 'ch.so.agi:gretl:1.0.+'
     }
@@ -25,69 +26,81 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'removeFiles'
 
 def nameOfZipWithBoundaries = 'swissBOUNDARIES3D_LV95.zip'
+//Todo: Change path --> not yet clear where file has to be saved to
+def tempFolder ='/vagrant/agi_ch_gemeinden/'
 def outputDir = rootProject.projectDir
 def xtfFilePath = outputDir.toString() + '/swissBOUNDARIES3D_LV95/INTERLIS_2_LV95_LN02/swissBOUNDARIES3D_1_3.xtf'
 
 
-task download(type: Download) {
-
+task download(type: Download){
     description = "Download swissBoundaries3D from swisstopo"
     doLast {
-        //Todo: Change path
-        println "File downloaded to: " + '/vagrant/agi_ch_gemeinden/' // System.getProperty("java.io.tmpdir")
+        println "File downloaded to: " + tempFolder
     }
     src 'https://data.geo.admin.ch/ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill/data.zip'
-    //Todo: Change path
-    dest '/vagrant/agi_ch_gemeinden/' //System.getProperty("java.io.tmpdir")
+    dest tempFolder
     overwrite true
 }
 
-task unzipData(type: Copy, dependsOn: 'download') {
-    description = "Unzip a single zip file."
+task unzipData(type: Copy, dependsOn: 'download'){
+    description = "Unzip Data.zip."
     doLast {
-        println "File unzipped to directory: " + rootProject.projectDir
+        println "File unzipped to directory: " + outputDir
     }
     from zipTree(file("data.zip"))
     into file(outputDir)
-
     include nameOfZipWithBoundaries
-
 }
 
 
-task unzipSwissBoundaries3D(type: Copy, dependsOn: 'unzipData') {
-    description = "Unzip a single zip file."
+task unzipSwissBoundaries3D(type: Copy, dependsOn: 'unzipData'){
+    description = "Unzip swissBOUNDARIES3D_ili2_LV95_V1_3.itf from swissBOUNDARIES3D.zip."
     doLast {
-        println "File unzipped to directory: " + rootProject.projectDir
+        println "File unzipped to directory: " + outputDir
     }
-
     from zipTree(file(nameOfZipWithBoundaries))
     into file(outputDir)
-
     include "**/*.xtf"
 }
 
 
 task dbImport(type: Ili2pgImport, dependsOn: 'unzipSwissBoundaries3D'){
-
-
+    description = "Import swissBoundaries3D-Data into database"
+    doLast {
+        println "Data imported into db: " + targetDbUrl
+    }
     database = [targetDbUrl, targetDbUser, targetDbPass]
-    dbschema = "test_swissboundaries"
+    dbschema = "agi_swissboundaries3d"
     models = "swissBOUNDARIES3D_ili2_LV95_V1_3"
     disableValidation = false
-    dataFile = xtfFilePath
-
+    dataFile = file(xtfFilePath)
+    deleteData = true
 }
 
-/* task umbau*/
+
+task convertData(type: Db2DbTask, dependsOn: 'dbImport'){
+    description = "Convert swissBoundaries3D-Data"
+    doLast {
+        println "SwissBoundaries3D-Data are converted."
+    }
+    //todo: change to sourceDbUrl, sourcDbUser, sourceDbPass
+    sourceDb = [targetDbUrl, targetDbUser, targetDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('bezirke.sql', 'agi_swissboundaries3d_pub.swissboundaries3d_bezirk', true),
+            new TransferSet('hoheitsgebiet.sql', 'agi_swissboundaries3d_pub.swissboundaries3d_hoheitsgebiet', true),
+            new TransferSet('kanton.sql', 'agi_swissboundaries3d_pub.swissboundaries3d_kanton', true),
+            new TransferSet('land.sql', 'agi_swissboundaries3d_pub.swissboundaries3d_land', true)
+    ];
+}
 
 
-task removeFiles(type: Delete, dependsOn:'dbImport') {
-    //unnecessairy statement in case execution of task dbImport fails? Because job fails...
-    /*onlyIf{
-        dbImport.state.failure = null
-    }*/
+task removeFiles(type: Delete, dependsOn:'convertData') {
+    description = "Remove Files"
+    doLast {
+        println "Files removed."
+    }
     delete 'data.zip', nameOfZipWithBoundaries, 'swissBOUNDARIES3D_LV95'
-
 }
+
 
