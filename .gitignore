@@ -13,3 +13,6 @@
 
 # exclude *.retry files
 **/*.retry
+
+# macOS
+.DS_Store
