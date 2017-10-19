@@ -12,6 +12,7 @@ task transferAfuSorkas(type: Db2DbTask){
             new TransferSet('afu_sorkas_pub_gasleitungen.sql', 'afu_sorkas_pub.gasleitungen', true),
             new TransferSet('afu_sorkas_pub_avt_oev_netz.sql', 'afu_sorkas_pub.avt_oev_netz', true),
             new TransferSet('afu_sorkas_pub_betriebe_kb.sql', 'afu_sorkas_pub.betriebe_kb', true),
-            new TransferSet('afu_sorkas_pub_natstr_kb.sql', 'afu_sorkas_pub.natstr_kb', true)
+            new TransferSet('afu_sorkas_pub_natstr_kb.sql', 'afu_sorkas_pub.natstr_kb', true),
+            new TransferSet('afu_sorkas_pub_durchgangsstrassen_kb.sql', 'afu_sorkas_pub.durchgangsstrassen_kb', true)
     ];
 }
