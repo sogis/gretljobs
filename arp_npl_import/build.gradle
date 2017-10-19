@@ -1,0 +1,90 @@
+description = """\n
+Importiert Nutzungsplanungs-INTERLIS-Daten in die Datenbank
+und baut diese in das Publikationsmodell um.
+
+Momentan wird noch nicht parametrisiert (also pro Gemeinde)
+umgebaut, sondern immer der gesamte Datensatz als Quelle
+verwendet. Der parametrisierte Umbau kann erst erfolgen,
+wenn die benötigten GRETL-Steps dies unterstützen.
+
+Die Performance des Umbau-Schrittes dürfte bei erst wenig
+vorhandenen Gemeinden in der Quell-Datenbank nicht
+problematisch sein.
+
+'gradle importDataset -Pxtf=path/to/xtf/bfsnr_gemeindename.xtf'
+"""
+
+apply plugin: 'ch.so.agi.gretl'
+
+ext {
+    sourceDbUrl = "jdbc:postgresql://geodb.verw.rootso.org:5432/sogis"
+    sourceDbUser = "datasync"
+    sourceDbPass = System.env.sourceDbPass    
+    //sourceDbPass = "mspublic"    
+    //targetDbUrl = "jdbc:postgresql://geodb-t.verw.rootso.org:5432/sogis"
+    //targetDbUser = "datasync"
+    //targetDbPass = System.env.targetDbPass
+    //targetDbPass = "mspublic"
+    setNonExistingPropertyToUndefinedValue('xtf')
+}
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.steps.*
+
+task checkXtfName() {
+    description = "Prüft, ob die ersten vier Buchstaben im XTF-Filenamen einer Nummer entsprechen, die im BfS-Range des Kt. SO liegt."    
+    doFirst {
+        def bfsRange = 2401..2622
+        def bfsNr = file(xtf).getName().take(4) as int
+        assert true == bfsRange.contains(bfsNr)
+    }
+}
+
+task validateDataset(type: IliValidator, dependsOn: 'checkXtfName') {
+    description = "Validiert ein Datensatz (=XTF)."    
+    dataFiles = [xtf]
+}
+
+// Momentan noch *mit* Validierung.
+// Bis klar ist, was IliValidator-Task genau macht.
+task replaceDataset (type: Ili2pgReplace, dependsOn: 'checkXtfName') {
+    description = "Ersetzt einen Datensatz (=XTF) in der PostgreSQL-Datenbank."
+    database = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    dbschema = "arp_npl"
+    models = "SO_Nutzungsplanung_20170915"
+    disableValidation = false
+    dataset = file(xtf).getName().take(4)
+    dataFile = file(xtf)   
+}
+
+// At the moment it's still sogis-Db to sogis-Db.
+// No Pub-Db yet.
+task transformArpNpl(type: Db2DbTask) {
+    description = "Datenumbau in das Publikationsmodell."
+    sourceDb =  [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    transferSets = [
+            new TransferSet("transform_arp_npl_pub_nutzungsplanung_grundnutzung.sql", 'arp_npl_pub.nutzungsplanung_grundnutzung', true),
+            new TransferSet("transform_arp_npl_pub_nutzungsplanung_ueberlagernd_flaeche.sql", 'arp_npl_pub.nutzungsplanung_ueberlagernd_flaeche', true),
+            new TransferSet("transform_arp_npl_pub_nutzungsplanung_ueberlagernd_linie.sql", 'arp_npl_pub.nutzungsplanung_ueberlagernd_linie', true),
+            new TransferSet("transform_arp_npl_pub_nutzungsplanung_ueberlagernd_punkt.sql", 'arp_npl_pub.nutzungsplanung_ueberlagernd_punkt', true),
+            new TransferSet("transform_arp_npl_pub_nutzungsplanung_beschriftung.sql", 'arp_npl_pub.nutzungsplanung_nutzungsplanung_beschriftung', true),
+            new TransferSet("transform_arp_npl_pub_erschliessung_flaechenobjekt.sql", 'arp_npl_pub.nutzungsplanung_erschliessung_flaechenobjekt', true),
+            new TransferSet("transform_arp_npl_pub_erschliessung_linienobjekt.sql", 'arp_npl_pub.nutzungsplanung_erschliessung_linienobjekt', true),
+            new TransferSet("transform_arp_npl_pub_erschliessung_punktobjekt.sql", 'arp_npl_pub.nutzungsplanung_erschliessung_punktobjekt', true),
+            new TransferSet("transform_arp_npl_pub_erschliessung_beschriftung.sql", 'arp_npl_pub.nutzungsplanung_erschliessung_beschriftung', true),
+            new TransferSet("transform_arp_npl_pub_vs_perimeter_verfahrensstand.sql", 'arp_npl_pub.nutzungsplanung_vs_perimeter_verfahrensstand', true),
+            new TransferSet("transform_arp_npl_pub_vs_perimeter_beschriftung.sql", 'arp_npl_pub.nutzungsplanung_vs_perimeter_beschriftung', true),
+            new TransferSet("transform_arp_npl_pub_transfermetadaten.sql", 'arp_npl_pub.nutzungsplanung_transfermetadaten', true)
+    ]
+}
+
+def setNonExistingPropertyToUndefinedValue(propertyName) {
+    setNonExistingPropertyToDefaultValue(propertyName, 'UNDEFINED')
+}
+
+def setNonExistingPropertyToDefaultValue(propertyName, defaultValue) {
+    if (!project.hasProperty(propertyName)) {
+        ext[propertyName] = defaultValue
+    }
+}
