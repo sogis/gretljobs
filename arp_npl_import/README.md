@@ -9,3 +9,7 @@ You can import a dataset (= one municipality) and do the conversion into the pub
 * Or combine the two tasks.
 
 Not sure how we will use this exactly with our gretl-jenkins.
+
+## Schema creation
+
+Check out: [https://geoweb.rootso.org/redmine/issues/2677#change-6963](https://geoweb.rootso.org/redmine/issues/2677#change-6963)
