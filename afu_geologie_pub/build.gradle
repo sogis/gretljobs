@@ -8,6 +8,7 @@ task transferAfuGeologie(type: Db2DbTask){
     transferSets = [
             new TransferSet('afu_geologie_pub_sfall.sql', 'afu_geologie_pub.sfall', true),
             new TransferSet('afu_geologie_pub_abrkt.sql', 'afu_geologie_pub.abrkt', true),
-            new TransferSet('afu_geologie_pub_karst.sql', 'afu_geologie_pub.karst', true)
+            new TransferSet('afu_geologie_pub_karst.sql', 'afu_geologie_pub.karst', true),
+            new TransferSet('afu_geologie_pub_tekton.sql', 'afu_geologie_pub.tekton', true)
     ];
 }
