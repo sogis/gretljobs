@@ -9,8 +9,8 @@ task transferAfuVegas(type: Db2DbTask){
             new TransferSet('afu_vegas_pub_baggerschlitz.sql', 'afu_vegas_pub.baggerschlitz', true),
             new TransferSet('afu_vegas_pub_gerammtes_piezometer.sql', 'afu_vegas_pub.gerammtes_piezometer', true),
             new TransferSet('afu_vegas_pub_sodbrunnen.sql', 'afu_vegas_pub.sodbrunnen', true),
-            new TransferSet('afu_vegas_pub_quelle_gefasst.sql', 'afu_vegas_pub.quelle_gefasst', true)/*,
-            new TransferSet('afu_gewisso_pub_jfv_fischenz.sql', 'afu_gewisso_pub.jfv_fischenz', true),
+            new TransferSet('afu_vegas_pub_quelle_gefasst.sql', 'afu_vegas_pub.quelle_gefasst', true),
+            new TransferSet('afu_vegas_pub_quelle_ungefasst.sql', 'afu_vegas_pub.quelle_ungefasst', true)/*,
             new TransferSet('afu_gewisso_pub_san_fischw_nicht_wk.sql', 'afu_gewisso_pub.san_fischw_nicht_wk', true),
             new TransferSet('afu_gewisso_pub_oeko_abstuerze.sql', 'afu_gewisso_pub.oeko_abstuerze', true),
             new TransferSet('afu_gewisso_pub_oeko_bauwerke.sql', 'afu_gewisso_pub.oeko_bauwerke', true)*/
