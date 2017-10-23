@@ -7,6 +7,7 @@ task transferAvtKantonsstrassen(type: Db2DbTask){
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
             new TransferSet('avt_kantonsstrassen_pub_bezugspunkt.sql', 'avt_kantonsstrassen_pub.bezugspunkt', true),
-            new TransferSet('avt_kantonsstrassen_pub_achse.sql', 'avt_kantonsstrassen_pub.achse', true)
+            new TransferSet('avt_kantonsstrassen_pub_achse.sql', 'avt_kantonsstrassen_pub.achse', true),
+            new TransferSet('avt_kantonsstrassen_pub_baustelle.sql', 'avt_kantonsstrassen_pub.baustelle', true)
     ];
 }
