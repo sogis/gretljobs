@@ -11,6 +11,8 @@ task transferAvtGesamtverkehrsmodell2010(type: Db2DbTask){
             new TransferSet('avt_gesamtverkehrsmodell2010_pub_auslastung.sql',
                     'avt_gesamtverkehrsmodell2010_pub.auslastung', true),
             new TransferSet('avt_gesamtverkehrsmodell2010_pub_gesamtverkehrsmodell_oev_2010.sql',
-                    'avt_gesamtverkehrsmodell2010_pub.gesamtverkehrsmodell_oev_2010', true)
+                    'avt_gesamtverkehrsmodell2010_pub.gesamtverkehrsmodell_oev_2010', true),
+            new TransferSet('avt_gesamtverkehrsmodell2010_pub_gesamtverkehrsmodell_oev_2030.sql',
+                    'avt_gesamtverkehrsmodell2010_pub.gesamtverkehrsmodell_oev_2030', true)
     ];
 }
