@@ -7,6 +7,8 @@ task transferAvtGesamtverkehrsmodell2010(type: Db2DbTask){
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
             new TransferSet('avt_gesamtverkehrsmodell2010_pub_gesamtverkehrsmodell.sql',
-                    'avt_gesamtverkehrsmodell2010_pub.gesamtverkehrsmodell', true)
+                    'avt_gesamtverkehrsmodell2010_pub.gesamtverkehrsmodell', true),
+            new TransferSet('avt_gesamtverkehrsmodell2010_pub_auslastung.sql',
+                    'avt_gesamtverkehrsmodell2010_pub.auslastung', true)
     ];
 }
