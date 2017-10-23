@@ -9,7 +9,7 @@ Maybe you have to change pg_hba.conf of source DB or target DB
 ```
 export sourceDbUser=username for source DB
 export sourceDbPass=password for source DB 
-export targetDbUrl= username for target DB (for example jdbc:postgresql://192.168.56.21/sogis (example for a virtual DB server))
+export targetDbUrl=url to target DB (for example jdbc:postgresql://192.168.56.21/sogis (example for a virtual DB server))
 export targetDbPass=password for gretl user in target DB
 ```
 After defining the environment variables you can build the virtual server.
