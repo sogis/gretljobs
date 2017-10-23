@@ -1,0 +1,12 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferAvtGesamtverkehrsmodell2010'
+
+task transferAvtGesamtverkehrsmodell2010(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('avt_gesamtverkehrsmodell2010_pub_gesamtverkehrsmodell.sql',
+                    'avt_gesamtverkehrsmodell2010_pub.gesamtverkehrsmodell', true)
+    ];
+}
