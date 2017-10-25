@@ -1,5 +1,6 @@
 import ch.so.agi.gretl.steps.*
 import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
 import de.undercouch.gradle.tasks.download.Download
 
 buildscript {
@@ -23,13 +24,15 @@ buildscript {
 apply plugin: "de.undercouch.download"
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'removeFiles'
+
+defaultTasks 'convertData'
 
 def nameOfZipWithBoundaries = 'swissBOUNDARIES3D_LV95.zip'
-//Todo: Change path --> not yet clear where file has to be saved to
-def tempFolder ='/vagrant/agi_ch_gemeinden/'
-def outputDir = rootProject.projectDir
-def xtfFilePath = outputDir.toString() + '/swissBOUNDARIES3D_LV95/INTERLIS_2_LV95_LN02/swissBOUNDARIES3D_1_3.xtf'
+def tempFolder = System.getProperty("java.io.tmpdir")
+def pathToDataZip = Paths.get(tempFolder, "data.zip")
+def pathToZipWithBoundaries = Paths.get(tempFolder, nameOfZipWithBoundaries)
+def pathToITF = Paths.get(tempFolder, 'swissBOUNDARIES3D_LV95')
+def xtfFilePath = Paths.get(tempFolder, 'swissBOUNDARIES3D_LV95/INTERLIS_2_LV95_LN02/swissBOUNDARIES3D_1_3.xtf')
 
 
 task download(type: Download){
@@ -42,13 +45,14 @@ task download(type: Download){
     overwrite true
 }
 
+
 task unzipData(type: Copy, dependsOn: 'download'){
     description = "Unzip Data.zip."
     doLast {
-        println "File unzipped to directory: " + outputDir
+        println "File unzipped to directory: " + tempFolder
     }
-    from zipTree(file("data.zip"))
-    into file(outputDir)
+    from zipTree(file(pathToDataZip))
+    into file(tempFolder)
     include nameOfZipWithBoundaries
 }
 
@@ -56,10 +60,10 @@ task unzipData(type: Copy, dependsOn: 'download'){
 task unzipSwissBoundaries3D(type: Copy, dependsOn: 'unzipData'){
     description = "Unzip swissBOUNDARIES3D_ili2_LV95_V1_3.itf from swissBOUNDARIES3D.zip."
     doLast {
-        println "File unzipped to directory: " + outputDir
+        println "File unzipped to directory: " + tempFolder
     }
-    from zipTree(file(nameOfZipWithBoundaries))
-    into file(outputDir)
+    from zipTree(file(pathToZipWithBoundaries))
+    into file(tempFolder)
     include "**/*.xtf"
 }
 
@@ -83,6 +87,7 @@ task convertData(type: Db2DbTask, dependsOn: 'dbImport'){
     doLast {
         println "SwissBoundaries3D-Data are converted."
     }
+    finalizedBy 'removeFiles'
     //todo: change to sourceDbUrl, sourcDbUser, sourceDbPass
     sourceDb = [targetDbUrl, targetDbUser, targetDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -95,12 +100,12 @@ task convertData(type: Db2DbTask, dependsOn: 'dbImport'){
 }
 
 
-task removeFiles(type: Delete, dependsOn:'convertData') {
+task removeFiles(type: Delete) {
     description = "Remove Files"
     doLast {
         println "Files removed."
     }
-    delete 'data.zip', nameOfZipWithBoundaries, 'swissBOUNDARIES3D_LV95'
+    delete file(pathToZipWithBoundaries), file(pathToDataZip), file(pathToITF)
 }
 
 

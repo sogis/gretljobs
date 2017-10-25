@@ -1,51 +1,40 @@
-WITH land AS (
-  SELECT 
-    tlm_grenzen_tlm_landesgebiet.icc,
-    tlm_grenzen_tlm_landesgebiet.aname
-  FROM
-    agi_swissboundaries3d.tlm_grenzen_tlm_landesgebiet
-  WHERE
-    land_teil = 0 OR land_teil = 1
-),
-geometrie AS (
-  SELECT
-    tlm_grenzen_tlm_kantonsgebiet.kantonsnummer,
-    tlm_grenzen_tlm_kantonsgebiet.aname AS kantonsname,
-    land.aname AS land,
-    ST_FORCE_2D(ST_Collect(tlm_grenzen_tlm_kantonsgebiet.shape)) AS geometrie
-  
-  FROM
-    agi_swissboundaries3d.tlm_grenzen_tlm_kantonsgebiet
-    LEFT JOIN
-      land
-      ON
-        land.icc = tlm_grenzen_tlm_kantonsgebiet.icc
-  GROUP BY
-    kantonsnummer,
-    kantonsname,
-    land
-),
-  kanton AS (
+--Kanton
+WITH geometrie AS (
     SELECT
-      tlm_grenzen_tlm_kantonsgebiet.uuid::uuid,
-      tlm_grenzen_tlm_kantonsgebiet.kantonsnummer,
-      tlm_grenzen_tlm_kantonsgebiet.datum_aenderung  
+        tlm_grenzen_tlm_kantonsgebiet.kantonsnummer,
+        tlm_grenzen_tlm_kantonsgebiet.aname AS kantonsname,
+        land.aname AS land,
+        ST_Force_2D(ST_Collect(tlm_grenzen_tlm_kantonsgebiet.shape)) AS geometrie
     FROM
-      agi_swissboundaries3d.tlm_grenzen_tlm_kantonsgebiet
-    WHERE 
-      kanton_teil=0 or kanton_teil=1
+        agi_swissboundaries3d.tlm_grenzen_tlm_kantonsgebiet
+        LEFT JOIN
+            agi_swissboundaries3d.tlm_grenzen_tlm_landesgebiet land
+            ON
+                land.icc = tlm_grenzen_tlm_kantonsgebiet.icc
+    WHERE
+        land.land_teil = 0
+        OR
+        land.land_teil = 1
+    GROUP BY
+        kantonsnummer,
+        kantonsname,
+        land
 )
 
 SELECT 
-  kanton.uuid AS t_ili_tid,
-  geometrie.kantonsnummer,
-  geometrie.kantonsname,
-  geometrie.land,
-  kanton.datum_aenderung,
-  geometrie.geometrie
+    kanton.uuid::uuid AS t_ili_tid,
+    geometrie.kantonsnummer,
+    kantonsname,
+    land,
+    datum_aenderung,
+    geometrie
 FROM
-  geometrie
-  LEFT JOIN
-    kanton
-    ON
-      kanton.kantonsnummer = geometrie.kantonsnummer;
+    geometrie
+    LEFT JOIN 
+        agi_swissboundaries3d.tlm_grenzen_tlm_kantonsgebiet kanton
+        ON
+            kanton.kantonsnummer = geometrie.kantonsnummer
+WHERE
+    kanton.kanton_teil = 0
+    OR
+    kanton.kanton_teil = 1;
