@@ -1,0 +1,17 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferAfuGeologie'
+
+task transferAfuGeologie(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('afu_geologie_pub_sfall.sql', 'afu_geologie_pub.sfall', true),
+            new TransferSet('afu_geologie_pub_abrkt.sql', 'afu_geologie_pub.abrkt', true),
+            new TransferSet('afu_geologie_pub_karst.sql', 'afu_geologie_pub.karst', true),
+            new TransferSet('afu_geologie_pub_tekton.sql', 'afu_geologie_pub.tekton', true),
+            new TransferSet('afu_geologie_pub_holoz.sql', 'afu_geologie_pub.holoz', true),
+            new TransferSet('afu_geologie_pub_pleist.sql', 'afu_geologie_pub.pleist', true),
+            new TransferSet('afu_geologie_pub_grunds.sql', 'afu_geologie_pub.grunds', true)
+    ];
+}
