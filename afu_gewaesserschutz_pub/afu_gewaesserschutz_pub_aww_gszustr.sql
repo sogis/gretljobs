@@ -1,6 +1,6 @@
 SELECT
-	ogc_fid,
-	wkb_geometry,
+	ogc_fid AS t_id,
+	wkb_geometry AS geometrie,
 	"name",
 	im_kanton,
 	typ

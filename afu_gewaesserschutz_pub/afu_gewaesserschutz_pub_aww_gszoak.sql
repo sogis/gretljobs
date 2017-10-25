@@ -1,6 +1,6 @@
 SELECT 
-	ogc_fid,
-	st_multi(wkb_geometry) AS wkb_geometry,
+	ogc_fid AS t_id,
+	st_multi(wkb_geometry) AS geometrie,
 	sz,
 	kanton,
 	status
