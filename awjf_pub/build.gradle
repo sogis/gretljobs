@@ -7,9 +7,9 @@ task transferAwjf(type: Db2DbTask){
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
         new TransferSet('awjf_pub_wald_uebersicht.sql', 'awjf_pub.wald_uebersicht', true),
-	    new TransferSet('awjf_pub_wap_bst.sql', 'awjf_pub.wap_bst', true),
-	    new TransferSet('awjf_pub_sw_funktion_ar.sql', 'awjf_pub.sw_funktion_ar', true),
-	    new TransferSet('awjf_pub_waldge.sql', 'awjf_pub.waldge', true),
+        new TransferSet('awjf_pub_wap_bst.sql', 'awjf_pub.wap_bst', true),
+        new TransferSet('awjf_pub_sw_funktion_ar.sql', 'awjf_pub.sw_funktion_ar', true),
+        new TransferSet('awjf_pub_waldge.sql', 'awjf_pub.waldge', true),
         new TransferSet('awjf_pub_oberhoehenbonitaet.sql', 'awjf_pub.oberhoehenbonitaet', true)
     ];        
 }
