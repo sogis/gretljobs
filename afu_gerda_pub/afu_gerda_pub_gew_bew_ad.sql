@@ -42,15 +42,4 @@ WHERE
     AND 
     bo.archive = 0 
     AND 
-    d.archive = 0
-ORDER BY 
-    a.wkb_geometry, 
-    a.anlageid, 
-    s.statusid, 
-    p.pumpeart, 
-    b.datum_bewilligung, 
-    d.dokument, 
-    d.name, 
-    ((a.anlageid || ''::text) || d.dokumenteid)::integer, 
-    d.doktyp, 
-    bo.tiefebohrung;
+    d.archive = 0;
