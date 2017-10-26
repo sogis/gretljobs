@@ -3,7 +3,6 @@ SELECT
     ogc_fid,
     typ,
     herkunft,
-    the_geom_1,
     tunnel,
     the_geom AS geometrie
 FROM
