@@ -1,5 +1,5 @@
 SELECT
-	so_id,
+	so_id AS t_id,
 	nummer,
 	sostrid,
 	fromnodeno,
@@ -52,7 +52,7 @@ SELECT
 	nodeno,
 	neigung_be,
 	laenge,
-	wkb_geometry,
+	wkb_geometry AS geometrie,
 	ogc_fid,
 	klasse
 FROM

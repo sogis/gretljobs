@@ -1,6 +1,6 @@
 SELECT 
-	wkb_geometry,
-	streckennummer,
+	wkb_geometry AS geometrie,
+	streckennummer AS t_id,
 	dtv2010_bus_modulo,
 	dtv2010_bahn_modulo,
 	asp2010_bus_modulo,
