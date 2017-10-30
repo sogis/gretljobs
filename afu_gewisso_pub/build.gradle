@@ -13,6 +13,7 @@ task transferAfuGewisso(type: Db2DbTask){
             new TransferSet('afu_gewisso_pub_jfv_fischenz.sql', 'afu_gewisso_pub.jfv_fischenz', true),
             new TransferSet('afu_gewisso_pub_san_fischw_nicht_wk.sql', 'afu_gewisso_pub.san_fischw_nicht_wk', true),
             new TransferSet('afu_gewisso_pub_oeko_abstuerze.sql', 'afu_gewisso_pub.oeko_abstuerze', true),
-            new TransferSet('afu_gewisso_pub_oeko_bauwerke.sql', 'afu_gewisso_pub.oeko_bauwerke', true)
+            new TransferSet('afu_gewisso_pub_oeko_bauwerke.sql', 'afu_gewisso_pub.oeko_bauwerke', true),
+            new TransferSet('afu_gewisso_pub_messstellen.sql', 'afu_gewisso_pub.messstellen', true)
     ];        
 }
