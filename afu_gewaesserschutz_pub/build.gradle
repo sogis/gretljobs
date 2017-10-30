@@ -7,6 +7,11 @@ task transferAfuGewaesserschutz(type: Db2DbTask){
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
             new TransferSet('afu_gewaesserschutz_pub_aww_gsab.sql', 'afu_gewaesserschutz_pub.aww_gsab', true),
-            new TransferSet('afu_gewaesserschutz_pub_aww_gszoar.sql', 'afu_gewaesserschutz_pub.aww_gszoar', true)
+            new TransferSet('afu_gewaesserschutz_pub_aww_gszoar.sql', 'afu_gewaesserschutz_pub.aww_gszoar', true),
+            new TransferSet('afu_gewaesserschutz_pub_aww_gshiso.sql', 'afu_gewaesserschutz_pub.aww_gshiso', true),
+            new TransferSet('afu_gewaesserschutz_pub_aww_gshora.sql', 'afu_gewaesserschutz_pub.aww_gshora', true),
+            new TransferSet('afu_gewaesserschutz_pub_aww_gszoak.sql', 'afu_gewaesserschutz_pub.aww_gszoak', true),
+            new TransferSet('afu_gewaesserschutz_pub_aww_gszustr.sql', 'afu_gewaesserschutz_pub.aww_gszustr', true),
+            new TransferSet('afu_gewaesserschutz_pub_aww_gwomac.sql', 'afu_gewaesserschutz_pub.aww_gwomac', true)
     ];        
 }

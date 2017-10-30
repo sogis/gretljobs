@@ -1,0 +1,12 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferAfuImmissionskarten'
+
+task transferAfuImmissionskarten(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('afu_immissionskarten_pub_luftbelastung_2010_2020.sql',
+                    'afu_immissionskarten_pub.luftbelastung_2010_2020', true)
+    ];
+}
