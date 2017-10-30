@@ -8,6 +8,7 @@ task transferAfuNaturgefahren(type: Db2DbTask){
     transferSets = [
             new TransferSet('afu_naturgefahren_pub_naturgefahren_ereignis.sql',
                     'afu_naturgefahren_pub.naturgefahren_ereignis', true),
-            new TransferSet('afu_naturgefahren_pub_naturgefahren.sql','afu_naturgefahren_pub.naturgefahren', true)
+            new TransferSet('afu_naturgefahren_pub_naturgefahren.sql','afu_naturgefahren_pub.naturgefahren', true),
+            new TransferSet('afu_naturgefahren_pub_doline.sql','afu_naturgefahren_pub.doline', true)
     ];
 }
