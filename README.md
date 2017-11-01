@@ -4,7 +4,7 @@ Enthält sämtliche Konfigurationsdateien (`*.gradle`, `*.sql`) der GRETL-Jobs u
 ## Anleitung GRETL-Entwicklungsumgebung
 Die GRETL-Entwicklungsumgebung läuft in einer Vagrant-Box (= virtueller Server). Die Datenbankverbindungsparameter einer Quell- und einer Zieldatenbank müssen als vier Umgebungsvariablen in der `.bashrc`-Datei gespeichert werden. Sowohl Ziel- wie auch die Quelldatenbank können ebenfalls in einer Vagrant-Boxlaufen. Unter Umständen müssen die `pg_hba.conf`- und `postgresql.conf`-Dateien angepasst werden, damit auf die Datenbank von "ausserhalb" zugegriffen werden kann.
 
-Beispieleinträgee in `.bashrc`:
+Beispieleinträge in `.bashrc`:
 ```
 export sourceDbUrl=jdbc:postgresql://geodb-t.verw.rootso.org/sogis
 export sourceDbUser=mylogin
