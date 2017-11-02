@@ -5,7 +5,6 @@ SELECT DISTINCT
     p.pumpeart, 
     bo.tiefebohrung AS bohrtiefe, 
     b.datum_bewilligung, 
-    d.dokument, 
     d.name, 
     ((a.anlageid || ''::text) || d.dokumenteid)::integer AS anlagedokument, 
     d.doktyp
