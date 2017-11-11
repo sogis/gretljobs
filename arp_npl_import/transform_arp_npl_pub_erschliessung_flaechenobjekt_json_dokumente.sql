@@ -110,6 +110,15 @@ typ_erschliessung_flaechenobjekt_dokument_ref AS
     arp_npl.erschlssngsplnung_typ_erschliessung_flaechenobjekt_dokument AS typ_erschliessung_flaechenobjekt_dokument
     LEFT JOIN doc_doc_references
     ON typ_erschliessung_flaechenobjekt_dokument.dokument = doc_doc_references.ursprung
+
+  UNION 
+  
+  SELECT
+    typ_erschliessung_flaechenobjekt,
+    dokument,
+    dokument AS dok_referenz
+  FROM
+    arp_npl.erschlssngsplnung_typ_erschliessung_flaechenobjekt_dokument
 ),
 typ_erschliessung_flaechenobjekt_json_dokument AS 
 (
@@ -117,8 +126,8 @@ typ_erschliessung_flaechenobjekt_json_dokument AS
     *
   FROM
     typ_erschliessung_flaechenobjekt_dokument_ref
-    LEFT JOIN json_documents_doc_doc_reference
-    ON json_documents_doc_doc_reference.t_id = typ_erschliessung_flaechenobjekt_dokument_ref.dok_referenz
+    LEFT JOIN json_documents_all
+    ON json_documents_all.t_id = typ_erschliessung_flaechenobjekt_dokument_ref.dok_referenz
 ),
 typ_erschliessung_flaechenobjekt_json_dokument_agg AS 
 (

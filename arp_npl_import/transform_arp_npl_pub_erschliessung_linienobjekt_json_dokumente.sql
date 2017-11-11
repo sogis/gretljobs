@@ -73,9 +73,12 @@ json_documents_all AS
       arp_npl.rechtsvorschrften_dokument
   ) AS t
 ),
+-- TODO:
 -- Alle Dokumente (die in HinweisWeitereDokumente vorkommen) 
 -- als JSON-Objekte (resp. als Text-Repräsentation).
 -- Muss noch genauer überlegt werden, wie genau mit JSON hantiert wird.
+
+-- TODO: Brauch ich jetzt diese Tabelle überhaupt noch?
 json_documents_doc_doc_reference AS 
 (
   SELECT
@@ -100,6 +103,11 @@ json_documents_doc_doc_reference AS
   LEFT JOIN json_documents_all AS bar
   ON foo.dokument_t_id = bar.t_id
 ),
+-- TODO: 
+-- Erstes SELECT liefert nur die Dokumente, die auch in der hinweisweiteredokumente-Tabelle
+-- vorkommen. Daher das Union mit der "linienobjekt_dokument"-Tabelle, um auch wirklich
+-- alle Dokumente zu erhalten, die mit einem Typ assoziiert sind.
+-- -> Nochmals überlegen, ob man das nicht besser lösen kann.
 typ_erschliessung_linienobjekt_dokument_ref AS 
 (
   SELECT DISTINCT
@@ -110,16 +118,32 @@ typ_erschliessung_linienobjekt_dokument_ref AS
     arp_npl.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument AS typ_erschliessung_linienobjekt_dokument
     LEFT JOIN doc_doc_references
     ON typ_erschliessung_linienobjekt_dokument.dokument = doc_doc_references.ursprung
-),
+  
+  UNION 
+  
+  SELECT
+    typ_erschliessung_linienobjekt,
+    dokument,
+    dokument AS dok_referenz
+  FROM
+    arp_npl.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument
+)
+--SELECT * FROM typ_erschliessung_linienobjekt_dokument_ref ORDER BY typ_erschliessung_linienobjekt
+,
+-- Dieses Joinen muss folgerichtig mit *allen* Json-Dokumenten geschehen,
+-- sonst gibt es NULL bei den Dokumenten, die nicht in hinweisweiteredokumente
+-- auftreten.
 typ_erschliessung_linienobjekt_json_dokument AS 
 (
   SELECT
     *
   FROM
     typ_erschliessung_linienobjekt_dokument_ref
-    LEFT JOIN json_documents_doc_doc_reference
-    ON json_documents_doc_doc_reference.t_id = typ_erschliessung_linienobjekt_dokument_ref.dok_referenz
-),
+    LEFT JOIN json_documents_all
+    ON json_documents_all.t_id = typ_erschliessung_linienobjekt_dokument_ref.dok_referenz
+)
+--SELECT * FROM typ_erschliessung_linienobjekt_json_dokument
+,
 typ_erschliessung_linienobjekt_json_dokument_agg AS 
 (
   SELECT

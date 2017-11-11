@@ -120,6 +120,15 @@ typ_grundnutzung_dokument_ref AS
     arp_npl.nutzungsplanung_typ_grundnutzung_dokument AS typ_grundnutzung_dokument
     LEFT JOIN doc_doc_references
     ON typ_grundnutzung_dokument.dokument = doc_doc_references.ursprung
+    
+  UNION 
+  
+  SELECT
+    typ_grundnutzung,
+    dokument,
+    dokument AS dok_referenz
+  FROM
+    arp_npl.nutzungsplanung_typ_grundnutzung_dokument   
 ),
 typ_grundnutzung_json_dokument AS 
 (
@@ -127,8 +136,8 @@ typ_grundnutzung_json_dokument AS
     *
   FROM
     typ_grundnutzung_dokument_ref
-    LEFT JOIN json_documents_doc_doc_reference
-    ON json_documents_doc_doc_reference.t_id = typ_grundnutzung_dokument_ref.dok_referenz
+    LEFT JOIN json_documents_all
+    ON json_documents_all.t_id = typ_grundnutzung_dokument_ref.dok_referenz
 ),
 typ_grundnutzung_json_dokument_agg AS 
 (

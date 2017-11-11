@@ -125,6 +125,15 @@ typ_ueberlagernd_flaeche_dokument_ref AS
     arp_npl.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS typ_ueberlagernd_flaeche_dokument
     LEFT JOIN doc_doc_references
     ON typ_ueberlagernd_flaeche_dokument.dokument = doc_doc_references.ursprung
+
+  UNION 
+  
+  SELECT
+    typ_ueberlagernd_flaeche,
+    dokument,
+    dokument AS dok_referenz
+  FROM
+    arp_npl.nutzungsplanung_typ_ueberlagernd_flaeche_dokument
 ),
 typ_ueberlagernd_flaeche_json_dokument AS 
 (
@@ -132,8 +141,8 @@ typ_ueberlagernd_flaeche_json_dokument AS
     *
   FROM
     typ_ueberlagernd_flaeche_dokument_ref
-    LEFT JOIN json_documents_doc_doc_reference
-    ON json_documents_doc_doc_reference.t_id = typ_ueberlagernd_flaeche_dokument_ref.dok_referenz
+    LEFT JOIN json_documents_all
+    ON json_documents_all.t_id = typ_ueberlagernd_flaeche_dokument_ref.dok_referenz
 ),
 typ_ueberlagernd_flaeche_json_dokument_agg AS 
 (
