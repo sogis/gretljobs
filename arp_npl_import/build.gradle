@@ -17,7 +17,7 @@ problematisch sein.
 apply plugin: 'ch.so.agi.gretl'
 
 ext {
-    sourceDbUrl = "jdbc:postgresql://geodb.verw.rootso.org:5432/sogis"
+    sourceDbUrl = "jdbc:postgresql://geodb-t.verw.rootso.org:5432/sogis"
     sourceDbUser = "datasync"
     sourceDbPass = System.env.sourceDbPass    
     //sourceDbUrl = "jdbc:postgresql://geodb-dev.cgjofbdf5rqg.eu-central-1.rds.amazonaws.com:5432/xanadu2"

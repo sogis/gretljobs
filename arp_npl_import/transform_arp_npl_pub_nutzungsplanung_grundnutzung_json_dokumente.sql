@@ -152,6 +152,7 @@ typ_grundnutzung_json_dokument_agg AS
 grundnutzung_geometrie_typ AS
 (
   SELECT 
+    g.t_id,
     g.t_datasetname::int4 AS bfs_nr,
     g.t_ili_tid,
     g.name_nummer,
@@ -176,9 +177,32 @@ grundnutzung_geometrie_typ AS
     arp_npl.nutzungsplanung_grundnutzung AS g
     LEFT JOIN arp_npl.nutzungsplanung_typ_grundnutzung AS t
     ON g.typ_grundnutzung = t.t_id
+),
+-- Alle Dokumente (inkl. Kaskade), die direkt von der Geometrie
+-- auf ein Dokument zeigen.
+additional_documents_from_geometry AS 
+(
+  SELECT
+    foo.t_id,
+    string_agg(json_dokument, ';') AS json_dokument
+  FROM
+  (
+  SELECT 
+    grundnutzung.t_id,
+    grundnutzung.t_ili_tid,
+    grundnutzung.dokument,
+    unnest(dok_dok_referenzen) AS dok_referenz
+  FROM
+    arp_npl.nutzungsplanung_grundnutzung AS grundnutzung
+    LEFT JOIN doc_doc_references
+    ON grundnutzung.dokument = doc_doc_references.ursprung
+  ) AS foo
+  LEFT JOIN json_documents_all
+  ON json_documents_all.t_id = foo.dok_referenz
+  GROUP BY foo.t_id
 )
--- Es muss noch das mögliche zusätzliche Dokument (Geometrie -> Dokument)
--- hinzugefügt werden.
+-- Es müssen noch die möglichen zusätzlichen Dokumente (Geometrie -> Dokument)
+-- hinzugefügt werden. Plural, da auch Kaskade wieder möglich.
 SELECT
   g.bfs_nr,
   g.t_ili_tid,
@@ -206,5 +230,5 @@ FROM
   grundnutzung_geometrie_typ AS g 
   LEFT JOIN typ_grundnutzung_json_dokument_agg AS d
   ON g.typ_t_id = d.typ_grundnutzung_t_id
-  LEFT JOIN json_documents_all AS j
-  ON j.t_id = g.dokument;
+  LEFT JOIN additional_documents_from_geometry AS j
+  ON j.t_id = g.t_id;
