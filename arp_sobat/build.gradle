@@ -1,0 +1,28 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferSobat'
+
+task transferSobat(type: Db2DbTask){
+    sourceDb = [jdbc:postgresql://geodb-t.verw.rootso.org/sogis, sourceDbUser, sourceDbPass]
+    targetDb = [jdbc:postgresql://geodb.verw.rootso.org/sogis, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('transfer_q1_mat.sql', 'sobat.q1_mat', true)
+	    new TransferSet('transfer_q2_mat.sql', 'sobat.q2_mat', true)
+            new TransferSet('transfer_help_dynamic_param.sql', 'sobat.help_dynamic_param', true)
+            new TransferSet('transfer_help_ew_stat.sql', 'sobat.help_ew_stat', true)
+            new TransferSet('transfer_help_static_param.sql', 'sobat.help_static_param', true)
+            new TransferSet('transfer_help_text.sql', 'sobat.help_text', true)
+            new TransferSet('transfer_help_zp.sql', 'sobat.help_zp', true)
+            new TransferSet('transfer_sobat_gemeinden.sql', 'sobat.sobat_gemeinden', true)
+	    new TransferSet('transfer_sobat_kgwr_g.sql', 'sobat.sobat_kgwr_g', true)
+            new TransferSet('transfer_sobat_kgwr_w.sql', 'sobat.sobat_kgwr_w', true)
+	    new TransferSet('transfer_sobat_zeitstand.sql', 'sobat.sobat_zeitstand', true)
+            new TransferSet('transfer_sobat_zonenplan.sql', 'sobat.sobat_zonenplan', true)
+	    new TransferSet('transfer_sobat_zonenplan_fme.sql', 'sobat.sobat_zonenplan_fme', true)
+            new TransferSet('transfer_sobat_zp_py.sql', 'sobat.sobat_zp_py', true)
+	    new TransferSet('transfer_t1_mat.sql', 'sobat.t1_mat', true)
+	    new TransferSet('transfer_t2_mat.sql', 'sobat.t2_mat', true)
+            new TransferSet('transfer_unbebaute_bauzonen.sql', 'sobat.unbebaute_bauzonen', true)
+	    new TransferSet('transfer_unbebaute_bauzonen_fme.sql', 'sobat.unbebaute_bauzonen_fme', true)
+    ];
+}
