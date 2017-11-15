@@ -18,4 +18,4 @@ FROM
     NATURAL JOIN 
         vegas.obj_quelle_
 WHERE
-    obj_objekt."archive" = 0;
+    obj_objekt.archive = 0;
