@@ -20,4 +20,4 @@ FROM
     NATURAL JOIN 
         vegas.obj_filterbrunnen_
 WHERE 
-    obj_objekt."archive" = 0;
+    obj_objekt.archive = 0;
