@@ -14,7 +14,7 @@ export targetDbUser=gretl
 export targetDbPass=fubar
 ```
 
-Anschliessend können neue GRETL-Jobs erstellt werden oder bestehende verändert werden. Für jeden neuen Job wird eine Branch erstellt.
+Anschliessend können neue GRETL-Jobs erstellt werden oder bestehende verändert werden. Für jeden neuen Job wird ein neuer Branch erstellt.
 
 ```
 git clone https://github.com/sogis/gretljobs.git
