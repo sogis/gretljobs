@@ -11,4 +11,4 @@ SELECT
 FROM
     public.aww_natgef_ereignis
 WHERE
-    "archive" = 0
+    archive = 0
