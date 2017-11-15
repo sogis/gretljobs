@@ -17,4 +17,4 @@ FROM
     NATURAL JOIN 
         vegas.obj_gerammtes_piezometer_
 WHERE 
-    obj_objekt."archive" = 0;
+    obj_objekt.archive = 0;
