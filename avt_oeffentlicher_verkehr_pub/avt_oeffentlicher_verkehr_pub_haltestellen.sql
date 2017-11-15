@@ -10,4 +10,4 @@ SELECT
 FROM
     public.avt_oev_haltestellen
 WHERE
-    "archive" = 0;
+    archive = 0;
