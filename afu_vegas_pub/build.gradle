@@ -6,7 +6,8 @@ task transferAfuVegas(type: Db2DbTask){
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
-            /*new TransferSet('afu_vegas_pub_baggerschlitz.sql', 'afu_vegas_pub.baggerschlitz', true),
+            /*Werden vermutlich nicht benötigt.Zur Sicherheit noch dringelassen. Falls nicht benötigt Dateien löschen
+            new TransferSet('afu_vegas_pub_baggerschlitz.sql', 'afu_vegas_pub.baggerschlitz', true),
             new TransferSet('afu_vegas_pub_gerammtes_piezometer.sql', 'afu_vegas_pub.gerammtes_piezometer', true),
             new TransferSet('afu_vegas_pub_sodbrunnen.sql', 'afu_vegas_pub.sodbrunnen', true),
             new TransferSet('afu_vegas_pub_quelle_gefasst.sql', 'afu_vegas_pub.quelle_gefasst', true),
