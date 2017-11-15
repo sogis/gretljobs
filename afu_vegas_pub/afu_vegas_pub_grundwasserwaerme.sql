@@ -18,4 +18,4 @@ FROM
     NATURAL JOIN 
         vegas.obj_grundwasserwaerme_
 WHERE
-    obj_objekt."archive" = 0;
+    obj_objekt.archive = 0;
