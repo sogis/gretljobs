@@ -9,4 +9,4 @@ SELECT
 FROM 
     public.avt_oev_haltestellen_ausserkantonal
 WHERE
-    "archive" = 0;
+    archive = 0;
