@@ -271,4 +271,4 @@ FROM
         ON 
             obj_objekt.vegas_id = obj_gerammtes_piezometer_.vegas_id
 WHERE 
-    "archive" = 0;
+    archive = 0;
