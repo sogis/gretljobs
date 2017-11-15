@@ -7,4 +7,4 @@ SELECT
 FROM
     public.aww_natgef_ubflut
 WHERE
-    "archive" = 0;
+    archive = 0;
