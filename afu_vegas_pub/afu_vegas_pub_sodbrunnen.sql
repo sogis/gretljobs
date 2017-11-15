@@ -20,4 +20,4 @@ FROM
     NATURAL JOIN 
         vegas.obj_sodbrunnen_
 WHERE 
-    obj_objekt."archive" = 0;
+    obj_objekt.archive = 0;
