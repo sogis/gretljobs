@@ -1,98 +1,98 @@
  WITH query AS ((((((((
                             SELECT 
-                                t.oid,
-                                t.wkb_geometry, 
-                                t.grid_code
+                                tief.oid,
+                                tief.wkb_geometry, 
+                                tief.grid_code
                             FROM 
-                                aww_natgef_rutsch_tief t
+                                aww_natgef_rutsch_tief AS tief
                             WHERE 
-                                t.archive = 0
+                                tief.archive = 0
                                 
                             UNION 
                             
                             SELECT 
-                                ut.oid,
-                                ut.wkb_geometry, 
-                                ut.grid_code
+                                untief.oid,
+                                untief.wkb_geometry, 
+                                untief.grid_code
                             FROM 
-                                aww_natgef_rutsch_untief ut
+                                aww_natgef_rutsch_untief AS untief
                             WHERE 
-                                ut.archive = 0)
+                                untief.archive = 0)
                                 
                         UNION 
                         
                         SELECT 
-                            b.oid, 
-                            b.wkb_geometry, 
-                            b.grid_code
+                            bekannte_rutschung.oid, 
+                            bekannte_rutschung.wkb_geometry, 
+                            bekannte_rutschung.grid_code
                         FROM 
-                            aww_natgef_rutsch_bek b
+                            aww_natgef_rutsch_bek AS bekannte_rutschung
                         WHERE 
-                            b.archive = 0)
+                            bekannte_rutschung.archive = 0)
                             
                     UNION 
                     
                     SELECT 
-                        tb.oid, 
-                        tb.wkb_geometry, 
-                        tb.grid_code
+                        talboden.oid, 
+                        talboden.wkb_geometry, 
+                        talboden.grid_code
                     FROM 
-                        aww_natgef_talbod tb
+                        aww_natgef_talbod AS talboden
                     WHERE 
-                        tb.archive = 0)
+                        talboden.archive = 0)
                         
                 UNION 
                 
                 SELECT 
-                    u.oid, 
-                    u.wkb_geometry,
-                    u.grid_code
+                    uebersarung.oid, 
+                    uebersarung.wkb_geometry,
+                    uebersarung.grid_code
                 FROM 
-                    aww_natgef_ubsar u
+                    aww_natgef_ubsar AS uebersarung
                 WHERE 
-                    u.archive = 0)
+                    uebersarung.archive = 0)
                     
             UNION 
             
             SELECT 
-                m.oid, 
-                m.wkb_geometry, 
-                m.grid_code
+                murgang.oid, 
+                murgang.wkb_geometry, 
+                murgang.grid_code
             FROM 
-                aww_natgef_murgang m
+                aww_natgef_murgang AS murgang
             WHERE 
-                m.archive = 0)
+                murgang.archive = 0)
                 
         UNION 
         
         SELECT 
-            f.oid, 
-            f.wkb_geometry, 
-            f.grid_code
+            ueberflutung.oid, 
+            ueberflutung.wkb_geometry, 
+            ueberflutung.grid_code
         FROM 
-            aww_natgef_ubflut f
-        WHERE f.archive = 0)
+            aww_natgef_ubflut AS ueberflutung
+        WHERE ueberflutung.archive = 0)
         
     UNION 
     
     SELECT 
-        bl.oid, 
-        bl.wkb_geometry, 
+        block.oid, 
+        block.wkb_geometry, 
         99 AS grid_code
     FROM 
-        aww_natgef_block bl
+        aww_natgef_block AS block
     WHERE 
-        bl.archive = 0)
+        block.archive = 0)
 UNION 
 
 SELECT 
-    st.oid, 
-    st.wkb_geometry, 
-    st.grid_code
+    stein.oid, 
+    stein.wkb_geometry, 
+    stein.grid_code
 FROM 
-    aww_natgef_steins st
+    aww_natgef_steins AS stein
 WHERE 
-    st.archive = 0)
+    stein.archive = 0)
 
 
 SELECT 
@@ -100,4 +100,5 @@ SELECT
 	ST_Multi(wkb_geometry) AS geometrie,
 	grid_code
 FROM
-	query;
+	query
+;
