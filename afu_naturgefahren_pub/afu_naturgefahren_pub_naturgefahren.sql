@@ -1,4 +1,4 @@
- WITH query AS (   (   (   (   (   (   (   (
+ WITH query AS ((((((((
                             SELECT 
                                 t.oid,
                                 t.wkb_geometry, 
