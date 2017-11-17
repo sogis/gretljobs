@@ -9,4 +9,5 @@ SELECT
     c_vflz_unterstand,
     c_vflz_vftyp 
 FROM
-    auszug_akt_altlasten17785.altlasten_belastete_standorte;
+    auszug_akt_altlasten17785.altlasten_belastete_standorte
+;
