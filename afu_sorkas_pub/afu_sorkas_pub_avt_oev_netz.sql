@@ -9,3 +9,4 @@ FROM
     sorkas.avt_oev_netz
 WHERE
     "archive" = 0
+;

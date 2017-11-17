@@ -6,3 +6,4 @@ FROM
     geologie.abrkt
 WHERE
     archive = 0
+;

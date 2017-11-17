@@ -14,7 +14,7 @@ SELECT
     obj_gerammtes_piezometer_.limnigraf
 FROM 
     vegas.obj_objekt
-    NATURAL JOIN 
-        vegas.obj_gerammtes_piezometer_
+    NATURAL JOIN vegas.obj_gerammtes_piezometer_
 WHERE 
-    obj_objekt.archive = 0;
+    obj_objekt.archive = 0
+;

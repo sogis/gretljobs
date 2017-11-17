@@ -1,6 +1,6 @@
 SELECT 
-  ogc_fid, 
-  wkb_geometry, 
+  ogc_fid AS t_id, 
+  wkb_geometry AS geometrie, 
   bgk,
   area,
   perimeter,
@@ -13,4 +13,4 @@ FROM
   afu_baugrundklassen
 WHERE
   archive = 0
-
+  ;

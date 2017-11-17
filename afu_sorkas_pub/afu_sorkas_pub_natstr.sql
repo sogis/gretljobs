@@ -14,3 +14,4 @@ SELECT
     the_geom AS geometrie
 FROM
     sorkas.natstr
+;

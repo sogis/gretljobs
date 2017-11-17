@@ -56,4 +56,5 @@ SELECT
     ogc_fid,
     klasse
 FROM
-    verkehrsmodell2013.verkehrsmodell2013_all;
+    verkehrsmodell2013.verkehrsmodell2013_all
+;

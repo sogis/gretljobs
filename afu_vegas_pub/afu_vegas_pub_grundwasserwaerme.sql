@@ -15,7 +15,7 @@ SELECT
     obj_grundwasserwaerme_.zustand
 FROM 
     vegas.obj_objekt
-    NATURAL JOIN 
-        vegas.obj_grundwasserwaerme_
+    NATURAL JOIN vegas.obj_grundwasserwaerme_
 WHERE
-    obj_objekt.archive = 0;
+    obj_objekt.archive = 0
+;

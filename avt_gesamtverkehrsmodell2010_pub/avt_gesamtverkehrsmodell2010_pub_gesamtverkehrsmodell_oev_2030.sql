@@ -11,3 +11,4 @@ SELECT
     dwv2030_bahn_modulo
 FROM 
     oev_netz.gv2010_modulo2030
+;

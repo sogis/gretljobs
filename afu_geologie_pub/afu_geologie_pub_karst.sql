@@ -6,3 +6,4 @@ FROM
     geologie.karst
 WHERE
     archive = 0
+;

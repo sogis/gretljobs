@@ -10,4 +10,5 @@ SELECT
     dwv2010_bus_modulo,
     dwv2010_bahn_modulo
 FROM 
-    oev_netz.gv2010_modulo;
+    oev_netz.gv2010_modulo
+;

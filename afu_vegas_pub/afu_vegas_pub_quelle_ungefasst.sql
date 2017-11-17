@@ -15,7 +15,7 @@ SELECT
     obj_quelle_.mittlere_schuettung
 FROM 
     vegas.obj_objekt
-    NATURAL JOIN 
-        vegas.obj_quelle_
+    NATURAL JOIN vegas.obj_quelle_
 WHERE
-    obj_objekt.archive = 0;
+    obj_objekt.archive = 0
+;

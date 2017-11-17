@@ -4,3 +4,4 @@ SELECT
     the_geom AS geometrie
 FROM
     sorkas.betriebe_kb
+;

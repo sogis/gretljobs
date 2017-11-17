@@ -6,3 +6,4 @@ FROM
     geologie.tekton
 WHERE
     archive = 0
+;

@@ -7,4 +7,5 @@ SELECT
 FROM
     aww_gszoar
 WHERE
-    archive = 0;
+    archive = 0
+;

@@ -4,3 +4,4 @@ SELECT
     the_geom AS geometrie
 FROM
     sorkas.avt_oev_netz_kb
+;

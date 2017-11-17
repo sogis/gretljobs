@@ -22,7 +22,7 @@ SELECT
     obj_bohrung_.piezometer
 FROM 
     vegas.obj_objekt
-    NATURAL JOIN 
-        vegas.obj_bohrung_
+    NATURAL JOIN vegas.obj_bohrung_
 WHERE
-    obj_objekt.archive = 0;
+    obj_objekt.archive = 0
+;
