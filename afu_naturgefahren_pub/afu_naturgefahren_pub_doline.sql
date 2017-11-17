@@ -10,4 +10,4 @@ SELECT
 FROM
     public.aww_natgef_doline
 WHERE
-     "archive" = 0
+     archive = 0
