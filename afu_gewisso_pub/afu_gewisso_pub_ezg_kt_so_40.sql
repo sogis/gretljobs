@@ -29,4 +29,5 @@ SELECT
 FROM
     gewisso.ezg_kt_so_40
 WHERE
-    "archive" = 0;
+    archive = 0
+;

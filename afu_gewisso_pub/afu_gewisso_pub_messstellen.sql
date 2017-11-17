@@ -21,4 +21,5 @@ SELECT
 FROM
     gewisso.messstellen
 WHERE
-    "archive" = 0;
+    archive = 0
+;
