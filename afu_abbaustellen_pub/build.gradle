@@ -1,0 +1,14 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferAfuAbbaustellen'
+
+task transferAfuAbbaustellen(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('afu_abbaustellen_pub_abbaustelle.sql', 'afu_abbaustellen_pub.abbaustelle', true),
+            new TransferSet('afu_abbaustellen_pub_teilregion_aaregaeu.sql', 'afu_abbaustellen_pub.teilregion_aaregaeu',
+                    true),
+            new TransferSet('afu_abbaustellen_pub_abbau_menge.sql', 'afu_abbaustellen_pub.abbau_menge', true)
+    ];
+}
