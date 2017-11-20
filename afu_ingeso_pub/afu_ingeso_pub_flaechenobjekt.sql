@@ -181,3 +181,4 @@ WHERE
     code.codeart_id = 19 
     AND 
     code.text::text = 'Landschaftsformen'::text
+;
