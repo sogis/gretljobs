@@ -21,7 +21,7 @@
     obj_quelle_gefasst_.mittlere_schuettung
 FROM 
     vegas.obj_objekt
-    NATURAL JOIN 
-        vegas.obj_quelle_gefasst_
+    NATURAL JOIN vegas.obj_quelle_gefasst_
 WHERE
-    obj_objekt.archive = 0;
+    obj_objekt.archive = 0
+;

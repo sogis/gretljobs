@@ -4,3 +4,4 @@ SELECT
     the_geom AS geometrie
 FROM
     sorkas.durchgangsstrassen_kb
+;

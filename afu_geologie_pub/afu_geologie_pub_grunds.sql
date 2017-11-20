@@ -39,4 +39,5 @@ SELECT
 FROM 
     geologie.grunds
 WHERE 
-    grunds.archive = 0;
+    grunds.archive = 0
+;

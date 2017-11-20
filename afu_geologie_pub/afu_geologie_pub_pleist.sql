@@ -36,4 +36,5 @@ SELECT
 FROM 
     geologie.pleist
 WHERE 
-    pleist.archive = 0;
+    pleist.archive = 0
+;

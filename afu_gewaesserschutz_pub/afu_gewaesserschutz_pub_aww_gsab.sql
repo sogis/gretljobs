@@ -8,4 +8,5 @@ SELECT
 FROM
     aww_gsab
 WHERE
-    archive = 0;
+    archive = 0
+;

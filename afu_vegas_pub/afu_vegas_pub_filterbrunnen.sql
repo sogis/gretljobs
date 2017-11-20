@@ -17,7 +17,7 @@ SELECT
     obj_filterbrunnen_.schutzzone
 FROM 
     vegas.obj_objekt
-    NATURAL JOIN 
-        vegas.obj_filterbrunnen_
+    NATURAL JOIN vegas.obj_filterbrunnen_
 WHERE 
-    obj_objekt.archive = 0;
+    obj_objekt.archive = 0
+;

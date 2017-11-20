@@ -36,4 +36,5 @@ SELECT
 FROM 
     geologie.holoz
 WHERE 
-    holoz.archive = 0;
+    holoz.archive = 0
+;

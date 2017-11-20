@@ -12,7 +12,7 @@
     obj_baggerschlitz_.tiefe_ab_okt
 FROM 
     vegas.obj_objekt
-    NATURAL JOIN 
-        vegas.obj_baggerschlitz_
+    NATURAL JOIN vegas.obj_baggerschlitz_
 WHERE
-    obj_objekt.archive = 0;
+    obj_objekt.archive = 0
+;

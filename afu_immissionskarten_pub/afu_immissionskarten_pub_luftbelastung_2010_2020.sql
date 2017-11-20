@@ -10,4 +10,5 @@ SELECT
     ipm25_2010,
     ipm25_2020
 FROM
-    immissionskarten_luft.luftbelastung_2010_2020;
+    immissionskarten_luft.luftbelastung_2010_2020
+;

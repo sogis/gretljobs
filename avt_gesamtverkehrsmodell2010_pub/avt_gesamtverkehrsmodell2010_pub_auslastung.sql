@@ -10,3 +10,4 @@ SELECT
     ausl_kat_2030
 FROM
     verkehrsmodell2013.auslastung_kat
+;

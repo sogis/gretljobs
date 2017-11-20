@@ -1,44 +1,35 @@
 SELECT DISTINCT 
-    a.wkb_geometry AS geometrie, 
-    a.anlageid, 
-    s.statusid, 
-    p.pumpeart, 
-    bo.tiefebohrung AS bohrtiefe, 
-    b.datum_bewilligung, 
-    d.name, 
-    ((a.anlageid || ''::text) || d.dokumenteid)::integer AS anlagedokument, 
-    d.doktyp
+    anlage.wkb_geometry AS geometrie, 
+    anlage.anlageid, 
+    erdsonde.statusid, 
+    pumpe.pumpeart, 
+    bohrung.tiefebohrung AS bohrtiefe, 
+    bewilligung.datum_bewilligung, 
+    dokument.name, 
+    ((anlage.anlageid || ''::text) || dokument.dokumenteid)::integer AS anlagedokument, 
+    dokument.doktyp
 FROM 
-    gerda.anlage_t a
-    LEFT JOIN 
-        gerda.erdsonden s 
-        ON 
-            a.anlageid = s.anlageid
-    LEFT JOIN 
-        gerda.pumpe p 
-        ON 
-            a.anlageid = p.anlageid
-    LEFT JOIN 
-        gerda.bohrung bo 
-        ON 
-            a.anlageid = bo.anlageid
-    LEFT JOIN 
-        gerda.bewilligung b 
-        ON 
-            a.anlageid = b.anlageid
-    LEFT JOIN 
-        gerda.geschaeft_dokumente d 
-        ON 
-            a.anlageid = d.anlageid
+    gerda.anlage_t AS anlage
+    LEFT JOIN gerda.erdsonden AS erdsonde 
+        ON anlage.anlageid = erdsonde.anlageid
+    LEFT JOIN gerda.pumpe AS pumpe 
+        ON anlage.anlageid = pumpe.anlageid
+    LEFT JOIN gerda.bohrung AS bohrung
+        ON anlage.anlageid = bohrung.anlageid
+    LEFT JOIN gerda.bewilligung AS bewilligung 
+        ON anlage.anlageid = bewilligung.anlageid
+    LEFT JOIN gerda.geschaeft_dokumente AS dokument
+        ON anlage.anlageid = dokument.anlageid
 WHERE 
-    s.statusid = 89 
+    erdsonde.statusid = 89 
     AND 
-    a.archive = 0 
+    anlage.archive = 0 
     AND 
-    p.archive = 0 
+    pumpe.archive = 0 
     AND 
-    b.archive = 0 
+    bewilligung.archive = 0 
     AND 
-    bo.archive = 0 
+    bohrung.archive = 0 
     AND 
-    d.archive = 0;
+    dokument.archive = 0
+;

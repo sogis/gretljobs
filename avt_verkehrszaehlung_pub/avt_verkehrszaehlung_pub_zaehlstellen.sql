@@ -26,4 +26,5 @@ WHERE
                 verkehrszaehlung.zaehlstellen
         )) 
     AND 
-        NOT messstellen_bis_2005.z_bezei::text = '202B'::text;
+        NOT messstellen_bis_2005.z_bezei::text = '202B'::text
+;
