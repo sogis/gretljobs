@@ -19,4 +19,5 @@ SELECT
 FROM
     abbaustellen.abbaustellen
 WHERE
-    "archive" = 0
+    archive = 0
+;

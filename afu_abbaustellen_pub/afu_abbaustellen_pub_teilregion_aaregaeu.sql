@@ -4,17 +4,14 @@ SELECT
     teilregion_aaregaeu.id, 
     teilregion_aaregaeu.perityp,
     CASE
-        WHEN 
-            teilregion_aaregaeu.perityp::text = 'Festsetzung neu'::text 
-            THEN 
-                1
-        WHEN 
-            teilregion_aaregaeu.perityp::text = 'Erweiterung 2. Priorität'::text 
-            THEN 
-                2
+        WHEN teilregion_aaregaeu.perityp::text = 'Festsetzung neu'::text 
+            THEN 1
+        WHEN teilregion_aaregaeu.perityp::text = 'Erweiterung 2. Priorität'::text 
+            THEN 2
         ELSE NULL::integer
     END AS perityp_int
 FROM 
     abbaustellen.teilregion_aaregaeu
 WHERE 
-    teilregion_aaregaeu.archive = 0;
+    teilregion_aaregaeu.archive = 0
+;
