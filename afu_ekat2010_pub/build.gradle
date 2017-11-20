@@ -1,0 +1,12 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferAfuEkat2010'
+
+task transferAfuEkat2010(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('afu_ekat2010_pub_uplus.sql', 'afu_ekat2010_pub.uplus', true),
+            new TransferSet('afu_ekat2010_pub_gesamtemission.sql', 'afu_ekat2010_pub.gesamtemission', true)
+    ];
+}
