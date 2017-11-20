@@ -22,4 +22,5 @@ SELECT
 FROM
     strassennetz.kantonsstrassen_def
 WHERE
-    "archive" = 0;
+    archive = 0
+;

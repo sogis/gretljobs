@@ -9,4 +9,5 @@ SELECT
 FROM
     public.avt_strassenklassierung
 WHERE
-    "archive" = 0
+    archive = 0
+;

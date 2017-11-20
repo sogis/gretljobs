@@ -19,4 +19,5 @@ SELECT
 FROM
     avt_ktstr.kantonsstrassen_achsen
 WHERE
-    "archive" = 0;
+    archive = 0
+;

@@ -18,4 +18,5 @@ SELECT
     zustaendigkeit,
     geometrie
 FROM
-    avt_baustellen.baustellen_baustelle;
+    avt_baustellen.baustellen_baustelle
+;

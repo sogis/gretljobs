@@ -15,4 +15,5 @@ SELECT
     "AGr" AS agr,
     istoffiziellebezeichnung
 FROM
-    strassennetz.klasse_kategorie;
+    strassennetz.klasse_kategorie
+;
