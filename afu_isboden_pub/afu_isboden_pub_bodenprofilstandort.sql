@@ -52,4 +52,5 @@ SELECT
 FROM
     public.isbo_prof_profil
 WHERE
-    "archive" = 0;
+    archive = 0
+;

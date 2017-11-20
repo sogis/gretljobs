@@ -54,4 +54,5 @@ SELECT
 FROM
     afu_isboden.bodeneinheit_onlinedata_t
 WHERE
-    "archive" = 0;
+    archive = 0
+;

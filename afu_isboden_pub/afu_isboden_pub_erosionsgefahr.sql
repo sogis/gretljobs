@@ -6,3 +6,4 @@ FROM
     afu_isboden.erosionsgefahr_qgis_server_client_t
 WHERE 
     archive = 0
+;
