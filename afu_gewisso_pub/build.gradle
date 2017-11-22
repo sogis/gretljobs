@@ -17,6 +17,7 @@ task transferAfuGewisso(type: Db2DbTask){
             new TransferSet('afu_gewisso_pub_messstellen.sql', 'afu_gewisso_pub.messstellen', true),
             new TransferSet('afu_gewisso_pub_ezg_kt_so_1000.sql', 'afu_gewisso_pub.ezg_kt_so_1000', true),
             new TransferSet('afu_gewisso_pub_ezg_kt_so_150.sql', 'afu_gewisso_pub.ezg_kt_so_150', true),
-            new TransferSet('afu_gewisso_pub_ezg_kt_so_40.sql', 'afu_gewisso_pub.ezg_kt_so_40', true)
+            new TransferSet('afu_gewisso_pub_ezg_kt_so_40.sql', 'afu_gewisso_pub.ezg_kt_so_40', true),
+            new TransferSet('afu_gewisso_pub_gwn_25_l_mq.sql', 'afu_gewisso_pub.gwn_25_l_mq', true)
     ];        
 }
