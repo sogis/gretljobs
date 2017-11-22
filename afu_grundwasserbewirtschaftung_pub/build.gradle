@@ -1,0 +1,12 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferAfuGrundwasserbewirtschaftung'
+
+task transferAfuGrundwasserbewirtschaftung(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('afu_grundwasserbewirtschaftung_pub_aww_gsmora.sql',
+                    'afu_grundwasserbewirtschaftung_pub.aww_gsmora', true)
+    ];
+}
