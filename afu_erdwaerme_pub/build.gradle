@@ -9,6 +9,7 @@ task transferAfuErdwaerme(type: Db2DbTask){
             new TransferSet('afu_erdwaerme_pub_private_quelle.sql', 'afu_erdwaerme_pub.private_quelle', true),
             new TransferSet('afu_erdwaerme_pub_problembereich.sql', 'afu_erdwaerme_pub.problembereich', true),
             new TransferSet('afu_erdwaerme_pub_ueberlagerter_ews_bereich.sql',
-                    'afu_erdwaerme_pub.ueberlagerter_ews_bereich', true)
+                    'afu_erdwaerme_pub.ueberlagerter_ews_bereich', true),
+            new TransferSet('afu_erdwaerme_pub_ews_zone.sql', 'afu_erdwaerme_pub.ews_zone', true)
     ];
 }
