@@ -11,6 +11,8 @@ task transferAfuGrundwasserbewirtschaftung(type: Db2DbTask){
             new TransferSet('afu_grundwasserbewirtschaftung_pub_aww_gsmiso.sql',
                     'afu_grundwasserbewirtschaftung_pub.aww_gsmiso', true),
             new TransferSet('afu_grundwasserbewirtschaftung_pub_aww_gstira.sql',
-                    'afu_grundwasserbewirtschaftung_pub.aww_gstira', true)
+                    'afu_grundwasserbewirtschaftung_pub.aww_gstira', true),
+            new TransferSet('afu_grundwasserbewirtschaftung_pub_aww_gstiso.sql',
+                    'afu_grundwasserbewirtschaftung_pub.aww_gstiso', true)
     ];
 }
