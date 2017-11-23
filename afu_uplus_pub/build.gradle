@@ -1,0 +1,11 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferAfuUplus'
+
+task transferAfuUplus(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('afu_uplus_pub_anlage.sql', 'afu_uplus_pub.anlage', true)
+    ];
+}
