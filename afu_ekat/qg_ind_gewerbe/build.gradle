@@ -1,0 +1,150 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'calc_qg_ind_gewerbe'
+
+//Berechnung der Untergruppe anl_proz
+
+task calc_ug_anl_proz(type: Db2DbTask){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_anl_proz/ug_anl_proz_eq_baumasch_aufw.sql', 'ekat2015.ug_anl_proz_eq_baumasch_aufw', true),
+            new TransferSet('ug_anl_proz/ug_anl_proz_eq_dachpa_verl.sql', 'ekat2015.ug_anl_proz_eq_dachpa_verl', true),
+            new TransferSet('ug_anl_proz/ug_anl_proz_eq_ind_aufw.sql', 'ekat2015.ug_anl_proz_eq_ind_aufw', true),
+            new TransferSet('ug_anl_proz/ug_anl_proz_eq_met_rein.sql', 'ekat2015.ug_anl_proz_eq_met_rein', true)
+    ];
+}
+
+//Berechnung der Tabellen ug_anl_proz_gesamt
+
+task calc_ug_anl_proz_gesamt(type: Db2DbTask, dependsOn: [calc_ug_anl_proz]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_anl_proz/ug_anl_proz_gesamt.sql', 'ekat2015.ug_anl_proz_gesamt', true)
+    ];
+}
+
+//Berechnung der Untergruppe spez_branch
+
+task calc_ug_spez_branch(type: Db2DbTask){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_spez_branch/ug_spez_branch_eq_deponien.sql', 'ekat2015.ug_spez_branch_eq_deponien', true),
+            new TransferSet('ug_spez_branch/ug_spez_branch_eq_gas_vert.sql', 'ekat2015.ug_spez_branch_eq_gas_vert', true),
+            new TransferSet('ug_spez_branch/ug_spez_branch_eq_klaeranl.sql', 'ekat2015.ug_spez_branch_eq_klaeranl', true),
+            new TransferSet('ug_spez_branch/ug_spez_branch_eq_med_praxen.sql', 'ekat2015.ug_spez_branch_eq_med_praxen', true)
+    ];
+}
+
+//Berechnung der Tabellen ug_spez_branch_gesamt
+
+task calc_ug_spez_branch_gesamt(type: Db2DbTask, dependsOn: [calc_ug_spez_branch]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_spez_branch/ug_spez_branch_gesamt.sql', 'ekat2015.ug_spez_branch_gesamt', true)
+    ];
+}
+
+//Berechnung der Untergruppe branchen
+
+task calc_ug_branchen(type: Db2DbTask){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_branchen/ug_branchen_eq_benz_um_tklag.sql', 'ekat2015.ug_branchen_eq_benz_um_tklag', true),
+            new TransferSet('ug_branchen/ug_branchen_eq_coiff_salons.sql', 'ekat2015.ug_branchen_eq_coiff_salons', true),
+            new TransferSet('ug_branchen/ug_branchen_eq_farbanw_bau.sql', 'ekat2015.ug_branchen_eq_farbanw_bau', true),
+            new TransferSet('ug_branchen/ug_branchen_eq_holzbearb.sql', 'ekat2015.ug_branchen_eq_holzbearb', true),
+            new TransferSet('ug_branchen/ug_branchen_eq_klebst_prod.sql', 'ekat2015.ug_branchen_eq_klebst_prod', true),
+            new TransferSet('ug_branchen/ug_branchen_eq_kosm_inst.sql', 'ekat2015.ug_branchen_eq_kosm_inst', true),
+            new TransferSet('ug_branchen/ug_branchen_eq_str_bel_arb.sql', 'ekat2015.ug_branchen_eq_str_bel_arb', true),
+            new TransferSet('ug_branchen/ug_branchen_eq_uebr_ges_wes.sql', 'ekat2015.ug_branchen_eq_uebr_ges_wes', true)
+    ];
+}
+
+//Berechnung der Tabellen ug_branchen_gesamt
+
+task calc_ug_branchen_gesamt(type: Db2DbTask, dependsOn: [calc_ug_branchen]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_branchen/ug_branchen_gesamt.sql', 'ekat2015.ug_branchen_gesamt', true)
+    ];
+}
+
+//Berechnung der Untergruppe spez_emiss
+
+task calc_ug_spez_emiss(type: Db2DbTask){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_spez_emiss/ug_spez_emiss_eq_geb_rein.sql', 'ekat2015.ug_spez_emiss_eq_geb_rein', true),
+            new TransferSet('ug_spez_emiss/ug_spez_emiss_eq_holzschutz_anw.sql', 'ekat2015.ug_spez_emiss_eq_holzschutz_anw', true),
+            new TransferSet('ug_spez_emiss/ug_spez_emiss_eq_klebst_anw.sql', 'ekat2015.ug_spez_emiss_eq_klebst_anw', true),
+            new TransferSet('ug_spez_emiss/ug_spez_emiss_eq_loesmittel_ind_gew.sql', 'ekat2015.ug_spez_emiss_eq_loesmittel_ind_gew', true),
+            new TransferSet('ug_spez_emiss/ug_spez_emiss_eq_rein_ind_uebrige.sql', 'ekat2015.ug_spez_emiss_eq_rein_ind_uebrige', true),
+            new TransferSet('ug_spez_emiss/ug_spez_emiss_eq_spray.sql', 'ekat2015.ug_spez_emiss_eq_spray', true)
+    ];
+}
+
+//Berechnung der Tabellen ug_spez_emiss_gesamt
+
+task calc_ug_spez_emiss_gesamt(type: Db2DbTask, dependsOn: [calc_ug_spez_emiss]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_spez_emiss/ug_spez_emiss_gesamt.sql', 'ekat2015.ug_spez_emiss_gesamt', true)
+    ];
+}
+
+//Berechnung der Untergruppe uplus
+
+task calc_ug_uplus(type: Db2DbTask){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_uplus/ug_uplus_eq_flaeche.sql', 'ekat2015.ug_uplus_eq_flaeche', true),
+            new TransferSet('ug_uplus/ug_uplus_eq_punktemiss.sql', 'ekat2015.ug_uplus_eq_punktemiss', true)
+    ];
+}
+
+//Berechnung der Tabellen ug_uplus_gesamt
+
+task calc_ug_uplus_gesamt(type: Db2DbTask, dependsOn: [calc_ug_uplus]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_uplus/ug_uplus_gesamt.sql', 'ekat2015.ug_uplus_gesamt', true)
+    ];
+}
+
+//Berechnung der Quellengruppe Industrie und Gewerbe 
+
+task calc_qg_ind_gewerbe(type: Db2DbTask, dependsOn: [calc_ug_uplus_gesamt, calc_ug_spez_emiss_gesamt, calc_ug_branchen_gesamt, calc_ug_spez_branch_gesamt, calc_ug_anl_proz_gesamt]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('qg_ind_gewerbe.sql', 'ekat2015.qg_ind_gewerbe', true),
+            new TransferSet('qg_ind_gewerbe_gemeinde.sql', 'ekat2015.qg_ind_gewerbe_gemeinde', true),
+            new TransferSet('ug_anl_proz/ug_anl_proz_gesamt_gem.sql', 'ekat2015.ug_anl_proz_gesamt_gem', true),
+            new TransferSet('ug_spez_branch/ug_spez_branch_gesamt_gem.sql', 'ekat2015.ug_spez_branch_gesamt_gem', true),
+            new TransferSet('ug_branchen/ug_branchen_gesamt_gem.sql', 'ekat2015.ug_branchen_gesamt_gem', true), 
+            new TransferSet('ug_spez_emiss/ug_spez_emiss_gesamt_gem.sql', 'ekat2015.ug_spez_emiss_gesamt_gem', true),
+            new TransferSet('ug_uplus/ug_uplus_gesamt_gem.sql', 'ekat2015.ug_uplus_gesamt_gem', true)
+    ];
+}
+
