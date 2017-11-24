@@ -6,6 +6,7 @@ task transferAfuEkat2005(type: Db2DbTask){
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
-            new TransferSet('afu_ekat2005_pub_gesamtemission.sql', 'afu_ekat2005_pub.gesamtemission', true)
+            new TransferSet('afu_ekat2005_pub_gesamtemission.sql', 'afu_ekat2005_pub.gesamtemission', true),
+            new TransferSet('afu_ekat2005_pub_industrie_gewerbe.sql', 'afu_ekat2005_pub.industrie_gewerbe', true)
     ];
 }
