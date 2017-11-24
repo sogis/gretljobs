@@ -6,6 +6,8 @@ task transferAfuSchadendienst(type: Db2DbTask){
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
-            new TransferSet('afu_schadendienst_pub_schadenfall.sql', 'afu_schadendienst_pub.schadenfall', true)
+            new TransferSet('afu_schadendienst_pub_schadenfall.sql', 'afu_schadendienst_pub.schadenfall', true),
+            new TransferSet('afu_schadendienst_pub_nichtschadenfall.sql', 'afu_schadendienst_pub.nichtschadenfall',
+                    true)
     ];
 }
