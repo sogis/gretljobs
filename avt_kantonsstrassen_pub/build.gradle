@@ -14,6 +14,7 @@ task transferAvtKantonsstrassen(type: Db2DbTask){
             new TransferSet('avt_kantonsstrassen_pub_kantonsstrassen_achsstuecke.sql',
                     'avt_kantonsstrassen_pub.kantonsstrassen_achsstuecke', true),
             new TransferSet('avt_kantonsstrassen_pub_kategorisierte_strassen.sql',
-                    'avt_kantonsstrassen_pub.kategorisierte_strassen', true)
+                    'avt_kantonsstrassen_pub.kategorisierte_strassen', true),
+            new TransferSet('avt_kantonsstrassen_pub_vereinbarung.sql', 'avt_kantonsstrassen_pub.vereinbarung', true)
     ];
 }
