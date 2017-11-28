@@ -8,6 +8,8 @@ task transferAfuIsboden(type: Db2DbTask){
     transferSets = [
             new TransferSet('afu_isboden_pub_bodeneinheit_wald.sql', 'afu_isboden_pub.bodeneinheit_wald', true),
             new TransferSet('afu_isboden_pub_bodeneinheit_lw.sql', 'afu_isboden_pub.bodeneinheit_lw', true),
-            new TransferSet('afu_isboden_pub_erosionsgefahr.sql', 'afu_isboden_pub.erosionsgefahr', true)
+            new TransferSet('afu_isboden_pub_bodenprofilstandort.sql', 'afu_isboden_pub.bodenprofilstandort', true),
+            new TransferSet('afu_isboden_pub_bodenerosion.sql', 'afu_isboden_pub.bodenerosion', true),
+            new TransferSet('afu_isboden_pub_bodeneinheit.sql', 'afu_isboden_pub.bodeneinheit', true)
     ];
 }
