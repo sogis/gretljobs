@@ -15,5 +15,5 @@ SELECT
     emiss_ch4,
     emiss_n2o
 FROM
-    ekat2010.verkehr_mapserver
+    ekat2010.verkehr
 ;
