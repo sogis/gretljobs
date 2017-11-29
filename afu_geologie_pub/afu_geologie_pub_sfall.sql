@@ -1,11 +1,12 @@
 SELECT
-  ogc_fid,
-  wkb_geometry,
-  fallrtg,
-  fall,
-  symbol,
-  "label"
+    ogc_fid AS t_id,
+    wkb_geometry AS geometrie,
+    fallrtg,
+    fall,
+    symbol,
+    "label"
 FROM
-  geologie.sfall
+    geologie.sfall
 WHERE
-  archive = 0
+    archive = 0
+;

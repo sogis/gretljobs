@@ -1,6 +1,7 @@
 SELECT
-	ogc_fid,
-	typ,
-	the_geom 
+    ogc_fid AS t_id,
+    typ,
+    the_geom AS geometrie
 FROM
-	sorkas.natstr_kb
+    sorkas.natstr_kb
+;
