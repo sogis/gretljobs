@@ -1,6 +1,6 @@
 SELECT 
     ogc_fid AS t_id,
-    st_multi(wkb_geometry) AS geometrie,
+    ST_Multi(wkb_geometry) AS geometrie,
     id_wp,
     fid_amtei,
     fid_fk,
