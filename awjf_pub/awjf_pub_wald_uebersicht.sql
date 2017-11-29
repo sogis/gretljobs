@@ -1,6 +1,6 @@
 SELECT 
     wap_bst.ogc_fid AS t_id, 
-    st_multi(wap_bst.wkb_geometry) AS  geometrie, 
+    ST_Multi(wap_bst.wkb_geometry) AS  geometrie, 
     'Waldplan'::text AS typ
 FROM 
     awjf.wap_bst
@@ -27,7 +27,7 @@ UNION
 
 SELECT 
     bodenbedeckung_boflaeche.ogc_fid AS t_id,
-    st_multi(bodenbedeckung_boflaeche.geometrie) AS geometrie,
+    ST_Multi(bodenbedeckung_boflaeche.geometrie) AS geometrie,
     'AVWald'::text AS typ
 FROM 
     av_avdpool_ng.bodenbedeckung_boflaeche
