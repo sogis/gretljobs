@@ -1,8 +1,9 @@
 SELECT  
-  ogc_fid,
-  wkb_geometry,
-  symbol
+    ogc_fid AS t_id,
+    wkb_geometry AS geometrie,
+    symbol
 FROM
-  geologie.abrkt
+    geologie.abrkt
 WHERE
-  archive = 0
+    archive = 0
+;
