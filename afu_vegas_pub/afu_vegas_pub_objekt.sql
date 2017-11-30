@@ -86,6 +86,8 @@
             THEN obj_bohrung_.limnigraf
         WHEN obj_gerammtes_piezometer_.limnigraf IS NOT NULL
             THEN obj_gerammtes_piezometer_.limnigraf
+        WHEN obj_messstation_.limnigraf
+            THEN obj_messstation_.limnigraf
         ELSE NULL
     END AS limnigraf,
     CASE
@@ -95,6 +97,8 @@
             THEN obj_filterbrunnen_.zustand
         WHEN obj_quelle_gefasst_.zustand IS NOT NULL
             THEN obj_quelle_gefasst_.zustand
+        WHEN obj_messstation_.zustand IS NOT NULL
+            THEN obj_messstation_.zustand
         ELSE NULL
     END AS zustand,
     CASE
@@ -136,7 +140,24 @@
     obj_bohrung_.uk_rohr, 
     obj_bohrung_.ok_rohr, 
     obj_bohrung_.piezometer,
-    obj_baggerschlitz_.tiefe_ab_okt
+    obj_baggerschlitz_.tiefe_ab_okt,
+    obj_messstation_.subtyp AS messstation_subtyp,
+    obj_messstation_.region,
+    obj_messstation_.gewaesserart,
+    obj_messstation_.messfrequenz,
+    obj_messstation_.ezg_flaeche,
+    obj_messstation_.klaeranlage,
+    obj_messstation_.betreiber,
+    obj_einbauten_.subtyp AS einbauten_subtyp,
+    obj_einbauten_.art,
+    obj_einbauten_.entnahmemenge,
+    obj_einbauten_.entnahmemenge_einheit,
+    obj_einbauten_.beginn_wasserhaltung,
+    obj_einbauten_.ende_wasserhaltung,
+    obj_einbauten_.einbaukote,
+    obj_einbauten_.querschnittsverringerung,
+    obj_einbauten_.durchflussrelevantes_einbauvolumen
+    
     
 FROM 
     vegas.obj_objekt
@@ -160,6 +181,10 @@ FROM
         ON obj_objekt.vegas_id = obj_baggerschlitz_.vegas_id
     LEFT JOIN vegas.obj_gerammtes_piezometer_
         ON obj_objekt.vegas_id = obj_gerammtes_piezometer_.vegas_id
+    LEFT JOIN vegas.obj_messstation_
+        ON obj_objekt.vegas_id = obj_messstation_.vegas_id
+    LEFT JOIN vegas.obj_einbauten_
+        ON obj_objekt.vegas_id = obj_einbauten_.vegas_id
 WHERE 
     archive = 0
 ;
