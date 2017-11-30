@@ -1,6 +1,6 @@
 import ch.so.agi.gretl.steps.*
 
-defaultTasks 'calc_qg_ind_gewerbe'
+defaultTasks 'calc_qg_ind_gewerbe_gem'
 
 //Berechnung der Untergruppe anl_proz
 
@@ -145,6 +145,15 @@ task calc_qg_ind_gewerbe(type: Db2DbTask, dependsOn: [calc_ug_uplus_gesamt, calc
             new TransferSet('ug_branchen/ug_branchen_gesamt_gem.sql', 'ekat2015.ug_branchen_gesamt_gem', true), 
             new TransferSet('ug_spez_emiss/ug_spez_emiss_gesamt_gem.sql', 'ekat2015.ug_spez_emiss_gesamt_gem', true),
             new TransferSet('ug_uplus/ug_uplus_gesamt_gem.sql', 'ekat2015.ug_uplus_gesamt_gem', true)
+    ];
+}
+
+task calc_qg_ind_gewerbe_gem(type: Db2DbTask, dependsOn: [calc_qg_ind_gewerbe]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('qg_ind_gewerbe_gemeinde.sql', 'ekat2015.qg_ind_gewerbe_gemeinde', true)
     ];
 }
 

@@ -1,0 +1,114 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'calc_qg_biogen_gem'
+
+//Berechnung der Untergruppe blitze
+
+task calc_ug_blitze(type: Db2DbTask){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_blitze/ug_blitze.sql', 'ekat2015.ug_blitze', true)
+    ];
+}
+
+
+//Berechnung der Untergruppe gewaesser
+
+task calc_ug_gewaesser(type: Db2DbTask){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_gewaesser/ug_gewaesser_eq_feuchtgebiete.sql', 'ekat2015.ug_gewaesser_eq_feuchtgebiete', true),
+            new TransferSet('ug_gewaesser/ug_gewaesser_eq_fluesse.sql', 'ekat2015.ug_gewaesser_eq_fluesse', true),
+            new TransferSet('ug_gewaesser/ug_gewaesser_eq_seen.sql', 'ekat2015.ug_gewaesser_eq_seen', true)
+    ];
+}
+
+//Berechnung der Tabellen ug_gewaesser_gesamt
+
+task calc_ug_gewaesser_gesamt(type: Db2DbTask, dependsOn: [calc_ug_gewaesser]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_gewaesser/ug_gewaesser_gesamt.sql', 'ekat2015.ug_gewaesser_gesamt', true)
+    ];
+}
+
+//Berechnung der Untergruppe graweiern
+
+task calc_ug_graweiern(type: Db2DbTask){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_graweiern/ug_graweiern_eq_bodenemissionen.sql', 'ekat2015.ug_graweiern_eq_bodenemissionen', true),
+            new TransferSet('ug_graweiern/ug_graweiern_eq_gras.sql', 'ekat2015.ug_graweiern_eq_gras', true),
+            new TransferSet('ug_graweiern/ug_graweiern_eq_weide.sql', 'ekat2015.ug_graweiern_eq_weide', true)
+    ];
+}
+
+//Berechnung der Tabellen ug_graweiern_gesamt
+
+task calc_ug_graweiern_gesamt(type: Db2DbTask, dependsOn: [calc_ug_graweiern]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_graweiern/ug_graweiern_gesamt.sql', 'ekat2015.ug_graweiern_gesamt', true)
+    ];
+}
+
+//Berechnung der Untergruppe waelder
+
+task calc_ug_waelder(type: Db2DbTask){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_waelder/ug_waelder_eq_laub.sql', 'ekat2015.ug_waelder_eq_laub', true),
+            new TransferSet('ug_waelder/ug_waelder_eq_laubmisch.sql', 'ekat2015.ug_waelder_eq_laubmisch', true),
+            new TransferSet('ug_waelder/ug_waelder_eq_nadel.sql', 'ekat2015.ug_waelder_eq_nadel', true),
+            new TransferSet('ug_waelder/ug_waelder_eq_nadelmisch.sql', 'ekat2015.ug_waelder_eq_nadelmisch', true)
+    ];
+}
+
+//Berechnung der Tabellen ug_waelder_gesamt
+
+task calc_ug_waelder_gesamt(type: Db2DbTask, dependsOn: [calc_ug_waelder]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_waelder/ug_waelder_gesamt.sql', 'ekat2015.ug_waelder_gesamt', true)
+    ];
+}
+
+//Berechnung der Quellengruppe Biogene
+
+task calc_qg_biogen(type: Db2DbTask, dependsOn: [calc_ug_blitze, calc_ug_gewaesser_gesamt, calc_ug_graweiern_gesamt, calc_ug_waelder_gesamt]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('qg_biogen.sql', 'ekat2015.qg_biogen', true),
+            new TransferSet('ug_blitze/ug_blitze_gesamt_gem.sql', 'ekat2015.ug_blitze_gesamt_gem', true),
+            new TransferSet('ug_gewaesser/ug_gewaesser_gesamt_gem.sql', 'ekat2015.ug_gewaesser_gesamt_gem', true),
+            new TransferSet('ug_graweiern/ug_graweiern_gesamt_gem.sql', 'ekat2015.ug_graweiern_gesamt_gem', true), 
+            new TransferSet('ug_waelder/ug_waelder_gesamt_gem.sql', 'ekat2015.ug_waelder_gesamt_gem', true)
+    ];
+}
+
+task calc_qg_biogen_gem(type: Db2DbTask, dependsOn: [calc_qg_biogen]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('qg_biogen_gemeinde.sql', 'ekat2015.qg_biogen_gemeinde', true)
+    ];
+}
+
+
