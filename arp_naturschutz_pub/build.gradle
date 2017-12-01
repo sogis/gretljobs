@@ -9,6 +9,7 @@ task transferArpNaturschutz(type: Db2DbTask){
             new TransferSet('arp_naturschutz_pub_karch_objekt.sql', 'arp_naturschutz_pub.karch_objekt', true),
             new TransferSet('arp_naturschutz_pub_amphibienstandort.sql', 'arp_naturschutz_pub.amphibienstandort', true),
             new TransferSet('arp_naturschutz_pub_blaue_flaechen_grenchen.sql',
-                    'arp_naturschutz_pub.blaue_flaechen_grenchen', true)
+                    'arp_naturschutz_pub.blaue_flaechen_grenchen', true),
+            new TransferSet('arp_naturschutz_pub_flachmoor.sql', 'arp_naturschutz_pub.flachmoor', true)
     ];
 }
