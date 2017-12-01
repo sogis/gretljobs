@@ -1,0 +1,20 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferAvtKantonsstrassen'
+
+task transferAvtKantonsstrassen(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('avt_kantonsstrassen_pub_bezugspunkt.sql', 'avt_kantonsstrassen_pub.bezugspunkt', true),
+            new TransferSet('avt_kantonsstrassen_pub_achse.sql', 'avt_kantonsstrassen_pub.achse', true),
+            new TransferSet('avt_kantonsstrassen_pub_baustelle.sql', 'avt_kantonsstrassen_pub.baustelle', true),
+            new TransferSet('avt_kantonsstrassen_pub_strassenklassierung.sql',
+                    'avt_kantonsstrassen_pub.strassenklassierung', true),
+            new TransferSet('avt_kantonsstrassen_pub_kantonsstrassen_achsstuecke.sql',
+                    'avt_kantonsstrassen_pub.kantonsstrassen_achsstuecke', true),
+            new TransferSet('avt_kantonsstrassen_pub_kategorisierte_strassen.sql',
+                    'avt_kantonsstrassen_pub.kategorisierte_strassen', true),
+            new TransferSet('avt_kantonsstrassen_pub_vereinbarung.sql', 'avt_kantonsstrassen_pub.vereinbarung', true)
+    ];
+}
