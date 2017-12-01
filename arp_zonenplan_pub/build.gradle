@@ -1,0 +1,12 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferArpZonenplan'
+
+task transferArpZonenplan(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('arp_zonenplan_pub_digitalisierter_zonenplan.sql',
+                    'arp_zonenplan_pub.digitalisierter_zonenplan', true)
+    ];
+}
