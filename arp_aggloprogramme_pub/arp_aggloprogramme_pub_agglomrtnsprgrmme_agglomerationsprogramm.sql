@@ -1,0 +1,12 @@
+SELECT
+    t_id,
+    aname,
+    generation,
+    gemeinde,
+    bfs_nr,
+    kanton,
+    land,
+    geometrie
+FROM
+    arp_aggloprogramme_pub.agglomrtnsprgrmme_agglomerationsprogramm
+;
