@@ -6,6 +6,7 @@ task transferArpIvs(type: Db2DbTask){
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
-            new TransferSet('arp_ivs_pub_linienobjekt.sql', 'arp_ivs_pub.linienobjekt', true)
+            new TransferSet('arp_ivs_pub_linienobjekt.sql', 'arp_ivs_pub.linienobjekt', true),
+            new TransferSet('arp_ivs_pub_punktobjekt.sql', 'arp_ivs_pub.punktobjekt', true)
     ];
 }
