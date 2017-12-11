@@ -1,0 +1,152 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'calc_qg_haushalte_gem'
+
+//Berechnung der Untergruppe ug_abfallverbr_hh
+
+task calc_ug_abfallverbr_hh(type: Db2DbTask){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_abfallverbr_hh/ug_abfallverbr_hh_eq_abfallverbr.sql', 'ekat2015.ug_abfallverbr_hh_eq_abfallverbr', true),
+            new TransferSet('ug_abfallverbr_hh/ug_abfallverbr_hh_eq_feuwer.sql', 'ekat2015.ug_abfallverbr_hh_eq_feuwer', true),
+    ];
+}
+
+//Berechnung der Tabellen ug_abfallverbr_gesamt
+
+task calc_ug_abfallverbr_hh_gesamt(type: Db2DbTask, dependsOn: [calc_ug_abfallverbr_hh]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_abfallverbr_hh/ug_abfallverbr_hh_gesamt.sql', 'ekat2015.ug_abfallverbr_hh_gesamt', true)
+    ];
+}
+
+//Berechnung der Untergruppe ug_feuer
+
+task calc_ug_feuer(type: Db2DbTask){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_feuer/ug_feuer_eq_alle_nmvoc_nh3.sql', 'ekat2015.ug_feuer_eq_alle_nmvoc_nh3', true),
+            new TransferSet('ug_feuer/ug_feuer_eq_gas_nach93.sql', 'ekat2015.ug_feuer_eq_gas_nach93', true),
+            new TransferSet('ug_feuer/ug_feuer_eq_gas_vor93.sql', 'ekat2015.ug_feuer_eq_gas_vor93', true),
+            new TransferSet('ug_feuer/ug_feuer_eq_holz_haus.sql', 'ekat2015.ug_feuer_eq_holz_haus', true), 
+            new TransferSet('ug_feuer/ug_feuer_eq_holz_klein.sql', 'ekat2015.ug_feuer_eq_holz_klein', true),
+            new TransferSet('ug_feuer/ug_feuer_eq_oel_nach93.sql', 'ekat2015.ug_feuer_eq_oel_nach93', true),
+            new TransferSet('ug_feuer/ug_feuer_eq_oel_vor93.sql', 'ekat2015.ug_feuer_eq_oel_vor93', true)
+    ];
+}
+
+//Berechnung der Tabellen ug_feuer_gesamt
+
+task calc_ug_feuer_gesamt(type: Db2DbTask, dependsOn: [calc_ug_feuer]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_feuer/ug_feuer_gesamt.sql', 'ekat2015.ug_feuer_gesamt', true)
+    ];
+}
+
+//Berechnung der Untergruppe ug_loemittel
+
+task calc_ug_loemittel(type: Db2DbTask){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_loemittel/ug_loemittel_eq_farbanw.sql', 'ekat2015.ug_loemittel_eq_farbanw', true),
+            new TransferSet('ug_loemittel/ug_loemittel_eq_pharma.sql', 'ekat2015.ug_loemittel_eq_pharma', true),
+            new TransferSet('ug_loemittel/ug_loemittel_eq_reiloe_mittel.sql', 'ekat2015.ug_loemittel_eq_reiloe_mittel', true),
+            new TransferSet('ug_loemittel/ug_loemittel_eq_spraydosen.sql', 'ekat2015.ug_loemittel_eq_spraydosen', true)
+    ];
+}
+
+//Berechnung der Tabellen ug_loemittel_gesamt
+
+task calc_ug_loemittel_gesamt(type: Db2DbTask, dependsOn: [calc_ug_loemittel]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_loemittel/ug_loemittel_gesamt.sql', 'ekat2015.ug_loemittel_gesamt', true)
+    ];
+}
+
+//Berechnung der Untergruppe ug_masch_gh
+
+task calc_ug_masch_gh(type: Db2DbTask){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_masch_gh/ug_masch_gh_eq_masch.sql', 'ekat2015.ug_masch_gh_eq_masch', true),
+            new TransferSet('ug_masch_gh/ug_masch_gh_eq_mot_hh_dies.sql', 'ekat2015.ug_masch_gh_eq_mot_hh_dies', true),
+            new TransferSet('ug_masch_gh/ug_masch_gh_eq_mot_hh_gas.sql', 'ekat2015.ug_masch_gh_eq_mot_hh_gas', true)
+    ];
+}
+
+//Berechnung der Tabellen ug_masch_gh_gesamt
+
+task calc_ug_masch_gh_gesamt(type: Db2DbTask, dependsOn: [calc_ug_masch_gh]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_masch_gh/ug_masch_gh_gesamt.sql', 'ekat2015.ug_masch_gh_gesamt', true)
+    ];
+}
+
+//Berechnung der Untergruppe ug_lachgas_hh
+
+task calc_ug_lachgas_hh(type: Db2DbTask){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_lachgas_hh/ug_lachgas_hh_gesamt.sql', 'ekat2015.ug_lachgas_hh_gesamt', true)
+    ];
+}
+
+//Berechnung der Untergruppe ug_metaha
+
+task calc_ug_metaha(type: Db2DbTask){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_metaha/ug_metaha_gesamt.sql', 'ekat2015.ug_metaha_gesamt', true)
+    ];
+}
+
+//Berechnung der Quellengruppe Haushalte 
+
+task calc_qg_haushalte(type: Db2DbTask, dependsOn: [calc_ug_abfallverbr_hh_gesamt, calc_ug_feuer_gesamt, calc_ug_lachgas_hh, calc_ug_loemittel_gesamt, calc_ug_masch_gh_gesamt, calc_ug_metaha]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('qg_haushalte.sql', 'ekat2015.qg_haushalte', true),
+            new TransferSet('ug_abfallverbr_hh/ug_abfallverbr_hh_gesamt_gem.sql', 'ekat2015.ug_abfallverbr_hh_gesamt_gem', true),
+            new TransferSet('ug_feuer/ug_feuer_gesamt_gem.sql', 'ekat2015.ug_feuer_gesamt_gem', true),
+            new TransferSet('ug_lachgas_hh/ug_lachgas_hh_gesamt_gem.sql', 'ekat2015.ug_lachgas_hh_gesamt_gem', true), 
+            new TransferSet('ug_loemittel/ug_loemittel_gesamt_gem.sql', 'ekat2015.ug_loemittel_gesamt_gem', true),
+            new TransferSet('ug_masch_gh/ug_masch_gh_gesamt_gem.sql', 'ekat2015.ug_masch_gh_gesamt_gem', true),
+            new TransferSet('ug_metaha/ug_metaha_gesamt_gem.sql', 'ekat2015.ug_metaha_gesamt_gem', true)
+    ];
+}
+
+task calc_qg_haushalte_gem(type: Db2DbTask, dependsOn: [calc_qg_haushalte]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('qg_haushalte_gemeinde.sql', 'ekat2015.qg_haushalte_gemeinde', true)
+    ];
+}
+
