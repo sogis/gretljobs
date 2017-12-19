@@ -1,0 +1,11 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferArpMJPNatur'
+
+task transferArpMJPNatur(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('arp_mjpnatur_pub_flaechen.sql', 'arp_mjpnatur_pub.flaechen', true)
+    ];
+}
