@@ -13,6 +13,10 @@ task transferArpNpl(type: Db2DbTask){
             new TransferSet('arp_npl_pub_nutzungsplanung_ueberlagernd_flaeche.sql',
                     'arp_npl_pub.nutzungsplanung_ueberlagernd_flaeche', true),
             new TransferSet('arp_npl_pub_nutzungsplanung_ueberlagernd_punkt.sql',
-                    'arp_npl_pub.nutzungsplanung_ueberlagernd_punkt', true)
+                    'arp_npl_pub.nutzungsplanung_ueberlagernd_punkt', true),
+            new TransferSet('arp_npl_pub_nutzungsplanung_ueberlagernd_linie.sql',
+                    'arp_npl_pub.nutzungsplanung_ueberlagernd_linie', true),
+            new TransferSet('arp_npl_pub_nutzungsplanung_erschliessung_flaechenobjekt.sql',
+                    'arp_npl_pub.nutzungsplanung_erschliessung_flaechenobjekt', true)
     ];
 }
