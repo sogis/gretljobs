@@ -1,0 +1,11 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferArpBaugis'
+
+task transferArpBaugis(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('arp_baugis_pub_baugesuche.sql', 'arp_baugis_pub.baugesuche', true)
+    ];
+}
