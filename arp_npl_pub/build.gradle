@@ -11,6 +11,8 @@ task transferArpNpl(type: Db2DbTask){
             new TransferSet('arp_npl_pub_nutzungsplanung_nutzungsplanung_beschriftung.sql',
                     'arp_npl_pub.nutzungsplanung_nutzungsplanung_beschriftung', true),
             new TransferSet('arp_npl_pub_nutzungsplanung_ueberlagernd_flaeche.sql',
-                    'arp_npl_pub.nutzungsplanung_ueberlagernd_flaeche', true)
+                    'arp_npl_pub.nutzungsplanung_ueberlagernd_flaeche', true),
+            new TransferSet('arp_npl_pub_nutzungsplanung_ueberlagernd_punkt.sql',
+                    'arp_npl_pub.nutzungsplanung_ueberlagernd_punkt', true)
     ];
 }
