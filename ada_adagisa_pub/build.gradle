@@ -7,7 +7,7 @@ task transferAdagisd(type: Db2DbTask){
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
             new TransferSet('ada_adagisa_pub_flaechenfundstellen.sql', 'ada_adagisa_pub.flaechenfundstellen', true),
-            new TransferSet('ada_adagisa_pub_punktfundstellen.sql', 'ada_adagisa_pub.punktfundstellen', true)/*,
-            new TransferSet('ada_adagisd_pub_polygongeometrien.sql', 'ada_adagisd_pub.polygongeometrien', true)*/
+            new TransferSet('ada_adagisa_pub_punktfundstellen.sql', 'ada_adagisa_pub.punktfundstellen', true),
+            new TransferSet('ada_adagisa_pub_schutz_olten_solothurn.sql', 'ada_adagisa_pub.schutz_olten_solothurn', true)
     ];
 }
