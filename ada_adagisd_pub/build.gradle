@@ -1,0 +1,11 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferAdagisd'
+
+task transferAdagisd(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ada_adagisd_pub_object.sql', 'ada_adagisd_pub.object', true)
+    ];
+}
