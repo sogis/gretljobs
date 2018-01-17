@@ -1,0 +1,13 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferAdagisd'
+
+task transferAdagisd(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ada_adagisa_pub_flaechenfundstellen.sql', 'ada_adagisa_pub.flaechenfundstellen', true)/*,
+            new TransferSet('ada_adagisd_pub_punktgeometrien.sql', 'ada_adagisd_pub.punktgeometrien', true),
+            new TransferSet('ada_adagisd_pub_polygongeometrien.sql', 'ada_adagisd_pub.polygongeometrien', true)*/
+    ];
+}
