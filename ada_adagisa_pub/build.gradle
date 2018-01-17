@@ -1,8 +1,8 @@
 import ch.so.agi.gretl.steps.*
 
-defaultTasks 'transferAdagisd'
+defaultTasks 'transferAdagisa'
 
-task transferAdagisd(type: Db2DbTask){
+task transferAdagisa(type: Db2DbTask){
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
