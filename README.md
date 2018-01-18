@@ -63,3 +63,20 @@ dependencies {
 }
 ```
 
+## GRETL Runtime Docker Image verwenden
+
+Docker Image mit der GRETL runtime starten für die Job Entwicklung.
+
+```
+cd scripts/
+./start-gretl.sh --docker_image uncoyote/gretl-runtime:11 --job_directory /home/gretl --task_name gradleTaskName -Pparam1=1 -Pparam2=2
+```
+
+Oder das test Skript *test-gretl.sh* verwenden.
+
+### Troubleshooting
+Wenn folgende Fehlermeldung auftritt, muss das *.gradle* Ordner im Job Ordner gelöscht werden.
+
+```
+Caused by: java.io.FileNotFoundException: /home/gradle/project/.gradle/4.2.1/fileHashes/fileHashes.lock (Permission denied)
+```
