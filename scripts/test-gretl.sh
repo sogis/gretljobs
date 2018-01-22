@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# requires Docker Image uncoyote/gretl-runtime with tag 11 on Docker Hub
+# requires Docker Image sogis/gretl-runtime with tag 14 on Docker Hub
 # requires a test postgres db to be running on the host with port: 5432
 
 hostIP=`ip route get 8.8.8.8 | awk '{print $NF; exit}'`
@@ -20,6 +20,6 @@ task_parameter=(
 
 # run GRETL job by GRETL runtime
 ./start-gretl.sh \
-  --docker_image uncoyote/gretl-runtime:11 \
+  --docker_image sogis/gretl-runtime:14 \
   --job_directory $job_directory \
   --task_name $task_name "${task_parameter[@]}"

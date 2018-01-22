@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # use like this:
-# start-gretl.sh --docker_image uncoyote/gretl-runtime:11 --job_directory /home/gretl --task_name gradleTaskName -Pparam1=1 -Pparam2=2
+# start-gretl.sh --docker_image sogis/gretl-runtime:14 --job_directory /home/gretl --task_name gradleTaskName -Pparam1=1 -Pparam2=2
 
 task_parameter=()
 
