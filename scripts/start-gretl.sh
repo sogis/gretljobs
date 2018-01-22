@@ -15,7 +15,16 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-declare gretl_cmd="gretl $task_name ${task_parameter[@]}"
+db_parameter=(
+-PsourceDbUrl=$sourceDbUrl \
+-PsourceDbUser=$sourceDbUser \
+-PsourceDbPass=$sourceDbPass \
+-PtargetDbUrl=$targetDbUrl \
+-PtargetDbUser=$targetDbUser \
+-PtargetDbPass=$targetDbPass \
+)
+
+declare gretl_cmd="gretl $task_name ${task_parameter[@]} ${db_parameter[@]}"
 
 echo "======================================================="
 echo "Starts the GRETL runtime to execute the given GRETL job"
@@ -23,7 +32,7 @@ echo "Docker Image: $docker_image"
 echo "task name: $task_name"
 echo "job directory: $job_directory"
 echo "task_parameter: ${task_parameter[@]}"
-echo "gretl_cmd: $gretl_cmd"
+#echo "gretl_cmd: $gretl_cmd"
 echo "======================================================="
 
 # special run configuration for jenkins-slave based image:
