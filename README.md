@@ -69,7 +69,7 @@ Docker Image mit der GRETL runtime starten für die Job Entwicklung.
 
 ```
 cd scripts/
-./start-gretl.sh --docker_image uncoyote/gretl-runtime:11 --job_directory /home/gretl --task_name gradleTaskName -Pparam1=1 -Pparam2=2
+./start-gretl.sh --docker_image sogis/gretl-runtime:14 --job_directory /home/gretl --task_name gradleTaskName -Pparam1=1 -Pparam2=2
 ```
 
 Oder das test Skript *test-gretl.sh* verwenden.
