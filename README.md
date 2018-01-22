@@ -69,8 +69,22 @@ Docker Image mit der GRETL runtime starten für die Job Entwicklung.
 
 ```
 cd scripts/
-./start-gretl.sh --docker_image uncoyote/gretl-runtime:11 --job_directory /home/gretl --task_name gradleTaskName -Pparam1=1 -Pparam2=2
+./start-gretl.sh --docker_image sogis/gretl-runtime:14 --job_directory /home/gretl --task_name gradleTaskName -Pparam1=1 -Pparam2=2
 ```
+
+Meistens benötigt ein GRETL-Job eine Quell- und eine Ziel-Datenbank. Hierfür können lokal folgende Umgebungsvariablen gesetzt werden (Werte entsprechend anpassen); sie werden der GRETL Runtime als Parameter übergeben und können im GRETL-Skript als Variablen genutzt werden:
+
+```
+export sourceDbUrl=jdbc:postgresql://127.0.0.1/foodb
+export sourceDbUser=foo
+export sourceDbPass=foopassword
+export targetDbUrl=jdbc:postgresql://localhost:5432/bardb
+export targetDbUser=bar
+export targetDbPass=barpassword
+```
+
+Unter Ubuntu können diese Befehle in die Datei ~/.profile eingetragen werden, damit die Umgebungsvariablen immer verfügbar sind.
+
 
 Oder das test Skript *test-gretl.sh* verwenden.
 
