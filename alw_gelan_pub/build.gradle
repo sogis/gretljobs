@@ -7,6 +7,7 @@ task transferAlwGelan(type: Db2DbTask){
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
             new TransferSet('alw_gelan_pub_bienenstandorte.sql', 'alw_gelan_pub.bienenstandorte', true),
-            new TransferSet('alw_gelan_pub_bienen_sperrgebiete.sql', 'alw_gelan_pub.bienen_sperrgebiete', true)
+            new TransferSet('alw_gelan_pub_bienen_sperrgebiete.sql', 'alw_gelan_pub.bienen_sperrgebiete', true),
+            new TransferSet('alw_gelan_pub_streptomycineinsatz.sql', 'alw_gelan_pub.streptomycineinsatz', true)
     ];
 }
