@@ -1,0 +1,11 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferAlwGelan'
+
+task transferAlwGelan(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('alw_gelan_pub_bienenstandorte.sql', 'alw_gelan_pub.bienenstandorte', true)
+    ];
+}
