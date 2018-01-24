@@ -7,6 +7,7 @@ task transferAlwGrundlagen(type: Db2DbTask){
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
             new TransferSet('alw_grundlagen_pub_fruchtfolgeflaechen.sql', 'alw_grundlagen_pub.fruchtfolgeflaechen',
-                    true)
+                    true),
+            new TransferSet('alw_grundlagen_pub_drainagen.sql', 'alw_grundlagen_pub.drainagen', true)
     ];
 }
