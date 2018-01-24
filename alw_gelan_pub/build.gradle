@@ -10,6 +10,8 @@ task transferAlwGelan(type: Db2DbTask){
             new TransferSet('alw_gelan_pub_bienen_sperrgebiete.sql', 'alw_gelan_pub.bienen_sperrgebiete', true),
             new TransferSet('alw_gelan_pub_streptomycineinsatz.sql', 'alw_gelan_pub.streptomycineinsatz', true),
             new TransferSet('alw_gelan_pub_feuerbrand_schutzobjekte.sql', 'alw_gelan_pub.feuerbrand_schutzobjekte',
+                    true),
+            new TransferSet('alw_gelan_pub_feuerbrand_schutzperimeter.sql', 'alw_gelan_pub.feuerbrand_schutzperimeter',
                     true)
     ];
 }
