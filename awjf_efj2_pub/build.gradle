@@ -1,0 +1,11 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferAwjfEfj2'
+
+task transferAwjfEfj2(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('awjf_efj2_pub_efj2.sql', 'awjf_efj2_pub.efj2', true)
+    ];
+}
