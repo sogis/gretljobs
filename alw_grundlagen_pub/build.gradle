@@ -8,6 +8,8 @@ task transferAlwGrundlagen(type: Db2DbTask){
     transferSets = [
             new TransferSet('alw_grundlagen_pub_fruchtfolgeflaechen.sql', 'alw_grundlagen_pub.fruchtfolgeflaechen',
                     true),
-            new TransferSet('alw_grundlagen_pub_drainagen.sql', 'alw_grundlagen_pub.drainagen', true)
+            new TransferSet('alw_grundlagen_pub_drainagen.sql', 'alw_grundlagen_pub.drainagen', true),
+            new TransferSet('alw_grundlagen_pub_landwirtschaftliche_gueterwege.sql',
+                    'alw_grundlagen_pub.landwirtschaftliche_gueterwege', true)
     ];
 }
