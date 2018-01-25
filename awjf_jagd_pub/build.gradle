@@ -1,0 +1,11 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferAwjfJagd'
+
+task transferAwjfJagd(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('awjf_jagd_pub_jagdbanngebiete.sql', 'awjf_jagd_pub.jagdbanngebiete', true)
+    ];
+}
