@@ -14,6 +14,7 @@ task transferAwjfWaldWork(type: Db2DbTask){
             new TransferSet('awjf_wald_work_pub_silvaprotecteinteilig_rutsch_kor.sql',
                     'awjf_wald_work_pub.silvaprotecteinteilig_rutsch_kor', true),
             new TransferSet('awjf_wald_work_pub_silvaprotecteinteilig_grs_kor.sql',
-                    'awjf_wald_work_pub.silvaprotecteinteilig_grs_kor', true)
+                    'awjf_wald_work_pub.silvaprotecteinteilig_grs_kor', true),
+            new TransferSet('awjf_wald_work_pub_sw_info.sql', 'awjf_wald_work_pub.sw_info', true)
     ];
 }
