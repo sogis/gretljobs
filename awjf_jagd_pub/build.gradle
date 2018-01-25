@@ -6,6 +6,7 @@ task transferAwjfJagd(type: Db2DbTask){
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
-            new TransferSet('awjf_jagd_pub_jagdbanngebiete.sql', 'awjf_jagd_pub.jagdbanngebiete', true)
+            new TransferSet('awjf_jagd_pub_jagdbanngebiete.sql', 'awjf_jagd_pub.jagdbanngebiete', true),
+            new TransferSet('awjf_jagd_pub_jagdreviere.sql', 'awjf_jagd_pub.jagdreviere', true)
     ];
 }
