@@ -14,6 +14,7 @@ task transferAwjf(type: Db2DbTask){
             new TransferSet('awjf_pub_wald_25000.sql', 'awjf_pub.wald_25000', true),
             new TransferSet('awjf_pub_schutzwald_behandelte_flaeche.sql', 'awjf_pub.schutzwald_behandelte_flaeche',
                     true),
-            new TransferSet('awjf_pub_schutzwald_status.sql', 'awjf_pub.schutzwald_status', true)
+            new TransferSet('awjf_pub_schutzwald_status.sql', 'awjf_pub.schutzwald_status', true),
+            new TransferSet('awjf_pub_schutzwald_massnahmenplanung.sql', 'awjf_pub.schutzwald_massnahmenplanung', true)
     ];        
 }
