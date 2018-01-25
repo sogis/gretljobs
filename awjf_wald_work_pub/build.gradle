@@ -6,6 +6,8 @@ task transferAwjfWaldWork(type: Db2DbTask){
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
-            new TransferSet('awjf_wald_work_pub_wap_bst_bkt.sql', 'awjf_wald_work_pub.wap_bst_bkt', true)
+            new TransferSet('awjf_wald_work_pub_wap_bst_bkt.sql', 'awjf_wald_work_pub.wap_bst_bkt', true),
+            new TransferSet('awjf_wald_work_pub_silvaprotecteinteilig_sturz_kor.sql',
+                    'awjf_wald_work_pub.silvaprotecteinteilig_sturz_kor', true)
     ];
 }
