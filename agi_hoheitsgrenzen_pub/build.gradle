@@ -6,6 +6,9 @@ task transferAgiHoheitsgrenzen(type: Db2DbTask){
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
-            new TransferSet('agi_hoheitsgrenzen_pub_gemeindegrenzen.sql', 'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze', true)
+            new TransferSet('agi_hoheitsgrenzen_pub_gemeindegrenzen.sql',
+                    'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze', true),
+            new TransferSet('agi_hoheitsgrenzen_pub_bezirksgrenzen.sql',
+                    'agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksgrenze', true)
     ];        
 }
