@@ -9,6 +9,7 @@ task transferAgiLeitungskataster(type: Db2DbTask){
             new TransferSet('agi_leitungskataster_pub_lk_verfuegbarkeit.sql',
                     'agi_leitungskataster_pub.lk_verfuegbarkeit', true),
             new TransferSet('agi_leitungskataster_pub_wasserleitung.sql', 'agi_leitungskataster_pub.wasserleitung',
-                    true)
+                    true),
+            new TransferSet('agi_leitungskataster_pub_hydrant.sql', 'agi_leitungskataster_pub.hydrant', true)
     ];
 }
