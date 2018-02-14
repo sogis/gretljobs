@@ -8,9 +8,9 @@ task transferAgiLeitungskataster(type: Db2DbTask){
     transferSets = [
             new TransferSet('agi_leitungskataster_pub_lk_verfuegbarkeit.sql',
                     'agi_leitungskataster_pub.lk_verfuegbarkeit', true),
-            new TransferSet('agi_leitungskataster_pub_wasserleitung.sql', 'agi_leitungskataster_pub.wasserleitung',
+            new TransferSet('agi_leitungskataster_pub_wasser_leitung.sql', 'agi_leitungskataster_pub.wasser_leitung',
                     true),
-            new TransferSet('agi_leitungskataster_pub_hydrant.sql', 'agi_leitungskataster_pub.hydrant', true),
+            new TransferSet('agi_leitungskataster_pub_wasser_hydrant.sql', 'agi_leitungskataster_pub.wasser_hydrant', true),
             new TransferSet('agi_leitungskataster_pub_wasser_absperrorgan.sql',
                     'agi_leitungskataster_pub.wasser_absperrorgan', true),
             new TransferSet('agi_leitungskataster_pub_wasser_rohrleitungsteil.sql',
@@ -25,6 +25,8 @@ task transferAgiLeitungskataster(type: Db2DbTask){
             new TransferSet('agi_leitungskataster_pub_abwasser_haltung.sql',
                     'agi_leitungskataster_pub.abwasser_haltung', true),
             new TransferSet('agi_leitungskataster_pub_abwasser_schacht.sql',
-                    'agi_leitungskataster_pub.abwasser_schacht', true)
+                    'agi_leitungskataster_pub.abwasser_schacht', true),
+            new TransferSet('agi_leitungskataster_pub_abwasser_bauwerk.sql',
+                    'agi_leitungskataster_pub.abwasser_bauwerk', true)
     ];
 }
