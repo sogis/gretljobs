@@ -23,6 +23,8 @@ task transferAgiLeitungskataster(type: Db2DbTask){
                     'agi_leitungskataster_pub.abwasser_bauwerk_text', true),
             new TransferSet('agi_leitungskataster_pub_wasser_kabel.sql', 'agi_leitungskataster_pub.wasser_kabel', true),
             new TransferSet('agi_leitungskataster_pub_abwasser_haltung.sql',
-                    'agi_leitungskataster_pub.abwasser_haltung', true)
+                    'agi_leitungskataster_pub.abwasser_haltung', true),
+            new TransferSet('agi_leitungskataster_pub_abwasser_schacht.sql',
+                    'agi_leitungskataster_pub.abwasser_schacht', true)
     ];
 }
