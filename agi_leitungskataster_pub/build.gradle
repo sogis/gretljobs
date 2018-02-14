@@ -29,6 +29,8 @@ task transferAgiLeitungskataster(type: Db2DbTask){
             new TransferSet('agi_leitungskataster_pub_abwasser_bauwerk.sql',
                     'agi_leitungskataster_pub.abwasser_bauwerk', true),
             new TransferSet('agi_leitungskataster_pub_elektrizitaet_trasse.sql',
-                    'agi_leitungskataster_pub.elektrizitaet_trasse', true)
+                    'agi_leitungskataster_pub.elektrizitaet_trasse', true),
+            new TransferSet('agi_leitungskataster_pub_elektrizitaet_trassepunkt.sql',
+                    'agi_leitungskataster_pub.elektrizitaet_trassepunkt', true)
     ];
 }
