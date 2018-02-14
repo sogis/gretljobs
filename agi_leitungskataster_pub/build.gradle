@@ -10,6 +10,8 @@ task transferAgiLeitungskataster(type: Db2DbTask){
                     'agi_leitungskataster_pub.lk_verfuegbarkeit', true),
             new TransferSet('agi_leitungskataster_pub_wasserleitung.sql', 'agi_leitungskataster_pub.wasserleitung',
                     true),
-            new TransferSet('agi_leitungskataster_pub_hydrant.sql', 'agi_leitungskataster_pub.hydrant', true)
+            new TransferSet('agi_leitungskataster_pub_hydrant.sql', 'agi_leitungskataster_pub.hydrant', true),
+            new TransferSet('agi_leitungskataster_pub_wasser_absperrorgan.sql',
+                    'agi_leitungskataster_pub.wasser_absperrorgan', true)
     ];
 }
