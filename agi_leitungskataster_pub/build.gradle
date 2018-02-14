@@ -14,6 +14,8 @@ task transferAgiLeitungskataster(type: Db2DbTask){
             new TransferSet('agi_leitungskataster_pub_wasser_absperrorgan.sql',
                     'agi_leitungskataster_pub.wasser_absperrorgan', true),
             new TransferSet('agi_leitungskataster_pub_wasser_rohrleitungsteil.sql',
-                    'agi_leitungskataster_pub.wasser_rohrleitungsteil', true)
+                    'agi_leitungskataster_pub.wasser_rohrleitungsteil', true),
+            new TransferSet('agi_leitungskataster_pub_wasser_kabelpunkt.sql',
+                    'agi_leitungskataster_pub.wasser_kabelpunkt', true)
     ];
 }
