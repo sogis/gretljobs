@@ -12,9 +12,10 @@ Not sure how we will use this exactly with our gretl-jenkins.
 
 ## Information zu den Queries
 ### Kaskade 
---> grundnutzung
+Die Rekursion muss nochmals überprüft werden: Es kann sein, dass ein Ursprungsdokument zweimal vorkommt und jeweils eine unterschiedliche Kaskade bilden. Ich bin mir nicht sicher, ob dieser Fall abgedeckt ist. Sowas ähnliches ist mir jedenfalls aufgefallen bei den ÖREB-Transferdateien des Bundes. Gelöst habe ich es damals (Code verschollen) damit, dass ich die Ursprungsdokumente eindeutig gemacht habe, dh. die "t_id" an das "Ursprung"-Attribut gehängt. 
 
 ### Mehrfache Dokumente
+Um zu verhindern, dass Dokumente mehrfach für eine Typ/Geometrie-Kombination im Publikationsmodell bei der Abfrage vorkommen, wird noch ein `DISTINCT ON (typ_grundnutzung, dok_referenz)` in der Query "typ_XXXXXXXX_dokument_ref" eingefügt.
 
 ## Schema creation
 

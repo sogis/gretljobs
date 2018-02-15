@@ -115,23 +115,28 @@ json_documents_doc_doc_reference AS
 -- -> Nochmals überlegen, ob man das nicht besser lösen kann.
 typ_erschliessung_linienobjekt_dokument_ref AS 
 (
-  SELECT DISTINCT
-    typ_erschliessung_linienobjekt_dokument.typ_erschliessung_linienobjekt,
-    dokument,
-    unnest(dok_dok_referenzen) AS dok_referenz
+  SELECT DISTINCT ON (typ_erschliessung_linienobjekt, dok_referenz)
+    *
   FROM
-    arp_npl.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument AS typ_erschliessung_linienobjekt_dokument
-    LEFT JOIN doc_doc_references
-    ON typ_erschliessung_linienobjekt_dokument.dokument = doc_doc_references.ursprung
-  
-  UNION 
-  
-  SELECT
-    typ_erschliessung_linienobjekt,
-    dokument,
-    dokument AS dok_referenz
-  FROM
-    arp_npl.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument
+  (
+    SELECT DISTINCT
+      typ_erschliessung_linienobjekt_dokument.typ_erschliessung_linienobjekt,
+      dokument,
+      unnest(dok_dok_referenzen) AS dok_referenz
+    FROM
+      arp_npl.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument AS typ_erschliessung_linienobjekt_dokument
+      LEFT JOIN doc_doc_references
+      ON typ_erschliessung_linienobjekt_dokument.dokument = doc_doc_references.ursprung
+    
+    UNION 
+    
+    SELECT
+      typ_erschliessung_linienobjekt,
+      dokument,
+      dokument AS dok_referenz
+    FROM
+      arp_npl.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument
+  ) AS foo
 )
 ,
 -- Dieses Joinen muss folgerichtig mit *allen* Json-Dokumenten geschehen,

@@ -106,23 +106,28 @@ json_documents_doc_doc_reference AS
 ,
 typ_ueberlagernd_punkt_dokument_ref AS 
 (
-  SELECT DISTINCT
-    typ_ueberlagernd_punkt_dokument.typ_ueberlagernd_punkt,
-    dokument,
-    unnest(dok_dok_referenzen) AS dok_referenz
+  SELECT DISTINCT ON (typ_ueberlagernd_punkt, dok_referenz)
+    *
   FROM
-    arp_npl.nutzungsplanung_typ_ueberlagernd_punkt_dokument AS typ_ueberlagernd_punkt_dokument
-    LEFT JOIN doc_doc_references
-    ON typ_ueberlagernd_punkt_dokument.dokument = doc_doc_references.ursprung
+  (
+    SELECT DISTINCT
+      typ_ueberlagernd_punkt_dokument.typ_ueberlagernd_punkt,
+      dokument,
+      unnest(dok_dok_referenzen) AS dok_referenz
+    FROM
+      arp_npl.nutzungsplanung_typ_ueberlagernd_punkt_dokument AS typ_ueberlagernd_punkt_dokument
+      LEFT JOIN doc_doc_references
+      ON typ_ueberlagernd_punkt_dokument.dokument = doc_doc_references.ursprung
+      
+    UNION 
     
-  UNION 
-  
-  SELECT
-    typ_ueberlagernd_punkt,
-    dokument,
-    dokument AS dok_referenz
-  FROM
-    arp_npl.nutzungsplanung_typ_ueberlagernd_punkt_dokument    
+    SELECT
+      typ_ueberlagernd_punkt,
+      dokument,
+      dokument AS dok_referenz
+    FROM
+      arp_npl.nutzungsplanung_typ_ueberlagernd_punkt_dokument
+  ) AS foo
 )
 ,
 typ_ueberlagernd_punkt_json_dokument AS 

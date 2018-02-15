@@ -76,6 +76,7 @@ json_documents_all AS
       arp_npl.rechtsvorschrften_dokument
   ) AS t
 )
+--SELECT * FROM json_documents_all
 ,
 -- Alle Dokumente (die in HinweisWeitereDokumente vorkommen) 
 -- als JSON-Objekte (resp. als Text-Repräsentation).
@@ -104,27 +105,39 @@ json_documents_doc_doc_reference AS
   LEFT JOIN json_documents_all AS bar
   ON foo.dokument_t_id = bar.t_id
 )
+--SELECT * FROM json_documents_doc_doc_reference
 ,
-typ_ueberlagernd_flaeche_dokument_ref AS 
+-- Dokumente, die nicht auf weitere Dokumente verweisen,
+-- verweisen auf sich selbst (= dok_referenz). Damit
+-- ist dok_referenz matchentscheidend. Und es kann
+-- zu guter Letzt mit diesem Attribut "distinced"
+-- werden, um z.B. mehrfache RRB pro Typ zu verhindern.
+typ_ueberlagernd_flaeche_dokument_ref AS
 (
-  SELECT DISTINCT
-    typ_ueberlagernd_flaeche_dokument.typ_ueberlagernd_flaeche,
-    dokument,
-    unnest(dok_dok_referenzen) AS dok_referenz
+  SELECT DISTINCT ON(typ_ueberlagernd_flaeche, dok_referenz)
+    *
   FROM
-    arp_npl.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS typ_ueberlagernd_flaeche_dokument
-    LEFT JOIN doc_doc_references
-    ON typ_ueberlagernd_flaeche_dokument.dokument = doc_doc_references.ursprung
-
-  UNION 
+  (
+    SELECT DISTINCT
+      typ_ueberlagernd_flaeche_dokument.typ_ueberlagernd_flaeche,
+      dokument,
+      unnest(dok_dok_referenzen) AS dok_referenz
+    FROM
+      arp_npl.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS typ_ueberlagernd_flaeche_dokument
+      LEFT JOIN doc_doc_references
+      ON typ_ueberlagernd_flaeche_dokument.dokument = doc_doc_references.ursprung
   
-  SELECT
-    typ_ueberlagernd_flaeche,
-    dokument,
-    dokument AS dok_referenz
-  FROM
-    arp_npl.nutzungsplanung_typ_ueberlagernd_flaeche_dokument
+    UNION 
+    
+    SELECT
+      typ_ueberlagernd_flaeche,
+      dokument,
+      dokument AS dok_referenz
+    FROM
+      arp_npl.nutzungsplanung_typ_ueberlagernd_flaeche_dokument
+  ) AS foo
 )
+--SELECT * FROM typ_ueberlagernd_flaeche_dokument_ref
 ,
 typ_ueberlagernd_flaeche_json_dokument AS 
 (

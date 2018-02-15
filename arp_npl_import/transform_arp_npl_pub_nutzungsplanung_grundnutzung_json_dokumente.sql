@@ -148,28 +148,34 @@ json_documents_doc_doc_reference AS
 -- zu [5, 1, 3] werden. -> Es gibt schlussendlich und temporär
 -- halt einfache ein Liste mit den Dokumenten-Objekten pro Geometrie 
 -- (resp. Typ).
-typ_grundnutzung_dokument_ref AS 
+typ_grundnutzung_dokument_ref AS
 (
-  SELECT DISTINCT
-    --string_agg(json_dokument, ';')
-    typ_grundnutzung_dokument.typ_grundnutzung,
-    dokument,
-    --dok_dok_referenzen
-    unnest(dok_dok_referenzen) AS dok_referenz
+  SELECT DISTINCT ON (typ_grundnutzung, dok_referenz)
+    *
   FROM
-    arp_npl.nutzungsplanung_typ_grundnutzung_dokument AS typ_grundnutzung_dokument
-    LEFT JOIN doc_doc_references
-    ON typ_grundnutzung_dokument.dokument = doc_doc_references.ursprung
+  (
+    SELECT DISTINCT
+      --string_agg(json_dokument, ';')
+      typ_grundnutzung_dokument.typ_grundnutzung,
+      dokument,
+      --dok_dok_referenzen
+      unnest(dok_dok_referenzen) AS dok_referenz
+    FROM
+      arp_npl.nutzungsplanung_typ_grundnutzung_dokument AS typ_grundnutzung_dokument
+      LEFT JOIN doc_doc_references
+      ON typ_grundnutzung_dokument.dokument = doc_doc_references.ursprung
+      
+    UNION 
     
-  UNION 
-  
-  SELECT
-    typ_grundnutzung,
-    dokument,
-    dokument AS dok_referenz
-  FROM
-    arp_npl.nutzungsplanung_typ_grundnutzung_dokument   
+    SELECT
+      typ_grundnutzung,
+      dokument,
+      dokument AS dok_referenz
+    FROM
+      arp_npl.nutzungsplanung_typ_grundnutzung_dokument   
+   ) AS foo
 )
+--SELECT * FROM typ_grundnutzung_dokument_ref
 ,
 typ_grundnutzung_json_dokument AS 
 (

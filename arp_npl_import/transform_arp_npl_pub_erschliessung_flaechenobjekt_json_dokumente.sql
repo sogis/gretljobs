@@ -106,23 +106,28 @@ json_documents_doc_doc_reference AS
 ,
 typ_erschliessung_flaechenobjekt_dokument_ref AS 
 (
-  SELECT DISTINCT
-    typ_erschliessung_flaechenobjekt_dokument.typ_erschliessung_flaechenobjekt,
-    dokument,
-    unnest(dok_dok_referenzen) AS dok_referenz
+  SELECT DISTINCT ON (typ_erschliessung_flaechenobjekt, dok_referenz)
+    *
   FROM
-    arp_npl.erschlssngsplnung_typ_erschliessung_flaechenobjekt_dokument AS typ_erschliessung_flaechenobjekt_dokument
-    LEFT JOIN doc_doc_references
-    ON typ_erschliessung_flaechenobjekt_dokument.dokument = doc_doc_references.ursprung
-
-  UNION 
+  (
+    SELECT DISTINCT
+      typ_erschliessung_flaechenobjekt_dokument.typ_erschliessung_flaechenobjekt,
+      dokument,
+      unnest(dok_dok_referenzen) AS dok_referenz
+    FROM
+      arp_npl.erschlssngsplnung_typ_erschliessung_flaechenobjekt_dokument AS typ_erschliessung_flaechenobjekt_dokument
+      LEFT JOIN doc_doc_references
+      ON typ_erschliessung_flaechenobjekt_dokument.dokument = doc_doc_references.ursprung
   
-  SELECT
-    typ_erschliessung_flaechenobjekt,
-    dokument,
-    dokument AS dok_referenz
-  FROM
-    arp_npl.erschlssngsplnung_typ_erschliessung_flaechenobjekt_dokument
+    UNION 
+    
+    SELECT
+      typ_erschliessung_flaechenobjekt,
+      dokument,
+      dokument AS dok_referenz
+    FROM
+      arp_npl.erschlssngsplnung_typ_erschliessung_flaechenobjekt_dokument
+  ) AS foo
 )
 ,
 typ_erschliessung_flaechenobjekt_json_dokument AS 
