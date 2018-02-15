@@ -24,7 +24,8 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS
     ON (last_ursprung = t1.ursprung)
   WHERE 
     t1.hinweis IS NOT NULL
-), 
+)
+, 
 doc_doc_references_all AS 
 (
   SELECT 
@@ -36,7 +37,8 @@ doc_doc_references_all AS
   FROM x 
   WHERE 
     depth = (SELECT max(sq."depth") FROM x sq WHERE sq.ursprung = x.ursprung)
-),
+)
+,
 -- Rekursion liefert alle Möglichkeiten, dh. zum Beispiel
 -- auch [3,4]. Wir sind aber nur längster Variante einer 
 -- Kasksade interessiert: [1,2,3,4,5].
@@ -57,7 +59,8 @@ doc_doc_references AS
       ON a.parents <@ b.parents AND a.parents != b.parents
   ) AS foo
   WHERE b_parents IS NULL
-),
+)
+,
 -- Alle Dokumente in JSON-Text codiert.
 json_documents_all AS 
 (
@@ -72,7 +75,8 @@ json_documents_all AS
     FROM
       arp_npl.rechtsvorschrften_dokument
   ) AS t
-),
+)
+,
 -- TODO:
 -- Alle Dokumente (die in HinweisWeitereDokumente vorkommen) 
 -- als JSON-Objekte (resp. als Text-Repräsentation).
@@ -102,7 +106,8 @@ json_documents_doc_doc_reference AS
   ) AS foo
   LEFT JOIN json_documents_all AS bar
   ON foo.dokument_t_id = bar.t_id
-),
+)
+,
 -- TODO: 
 -- Erstes SELECT liefert nur die Dokumente, die auch in der hinweisweiteredokumente-Tabelle
 -- vorkommen. Daher das Union mit der "linienobjekt_dokument"-Tabelle, um auch wirklich
@@ -128,7 +133,6 @@ typ_erschliessung_linienobjekt_dokument_ref AS
   FROM
     arp_npl.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument
 )
---SELECT * FROM typ_erschliessung_linienobjekt_dokument_ref ORDER BY typ_erschliessung_linienobjekt
 ,
 -- Dieses Joinen muss folgerichtig mit *allen* Json-Dokumenten geschehen,
 -- sonst gibt es NULL bei den Dokumenten, die nicht in hinweisweiteredokumente
@@ -142,7 +146,6 @@ typ_erschliessung_linienobjekt_json_dokument AS
     LEFT JOIN json_documents_all
     ON json_documents_all.t_id = typ_erschliessung_linienobjekt_dokument_ref.dok_referenz
 )
---SELECT * FROM typ_erschliessung_linienobjekt_json_dokument
 ,
 typ_erschliessung_linienobjekt_json_dokument_agg AS 
 (
@@ -153,7 +156,8 @@ typ_erschliessung_linienobjekt_json_dokument_agg AS
     typ_erschliessung_linienobjekt_json_dokument
   GROUP BY
     typ_erschliessung_linienobjekt
-),
+)
+,
 erschliessung_linienobjekt_geometrie_typ AS
 (
   SELECT 

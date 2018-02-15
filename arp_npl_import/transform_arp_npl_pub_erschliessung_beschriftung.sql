@@ -93,4 +93,5 @@ SELECT
     --g.beschriftung_fuer,
     g.pos
 FROM 
-    beschriftung AS g;
+    beschriftung AS g
+    ;

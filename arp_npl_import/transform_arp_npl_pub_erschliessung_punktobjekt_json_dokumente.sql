@@ -24,7 +24,8 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS
     ON (last_ursprung = t1.ursprung)
   WHERE 
     t1.hinweis IS NOT NULL
-), 
+)
+, 
 doc_doc_references_all AS 
 (
   SELECT 
@@ -36,7 +37,8 @@ doc_doc_references_all AS
   FROM x 
   WHERE 
     depth = (SELECT max(sq."depth") FROM x sq WHERE sq.ursprung = x.ursprung)
-),
+)
+,
 -- Rekursion liefert alle Möglichkeiten, dh. zum Beispiel
 -- auch [3,4]. Wir sind aber nur längster Variante einer 
 -- Kasksade interessiert: [1,2,3,4,5].
@@ -57,7 +59,8 @@ doc_doc_references AS
       ON a.parents <@ b.parents AND a.parents != b.parents
   ) AS foo
   WHERE b_parents IS NULL
-),
+)
+,
 -- Alle Dokumente in JSON-Text codiert.
 json_documents_all AS 
 (
@@ -72,7 +75,8 @@ json_documents_all AS
     FROM
       arp_npl.rechtsvorschrften_dokument
   ) AS t
-),
+)
+,
 -- Alle Dokumente (die in HinweisWeitereDokumente vorkommen) 
 -- als JSON-Objekte (resp. als Text-Repräsentation).
 -- Muss noch genauer überlegt werden, wie genau mit JSON hantiert wird.
@@ -99,7 +103,8 @@ json_documents_doc_doc_reference AS
   ) AS foo
   LEFT JOIN json_documents_all AS bar
   ON foo.dokument_t_id = bar.t_id
-),
+)
+,
 typ_erschliessung_punktobjekt_dokument_ref AS 
 (
   SELECT DISTINCT
@@ -119,7 +124,8 @@ typ_erschliessung_punktobjekt_dokument_ref AS
     dokument AS dok_referenz
   FROM
     arp_npl.erschlssngsplnung_typ_erschliessung_punktobjekt_dokument
-),
+)
+,
 typ_erschliessung_punktobjekt_json_dokument AS 
 (
   SELECT
@@ -128,7 +134,8 @@ typ_erschliessung_punktobjekt_json_dokument AS
     typ_erschliessung_punktobjekt_dokument_ref
     LEFT JOIN json_documents_all
     ON json_documents_all.t_id = typ_erschliessung_punktobjekt_dokument_ref.dok_referenz
-),
+)
+,
 typ_erschliessung_punktobjekt_json_dokument_agg AS 
 (
   SELECT
@@ -138,7 +145,8 @@ typ_erschliessung_punktobjekt_json_dokument_agg AS
     typ_erschliessung_punktobjekt_json_dokument
   GROUP BY
     typ_erschliessung_punktobjekt
-),
+)
+,
 erschliessung_punktobjekt_geometrie_typ AS
 (
   SELECT 

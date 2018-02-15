@@ -24,7 +24,8 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS
     ON (last_ursprung = t1.ursprung)
   WHERE 
     t1.hinweis IS NOT NULL
-), 
+)
+, 
 doc_doc_references_all AS 
 (
   SELECT 
@@ -35,7 +36,8 @@ doc_doc_references_all AS
   FROM x 
   WHERE 
     depth = (SELECT max(sq."depth") FROM x sq WHERE sq.ursprung = x.ursprung)
-),
+)
+,
 -- Rekursion liefert alle Möglichkeiten, dh. zum Beispiel
 -- auch [3,4]. Wir sind aber nur längster Variante einer 
 -- Kasksade interessiert: [1,2,3,4,5].
@@ -56,7 +58,8 @@ doc_doc_references AS
       ON a.parents <@ b.parents AND a.parents != b.parents
   ) AS foo
   WHERE b_parents IS NULL
-),
+)
+,
 -- Alle Dokumente in JSON-Text codiert.
 json_documents_all AS 
 (
@@ -71,7 +74,8 @@ json_documents_all AS
     FROM
       arp_npl.rechtsvorschrften_dokument
   ) AS t
-),
+)
+,
 -- Alle Dokumente (die in HinweisWeitereDokumente vorkommen) 
 -- als JSON-Objekte (resp. als Text-Repräsentation).
 -- Muss noch genauer überlegt werden, wie genau mit JSON hantiert wird.
@@ -98,7 +102,8 @@ json_documents_doc_doc_reference AS
   ) AS foo
   LEFT JOIN json_documents_all AS bar
   ON foo.dokument_t_id = bar.t_id
-),
+)
+,
 typ_ueberlagernd_linie_dokument_ref AS 
 (
   SELECT DISTINCT
@@ -118,7 +123,8 @@ typ_ueberlagernd_linie_dokument_ref AS
     dokument AS dok_referenz
   FROM
     arp_npl.nutzungsplanung_typ_ueberlagernd_linie_dokument
-),
+)
+,
 typ_ueberlagernd_linie_json_dokument AS 
 (
   SELECT
@@ -127,7 +133,8 @@ typ_ueberlagernd_linie_json_dokument AS
     typ_ueberlagernd_linie_dokument_ref
     LEFT JOIN json_documents_all
     ON json_documents_all.t_id = typ_ueberlagernd_linie_dokument_ref.dok_referenz
-),
+)
+,
 typ_ueberlagernd_linie_json_dokument_agg AS 
 (
   SELECT
@@ -137,7 +144,8 @@ typ_ueberlagernd_linie_json_dokument_agg AS
     typ_ueberlagernd_linie_json_dokument
   GROUP BY
     typ_ueberlagernd_linie
-),
+)
+,
 ueberlagernd_linie_geometrie_typ AS
 (
   SELECT
@@ -151,7 +159,6 @@ ueberlagernd_linie_geometrie_typ AS
     l.erfasser,
     l.datum,
     l.geometrie,
-    l.dokument,
     t.t_id AS typ_t_id,
     t.typ_kt AS typ_typ_kt,
     t.code_kommunal AS typ_code_kommunal,
@@ -163,29 +170,6 @@ ueberlagernd_linie_geometrie_typ AS
     arp_npl.nutzungsplanung_ueberlagernd_linie AS l
     LEFT JOIN arp_npl.nutzungsplanung_typ_ueberlagernd_linie AS t
     ON l.typ_ueberlagernd_linie = t.t_id
-),
--- Alle Dokumente (inkl. Kaskade), die direkt von der Geometrie
--- auf ein Dokument zeigen.
-additional_documents_from_geometry AS 
-(
-  SELECT
-    foo.t_id,
-    string_agg(json_dokument, ';') AS json_dokument
-  FROM
-  (
-  SELECT 
-    ueberlagernd_linie.t_id,
-    ueberlagernd_linie.t_ili_tid,
-    ueberlagernd_linie.dokument,
-    unnest(dok_dok_referenzen) AS dok_referenz
-  FROM
-    arp_npl.nutzungsplanung_ueberlagernd_linie AS ueberlagernd_linie
-    LEFT JOIN doc_doc_references
-    ON ueberlagernd_linie.dokument = doc_doc_references.ursprung
-  ) AS foo
-  LEFT JOIN json_documents_all
-  ON json_documents_all.t_id = foo.dok_referenz
-  GROUP BY foo.t_id
 )
 -- Es muss noch die möglichen zusätzlichen Dokumente (Geometrie -> Dokument)
 -- hinzugefügt werden. Plural, da auch Kaskade wieder möglich.
@@ -205,13 +189,9 @@ SELECT
   g.typ_abkuerzung,
   g.typ_verbindlichkeit,
   g.typ_bemerkungen,
-  CASE 
-    WHEN j.json_dokument IS NOT NULL THEN COALESCE(d.dokumente||';','')||j.json_dokument
-    ELSE d.dokumente 
-  END AS dok_id
+  d.dokumente AS dok_id
 FROM  
   ueberlagernd_linie_geometrie_typ AS g 
   LEFT JOIN typ_ueberlagernd_linie_json_dokument_agg AS d
   ON g.typ_t_id = d.typ_ueberlagernd_linie_t_id
-  LEFT JOIN additional_documents_from_geometry AS j
-  ON j.t_id = g.t_id;
+  ;
