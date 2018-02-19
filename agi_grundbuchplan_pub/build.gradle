@@ -7,6 +7,8 @@ task transferAgiGrundbuchplan(type: Db2DbTask){
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
             new TransferSet('agi_grundbuchplan_pub_liegenschaften_grenzpunkt.sql',
-                    'agi_grundbuchplan_pub.liegenschaften_grenzpunkt', true)
+                    'agi_grundbuchplan_pub.liegenschaften_grenzpunkt', true),
+            new TransferSet('agi_grundbuchplan_pub_liegenschaften_grundstueckpos.sql',
+                    'agi_grundbuchplan_pub.liegenschaften_grundstueckpos', true)
     ];
 }
