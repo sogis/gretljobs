@@ -6,7 +6,7 @@ task transferAgiAdressen(type: Db2DbTask){
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
-            new TransferSet('agi_adressen_pub_gebaeudeadressen_strassenstueck.sql',
-                    'agi_adressen_pub.gebaeudeadressen_strassenstueck', true)
+            new TransferSet('agi_adressen_pub_richtung_strassenachse.sql', 'agi_adressen_pub.richtung_strassenachse',
+                    true)
     ];
 }
