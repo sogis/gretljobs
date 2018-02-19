@@ -1,0 +1,12 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferAgiHoheitsgrenzsteine'
+
+task transferAgiHoheitsgrenzsteine(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('agi_hoheitsgrenzsteine_pub_kantonsgrenzstein.sql',
+                    'agi_hoheitsgrenzsteine_pub.kantonsgrenzstein', true)
+    ];
+}
