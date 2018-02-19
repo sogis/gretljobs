@@ -7,6 +7,8 @@ task transferAgiAdressen(type: Db2DbTask){
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
             new TransferSet('agi_adressen_pub_richtung_strassenachse.sql', 'agi_adressen_pub.richtung_strassenachse',
-                    true)
+                    true),
+            new TransferSet('agi_adressen_pub_verbindungslinie_strasse_hausnummer.sql',
+                    'agi_adressen_pub.verbindungslinie_strasse_hausnummer', true)
     ];
 }
