@@ -11,6 +11,8 @@ task transferAgiGrundbuchplan(type: Db2DbTask){
             new TransferSet('agi_grundbuchplan_pub_liegenschaften_grundstueckpos.sql',
                     'agi_grundbuchplan_pub.liegenschaften_grundstueckpos', true),
             new TransferSet('agi_grundbuchplan_pub_liegenschaften_liegenschaft.sql',
-                    'agi_grundbuchplan_pub.liegenschaften_liegenschaft', true)
+                    'agi_grundbuchplan_pub.liegenschaften_liegenschaft', true),
+            new TransferSet('agi_grundbuchplan_pub_bodenbedeckung_boflaechesymbol.sql',
+                    'agi_grundbuchplan_pub.bodenbedeckung_boflaechesymbol', true)
     ];
 }
