@@ -1,0 +1,12 @@
+import ch.so.agi.gretl.steps.*
+
+defaultTasks 'transferAgiHoehen2014'
+
+task transferAgiHoehen2014(type: Db2DbTask){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('agi_hoehen_2014_pub_hoehenkurven_10m_vereinfacht.sql',
+                    'agi_hoehen_2014_pub.hoehenkurven_10m_vereinfacht', true)
+    ];
+}
