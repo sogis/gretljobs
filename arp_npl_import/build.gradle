@@ -32,7 +32,8 @@ ext {
 }
 
 import ch.so.agi.gretl.tasks.*
-import ch.so.agi.gretl.steps.*
+import ch.so.agi.gretl.api.TransferSet
+
 
 task checkXtfName() {
     description = "Prüft, ob die ersten vier Buchstaben im XTF-Filenamen einer Nummer entsprechen, die im BfS-Range des Kt. SO liegt."    
