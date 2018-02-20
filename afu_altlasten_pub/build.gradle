@@ -1,8 +1,12 @@
-import ch.so.agi.gretl.steps.*
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
 
 defaultTasks 'transferAfuAltlasten', 'transferAfuAltlast4Web'
 
-task transferAfuAltlasten(type: Db2DbTask){
+task transferAfuAltlasten(type: Db2Db){
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
@@ -12,7 +16,7 @@ task transferAfuAltlasten(type: Db2DbTask){
     ];        
 }
 
-task transferAfuAltlast4Web(type: Db2DbTask){
+task transferAfuAltlast4Web(type: Db2Db){
     //todo: change sourceDB to altlast4web-Db
     //sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
