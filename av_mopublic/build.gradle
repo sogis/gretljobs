@@ -6,12 +6,42 @@ eingänge mit den PLZ/Orschaften zur Zeit verzichten.
 """
 
 import ch.so.agi.gretl.steps.*
+import ch.so.agi.gretl.api.*
+
+
+apply plugin: 'ch.so.agi.gretl'
+
+ext {
+    //sourceDbUrl = "jdbc:postgresql://192.168.50.5/sogis"
+    //sourceDbUser = "ddluser"
+    //sourceDbPass = "ddluser"
+    
+    targetDbUrl = "jdbc:postgresql://192.168.50.5/sogis"
+    targetDbUser = "ddluser"
+    targetDbPass = "ddluser"
+
+    sourceDbUrl = "jdbc:postgresql://geodb-t.verw.rootso.org:5432/sogis"
+    sourceDbUser = "datasync"
+    sourceDbPass = System.env.sourceDbPass    
+    
+    //sourceDbUrl = "jdbc:postgresql://geodb-dev.cgjofbdf5rqg.eu-central-1.rds.amazonaws.com:5432/xanadu2"
+    //sourceDbUser = "stefan"
+    //sourceDbPass = System.env.sourceDbPass    
+    //sourceDbPass = "mspublic"    
+    
+    //targetDbUrl = "jdbc:postgresql://geodb-t.verw.rootso.org:5432/sogis"
+    //targetDbUser = "datasync"
+    //targetDbPass = System.env.targetDbPass
+    //targetDbPass = "mspublic"
+}
+
 
 defaultTasks 'transferAvMopublic'
 
 task transferAvMopublic(type: Db2DbTask){
     description = "Datenumbau in das SO-MOpublic-Publikationsmodell."    
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    //targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
             new TransferSet("transform_av_mopublic_bodenbedeckung.sql", 'av_mopublic.mopublic_bodenbedeckung', true),
