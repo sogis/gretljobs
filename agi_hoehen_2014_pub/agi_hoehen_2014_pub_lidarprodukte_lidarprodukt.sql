@@ -1,0 +1,21 @@
+SELECT
+    t_id,
+    t_ili_tid,
+    kachel_hoehe,
+    kachel_breite,
+    pixel_hoehe,
+    pixel_breite,
+    flugjahr,
+    flugdatum,
+    link,
+    minimum,
+    maximum,
+    filegroesse,
+    filetyp,
+    bemerkung,
+    bezugsrahmen,
+    produkttyp,
+    geometrie
+FROM
+    agi_lidar_pub.lidarprodukte_lidarprodukt
+;
