@@ -8,7 +8,12 @@ SELECT
     neophyten.lraum, 
     codes1.code_text AS pflanzenart, 
     codes2.code_text AS anzahl, 
-    codes3.code_text AS flaeche, 
+    codes3.code_text AS flaeche,
+    CASE
+        WHEN codes3.code_text = 'keine Angabe' OR codes3.code_text is NULL
+            THEN codes2.code_text
+        ELSE codes3.code_text
+    END AS  anzahl_flaeche, 
     lebensraum.lraum AS lebensraum
 FROM 
     neophyten.neophyten_t neophyten
