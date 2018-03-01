@@ -190,12 +190,18 @@ typ_grundnutzung_json_dokument AS
 typ_grundnutzung_json_dokument_agg AS 
 (
   SELECT
-    typ_grundnutzung AS typ_grundnutzung_t_id,
-    string_agg(json_dokument, ';') AS dokumente
+    typ_grundnutzung_t_id,
+    '[' || dokumente::varchar || ']' as dokumente
   FROM
-    typ_grundnutzung_json_dokument
-  GROUP BY
-    typ_grundnutzung
+  (
+    SELECT
+      typ_grundnutzung AS typ_grundnutzung_t_id,
+      string_agg(json_dokument, ',') AS dokumente
+    FROM
+      typ_grundnutzung_json_dokument
+    GROUP BY
+      typ_grundnutzung
+  ) as foo
 )
 ,
 grundnutzung_geometrie_typ AS

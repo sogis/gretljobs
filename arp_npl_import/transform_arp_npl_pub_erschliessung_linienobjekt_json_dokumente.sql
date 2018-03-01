@@ -155,12 +155,18 @@ typ_erschliessung_linienobjekt_json_dokument AS
 typ_erschliessung_linienobjekt_json_dokument_agg AS 
 (
   SELECT
-    typ_erschliessung_linienobjekt AS typ_erschliessung_linienobjekt_t_id,
-    string_agg(json_dokument, ';') AS dokumente
+    typ_erschliessung_linienobjekt_t_id,
+    '[' || dokumente::varchar || ']' as dokumente
   FROM
-    typ_erschliessung_linienobjekt_json_dokument
-  GROUP BY
-    typ_erschliessung_linienobjekt
+  (
+    SELECT
+      typ_erschliessung_linienobjekt AS typ_erschliessung_linienobjekt_t_id,
+      string_agg(json_dokument, ',') AS dokumente
+    FROM
+      typ_erschliessung_linienobjekt_json_dokument
+    GROUP BY
+      typ_erschliessung_linienobjekt
+  ) as foo
 )
 ,
 erschliessung_linienobjekt_geometrie_typ AS

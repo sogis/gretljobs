@@ -144,12 +144,18 @@ typ_erschliessung_punktobjekt_json_dokument AS
 typ_erschliessung_punktobjekt_json_dokument_agg AS 
 (
   SELECT
-    typ_erschliessung_punktobjekt AS typ_erschliessung_punktobjekt_t_id,
-    string_agg(json_dokument, ';') AS dokumente
+    typ_erschliessung_punktobjekt_t_id,
+    '[' || dokumente::varchar || ']' as dokumente
   FROM
-    typ_erschliessung_punktobjekt_json_dokument
-  GROUP BY
-    typ_erschliessung_punktobjekt
+  (
+    SELECT
+      typ_erschliessung_punktobjekt AS typ_erschliessung_punktobjekt_t_id,
+      string_agg(json_dokument, ',') AS dokumente
+    FROM
+      typ_erschliessung_punktobjekt_json_dokument
+    GROUP BY
+      typ_erschliessung_punktobjekt
+  ) as foo
 )
 ,
 erschliessung_punktobjekt_geometrie_typ AS

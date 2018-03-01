@@ -33,7 +33,7 @@ ext {
     //sourceDbPass = System.env.sourceDbPass    
     //sourceDbPass = "mspublic"    
     
-    targetDbUrl = "jdbc:postgresql://geodb.verw.rootso.org:5432/sogis"
+    targetDbUrl = "jdbc:postgresql://geodb-t.verw.rootso.org:5432/sogis"
     targetDbUser = "datasync"
     targetDbPass = System.env.targetDbPass
     //targetDbPass = "mspublic"

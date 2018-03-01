@@ -143,12 +143,18 @@ typ_ueberlagernd_linie_json_dokument AS
 typ_ueberlagernd_linie_json_dokument_agg AS 
 (
   SELECT
-    typ_ueberlagernd_linie AS typ_ueberlagernd_linie_t_id,
-    string_agg(json_dokument, ';') AS dokumente
+    typ_ueberlagernd_linie_t_id,
+    '[' || dokumente::varchar || ']' as dokumente
   FROM
-    typ_ueberlagernd_linie_json_dokument
-  GROUP BY
-    typ_ueberlagernd_linie
+  (
+    SELECT
+      typ_ueberlagernd_linie AS typ_ueberlagernd_linie_t_id,
+      string_agg(json_dokument, ',') AS dokumente
+    FROM
+      typ_ueberlagernd_linie_json_dokument
+    GROUP BY
+      typ_ueberlagernd_linie
+  ) as foo
 )
 ,
 ueberlagernd_linie_geometrie_typ AS
