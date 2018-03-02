@@ -1,6 +1,6 @@
 node ("gretl") {
     echo 'Hello World'
-    git 'https://github.com/schmandr/greteljobs.git'
+    git 'https://github.com/schmandr/gretljobs.git'
 
     sh 'ls -la /home/gradle/libs'
 
