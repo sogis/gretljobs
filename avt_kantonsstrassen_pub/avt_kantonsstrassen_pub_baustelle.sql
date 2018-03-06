@@ -1,0 +1,22 @@
+SELECT
+    t_id,
+    t_ili_tid,
+    nummer,
+    achsnummer,
+    beschreibung,
+    stassenabschnitt,
+    ausnahmetransportroute,
+    amtsblatt_nr,
+    bp_nr_von,
+    bp_nr_bis,
+    beginn_monat,
+    beginn_jahr,
+    ende_monat,
+    ende_jahr,
+    status,
+    verkehrsfuehrung,
+    zustaendigkeit,
+    geometrie
+FROM
+    avt_baustellen.baustellen_baustelle
+;

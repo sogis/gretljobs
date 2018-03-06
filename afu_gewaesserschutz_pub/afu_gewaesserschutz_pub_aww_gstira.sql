@@ -1,8 +1,9 @@
 SELECT
     ogc_fid AS t_id,
     wkb_geometry AS geometrie,
-    grid_code
+    maechtigke
 FROM
-    afu_isboden.erosionsgefahr_qgis_server_client_t
-WHERE 
+    public.aww_gstira
+WHERE
     archive = 0
+;

@@ -1,5 +1,5 @@
 SELECT
-    1 AS typ,
+    0 AS typ,
     'LFP1' AS typ_txt,
     lfp.nbident, 
     lfp.nummer,
@@ -41,7 +41,7 @@ FROM
 UNION ALL
 
 SELECT
-    2 AS typ,
+    1 AS typ,
     'LFP2' AS typ_txt,
     lfp.nbident, 
     lfp.nummer,
@@ -83,7 +83,7 @@ FROM
 UNION ALL
 
 SELECT
-    3 AS typ,
+    2 AS typ,
     'LFP3' AS typ_txt,
     lfp.nbident, 
     lfp.nummer,
@@ -125,7 +125,7 @@ FROM
 UNION ALL
 
 SELECT
-    4 AS typ,
+    3 AS typ,
     'HFP1' AS typ_txt,
     hfp.nbident, 
     hfp.nummer,
@@ -161,7 +161,7 @@ FROM
 UNION ALL
 
 SELECT
-    5 AS typ,
+    4 AS typ,
     'HFP2' AS typ_txt,
     hfp.nbident, 
     hfp.nummer,
@@ -197,7 +197,7 @@ FROM
 UNION ALL
     
 SELECT
-    6 AS typ,
+    5 AS typ,
     'HFP3' AS typ_txt,
     hfp.nbident, 
     hfp.nummer,

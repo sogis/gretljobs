@@ -9,3 +9,4 @@ FROM
     geologie.sfall
 WHERE
     archive = 0
+;

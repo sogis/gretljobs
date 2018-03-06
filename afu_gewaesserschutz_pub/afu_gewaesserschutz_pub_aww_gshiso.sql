@@ -7,4 +7,5 @@ SELECT
 FROM
 	public.aww_gshiso
 WHERE
-	"archive" = 0
+	archive = 0
+;

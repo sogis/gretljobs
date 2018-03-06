@@ -6,4 +6,5 @@ SELECT
 FROM
     public.aww_gwomac
 WHERE
-    "archive" = 0
+    archive = 0
+;

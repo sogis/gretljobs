@@ -82,3 +82,4 @@ FROM
     afu_isboden.bodeneinheit_lw_qgis_server_client_t
 WHERE
     archive = 0
+;
