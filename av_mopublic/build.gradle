@@ -5,8 +5,8 @@ aufgrund des Wechsels von ogr2ogr zu ili2pg. Daher wird mit Verschnitt der Gebä
 eingänge mit den PLZ/Orschaften zur Zeit verzichten.
 """
 
-import ch.so.agi.gretl.steps.*
-import ch.so.agi.gretl.api.*
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
 
 
 apply plugin: 'ch.so.agi.gretl'
@@ -38,7 +38,7 @@ ext {
 
 defaultTasks 'transferAvMopublic'
 
-task transferAvMopublic(type: Db2DbTask){
+task transferAvMopublic(type: Db2Db){
     description = "Datenumbau in das SO-MOpublic-Publikationsmodell."    
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     //targetDb = [targetDbUrl, targetDbUser, targetDbPass]
