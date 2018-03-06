@@ -3,23 +3,6 @@ import ch.so.agi.gretl.tasks.*
 import java.nio.file.Paths
 import de.undercouch.gradle.tasks.download.Download
 
-buildscript {
-    repositories {
-        jcenter()
-        mavenCentral()
-        //Todo: change as soon as the plugin is available
-        //maven { url "https://plugins.gradle.org/m2/" }
-
-        maven { url 'http://sogeo.services:8081/artifactory/libs-snapshot' }
-        maven { url 'http://jars.interlis.ch' }
-    }
-    dependencies {
-        classpath "de.undercouch:gradle-download-task:3.3.0"
-        //todo: change as soon as the plugin is available
-        //classpath "ch.so.agi.gretl:gradle-gretl.plugin:1.0.0"
-        classpath 'ch.so.agi:gretl:1.0.+'
-    }
-}
 
 apply plugin: "de.undercouch.download"
 apply plugin: 'ch.so.agi.gretl'
@@ -28,20 +11,20 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'convertData'
 
 def nameOfZipWithBoundaries = 'swissBOUNDARIES3D_LV95.zip'
-def tempFolder = System.getProperty("java.io.tmpdir")
-def pathToDataZip = Paths.get(tempFolder, "data.zip")
-def pathToZipWithBoundaries = Paths.get(tempFolder, nameOfZipWithBoundaries)
-def pathToITF = Paths.get(tempFolder, 'swissBOUNDARIES3D_LV95')
-def xtfFilePath = Paths.get(tempFolder, 'swissBOUNDARIES3D_LV95/INTERLIS_2_LV95_LN02/swissBOUNDARIES3D_1_3.xtf')
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
+def pathToDataZip = Paths.get(pathToTempFolder, "data.zip")
+def pathToZipWithBoundaries = Paths.get(pathToUnzipFolder.toString(), nameOfZipWithBoundaries)
+def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), 'swissBOUNDARIES3D_LV95','INTERLIS_2_LV95_LN02','swissBOUNDARIES3D_1_3.xtf')
 
 
 task download(type: Download){
     description = "Download swissBoundaries3D from swisstopo"
     doLast {
-        println "File downloaded to: " + tempFolder
+        println "File downloaded to: " + pathToTempFolder
     }
     src 'https://data.geo.admin.ch/ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill/data.zip'
-    dest tempFolder
+    dest pathToTempFolder
     overwrite true
 }
 
@@ -49,10 +32,10 @@ task download(type: Download){
 task unzipData(type: Copy, dependsOn: 'download'){
     description = "Unzip Data.zip."
     doLast {
-        println "File unzipped to directory: " + tempFolder
+        println "File unzipped to directory: " + pathToUnzipFolder
     }
     from zipTree(file(pathToDataZip))
-    into file(tempFolder)
+    into pathToUnzipFolder
     include nameOfZipWithBoundaries
 }
 
@@ -60,10 +43,10 @@ task unzipData(type: Copy, dependsOn: 'download'){
 task unzipSwissBoundaries3D(type: Copy, dependsOn: 'unzipData'){
     description = "Unzip swissBOUNDARIES3D_ili2_LV95_V1_3.itf from swissBOUNDARIES3D.zip."
     doLast {
-        println "File unzipped to directory: " + tempFolder
+        println "File unzipped to directory: " + pathToUnzipFolder
     }
-    from zipTree(file(pathToZipWithBoundaries))
-    into file(tempFolder)
+    from zipTree(pathToZipWithBoundaries)
+    into file(pathToUnzipFolder)
     include "**/*.xtf"
 }
 
@@ -79,6 +62,8 @@ task dbImport(type: Ili2pgImport, dependsOn: 'unzipSwissBoundaries3D'){
     disableValidation = false
     dataFile = file(xtfFilePath)
     deleteData = true
+    strokeArcs = true
+    //missing parameters: createEnumTabs and nameByTopic
 }
 
 
@@ -105,7 +90,7 @@ task removeFiles(type: Delete) {
     doLast {
         println "Files removed."
     }
-    delete file(pathToZipWithBoundaries), file(pathToDataZip), file(pathToITF)
+    delete file(pathToUnzipFolder), file(pathToDataZip)
 }
 
 
