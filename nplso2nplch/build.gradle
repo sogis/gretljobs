@@ -7,5 +7,8 @@ defaultTasks 'transferNplso2Nplch'
 task transferNplso2Nplch(type: SqlExecutor){
     database = [targetDbUrl, targetDbUser, targetDbPass] //[sourceDbUrl, sourceDbUser, sourceDbPass]
     sqlFiles = ['arp_npl_mgdm_geobasisdaten_typ_kt.sql',
-                'arp_npl_mgdm_geobasisdaten_typ.sql'];
+                'arp_npl_mgdm_geobasisdaten_typ.sql',
+                'arp_npl_mgdm_geobasisdaten_grundnutzung_zonenflaeche.sql',
+                'arp_npl_mgdm_geobasisdaten_linienbezogene_festlegung.sql',
+                'arp_npl_mgdm_geobasisdaten_objektbezogene_festlegung.sql'];
 }
