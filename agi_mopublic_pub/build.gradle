@@ -1,0 +1,39 @@
+description = """\n
+Gebäudeadressen: Import des PLZ/Ortschafts-Datensatz (von swisstopo) noch nicht
+nachhaltig und die bestehenden Daten sind veraltet und Struktur dürfte auch ändern
+aufgrund des Wechsels von ogr2ogr zu ili2pg. Daher wird mit Verschnitt der Gebäude-
+eingänge mit den PLZ/Orschaften zur Zeit verzichten.
+"""
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+defaultTasks 'transferAgiMopublic'
+
+task transferAgiMopublic(type: Db2Db){
+    description = "Datenumbau in das SO-MOpublic-Publikationsmodell."    
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet("agi_mopublic_pub_mopublic_bodenbedeckung.sql", 'agi_mopublic_pub.mopublic_bodenbedeckung', true),
+            new TransferSet("agi_mopublic_pub_mopublic_bodenbedeckung_proj.sql", 'agi_mopublic_pub.mopublic_bodenbedeckung_proj', true),
+            new TransferSet("agi_mopublic_pub_mopublic_einzelobjekt_flaeche.sql", 'agi_mopublic_pub.mopublic_einzelobjekt_flaeche', true),
+            new TransferSet("agi_mopublic_pub_mopublic_einzelobjekt_linie.sql", 'agi_mopublic_pub.mopublic_einzelobjekt_linie', true),
+            new TransferSet("agi_mopublic_pub_mopublic_einzelobjekt_punkt.sql", 'agi_mopublic_pub.mopublic_einzelobjekt_punkt', true),
+            new TransferSet("agi_mopublic_pub_mopublic_objektname_pos.sql", 'agi_mopublic_pub.mopublic_objektname_pos', true),
+            new TransferSet("agi_mopublic_pub_mopublic_flurname.sql", 'agi_mopublic_pub.mopublic_flurname', true),
+            new TransferSet("agi_mopublic_pub_mopublic_gebaeudeadresse.sql", 'agi_mopublic_pub.mopublic_gebaeudeadresse', true),
+            new TransferSet("agi_mopublic_pub_mopublic_gelaendename.sql", 'agi_mopublic_pub.mopublic_gelaendename', true),
+            new TransferSet("agi_mopublic_pub_mopublic_gemeindegrenze.sql", 'agi_mopublic_pub.mopublic_gemeindegrenze', true),
+            new TransferSet("agi_mopublic_pub_mopublic_gemeindegrenze_proj.sql", 'agi_mopublic_pub.mopublic_gemeindegrenze_proj', true),
+            new TransferSet("agi_mopublic_pub_mopublic_grenzpunkt.sql", 'agi_mopublic_pub.mopublic_grenzpunkt', true),
+            new TransferSet("agi_mopublic_pub_mopublic_grundstueck.sql", 'agi_mopublic_pub.mopublic_grundstueck', true),
+            new TransferSet("agi_mopublic_pub_mopublic_grundstueck_proj.sql", 'agi_mopublic_pub.mopublic_grundstueck_proj', true),            
+            new TransferSet("agi_mopublic_pub_mopublic_fixpunkt.sql", 'agi_mopublic_pub.mopublic_fixpunkt', true),
+            new TransferSet("agi_mopublic_pub_mopublic_hoheitsgrenzpunkt.sql", 'agi_mopublic_pub.mopublic_hoheitsgrenzpunkt', true),
+            new TransferSet("agi_mopublic_pub_mopublic_ortsname.sql", 'agi_mopublic_pub.mopublic_ortsname', true),
+            new TransferSet("agi_mopublic_pub_mopublic_rohrleitung.sql", 'agi_mopublic_pub.mopublic_rohrleitung', true),
+            new TransferSet("agi_mopublic_pub_mopublic_strassenname_pos.sql", 'agi_mopublic_pub.mopublic_strassenname_pos', true),
+            new TransferSet("agi_mopublic_pub_mopublic_strassenachse.sql", 'agi_mopublic_pub.mopublic_strassenachse', true)
+    ];        
+}
