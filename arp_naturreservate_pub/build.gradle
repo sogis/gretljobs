@@ -1,0 +1,19 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferArpNaturreservate'
+
+task transferArpNaturreservate(type: Db2Db){
+    sourceDb = [targetDbUrl, targetDbUser, targetDbPass] //[sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('arp_naturreservate_pub_naturreservate_pflanzenliste.sql',
+                    'arp_naturreservate_pub.naturreservate_pflanzenliste', true),
+            new TransferSet('arp_naturreservate_pub_naturreservate_reservate.sql',
+                    'arp_naturreservate_pub.naturreservate_reservat', true),
+            new TransferSet('arp_naturreservate_pub_naturreservate_teilgebiete.sql',
+                    'arp_naturreservate_pub.naturreservate_teilgebiet', true)
+    ];
+}
