@@ -24,7 +24,7 @@ SELECT
     , ', ') 
         || ', http://georeport.so.ch/jasperserver/rest_v2/reports/reports/arp/naturreservate/objektblatt.pdf?j_username=mspublic_user&j_password=mspublic&reservatsnummer=' || reservate_reservat.nummer 
         || ', http://faust.so.ch/such_start.fau?prj=ARP&dm=FVARP02&rpos=3&ro_zeile_2=' || reservate_reservat.nummer
-         || ', http://georeport.so.ch/jasperserver/rest_v2/reports/reports/arp/naturreservate/pflanzenliste.pdf?j_username=mspublic_user&j_password=mspublic&reservatsnummer=' || reservate_reservat.nummer 
+         || ', http://georeport.so.ch/jasperserver/rest_v2/reports/reports/arp/naturreservate/pflanzenliste.pdf?j_username=mspublic_user&j_password=mspublic&teilgebiet_id=' || reservate_teilgebiet.t_id 
             AS dokumente,
     string_agg(DISTINCT liegen.nummer || '(' || liegen.gem_bfs|| ')', ', ' ORDER BY liegen.nummer || '(' || liegen.gem_bfs || ')') AS parzellennummern,
     reservate_reservat.nummer AS reservatsnummer,
