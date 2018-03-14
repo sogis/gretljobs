@@ -1,8 +1,9 @@
-import ch.so.agi.gretl.steps.*
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
 
 defaultTasks 'transferAgiHoheitsgrenzsteine'
 
-task transferAgiHoheitsgrenzsteine(type: Db2DbTask){
+task transferAgiHoheitsgrenzsteine(type: Db2Db){
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
