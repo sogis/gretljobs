@@ -36,6 +36,7 @@ task transferArpRichtplan(type: Db2Db){
             new TransferSet('arp_richtplan_2017_pub_bahnlinie_bestehend.sql',
                     'arp_richtplan_2017_pub.bahnlinie_bestehend', true),
             new TransferSet('arp_richtplan_2017_pub_bahnlinie_vorhaben.sql',
-                    'arp_richtplan_2017_pub.bahnlinie_vorhaben', true)
+                    'arp_richtplan_2017_pub.bahnlinie_vorhaben', true),
+            new TransferSet('arp_richtplan_2017_pub_gwsz.sql', 'arp_richtplan_2017_pub.gwsz', true)
     ];
 }
