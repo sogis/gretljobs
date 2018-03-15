@@ -25,6 +25,7 @@ task transferArpRichtplan(type: Db2Db){
             //new TransferSet('arp_richtplan_2017_pub_witischutzzone.sql', 'arp_richtplan_2017_pub.witischutzzone', true),
             new TransferSet('arp_richtplan_2017_pub_bln.sql', 'arp_richtplan_2017_pub.bln', true),
             new TransferSet('arp_richtplan_2017_pub_wildtierkorridor.sql', 'arp_richtplan_2017_pub.wildtierkorridor',
-                    true)
+                    true),
+            new TransferSet('arp_richtplan_2017_pub_naturpark.sql', 'arp_richtplan_2017_pub.naturpark', true)
     ];
 }
