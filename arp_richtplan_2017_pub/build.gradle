@@ -9,7 +9,7 @@ task transferArpRichtplan(type: Db2Db){
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
-            //new TransferSet('arp_richtplan_2017_pub_grundnutzung.sql', 'arp_richtplan_2017_pub.grundnutzung', true),
+            new TransferSet('arp_richtplan_2017_pub_grundnutzung.sql', 'arp_richtplan_2017_pub.grundnutzung', true),
             new TransferSet('arp_richtplan_2017_pub_siedlungstrennguertel.sql',
                     'arp_richtplan_2017_pub.siedlungstrennguertel', true),
             new TransferSet('arp_richtplan_2017_pub_entwicklungsgebiete_arbeiten.sql',
@@ -19,10 +19,10 @@ task transferArpRichtplan(type: Db2Db){
             new TransferSet('arp_richtplan_2017_pub_juraschutz.sql', 'arp_richtplan_2017_pub.juraschutz', true),
             new TransferSet('arp_richtplan_2017_pub_kant_uferschutzzone.sql',
                     'arp_richtplan_2017_pub.kant_uferschutzzone', true),
-            //new TransferSet('arp_richtplan_2017_pub_natgebiete.sql', 'arp_richtplan_2017_pub.natgebiete', true),
+            new TransferSet('arp_richtplan_2017_pub_natgebiete.sql', 'arp_richtplan_2017_pub.natgebiete', true),
             new TransferSet('arp_richtplan_2017_pub_kant_vorranggebiete.sql',
                     'arp_richtplan_2017_pub.kant_vorranggebiete', true),
-            //new TransferSet('arp_richtplan_2017_pub_witischutzzone.sql', 'arp_richtplan_2017_pub.witischutzzone', true),
+            new TransferSet('arp_richtplan_2017_pub_witischutzzone.sql', 'arp_richtplan_2017_pub.witischutzzone', true),
             new TransferSet('arp_richtplan_2017_pub_bln.sql', 'arp_richtplan_2017_pub.bln', true),
             new TransferSet('arp_richtplan_2017_pub_wildtierkorridor.sql', 'arp_richtplan_2017_pub.wildtierkorridor',
                     true),
