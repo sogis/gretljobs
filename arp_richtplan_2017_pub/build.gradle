@@ -46,6 +46,7 @@ task transferArpRichtplan(type: Db2Db){
                     'arp_richtplan_2017_pub.uebertragungsleitung_aek', true),
             new TransferSet('arp_richtplan_2017_pub_gasleitung_gvm.sql', 'arp_richtplan_2017_pub.gasleitung_gvm', true),
             new TransferSet('arp_richtplan_2017_pub_gasleitung_transitgas.sql',
-                    'arp_richtplan_2017_pub.gasleitung_transitgas', true)
+                    'arp_richtplan_2017_pub.gasleitung_transitgas', true),
+            new TransferSet('arp_richtplan_2017_pub_punktlayer.sql', 'arp_richtplan_2017_pub.punktlayer', true)
     ];
 }
