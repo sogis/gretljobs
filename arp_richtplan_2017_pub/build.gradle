@@ -11,6 +11,8 @@ task transferArpRichtplan(type: Db2Db){
     transferSets = [
             new TransferSet('arp_richtplan_2017_pub_grundnutzung.sql', 'arp_richtplan_2017_pub.grundnutzung', true),
             new TransferSet('arp_richtplan_2017_pub_siedlungstrennguertel.sql',
-                    'arp_richtplan_2017_pub.siedlungstrennguertel', true)
+                    'arp_richtplan_2017_pub.siedlungstrennguertel', true),
+            new TransferSet('arp_richtplan_2017_pub_entwicklungsgebiete_arbeiten.sql',
+                    'arp_richtplan_2017_pub.entwicklungsgebiete_arbeiten', true)
     ];
 }
