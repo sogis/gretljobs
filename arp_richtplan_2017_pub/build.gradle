@@ -39,6 +39,8 @@ task transferArpRichtplan(type: Db2Db){
                     'arp_richtplan_2017_pub.bahnlinie_vorhaben', true),
             new TransferSet('arp_richtplan_2017_pub_gwsz.sql', 'arp_richtplan_2017_pub.gwsz', true),
             new TransferSet('arp_richtplan_2017_pub_uebertragungsleitung_swissgrid.sql',
-                    'arp_richtplan_2017_pub.uebertragungsleitung_swissgrid', true)
+                    'arp_richtplan_2017_pub.uebertragungsleitung_swissgrid', true),
+            new TransferSet('arp_richtplan_2017_pub_uebertragungsleitung_sbb.sql',
+                    'arp_richtplan_2017_pub.uebertragungsleitung_sbb', true)
     ];
 }
