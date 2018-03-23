@@ -27,7 +27,7 @@ node ("gretl") {
         sh 'pwd && ls -la'
         // run job
         withCredentials([usernamePassword(credentialsId: "${sogisDbCredentialName}", usernameVariable: 'sogisDbUser', passwordVariable: 'sogisDbPwd'), usernamePassword(credentialsId: "${pubDbCredentialName}", usernameVariable: 'pubDbUser', passwordVariable: 'pubDbPwd')]) {
-            sh "gradle --init-script /home/gradle/init.gradle -PsogisDbUri=${sogisDbUri} -PsogisDbUser=${sogisDbUser} -PsogisDbPwd=${sogisDbPwd} -PpubDbUri=${pubDbUri} -PpubDbUser=${pubDbUser} -PpubDbPwd=${pubDbPwd}"
+            sh "gradle --init-script /home/gradle/init.gradle -PsogisDbUri='${sogisDbUri}' -PsogisDbUser=${sogisDbUser} -PsogisDbPwd=${sogisDbPwd} -PpubDbUri='${pubDbUri}' -PpubDbUser=${pubDbUser} -PpubDbPwd=${pubDbPwd}"
         }
     }
 }
