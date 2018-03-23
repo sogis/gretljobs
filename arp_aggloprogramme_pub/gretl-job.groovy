@@ -7,6 +7,14 @@ properties([
         ])
 ])
 
+def sogisDbUri = ''
+def pubDbUri = ''
+
+node("master") {
+    sogisDbUri = "${env.sogisDbUri}"
+    pubDbUri = "${env.pubDbUri}"
+}
+
 node ("gretl") {
     git 'https://github.com/sogis/gretljobs.git'
     sh 'ls -la /home/gradle/libs'
@@ -14,7 +22,7 @@ node ("gretl") {
         // show current location and content
         sh 'pwd && ls -la'
         // run job
-        sh 'gradle --init-script /home/gradle/init.gradle'
+        sh "gradle --init-script /home/gradle/init.gradle -PsogisDbUri=${sogisDbUri} -PpubDbUri=${pubDbUri}"
     }
 }
 
