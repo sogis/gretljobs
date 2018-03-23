@@ -1,10 +1,10 @@
 properties([
-        // keep only the last 20 builds
-        buildDiscarder(logRotator(numToKeepStr: '20')),
-        // when to run job 
-        pipelineTriggers([
-                cron('H H(3-4) * * *')
-        ])
+    // keep only the last 20 builds
+    buildDiscarder(logRotator(numToKeepStr: '20')),
+    // when to run job 
+    pipelineTriggers([
+        cron('H H(3-4) * * *')
+    ])
 ])
 
 def sogisDbUri = ''
