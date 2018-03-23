@@ -8,11 +8,15 @@ properties([
 ])
 
 def sogisDbUri = ''
+def sogisDbCredentialName = ''
 def pubDbUri = ''
+def pubDbCredentialName = ''
 
 node("master") {
     sogisDbUri = "${env.sogisDbUri}"
+    sogisDbCredentialName = "${gretlDbCredential}"
     pubDbUri = "${env.pubDbUri}"
+    pubDbCredentialName = "${gretlDbCredential}"
 }
 
 node ("gretl") {
@@ -22,7 +26,9 @@ node ("gretl") {
         // show current location and content
         sh 'pwd && ls -la'
         // run job
-        sh "gradle --init-script /home/gradle/init.gradle -PsogisDbUri=${sogisDbUri} -PpubDbUri=${pubDbUri}"
+        withCredentials([usernamePassword(credentialsId: "${sogisDbCredentialName}", usernameVariable: 'sogisDbUser', passwordVariable: 'sogisDbPwd'), usernamePassword(credentialsId: "${pubDbCredentialName}", usernameVariable: 'pubDbUser', passwordVariable: 'pubDbPwd')]) {
+            sh "gradle --init-script /home/gradle/init.gradle -PsogisDbUri=${sogisDbUri} -PsogisDbUser=${sogisDbUser} -PsogisDbPwd=${sogisDbPwd} -PpubDbUri=${pubDbUri} -PpubDbUser=${pubDbUser} -PpubDbPwd=${pubDbPwd}"
+        }
     }
 }
 
