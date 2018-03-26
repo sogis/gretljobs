@@ -7,16 +7,16 @@ properties([
     ])
 ])
 
-def sogisDbUri = ''
-def sogisDbCredentialName = ''
-def pubDbUri = ''
-def pubDbCredentialName = ''
+def dbUriSogis = ''
+def dbCredentialNameSogis = ''
+def dbUriPub = ''
+def dbCredentialNamePub = ''
 
 node("master") {
-    sogisDbUri = "${env.sogisDbUri}"
-    sogisDbCredentialName = "${gretlDbCredential}"
-    pubDbUri = "${env.pubDbUri}"
-    pubDbCredentialName = "${gretlDbCredential}"
+    dbUriSogis = "${env.DB_URI_SOGIS}"
+    dbCredentialNameSogis = "${DB_CREDENTIAL_GRETL}"
+    dbUriPub = "${env.DB_URI_PUB}"
+    dbCredentialNamePub = "${DB_CREDENTIAL_GRETL}"
 }
 
 node ("gretl") {
@@ -26,8 +26,8 @@ node ("gretl") {
         // show current location and content
         sh 'pwd && ls -la'
         // run job
-        withCredentials([usernamePassword(credentialsId: "${sogisDbCredentialName}", usernameVariable: 'sogisDbUser', passwordVariable: 'sogisDbPwd'), usernamePassword(credentialsId: "${pubDbCredentialName}", usernameVariable: 'pubDbUser', passwordVariable: 'pubDbPwd')]) {
-            sh "gradle --init-script /home/gradle/init.gradle -PsogisDbUri='${sogisDbUri}' -PsogisDbUser=${sogisDbUser} -PsogisDbPwd=${sogisDbPwd} -PpubDbUri='${pubDbUri}' -PpubDbUser=${pubDbUser} -PpubDbPwd=${pubDbPwd}"
+        withCredentials([usernamePassword(credentialsId: "${dbCredentialNameSogis}", usernameVariable: 'dbUserSogis', passwordVariable: 'dbPwdSogis'), usernamePassword(credentialsId: "${dbCredentialNamePub}", usernameVariable: 'dbUserPub', passwordVariable: 'dbPwdPub')]) {
+            sh "gradle --init-script /home/gradle/init.gradle -PdbUriSogis='${dbUriSogis}' -PdbUserSogis='${dbUserSogis}' -PdbPwdSogis='${dbPwdSogis}' -PdbUriPub='${dbUriPub}' -PdbUserPub='${dbUserPub}' -PdbPwdPub='${dbPwdPub}'"
         }
     }
 }
