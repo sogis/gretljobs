@@ -1,4 +1,7 @@
-import ch.so.agi.gretl.steps.*
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
 
 
 def gemeindegrenze = 'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze.sql'
@@ -14,7 +17,7 @@ def lsnachfuehrung = 'av_avdpool_ng.liegenschaften_lsnachfuehrung.sql'
 defaultTasks 'updateBaseData'
 
 
-task updateBaseData(type: Db2DbTask){
+task updateBaseData(type: Db2Db){
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [

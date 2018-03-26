@@ -1,31 +1,61 @@
 # gretljobs
-Contains all job configuration files (\*.gradle, \*.sql, ...) of the jobs that are run by gretl and all files needed to set up a virtual gretl runtime environment
+Enthält sämtliche Konfigurationsdateien (`*.gradle`, `*.sql`) der GRETL-Jobs und eine GRETL-Entwicklungsumgebung.
 
-**Instructions to build the virtual gretl runtime environment**
 
-As a requirement to run gretl virtual environment you have to define 4 environment variables in your .bashrc
-To run the gretljobs you need a source DB and a target DB (possibly a virtual environment too).
-Maybe you have to change pg_hba.conf of source DB or target DB
+## Best Practice für das Erstellen von Jobs
+
+* Für jeden neuen Job oder für jede Änderung an einem Job muss ein neuer Entwicklungsbranch erstellt werden:
+
 ```
-export sourceDbUser=username for source DB
-export sourceDbPass=password for source DB 
-export targetDbUrl= username for target DB (for example jdbc:postgresql://192.168.56.21/sogis (example for a virtual DB server))
-export targetDbPass=password for gretl user in target DB
-```
-After defining the environment variables you can build the virtual server.
-Please make a new branch for working with gretljobs.
-```
-git clone https://github.com/sogis/gretljobs.git
-cd gretljobs
 git checkout -b branchname
-vagrant up
-```
-Login on the virtual server with
-```
-vagrant ssh
 ```
 
-Example build command 
+* Änderungen müssen immer per Pull Request in den master-Branch eingepflegt werden
+
+### build.gradle
+
+* `import`-Statements zuoberst einfügen
+* Danach das `apply plugin`-Statement einfügen
+* Als `targetDbUser` bei AGI-Datenbanken `gretl` verwenden.
+* Als (temporäres) Verzeichnis beim Herunterladen von Dateien etc. ```System.getProperty("java.io.tmpdir")``` verwenden. Dies ist das temp-Verzeichnis des Betriebssystems. Heruntergeladene und temporäre Dateien bitte trotzdem mittels abschliessenden Task wieder löschen.
+* Immer mindestens einen DefaultTask setzen mit dem das Skript startet. Dadurch muss kein Task beim Aufruf von GRETL mitgegeben werden (Bsp ```defaultTasks 'transferAgiHoheitsgrenzen'```).
+* `println` einsetzen wo sinnvoll, also informativ.
+* `description` für Projekt und Tasks machen (Beispiel `av_mopublic/build.gradle`).
+* In den `SELECT`-Statements kein `SELECT *` verwenden, sondern die Spalten explizit aufführen.
+* Pfade nicht im Unix Style, sondern im mittels Java-Methoden Betriebssystem unabhängig angeben: ```Paths.get("var","www","maps")``` oder ```Paths.get("var/www/maps")```.
+* Pro Tabelle sollte eine SQL-Datei verwendet werden.
+* Bitte an den AGI SQL-Richtlinien orientieren.
+* Variablen mit `def` definieren und nicht mit `ext{}`
+
+
+## GRETL Runtime Docker Image verwenden
+
+Docker Image mit der GRETL runtime starten für die Job Entwicklung.
+
 ```
-gradle -b /vagrant/ch.so.afu.gewaesserschutz_export/build.gradle
+cd scripts/
+./start-gretl.sh --docker_image sogis/gretl-runtime:14 --job_directory /home/gretl --task_name gradleTaskName -Pparam1=1 -Pparam2=2
+```
+
+Meistens benötigt ein GRETL-Job eine Quell- und eine Ziel-Datenbank. Hierfür können lokal folgende Umgebungsvariablen gesetzt werden (Werte entsprechend anpassen); sie werden der GRETL Runtime als Parameter übergeben und können im GRETL-Skript als Variablen genutzt werden:
+
+```
+export sourceDbUrl=jdbc:postgresql://127.0.0.1/foodb
+export sourceDbUser=foo
+export sourceDbPass=foopassword
+export targetDbUrl=jdbc:postgresql://localhost:5432/bardb
+export targetDbUser=bar
+export targetDbPass=barpassword
+```
+
+Unter Ubuntu können diese Befehle in die Datei ~/.profile eingetragen werden, damit die Umgebungsvariablen immer verfügbar sind.
+
+
+Oder das test Skript *test-gretl.sh* verwenden.
+
+### Troubleshooting
+Wenn folgende Fehlermeldung auftritt, muss das *.gradle* Ordner im Job Ordner gelöscht werden.
+
+```
+Caused by: java.io.FileNotFoundException: /home/gradle/project/.gradle/4.2.1/fileHashes/fileHashes.lock (Permission denied)
 ```

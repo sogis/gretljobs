@@ -1,0 +1,23 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferAfuSorkas'
+
+task transferAfuSorkas(type: Db2Db){
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('afu_sorkas_pub_betriebe.sql', 'afu_sorkas_pub.betriebe', true),
+            new TransferSet('afu_sorkas_pub_natstr.sql', 'afu_sorkas_pub.natstr', true),
+            new TransferSet('afu_sorkas_pub_durchgangsstrassen.sql', 'afu_sorkas_pub.durchgangsstrassen', true),
+            new TransferSet('afu_sorkas_pub_gasleitungen.sql', 'afu_sorkas_pub.gasleitungen', true),
+            new TransferSet('afu_sorkas_pub_avt_oev_netz.sql', 'afu_sorkas_pub.avt_oev_netz', true),
+            new TransferSet('afu_sorkas_pub_betriebe_kb.sql', 'afu_sorkas_pub.betriebe_kb', true),
+            new TransferSet('afu_sorkas_pub_natstr_kb.sql', 'afu_sorkas_pub.natstr_kb', true),
+            new TransferSet('afu_sorkas_pub_durchgangsstrassen_kb.sql', 'afu_sorkas_pub.durchgangsstrassen_kb', true),
+            new TransferSet('afu_sorkas_pub_avt_oev_netz_kb.sql', 'afu_sorkas_pub.avt_oev_netz_kb', true),
+            new TransferSet('afu_sorkas_pub_gasleitungen_kb.sql', 'afu_sorkas_pub.gasleitungen_kb', true)
+    ];
+}

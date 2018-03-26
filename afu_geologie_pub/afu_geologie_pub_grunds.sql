@@ -1,0 +1,43 @@
+SELECT 
+    grunds.ogc_fid AS t_id, 
+    grunds.wkb_geometry AS geometrie,     
+    grunds.neuer_code, 
+    grunds.layercode, 
+    grunds.system, 
+    grunds.system1, 
+    grunds.system2, 
+    grunds.serie, 
+    grunds.serie1, 
+    grunds.serie2,     
+    grunds.formation, 
+    grunds.formation1, 
+    grunds.formation2, 
+    grunds.schichtgli,     
+    grunds.ausbi_fest, 
+    grunds.litho_fest, 
+    grunds.sacku_fest, 
+    grunds.ausbi_lock,     
+    grunds.litho_lock, 
+    grunds.verki_lock, 
+    grunds.durchlaess, 
+    grunds.gw_art,     
+    grunds.gw_fuehrun, 
+    grunds.gespannt, 
+    grunds.reib_winke, 
+    grunds.kohaesion,     
+    grunds.fels_reib_, 
+    grunds.fels_kohae, 
+    grunds.mat_maecht, 
+    grunds.fehlmatmae,    
+    grunds.maxwinkel, 
+    grunds.midwinkel, 
+    grunds.minwinkel,
+    substr(grunds.schichtgli::text, 1, 5) AS schichtgliederung, 
+    substr(grunds.neuer_code::text, 11, 1) AS gesteinstyp, 
+    substr(grunds.neuer_code::text, 13, 2) AS lithologie1, 
+    substr(grunds.neuer_code::text, 15, 2) AS lithologie2
+FROM 
+    geologie.grunds
+WHERE 
+    grunds.archive = 0
+;
