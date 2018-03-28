@@ -1,10 +1,13 @@
-import ch.so.agi.gretl.steps.*
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'calc_qg_verkehr_gem'
 
 //Berechnung der Untergruppe bahn
 
-task calc_ug_bahn_gesamt(type: Db2DbTask){
+task calc_ug_bahn_gesamt(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -15,7 +18,7 @@ task calc_ug_bahn_gesamt(type: Db2DbTask){
 
 //Berechnung der Untergruppe Flug
 
-task calc_ug_flug_gesamt(type: Db2DbTask){
+task calc_ug_flug_gesamt(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -26,7 +29,7 @@ task calc_ug_flug_gesamt(type: Db2DbTask){
 
 //Berechnung der Untergruppe Diff Verkehr
 
-task calc_ug_diff_verkehr(type: Db2DbTask){
+task calc_ug_diff_verkehr(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -35,16 +38,14 @@ task calc_ug_diff_verkehr(type: Db2DbTask){
             new TransferSet('ug_diff_verkehr/ug_diff_verkehr_eq_aufw_abr_mr_2t.sql', 'ekat2015.ug_diff_verkehr_eq_aufw_abr_mr_2t', true),
             new TransferSet('ug_diff_verkehr/ug_diff_verkehr_eq_aufw_abr_mr_4t.sql', 'ekat2015.ug_diff_verkehr_eq_aufw_abr_mr_4t', true),
             new TransferSet('ug_diff_verkehr/ug_diff_verkehr_eq_aufw_abr_smw.sql', 'ekat2015.ug_diff_verkehr_eq_aufw_abr_smw', true),
-            new TransferSet('ug_diff_verkehr/ug_diff_verkehr_eq_lnf_vsit_agglo.sql', 'ekat2015.ug_diff_verkehr_eq_lnf_vsit_agglo', true),
-            new TransferSet('ug_diff_verkehr/ug_diff_verkehr_eq_lnf_vsit_land.sql', 'ekat2015.ug_diff_verkehr_eq_lnf_vsit_land', true),
-            new TransferSet('ug_diff_verkehr/ug_diff_verkehr_eq_pw_vsit_agglo.sql', 'ekat2015.ug_diff_verkehr_eq_pw_vsit_agglo', true),
-            new TransferSet('ug_diff_verkehr/ug_diff_verkehr_eq_pw_vsit_land.sql', 'ekat2015.ug_diff_verkehr_eq_pw_vsit_land', true)
+            new TransferSet('ug_diff_verkehr/ug_diff_verkehr_eq_lnf.sql', 'ekat2015.ug_diff_verkehr_eq_lnf', true),
+            new TransferSet('ug_diff_verkehr/ug_diff_verkehr_eq_pw.sql', 'ekat2015.ug_diff_verkehr_eq_pw', true)
     ];
 }
 
 //Berechnung der Tabellen ug_diff_verkehr_gesamt
 
-task calc_ug_diff_verkehr_gesamt(type: Db2DbTask, dependsOn: [calc_ug_diff_verkehr]){
+task calc_ug_diff_verkehr_gesamt(type: Db2Db, dependsOn: [calc_ug_diff_verkehr]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -55,7 +56,7 @@ task calc_ug_diff_verkehr_gesamt(type: Db2DbTask, dependsOn: [calc_ug_diff_verke
 
 //Berechnung der Untergruppe Kaltstart
 
-task calc_ug_kaltstart(type: Db2DbTask){
+task calc_ug_kaltstart(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -67,7 +68,7 @@ task calc_ug_kaltstart(type: Db2DbTask){
 
 //Berechnung der Tabellen ug_kaltstart_gesamt
 
-task calc_ug_kaltstart_gesamt(type: Db2DbTask, dependsOn: [calc_ug_kaltstart]){
+task calc_ug_kaltstart_gesamt(type: Db2Db, dependsOn: [calc_ug_kaltstart]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -78,7 +79,7 @@ task calc_ug_kaltstart_gesamt(type: Db2DbTask, dependsOn: [calc_ug_kaltstart]){
 
 //Berechnung der Untergruppe Streckenverkehr (strkvk)
 
-task calc_ug_strkvk(type: Db2DbTask){
+task calc_ug_strkvk(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -86,7 +87,7 @@ task calc_ug_strkvk(type: Db2DbTask){
             new TransferSet('ug_strkvk/ug_strkvk_eq_aufw_abr_lmw.sql', 'ekat2015.ug_strkvk_eq_aufw_abr_lmw', true),
             new TransferSet('ug_strkvk/ug_strkvk_eq_aufw_abr_mr_2t.sql', 'ekat2015.ug_strkvk_eq_aufw_abr_mr_2t', true),
             new TransferSet('ug_strkvk/ug_strkvk_eq_aufw_abr_mr_4t.sql', 'ekat2015.ug_strkvk_eq_aufw_abr_mr_4t', true),
-            new TransferSet('ug_strkvk/ug_strkvk_eq_aufw_abr_mr_smw.sql', 'ekat2015.ug_strkvk_eq_aufw_abr_mr_smw', true),
+            new TransferSet('ug_strkvk/ug_strkvk_eq_aufw_abr_smw.sql', 'ekat2015.ug_strkvk_eq_aufw_abr_smw', true),
             new TransferSet('ug_strkvk/ug_strkvk_eq_li.sql', 'ekat2015.ug_strkvk_eq_li', true),
             new TransferSet('ug_strkvk/ug_strkvk_eq_mr.sql', 'ekat2015.ug_strkvk_eq_mr', true),
             new TransferSet('ug_strkvk/ug_strkvk_eq_pw.sql', 'ekat2015.ug_strkvk_eq_pw', true),
@@ -100,7 +101,7 @@ task calc_ug_strkvk(type: Db2DbTask){
 
 //Berechnung der Tabellen ug_strkvk_gesamt
 
-task calc_ug_strkvk_gesamt(type: Db2DbTask, dependsOn: [calc_ug_strkvk]){
+task calc_ug_strkvk_gesamt(type: Db2Db, dependsOn: [calc_ug_strkvk]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -113,7 +114,7 @@ task calc_ug_strkvk_gesamt(type: Db2DbTask, dependsOn: [calc_ug_strkvk]){
 
 //Berechnung der Untergruppe Verdampf
 
-task calc_ug_verdampf(type: Db2DbTask){
+task calc_ug_verdampf(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -131,7 +132,7 @@ task calc_ug_verdampf(type: Db2DbTask){
 
 //Berechnung der Tabellen ug_verdampf_gesamt
 
-task calc_ug_verdampf_gesamt(type: Db2DbTask, dependsOn: [calc_ug_verdampf]){
+task calc_ug_verdampf_gesamt(type: Db2Db, dependsOn: [calc_ug_verdampf]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -141,7 +142,7 @@ task calc_ug_verdampf_gesamt(type: Db2DbTask, dependsOn: [calc_ug_verdampf]){
 }
 //Berechnung der Quellengruppe Industrie und Gewerbe 
 
-task calc_qg_verkehr(type: Db2DbTask, dependsOn: [calc_ug_bahn_gesamt, calc_ug_flug_gesamt, calc_ug_diff_verkehr_gesamt, calc_ug_kaltstart_gesamt, calc_ug_strkvk_gesamt, calc_ug_verdampf_gesamt]){
+task calc_qg_verkehr(type: Db2Db, dependsOn: [calc_ug_bahn_gesamt, calc_ug_flug_gesamt, calc_ug_diff_verkehr_gesamt, calc_ug_kaltstart_gesamt, calc_ug_strkvk_gesamt, calc_ug_verdampf_gesamt]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -156,7 +157,7 @@ task calc_qg_verkehr(type: Db2DbTask, dependsOn: [calc_ug_bahn_gesamt, calc_ug_f
     ];
 }
 
-task calc_qg_verkehr_gem(type: Db2DbTask, dependsOn: [calc_qg_verkehr]){
+task calc_qg_verkehr_gem(type: Db2Db, dependsOn: [calc_qg_verkehr]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]

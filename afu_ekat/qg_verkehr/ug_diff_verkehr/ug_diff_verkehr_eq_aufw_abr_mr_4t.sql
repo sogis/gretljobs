@@ -15,17 +15,16 @@ SELECT min(c.ogc_fid) AS ogc_fid, min(c.xkoord)::numeric AS xkoord,
                     b.arb_plaetze_zone, b.einw_zone, b.dtv_pw, b.dtv_li, 
                     a.vk_zone, a.p00btot, a.b05empts2, a.b05empts3, b.laenge
                    FROM ekat2015.intersec_vk_zone_ha_raster a
-              LEFT JOIN ( SELECT zonenergaenzungen2015.zonennumme, 
-                            zonenergaenzungen2015.dtv_pw, 
-                            zonenergaenzungen2015.dtv_li, 
-                            zonenergaenzungen2015.arb_plaetze_zone, 
-                            zonenergaenzungen2015.einw_zone, 
-                            zonenergaenzungen2015.laenge
-                           FROM verkehrsmodell2015.zonenergaenzungen2015) b ON a.vk_zone::double precision = b.zonennumme
+              LEFT JOIN ( SELECT vk_zonen.zonennummer, 
+                            vk_zonen.dtv_pw, 
+                            vk_zonen.dtv_li, 
+                            vk_zonen.arb_plaetze_zone, 
+                            vk_zonen.einw_zone, 
+                            vk_zonen.laenge
+                           FROM ekat2015.vk_zonen) b ON a.vk_zone::double precision = b.zonennummer
          LEFT JOIN ( SELECT gmde.gem_bfs, gmde.anz_smw, gmde.anz_lmw, 
                        gmde.anz_mr_2t, gmde.anz_mr_4t
                       FROM ekat2015.gmde
-                     WHERE gmde.archive = 0 AND gmde.gem_bfs >= 2401 AND gmde.gem_bfs <= 2622) c ON a.gem_bfs = c.gem_bfs
-        WHERE a.archive = 0) k) c
+                     WHERE gmde.archive = 0 AND gmde.gem_bfs >= 2401 AND gmde.gem_bfs <= 2622) c ON a.gem_bfs = c.gem_bfs) k) c
   GROUP BY c.wkb_geometry
   ORDER BY min(c.xkoord)::numeric, min(c.ykoord)::numeric;

@@ -3,50 +3,40 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
     sum(k.emiss_pm10) AS emiss_pm10
    FROM ( SELECT a.ogc_fid, a.xkoord, a.ykoord, a.wkb_geometry, a.gem_bfs, 
                 CASE
-                    WHEN c.ioaoab::text = 'AO'::text THEN (b.dtv_snf + b.dtv_rb)::double precision * (( SELECT b.schast_efak
+                    WHEN c.ioaoab::text = 'AO'::text THEN (b.dtv2015_snf + b.dtv2015_rb)::double precision * (( SELECT b.schast_efak
                        FROM ekat2015.emiss_quelle a
                   LEFT JOIN ekat2015.quelle_emiss_efak b ON a.equelle_id = b.equelle_id
-                 WHERE a.equelle_id = 46 AND b.s_code = 7 AND a.archive = 0 AND b.archive = 0))::double precision * 365::double precision
-                    WHEN c.ioaoab::text = 'IO'::text THEN (b.dtv_snf + b.dtv_rb)::double precision * (( SELECT b.schast_efak
+                 WHERE a.equelle_id = 46 AND b.s_code = 7 ))::double precision * 365::double precision
+                    WHEN c.ioaoab::text = 'IO'::text THEN (b.dtv2015_snf + b.dtv2015_rb)::double precision * (( SELECT b.schast_efak
                        FROM ekat2015.emiss_quelle a
                   LEFT JOIN ekat2015.quelle_emiss_efak b ON a.equelle_id = b.equelle_id
-                 WHERE a.equelle_id = 47 AND b.s_code = 7 AND a.archive = 0 AND b.archive = 0))::double precision * 365::double precision
-                    WHEN c.ioaoab::text = 'AB'::text THEN (b.dtv_snf + b.dtv_rb)::double precision * (( SELECT b.schast_efak
+                 WHERE a.equelle_id = 47 AND b.s_code = 7 ))::double precision * 365::double precision
+                    WHEN c.ioaoab::text = 'AB'::text THEN (b.dtv2015_snf + b.dtv2015_rb)::double precision * (( SELECT b.schast_efak
                        FROM ekat2015.emiss_quelle a
                   LEFT JOIN ekat2015.quelle_emiss_efak b ON a.equelle_id = b.equelle_id
-                 WHERE a.equelle_id = 45 AND b.s_code = 7 AND a.archive = 0 AND b.archive = 0))::double precision * 365::double precision
+                 WHERE a.equelle_id = 45 AND b.s_code = 7 ))::double precision * 365::double precision
                     ELSE 0::double precision
                 END AS emiss_pm10
            FROM ekat2015.ha_raster_100 a
-      LEFT JOIN ( SELECT intersec_link_ha_raster.ogc_fid, 
-                    intersec_link_ha_raster.gid_link, 
-                    intersec_link_ha_raster.ogc_fid_ha, 
-                    intersec_link_ha_raster.xkoord, 
-                    intersec_link_ha_raster.ykoord, 
-                    intersec_link_ha_raster.gem_bfs, 
-                    intersec_link_ha_raster.laenge, 
-                    intersec_link_ha_raster.laenge_neu, 
-                    intersec_link_ha_raster.dtv_pw, 
-                    intersec_link_ha_raster.dtv_li, 
-                    intersec_link_ha_raster.dtv_mr, 
-                    intersec_link_ha_raster.dtv_snf, 
-                    intersec_link_ha_raster.dtv_rb, 
-                    intersec_link_ha_raster.wkb_geometry, 
-                    intersec_link_ha_raster.new_date, 
-                    intersec_link_ha_raster.archive_date, 
-                    intersec_link_ha_raster.archive
-                   FROM ekat2015.intersec_link_ha_raster
-                  WHERE intersec_link_ha_raster.archive = 0) b ON a.xkoord = b.xkoord::numeric AND a.ykoord = b.ykoord::numeric
-   LEFT JOIN ( SELECT f.ogc_fid, f.wkb_geometry, f.objectid, f.linkno, 
-               f.herkunft, f.laenge_alt, f.neigung, f.neigung_be, f.strassenty, 
-               f.geschw, f.auslastung, f.auslastu_1, f.dtv_pw, f.dtv_snf, 
-               f.dtv_li, f.dtv_mr, f.dtv_rb, f.dtv_lb, f.gis, f.tunnel, 
-               f.bem_10_2, f.lsa_10, f.laenge_neu, f.vsit, f.pwe_10, f.mt_id, 
-               f.kapazitaet, f.ausl_h_max, f.ant_los1, f.ant_los2, f.ant_los3, 
-               f.ant_los4, f.shape_leng, f.ioaoab, f.new_date, f.archive_date, 
-               f.archive
-              FROM verkehrsmodell2015.gvm_so_2015_meteotest f
-             WHERE f.archive = 0) c ON b.gid_link = c.ogc_fid
+      LEFT JOIN ( SELECT intersec_link2015_ha_raster.ogc_fid, 
+                    intersec_link2015_ha_raster.gid_link, 
+                    intersec_link2015_ha_raster.ogc_fid_ha, 
+                    intersec_link2015_ha_raster.xkoord, 
+                    intersec_link2015_ha_raster.ykoord, 
+                    intersec_link2015_ha_raster.gem_bfs, 
+                    intersec_link2015_ha_raster.laenge, 
+                    intersec_link2015_ha_raster.laenge_neu, 
+                    intersec_link2015_ha_raster.dtv2015_pw, 
+                    intersec_link2015_ha_raster.dtv2015_li, 
+                    intersec_link2015_ha_raster.dtv2015_mr, 
+                    intersec_link2015_ha_raster.dtv2015_snf, 
+                    intersec_link2015_ha_raster.dtv2015_rb, 
+                    intersec_link2015_ha_raster.wkb_geometry
+                   FROM ekat2015.intersec_link2015_ha_raster) b ON a.xkoord = b.xkoord::numeric AND a.ykoord = b.ykoord::numeric
+   LEFT JOIN ( SELECT f.wkb_geometry, f.gid, 
+               f."LAENGE" AS laenge, f."NEIGUNG" as neigung, f."NEIGUNG_BE" as neigung_be, f."TYPENO" as strassenty, 
+               f."IOAOAB" AS ioaoab
+              FROM verkehrsmodell2015.gvm_so_2015_meteotest f) c ON b.gid_link = c.gid
   WHERE a.archive = 0) k
   GROUP BY k.wkb_geometry
   ORDER BY min(k.xkoord), min(k.ykoord);

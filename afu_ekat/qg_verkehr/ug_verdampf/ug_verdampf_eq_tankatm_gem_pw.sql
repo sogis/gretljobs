@@ -2,7 +2,7 @@ SELECT k.ogc_fid, k.xkoord, k.ykoord, k.wkb_geometry, k.gem_bfs,
         CASE
             WHEN k.besch_gesamt > 0::double precision OR k.b15btot > 0 THEN (k.b15btot::double precision + k.besch_gesamt)::numeric * ((0.6666666 * ((( SELECT efak_kalt_tank.efak
                FROM ekat2015.efak_kalt_tank
-              WHERE efak_kalt_tank.efak_code = 2 AND efak_kalt_tank.fhz_art = 'PKW'::text AND efak_kalt_tank.archive = 0))::numeric * k.anz_pw::numeric * 365::numeric) / 1000::numeric)::double precision / (k.besch_gesamt_gem::double precision + k.einw_gem::double precision))::numeric
+              WHERE efak_kalt_tank.efak_code = 2 AND efak_kalt_tank.fhz_art = 'PKW'::text))::numeric * k.anz_pw::numeric * 365::numeric) / 1000::numeric)::double precision / (k.besch_gesamt_gem::double precision + k.einw_gem::double precision))::numeric
             ELSE 0::numeric
         END AS emiss_nmvoc
    FROM ( SELECT a.ogc_fid, a.xkoord, a.ykoord, a.wkb_geometry, a.gem_bfs, 
