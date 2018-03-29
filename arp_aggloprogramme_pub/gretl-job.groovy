@@ -2,16 +2,18 @@ def dbUriSogis = ''
 def dbCredentialNameSogis = ''
 def dbUriPub = ''
 def dbCredentialNamePub = ''
+def gretljobsRepo = ''
 
 node("master") {
     dbUriSogis = "${env.DB_URI_SOGIS}"
     dbCredentialNameSogis = "${DB_CREDENTIAL_GRETL}"
     dbUriPub = "${env.DB_URI_PUB}"
     dbCredentialNamePub = "${DB_CREDENTIAL_GRETL}"
+    gretljobsRepo = "${env.GRETL_JOB_REPO_URL}"
 }
 
 node ("gretl") {
-    git 'https://github.com/sogis/gretljobs.git'
+    git "${gretljobsRepo}"
     sh 'ls -la /home/gradle/libs'
     dir(env.JOB_BASE_NAME) {
         // show current location and content
