@@ -1,0 +1,91 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+
+
+apply plugin: "de.undercouch.download"
+apply plugin: 'ch.so.agi.gretl'
+
+
+defaultTasks 'convertData'
+
+def nameOfZipWithPLZOrtschaften = 'PLZO_INTERLIS_LV95.zip'
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
+def pathToDataZip = Paths.get(pathToTempFolder, "PLZO_INTERLIS_LV95.zip")
+def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), 'PLZO_ITF_LV95.itf')
+
+
+task download(type: Download){
+    description = "Download plz_ortschaften from swisstopo"
+    doLast {
+        println "File downloaded to: " + pathToTempFolder
+    }
+    src 'http://data.geo.admin.ch/ch.swisstopo-vd.ortschaftenverzeichnis_plz/PLZO_INTERLIS_LV95.zip'
+    dest pathToTempFolder
+    overwrite true
+}
+
+
+task unzipData(type: Copy, dependsOn: 'download'){
+    description = "Unzip Data.zip."
+    doLast {
+        println "File unzipped to directory: " + pathToUnzipFolder
+    }
+    from zipTree(pathToDataZip)
+    into file(pathToUnzipFolder)
+}
+
+
+task loadFiles(dependsOn: 'unzipData'){
+    doLast{
+        FileTree tree = fileTree('/tmp/unzip_data')
+        tree.each {
+            println it.name
+        }
+    }
+}
+
+
+task dbImport(type: Ili2pgImport, dependsOn: 'loadFiles'){
+    description = "Import swissBoundaries3D-Data into database"
+    doLast {
+        println "Data imported into db: " + sourceDbUrl
+    }
+    database = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    dbschema = "agi_plz_ortschaften"
+    models = "PLZOCH1LV95D"
+    disableValidation = false
+    dataFile = file(xtfFilePath)
+    deleteData = true
+    strokeArcs = true
+}
+
+
+task convertData(type: Db2Db, dependsOn: 'dbImport'){
+    description = "Convert swissBoundaries3D-Data"
+    doLast {
+        println "SwissBoundaries3D-Data are converted."
+    }
+    finalizedBy 'removeFiles'
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('bezirke.sql', 'agi_swissboundaries3d_pub.swissboundaries3d_bezirk', true),
+            new TransferSet('hoheitsgebiet.sql', 'agi_swissboundaries3d_pub.swissboundaries3d_hoheitsgebiet', true),
+            new TransferSet('kanton.sql', 'agi_swissboundaries3d_pub.swissboundaries3d_kanton', true),
+            new TransferSet('land.sql', 'agi_swissboundaries3d_pub.swissboundaries3d_land', true)
+    ];
+}
+
+
+task removeFiles(type: Delete) {
+    description = "Remove Files"
+    doLast {
+        println "Files removed."
+    }
+    delete file(pathToUnzipFolder), file(pathToDataZip)
+}
