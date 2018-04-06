@@ -13,97 +13,86 @@ SELECT
                 WHEN 
                     reservate_dokument.typ = 'RRB' 
                     AND 
-                    position('/' IN reservate_dokument.dateiname) = 0 
+                    position('/opt/sogis_pic/daten_aktuell/arp/natur_und_landschaft/dokumente/rrb/' IN reservate_dokument.dateipfad) != 0 
                     AND 
                     reservate_dokument.bezeichnung != ''
-                    THEN '<a href ="/opt/sogis_pic/daten_aktuell/arp/natur_und_landschaft/dokumente/rrb/' 
-                                    || reservate_dokument.dateiname || '" target="_blank">' || reservate_dokument.bezeichnung || '</a>'
+                    THEN '<a href ="https://geoweb.so.ch/naturreservate/' 
+                                    || split_part(reservate_dokument.dateipfad, '/natur_und_landschaft/dokumente/', 2)  || '" target="_blank">' || reservate_dokument.bezeichnung || ' (RRB)</a>'
                 WHEN 
                     reservate_dokument.typ = 'RRB' 
                     AND 
-                    position('/' IN reservate_dokument.dateiname) = 0 
+                    position('/opt/sogis_pic/daten_aktuell/arp/natur_und_landschaft/dokumente/rrb/' IN reservate_dokument.dateipfad) != 0 
                     AND 
                     reservate_dokument.bezeichnung = ''
-                    THEN '<a href ="/opt/sogis_pic/daten_aktuell/arp/natur_und_landschaft/dokumente/rrb/' 
-                                    || reservate_dokument.dateiname || '" target="_blank">' || reservate_dokument.dateiname || ' (' || reservate_dokument.typ || ')</a>'
+                    THEN '<a href ="https://geoweb.so.ch/naturreservate/' 
+                                    || split_part(reservate_dokument.dateipfad, '/natur_und_landschaft/dokumente/', 2) || '" target="_blank">' || reservate_dokument.typ || '</a>'
                                     
                 WHEN 
                     reservate_dokument.typ = 'RRB' 
                     AND 
-                    position('/' IN reservate_dokument.dateiname) != 0
+                    position('opt/sogis_pic/daten_aktuell/apr/Zonenplaene/Zonenplaene_pdf/' IN reservate_dokument.dateipfad) != 0
                     AND 
                     reservate_dokument.bezeichnung != '' 
-                    THEN '<a href ="opt/sogis_pic/daten_aktuell/apr/Zonenplaene/Zonenplaene_pdf/' 
-                                    || reservate_dokument.dateiname || '" target="_blank">' || reservate_dokument.bezeichnung || '</a>'
+                    THEN '<a href ="https://geoweb.so.ch/zonenplaene/' 
+                                    || split_part(reservate_dokument.dateipfad, '/Zonenplaene/', 2) || '" target="_blank">' || reservate_dokument.bezeichnung || ' (RRB)</a>'
                                     
                 WHEN 
                     reservate_dokument.typ = 'RRB' 
                     AND 
-                    position('/' IN reservate_dokument.dateiname) != 0
+                    position('opt/sogis_pic/daten_aktuell/apr/Zonenplaene/Zonenplaene_pdf/' IN reservate_dokument.dateipfad) != 0
                     AND 
                     reservate_dokument.bezeichnung = ''
-                    THEN '<a href ="opt/sogis_pic/daten_aktuell/apr/Zonenplaene/Zonenplaene_pdf/' 
-                                    || reservate_dokument.dateiname || '" target="_blank">' || reservate_dokument.dateiname || ' (' || reservate_dokument.typ || ')</a>'
+                    THEN '<a href ="https://geoweb.so.ch/zonenplaene/' 
+                                    || split_part(reservate_dokument.dateipfad, '/Zonenplaene/', 2) || '" target="_blank">' || reservate_dokument.typ || '</a>'
                 WHEN 
-                    reservate_dokument.typ = 'Kommunale_Inventare' 
+                    (
+                        reservate_dokument.typ = 'Kommunale_Inventare' 
+                        OR
+                        reservate_dokument.typ = 'Bericht' 
+                        OR
+                        reservate_dokument.typ = 'Pflegekonzept' 
+                    )
                     AND 
                     reservate_dokument.bezeichnung != '' 
-                    THEN '<a href ="/opt/sogis_pic/daten_aktuell/arp/natur_und_landschaft/dokumente/kommunale_inventare/' 
-                                    || reservate_dokument.dateiname || '" target="_blank">' || reservate_dokument.bezeichnung || '</a>'                                    
+                    THEN '<a href ="https://geoweb.so.ch/naturreservate/' 
+                                    || split_part(reservate_dokument.dateipfad, '/natur_und_landschaft/dokumente/', 2) || '" target="_blank">' || reservate_dokument.bezeichnung || '</a>'                                    
                 WHEN 
-                    reservate_dokument.typ = 'Kommunale_Inventare'
+                    (
+                        reservate_dokument.typ = 'Kommunale_Inventare' 
+                        OR
+                        reservate_dokument.typ = 'Bericht' 
+                        OR
+                        reservate_dokument.typ = 'Pflegekonzept' 
+                    )
                     AND 
                     reservate_dokument.bezeichnung = ''
-                    THEN '<a href ="/opt/sogis_pic/daten_aktuell/arp/natur_und_landschaft/dokumente/kommunale_inventare/' 
-                                    || reservate_dokument.dateiname || '" target="_blank">' || reservate_dokument.dateiname || ' (' || reservate_dokument.typ || ')</a>'
-                WHEN reservate_dokument.typ = 'Objektblatt' 
-                    THEN '<a href ="http://georeport.so.ch/jasperserver/rest_v2/reports/reports/arp/naturreservate/objektblatt.pdf?j_username=mspublic_user&j_password=mspublic&reservatsnummer=' || reservate_reservat.nummer || '" target="_blank">Objektblatt</a>'                                    
-                WHEN 
-                    reservate_dokument.typ = 'Bericht' 
+                    THEN  '<a href ="https://geoweb.so.ch/naturreservate/' 
+                                    || split_part(reservate_dokument.dateipfad, '/natur_und_landschaft/dokumente/', 2) || '" target="_blank">' || reservate_dokument.typ || '</a>'
+               WHEN 
+                    (
+                        reservate_dokument.typ = 'Sonderbauvorschriften' 
+                        OR 
+                        reservate_dokument.typ = 'Gestaltungsplan'
+                    )
                     AND 
                     reservate_dokument.bezeichnung != '' 
-                    THEN '<a href ="/opt/sogis_pic/daten_aktuell/arp/natur_und_landschaft/dokumente/bericht/' 
-                                    || reservate_dokument.dateiname || '" target="_blank">' || reservate_dokument.bezeichnung || '</a>'                                    
+                    THEN '<a href ="https://geoweb.so.ch/zonenplaene/' 
+                                    || split_part(reservate_dokument.dateipfad, '/Zonenplaene/', 2)  || '" target="_blank">' || reservate_dokument.bezeichnung || '</a>'                                    
                 WHEN 
-                    reservate_dokument.typ = 'Bericht'
+                    (
+                        reservate_dokument.typ = 'Sonderbauvorschriften' 
+                        OR 
+                        reservate_dokument.typ = 'Gestaltungsplan'
+                    )
                     AND 
                     reservate_dokument.bezeichnung = ''
-                    THEN '<a href ="/opt/sogis_pic/daten_aktuell/arp/natur_und_landschaft/dokumente/bericht/' 
-                                    || reservate_dokument.dateiname || '" target="_blank">' || reservate_dokument.dateiname || ' (' || reservate_dokument.typ || ')</a>'
-                WHEN 
-                    reservate_dokument.typ = 'Pflegekonzept' 
-                    AND 
-                    reservate_dokument.bezeichnung != '' 
-                    THEN '<a href ="/opt/sogis_pic/daten_aktuell/arp/natur_und_landschaft/dokumente/pflegekonzept/' 
-                                    || reservate_dokument.dateiname || '" target="_blank">' || reservate_dokument.bezeichnung || '</a>'                                    
-                WHEN 
-                    reservate_dokument.typ = 'Pflegekonzept'
-                    AND 
-                    reservate_dokument.bezeichnung = ''
-                    THEN '<a href ="/opt/sogis_pic/daten_aktuell/arp/natur_und_landschaft/dokumente/pflegekonzept/' 
-                                    || reservate_dokument.dateiname || '" target="_blank">' || reservate_dokument.dateiname || ' (' || reservate_dokument.typ || ')</a>'
-                WHEN 
-                    (reservate_dokument.typ = 'Sonderbauvorschriften' 
-                    OR 
-                    reservate_dokument.typ = 'Gestaltungsplan')
-                    AND 
-                    reservate_dokument.bezeichnung != '' 
-                    THEN '<a href ="/opt/sogis_pic/daten_aktuell/arp/Zonenplaene/Zonenplaene_pdf/' 
-                                    || reservate_dokument.dateiname || '" target="_blank">' || reservate_dokument.bezeichnung || '</a>'                                    
-                WHEN 
-                    (reservate_dokument.typ = 'Sonderbauvorschriften' 
-                    OR 
-                    reservate_dokument.typ = 'Gestaltungsplan')
-                    AND 
-                    reservate_dokument.bezeichnung = ''
-                    THEN '<a href ="/opt/sogis_pic/daten_aktuell/arp/Zonenplaene/Zonenplaene_pdf/' 
-                                    || reservate_dokument.dateiname || '" target="_blank">' || reservate_dokument.dateiname || ' (' || reservate_dokument.typ || ')</a>'
+                    THEN '<a href ="https://geoweb.so.ch/zonenplaene/' 
+                                    || split_part(reservate_dokument.dateipfad, '/Zonenplaene/', 2) || '" target="_blank">' || reservate_dokument.typ || '</a>'
                 ELSE NULL 
             END
     , '<br>') 
     || '<br><a href ="http://georeport.so.ch/jasperserver/rest_v2/reports/reports/arp/naturreservate/objektblatt.pdf?j_username=mspublic_user&j_password=mspublic&reservatsnummer=' || reservate_reservat.nummer || '" target="_blank">Objektblatt</a>' 
     || '<br><a href="http://faust.so.ch/such_start.fau?prj=ARP&dm=FVARP02&rpos=3&ro_zeile_2=' || reservate_reservat.nummer || '" target="_blank">Fotos</a>' 
-    --|| '<br><a href = "http://georeport.so.ch/jasperserver/rest_v2/reports/reports/arp/naturreservate/pflanzenliste.pdf?j_username=mspublic_user&j_password=mspublic&teilgebiet_id=' || reservate_teilgebiet.t_id || '" target="_blank">Pflanzenliste</a>' 
     AS dokumente,
     string_agg(
         DISTINCT
