@@ -11,7 +11,6 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'convertData'
 
-def nameOfZipWithPLZOrtschaften = 'PLZO_INTERLIS_LV95.zip'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
 def pathToDataZip = Paths.get(pathToTempFolder, "PLZO_INTERLIS_LV95.zip")
@@ -62,7 +61,7 @@ task convertData(type: Db2Db, dependsOn: 'dbImport'){
     }
     finalizedBy 'removeFiles'
 
-    sourceDb = [targetDbUrl, targetDbUser, targetDbPass]//[sourceDbUrl, sourceDbUser, sourceDbPass]
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
             new TransferSet('plzortschaften_ortschaft.sql', 'agi_plz_ortschaften_pub.plzortschaften_ortschaft', true),
