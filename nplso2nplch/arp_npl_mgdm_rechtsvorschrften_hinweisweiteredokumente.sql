@@ -1,6 +1,6 @@
-DELETE FROM arp_npl_mgdm.rechtsvorschrften_dokument;
+DELETE FROM arp_npl_mgdm.rechtsvorschrften_hinweisweiteredokumente;
 
-INSERT INTO arp_npl_mgdm.rechtsvorschrften_dokument(
+INSERT INTO arp_npl_mgdm.rechtsvorschrften_hinweisweiteredokumente(
     ursprung,
     hinweis
 )

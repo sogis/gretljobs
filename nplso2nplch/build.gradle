@@ -12,5 +12,9 @@ task transferNplso2Nplch(type: SqlExecutor){
                 'arp_npl_mgdm_geobasisdaten_linienbezogene_festlegung.sql',
                 'arp_npl_mgdm_geobasisdaten_objektbezogene_festlegung.sql',
                 'arp_npl_mgdm_geobasisdaten_ueberlagernde_festlegung.sql',
-                'arp_npl_mgdm_rechtsvorschrften_dokument.sql'];
+                'arp_npl_mgdm_rechtsvorschrften_dokument.sql',
+                'arp_npl_mgdm_rechtsvorschrften_hinweisweiteredokumente.sql',
+                'arp_npl_mgdm_geobasisdaten_typ_dokument.sql',
+                'arp_npl_mgdm_multilingualuri.sql',
+                'arp_npl_mgdm_localiseduri.sql'];
 }
