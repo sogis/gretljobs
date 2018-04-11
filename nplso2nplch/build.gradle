@@ -2,9 +2,9 @@ import ch.so.agi.gretl.tasks.*
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferNplso2Nplch'
+defaultTasks 'transferNplso2Nplch', 'transferNplso2Laermempfindlichkeit'
 
-task transferNplso2Nplch(type: SqlExecutor){
+task transferNplso2Nplch(type: SqlExecutor) {
     database = [targetDbUrl, targetDbUser, targetDbPass] //[sourceDbUrl, sourceDbUser, sourceDbPass]
     sqlFiles = ['arp_npl_mgdm_geobasisdaten_typ_kt.sql',
                 'arp_npl_mgdm_geobasisdaten_typ.sql',
@@ -16,9 +16,14 @@ task transferNplso2Nplch(type: SqlExecutor){
                 'arp_npl_mgdm_rechtsvorschrften_hinweisweiteredokumente.sql',
                 'arp_npl_mgdm_geobasisdaten_typ_dokument.sql',
                 'arp_npl_mgdm_multilingualuri.sql',
-                'arp_npl_mgdm_localiseduri.sql',
-                'arp_npl_mgdm_laermmp95_v1_1geobasisdaten_typ.sql',
-                'arp_npl_mgdm_geobasisdaten_laermempfindlichkeit_zonenflaeche.sql',
-                'arp_npl_mgdm_laermmp95_v1_1rechtsvorschrften_dokument.sql',
-                'arp_npl_mgdm_laermmp95_v1_1rechtsvorschften_hinweisweiteredokumente.sql'];
+                'arp_npl_mgdm_localiseduri.sql']
+}
+
+task transferNplso2Laermempfindlichkeit(type: SqlExecutor){
+        database = [targetDbUrl, targetDbUser, targetDbPass] //[sourceDbUrl, sourceDbUser, sourceDbPass]
+        sqlFiles = [
+                'arp_laermempfindlichkeit_mgdm_geobasisdaten_typ.sql',
+                'arp_laermempfindlichkeit_mgdm_geobasisdaten_laermempfindlichkeit_zonenflaeche.sql',
+                'arp_laermempfindlichkeit_mgdm_rechtsvorschrften_dokument.sql',
+                'arp_laermempfindlichkeit_mgdm_rechtsvorschrften_hinweisweiteredokumente.sql'];
 }
