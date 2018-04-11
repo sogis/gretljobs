@@ -1,7 +1,7 @@
-DELETE FROM arp_npl_mgdm.laermmp95_v1_1geobasisdaten_typ
+DELETE FROM arp_laermempfindlichkeit_mgdm.geobasisdaten_typ
 ;
 
-INSERT INTO arp_npl_mgdm.laermmp95_v1_1geobasisdaten_typ(
+INSERT INTO arp_laermempfindlichkeit_mgdm.geobasisdaten_typ(
     code,
     bezeichnung,
     abkuerzung,
