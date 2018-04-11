@@ -22,8 +22,11 @@ task transferNplso2Nplch(type: SqlExecutor) {
 task transferNplso2Laermempfindlichkeit(type: SqlExecutor){
         database = [targetDbUrl, targetDbUser, targetDbPass] //[sourceDbUrl, sourceDbUser, sourceDbPass]
         sqlFiles = [
-                'arp_laermempfindlichkeit_mgdm_geobasisdaten_typ.sql',
+                /*'arp_laermempfindlichkeit_mgdm_geobasisdaten_typ.sql',
                 'arp_laermempfindlichkeit_mgdm_geobasisdaten_laermempfindlichkeit_zonenflaeche.sql',
                 'arp_laermempfindlichkeit_mgdm_rechtsvorschrften_dokument.sql',
-                'arp_laermempfindlichkeit_mgdm_rechtsvorschrften_hinweisweiteredokumente.sql'];
+                'arp_laermempfindlichkeit_mgdm_rechtsvorschrften_hinweisweiteredokumente.sql',*/
+                'arp_laermempfindlichkeit_mgdm_geobasisdaten_typ_dokument.sql',
+                'arp_laermempfindlichkeit_mgdm_multilingualuri.sql',
+                'arp_laermempfindlichkeit_mgdm_localiseduri.sql'];
 }
