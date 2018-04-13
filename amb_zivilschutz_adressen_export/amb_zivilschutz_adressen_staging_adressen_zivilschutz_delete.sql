@@ -1,0 +1,1 @@
+DELETE FROM amb_zivilschutz_adressen_staging.adressen_zivilschutz; 
