@@ -1,0 +1,63 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+repositories {
+    jcenter()
+}
+
+configurations {
+    ftpAntTask
+}
+
+dependencies {
+    ftpAntTask("org.apache.ant:ant-commons-net:1.8.2") {
+        module("commons-net:commons-net:1.4.1") {
+            dependencies "oro:oro:2.0.8:jar"
+        }
+    }
+}
+
+def adressenDelete = 'amb_zivilschutz_adressen_staging_adressen_zivilschutz_delete.sql'
+def adressenInsert = 'amb_zivilschutz_adressen_staging_adressen_zivilschutz.sql'
+def csvFileName = "TEST_Adressen_Kanton_Solothurn_${new Date().format('yyyy-MM-dd')}.csv"
+
+defaultTasks 'deleteFile'
+
+task stageAdressenZivilschutz(type: SqlExecutor){
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlFiles = [adressenDelete, adressenInsert]
+}
+
+task exportAdressenZivilschutz(type: CsvExport, dependsOn: stageAdressenZivilschutz){
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    schemaName = "amb_zivilschutz_adressen_staging"
+    tableName = "adressen_zivilschutz"
+    dataFile = csvFileName
+    encoding = "UTF-8"
+    // workaround für #139
+    attributes = ["gemeinde","grundbuchkreis","grundstuecknummer","gwr_edid","gwr_egid","hausnummer","koord_nord","koord_ost","lokalisationsname","objektname","ortschaft","plz","status"]
+}
+
+task clearStaging(type: SqlExecutor, dependsOn: exportAdressenZivilschutz){
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlFiles = [adressenDelete]
+}
+
+task uploadFile (dependsOn: clearStaging){
+    description = "Upload file to FTP server"    
+    doLast {
+        ant {
+            taskdef(name: "ftp", classname: "org.apache.tools.ant.taskdefs.optional.net.FTP", classpath: configurations.ftpAntTask.asPath)      
+            ftp(action: "send", server: "${ftpServerZivilschutz}", userid: "${ftpUserZivilschutz}", password: "${ftpPwdZivilschutz}", verbose: true, passive: true) {
+                fileset(file: "$csvFileName")
+            }
+        }
+        println "File uploaded to FTP server"
+    }
+}
+
+task deleteFile(type: Delete, dependsOn: uploadFile){
+    delete "${csvFileName}"
+}
