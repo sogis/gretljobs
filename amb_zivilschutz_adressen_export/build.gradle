@@ -21,7 +21,7 @@ dependencies {
 
 def adressenDelete = 'amb_zivilschutz_adressen_staging_adressen_zivilschutz_delete.sql'
 def adressenInsert = 'amb_zivilschutz_adressen_staging_adressen_zivilschutz.sql'
-def csvFileName = "TEST_Adressen_Kanton_Solothurn_${new Date().format('yyyy-MM-dd')}.csv"
+def csvFileName = "Adressen_Kanton_Solothurn_${new Date().format('yyyy-MM-dd')}.csv"
 
 defaultTasks 'deleteFile'
 
