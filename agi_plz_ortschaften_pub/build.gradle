@@ -42,9 +42,9 @@ task unzipData(type: Copy, dependsOn: 'download'){
 task dbImport(type: Ili2pgImport, dependsOn: 'unzipData'){
     description = "Import plz_ortschaften-Data into database"
     doLast {
-        println "Data imported into db: " + sourceDbUrl
+        println "Data imported into db: " + dbUriSogis
     }
-    database = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     dbschema = "agi_plz_ortschaften"
     models = "PLZOCH1LV95D"
     disableValidation = false
@@ -61,8 +61,8 @@ task convertData(type: Db2Db, dependsOn: 'dbImport'){
     }
     finalizedBy 'removeFiles'
 
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('plzortschaften_ortschaft.sql', 'agi_plz_ortschaften_pub.plzortschaften_ortschaft', true),
             new TransferSet('plzortschaften_postleitzahl.sql', 'agi_plz_ortschaften_pub.plzortschaften_postleitzahl', true)
