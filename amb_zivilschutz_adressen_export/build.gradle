@@ -1,23 +1,19 @@
+plugins {
+    id 'org.hidetake.ssh' version '2.9.0'
+}
+
+remotes {
+    ftpServer {
+        host = "${ftpServerZivilschutz}"
+        user = "${ftpUserZivilschutz}"
+        password = "${ftpPwdZivilschutz}"
+    }
+}
+
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
-
-repositories {
-    jcenter()
-}
-
-configurations {
-    ftpAntTask
-}
-
-dependencies {
-    ftpAntTask("org.apache.ant:ant-commons-net:1.8.2") {
-        module("commons-net:commons-net:1.4.1") {
-            dependencies "oro:oro:2.0.8:jar"
-        }
-    }
-}
 
 def adressenDelete = 'amb_zivilschutz_adressen_staging_adressen_zivilschutz_delete.sql'
 def adressenInsert = 'amb_zivilschutz_adressen_staging_adressen_zivilschutz.sql'
@@ -48,10 +44,12 @@ task clearStaging(type: SqlExecutor, dependsOn: exportAdressenZivilschutz){
 task uploadFile (dependsOn: clearStaging){
     description = "Upload file to FTP server"    
     doLast {
-        ant {
-            taskdef(name: "ftp", classname: "org.apache.tools.ant.taskdefs.optional.net.FTP", classpath: configurations.ftpAntTask.asPath)      
-            ftp(action: "send", server: "${ftpServerZivilschutz}", userid: "${ftpUserZivilschutz}", password: "${ftpPwdZivilschutz}", verbose: true, passive: true) {
-                fileset(file: "$csvFileName")
+        ssh.settings {
+            knownHosts = allowAnyHosts
+        }
+        ssh.run {
+            session(remotes.ftpServer) {
+                put from: "${csvFileName}", into: "."
             }
         }
         println "File uploaded to FTP server"
