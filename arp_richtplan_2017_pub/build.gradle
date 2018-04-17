@@ -6,8 +6,8 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferArpRichtplan'
 
 task transferArpRichtplan(type: Db2Db){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('arp_richtplan_2017_pub_grundnutzung.sql', 'arp_richtplan_2017_pub.grundnutzung', true),
             new TransferSet('arp_richtplan_2017_pub_siedlungstrennguertel.sql',
