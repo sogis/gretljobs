@@ -6,8 +6,8 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferAfuAbbaustellen'
 
 task transferAfuAbbaustellen(type: Db2Db){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('afu_abbaustellen_pub_abbaustelle.sql', 'afu_abbaustellen_pub.abbaustelle', true),
             new TransferSet('afu_abbaustellen_pub_teilregion_aaregaeu.sql', 'afu_abbaustellen_pub.teilregion_aaregaeu',

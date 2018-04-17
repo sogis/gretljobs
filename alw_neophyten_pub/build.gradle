@@ -3,8 +3,8 @@ import ch.so.agi.gretl.steps.*
 defaultTasks 'transferAlwNeophyten'
 
 task transferAlwNeophyten(type: Db2DbTask){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('alw_neophyten_pub_neophyten.sql', 'alw_neophyten_pub.neophyten', true),
             new TransferSet('alw_neophyten_pub_massnahmen.sql', 'alw_neophyten_pub.massnahmen', true)

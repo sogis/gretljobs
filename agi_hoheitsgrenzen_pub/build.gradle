@@ -4,8 +4,8 @@ import ch.so.agi.gretl.api.TransferSet
 defaultTasks 'transferAgiHoheitsgrenzen'
 
 task transferAgiHoheitsgrenzen(type: Db2Db){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('agi_hoheitsgrenzen_pub_hoheitsgrenzen_gemeindegrenze.sql',
                     'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze', true),

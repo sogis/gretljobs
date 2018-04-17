@@ -18,8 +18,8 @@ defaultTasks 'updateBaseData'
 
 
 task updateBaseData(type: Db2Db){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
         new TransferSet(gemeindegrenze, 'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze', true),
         new TransferSet(boflaeche, 'av_avdpool_ng.bodenbedeckung_boflaeche', true),
