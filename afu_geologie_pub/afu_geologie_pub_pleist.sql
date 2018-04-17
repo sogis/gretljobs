@@ -15,13 +15,19 @@ SELECT
     pleist.formation1, 
     codes_formation1.code_text AS formation1_txt,
     pleist.formation2, 
-    pleist.schichtgli, 
+    pleist.schichtgli,
+    substr(pleist.schichtgli::text, 1, 5) AS schichtgliederung,
+    codes_schichtgliederung.code_text AS schichtgliederung_txt,
     pleist.ausbi_fest, 
     pleist.litho_fest, 
     pleist.sacku_fest, 
     pleist.ausbi_lock, 
     codes_ausbi_lock.code_text AS ausbi_lock_txt,
-    pleist.litho_lock, 
+    pleist.litho_lock,
+    substr(pleist.neuer_code::text, 13, 2) AS lithologie1, 
+    codes_lithologie1.code_text AS lithologie1_txt,
+    substr(pleist.neuer_code::text, 15, 2) AS lithologie2,
+    codes_lithologie2.code_text AS lithologie2_txt
     pleist.verki_lock, 
     codes_verki_lock.code_text AS verki_lock_txt,
     pleist.durchlaess, 
@@ -44,13 +50,7 @@ SELECT
     codes_mat_maecht.code_text AS mat_maecht_txt,
     pleist.fehlmatmae, 
     codes_fehlmatmae.code_text AS fehlmatmae_txt,
-    substr(pleist.schichtgli::text, 1, 5) AS schichtgliederung,
-    codes_schichtgliederung.code_text AS schichtgliederung_txt,
     substr(pleist.neuer_code::text, 11, 1) AS gesteinstyp, 
-    substr(pleist.neuer_code::text, 13, 2) AS lithologie1, 
-    codes_lithologie1.code_text AS lithologie1_txt,
-    substr(pleist.neuer_code::text, 15, 2) AS lithologie2,
-    codes_lithologie2.code_text AS lithologie2_txt
 FROM 
     geologie.pleist
     LEFT JOIN geologie.codes AS codes_system1
