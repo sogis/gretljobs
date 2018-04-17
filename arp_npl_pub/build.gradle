@@ -1,10 +1,11 @@
-import ch.so.agi.gretl.steps.*
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
 
 defaultTasks 'transferArpNpl'
 
-task transferArpNpl(type: Db2DbTask){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+task transferArpNpl(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('arp_npl_pub_nutzungsplanung_grundnutzung.sql', 'arp_npl_pub.nutzungsplanung_grundnutzung',
                     true),
