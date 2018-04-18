@@ -4,9 +4,9 @@ SELECT
     o_art,
     CASE 
         WHEN o_art = 30601
-            THEN 'von kantonaler Bedeutung'
+            THEN 'Siedlungstrenngürtel von kantonaler Bedeutung'
         WHEN o_art = 30602
-            THEN 'von regionaler Bedeutung'
+            THEN 'Siedlungstrenngürtel von regionaler Bedeutung'
     END AS o_art_txt,
     geometrie
 FROM

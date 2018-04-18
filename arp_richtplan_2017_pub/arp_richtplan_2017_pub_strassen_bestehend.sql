@@ -6,11 +6,11 @@ SELECT
     objectval,
     CASE
         WHEN objectval = 'Autobahn'
-            THEN 'Autobahn'
+            THEN 'Nationalstrasse bestehend: Autobahn'
         WHEN objectval = 'Autostr'
-            THEN 'Autostrasse'
+            THEN 'Nationalstrasse bestehend: Autostrasse'
         WHEN objectval = 'Autobahn Tunnel'
-            THEN 'Autobahn Tunnel'
+            THEN 'Nationalstrasse bestehend: Autobahn Tunnel'
     END AS objectval_txt,
     yearchange,
     constructi,
