@@ -4,6 +4,14 @@ SELECT
     objid,
     objectorig,
     objectval,
+    CASE
+        WHEN objectval = 'Autobahn'
+            THEN 'Autobahn'
+        WHEN objectval = 'Autostr'
+            THEN 'Autostrasse'
+        WHEN objectval = 'Autobahn Tunnel'
+            THEN 'Autobahn Tunnel'
+    END AS objectval_txt,
     yearchange,
     constructi,
     objectname,
