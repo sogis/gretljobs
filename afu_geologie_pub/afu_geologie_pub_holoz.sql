@@ -17,12 +17,18 @@ SELECT
     codes_formation1.code_text AS formation_txt,
     holoz.formation2, 
     holoz.schichtgli,
+    substr(holoz.schichtgli::text, 1, 5) AS schichtgliederung, 
+    codes_schichtgliederung.code_text AS schichtgliederung_txt,
     holoz.ausbi_fest, 
     holoz.litho_fest, 
     holoz.sacku_fest, 
     holoz.ausbi_lock, 
     codes_ausbi_lock.code_text AS ausbi_lock_txt,
     holoz.litho_lock, 
+    substr(holoz.neuer_code::text, 13, 2) AS lithologie1, 
+    codes_litho1.code_text AS lithologie1_txt,
+    substr(holoz.neuer_code::text, 15, 2) AS lithologie2,
+    codes_litho2.code_text AS lithologie2_txt,
     holoz.verki_lock, 
     codes_verki_lock.code_text AS verki_lock_txt,
     holoz.durchlaess, 
@@ -45,13 +51,7 @@ SELECT
     codes_mat_maecht.code_text AS mat_maecht_txt,
     holoz.fehlmatmae, 
     codes_fehlmatmae.code_text AS fehlmatmae_txt,
-    substr(holoz.schichtgli::text, 1, 5) AS schichtgliederung, 
-    codes_schichtgliederung.code_text AS schichtgliederung_txt,
-    substr(holoz.neuer_code::text, 11, 1) AS gesteinstyp, 
-    substr(holoz.neuer_code::text, 13, 2) AS lithologie1, 
-    codes_litho1.code_text AS lithologie1_txt,
-    substr(holoz.neuer_code::text, 15, 2) AS lithologie2,
-    codes_litho2.code_text AS lithologie2_txt
+    substr(holoz.neuer_code::text, 11, 1) AS gesteinstyp
 FROM 
     geologie.holoz
     LEFT JOIN geologie.codes AS codes_system1

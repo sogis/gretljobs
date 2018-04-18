@@ -15,10 +15,16 @@ SELECT
     grunds.formation1,
     codes_formation1.code_text AS formation1_txt,
     grunds.formation2, 
-    grunds.schichtgli,     
+    grunds.schichtgli,
+    substr(grunds.schichtgli::text, 1, 5) AS schichtgliederung,
+    codes_schichtgliederung.code_text AS schichtgliederung_txt,
     grunds.ausbi_fest, 
     codes_ausbi_fest.code_text AS ausbi_fest_txt,
     grunds.litho_fest, 
+    substr(grunds.neuer_code::text, 13, 2) AS lithologie1,
+    codes_lithologie1.code_text AS lithologie1_txt,
+    substr(grunds.neuer_code::text, 15, 2) AS lithologie2,
+    codes_lithologie2.code_text AS lithologie2_txt,
     grunds.sacku_fest, 
     codes_sacku_fest.code_text AS sacku_fest_txt,
     grunds.ausbi_lock,     
@@ -47,13 +53,7 @@ SELECT
     grunds.maxwinkel, 
     grunds.midwinkel, 
     grunds.minwinkel,
-    substr(grunds.schichtgli::text, 1, 5) AS schichtgliederung,
-    codes_schichtgliederung.code_text AS schichtgliederung_txt,
-    substr(grunds.neuer_code::text, 11, 1) AS gesteinstyp, 
-    substr(grunds.neuer_code::text, 13, 2) AS lithologie1,
-    codes_lithologie1.code_text AS lithologie1_txt,
-    substr(grunds.neuer_code::text, 15, 2) AS lithologie2,
-    codes_lithologie2.code_text AS lithologie2_txt
+    substr(grunds.neuer_code::text, 11, 1) AS gesteinstyp
 FROM 
     geologie.grunds
     LEFT JOIN geologie.codes AS codes_system1
