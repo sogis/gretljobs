@@ -6,5 +6,5 @@ SELECT
 FROM
     public.avt_oev_netz
 WHERE
-    "archive" = 0
+    archive = 0
 ;
