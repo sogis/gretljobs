@@ -1,10 +1,10 @@
 SELECT
     ogc_fid AS t_id,
     ST_Multi(wkb_geometry) AS geometrie,
- S  typ,
+    typ,
     herkunft
 FROM
     public.avt_oev_netz
 WHERE
-    "archive" = 0
+    archive = 0
 ;
