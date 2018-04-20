@@ -25,7 +25,7 @@ SELECT
     shape_area,
     area1000,
     area_ha,
-    color
+    replace(color, ' ', ',')||',50' AS color
 FROM
     gewisso.ezg_kt_so_1000
 WHERE
