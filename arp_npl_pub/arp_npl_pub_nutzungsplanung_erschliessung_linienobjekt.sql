@@ -1,0 +1,32 @@
+SELECT
+    t_id ,
+    t_ili_tid,
+    typ_bezeichnung,
+    typ_abkuerzung,
+    typ_verbindlichkeit,
+    typ_bemerkungen,
+    typ_kt,
+    typ_code_kommunal,
+    name_nummer,
+    rechtsstatus,
+    publiziertab,
+    bemerkungen,
+    erfasser,
+    datum,
+    dok_id,
+    dok_titel,
+    dok_offiziellertitel,
+    dok_abkuerzung,
+    dok_offiziellenr,
+    dok_kanton,
+    dok_gemeinde,
+    dok_publiziertab,
+    dok_rechtsstatus,
+    dok_textimweb,
+    dok_bemerkungen,
+    dok_rechtsvorschrift,
+    bfs_nr,
+    geometrie
+FROM
+    arp_npl_pub.nutzungsplanung_erschliessung_linienobjekt
+;
