@@ -1,10 +1,13 @@
-import ch.so.agi.gretl.steps.*
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferAdagisd'
 
-task transferAdagisd(type: Db2DbTask){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+task transferAdagisd(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('ada_adagisd_pub_object.sql', 'ada_adagisd_pub.object', true),
             new TransferSet('ada_adagisd_pub_punktgeometrien.sql', 'ada_adagisd_pub.punktgeometrien', true),
