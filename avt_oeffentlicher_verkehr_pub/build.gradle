@@ -6,8 +6,8 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferAvtOeffentlicherVerkehr'
 
 task transferAvtOeffentlicherVerkehr(type: Db2Db){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('avt_oeffentlicher_verkehr_pub_haltestellen.sql',
                     'avt_oeffentlicher_verkehr_pub.haltestellen', true),

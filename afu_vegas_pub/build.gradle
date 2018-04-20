@@ -6,8 +6,8 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferAfuVegas'
 
 task transferAfuVegas(type: Db2Db){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             /*Werden vermutlich nicht benötigt.Zur Sicherheit noch dringelassen. Falls nicht benötigt Dateien löschen
             new TransferSet('afu_vegas_pub_baggerschlitz.sql', 'afu_vegas_pub.baggerschlitz', true),

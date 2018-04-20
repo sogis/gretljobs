@@ -16,12 +16,12 @@ while [ $# -gt 0 ]; do
 done
 
 db_parameter=(
--PsourceDbUrl=$sourceDbUrl \
--PsourceDbUser=$sourceDbUser \
--PsourceDbPass=$sourceDbPass \
--PtargetDbUrl=$targetDbUrl \
--PtargetDbUser=$targetDbUser \
--PtargetDbPass=$targetDbPass \
+-PdbUriSogis=$DB_URI_SOGIS \
+-PdbUserSogis=$DB_USER_SOGIS \
+-PdbPwdSogis=$DB_PWD_SOGIS \
+-PdbUriPub=$DB_URI_PUB \
+-PdbUserPub=$DB_USER_PUB \
+-PdbPwdPub=$DB_PWD_PUB \
 )
 
 declare gretl_cmd="gretl $task_name ${task_parameter[@]} ${db_parameter[@]}"

@@ -6,8 +6,8 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferAfuGewisso'
 
 task transferAfuGewisso(type: Db2Db){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('afu_gewisso_pub_oeko_abschnitte.sql', 'afu_gewisso_pub.oeko_abschnitte', true),
             new TransferSet('afu_gewisso_pub_gewisso.sql', 'afu_gewisso_pub.gewisso', true),

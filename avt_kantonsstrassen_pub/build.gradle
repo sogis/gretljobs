@@ -6,8 +6,8 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferAvtKantonsstrassen'
 
 task transferAvtKantonsstrassen(type: Db2Db){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('avt_kantonsstrassen_pub_bezugspunkt.sql', 'avt_kantonsstrassen_pub.bezugspunkt', true),
             new TransferSet('avt_kantonsstrassen_pub_achse.sql', 'avt_kantonsstrassen_pub.achse', true),
