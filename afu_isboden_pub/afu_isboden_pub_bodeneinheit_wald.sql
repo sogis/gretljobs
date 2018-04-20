@@ -18,10 +18,42 @@ SELECT
     untertyp_p,
     untertyp_div,
     skelett_ob,
+    CASE 
+        WHEN skelett_ob = 0
+            THEN 'Keine oder nur wenige Steine (0-5%)'
+        WHEN skelett_ob = 1
+            THEN 'mässig viele Steine (5-10%)'
+        WHEN skelett_ob = 2 OR skelett_ob = 3
+            THEN 'viele Steine (10-20%)'
+        WHEN skelett_ob = 4 OR skelett_ob = 5
+            THEN 'sehr viele Steine (20-30%)'
+        WHEN skelett_ob = 6 OR skelett_ob = 7
+            THEN 'extrem viele Steine (>30%)'
+    END AS skelett_ob_txt,
     skelett_ob_beschreibung,
     skelett_ub,
+    CASE 
+        WHEN skelett_ub = 0
+            THEN 'Keine oder nur wenige Steine (0-5%)'
+        WHEN skelett_ub = 1
+            THEN 'mässig viele Steine (5-10%)'
+        WHEN skelett_ub = 2 OR skelett_ub = 3
+            THEN 'viele Steine (10-20%)'
+        WHEN skelett_ub = 4 OR skelett_ub = 5
+            THEN 'sehr viele Steine (20-30%)'
+        WHEN skelett_ub = 6 OR skelett_ub = 7
+            THEN 'extrem viele Steine (>30%)'
+        END AS skelett_ub_txt,
     skelett_ub_beschreibung,
     koernkl_ob,
+    CASE
+        WHEN koernkl_ob = 1 OR koernkl_ob = 2 OR koernkl_ob = 3 OR koernkl_ob = 4
+            THEN 'Leichte, sandige Böden:<br>leicht bearbeitbar, trocknen leicht ab.'
+        WHEN koernkl_ob = 5 OR koernkl_ob = 6 OR koernkl_ob = 10 OR koernkl_ob = 11 OR koernkl_ob = 12
+            THEN 'Mittelschwere, lehmige bis schluffige Böden:<br>normal bearbeitbar, trocknen mässig schnell ab.'
+        WHEN koernkl_ob = 7 OR koernkl_ob = 8 OR koernkl_ob = 9 OR koernkl_ob = 13
+            THEN 'Schwere, tonige Böden:<br>schwer bearbeitbar, trocknen sehr langsam ab.'
+    END AS koernkl_ob_txt,
     koernkl_ob_beschreibung,
     koernkl_ub,
     koernkl_ub_beschreibung,
@@ -73,6 +105,18 @@ SELECT
     nfkapwe,
     nfkapwe_qgis_txt,
     verdempf,
+    CASE
+        WHEN verdempf = 1
+            THEN 'wenig empfindlicher Unterboden:<br>Bearbeitung mit üblicher Sorgfalt.'
+        WHEN verdempf = 2
+            THEN 'mässig empfindlicher Unterboden:<br>nach Abtrocknungsphase, gut mechanisch belastbar, Rückegassenabstand 30 m oder mehr empfohlen.'
+        WHEN verdempf = 3
+            THEN 'empfindlicher Unterboden:<br>erhöhte Sorgfalt beim Befahren und Feldarbeiten notwendig, Trockenperioden sind optimal zu nutzen, Rückegassenabstand 50 m oder mehr empfohlen.'
+        WHEN verdempf = 4
+            THEN 'stark empfindlicher Unterboden:<br>nur eingeschränkt mechanisch belastbar, längere Trockenperioden abwarten, ergänzende lastreduzierende und lastverteilende Massnahmen ergreifen, Rückegassenabstand 50 m oder mehr empfohlen.'
+        WHEN verdempf = 5
+            THEN 'extrem empfindlicher Unterboden:<br>möglichst Verzicht auf ackerbauliche Nutzung, bereits geringe Auflasten können irreversible Schäden verursachen, befahren vermeiden, falls dennoch nötig: nur mit lastverteilenden und lastreduzierenden Massnahmen und erst nach längeren Trockenperioden.'
+    END AS verdempf_txt,
     drain_wel,
     wassastoss,
     is_hauptauspraegung,
