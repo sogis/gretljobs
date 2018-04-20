@@ -1,10 +1,13 @@
-import ch.so.agi.gretl.steps.*
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferAgiAvKasoAbgleich'
 
-task transferAgiAvKasoAbgleich(type: Db2DbTask){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+task transferAgiAvKasoAbgleich(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('agi_av_kaso_abgleich_pub_differenzen.sql', 'agi_av_kaso_abgleich_pub.differenzen', true),
             new TransferSet('agi_av_kaso_abgleich_pub_uebersicht_des_vergleichs.sql',
