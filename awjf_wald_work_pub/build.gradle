@@ -1,10 +1,13 @@
-import ch.so.agi.gretl.steps.*
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferAwjfWaldWork'
 
-task transferAwjfWaldWork(type: Db2DbTask){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+task transferAwjfWaldWork(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('awjf_wald_work_pub_wap_bst_bkt.sql', 'awjf_wald_work_pub.wap_bst_bkt', true),
             new TransferSet('awjf_wald_work_pub_silvaprotecteinteilig_sturz_kor.sql',
