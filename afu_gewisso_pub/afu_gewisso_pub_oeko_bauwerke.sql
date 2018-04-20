@@ -7,9 +7,15 @@ SELECT
     bauwnr,
     bauwtyp,
     bauwhoeh,
-    erhebungsdatum
+    erhebungsdatum,
+    code_text.text AS bauwtyp_txt
 FROM 
     gewisso.oeko_bauwerke
+    LEFT JOIN gewisso.code_text
+        ON
+            code_text.code = oeko_bauwerke.bauwtyp
+            AND
+            code_text.code_typ_id = 1
 WHERE 
     archive = 0
 ;

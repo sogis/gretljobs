@@ -1,10 +1,13 @@
-import ch.so.agi.gretl.steps.*
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferAfuGeologie'
 
-task transferAfuGeologie(type: Db2DbTask){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+task transferAfuGeologie(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('afu_geologie_pub_sfall.sql', 'afu_geologie_pub.sfall', true),
             new TransferSet('afu_geologie_pub_abrkt.sql', 'afu_geologie_pub.abrkt', true),
