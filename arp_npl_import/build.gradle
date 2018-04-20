@@ -32,7 +32,8 @@ ext {
 }
 
 import ch.so.agi.gretl.tasks.*
-import ch.so.agi.gretl.steps.*
+import ch.so.agi.gretl.api.TransferSet
+
 
 task checkXtfName() {
     description = "Prüft, ob die ersten vier Buchstaben im XTF-Filenamen einer Nummer entsprechen, die im BfS-Range des Kt. SO liegt."    
@@ -52,7 +53,7 @@ task validateDataset(type: IliValidator, dependsOn: 'checkXtfName') {
 // Bis klar ist, was IliValidator-Task genau macht.
 task replaceDataset (type: Ili2pgReplace, dependsOn: 'checkXtfName') {
     description = "Ersetzt einen Datensatz (=XTF) in der PostgreSQL-Datenbank."
-    database = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     dbschema = "arp_npl"
     models = "SO_Nutzungsplanung_20170915"
     disableValidation = false
@@ -64,8 +65,8 @@ task replaceDataset (type: Ili2pgReplace, dependsOn: 'checkXtfName') {
 // No Pub-Db yet.
 task transformArpNpl(type: Db2DbTask) {
     description = "Datenumbau in das Publikationsmodell."
-    sourceDb =  [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    sourceDb =  [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
             new TransferSet("transform_arp_npl_pub_nutzungsplanung_grundnutzung_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_grundnutzung', true),
             new TransferSet("transform_arp_npl_pub_nutzungsplanung_ueberlagernd_flaeche_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_ueberlagernd_flaeche', true),

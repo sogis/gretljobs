@@ -1,6 +1,7 @@
 import java.nio.file.Paths
 import ch.so.agi.gretl.tasks.*
-import ch.so.agi.gretl.steps.*
+
+apply plugin: 'ch.so.agi.gretl'
 
 description = """\n
 Exportiert sämtliche modellbasierten Datenerfassungen in eine 
@@ -48,7 +49,7 @@ models.each { model ->
     
     task "checkModel_$modelName"(type: Ili2pgExport) {
         description = "INTERLIS validation against database schema: $dbSchema ($modelName)"
-        database = [sourceDbUrl, sourceDbUser, sourceDbPass]
+        database = [dbUriSogis, dbUserSogis, dbPwdSogis]
         dbschema = dbSchema
         models = modelName
         disableValidation = false
