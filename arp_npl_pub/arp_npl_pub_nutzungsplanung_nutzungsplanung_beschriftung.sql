@@ -1,0 +1,18 @@
+SELECT
+    t_id,
+    t_ili_tid,
+    typ_bezeichnung,
+    typ_abkuerzung,
+    typ_verbindlichkeit,
+    typ_bemerkungen,
+    typ_kt,
+    typ_code_kommunal,
+    pos_ori,
+    pos_hali,
+    pos_vali,
+    pos_groesse,
+    bfs_nr,
+    pos
+FROM
+    arp_npl_pub.nutzungsplanung_nutzungsplanung_beschriftung
+;

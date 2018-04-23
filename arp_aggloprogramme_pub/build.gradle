@@ -6,8 +6,8 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferArpAggloprogramme'
 
 task transferArpAggloprogramme(type: Db2Db){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('arp_aggloprogramme_pub_agglomrtnsprgrmme_agglomerationsprogramm.sql',
                     'arp_aggloprogramme_pub.agglomrtnsprgrmme_agglomerationsprogramm', true),

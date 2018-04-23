@@ -7,8 +7,8 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferAfuAbwasser'
 
 task transferAfuAbwasser(type: Db2Db){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('afu_abwasser_pub_aww_seso.sql', 'afu_abwasser_pub.aww_seso', true),
             new TransferSet('afu_abwasser_pub_aww_seso_node.sql', 'afu_abwasser_pub.aww_seso_node', true),
