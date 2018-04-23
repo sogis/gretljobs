@@ -55,9 +55,9 @@ task unzipSwissBoundaries3D(type: Copy, dependsOn: 'unzipData'){
 task dbImport(type: Ili2pgImport, dependsOn: 'unzipSwissBoundaries3D'){
     description = "Import swissBoundaries3D-Data into database"
     doLast {
-        println "Data imported into db: " + sourceDbUrl
+        println "Data imported into db: " + dbUriSogis
     }
-    database = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     dbschema = "agi_swissboundaries3d"
     models = "swissBOUNDARIES3D_ili2_LV95_V1_3"
     disableValidation = false
@@ -74,8 +74,8 @@ task convertData(type: Db2Db, dependsOn: 'dbImport'){
     }
     finalizedBy 'removeFiles'
 
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('bezirke.sql', 'agi_swissboundaries3d_pub.swissboundaries3d_bezirk', true),
             new TransferSet('hoheitsgebiet.sql', 'agi_swissboundaries3d_pub.swissboundaries3d_hoheitsgebiet', true),
