@@ -6,8 +6,8 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferAgiHoehen2001'
 
 task transferAgiHoehen2001(type: Db2Db){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     fetchSize = 100
     batchSize = 100
     transferSets = [
