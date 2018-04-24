@@ -32,6 +32,7 @@ task exportAdressenZivilschutz(type: CsvExport, dependsOn: stageAdressenZivilsch
     tableName = "adressen_zivilschutz"
     dataFile = csvFileName
     encoding = "UTF-8"
+    valueSeparator = ';'
     // workaround für #139
     attributes = ["gemeinde","grundbuchkreis","grundstuecknummer","gwr_edid","gwr_egid","hausnummer","koord_nord","koord_ost","lokalisationsname","objektname","ortschaft","plz","status"]
 }
@@ -42,7 +43,7 @@ task clearStaging(type: SqlExecutor, dependsOn: exportAdressenZivilschutz){
 }
 
 task uploadFile (dependsOn: clearStaging){
-    description = "Upload file to FTP server"    
+    description = "Upload file to FTP server"
     doLast {
         ssh.settings {
             knownHosts = allowAnyHosts
