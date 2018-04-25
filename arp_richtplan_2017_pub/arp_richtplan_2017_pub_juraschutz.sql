@@ -2,9 +2,9 @@ SELECT
     typ,
     CASE
         WHEN typ = 3
-            THEN 'dem Wald überlagert'
+            THEN 'Juraschutzzone/Gebiet von besonderer Schönheit und Eigenart: dem Wald überlagert'
         WHEN typ = 5
-            THEN 'dem Landwirtschaftsgebiet überlagert'
+            THEN 'Juraschutzzone/Gebiet von besonderer Schönheit und Eigenart: dem Landwirtschaftsgebiet überlagert'
     END AS typ_txt,
     gid AS t_id,
     flaeche,

@@ -1,0 +1,16 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferAgiAvGbAbgleich'
+
+task transferAgiAvGbAbgleich(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('agi_av_gb_abgleich_pub_differenzen.sql', 'agi_av_gb_abgleich_pub.differenzen', true),
+            new TransferSet('agi_av_gb_abgleich_pub_uebersicht_des_vergleichs.sql',
+                    'agi_av_gb_abgleich_pub.uebersicht_des_vergleichs', true)
+    ];
+}

@@ -1,0 +1,18 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferAdagisa'
+
+task transferAdagisa(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('ada_adagisa_pub_flaechenfundstellen.sql', 'ada_adagisa_pub.flaechenfundstellen', true),
+            new TransferSet('ada_adagisa_pub_punktfundstellen.sql', 'ada_adagisa_pub.punktfundstellen', true),
+            new TransferSet('ada_adagisa_pub_schutz_olten_solothurn.sql', 'ada_adagisa_pub.schutz_olten_solothurn', true),
+            new TransferSet('ada_adagisa_pub_gemeindegrenzen_adagisa.sql', 'ada_adagisa_pub.gemeindegrenzen_adagisa',
+                    true)
+    ];
+}

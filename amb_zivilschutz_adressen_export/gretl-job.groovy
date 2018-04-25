@@ -3,7 +3,6 @@ def dbCredentialNameSogis = ''
 def ftpServerZivilschutz = ''
 def ftpCredentialNameZivilschutz = ''
 def gretljobsRepo = ''
-def emailRecipients = 'andreas.schmid@bd.so.ch, andreas.schmid@bd.so.ch'
 
 node("master") {
     dbUriSogis = "${env.DB_URI_SOGIS}"
@@ -20,5 +19,4 @@ node ("gretl") {
             sh "gradle --init-script /home/gradle/init.gradle -PdbUriSogis='${dbUriSogis}' -PdbUserSogis='${dbUserSogis}' -PdbPwdSogis='${dbPwdSogis}' -PftpServerZivilschutz='${ftpServerZivilschutz}' -PftpUserZivilschutz='${ftpUserZivilschutz}' -PftpPwdZivilschutz='${ftpPwdZivilschutz}'"
         }
     }
-	// emailext attachLog: true, to: "${emailRecipients}", subject: "Ausführung des GRETL-Job ${env.JOB_BASE_NAME} abgeschlossen", body: "Die Ausführung des GRETL-Job ${env.JOB_BASE_NAME} ist abgeschlossen. Ob sie erfolgreich war, entnehmen Sie bitte dem anghängten Log."
 }
