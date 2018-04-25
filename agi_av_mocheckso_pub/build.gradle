@@ -1,0 +1,12 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+defaultTasks 'transferAgiAvMocheckso'
+
+task transferAgiAvMocheckso(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('agi_av_mocheckso_pub_mocheckso.sql', 'agi_av_mocheckso_pub.mocheckso', true)
+    ];
+}
