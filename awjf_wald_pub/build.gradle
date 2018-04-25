@@ -1,10 +1,13 @@
-import ch.so.agi.gretl.steps.*
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferAwjf'
 
-task transferAwjf(type: Db2DbTask){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+task transferAwjf(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('awjf_wald_pub_wald_uebersicht.sql', 'awjf_wald_pub.wald_uebersicht', true),
             new TransferSet('awjf_wald_pub_wap_bst.sql', 'awjf_wald_pub.wap_bst', true),
@@ -17,6 +20,16 @@ task transferAwjf(type: Db2DbTask){
             new TransferSet('awjf_wald_pub_schutzwald_status.sql', 'awjf_wald_pub.schutzwald_status', true),
             new TransferSet('awjf_wald_pub_schutzwald_massnahmenplanung.sql',
                     'awjf_wald_pub.schutzwald_massnahmenplanung', true),
-            new TransferSet('awjf_wald_pub_sw_pdf.sql', 'awjf_wald_pub.sw_pdf', true)
+            new TransferSet('awjf_wald_pub_sw_pdf.sql', 'awjf_wald_pub.sw_pdf', true),
+            new TransferSet('awjf_wald_pub_wap_bst_bkt.sql', 'awjf_wald_pub.wap_bst_bkt', true),
+            new TransferSet('awjf_wald_pub_silvaprotecteinteilig_sturz_kor.sql',
+                    'awjf_wald_pub.silvaprotecteinteilig_sturz_kor', true),
+            new TransferSet('awjf_wald_pub_silvaprotecteinteilig_lawine_kor.sql',
+                    'awjf_wald_pub.silvaprotecteinteilig_lawine_kor', true),
+            new TransferSet('awjf_wald_pub_silvaprotecteinteilig_rutsch_kor.sql',
+                    'awjf_wald_pub.silvaprotecteinteilig_rutsch_kor', true),
+            new TransferSet('awjf_wald_pub_silvaprotecteinteilig_grs_kor.sql',
+                    'awjf_wald_pub.silvaprotecteinteilig_grs_kor', true),
+            new TransferSet('awjf_wald_pub_sw_info.sql', 'awjf_wald_pub.sw_info', true)
     ];        
 }
