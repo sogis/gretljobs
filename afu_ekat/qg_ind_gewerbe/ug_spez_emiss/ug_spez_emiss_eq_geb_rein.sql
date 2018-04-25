@@ -8,7 +8,7 @@
         END AS emiss_nmvoc
    FROM ekat2015.ha_raster_100 a
    LEFT JOIN ( SELECT besch_gesamt, x, y FROM ekat2015.bz_besch_2_und3_sektor) f ON a.xkoord = f.x::numeric AND a.ykoord = f.y::numeric, 
-    ( SELECT sum(besch_gesamt) AS besch_gesamt 
-      FROM ekat2015.bz_besch_2_und3_sektor) b
+    ( SELECT besch_ges AS besch_gesamt 
+      FROM ekat2015.bz_besch_2_und3_sektor_ch) b
   WHERE a.archive = 0
   ORDER BY a.xkoord, a.ykoord;

@@ -150,7 +150,7 @@ task calc_qg_verkehr(type: Db2Db, dependsOn: [calc_ug_bahn_gesamt, calc_ug_flug_
             new TransferSet('qg_verkehr.sql', 'ekat2015.qg_verkehr', true),
             new TransferSet('ug_bahn/ug_bahn_gesamt_gem.sql', 'ekat2015.ug_bahn_gesamt_gem', true),
             new TransferSet('ug_flug/ug_flug_gesamt_gem.sql', 'ekat2015.ug_flug_gesamt_gem', true),
-            new TransferSet('ug_diff_verkehr/ug_diff_verkehr_gesamt_gem.sql', 'ekat2015.uf_diff_verkehr_gesamt_gem', true), 
+            new TransferSet('ug_diff_verkehr/ug_diff_verkehr_gesamt_gem.sql', 'ekat2015.ug_diff_verkehr_gesamt_gem', true), 
             new TransferSet('ug_kaltstart/ug_kaltstart_gesamt_gem.sql', 'ekat2015.ug_kaltstart_gesamt_gem', true),
             new TransferSet('ug_strkvk/ug_strkvk_gesamt_gem.sql', 'ekat2015.ug_strkvk_gesamt_gem', true),
             new TransferSet('ug_verdampf/ug_verdampf_gesamt_gem.sql', 'ekat2015.ug_verdampf_gesamt_gem', true)

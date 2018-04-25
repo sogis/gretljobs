@@ -33,6 +33,6 @@ SELECT a.ogc_fid, a.xkoord, a.ykoord, a.wkb_geometry, a.gem_bfs,
        flug_emiss.emiss_nmvoc, flug_emiss.emiss_co, flug_emiss.new_date, 
        flug_emiss.archive_date, flug_emiss.archive
       FROM ekat2015.flug_emiss
-     WHERE flug_emiss.archive = 0 AND flug_emiss.unterteilung = 'Total'::text) d
+     WHERE flug_emiss.archive = 0 AND flug_emiss.unterteilung = '3'::text) d
   WHERE a.archive = 0
   ORDER BY a.xkoord, a.ykoord;

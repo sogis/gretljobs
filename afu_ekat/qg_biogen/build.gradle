@@ -1,10 +1,13 @@
-import ch.so.agi.gretl.steps.*
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'calc_qg_biogen_gem'
 
 //Berechnung der Untergruppe blitze
 
-task calc_ug_blitze(type: Db2DbTask){
+task calc_ug_blitze(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -16,7 +19,7 @@ task calc_ug_blitze(type: Db2DbTask){
 
 //Berechnung der Untergruppe gewaesser
 
-task calc_ug_gewaesser(type: Db2DbTask){
+task calc_ug_gewaesser(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -29,7 +32,7 @@ task calc_ug_gewaesser(type: Db2DbTask){
 
 //Berechnung der Tabellen ug_gewaesser_gesamt
 
-task calc_ug_gewaesser_gesamt(type: Db2DbTask, dependsOn: [calc_ug_gewaesser]){
+task calc_ug_gewaesser_gesamt(type: Db2Db, dependsOn: [calc_ug_gewaesser]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -40,7 +43,7 @@ task calc_ug_gewaesser_gesamt(type: Db2DbTask, dependsOn: [calc_ug_gewaesser]){
 
 //Berechnung der Untergruppe graweiern
 
-task calc_ug_graweiern(type: Db2DbTask){
+task calc_ug_graweiern(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -53,7 +56,7 @@ task calc_ug_graweiern(type: Db2DbTask){
 
 //Berechnung der Tabellen ug_graweiern_gesamt
 
-task calc_ug_graweiern_gesamt(type: Db2DbTask, dependsOn: [calc_ug_graweiern]){
+task calc_ug_graweiern_gesamt(type: Db2Db, dependsOn: [calc_ug_graweiern]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -64,7 +67,7 @@ task calc_ug_graweiern_gesamt(type: Db2DbTask, dependsOn: [calc_ug_graweiern]){
 
 //Berechnung der Untergruppe waelder
 
-task calc_ug_waelder(type: Db2DbTask){
+task calc_ug_waelder(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -78,7 +81,7 @@ task calc_ug_waelder(type: Db2DbTask){
 
 //Berechnung der Tabellen ug_waelder_gesamt
 
-task calc_ug_waelder_gesamt(type: Db2DbTask, dependsOn: [calc_ug_waelder]){
+task calc_ug_waelder_gesamt(type: Db2Db, dependsOn: [calc_ug_waelder]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -89,7 +92,7 @@ task calc_ug_waelder_gesamt(type: Db2DbTask, dependsOn: [calc_ug_waelder]){
 
 //Berechnung der Quellengruppe Biogene
 
-task calc_qg_biogen(type: Db2DbTask, dependsOn: [calc_ug_blitze, calc_ug_gewaesser_gesamt, calc_ug_graweiern_gesamt, calc_ug_waelder_gesamt]){
+task calc_qg_biogen(type: Db2Db, dependsOn: [calc_ug_blitze, calc_ug_gewaesser_gesamt, calc_ug_graweiern_gesamt, calc_ug_waelder_gesamt]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -102,7 +105,7 @@ task calc_qg_biogen(type: Db2DbTask, dependsOn: [calc_ug_blitze, calc_ug_gewaess
     ];
 }
 
-task calc_qg_biogen_gem(type: Db2DbTask, dependsOn: [calc_qg_biogen]){
+task calc_qg_biogen_gem(type: Db2Db, dependsOn: [calc_qg_biogen]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]

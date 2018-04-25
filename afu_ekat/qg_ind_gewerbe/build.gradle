@@ -1,10 +1,13 @@
-import ch.so.agi.gretl.steps.*
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'calc_qg_ind_gewerbe_gem'
 
 //Berechnung der Untergruppe anl_proz
 
-task calc_ug_anl_proz(type: Db2DbTask){
+task calc_ug_anl_proz(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -18,7 +21,7 @@ task calc_ug_anl_proz(type: Db2DbTask){
 
 //Berechnung der Tabellen ug_anl_proz_gesamt
 
-task calc_ug_anl_proz_gesamt(type: Db2DbTask, dependsOn: [calc_ug_anl_proz]){
+task calc_ug_anl_proz_gesamt(type: Db2Db, dependsOn: [calc_ug_anl_proz]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -29,7 +32,7 @@ task calc_ug_anl_proz_gesamt(type: Db2DbTask, dependsOn: [calc_ug_anl_proz]){
 
 //Berechnung der Untergruppe spez_branch
 
-task calc_ug_spez_branch(type: Db2DbTask){
+task calc_ug_spez_branch(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -43,7 +46,7 @@ task calc_ug_spez_branch(type: Db2DbTask){
 
 //Berechnung der Tabellen ug_spez_branch_gesamt
 
-task calc_ug_spez_branch_gesamt(type: Db2DbTask, dependsOn: [calc_ug_spez_branch]){
+task calc_ug_spez_branch_gesamt(type: Db2Db, dependsOn: [calc_ug_spez_branch]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -54,7 +57,7 @@ task calc_ug_spez_branch_gesamt(type: Db2DbTask, dependsOn: [calc_ug_spez_branch
 
 //Berechnung der Untergruppe branchen
 
-task calc_ug_branchen(type: Db2DbTask){
+task calc_ug_branchen(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -72,7 +75,7 @@ task calc_ug_branchen(type: Db2DbTask){
 
 //Berechnung der Tabellen ug_branchen_gesamt
 
-task calc_ug_branchen_gesamt(type: Db2DbTask, dependsOn: [calc_ug_branchen]){
+task calc_ug_branchen_gesamt(type: Db2Db, dependsOn: [calc_ug_branchen]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -83,7 +86,7 @@ task calc_ug_branchen_gesamt(type: Db2DbTask, dependsOn: [calc_ug_branchen]){
 
 //Berechnung der Untergruppe spez_emiss
 
-task calc_ug_spez_emiss(type: Db2DbTask){
+task calc_ug_spez_emiss(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -99,7 +102,7 @@ task calc_ug_spez_emiss(type: Db2DbTask){
 
 //Berechnung der Tabellen ug_spez_emiss_gesamt
 
-task calc_ug_spez_emiss_gesamt(type: Db2DbTask, dependsOn: [calc_ug_spez_emiss]){
+task calc_ug_spez_emiss_gesamt(type: Db2Db, dependsOn: [calc_ug_spez_emiss]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -110,7 +113,7 @@ task calc_ug_spez_emiss_gesamt(type: Db2DbTask, dependsOn: [calc_ug_spez_emiss])
 
 //Berechnung der Untergruppe uplus
 
-task calc_ug_uplus(type: Db2DbTask){
+task calc_ug_uplus(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -122,7 +125,7 @@ task calc_ug_uplus(type: Db2DbTask){
 
 //Berechnung der Tabellen ug_uplus_gesamt
 
-task calc_ug_uplus_gesamt(type: Db2DbTask, dependsOn: [calc_ug_uplus]){
+task calc_ug_uplus_gesamt(type: Db2Db, dependsOn: [calc_ug_uplus]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -133,7 +136,7 @@ task calc_ug_uplus_gesamt(type: Db2DbTask, dependsOn: [calc_ug_uplus]){
 
 //Berechnung der Quellengruppe Industrie und Gewerbe 
 
-task calc_qg_ind_gewerbe(type: Db2DbTask, dependsOn: [calc_ug_uplus_gesamt, calc_ug_spez_emiss_gesamt, calc_ug_branchen_gesamt, calc_ug_spez_branch_gesamt, calc_ug_anl_proz_gesamt]){
+task calc_qg_ind_gewerbe(type: Db2Db, dependsOn: [calc_ug_uplus_gesamt, calc_ug_spez_emiss_gesamt, calc_ug_branchen_gesamt, calc_ug_spez_branch_gesamt, calc_ug_anl_proz_gesamt]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -148,7 +151,7 @@ task calc_qg_ind_gewerbe(type: Db2DbTask, dependsOn: [calc_ug_uplus_gesamt, calc
     ];
 }
 
-task calc_qg_ind_gewerbe_gem(type: Db2DbTask, dependsOn: [calc_qg_ind_gewerbe]){
+task calc_qg_ind_gewerbe_gem(type: Db2Db, dependsOn: [calc_qg_ind_gewerbe]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]

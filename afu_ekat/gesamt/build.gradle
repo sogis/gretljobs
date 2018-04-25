@@ -1,0 +1,36 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'calc_gesamt_gesamt'
+
+//Berechnung der ekat_mapserver_tabellen
+
+task calc_gesamt(type: Db2Db){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('biogene_quellen_gem_mapserver.sql', 'ekat2015.biogene_quellen_gem_mapserver', true),
+            new TransferSet('biogene_quellen_mapserver.sql', 'ekat2015.biogene_quellen_mapserver', true),
+            new TransferSet('haushalte_gem_mapserver.sql', 'ekat2015.haushalte_gem_mapserver', true),
+            new TransferSet('haushalte_mapserver.sql', 'ekat2015.haushalte_mapserver', true),
+            new TransferSet('ind_gewerbe_gem_mapserver.sql', 'ekat2015.ind_gewerbe_gem_mapserver', true),
+            new TransferSet('ind_gewerbe_mapserver.sql', 'ekat2015.ind_gewerbe_mapserver', true),
+            new TransferSet('land_forst_gem_mapserver.sql', 'ekat2015.land_forst_gem_mapserver', true),
+            new TransferSet('land_forst_mapserver.sql', 'ekat2015.land_forst_mapserver', true), 
+            new TransferSet('verkehr_gem_mapserver.sql', 'ekat2015.verkehr_gem_mapserver', true),
+            new TransferSet('verkehr_mapserver.sql', 'ekat2015.verkehr_mapserver', true)
+    ];
+}
+
+task calc_gesamt_gesamt(type: Db2Db, dependsOn: [calc_gesamt]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('gesamt_mapserver.sql', 'ekat2015.gesamt_mapserver', true),
+            new TransferSet('gesamt_gem_mapserver.sql', 'ekat2015.gesamt_gem_mapserver', true)
+    ];
+} 

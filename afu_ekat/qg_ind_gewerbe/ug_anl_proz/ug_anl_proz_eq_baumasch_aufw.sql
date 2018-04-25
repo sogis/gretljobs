@@ -10,7 +10,7 @@
             intersec_bdbed_ha_raster.xkoord, intersec_bdbed_ha_raster.ykoord, 
             sum(intersec_bdbed_ha_raster.flaeche) AS flaeche
            FROM ekat2015.intersec_bdbed_ha_raster
-          WHERE intersec_bdbed_ha_raster.archive = 0 AND ((intersec_bdbed_ha_raster.art = ANY (ARRAY[0, 1, 2, 9, 11, 12])) OR (intersec_bdbed_ha_raster.art = ANY (ARRAY[34, 35, 36, 37])))
+          WHERE intersec_bdbed_ha_raster.archive = 0 AND ((intersec_bdbed_ha_raster.art = ANY (ARRAY[0, 1, 2, 9, 11, 12])) OR (intersec_bdbed_ha_raster.art = ANY (ARRAY[34, 35, 37]))) --36 = Deponien
           GROUP BY intersec_bdbed_ha_raster.xkoord, intersec_bdbed_ha_raster.ykoord) g ON c.xkoord = g.xkoord::numeric AND c.ykoord = g.ykoord::numeric, 
     ( SELECT sum(asch92_sum.anz_ha_ch) AS anz_ha_ch
       FROM ekat.asch92_sum
@@ -20,6 +20,6 @@
      WHERE asch92.bn9725 >= 16 AND asch92.bn9725 <= 20 OR asch92.bn9725 = 22 AND asch92.archive = 0) f, 
     ( SELECT sum(intersec_bdbed_ha_raster.flaeche) AS flaeche
       FROM ekat2015.intersec_bdbed_ha_raster
-     WHERE intersec_bdbed_ha_raster.archive = 0 AND ((intersec_bdbed_ha_raster.art = ANY (ARRAY[0, 1, 2, 9, 11, 12])) OR (intersec_bdbed_ha_raster.art = ANY (ARRAY[34, 35, 36, 37])))) h
+     WHERE intersec_bdbed_ha_raster.archive = 0 AND ((intersec_bdbed_ha_raster.art = ANY (ARRAY[0, 1, 2, 9, 11, 12])) OR (intersec_bdbed_ha_raster.art = ANY (ARRAY[34, 35, 37])))) h --36 = Deponien
   WHERE c.archive = 0
   ORDER BY c.xkoord, c.ykoord;

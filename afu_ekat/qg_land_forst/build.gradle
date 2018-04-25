@@ -1,0 +1,127 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'calc_qg_land_forst_gem'
+
+//Berechnung der Untergruppe abfallverbr
+
+task calc_ug_abfallverbr(type: Db2Db){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_abfallverbr/ug_abfallverbr_eq_fw.sql', 'ekat2015.ug_abfallverbr_eq_fw', true),
+            new TransferSet('ug_abfallverbr/ug_abfallverbr_eq_lw.sql', 'ekat2015.ug_abfallverbr_eq_lw', true)
+    ];
+}
+
+//Berechnung der Tabellen abfallverbr_gesamt
+
+task calc_ug_abfallverbr_gesamt(type: Db2Db, dependsOn: [calc_ug_abfallverbr]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_abfallverbr/ug_abfallverbr_gesamt.sql', 'ekat2015.ug_abfallverbr_gesamt', true)
+    ];
+}
+
+//Berechnung der Untergruppe Maschinen
+
+task calc_ug_maschinen(type: Db2Db){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_maschinen/ug_maschinen_eq_maschfw.sql', 'ekat2015.ug_maschinen_eq_maschfw', true),
+            new TransferSet('ug_maschinen/ug_maschinen_eq_maschlw.sql', 'ekat2015.ug_maschinen_eq_maschlw', true),
+    ];
+}
+
+//Berechnung der Tabellen ug_maschinen_gesamt
+
+task calc_ug_maschinen_gesamt(type: Db2Db, dependsOn: [calc_ug_maschinen]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_maschinen/ug_maschinen_gesamt.sql', 'ekat2015.ug_maschinen_gesamt', true)
+    ];
+}
+
+//Berechnung der Untergruppe Nutzduenger
+
+task calc_ug_nutzdue(type: Db2Db){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_nutzdue/ug_nutzdue_eq_hofdue_transfer.sql', 'ekat2015.ug_nutzdue_eq_hofdue_transfer', true),
+            new TransferSet('ug_nutzdue/ug_nutzdue_eq_nutzdue_nh3.sql', 'ekat2015.ug_nutzdue_eq_nutzdue_nh3', true),
+            new TransferSet('ug_nutzdue/ug_nutzdue_eq_nutzdue_nox_n2o.sql', 'ekat2015.ug_nutzdue_eq_nutzdue_nox_n2o', true)
+    ];
+}
+
+//Berechnung der Tabellen ug_nutzdue_gesamt
+
+task calc_ug_nutzdue_gesamt(type: Db2Db, dependsOn: [calc_ug_nutzdue]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_nutzdue/ug_nutzdue_gesamt.sql', 'ekat2015.ug_nutzdue_gesamt', true)
+    ];
+}
+
+//Berechnung der Untergruppe Streckenverkehr (strkvk)
+
+task calc_ug_nutztier(type: Db2Db){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_nutztier/ug_nutztier_eq_exkr_flaeche.sql', 'ekat2015.ug_nutztier_eq_exkr_flaeche', true),
+            new TransferSet('ug_nutztier/ug_nutztier_eq_exkr_punktquelle.sql', 'ekat2015.ug_nutztier_eq_exkr_punktquelle', true),
+            new TransferSet('ug_nutztier/ug_nutztier_eq_ferm_flaeche.sql', 'ekat2015.ug_nutztier_eq_ferm_flaeche', true),
+            new TransferSet('ug_nutztier/ug_nutztier_eq_ferm_punktquelle.sql', 'ekat2015.ug_nutztier_eq_ferm_punktquelle', true)
+    ];
+}
+
+//Berechnung der Tabellen ug_nutztier_gesamt
+
+task calc_ug_nutztier_gesamt(type: Db2Db, dependsOn: [calc_ug_nutztier]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_nutztier/ug_nutztier_gesamt.sql', 'ekat2015.ug_nutztier_gesamt', true)
+    ];
+}
+
+
+//Berechnung der Quellengruppe Forst- und Landwirtschaft 
+
+task calc_qg_land_forst(type: Db2Db, dependsOn: [calc_ug_abfallverbr_gesamt, calc_ug_maschinen_gesamt, calc_ug_nutzdue_gesamt, calc_ug_nutztier_gesamt]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('qg_land_forst.sql', 'ekat2015.qg_land_forst', true),
+            new TransferSet('ug_abfallverbr/ug_abfallverbr_gesamt_gem.sql', 'ekat2015.ug_abfallverbr_gesamt_gem', true),
+            new TransferSet('ug_maschinen/ug_maschinen_gesamt_gem.sql', 'ekat2015.ug_maschinen_gesamt_gem', true),
+            new TransferSet('ug_nutzdue/ug_nutzdue_gesamt_gem.sql', 'ekat2015.ug_nutzdue_gesamt_gem', true), 
+            new TransferSet('ug_nutztier/ug_nutztier_gesamt_gem.sql', 'ekat2015.ug_nutztier_gesamt_gem', true)
+    ];
+}
+
+task calc_qg_land_forst_gem(type: Db2Db, dependsOn: [calc_qg_land_forst]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('qg_land_forst_gemeinde.sql', 'ekat2015.qg_land_forst_gemeinde', true)
+    ];
+}
+

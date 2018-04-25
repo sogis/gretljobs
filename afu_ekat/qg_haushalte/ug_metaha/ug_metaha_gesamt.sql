@@ -25,8 +25,6 @@
         END AS emiss_co2
    FROM ekat2015.ha_raster_100 c
    LEFT JOIN geostat.vz15_minus_sammel_ha d ON c.xkoord = d.x_koord::numeric AND c.ykoord = d.y_koord::numeric, 
-    ( SELECT vz15_minus_sammel_ha.b15btot AS b15btot_ch
-      FROM geostat.vz15_minus_sammel_ha
-     WHERE vz15_minus_sammel_ha.archive = 0 AND vz15_minus_sammel_ha.x_koord = (-1)) e
+    ( SELECT sum(vz15_minus_sammel_ha.b15btot) AS b15btot_ch FROM geostat.vz15_minus_sammel_ha) e
   WHERE c.archive = 0
   ORDER BY c.xkoord, c.ykoord;

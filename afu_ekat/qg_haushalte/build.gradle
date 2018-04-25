@@ -1,10 +1,13 @@
-import ch.so.agi.gretl.steps.*
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'calc_qg_haushalte_gem'
 
 //Berechnung der Untergruppe ug_abfallverbr_hh
 
-task calc_ug_abfallverbr_hh(type: Db2DbTask){
+task calc_ug_abfallverbr_hh(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -16,7 +19,7 @@ task calc_ug_abfallverbr_hh(type: Db2DbTask){
 
 //Berechnung der Tabellen ug_abfallverbr_gesamt
 
-task calc_ug_abfallverbr_hh_gesamt(type: Db2DbTask, dependsOn: [calc_ug_abfallverbr_hh]){
+task calc_ug_abfallverbr_hh_gesamt(type: Db2Db, dependsOn: [calc_ug_abfallverbr_hh]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -27,7 +30,7 @@ task calc_ug_abfallverbr_hh_gesamt(type: Db2DbTask, dependsOn: [calc_ug_abfallve
 
 //Berechnung der Untergruppe ug_feuer
 
-task calc_ug_feuer(type: Db2DbTask){
+task calc_ug_feuer(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -44,7 +47,7 @@ task calc_ug_feuer(type: Db2DbTask){
 
 //Berechnung der Tabellen ug_feuer_gesamt
 
-task calc_ug_feuer_gesamt(type: Db2DbTask, dependsOn: [calc_ug_feuer]){
+task calc_ug_feuer_gesamt(type: Db2Db, dependsOn: [calc_ug_feuer]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -55,7 +58,7 @@ task calc_ug_feuer_gesamt(type: Db2DbTask, dependsOn: [calc_ug_feuer]){
 
 //Berechnung der Untergruppe ug_loemittel
 
-task calc_ug_loemittel(type: Db2DbTask){
+task calc_ug_loemittel(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -69,7 +72,7 @@ task calc_ug_loemittel(type: Db2DbTask){
 
 //Berechnung der Tabellen ug_loemittel_gesamt
 
-task calc_ug_loemittel_gesamt(type: Db2DbTask, dependsOn: [calc_ug_loemittel]){
+task calc_ug_loemittel_gesamt(type: Db2Db, dependsOn: [calc_ug_loemittel]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -80,7 +83,7 @@ task calc_ug_loemittel_gesamt(type: Db2DbTask, dependsOn: [calc_ug_loemittel]){
 
 //Berechnung der Untergruppe ug_masch_gh
 
-task calc_ug_masch_gh(type: Db2DbTask){
+task calc_ug_masch_gh(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -93,7 +96,7 @@ task calc_ug_masch_gh(type: Db2DbTask){
 
 //Berechnung der Tabellen ug_masch_gh_gesamt
 
-task calc_ug_masch_gh_gesamt(type: Db2DbTask, dependsOn: [calc_ug_masch_gh]){
+task calc_ug_masch_gh_gesamt(type: Db2Db, dependsOn: [calc_ug_masch_gh]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -104,7 +107,7 @@ task calc_ug_masch_gh_gesamt(type: Db2DbTask, dependsOn: [calc_ug_masch_gh]){
 
 //Berechnung der Untergruppe ug_lachgas_hh
 
-task calc_ug_lachgas_hh(type: Db2DbTask){
+task calc_ug_lachgas_hh(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -115,7 +118,7 @@ task calc_ug_lachgas_hh(type: Db2DbTask){
 
 //Berechnung der Untergruppe ug_metaha
 
-task calc_ug_metaha(type: Db2DbTask){
+task calc_ug_metaha(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -126,7 +129,7 @@ task calc_ug_metaha(type: Db2DbTask){
 
 //Berechnung der Quellengruppe Haushalte 
 
-task calc_qg_haushalte(type: Db2DbTask, dependsOn: [calc_ug_abfallverbr_hh_gesamt, calc_ug_feuer_gesamt, calc_ug_lachgas_hh, calc_ug_loemittel_gesamt, calc_ug_masch_gh_gesamt, calc_ug_metaha]){
+task calc_qg_haushalte(type: Db2Db, dependsOn: [calc_ug_abfallverbr_hh_gesamt, calc_ug_feuer_gesamt, calc_ug_lachgas_hh, calc_ug_loemittel_gesamt, calc_ug_masch_gh_gesamt, calc_ug_metaha]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
@@ -141,7 +144,7 @@ task calc_qg_haushalte(type: Db2DbTask, dependsOn: [calc_ug_abfallverbr_hh_gesam
     ];
 }
 
-task calc_qg_haushalte_gem(type: Db2DbTask, dependsOn: [calc_qg_haushalte]){
+task calc_qg_haushalte_gem(type: Db2Db, dependsOn: [calc_qg_haushalte]){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
