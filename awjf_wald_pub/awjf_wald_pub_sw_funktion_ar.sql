@@ -14,7 +14,7 @@ SELECT
     igef_pot,
     bemerkunge,
     flaeche,
-    st_multi(wkb_geometry) as geometrie,
+    ST_Multi(wkb_geometry) as geometrie,
     status,
     name_2,
     gem_name,
