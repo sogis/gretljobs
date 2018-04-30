@@ -9,4 +9,6 @@ SELECT
     wkb_geometry AS geometrie
 FROM
     naturschutz.karch_objekte
+WHERE
+    ianb = 'NEIN'
 ;
