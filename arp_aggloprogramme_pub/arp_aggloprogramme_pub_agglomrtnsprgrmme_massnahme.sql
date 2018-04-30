@@ -2,6 +2,10 @@ SELECT
     row_number() over() AS t_id,
     aggloprogramm.aname AS aggloprogramm,
     aggloprogramm.generation,
+    CASE 
+        WHEN generation = 3
+            THEN 'in Prüfung'
+    END AS status,
     paket.handlungsfeld,
     paket.handlungspaket,
     paket.massnahmepaket AS massnahmenpaket,
@@ -28,7 +32,7 @@ SELECT
     massnahme.kosten_lv,
     massnahme.kostenstand_aktuell,
     massnahme.kostenanteil_bund,
-    massnahme.massnahmenblatt,
+    concat('<a href="', replace(massnahme.massnahmenblatt, '/opt/sogis_pic/daten_aktuell/arp/agglo/Dokumente/', '../docs/ch.so.arp.agglo/'), '" target="_blank">PDF</a>') AS massnahmenblatt,
     massnahme.ansprechperson,
     massnahme.sonstiges,
     massnahme.projektphase,
@@ -136,7 +140,8 @@ SELECT
     massnahme.letzte_anpassung,
     punktobjekt.geometrie AS punktgeometrie,
     linienobjekt.geometrie AS liniengeometrie,
-    flaechenobjekt.geometrie AS flaechengeometrie
+    flaechenobjekt.geometrie AS flaechengeometrie,
+    concat('(', aggloprogramm.aname, ' - ', massnahme.nummer, ') ', massnahme.beschreibung) AS suchattribut
 FROM
     arp_aggloprogramme.agglomrtnsprgrmme_massnahme massnahme
     LEFT JOIN arp_aggloprogramme.agglomrtnsprgrmme_agglomerationsprogramm aggloprogramm
