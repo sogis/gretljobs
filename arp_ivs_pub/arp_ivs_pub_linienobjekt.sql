@@ -8,7 +8,7 @@ SELECT
     ivstyp,
     ivskanton,
     ivssort,
-    concat('<a href="../docs/ch.so.arp.ivs/', ivssort,'.pdf" target="_blank">Objektblatt</a>')
+    concat('<a href="../docs/ch.so.arp.ivs/', ivssort,'.pdf" target="_blank">Objektblatt</a>') AS link
 FROM
     public.arp_ivsso_line
 WHERE
