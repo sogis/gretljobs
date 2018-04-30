@@ -1,7 +1,7 @@
 SELECT
     gid AS t_id,
     fm_id,
-    area,
+    round(CAST(area AS NUMERIC)/ 10000, 1) AS area,
     nr_id,
     bezeichung,
     wkb_geometry AS geometrie,
