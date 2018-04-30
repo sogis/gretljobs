@@ -15,7 +15,8 @@ SELECT
     END AS symbolorientierung,
     grenzpunkt.gem_bfs AS bfs_nr,
     grenzpunkt.lieferdatum AS importdatum,
-    to_date(nachfuehrung.gueltigereintrag, 'YYYYMMDD') AS nachfuehrung
+    to_date(nachfuehrung.gueltigereintrag, 'YYYYMMDD') AS nachfuehrung,
+    nachfuehrung.gueltigkeit_txt AS gueltigkeit
 FROM
     av_avdpool_ng.liegenschaften_grenzpunkt AS grenzpunkt 
     LEFT JOIN av_avdpool_ng.liegenschaften_grenzpunktpos AS pos 
