@@ -11,10 +11,6 @@ task transferAvtOeffentlicherVerkehr(type: Db2Db){
     transferSets = [
             new TransferSet('avt_oeffentlicher_verkehr_pub_haltestellen.sql',
                     'avt_oeffentlicher_verkehr_pub.haltestellen', true),
-            new TransferSet('avt_oeffentlicher_verkehr_pub_haltestellen_ausserkantonal.sql',
-                    'avt_oeffentlicher_verkehr_pub.haltestellen_ausserkantonal', true),
-            new TransferSet('avt_oeffentlicher_verkehr_pub_netz.sql', 'avt_oeffentlicher_verkehr_pub.netz', true),
-            new TransferSet('avt_oeffentlicher_verkehr_pub_netz_ausserkantonal.sql',
-                    'avt_oeffentlicher_verkehr_pub.netz_ausserkantonal', true)
+            new TransferSet('avt_oeffentlicher_verkehr_pub_netz.sql', 'avt_oeffentlicher_verkehr_pub.netz', true)
     ];
 }
