@@ -1,0 +1,14 @@
+SELECT
+    amtschreiberei, 
+    amt, 
+    strasse, 
+    hausnummer, 
+    plz, 
+    ortschaft, 
+    telefon, 
+    web, 
+    email,
+    gem_bfs
+FROM
+    av_grundbuch.grundbuchkreise_grundbuchamt_v
+;
