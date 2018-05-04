@@ -1,0 +1,17 @@
+SELECT 
+    name, 
+    vorname, 
+    firma, 
+    firma_zusatz, 
+    strasse, 
+    hausnr, 
+    plz, 
+    ortschaft, 
+    telefon, 
+    fax, 
+    web, 
+    email,
+    gem_bfs
+FROM 
+    av_nfgeometer.datenabgabe_info_v
+;
