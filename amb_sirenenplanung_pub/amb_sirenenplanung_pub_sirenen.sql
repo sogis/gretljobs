@@ -1,0 +1,29 @@
+ SELECT 
+    sirenen.sir_nr, 
+    sirenen.id_nr, 
+    sirenen.so_sir_id, 
+    sirenen.plz, 
+    sirenen.gemeinde, 
+    sirenen.politische_gemeinde, 
+    sirenen.sir_stueck, 
+    sirenen.e, 
+    sirenen.n, 
+    sirenen.standortbezeichnung, 
+    sirenen.standort_strasse, 
+    sirenen.bedienungsstandort_schluesselschalter, 
+    sirenen.sir_groesse, 
+    sirenen.dichte_faktor, 
+    sirenen.kennwert_radius_1, 
+    sirenen.kennwert_radius_1 * 2 AS kennwert_durchmesser_1, 
+    sirenen.kennwert_radius_2, 
+    sirenen.kennwert_radius_2 * 2 AS kennwert_durchmesser_2, 
+    sirenen.winkel, 
+    sirenen.sirenenbezeichnung, 
+    sirenen.lieferant_service, 
+    sirenen.baujahr, 
+    sirenen.kkw_zone, 
+    sirenen.informationen_bemerkungen, 
+    sirenen.geometrie
+FROM 
+    amb_sirenenplanung.sirenen
+;
