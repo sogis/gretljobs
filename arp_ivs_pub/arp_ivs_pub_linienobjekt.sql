@@ -34,7 +34,7 @@ SELECT
     END AS ivs_typ,
     ivskanton,
     ivssort,
-    concat('<a href="../docs/ch.so.arp.ivs/', ivssort,'.pdf" target="_blank">Objektblatt</a>') AS link
+    concat('https://geo.so.ch/docs/ch.so.arp.ivs/', ivssort,'.pdf') AS link
 FROM
     public.arp_ivsso_line
 WHERE

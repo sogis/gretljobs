@@ -32,7 +32,7 @@ SELECT
         WHEN gz = '2'
             THEN '<b>Erdbebengefährdungszone: Z2</b>'
     END AS gz_txt,
-    '<a href="http://geo.so.ch/doks/afu/baugk/synthesebericht.pdf">Synthesebericht anzeigen (als pdf-Datei)</a>' AS bericht
+    'https://geo.so.ch/docs/ch.so.afu.baugrundklassen/synthesebericht.pdf' AS bericht
     
 FROM 
     afu_baugrundklassen

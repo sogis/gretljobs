@@ -32,7 +32,7 @@ SELECT
     massnahme.kosten_lv,
     massnahme.kostenstand_aktuell,
     massnahme.kostenanteil_bund,
-    concat('<a href="', replace(massnahme.massnahmenblatt, '/opt/sogis_pic/daten_aktuell/arp/agglo/Dokumente/', '../docs/ch.so.arp.agglo/'), '" target="_blank">PDF</a>') AS massnahmenblatt,
+    concat('https://geo.so.ch/', replace(massnahme.massnahmenblatt, '/opt/sogis_pic/daten_aktuell/arp/agglo/Dokumente/', 'docs/ch.so.arp.agglo/')) AS massnahmenblatt,
     massnahme.ansprechperson,
     massnahme.sonstiges,
     massnahme.projektphase,
