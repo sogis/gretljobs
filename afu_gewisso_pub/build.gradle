@@ -11,6 +11,7 @@ task transferAfuGewisso(type: Db2Db){
     transferSets = [
             new TransferSet('afu_gewisso_pub_oeko_abschnitte.sql', 'afu_gewisso_pub.oeko_abschnitte', true),
             new TransferSet('afu_gewisso_pub_gewisso.sql', 'afu_gewisso_pub.gewisso', true),
+            new TransferSet('afu_gewisso_pub_gewisso_line_merge.sql', 'afu_gewisso_pub.gewisso_line_merge', true),
             new TransferSet('afu_gewisso_pub_abschnnutzen_gdbsigmas.sql', 'afu_gewisso_pub.abschnnutzen_gdbsigmas', true),
             new TransferSet('afu_gewisso_pub_abschnprio_gdbsigmas.sql', 'afu_gewisso_pub.abschnprio_gdbsigmas', true),
             new TransferSet('afu_gewisso_pub_jfv_fischenz.sql', 'afu_gewisso_pub.jfv_fischenz', true),
