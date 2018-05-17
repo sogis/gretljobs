@@ -196,7 +196,37 @@ SELECT
     END AS schadstoffe_3,
     statustyp,
     bezeichnung,
-    anz_order
+    anz_order,
+    'docs/ch.so.afu.luftbelastung/was_ist_zu_tun.pdf' AS was_ist_zu_tun_dokument,
+     CASE
+        WHEN belastungstyp = 1
+            THEN 'https://www.so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-umwelt/boden-untergrund-geologie/boden/bodenbelastungsgebiete/'
+        WHEN 
+            belastungstyp = 2
+            OR
+            belastungstyp = 3
+            OR
+            belastungstyp = 5
+            OR
+            belastungstyp = 6
+            OR 
+            belastungstyp = 8
+            OR
+            belastungstyp = 9
+            OR 
+            belastungstyp = 10
+            OR 
+            belastungstyp = 11
+            OR
+            belastungstyp = 12
+            OR
+            belastungstyp = 220
+            OR
+            belastungstyp = 221
+            THEN 'https://www.so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-umwelt/boden-untergrund-geologie/boden/pruefperimeter-bodenabtrag/'
+        WHEN belastungstyp = 7
+            THEN 'https://www.so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-umwelt/boden-untergrund-geologie/altlasten-belastete-standorte/schiessanlagen/'
+    END AS weitere_infos
 FROM
     vsb.afu_pruefperimeter_qgis_server_client_t
 ;
