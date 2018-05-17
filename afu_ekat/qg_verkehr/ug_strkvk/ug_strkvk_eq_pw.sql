@@ -8,186 +8,6 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
    FROM ( SELECT a.ogc_fid, a.xkoord, a.ykoord, a.wkb_geometry, a.gem_bfs, 
             b.vsit, 
                 CASE
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/AB/100'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/AB/100/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -296,6 +116,78 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/AB/80/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/AB/80/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -332,6 +224,150 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Erschliessung/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/70'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS/70/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -440,6 +476,42 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS-kurv./70/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/HVS-kurv./70/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/Sammel/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 5 AND a.vk_sit = 'Land/Sammel/60/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -659,186 +731,6 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                     ELSE 0::numeric::double precision
                 END AS emiss_co, 
                 CASE
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/AB/100'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/AB/100/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -947,6 +839,78 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/AB/80/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/AB/80/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -983,6 +947,150 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Erschliessung/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/70'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS/70/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -1091,6 +1199,42 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS-kurv./70/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/HVS-kurv./70/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/Sammel/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 25 AND a.vk_sit = 'Land/Sammel/60/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -1310,186 +1454,6 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                     ELSE 0::numeric::double precision
                 END AS emiss_co2, 
                 CASE
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/AB/100'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/AB/100/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -1598,6 +1562,78 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/AB/80/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/AB/80/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -1634,6 +1670,150 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Erschliessung/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/70'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS/70/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -1742,6 +1922,42 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS-kurv./70/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/HVS-kurv./70/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/Sammel/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 2 AND a.vk_sit = 'Land/Sammel/60/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -1961,186 +2177,6 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                     ELSE 0::numeric::double precision
                 END AS emiss_nox, 
                 CASE
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/AB/100'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/AB/100/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -2249,6 +2285,78 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/AB/80/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/AB/80/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -2285,6 +2393,150 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Erschliessung/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/70'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS/70/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -2393,6 +2645,42 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS-kurv./70/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/HVS-kurv./70/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/Sammel/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 1 AND a.vk_sit = 'Land/Sammel/60/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -2612,186 +2900,6 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                     ELSE 0::numeric::double precision
                 END AS emiss_so2, 
                 CASE
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/AB/100'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/AB/100/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -2900,6 +3008,78 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/AB/80/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/AB/80/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -2936,6 +3116,150 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Erschliessung/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/70'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS/70/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -3044,6 +3368,42 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS-kurv./70/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/HVS-kurv./70/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/Sammel/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 22 AND a.vk_sit = 'Land/Sammel/60/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -3263,186 +3623,6 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                     ELSE 0::numeric::double precision
                 END AS emiss_nmvoc, 
                 CASE
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/AB/100'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/AB/100/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -3551,6 +3731,78 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/AB/80/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/AB/80/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -3587,6 +3839,150 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Erschliessung/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/70'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS/70/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -3695,6 +4091,42 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS-kurv./70/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/HVS-kurv./70/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/Sammel/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 6 AND a.vk_sit = 'Land/Sammel/60/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -3914,186 +4346,6 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                     ELSE 0::numeric::double precision
                 END AS emiss_ch4, 
                 CASE
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/AB/100'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/AB/100/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -4202,6 +4454,78 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/AB/80/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/AB/80/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -4238,6 +4562,150 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Erschliessung/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/70'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS/70/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -4346,6 +4814,42 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS-kurv./70/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/HVS-kurv./70/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/Sammel/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 8 AND a.vk_sit = 'Land/Sammel/60/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -4565,186 +5069,6 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                     ELSE 0::numeric::double precision
                 END AS emiss_nh3, 
                 CASE
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/AB/100'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/AB/100/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -4853,6 +5177,78 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/AB/80/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/AB/80/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -4889,6 +5285,150 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Erschliessung/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/70'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS/70/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -4997,6 +5537,42 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS-kurv./70/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/HVS-kurv./70/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/Sammel/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 26 AND a.vk_sit = 'Land/Sammel/60/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -5216,186 +5792,6 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                     ELSE 0::numeric::double precision
                 END AS emiss_n2o, 
                 CASE
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Erschliessung/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/HVS/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/HVS/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/HVS/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/HVS/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 0 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 2 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 4 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
-                    WHEN b.neigung = 6 AND b.vsit::text = 'Agglo/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Sammel/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Sammel/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Sammel/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
-                       FROM ekat2015.efak_streckenverkehr a
-                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Agglo/Sammel/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/AB/100'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/AB/100/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -5504,6 +5900,78 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/AB/80/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/AB/80/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Erschliessung/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Erschliessung/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/Erschliessung/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -5540,6 +6008,150 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Erschliessung/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/30'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/30/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/30/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/30/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/30/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/40'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/40/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/40/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/40/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/40/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/HVS/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/60/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/60/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/60/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/60/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/HVS/70'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS/70/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
@@ -5648,6 +6260,42 @@ SELECT min(k.ogc_fid) AS ogc_fid, min(k.xkoord) AS xkoord,
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS-kurv./70/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/HVS-kurv./70/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 0 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 0)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 0)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 0)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 2 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 2)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 2)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 2)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 2)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 4 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 4)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 4)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 4)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 4)) * b.ant_los4) * 365::double precision / 1000::double precision
+                    WHEN b.neigung = 6 AND b.vsit::text = 'Land/Sammel/50'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Sammel/50/fluessig'::text AND a.neigung = 6)) * b.ant_los1 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Sammel/50/dicht'::text AND a.neigung = 6)) * b.ant_los2 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Sammel/50/gesaettigt'::text AND a.neigung = 6)) * b.ant_los3 + (( SELECT a.efak
+                       FROM ekat2015.efak_streckenverkehr a
+                      WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Sammel/50/stop+go'::text AND a.neigung = 6)) * b.ant_los4) * 365::double precision / 1000::double precision
                     WHEN b.neigung = 0 AND b.vsit::text = 'Land/Sammel/60'::text THEN b.dtv2015_pw::double precision * ((( SELECT a.efak
                        FROM ekat2015.efak_streckenverkehr a
                       WHERE a.fhz_art = 'PKW'::text AND a.schast = 7 AND a.vk_sit = 'Land/Sammel/60/fluessig'::text AND a.neigung = 0)) * b.ant_los1 + (( SELECT a.efak
