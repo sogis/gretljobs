@@ -1,5 +1,5 @@
 SELECT gid, 
-"_tid", 
+tid, 
 name_nummer, 
 nutzungsart, 
 funktionhi, 
