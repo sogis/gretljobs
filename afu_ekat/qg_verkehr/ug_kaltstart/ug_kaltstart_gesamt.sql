@@ -1,9 +1,10 @@
 SELECT d.ogc_fid, d.xkoord, d.ykoord, d.wkb_geometry, d.gem_bfs, 
-    d.emiss_co + e.emiss_co AS emiss_co, d.emiss_nox + e.emiss_nox AS emiss_nox, 
-    d.emiss_so2 + e.emiss_so2 AS emiss_so2, 
-    d.emiss_nmvoc + e.emiss_nmvoc AS emiss_nmvoc, 
-    d.emiss_ch4 + e.emiss_ch4 AS emiss_ch4, 
-    d.emiss_pm10 + e.emiss_pm10 AS emiss_pm10
+    coalesce(d.emiss_co,0) + coalesce(e.emiss_co,0) AS emiss_co, 
+    coalesce(d.emiss_nox,0) + coalesce(e.emiss_nox,0) AS emiss_nox, 
+    coalesce(d.emiss_so2,0) + coalesce(e.emiss_so2,0) AS emiss_so2, 
+    coalesce(d.emiss_nmvoc,0) + coalesce(e.emiss_nmvoc,0) AS emiss_nmvoc, 
+    coalesce(d.emiss_ch4,0) + coalesce(e.emiss_ch4,0) AS emiss_ch4, 
+    coalesce(d.emiss_pm10,0) + coalesce(e.emiss_pm10,0) AS emiss_pm10
    FROM ekat2015.ug_kaltstart_eq_pw d
    LEFT JOIN ekat2015.ug_kaltstart_eq_li e ON d.xkoord = e.xkoord AND d.ykoord = e.ykoord
   ORDER BY d.xkoord, d.ykoord;

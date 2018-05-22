@@ -1,6 +1,8 @@
  SELECT g.ogc_fid, g.xkoord, g.ykoord, g.wkb_geometry, g.gem_bfs, 
-    g.emiss_nmvoc + h.emiss_nmvoc + i.emiss_nmvoc + m.emiss_nmvoc + n.emiss_nmvoc + s.emiss_nmvoc + u.emiss_nmvoc AS emiss_nmvoc, 
-    t.emiss_pm10, g.emiss_co2
+    coalesce(g.emiss_nmvoc,0) + coalesce(h.emiss_nmvoc,0) + coalesce(i.emiss_nmvoc,0) + coalesce(m.emiss_nmvoc,0) + coalesce(n.emiss_nmvoc,0) + coalesce(s.emiss_nmvoc,0) 
+  + coalesce(u.emiss_nmvoc,0) AS emiss_nmvoc, 
+    coalesce(t.emiss_pm10,0) AS emiss_pm10, 
+    coalesce(g.emiss_co2,0) AS emiss_co2
    FROM ekat2015.ug_branchen_eq_benz_um_tklag g
    LEFT JOIN ekat2015.ug_branchen_eq_coiff_salons h ON g.xkoord = h.xkoord AND g.ykoord = h.ykoord
    LEFT JOIN ekat2015.ug_branchen_eq_farbanw_bau i ON h.xkoord = i.xkoord AND h.ykoord = i.ykoord
