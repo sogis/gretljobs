@@ -7,7 +7,19 @@ SELECT DISTINCT
     bewilligung.datum_bewilligung, 
     dokument.name, 
     ((anlage.anlageid || ''::text) || dokument.dokumenteid)::integer AS anlagedokument, 
-    dokument.doktyp
+    dokument.doktyp,
+    CASE
+        WHEN 
+            pumpe.pumpeart = 'eso'
+            AND
+            doktyp = 4
+                THEN 'Erdsonde'
+        WHEN
+            pumpe.pumpeart = 'eko'
+            AND
+            doktyp = 4
+                THEN 'Erdkollektor'
+    END AS objekttyp
 FROM 
     gerda.anlage_t AS anlage
     LEFT JOIN gerda.erdsonden AS erdsonde 

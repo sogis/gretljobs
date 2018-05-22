@@ -56,17 +56,15 @@ SELECT
     isbo_prof_horizont.labphbodenreakt AS f47,
     isbo_prof_horizont.kationkapeffektiv,
     isbo_prof_horizont.kationkappotenz,
-    code_fton.strcode AS fton,
-    code_ffarbe.strcode AS ffarbe,
-    code_fhelligk.strcode AS fhelligk,
-    code_intensitaet.strcode AS fintensitaet
+    farbe_munsell.farbe
 FROM
     isbo_prof_horizont
     LEFT JOIN isbo_prof_profil
         ON isbo_prof_horizont.profkey = isbo_prof_profil.profkey
     LEFT JOIN isbo_prof_codenumzeichen AS code_karbonatgehalt 
         ON isbo_prof_horizont.karbonatgehalt = code_karbonatgehalt.numcode
-
+    LEFT JOIN farbe_munsell
+        ON farbe_munsell.horkey = isbo_prof_horizont.horkey
     LEFT JOIN gefuege
         ON gefuege.horkey = isbo_prof_horizont.horkey
 
