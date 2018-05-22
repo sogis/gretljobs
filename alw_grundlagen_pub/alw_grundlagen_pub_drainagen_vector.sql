@@ -20,4 +20,4 @@ eigentuemer,
 bemerkung, 
 strangref, 
 wkb_geometry
-FROM alw_grundlagen_pub.drainagen_vector;
+FROM alw_grundlagen.drainagen_vector;
