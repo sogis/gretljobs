@@ -14,7 +14,7 @@ task transferAfuGerda(type: Db2Db){
             new TransferSet('afu_gerda_pub_gew_bew_ad.sql', 'afu_gerda_pub.gew_bew_ad', true),
             new TransferSet('afu_gerda_pub_erdsonde.sql', 'afu_gerda_pub.erdsonde', true),
             new TransferSet('afu_gerda_pub_ews_max_tiefe.sql', 'afu_gerda_pub.ews_max_tiefe', true),
-            //new TransferSet('afu_gerda_pub_bohrprofil.sql', 'afu_gerda_pub.bohrprofil', true),
+            new TransferSet('afu_gerda_pub_bohrprofil.sql', 'afu_gerda_pub.bohrprofil', true),
             new TransferSet('afu_gerda_pub_bohrprofil_profilskizze.sql', 'afu_gerda_pub.bohrprofil_profilskizze', true),
     ];
 }
