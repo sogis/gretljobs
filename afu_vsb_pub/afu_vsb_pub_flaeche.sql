@@ -44,8 +44,9 @@ WITH vsb_flaeche AS (
             WHEN strasse.bemerkung IS NOT NULL
                 THEN strasse.bemerkung
             ELSE NULL
-        END AS bemerkung
-        
+        END AS bemerkung,
+        round(ST_Area(wkb_geometry)) AS flaeche,
+        round(ST_Perimeter(wkb_geometry)) AS umfang
     FROM
         vsb.flaeche
         LEFT JOIN vsb.eisenbahn
@@ -78,7 +79,9 @@ SELECT
     vsb_flaeche.steigung, 
     vsb_flaeche.strassentyp,
     vsb_flaeche.bemerkung,
-    codenumzeichen.bezeichnung AS code_bezeichnung
+    codenumzeichen.bezeichnung AS code_bezeichnung,
+    vsb_flaeche.flaeche,
+    vsb_flaeche.umfang
 FROM
     vsb_flaeche
     LEFT JOIN vsb.codenumzeichen
