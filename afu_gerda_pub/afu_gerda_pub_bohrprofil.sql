@@ -13,7 +13,6 @@ WITH
                 ON isbo_prof_nutzungsbesch.wert = code.numcode::NUMERIC
         WHERE 
             code_eigenschaft.bezeichnung LIKE 'Limitierende Eigenschaft%'
-        
         GROUP BY
             isbo_prof_profil.profkey
     ), 
@@ -81,7 +80,7 @@ WITH
             LEFT JOIN isbo_prof_codenumzeichen AS code_eigenschaft
                 ON code_eigenschaft.numcode::NUMERIC = isbo_prof_nutzungsbesch.feld
         WHERE
-            code_eigenschaft.bezeichnung = 'Melioration festgestellt%'
+            code_eigenschaft.bezeichnung LIKE 'Melioration festgestellt%'
         GROUP BY
             isbo_prof_profil.profkey
     ),
@@ -98,7 +97,7 @@ WITH
             LEFT JOIN isbo_prof_codenumzeichen AS code_eigenschaft
                 ON code_eigenschaft.numcode::NUMERIC = isbo_prof_nutzungsbesch.feld
         WHERE
-            code_eigenschaft.bezeichnung =  'Melioration empfohlen%'
+            code_eigenschaft.bezeichnung LIKE 'Melioration empfohlen%'
         GROUP BY
             isbo_prof_profil.profkey
     ),
@@ -127,9 +126,7 @@ WITH
             row_num IS NULL 
 )
     
-    
-
-SELECT DISTINCT
+SELECT
     isbo_prof_profil.profkey,
     isbo_prof_profil.gdenummer AS gemeindenummer_alt,
     isbo_prof_profil.profilnummer,
@@ -193,8 +190,8 @@ SELECT DISTINCT
     profilskizze_bild.daten AS profilskizze_bild,
     nutzungsbeschraenkung_68.code AS nutzungsbeschraenkung,
     melioration_festgestellt_69.code AS melioration_festgestellt,
-    melioration_empfohlen_70.code AS melioration_empfohlen,
-    foto.daten AS foto
+    melioration_empfohlen_70.code AS melioration_empfohlen/*,
+    foto.daten AS foto*/
 FROM
     isbo_prof_profil
     LEFT JOIN isbo_prof_codenumzeichen AS code 
@@ -256,7 +253,7 @@ FROM
     LEFT JOIN untertyp_18
         ON untertyp_18.profkey = isbo_prof_profil.profkey
     LEFT JOIN topografie_bild
-        ON topografie_bild.profkey = isbo_prof_profil.profkey
+        ON topografie_bild.profkey = isbo_prof_profil.profkeyDISTINCT
     LEFT JOIN profilskizze_bild
         ON profilskizze_bild.profkey = isbo_prof_profil.profkey
     LEFT JOIN nutzungsbeschraenkung_68
@@ -267,3 +264,4 @@ FROM
         ON melioration_empfohlen_70.profkey = isbo_prof_profil.profkey
     LEFT JOIN foto
         ON foto.profkey = isbo_prof_profil.profkey
+;
