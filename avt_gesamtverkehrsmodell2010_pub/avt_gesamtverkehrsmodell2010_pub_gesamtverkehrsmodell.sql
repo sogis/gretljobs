@@ -19,11 +19,51 @@ SELECT
     verkehrsmodell2013_all.dtv2010_li,
     verkehrsmodell2013_all.dtv2010_lw,
     verkehrsmodell2013_all.dtv2010_lz,
+    CASE
+        WHEN verkehrsmodell2013_all.dtv2010 BETWEEN 0 AND 1999
+            THEN '< 2000'
+        WHEN verkehrsmodell2013_all.dtv2010 BETWEEN 2000 AND 3999
+            THEN '2000 - 4000'
+        WHEN verkehrsmodell2013_all.dtv2010 BETWEEN 4000 AND 5999
+            THEN '4000 - 6000'
+        WHEN verkehrsmodell2013_all.dtv2010 BETWEEN 6000 AND 9999
+            THEN '6000 - 10''000'
+        WHEN verkehrsmodell2013_all.dtv2010 BETWEEN 10000 AND 19999
+            THEN '10''000 - 20''000'
+        WHEN verkehrsmodell2013_all.dtv2010 BETWEEN 20000 AND 29999
+            THEN '20''000 - 30''000'
+        WHEN verkehrsmodell2013_all.dtv2010 BETWEEN 30000 AND 49999
+            THEN '30''000 - 50''000'
+        WHEN verkehrsmodell2013_all.dtv2010 >= 50000
+            THEN '> 50''000'
+        WHEN verkehrsmodell2013_all.dtv2010 IS NULL
+            THEN 'keine Angaben'
+    END AS dtv2010_text,
     verkehrsmodell2013_all.dtv2020,
     verkehrsmodell2013_all.dtv2020_pkw,
     verkehrsmodell2013_all.dtv2020_li,
     verkehrsmodell2013_all.dtv2020_lw,
     verkehrsmodell2013_all.dtv2020_lz,
+        CASE
+        WHEN verkehrsmodell2013_all.dtv2020 BETWEEN 0 AND 1999
+            THEN '< 2000'
+        WHEN verkehrsmodell2013_all.dtv2020 BETWEEN 2000 AND 3999
+            THEN '2000 - 4000'
+        WHEN verkehrsmodell2013_all.dtv2020 BETWEEN 4000 AND 5999
+            THEN '4000 - 6000'
+        WHEN verkehrsmodell2013_all.dtv2020 BETWEEN 6000 AND 9999
+            THEN '6000 - 10''000'
+        WHEN verkehrsmodell2013_all.dtv2020 BETWEEN 10000 AND 19999
+            THEN '10''000 - 20''000'
+        WHEN verkehrsmodell2013_all.dtv2020 BETWEEN 20000 AND 29999
+            THEN '20''000 - 30''000'
+        WHEN verkehrsmodell2013_all.dtv2020 BETWEEN 30000 AND 49999
+            THEN '30''000 - 50''000'
+        WHEN verkehrsmodell2013_all.dtv2020 >= 50000
+            THEN '> 50''000'
+        WHEN verkehrsmodell2013_all.dtv2020 IS NULL
+            THEN 'keine Angaben'
+    END AS dtv2020_text,
     verkehrsmodell2013_all.dtv2030,
     verkehrsmodell2013_all.dtv2030_pkw,
     verkehrsmodell2013_all.dtv2030_li,
@@ -71,4 +111,3 @@ FROM
             AND
             geschw_kap_sum_v2.so_id = verkehrsmodell2013_all.so_id
 ;
-
