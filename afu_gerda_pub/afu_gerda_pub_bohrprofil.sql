@@ -190,8 +190,8 @@ SELECT
     profilskizze_bild.daten AS profilskizze_bild,
     nutzungsbeschraenkung_68.code AS nutzungsbeschraenkung,
     melioration_festgestellt_69.code AS melioration_festgestellt,
-    melioration_empfohlen_70.code AS melioration_empfohlen/*,
-    foto.daten AS foto*/
+    melioration_empfohlen_70.code AS melioration_empfohlen,
+    foto.daten AS foto
 FROM
     isbo_prof_profil
     LEFT JOIN isbo_prof_codenumzeichen AS code 
@@ -253,7 +253,7 @@ FROM
     LEFT JOIN untertyp_18
         ON untertyp_18.profkey = isbo_prof_profil.profkey
     LEFT JOIN topografie_bild
-        ON topografie_bild.profkey = isbo_prof_profil.profkeyDISTINCT
+        ON topografie_bild.profkey = isbo_prof_profil.profkey
     LEFT JOIN profilskizze_bild
         ON profilskizze_bild.profkey = isbo_prof_profil.profkey
     LEFT JOIN nutzungsbeschraenkung_68
