@@ -16,7 +16,7 @@ WITH gefuege AS (
     farbe_munsell AS (
         SELECT
             isbo_prof_horizont.horkey,
-            string_agg(concat(code_fton.strcode, ' ', code_ffarbe.strcode, ' ', code_fhelligk.strcode, '/', code_intensitaet.strcode), '<br>') AS farbe
+            string_agg(concat(code_fton.strcode, ' ', code_ffarbe.strcode, ' ', code_fhelligk.strcode, '/', code_intensitaet.strcode), E'\n') AS farbe
         FROM
             isbo_prof_horizont
             LEFT JOIN isbo_prof_farbe
