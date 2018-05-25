@@ -5,6 +5,9 @@ SELECT
     sostrid,
     wkb_geometry AS geometrie,
     so_typ,
+    ausl_kat_2010,
+    ausl_kat_2020,
+    ausl_kat_2030,
     CASE
         WHEN ausl_kat_2010 = 1
             THEN 'flüssig'
@@ -16,7 +19,7 @@ SELECT
             THEN 'stop + go'
         WHEN ausl_kat_2010 = 5
             THEN 'Stau'
-    END AS ausl_kat_2010,
+    END AS ausl_kat_2010_text,
     CASE
         WHEN ausl_kat_2020 = 1
             THEN 'flüssig'
@@ -28,7 +31,7 @@ SELECT
             THEN 'stop + go'
         WHEN ausl_kat_2020 = 5
             THEN 'Stau'
-    END AS ausl_kat_2020,
+    END AS ausl_kat_2020_text,
     CASE
         WHEN ausl_kat_2030 = 1
             THEN 'flüssig'
@@ -40,7 +43,7 @@ SELECT
             THEN 'stop + go'
         WHEN ausl_kat_2030 = 5
             THEN 'Stau'
-    END AS ausl_kat_2030
+    END AS ausl_kat_2030_text
 FROM
     verkehrsmodell2013.auslastung_kat
 ;
