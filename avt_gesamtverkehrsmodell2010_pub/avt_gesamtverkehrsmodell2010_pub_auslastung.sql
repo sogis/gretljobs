@@ -13,7 +13,7 @@ SELECT
         WHEN ausl_kat_2010 = 3
             THEN 'gesättigt'
         WHEN ausl_kat_2010 = 4
-            THEN 'stop+ go'
+            THEN 'stop + go'
         WHEN ausl_kat_2010 = 5
             THEN 'Stau'
     END AS ausl_kat_2010,
@@ -25,8 +25,8 @@ SELECT
         WHEN ausl_kat_2020 = 3
             THEN 'gesättigt'
         WHEN ausl_kat_2020 = 4
-            THEN 'stop+ go'
-         WHEN ausl_kat_2020 = 5
+            THEN 'stop + go'
+        WHEN ausl_kat_2020 = 5
             THEN 'Stau'
     END AS ausl_kat_2020,
     CASE
@@ -37,8 +37,8 @@ SELECT
         WHEN ausl_kat_2030 = 3
             THEN 'gesättigt'
         WHEN ausl_kat_2030 = 4
-            THEN 'stop+ go'
-         WHEN ausl_kat_2030 = 5
+            THEN 'stop + go'
+        WHEN ausl_kat_2030 = 5
             THEN 'Stau'
     END AS ausl_kat_2030
 FROM
