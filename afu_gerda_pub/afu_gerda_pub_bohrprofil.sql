@@ -19,8 +19,8 @@ WITH
     untertyp_18 AS (
         SELECT 
             profil.profkey,  
-            string_agg(code.strcode, ', ') AS f18, 
-            string_agg(code.bezeichnung, ', ') AS untertypen
+            string_agg(code.strcode, ', ' ORDER BY code.strcode) AS f18, 
+            string_agg(code.bezeichnung, ', ' ORDER BY code.strcode) AS untertypen
         FROM 
             isbo_prof_profil profil, 
             isbo_prof_untertyp tbluntertyp, 
@@ -163,7 +163,7 @@ SELECT
     code_skelettoberbod.strcode AS f19,
     code_skelettoberbod.bezeichnung AS skelettoberbod,
     code_skelettunterbod.strcode AS f20,
-    skelettunterbod,
+    code_skelettunterbod.bezeichnung AS skelettunterbod,
     code_feinerdeoberbod.strcode AS f21,
     code_feinerdeoberbod.bezeichnung AS feinerdeoberbod,
     code_feinerdeunterbod.strcode AS f22,
