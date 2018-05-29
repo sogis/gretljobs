@@ -25,10 +25,6 @@ ist.
 apply plugin: 'ch.so.agi.gretl'
 
 ext {
-    sourceDbUrl = "jdbc:postgresql://geodb-t.verw.rootso.org:5432/sogis"
-    sourceDbUser = "hdus"
-    sourceDbPass = System.env.sourceDbPass    
-
     outputDir = rootProject.projectDir
 
     todaysDate = new Date().format('yyyy-MM-dd')
