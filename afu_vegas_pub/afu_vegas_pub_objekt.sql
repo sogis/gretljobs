@@ -57,8 +57,36 @@ WITH
             'gerammtes Piezometer'::text AS objekttyp
         FROM
             vegas.obj_gerammtes_piezometer_
+    ),
+    hydrometrie AS (
+        SELECT 
+            CASE 
+                WHEN obj_messstation_.gewaesserart IN (1, 2, 3, 4)
+                    THEN 'Oberflächengewässer-Messstelle'
+                WHEN obj_messstation_.gewaesserart = 5
+                    THEN 'Grundwasser-Messstelle'
+                WHEN obj_messstation_.gewaesserart = 6
+                    THEN 'Niederschlags-Messstelle'
+            END AS vegas_typ, 
+            obj_objekt.vegas_id, 
+            CASE
+                WHEN adm_wva.symbol != 0
+                    THEN 'Ja'
+                ELSE 'Nein'
+            END AS wva
+        FROM
+            vegas.obj_objekt
+            LEFT JOIN vegas.obj_messstation_
+                ON obj_objekt.vegas_id = obj_messstation_.vegas_id 
+            LEFT JOIN vegas.adm_wva
+                ON adm_wva.vegas_id = obj_objekt.vegas_id
+        WHERE
+            obj_objekt.archive = 0 
+            AND
+            objekttyp_id = 22
+        ORDER BY
+            obj_objekt.mobj_id
     )
- 
 
 SELECT 
     obj_objekt.vegas_id, 
@@ -282,7 +310,9 @@ SELECT
             AND 
             obj_grundwasserwaerme_.zustand != 4
                 THEN 'Entnahmeschacht für eine Grundwasserwärmenutzung'
-    END AS objekttyp
+    END AS objekttyp,
+    hydrometrie.vegas_typ,
+    hydrometrie.wva
     
 FROM 
     vegas.obj_objekt
@@ -310,6 +340,8 @@ FROM
         ON obj_objekt.vegas_id = baggerschlitz.vegas_id
     LEFT JOIN gerammtes_piezometer
         ON obj_objekt.vegas_id = gerammtes_piezometer.vegas_id
+    LEFT JOIN hydrometrie
+        ON obj_objekt.vegas_id = hydrometrie.vegas_id
         
 WHERE 
     archive = 0
