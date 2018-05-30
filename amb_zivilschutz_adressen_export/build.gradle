@@ -1,0 +1,63 @@
+plugins {
+    id 'org.hidetake.ssh' version '2.9.0'
+}
+
+remotes {
+    ftpServer {
+        host = "${ftpServerZivilschutz}"
+        user = "${ftpUserZivilschutz}"
+        password = "${ftpPwdZivilschutz}"
+    }
+}
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+def adressenDelete = 'amb_zivilschutz_adressen_staging_adressen_zivilschutz_delete.sql'
+def adressenInsert = 'amb_zivilschutz_adressen_staging_adressen_zivilschutz.sql'
+def csvFileName = "Adressen_Kanton_Solothurn_${new Date().format('yyyy-MM-dd')}.csv"
+
+defaultTasks 'uploadCsvFile'
+
+task stageAdressenZivilschutz(type: SqlExecutor){
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlFiles = [adressenDelete, adressenInsert]
+}
+
+task clearStaging(type: SqlExecutor){
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlFiles = [adressenDelete]
+}
+
+task exportAdressenZivilschutz(type: CsvExport, dependsOn: stageAdressenZivilschutz){
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    schemaName = "amb_zivilschutz_adressen_staging"
+    tableName = "adressen_zivilschutz"
+    dataFile = csvFileName
+    encoding = "UTF-8"
+    valueSeparator = ';'
+    attributes = ['lokalisationsname', 'hausnummer', 'plz', 'ortschaft', 'gemeinde', 'gwr_egid', 'gwr_edid', 'koord_ost', 'koord_nord', 'status', 'objektname', 'grundstuecknummer', 'grundbuchkreis']
+    finalizedBy clearStaging
+}
+
+task deleteCsvFile(type: Delete){
+    delete "${csvFileName}"
+}
+
+task uploadCsvFile (dependsOn: exportAdressenZivilschutz){
+    description = "Upload file to FTP server"
+    doLast {
+        ssh.settings {
+            knownHosts = allowAnyHosts
+        }
+        ssh.run {
+            session(remotes.ftpServer) {
+                put from: "${csvFileName}", into: "."
+            }
+        }
+        println "File uploaded to FTP server"
+    }
+    finalizedBy deleteCsvFile
+}

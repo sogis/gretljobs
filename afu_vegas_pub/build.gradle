@@ -6,18 +6,12 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferAfuVegas'
 
 task transferAfuVegas(type: Db2Db){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    fetchSize = 100
+    batchSize = 100
     transferSets = [
-            /*Werden vermutlich nicht benötigt.Zur Sicherheit noch dringelassen. Falls nicht benötigt Dateien löschen
-            new TransferSet('afu_vegas_pub_baggerschlitz.sql', 'afu_vegas_pub.baggerschlitz', true),
-            new TransferSet('afu_vegas_pub_gerammtes_piezometer.sql', 'afu_vegas_pub.gerammtes_piezometer', true),
-            new TransferSet('afu_vegas_pub_sodbrunnen.sql', 'afu_vegas_pub.sodbrunnen', true),
-            new TransferSet('afu_vegas_pub_quelle_gefasst.sql', 'afu_vegas_pub.quelle_gefasst', true),
-            new TransferSet('afu_vegas_pub_quelle_ungefasst.sql', 'afu_vegas_pub.quelle_ungefasst', true),
-            new TransferSet('afu_vegas_pub_grundwasserwaerme.sql', 'afu_vegas_pub.grundwasserwaerme', true),
-            new TransferSet('afu_vegas_pub_bohrung.sql', 'afu_vegas_pub.bohrung', true),
-            new TransferSet('afu_vegas_pub_filterbrunnen.sql', 'afu_vegas_pub.filterbrunnen', true)*/
-            new TransferSet('afu_vegas_pub_objekt.sql', 'afu_vegas_pub.objekt', true)
+            new TransferSet('afu_vegas_pub_objekt.sql', 'afu_vegas_pub.objekt', true),
+            new TransferSet('afu_vegas_pub_dokumente.sql', 'afu_vegas_pub.dokumente', true)
     ];
 }

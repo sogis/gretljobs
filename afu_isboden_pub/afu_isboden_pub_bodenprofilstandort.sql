@@ -48,7 +48,8 @@ SELECT
     pedologe,
     erstaufn_bemerkung,
     profilbez_prov,
-    akt_date 
+    akt_date,
+    gdenummer || '-' || profilnummer || ' ' || flurname as bodenprofil
 FROM
     public.isbo_prof_profil
 WHERE

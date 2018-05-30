@@ -6,8 +6,8 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferArpIvs'
 
 task transferArpIvs(type: Db2Db){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('arp_ivs_pub_linienobjekt.sql', 'arp_ivs_pub.linienobjekt', true),
             new TransferSet('arp_ivs_pub_punktobjekt.sql', 'arp_ivs_pub.punktobjekt', true)
