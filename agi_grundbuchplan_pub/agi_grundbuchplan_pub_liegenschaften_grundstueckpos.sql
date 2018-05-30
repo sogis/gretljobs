@@ -1,0 +1,25 @@
+SELECT
+    ogc_fid AS t_id,
+    tid,
+    grundstueckpos_von,
+    pos,
+    ori,
+    hali,
+    hali_txt,
+    vali,
+    vali_txt,
+    groesse,
+    groesse_txt,
+    hilfslinie,
+    gem_bfs,
+    los,
+    lieferdatum,
+    y,
+    x,
+    rot,
+    nummer,
+    art,
+    mutation
+FROM
+    av_pfdgb.t_liegenschaften_grundstueckpos
+;

@@ -40,12 +40,12 @@ cd scripts/
 Meistens benötigt ein GRETL-Job eine Quell- und eine Ziel-Datenbank. Hierfür können lokal folgende Umgebungsvariablen gesetzt werden (Werte entsprechend anpassen); sie werden der GRETL Runtime als Parameter übergeben und können im GRETL-Skript als Variablen genutzt werden:
 
 ```
-export sourceDbUrl=jdbc:postgresql://127.0.0.1/foodb
-export sourceDbUser=foo
-export sourceDbPass=foopassword
-export targetDbUrl=jdbc:postgresql://localhost:5432/bardb
-export targetDbUser=bar
-export targetDbPass=barpassword
+export DB_URI_SOGIS=jdbc:postgresql://127.0.0.1/foodb
+export DB_USER_SOGIS=foo
+export DB_PWD_SOGIS=foopassword
+export DB_URI_PUB=jdbc:postgresql://localhost:5432/bardb
+export DB_USER_PUB=bar
+export DB_PWD_PUB=barpassword
 ```
 
 Unter Ubuntu können diese Befehle in die Datei ~/.profile eingetragen werden, damit die Umgebungsvariablen immer verfügbar sind.

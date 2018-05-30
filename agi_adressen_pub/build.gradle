@@ -1,0 +1,17 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+defaultTasks 'transferAgiAdressen'
+
+task transferAgiAdressen(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('agi_adressen_pub_richtung_strassenachse.sql', 'agi_adressen_pub.richtung_strassenachse',
+                    true),
+            new TransferSet('agi_adressen_pub_verbindungslinie_strasse_hausnummer.sql',
+                    'agi_adressen_pub.verbindungslinie_strasse_hausnummer', true),
+            new TransferSet('agi_adressen_pub_postleitzahlkreise.sql', 'agi_adressen_pub.postleitzahlkreise', true),
+            new TransferSet('agi_adressen_pub_benanntes_gebiet.sql', 'agi_adressen_pub.benanntes_gebiet', true)
+    ];
+}
