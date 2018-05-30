@@ -6,8 +6,8 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferArpNaturreservate'
 
 task transferArpNaturreservate(type: Db2Db){
-    sourceDb = [targetDbUrl, targetDbUser, targetDbPass] //[sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('arp_naturreservate_pub_naturreservate_pflanzenliste.sql',
                     'arp_naturreservate_pub.naturreservate_pflanzenliste', true),

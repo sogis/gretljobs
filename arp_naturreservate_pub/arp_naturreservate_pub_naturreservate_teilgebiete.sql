@@ -110,6 +110,8 @@ WITH documents AS (
         'http://geo.dev.so.ch/api/v1/document/?template=Pflanzenliste%26teilgebiet_id=' || reservate_teilgebiet.t_id
     FROM
         arp_naturreservate.reservate_teilgebiet
+    WHERE 
+        t_id IN (SELECT DISTINCT teilgebietsnummer FROM arp_naturreservate_pub.naturreservate_pflanzenliste)
         
     UNION
     
