@@ -8,8 +8,6 @@ task transferAgiHoehen2014(type: Db2Db){
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('agi_hoehen_2014_pub_hoehenkurven_10m_vereinfacht.sql',
-                    'agi_hoehen_2014_pub.hoehenkurven_10m_vereinfacht', true),
-            new TransferSet('agi_hoehen_2014_pub_lidarprodukte_lidarprodukt.sql',
-                    'agi_hoehen_2014_pub.lidarprodukte_lidarprodukt', true)
+                    'agi_hoehen_2014_pub.hoehenkurven_10m_vereinfacht', true)
     ];
 }
