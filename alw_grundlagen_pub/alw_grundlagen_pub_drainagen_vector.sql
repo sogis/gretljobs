@@ -80,9 +80,9 @@ SELECT
         WHEN material = 33 
             THEN 'Ton' 
         WHEN material = 34 
-            THEN 'Verschiedene',
+            THEN 'Verschiedene'
         WHEN material = 35 
-            THEN 'Zement', 
+            THEN 'Zement' 
         WHEN material = 36 
             THEN 'Kunststoff_Polyethylen_PE'
         WHEN material = 37 
