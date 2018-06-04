@@ -7,7 +7,11 @@ SELECT
     koord_y,
     status_bst,
     pid_2015,
-    saisonal,
+    CASE 
+        WHEN saisonal = '0' 
+            THEN 'Nein'
+        ELSE 'Ja'
+    END AS saisonal,
     "name",
     tel_p,
     tel_g,
