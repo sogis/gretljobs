@@ -62,10 +62,12 @@ SELECT
     vsb_flaeche.bezeichnung,
     vsb_flaeche.geometrie,
     vsb_flaeche.statustyp,
+    code_status.bezeichnung AS statustyp_text,
     vsb_flaeche.aktiv,
     vsb_flaeche.erfassungsdatum,
     vsb_flaeche.datenerfasser,
     vsb_flaeche.belastungstyp,
+    code_belastung.bezeichnung AS belastungstyp_text,
     vsb_flaeche.begruendung_inaktiv,
     vsb_flaeche.inaktiv_date,
     vsb_flaeche.flaechentyp,
@@ -86,4 +88,8 @@ FROM
     vsb_flaeche
     LEFT JOIN vsb.codenumzeichen
         ON verdachtsstreifenbreite = codenumzeichen.numcode
+    LEFT JOIN vsb.codenumzeichen code_status
+        ON code_status.numcode = vsb_flaeche.statustyp
+    LEFT JOIN vsb.codenumzeichen code_belastung
+        ON code_belastung.numcode = vsb_flaeche.belastungstyp
 ;
