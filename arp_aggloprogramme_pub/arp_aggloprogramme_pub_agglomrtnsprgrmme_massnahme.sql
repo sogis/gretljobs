@@ -33,7 +33,7 @@ SELECT
     massnahme.kostenstand_aktuell,
     massnahme.kostenanteil_bund,
     concat('https://geo.so.ch/', replace(massnahme.massnahmenblatt, '/opt/sogis_pic/daten_aktuell/arp/agglo/Dokumente/', 'docs/ch.so.arp.agglo/')) AS massnahmenblatt,
-    massnahme.ansprechperson,
+    regexp_replace(massnahme.ansprechperson, E'[\\n\\r]+', ' ', 'g' ) AS ansprechperson,
     massnahme.sonstiges,
     massnahme.projektphase,
     massnahme.umsetzungsstand,
