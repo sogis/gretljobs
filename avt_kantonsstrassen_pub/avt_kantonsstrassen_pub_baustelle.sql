@@ -16,7 +16,7 @@ SELECT
     CASE
         WHEN
             status = 'im_Bau'
-            THEN ' im Bau'
+            THEN 'im Bau'
         ELSE status
     END AS status,
     verkehrsfuehrung.massnahme AS verkehrsfuehrung,
