@@ -11,7 +11,8 @@ SELECT
     schutzstatus,
     gemeinde,
     strasse,
-    hausnummer
+    hausnummer, 
+    areal
 FROM
     ada_adagis_d.poly_geometrie
     LEFT JOIN ada_adagis_d."object"
