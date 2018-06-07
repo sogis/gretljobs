@@ -12,6 +12,8 @@ task transferAgiAvNachfuehrung(type: Db2Db){
             new TransferSet('agi_av_nachfuehrung_pub_grundbuchaemter.sql', 'agi_av_nachfuehrung_pub.grundbuchaemter',
                     true),
             new TransferSet('agi_av_nachfuehrung_pub_nachfuehrungsgeometer.sql',
-                    'agi_av_nachfuehrung_pub.nachfuehrungsgeometer', true)
+                    'agi_av_nachfuehrung_pub.nachfuehrungsgeometer', true),
+            new TransferSet('agi_av_nachfuehrung_pub_angaben_grundbuchplanauszug.sql',
+                    'agi_av_nachfuehrung_pub.angaben_grundbuchplanauszug', true)
     ];
 }
