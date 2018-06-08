@@ -1,0 +1,10 @@
+SELECT 
+    strassenname, 
+    ordnung, 
+    bfs_nr, 
+    importdatum, 
+    nachfuehrung, 
+    geometrie
+FROM 
+    agi_mopublic_pub.mopublic_strassenachse
+;

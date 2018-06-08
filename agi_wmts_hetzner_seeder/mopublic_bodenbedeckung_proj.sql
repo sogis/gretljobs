@@ -1,0 +1,11 @@
+SELECT
+  art,
+  art_txt,
+  bfs_nr,
+  egid,
+  importdatum,
+  nachfuehrung,
+  geometrie
+FROM
+  agi_mopublic_pub.mopublic_bodenbedeckung_proj
+ ;
