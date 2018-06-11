@@ -73,6 +73,9 @@ task copyDataFromGrundbuchplan(type: Db2Db, dependsOn: copyDataFromMOpublic) {
 task updateColorCaches(dependsOn: copyDataFromGrundbuchplan) {
     description = "Neuberechnen (komplett) der Grundbuchplan-Kacheln (farbig)."
     doLast {
+        ssh.settings {
+            knownHosts = allowAnyHosts
+        }
         ssh.run {
             session(remotes.seedingServer) {
                 execute("mapcache_seed -c /opt/mapcache/mapcache.xml -f -g 2056 -t ch.so.agi.hintergrundkarte_farbig -z 11,14 -n 4 -d /tiles/wmts-seeding-geom.gpkg -l kanton1000m") { result ->
@@ -83,9 +86,13 @@ task updateColorCaches(dependsOn: copyDataFromGrundbuchplan) {
     }
 }
 
-task updateBlackWhiteCaches(dependsOn: updateColorCaches) {
+//task updateBlackWhiteCaches(dependsOn: updateColorCaches) {
+task updateBlackWhiteCaches() {
     description = "Neuberechnen (komplett) der Grundbuchplan-Kacheln (schwarz-weiss)."
     doLast {
+        ssh.settings {
+            knownHosts = allowAnyHosts
+        }
         ssh.run {
             session(remotes.seedingServer) {
                 execute("mapcache_seed -c /opt/mapcache/mapcache.xml -f -g 2056 -t ch.so.agi.hintergrundkarte_sw -z 11,14 -n 4 -d /tiles/wmts-seeding-geom.gpkg -l kanton1000m") { result ->
