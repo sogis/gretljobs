@@ -18,9 +18,10 @@ apply plugin: "org.hidetake.ssh"
 
 remotes {
     seedingServer {
-        host = "${hetznerWmtsServerIp}" // floating IP
+        host = hetznerWmtsServerIp // floating IP
         user = "seeder"
-        identity = file(System.getProperty("user.home") + '/.ssh/id_rsa') // TODO
+        //identity = file(System.getProperty("user.home") + '/.ssh/id_rsa') // TODO
+        identity = sshKeyFilePathHetznerWmts
     }
 }
 
