@@ -8,6 +8,8 @@ defaultTasks 'transferAfuIsboden'
 task transferAfuIsboden(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    fetchSize = 100
+    batchSize = 100
     transferSets = [
             new TransferSet('afu_isboden_pub_bodeneinheit_wald.sql', 'afu_isboden_pub.bodeneinheit_wald', true),
             new TransferSet('afu_isboden_pub_bodeneinheit_lw.sql', 'afu_isboden_pub.bodeneinheit_lw', true),
