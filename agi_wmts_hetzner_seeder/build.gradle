@@ -86,8 +86,8 @@ task updateColorCaches(dependsOn: copyDataFromGrundbuchplan) {
     }
 }
 
-//task updateBlackWhiteCaches(dependsOn: updateColorCaches) {
-task updateBlackWhiteCaches() {
+task updateBlackWhiteCaches(dependsOn: updateColorCaches) {
+//task updateBlackWhiteCaches() {
     description = "Neuberechnen (komplett) der Grundbuchplan-Kacheln (schwarz-weiss)."
     doLast {
         ssh.settings {
