@@ -1,0 +1,14 @@
+SELECT 
+    lagegenauigkeit, 
+    lagezuverlaessigkeit, 
+    punktzeichen, 
+    punktzeichen_txt, 
+    symbolorientierung, 
+    bfs_nr, 
+    importdatum, 
+    nachfuehrung, 
+    gueltigkeit, 
+    geometrie
+FROM 
+    agi_mopublic_pub.mopublic_grenzpunkt
+;

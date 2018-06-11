@@ -1,0 +1,10 @@
+SELECT 
+    t_id,
+    bfsnr, 
+    gueltigkeit, 
+    punktzeichen, 
+    geometrie, 
+    mutation
+FROM 
+    agi_grundbuchplan_pub.liegenschaften_grenzpunkt
+;

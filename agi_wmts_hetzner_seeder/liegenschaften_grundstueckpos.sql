@@ -1,0 +1,25 @@
+SELECT 
+    t_id,
+    tid, 
+    grundstueckpos_von, 
+    pos, 
+    ori, 
+    hali, 
+    hali_txt, 
+    vali, 
+    vali_txt, 
+    groesse, 
+    groesse_txt, 
+    hilfslinie, 
+    gem_bfs, 
+    los, 
+    lieferdatum, 
+    y, 
+    x, 
+    rot, 
+    nummer, 
+    art, 
+    mutation
+FROM 
+    agi_grundbuchplan_pub.liegenschaften_grundstueckpos
+;

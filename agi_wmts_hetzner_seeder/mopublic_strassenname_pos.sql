@@ -1,0 +1,12 @@
+SELECT 
+    strassenname, 
+    orientierung, 
+    hali, 
+    vali, 
+    bfs_nr, 
+    importdatum, 
+    nachfuehrung, 
+    pos
+FROM 
+    agi_mopublic_pub.mopublic_strassenname_pos
+;
