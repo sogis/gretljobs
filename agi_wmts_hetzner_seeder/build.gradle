@@ -21,7 +21,7 @@ remotes {
         host = hetznerWmtsServerIp // floating IP
         user = "seeder"
         //identity = file(System.getProperty("user.home") + '/.ssh/id_rsa') // TODO
-        identity = sshKeyFilePathHetznerWmts
+        identity = new File(sshKeyFilePathHetznerWmts)
     }
 }
 
