@@ -21,9 +21,11 @@
                                 untief.wkb_geometry, 
                                 untief.grid_code,
                                 CASE
+                                    WHEN grid_code = 32
+                                        THEN 'übrige Rutschgebiete'
                                     WHEN grid_code = 33
                                         THEN 'Schutzgüter betroffen'
-                            END AS grid_code_text
+                                END AS grid_code_text
                             FROM 
                                 aww_natgef_rutsch_untief AS untief
                             WHERE 
