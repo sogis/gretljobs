@@ -3,6 +3,7 @@ SELECT
     wkb_geometry AS geometrie,
     datum,
     prozess_typ,
+    prozess_typ_text,
     storme_nr,
     jahr,
     gem_bfs,
