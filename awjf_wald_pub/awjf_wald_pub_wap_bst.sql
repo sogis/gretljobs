@@ -13,58 +13,58 @@ SELECT
     fid_eigcod,
     CASE 
         WHEN fid_eig=1000
-            THEN 'Bundeswald' 
+            THEN '1000 - Bundeswald' 
         WHEN fid_eig=2000
-            THEN 'Staatswald'
+            THEN '2000 - Staatswald'
         WHEN fid_eig=3100
-            THEN 'Bürgergemeinde'
+            THEN '3100 - Bürgergemeinde'
         WHEN fid_eig=3200
-            THEN 'Einwohnergemeinde'
+            THEN '3200 - Einwohnergemeinde'
         WHEN fid_eig=3300
-            THEN 'Einheitsgemeinde'
+            THEN '3300 - Einheitsgemeinde'
         WHEN fid_eig=4000
-            THEN 'Öffentlich (gemischt)'
+            THEN '4000 - Öffentlich (gemischt)'
         WHEN fid_eig=5000
-            THEN 'Gemischt öffentlich-privat'
+            THEN '5000 - Gemischt öffentlich-privat'
         WHEN fid_eig=6000
-            THEN 'Privat'
+            THEN '6000 - Privat'
         WHEN fid_eig=7000
-            THEN 'Privat (gemischt)'
+            THEN '7000 - Privat (gemischt)'
     END AS fid_eig,
     fid_prod,
     CASE 
         WHEN wpnr=501 
-            THEN 'Wirtschaftswald' 
+            THEN '501 - Wirtschaftswald' 
         WHEN wpnr=502 
-            THEN 'Schutzwald' 
+            THEN '502 - Schutzwald' 
         WHEN wpnr=503 
-            THEN 'Erholungswald' 
+            THEN '503 - Erholungswald' 
         WHEN wpnr=504 
-            THEN 'Natur und Landschaft'
+            THEN '504 - Natur und Landschaft'
         WHEN wpnr=505 
-            THEN 'Schutzwald / Natur und Landschaft' 
+            THEN '505 - Schutzwald / Natur und Landschaft' 
         WHEN wpnr=509 
-            THEN 'Nicht Wald'
+            THEN '509 - Nicht Wald'
     END AS wpnr,
     CASE 
         WHEN wptyp=1 
-            THEN 'Mit Wald bestockt' 
+            THEN '1 - Mit Wald bestockt' 
         WHEN wptyp=2
-            THEN 'Niederhaltezone'
+            THEN '2 - Niederhaltezone'
         WHEN wptyp=3 
-            THEN 'Waldstrasse'
+            THEN '3 - Waldstrasse'
         WHEN wptyp=4
-            THEN 'Maschinenweg'
+            THEN '4 - Maschinenweg'
         WHEN wptyp=5
-            THEN 'Bauten und Anlagen'
+            THEN '5 - Bauten und Anlagen'
         WHEN wptyp=6
-            THEN 'Rodungsfläche (temporär)'
+            THEN '6 - Rodungsfläche (temporär)'
         WHEN wptyp=7
-            THEN 'Gewässer'
+            THEN '7 - Gewässer'
         WHEN wptyp=8
-            THEN 'Abbaustelle'
+            THEN '8 - Abbaustelle'
         WHEN wptyp=9
-            THEN 'Nicht Wald'
+            THEN '9 - Nicht Wald'
     END AS wptyp,
     betriebsteil,
     fid_abt,
