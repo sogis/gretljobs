@@ -1,0 +1,14 @@
+SELECT
+    "BFS_Nr",
+    "Kreis_Nr",
+    "Gemeindename",
+    "Grundstueckart",
+    "Grundstueck_Nr",
+    "Grundstueck_Nr_Zusatz",
+    "Grundstueck_Nr_3",
+    "Fuehrungsart",
+    "Flaeche",
+    "EGRID"
+FROM
+    capi_p.V_AIO_GrundstueckeMitFlaeche
+;
