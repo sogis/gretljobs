@@ -9,7 +9,7 @@ task transferKasoData(type: Db2Db){
     sourceDb = [dbUriKaso, dbUserKaso, dbPwdKaso]
     targetDb = [dbUriErf, dbUserErf, dbPwdErf]
     transferSets = [
-            new TransferSet('av_kaso_abgleich_kaso_daten.sql', 'agi_av_kaso_abgleich.kaso_daten', true)
+            new TransferSet('agi_av_kaso_abgleich_kaso_daten.sql', 'agi_av_kaso_abgleich.kaso_daten', true)
     ];
 }
 
@@ -17,7 +17,7 @@ task calculateDifferences(type: Db2Db, dependsOn: 'transferKasoData'){
     sourceDb = [dbUriErf, dbUserErf, dbPwdErf]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('av_kaso_abgleich_pub_differenzen.sql', 'agi_av_kaso_abgleich_pub.differenzen', true)]
+            new TransferSet('agi_av_kaso_abgleich_pub_differenzen.sql', 'agi_av_kaso_abgleich_pub.differenzen', true)]
 }
 
 task createOverview(type: SqlExecutor, dependsOn: 'calculateDifferences'){
