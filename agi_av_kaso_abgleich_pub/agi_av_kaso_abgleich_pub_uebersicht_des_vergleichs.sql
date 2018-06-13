@@ -1,53 +1,62 @@
-WITH gemeinde AS (
-    SELECT 
-        gemeindegrenze.ogc_fid, 
-        gemeindegrenze.geometrie, 
-        gemeindegrenze.gem_bfs, 
-        gemeinde.name
-    FROM 
-        av_avdpool_ng.gemeindegrenzen_gemeindegrenze gemeindegrenze
-        LEFT JOIN av_avdpool_ng.gemeindegrenzen_gemeinde gemeinde 
-            ON gemeindegrenze.gemeindegrenze_von::text = gemeinde.tid::text
-), 
+DELETE FROM agi_av_kaso_abgleich_pub.uebersicht_des_vergleichs
+;
 
-diff_av AS (
-    SELECT 
-        differenzen_av.av_gem_bfs, 
-        count(differenzen_av.av_gem_bfs) AS anzahl
-    FROM 
-        av_kaso_abgleich.differenzen differenzen_av
-    WHERE 
-        differenzen_av.av_gem_bfs IS NOT NULL 
-        AND 
-        differenzen_av.fehlerart <> 1
-    GROUP BY 
-        differenzen_av.av_gem_bfs
-), 
-
-diff_kaso AS (
-    SELECT 
-        differenzen_kaso.kaso_bfs_nr, 
-        count(differenzen_kaso.kaso_bfs_nr) AS anzahl
-    FROM 
-        av_kaso_abgleich.differenzen differenzen_kaso
-    WHERE 
-        differenzen_kaso.kaso_bfs_nr IS NOT NULL 
-        AND 
-        differenzen_kaso.fehlerart = 4
-    GROUP BY 
-        differenzen_kaso.kaso_bfs_nr
+WITH 
+    gemeinde AS (
+        SELECT 
+            t_id, 
+            geometrie, 
+            bfs_gemeindenummer, 
+            gemeindename
+        FROM 
+            agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze
+    ), 
+    diff_av AS (
+        SELECT 
+            av.av_gem_bfs, 
+            count(av.av_gem_bfs) AS anzahl
+        FROM 
+            agi_av_kaso_abgleich_pub.differenzen av
+        WHERE 
+            av.av_gem_bfs IS NOT NULL 
+            AND 
+            av.fehlerart <> 1
+        GROUP BY 
+            av.av_gem_bfs
+    ), 
+    diff_kaso AS (
+        SELECT 
+            kaso.kaso_bfs_nr, 
+            count(kaso.kaso_bfs_nr) AS anzahl
+        FROM 
+            agi_av_kaso_abgleich_pub.differenzen kaso
+        WHERE 
+            kaso.kaso_bfs_nr IS NOT NULL 
+            AND 
+            kaso.fehlerart = 4
+        GROUP BY 
+            kaso.kaso_bfs_nr
+    )
+    
+INSERT INTO agi_av_kaso_abgleich_pub.uebersicht_des_vergleichs (
+    t_id,
+    geometrie,
+    gem_bfs,
+    name,
+    anzahl_differenzen
 )
-
-SELECT 
-    gemeinde.ogc_fid AS t_id, 
-    gemeinde.geometrie, 
-    gemeinde.gem_bfs, 
-    gemeinde.name, 
-    COALESCE(diff_av.anzahl, 0::bigint) + COALESCE(diff_kaso.anzahl, 0::bigint) AS anzahl_differenzen
-FROM 
-    gemeinde
-    LEFT JOIN diff_av 
-        ON gemeinde.gem_bfs = diff_av.av_gem_bfs
-    LEFT JOIN diff_kaso 
-        ON gemeinde.gem_bfs = diff_kaso.kaso_bfs_nr
+(
+    SELECT 
+        gemeinde.t_id, 
+        gemeinde.geometrie, 
+        gemeinde.bfs_gemeindenummer AS gem_bfs, 
+        gemeinde.gemeindename AS name, 
+        COALESCE(diff_av.anzahl, 0::bigint) + COALESCE(diff_kaso.anzahl, 0::bigint) AS anzahl_differenzen
+    FROM 
+        gemeinde
+        LEFT JOIN diff_av 
+            ON gemeinde.bfs_gemeindenummer = diff_av.av_gem_bfs
+        LEFT JOIN diff_kaso 
+            ON gemeinde.bfs_gemeindenummer = diff_kaso.kaso_bfs_nr
+)
 ;
