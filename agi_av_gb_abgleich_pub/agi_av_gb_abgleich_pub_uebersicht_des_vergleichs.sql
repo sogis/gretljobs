@@ -1,44 +1,51 @@
-WITH gemeinde AS (
-    SELECT 
-        gemeindegrenze.ogc_fid, 
-        gemeindegrenze.geometrie, 
-        gemeindegrenze.gem_bfs, 
-        gemeinde.name
-    FROM 
-        av_avdpool_ng.gemeindegrenzen_gemeindegrenze gemeindegrenze
-        LEFT JOIN av_avdpool_ng.gemeindegrenzen_gemeinde gemeinde
-            ON gemeindegrenze.gemeindegrenze_von::text = gemeinde.tid::text
-), 
+DELETE FROM agi_av_gb_abgleich_pub.uebersicht_des_vergleichs
+;
 
-diff_av AS (
-    SELECT 
-        differenzen_av.av_gem_bfs, 
-        count(differenzen_av.av_gem_bfs) AS anzahl
-    FROM 
-        av_gb_abgleich.differenzen differenzen_av
-    WHERE 
-        differenzen_av.av_gem_bfs IS NOT NULL
-    GROUP BY 
-        differenzen_av.av_gem_bfs
-), 
+WITH 
+    gemeinde AS (
+        SELECT 
+            t_id,
+            geometrie,
+            bfs_gemeindenummer,
+            gemeindename
+        FROM 
+            agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze
+    ), 
+    diff_av AS (
+        SELECT 
+            av_gem_bfs, 
+            count(av_gem_bfs) AS anzahl
+        FROM 
+            agi_av_gb_abgleich_pub.differenzen
+        WHERE 
+            av_gem_bfs IS NOT NULL
+        GROUP BY 
+            av_gem_bfs
+    ), 
+    diff_gb AS (
+        SELECT 
+            gb_gem_bfs, 
+            count(gb_gem_bfs) AS anzahl
+        FROM 
+            agi_av_gb_abgleich_pub.differenzen
+        WHERE 
+            gb_nummer::integer < 90000
+        GROUP BY 
+            gb_gem_bfs
+    )
 
-diff_gb AS (
-    SELECT 
-        differenzen_gb.gb_gem_bfs, 
-        count(differenzen_gb.gb_gem_bfs) AS anzahl
-    FROM 
-        av_gb_abgleich.differenzen differenzen_gb
-    WHERE 
-        differenzen_gb.gb_nummer::integer < 90000
-    GROUP BY 
-        differenzen_gb.gb_gem_bfs
+INSERT INTO agi_av_gb_abgleich_pub.uebersicht_des_vergleichs (
+    t_id,
+    geometrie,
+    gem_bfs,
+    name,
+    anzahl_differenzen
 )
-
 SELECT 
-    gemeinde.ogc_fid AS t_id, 
+    gemeinde.t_id, 
     gemeinde.geometrie, 
-    gemeinde.gem_bfs, 
-    gemeinde.name, 
+    gemeinde.bfs_gemeindenummer, 
+    gemeinde.gemeindename, 
     CASE
         WHEN (COALESCE(diff_av.anzahl, 0::bigint) + COALESCE(diff_gb.anzahl, 0::bigint)) = 0 
             THEN NULL::bigint
@@ -47,7 +54,7 @@ SELECT
 FROM 
     gemeinde
     LEFT JOIN diff_av 
-        ON gemeinde.gem_bfs = diff_av.av_gem_bfs
+        ON gemeinde.bfs_gemeindenummer = diff_av.av_gem_bfs
     LEFT JOIN diff_gb 
-        ON gemeinde.gem_bfs = diff_gb.gb_gem_bfs
+        ON gemeinde.bfs_gemeindenummer = diff_gb.gb_gem_bfs
 ;
