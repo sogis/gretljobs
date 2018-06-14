@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'createOverview'
+defaultTasks 'RemoveImportedData'
 
 
 task transferGbData(type: Db2Db){
@@ -24,5 +24,14 @@ task calculateDifferences(type: Db2Db, dependsOn: 'transferGbData'){
 
 task createOverview(type: SqlExecutor, dependsOn: 'calculateDifferences'){
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlFiles = ['agi_av_gb_abgleich_pub_uebersicht_des_vergleichs.sql']
+    sqlFiles = [
+            'agi_av_gb_abgleich_pub_uebersicht_des_vergleichs.sql'
+    ]
+}
+
+task RemoveImportedData(type: SqlExecutor, dependsOn: 'createOverview'){
+    database = [dbUriErf, dbUserErf, dbPwdErf]
+    sqlFiles = [
+            'delete_from_agi_av_gb_abgleich_gb_daten.sql'
+    ]
 }
