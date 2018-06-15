@@ -3,22 +3,24 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'removeImportedData'
+defaultTasks 'createOverview'
 
 
 task transferKasoData(type: Db2Db){
     sourceDb = [dbUriKaso, dbUserKaso, dbPwdKaso]
-    targetDb = [dbUriErf, dbUserErf, dbPwdErf]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
             new TransferSet('agi_av_kaso_abgleich_kaso_daten.sql', 'agi_av_kaso_abgleich.kaso_daten', true)
     ];
 }
 
 task calculateDifferences(type: Db2Db, dependsOn: 'transferKasoData'){
-    sourceDb = [dbUriErf, dbUserErf, dbPwdErf]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('agi_av_kaso_abgleich_pub_differenzen.sql', 'agi_av_kaso_abgleich_pub.differenzen', true)]
+
+    finalizedBy 'removeImportedData'
 }
 
 task createOverview(type: SqlExecutor, dependsOn: 'calculateDifferences'){
@@ -28,8 +30,8 @@ task createOverview(type: SqlExecutor, dependsOn: 'calculateDifferences'){
     ]
 }
 
-task removeImportedData(type: SqlExecutor, dependsOn: 'createOverview'){
-    database = [dbUriErf, dbUserErf, dbPwdErf]
+task removeImportedData(type: SqlExecutor){
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     sqlFiles = [
             'delete_from_agi_av_kaso_abgleich_kaso_daten.sql'
     ]
