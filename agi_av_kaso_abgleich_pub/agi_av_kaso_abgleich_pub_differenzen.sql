@@ -35,7 +35,7 @@ WITH
             REPLACE(REPLACE(liegenschaften_grundstueck.nummer::text, ' LRO'::text, ''::text), ' alt'::text, ''::text)  AS av_nummer, 
             liegenschaften_grundstueck.art AS av_art, 
             liegenschaften_grundstueck.art_txt AS av_art_txt, 
-            liegenschaften_liegenschaft.flaechenmass AS av_flaeche , 
+            liegenschaften_liegenschaft.flaechenmass AS av_flaeche, 
             av_projektierte_grundstuecke.identifikator AS av_mutation_id, 
             av_projektierte_grundstuecke.beschreibung AS av_mut_beschreibung
         FROM 
@@ -44,11 +44,11 @@ WITH
                 ON liegenschaften_liegenschaft.liegenschaft_von::text = liegenschaften_grundstueck.tid::text
             LEFT JOIN av_projektierte_grundstuecke
                 ON 
-                    av_projektierte_grundstuecke.nummer::text = REPLACE(liegenschaften_grundstueck.nummer::text, ' LRO'::text, ''::text) 
+                    av_projektierte_grundstuecke.nummer::text = REPLACE(REPLACE(liegenschaften_grundstueck.nummer::text, ' LRO'::text, ''::text), ' alt'::text, ''::text) 
                     AND 
                     liegenschaften_grundstueck.nbident::text = av_projektierte_grundstuecke.nbident::text
     
-        UNION
+        UNION ALL
     
         SELECT 
             liegenschaften_selbstrecht.ogc_fid, 
@@ -68,7 +68,7 @@ WITH
                 ON liegenschaften_selbstrecht.selbstrecht_von::text = liegenschaften_grundstueck.tid::text 
             LEFT JOIN av_projektiertes_selbstrecht
                 ON 
-                    av_projektiertes_selbstrecht.nummer::text = REPLACE(liegenschaften_grundstueck.nummer::text, ' LRO'::text, ''::text) 
+                    av_projektiertes_selbstrecht.nummer::text = REPLACE(REPLACE(liegenschaften_grundstueck.nummer::text, ' LRO'::text, ''::text), ' alt'::text, ''::text) 
                     AND 
                     liegenschaften_grundstueck.nbident::text = av_projektiertes_selbstrecht.nbident::text
     ),
@@ -105,7 +105,7 @@ SELECT
     kaso_gb_nr,
     kaso_art,
     kaso_flaeche, 
-    av_grundstuecke.av_flaeche - kaso.kaso_flaeche AS flaechen_differenz , 
+    av_grundstuecke.av_flaeche - kaso.kaso_flaeche AS flaechen_differenz, 
     1::integer AS fehlerart,
     'Liegenschaft mit falscher Art in KASO' AS fehlerart_text
     
@@ -144,7 +144,7 @@ SELECT
     kaso_gb_nr,
     kaso_art,
     kaso_flaeche,
-    av_grundstuecke.av_flaeche - kaso.kaso_flaeche AS flaechen_differenz ,
+    av_grundstuecke.av_flaeche - kaso.kaso_flaeche AS flaechen_differenz,
     2::integer AS fehlerart,
     'Gründstücke mit Flächendifferenzen' AS fehlerart_text
 FROM 
@@ -178,7 +178,7 @@ SELECT
     kaso_gb_nr,
     kaso_art,
     kaso_flaeche, 
-    av_grundstuecke.av_flaeche - kaso.kaso_flaeche AS flaechen_differenz , 
+    av_grundstuecke.av_flaeche - kaso.kaso_flaeche AS flaechen_differenz, 
      3::integer AS fehlerart,
      'Gründstück kommt nur in den AV-Daten vor' AS fehlerart_text
 FROM 
@@ -214,7 +214,7 @@ SELECT
     kaso_gb_nr,
     kaso_art,
     kaso_flaeche, 
-    av_grundstuecke.av_flaeche - kaso.kaso_flaeche AS flaechen_differenz , 
+    av_grundstuecke.av_flaeche - kaso.kaso_flaeche AS flaechen_differenz, 
     4::integer AS fehlerart,
     'Gründstück kommt nur in den KASO-Daten vor' AS fehlerart_text
 FROM 
