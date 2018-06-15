@@ -48,7 +48,7 @@ SELECT
     gemeinde.gemeindename, 
     CASE
         WHEN (COALESCE(diff_av.anzahl, 0::bigint) + COALESCE(diff_gb.anzahl, 0::bigint)) = 0 
-            THEN NULL::bigint
+            THEN 0
         ELSE COALESCE(diff_av.anzahl, 0::bigint) + COALESCE(diff_gb.anzahl, 0::bigint)
     END AS anzahl_differenzen
 FROM 

@@ -19,7 +19,7 @@ WITH
             liegenschaften_grundstueck.nummer::text AS av_nummer, 
             liegenschaften_grundstueck.art AS av_art, 
             liegenschaften_grundstueck.art_txt AS av_art_txt, 
-            liegenschaften_liegenschaft.flaechenmass AS av_flaeche , 
+            liegenschaften_liegenschaft.flaechenmass AS av_flaeche, 
             liegenschaften_grundstueck.lieferdatum AS av_lieferdatum,
             projektierte_liegenschaften_selbstrecht.identifikator AS av_mutation_id, 
             projektierte_liegenschaften_selbstrecht.beschreibung AS av_mut_beschreibung       
@@ -35,7 +35,7 @@ WITH
             LEFT JOIN av_grundbuch.grundbuchkreise
                 ON liegenschaften_grundstueck.nbident = grundbuchkreise.nbident
           
-        UNION
+        UNION ALL 
     
         SELECT 
             liegenschaften_selbstrecht.geometrie, 
@@ -70,7 +70,7 @@ WITH
             gb_daten.grundstueck_nr AS gb_nummer,
             gb_daten.grundstueckart AS gb_art,
             gb_daten.flaeche AS gb_flaeche,
-            gb_daten.fuehrungsart AS gb_fuehrungsart ,
+            gb_daten.fuehrungsart AS gb_fuehrungsart,
             grundbuchkreise.nbident AS gb_nbident
         FROM
             agi_av_gb_abgleich.gb_daten 
@@ -143,7 +143,7 @@ SELECT
     gb_flaeche,
     gb_fuehrungsart,
     gb_nbident,  
-    av_grundstuecke.av_flaeche - gb_grundstuecke.gb_flaeche AS flaechen_differenz , 
+    av_grundstuecke.av_flaeche - gb_grundstuecke.gb_flaeche AS flaechen_differenz, 
     2::integer AS fehlerart --'Grundstücke mit Flächendifferenzen'
 FROM 
     av_grundstuecke
@@ -177,7 +177,7 @@ SELECT
     gb_flaeche,
     gb_fuehrungsart,
     gb_nbident, 
-    av_grundstuecke.av_flaeche - gb_grundstuecke.gb_flaeche AS flaechen_differenz , 
+    av_grundstuecke.av_flaeche - gb_grundstuecke.gb_flaeche AS flaechen_differenz, 
     3::integer AS fehlerart --'Grundstück kommt nur in den AV-Daten vor'
 FROM 
     av_grundstuecke
@@ -211,7 +211,7 @@ SELECT
     gb_flaeche,
     gb_fuehrungsart,
     gb_nbident, 
-    av_grundstuecke.av_flaeche - gb_grundstuecke.gb_flaeche AS flaechen_differenz , 
+    av_grundstuecke.av_flaeche - gb_grundstuecke.gb_flaeche AS flaechen_differenz, 
     4::integer AS fehlerart --'Grundstück kommt nur in den Grundbuch-Daten vor'
 FROM 
     av_grundstuecke
