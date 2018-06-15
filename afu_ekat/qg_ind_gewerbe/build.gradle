@@ -12,6 +12,7 @@ task calc_ug_anl_proz(type: Db2Db){
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]
     transferSets = [
+            new TransferSet('ug_anl_proz/ug_anl_proz_eq_baumasch_innermot.sql', 'ekat2015.ug_anl_proz_eq_baumasch_innermot', true),
             new TransferSet('ug_anl_proz/ug_anl_proz_eq_baumasch_aufw.sql', 'ekat2015.ug_anl_proz_eq_baumasch_aufw', true),
             new TransferSet('ug_anl_proz/ug_anl_proz_eq_dachpa_verl.sql', 'ekat2015.ug_anl_proz_eq_dachpa_verl', true),
             new TransferSet('ug_anl_proz/ug_anl_proz_eq_ind_aufw.sql', 'ekat2015.ug_anl_proz_eq_ind_aufw', true),
@@ -113,19 +114,19 @@ task calc_ug_spez_emiss_gesamt(type: Db2Db, dependsOn: [calc_ug_spez_emiss]){
 
 //Berechnung der Untergruppe uplus
 
-task calc_ug_uplus(type: Db2Db){
-
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
-    transferSets = [
-            new TransferSet('ug_uplus/ug_uplus_eq_flaeche.sql', 'ekat2015.ug_uplus_eq_flaeche', true),
-            new TransferSet('ug_uplus/ug_uplus_eq_punktemiss.sql', 'ekat2015.ug_uplus_eq_punktemiss', true)
-    ];
-}
+//task calc_ug_uplus(type: Db2Db){
+//
+//    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+//    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+//    transferSets = [
+//            new TransferSet('ug_uplus/ug_uplus_eq_flaeche.sql', 'ekat2015.ug_uplus_eq_flaeche', true),
+//            new TransferSet('ug_uplus/ug_uplus_eq_punktemiss.sql', 'ekat2015.ug_uplus_eq_punktemiss', true)
+//    ];
+//}
 
 //Berechnung der Tabellen ug_uplus_gesamt
 
-task calc_ug_uplus_gesamt(type: Db2Db, dependsOn: [calc_ug_uplus]){
+task calc_ug_uplus_gesamt(type: Db2Db){
 
     sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
     targetDb = [targetDbUrl, targetDbUser, targetDbPass]

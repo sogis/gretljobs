@@ -1,0 +1,33 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'calc_strkvk_nur_autobahn_gesamt'
+
+//Berechnung des Streckenverkehrs NUR AUTOBAHN
+
+task calc_ug_strkvk_nur_autobahn(type: Db2Db){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_strkvk_eq_li.sql', 'ekat2015.ug_strkvk_nur_autobahn_li', true),
+            new TransferSet('ug_strkvk_eq_mr.sql', 'ekat2015.ug_strkvk_nur_autobahn_mr', true),
+            new TransferSet('ug_strkvk_eq_pw.sql', 'ekat2015.ug_strkvk_nur_autobahn_pw', true),
+            new TransferSet('ug_strkvk_eq_rb.sql', 'ekat2015.ug_strkvk_nur_autobahn_rb', true),
+            new TransferSet('ug_strkvk_eq_snf.sql', 'ekat2015.ug_strkvk_nur_autobahn_snf', true)
+    ];
+}
+
+//Berechnung der Emissionen auf Autobahnen
+
+task calc_strkvk_nur_autobahn_gesamt(type: Db2Db, dependsOn: [calc_ug_strkvk_nur_autobahn]){
+
+    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    transferSets = [
+            new TransferSet('ug_strkvk_nur_autobahn_gesamt.sql', 'ekat2015.ug_strkvk_links_nur_autobahn_gesamt', true)
+    ];
+}
+
