@@ -46,11 +46,7 @@ SELECT
     gemeinde.geometrie, 
     gemeinde.bfs_gemeindenummer, 
     gemeinde.gemeindename, 
-    CASE
-        WHEN (COALESCE(diff_av.anzahl, 0::bigint) + COALESCE(diff_gb.anzahl, 0::bigint)) = 0 
-            THEN 0
-        ELSE COALESCE(diff_av.anzahl, 0::bigint) + COALESCE(diff_gb.anzahl, 0::bigint)
-    END AS anzahl_differenzen
+    COALESCE(diff_av.anzahl, 0::bigint) + COALESCE(diff_gb.anzahl, 0::bigint) AS anzahl_differenzen
 FROM 
     gemeinde
     LEFT JOIN diff_av 
