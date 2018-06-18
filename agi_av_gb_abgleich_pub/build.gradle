@@ -7,7 +7,7 @@ defaultTasks 'createOverview'
 
 
 task transferGbData(type: Db2Db){
-    sourceDb = [dbUriGb, dbUserGb, dbPwdGb]
+    sourceDb = [dbUriCapitastra, dbUserCapitastra, dbPwdCapitastra]
     targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
             new TransferSet('agi_av_gb_abgleich_gb_daten.sql', 'agi_av_gb_abgleich.gb_daten', true)
