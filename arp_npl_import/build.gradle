@@ -1,6 +1,3 @@
-import ch.so.agi.gretl.tasks.*
-import ch.so.agi.gretl.api.*
-
 description = """\n
 Importiert Nutzungsplanungs-INTERLIS-Daten in die Datenbank
 und baut diese in das Publikationsmodell um.
@@ -14,34 +11,28 @@ Die Performance des Umbau-Schrittes dürfte bei erst wenig
 vorhandenen Gemeinden in der Quell-Datenbank nicht
 problematisch sein.
 
-'gradle importDataset -Pxtf=path/to/xtf/bfsnr_gemeindename.xtf'
+gradle -I init.gradle checkXtfName -Pxtf=path/to/XXXX_fubar.xtf
 """
 
 apply plugin: 'ch.so.agi.gretl'
 
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+defaultTasks 'transformArpNpl'
+
 ext {
-    sourceDbUrl = "jdbc:postgresql://192.168.50.5/sogis"
-    sourceDbUser = "ddluser"
-    sourceDbPass = "ddluser"
-    
-    //sourceDbUrl = "jdbc:postgresql://geodb-t.verw.rootso.org:5432/sogis"
-    //sourceDbUser = "datasync"
-    //sourceDbPass = System.env.sourceDbPass    
-    
-    //sourceDbUrl = "jdbc:postgresql://geodb-dev.cgjofbdf5rqg.eu-central-1.rds.amazonaws.com:5432/xanadu2"
-    //sourceDbUser = "stefan"
-    //sourceDbPass = System.env.sourceDbPass    
-    //sourceDbPass = "mspublic"    
-    
-    targetDbUrl = "jdbc:postgresql://geodb-t.verw.rootso.org:5432/sogis"
-    targetDbUser = "datasync"
-    targetDbPass = System.env.targetDbPass
-    //targetDbPass = "mspublic"
     setNonExistingPropertyToUndefinedValue('xtf')
 }
 
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.steps.*
+
+configurations.all {
+    resolutionStrategy {
+        force "ch.interlis:ili2pg:3.10.7-SNAPSHOT"
+    }
+}
 
 task checkXtfName() {
     description = "Prüft, ob die ersten vier Buchstaben im XTF-Filenamen einer Nummer entsprechen, die im BfS-Range des Kt. SO liegt."    
@@ -53,13 +44,14 @@ task checkXtfName() {
 }
 
 task validateDataset(type: IliValidator, dependsOn: 'checkXtfName') {
-    description = "Validiert ein Datensatz (=XTF)."    
+    description = "Validiert einen Datensatz (=XTF)."    
     dataFiles = [xtf]
 }
 
 task replaceDataset (type: Ili2pgReplace, dependsOn: 'validateDataset') {
-    description = "Ersetzt einen Datensatz (=XTF) in der PostgreSQL-Datenbank."
-    database = [sourceDbUrl, sourceDbUser, sourceDbPass]
+    description = "Ersetzt einen Datensatz (=XTF) in der Erfassungsdatenbank."
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    createMetaInfo = false
     dbschema = "arp_npl"
     models = "SO_Nutzungsplanung_20171118"
     disableValidation = true
@@ -67,12 +59,10 @@ task replaceDataset (type: Ili2pgReplace, dependsOn: 'validateDataset') {
     dataFile = xtf
 }
 
-// At the moment it's still sogis-Db to sogis-Db.
-// No Pub-Db yet.
-task transformArpNpl(type: Db2DbTask) {
+task transformArpNpl(type: Db2Db, dependsOn: 'replaceDataset') {
     description = "Datenumbau in das Publikationsmodell."
-    sourceDb =  [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet("transform_arp_npl_pub_nutzungsplanung_grundnutzung_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_grundnutzung', true),
             new TransferSet("transform_arp_npl_pub_nutzungsplanung_ueberlagernd_flaeche_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_ueberlagernd_flaeche', true),
