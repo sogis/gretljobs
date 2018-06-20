@@ -140,8 +140,7 @@ SELECT
     massnahme.letzte_anpassung,
     punktobjekt.geometrie AS punktgeometrie,
     linienobjekt.geometrie AS liniengeometrie,
-    flaechenobjekt.geometrie AS flaechengeometrie,
-    concat('(', aggloprogramm.aname, ' - ', massnahme.nummer, ') ', massnahme.beschreibung) AS suchattribut
+    flaechenobjekt.geometrie AS flaechengeometrie
 FROM
     arp_aggloprogramme.agglomrtnsprgrmme_massnahme massnahme
     LEFT JOIN arp_aggloprogramme.agglomrtnsprgrmme_agglomerationsprogramm aggloprogramm
