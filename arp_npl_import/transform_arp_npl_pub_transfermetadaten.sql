@@ -15,7 +15,7 @@ WITH transfermetadaten AS (
 SELECT  
     t.t_datasetname::int4 AS bfs_nr,
     t.t_id,
-    --t.aname,
+    t.aname AS amt_name,
     t.amtimweb,
     t.stand,
     t.lieferdatum,

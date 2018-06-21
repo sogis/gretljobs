@@ -60,3 +60,20 @@ java -jar ~/apps/ili2pg-3.11.2/ili2pg.jar \
 --createUnique \
 --createFk \
 --createNumChecks
+
+## GRETL
+
+Lokales arbeiten:
+
+```
+export DB_URI_SOGIS=jdbc:postgresql://192.168.50.6/sogis
+export DB_USER_SOGIS=ddluser
+export DB_PWD_SOGIS=ddluser
+export DB_URI_PUB=jdbc:postgresql://192.168.50.6/pub
+export DB_USER_PUB=sogis_admin
+export DB_PWD_PUB=sogis_admin
+```
+
+```
+./start-gretl.sh --docker_image sogis/gretl-runtime:production --job_directory /Users/stefan/Projekte/gretl-arp-import/arp_npl_import/ --task_name -Pxtf=2580_091_2018-02-13.xtf
+```
