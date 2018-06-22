@@ -141,7 +141,7 @@ WITH documents AS (
         NULL AS offiziellenr,
         reservate_reservat.t_id,
         reservate_teilgebiet.t_id,
-        'http://faust.so.ch/such_start.fau?prj=ARP&dm=FVARP02&rpos=3&ro_zeile_2=' || reservate_reservat.nummer 
+        'http://faust.so.ch/suche_start.fau?prj=ARP&dm=FVARP02&rpos=3&ro_zeile_2=' || reservate_reservat.nummer 
     FROM
         arp_naturreservate.reservate_reservat
         RIGHT JOIN arp_naturreservate.reservate_teilgebiet
