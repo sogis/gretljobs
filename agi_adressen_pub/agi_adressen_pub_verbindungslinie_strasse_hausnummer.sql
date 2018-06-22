@@ -5,7 +5,6 @@ WITH
             strassenstueck_von
         FROM 
             av_avdpool_ng.gebaeudeadressen_strassenstueck
-
         GROUP BY 
             strassenstueck_von
     ),
@@ -22,8 +21,8 @@ WITH
 SELECT 
     gebaeudeadressen_lokalisationsname."text" AS strname, 
     gebaeudeadressen_gebaeudeeingang.hausnummer, 
-    hausnummern.tid AS a_tid, 
-    gebaeudeadressen_gebaeudeeingang.tid AS b_tid, 
+    hausnummern.tid AS hausnummerpos_tid, 
+    gebaeudeadressen_gebaeudeeingang.tid AS gebaeudeeingang_tid, 
     gebaeudeadressen_gebaeudeeingang.gebaeudeeingang_von AS lok_tid, 
     ST_ShortestLine(hausnummern.pos, strassen.geometrie) AS geometrie, 
     hausnummern.gem_bfs,
