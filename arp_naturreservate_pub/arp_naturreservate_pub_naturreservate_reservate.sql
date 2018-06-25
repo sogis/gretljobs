@@ -103,7 +103,7 @@ WITH documents AS (
         FALSE AS rechtsvorschrift, 
         NULL AS offiziellenr,
         reservate_reservat.t_id,
-        'http://geo.dev.so.ch/api/v1/document/?template=Naturreservate%26reservatsnummer=' || reservate_reservat.nummer
+        'http://geo.dev.so.ch/api/v1/document/?template=Naturreservate%26feature=' || reservate_reservat.nummer
     FROM
         arp_naturreservate.reservate_reservat
         
