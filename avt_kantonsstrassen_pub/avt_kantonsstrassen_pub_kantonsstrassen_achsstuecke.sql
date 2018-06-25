@@ -1,5 +1,5 @@
 SELECT
-    id AS t_id,
+    max(id) AS t_id,
     geom AS geometrie,
     "name",
     lokalisati,
@@ -11,16 +11,34 @@ SELECT
     plz_ortsch,
     sostrid,
     eid,
-    ogc_fid,
-    abschnitti,
+    max(ogc_fid) As ogc_fid,
+    max(abschnitti) AS abschnitti,
     achseid,
     achsname,
     achsnummer,
     achstyp,
     achstypnam,
-    code
+    max(code) AS code
 FROM
     strassennetz.kantonsstrassen_def
 WHERE
     archive = 0
+
+GROUP BY
+    geometrie,
+    "name",
+    lokalisati,
+    strassenst,
+    ordnung,
+    istachse,
+    gem_bfs,
+    los,
+    plz_ortsch,
+    sostrid,
+    eid,
+    achseid,
+    achsname,
+    achsnummer,
+    achstyp,
+    achstypnam
 ;
