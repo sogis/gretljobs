@@ -11,7 +11,7 @@ SELECT
     plz_ortsch,
     sostrid,
     eid,
-    max(ogc_fid) As ogc_fid,
+    max(ogc_fid) AS ogc_fid,
     max(abschnitti) AS abschnitti,
     achseid,
     achsname,
