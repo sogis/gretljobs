@@ -11,14 +11,14 @@ SELECT
     plz_ortsch,
     sostrid,
     eid,
-    max(ogc_fid),
-    max(abschnitti),
+    max(ogc_fid) AS ogc_fid,
+    max(abschnitti) AS abschnitti,
     achseid,
     achsname,
     achsnummer,
     achstyp,
     achstypnam,
-    max(code)
+    max(code) AS code
 FROM
     strassennetz.kantonsstrassen_def
 WHERE
