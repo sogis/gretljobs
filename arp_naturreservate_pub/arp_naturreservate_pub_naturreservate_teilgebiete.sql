@@ -111,7 +111,7 @@ WITH documents AS (
     FROM
         arp_naturreservate.reservate_teilgebiet
     WHERE 
-        t_id IN (SELECT DISTINCT teilgebietsnummer FROM arp_naturreservate_pub.naturreservate_pflanzenliste)
+        t_id IN (SELECT DISTINCT teilgebiet FROM arp_naturreservate.reservate_teilgebiet_pflanze)
         
     UNION
     
