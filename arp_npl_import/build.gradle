@@ -19,19 +19,10 @@ apply plugin: 'ch.so.agi.gretl'
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'transformArpNpl'
+defaultTasks 'replaceDataset'
 
 ext {
     setNonExistingPropertyToUndefinedValue('xtf')
-}
-
-import ch.so.agi.gretl.tasks.*
-import ch.so.agi.gretl.steps.*
-
-configurations.all {
-    resolutionStrategy {
-        force "ch.interlis:ili2pg:3.10.7-SNAPSHOT"
-    }
 }
 
 task checkXtfName() {
@@ -58,6 +49,8 @@ task replaceDataset (type: Ili2pgReplace, dependsOn: 'validateDataset') {
     dataFile = xtf
 }
 
+// Datenumbau aus technischen Gründen ausgelagert in eigenen GRETL-Job (arp_npl_pub)
+/*
 task transformArpNpl(type: Db2Db, dependsOn: 'replaceDataset') {
     description = "Datenumbau in das Publikationsmodell."
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
@@ -77,6 +70,7 @@ task transformArpNpl(type: Db2Db, dependsOn: 'replaceDataset') {
             new TransferSet("transform_arp_npl_pub_transfermetadaten.sql", 'arp_npl_pub.nutzungsplanung_transfermetadaten', true)
     ]
 }
+*/
 
 def setNonExistingPropertyToUndefinedValue(propertyName) {
     setNonExistingPropertyToDefaultValue(propertyName, 'UNDEFINED')

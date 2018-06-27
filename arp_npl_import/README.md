@@ -1,20 +1,14 @@
-# Import und Transformation der Nutzungsplanung
+# Import und Datenumbau der Nutzungsplanung
 
-TODO: Lokal oder in GRETL-Jenkins? Berechtigungen, falls lokal?
+Es gibt für den Import und Datenumbau zur Zeit je einen GRETL-Job. Ziel ist es alles in einem Job konsolidieren. Dazu fehlt aber die Anbindung eines Filesystems an GRETL-Jenkins, um auf zu importierende XTF zugreifen zu können. Der Importjob muss aus diesem Grund lokal ausgeführt werden. Wird ein GRETL-Job lokal ausgeführt, kann er aber nicht auf die notwendigen DB-Credentials für die Pub-DB zugreifen, die man für das Schreiben (also den Datenumbau) in die Pub-DB braucht. Aus diesem Grund sind zwei einzelne Jobs notwendig. Der Importrozess wird lokal "on-demand" ausgeführt, der Datenumbau-Prozess wird in GRETL-Jenkins "on-demand" ausgeführt.
 
-## Information zu den Queries
-### Allgemein
-Das Publikationsmodell resp. die Ursprungsdatenumbau-Queries sind noch fehlerhaft, da beim Erstellen die Rekursion der ganzen Dokumenten-Geschichte wahrscheinlich nicht berücktsichtig wurde. Daher muss das Pub-Modell nochmals angepasst werden. Aber erst wenn JSON-Datentyp in ili2pg implementiert ist. 
+Vertretbar solange Lieferungen noch eine seltene Ausnahmeerscheinung sind...
 
-### Kaskade 
-Die Rekursion beim Datenumbau muss nochmals überprüft werden: Es kann sein, dass ein Ursprungsdokument zweimal vorkommt und jeweils eine unterschiedliche Kaskade bilden. Ich bin mir nicht sicher, ob dieser Fall abgedeckt ist. Sowas ähnliches ist mir jedenfalls aufgefallen bei den ÖREB-Transferdateien des Bundes. Gelöst habe ich es damals (Code verschollen) damit, dass ich die Ursprungsdokumente eindeutig gemacht habe, dh. die "t_id" an das "Ursprung"-Attribut gehängt. 
+Datenumbau-SQL-Dateien lasse ich mal hier stehen. Darauf achten, dass sie ggf angepasst werden müssen, falls man im Datenumbau-Job etwas macht.
 
-### Mehrfache Dokumente
-Um zu verhindern, dass Dokumente mehrfach für eine Typ/Geometrie-Kombination im Publikationsmodell bei der Abfrage vorkommen, wird noch ein `DISTINCT ON (typ_grundnutzung, dok_referenz)` in der Query "typ_XXXXXXXX_dokument_ref" eingefügt.
+# Schema creation
 
-## Schema creation
-
-Check out: [https://geoweb.rootso.org/redmine/issues/2677](https://geoweb.rootso.org/redmine/issues/2677)
+See: [https://geoweb.rootso.org/redmine/issues/2677](https://geoweb.rootso.org/redmine/issues/2677)
 
 java -jar ~/apps/ili2pg-3.11.2/ili2pg.jar \
 --dbhost 192.168.50.6 \
@@ -41,26 +35,6 @@ java -jar ~/apps/ili2pg-3.11.2/ili2pg.jar \
 --createFk \
 --createNumChecks
 
-java -jar ~/apps/ili2pg-3.11.2/ili2pg.jar \
---dbhost 192.168.50.5 \
---dbdatabase sogis \
---dbusr ddluser \
---dbpwd ddluser \
---nameByTopic \
---disableValidation \
---defaultSrsCode 2056 \
---strokeArcs \
---sqlEnableNull \
---createGeomIdx \
---createFkIdx \
---models SO_Nutzungsplanung_Publikation_20170821 \
---dbschema arp_npl_pub \
---createscript arp_npl_pub.sql \
---schemaimport \
---createUnique \
---createFk \
---createNumChecks
-
 ## GRETL
 
 Lokales arbeiten:
@@ -75,5 +49,5 @@ export DB_PWD_PUB=sogis_admin
 ```
 
 ```
-./start-gretl.sh --docker_image sogis/gretl-runtime:production --job_directory /Users/stefan/Projekte/gretl-arp-import/arp_npl_import/ --task_name -Pxtf=2580_091_2018-02-13.xtf
+./start-gretl.sh --docker_image sogis/gretl-runtime:production --job_directory /Users/stefan/Projekte/gretl-arp-import/arp_npl_import/ --task_name replaceDataset -Pxtf=2580_091_2018-02-13.xtf
 ```
