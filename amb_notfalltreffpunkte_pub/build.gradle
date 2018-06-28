@@ -1,0 +1,14 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferAmbNotfalltreffpunkte'
+
+task transferAmbNotfalltreffpunkte(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('amb_notfalltreffpunkte_pub.sql', 'amb_notfalltreffpunkte_pub.notfalltreffpnkte_treffpunkt', true)
+    ];
+}
