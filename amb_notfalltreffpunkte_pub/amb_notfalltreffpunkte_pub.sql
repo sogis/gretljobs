@@ -6,10 +6,10 @@ SELECT
     a.rfs, 
     a.einwohner,
     a.art,
-    b.str_name, 
+    b.str_name AS strasse, 
     b.hausnummer, 
     b.plz4 AS plz, 
-    b.ortschaft, 
+    b.ortschaft AS ort, 
     a.url, 
     a.geometrie
 FROM 
