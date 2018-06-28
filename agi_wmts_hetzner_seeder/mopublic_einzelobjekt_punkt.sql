@@ -1,0 +1,11 @@
+SELECT 
+    art, 
+    art_txt, 
+    bfs_nr, 
+    symbolorientierung, 
+    importdatum, 
+    nachfuehrung, 
+    geometrie
+FROM 
+    agi_mopublic_pub.mopublic_einzelobjekt_punkt
+;

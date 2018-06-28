@@ -1,0 +1,12 @@
+SELECT 
+    gelaendename, 
+    bfs_nr, 
+    orientierung, 
+    hali, 
+    vali, 
+    importdatum, 
+    nachfuehrung, 
+    pos
+FROM 
+    agi_mopublic_pub.mopublic_gelaendename
+;

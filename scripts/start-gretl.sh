@@ -22,6 +22,9 @@ db_parameter=(
 -PdbUriPub=$DB_URI_PUB \
 -PdbUserPub=$DB_USER_PUB \
 -PdbPwdPub=$DB_PWD_PUB \
+-PdbUriAltlast4web=$DB_URI_ALTLAST4WEB \
+-PdbUserAltlast4web=$DB_USER_ALTLAST4WEB \
+-PdbPwdAltlast4web=$DB_PWD_ALTLAST4WEB \
 )
 
 declare gretl_cmd="gretl $task_name ${task_parameter[@]} ${db_parameter[@]}"

@@ -1,0 +1,15 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferAwjfWegsanierungen'
+
+task transferAwjfWegsanierungen(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('awjf_wegsanierungen_pub_wegsanierungen_wegsanierung.sql',
+                    'awjf_wegsanierungen_pub.wegsanierungen_wegsanierung', true)
+    ];
+}
