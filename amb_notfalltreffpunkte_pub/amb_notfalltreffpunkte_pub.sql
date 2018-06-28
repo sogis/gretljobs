@@ -6,10 +6,10 @@ SELECT
     a.rfs, 
     a.einwohner,
     a.art,
-    b.str_name AS strasse, 
-    b.hausnummer, 
-    b.plz4 AS plz, 
-    b.ortschaft AS ort, 
+    coalesce(b.str_name,'unbekannt') AS strasse, 
+    coalesce(b.hausnummer,'unbekannt') AS hausnummer, 
+    coalesce(b.plz4, 0) AS plz, 
+    coalesce(b.ortschaft, 'unbekannt') AS ort, 
     a.url, 
     a.geometrie
 FROM 
