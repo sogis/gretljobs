@@ -11,19 +11,19 @@ WITH documents AS (
             WHEN 
                 reservate_dokument.typ = 'RRB' 
                 AND 
-                position('/opt/sogis_pic/daten_aktuell/arp/natur_und_landschaft/dokumente/rrb/' IN reservate_dokument.dateipfad) != 0 
+                position('/opt/sogis_pic/documents/ch.so.arp.naturreservate/rrb/' IN reservate_dokument.dateipfad) != 0 
                 AND 
                 reservate_dokument.bezeichnung != ''
                 THEN 'https://geoweb.so.ch/naturreservate/' 
-                                || split_part(reservate_dokument.dateipfad, '/natur_und_landschaft/dokumente/', 2)
+                                || split_part(reservate_dokument.dateipfad, '/ch.so.arp.naturreservate/', 2)
             WHEN 
                 reservate_dokument.typ = 'RRB' 
                 AND 
-                position('/opt/sogis_pic/daten_aktuell/arp/natur_und_landschaft/dokumente/rrb/' IN reservate_dokument.dateipfad) != 0 
+                position('/opt/sogis_pic/documents/ch.so.arp.naturreservate/rrb/' IN reservate_dokument.dateipfad) != 0 
                 AND 
                 reservate_dokument.bezeichnung = ''
                 THEN 'https://geoweb.so.ch/naturreservate/' 
-                                || split_part(reservate_dokument.dateipfad, '/natur_und_landschaft/dokumente/', 2)
+                                || split_part(reservate_dokument.dateipfad, '/ch.so.arp.naturreservate/', 2)
                                 
             WHEN 
                 reservate_dokument.typ = 'RRB' 
@@ -53,7 +53,7 @@ WITH documents AS (
                 AND 
                 reservate_dokument.bezeichnung != '' 
                 THEN 'https://geoweb.so.ch/naturreservate/' 
-                                || split_part(reservate_dokument.dateipfad, '/natur_und_landschaft/dokumente/', 2)                              
+                                || split_part(reservate_dokument.dateipfad, '/ch.so.arp.naturreservate/', 2)                              
             WHEN 
                 (
                     reservate_dokument.typ = 'Kommunale_Inventare' 
@@ -65,7 +65,7 @@ WITH documents AS (
                 AND 
                 reservate_dokument.bezeichnung = ''
                 THEN  'https://geoweb.so.ch/naturreservate/' 
-                                || split_part(reservate_dokument.dateipfad, '/natur_und_landschaft/dokumente/', 2)
+                                || split_part(reservate_dokument.dateipfad, '/ch.so.arp.naturreservate/', 2)
            WHEN 
                 (
                     reservate_dokument.typ = 'Sonderbauvorschriften' 
@@ -103,7 +103,7 @@ WITH documents AS (
         FALSE AS rechtsvorschrift, 
         NULL AS offiziellenr,
         reservate_reservat.t_id,
-        'http://geo.dev.so.ch/api/v1/document/?template=Naturreservate%26feature=' || reservate_reservat.nummer
+        'https://geo.so.ch/api/v1/document/?template=Naturreservate%26feature=' || reservate_reservat.nummer
     FROM
         arp_naturreservate.reservate_reservat
         
