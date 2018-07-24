@@ -20,7 +20,7 @@ remotes {
     seedingServer {
         host = hetznerWmtsServerIp // floating IP
         user = "seeder"
-        //identity = file(System.getProperty("user.home") + '/.ssh/id_rsa') // TODO
+        //identity = file(System.getProperty("user.home") + '/.ssh/id_rsa')
         identity = new File(sshKeyFilePathHetznerWmts)
     }
 }
