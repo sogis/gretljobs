@@ -8,16 +8,16 @@ SELECT
     bodentyp,
     bodentyp_beschreibung,
     gelform,
-    CASE
-        WHEN gelform = 'a' OR gelform = 'b' OR gelform = 'c' OR gelform = 'd' OR gelform = 'e'
+    CASE 
+        WHEN gelform IN ('a', 'b', 'c', 'd', 'e')
             THEN '0-10%: Keine Einschränkung'
-        WHEN gelform = 'f' OR gelform = 'g' OR gelform = 'h' OR gelform = 'i'
+        WHEN gelform IN ('f', 'g', 'h', 'i')
             THEN '10-15%: Hackfruchtanbau und Vollerntemaschine möglich'
-        WHEN gelform = 'j' OR gelform = 'k' OR gelform = 'l' OR gelform = 'm' OR gelform = 'n'
+        WHEN gelform IN ('j', 'k', 'l', 'm', 'n')
             THEN '10-15%: Hackfruchtanbau stark erschwert, Getreidebau erschwert; Mähdrescher möglich, evtl. Hangmähdrescher'
-        WHEN gelform = 'o' OR gelform = 'p' OR gelform ='q' OR gelform = 'r'
+        WHEN gelform IN ('o', 'p', 'q', 'r')
             THEN '25-35%: Getreideanbau stark eingeschränkt, Hangmähdrescher; Hangtraktoren.'
-        WHEN gelform = 's' OR gelform = 't' OR gelform = 'u' OR gelform = 'v' OR gelform = 'w' OR gelform = 'x' OR gelform = 'y' OR gelform = 'z'
+        WHEN gelform IN ('s', 't', 'u', 'v', 'w', 'x', 'y', 'z')
             THEN '>35%: nur Hähwiese und Weide möglich; spezialisierte Hangmechanisierung'
     END AS gelform_txt,
     gelform_beschreibung,
@@ -35,25 +35,25 @@ SELECT
             THEN 'Keine oder nur wenige Steine (0-5%)'
         WHEN skelett_ob = 1
             THEN 'mässig viele Steine (5-10%)'
-        WHEN skelett_ob = 2 OR skelett_ob = 3
+        WHEN skelett_ob IN (2, 3)
             THEN 'viele Steine (10-20%)'
-        WHEN skelett_ob = 4 OR skelett_ob = 5
+        WHEN skelett_ob IN (4, 5)
             THEN 'sehr viele Steine (20-30%)'
-        WHEN skelett_ob = 6 OR skelett_ob = 7
+        WHEN skelett_ob IN (6, 7)
             THEN 'extrem viele Steine (>30%)'
     END AS skelett_ob_txt,
     skelett_ob_beschreibung,
     skelett_ub,
-    '' AS skelett_ub_txt,
+    NULL AS skelett_ub_txt,
     skelett_ub_beschreibung,
     koernkl_ob,
     CASE 
-        WHEN koernkl_ob = 1 OR koernkl_ob = 2 OR koernkl_ob = 3 OR koernkl_ob = 4
-            THEN 'Leichte, sandige Böden:<br>leicht bearbeitbar, trocknen leicht ab.'
-        WHEN koernkl_ob = 5 OR koernkl_ob = 6 OR koernkl_ob = 10 OR koernkl_ob = 11 OR koernkl_ob = 12
-            THEN 'Mittelschwere, lehmige bis schluffige Böden:<br>normal bearbeitbar, trocknen mässig schnell ab.'
-        WHEN koernkl_ob = 7 OR koernkl_ob = 8 OR koernkl_ob = 9 OR koernkl_ob = 13
-            THEN 'Schwere, tonige Böden:<br>schwer bearbeitbar, trocknen sehr langsam ab.'
+        WHEN koernkl_ob IN (1, 2, 3, 4)
+            THEN 'Leichte, sandige Böden: leicht bearbeitbar, trocknen leicht ab.'
+        WHEN koernkl_ob IN (5, 6, 10, 11, 12)
+            THEN 'Mittelschwere, lehmige bis schluffige Böden: normal bearbeitbar, trocknen mässig schnell ab.'
+        WHEN koernkl_ob IN (7, 8, 9, 13)
+            THEN 'Schwere, tonige Böden: schwer bearbeitbar, trocknen sehr langsam ab.'
     END AS koernkl_ob_txt,
     koernkl_ob_beschreibung,
     koernkl_ub,
@@ -91,13 +91,13 @@ SELECT
     pflngr_qgis_int,
     CASE 
         WHEN pflngr_qgis_int = 1
-            THEN 'Geringe Durchwurzelungstiefe;<br> schlechtes Speichervermögen für Nährstoffe und Wasser'
+            THEN 'Geringe Durchwurzelungstiefe; schlechtes Speichervermögen für Nährstoffe und Wasser'
         WHEN pflngr_qgis_int = 2
-            THEN 'Mässige Durchwurzelungstiefe;<br> genügendes Speichervermögen für Nährstoffe und Wasser'
+            THEN 'Mässige Durchwurzelungstiefe; genügendes Speichervermögen für Nährstoffe und Wasser'
         WHEN pflngr_qgis_int = 3
-            THEN 'Grosse Durchwurzelungstiefe;<br> gutes Speichervermögen für Nährstoffe und Wasser'
+            THEN 'Grosse Durchwurzelungstiefe; gutes Speichervermögen für Nährstoffe und Wasser'
         WHEN pflngr_qgis_int = 4 
-            THEN 'Sehr grosse Durchwurzelungstiefe;<br> sehr gutes Speichervermögen für Nährstoffe und Wasser'
+            THEN 'Sehr grosse Durchwurzelungstiefe; sehr gutes Speichervermögen für Nährstoffe und Wasser'
     END AS pflngr_qgis_int_txt,
     bodpktzahl,
     bodpktzahl_qgis_txt,
@@ -118,15 +118,15 @@ SELECT
     verdempf,
     CASE 
         WHEN verdempf = 1 
-            THEN 'wenig empfindlicher Unterboden:<br>Bearbeitung mit üblicher Sorgfalt.'
+            THEN 'wenig empfindlicher Unterboden: Bearbeitung mit üblicher Sorgfalt.'
         WHEN verdempf = 2
-            THEN 'mässig empfindlicher Unterboden:<br>nach Abtrocknungsphase, gut mechanisch belastbar.'
+            THEN 'mässig empfindlicher Unterboden: nach Abtrocknungsphase, gut mechanisch belastbar.'
         WHEN verdempf = 3
-            THEN 'empfindlicher Unterboden:<br>erhöhte Sorgfalt beim Befahren und Feldarbeiten notwendig, Trockenperioden sind optimal zu nutzen.'
+            THEN 'empfindlicher Unterboden: erhöhte Sorgfalt beim Befahren und Feldarbeiten notwendig, Trockenperioden sind optimal zu nutzen.'
         WHEN verdempf = 4
-            THEN 'stark empfindlicher Unterboden:<br>nur eingeschränkt mechanisch belastbar, längere Trockenperioden abwarten, ergänzende lastreduzierende und lastverteilende Massnahmen ergreifen.'
+            THEN 'stark empfindlicher Unterboden: nur eingeschränkt mechanisch belastbar, längere Trockenperioden abwarten, ergänzende lastreduzierende und lastverteilende Massnahmen ergreifen.'
         WHEN verdempf = 5
-            THEN 'extrem empfindlicher Unterboden:<br>möglichst Verzicht auf ackerbauliche Nutzung, bereits geringe Auflasten können irreversible Schäden verursachen.'
+            THEN 'extrem empfindlicher Unterboden: möglichst Verzicht auf ackerbauliche Nutzung, bereits geringe Auflasten können irreversible Schäden verursachen.'
     END AS verdempf_txt,
     drain_wel,
     wassastoss,
@@ -138,7 +138,7 @@ FROM
 WHERE
     archive = 0
     
-UNION
+UNION ALL
 
 SELECT
     pk_ogc_fid AS t_id,
@@ -150,7 +150,7 @@ SELECT
     bodentyp,
     bodentyp_beschreibung,
     gelform,
-    '' AS gelform_txt,
+    NULL AS gelform_txt,
     gelform_beschreibung,
     geologie,
     untertyp_e,
@@ -166,11 +166,11 @@ SELECT
             THEN 'Keine oder nur wenige Steine (0-5%)'
         WHEN skelett_ob = 1
             THEN 'mässig viele Steine (5-10%)'
-        WHEN skelett_ob = 2 OR skelett_ob = 3
+        WHEN skelett_ob IN (2, 3)
             THEN 'viele Steine (10-20%)'
-        WHEN skelett_ob = 4 OR skelett_ob = 5
+        WHEN skelett_ob IN (4, 5)
             THEN 'sehr viele Steine (20-30%)'
-        WHEN skelett_ob = 6 OR skelett_ob = 7
+        WHEN skelett_ob IN (6, 7)
             THEN 'extrem viele Steine (>30%)'
     END AS skelett_ob_txt,
     skelett_ob_beschreibung,
@@ -180,22 +180,22 @@ SELECT
             THEN 'Keine oder nur wenige Steine (0-5%)'
         WHEN skelett_ub = 1
             THEN 'mässig viele Steine (5-10%)'
-        WHEN skelett_ub = 2 OR skelett_ub = 3
+        WHEN skelett_ub IN (2, 3)
             THEN 'viele Steine (10-20%)'
-        WHEN skelett_ub = 4 OR skelett_ub = 5
+        WHEN skelett_ub IN (4, 5)
             THEN 'sehr viele Steine (20-30%)'
-        WHEN skelett_ub = 6 OR skelett_ub = 7
+        WHEN skelett_ub IN (6, 7)
             THEN 'extrem viele Steine (>30%)'
     END AS skelett_ub_txt,
     skelett_ub_beschreibung,
     koernkl_ob,
     CASE
-        WHEN koernkl_ob = 1 OR koernkl_ob = 2 OR koernkl_ob = 3 OR koernkl_ob = 4
-            THEN 'Leichte, sandige Böden:<br>leicht bearbeitbar, trocknen leicht ab.'
-        WHEN koernkl_ob = 5 OR koernkl_ob = 6 OR koernkl_ob = 10 OR koernkl_ob = 11 OR koernkl_ob = 12
-            THEN 'Mittelschwere, lehmige bis schluffige Böden:<br>normal bearbeitbar, trocknen mässig schnell ab.'
-        WHEN koernkl_ob = 7 OR koernkl_ob = 8 OR koernkl_ob = 9 OR koernkl_ob = 13
-            THEN 'Schwere, tonige Böden:<br>schwer bearbeitbar, trocknen sehr langsam ab.'
+        WHEN koernkl_ob IN (1, 2, 3, 4)
+            THEN 'Leichte, sandige Böden: leicht bearbeitbar, trocknen leicht ab.'
+        WHEN koernkl_ob IN (5, 6, 10, 11, 12)
+            THEN 'Mittelschwere, lehmige bis schluffige Böden: normal bearbeitbar, trocknen mässig schnell ab.'
+        WHEN koernkl_ob IN (7, 8, 9, 13)
+            THEN 'Schwere, tonige Böden: schwer bearbeitbar, trocknen sehr langsam ab.'
     END AS koernkl_ob_txt,
     koernkl_ob_beschreibung,
     koernkl_ub,
@@ -231,7 +231,7 @@ SELECT
     gefueggr_ub_beschreibung,
     pflngr,
     pflngr_qgis_int,
-    '' AS pflngr_qgis_int_txt,
+    NULL AS pflngr_qgis_int_txt,
     bodpktzahl,
     bodpktzahl_qgis_txt,
     bemerkungen,
@@ -251,15 +251,15 @@ SELECT
     verdempf,
     CASE
         WHEN verdempf = 1
-            THEN 'wenig empfindlicher Unterboden:<br>Bearbeitung mit üblicher Sorgfalt.'
+            THEN 'wenig empfindlicher Unterboden: Bearbeitung mit üblicher Sorgfalt.'
         WHEN verdempf = 2
-            THEN 'mässig empfindlicher Unterboden:<br>nach Abtrocknungsphase, gut mechanisch belastbar, Rückegassenabstand 30 m oder mehr empfohlen.'
+            THEN 'mässig empfindlicher Unterboden: nach Abtrocknungsphase, gut mechanisch belastbar, Rückegassenabstand 30 m oder mehr empfohlen.'
         WHEN verdempf = 3
-            THEN 'empfindlicher Unterboden:<br>erhöhte Sorgfalt beim Befahren und Feldarbeiten notwendig, Trockenperioden sind optimal zu nutzen, Rückegassenabstand 50 m oder mehr empfohlen.'
+            THEN 'empfindlicher Unterboden: erhöhte Sorgfalt beim Befahren und Feldarbeiten notwendig, Trockenperioden sind optimal zu nutzen, Rückegassenabstand 50 m oder mehr empfohlen.'
         WHEN verdempf = 4
-            THEN 'stark empfindlicher Unterboden:<br>nur eingeschränkt mechanisch belastbar, längere Trockenperioden abwarten, ergänzende lastreduzierende und lastverteilende Massnahmen ergreifen, Rückegassenabstand 50 m oder mehr empfohlen.'
+            THEN 'stark empfindlicher Unterboden: nur eingeschränkt mechanisch belastbar, längere Trockenperioden abwarten, ergänzende lastreduzierende und lastverteilende Massnahmen ergreifen, Rückegassenabstand 50 m oder mehr empfohlen.'
         WHEN verdempf = 5
-            THEN 'extrem empfindlicher Unterboden:<br>möglichst Verzicht auf ackerbauliche Nutzung, bereits geringe Auflasten können irreversible Schäden verursachen, befahren vermeiden, falls dennoch nötig: nur mit lastverteilenden und lastreduzierenden Massnahmen und erst nach längeren Trockenperioden.'
+            THEN 'extrem empfindlicher Unterboden: möglichst Verzicht auf ackerbauliche Nutzung, bereits geringe Auflasten können irreversible Schäden verursachen, befahren vermeiden, falls dennoch nötig: nur mit lastverteilenden und lastreduzierenden Massnahmen und erst nach längeren Trockenperioden.'
     END AS verdempf_txt,
     drain_wel,
     wassastoss,
