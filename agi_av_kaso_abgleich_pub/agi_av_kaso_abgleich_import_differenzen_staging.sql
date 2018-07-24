@@ -256,5 +256,7 @@ WHERE
     kaso.kaso_art = '5'
     AND
     kaso.kaso_historisiert IS NULL
+    AND 
+    kaso.kaso_flaeche IS NOT NULL
 ;
 
