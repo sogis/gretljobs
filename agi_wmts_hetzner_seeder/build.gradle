@@ -1,7 +1,7 @@
 description = """\n
 Kopiert MOpublic und spezielle Tabellen für die Darstellung für den Plan
 für das Grundbuch auf den WMTS-Hetzner-Server und stellt Tasks zum
-Seeden des WMTS zur Verfügung.
+Seeden des WMTS zur Verfügung. Lädt die Caches danach herunter.
 """
 
 buildscript {
@@ -28,7 +28,7 @@ remotes {
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'updateBlackWhiteCaches'
+defaultTasks 'downloadUpdatedCaches'
 
 task copyDataFromMOpublic(type: Db2Db) {
     description = "Kopiert MOpublic-Daten auf den WMTS-Hetzner-Server."
@@ -100,5 +100,46 @@ task updateBlackWhiteCaches(dependsOn: updateColorCaches) {
                 }
             }
         }
+    }
+}
+
+//task downloadUpdatedCaches(dependsOn: updateBlackWhiteCaches) {
+task downloadUpdatedCaches() {
+    description = "Herunterladen aller neuberechneten Kacheln"
+    doLast {
+        ssh.settings {
+            knownHosts = allowAnyHosts
+        }
+        ssh.run {
+            session(remotes.seedingServer) {
+                get from: "/tiles/", into: gretlShareMountpoint, filter: { it.name =~ /ch\.so\.agi.hintergrundkarte_sw-1[1-4]-2056\.db/ }, fileTransfer: "scp"
+                get from: "/tiles/", into: gretlShareMountpoint, filter: { it.name =~ /ch\.so\.agi.hintergrundkarte_farbig-1[1-4]-2056\.db/ }, fileTransfer: "scp"
+            }
+        }
+        println "Files downloaded to: " + gretlShareMountpoint
+    }
+}
+
+task downloadStaticCaches() {
+    description = "Herunterladen aller nicht regelmässig neuberechneten Kacheln"
+    doLast {
+        ssh.settings {
+            knownHosts = allowAnyHosts
+        }
+        ssh.run {
+            session(remotes.seedingServer) {
+                get from: "/tiles/", into: gretlShareMountpoint, filter: { it.name =~ /ch\.so\.agi.hintergrundkarte_sw-([0-9]|10)-2056\.db/ }, fileTransfer: "scp"
+                get from: "/tiles/", into: gretlShareMountpoint, filter: { it.name =~ /ch\.so\.agi.hintergrundkarte_farbig-([0-9]|10)-2056\.db/ }, fileTransfer: "scp"
+                get from: "/tiles/", into: gretlShareMountpoint, filter: { it.name =~ /ch\.so\.agi.hintergrundkarte_ortho-1?[0-9]-2056\.db/ }, fileTransfer: "scp"
+            }
+        }
+        println "Files downloaded to: " + gretlShareMountpoint
+    }
+}
+
+task downloadAllCaches(dependsOn: [downloadStaticCaches, downloadUpdatedCaches]) {
+    description = "Herunterladen aller Kacheln (neuberechnete und statische)"
+    doLast {
+        println 'Downloaded all Caches'
     }
 }
