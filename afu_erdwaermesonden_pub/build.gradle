@@ -1,0 +1,15 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+
+defaultTasks 'transferAfuErdwaermesonden'
+
+task transferAfuErdwaermesonden(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('afu_erdwaermesonden_pub_abfrageperimeter_kanton.sql','afu_erdwaermesonden_pub.abfrageperimeter_kanton', true)
+    ];
+}
