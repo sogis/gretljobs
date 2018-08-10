@@ -16,8 +16,8 @@ task transferGbData(type: Db2Db){
 task convertData(type: SqlExecutor, dependsOn: 'transferGbData'){
     database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     sqlFiles = [
-            'agi_av_gb_abgleich_import_uebersicht_des_vergleichs_staging.sql',
-            'agi_av_gb_abgleich_import_differenzen_staging.sql'
+            'agi_av_gb_abgleich_import_differenzen_staging.sql',
+            'agi_av_gb_abgleich_import_uebersicht_des_vergleichs_staging.sql'
     ]
 }
 
