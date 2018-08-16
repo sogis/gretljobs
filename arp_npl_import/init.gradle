@@ -1,20 +1,29 @@
 allprojects {
     buildscript {
         repositories {
+            mavenLocal()
+            maven {
+                url "http://jars.interlis.ch"
+            }
+            maven {
+                url "http://download.osgeo.org/webdav/geotools/"
+            }
             mavenCentral()
-            jcenter()
-            maven { url 'http://sogeo.services:8081/artifactory/libs-snapshot' }  
-            //mavenLocal() 
-            maven { url 'http://jars.interlis.ch' }   
         }
+
         dependencies {
-            classpath 'ch.so.agi:gretl:1.0.+'
-            classpath 'de.undercouch:gradle-download-task:3.3.0'
+            classpath group: 'ch.so.agi', name: 'gretl',  version: '1.0.4-SNAPSHOT'
         }
         ext {
-            dbUrl = System.env.dbUrl
-            dbUser = System.env.dbUser
-            dbPass = System.env.dbPass
+            dbUriSogis = "jdbc:postgresql://geodb-t.verw.rootso.org:5432/sogis"
+            dbUserSogis = "datasync"
+            dbPwdSogis = "datasync"
+            dbUriSogis = "jdbc:postgresql://192.168.50.5/sogis"
+            dbUserSogis = "ddluser"
+            dbPwdSogis = "ddluser"
+            dbUriPub = "jdbc:postgresql://192.168.50.XXX/pub"
+            dbUserPub = "sogis_admin"
+            dbPwdPub = "sogis_admin"
         }
     }
 }
