@@ -1,0 +1,11 @@
+SELECT 
+    art, 
+    art_txt, 
+    betreiber, 
+    bfs_nr, 
+    importdatum, 
+    nachfuehrung, 
+    geometrie
+FROM 
+    agi_mopublic_pub.mopublic_rohrleitung
+;

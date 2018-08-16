@@ -2,7 +2,13 @@
                             SELECT 
                                 tief.oid,
                                 tief.wkb_geometry, 
-                                tief.grid_code
+                                tief.grid_code,
+                                CASE
+                                    WHEN grid_code = 8
+                                        THEN 'geringe Festigkeit / höhere Rutschneigung'
+                                    WHEN grid_code = 9
+                                        THEN 'mässige Festigkeit / geringere Rutschneigung'
+                                END AS  grid_code_text
                             FROM 
                                 aww_natgef_rutsch_tief AS tief
                             WHERE 
@@ -13,7 +19,13 @@
                             SELECT 
                                 untief.oid,
                                 untief.wkb_geometry, 
-                                untief.grid_code
+                                untief.grid_code,
+                                CASE
+                                    WHEN grid_code = 32
+                                        THEN 'übrige Rutschgebiete'
+                                    WHEN grid_code = 33
+                                        THEN 'Schutzgüter betroffen'
+                                END AS grid_code_text
                             FROM 
                                 aww_natgef_rutsch_untief AS untief
                             WHERE 
@@ -24,7 +36,11 @@
                         SELECT 
                             bekannte_rutschung.oid, 
                             bekannte_rutschung.wkb_geometry, 
-                            bekannte_rutschung.grid_code
+                            bekannte_rutschung.grid_code,
+                            CASE
+                                WHEN grid_code = 10
+                                    THEN 'aus diversen Quellen bekannte aktive oder nichtaktive Rutschgebiete'
+                        END AS grid_code_text
                         FROM 
                             aww_natgef_rutsch_bek AS bekannte_rutschung
                         WHERE 
@@ -35,7 +51,11 @@
                     SELECT 
                         talboden.oid, 
                         talboden.wkb_geometry, 
-                        talboden.grid_code
+                        talboden.grid_code,
+                        CASE
+                            WHEN grid_code = 5
+                                THEN 'sehr flache Talböden ausserhalb der modellierten Überflutungsbereiche: Überflutung kann nicht ausgeschlossen werden'
+                        END AS grid_code_text
                     FROM 
                         aww_natgef_talbod AS talboden
                     WHERE 
@@ -46,7 +66,11 @@
                 SELECT 
                     uebersarung.oid, 
                     uebersarung.wkb_geometry,
-                    uebersarung.grid_code
+                    uebersarung.grid_code,
+                    CASE
+                        WHEN grid_code = 3
+                            THEN 'Übersarung /Schwemmkegel'
+                    END AS grid_code_text
                 FROM 
                     aww_natgef_ubsar AS uebersarung
                 WHERE 
@@ -57,7 +81,13 @@
             SELECT 
                 murgang.oid, 
                 murgang.wkb_geometry, 
-                murgang.grid_code
+                murgang.grid_code,
+                CASE
+                    WHEN grid_code = 1
+                        THEN 'Übrige Murganggebiete'
+                    WHEN grid_code = 2
+                        THEN 'Schutzgüter betroffen'
+                END AS grid_code_text
             FROM 
                 aww_natgef_murgang AS murgang
             WHERE 
@@ -68,7 +98,11 @@
         SELECT 
             ueberflutung.oid, 
             ueberflutung.wkb_geometry, 
-            ueberflutung.grid_code
+            ueberflutung.grid_code,
+            CASE
+                WHEN grid_code = 4
+                    THEN 'Überflutungsgebiete'
+            END AS grid_code_text
         FROM 
             aww_natgef_ubflut AS ueberflutung
         WHERE ueberflutung.archive = 0)
@@ -78,7 +112,8 @@
     SELECT 
         block.oid, 
         block.wkb_geometry, 
-        99 AS grid_code
+        99 AS grid_code,
+        'bekannte Ereignisse ausserhalb des modellierten Steinschlaggebietes' AS grid_code_text
     FROM 
         aww_natgef_block AS block
     WHERE 
@@ -88,7 +123,13 @@ UNION
 SELECT 
     stein.oid, 
     stein.wkb_geometry, 
-    stein.grid_code
+    stein.grid_code,
+    CASE
+        WHEN grid_code = 6
+            THEN 'übrige Steinschlaggebiete'
+        WHEN grid_code = 7
+            THEN 'Schutzgüter betroffen'
+    END AS grid_code_text
 FROM 
     aww_natgef_steins AS stein
 WHERE 
@@ -96,9 +137,10 @@ WHERE
 
 
 SELECT 
-	oid AS t_id,
-	ST_Multi(wkb_geometry) AS geometrie,
-	grid_code
+    oid AS t_id,
+    ST_Multi(wkb_geometry) AS geometrie,
+    grid_code,
+    grid_code_text
 FROM
-	query
+    query
 ;

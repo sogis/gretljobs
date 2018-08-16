@@ -1,0 +1,41 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'moveConvertedDataToPubDb'
+
+task transferGbData(type: Db2Db){
+    sourceDb = [dbUriCapitastra, dbUserCapitastra, dbPwdCapitastra]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    transferSets = [
+            new TransferSet('agi_av_gb_abgleich_import_gb_daten.sql', 'agi_av_gb_abgleich_import.gb_daten', true)
+    ]
+}
+
+task convertData(type: SqlExecutor, dependsOn: 'transferGbData'){
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlFiles = [
+            'agi_av_gb_abgleich_import_uebersicht_des_vergleichs_staging.sql',
+            'agi_av_gb_abgleich_import_differenzen_staging.sql'
+    ]
+}
+
+task moveConvertedDataToPubDb(type: Db2Db, dependsOn: 'convertData'){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('agi_av_gb_abgleich_pub_differenzen.sql', 'agi_av_gb_abgleich_pub.differenzen', true),
+            new TransferSet('agi_av_gb_abgleich_pub_uebersicht_des_vergleichs.sql',
+                    'agi_av_gb_abgleich_pub.uebersicht_des_vergleichs', true)
+    ]
+
+    finalizedBy 'removeImportedData'
+}
+
+task removeImportedData(type: SqlExecutor){
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlFiles = [
+            'delete_from_agi_av_gb_abgleich_import.sql'
+    ]
+}

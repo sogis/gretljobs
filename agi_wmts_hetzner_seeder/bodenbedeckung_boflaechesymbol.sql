@@ -1,0 +1,13 @@
+SELECT
+    t_id,
+    art, 
+    art_txt, 
+    pos, 
+    ori, 
+    rot, 
+    gem_bfs, 
+    los, 
+    lieferdatum
+FROM 
+    agi_grundbuchplan_pub.bodenbedeckung_boflaechesymbol
+;

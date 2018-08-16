@@ -46,7 +46,7 @@ task replaceDataset (type: Ili2pgReplace, dependsOn: 'validateDataset') {
     models = "SO_Nutzungsplanung_20171118"
     disableValidation = true
     dataset = file(xtf).getName().take(4)
-    dataFile = xtf
+    dataFile = xtf 
 }
 
 def setNonExistingPropertyToUndefinedValue(propertyName) {

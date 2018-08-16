@@ -1,0 +1,10 @@
+SELECT 
+    art, 
+    art_txt, 
+    bfs_nr, 
+    importdatum, 
+    nachfuehrung, 
+    geometrie
+FROM    
+    agi_mopublic_pub.mopublic_einzelobjekt_linie
+;
