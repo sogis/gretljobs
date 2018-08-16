@@ -18,10 +18,10 @@ allprojects {
             dbUriSogis = "jdbc:postgresql://geodb-t.verw.rootso.org:5432/sogis"
             dbUserSogis = "datasync"
             dbPwdSogis = "datasync"
-            dbUriSogis = "jdbc:postgresql://192.168.50.6/sogis"
+            dbUriSogis = "jdbc:postgresql://192.168.50.5/sogis"
             dbUserSogis = "ddluser"
             dbPwdSogis = "ddluser"
-            dbUriPub = "jdbc:postgresql://192.168.50.6/pub"
+            dbUriPub = "jdbc:postgresql://192.168.50.XXX/pub"
             dbUserPub = "sogis_admin"
             dbPwdPub = "sogis_admin"
         }

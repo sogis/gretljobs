@@ -11,8 +11,8 @@ Datenumbau-SQL-Dateien lasse ich mal hier stehen. Darauf achten, dass sie ggf an
 See: [https://geoweb.rootso.org/redmine/issues/2677](https://geoweb.rootso.org/redmine/issues/2677)
 
 java -jar ~/apps/ili2pg-3.11.2/ili2pg.jar \
---dbhost 192.168.50.6 \
---dbdatabase pub_2 \
+--dbhost 192.168.50.5 \
+--dbdatabase sogis \
 --dbusr ddluser \
 --dbpwd ddluser \
 --nameByTopic \
@@ -35,15 +35,17 @@ java -jar ~/apps/ili2pg-3.11.2/ili2pg.jar \
 --createFk \
 --createNumChecks
 
+Dient hier sogleich zum Testen mit einer lokalen Vagrant-Kiste.
+
 ## GRETL
 
 Lokales arbeiten:
 
 ```
-export DB_URI_SOGIS=jdbc:postgresql://192.168.50.6/sogis
+export DB_URI_SOGIS=jdbc:postgresql://192.168.50.5/sogis
 export DB_USER_SOGIS=ddluser
 export DB_PWD_SOGIS=ddluser
-export DB_URI_PUB=jdbc:postgresql://192.168.50.6/pub
+export DB_URI_PUB=jdbc:postgresql://192.168.50.XXX/pub
 export DB_USER_PUB=sogis_admin
 export DB_PWD_PUB=sogis_admin
 ```
@@ -51,3 +53,5 @@ export DB_PWD_PUB=sogis_admin
 ```
 ./start-gretl.sh --docker_image sogis/gretl-runtime:production --job_directory /Users/stefan/Projekte/gretl-arp-import/arp_npl_import/ --task_name replaceDataset -Pxtf=2580_091_2018-02-13.xtf
 ```
+
+Die XTF-Datei muss im Projektverzeichnis liegen, da nur dieses vom Docker-Image gemountet wird.
