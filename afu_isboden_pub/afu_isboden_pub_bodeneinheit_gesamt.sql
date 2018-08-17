@@ -5,6 +5,97 @@ SELECT
     wasserhhgr,
     wasserhhgr_beschreibung,
     wasserhhgr_qgis_txt,
+    CASE
+        WHEN 
+            is_wald IS TRUE
+            AND 
+            (
+                wasserhhgr IN ('a', 'b', 'f', 'k','s')
+                OR
+                (
+                    wasserhhgr ='o' 
+                    AND 
+                    pflngr >=70
+                )
+            )
+            THEN 'tiefgründiger Boden, d.h. pflanzennutzbare Gründigkeit > 70 cm'
+        WHEN
+            is_wald IS TRUE  
+            AND
+            (
+                wasserhhgr  IN ('c', 'd', 'g', 'h', 'l', 'm', 'q', 't', 'v', 'x')
+                OR 
+                (
+                    (
+                        wasserhhgr ='o' 
+                        AND 
+                        (
+                            pflngr < 70 
+                            OR 
+                            pflngr IS NULL
+                        )
+                    ) 
+                    OR 
+                    ( 
+                        wasserhhgr ='p' 
+                        AND 
+                        pflngr >= 30
+                    )
+                    OR 
+                    ( 
+                        wasserhhgr ='u' 
+                        AND 
+                        pflngr >= 30
+                    ) 
+                    OR
+                    (  
+                        wasserhhgr='w' 
+                        AND  
+                        pflngr >= 30
+                    )
+                )
+            )
+            THEN 'mittelgründiger Boden, d.h. pflanzennutzbare Gründigkeit 30 - 70 cm'
+        WHEN
+            is_wald IS TRUE
+            AND 
+            (
+                wasserhhgr IN ('e', 'i', 'n') 
+                OR 
+                (
+                    wasserhhgr ='p' 
+                    AND 
+                    (
+                        pflngr < 30 
+                        OR 
+                        pflngr IS NULL
+                    )
+                ) 
+                OR 
+                wasserhhgr ='r'
+            ) 
+            OR
+            (
+                (
+                    wasserhhgr ='u' 
+                    AND 
+                    pflngr < 30
+                ) 
+                OR 
+                ( 
+                    wasserhhgr ='w' 
+                    AND 
+                    (
+                        pflngr <30 
+                        OR 
+                        pflngr IS NULL
+                    )
+                ) 
+                OR  
+                wasserhhgr IN ('y', 'z')
+            )
+            THEN 'flachgründiger Boden, d.h. pflanzennutzbare Gründigkeit < 30 cm'
+    END AS wasserhhgr_qgis_wald_txt,
     bodentyp,
     bodentyp_beschreibung,
     gelform,
@@ -147,6 +238,97 @@ SELECT
     wasserhhgr,
     wasserhhgr_beschreibung,
     wasserhhgr_qgis_txt,
+    CASE
+        WHEN 
+            is_wald IS TRUE
+            AND 
+            (
+                wasserhhgr IN ('a', 'b', 'f', 'k','s')
+                OR
+                (
+                    wasserhhgr ='o' 
+                    AND 
+                    pflngr >=70
+                )
+            )
+            THEN 'tiefgründiger Boden, d.h. pflanzennutzbare Gründigkeit > 70 cm'
+        WHEN
+            is_wald IS TRUE  
+            AND
+            (
+                wasserhhgr  IN ('c', 'd', 'g', 'h', 'l', 'm', 'q', 't', 'v', 'x')
+                OR 
+                (
+                    (
+                        wasserhhgr ='o' 
+                        AND 
+                        (
+                            pflngr < 70 
+                            OR 
+                            pflngr IS NULL
+                        )
+                    ) 
+                    OR 
+                    ( 
+                        wasserhhgr ='p' 
+                        AND 
+                        pflngr >= 30
+                    )
+                    OR 
+                    ( 
+                        wasserhhgr ='u' 
+                        AND 
+                        pflngr >= 30
+                    ) 
+                    OR
+                    (  
+                        wasserhhgr='w' 
+                        AND  
+                        pflngr >= 30
+                    )
+                )
+            )
+            THEN 'mittelgründiger Boden, d.h. pflanzennutzbare Gründigkeit 30 - 70 cm'
+        WHEN
+            is_wald IS TRUE
+            AND 
+            (
+                wasserhhgr IN ('e', 'i', 'n') 
+                OR 
+                (
+                    wasserhhgr ='p' 
+                    AND 
+                    (
+                        pflngr < 30 
+                        OR 
+                        pflngr IS NULL
+                    )
+                ) 
+                OR 
+                wasserhhgr ='r'
+            ) 
+            OR
+            (
+                (
+                    wasserhhgr ='u' 
+                    AND 
+                    pflngr < 30
+                ) 
+                OR 
+                ( 
+                    wasserhhgr ='w' 
+                    AND 
+                    (
+                        pflngr <30 
+                        OR 
+                        pflngr IS NULL
+                    )
+                ) 
+                OR  
+                wasserhhgr IN ('y', 'z')
+            )
+            THEN 'flachgründiger Boden, d.h. pflanzennutzbare Gründigkeit < 30 cm'
+    END AS wasserhhgr_qgis_wald_txt,
     bodentyp,
     bodentyp_beschreibung,
     gelform,
@@ -191,7 +373,7 @@ SELECT
     koernkl_ob,
     CASE
         WHEN koernkl_ob IN (1, 2, 3, 4)
-            THEN 'Leichte, sandige Böden: leicht bearbeitbar, trocknen leicht ab.'
+            THEN 'Leichte, sandige Böden: leicht bearbeitbar, trocknen schnell ab.'
         WHEN koernkl_ob IN (5, 6, 10, 11, 12)
             THEN 'Mittelschwere, lehmige bis schluffige Böden: normal bearbeitbar, trocknen mässig schnell ab.'
         WHEN koernkl_ob IN (7, 8, 9, 13)
