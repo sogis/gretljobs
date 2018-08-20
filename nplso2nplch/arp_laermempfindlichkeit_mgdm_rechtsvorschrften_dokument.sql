@@ -128,7 +128,8 @@ list_with_documents AS (
     SELECT 
         ursprung_2 AS t_id  
     FROM 
-        all_documents),
+        all_documents
+),
         
 list_distinct_documents AS (
     SELECT DISTINCT 
@@ -136,7 +137,35 @@ list_distinct_documents AS (
     FROM 
         list_with_documents 
     WHERE 
-        t_id IS NOT NULL )
+        t_id IS NOT NULL
+),
+        
+list_with_documents_without_origin AS (
+    SELECT 
+        t_id
+    FROM 
+        empfindlichkeit_dokumente
+    WHERE
+        t_id NOT IN 
+        (
+            SELECT 
+                t_id
+            FROM
+                list_distinct_documents
+        )
+),
+
+all_used_documents AS (
+    SELECT 
+        t_id 
+    FROM 
+        list_distinct_documents 
+    UNION
+    SELECT
+        t_id
+    FROM 
+        list_with_documents_without_origin
+)
 
     
     
@@ -155,7 +184,7 @@ SELECT DISTINCT
     rechtsstatus,
     bemerkungen
 FROM
-    list_distinct_documents
+    all_used_documents
     LEFT JOIN
         arp_npl.rechtsvorschrften_dokument AS dokument_so
-        ON dokument_so.t_id = list_distinct_documents.t_id
+        ON dokument_so.t_id = all_used_documents.t_id
