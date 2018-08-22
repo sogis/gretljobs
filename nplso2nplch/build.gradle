@@ -1,8 +1,12 @@
 import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferNplso2Nplch', 'transferNplso2Laermempfindlichkeit'
+defaultTasks 'exportLaermempfindlichkeit'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def xtfFilePath = Paths.get(pathToTempFolder.toString(), 'Nutzungsplanung_LV95_V1_1.itf')
 
 task transferNplso2Nplch(type: SqlExecutor) {
     database = [dbUriSogis, dbUserSogis, dbPwdSogis]
@@ -21,7 +25,7 @@ task transferNplso2Nplch(type: SqlExecutor) {
     ]
 }
 
-task transferNplso2Laermempfindlichkeit(type: SqlExecutor){
+task transferNplso2Laermempfindlichkeit(type: SqlExecutor, dependsOn: 'transferNplso2Nplch'){
     database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     sqlFiles = [
             'arp_laermempfindlichkeit_mgdm_geobasisdaten_typ.sql',
@@ -32,4 +36,20 @@ task transferNplso2Laermempfindlichkeit(type: SqlExecutor){
             'arp_laermempfindlichkeit_mgdm_multilingualuri.sql',
             'arp_laermempfindlichkeit_mgdm_localiseduri.sql'
     ]
+}
+
+task exportNplch(type: Ili2pgExport, dependsOn:'transferNplso2Laermempfindlichkeit') {
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    dbschema = "arp_npl_mgdm"
+    models = "Nutzungsplanung_LV95_V1_1"
+    disableValidation = false
+    dataFile = file(xtfFilePath)
+}
+
+task exportLaermempfindlichkeit(type: Ili2pgExport, dependsOn:'exportNplch') {
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    dbschema = "arp_laermempfindlichkeit_mgdm"
+    models = "Laermempfindlichkeitsstufen_LV95_V1_1"
+    disableValidation = false
+    dataFile = file(xtfFilePath)
 }
