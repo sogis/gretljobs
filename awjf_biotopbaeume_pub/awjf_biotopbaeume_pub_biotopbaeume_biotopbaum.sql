@@ -144,8 +144,8 @@ SELECT
     END AS tp_inventar,
     auszahlung_beitrag,
     auszahlung_beitrag_jahr,
-    forstkreis.forstkreis,
-    forstrevier.forstrevier,
+    forstkreis.aname AS forstkreis,
+    forstrevier.aname AS forstrevier,
     CASE
         WHEN 
             kanton.geometrie && biotopbaum.geometrie
@@ -172,16 +172,17 @@ SELECT
     ablage AS foto
 FROM
     awjf_biotopbaeume.biotopbaeume_biotopbaum biotopbaum
-    LEFT JOIN awjf_forstreviere_pub.forstreviere_forstkreis AS forstkreis
+    LEFT JOIN awjf_forstreviere.forstreviere_forstreviergeometrie AS forstgeometrie
         ON
-            forstkreis.geometrie && biotopbaum.geometrie
+            forstgeometrie.geometrie && biotopbaum.geometrie
             AND
-            ST_Contains(forstkreis.geometrie, biotopbaum.geometrie)
-    LEFT JOIN awjf_forstreviere_pub.forstreviere_forstrevier AS forstrevier
+            ST_Contains(forstgeometrie.geometrie, biotopbaum.geometrie)
+    LEFT JOIN awjf_forstreviere.forstreviere_forstrevier AS forstrevier
         ON
-            forstrevier.geometrie && biotopbaum.geometrie
-            AND
-            ST_Contains(forstrevier.geometrie, biotopbaum.geometrie)
+            forstgeometrie.forstrevier = forstrevier.t_id
+    LEFT JOIN awjf_forstreviere.forstreviere_forstkreis AS forstkreis
+        ON
+            forstgeometrie.forstkreis = forstkreis.t_id
     LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze AS kanton
         ON
             kanton.geometrie && biotopbaum.geometrie
@@ -266,8 +267,8 @@ GROUP BY
     biotopbaum.geometrie,
     waldgesellschaft.legende,
     waldplan.wpnr,
-    forstkreis.forstkreis,
-    forstrevier.forstrevier,
+    forstkreis.aname,
+    forstrevier.aname,
     kanton.geometrie,
     kanton.kantonskuerzel,
     bfs_gemeindenummer,
