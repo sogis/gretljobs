@@ -9,8 +9,7 @@ task transferAwaNetzbetreiberStrom(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('awa_netzbetreiber_strom_pub_netz_3.sql', 'awa_netzbetreiber_strom_pub.netz_3', true),
-            new TransferSet('awa_netzbetreiber_strom_pub_netz_5.sql', 'awa_netzbetreiber_strom_pub.netz_5', true),
-            new TransferSet('awa_netzbetreiber_strom_pub_netz_7.sql', 'awa_netzbetreiber_strom_pub.netz_7', true)
+            new TransferSet('awa_netzbetreiber_strom_pub_netzbetreiber.sql',
+                    'awa_netzbetreiber_strom_pub.netzbetreiber', true)
     ];
 }
