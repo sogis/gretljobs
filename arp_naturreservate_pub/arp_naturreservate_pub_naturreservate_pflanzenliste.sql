@@ -5,7 +5,7 @@ SELECT
     erhebungsjahr,
     erhebungsprojekt,
     rote_liste,
-    reservate_teilgebiet.aname AS teilgebietsname,
+    reservate_teilgebiet.teilgebietsname AS teilgebietsname,
     reservate_reservat.nummer AS reservatsnummer,
     reservate_teilgebiet.t_id AS teilgebietsnummer
 FROM
