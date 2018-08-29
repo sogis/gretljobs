@@ -136,20 +136,21 @@ SELECT
     reservate_reservat.t_id,
     reservate_reservat.nummer,
     reservate_reservat.nsi_nummer,
-    reservate_reservat.aname,
+    reservate_reservat.reservatsname as aname,
     reservate_reservat.beschreibung,
     ST_Area(ST_Union(reservate_teilgebiet.geometrie))/10000 AS flaeche,
-    string_agg(DISTINCT reservate_teilgebiet.aname, ', ' ORDER BY reservate_teilgebiet.aname) AS teilgebietsnamen,
+    string_agg(DISTINCT reservate_teilgebiet.teilgebietsname, ', ' ORDER BY reservate_teilgebiet.teilgebietsname) AS teilgebietsnamen,
     string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename) AS gemeinden,
     documents_json.dokumente AS dokumente,
     string_agg(
         DISTINCT
             CASE
-                WHEN reservate_zustaendiger.aname IS NOT NULL AND reservate_zustaendiger.organisation IS NOT NULL 
-                    THEN reservate_zustaendiger.aname || ' (' || reservate_zustaendiger.organisation || ')'
-                WHEN reservate_zustaendiger.aname IS NOT NULL AND reservate_zustaendiger.organisation IS NULL
-                    THEN reservate_zustaendiger.aname
-                WHEN reservate_zustaendiger.aname IS NULL AND reservate_zustaendiger.organisation IS NOT NULL
+                WHEN reservate_zustaendiger.zustaendigername IS NOT NULL
+                    AND reservate_zustaendiger.organisation IS NOT NULL
+                    THEN reservate_zustaendiger.zustaendigername || ' (' || reservate_zustaendiger.organisation || ')'
+                WHEN reservate_zustaendiger.zustaendigername IS NOT NULL AND reservate_zustaendiger.organisation IS NULL
+                    THEN reservate_zustaendiger.zustaendigername
+                WHEN reservate_zustaendiger.zustaendigername IS NULL AND reservate_zustaendiger.organisation IS NOT NULL
                     THEN reservate_zustaendiger.organisation
                 ELSE NULL 
             END

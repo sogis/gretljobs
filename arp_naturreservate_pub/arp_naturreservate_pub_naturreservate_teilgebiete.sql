@@ -210,14 +210,14 @@ WITH documents AS (
 
 SELECT
     reservate_teilgebiet.t_id,
-    reservate_teilgebiet.aname,
+    reservate_teilgebiet.teilgebietsname AS aname,
     reservate_teilgebiet.beschreibung,
     ST_Area(reservate_teilgebiet.geometrie)/10000 AS flaeche,
     string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename) AS gemeinden,
     documents_json.dokumente AS dokumente,
     string_agg(DISTINCT liegen.nummer || '(' || liegen.gem_bfs|| ')', ', ' ORDER BY liegen.nummer || '(' || liegen.gem_bfs || ')') AS parzellennummern,
     reservate_reservat.nummer AS reservatsnummer,
-    reservate_reservat.aname AS reservatsname,
+    reservate_reservat.reservatsname AS reservatsname,
     mjpnatur.vereinbarungsflaechen,
     mjpnatur.bewirtschafter,
     reservate_teilgebiet.geometrie
