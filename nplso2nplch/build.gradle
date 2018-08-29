@@ -1,12 +1,21 @@
 import ch.so.agi.gretl.tasks.*
 import java.nio.file.Paths
+import groovy.json.JsonSlurper
+
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'exportLaermempfindlichkeit'
+defaultTasks 'uploadNplch'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
-def xtfFilePath = Paths.get(pathToTempFolder.toString(), 'Nutzungsplanung_LV95_V1_1.itf')
+def logExportLe = file(Paths.get(pathToTempFolder.toString(), "log_export_le.log"))
+def logExportNplch = file(Paths.get(pathToTempFolder.toString(), "log_export_nplch.log"))
+def exportNplchFileName = 'export_nplch.xtf'
+def exportLeFile = file(Paths.get(pathToTempFolder.toString(), 'export_le.xtf'))
+def exportNplchFile = file(Paths.get(pathToTempFolder.toString(), exportNplchFileName))
+def nplchZipName = 'LV95.zip'
+
+
 
 task transferNplso2Nplch(type: SqlExecutor) {
     database = [dbUriSogis, dbUserSogis, dbPwdSogis]
@@ -39,17 +48,83 @@ task transferNplso2Laermempfindlichkeit(type: SqlExecutor, dependsOn: 'transferN
 }
 
 task exportNplch(type: Ili2pgExport, dependsOn:'transferNplso2Laermempfindlichkeit') {
+    println("Pfad zu Folder "  + System.getProperty("user.dir"))
     database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     dbschema = "arp_npl_mgdm"
     models = "Nutzungsplanung_LV95_V1_1"
-    disableValidation = false
-    dataFile = file(xtfFilePath)
+    logFile = logExportNplch
+    dataFile = exportNplchFile
 }
 
-task exportLaermempfindlichkeit(type: Ili2pgExport, dependsOn:'exportNplch') {
+task zipNplCH(type: Zip, dependsOn: exportNplch){
+    description = "Zippt das xtf-File mit den Nutzungsplanungsdaten (MGDM vom Bund) für den Upload in die " +
+            "Aggregationsinfrastruktur"
+    from pathToTempFolder
+    include exportNplchFileName
+    archiveName nplchZipName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadNplch(dependsOn: zipNplCH) {
+    description = "Lädt die Nutzungsplanungsdaten (MGDM vom Bund) in die Aggregationsinfrastruktur hoch"
+    doLast {
+        def response = ["curl", "-u", "benutzername:passwort", "-F", "topic=npl_nutzungsplanung", "-F",
+                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), nplchZipName), "-F", "publish=true",
+                        "https://integration.geodienste.ch/data_agg/interlis/import"].execute().text
+        println(response)
+    }
+    finalizedBy 'removeNplchFiles'
+}
+/*
+task uploadNplch(type: Exec) {
+    commandLine "curl", "-u", "benutzername:passwort", "-F", "topic=npl_nutzungsplanung", "-F",
+                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), nplchZipName), "-F", "publish=true",
+                        "https://integration.geodienste.ch/data_agg/interlis/import"
+}*/
+
+task removeNplchFiles(type: Delete){
+    description = "Entfernt zip-File mit den Nutzungsplanungsdaten"
+    doLast {
+        println(nplchZipName + " removed")
+    }
+    delete file(Paths.get(pathToTempFolder.toString(), nplchZipName)), exportNplchFile, logExportNplch
+}
+
+
+task exportLaermempfindlichkeit(type: Ili2pgExport, dependsOn:'removeZipNplch') {
     database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     dbschema = "arp_laermempfindlichkeit_mgdm"
     models = "Laermempfindlichkeitsstufen_LV95_V1_1"
     disableValidation = false
-    dataFile = file(xtfFilePath)
+    logFile = logExportLe
+    dataFile = exportLeFile
+}
+
+task zipLaermempfindlichkeit(type: Zip, dependsOn: exportLaermempfindlichkeit){
+    description = "Zippt das xtf-File mit den Nutzungsplanungsdaten (MGDM vom Bund) für den Upload in die " +
+            "Aggregationsinfrastruktur"
+    from pathToTempFolder
+    include exportNplchFileName
+    archiveName nplchZipName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadLaermempfindlichkeit(dependsOn: zipLaermempfindlichkeit) {
+    description = "Lädt die Nutzungsplanungsdaten (MGDM vom Bund) in die Aggregationsinfrastruktur hoch"
+    doLast {
+        def response = ["curl", "-u", "benutzername:passwort", "-F", "topic=npl_nutzungsplanung", "-F",
+                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), nplchZipName), "-F", "publish=true",
+                        "https://integration.geodienste.ch/data_agg/interlis/import"].execute().text
+        println(response)
+    }
+    finalizedBy 'removeFilesLaermempfindlichkeit'
+}
+
+
+task removeFilesLaermempfindlichkeit(type: Delete){
+    description = "Entfernt zip-File mit den Nutzungsplanungsdaten"
+    doLast {
+        println(nplchZipName + " removed")
+    }
+    delete file(Paths.get(pathToTempFolder.toString(), nplchZipName)), exportNplchFile, logExportNplch
 }
