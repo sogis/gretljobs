@@ -5,7 +5,7 @@ SELECT
             THEN NULL
         ELSE ST_Multi(wkb_geometry) 
     END AS geometrie,
-    zone,
+    "zone",
     rrbnr,
     rrb_date
 FROM
