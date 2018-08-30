@@ -11,7 +11,7 @@ INSERT INTO arp_laermempfindlichkeit_mgdm.geobasisdaten_typ(
     bemerkungen
 )
 
-SELECT
+SELECT DISTINCT
     code_kommunal AS code, 
     replace(substring(typ_kt FROM 6), '_', ' ') AS bezeichnung, 
     substring(typ_kt FROM 1 FOR 4) AS abkuerzung,
