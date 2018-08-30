@@ -13,7 +13,7 @@ SELECT
     flaeche.rechtsstatus,
     flaeche.bemerkungen,
     typ.t_id AS es,
-    flaeche.geometrie
+    ST_SnapToGrid(flaeche.geometrie, 0.001) AS geometrie
 FROM
     arp_npl.nutzungsplanung_ueberlagernd_flaeche AS flaeche
     LEFT JOIN arp_npl.nutzungsplanung_typ_ueberlagernd_flaeche
