@@ -1,6 +1,7 @@
 import java.nio.file.Paths
 import ch.so.agi.gretl.tasks.*
 
+
 apply plugin: 'ch.so.agi.gretl'
 
 description = """\n
@@ -24,9 +25,9 @@ ist.
 
 apply plugin: 'ch.so.agi.gretl'
 
-ext {
-    outputDir = rootProject.projectDir
+defaultTasks 'checkAllModels'
 
+ext {
     todaysDate = new Date().format('yyyy-MM-dd')
     models = []
     models.add(["SO_Agglomerationsprogramme_20170512", "arp_aggloprogramme", "arp_aggloprogramme_" + todaysDate ])
@@ -36,12 +37,14 @@ ext {
     models.add(["SO_AWJF_Wegsanierungen_20170629", "awjf_wegsanierungen", "awjf_wegsanierungen_" + todaysDate ])
 }
 
-// Create a dynamic task for every model we 
-// want to validate and for cleaning up if
-// validaton was successful.
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+// Create a dynamic task for every model we want to validate and for cleaning up if validaton was successful.
 models.each { model ->
     def modelName = model.getAt(0)
     def dbSchema = model.getAt(1)
+    def dataExists
+
     
     task "checkModel_$modelName"(type: Ili2pgExport) {
         description = "INTERLIS validation against database schema: $dbSchema ($modelName)"
@@ -49,8 +52,27 @@ models.each { model ->
         dbschema = dbSchema
         models = modelName
         disableValidation = false
-        logFile = file(Paths.get(outputDir.toString(), dbSchema+".log"))
-        dataFile = file(Paths.get(outputDir.toString(), dbSchema+".xtf"))
+        logFile = file(Paths.get(pathToTempFolder.toString(), dbSchema+".log"))
+        dataFile = file(Paths.get(pathToTempFolder.toString(), dbSchema+".xtf"))
+
+        finalizedBy "checkDataFileForData_$modelName" //"removeFiles_$modelName"
+    }
+
+    task "checkDataFileForData_$modelName"(){
+        description = "Temporary workaround until ili2pgExport works correctly on failure during export. " +
+                "Checks if there is any data within datasection."
+        doLast {
+            def dataFile = file(Paths.get(pathToTempFolder.toString(), dbSchema + ".xtf"))
+            def indexStartDatasection = dataFile.findLastIndexOf { it =~ "<DATASECTION>" }
+            def indexEndDatasection = dataFile.findLastIndexOf { it =~ "</DATASECTION>" }
+            def lineDifference= indexEndDatasection - indexStartDatasection
+
+            if (lineDifference <= 1){
+                dataExists = false
+            } else if(lineDifference > 1) {
+                dataExists = true
+            }
+        }
 
         finalizedBy "removeFiles_$modelName"
     }
@@ -59,14 +81,15 @@ models.each { model ->
         description = "Remove files from model export: $modelName"
 
         onlyIf {
-            project.getTasksByName("checkModel_$modelName", false).getAt(0).state.failure == null
+            //project.getTasksByName("checkModel_$modelName", false).getAt(0).state.failure == null
+            dataExists
         }
 
-        delete file(Paths.get(outputDir.toString(), dbSchema+".log")), file(Paths.get(outputDir.toString(), dbSchema+".xtf")) 
+        delete file(Paths.get(pathToTempFolder.toString(), dbSchema + ".log")),
+                file(Paths.get(pathToTempFolder.toString(), dbSchema + ".xtf"))
     }
 }
 
-// This is kinda dummy task. The magic is the 'dependsOn' logic.
 task checkAllModels() {
     description = "Validate all models."
 }
