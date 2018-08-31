@@ -55,7 +55,7 @@ models.each { model ->
         logFile = file(Paths.get(pathToTempFolder.toString(), dbSchema+".log"))
         dataFile = file(Paths.get(pathToTempFolder.toString(), dbSchema+".xtf"))
 
-        finalizedBy "checkDataFileForData_$modelName" //"removeFiles_$modelName"
+        finalizedBy "removeFiles_$modelName"
     }
 
     task "checkDataFileForData_$modelName"(){
@@ -69,15 +69,14 @@ models.each { model ->
 
             if (lineDifference <= 1){
                 dataExists = false
+                throw new GradleException("No Data exported")
             } else if(lineDifference > 1) {
                 dataExists = true
             }
         }
-
-        finalizedBy "removeFiles_$modelName"
     }
 
-    task "removeFiles_$modelName"(type: Delete) {
+    task "removeFiles_$modelName"(type: Delete, dependsOn:"checkDataFileForData_$modelName") {
         description = "Remove files from model export: $modelName"
 
         onlyIf {
