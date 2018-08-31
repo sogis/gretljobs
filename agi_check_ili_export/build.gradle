@@ -11,16 +11,6 @@ INTERLIS-Transferdatei, um die Modellkonformität zu prüfen.
 In Zukunft könnte auch eine direktere Prüfung in der Datenbank
 stattfinden, ohne zu versuchen die Datei zu exportieren
 (Feature request für ilivalidator).
-
-Usage:
-gretl -I init.gradle checkAllModels --continue > checkAllModels.log
-
-* init.gradle wird benötigt, da eine noch nicht veröffentlichte
-gretl-Version verwendet wird.
-* --continue ermöglicht das Ausführen der weiteren Tasks auch wenn
-ein Fehler beim Validieren/Exportieren eines Modelles aufgetreten
-ist.
-* Einzelne Modelle können ebenfalls geprüft werden.
 """
 
 apply plugin: 'ch.so.agi.gretl'
