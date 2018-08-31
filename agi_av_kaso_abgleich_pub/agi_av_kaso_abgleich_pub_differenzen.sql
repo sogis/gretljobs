@@ -1,5 +1,4 @@
 SELECT
-    ogc_fid AS t_id,
     geometrie,
     av_lieferdatum,
     av_gem_bfs,
@@ -15,9 +14,10 @@ SELECT
     kaso_nbident,
     kaso_gb_nr,
     kaso_art,
-    kaso_flaeche,
-    flaechen_differenz,
-    fehlerart
+    kaso_flaeche, 
+    flaechen_differenz, 
+    fehlerart,
+    fehlerart_text
 FROM
-    av_kaso_abgleich.differenzen
+    agi_av_kaso_abgleich_import.differenzen_staging
 ;

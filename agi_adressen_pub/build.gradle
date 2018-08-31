@@ -11,7 +11,6 @@ task transferAgiAdressen(type: Db2Db){
                     true),
             new TransferSet('agi_adressen_pub_verbindungslinie_strasse_hausnummer.sql',
                     'agi_adressen_pub.verbindungslinie_strasse_hausnummer', true),
-            new TransferSet('agi_adressen_pub_postleitzahlkreise.sql', 'agi_adressen_pub.postleitzahlkreise', true),
             new TransferSet('agi_adressen_pub_benanntes_gebiet.sql', 'agi_adressen_pub.benanntes_gebiet', true)
     ];
 }

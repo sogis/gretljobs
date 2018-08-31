@@ -1,5 +1,5 @@
 SELECT
-    ogc_fid AS t_id,
+    t_id,
     geometrie,
     av_gem_bfs,
     av_nbident,
@@ -20,7 +20,7 @@ SELECT
     gb_fuehrungsart,
     gb_nbident,
     flaechen_differenz,
-    fehlerart 
-FROM
-    av_gb_abgleich.differenzen
+    fehlerart
+FROM 
+    agi_av_gb_abgleich_import.differenzen_staging
 ;

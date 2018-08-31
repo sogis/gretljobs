@@ -11,7 +11,18 @@ SELECT
     schutzstatus,
     gemeinde,
     strasse,
-    hausnummer
+    hausnummer, 
+    areal, 
+    CASE 
+        WHEN schutzstatus = 1 
+            THEN 'Geschützt'
+        WHEN schutzstatus = 2 
+            THEN 'Erhaltenswert'
+        WHEN schutzstatus = 3 
+            THEN 'Schützenswert'
+        WHEN schutzstatus = 4 
+            THEN 'Ohne Einstufung'
+    END AS schutzstatus_text
 FROM
     ada_adagis_d.poly_geometrie
     LEFT JOIN ada_adagis_d."object"

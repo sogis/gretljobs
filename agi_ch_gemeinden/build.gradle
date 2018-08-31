@@ -77,10 +77,14 @@ task convertData(type: Db2Db, dependsOn: 'dbImport'){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('bezirke.sql', 'agi_swissboundaries3d_pub.swissboundaries3d_bezirk', true),
-            new TransferSet('hoheitsgebiet.sql', 'agi_swissboundaries3d_pub.swissboundaries3d_hoheitsgebiet', true),
-            new TransferSet('kanton.sql', 'agi_swissboundaries3d_pub.swissboundaries3d_kanton', true),
-            new TransferSet('land.sql', 'agi_swissboundaries3d_pub.swissboundaries3d_land', true)
+            new TransferSet('agi_swissboundaries3d_pub_swissboundaries3d_bezirk.sql',
+                    'agi_swissboundaries3d_pub.swissboundaries3d_bezirk', true),
+            new TransferSet('agi_swissboundaries3d_pub_swissboundaries3d_hoheitsgebiet.sql',
+                    'agi_swissboundaries3d_pub.swissboundaries3d_hoheitsgebiet', true),
+            new TransferSet('agi_swissboundaries3d_pub_swissboundaries3d_kanton.sql',
+                    'agi_swissboundaries3d_pub.swissboundaries3d_kanton', true),
+            new TransferSet('agi_swissboundaries3d_pub_swissboundaries3d_land.sql',
+                    'agi_swissboundaries3d_pub.swissboundaries3d_land', true)
     ];
 }
 

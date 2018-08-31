@@ -1,10 +1,3 @@
-description = """\n
-Gebäudeadressen: Import des PLZ/Ortschafts-Datensatz (von swisstopo) noch nicht
-nachhaltig und die bestehenden Daten sind veraltet und Struktur dürfte auch ändern
-aufgrund des Wechsels von ogr2ogr zu ili2pg. Daher wird mit Verschnitt der Gebäude-
-eingänge mit den PLZ/Orschaften zur Zeit verzichten.
-"""
-
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 

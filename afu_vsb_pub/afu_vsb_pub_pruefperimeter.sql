@@ -197,7 +197,7 @@ SELECT
     statustyp,
     bezeichnung,
     anz_order,
-    'docs/ch.so.afu.luftbelastung/was_ist_zu_tun.pdf' AS was_ist_zu_tun_dokument,
+    'https://geo.so.ch/docs/ch.so.afu.pruefperimeter_bodenabtrag/was_ist_zu_tun.pdf' AS was_ist_zu_tun_dokument,
      CASE
         WHEN belastungstyp = 1
             THEN 'https://www.so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-umwelt/boden-untergrund-geologie/boden/bodenbelastungsgebiete/'

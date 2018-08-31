@@ -33,7 +33,7 @@ SELECT
     massnahme.kostenstand_aktuell,
     massnahme.kostenanteil_bund,
     concat('https://geo.so.ch/', replace(massnahme.massnahmenblatt, '/opt/sogis_pic/daten_aktuell/arp/agglo/Dokumente/', 'docs/ch.so.arp.agglo/')) AS massnahmenblatt,
-    massnahme.ansprechperson,
+    regexp_replace(massnahme.ansprechperson, E'[\\n\\r]+', ' ', 'g' ) AS ansprechperson,
     massnahme.sonstiges,
     massnahme.projektphase,
     massnahme.umsetzungsstand,
@@ -140,8 +140,7 @@ SELECT
     massnahme.letzte_anpassung,
     punktobjekt.geometrie AS punktgeometrie,
     linienobjekt.geometrie AS liniengeometrie,
-    flaechenobjekt.geometrie AS flaechengeometrie,
-    concat('(', aggloprogramm.aname, ' - ', massnahme.nummer, ') ', massnahme.beschreibung) AS suchattribut
+    flaechenobjekt.geometrie AS flaechengeometrie
 FROM
     arp_aggloprogramme.agglomrtnsprgrmme_massnahme massnahme
     LEFT JOIN arp_aggloprogramme.agglomrtnsprgrmme_agglomerationsprogramm aggloprogramm

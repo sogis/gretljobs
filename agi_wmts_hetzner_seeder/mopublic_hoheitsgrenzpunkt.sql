@@ -1,0 +1,18 @@
+SELECT 
+    nummer, 
+    punktzeichen, 
+    punktzeichen_txt, 
+    schoener_stein, 
+    lagegenauigkeit, 
+    lagezuverlaessigkeit, 
+    symbolorientierung, 
+    hali, 
+    vali, 
+    bfs_nr, 
+    importdatum, 
+    nachfuehrung, 
+    geometrie, 
+    pos
+FROM 
+    agi_mopublic_pub.mopublic_hoheitsgrenzpunkt
+;

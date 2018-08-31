@@ -27,4 +27,6 @@ FROM
     avt_ktstr.kantonsstrassen_bezugspunkte
 WHERE
     archive = 0
+AND
+    typ_id = 1
 ;

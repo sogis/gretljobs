@@ -1,0 +1,16 @@
+SELECT  
+    t_id,
+    tid, 
+    liegenschaft_von, 
+    nummerteilgrundstueck, 
+    geometrie, 
+    flaechenmass, 
+    gem_bfs, 
+    los, 
+    lieferdatum, 
+    numpos, 
+    nummer, 
+    mutation
+FROM
+    agi_grundbuchplan_pub.liegenschaften_liegenschaft
+;

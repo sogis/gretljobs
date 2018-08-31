@@ -1,0 +1,15 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferAwaNetzbetreiberStrom'
+
+task transferAwaNetzbetreiberStrom(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('awa_netzbetreiber_strom_pub_netzbetreiber.sql',
+                    'awa_netzbetreiber_strom_pub.netzbetreiber', true)
+    ];
+}
