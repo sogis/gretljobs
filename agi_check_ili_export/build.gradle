@@ -27,12 +27,13 @@ ext {
     models.add(["SO_AWJF_Wegsanierungen_20170629", "awjf_wegsanierungen", "awjf_wegsanierungen_" + todaysDate ])
 }
 
-def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def stringPathToTempFolder = System.getProperty("java.io.tmpdir").toString()
 
 // Create a dynamic task for every model we want to validate and for cleaning up if validaton was successful.
 models.each { model ->
     def modelName = model.getAt(0)
     def dbSchema = model.getAt(1)
+    def filename = model.getAt(2)
     def dataExists
 
     
@@ -42,8 +43,8 @@ models.each { model ->
         dbschema = dbSchema
         models = modelName
         disableValidation = false
-        logFile = file(Paths.get(pathToTempFolder.toString(), dbSchema+".log"))
-        dataFile = file(Paths.get(pathToTempFolder.toString(), dbSchema+".xtf"))
+        logFile = file(Paths.get(stringPathToTempFolder, filename + ".log"))
+        dataFile = file(Paths.get(stringPathToTempFolder, filename + ".xtf"))
 
         finalizedBy "removeFiles_$modelName"
     }
@@ -52,21 +53,21 @@ models.each { model ->
         description = "Temporary workaround until ili2pgExport works correctly on failure during export. " +
                 "Checks if there is any data within datasection."
         doLast {
-            def dataFile = file(Paths.get(pathToTempFolder.toString(), dbSchema + ".xtf"))
+            def dataFile = file(Paths.get(stringPathToTempFolder, filename + ".xtf"))
             def indexStartDatasection = dataFile.findLastIndexOf { it =~ "<DATASECTION>" }
             def indexEndDatasection = dataFile.findLastIndexOf { it =~ "</DATASECTION>" }
-            def lineDifference= indexEndDatasection - indexStartDatasection
+            def lineDifference = indexEndDatasection - indexStartDatasection
 
             if (lineDifference <= 1){
                 dataExists = false
                 throw new GradleException("No Data exported")
-            } else if(lineDifference > 1) {
+            } else if (lineDifference > 1) {
                 dataExists = true
             }
         }
     }
 
-    task "removeFiles_$modelName"(type: Delete, dependsOn:"checkDataFileForData_$modelName") {
+    task "removeFiles_$modelName"(type: Delete, dependsOn: "checkDataFileForData_$modelName") {
         description = "Remove files from model export: $modelName"
 
         onlyIf {
@@ -74,8 +75,8 @@ models.each { model ->
             dataExists
         }
 
-        delete file(Paths.get(pathToTempFolder.toString(), dbSchema + ".log")),
-                file(Paths.get(pathToTempFolder.toString(), dbSchema + ".xtf"))
+        delete file(Paths.get(stringPathToTempFolder, filename + ".log")),
+                file(Paths.get(stringPathToTempFolder, filename + ".xtf"))
     }
 }
 
