@@ -36,6 +36,19 @@ Anschliessend kann in der GRETL-Jenkins-Umgebung (`https://gretl-test.so.ch/`) d
 
 Wenn in der Test-Umgebung alles funktioniert hat, das Ganze nochmals auf der Produktion. In Zukunft dürfte wohl das Ausführen auf der Test-Umgebung überflüssig werden.
 
+### Alte Welt (QWC1)
+Da nun der Datenumbau direkt beim Transfer von Erfassungs-DB nach Pub-DB passiert, fehlt das Pub-Modell (resp. Schema des Pub-Modelles) auf der alten sogis-DB. Temporär muss es auch noch dort vorhanden sein, weil man immer noch den QWC1 bedienen will. Dazu wird der `arp_npl_pub`-Job lokal ausgeführt. Hier müssen noch die DB-Parameter gesetzt werden:
+
+```
+export DB_URI_PUB=jdbc:postgresql://geodb-t.verw.rootso.org:5432/sogis
+export DB_USER_PUB=datasync
+export DB_PWD_PUB=datasync
+```
+
+```
+./start-gretl.sh --docker_image sogis/gretl-runtime:production --job_directory /Users/stefan/tmp/gretljobs-npl-import/arp_npl_pub/ 
+```
+
 ### Fehlermeldungen
 
 ```
