@@ -1,4 +1,5 @@
-DELETE FROM arp_npl_mgdm.geobasisdaten_objektbezogene_festlegung;
+DELETE FROM arp_npl_mgdm.geobasisdaten_objektbezogene_festlegung
+;
 
 INSERT INTO arp_npl_mgdm.geobasisdaten_objektbezogene_festlegung (
     publiziertab,
@@ -18,6 +19,6 @@ FROM
     arp_npl.nutzungsplanung_ueberlagernd_punkt AS punkt
     LEFT JOIN arp_npl.nutzungsplanung_typ_ueberlagernd_punkt
         ON punkt.typ_ueberlagernd_punkt = nutzungsplanung_typ_ueberlagernd_punkt.t_id
-    LEFT JOIN arp_npl_mgdm.geobasisdaten_typ AS typ 
+    LEFT JOIN arp_npl_mgdm.geobasisdaten_typ AS typ
         ON typ.code = nutzungsplanung_typ_ueberlagernd_punkt.code_kommunal
 ;
