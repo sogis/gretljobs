@@ -1,4 +1,5 @@
-DELETE FROM arp_npl_mgdm.geobasisdaten_grundnutzung_zonenflaeche;
+DELETE FROM arp_npl_mgdm.geobasisdaten_grundnutzung_zonenflaeche
+;
 
 INSERT INTO arp_npl_mgdm.geobasisdaten_grundnutzung_zonenflaeche (
     publiziertab,
@@ -21,4 +22,3 @@ FROM
     LEFT JOIN arp_npl_mgdm.geobasisdaten_typ AS typ 
         ON typ.code = nutzungsplanung_typ_grundnutzung.code_kommunal
 ;
-        

@@ -1,4 +1,5 @@
-DELETE FROM arp_npl_mgdm.geobasisdaten_typ;
+DELETE FROM arp_npl_mgdm.geobasisdaten_typ
+;
 
 INSERT INTO arp_npl_mgdm.geobasisdaten_typ (
     code,
@@ -9,7 +10,7 @@ INSERT INTO arp_npl_mgdm.geobasisdaten_typ (
     typ_kt
 )
 
-SELECT 
+SELECT
     typ.code_kommunal AS code,
     typ.bezeichnung,
     typ.abkuerzung,
@@ -20,7 +21,7 @@ FROM
     arp_npl.nutzungsplanung_typ_grundnutzung AS typ
     JOIN arp_npl_mgdm.geobasisdaten_typ_kt AS typ_kt
         ON typ_kt.code = substring(typ.typ_kt FROM 2 FOR 3)
-        
+
 UNION
 
 SELECT
@@ -62,3 +63,4 @@ FROM
     arp_npl.nutzungsplanung_typ_ueberlagernd_punkt AS typ
     JOIN arp_npl_mgdm.geobasisdaten_typ_kt AS typ_kt
         ON typ_kt.code = substring(typ.typ_kt FROM 2 FOR 3)
+;

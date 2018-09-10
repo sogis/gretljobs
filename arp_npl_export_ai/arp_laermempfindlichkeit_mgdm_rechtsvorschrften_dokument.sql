@@ -1,4 +1,5 @@
-DELETE FROM arp_laermempfindlichkeit_mgdm.rechtsvorschrften_dokument;
+DELETE FROM arp_laermempfindlichkeit_mgdm.rechtsvorschrften_dokument
+;
 
 INSERT INTO arp_laermempfindlichkeit_mgdm.rechtsvorschrften_dokument (
     t_type,
@@ -12,9 +13,8 @@ INSERT INTO arp_laermempfindlichkeit_mgdm.rechtsvorschrften_dokument (
     bemerkungen
 )
 
-
 WITH empfindlichkeit_dokumente AS (
-    SELECT distinct
+    SELECT DISTINCT
         dokument_so.t_id
     FROM
         arp_npl.nutzungsplanung_typ_ueberlagernd_flaeche_dokument
@@ -23,19 +23,7 @@ WITH empfindlichkeit_dokumente AS (
         LEFT JOIN arp_npl.rechtsvorschrften_dokument AS dokument_so
             ON dokument_so.t_id = nutzungsplanung_typ_ueberlagernd_flaeche_dokument.dokument
     WHERE
-        substring(code_kommunal FROM 1 FOR 3)::integer = 680
-        OR 
-        substring(code_kommunal FROM 1 FOR 3)::integer = 681
-        OR
-        substring(code_kommunal FROM 1 FOR 3)::integer = 682
-        OR
-        substring(code_kommunal FROM 1 FOR 3)::integer = 683
-        OR 
-        substring(code_kommunal FROM 1 FOR 3)::integer = 684
-        OR
-        substring(code_kommunal FROM 1 FOR 3)::integer = 685
-        OR
-        substring(code_kommunal FROM 1 FOR 3)::integer = 686
+        CAST(substring(code_kommunal FROM 1 FOR 3) AS integer) IN (680, 681, 682, 683, 684, 685, 686)
 ),
 all_documents AS (
     SELECT 
@@ -130,16 +118,6 @@ list_with_documents AS (
     FROM 
         all_documents
 ),
-        
-list_distinct_documents AS (
-    SELECT DISTINCT 
-        t_id 
-    FROM 
-        list_with_documents 
-    WHERE 
-        t_id IS NOT NULL
-),
-        
 list_with_documents_without_origin AS (
     SELECT 
         t_id
@@ -151,7 +129,9 @@ list_with_documents_without_origin AS (
             SELECT 
                 t_id
             FROM
-                list_distinct_documents
+                list_with_documents
+            WHERE 
+                t_id IS NOT NULL
         )
 ),
 
@@ -159,17 +139,19 @@ all_used_documents AS (
     SELECT 
         t_id 
     FROM 
-        list_distinct_documents 
+        list_with_documents
+    WHERE 
+        t_id IS NOT NULL
+        
     UNION
+    
     SELECT
         t_id
     FROM 
         list_with_documents_without_origin
 )
 
-    
-    
-SELECT DISTINCT 
+SELECT
     CASE 
         WHEN rechtsvorschrift IS TRUE 
             THEN 'rechtsvorschrften_rechtsvorschrift'
@@ -188,3 +170,4 @@ FROM
     LEFT JOIN
         arp_npl.rechtsvorschrften_dokument AS dokument_so
         ON dokument_so.t_id = all_used_documents.t_id
+;

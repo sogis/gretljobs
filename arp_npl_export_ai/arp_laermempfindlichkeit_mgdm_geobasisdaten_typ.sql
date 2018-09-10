@@ -56,16 +56,5 @@ SELECT DISTINCT
 FROM
     arp_npl.nutzungsplanung_typ_ueberlagernd_flaeche AS ueberlagernd_flaeche
 WHERE 
-    substring(typ_kt FROM 2 FOR 3)::integer = 680
-    OR 
-    substring(typ_kt FROM 2 FOR 3)::integer = 681
-    OR
-    substring(typ_kt FROM 2 FOR 3)::integer = 682
-    OR
-    substring(typ_kt FROM 2 FOR 3)::integer = 683
-    OR 
-    substring(typ_kt FROM 2 FOR 3)::integer = 684
-    OR
-    substring(typ_kt FROM 2 FOR 3)::integer = 685
-    OR
-    substring(typ_kt FROM 2 FOR 3)::integer = 686
+    CAST(substring(typ_kt FROM 2 FOR 3) AS integer) IN (680, 681, 682, 683, 684, 685, 686)
+;
