@@ -98,6 +98,8 @@ DELETE FROM arp_npl.T_ILI2DB_DATASET WHERE T_Id= 8396;
 
 Die Where-Bedingung muss natürlich angepasst werden. Die T_ILI2DB-Löschaktion bedarf gewisser Konzentration.
 
+Anschliessend kann man das XTF wieder importieren. Problem bleibt natürlich bestehen.
+
 #### Varia
 ```
 Started by user Ziegler Stefan
