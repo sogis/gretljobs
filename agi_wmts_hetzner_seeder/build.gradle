@@ -28,7 +28,7 @@ remotes {
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'downloadUpdatedCaches'
+defaultTasks 'downloadStaticCaches'
 
 task copyDataFromMOpublic(type: Db2Db) {
     description = "Kopiert MOpublic-Daten auf den WMTS-Hetzner-Server."
