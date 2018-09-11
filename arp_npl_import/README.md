@@ -50,7 +50,55 @@ export DB_PWD_PUB=datasync
 ```
 
 ### Fehlermeldungen
+#### Reihenfolge im XTF
+Ili2db hat anscheinend Probleme wenn die Reihenfolge der Baskets im XTF nicht entsprechent der Topics im Modell ist. Oder anderen Bedingungen widerspricht. Ich bin aber nicht sicher, ob es ein Bug ist oder es so gar nicht erlaubt ist. Siehe: https://github.com/claeis/ili2db/issues/215
 
+Die Folge ist, dass der Dataset nicht löschbar ist resp. nicht replacebar. Als grausiger Workaround muss man in von Hand mit SQL löschen:
+
+```
+DELETE FROM arp_npl.nutzungsplanung_grundnutzung_pos WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.nutzungsplanung_ueberlagernd_flaeche_pos WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.nutzungsplanung_ueberlagernd_linie_pos WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.nutzungsplanung_ueberlagernd_punkt_pos WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.nutzungsplanung_grundnutzung WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.nutzungsplanung_ueberlagernd_flaeche WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.nutzungsplanung_ueberlagernd_linie WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.nutzungsplanung_ueberlagernd_punkt WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.nutzungsplanung_typ_grundnutzung_dokument WHERE t_datasetname='2614'  ;
+DELETE FROM arp_npl.nutzungsplanung_typ_ueberlagernd_flaeche_dokument WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.nutzungsplanung_typ_ueberlagernd_linie_dokument WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.nutzungsplanung_typ_ueberlagernd_punkt_dokument WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.nutzungsplanung_typ_grundnutzung WHERE t_datasetname='2614';  
+DELETE FROM arp_npl.nutzungsplanung_typ_ueberlagernd_flaeche WHERE t_datasetname='2614';  
+DELETE FROM arp_npl.nutzungsplanung_typ_ueberlagernd_linie WHERE t_datasetname='2614' ; 
+DELETE FROM arp_npl.nutzungsplanung_typ_ueberlagernd_punkt WHERE t_datasetname='2614' ; 
+DELETE FROM arp_npl.verfahrenstand_vs_perimeter_verfahrensstand WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.verfahrenstand_vs_perimeter_pos WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.transfermetadaten_datenbestand WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.transfermetadaten_amt WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.erschlssngsplnung_erschliessung_flaechenobjekt_pos WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.erschlssngsplnung_erschliessung_flaechenobjekt WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.erschlssngsplnung_erschliessung_linienobjekt_pos WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.erschlssngsplnung_erschliessung_linienobjekt WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.erschlssngsplnung_erschliessung_punktobjekt_pos WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.erschlssngsplnung_erschliessung_punktobjekt WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.erschlssngsplnung_typ_erschliessung_flaechenobjekt_dokument WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.erschlssngsplnung_typ_erschliessung_flaechenobjekt WHERE t_datasetname='2614'; 
+DELETE FROM arp_npl.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.erschlssngsplnung_typ_erschliessung_linienobjekt WHERE t_datasetname='2614';
+DELETE FROM arp_npl.erschlssngsplnung_typ_erschliessung_punktobjekt_dokument WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.erschlssngsplnung_typ_erschliessung_punktobjekt WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.rechtsvorschrften_hinweisweiteredokumente WHERE t_datasetname='2614' ;
+DELETE FROM arp_npl.rechtsvorschrften_dokument WHERE t_datasetname='2614' ;
+
+DELETE FROM arp_npl.T_ILI2DB_IMPORT_BASKET WHERE import = 8397;
+DELETE FROM arp_npl.T_ILI2DB_BASKET WHERE dataset = 8396; 
+DELETE FROM arp_npl.T_ILI2DB_DATASET WHERE T_Id= 8396; 
+```
+
+Die Where-Bedingung muss natürlich angepasst werden. Die T_ILI2DB-Löschaktion bedarf gewisser Konzentration.
+
+#### Varia
 ```
 Started by user Ziegler Stefan
 [Pipeline] node
