@@ -28,7 +28,7 @@ remotes {
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'downloadStaticCaches'
+defaultTasks 'downloadUpdatedCaches'
 
 task copyDataFromMOpublic(type: Db2Db) {
     description = "Kopiert MOpublic-Daten auf den WMTS-Hetzner-Server."
@@ -103,8 +103,7 @@ task updateBlackWhiteCaches(dependsOn: updateColorCaches) {
     }
 }
 
-//task downloadUpdatedCaches(dependsOn: updateBlackWhiteCaches) {
-task downloadUpdatedCaches() {
+task downloadUpdatedCaches(dependsOn: updateBlackWhiteCaches) {
     description = "Herunterladen aller neuberechneten Kacheln"
     doLast {
         ssh.settings {
