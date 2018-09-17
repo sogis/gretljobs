@@ -100,6 +100,8 @@ Die Where-Bedingung muss natürlich angepasst werden. Die T_ILI2DB-Löschaktion 
 
 Anschliessend kann man das XTF wieder importieren. Problem bleibt natürlich bestehen.
 
+__Workaround:__ Das XTF mit ili2gpkg nach GeoPackage umformatieren. Unbedingt ohne "Basket/Dataset"-Parameter und ohne `--strokeArcs`. Anschliessend wieder nach XTF exportieren. Jetzt hat das XTF die "richtige" Reihenfolge (den Topics im Modell entsprechend) und kann importiertiert und ersetzt werden.
+
 #### Varia
 ```
 Started by user Ziegler Stefan
