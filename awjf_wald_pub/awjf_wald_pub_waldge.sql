@@ -1,7 +1,7 @@
 SELECT 
     ogc_fid AS t_id,
     wkb_geometry AS geometrie,
-    area,
+    round(area::numeric,0) AS area,
     perimeter,
     waldge_,
     waldge_id,
@@ -39,11 +39,26 @@ SELECT
     ges_neu_ber,
     grundeinheit,
     legende,
+    concat_ws(' ', grundeinheit, legende) AS waldstandort,
     farbcode,
     verband,
     ertragsklasse,
+    CASE
+        WHEN ertragsklasse = 1
+            THEN 'Ertragsklasse I, Zuwachs jährlich (10-13-15) m3 pro ha'
+        WHEN ertragsklasse = 2
+            THEN 'Ertragsklasse II, Zuwachs jährlich (8-10-12) m3 pro ha'
+        WHEN ertragsklasse = 3
+            THEN 'Ertragsklasse III, Zuwachs jährlich (7-8-9) m3 pro ha'
+        WHEN ertragsklasse = 4
+            THEN 'Ertragsklasse IV, Zuwachs jährlich (5-6-7) m3 pro ha'
+        WHEN ertragsklasse = 5
+            THEN 'Ertragsklasse V, Zuwachs jährlich (3-4-5) m3 pro ha'
+        WHEN ertragsklasse = 6
+            THEN 'Ertragsklasse VI, Zuwachs jährlich (1-2-3) m3 pro ha'
+    END AS ertragsklasse_text,
     zuwachs,
-    min_lbh_ant
+    min_lbh_ant * 100 AS min_lbh_ant
 FROM 
     awjf.waldge
 WHERE 

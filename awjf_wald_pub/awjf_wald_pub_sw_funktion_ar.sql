@@ -122,7 +122,7 @@ SELECT
             THEN 'stark'
     END AS igef_pot,
     bemerkunge,
-    flaeche,
+    round(flaeche::NUMERIC / 10000,2) AS flaeche,
     ST_Multi(wkb_geometry) AS geometrie,
     status,
     name_2,
