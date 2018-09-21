@@ -1,7 +1,7 @@
 SELECT
-    bodeneinheit_t.pk_ogc_fid AS t_id,
-    bodeneinheit_t.gemnr,
-    bodeneinheit_t.objnr,
+    bodeneinheit_onlinedata_t.pk_isboden AS t_id,
+    bodeneinheit_onlinedata_t.gemnr,
+    bodeneinheit_onlinedata_t.objnr,
     wasserhhgr_t.code AS wasserhhgr,
     wasserhhgr_t.beschreibung AS wasserhhgr_beschreibung,
     CASE
@@ -18,7 +18,7 @@ SELECT
     END AS charakter_wasserhaushalt,
     CASE
         WHEN
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
             AND
             (
                 wasserhhgr_t.code IN ('a', 'b', 'f', 'k', 's')
@@ -26,12 +26,12 @@ SELECT
                 (
                     wasserhhgr_t.code ='o'
                     AND
-                    pflngr >= 70
+                    bodeneinheit_auspraegung_t.pflngr >= 70
                 )
             )
             THEN 'tiefgründiger Boden, d.h. pflanzennutzbare Gründigkeit > 70 cm'
         WHEN
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
             AND
             (
                 wasserhhgr_t.code  IN ('c', 'd', 'g', 'h', 'l', 'm', 'q', 't', 'v', 'x')
@@ -41,34 +41,34 @@ SELECT
                         wasserhhgr_t.code ='o'
                         AND
                         (
-                            pflngr < 70
+                            bodeneinheit_auspraegung_t.pflngr < 70
                             OR
-                            pflngr IS NULL
+                            bodeneinheit_auspraegung_t.pflngr IS NULL
                         )
                     )
                     OR
                     (
                         wasserhhgr_t.code = 'p'
                         AND
-                        pflngr >= 30
+                        bodeneinheit_auspraegung_t.pflngr >= 30
                     )
                     OR
                     (
                         wasserhhgr_t.code = 'u'
                         AND
-                        pflngr >= 30
+                        bodeneinheit_auspraegung_t.pflngr >= 30
                     )
                     OR
                     (
                         wasserhhgr_t.code = 'w'
                         AND
-                        pflngr >= 30
+                        bodeneinheit_auspraegung_t.pflngr >= 30
                     )
                 )
             )
             THEN 'mittelgründiger Boden, d.h. pflanzennutzbare Gründigkeit 30 - 70 cm'
         WHEN
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
             AND
             (
                 wasserhhgr_t.code IN ('e', 'i', 'n')
@@ -77,9 +77,9 @@ SELECT
                     wasserhhgr_t.code ='p'
                     AND
                     (
-                        pflngr < 30
+                        bodeneinheit_auspraegung_t.pflngr < 30
                         OR
-                        pflngr IS NULL
+                        bodeneinheit_auspraegung_t.pflngr IS NULL
                     )
                 )
                 OR
@@ -90,16 +90,16 @@ SELECT
                 (
                     wasserhhgr_t.code = 'u'
                     AND
-                    pflngr < 30
+                    bodeneinheit_auspraegung_t.pflngr < 30
                 )
                 OR
                 (
                     wasserhhgr_t.code = 'w'
                     AND
                     (
-                        pflngr < 30
+                        bodeneinheit_auspraegung_t.pflngr < 30
                         OR
-                        pflngr IS NULL
+                        bodeneinheit_auspraegung_t.pflngr IS NULL
                     )
                 )
                 OR
@@ -187,27 +187,27 @@ SELECT
         WHEN
             begelfor_t.code IN ('a', 'b', 'c', 'd', 'e')
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN '0-10%: Keine Einschränkung'
         WHEN
             begelfor_t.code IN ('f', 'g', 'h', 'i')
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN '10-15%: Hackfruchtanbau und Vollerntemaschine möglich'
         WHEN
             begelfor_t.code IN ('j', 'k', 'l', 'm', 'n')
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN '15-25%: Hackfruchtanbau stark erschwert, Getreidebau erschwert; Mähdrescher möglich, evtl. Hangmähdrescher'
         WHEN
             begelfor_t.code IN ('o', 'p', 'q', 'r')
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN '25-35%: Getreideanbau stark eingeschränkt, Hangmähdrescher; Hangtraktoren.'
         WHEN
             begelfor_t.code IN ('s', 't', 'u', 'v', 'w', 'x', 'y', 'z')
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN '>35%: nur Hähwiese und Weide möglich; spezialisierte Hangmechanisierung'
     END AS gelform_text,
     bodeneinheit_auspraegung_t.geologie,
@@ -238,27 +238,27 @@ SELECT
         WHEN
             skelett_t_ub.code = 0
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'keine oder nur wenige Steine (0-5%)'
         WHEN
             skelett_t_ub.code = 1
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'mässig viele Steine (5-10%)'
         WHEN
             skelett_t_ub.code IN (2, 3)
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'viele Steine (10-20%)'
         WHEN
             skelett_t_ub.code IN (4, 5)
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'sehr viele Steine (20-30%)'
         WHEN
             skelett_t_ub.code >= 6
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'extrem viele Steine'
     END AS skelett_ub_text,
     koernkl_t_ob.code AS koernkl_ob,
@@ -267,32 +267,32 @@ SELECT
         WHEN
             koernkl_t_ob.code IN (7, 8, 9, 13)
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN 'Schwere, tonige Böden: schwer bearbeitbar, trocknen sehr langsam ab.'
         WHEN
             koernkl_t_ob.code IN (5, 6, 10, 11, 12)
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN 'Mittelschwere, lehmige bis schluffige Böden: normal bearbeitbar, trocknen mässig schnell ab.'
         WHEN
             koernkl_t_ob.code IN (1, 2, 3, 4)
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN 'Leichte, sandige Böden: leicht bearbeitbar, trocknen schnell ab.'
         WHEN 
             koernkl_t_ob.code IN (7, 8, 9, 13)
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'Schwere, tonige Böden: trocknen sehr langsam ab.'
         WHEN
             koernkl_t_ob.code IN (5, 6, 10, 11, 12)
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'Mittelschwere, lehmige bis schluffige Böden: trocknen mässig schnell ab.'
         WHEN
             koernkl_t_ob.code IN (1, 2, 3, 4)
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'Leichte, sandige Böden: trocknen schnell ab.'
     END AS bodenart_bodenbearbeitbarkeit,
     koernkl_t_ub.code AS koernkl_ub,
@@ -313,73 +313,73 @@ SELECT
             AND
             bodeneinheit_auspraegung_t.ph_ob <= 4.2
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN 'stark sauer: starke Nährstoffauswaschung; Kalkung erforderlich'
         WHEN
             bodeneinheit_auspraegung_t.ph_ob > 4.2
             AND
             bodeneinheit_auspraegung_t.ph_ob <= 5.0
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN 'sauer: Nährstoffauswaschung; Kalkung erforderlich'
         WHEN
             bodeneinheit_auspraegung_t.ph_ob > 5.0
             AND
             bodeneinheit_auspraegung_t.ph_ob <= 6.1
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN 'schwach sauer: optimale Nährstoffverhältnisse; Erhaltungskalkung empfohlen'
         WHEN
             bodeneinheit_auspraegung_t.ph_ob > 6.1
             AND
             bodeneinheit_auspraegung_t.ph_ob <= 6.7
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN 'neutral: optimale Nährstoffverhältnisse; Erhaltungskalkung empfohlen'
         WHEN
             bodeneinheit_auspraegung_t.ph_ob > 6.7
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
             THEN 'alkalisch: keine Kalkung'
         WHEN
             bodeneinheit_auspraegung_t.ph_ob > 0
             AND
             bodeneinheit_auspraegung_t.ph_ob <= 3.2
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'sehr stark sauer'
         WHEN
             bodeneinheit_auspraegung_t.ph_ob > 3.2
             AND
             bodeneinheit_auspraegung_t.ph_ob <= 4.2
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'stark sauer'
         WHEN 
             bodeneinheit_auspraegung_t.ph_ob > 4.2
             AND
             bodeneinheit_auspraegung_t.ph_ob <= 5.0
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'sauer'
         WHEN
             bodeneinheit_auspraegung_t.ph_ob > 5.0
             AND
             bodeneinheit_auspraegung_t.ph_ob <= 6.1
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'schwach sauer'
         WHEN
             bodeneinheit_auspraegung_t.ph_ob > 6.1
             AND
             bodeneinheit_auspraegung_t.ph_ob <= 6.7
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'neutral'
         WHEN
             bodeneinheit_auspraegung_t.ph_ob > 6.7
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'alkalisch: keine Kalkung'
     END AS ph_ob_text,
     bodeneinheit_auspraegung_t.ph_ub, 
@@ -389,80 +389,80 @@ SELECT
             AND
             bodeneinheit_auspraegung_t.ph_ub < 3.3
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN 'sehr stark sauer'
         WHEN
             bodeneinheit_auspraegung_t.ph_ub >= 3.3
             AND
             bodeneinheit_auspraegung_t.ph_ub < 4.3
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN 'stark sauer'
         WHEN
             bodeneinheit_auspraegung_t.ph_ub >= 4.3
             AND
             bodeneinheit_auspraegung_t.ph_ub < 5.1
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN 'sauer'
         WHEN
             bodeneinheit_auspraegung_t.ph_ub >= 5.1
             AND
             bodeneinheit_auspraegung_t.ph_ub < 6.2
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN 'schwach sauer'
         WHEN
             bodeneinheit_auspraegung_t.ph_ub >= 6.2
             AND
             bodeneinheit_auspraegung_t.ph_ub < 6.8
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN 'neutral'
         WHEN
             bodeneinheit_auspraegung_t.ph_ub >= 6.8
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN 'alkalisch'
         WHEN
             bodeneinheit_auspraegung_t.ph_ub > 0
             AND
             bodeneinheit_auspraegung_t.ph_ub <= 3.2
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'sehr stark sauer'
         WHEN
             bodeneinheit_auspraegung_t.ph_ub > 3.2
             AND
             bodeneinheit_auspraegung_t.ph_ub <= 4.2
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'stark sauer'
         WHEN
             bodeneinheit_auspraegung_t.ph_ub > 4.2
             AND
             bodeneinheit_auspraegung_t.ph_ub <= 5.0
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'sauer'
         WHEN
             bodeneinheit_auspraegung_t.ph_ub > 5.0
             AND
             bodeneinheit_auspraegung_t.ph_ub <= 6.1
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'schwach sauer'
         WHEN
             bodeneinheit_auspraegung_t.ph_ub > 6.1
             AND
             bodeneinheit_auspraegung_t.ph_ub <= 6.7
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'neutral'
         WHEN
             bodeneinheit_auspraegung_t.ph_ub > 6.7
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'alkalisch'
     END AS ph_ub_text,
     bodeneinheit_auspraegung_t.maechtigk_ah,
@@ -478,66 +478,66 @@ SELECT
             AND
             bodeneinheit_auspraegung_t.humusgeh_ah < 3
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN '2.0 - 2.9%: schwach humos'
         WHEN
             bodeneinheit_auspraegung_t.humusgeh_ah >= 3
             AND
             bodeneinheit_auspraegung_t.humusgeh_ah < 4
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN '3.0 - 3.9%: mässig humos'
         WHEN
             bodeneinheit_auspraegung_t.humusgeh_ah >= 4
             AND
             bodeneinheit_auspraegung_t.humusgeh_ah < 5
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN '4.0 - 4.9%: mittel humos'
         WHEN
             bodeneinheit_auspraegung_t.humusgeh_ah >= 5
             AND
             bodeneinheit_auspraegung_t.humusgeh_ah < 10
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN '5.0 - 9.9%: humos'
         WHEN
             bodeneinheit_auspraegung_t.humusgeh_ah >= 10
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
             THEN '>= 10.0%: humusreich bis organisch'
         WHEN
             bodeneinheit_auspraegung_t.humusgeh_ah >= 2
             AND
             bodeneinheit_auspraegung_t.humusgeh_ah < 5
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN '2.0 - 4.9%: schwach humos'
         WHEN
             bodeneinheit_auspraegung_t.humusgeh_ah >= 5
             AND
             bodeneinheit_auspraegung_t.humusgeh_ah < 10
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN '5.0 - 9.9%: humos'
         WHEN
             bodeneinheit_auspraegung_t.humusgeh_ah >= 10
             AND
             bodeneinheit_auspraegung_t.humusgeh_ah < 20
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN '10.0 - 19.9%: humusreich'
         WHEN
             bodeneinheit_auspraegung_t.humusgeh_ah >= 20
             AND
             bodeneinheit_auspraegung_t.humusgeh_ah < 30
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN '20.0 - 29.9%: sehr humusreich'
         WHEN
             bodeneinheit_auspraegung_t.humusgeh_ah >= 30
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN '>= 30.0%: organisch'
     END AS humusgeh_ah_text,
     humusform_wa_t.code AS humusform_wa,
@@ -807,11 +807,11 @@ SELECT
                 THEN 'keine Information'
     END AS bodpktzahl_text,
     bodeneinheit_auspraegung_t.bemerkungen,
-    bodeneinheit_t.los,
-    bodeneinheit_t.kartierjahr,
+    bodeneinheit_onlinedata_t.los,
+    bodeneinheit_onlinedata_t.kjahr AS kartierjahr,
     bodeneinheit_t.fk_kartierer AS kartierer,
     bodeneinheit_t.kartierquartal,
-    bodeneinheit_t.is_wald,
+    bodeneinheit_onlinedata_t.is_wald,
     bodeneinheit_auspraegung_t.bindst_cd,
     bodeneinheit_auspraegung_t.bindst_zn,
     bodeneinheit_auspraegung_t.bindst_cu,
@@ -823,140 +823,142 @@ SELECT
         WHEN
             bodeneinheit_auspraegung_t.nfkapwe < 50
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN '< 50 mm'
         WHEN
             bodeneinheit_auspraegung_t.nfkapwe >= 50
             AND
             bodeneinheit_auspraegung_t.nfkapwe < 100
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN '50 - 100 mm'
         WHEN
             bodeneinheit_auspraegung_t.nfkapwe >= 100
             AND
             bodeneinheit_auspraegung_t.nfkapwe < 150
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN '100 - 150 mm'
         WHEN
             bodeneinheit_auspraegung_t.nfkapwe >= 150
             AND
             bodeneinheit_auspraegung_t.nfkapwe < 200
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN '150 - 200 mm'
         WHEN
             bodeneinheit_auspraegung_t.nfkapwe >= 200
             AND
             bodeneinheit_auspraegung_t.nfkapwe < 250
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN '200 - 250 mm'
         WHEN
             bodeneinheit_auspraegung_t.nfkapwe >= 250
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN '>= 250 mm'
         WHEN
             bodeneinheit_auspraegung_t.nfkapwe < 50
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN '< 50 mm; sehr grosses Trockenstressrisiko'
         WHEN
             bodeneinheit_auspraegung_t.nfkapwe >= 50
             AND
             bodeneinheit_auspraegung_t.nfkapwe < 100
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN '50 - 99 mm; sehr grosses Trockenstressrisiko'
         WHEN
             bodeneinheit_auspraegung_t.nfkapwe >= 100
             AND
             bodeneinheit_auspraegung_t.nfkapwe < 150
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN '100 - 149 mm; grosses Trockenstressrisiko'
         WHEN
             bodeneinheit_auspraegung_t.nfkapwe >= 150
             AND
             bodeneinheit_auspraegung_t.nfkapwe < 200
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN '150 - 199 mm; mässiges Trockenstressrisiko'
         WHEN
             bodeneinheit_auspraegung_t.nfkapwe >= 200
             AND
             bodeneinheit_auspraegung_t.nfkapwe < 250
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN '200 - 249 mm; kleines Trockenstressrisiko'
         WHEN
             bodeneinheit_auspraegung_t.nfkapwe >= 250
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN '>= 250 mm; kein Trockenstressrisiko'
     END AS nfkapwe_text,
     bodeneinheit_auspraegung_t.verdempf,
     CASE
         WHEN
-            verdempf = 1
+            bodeneinheit_auspraegung_t.verdempf = 1
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'wenig empfindlicher Unterboden: befahren mit üblicher Sorgfalt.'
         WHEN
-            verdempf = 2
+            bodeneinheit_auspraegung_t.verdempf = 2
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'mässig empfindlicher Unterboden: nach Abtrocknungsphase gut mechanisch belastbar, Rückegassenabstand 30 m oder mehr empfohlen.'
         WHEN
-            verdempf = 3
+            bodeneinheit_auspraegung_t.verdempf = 3
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'empfindlicher Unterboden: erhöhte Sorgfalt beim Befahren notwendig, Trockenphasen optimal nutzen, Rückegassenabstand 50 m oder mehr empfohlen.'
         WHEN
-            verdempf = 4
+            bodeneinheit_auspraegung_t.verdempf = 4
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'stark empfindlicher Unterboden: nur eingeschränkt mechanisch belastbar, längere Trockenphasen abwarten, ergänzende lastverteilende Massnahmen ergreifen, Rückegassenabstand 50 m oder mehr empfohlen.'
         WHEN
-            verdempf = 5
+            bodeneinheit_auspraegung_t.verdempf = 5
             AND
-            bodeneinheit_t.is_wald IS TRUE
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'extrem empfindlicher Unterboden: bereits geringe Auflasten können irreversible Schäden verursachen, befahren vermeiden, falls dennoch nötig: nur mit lastverteilenden und lastreduzierenden Massnahmen und erst nach längeren Trockenperioden.'
         WHEN
-            verdempf = 1
+            bodeneinheit_auspraegung_t.verdempf = 1
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN 'wenig empfindlicher Unterboden: Bearbeitung mit üblicher Sorgfalt.'
         WHEN
-            verdempf = 2
+            bodeneinheit_auspraegung_t.verdempf = 2
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN 'mässig empfindlicher Unterboden: nach Abtrocknungsphase gut mechanisch belastbar.'
         WHEN
-            verdempf = 3
+            bodeneinheit_auspraegung_t.verdempf = 3
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN 'empfindlicher Unterboden: erhöhte Sorgfalt beim Befahren und Feldarbeiten notwendig, Trockenperioden sind optimal zu nutzen.'
         WHEN
-            verdempf = 4
+            bodeneinheit_auspraegung_t.verdempf = 4
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN 'stark empfindlicher Unterboden: nur eingeschränkt mechanisch belastbar, längere Trockenperioden abwarten, ergänzende lastreduzierende und lastverteilende Massnahmen ergreifen.'
         WHEN
-            verdempf = 5
+            bodeneinheit_auspraegung_t.verdempf = 5
             AND
-            bodeneinheit_t.is_wald IS FALSE
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN 'extrem empfindlicher Unterboden: möglichst Verzicht auf ackerbauliche Nutzung, bereits geringe Auflasten können irreversible Schäden verursachen.'
     END AS verdempf_text,
     bodeneinheit_auspraegung_t.drain_wel,
     bodeneinheit_auspraegung_t.wassastoss,
     bodeneinheit_auspraegung_t.is_hauptauspraegung,
     bodeneinheit_auspraegung_t.gewichtung_auspraegung,
-    bodeneinheit_t.wkb_geometry AS geometrie
+    bodeneinheit_onlinedata_t.geom AS geometrie
 FROM
-    afu_isboden.bodeneinheit_t
+    afu_isboden.bodeneinheit_onlinedata_t
+    LEFT JOIN afu_isboden.bodeneinheit_t
+        ON bodeneinheit_onlinedata_t.objnr = bodeneinheit_t.objnr
     LEFT JOIN afu_isboden.bodeneinheit_auspraegung_t
         ON bodeneinheit_auspraegung_t.fk_bodeneinheit = bodeneinheit_t.pk_ogc_fid
     LEFT JOIN afu_isboden.wasserhhgr_t
@@ -1029,7 +1031,15 @@ FROM
         ) AS untertyp
         ON untertyp.fk_bodeneinheit = bodeneinheit_auspraegung_t.pk_bodeneinheit
 WHERE
-    bodeneinheit_t.archive = 0
+    bodeneinheit_onlinedata_t.archive = 0
     AND
     bodeneinheit_auspraegung_t.is_hauptauspraegung
+    AND
+    bodeneinheit_onlinedata_t.gemnr = bodeneinheit_t.gemnr
+    AND
+    bodeneinheit_onlinedata_t.objnr = bodeneinheit_t.objnr
+    AND
+    bodeneinheit_t.archive = 0
+    AND
+    bodeneinheit_t.los = bodeneinheit_onlinedata_t.los
 ;
