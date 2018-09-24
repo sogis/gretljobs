@@ -1037,8 +1037,6 @@ WHERE
     AND
     bodeneinheit_onlinedata_t.gemnr = bodeneinheit_t.gemnr
     AND
-    bodeneinheit_onlinedata_t.objnr = bodeneinheit_t.objnr
-    AND
     bodeneinheit_t.archive = 0
     AND
     bodeneinheit_t.los = bodeneinheit_onlinedata_t.los
