@@ -131,7 +131,7 @@ WITH documents AS (
         NULL AS offiziellenr,
         reservate_teilgebiet.reservat,
         reservate_teilgebiet.t_id,
-        'https://geo.so.ch/api/v1/document/?template=Pflanzenliste&feature=' || reservate_teilgebiet.t_id
+        'https://geo.so.ch/api/v1/document/Pflanzenliste?feature=' || reservate_teilgebiet.t_id
     FROM
         arp_naturreservate.reservate_teilgebiet
     WHERE 
@@ -148,7 +148,7 @@ WITH documents AS (
         NULL AS offiziellenr,
         reservate_reservat.t_id,
         reservate_teilgebiet.t_id,
-        'https://geo.so.ch/api/v1/document/?template=Naturreservate&feature=' || reservate_reservat.t_id
+        'https://geo.so.ch/api/v1/document/Naturreservate?feature=' || reservate_reservat.t_id
     FROM
         arp_naturreservate.reservate_reservat
         RIGHT JOIN arp_naturreservate.reservate_teilgebiet
