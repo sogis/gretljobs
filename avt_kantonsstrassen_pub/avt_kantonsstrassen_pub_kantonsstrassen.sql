@@ -1,6 +1,6 @@
 SELECT
     eid AS t_id,
-    geometrie,
+    ST_Multi(ST_Linemerge(ST_Union(geometrie))) AS geometrie,
     "name",
     plz_ortschaft,
     klasse,
