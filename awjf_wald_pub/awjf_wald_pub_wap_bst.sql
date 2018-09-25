@@ -67,7 +67,26 @@ SELECT
         WHEN wptyp = 9
             THEN '9 - Nicht Wald'
     END AS wptyp,
-    betriebsteil,
+    CASE
+        WHEN betriebsteil = 1
+            THEN concat_ws(' - ', betriebsteil, 'Talwald')
+        WHEN betriebsteil = 2
+            THEN concat_ws(' - ', betriebsteil, 'Bergwald')
+        WHEN betriebsteil = 3
+            THEN concat_ws(' - ', betriebsteil, 'Vorberg')
+        WHEN betriebsteil = 4
+            THEN concat_ws(' - ', betriebsteil, 'Sonnseite')
+        WHEN betriebsteil = 5
+            THEN concat_ws(' - ', betriebsteil, 'Schattseite')
+        WHEN betriebsteil = 6
+            THEN concat_ws(' - ', betriebsteil, 'Lebern-Klus')
+        WHEN betriebsteil = 7
+            THEN concat_ws(' - ', betriebsteil, 'Aebisholz')
+        WHEN betriebsteil = 8
+            THEN concat_ws(' - ', betriebsteil, 'Jurawald')
+        WHEN  betriebsteil = 9
+            THEN concat_ws(' - ', betriebsteil, 'Bornwald')
+    END AS betriebsteil,
     fid_abt,
     bstnr,
     bsttyp,
