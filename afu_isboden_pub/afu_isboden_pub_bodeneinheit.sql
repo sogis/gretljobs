@@ -1,112 +1,137 @@
+WITH charakter_wasserhaushalt AS (
+    SELECT
+        bodeneinheit_onlinedata_t.pk_isboden AS t_id,
+        CASE
+            WHEN wasserhhgr_t.code IN ('a', 'b', 'c', 'd', 'e')
+                THEN 'Kein Einfluss von Stau- oder Grundwasser'
+            WHEN wasserhhgr_t.code IN ('f', 'g', 'h', 'i')
+                THEN 'Leichter Einfluss von Stauwasser'
+            WHEN wasserhhgr_t.code IN ('k', 'l', 'm', 'n')
+                THEN 'Leichter Einfluss von Grund- oder Hangwasser'
+            WHEN wasserhhgr_t.code IN ('o', 'p', 'q', 'r')
+                THEN 'Starker Einfluss von Stauwasser. Falls nicht drainiert, stellenweise dauernd vernässt'
+            WHEN wasserhhgr_t.code IN ('s', 't', 'u', 'v', 'w', 'x', 'y', 'z')
+                THEN 'Starker Einfluss von Grund- oder Hangwasser. Falls nicht drainiert, stellenweise dauernd vernässt'
+        END AS charakter_wasserhaushalt,
+        CASE
+            WHEN
+                bodeneinheit_onlinedata_t.is_wald IS TRUE
+                AND
+                (
+                    wasserhhgr_t.code IN ('a', 'b', 'f', 'k', 's')
+                    OR
+                    (
+                        wasserhhgr_t.code ='o'
+                        AND
+                        bodeneinheit_auspraegung_t.pflngr >= 70
+                    )
+                )
+                THEN 'tiefgründiger Boden, d.h. pflanzennutzbare Gründigkeit > 70 cm'
+            WHEN
+                bodeneinheit_onlinedata_t.is_wald IS TRUE
+                AND
+                (
+                    wasserhhgr_t.code  IN ('c', 'd', 'g', 'h', 'l', 'm', 'q', 't', 'v', 'x')
+                    OR
+                    (
+                        (
+                            wasserhhgr_t.code ='o'
+                            AND
+                            (
+                                bodeneinheit_auspraegung_t.pflngr < 70
+                                OR
+                                bodeneinheit_auspraegung_t.pflngr IS NULL
+                            )
+                        )
+                        OR
+                        (
+                            wasserhhgr_t.code = 'p'
+                            AND
+                            bodeneinheit_auspraegung_t.pflngr >= 30
+                        )
+                        OR
+                        (
+                            wasserhhgr_t.code = 'u'
+                            AND
+                            bodeneinheit_auspraegung_t.pflngr >= 30
+                        )
+                        OR
+                        (
+                            wasserhhgr_t.code = 'w'
+                            AND
+                            bodeneinheit_auspraegung_t.pflngr >= 30
+                        )
+                    )
+                )
+                THEN 'mittelgründiger Boden, d.h. pflanzennutzbare Gründigkeit 30 - 70 cm'
+            WHEN
+                bodeneinheit_onlinedata_t.is_wald IS TRUE
+                AND
+                (
+                    wasserhhgr_t.code IN ('e', 'i', 'n')
+                    OR
+                    (
+                        wasserhhgr_t.code ='p'
+                        AND
+                        (
+                            bodeneinheit_auspraegung_t.pflngr < 30
+                            OR
+                            bodeneinheit_auspraegung_t.pflngr IS NULL
+                        )
+                    )
+                    OR
+                    wasserhhgr_t.code = 'r'
+                )
+                OR
+                (
+                    (
+                        wasserhhgr_t.code = 'u'
+                        AND
+                        bodeneinheit_auspraegung_t.pflngr < 30
+                    )
+                    OR
+                    (
+                        wasserhhgr_t.code = 'w'
+                        AND
+                        (
+                            bodeneinheit_auspraegung_t.pflngr < 30
+                            OR
+                            bodeneinheit_auspraegung_t.pflngr IS NULL
+                        )
+                    )
+                    OR
+                    wasserhhgr_t.code IN ('y', 'z')
+                )
+                THEN 'flachgründiger Boden, d.h. pflanzennutzbare Gründigkeit < 30 cm'
+        END AS wald_charakter_wasserhaushalt
+    FROM
+        afu_isboden.bodeneinheit_onlinedata_t
+        LEFT JOIN afu_isboden.bodeneinheit_t
+            ON bodeneinheit_onlinedata_t.objnr = bodeneinheit_t.objnr
+        LEFT JOIN afu_isboden.bodeneinheit_auspraegung_t
+            ON bodeneinheit_auspraegung_t.fk_bodeneinheit = bodeneinheit_t.pk_ogc_fid
+        LEFT JOIN afu_isboden.wasserhhgr_t
+            ON wasserhhgr_t.pk_wasserhhgr = bodeneinheit_auspraegung_t.fk_wasserhhgr
+    WHERE
+        bodeneinheit_onlinedata_t.archive = 0
+        AND
+        bodeneinheit_auspraegung_t.is_hauptauspraegung
+        AND
+        bodeneinheit_onlinedata_t.gemnr = bodeneinheit_t.gemnr
+        AND
+        bodeneinheit_t.archive = 0
+        AND
+        bodeneinheit_t.los = bodeneinheit_onlinedata_t.los
+)
+
+
 SELECT
     bodeneinheit_onlinedata_t.pk_isboden AS t_id,
     bodeneinheit_onlinedata_t.gemnr,
     bodeneinheit_onlinedata_t.objnr,
     wasserhhgr_t.code AS wasserhhgr,
     wasserhhgr_t.beschreibung AS wasserhhgr_beschreibung,
-    CASE
-        WHEN wasserhhgr_t.code IN ('a', 'b', 'c', 'd', 'e')
-            THEN 'Kein Einfluss von Stau- oder Grundwasser'
-        WHEN wasserhhgr_t.code IN ('f', 'g', 'h', 'i')
-            THEN 'Leichter Einfluss von Stauwasser'
-        WHEN wasserhhgr_t.code IN ('k', 'l', 'm', 'n')
-            THEN 'Leichter Einfluss von Grund- oder Hangwasser'
-        WHEN wasserhhgr_t.code IN ('o', 'p', 'q', 'r')
-            THEN 'Starker Einfluss von Stauwasser. Falls nicht drainiert, stellenweise dauernd vernässt'
-        WHEN wasserhhgr_t.code IN ('s', 't', 'u', 'v', 'w', 'x', 'y', 'z')
-            THEN 'Starker Einfluss von Grund- oder Hangwasser. Falls nicht drainiert, stellenweise dauernd vernässt'
-    END AS charakter_wasserhaushalt,
-    CASE
-        WHEN
-            bodeneinheit_onlinedata_t.is_wald IS TRUE
-            AND
-            (
-                wasserhhgr_t.code IN ('a', 'b', 'f', 'k', 's')
-                OR
-                (
-                    wasserhhgr_t.code ='o'
-                    AND
-                    bodeneinheit_auspraegung_t.pflngr >= 70
-                )
-            )
-            THEN 'tiefgründiger Boden, d.h. pflanzennutzbare Gründigkeit > 70 cm'
-        WHEN
-            bodeneinheit_onlinedata_t.is_wald IS TRUE
-            AND
-            (
-                wasserhhgr_t.code  IN ('c', 'd', 'g', 'h', 'l', 'm', 'q', 't', 'v', 'x')
-                OR
-                (
-                    (
-                        wasserhhgr_t.code ='o'
-                        AND
-                        (
-                            bodeneinheit_auspraegung_t.pflngr < 70
-                            OR
-                            bodeneinheit_auspraegung_t.pflngr IS NULL
-                        )
-                    )
-                    OR
-                    (
-                        wasserhhgr_t.code = 'p'
-                        AND
-                        bodeneinheit_auspraegung_t.pflngr >= 30
-                    )
-                    OR
-                    (
-                        wasserhhgr_t.code = 'u'
-                        AND
-                        bodeneinheit_auspraegung_t.pflngr >= 30
-                    )
-                    OR
-                    (
-                        wasserhhgr_t.code = 'w'
-                        AND
-                        bodeneinheit_auspraegung_t.pflngr >= 30
-                    )
-                )
-            )
-            THEN 'mittelgründiger Boden, d.h. pflanzennutzbare Gründigkeit 30 - 70 cm'
-        WHEN
-            bodeneinheit_onlinedata_t.is_wald IS TRUE
-            AND
-            (
-                wasserhhgr_t.code IN ('e', 'i', 'n')
-                OR
-                (
-                    wasserhhgr_t.code ='p'
-                    AND
-                    (
-                        bodeneinheit_auspraegung_t.pflngr < 30
-                        OR
-                        bodeneinheit_auspraegung_t.pflngr IS NULL
-                    )
-                )
-                OR
-                wasserhhgr_t.code = 'r'
-            )
-            OR
-            (
-                (
-                    wasserhhgr_t.code = 'u'
-                    AND
-                    bodeneinheit_auspraegung_t.pflngr < 30
-                )
-                OR
-                (
-                    wasserhhgr_t.code = 'w'
-                    AND
-                    (
-                        bodeneinheit_auspraegung_t.pflngr < 30
-                        OR
-                        bodeneinheit_auspraegung_t.pflngr IS NULL
-                    )
-                )
-                OR
-                wasserhhgr_t.code IN ('y', 'z')
-            )
-            THEN 'flachgründiger Boden, d.h. pflanzennutzbare Gründigkeit < 30 cm'
-    END AS wald_charakter_wasserhaushalt,
+    concat_ws(' ',charakter_wasserhaushalt.wald_charakter_wasserhaushalt, charakter_wasserhaushalt.charakter_wasserhaushalt) AS charakter_wasserhaushalt,
     CASE
         WHEN wasserhhgr_t.code = 'a'
             THEN 'a - sehr tiefgründig'
@@ -123,7 +148,7 @@ SELECT
         WHEN wasserhhgr_t.code = 'g'
             THEN 'g - mässig tiefgründig'
         WHEN wasserhhgr_t.code = 'h'
-            THEN 'h - ziemlich flachgründig'
+            THEN 'h - ziemlich flachgründig' 
         WHEN wasserhhgr_t.code = 'i'
             THEN 'i - flachgründig und sehr flachgründig'
         WHEN wasserhhgr_t.code = 'k'
@@ -173,7 +198,7 @@ SELECT
         WHEN wasserhhgr_t.code IN ('s', 't', 'u')
             THEN 'Grund- oder hangwassergeprägt, selten bis zur Oberfläche porengesättigt und'
         WHEN wasserhhgr_t.code IN ('v', 'w')
-            THEN 'Grund- oder hangwassergeprägt, häufig bis zur Oberfläche porengesättigt und'
+            THEN 'Grund- oder hangwassergeprägt, häufig bis zur Oberfläche porengesättigt und '
         WHEN wasserhhgr_t.code IN ('x', 'y')
             THEN 'Grund- oder hangwassergeprägt, meist bis zur Oberfläche porengesättigt und'
         WHEN wasserhhgr_t.code = 'z'
@@ -208,7 +233,7 @@ SELECT
             begelfor_t.code IN ('s', 't', 'u', 'v', 'w', 'x', 'y', 'z')
             AND
             bodeneinheit_onlinedata_t.is_wald IS FALSE
-                THEN '>35%: nur Hähwiese und Weide möglich; spezialisierte Hangmechanisierung'
+                THEN '>35%: nur Mähwiese und Weide möglich; spezialisierte Hangmechanisierung'
     END AS gelform_text,
     bodeneinheit_auspraegung_t.geologie,
     untertyp.untertyp_e,
@@ -230,7 +255,7 @@ SELECT
         WHEN skelett_t_ob.code IN (4, 5)
             THEN 'sehr viele Steine (20-30%)'
         WHEN skelett_t_ob.code >= 6
-            THEN 'extrem viele Steine'
+            THEN 'extrem viele Steine (> 30%)'
     END AS skelett_ob_text,
     skelett_t_ub.code AS skelett_ub,
     skelett_t_ub.beschreibung AS skelett_ub_beschreibung,
@@ -259,7 +284,7 @@ SELECT
             skelett_t_ub.code >= 6
             AND
             bodeneinheit_onlinedata_t.is_wald IS TRUE
-                THEN 'extrem viele Steine'
+                THEN 'extrem viele Steine (> 30%)'
     END AS skelett_ub_text,
     koernkl_t_ob.code AS koernkl_ob,
     koernkl_t_ob.beschreibung AS koernkl_ob_beschreibung,
@@ -283,17 +308,17 @@ SELECT
             koernkl_t_ob.code IN (7, 8, 9, 13)
             AND
             bodeneinheit_onlinedata_t.is_wald IS TRUE
-                THEN 'Schwere, tonige Böden: trocknen sehr langsam ab.'
+                THEN 'Schwere, tonige Böden: leicht bearbeitbar, trocknen sehr langsam ab.'
         WHEN
             koernkl_t_ob.code IN (5, 6, 10, 11, 12)
             AND
             bodeneinheit_onlinedata_t.is_wald IS TRUE
-                THEN 'Mittelschwere, lehmige bis schluffige Böden: trocknen mässig schnell ab.'
+                THEN 'Mittelschwere, lehmige bis schluffige Böden: normal barbeitbar, trocknen mässig schnell ab.'
         WHEN
             koernkl_t_ob.code IN (1, 2, 3, 4)
             AND
             bodeneinheit_onlinedata_t.is_wald IS TRUE
-                THEN 'Leichte, sandige Böden: trocknen schnell ab.'
+                THEN 'Leichte, sandige Böden: schwer bearbeitbar, trocknen schnell ab.'
     END AS bodenart_bodenbearbeitbarkeit,
     koernkl_t_ub.code AS koernkl_ub,
     koernkl_t_ub.beschreibung AS koernkl_ub_beschreibung,
@@ -380,7 +405,7 @@ SELECT
             bodeneinheit_auspraegung_t.ph_ob > 6.7
             AND
             bodeneinheit_onlinedata_t.is_wald IS TRUE
-                THEN 'alkalisch: keine Kalkung'
+                THEN 'alkalisch'
     END AS ph_ob_text,
     bodeneinheit_auspraegung_t.ph_ub, 
     CASE
@@ -544,19 +569,19 @@ SELECT
     humusform_wa_t.beschreibung AS humusform_wa_beschreibung,
     CASE
         WHEN humusform_wa_t.code IN ('M', 'Mt', 'Mf')
-            THEN 'Mull: Hohe biologische Aktivität mit vollständigem Streuabbau nach 1-2 Jahren. Über 8 cm mächtiger, gut strukturierter Oberboden. Günstiger Wasser-, Luft- und Nährstoffhaushalt.'
+            THEN 'Mull: Hohe biologische Aktivität mit vollständigem Streuabbau nach 1-2 Jahren. über 8 cm mächtiger, gut strukturierter Oberboden. Günstiger Wasser-, Luft- und Nährstoffhaushalt.'
         WHEN humusform_wa_t.code IN ('Fm', 'Fa', 'Fr', 'Fl')
             THEN 'Moder: Wegen Säuregrad reduzierte biologische Aktivität. Verlangsamter, unvollständiger Streuabbau, daher organische Auflage. 4-8 cm mächtiger Oberboden. Saure, nährstoffarme Böden in krautarmen Laub- und Nadelwäldern.'
         WHEN humusform_wa_t.code IN ('L', 'La', 'Lr')
             THEN 'Rohhumus: Geringe biologische Aktivität. Gehemmter Streuabbau mit ausgeprägten Auflagehorizonten und geringmächtigem Oberboden. Stark saure, nährstoffarme Böden mit schwer abbaubarer Streu (Nadelwälder).'
         WHEN humusform_wa_t.code IN ('MHt', 'MHf')
-            THEN 'Feuchtmull: Hohe biologische Aktivität mit vollständigem Streuabbau nach 1-2 Jahren. Über 8 cm mächtiger, gut strukturierter Oberboden. Trotz schwach vernässtem Boden günstiger Wasser-, Luft- und Nährstoffhaushalt.'
+            THEN 'Feuchtmull: Hohe biologische Aktivität mit vollständigem Streuabbau nach 1-2 Jahren. über 8 cm mächtiger, gut strukturierter Oberboden. Trotz schwach vernässtem Boden günstiger Wasser-, Luft- und Nährstoffhaushalt.'
         WHEN humusform_wa_t.code IN ('FHm', 'FHa', 'FHr', 'FHl')
             THEN 'Feuchtmoder: Wegen Vernässung reduzierte biologische Aktivität. Verlangsamter, unvollständiger Streuabbau, daher organische Auflage. 4-8 cm mächtiger Oberboden.Vernässte, z.T. saure, nährstoffarme Böden.'
         WHEN humusform_wa_t.code IN ('Lha', 'LHr')
             THEN 'Feuchtrohhumus: Geringe biologische Aktivität. Gehemmter Streuabbau mit ausgeprägten Auflagehorizonten und geringmächtigem Oberboden.Vernässte, stark saure, nährstoffarme Böden mit schwer abbaubarer Streu (Nadelwälder).'
         WHEN humusform_wa_t.code = 'A'
-            THEN 'Anmmor: Unvollständiger Streuabbau wegen häufigem Luftmangel. Der dunkle Horizont mit hohem Anteil an organischer Substanz ist strukturarm und schwach sauer bis alkalisch.'
+            THEN 'Anmoor: Unvollständiger Streuabbau wegen häufigem Luftmangel. Der dunkle Horizont mit hohem Anteil an organischer Substanz ist strukturarm und schwach sauer bis alkalisch.'
         WHEN humusform_wa_t.code = 'T'
             THEN 'Torf: Anreicherung von kaum zersetzten Pflanzenrückständen, v.a. Torfmoose wegen dauernder Wassersättigung und stark sauren Bedingungen. Faserig, schwammig.'
     END AS humusform_wa_text,
@@ -699,21 +724,21 @@ SELECT
             THEN
                 CASE
                     WHEN
-                        bodeneinheit_auspraegung_t.pflngr > 0
+                        bodeneinheit_auspraegung_t.bodpktzahl > 0
                         AND
-                        bodeneinheit_auspraegung_t.pflngr <= 29
+                        bodeneinheit_auspraegung_t.bodpktzahl <= 29
                             THEN 1
                     WHEN
-                        bodeneinheit_auspraegung_t.pflngr >= 30
+                        bodeneinheit_auspraegung_t.bodpktzahl >= 30
                         AND
-                        bodeneinheit_auspraegung_t.pflngr <= 49
+                        bodeneinheit_auspraegung_t.bodpktzahl <= 49
                             THEN 2
                     WHEN
-                        bodeneinheit_auspraegung_t.pflngr >= 50
+                        bodeneinheit_auspraegung_t.bodpktzahl >= 50
                         AND
-                        bodeneinheit_auspraegung_t.pflngr <= 69
+                        bodeneinheit_auspraegung_t.bodpktzahl <= 69
                             THEN 3
-                    WHEN bodeneinheit_auspraegung_t.pflngr >= 70
+                    WHEN bodeneinheit_auspraegung_t.bodpktzahl >= 70
                         THEN 4
                     ELSE NULL::integer
                 END
@@ -753,17 +778,17 @@ SELECT
                         bodeneinheit_auspraegung_t.bodpktzahl <= 29
                             THEN 'Geringe Durchwurzelungstiefe; schlechtes Speichervermögen für Nährstoffe und Wasser'
                     WHEN
-                        bodeneinheit_auspraegung_t.pflngr >= 30
+                        bodeneinheit_auspraegung_t.bodpktzahl >= 30
                         AND
-                        bodeneinheit_auspraegung_t.pflngr <= 49
+                        bodeneinheit_auspraegung_t.bodpktzahl <= 49
                             THEN 'Mässige Durchwurzelungstiefe; genügendes Speichervermögen für Nährstoffe und Wasser'
                     WHEN
-                        bodeneinheit_auspraegung_t.pflngr >= 50
+                        bodeneinheit_auspraegung_t.bodpktzahl >= 50
                         AND
-                        bodeneinheit_auspraegung_t.pflngr <= 69
+                        bodeneinheit_auspraegung_t.bodpktzahl <= 69
                             THEN 'Grosse Durchwurzelungstiefe; gutes Speichervermögen für Nährstoffe und Wasser'
-                    WHEN bodeneinheit_auspraegung_t.pflngr >= 70
-                        THEN 'Sehr grosse Durchwurzelungstiefe; sehr gutes Speichervermögen für Nährstoffe und Wasser'
+                    WHEN bodeneinheit_auspraegung_t.bodpktzahl >= 70
+                        THEN 'Sehr grosse Durchwurzelungstiefe; sehr gutes Speichervermögen für Nàhrstoffe und Wasser'
                 END
     END AS pflngr_text,
     bodeneinheit_auspraegung_t.bodpktzahl,
@@ -908,17 +933,17 @@ SELECT
             bodeneinheit_auspraegung_t.verdempf = 2
             AND
             bodeneinheit_onlinedata_t.is_wald IS TRUE
-                THEN 'mässig empfindlicher Unterboden: nach Abtrocknungsphase gut mechanisch belastbar, Rückegassenabstand 30 m oder mehr empfohlen.'
+                THEN 'mässig empfindlicher Unterboden: nach Abtrocknungsphase gut mechanisch belastbar, weiter Rückegassenabstand empfohlen'
         WHEN
             bodeneinheit_auspraegung_t.verdempf = 3
             AND
             bodeneinheit_onlinedata_t.is_wald IS TRUE
-                THEN 'empfindlicher Unterboden: erhöhte Sorgfalt beim Befahren notwendig, Trockenphasen optimal nutzen, Rückegassenabstand 50 m oder mehr empfohlen.'
+                THEN 'empfindlicher Unterboden: erhöhte Sorgfalt beim Befahren notwendig, Trockenperioden optimal nutzen, sehr weiter Rückegassenabstand empfohlen'
         WHEN
             bodeneinheit_auspraegung_t.verdempf = 4
             AND
             bodeneinheit_onlinedata_t.is_wald IS TRUE
-                THEN 'stark empfindlicher Unterboden: nur eingeschränkt mechanisch belastbar, längere Trockenphasen abwarten, ergänzende lastverteilende Massnahmen ergreifen, Rückegassenabstand 50 m oder mehr empfohlen.'
+                THEN 'stark empfindlicher Unterboden: nur eingeschränkt mechanisch belastbar, längere Trockenperioden abwarten, ergänzende lastverteilende Massnahmen ergreifen, sehr weiter Rückegassenabstand empfohlen'
         WHEN
             bodeneinheit_auspraegung_t.verdempf = 5
             AND
@@ -959,6 +984,8 @@ FROM
     afu_isboden.bodeneinheit_onlinedata_t
     LEFT JOIN afu_isboden.bodeneinheit_t
         ON bodeneinheit_onlinedata_t.objnr = bodeneinheit_t.objnr
+    LEFT JOIN charakter_wasserhaushalt
+        ON charakter_wasserhaushalt.t_id = bodeneinheit_onlinedata_t.pk_isboden
     LEFT JOIN afu_isboden.bodeneinheit_auspraegung_t
         ON bodeneinheit_auspraegung_t.fk_bodeneinheit = bodeneinheit_t.pk_ogc_fid
     LEFT JOIN afu_isboden.wasserhhgr_t
