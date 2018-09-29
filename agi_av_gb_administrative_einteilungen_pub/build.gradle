@@ -1,0 +1,13 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+defaultTasks 'transferAvGbAdminEinteilungen'
+
+task transferAvGbAdminEinteilungen(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet("transform_nachfuehrngskrise_gemeinde.sql", 'agi_av_gb_administrative_einteilungen_pub.nachfuehrngskrise_gemeinde', true),
+            new TransferSet("transform_grundbuchkreise_grundbuchkreis.sql", 'agi_av_gb_administrative_einteilungen_pub.grundbuchkreise_grundbuchkreis', true)
+    ];
+}
