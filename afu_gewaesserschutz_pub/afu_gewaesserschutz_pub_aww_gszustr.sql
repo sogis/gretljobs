@@ -6,9 +6,9 @@ SELECT
     typ,
     CASE
         WHEN typ = 'Zo'
-            THEN 'Zuströmbereich für Oberflächengewässer'
+            THEN 'Zo: Zuströmbereich für Oberflächengewässer'
         WHEN typ = 'Zu'
-            THEN 'Zuströmbereich für Grundwasserfassung'
+            THEN 'Zu: Zuströmbereich für Grundwasserfassung'
     END AS typ_text
 FROM
     public.aww_gszustr
