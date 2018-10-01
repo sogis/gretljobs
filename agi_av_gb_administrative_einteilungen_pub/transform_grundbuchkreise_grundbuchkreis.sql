@@ -38,8 +38,8 @@ SELECT
   amt.email AS email,
   amt.uid AS uid
 FROM
-  agi_av_gb_administrative_einteilungen.grundbuchkreise_grundbuchkreis AS kreis
-  LEFT JOIN agi_av_gb_administrative_einteilungen.grundbuchkreise_grundbuchamt AS amt
+  agi_av_gb_admin_einteilung.grundbuchkreise_grundbuchkreis AS kreis
+  LEFT JOIN agi_av_gb_admin_einteilung.grundbuchkreise_grundbuchamt AS amt
   ON kreis.r_grundbuchamt = amt.t_id
   LEFT JOIN nummerierungsbereich
   ON nummerierungsbereich.gem_bfs = kreis.bfsnr AND nummerierungsbereich.nbident = kreis.nbident
