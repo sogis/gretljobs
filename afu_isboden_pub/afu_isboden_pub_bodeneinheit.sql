@@ -764,7 +764,7 @@ SELECT
                         bodeneinheit_auspraegung_t.bodpktzahl <= 69
                             THEN 'Grosse Durchwurzelungstiefe; gutes Speichervermögen für Nährstoffe und Wasser'
                     WHEN bodeneinheit_auspraegung_t.bodpktzahl >= 70
-                        THEN 'Sehr grosse Durchwurzelungstiefe; sehr gutes Speichervermögen für Nàhrstoffe und Wasser'
+                        THEN 'Sehr grosse Durchwurzelungstiefe; sehr gutes Speichervermögen für Nährstoffe und Wasser'
                 END
     END AS pflngr_text,
     bodeneinheit_auspraegung_t.bodpktzahl,
