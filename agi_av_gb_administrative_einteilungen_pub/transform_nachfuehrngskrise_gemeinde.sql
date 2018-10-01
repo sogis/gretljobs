@@ -16,10 +16,10 @@ SELECT
   standort.email AS email,
   standort.uid AS uid
 FROM
-  agi_av_gb_administrative_einteilungen.nachfuehrngskrise_gemeinde AS gemeinde
-  LEFT JOIN agi_av_gb_administrative_einteilungen.nachfuehrngskrise_nachfuehrungsgeometer AS geometer
+  agi_av_gb_admin_einteilung.nachfuehrngskrise_gemeinde AS gemeinde
+  LEFT JOIN agi_av_gb_admin_einteilung.nachfuehrngskrise_nachfuehrungsgeometer AS geometer
   ON gemeinde.r_geometer = geometer.t_id
-  LEFT JOIN agi_av_gb_administrative_einteilungen.nachfuehrngskrise_standort AS standort
+  LEFT JOIN agi_av_gb_admin_einteilung.nachfuehrngskrise_standort AS standort
   ON gemeinde.r_standort = standort.t_id
   LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS gemeindegrenze
   ON gemeinde.bfsnr = gemeindegrenze.bfs_gemeindenummer
