@@ -18,5 +18,5 @@ task transferAfuIsboden(type: Db2Db){
                     'afu_isboden_pub.hinweiskarte_bodenverdichtung', true),
             new TransferSet('afu_isboden_pub_bodenprofilstandort_profilskizze.sql',
                     'afu_isboden_pub.bodenprofilstandort_profilskizze', true)
-    ];
+    ]
 }
