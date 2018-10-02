@@ -9,10 +9,10 @@
 with 
 afu_gszoar as
 (
-	 SELECT aww_gszoar.ogc_fid, aww_gszoar.zone, aww_gszoar.rrbnr, 
+	 SELECT aww_gszoar.ogc_fid, aww_gszoar."zone", aww_gszoar.rrbnr, 
 	    aww_gszoar.rrb_date, aww_gszoar.wkb_geometry
 	   FROM aww_gszoar
-	  WHERE aww_gszoar.archive = 0 and zone != 'SARE'
+	  WHERE aww_gszoar.archive = 0 and "zone" != 'SARE'
 ),
 singlepolygon as 
 (
@@ -31,10 +31,10 @@ zone_fields as -- gwszone felder gemappt aus aww_gszoar
 	select 
 		ogc_fid, 
 		case
-			when trim(zone) = 'GZ1' then 'S1'
-			when trim(zone) = 'GZ2' then 'S2'
-			when trim(zone) = 'GZ2B' then 'S2'
-			when trim(zone) = 'GZ3' then 'S3'
+			when trim("zone") = 'GZ1' then 'S1'
+			when trim("zone") = 'GZ2' then 'S2'
+			when trim("zone") = 'GZ2B' then 'S2'
+			when trim("zone") = 'GZ3' then 'S3'
 			else 'Umbauproblem: Nicht behandelte Codierung von Attibut [zone]'
 		end as typ,
 		false as ist_altrechtlich, 

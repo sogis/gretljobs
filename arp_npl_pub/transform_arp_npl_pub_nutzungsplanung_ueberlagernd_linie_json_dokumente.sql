@@ -70,7 +70,7 @@ json_documents_all AS
   (
     SELECT
       *,
-      ('https://geoweb.so.ch/zonenplaene/Zonenplaene_pdf/'||"textimweb")::text AS textimweb_absolut
+      ('https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/'||"textimweb")::text AS textimweb_absolut
     FROM
       arp_npl.rechtsvorschrften_dokument
   ) AS t

@@ -1,0 +1,124 @@
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+
+
+apply plugin: 'ch.so.agi.gretl'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+def logExportNplch = file(Paths.get(pathToTempFolder.toString(), "log_export_nplch.log"))
+def exportNplchFileName = 'export_nplch.xtf'
+def exportNplchFile = file(Paths.get(pathToTempFolder.toString(), exportNplchFileName))
+
+def logExportLaermempfindlichkeit = file(Paths.get(pathToTempFolder.toString(), "log_export_laermempfindlichkeit.log"))
+def exportLaermempfindlichkeitFileName = 'export_laermempfindlichkeit.xtf'
+def exportLaermempfindlichkeitFile = file(Paths.get(pathToTempFolder.toString(), exportLaermempfindlichkeitFileName))
+
+def ZipName = 'LV95.zip'
+
+def aiLogin = aiUser + ":" + aiPwd
+
+defaultTasks 'uploadNplch', 'uploadLaermempfindlichkeit'
+
+task transferNplso2Nplch(type: SqlExecutor) {
+    description = "Baut die Nutzungsplanungsdaten des Kanton Solothurn in das MGDM des Bundes um."
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlFiles = [
+            'arp_npl_mgdm_geobasisdaten_typ_kt.sql',
+            'arp_npl_mgdm_geobasisdaten_typ.sql',
+            'arp_npl_mgdm_geobasisdaten_grundnutzung_zonenflaeche.sql',
+            'arp_npl_mgdm_geobasisdaten_linienbezogene_festlegung.sql',
+            'arp_npl_mgdm_geobasisdaten_objektbezogene_festlegung.sql',
+            'arp_npl_mgdm_geobasisdaten_ueberlagernde_festlegung.sql',
+            'arp_npl_mgdm_rechtsvorschrften_dokument.sql',
+            'arp_npl_mgdm_rechtsvorschrften_hinweisweiteredokumente.sql',
+            'arp_npl_mgdm_geobasisdaten_typ_dokument.sql',
+            'arp_npl_mgdm_multilingualuri.sql',
+            'arp_npl_mgdm_localiseduri.sql'
+    ]
+}
+
+task exportNplch(type: Ili2pgExport, dependsOn:'transferNplso2Nplch') {
+    description = "Exportiert die ins Nutzungsplanungs-MGDM umgebauten Daten in ein xtf-File."
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    dbschema = "arp_npl_mgdm"
+    models = "Nutzungsplanung_LV95_V1_1"
+    logFile = logExportNplch
+    dataFile = exportNplchFile
+}
+
+task zipNplch(type: Zip, dependsOn: exportNplch){
+    description = "Zippt das xtf-File mit den Nutzungsplanungsdaten (MGDM vom Bund) für den Upload in die " +
+            "Aggregationsinfrastruktur."
+    from pathToTempFolder
+    include exportNplchFileName
+    archiveName ZipName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadNplch(dependsOn: zipNplch) {
+    description = "Lädt die Nutzungsplanungsdaten (MGDM vom Bund) in die Aggregationsinfrastruktur hoch."
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_nutzungsplanung", "-F",
+                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), ZipName), "-F", "publish=true",
+                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        println(response)
+    }
+    finalizedBy 'removeNplchFiles'
+}
+
+task removeNplchFiles(type: Delete){
+    description = "Entfernt während der Ausführung des Jobs erstellte Nutzungsplanungsdateien."
+    delete file(Paths.get(pathToTempFolder.toString(), ZipName)), exportNplchFile, logExportNplch
+}
+
+
+task transferNplso2Laermempfindlichkeit(type: SqlExecutor){
+    description = "Baut die Lärmempfindlichkeitsdaten des Kanton Solothurn in das MGDM des Bundes um."
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlFiles = [
+            'arp_laermempfindlichkeit_mgdm_geobasisdaten_typ.sql',
+            'arp_laermempfindlichkeit_mgdm_rechtsvorschrften_dokument.sql',
+            'arp_laermempfindlichkeit_mgdm_geobasisdaten_laermempfindlichkeit_zonenflaeche.sql',
+            'arp_laermempfindlichkeit_mgdm_rechtsvorschrften_hinweisweiteredokumente.sql',
+            'arp_laermempfindlichkeit_mgdm_geobasisdaten_typ_dokument.sql',
+            'arp_laermempfindlichkeit_mgdm_multilingualuri.sql',
+            'arp_laermempfindlichkeit_mgdm_localiseduri.sql'
+    ]
+}
+
+task exportLaermempfindlichkeit(type: Ili2pgExport, dependsOn: 'transferNplso2Laermempfindlichkeit') {
+    description = "Exportiert die ins Lärmempfindlichkeits-MGDM umgebauten Daten in ein xtf-File."
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    dbschema = "arp_laermempfindlichkeit_mgdm"
+    models = "Laermempfindlichkeitsstufen_LV95_V1_1"
+    disableValidation = false
+    logFile = logExportLaermempfindlichkeit
+    dataFile = exportLaermempfindlichkeitFile
+}
+
+task zipLaermempfindlichkeit(type: Zip, dependsOn: exportLaermempfindlichkeit){
+    description = "Zippt das xtf-File mit den Lärmempfindlichkeitsdaten (MGDM vom Bund) für den Upload in die " +
+            "Aggregationsinfrastruktur."
+    from pathToTempFolder
+    include exportLaermempfindlichkeitFileName
+    archiveName ZipName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadLaermempfindlichkeit(dependsOn: zipLaermempfindlichkeit) {
+    description = "Lädt die Lärmempfindlichkeitsdaten (MGDM vom Bund) in die Aggregationsinfrastruktur hoch."
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_laermempfindlichkeitsstufen", "-F",
+                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), ZipName), "-F", "publish=true",
+                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        println(response)
+    }
+    finalizedBy 'removeFilesLaermempfindlichkeit'
+}
+
+task removeFilesLaermempfindlichkeit(type: Delete){
+    description = "Entfernt während der Ausführung des Jobs erstellte Lärmempfindlichkeitsdateien."
+    delete file(Paths.get(pathToTempFolder.toString(), ZipName)), exportLaermempfindlichkeitFile,
+            logExportLaermempfindlichkeit
+}
