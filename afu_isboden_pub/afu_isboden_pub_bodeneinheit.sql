@@ -3,15 +3,15 @@ WITH charakter_wasserhaushalt AS (
         bodeneinheit_onlinedata_t.pk_isboden AS t_id,
         CASE
             WHEN wasserhhgr_t.code IN ('a', 'b', 'c', 'd', 'e')
-                THEN 'Kein Einfluss von Stau- oder Grundwasser'
+                THEN 'kein Einfluss von Stau- oder Grundwasser'
             WHEN wasserhhgr_t.code IN ('f', 'g', 'h', 'i')
-                THEN 'Leichter Einfluss von Stauwasser'
+                THEN 'leichter Einfluss von Stauwasser'
             WHEN wasserhhgr_t.code IN ('k', 'l', 'm', 'n')
-                THEN 'Leichter Einfluss von Grund- oder Hangwasser'
+                THEN 'leichter Einfluss von Grund- oder Hangwasser'
             WHEN wasserhhgr_t.code IN ('o', 'p', 'q', 'r')
-                THEN 'Starker Einfluss von Stauwasser. Falls nicht drainiert, stellenweise dauernd vernässt'
+                THEN 'starker Einfluss von Stauwasser. Falls nicht drainiert, stellenweise dauernd vernässt'
             WHEN wasserhhgr_t.code IN ('s', 't', 'u', 'v', 'w', 'x', 'y', 'z')
-                THEN 'Starker Einfluss von Grund- oder Hangwasser. Falls nicht drainiert, stellenweise dauernd vernässt'
+                THEN 'starker Einfluss von Grund- oder Hangwasser. Falls nicht drainiert, stellenweise dauernd vernässt'
         END AS charakter_wasserhaushalt,
         CASE
             WHEN
@@ -131,7 +131,7 @@ SELECT
     bodeneinheit_onlinedata_t.objnr,
     wasserhhgr_t.code AS wasserhhgr,
     wasserhhgr_t.beschreibung AS wasserhhgr_beschreibung,
-    concat_ws(' ',charakter_wasserhaushalt.wald_charakter_wasserhaushalt, charakter_wasserhaushalt.charakter_wasserhaushalt) AS charakter_wasserhaushalt,
+    concat_ws(', ',charakter_wasserhaushalt.wald_charakter_wasserhaushalt, charakter_wasserhaushalt.charakter_wasserhaushalt) AS charakter_wasserhaushalt,
     CASE
         WHEN wasserhhgr_t.code = 'a'
             THEN 'a - sehr tiefgründig'
