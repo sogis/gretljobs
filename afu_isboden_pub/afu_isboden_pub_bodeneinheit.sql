@@ -700,21 +700,21 @@ SELECT
             THEN
                 CASE
                     WHEN
-                        bodeneinheit_auspraegung_t.bodpktzahl > 0
+                        bodeneinheit_auspraegung_t.pflngr > 0
                         AND
-                        bodeneinheit_auspraegung_t.bodpktzahl <= 29
+                        bodeneinheit_auspraegung_t.pflngr <= 29
                             THEN 1
                     WHEN
-                        bodeneinheit_auspraegung_t.bodpktzahl >= 30
+                        bodeneinheit_auspraegung_t.pflngr >= 30
                         AND
-                        bodeneinheit_auspraegung_t.bodpktzahl <= 49
+                        bodeneinheit_auspraegung_t.pflngr <= 49
                             THEN 2
                     WHEN
-                        bodeneinheit_auspraegung_t.bodpktzahl >= 50
+                        bodeneinheit_auspraegung_t.pflngr >= 50
                         AND
-                        bodeneinheit_auspraegung_t.bodpktzahl <= 69
+                        bodeneinheit_auspraegung_t.pflngr <= 69
                             THEN 3
-                    WHEN bodeneinheit_auspraegung_t.bodpktzahl >= 70
+                    WHEN bodeneinheit_auspraegung_t.pflngr >= 70
                         THEN 4
                     ELSE NULL::integer
                 END
@@ -749,21 +749,21 @@ SELECT
             THEN
                 CASE
                     WHEN
-                        bodeneinheit_auspraegung_t.bodpktzahl > 0
+                        bodeneinheit_auspraegung_t.pflngr > 0
                         AND
-                        bodeneinheit_auspraegung_t.bodpktzahl <= 29
+                        bodeneinheit_auspraegung_t.pflngr <= 29
                             THEN 'Geringe Durchwurzelungstiefe; schlechtes Speichervermögen für Nährstoffe und Wasser'
                     WHEN
-                        bodeneinheit_auspraegung_t.bodpktzahl >= 30
+                        bodeneinheit_auspraegung_t.pflngr >= 30
                         AND
-                        bodeneinheit_auspraegung_t.bodpktzahl <= 49
+                        bodeneinheit_auspraegung_t.pflngr <= 49
                             THEN 'Mässige Durchwurzelungstiefe; genügendes Speichervermögen für Nährstoffe und Wasser'
                     WHEN
-                        bodeneinheit_auspraegung_t.bodpktzahl >= 50
+                        bodeneinheit_auspraegung_t.pflngr >= 50
                         AND
-                        bodeneinheit_auspraegung_t.bodpktzahl <= 69
+                        bodeneinheit_auspraegung_t.pflngr <= 69
                             THEN 'Grosse Durchwurzelungstiefe; gutes Speichervermögen für Nährstoffe und Wasser'
-                    WHEN bodeneinheit_auspraegung_t.bodpktzahl >= 70
+                    WHEN bodeneinheit_auspraegung_t.pflngr >= 70
                         THEN 'Sehr grosse Durchwurzelungstiefe; sehr gutes Speichervermögen für Nährstoffe und Wasser'
                 END
     END AS pflngr_text,
