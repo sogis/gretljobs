@@ -3,7 +3,7 @@ SELECT
     standort.wkb_geometry AS geometrie, 
     standort.vflz_combined_id_kt, 
     standort.c_vflz_vftyp, 
-    standort.c_vflz_unterstand, 
+    standort.c_vflz_unterstand||', '||standort.c_vflz_bearbstand AS c_vflz_unterstand,
     standort.c_vflz_bearbstand, 
     standort.c_bere_res_abwbewe_txt AS bel_teilfl, 
     standort.c_bere_res_abwbewe, 
