@@ -127,7 +127,7 @@ WITH documents AS (
         FALSE AS rechtsvorschrift, 
         NULL AS offiziellenr,
         reservate_reservat.t_id,
-        'https://geo.so.ch/api/v1/document/?template=Naturreservate&feature=' || reservate_reservat.t_id
+        'https://geo.so.ch/api/v1/document/Naturreservate?feature=' || reservate_reservat.t_id
     FROM
         arp_naturreservate.reservate_reservat
         
