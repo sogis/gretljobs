@@ -1,0 +1,17 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+defaultTasks 'transferAgiHoheitsgrenzen'
+
+task transferAgiHoheitsgrenzen(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = ['jdbc:postgresql://10.36.54.198:54322/sogis','barpastu','agi-stur']//sourceDb
+    transferSets = [
+            new TransferSet('agi_hoheitsgrenzen_pub_hoheitsgrenzen_gemeindegrenze.sql',
+                    'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze', true),
+            new TransferSet('agi_hoheitsgrenzen_pub_hoheitsgrenzen_bezirksgrenze.sql',
+                    'agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksgrenze', true),
+            new TransferSet('agi_hoheitsgrenzen_pub_hoheitsgrenzen_kantonsgrenze.sql',
+                    'agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze', true)
+    ];        
+}
