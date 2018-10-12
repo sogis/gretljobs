@@ -8,7 +8,7 @@ node("master") {
     dbUriSogis = "${env.DB_URI_SOGIS}"
     dbCredentialNameSogis = "${DB_CREDENTIAL_GRETL}"
     aiServer = "${env.AI_SERVER}"
-    aiCredentialNamee = "${AI_CREDENTIAL}"
+    aiCredentialName = "${AI_CREDENTIAL}"
     gretljobsRepo = "${env.GRETL_JOB_REPO_URL}"
 }
 
