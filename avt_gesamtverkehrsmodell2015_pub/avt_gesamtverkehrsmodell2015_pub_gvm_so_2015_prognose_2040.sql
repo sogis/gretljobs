@@ -116,7 +116,9 @@ FROM
     verkehrsmodell2015.gvm_so_2015_prognose_2040_asp b, 
     verkehrsmodell2015.gvm_so_2015_prognose_2040_dwv c
 WHERE 
-    a.eid = b.eid
+    a.gid = b.gid
     AND
-    a.eid = c.eid
+    a.gid = c.gid
+    AND
+    (a."VOLVEHPR_1" + a."GR_VOLVE_1") > 50
 ;

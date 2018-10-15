@@ -52,4 +52,6 @@ SELECT
     gvm_so_2015_prognose_2025.wkb_geometry
 FROM 
     verkehrsmodell2015.gvm_so_2015_prognose_2025
+WHERE 
+    (gvm_so_2015_prognose_2025."VOLVEHPR_1" + gvm_so_2015_prognose_2025."GR_VOLVE_1") > 50
 ;

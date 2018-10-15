@@ -113,4 +113,6 @@ WHERE
     gvm_so_2015_dtv.eid = gvm_so_2015_asp.eid 
     AND
     gvm_so_2015_dtv.eid = gvm_so_2015_dwv.eid
+    AND 
+    (gvm_so_2015_dtv."VOLVEHPR_1" + gvm_so_2015_dtv."GR_VOLVE_1") > 50
 ;
