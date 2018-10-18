@@ -22,8 +22,8 @@
     END AS verwendungszweck,
     a.bezeichnung AS objektname, 
     a.vegas_id AS objektnummer,
-    a.bemerkung AS technische_angabe,
-    a.beschreibung AS bemerkung,
+    a.beschreibung AS technische_angabe,
+    a.bemerkung AS bemerkung,
     array_to_json(c.dokumente) AS dokumente, 
     a.wkb_geometry AS geometrie
 FROM 
@@ -51,8 +51,8 @@ UNION ALL
     NULL AS verwendungszweck, --Nicht gefasste Quellen werden nicht verwendet. 
     a.bezeichnung AS objektname, 
     a.vegas_id AS objektnummer, 
-    a.bemerkung AS technische_angabe,
-    a.beschreibung AS bemerkung, 
+    a.beschreibung AS technische_angabe,
+    a.bemerkung AS bemerkung, 
     array_to_json(c.dokumente) AS dokumente, 
     a.wkb_geometry AS geometrie
  FROM 
