@@ -68,7 +68,7 @@ node ("gretl") {
 ```java
 logRotator.numToKeep=30
 triggers.cron=H H(1-3) * * *
-authorization.permissions=gretl-users
+authorization.permissions=gretl-users-barpa
 ```
 
 Mit `logRotator.numToKeep` kann eingestellt werden, wieviele Ausführungen des Jobs aufbewahrt werden sollen, d.h. für wieviele Ausführungen beispielsweise das Logfile vorgehalten wird. Standardwert ist 15. Wenn man diese Einstellung weglässt, werden also die 15 letzten Ausführungen aufbewahrt.
