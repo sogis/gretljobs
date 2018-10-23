@@ -119,4 +119,6 @@ WHERE
     a.gid = b.gid
     AND
     a.gid = c.gid
+    AND
+    (a."VOLVEHPR_1" + a."GR_VOLVE_1") > 50
 ;
