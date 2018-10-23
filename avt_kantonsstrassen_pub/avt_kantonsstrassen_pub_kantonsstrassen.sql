@@ -1,19 +1,12 @@
 SELECT
-    eid AS t_id,
-    geometrie,
-    "name",
-    plz_ortschaft,
-    klasse,
-    kategorie,
+    ST_Multi(ST_Linemerge(ST_Union(geometrie))) AS geometrie,
     "KSNr" AS ksnr,
-    "Strassentyp" AS strassentyp,
-    "Strasseneigner" AS strasseneigner,
-    "OeV-Nutzung" AS oev_nutzung,
-    "ObjectID" AS objectid,
-    "AGI_Strid" AS agi_strid,
-    "AV_Seq" AS av_seq,
-    "AGr" AS agr,
-    istoffiziellebezeichnung
+    "Strassentyp" AS strassentyp
 FROM
     strassennetz.klasse_kategorie
+WHERE
+    "Strasseneigner" = 'Kanton'
+GROUP BY
+    "KSNr",
+    "Strassentyp"
 ;

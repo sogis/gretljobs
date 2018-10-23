@@ -1,0 +1,27 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+description = "GRETL-Job für Datenumbau und Historisierung der Vernetzungsdaten innerhalb der sogis-DB."
+
+defaultTasks 'historicizeAlwVernetzung'
+
+task transferAlwVernetzung(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = sourceDb
+    transferSets = [
+            new TransferSet('alw_vernetzung_pub_vernetzung_massnahmengebiet.sql',
+                    'alw_vernetzung_pub.vernetzung_massnahmengebiet', true),
+            new TransferSet('alw_vernetzung_pub_vernetzung_vernetzungsperimeter.sql',
+                    'alw_vernetzung_pub.vernetzung_vernetzungsperimeter', true)
+    ];
+}
+
+task historicizeAlwVernetzung(type: SqlExecutor, dependsOn: 'transferAlwVernetzung'){
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlFiles = [
+            'alw_vernetzung_hist_vernetzung_massnahmengebiet.sql',
+            'alw_vernetzung_hist_vernetzung_vernetzungsperimeter.sql'
+    ]
+}

@@ -14,6 +14,8 @@ WITH documents AS (
                 position('/opt/sogis_pic/documents/ch.so.arp.naturreservate/rrb/' IN reservate_dokument.dateipfad) != 0 
                 AND 
                 reservate_dokument.bezeichnung != ''
+                AND 
+                reservate_dokument.bezeichnung IS NOT NULL
                 THEN 'https://geo.so.ch/docs/'
                                 || split_part(reservate_dokument.dateipfad, '/documents/', 2)
             WHEN 
@@ -21,7 +23,11 @@ WITH documents AS (
                 AND 
                 position('/opt/sogis_pic/documents/ch.so.arp.naturreservate/rrb/' IN reservate_dokument.dateipfad) != 0 
                 AND 
-                reservate_dokument.bezeichnung = ''
+                (
+                    reservate_dokument.bezeichnung = ''
+                    OR 
+                    reservate_dokument.bezeichnung IS NULL
+                )
                 THEN 'https://geo.so.ch/docs/'
                                 || split_part(reservate_dokument.dateipfad, '/documents/', 2)
                                 
@@ -30,7 +36,9 @@ WITH documents AS (
                 AND 
                 position('opt/sogis_pic/daten_aktuell/arp/Zonenplaene/Zonenplaene_pdf/' IN reservate_dokument.dateipfad) != 0
                 AND 
-                reservate_dokument.bezeichnung != '' 
+                reservate_dokument.bezeichnung != ''
+                AND 
+                reservate_dokument.bezeichnung IS NOT NULL
                 THEN 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/'
                                 || split_part(reservate_dokument.dateipfad, '/Zonenplaene/', 2)
                                 
@@ -39,7 +47,11 @@ WITH documents AS (
                 AND 
                 position('opt/sogis_pic/daten_aktuell/arp/Zonenplaene/Zonenplaene_pdf/' IN reservate_dokument.dateipfad) != 0
                 AND 
-                reservate_dokument.bezeichnung = ''
+                (
+                    reservate_dokument.bezeichnung = ''
+                    OR 
+                    reservate_dokument.bezeichnung IS NULL
+                )
                 THEN 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/'
                                 || split_part(reservate_dokument.dateipfad, '/Zonenplaene/', 2)
             WHEN 
@@ -51,7 +63,9 @@ WITH documents AS (
                     reservate_dokument.typ = 'Pflegekonzept'
                 )
                 AND 
-                reservate_dokument.bezeichnung != '' 
+                reservate_dokument.bezeichnung != ''
+                AND 
+                reservate_dokument.bezeichnung IS NOT NULL
                 THEN 'https://geo.so.ch/docs/'
                                 || split_part(reservate_dokument.dateipfad, '/documents/', 2)                              
             WHEN 
@@ -63,7 +77,11 @@ WITH documents AS (
                     reservate_dokument.typ = 'Pflegekonzept'
                 )
                 AND 
-                reservate_dokument.bezeichnung = ''
+                (
+                    reservate_dokument.bezeichnung = ''
+                    OR 
+                    reservate_dokument.bezeichnung IS NULL
+                )
                 THEN  'https://geo.so.ch/docs/'
                                 || split_part(reservate_dokument.dateipfad, '/documents/', 2)
             WHEN 
@@ -74,6 +92,8 @@ WITH documents AS (
                 )
                 AND 
                 reservate_dokument.bezeichnung != ''
+                AND 
+                reservate_dokument.bezeichnung IS NOT NULL
                 THEN 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/'
                                 || split_part(reservate_dokument.dateipfad, '/Zonenplaene/', 2)                
             WHEN 
@@ -83,7 +103,11 @@ WITH documents AS (
                     reservate_dokument.typ = 'Gestaltungsplan'
                 )
                 AND 
-                reservate_dokument.bezeichnung = ''
+                (
+                    reservate_dokument.bezeichnung = ''
+                    OR 
+                    reservate_dokument.bezeichnung IS NULL
+                )
                 THEN 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/'
                                 || split_part(reservate_dokument.dateipfad, '/Zonenplaene/', 2)
             ELSE NULL 
@@ -103,7 +127,7 @@ WITH documents AS (
         FALSE AS rechtsvorschrift, 
         NULL AS offiziellenr,
         reservate_reservat.t_id,
-        'https://geo.so.ch/api/v1/document/?template=Naturreservate&feature=' || reservate_reservat.t_id
+        'https://geo.so.ch/api/v1/document/Naturreservate?feature=' || reservate_reservat.t_id
     FROM
         arp_naturreservate.reservate_reservat
         
