@@ -6,7 +6,7 @@ SELECT DISTINCT
     bohrung.tiefebohrung AS bohrtiefe, 
     bewilligung.datum_bewilligung, 
     dokument.name, 
-    ((anlage.anlageid || ''::text) || dokument.dokumenteid)::integer AS anlagedokument, 
+    (anlage.anlageid::text || dokument.dokumenteid)::integer AS anlagedokument, 
     dokument.doktyp,
     CASE
         WHEN 

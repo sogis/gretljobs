@@ -8,8 +8,8 @@ defaultTasks 'transferAfuVegas'
 task transferAfuVegas(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
-    fetchSize = 100
-    batchSize = 100
+    fetchSize = 50
+    batchSize = 50
     transferSets = [
             new TransferSet('afu_vegas_pub_objekt.sql', 'afu_vegas_pub.objekt', true),
             new TransferSet('afu_vegas_pub_dokumente.sql', 'afu_vegas_pub.dokumente', true)

@@ -1,12 +1,12 @@
 description = """\n
 Kopiert MOpublic und spezielle Tabellen für die Darstellung für den Plan
 für das Grundbuch auf den WMTS-Hetzner-Server und stellt Tasks zum
-Seeden des WMTS zur Verfügung.
+Seeden des WMTS zur Verfügung. Lädt die Caches danach herunter.
 """
 
 buildscript {
     repositories {
-        maven { url "https://plugins.gradle.org/m2/" } 
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath "org.hidetake:gradle-ssh-plugin:2.9.0"
@@ -20,7 +20,7 @@ remotes {
     seedingServer {
         host = hetznerWmtsServerIp // floating IP
         user = "seeder"
-        //identity = file(System.getProperty("user.home") + '/.ssh/id_rsa') // TODO
+        //identity = file(System.getProperty("user.home") + '/.ssh/id_rsa')
         identity = new File(sshKeyFilePathHetznerWmts)
     }
 }
@@ -28,45 +28,45 @@ remotes {
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'updateBlackWhiteCaches'
+defaultTasks 'downloadUpdatedCaches'
 
 task copyDataFromMOpublic(type: Db2Db) {
-    description = "Kopiert MOpublic-Daten auf den WMTS-Hetzner-Server."    
+    description = "Kopiert MOpublic-Daten auf den WMTS-Hetzner-Server."
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriHetznerWmts, dbUserHetznerWmts, dbPwdHetznerWmts]
     transferSets = [
-            new TransferSet("mopublic_bodenbedeckung.sql", "agi_mopublic_pub.mopublic_bodenbedeckung", true),        
-            new TransferSet("mopublic_bodenbedeckung_proj.sql", "agi_mopublic_pub.mopublic_bodenbedeckung_proj", true),        
-            new TransferSet("mopublic_einzelobjekt_flaeche.sql", "agi_mopublic_pub.mopublic_einzelobjekt_flaeche", true),        
-            new TransferSet("mopublic_einzelobjekt_linie.sql", "agi_mopublic_pub.mopublic_einzelobjekt_linie", true),        
-            new TransferSet("mopublic_einzelobjekt_punkt.sql", "agi_mopublic_pub.mopublic_einzelobjekt_punkt", true),        
-            new TransferSet("mopublic_fixpunkt.sql", "agi_mopublic_pub.mopublic_fixpunkt", true),        
-            new TransferSet("mopublic_flurname.sql", "agi_mopublic_pub.mopublic_flurname", true),        
-            new TransferSet("mopublic_gebaeudeadresse.sql", "agi_mopublic_pub.mopublic_gebaeudeadresse", true),        
-            new TransferSet("mopublic_gelaendename.sql", "agi_mopublic_pub.mopublic_gelaendename", true),        
-            new TransferSet("mopublic_gemeindegrenze_proj.sql", "agi_mopublic_pub.mopublic_gemeindegrenze_proj", true),        
-            new TransferSet("mopublic_gemeindegrenze.sql", "agi_mopublic_pub.mopublic_gemeindegrenze", true),        
-            new TransferSet("mopublic_grenzpunkt.sql", "agi_mopublic_pub.mopublic_grenzpunkt", true),        
-            new TransferSet("mopublic_grundstueck_proj.sql", "agi_mopublic_pub.mopublic_grundstueck_proj", true),        
-            new TransferSet("mopublic_grundstueck.sql", "agi_mopublic_pub.mopublic_grundstueck", true),        
-            new TransferSet("mopublic_hoheitsgrenzpunkt.sql", "agi_mopublic_pub.mopublic_hoheitsgrenzpunkt", true),        
-            new TransferSet("mopublic_objektname_pos.sql", "agi_mopublic_pub.mopublic_objektname_pos", true),        
-            new TransferSet("mopublic_ortsname.sql", "agi_mopublic_pub.mopublic_ortsname", true),        
-            new TransferSet("mopublic_rohrleitung.sql", "agi_mopublic_pub.mopublic_rohrleitung", true),        
-            new TransferSet("mopublic_strassenachse.sql", "agi_mopublic_pub.mopublic_strassenachse", true),        
-            new TransferSet("mopublic_strassenname_pos.sql", "agi_mopublic_pub.mopublic_strassenname_pos", true)     
+            new TransferSet("mopublic_bodenbedeckung.sql", "agi_mopublic_pub.mopublic_bodenbedeckung", true),
+            new TransferSet("mopublic_bodenbedeckung_proj.sql", "agi_mopublic_pub.mopublic_bodenbedeckung_proj", true),
+            new TransferSet("mopublic_einzelobjekt_flaeche.sql", "agi_mopublic_pub.mopublic_einzelobjekt_flaeche", true),
+            new TransferSet("mopublic_einzelobjekt_linie.sql", "agi_mopublic_pub.mopublic_einzelobjekt_linie", true),
+            new TransferSet("mopublic_einzelobjekt_punkt.sql", "agi_mopublic_pub.mopublic_einzelobjekt_punkt", true),
+            new TransferSet("mopublic_fixpunkt.sql", "agi_mopublic_pub.mopublic_fixpunkt", true),
+            new TransferSet("mopublic_flurname.sql", "agi_mopublic_pub.mopublic_flurname", true),
+            new TransferSet("mopublic_gebaeudeadresse.sql", "agi_mopublic_pub.mopublic_gebaeudeadresse", true),
+            new TransferSet("mopublic_gelaendename.sql", "agi_mopublic_pub.mopublic_gelaendename", true),
+            new TransferSet("mopublic_gemeindegrenze_proj.sql", "agi_mopublic_pub.mopublic_gemeindegrenze_proj", true),
+            new TransferSet("mopublic_gemeindegrenze.sql", "agi_mopublic_pub.mopublic_gemeindegrenze", true),
+            new TransferSet("mopublic_grenzpunkt.sql", "agi_mopublic_pub.mopublic_grenzpunkt", true),
+            new TransferSet("mopublic_grundstueck_proj.sql", "agi_mopublic_pub.mopublic_grundstueck_proj", true),
+            new TransferSet("mopublic_grundstueck.sql", "agi_mopublic_pub.mopublic_grundstueck", true),
+            new TransferSet("mopublic_hoheitsgrenzpunkt.sql", "agi_mopublic_pub.mopublic_hoheitsgrenzpunkt", true),
+            new TransferSet("mopublic_objektname_pos.sql", "agi_mopublic_pub.mopublic_objektname_pos", true),
+            new TransferSet("mopublic_ortsname.sql", "agi_mopublic_pub.mopublic_ortsname", true),
+            new TransferSet("mopublic_rohrleitung.sql", "agi_mopublic_pub.mopublic_rohrleitung", true),
+            new TransferSet("mopublic_strassenachse.sql", "agi_mopublic_pub.mopublic_strassenachse", true),
+            new TransferSet("mopublic_strassenname_pos.sql", "agi_mopublic_pub.mopublic_strassenname_pos", true)
     ]
 }
 
 task copyDataFromGrundbuchplan(type: Db2Db, dependsOn: copyDataFromMOpublic) {
-    description = "Kopiert zusätzliche Daten für die Darstellung des Planes für das Grundbuch."    
+    description = "Kopiert zusätzliche Daten für die Darstellung des Planes für das Grundbuch."
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriHetznerWmts, dbUserHetznerWmts, dbPwdHetznerWmts]
     transferSets = [
-            new TransferSet("bodenbedeckung_boflaechesymbol.sql", "agi_grundbuchplan_pub.bodenbedeckung_boflaechesymbol", true),      
-            new TransferSet("liegenschaften_grenzpunkt.sql", "agi_grundbuchplan_pub.liegenschaften_grenzpunkt", true),     
-            new TransferSet("liegenschaften_grundstueckpos.sql", "agi_grundbuchplan_pub.liegenschaften_grundstueckpos", true),      
-            new TransferSet("liegenschaften_liegenschaft.sql", "agi_grundbuchplan_pub.liegenschaften_liegenschaft", true)      
+            new TransferSet("bodenbedeckung_boflaechesymbol.sql", "agi_grundbuchplan_pub.bodenbedeckung_boflaechesymbol", true),
+            new TransferSet("liegenschaften_grenzpunkt.sql", "agi_grundbuchplan_pub.liegenschaften_grenzpunkt", true),
+            new TransferSet("liegenschaften_grundstueckpos.sql", "agi_grundbuchplan_pub.liegenschaften_grundstueckpos", true),
+            new TransferSet("liegenschaften_liegenschaft.sql", "agi_grundbuchplan_pub.liegenschaften_liegenschaft", true)
     ]
 }
 
@@ -100,5 +100,45 @@ task updateBlackWhiteCaches(dependsOn: updateColorCaches) {
                 }
             }
         }
+    }
+}
+
+task downloadUpdatedCaches(dependsOn: updateBlackWhiteCaches) {
+    description = "Herunterladen aller neuberechneten Kacheln"
+    doLast {
+        ssh.settings {
+            knownHosts = allowAnyHosts
+        }
+        ssh.run {
+            session(remotes.seedingServer) {
+                get from: "/tiles/", into: gretlShareMountpoint, filter: { it.name =~ /ch\.so\.agi.hintergrundkarte_sw-1[1-4]-2056\.db/ }, fileTransfer: "scp"
+                get from: "/tiles/", into: gretlShareMountpoint, filter: { it.name =~ /ch\.so\.agi.hintergrundkarte_farbig-1[1-4]-2056\.db/ }, fileTransfer: "scp"
+            }
+        }
+        println "Files downloaded to: " + gretlShareMountpoint
+    }
+}
+
+task downloadStaticCaches() {
+    description = "Herunterladen aller nicht regelmässig neuberechneten Kacheln"
+    doLast {
+        ssh.settings {
+            knownHosts = allowAnyHosts
+        }
+        ssh.run {
+            session(remotes.seedingServer) {
+                get from: "/tiles/", into: gretlShareMountpoint, filter: { it.name =~ /ch\.so\.agi.hintergrundkarte_sw-([0-9]|10)-2056\.db/ }, fileTransfer: "scp"
+                get from: "/tiles/", into: gretlShareMountpoint, filter: { it.name =~ /ch\.so\.agi.hintergrundkarte_farbig-([0-9]|10)-2056\.db/ }, fileTransfer: "scp"
+                get from: "/tiles/", into: gretlShareMountpoint, filter: { it.name =~ /ch\.so\.agi.hintergrundkarte_ortho-([0-9]|10|1[1-4])-2056\.db/ }, fileTransfer: "scp"
+            }
+        }
+        println "Files downloaded to: " + gretlShareMountpoint
+    }
+}
+
+task downloadAllCaches(dependsOn: [downloadStaticCaches, downloadUpdatedCaches]) {
+    description = "Herunterladen aller Kacheln (neuberechnete und statische)"
+    doLast {
+        println 'Downloaded all Caches'
     }
 }

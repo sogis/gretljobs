@@ -1,5 +1,4 @@
 SELECT
-    ogc_fid AS t_id,
     ST_Multi(wkb_geometry) AS geometrie,
     name,
     betreiber,
@@ -13,7 +12,6 @@ WHERE
 UNION ALL
 
 SELECT
-    ogc_fid AS t_id,
     ST_Multi(wkb_geometry) AS geometrie,
     name,
     betreiber,
@@ -27,7 +25,6 @@ WHERE
 UNION ALL
 
 SELECT
-    ogc_fid AS t_id,
     wkb_geometry AS geometrie,
     name,
     betreiber,

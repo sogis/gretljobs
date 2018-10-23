@@ -53,8 +53,8 @@ SELECT
     END AS datum_oeqv, 
     CASE
         WHEN flaechen.new_date > flaechen_geom_t.new_date 
-            THEN flaechen.new_date::date::character varying::text
-        ELSE flaechen_geom_t.new_date::date::character varying::text || ' (G)'::text
+            THEN to_char(flaechen.new_date, 'YYYY-MM-DD')
+        ELSE to_char(flaechen_geom_t.new_date, 'YYYY-MM-DD') || ' (G)'::text
     END AS gueltigab, 
     flaechen.gueltigbis, 
     flaechen.wiesenkategorie, 

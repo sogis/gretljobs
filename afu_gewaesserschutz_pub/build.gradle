@@ -20,5 +20,5 @@ task transferAfuGewaesserschutz(type: Db2Db){
             new TransferSet('afu_gewaesserschutz_pub_aww_gsmiso.sql', 'afu_gewaesserschutz_pub.aww_gsmiso', true),
             new TransferSet('afu_gewaesserschutz_pub_aww_gstira.sql', 'afu_gewaesserschutz_pub.aww_gstira', true),
             new TransferSet('afu_gewaesserschutz_pub_aww_gstiso.sql', 'afu_gewaesserschutz_pub.aww_gstiso', true)
-    ];        
+    ]
 }
