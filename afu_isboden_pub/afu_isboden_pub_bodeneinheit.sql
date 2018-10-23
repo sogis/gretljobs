@@ -289,12 +289,36 @@ SELECT
     koernkl_t_ob.code AS koernkl_ob,
     koernkl_t_ob.beschreibung AS koernkl_ob_beschreibung,
     CASE
-        WHEN koernkl_t_ob.code IN (7, 8, 9, 13)
-            THEN 'Schwere, tonige Böden: schwer bearbeitbar, trocknen sehr langsam ab.'
-        WHEN koernkl_t_ob.code IN (5, 6, 10, 11, 12)
-            THEN 'Mittelschwere, lehmige bis schluffige Böden: normal bearbeitbar, trocknen mässig schnell ab.'
-        WHEN koernkl_t_ob.code IN (1, 2, 3, 4)
-            THEN 'Leichte, sandige Böden: leicht bearbeitbar, trocknen schnell ab.'
+        WHEN
+            koernkl_t_ob.code IN (7, 8, 9, 13)
+            AND
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
+                THEN 'Schwere, tonige Böden: schwer bearbeitbar, trocknen sehr langsam ab.'
+        WHEN
+            koernkl_t_ob.code IN (7, 8, 9, 13)
+            AND
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
+                THEN 'Schwere, tonige Böden: trocknen sehr langsam ab.'
+        WHEN
+            koernkl_t_ob.code IN (5, 6, 10, 11, 12)
+            AND
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
+                THEN 'Mittelschwere, lehmige bis schluffige Böden: normal bearbeitbar, trocknen mässig schnell ab.'
+        WHEN
+            koernkl_t_ob.code IN (5, 6, 10, 11, 12)
+            AND
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
+                THEN 'Mittelschwere, lehmige bis schluffige Böden: trocknen mässig schnell ab.'
+        WHEN 
+            koernkl_t_ob.code IN (1, 2, 3, 4)
+            AND
+            bodeneinheit_onlinedata_t.is_wald IS FALSE
+                THEN 'Leichte, sandige Böden: leicht bearbeitbar, trocknen schnell ab.'
+        WHEN 
+            koernkl_t_ob.code IN (1, 2, 3, 4)
+            AND
+            bodeneinheit_onlinedata_t.is_wald IS TRUE
+                THEN 'Leichte, sandige Böden: trocknen schnell ab.'
     END AS bodenart_bodenbearbeitbarkeit,
     koernkl_t_ub.code AS koernkl_ub,
     koernkl_t_ub.beschreibung AS koernkl_ub_beschreibung,
