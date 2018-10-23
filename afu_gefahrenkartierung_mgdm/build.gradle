@@ -1,0 +1,34 @@
+/*
+Pushes the afu hazard data (model SO_AfU_Gefahrenkartierung) to the KKGEO AI.
+Process:
+1. Transform the data from model SO_AfU_Gefahrenkartierung into bafu model Hazard_Mapping using GRETL sql
+2. Create the *.xtf with the ili2pg GRETL task
+3. Push the xtf to the KKGEO AI
+
+Class mapping between the models:
+- Erhebungsgebiet --> assessment_area
+- GK_MGDM --> hazard_area
+- IK_synoptisch_MGDM --> synoptic_intensity
+
+Stand der Arbeit:
+done: assessment_area
+*/
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+defaultTasks 'mapGefkart2Mgdm'
+
+task stageKantonsgrenze(type: Db2Db){
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    transferSets = [new TransferSet('stage_kantonsgrenze.sql', 'afu_gefahrenkartierung_stage_mgdm.kantonsgrenze', true, 'geometrie:WKB:2056')];        
+}
+
+task mapGefkart2Mgdm(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    transferSets = [
+		new TransferSet('assessment_area.sql', 'afu_gefahrenkartierung_stage_mgdm.assessment_area', true, 'geometrie:WKB:2056')		
+	];        
+}
