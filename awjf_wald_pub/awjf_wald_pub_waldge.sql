@@ -1,7 +1,7 @@
 SELECT 
     ogc_fid AS t_id,
     wkb_geometry AS geometrie,
-    round(area::numeric,0) AS area,
+    round(area::NUMERIC/10000,2) AS area,
     perimeter,
     waldge_,
     waldge_id,
@@ -58,7 +58,8 @@ SELECT
             THEN 'Ertragsklasse VI, Zuwachs jährlich (1-2-3) m3 pro ha'
     END AS ertragsklasse_text,
     zuwachs,
-    min_lbh_ant * 100 AS min_lbh_ant
+    min_lbh_ant * 100 AS min_lbh_ant,
+    '[{"name": "Ökogramm Waldstandorte", "url": "https://geo.so.ch/docs/ch.so.awjf.waldstandorte.waldstandorte/Oekogramme_Waldstandorte.pdf"},{"name": "Legende Waldstandorte", "url": "https://geo.so.ch/docs/ch.so.awjf.waldstandorte.waldstandorte/Legende_Waldstandorte.pdf"}]' AS dokumente
 FROM 
     awjf.waldge
 WHERE 
