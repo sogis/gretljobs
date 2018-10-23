@@ -1,5 +1,5 @@
 SELECT
-    ST_Collect(geometrie) AS geometrie,
+    ST_Multi(ST_Buffer(ST_Buffer(ST_Union(geometrie),1),-1)) AS geometrie,
     forstreviere_forstrevier.aname AS forstrevier,
     forstreviere_forstkreis.aname AS forstkreis
 FROM
@@ -10,5 +10,5 @@ FROM
         ON forstreviere_forstkreis.t_id=forstreviere_forstreviergeometrie.forstkreis
 GROUP BY
     forstreviere_forstkreis.t_id,
-    forstreviere_forstrevier.t_id
+    forstreviere_forstrevier.aname
 ;
