@@ -1,4 +1,4 @@
-SELECT 
+SELECT
     hoheitsgrenzen_gemeindegrenze.kantonsname,
     'SO' as kantonskuerzel,
     kantonsnummer,
@@ -6,8 +6,9 @@ SELECT
 FROM
     agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze
     LEFT JOIN agi_hoheitsgrenzen.hoheitsgrenzen_kanton
-        ON hoheitsgrenzen_kanton.kantonsname=hoheitsgrenzen_gemeindegrenze.kantonsname    
+        ON hoheitsgrenzen_kanton.kantonsname=hoheitsgrenzen_gemeindegrenze.kantonsname
 GROUP BY
     hoheitsgrenzen_gemeindegrenze.kantonsname,
     kantonsnummer,
-    kantonskuerzel;
+    kantonskuerzel
+;
