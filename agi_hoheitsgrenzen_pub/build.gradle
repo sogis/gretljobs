@@ -25,7 +25,7 @@ task transferAgiHoheitsgrenzen(type: Db2Db){
                     'agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsname_a4', true),
             new TransferSet('agi_hoheitsgrenzen_pub_sogis_hoheitsgrenzen_kantonsname_a3.sql',
                     'agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsname_a3', true)
-    ];        
+    ]
 }
 
 task createGeometriesAgiHoheitsgrenzen(type: SqlExecutor, dependsOn:'transferAgiHoheitsgrenzen') {
@@ -69,5 +69,5 @@ task transferAgiHoheitsgrenzenToPubDb(type: Db2Db, dependsOn:'createGeometriesAg
                     'agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsname_a3', true),
             new TransferSet('agi_hoheitsgrenzen_pub_pub_hoheitsgrenzen_kantonsname_a4.sql',
                     'agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsname_a4', true)
-    ];
+    ]
 }
