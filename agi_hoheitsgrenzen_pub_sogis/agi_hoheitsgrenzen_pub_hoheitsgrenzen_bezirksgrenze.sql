@@ -1,3 +1,13 @@
+DELETE FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksgrenze
+;
+
+INSERT INTO agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksgrenze (
+    bezirksname,
+    bezirksnummer,
+    kantonsname,
+    geometrie
+)
+
 SELECT
     hoheitsgrenzen_gemeindegrenze.bezirksname,
     hoheitsgrenzen_bezirk.bezirksnummer,

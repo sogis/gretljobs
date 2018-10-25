@@ -5,7 +5,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 description = "GRETL-Job für Datenumbau der Hoheitsgrenzen innerhalb der sogis-DB"
 
-defaultTasks 'transferAgiHoheitsgrenzen', 'generalizeAgiHoheitsgrenzen'
+defaultTasks 'transferAgiHoheitsgrenzen', 'createGeometriesAgiHoheitsgrenzen'
 
 task transferAgiHoheitsgrenzen(type: Db2Db){
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]//[dbUriSogis, dbUserSogis, dbPwdSogis]
@@ -13,10 +13,6 @@ task transferAgiHoheitsgrenzen(type: Db2Db){
     transferSets = [
             new TransferSet('agi_hoheitsgrenzen_pub_hoheitsgrenzen_gemeindegrenze.sql',
                     'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze', true),
-            new TransferSet('agi_hoheitsgrenzen_pub_hoheitsgrenzen_bezirksgrenze.sql',
-                    'agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksgrenze', true),
-            new TransferSet('agi_hoheitsgrenzen_pub_hoheitsgrenzen_kantonsgrenze.sql',
-                    'agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze', true),
             new TransferSet('agi_hoheitsgrenzen_pub_hoheitsgrenzen_gemeindename_a4.sql',
                     'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindename_a4', true),
             new TransferSet('agi_hoheitsgrenzen_pub_hoheitsgrenzen_gemeindename_a3.sql',
@@ -30,12 +26,15 @@ task transferAgiHoheitsgrenzen(type: Db2Db){
     ];        
 }
 
-task generalizeAgiHoheitsgrenzen(type: SqlExecutor) {
+task createGeometriesAgiHoheitsgrenzen(type: SqlExecutor) {
     description = "Baut die Nutzungsplanungsdaten des Kanton Solothurn in das MGDM des Bundes um."
     database = [dbUriPub, dbUserPub, dbPwdPub]//[dbUriSogis, dbUserSogis, dbPwdSogis]
     sqlFiles = [
+            'agi_hoheitsgrenzen_pub_hoheitsgrenzen_bezirksgrenze.sql',
+            'agi_hoheitsgrenzen_pub_hoheitsgrenzen_kantonsgrenze.sql',
             'agi_hoheitsgrenzen_pub_hoheitsgrenzen_gemeindegrenze_generalisiert.sql',
             'agi_hoheitsgrenzen_pub_hoheitsgrenzen_bezirksgrenze_generalisiert.sql',
             'agi_hoheitsgrenzen_pub_hoheitsgrenzen_kantonsgrenze_generalisiert.sql'
-            ]
+
+    ]
 }

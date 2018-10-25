@@ -137,11 +137,11 @@ WITH
 
 
 SELECT
-    name as gemeindename,
-    geometry.gem_bfs as bfs_gemeindenummer,
-    bezirksname,
-    kantonsname,
-    geometrie
+    gemeindegrenzen_gemeinde.name AS gemeindename,
+    geometry.gem_bfs AS bfs_gemeindenummer,
+    hoheitsgrenzen_bezirk.bezirksname,
+    hoheitsgrenzen_kanton.kantonsname,
+    geometry.geometrie
 FROM
     (
         SELECT
