@@ -1,0 +1,10 @@
+SELECT
+    t_id,
+    t_ili_tid,
+    bezirksname,
+    bezirksnummer,
+    kantonsname,
+    geometrie
+FROM
+    agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksgrenze
+;
