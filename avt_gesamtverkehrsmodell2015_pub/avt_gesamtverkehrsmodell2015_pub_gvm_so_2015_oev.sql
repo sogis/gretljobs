@@ -3,6 +3,12 @@ SELECT
     b."VOLPERSW~6" AS passagieranzahl_in_abendspitzen_2015, 
     c."VOLPERSW~6" AS passagieranzahl_pro_werktag_2040, 
     d."VOLPERSW~6" AS passagieranzahl_in_abendspitzen_2040, 
+    CASE 
+        WHEN a."TYPENO"::integer = 11 
+            THEN 'Bahn'
+        ELSE 
+            'Bus'
+    END AS streckentyp, 
     a.wkb_geometry AS geometrie
 FROM 
     verkehrsmodell2015.gvm_so_2015_oev_dwv_2015_link a, 
