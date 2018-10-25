@@ -1,3 +1,12 @@
+DELETE FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze
+;
+
+INSERT INTO agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze (
+    kantonsname,
+    kantonskuerzel,
+    kantonsnummer,
+    geometrie
+)
 SELECT
     hoheitsgrenzen_gemeindegrenze.kantonsname,
     'SO' as kantonskuerzel,
