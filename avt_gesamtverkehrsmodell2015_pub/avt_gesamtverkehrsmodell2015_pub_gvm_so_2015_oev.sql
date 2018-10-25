@@ -16,8 +16,8 @@ FROM
     verkehrsmodell2015.gvm_so_2015_oev_dwv_2040_link c, 
     verkehrsmodell2015.gvm_so_2015_oev_asp_2040_link d 
 WHERE 
-    a.gid = b.gid
+    a."NO" = b."NO"
     AND 
-    a.gid = c.gid
+    a."NO" = c."NO"
     AND
-    a.gid = d.gid
+    a."NO" = d."NO"
