@@ -1,1 +1,15 @@
-SELECT * FROM av_avdpool_ng.bodenbedeckung_boflaeche;
+SELECT
+    ogc_fid,
+    tid,
+    entstehung,
+    geometrie,
+    qualitaet,
+    qualitaet_txt,
+    art,
+    art_txt,
+    gem_bfs,
+    los,
+    lieferdatum
+FROM
+    av_avdpool_ng.bodenbedeckung_boflaeche
+;
