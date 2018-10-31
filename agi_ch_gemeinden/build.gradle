@@ -9,7 +9,7 @@ apply plugin: "de.undercouch.download"
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'convertData'
+defaultTasks 'transferDataToPubDb'
 
 def nameOfZipWithBoundaries = 'swissBOUNDARIES3D_LV95.zip'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
@@ -75,17 +75,17 @@ task convertData(type: Db2Db, dependsOn: 'dbImport'){
     finalizedBy 'removeFiles'
 
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = sourceDb
     transferSets = [
-            new TransferSet('agi_swissboundaries3d_pub_swissboundaries3d_bezirk.sql',
+            new TransferSet('agi_swissboundaries3d_pub_sogis_swissboundaries3d_bezirk.sql',
                     'agi_swissboundaries3d_pub.swissboundaries3d_bezirk', true),
-            new TransferSet('agi_swissboundaries3d_pub_swissboundaries3d_hoheitsgebiet.sql',
+            new TransferSet('agi_swissboundaries3d_pub_sogis_swissboundaries3d_hoheitsgebiet.sql',
                     'agi_swissboundaries3d_pub.swissboundaries3d_hoheitsgebiet', true),
-            new TransferSet('agi_swissboundaries3d_pub_swissboundaries3d_kanton.sql',
+            new TransferSet('agi_swissboundaries3d_pub_sogis_swissboundaries3d_kanton.sql',
                     'agi_swissboundaries3d_pub.swissboundaries3d_kanton', true),
-            new TransferSet('agi_swissboundaries3d_pub_swissboundaries3d_land.sql',
+            new TransferSet('agi_swissboundaries3d_pub_sogis_swissboundaries3d_land.sql',
                     'agi_swissboundaries3d_pub.swissboundaries3d_land', true)
-    ];
+    ]
 }
 
 
@@ -95,6 +95,27 @@ task removeFiles(type: Delete) {
         println "Files removed."
     }
     delete file(pathToUnzipFolder), file(pathToDataZip)
+}
+
+task transferDataToPubDb(type: Db2Db, dependsOn: 'convertData'){
+    description = "Transfer swissBoundaries3D-Data to pub-DB"
+    doLast {
+        println "SwissBoundaries3D-Data are transfered."
+    }
+    finalizedBy 'removeFiles'
+
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_bezirk.sql',
+                    'agi_swissboundaries3d_pub.swissboundaries3d_bezirk', true),
+            new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_hoheitsgebiet.sql',
+                    'agi_swissboundaries3d_pub.swissboundaries3d_hoheitsgebiet', true),
+            new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_kanton.sql',
+                    'agi_swissboundaries3d_pub.swissboundaries3d_kanton', true),
+            new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_land.sql',
+                    'agi_swissboundaries3d_pub.swissboundaries3d_land', true)
+    ]
 }
 
 
