@@ -21,13 +21,23 @@ ext {
     todaysDate = new Date().format('yyyy-MM-dd')
     models = []
     models.add(["SO_Agglomerationsprogramme_20170512", "arp_aggloprogramme", "arp_aggloprogramme_" + todaysDate ])
-    models.add(["SO_ARP_Nutzungsvereinbarung_20170512", "arp_nutzungsvereinbarung", "arp_nutzungsvereinbarung_" + todaysDate ])
+    models.add(["SO_ARP_Nutzungsvereinbarung_20170512", "arp_nutzungsvereinbarung",
+                "arp_nutzungsvereinbarung_" + todaysDate ])
     models.add(["SO_Forstreviere_20170512", "awjf_forstreviere", "awjf_forstreviere_" + todaysDate ])
     models.add(["SO_Hoheitsgrenzen_20170623", "agi_hoheitsgrenzen", "agi_hoheitsgrenzen_" + todaysDate ])
     models.add(["SO_AWJF_Wegsanierungen_20170629", "awjf_wegsanierungen", "awjf_wegsanierungen_" + todaysDate ])
+    models.add(["SO_BLN_20170904", "arp_bln", "arp_bln_" + todaysDate ])
+    models.add(["SO_ALW_Vernetzung_20171010", "alw_vernetzung", "alw_vernetzung_" + todaysDate ])
+    models.add(["SO_AWJF_Biotopbaeume_20171213", "awjf_biotopbaeume", "awjf_biotopbaeume_" + todaysDate ])
+    models.add(["SO_AMB_Notfalltreffpunkte_20180413", "amb_notfalltreffpunkte", "amb_notfalltreffpunkte_" + todaysDate ])
+    models.add(["SO_AGI_AV_GB_Administrative_Einteilungen_20180613", "agi_av_gb_admin_einteilung",
+                "agi_av_gb_admin_einteilung_" + todaysDate ])
+    models.add(["SO_ARP_Naturreservate_20180829", "arp_naturreservate", "arp_naturreservate_" + todaysDate ])
 }
 
 def stringPathToTempFolder = System.getProperty("java.io.tmpdir").toString()
+
+def failingModel
 
 // Create a dynamic task for every model we want to validate and for cleaning up if validaton was successful.
 models.each { model ->
@@ -60,7 +70,8 @@ models.each { model ->
 
             if (lineDifference <= 1){
                 dataExists = false
-                throw new GradleException("No Data exported")
+                failingModel = false
+                //throw new GradleException("No Data exported")
             } else if (lineDifference > 1) {
                 dataExists = true
             }
@@ -82,8 +93,17 @@ models.each { model ->
 
 task checkAllModels() {
     description = "Validate all models."
+    //ignoreFailures = true
+
+    finalizedBy "throwException"
 }
 
 checkAllModels.dependsOn {
     tasks.findAll { task -> task.name.startsWith('checkModel_') }
+}
+
+task "throwException"() {
+    if (failingModel == false) {
+        throw new GradleException("No Data exported")
+    }
 }
