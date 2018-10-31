@@ -1,0 +1,10 @@
+SELECT
+    t_id,
+    t_ili_tid,
+    landeskuerzel,
+    landesname,
+    datum_aenderung,
+    geometrie
+FROM
+    agi_swissboundaries3d_pub.swissboundaries3d_land
+;
