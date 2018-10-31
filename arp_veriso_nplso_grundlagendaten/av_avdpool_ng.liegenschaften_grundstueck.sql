@@ -1,1 +1,20 @@
-SELECT * FROM av_avdpool_ng.liegenschaften_grundstueck;
+SELECT
+    ogc_fid,
+    tid,
+    entstehung,
+    nbident,
+    nummer,
+    egris_egrid,
+    gueltigkeit,
+    gueltigkeit_txt,
+    vollstaendigkeit,
+    vollstaendigkeit_txt,
+    art,
+    art_txt,
+    gesamteflaechenmass,
+    gem_bfs,
+    los,
+    lieferdatum
+FROM
+    av_avdpool_ng.liegenschaften_grundstueck
+;

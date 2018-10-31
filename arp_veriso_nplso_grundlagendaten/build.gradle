@@ -4,30 +4,27 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 
 
-def gemeindegrenze = 'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze.sql'
-def boflaeche = 'av_avdpool_ng.bodenbedeckung_boflaeche.sql'
-def einzelobjekt = 'av_avdpool_ng.einzelobjekte_einzelobjekt.sql'
-def flaechenelement = 'av_avdpool_ng.einzelobjekte_flaechenelement.sql'
-def linienelement = 'av_avdpool_ng.einzelobjekte_linienelement.sql'
-def grundstueck = 'av_avdpool_ng.liegenschaften_grundstueck.sql'
-def liegenschaft = 'av_avdpool_ng.liegenschaften_liegenschaft.sql'
-def lsnachfuehrung = 'av_avdpool_ng.liegenschaften_lsnachfuehrung.sql'
-
-
 defaultTasks 'updateBaseData'
 
 
 task updateBaseData(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriNplso, dbUserNplso, dbPwdNplso]
     transferSets = [
-        new TransferSet(gemeindegrenze, 'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze', true),
-        new TransferSet(boflaeche, 'av_avdpool_ng.bodenbedeckung_boflaeche', true),
-        new TransferSet(einzelobjekt, 'av_avdpool_ng.einzelobjekte_einzelobjekt', true),
-        new TransferSet(flaechenelement, 'av_avdpool_ng.einzelobjekte_flaechenelement', true),
-        new TransferSet(linienelement, 'av_avdpool_ng.einzelobjekte_linienelement', true),
-        new TransferSet(grundstueck, 'av_avdpool_ng.liegenschaften_grundstueck', true),
-        new TransferSet(liegenschaft, 'av_avdpool_ng.liegenschaften_liegenschaft', true),
-        new TransferSet(lsnachfuehrung, 'av_avdpool_ng.liegenschaften_lsnachfuehrung', true)
+        new TransferSet('agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze.sql',
+                'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze', true),
+        new TransferSet('av_avdpool_ng.bodenbedeckung_boflaeche.sql', 'av_avdpool_ng.bodenbedeckung_boflaeche', true),
+        new TransferSet('av_avdpool_ng.einzelobjekte_einzelobjekt.sql', 'av_avdpool_ng.einzelobjekte_einzelobjekt',
+                true),
+        new TransferSet('av_avdpool_ng.einzelobjekte_flaechenelement.sql',
+                'av_avdpool_ng.einzelobjekte_flaechenelement', true),
+        new TransferSet('av_avdpool_ng.einzelobjekte_linienelement.sql', 'av_avdpool_ng.einzelobjekte_linienelement',
+                true),
+        new TransferSet('av_avdpool_ng.liegenschaften_grundstueck.sql', 'av_avdpool_ng.liegenschaften_grundstueck',
+                true),
+        new TransferSet('av_avdpool_ng.liegenschaften_liegenschaft.sql', 'av_avdpool_ng.liegenschaften_liegenschaft',
+                true),
+        new TransferSet('av_avdpool_ng.liegenschaften_lsnachfuehrung.sql',
+                'av_avdpool_ng.liegenschaften_lsnachfuehrung', true)
     ];
 }
