@@ -1,6 +1,6 @@
 (SELECT 
     TRUE AS gefasst,
-    b.besitzer, 
+    b.besitzer AS eigentuemer, 
     a.min_schuettung, 
     a.max_schuettung,
     coalesce(a.schutzzone,FALSE) AS schutzzone, 
@@ -43,7 +43,7 @@ LEFT JOIN
 UNION ALL 
 (SELECT 
     FALSE AS gefasst, 
-    b.besitzer, 
+    b.besitzer AS eigentuemer, 
     a.min_schuettung, 
     a.max_schuettung, 
     coalesce(a.schutzzone, FALSE) AS schutzzone,
