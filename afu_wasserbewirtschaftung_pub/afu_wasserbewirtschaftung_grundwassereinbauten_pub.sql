@@ -1,5 +1,5 @@
 (SELECT 
-    'weitere_einbauten' AS grundwassereinbauobjektart, 
+    'weitere_einbauten' AS objektart, 
     weitere_einbauten.bezeichnung AS objektname, 
     weitere_einbauten.vegas_id AS objektnummer, 
     weitere_einbauten.beschreibung AS technische_angabe, 
@@ -22,7 +22,7 @@ LEFT JOIN
      ) dokumente ON weitere_einbauten.vegas_id = dokumente.vegas_id )
 UNION ALL 
 (SELECT 
-    'versickerungsschacht' AS grundwassereinbauobjektart, 
+    'versickerungsschacht' AS objektart, 
     versickerungsschacht.bezeichnung AS objektname, 
     versickerungsschacht.vegas_id AS objektnummer, 
     versickerungsschacht.beschreibung AS technische_angabe, 
@@ -43,13 +43,10 @@ LEFT JOIN
      GROUP BY 
          y.vegas_id
      ) dokumente ON versickerungsschacht.vegas_id = dokumente.vegas_id )
- 
-
--- HIER wUERDE NOCH DIE GRUNDWASERBEOBACHTUNG KOMMEN (WAS AUCH IMMER DAS IST...)
 
 UNION ALL 
     (SELECT 
-        'Grundwasserbeobachtung.Piezometer.Bohrung' AS grundwassereinbauobjektart, 
+        'Grundwasserbeobachtung.Piezometer.Bohrung' AS objektart, 
         bohrung.bezeichnung AS objektname, 
         bohrung.vegas_id AS objektnummer,
         bohrung.beschreibung AS technische_angabe,
@@ -72,7 +69,7 @@ UNION ALL
          ) dokumente ON bohrung.vegas_id = dokumente.vegas_id )
 UNION ALL 
     (SELECT 
-        'Grundwasserbeobachtung.Piezometer.Gerammt' AS grundwassereinbauobjektart, 
+        'Grundwasserbeobachtung.Piezometer.Gerammt' AS objektart, 
         gerammt.bezeichnung AS objektname, 
         gerammt.vegas_id AS objektnummer,
         gerammt.beschreibung AS technische_angabe,
@@ -95,7 +92,7 @@ UNION ALL
          ) dokumente ON gerammt.vegas_id = dokumente.vegas_id )
 UNION ALL 
     (SELECT 
-        'Grundwasserbeobachtung.Sondierung.Bohrung' AS grundwassereinbauobjektart, 
+        'Grundwasserbeobachtung.Sondierung.Bohrung' AS objektart, 
         sondierung.bezeichnung AS objektname, 
         sondierung.vegas_id AS objektnummer,
         sondierung.beschreibung AS technische_angabe,
@@ -118,7 +115,7 @@ UNION ALL
          ) dokumente ON sondierung.vegas_id = dokumente.vegas_id )
 UNION ALL 
     (SELECT 
-        'Grundwasserbeobachtung.Sondierung.Baggerschlitz' AS grundwassereinbauobjektart, 
+        'Grundwasserbeobachtung.Sondierung.Baggerschlitz' AS objektart, 
         baggerschlitz.bezeichnung AS objektname, 
         baggerschlitz.vegas_id AS objektnummer,
         baggerschlitz.beschreibung AS technische_angabe,
@@ -141,7 +138,7 @@ UNION ALL
          ) dokumente ON baggerschlitz.vegas_id = dokumente.vegas_id )
 UNION ALL 
     (SELECT 
-        'Grundwasserbeobachtung.Limnigraf' AS grundwassereinbauobjektart, 
+        'Grundwasserbeobachtung.Limnigraf' AS objektart, 
         limnigraf.bezeichnung AS objektname, 
         limnigraf.vegas_id AS objektnummer,
         limnigraf.beschreibung AS technische_angabe,
