@@ -9,7 +9,7 @@ defaultTasks 'updateBaseData'
 
 task updateBaseData(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    targetDb = [dbUriNplso, dbUserNplso, dbPwdNplso]
+    targetDb = [dbUriVerisoNplso, dbUserVerisoNplso, dbPwdVerisoNplso]
     transferSets = [
         new TransferSet('agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze.sql',
                 'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze', true),
