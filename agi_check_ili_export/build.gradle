@@ -70,7 +70,6 @@ models.each { model ->
 
             if (lineDifference <= 1){
                 dataExists = false
-                failingModel = false
                 //throw new GradleException("No Data exported")
             } else if (lineDifference > 1) {
                 dataExists = true
@@ -94,16 +93,9 @@ models.each { model ->
 task checkAllModels() {
     description = "Validate all models."
     //ignoreFailures = true
-
-    finalizedBy "throwException"
 }
 
-checkAllModels.dependsOn {
+checkAllModels.finalizedBy {
     tasks.findAll { task -> task.name.startsWith('checkModel_') }
 }
 
-task "throwException"() {
-    if (failingModel == false) {
-        throw new GradleException("No Data exported")
-    }
-}
