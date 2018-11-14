@@ -1,11 +1,10 @@
 SELECT
-    ogc_fid AS t_id,
-    wkb_geometry AS geometrie,
-    area,
+    area AS flaeche,
     perimeter,
     nr,
     "name",
-    hegering 
+    hegering, 
+    wkb_geometry AS geometrie 
 FROM
     "public".jfv_jagdre
 WHERE
