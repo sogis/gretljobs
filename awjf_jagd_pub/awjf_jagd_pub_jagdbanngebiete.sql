@@ -1,11 +1,17 @@
 SELECT
-    ogc_fid AS t_id,
-    wkb_geometry AS geometrie,
-    area,
+    area AS flaeche,
     perimeter,
     nr,
     "name",
-    art 
+    CASE 
+        WHEN art = '1' 
+            THEN 'kantonal' 
+        WHEN art = '2' 
+            THEN 'kantonal für Vogelwelt'
+        WHEN art = '3' 
+            THEN 'Wasser und Zugvogelreservate von nationaler Bedeutung'
+    END AS art, 
+    wkb_geometry AS geometrie 
 FROM
     "public".jfv_jagdba
 WHERE
