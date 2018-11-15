@@ -37,8 +37,6 @@ ext {
 
 def stringPathToTempFolder = System.getProperty("java.io.tmpdir").toString()
 
-def failingModel
-
 // Create a dynamic task for every model we want to validate and for cleaning up if validaton was successful.
 models.each { model ->
     def modelName = model.getAt(0)
@@ -97,4 +95,3 @@ task checkAllModels() {
 checkAllModels.finalizedBy {
     tasks.findAll { task -> task.name.startsWith('checkModel_') }
 }
-
