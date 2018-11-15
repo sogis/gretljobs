@@ -70,7 +70,6 @@ models.each { model ->
 
             if (lineDifference <= 1){
                 dataExists = false
-                //throw new GradleException("No Data exported")
             } else if (lineDifference > 1) {
                 dataExists = true
             }
