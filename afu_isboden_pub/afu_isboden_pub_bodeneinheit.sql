@@ -236,13 +236,7 @@ SELECT
                 THEN '>35%: nur Mähwiese und Weide möglich; spezialisierte Hangmechanisierung'
     END AS gelform_text,
     bodeneinheit_auspraegung_t.geologie,
-    untertyp.untertyp_e,
-    untertyp.untertyp_k,
-    untertyp.untertyp_i,
-    untertyp.untertyp_g,
-    untertyp.untertyp_r,
-    untertyp.untertyp_p,
-    untertyp.untertyp_div,
+    concat_ws(', ', untertyp.untertyp_e, untertyp.untertyp_k, untertyp.untertyp_i, untertyp.untertyp_g, untertyp.untertyp_r, untertyp.untertyp_p, untertyp.untertyp_div) AS untertyp,
     skelett_t_ob.code AS skelett_ob,
     skelett_t_ob.beschreibung AS skelett_ob_beschreibung,
     CASE
@@ -569,13 +563,13 @@ SELECT
     humusform_wa_t.beschreibung AS humusform_wa_beschreibung,
     CASE
         WHEN humusform_wa_t.code IN ('M', 'Mt', 'Mf')
-            THEN 'Mull: Hohe biologische Aktivität mit vollständigem Streuabbau nach 1-2 Jahren. über 8 cm mächtiger, gut strukturierter Oberboden. Günstiger Wasser-, Luft- und Nährstoffhaushalt.'
+            THEN 'Mull: Hohe biologische Aktivität mit vollständigem Streuabbau nach 1-2 Jahren. Über 8 cm mächtiger, gut strukturierter Oberboden. Günstiger Wasser-, Luft- und Nährstoffhaushalt.'
         WHEN humusform_wa_t.code IN ('Fm', 'Fa', 'Fr', 'Fl')
             THEN 'Moder: Wegen Säuregrad reduzierte biologische Aktivität. Verlangsamter, unvollständiger Streuabbau, daher organische Auflage. 4-8 cm mächtiger Oberboden. Saure, nährstoffarme Böden in krautarmen Laub- und Nadelwäldern.'
         WHEN humusform_wa_t.code IN ('L', 'La', 'Lr')
             THEN 'Rohhumus: Geringe biologische Aktivität. Gehemmter Streuabbau mit ausgeprägten Auflagehorizonten und geringmächtigem Oberboden. Stark saure, nährstoffarme Böden mit schwer abbaubarer Streu (Nadelwälder).'
         WHEN humusform_wa_t.code IN ('MHt', 'MHf')
-            THEN 'Feuchtmull: Hohe biologische Aktivität mit vollständigem Streuabbau nach 1-2 Jahren. über 8 cm mächtiger, gut strukturierter Oberboden. Trotz schwach vernässtem Boden günstiger Wasser-, Luft- und Nährstoffhaushalt.'
+            THEN 'Feuchtmull: Hohe biologische Aktivität mit vollständigem Streuabbau nach 1-2 Jahren. Über 8 cm mächtiger, gut strukturierter Oberboden. Trotz schwach vernässtem Boden günstiger Wasser-, Luft- und Nährstoffhaushalt.'
         WHEN humusform_wa_t.code IN ('FHm', 'FHa', 'FHr', 'FHl')
             THEN 'Feuchtmoder: Wegen Vernässung reduzierte biologische Aktivität. Verlangsamter, unvollständiger Streuabbau, daher organische Auflage. 4-8 cm mächtiger Oberboden.Vernässte, z.T. saure, nährstoffarme Böden.'
         WHEN humusform_wa_t.code IN ('Lha', 'LHr')
@@ -987,7 +981,10 @@ FROM
     LEFT JOIN charakter_wasserhaushalt
         ON charakter_wasserhaushalt.t_id = bodeneinheit_onlinedata_t.pk_isboden
     LEFT JOIN afu_isboden.bodeneinheit_auspraegung_t
-        ON bodeneinheit_auspraegung_t.fk_bodeneinheit = bodeneinheit_t.pk_ogc_fid
+        ON 
+            bodeneinheit_auspraegung_t.fk_bodeneinheit = bodeneinheit_t.pk_ogc_fid
+            AND
+            bodeneinheit_auspraegung_t.is_hauptauspraegung
     LEFT JOIN afu_isboden.wasserhhgr_t
         ON wasserhhgr_t.pk_wasserhhgr = bodeneinheit_auspraegung_t.fk_wasserhhgr
     LEFT JOIN afu_isboden.bodentyp_t
@@ -1059,6 +1056,8 @@ FROM
         ON untertyp.fk_bodeneinheit = bodeneinheit_auspraegung_t.pk_bodeneinheit
 WHERE
     bodeneinheit_onlinedata_t.archive = 0
+    AND
+    bodeneinheit_onlinedata_t.is_haupt
     AND
     bodeneinheit_auspraegung_t.is_hauptauspraegung
     AND
