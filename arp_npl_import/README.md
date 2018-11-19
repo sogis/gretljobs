@@ -25,7 +25,7 @@ export DB_PWD_SOGIS=datasync
 Im `scripts`-Ordner des geklonten Repos folgender Befehl ausführen, um den Import zu starten:
 
 ```
-./start-gretl.sh --docker_image sogis/gretl-runtime:production --job_directory /Users/stefan/tmp/gretljobs-npl-import/arp_npl_import/ --task_name replaceDataset -Pxtf=2580_091_2018-02-13.xtf
+../scripts/start-gretl.sh --docker_image sogis/gretl-runtime:production --job_directory /Users/stefan/tmp/gretljobs-npl-import/arp_npl_import/ --task_name replaceDataset -Pxtf=2580_091_2018-02-13.xtf
 ```
 
 Ein absoluter Pfad zum `--job_directory` verursacht m.E. am wenigsten Probleme.
@@ -46,7 +46,7 @@ export DB_PWD_PUB=datasync
 ```
 
 ```
-./start-gretl.sh --docker_image sogis/gretl-runtime:production --job_directory /Users/stefan/tmp/gretljobs-npl-import/arp_npl_pub/ 
+../scripts/start-gretl.sh --docker_image sogis/gretl-runtime:production --job_directory /Users/stefan/tmp/gretljobs-npl-import/arp_npl_pub/ 
 ```
 
 ### Fehlermeldungen
@@ -100,7 +100,13 @@ Die Where-Bedingung muss natürlich angepasst werden. Die T_ILI2DB-Löschaktion 
 
 Anschliessend kann man das XTF wieder importieren. Problem bleibt natürlich bestehen.
 
-__Workaround:__ Das XTF mit ili2gpkg nach GeoPackage umformatieren. Unbedingt ohne "Basket/Dataset"-Parameter und ohne `--strokeArcs`. Anschliessend wieder nach XTF exportieren. Jetzt hat das XTF die "richtige" Reihenfolge (den Topics im Modell entsprechend) und kann importiertiert und ersetzt werden.
+__Workaround:__ Das XTF mit ili2gpkg nach GeoPackage umformatieren. Unbedingt ohne "Basket/Dataset"-Parameter und ohne `--strokeArcs`. Anschliessend wieder nach XTF exportieren. Jetzt hat das XTF die "richtige" Reihenfolge (den Topics im Modell entsprechend) und kann importiertiert und ersetzt werden:
+
+```
+java -jar /Users/stefan/apps/ili2gpkg-3.11.3/ili2gpkg.jar --dbfile fubar.gpkg --nameByTopic --models SO_Nutzungsplanung_20171118 --import 2405_2018_11-19_original.xtf
+
+java -jar /Users/stefan/apps/ili2gpkg-3.11.3/ili2gpkg.jar --dbfile fubar.gpkg --nameByTopic --models SO_Nutzungsplanung_20171118 --export 2405_2018_11-19_formatiert.xtf
+```
 
 #### Varia
 ```
