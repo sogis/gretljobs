@@ -1,0 +1,29 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferArpRichtplanPub'
+
+
+def dbUriEntw = dbUriPub
+def dbUserEntw = dbUserPub
+def dbPwdEntw = dbPwdPub
+
+
+task transferArpRichtplanPub(type: Db2Db){
+    sourceDb = [dbUriEntw, dbUserEntw, dbPwdEntw] // [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('arp_richtplan_pub_detailkarten_ueberlagernder_Punkt.sql',
+                    'arp_richtplan_pub.detailkarten_ueberlagernder_punkt', true),  //Freizeitnutzungen fehlen noch
+            new TransferSet('arp_richtplan_pub_detailkarten_ueberlagernde_Flaeche.sql',
+                    'arp_richtplan_pub.detailkarten_ueberlagernde_flaeche', true), //naturnahe Landschaftsräume fehlen noch
+            new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernder_punkt.sql',
+                    'arp_richtplan_pub.richtplankarte_ueberlagernder_punkt', true),
+            new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernde_linie.sql',
+                    'arp_richtplan_pub.richtplankarte_ueberlagernde_linie', true), //public.avt_oev_netz muss noch mit Attribut ergänzt werden -->anschliessend SQL-Query anpassen; IVS
+            new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernde_Flaeche.sql',
+                    'arp_richtplan_pub.richtplankarte_ueberlagernde_flaeche', true)
+    ]
+}

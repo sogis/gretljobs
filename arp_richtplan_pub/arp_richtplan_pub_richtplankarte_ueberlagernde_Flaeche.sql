@@ -40,8 +40,8 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS (
             WHERE
                 sq.ursprung = x.ursprung
                 )
-
-), doc_doc_references AS (
+), 
+doc_doc_references AS (
     SELECT 
         ursprung,
         a_parents AS dok_dok_referenzen
@@ -61,8 +61,8 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS (
         ) AS subquery
     WHERE
         b_parents IS NULL
-
-), json_documents_all AS (
+), 
+json_documents_all AS (
     SELECT
         t_id, 
         row_to_json(subquery)::text AS json_dokument -- Text-Repräsentation des JSON-Objektes. 
@@ -78,8 +78,8 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS (
             FROM
                 arp_npl.rechtsvorschrften_dokument
         ) AS subquery
-
-), json_documents_doc_doc_reference AS (
+),
+json_documents_doc_doc_reference AS (
     SELECT
         t_id,
         json_dokument
@@ -99,8 +99,8 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS (
         ) AS subquery
         LEFT JOIN json_documents_all
             ON subquery.dokument_t_id = json_documents_all.t_id
-
-), typ_ueberlagernd_flaeche_dokument_ref AS(
+),
+typ_ueberlagernd_flaeche_dokument_ref AS(
     SELECT DISTINCT ON(typ_ueberlagernd_flaeche, dok_referenz)
         typ_ueberlagernd_flaeche,
         dokument,
@@ -125,8 +125,8 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS (
             FROM
                 arp_npl.nutzungsplanung_typ_ueberlagernd_flaeche_dokument
         ) AS subquery
-
-), typ_ueberlagernd_flaeche_json_dokument AS (
+),
+typ_ueberlagernd_flaeche_json_dokument AS (
     SELECT
         typ_ueberlagernd_flaeche,
         dokument,
@@ -137,8 +137,8 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS (
         typ_ueberlagernd_flaeche_dokument_ref
         LEFT JOIN json_documents_all
             ON json_documents_all.t_id = typ_ueberlagernd_flaeche_dokument_ref.dok_referenz
-
-), typ_ueberlagernd_flaeche_json_dokument_agg AS (
+),
+typ_ueberlagernd_flaeche_json_dokument_agg AS (
     SELECT
         typ_ueberlagernd_flaeche_t_id,
         '[' || dokumente::varchar || ']' as dokumente
@@ -152,8 +152,8 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS (
             GROUP BY
                 typ_ueberlagernd_flaeche
         ) as subquery
-
-), ueberlagernd_flaeche_geometrie_typ AS (
+),
+ueberlagernd_flaeche_geometrie_typ AS (
     SELECT
         nutzungsplanung_ueberlagernd_flaeche.t_id,
         nutzungsplanung_ueberlagernd_flaeche.geometrie,
@@ -163,8 +163,8 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS (
         arp_npl.nutzungsplanung_ueberlagernd_flaeche
         LEFT JOIN arp_npl.nutzungsplanung_typ_ueberlagernd_flaeche
             ON nutzungsplanung_ueberlagernd_flaeche.typ_ueberlagernd_flaeche = nutzungsplanung_typ_ueberlagernd_flaeche.t_id
-
-), npl_wald AS (
+),
+npl_wald AS (
     SELECT
         geometrie
     FROM
@@ -173,15 +173,34 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS (
             ON nutzungsplanung_grundnutzung.typ_grundnutzung = nutzungsplanung_typ_grundnutzung.t_id
     WHERE
         nutzungsplanung_typ_grundnutzung.typ_kt = 'N440_Wald'
-
-), juraschutzzone_ueberlagert_wald AS (
+),
+juraschutzzone_ueberlagert_wald AS (
     SELECT
         ueberlagernd_flaeche_geometrie_typ.t_id,
         ST_Intersects(ueberlagernd_flaeche_geometrie_typ.geometrie, npl_wald.geometrie) AS ueberlagerungstyp
     FROM
         npl_wald,
         ueberlagernd_flaeche_geometrie_typ
-), documents_richtplan AS (
+),
+npl_landwirtschaft AS (
+    SELECT
+        geometrie
+    FROM
+        arp_npl.nutzungsplanung_grundnutzung
+        LEFT JOIN arp_npl.nutzungsplanung_typ_grundnutzung 
+            ON nutzungsplanung_grundnutzung.typ_grundnutzung = nutzungsplanung_typ_grundnutzung.t_id
+    WHERE
+        nutzungsplanung_typ_grundnutzung.typ_kt = 'N210_Landwirtschaftszone'
+),
+juraschutzzone_ueberlagert_landwirtschaft AS (
+    SELECT
+        ueberlagernd_flaeche_geometrie_typ.t_id,
+        ST_Intersects(ueberlagernd_flaeche_geometrie_typ.geometrie, npl_landwirtschaft.geometrie) AS ueberlagerungstyp
+    FROM
+        npl_landwirtschaft,
+        ueberlagernd_flaeche_geometrie_typ
+),
+documents_richtplan AS (
     SELECT DISTINCT 
         titel, 
         publiziertAb, 
@@ -196,8 +215,8 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS (
             ON richtplankarte_ueberlagernde_flaeche_dokument.ueberlagernde_flaeche = richtplankarte_ueberlagernde_flaeche.t_id
     WHERE
         (titel, publiziertab, bemerkung, dateipfad) IS NOT NULL
-    
-), documents_json_richtplan AS (
+),
+documents_json_richtplan AS (
     SELECT 
         array_to_json(array_agg(row_to_json(documents_richtplan)))::text AS dokumente, 
         ueberlagernde_flaeche_id
@@ -205,7 +224,8 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS (
         documents_richtplan
     GROUP BY 
         ueberlagernde_flaeche_id
-), documents_naturreservate AS (
+),
+documents_naturreservate AS (
     SELECT DISTINCT 
         bezeichnung, 
         typ, 
@@ -351,8 +371,8 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS (
         'http://faust.so.ch/suche_start.fau?prj=ARP&dm=FVARP02&rpos=3&ro_zeile_2=' || reservate_reservat.nummer
     FROM
         arp_naturreservate.reservate_reservat
-    
-), documents_json_naturreservate AS (
+),
+documents_json_naturreservate AS (
     SELECT 
         array_to_json(array_agg(row_to_json(documents_naturreservate)))::text AS dokumente, 
         reservat
@@ -362,6 +382,18 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS (
         reservat
 )
 
+/* Deponie
+ * Windenergie,
+ * Naturpark,
+ * kantonales_Vorranggeiet,
+ * Sondernutzungsgebiet,
+ * Witischutzzone,
+ * kantonale_Uferschutzzone,
+ * Juraschutzzone (alt aus Richtplan),
+ * Entwicklungsgebiet_Arbeiten,
+ * Siedlungstrennguertel,
+ * BLN-Gebiet
+ */
 SELECT
     richtplankarte_ueberlagernde_flaeche.t_ili_tid,
     richtplankarte_ueberlagernde_flaeche.objektnummer,
@@ -374,14 +406,21 @@ SELECT
     richtplankarte_ueberlagernde_flaeche.status,
     richtplankarte_ueberlagernde_flaeche.geometrie,
     documents_json_richtplan.dokumente,
-    NULL AS gemeindenamen
+   string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename) AS gemeindenamen
 FROM
+    agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
     arp_richtplan.richtplankarte_ueberlagernde_flaeche
     LEFT JOIN documents_json_richtplan
         ON documents_json_richtplan.ueberlagernde_flaeche_id = richtplankarte_ueberlagernde_flaeche.t_id
+WHERE
+    ST_Intersects(richtplankarte_ueberlagernde_flaeche.geometrie, hoheitsgrenzen_gemeindegrenze.geometrie) = TRUE
+GROUP BY
+    richtplankarte_ueberlagernde_flaeche.t_id,
+    documents_json_richtplan.dokumente
 
-UNION
+UNION ALL
 
+/* Grundwasserschutzzone_areal*/
 SELECT
     uuid_generate_v4() AS t_ili_tid,
     NULL AS objektnummer,
@@ -392,18 +431,22 @@ SELECT
     NULL AS bedeutung,
     'rechtsgueltig' AS planungsstand,
     'bestehend' AS status,
-    ST_Union(wkb_geometry) AS geometrie,
+    ST_Union(ST_SnapToGrid(wkb_geometry, 0.001)) AS geometrie,
     NULL AS dokumente,
-    NULL AS gemeindenamen
+    string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename) AS gemeindenamen
 FROM
+    agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
     public.aww_gszoar
 WHERE
     "archive" = 0
+    AND
+    ST_Intersects(aww_gszoar.wkb_geometry, hoheitsgrenzen_gemeindegrenze.geometrie) = TRUE
 GROUP BY 
     "zone"
 
-UNION
+UNION ALL
 
+/*kantonales_Naturreservat*/
 SELECT
     uuid_generate_v4() AS t_ili_tid,
     CAST(reservate_reservat.nummer AS varchar) AS nummer,
@@ -414,9 +457,9 @@ SELECT
     NULL AS bedeutung,
     'rechtsgueltig' AS planungsstand,
     'bestehend' AS status,
-    ST_Multi(ST_Union(reservate_teilgebiet.geometrie)) AS geometrie,
+    ST_Multi(ST_Union(ST_SnapToGrid(reservate_teilgebiet.geometrie, 0.001))) AS geometrie,
     documents_json_naturreservate.dokumente AS dokumente,
-    string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename) AS gemeinden
+    string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename) AS gemeindenamen
 FROM
     agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
     arp_naturreservate.reservate_reservat
@@ -430,8 +473,9 @@ GROUP BY
     reservate_reservat.t_id,
     documents_json_naturreservate.dokumente
 
-UNION
+UNION ALL
 
+/*Fruchtfolgeflaeche*/
 SELECT
     uuid_generate_v4() AS t_ili_tid,
     NULL AS objektnummer,
@@ -442,16 +486,22 @@ SELECT
     NULL AS bedeutung,
     'rechtsgueltig' AS planungsstand,
     'bestehend' AS status,
-    ST_Multi(wkb_geometry) AS geometrie,
+    ST_Multi(ST_SnapToGrid(wkb_geometry, 0.001)) AS geometrie,
     NULL AS dokumente,
-    NULL AS gemeindenamen
+    string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename) AS gemeindenamen
 FROM
+    agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
     alw_grundlagen.fruchtfolgeflaechen_tab
 WHERE
     "archive" = 0
+    AND
+    ST_Intersects(fruchtfolgeflaechen_tab.wkb_geometry, hoheitsgrenzen_gemeindegrenze.geometrie) = TRUE
+GROUP BY
+    ogc_fid
 
-UNION
+UNION ALL
 
+/*Abbaustelle*/
 SELECT
     uuid_generate_v4() AS t_ili_tid,
     akten_nr_t AS objektnummer,
@@ -469,7 +519,7 @@ SELECT
     NULL AS bedeutung,
     'rechtsgueltig' AS planungsstand,
     'bestehend' AS status,
-    ST_Multi(wkb_geometry) AS geometrie,
+    ST_Multi(ST_SnapToGrid(wkb_geometry, 0.001)) AS geometrie,
     NULL AS dokumente,
     string_agg(hoheitsgrenzen_gemeindegrenze.gemeindename, ', ') AS gemeindenamen
 FROM
@@ -486,8 +536,9 @@ WHERE
 GROUP BY
     ogc_fid
 
-UNION
+UNION ALL
 
+/*Juraschutzzone aus NPL*/
 SELECT
     uuid_generate_v4() AS t_ili_tid,
     NULL AS nummer,
@@ -495,7 +546,7 @@ SELECT
         WHEN juraschutzzone_ueberlagert_wald.ueberlagerungstyp IS TRUE
             THEN 'Juraschutzzone.ueberlagert_Wald'
         WHEN juraschutzzone_ueberlagert_landwirtschaft.ueberlagerungstyp IS TRUE
-            THEN 'Juraschutzzone.ueberlagert_Landwirtschaft'  -- muss noch erstellt werden
+            THEN 'Juraschutzzone.ueberlagert_Landwirtschaftsgebiet'
     END AS objekttyp,
     NULL AS weitere_Informationen,
     NULL as objektname,
@@ -503,14 +554,30 @@ SELECT
     NULL AS bedeutung,
     'rechtsgueltig' AS planungsstand,
     'bestehend' AS status,
-    ST_Multi(ueberlagernd_flaeche_geometrie_typ.geometrie) AS geometrie,
+    ST_Multi(ST_SnapToGrid(ueberlagernd_flaeche_geometrie_typ.geometrie, 0.001)) AS geometrie,
     typ_ueberlagernd_flaeche_json_dokument_agg.dokumente AS dokumente,
-    NULL AS gemeinden
+    string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename) AS gemeindenamen
 FROM
+    agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
     ueberlagernd_flaeche_geometrie_typ
     LEFT JOIN typ_ueberlagernd_flaeche_json_dokument_agg
         ON ueberlagernd_flaeche_geometrie_typ.typ_t_id = typ_ueberlagernd_flaeche_json_dokument_agg.typ_ueberlagernd_flaeche_t_id
     LEFT JOIN juraschutzzone_ueberlagert_wald
         ON juraschutzzone_ueberlagert_wald.t_id = ueberlagernd_flaeche_geometrie_typ.t_id
+    LEFT JOIN juraschutzzone_ueberlagert_landwirtschaft
+        ON juraschutzzone_ueberlagert_landwirtschaft.t_id = ueberlagernd_flaeche_geometrie_typ.t_id
 WHERE
     ueberlagernd_flaeche_geometrie_typ.typ_typ_kt = 'N521_Juraschutzzone'
+    AND
+    ST_Intersects(ueberlagernd_flaeche_geometrie_typ.geometrie, hoheitsgrenzen_gemeindegrenze.geometrie) = TRUE
+    AND
+    (
+        juraschutzzone_ueberlagert_wald.ueberlagerungstyp IS TRUE
+        OR
+        juraschutzzone_ueberlagert_landwirtschaft.ueberlagerungstyp IS TRUE
+    )
+GROUP BY
+    juraschutzzone_ueberlagert_wald.ueberlagerungstyp,
+    juraschutzzone_ueberlagert_landwirtschaft.ueberlagerungstyp,
+    ueberlagernd_flaeche_geometrie_typ.geometrie,
+    typ_ueberlagernd_flaeche_json_dokument_agg.dokumente

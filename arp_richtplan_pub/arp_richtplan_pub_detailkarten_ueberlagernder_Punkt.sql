@@ -1,9 +1,10 @@
+/*Zentrumsstruktur - Raumkonzept */
 SELECT
     detailkarten_ueberlagernder_punkt.t_ili_tid,
     detailkarten_ueberlagernder_punkt.objekttyp,
     detailkarten_ueberlagernder_punkt.status,
     detailkarten_ueberlagernder_punkt.geometrie,
-    hoheitsgrenzen_gemeindegrenze.gemeindename AS gemeinden
+    hoheitsgrenzen_gemeindegrenze.gemeindename AS gemeindename
 FROM
     arp_richtplan.detailkarten_ueberlagernder_punkt,
     agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze
@@ -14,14 +15,15 @@ WHERE
     AND
     objekttyp != 'Freizeitnutzung'
 
-UNION
+UNION ALL
 
+/*Freizeitnutzungen konzentrieren - Raumkonzept*/
 SELECT
     t_ili_tid,
     objekttyp,
     status,
     geometrie,
-    NULL AS gemeinden
+    NULL AS gemeindename
 FROM
     arp_richtplan.detailkarten_ueberlagernder_punkt
 WHERE
