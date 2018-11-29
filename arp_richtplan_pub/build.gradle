@@ -24,6 +24,8 @@ task transferArpRichtplanPub(type: Db2Db){
             new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernde_linie.sql',
                     'arp_richtplan_pub.richtplankarte_ueberlagernde_linie', true), //public.avt_oev_netz muss noch mit Attribut ergänzt werden -->anschliessend SQL-Query anpassen; IVS
             new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernde_Flaeche.sql',
-                    'arp_richtplan_pub.richtplankarte_ueberlagernde_flaeche', true)
+                    'arp_richtplan_pub.richtplankarte_ueberlagernde_flaeche', true),
+            new TransferSet('arp_richtplan_pub_richtplankarte_grundnutzung.sql',
+                    'arp_richtplan_pub.richtplankarte_grundnutzung', true) //für alle Grundnutzungsarten muss noch definiert werden welche Nutzungsplanungstypen welcher Richtplan-Grundnutzung entsprechen;URL-Umbau für Richtplan-Dokumente
     ]
 }

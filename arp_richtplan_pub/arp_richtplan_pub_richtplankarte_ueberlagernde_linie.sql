@@ -60,4 +60,4 @@ FROM
 WHERE
     typ IN (2,3)
     AND
-    "archive" = 1
+    "archive" = 0
