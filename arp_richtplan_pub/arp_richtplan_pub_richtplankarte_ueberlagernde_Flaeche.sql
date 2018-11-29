@@ -496,6 +496,8 @@ WHERE
     "archive" = 0
     AND
     ST_Intersects(fruchtfolgeflaechen_tab.wkb_geometry, hoheitsgrenzen_gemeindegrenze.geometrie) = TRUE
+    AND
+    ST_Multi(ST_SnapToGrid(wkb_geometry, 0.001)) IS NOT NULL
 GROUP BY
     ogc_fid
 
