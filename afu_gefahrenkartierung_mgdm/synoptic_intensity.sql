@@ -1,5 +1,5 @@
 SELECT 
-	--ST_AsBinary(geometrie) AS impact_zone_wkb,
+	geometrie AS impact_zone,
 	t_ili_tid::varchar AS t_ili_tid,
     'SO' AS data_responsibility,
 	bemerkung AS comments,
@@ -58,6 +58,7 @@ SELECT
 	END AS subproc_synoptic_intensity,
 	CAST('complete' AS VARCHAR) AS sources_in_subprocesses_compl
 FROM afu_gefahrenkartierung.ik_synoptisch_mgdm
+LIMIT ALL
 
 
       

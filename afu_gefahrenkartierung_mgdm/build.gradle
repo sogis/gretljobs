@@ -10,8 +10,9 @@ Class mapping between the models:
 - GK_MGDM --> hazard_area
 - IK_synoptisch_MGDM --> synoptic_intensity
 
-Stand der Arbeit:
-done: assessment_area
+Go on: 
+- Validierung des manuellen Exports - wo ist problem bei assessment_area?
+- Dann zip task
 */
 
 import ch.so.agi.gretl.tasks.*
@@ -19,16 +20,85 @@ import ch.so.agi.gretl.api.TransferSet
 
 defaultTasks 'mapGefkart2Mgdm'
 
+/*
+1. Transform the data from model SO_AfU_Gefahrenkartierung into bafu model Hazard_Mapping using GRETL sql
+*/
+
 task stageKantonsgrenze(type: Db2Db){
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    transferSets = [new TransferSet('stage_kantonsgrenze.sql', 'afu_gefahrenkartierung_stage_mgdm.kantonsgrenze', true, 'geometrie:WKB:2056')];        
+    transferSets = [new TransferSet('stage_kantonsgrenze.sql', 'afu_gefahrenkartierung_stage_mgdm.kantonsgrenze', true)];        
 }
 
 task mapGefkart2Mgdm(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
-		new TransferSet('assessment_area.sql', 'afu_gefahrenkartierung_stage_mgdm.assessment_area', true, 'geometrie:WKB:2056')		
+		new TransferSet('assessment_area.sql', 'afu_gefahrenkartierung_stage_mgdm.assessment_area', true),
+		new TransferSet('hazard_area.sql', 'afu_gefahrenkartierung_stage_mgdm.hazard_area', true),
+		new TransferSet('synoptic_intensity.sql', 'afu_gefahrenkartierung_stage_mgdm.synoptic_intensity', true)
+		
 	];        
 }
+
+/*
+2. Create the *.xtf with the ili2pg GRETL task
+*/
+import java.nio.file.Paths
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def exportLog = file(Paths.get(pathToTempFolder.toString(), "export.log"))
+def exportFile = file(Paths.get(pathToTempFolder.toString(), "export.xtf"))
+
+task exportGefkartMgdm(type: Ili2pgExport, dependsOn:'mapGefkart2Mgdm') {
+    description = "Exportiert die ins Gefahrenkartierungs-MGDM umgebauten Daten in ein xtf-File."
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    dbschema = "afu_gefahrenkartierung_stage_mgdm"
+    models = "Hazard_Mapping_LV95_V1_2"
+    logFile = exportLog
+    dataFile = exportFile
+}
+
+/*
+3. Package and upload to the KKGEO AI
+*/
+
+/*
+def zipName = 'LV95.zip'
+
+task zipGefkartMgdm(type: Zip){//, dependsOn: 'exportGefkartMgdm'){
+    description = "Zippt das xtf-File mit den Gefahrenkartierungsdaten (MGDM vom Bund) für den Upload in die " +
+            "Aggregationsinfrastruktur."
+    from pathToTempFolder
+    include exportFile
+    archiveName zipName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadGefkartMgdm{//(dependsOn: zipGefkartMgdm) {
+    description = "Lädt die Gefahrenkartierungsdaten (MGDM vom Bund) in die Aggregationsinfrastruktur hoch."
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_nutzungsplanung", "-F",
+                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), zipName), "-F", "publish=true",
+                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        println(response)
+    }
+}
+*/
+
+
+/*
+def exportNplchFile = file(Paths.get(pathToTempFolder.toString(), exportNplchFileName))
+
+def logExportLaermempfindlichkeit = file(Paths.get(pathToTempFolder.toString(), "log_export_laermempfindlichkeit.log"))
+def exportLaermempfindlichkeitFileName = 'export_laermempfindlichkeit.xtf'
+def exportLaermempfindlichkeitFile = file(Paths.get(pathToTempFolder.toString(), exportLaermempfindlichkeitFileName))
+
+def ZipName = 'LV95.zip'
+
+def aiLogin = aiUser + ":" + aiPwd
+*/
+
+
+
+
