@@ -404,7 +404,7 @@ SELECT
     richtplankarte_ueberlagernde_flaeche.bedeutung,
     richtplankarte_ueberlagernde_flaeche.planungsstand,
     richtplankarte_ueberlagernde_flaeche.status,
-    richtplankarte_ueberlagernde_flaeche.geometrie,
+    ST_Union(richtplankarte_ueberlagernde_flaeche.geometrie) AS geometrie, --testen, ob das funktioniert wie es sollte
     documents_json_richtplan.dokumente,
    string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename) AS gemeindenamen
 FROM
