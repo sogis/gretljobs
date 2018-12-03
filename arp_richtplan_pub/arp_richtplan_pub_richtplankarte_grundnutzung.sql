@@ -220,6 +220,29 @@ FROM
 UNION
 
 SELECT
+    uuid_generate_v4() AS t_ili_tid,
+    'Ausgangslage' AS abstimmungskategorie,
+    'Reservezone' AS grundnutzungsart,
+    'rechtsgueltig' AS planungsstand,
+    ST_SnapToGrid((ST_Dump(wkb_geometry)).geom, 0.001) AS geometrie,
+    NULL AS dokumente
+FROM
+    digizone.zonenplan
+WHERE
+    "archive" = 0
+    AND
+    zcode = 721
+    AND
+    gem_bfs NOT IN (
+        SELECT
+            CAST(datasetname AS integer)
+        FROM
+            arp_npl.t_ili2db_dataset
+    )
+
+UNION
+
+SELECT
     grundnutzung.t_ili_tid,
     'Ausgangslage' AS abstimmungskategorie,
     CASE
