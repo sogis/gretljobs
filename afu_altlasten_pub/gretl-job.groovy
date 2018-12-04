@@ -17,7 +17,8 @@ node("master") {
 }
 
 node ("gretl") {
-    git "${gretljobsRepo}"
+    gitBranch = "${params.BRANCH ?: 'master'}"
+    git url: "${gretljobsRepo}", branch: gitBranch
     dir(env.JOB_BASE_NAME) {
         withCredentials([usernamePassword(credentialsId: "${dbCredentialNameSogis}", usernameVariable: 'dbUserSogis', passwordVariable: 'dbPwdSogis'), usernamePassword(credentialsId: "${dbCredentialNamePub}", usernameVariable: 'dbUserPub', passwordVariable: 'dbPwdPub'), usernamePassword(credentialsId: "${dbCredentialNameAltlast4web}", usernameVariable: 'dbUserAltlast4web', passwordVariable: 'dbPwdAltlast4web')]) {
             sh "gradle --init-script /home/gradle/init.gradle \
