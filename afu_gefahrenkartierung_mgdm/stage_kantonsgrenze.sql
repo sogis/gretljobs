@@ -1,4 +1,2 @@
-SELECT 
-	ST_AsBinary(ST_CurveToLine(geometrie, 0.1, 1, 1)) AS geometrie
-FROM 
-	agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze;
+SELECT t_id, t_ili_tid, kantonsname, kantonskuerzel, kantonsnummer, geometrie
+FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze;
