@@ -3,9 +3,9 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAfuGewaesserschutzDoris'
+defaultTasks 'transferAfuGewaesserschutz'
 
-task transferAfuGewaesserschutzDoris(type: Db2Db){
+task transferAfuGewaesserschutz(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
