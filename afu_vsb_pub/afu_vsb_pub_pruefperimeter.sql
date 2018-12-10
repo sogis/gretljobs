@@ -1,3 +1,97 @@
+WITH vsb AS (
+    SELECT
+        flaeche.flaecheid,
+        flaeche.wkb_geometry,
+        flaeche.belastungstyp,
+        flaeche.statustyp,
+        NULL AS bezeichnung,
+        '1' AS anz_order
+    FROM
+        vsb.flaeche
+    WHERE
+        flaeche.aktiv = TRUE
+        AND
+        (
+            flaeche.belastungstyp <> 1
+            AND
+            flaeche.belastungstyp <> 11
+            AND
+            flaeche.belastungstyp <> 2
+            AND
+            flaeche.belastungstyp <> 227
+            AND
+            flaeche.belastungstyp <> 4
+        )
+
+    UNION
+
+    SELECT 
+       flaeche.flaecheid, 
+       flaeche.wkb_geometry, 
+       flaeche.belastungstyp, 
+       flaeche.statustyp, 
+       codenumzeichen.bezeichnung, 
+       '3' AS anz_order
+    FROM vsb.flaeche
+        LEFT JOIN vsb.strasse
+            ON flaeche.flaecheid = strasse.flaecheid
+        LEFT JOIN vsb.codenumzeichen 
+            ON strasse.verdachtsstreifenbreite = codenumzeichen.numcode
+    WHERE 
+        flaeche.belastungstyp = 11 
+        and 
+        flaeche.aktiv=true 
+        AND 
+        flaeche.statustyp = 14 
+        and 
+        codenumzeichen.bezeichnung != '0' 
+        
+    UNION
+    
+    SELECT
+        flaeche.flaecheid,
+        flaeche.wkb_geometry,
+        flaeche.belastungstyp,
+        flaeche.statustyp,
+        codenumzeichen.bezeichnung,
+        '2' AS anz_order
+    FROM 
+        vsb.flaeche
+        LEFT JOIN vsb.eisenbahn
+            ON flaeche.flaecheid = eisenbahn.flaecheid
+        LEFT JOIN vsb.codenumzeichen
+            ON eisenbahn.verdachtsstreifenbreite = codenumzeichen.numcode
+    WHERE
+        flaeche.belastungstyp = 2
+        AND
+        flaeche.aktiv=true
+        AND
+        flaeche.statustyp = 14
+        AND
+        codenumzeichen.bezeichnung IN ('0','5','10')
+
+    UNION
+
+    SELECT
+        bodenbelastungsgebiet.flaecheid, 
+        flaeche.wkb_geometry, 
+        flaeche.belastungstyp, 
+        flaeche.statustyp, 
+        bodenbelastungsgebiet.belastungsstufe::varchar as bezeichnung, 
+        '4' as anz_order
+    FROM
+        vsb.flaeche flaeche
+        JOIN vsb.bodenbelastungsgebiet
+            ON bodenbelastungsgebiet.flaecheid = flaeche.flaecheid
+    WHERE
+        flaeche.belastungstyp = 1
+        AND
+        flaeche.aktiv= TRUE
+        AND
+        bodenbelastungsgebiet.belastungsstufe IN (17,18,19,20,200,199)
+)
+
+
 SELECT
     flaecheid AS t_id,
     wkb_geometry AS geometrie,
@@ -207,5 +301,5 @@ SELECT
             THEN 'https://www.so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-umwelt/boden-untergrund-geologie/altlasten-belastete-standorte/schiessanlagen/'
     END AS weitere_infos
 FROM
-    vsb.afu_pruefperimeter_qgis_server_client_t
+    vsb
 ;
