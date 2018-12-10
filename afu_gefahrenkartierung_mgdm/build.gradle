@@ -21,7 +21,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.io.File
 
-defaultTasks 'mapGefkart2Mgdm'
+defaultTasks 'uploadGefkartMgdm'
 
 /*
 1. Transform the data from model SO_AfU_Gefahrenkartierung into bafu model Hazard_Mapping using GRETL sql
@@ -30,20 +30,21 @@ task mapGefkart2Mgdm(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
-		new TransferSet('assessment_area.sql', 'afu_gefahrenkartierung_export_ai.hazard_mapping_assessment_area', true)
-		,new TransferSet('hazard_area.sql', 'afu_gefahrenkartierung_export_ai.hazard_mapping_hazard_area', true)
-		,new TransferSet('synoptic_intensity.sql', 'afu_gefahrenkartierung_export_ai.hazard_mapping_synoptic_intensity', true)
+		//new TransferSet('assessment_area.sql', 'afu_gefahrenkartierung_export_ai.hazard_mapping_assessment_area', true)
+		new TransferSet('hazard_area.sql', 'afu_gefahrenkartierung_export_ai.hazard_mapping_hazard_area', true)
+		//,new TransferSet('synoptic_intensity.sql', 'afu_gefahrenkartierung_export_ai.hazard_mapping_synoptic_intensity', true)
 	];        
 }
 
 /*
 2. Create the *.xtf with the ili2pg GRETL task
 */
-def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def zipContentDir = file('/home/gradle/project/tmp/gefkart/zipcontent')
+def tmpDir = zipContentDir.getParentFile()
 
-def loggingFile = file(Paths.get(pathToTempFolder.toString(), "gretl_gefkart_log.log"))
+def loggingFile = file(Paths.get(tmpDir.toString(), "gretl_gefkart_log.log"))
 def exportFileName = 'gretl_gefkart_data.xtf'
-def exportFile = file(Paths.get(pathToTempFolder.toString(), exportFileName))
+def exportFile = file(Paths.get(zipContentDir.toString(), exportFileName))
 
 task exportGefkartMgdm(type: Ili2pgExport, dependsOn: 'mapGefkart2Mgdm') {
     description = "Exportiert die ins Gefahrenkartierungs-MGDM umgebauten Daten in ein xtf-File."
@@ -57,7 +58,6 @@ task exportGefkartMgdm(type: Ili2pgExport, dependsOn: 'mapGefkart2Mgdm') {
 /*
 3. Package and upload to the KKGEO AI
 */
-/*
 def zipName = 'gefkart_export.zip'
 
 task zipGefkartMgdm(type: Zip, dependsOn: 'exportGefkartMgdm'){
@@ -84,20 +84,7 @@ task uploadGefkartMgdm(dependsOn: zipGefkartMgdm) {
                         ].execute().text
         println(response)
     }
-}*/
-
-
-/*
-def exportNplchFile = file(Paths.get(pathToTempFolder.toString(), exportNplchFileName))
-
-def logExportLaermempfindlichkeit = file(Paths.get(pathToTempFolder.toString(), "log_export_laermempfindlichkeit.log"))
-def exportLaermempfindlichkeitFileName = 'export_laermempfindlichkeit.xtf'
-def exportLaermempfindlichkeitFile = file(Paths.get(pathToTempFolder.toString(), exportLaermempfindlichkeitFileName))
-
-def ZipName = 'LV95.zip'
-
-def aiLogin = aiUser + ":" + aiPwd
-*/
+}
 
 
 

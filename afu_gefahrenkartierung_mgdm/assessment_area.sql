@@ -84,4 +84,4 @@ SELECT * FROM (
 	FROM
 		assessed_area
 ) AS ktso
-LIMIT ALL
+LIMIT 50
