@@ -3,9 +3,9 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-description = "GRETL-Job für Datenumbau der Hoheitsgrenzen innerhalb der sogis-DB und in die pub-DB"
+description = "GRETL-Job für Datenumbau der Hoheitsgrenzen innerhalb der sogis-DB, in die pub-DB und in die edit-DB"
 
-defaultTasks 'transferAgiHoheitsgrenzenToPubDb'
+defaultTasks 'transferAgiHoheitsgrenzenToEditDb'
 
 task transferAgiHoheitsgrenzen(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
@@ -44,6 +44,37 @@ task createGeometriesAgiHoheitsgrenzen(type: SqlExecutor, dependsOn:'transferAgi
 task transferAgiHoheitsgrenzenToPubDb(type: Db2Db, dependsOn:'createGeometriesAgiHoheitsgrenzen'){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('agi_hoheitsgrenzen_pub_pub_hoheitsgrenzen_bezirksgrenze.sql',
+                    'agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksgrenze', true),
+            new TransferSet('agi_hoheitsgrenzen_pub_pub_hoheitsgrenzen_bezirksgrenze_generalisiert.sql',
+                    'agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksgrenze_generalisiert', true),
+            new TransferSet('agi_hoheitsgrenzen_pub_pub_hoheitsgrenzen_bezirksname_a3.sql',
+                    'agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksname_a3', true),
+            new TransferSet('agi_hoheitsgrenzen_pub_pub_hoheitsgrenzen_bezirksname_a4.sql',
+                    'agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksname_a4', true),
+            new TransferSet('agi_hoheitsgrenzen_pub_pub_hoheitsgrenzen_gemeindegrenze.sql',
+                    'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze', true),
+            new TransferSet('agi_hoheitsgrenzen_pub_pub_hoheitsgrenzen_gemeindegrenze_generalisiert.sql',
+                    'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze_generalisiert', true),
+            new TransferSet('agi_hoheitsgrenzen_pub_pub_hoheitsgrenzen_gemeindename_a3.sql',
+                    'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindename_a3', true),
+            new TransferSet('agi_hoheitsgrenzen_pub_pub_hoheitsgrenzen_gemeindename_a4.sql',
+                    'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindename_a4', true),
+            new TransferSet('agi_hoheitsgrenzen_pub_pub_hoheitsgrenzen_kantonsgrenze.sql',
+                    'agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze', true),
+            new TransferSet('agi_hoheitsgrenzen_pub_pub_hoheitsgrenzen_kantonsgrenze_generalisiert.sql',
+                    'agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze_generalisiert', true),
+            new TransferSet('agi_hoheitsgrenzen_pub_pub_hoheitsgrenzen_kantonsname_a3.sql',
+                    'agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsname_a3', true),
+            new TransferSet('agi_hoheitsgrenzen_pub_pub_hoheitsgrenzen_kantonsname_a4.sql',
+                    'agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsname_a4', true)
+    ]
+}
+
+task transferAgiHoheitsgrenzenToEditDb(type: Db2Db, dependsOn:'transferAgiHoheitsgrenzenToPubDb'){
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
             new TransferSet('agi_hoheitsgrenzen_pub_pub_hoheitsgrenzen_bezirksgrenze.sql',
                     'agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksgrenze', true),
