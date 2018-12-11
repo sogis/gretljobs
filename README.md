@@ -26,6 +26,10 @@ git checkout -b branchname
 * Pro Tabelle sollte eine SQL-Datei verwendet werden.
 * Bitte an den AGI SQL-Richtlinien orientieren.
 * Variablen mit `def` definieren und nicht mit `ext{}`
+* Für den Zugriff auf Datenbanken und den GRETL-Speicherplatz folgende Variablen verwenden:
+  * `dbUriSogis`, `dbUserSogis`, `dbPwdSogis`
+  * `dbUriPub`, `dbUserPub`, `dbPwdPub`
+  * `gretlShare`
 
 
 ### Files
@@ -36,6 +40,7 @@ Jeder GRETL-Job braucht im Minimum das File `build.gradle`. Wenn er auch durch J
 `gretl-job.groovy` hat in der Regel folgenden Inhalt:
 
 ```groovy
+def gretlShare = 'none'
 def dbUriSogis = ''
 def dbCredentialNameSogis = ''
 def dbUriPub = ''
@@ -43,6 +48,7 @@ def dbCredentialNamePub = ''
 def gretljobsRepo = ''
 
 node("master") {
+    gretlShare = "${env.GRETL_SHARE}"
     dbUriSogis = "${env.DB_URI_SOGIS}"
     dbCredentialNameSogis = "${DB_CREDENTIAL_GRETL}"
     dbUriPub = "${env.DB_URI_PUB}"
@@ -56,6 +62,7 @@ node ("gretl") {
     dir(env.JOB_BASE_NAME) {
         withCredentials([usernamePassword(credentialsId: "${dbCredentialNameSogis}", usernameVariable: 'dbUserSogis', passwordVariable: 'dbPwdSogis'), usernamePassword(credentialsId: "${dbCredentialNamePub}", usernameVariable: 'dbUserPub', passwordVariable: 'dbPwdPub')]) {
             sh "gradle --init-script /home/gradle/init.gradle \
+                -PgretlShare='${gretlShare}' \
                 -PdbUriSogis='${dbUriSogis}' -PdbUserSogis='${dbUserSogis}' -PdbPwdSogis='${dbPwdSogis}' \
                 -PdbUriPub='${dbUriPub}' -PdbUserPub='${dbUserPub}' -PdbPwdPub='${dbPwdPub}'"
         }
