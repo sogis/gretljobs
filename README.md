@@ -94,7 +94,7 @@ Meistens benötigt ein GRETL-Job eine Quell- und eine Ziel-Datenbank. Hierfür k
 export DB_URI_SOGIS=jdbc:postgresql://127.0.0.1/foodb
 export DB_USER_SOGIS=foo
 export DB_PWD_SOGIS=foopassword
-export DB_URI_PUB=jdbc:postgresql://localhost:5432/bardb?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory
+export DB_URI_PUB=jdbc:postgresql://localhost:5432/bardb?ssl=true\&sslfactory=org.postgresql.ssl.NonValidatingFactory
 export DB_USER_PUB=bar
 export DB_PWD_PUB=barpassword
 ```
