@@ -16,7 +16,7 @@ git checkout -b branchname
 
 * `import`-Statements zuoberst einfügen
 * Danach das `apply plugin`-Statement einfügen
-* Als `targetDbUser` bei AGI-Datenbanken `gretl` verwenden.
+* Als DB-User bei AGI-Datenbanken `gretl` verwenden.
 * Als (temporäres) Verzeichnis beim Herunterladen von Dateien etc. ```System.getProperty("java.io.tmpdir")``` verwenden. Dies ist das temp-Verzeichnis des Betriebssystems. Heruntergeladene und temporäre Dateien bitte trotzdem mittels abschliessenden Task wieder löschen.
 * Immer mindestens einen DefaultTask setzen mit dem das Skript startet. Dadurch muss kein Task beim Aufruf von GRETL mitgegeben werden (Bsp ```defaultTasks 'transferAgiHoheitsgrenzen'```).
 * `println` einsetzen wo sinnvoll, also informativ.
@@ -28,6 +28,7 @@ git checkout -b branchname
 * Variablen mit `def` definieren und nicht mit `ext{}`
 * Für den Zugriff auf Datenbanken und den GRETL-Speicherplatz folgende Variablen verwenden:
   * `dbUriSogis`, `dbUserSogis`, `dbPwdSogis`
+  * `dbUriEdit`, `dbUserEdit`, `dbPwdEdit`
   * `dbUriPub`, `dbUserPub`, `dbPwdPub`
   * `gretlShare`
 
@@ -43,6 +44,8 @@ Jeder GRETL-Job braucht im Minimum das File `build.gradle`. Wenn er auch durch J
 def gretlShare = 'none'
 def dbUriSogis = ''
 def dbCredentialNameSogis = ''
+def dbUriEdit = ''
+def dbCredentialNameEdit = ''
 def dbUriPub = ''
 def dbCredentialNamePub = ''
 def gretljobsRepo = ''
@@ -51,6 +54,8 @@ node("master") {
     gretlShare = "${env.GRETL_SHARE}"
     dbUriSogis = "${env.DB_URI_SOGIS}"
     dbCredentialNameSogis = "${DB_CREDENTIAL_GRETL}"
+    dbUriEdit = "${env.DB_URI_EDIT}"
+    dbCredentialNameEdit = "${DB_CREDENTIAL_GRETL}"
     dbUriPub = "${env.DB_URI_PUB}"
     dbCredentialNamePub = "${DB_CREDENTIAL_GRETL}"
     gretljobsRepo = "${env.GRETL_JOB_REPO_URL}"
@@ -60,10 +65,11 @@ node ("gretl") {
     gitBranch = "${params.BRANCH ?: 'master'}"
     git url: "${gretljobsRepo}", branch: gitBranch
     dir(env.JOB_BASE_NAME) {
-        withCredentials([usernamePassword(credentialsId: "${dbCredentialNameSogis}", usernameVariable: 'dbUserSogis', passwordVariable: 'dbPwdSogis'), usernamePassword(credentialsId: "${dbCredentialNamePub}", usernameVariable: 'dbUserPub', passwordVariable: 'dbPwdPub')]) {
+        withCredentials([usernamePassword(credentialsId: "${dbCredentialNameSogis}", usernameVariable: 'dbUserSogis', passwordVariable: 'dbPwdSogis'), usernamePassword(credentialsId: "${dbCredentialNameEdit}", usernameVariable: 'dbUserEdit', passwordVariable: 'dbPwdEdit'), usernamePassword(credentialsId: "${dbCredentialNamePub}", usernameVariable: 'dbUserPub', passwordVariable: 'dbPwdPub')]) {
             sh "gradle --init-script /home/gradle/init.gradle \
                 -PgretlShare='${gretlShare}' \
                 -PdbUriSogis='${dbUriSogis}' -PdbUserSogis='${dbUserSogis}' -PdbPwdSogis='${dbPwdSogis}' \
+                -PdbUriEdit='${dbUriEdit}' -PdbUserEdit='${dbUserEdit}' -PdbPwdEdit='${dbPwdEdit}' \
                 -PdbUriPub='${dbUriPub}' -PdbUserPub='${dbUserPub}' -PdbPwdPub='${dbPwdPub}'"
         }
     }
@@ -95,15 +101,18 @@ cd scripts/
 ./start-gretl.sh --docker_image sogis/gretl-runtime:14 --job_directory /home/gretl --task_name gradleTaskName -Pparam1=1 -Pparam2=2
 ```
 
-Meistens benötigt ein GRETL-Job eine Quell- und eine Ziel-Datenbank. Hierfür können lokal folgende Umgebungsvariablen gesetzt werden (Werte entsprechend anpassen); sie werden der GRETL Runtime als Parameter übergeben und können im GRETL-Skript als Variablen genutzt werden:
+Meistens benötigt ein GRETL-Job Zugriff auf Datenbanken. Hierfür können lokal für die Entwicklung von GRETL-Jobs folgende Umgebungsvariablen gesetzt werden (Werte entsprechend anpassen); sie werden von *start-gretl.sh* der GRETL Runtime als Parameter übergeben und können im GRETL-Skript als Variablen (Namen siehe bei der Beschreibung von *build.gradle*) genutzt werden:
 
 ```
 export DB_URI_SOGIS=jdbc:postgresql://127.0.0.1/foodb
 export DB_USER_SOGIS=foo
 export DB_PWD_SOGIS=foopassword
-export DB_URI_PUB=jdbc:postgresql://localhost:5432/bardb?ssl=true\&sslfactory=org.postgresql.ssl.NonValidatingFactory
-export DB_USER_PUB=bar
-export DB_PWD_PUB=barpassword
+export DB_URI_EDIT=jdbc:postgresql://localhost/bardb?ssl=true\&sslfactory=org.postgresql.ssl.NonValidatingFactory
+export DB_USER_EDIT=bar
+export DB_PWD_EDIT=barpassword
+export DB_URI_PUB=jdbc:postgresql://localhost:5432/bazdb?ssl=true\&sslfactory=org.postgresql.ssl.NonValidatingFactory
+export DB_USER_PUB=barbar
+export DB_PWD_PUB=barbarpassword
 ```
 
 Unter Ubuntu können diese Befehle in die Datei ~/.profile eingetragen werden, damit die Umgebungsvariablen immer verfügbar sind.
