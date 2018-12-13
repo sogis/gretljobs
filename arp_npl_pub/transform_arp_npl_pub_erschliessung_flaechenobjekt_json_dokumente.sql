@@ -9,7 +9,9 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS
     0 AS "depth" 
   FROM 
     arp_npl.rechtsvorschrften_hinweisweiteredokumente
-  
+  WHERE
+    ursprung != hinweis
+
   UNION ALL
   
   SELECT 
