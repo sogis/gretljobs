@@ -97,9 +97,10 @@ Mit `authorization.permissions` kann angegeben werden, welcher Benutzer oder wel
 Docker Image mit der GRETL runtime starten für die Job Entwicklung.
 
 ```
-cd scripts/
-./start-gretl.sh --docker_image sogis/gretl-runtime:14 --job_directory /home/gretl --task_name gradleTaskName -Pparam1=1 -Pparam2=2
+scripts/start-gretl.sh --docker-image sogis/gretl-runtime:latest --job-directory ~/gretljobs/jobname [taskName...] [--option-name...]
 ```
+
+Bei [--option-name...] können beliebige Gradle-Optionen verwendet werden, auch z.B. `-Pmyprop=myvalue` und `-Dmyprop=myvalue`. Die Gradle-Optionen sind unter https://docs.gradle.org/current/userguide/command_line_interface.html beschrieben oder aus der Ausgabe des Befehls `gradle -h` ersichtlich. Die Reihenfolge aller Optionen ist beliebig.
 
 Meistens benötigt ein GRETL-Job Zugriff auf Datenbanken. Hierfür können lokal für die Entwicklung von GRETL-Jobs folgende Umgebungsvariablen gesetzt werden (Werte entsprechend anpassen); sie werden von *start-gretl.sh* der GRETL Runtime als Parameter übergeben und können im GRETL-Skript als Variablen (Namen siehe bei der Beschreibung von *build.gradle*) genutzt werden:
 
