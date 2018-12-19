@@ -30,9 +30,9 @@ WITH
     ),
 	not_assessed_area AS (
 		SELECT 
-		    'ch.so.afu_gefahrenkartierung.not_assessed'::varchar AS t_ili_tid,
+		    CAST(uuid_generate_v4() AS varchar) AS t_ili_tid,
 		    (ST_Dump(not_assessed_area_multipoly.area_multi)).geom AS area,
-			'SO'::text AS data_responsibility,			
+		   	'SO'::text AS data_responsibility,			
 			'not_assessed'::text AS fl_state_flooding,
 			'not_assessed'::text AS df_state_debris_flow,
 			'not_assessed'::text AS be_state_bank_erosion,
@@ -84,4 +84,4 @@ SELECT * FROM (
 	FROM
 		assessed_area
 ) AS ktso
-LIMIT 50
+LIMIT 0
