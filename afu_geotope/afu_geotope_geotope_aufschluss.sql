@@ -1,7 +1,7 @@
 SELECT
     code_petrografie.text AS petrografie,
-    NULL AS entstehung,
-    NULL AS oberflaechenform,
+    'bla' AS entstehung, -- welches Attribut?
+    code_oberflaechenform.text AS oberflaechenform,
     code_geologische_system_von.text AS geologisches_system_von,
     code_geologische_system_bis.text AS geologisches_system_bis,
     code_geologische_serie_von.text AS geologische_serie_von,
@@ -20,10 +20,10 @@ SELECT
     code_anthropogene_gefaehrdung.text AS anthropogene_gefaehrdung,
     lokalname,
     kantonal_gesch AS kant_geschuetztes_objekt,
-    ingeso_oid AS nummer,
+    ingeso_oid AS nummer, --korrekt?
     ingesonr_alt AS alte_inventar_nummer,
-    NULL AS hinweis_literatur,
-    wkb_geometry AS geometrie
+    quelle AS hinweis_literatur, --korrekt?
+    (ST_DUMP(wkb_geometry)).geom AS geometrie --gesplittet zu Polygon. Okay so?
 FROM
     ingeso.aufschluesse
     LEFT JOIN ingeso.code AS code_regionalgeologische_einheit
@@ -56,3 +56,8 @@ FROM
         ON aufschluesse.geowiss_wert = code_geowissenschaftlicher_wert.code_id
     LEFT JOIN ingeso.code AS code_anthropogene_gefaehrdung
         ON aufschluesse.gefaehrdung = code_anthropogene_gefaehrdung.code_id
+    LEFT JOIN ingeso.code AS code_oberflaechenform
+        ON aufschluesse.objektart_spez = code_oberflaechenform.code_id
+WHERE
+    "archive" = 0
+;
