@@ -26,6 +26,9 @@ resource_parameters=(
 -PdbUriSogis=\'$DB_URI_SOGIS\' \
 -PdbUserSogis=\'$DB_USER_SOGIS\' \
 -PdbPwdSogis=\'$DB_PWD_SOGIS\' \
+-PdbUriVerisoNplso=\'$DB_URI_VERISO_NPLSO\' \
+-PdbUserVerisoNplso=\'$DB_USER_VERISO_NPLSO\' \
+-PdbPwdVerisoNplso=\'$DB_PWD_VERISO_NPLSO\' \
 -PdbUriEdit=\'$DB_URI_EDIT\' \
 -PdbUserEdit=\'$DB_USER_EDIT\' \
 -PdbPwdEdit=\'$DB_PWD_EDIT\' \
@@ -35,10 +38,20 @@ resource_parameters=(
 -PdbUriAltlast4web=\'$DB_URI_ALTLAST4WEB\' \
 -PdbUserAltlast4web=\'$DB_USER_ALTLAST4WEB\' \
 -PdbPwdAltlast4web=\'$DB_PWD_ALTLAST4WEB\' \
+-PdbUriKaso=\'$DB_URI_KASO\' \
+-PdbUserKaso=\'$DB_USER_KASO\' \
+-PdbPwdKaso=\'$DB_PWD_KASO\' \
+-PdbUriCapitastra=\'$DB_URI_CAPITASTRA\' \
+-PdbUserCapitastra=\'$DB_USER_CAPITASTRA\' \
+-PdbPwdCapitastra=\'$DB_PWD_CAPITASTRA\' \
+-PftpServerZivilschutz=\'$FTP_SERVER_ZIVILSCHUTZ\' \
+-PftpUserZivilschutz=\'$FTP_USER_ZIVILSCHUTZ\' \
+-PftpPwdZivilschutz=\'$FTP_PWD_ZIVILSCHUTZ\' \
 -PaiServer=\'$AI_SERVER\' \
 -PaiUser=\'$AI_USER\' \
 -PaiPwd=\'$AI_PWD\' \
 )
+# For accessing the "GRETL share", use the gretlShare variable.
 
 declare gretl_cmd="gretl ${gradle_options[@]} -PgretlShare=/tmp/gretl-share ${resource_parameters[@]}"
 
