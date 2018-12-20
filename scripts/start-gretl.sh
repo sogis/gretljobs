@@ -22,7 +22,7 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-db_parameter=(
+resource_parameters=(
 -PdbUriSogis=\'$DB_URI_SOGIS\' \
 -PdbUserSogis=\'$DB_USER_SOGIS\' \
 -PdbPwdSogis=\'$DB_PWD_SOGIS\' \
@@ -35,9 +35,12 @@ db_parameter=(
 -PdbUriAltlast4web=\'$DB_URI_ALTLAST4WEB\' \
 -PdbUserAltlast4web=\'$DB_USER_ALTLAST4WEB\' \
 -PdbPwdAltlast4web=\'$DB_PWD_ALTLAST4WEB\' \
+-PaiServer=\'$AI_SERVER\' \
+-PaiUser=\'$AI_USER\' \
+-PaiPwd=\'$AI_PWD\' \
 )
 
-declare gretl_cmd="gretl ${gradle_options[@]} -PgretlShare=/tmp/gretl-share ${db_parameter[@]}"
+declare gretl_cmd="gretl ${gradle_options[@]} -PgretlShare=/tmp/gretl-share ${resource_parameters[@]}"
 
 echo "======================================================="
 echo "Starts the GRETL runtime to execute the given GRETL job"
