@@ -30,8 +30,7 @@ node ("gretl") {
             to: '${DEFAULT_RECIPIENTS}',
             recipientProviders: [requestor()],
             subject: "FAILED: Job ${env.JOB_NAME} ${env.BUILD_DISPLAY_NAME}",
-            body: "FAILED: Job ${env.JOB_NAME} ${env.BUILD_DISPLAY_NAME}: Check console output at ${env.BUILD_URL}",
-            attachLog: true
+            body: "FAILED: Job ${env.JOB_NAME} ${env.BUILD_DISPLAY_NAME}. Check console output at ${env.BUILD_URL}"
         )
         throw e
     }
