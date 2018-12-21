@@ -1,7 +1,17 @@
 SELECT
-    code_petrografie.text AS petrografie,
-    'bla' AS entstehung, -- welches Attribut?
-    groesse,
+    CASE 
+        WHEN code_petrografie.text = 'Penninischer Grünschiefer'
+            THEN 'Penninischer_Gruenschiefer'
+        WHEN code_petrografie.text = 'Casanaschiefer (Ton-Talk-Glimmerschiefer)'
+            THEN 'Casanaschiefer_Ton_Talk_Glimmerschiefer'
+        ELSE replace(replace(trim(code_petrografie.text), ' ', '_'), '-', '_')
+    END AS petrografie,
+    CASE
+        WHEN code_entstehung.text = 'natürlich'
+            THEN 'natuerlich'
+        ELSE code_entstehung.text
+    END AS entstehung,
+    regexp_replace(groesse, E'[\\n\\r]+', ' ', 'g' ) AS groesse,
     CASE 
         WHEN eiszeit = 473
             THEN 'Wuerm'
@@ -16,25 +26,43 @@ SELECT
             THEN TRUE
         WHEN schalenstein = 477
             THEN FALSE
-        ELSE FALSE --temporäre Lösung
+        ELSE NULL
     END AS schalenstein,
     aufenthaltsort,
     objektname,
     code_regionalgeologische_einheit.text AS regionalgeologische_einheit,
     code_bedeutung.text AS bedeutung,
-    code_zustand.text AS zustand,
+    CASE
+        WHEN code_zustand.text = 'nicht beeinträchtigt'
+            THEN 'nicht_beeintraechtigt'
+        WHEN code_zustand.text = 'gering beeinträchtigt'
+            THEN 'gering_beeintraechtigt'
+        WHEN code_zustand.text = 'stark beeinträchtigt'
+            THEN 'stark_beeintraechtigt'
+        WHEN code_zustand.text = 'zerstört'
+            THEN 'zerstoert'
+        ELSE code_zustand.text 
+    END AS zustand,
     kurzbeschreibung AS beschreibung,
-    code_schuetzwuerdigkeit.text AS schutzwuerdigkeit,
+    CASE
+        WHEN code_schuetzwuerdigkeit.text = 'schutzwürdig'
+            THEN 'schutzwuerdig'
+        WHEN code_schuetzwuerdigkeit.text = 'geschützt'
+            THEN 'geschuetzt'
+        ELSE trim(code_schuetzwuerdigkeit.text)
+    END AS schutzwuerdigkeit,
     code_geowissenschaftlicher_wert.text AS geowissenschaftlicher_wert,
     code_anthropogene_gefaehrdung.text AS anthropogene_gefaehrdung,
     lokalname,
     kantonal_gesch AS kant_geschuetztes_objekt,
-    ingeso_oid AS nummer, --korrekt?
+    ingeso_oid AS nummer,
     ingesonr_alt AS alte_inventar_nummer,
-    quelle AS hinweis_literatur, --korrekt?
+    regexp_replace(quelle, E'[\\n\\r]+', ' ', 'g' ) AS hinweis_literatur,
     wkb_geometry AS geometrie
 FROM
     ingeso.erratiker
+    LEFT JOIN ingeso.code AS code_entstehung
+        ON erratiker.objektart_allg = code_entstehung.code_id
     LEFT JOIN ingeso.code AS code_regionalgeologische_einheit
         ON erratiker.regio_geol_einheit = code_regionalgeologische_einheit.code_id
     LEFT JOIN ingeso.code AS code_petrografie
