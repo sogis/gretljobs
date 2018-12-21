@@ -17,7 +17,11 @@ SELECT
         WHEN landschaftstyp = 520
             THEN 'Tal'
     END AS landschaftstyp,
-    'bla' AS entstehung, -- welches Attribut?
+    CASE
+        WHEN code_entstehung.text = 'natürlich'
+            THEN 'natuerlich'
+        ELSE code_entstehung.text
+    END AS entstehung,
     CASE
         WHEN objektart_spez = 138
             THEN 'Grundmoraene'
@@ -29,24 +33,42 @@ SELECT
             THEN 'Gletschermuehle'
         WHEN objektart_spez = 420
             THEN 'tektonische_Struktur'
-        ELSE code_oberflaechenform.text 
+        ELSE trim(code_oberflaechenform.text)
     END AS oberflaechenform,
     objektname,
     code_regionalgeologische_einheit.text AS regionalgeologische_einheit,
-    code_bedeutung.text AS bedeutung,
-    code_zustand.text AS zustand,
+    trim(code_bedeutung.text) AS bedeutung,
+    CASE
+        WHEN code_zustand.text = 'nicht beeinträchtigt'
+            THEN 'nicht_beeintraechtigt'
+        WHEN code_zustand.text = 'gering beeinträchtigt'
+            THEN 'gering_beeintraechtigt'
+        WHEN code_zustand.text = 'stark beeinträchtigt'
+            THEN 'stark_beeintraechtigt'
+        WHEN code_zustand.text = 'zerstört'
+            THEN 'zerstoert'
+        ELSE code_zustand.text 
+    END AS zustand,
     kurzbeschreibung AS beschreibung,
-    code_schuetzwuerdigkeit.text AS schutzwuerdigkeit,
+    CASE
+        WHEN code_schuetzwuerdigkeit.text = 'schutzwürdig'
+            THEN 'schutzwuerdig'
+        WHEN code_schuetzwuerdigkeit.text = 'geschützt'
+            THEN 'geschuetzt'
+        ELSE trim(code_schuetzwuerdigkeit.text)
+    END AS schutzwuerdigkeit,
     code_geowissenschaftlicher_wert.text AS geowissenschaftlicher_wert,
     code_anthropogene_gefaehrdung.text AS anthropogene_gefaehrdung,
     lokalname,
     kantonal_gesch AS kant_geschuetztes_objekt,
-    ingeso_oid AS nummer, --korrekt?
+    ingeso_oid AS nummer,
     ingesonr_alt AS alte_inventar_nummer,
-    quelle AS hinweis_literatur, --korrekt?
-    (ST_DUMP(wkb_geometry)).geom AS geometrie --gesplittet zu Polygon. Okay so?
+    quelle AS hinweis_literatur,
+    ST_Multi(wkb_geometry) AS geometrie
 FROM
     ingeso.landsformen
+    LEFT JOIN ingeso.code AS code_entstehung
+        ON landsformen.objektart_allg = code_entstehung.code_id
     LEFT JOIN ingeso.code AS code_oberflaechenform
         ON landsformen.objektart_spez = code_oberflaechenform.code_id
     LEFT JOIN ingeso.code AS code_regionalgeologische_einheit

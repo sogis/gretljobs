@@ -1,17 +1,33 @@
 SELECT
     objektname,
     code_regionalgeologische_einheit.text AS regionalgeologische_einheit,
-    code_bedeutung.text AS bedeutung,
-    code_zustand.text AS zustand,
+    trim(code_bedeutung.text) AS bedeutung,
+    CASE
+        WHEN code_zustand.text = 'nicht beeinträchtigt'
+            THEN 'nicht_beeintraechtigt'
+        WHEN code_zustand.text = 'gering beeinträchtigt'
+            THEN 'gering_beeintraechtigt'
+        WHEN code_zustand.text = 'stark beeinträchtigt'
+            THEN 'stark_beeintraechtigt'
+        WHEN code_zustand.text = 'zerstört'
+            THEN 'zerstoert'
+        ELSE code_zustand.text 
+    END AS zustand,
     kurzbeschreibung AS beschreibung,
-    code_schuetzwuerdigkeit.text AS schutzwuerdigkeit,
+    CASE
+        WHEN code_schuetzwuerdigkeit.text = 'schutzwürdig'
+            THEN 'schutzwuerdig'
+        WHEN code_schuetzwuerdigkeit.text = 'geschützt'
+            THEN 'geschuetzt'
+        ELSE trim(code_schuetzwuerdigkeit.text)
+    END AS schutzwuerdigkeit,
     code_geowissenschaftlicher_wert.text AS geowissenschaftlicher_wert,
     code_anthropogene_gefaehrdung.text AS anthropogene_gefaehrdung,
     lokalname,
     kantonal_gesch AS kant_geschuetztes_objekt,
-    ingeso_oid AS nummer, --korrekt?
+    ingeso_oid AS nummer,
     ingesonr_alt AS alte_inventar_nummer,
-    quelle AS hinweis_literatur, --korrekt?
+    quelle AS hinweis_literatur,
     wkb_geometry AS geometrie
 FROM
     ingeso.hoehlen
