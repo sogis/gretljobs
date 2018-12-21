@@ -27,7 +27,7 @@ node ("gretl") {
     catch (e) {
         echo 'Job failed'
         emailext (
-            to: ${DEFAULT_RECIPIENTS}
+            to: '${DEFAULT_RECIPIENTS}',
             recipientProviders: [requestor()],
             subject: "FAILED: Job ${env.JOB_NAME} ${env.BUILD_DISPLAY_NAME}",
             body: "FAILED: Job ${env.JOB_NAME} ${env.BUILD_DISPLAY_NAME}: Check console output at ${env.BUILD_URL}",
