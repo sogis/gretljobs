@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAfuGeotope'
+defaultTasks 'transferAfuGeotopeRelations'
 
 task transferAfuGeotope(type: Db2Db){
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub] //[dbUriSogis, dbUserSogis, dbPwdSogis]
@@ -15,7 +15,22 @@ task transferAfuGeotope(type: Db2Db){
             new TransferSet('afu_geotope_geotope_quelle.sql', 'afu_geotope.geotope_quelle', true),
             new TransferSet('afu_geotope_geotope_landschaftsform.sql', 'afu_geotope.geotope_landschaftsform', true),
             new TransferSet('afu_geotope_geotope_fachbereich.sql', 'afu_geotope.geotope_fachbereich', true),
+    ]
+}
+
+task transferAfuGeotopeRelations(type: Db2Db, dependsOn:transferAfuGeotope){
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub] //[dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
             new TransferSet('afu_geotope_geotope_aufschluss_fachbereich.sql',
-                    'afu_geotope.geotope_aufschluss_fachbereich', true)
+                    'afu_geotope.geotope_aufschluss_fachbereich', true),
+            new TransferSet('afu_geotope_geotope_erratiker_fachbereich.sql',
+                    'afu_geotope.geotope_erratiker_fachbereich', true),
+            new TransferSet('afu_geotope_geotope_hoehle_fachbereich.sql', 'afu_geotope.geotope_hoehle_fachbereich',
+                    true),
+            new TransferSet('afu_geotope_geotope_quelle_fachbereich.sql', 'afu_geotope.geotope_quelle_fachbereich',
+                    true),
+            new TransferSet('afu_geotope_geotope_landform_fachbereich.sql', 'afu_geotope.geotope_landform_fachbereich',
+                    true)
     ]
 }

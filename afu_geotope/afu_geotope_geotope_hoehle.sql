@@ -21,7 +21,7 @@ SELECT
             THEN 'geschuetzt'
         ELSE trim(code_schuetzwuerdigkeit.text)
     END AS schutzwuerdigkeit,
-    code_geowissenschaftlicher_wert.text AS geowissenschaftlicher_wert,
+    replace(trim(code_geowissenschaftlicher_wert.text), ' ', '_') AS geowissenschaftlicher_wert,
     code_anthropogene_gefaehrdung.text AS anthropogene_gefaehrdung,
     lokalname,
     kantonal_gesch AS kant_geschuetztes_objekt,

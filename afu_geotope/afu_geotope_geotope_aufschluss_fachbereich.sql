@@ -63,3 +63,4 @@ WHERE
     aufschluesse."archive" = 0
     AND
     aufschluesse.fachbereich3 IS NOT NULL
+;
