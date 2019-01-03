@@ -3,7 +3,7 @@ SELECT
     "__gid",
     ogc_fid,
     o_art,
-    geometrie
+    ST_Multi(geometrie) AS geometrie
 FROM
     arp_richtplan_2017.kant_uferschutzzone
 WHERE
