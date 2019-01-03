@@ -9,9 +9,6 @@ Class mapping between the models:
 - Erhebungsgebiet --> assessment_area
 - GK_MGDM --> hazard_area
 - IK_synoptisch_MGDM --> synoptic_intensity
-
-Go on: 
-- Dann zip task
 */
 
 import ch.so.agi.gretl.tasks.*
@@ -22,19 +19,17 @@ import java.nio.file.Paths
 import java.io.File
 
 defaultTasks 'uploadGefkartMgdm'
-//defaultTasks 'mapGefkart2Mgdm'
-
 
 /*
 1. Transform the data from model SO_AfU_Gefahrenkartierung into bafu model Hazard_Mapping using GRETL sql
 */
 task mapGefkart2Mgdm(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-		new TransferSet('assessment_area.sql', 'afu_gefahrenkartierung_export_ai.hazard_mapping_assessment_area', true),
-		new TransferSet('hazard_area.sql', 'afu_gefahrenkartierung_export_ai.hazard_mapping_hazard_area', true),
-		new TransferSet('synoptic_intensity.sql', 'afu_gefahrenkartierung_export_ai.hazard_mapping_synoptic_intensity', true)
+		//new TransferSet('assessment_area.sql', 'afu_gefahrenkartierung_export_ai.assessment_area', true),
+		new TransferSet('hazard_area.sql', 'afu_gefahrenkartierung_export_ai.hazard_area', true),
+		new TransferSet('synoptic_intensity.sql', 'afu_gefahrenkartierung_export_ai.synoptic_intensity', true)
 	];        
 }
 
@@ -43,7 +38,6 @@ task mapGefkart2Mgdm(type: Db2Db){
 */
 def jobTempRoot = 'gefkart'
 def zipContentDir = file(Paths.get(gretlShare, jobTempRoot, 'zipcontent'))
-        //file('/home/gradle/project/tmp/gefkart/zipcontent')
 def tmpDir = zipContentDir.getParentFile()
 
 def loggingFile = file(Paths.get(tmpDir.toString(), "iliexport.log"))
@@ -52,7 +46,7 @@ def exportFile = file(Paths.get(zipContentDir.toString(), exportFileName))
 
 task exportGefkartMgdm(type: Ili2pgExport, dependsOn: 'mapGefkart2Mgdm') {
     description = "Exportiert die ins Gefahrenkartierungs-MGDM umgebauten Daten in ein xtf-File."
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "afu_gefahrenkartierung_export_ai"
     models = "Hazard_Mapping_LV95_V1_2"
     logFile = loggingFile
@@ -73,23 +67,28 @@ task zipGefkartMgdm(type: Zip, dependsOn: 'exportGefkartMgdm'){
     from zipContentDir
 }
 
-
-def aiLogin = aiUser + ":" + aiPwd
-//def aiLogin = 'geodienste_so:fuubar';
-//def aiServer = 'www-integration.geodienste.ch'
-
-def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
-def zipFile = new File(tmpDir, zipName)
-
 task uploadGefkartMgdm(dependsOn: zipGefkartMgdm) {
     description = "Lädt die Gefahrenkartierungsdaten (MGDM vom Bund) in die Aggregationsinfrastruktur hoch."
+
+    def aiLogin = aiUser + ":" + aiPwd
+    def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
+    def zipFile = new File(tmpDir, zipName)
+
+    def file_kb = Math.round(exportFile.length() / 1000.0)
+    def zip_kb = Math.round(zipFile.length() / 1000.0)
+
     doLast {
-        println "Groesse der hochzuladenden Dateien (byte). XTF unkomprimiert: " + exportFile.length() + " ZIP: " + zipFile.length()
+        println "Groesse der hochzuladenden Dateien (kb). XTF unkomprimiert: " + file_kb + " ZIP: " + zip_kb
         def response = ["curl", "-u", aiLogin, "-F", "topic=gefahrenkarten", "-F",
                         "lv95_file=@" + zipFile, "-F", "publish=true", serverUrl
                         ].execute().text
         println(response)
     }
+}
+
+task removeShare(type: Delete, dependsOn: uploadGefkartMgdm){
+    description = "Entfernt das Verzeichnis [jobTempRoot] aus dem gretl share"
+    delete tmpDir
 }
 
 
