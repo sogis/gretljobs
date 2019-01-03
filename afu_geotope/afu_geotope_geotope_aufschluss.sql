@@ -213,7 +213,7 @@ SELECT
     ingeso_oid AS nummer,
     ingesonr_alt AS alte_inventar_nummer,
     regexp_replace(quelle, E'[\\n\\r]+', ' ', 'g' ) AS hinweis_literatur,
-    ST_Multi(wkb_geometry) AS geometrie
+    ST_Multi(ST_SnapToGrid(wkb_geometry, 0.001)) AS geometrie
 FROM
     ingeso.aufschluesse
     LEFT JOIN ingeso.code AS code_entstehung

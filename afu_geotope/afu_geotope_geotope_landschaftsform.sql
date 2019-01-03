@@ -57,14 +57,14 @@ SELECT
             THEN 'geschuetzt'
         ELSE trim(code_schuetzwuerdigkeit.text)
     END AS schutzwuerdigkeit,
-    code_geowissenschaftlicher_wert.text AS geowissenschaftlicher_wert,
+    replace(trim(code_geowissenschaftlicher_wert.text), ' ', '_') AS geowissenschaftlicher_wert,
     code_anthropogene_gefaehrdung.text AS anthropogene_gefaehrdung,
     lokalname,
     kantonal_gesch AS kant_geschuetztes_objekt,
     ingeso_oid AS nummer,
     ingesonr_alt AS alte_inventar_nummer,
     quelle AS hinweis_literatur,
-    ST_Multi(wkb_geometry) AS geometrie
+    ST_Multi(ST_SnapToGrid(wkb_geometry, 0.001)) AS geometrie
 FROM
     ingeso.landsformen
     LEFT JOIN ingeso.code AS code_entstehung
