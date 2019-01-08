@@ -1,6 +1,3 @@
-DELETE FROM arp_laermempfindlichkeit_mgdm.geobasisdaten_typ
-;
-
 INSERT INTO arp_laermempfindlichkeit_mgdm.geobasisdaten_typ(
     code,
     bezeichnung,

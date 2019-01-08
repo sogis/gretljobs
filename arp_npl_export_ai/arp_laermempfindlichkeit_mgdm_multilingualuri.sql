@@ -1,6 +1,3 @@
-DELETE FROM arp_laermempfindlichkeit_mgdm.multilingualuri
-;
-
 INSERT INTO arp_laermempfindlichkeit_mgdm.multilingualuri(
     rechtsvrschrftn_dkment_textimweb
 )
