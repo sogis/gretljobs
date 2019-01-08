@@ -23,6 +23,8 @@ FROM
                 AND
                 dokument_so.offiziellertitel IS NULL
                 AND
+                dokument_ch.offiziellertitel IS NULL
+                AND
                 dokument_so.publiziertab = dokument_ch.publiziertab
             )
             OR 
@@ -58,6 +60,8 @@ FROM
                 dokument_so.titel = dokument_ch.titel
                 AND
                 dokument_so.offiziellertitel IS NULL
+                AND
+                dokument_ch.offiziellertitel IS NULL
                 AND
                 dokument_so.publiziertab = dokument_ch.publiziertab
             )
@@ -97,6 +101,8 @@ FROM
                 AND
                 dokument_so.offiziellertitel IS NULL
                 AND
+                dokument_ch.offiziellertitel IS NULL
+                AND
                 dokument_so.publiziertab = dokument_ch.publiziertab
             )
             OR 
@@ -132,6 +138,8 @@ FROM
                 dokument_so.titel = dokument_ch.titel
                 AND
                 dokument_so.offiziellertitel IS NULL
+                AND
+                dokument_ch.offiziellertitel IS NULL
                 AND
                 dokument_so.publiziertab = dokument_ch.publiziertab
             )
