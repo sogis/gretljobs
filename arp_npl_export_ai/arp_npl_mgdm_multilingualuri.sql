@@ -1,6 +1,3 @@
-DELETE FROM arp_npl_mgdm.multilingualuri
-;
-
 INSERT INTO arp_npl_mgdm.multilingualuri(
     rechtsvrschrftn_dkment_textimweb
 )

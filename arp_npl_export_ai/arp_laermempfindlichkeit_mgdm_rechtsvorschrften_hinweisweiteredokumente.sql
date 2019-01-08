@@ -1,6 +1,3 @@
-DELETE FROM arp_laermempfindlichkeit_mgdm.rechtsvorschrften_hinweisweiteredokumente
-;
-
 INSERT INTO arp_laermempfindlichkeit_mgdm.rechtsvorschrften_hinweisweiteredokumente(
     ursprung,
     hinweis

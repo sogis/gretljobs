@@ -1,6 +1,3 @@
-DELETE FROM arp_laermempfindlichkeit_mgdm.geobasisdaten_laermempfindlichkeit_zonenflaeche
-;
-
 INSERT INTO arp_laermempfindlichkeit_mgdm.geobasisdaten_laermempfindlichkeit_zonenflaeche (
     publiziertab,
     rechtsstatus,
