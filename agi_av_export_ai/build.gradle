@@ -33,10 +33,6 @@ def ZipName = 'LV95.zip'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
 
-def aiUser = "geodienste_so"
-def aiPwd = "ee4Aipai"
-def aiServer = "integration.geodienste.ch"
-
 def aiLogin = aiUser + ":" + aiPwd
 
 defaultTasks 'uploadAvCh'
