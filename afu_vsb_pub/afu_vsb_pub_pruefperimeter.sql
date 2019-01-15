@@ -272,7 +272,7 @@ SELECT
         WHEN belastungstyp = 7
             THEN 'Hg, Pb'
         WHEN belastungstyp = 8 OR belastungstyp = 220
-            THEN 'Pb, Cd, Cu, Zn, Hg, PAK'
+            THEN 'Pb, Cd, Cu, Zn, Hg, PAK, Pestizide'
         WHEN belastungstyp = 9
             THEN 'Pb, Cd, Cu, Zn, PAK'
         WHEN belastungstyp = 11
