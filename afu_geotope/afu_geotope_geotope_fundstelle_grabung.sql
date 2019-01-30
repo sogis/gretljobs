@@ -1,18 +1,24 @@
-WITH aufschluss AS (
+WITH fundstelle_grabung AS (
     SELECT
         CASE 
             WHEN code_petrografie.text = 'Penninischer Grünschiefer'
                 THEN 'Penninischer_Gruenschiefer'
             WHEN code_petrografie.text = 'Casanaschiefer (Ton-Talk-Glimmerschiefer)'
                 THEN 'Casanaschiefer'
+            WHEN petrografie IS NULL
+                THEN 'unbekannt'
             ELSE replace(replace(trim(code_petrografie.text), ' ', '_'), '-', '_')
         END AS petrografie,
+        CASE 
+            WHEN trim(aufenthaltsort_funde) = ''
+                THEN 'unbekannt'
+            ELSE trim(aufenthaltsort_funde)
+        END AS aufenthaltsort,
         CASE
-            WHEN code_entstehung.text = 'natürlich'
-                THEN 'natuerlich'
-            ELSE code_entstehung.text
-        END AS entstehung,
-        replace(trim(code_oberflaechenform.text), ' ', '_') AS oberflaechenform, 
+            WHEN trim(fundgegenstaende) = ''
+                THEN 'unbekannt'
+            ELSE trim(fundgegenstaende)
+        END AS fundgegenstaende, 
         CASE
             WHEN code_geologische_system_von.text = 'Tertiär (Paläogen)'
                 THEN 'Tertiaer'
@@ -214,43 +220,41 @@ WITH aufschluss AS (
         ingeso_oid AS nummer,
         ingesonr_alt AS alte_inventar_nummer,
         regexp_replace(quelle, E'[\\n\\r]+', ' ', 'g' ) AS hinweis_literatur,
-        ST_Multi(ST_SnapToGrid(wkb_geometry, 0.001)) AS geometrie
+        wkb_geometry AS geometrie
     FROM
-        ingeso.aufschluesse
-        LEFT JOIN ingeso.code AS code_entstehung
-            ON aufschluesse.objektart_allg = code_entstehung.code_id
+        ingeso.fundstl_grabungen
         LEFT JOIN ingeso.code AS code_regionalgeologische_einheit
-            ON aufschluesse.regio_geol_einheit = code_regionalgeologische_einheit.code_id
+            ON fundstl_grabungen.regio_geol_einheit = code_regionalgeologische_einheit.code_id
         LEFT JOIN ingeso.code AS code_geologische_system_von
-            ON aufschluesse.geol_sys_von = code_geologische_system_von.code_id
+            ON fundstl_grabungen.geol_sys_von = code_geologische_system_von.code_id
         LEFT JOIN ingeso.code AS code_geologische_system_bis
-            ON aufschluesse.geol_sys_bis = code_geologische_system_bis.code_id
+            ON fundstl_grabungen.geol_sys_bis = code_geologische_system_bis.code_id
         LEFT JOIN ingeso.code AS code_geologische_serie_von
-            ON aufschluesse.geol_serie_von = code_geologische_serie_von.code_id
+            ON fundstl_grabungen.geol_serie_von = code_geologische_serie_von.code_id
         LEFT JOIN ingeso.code AS code_geologische_serie_bis
-            ON aufschluesse.geol_serie_bis = code_geologische_serie_bis.code_id
+            ON fundstl_grabungen.geol_serie_bis = code_geologische_serie_bis.code_id
         LEFT JOIN ingeso.code AS code_geologische_stufe_von
-            ON aufschluesse.geol_stufe_von = code_geologische_stufe_von.code_id
+            ON fundstl_grabungen.geol_stufe_von = code_geologische_stufe_von.code_id
         LEFT JOIN ingeso.code AS code_geologische_stufe_bis
-            ON aufschluesse.geol_stufe_bis = code_geologische_stufe_bis.code_id
+            ON fundstl_grabungen.geol_stufe_bis = code_geologische_stufe_bis.code_id
         LEFT JOIN ingeso.code AS code_geologische_schicht_von
-            ON aufschluesse.geol_schicht_von = code_geologische_schicht_von.code_id
+            ON fundstl_grabungen.geol_schicht_von = code_geologische_schicht_von.code_id
         LEFT JOIN ingeso.code AS code_geologische_schicht_bis
-            ON aufschluesse.geol_schicht_bis = code_geologische_schicht_bis.code_id
+            ON fundstl_grabungen.geol_schicht_bis = code_geologische_schicht_bis.code_id
         LEFT JOIN ingeso.code AS code_petrografie
-            ON aufschluesse.petrografie = code_petrografie.code_id
+            ON fundstl_grabungen.petrografie = code_petrografie.code_id
         LEFT JOIN ingeso.code AS code_bedeutung
-            ON aufschluesse.bedeutung = code_bedeutung.code_id
+            ON fundstl_grabungen.bedeutung = code_bedeutung.code_id
         LEFT JOIN ingeso.code AS code_zustand
-            ON aufschluesse.zustand= code_zustand.code_id
+            ON fundstl_grabungen.zustand= code_zustand.code_id
         LEFT JOIN ingeso.code AS code_schuetzwuerdigkeit
-            ON aufschluesse.schutzbedarf = code_schuetzwuerdigkeit.code_id
+            ON fundstl_grabungen.schutzbedarf = code_schuetzwuerdigkeit.code_id
         LEFT JOIN ingeso.code AS code_geowissenschaftlicher_wert
-            ON aufschluesse.geowiss_wert = code_geowissenschaftlicher_wert.code_id
+            ON fundstl_grabungen.geowiss_wert = code_geowissenschaftlicher_wert.code_id
         LEFT JOIN ingeso.code AS code_anthropogene_gefaehrdung
-            ON aufschluesse.gefaehrdung = code_anthropogene_gefaehrdung.code_id
+            ON fundstl_grabungen.gefaehrdung = code_anthropogene_gefaehrdung.code_id
         LEFT JOIN ingeso.code AS code_oberflaechenform
-            ON aufschluesse.objektart_spez = code_oberflaechenform.code_id
+            ON fundstl_grabungen.objektart_spez = code_oberflaechenform.code_id
     WHERE
         "archive" = 0
 ),
@@ -275,9 +279,9 @@ lithostratigraphie AS (
 )
 
 SELECT
-    aufschluss.petrografie,
-    aufschluss.entstehung,
-    aufschluss.oberflaechenform,
+    fundstelle_grabung.petrografie,
+    fundstelle_grabung.aufenthaltsort,
+    fundstelle_grabung.fundgegenstaende,
     lithostratigraphie_von.geologisches_system AS geologisches_system_von,
     lithostratigraphie_bis.geologisches_system AS geologisches_system_bis,
     lithostratigraphie_von.geologische_serie AS geologische_serie_von,
@@ -286,42 +290,42 @@ SELECT
     lithostratigraphie_bis.geologische_stufe AS geologische_stufe_bis,
     lithostratigraphie_von.geologische_schicht AS geologische_schicht_von,
     lithostratigraphie_bis.geologische_schicht AS geologische_schicht_bis,
-    aufschluss.objektname,
-    aufschluss.regionalgeologische_einheit,
-    aufschluss.bedeutung,
-    aufschluss.zustand,
-    aufschluss.beschreibung,
-    aufschluss.schutzwuerdigkeit,
-    aufschluss.geowissenschaftlicher_wert,
-    aufschluss.anthropogene_gefaehrdung,
-    aufschluss.lokalname,
-    aufschluss.kant_geschuetztes_objekt,
-    aufschluss.nummer,
-    aufschluss.alte_inventar_nummer,
-    aufschluss.hinweis_literatur,
-    aufschluss.geometrie,
+    fundstelle_grabung.objektname,
+    fundstelle_grabung.regionalgeologische_einheit,
+    fundstelle_grabung.bedeutung,
+    fundstelle_grabung.zustand,
+    fundstelle_grabung.beschreibung,
+    fundstelle_grabung.schutzwuerdigkeit,
+    fundstelle_grabung.geowissenschaftlicher_wert,
+    fundstelle_grabung.anthropogene_gefaehrdung,
+    fundstelle_grabung.lokalname,
+    fundstelle_grabung.kant_geschuetztes_objekt,
+    fundstelle_grabung.nummer,
+    fundstelle_grabung.alte_inventar_nummer,
+    fundstelle_grabung.hinweis_literatur,
+    fundstelle_grabung.geometrie,
     'inKraft' AS rechtstatus,
     'Amt für Umwelt' AS zustaendige_stelle_name,
     'https://www.so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-umwelt/' AS zustaendige_stelle_amtimweb,
     FALSE AS oereb_objekt
 FROM
-    aufschluss,
+    fundstelle_grabung,
     lithostratigraphie AS lithostratigraphie_von,
     lithostratigraphie AS lithostratigraphie_bis
 WHERE
-    aufschluss.geologische_schicht_von = lithostratigraphie_von.geologische_schicht_bezeichnung
+    fundstelle_grabung.geologische_schicht_von = lithostratigraphie_von.geologische_schicht_bezeichnung
     AND
-    aufschluss.geologische_serie_von = lithostratigraphie_von.geologische_serie_bezeichnung
+    fundstelle_grabung.geologische_serie_von = lithostratigraphie_von.geologische_serie_bezeichnung
     AND
-    aufschluss.geologische_stufe_von = lithostratigraphie_von.geologische_stufe_bezeichnung
+    fundstelle_grabung.geologische_stufe_von = lithostratigraphie_von.geologische_stufe_bezeichnung
     AND
-    aufschluss.geologisches_system_von = lithostratigraphie_von.geologisches_system_bezeichnung
+    fundstelle_grabung.geologisches_system_von = lithostratigraphie_von.geologisches_system_bezeichnung
     AND
-    aufschluss.geologische_schicht_bis = lithostratigraphie_bis.geologische_schicht_bezeichnung
+    fundstelle_grabung.geologische_schicht_bis = lithostratigraphie_bis.geologische_schicht_bezeichnung
     AND
-    aufschluss.geologische_serie_bis = lithostratigraphie_bis.geologische_serie_bezeichnung
+    fundstelle_grabung.geologische_serie_bis = lithostratigraphie_bis.geologische_serie_bezeichnung
     AND
-    aufschluss.geologische_stufe_bis = lithostratigraphie_bis.geologische_stufe_bezeichnung
+    fundstelle_grabung.geologische_stufe_bis = lithostratigraphie_bis.geologische_stufe_bezeichnung
     AND
-    aufschluss.geologisches_system_bis = lithostratigraphie_bis.geologisches_system_bezeichnung
+    fundstelle_grabung.geologisches_system_bis = lithostratigraphie_bis.geologisches_system_bezeichnung
 ;
