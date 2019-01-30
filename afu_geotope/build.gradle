@@ -3,9 +3,9 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAfuGeotopeRelations'
+defaultTasks 'transferAfuGeotopeLithostratigraphie', 'transferAfuGeotope'
 
-task transferAfuGeotope(type: Db2Db){
+task transferAfuGeotopeBasic(type: Db2Db){
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub] //[dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -14,11 +14,13 @@ task transferAfuGeotope(type: Db2Db){
             new TransferSet('afu_geotope_geotope_hoehle.sql', 'afu_geotope.geotope_hoehle', true),
             new TransferSet('afu_geotope_geotope_quelle.sql', 'afu_geotope.geotope_quelle', true),
             new TransferSet('afu_geotope_geotope_landschaftsform.sql', 'afu_geotope.geotope_landschaftsform', true),
-            new TransferSet('afu_geotope_geotope_fachbereich.sql', 'afu_geotope.geotope_fachbereich', true),
+            new TransferSet('afu_geotope_geotope_fundstelle_grabung.sql', 'afu_geotope.geotope_fundstelle_grabung',
+                    true),
+            new TransferSet('afu_geotope_geotope_fachbereich.sql', 'afu_geotope.geotope_fachbereich', true)
     ]
 }
 
-task transferAfuGeotopeRelations(type: Db2Db, dependsOn:transferAfuGeotope){
+task transferAfuGeotopeRelations(type: Db2Db){
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub] //[dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -31,6 +33,65 @@ task transferAfuGeotopeRelations(type: Db2Db, dependsOn:transferAfuGeotope){
             new TransferSet('afu_geotope_geotope_quelle_fachbereich.sql', 'afu_geotope.geotope_quelle_fachbereich',
                     true),
             new TransferSet('afu_geotope_geotope_landform_fachbereich.sql', 'afu_geotope.geotope_landform_fachbereich',
-                    true)
+                    true),
+            new TransferSet('afu_geotope_geotope_fundstelle_grabung_fachbereich.sql',
+                    'afu_geotope.geotope_fundstelle_grabung_fachbereich', true)
+
     ]
+}
+
+task transferAfuGeotope {
+    dependsOn 'transferAfuGeotopeBasic'
+    dependsOn 'transferAfuGeotopeRelations'
+
+    tasks.findByName('transferAfuGeotopeRelations').mustRunAfter 'transferAfuGeotopeBasic'
+}
+
+
+
+task transferAfuGeotopeGeologischesSystem(type: Db2Db){
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub] //[dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('afu_geotope_lithostratigrphie_geologisches_system.sql',
+                    'afu_geotope.lithostratigrphie_geologisches_system', true)
+    ]
+}
+
+task transferAfuGeotopeGeologischeSerie(type: Db2Db){
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub] //[dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('afu_geotope_lithostratigrphie_geologische_serie.sql',
+                    'afu_geotope.lithostratigrphie_geologische_serie', true)
+    ]
+}
+
+task transferAfuGeotopeGeologischeStufe(type: Db2Db){
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub] //[dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('afu_geotope_lithostratigrphie_geologische_stufe.sql',
+                    'afu_geotope.lithostratigrphie_geologische_stufe', true)
+    ]
+}
+
+task transferAfuGeotopeGeologischeSchicht(type: Db2Db){
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub] //[dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('afu_geotope_lithostratigrphie_geologische_schicht.sql',
+                    'afu_geotope.lithostratigrphie_geologische_schicht', true)
+    ]
+}
+
+task transferAfuGeotopeLithostratigraphie {
+    dependsOn 'transferAfuGeotopeGeologischesSystem'
+    dependsOn 'transferAfuGeotopeGeologischeSerie'
+    dependsOn 'transferAfuGeotopeGeologischeStufe'
+    dependsOn 'transferAfuGeotopeGeologischeSchicht'
+
+    tasks.findByName('transferAfuGeotopeGeologischeSchicht').mustRunAfter 'transferAfuGeotopeGeologischeStufe'
+    tasks.findByName('transferAfuGeotopeGeologischeStufe').mustRunAfter 'transferAfuGeotopeGeologischeSerie'
+    tasks.findByName('transferAfuGeotopeGeologischeSerie').mustRunAfter 'transferAfuGeotopeGeologischesSystem'
 }

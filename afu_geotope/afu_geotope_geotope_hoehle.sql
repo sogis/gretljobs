@@ -28,7 +28,11 @@ SELECT
     ingeso_oid AS nummer,
     ingesonr_alt AS alte_inventar_nummer,
     quelle AS hinweis_literatur,
-    wkb_geometry AS geometrie
+    wkb_geometry AS geometrie,
+    'inKraft' AS rechtstatus,
+    'Amt für Umwelt' AS zustaendige_stelle_name,
+    'https://www.so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-umwelt/' AS zustaendige_stelle_amtimweb,
+    FALSE AS oereb_objekt
 FROM
     ingeso.hoehlen
     LEFT JOIN ingeso.code AS code_regionalgeologische_einheit
