@@ -107,9 +107,9 @@ gebaeudeeingang_strassenname_plz_ortschaft AS
     LEFT JOIN agi_plz_ortschaften.plzortschaft_ortschaftsname AS ortschaftsname
     ON ortschaftsname.ortschaftsname_von = ortschaft.t_id
     WHERE 
-      plz.status = 'real'
+      plz.status != 'vergangen'
       AND
-      ortschaft.status = 'real'
+      ortschaft.status != 'vergangen'
       AND 
       strassenname IS NOT NULL
       AND
