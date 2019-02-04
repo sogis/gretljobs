@@ -11,12 +11,12 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferDataToPubDb'
 
-def nameOfZipWithBoundaries = 'swissBOUNDARIES3D_LV95.zip'
+def nameOfZipWithBoundaries = 'INTERLIS_2_LV95_LN02.zip'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
 def pathToDataZip = Paths.get(pathToTempFolder, "data.zip")
 def pathToZipWithBoundaries = Paths.get(pathToUnzipFolder.toString(), nameOfZipWithBoundaries)
-def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), 'swissBOUNDARIES3D_LV95','INTERLIS_2_LV95_LN02','swissBOUNDARIES3D_1_3.xtf')
+def xtfFilePath = Paths.get(pathToUnzipFolder.toString(),'INTERLIS_2_LV95_LN02','swissBOUNDARIES3D_1_3.xtf')
 
 
 task download(type: Download){
