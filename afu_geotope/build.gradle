@@ -16,7 +16,8 @@ task transferAfuGeotopeBasic(type: Db2Db){
             new TransferSet('afu_geotope_geotope_landschaftsform.sql', 'afu_geotope.geotope_landschaftsform', true),
             new TransferSet('afu_geotope_geotope_fundstelle_grabung.sql', 'afu_geotope.geotope_fundstelle_grabung',
                     true),
-            new TransferSet('afu_geotope_geotope_fachbereich.sql', 'afu_geotope.geotope_fachbereich', true)
+            new TransferSet('afu_geotope_geotope_fachbereich.sql', 'afu_geotope.geotope_fachbereich', true),
+            new TransferSet('afu_geotope_geotope_dokument.sql', 'afu_geotope.geotope_dokument', true)
     ]
 }
 
@@ -35,7 +36,16 @@ task transferAfuGeotopeRelations(type: Db2Db){
             new TransferSet('afu_geotope_geotope_landform_fachbereich.sql', 'afu_geotope.geotope_landform_fachbereich',
                     true),
             new TransferSet('afu_geotope_geotope_fundstelle_grabung_fachbereich.sql',
-                    'afu_geotope.geotope_fundstelle_grabung_fachbereich', true)
+                    'afu_geotope.geotope_fundstelle_grabung_fachbereich', true),
+            new TransferSet('afu_geotope_geotope_aufschluss_dokument.sql', 'afu_geotope.geotope_aufschluss_dokument',
+                    true),
+            new TransferSet('afu_geotope_geotope_erratiker_dokument.sql', 'afu_geotope.geotope_erratiker_dokument',
+                    true),
+            new TransferSet('afu_geotope_geotope_hoehle_dokument.sql', 'afu_geotope.geotope_hoehle_dokument', true),
+            new TransferSet('afu_geotope_geotope_quelle_dokument.sql', 'afu_geotope.geotope_quelle_dokument', true),
+            new TransferSet('afu_geotope_geotope_landform_dokument.sql', 'afu_geotope.geotope_landform_dokument', true),
+            new TransferSet('afu_geotope_geotope_fundstelle_grabung_dokument.sql',
+                    'afu_geotope.geotope_fundstelle_grabung_dokument', true)
 
     ]
 }
