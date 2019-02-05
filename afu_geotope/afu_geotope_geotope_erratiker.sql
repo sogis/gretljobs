@@ -11,7 +11,11 @@ SELECT
             THEN 'natuerlich'
         ELSE code_entstehung.text
     END AS entstehung,
-    regexp_replace(groesse, E'[\\n\\r]+', ' ', 'g' ) AS groesse,
+    CASE 
+        WHEN trim(regexp_replace(groesse, E'[\\n\\r]+', ' ', 'g')) != ''
+            THEN trim(regexp_replace(groesse, E'[\\n\\r]+', ' ', 'g'))
+        ELSE 'unbekannt'
+    END AS groesse,
     CASE 
         WHEN eiszeit = 473
             THEN 'Wuerm'
@@ -20,7 +24,11 @@ SELECT
         WHEN eiszeit = 510
             THEN 'unbekannt'
     END AS eiszeit,
-    herkunft,
+    CASE 
+        WHEN trim(regexp_replace(herkunft, E'[\\n\\r]+', ' ', 'g')) != ''
+            THEN trim(regexp_replace(herkunft, E'[\\n\\r]+', ' ', 'g'))
+        ELSE 'unbekannt'
+    END AS herkunft,
     CASE
         WHEN schalenstein = 476
             THEN TRUE
