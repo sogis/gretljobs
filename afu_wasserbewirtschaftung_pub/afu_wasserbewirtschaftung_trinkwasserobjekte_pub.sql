@@ -4,13 +4,13 @@
     kontrollschacht.vegas_id AS objektnummer,
     kontrollschacht.beschreibung AS technische_angabe,  
     kontrollschacht.bemerkung AS bemerkung,
-    dokumente.dokumente, 
+    array_to_json(dokumente.dokumente) AS dokumente, 
     kontrollschacht.wkb_geometry AS geometrie
 FROM 
     vegas.obj_kontrollschacht kontrollschacht
 LEFT JOIN 
     (SELECT 
-         array_agg(x.bezeichnung) AS dokumente, 
+         array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
          y.vegas_id
      FROM 
          vegas.adm_dokument x, 
@@ -24,13 +24,13 @@ UNION ALL
     sammelbrunnenstube.vegas_id AS objektnummer, 
     sammelbrunnenstube.beschreibung AS technische_angabe,
     sammelbrunnenstube.bemerkung AS bemerkung, 
-    dokumente.dokumente, 
+    array_to_json(dokumente.dokumente) AS dokumente,
     sammelbrunnenstube.wkb_geometry AS geometrie
 FROM 
     vegas.obj_sammelbrunnstube sammelbrunnenstube
 LEFT JOIN 
     (SELECT 
-         array_agg(x.bezeichnung) AS dokumente, 
+         array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
          y.vegas_id
      FROM 
          vegas.adm_dokument x, 
@@ -44,13 +44,13 @@ UNION ALL
     quellwasserbehaelter.vegas_id AS objektnummer, 
     quellwasserbehaelter.beschreibung AS technische_angabe,
     quellwasserbehaelter.bemerkung AS bemerkung, 
-    dokumente.dokumente, 
+    array_to_json(dokumente.dokumente) AS dokumente, 
     quellwasserbehaelter.wkb_geometry AS geometrie
 FROM 
     vegas.obj_quellwasserbehaelter quellwasserbehaelter
 LEFT JOIN 
     (SELECT 
-         array_agg(x.bezeichnung) AS dokumente, 
+         array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
          y.vegas_id
      FROM 
          vegas.adm_dokument x, 
@@ -64,13 +64,13 @@ UNION ALL
     netzmessstelle.vegas_id AS objektnummer, 
     netzmessstelle.beschreibung AS technische_angabe,
     netzmessstelle.bemerkung AS bemerkung, 
-    dokumente.dokumente, 
+    array_to_json(dokumente.dokumente) AS dokumente, 
     netzmessstelle.wkb_geometry AS geometrie
 FROM 
     vegas.obj_netzmessstelle netzmessstelle
 LEFT JOIN 
     (SELECT 
-         array_agg(x.bezeichnung) AS dokumente, 
+         array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
          y.vegas_id
      FROM 
          vegas.adm_dokument x, 
@@ -84,13 +84,13 @@ UNION ALL
     pumpwerk.vegas_id AS objektnummer, 
     pumpwerk.beschreibung AS technische_angabe,
     pumpwerk.bemerkung AS bemerkung, 
-    dokumente.dokumente, 
+    array_to_json(dokumente.dokumente) AS dokumente, 
     pumpwerk.wkb_geometry AS geometrie
 FROM 
     vegas.obj_pumpwerk pumpwerk
 LEFT JOIN 
     (SELECT 
-         array_agg(x.bezeichnung) AS dokumente, 
+         array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
          y.vegas_id
      FROM 
          vegas.adm_dokument x, 
@@ -104,13 +104,13 @@ UNION ALL
     reservoir.vegas_id AS objektnummer, 
     reservoir.beschreibung AS technische_angabe,
     reservoir.bemerkung AS bemerkung, 
-    dokumente.dokumente, 
+    array_to_json(dokumente.dokumente) AS dokumente, 
     reservoir.wkb_geometry AS geometrie
 FROM 
     vegas.obj_reservoir reservoir
 LEFT JOIN 
     (SELECT 
-         array_agg(x.bezeichnung) AS dokumente, 
+         array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
          y.vegas_id
      FROM 
          vegas.adm_dokument x, 

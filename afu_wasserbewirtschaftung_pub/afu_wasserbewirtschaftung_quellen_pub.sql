@@ -32,7 +32,7 @@ LEFT JOIN
     gaso.gso_mobj b ON a.mobj_id = b.mobj_id
 LEFT JOIN 
     (SELECT 
-         array_agg(x.bezeichnung) AS dokumente, 
+         array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
          y.vegas_id
      FROM 
          vegas.adm_dokument x, 
@@ -61,7 +61,7 @@ UNION ALL
     gaso.gso_mobj b ON a.mobj_id = b.mobj_id
 LEFT JOIN 
     (SELECT 
-         array_agg(x.bezeichnung) AS dokumente, 
+         array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
          y.vegas_id
      FROM 
          vegas.adm_dokument x, 
