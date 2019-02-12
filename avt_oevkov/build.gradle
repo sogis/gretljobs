@@ -1,0 +1,69 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+description = "GRETL-Job für die Berechnung des OEVKOV in der Test sogis-DB"
+
+
+// OEVKOV Variablen
+def schema = 'avt_oevkov_2019'
+def currentYear = '2019'
+//def referenceDate = '2019-09-05'    // nicht benoetigt, da in Tabelle sachdaten_oevkov_daten
+def lastYear = '2018'
+
+
+
+task KontrolleHaltestellen(type: SqlExecutor){
+    dsourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlParameters = [currentYear: currentYear]
+    sqlFiles = ['1_kontrolle_haltestellen.sql']
+}
+
+task KorrekturHaltestellen(type: SqlExecutor){
+    dsourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlParameters = [currentYear: currentYear]
+    sqlFiles = ['2_korrektur_haltestellen.sql']
+}
+
+task ZuordnungRoute_Linie(type: SqlExecutor){
+    dsourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlParameters = [currentYear: currentYear]
+    sqlFiles = ['3_zuordnung_route_linie.sql']
+}
+
+task insertGTFSAuswertung(type: SqlExecutor){
+    dsourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlParameters = [currentYear: currentYear]
+    sqlFiles = ['4_insert_into_gtfs_auswertung.sql']
+}
+
+task insertGesamtauswertung(type: SqlExecutor){
+    dsourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlParameters = [currentYear: currentYear]
+    sqlFiles = ['5_insert_into_gesamtauswertung.sql']
+}
+
+task BerechnungKosten(type: SqlExecutor){
+    dsourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlParameters = [currentYear: currentYear]
+    sqlFiles = ['6_berechnung_kosten.sql']
+}
+
+task createHaltestellenbuffer(type: SqlExecutor){
+    dsourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlParameters = [currentYear: currentYear]
+    sqlFiles = ['7_insert_into_gtfs_haltestellenbuffer.sql']
+}
+
+task KontrolleVorjahr(type: SqlExecutor){
+    dsourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlParameters = [currentYear: currentYear, lastYear: lastYear]
+    sqlFiles = ['8_kontrolle_vorjahr.sql']
+}
+
+task BerechnungGesamtauswertung(type: SqlExecutor){
+    dsourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlParameters = [currentYear: currentYear, lastYear: lastYear]
+     sqlFiles = ['4_insert_into_gtfs_auswertung.sql', '5_insert_into_gesamtauswertung.sql', '6_berechnung_kosten.sql']
+}
