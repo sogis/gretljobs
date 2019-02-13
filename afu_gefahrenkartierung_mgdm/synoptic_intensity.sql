@@ -14,7 +14,7 @@ SELECT
 			THEN 'mean'
 		WHEN int_stufe = 'stark'
 			THEN 'high'
-		ELSE 'MAPPING_ERROR'
+		ELSE 'MAPPING_ERROR' --mapping error, case statement must not go in else block
 	END AS intensity_class,
 	bez_kanton AS process_cantonal_term,
 	CASE
@@ -54,11 +54,12 @@ SELECT
 			THEN 'r_rock_slide_rock_avalanche'
 		WHEN teilproz = 'Einsturz_Absenkung'
 			THEN 'sinkhole_or_subsidence'
-		ELSE 'MAPPING_ERROR'
+		ELSE 'MAPPING_ERROR' --mapping error, case statement must not go in else block
 	END AS subproc_synoptic_intensity,
 	CAST('complete' AS VARCHAR) AS sources_in_subprocesses_compl
 FROM afu_gefahrenkartierung.ik_synoptisch_mgdm
-LIMIT 100
+LIMIT ALL
+;
 
 
       

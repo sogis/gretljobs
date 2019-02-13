@@ -27,7 +27,7 @@ task mapGefkart2Mgdm(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-		//new TransferSet('assessment_area.sql', 'afu_gefahrenkartierung_export_ai.assessment_area', true),
+		new TransferSet('assessment_area.sql', 'afu_gefahrenkartierung_export_ai.assessment_area', true),
 		new TransferSet('hazard_area.sql', 'afu_gefahrenkartierung_export_ai.hazard_area', true),
 		new TransferSet('synoptic_intensity.sql', 'afu_gefahrenkartierung_export_ai.synoptic_intensity', true)
 	];        
@@ -67,7 +67,7 @@ task zipGefkartMgdm(type: Zip, dependsOn: 'exportGefkartMgdm'){
     from zipContentDir
 }
 
-task uploadGefkartMgdm(dependsOn: zipGefkartMgdm) {
+task uploadGefkartMgdm {//(dependsOn: zipGefkartMgdm) {
     description = "Lädt die Gefahrenkartierungsdaten (MGDM vom Bund) in die Aggregationsinfrastruktur hoch."
 
     def aiLogin = aiUser + ":" + aiPwd

@@ -1,37 +1,12 @@
 /* Erstellt das assessment_area aufgrund der Siedlungsgebiete in afu_gefahrenkartierung.erhebungsgebiet.
- * Für die Gebiete zwischen den Siedlungsgebieten wird dynamisch ein Polygon erzeugt, zwecks Erfüllung
- * der Vorgaben des MGDM.
- * 
- * assessed_area_single_multipoly: Kombiniert alle Erhebungsgebiet-Polygone in ein Multipolygon ohne Kurven
- * kantonsgrenze_single_multipoly: Kombiniert alle Kantonsgrenzen-Polygone in ein Multipolygon ohne Kurven (sofern nicht schon ein Multipolygon)
- * not_assessed_area_multipoly: Resultierende singulaere Restflaeche als Multipolygon
- * not_assessed_area: Attributierte Restflaechen als mehrere Einzelpolygone
- * assessed_area: Attributierte Erhebungsflaechen als mehrere Einzelpolygone
+ * Die Gebiete zwischen den Siedlungsgebieten sind als Füllpolygone mit dem Bezeichner $OUTSIDE$ im
+ * Feld bemerkung von afu_gefahrenkartierung.erhebungsgebiet enthalten.
  * */
 WITH
-	assessed_area_single_multipoly AS (
-		SELECT 
-			public.ST_Multi(public.ST_Collect(public.ST_ForceSFS(geometrie))) AS geometrie
-		FROM
-			(SELECT geometrie FROM afu_gefahrenkartierung.erhebungsgebiet) AS suquery
-	),
-	kantonsgrenze_single_multipoly AS (
-		SELECT 
-			public.ST_Multi(public.ST_Collect(public.ST_ForceSFS(geometrie))) AS geometrie
-		FROM
-			(SELECT geometrie FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze) AS suquery
-	),
-	not_assessed_area_multipoly AS (
-    		SELECT
-    			public.ST_Difference(kantonsgrenze_single_multipoly.geometrie, assessed_area_single_multipoly.geometrie) AS area_multi
-    		FROM
-    			kantonsgrenze_single_multipoly,
-    			assessed_area_single_multipoly
-    ),
 	not_assessed_area AS (
 		SELECT 
-		    CAST(uuid_generate_v4() AS varchar) AS t_ili_tid,
-		    (ST_Dump(not_assessed_area_multipoly.area_multi)).geom AS area,
+			t_ili_tid::text AS t_ili_tid,
+			geometrie AS area,
 		   	'SO'::text AS data_responsibility,			
 			'not_assessed'::text AS fl_state_flooding,
 			'not_assessed'::text AS df_state_debris_flow,
@@ -47,8 +22,9 @@ WITH
 			'not_assessed'::text AS su_state_subsidence,
 			'not_assessed'::text AS sh_state_sinkhole,
 			'not_assessed'::text AS if_state_ice_fall
-		FROM 
-			not_assessed_area_multipoly
+		FROM afu_gefahrenkartierung.erhebungsgebiet
+		WHERE 
+			bemerkung LIKE '%$OUTSIDE$%' 
 	),
 	assessed_area AS (
 		SELECT
@@ -70,6 +46,8 @@ WITH
 			'assessed'::text AS sh_state_sinkhole,
 			'assessed'::text AS if_state_ice_fall
 		FROM afu_gefahrenkartierung.erhebungsgebiet
+		WHERE bemerkung IS NULL		
+			OR bemerkung NOT LIKE '%$OUTSIDE$%'
 	)
 	
 SELECT * FROM (
@@ -84,4 +62,5 @@ SELECT * FROM (
 	FROM
 		assessed_area
 ) AS ktso
-LIMIT 0
+LIMIT ALL
+;
