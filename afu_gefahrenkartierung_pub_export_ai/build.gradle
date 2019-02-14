@@ -1,96 +1,29 @@
-/*
-Pushes the afu hazard data (model SO_AfU_Gefahrenkartierung) to the KKGEO AI.
-Process:
-1. Transform the data from model SO_AfU_Gefahrenkartierung into bafu model Hazard_Mapping using GRETL sql
-2. Create the *.xtf with the ili2pg GRETL task
-3. Push the xtf to the KKGEO AI
-
-Class mapping between the models:
-- Erhebungsgebiet --> assessment_area
-- GK_MGDM --> hazard_area
-- IK_synoptisch_MGDM --> synoptic_intensity
-*/
-
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.io.File
+defaultTasks 'pubGefkart'
 
-defaultTasks 'uploadGefkartMgdm'
-
-/*
-1. Transform the data from model SO_AfU_Gefahrenkartierung into bafu model Hazard_Mapping using GRETL sql
-*/
-task mapGefkart2Mgdm(type: Db2Db){
+task pubGefkart(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-		new TransferSet('assessment_area.sql', 'afu_gefahrenkartierung_export_ai.assessment_area', true),
-		new TransferSet('hazard_area.sql', 'afu_gefahrenkartierung_export_ai.hazard_area', true),
-		new TransferSet('synoptic_intensity.sql', 'afu_gefahrenkartierung_export_ai.synoptic_intensity', true)
-	];        
+		new TransferSet('pub/perimeter_gefahrenkartierung.sql', 'afu_gefahrenkartierung.gefahrenkartirung_perimeter_gefahrenkartierung', true),
+		new TransferSet('pub/gk_synoptisch_generiert.sql', 'afu_gefahrenkartierung.gefahrenkartirung_gk_synoptisch_generiert', true),
+		new TransferSet('pub/gk_absenkung_einsturz.sql', 'afu_gefahrenkartierung.gefahrenkartirung_gk_absenkung_einsturz', true),
+		new TransferSet('pub/gk_hangmure.sql', 'afu_gefahrenkartierung.gefahrenkartirung_gk_hangmure', true),
+		new TransferSet('pub/gk_rutsch_spontan.sql', 'afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_spontan', true),
+		new TransferSet('pub/gk_rutsch_kont_sackung.sql', 'afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_kont_sackung', true), 
+		new TransferSet('pub/gk_sturz.sql', 'afu_gefahrenkartierung.gefahrenkartirung_gk_sturz', true), 
+		new TransferSet('pub/gk_wasser.sql', 'afu_gefahrenkartierung.gefahrenkartirung_gk_wasser', true),
+		new TransferSet('pub/prozessquelle_wasser.sql', 'afu_gefahrenkartierung.gefahrenkartirung_prozessquelle_wasser', true),
+		new TransferSet('pub/prozessquelle_sturz.sql', 'afu_gefahrenkartierung.gefahrenkartirung_prozessquelle_sturz', true),    
+		new TransferSet('pub/punktsignatur.sql', 'afu_gefahrenkartierung.gefahrenkartirung_punktsignatur', true),
+		new TransferSet('pub/ik_absenkung_einsturz.sql', 'afu_gefahrenkartierung.gefahrenkartirung_ik_absenkung_einsturz', true), 
+		new TransferSet('pub/ik_hangmure.sql', 'afu_gefahrenkartierung.gefahrenkartirung_ik_hangmure', true), 
+		new TransferSet('pub/ik_sturz.sql', 'afu_gefahrenkartierung.gefahrenkartirung_ik_sturz', true), 
+		new TransferSet('pub/ik_rutsch_kont_sackung.sql', 'afu_gefahrenkartierung.gefahrenkartirung_ik_rutsch_kont_sackung', true), 
+		new TransferSet('pub/ik_rutsch_spontan.sql', 'afu_gefahrenkartierung.gefahrenkartirung_ik_rutsch_spontan', true), 
+		new TransferSet('pub/ik_wasser.sql', 'afu_gefahrenkartierung.gefahrenkartirung_ik_wasser', true), 
+		new TransferSet('pub/ueberflutungskarte.sql', 'afu_gefahrenkartierung.gefahrenkartirung_ueberflutungskarte', true)		
+	];    
 }
-
-/*
-2. Create the *.xtf with the ili2pg GRETL task
-*/
-def jobTempRoot = 'gefkart'
-def zipContentDir = file(Paths.get(gretlShare, jobTempRoot, 'zipcontent'))
-def tmpDir = zipContentDir.getParentFile()
-
-def loggingFile = file(Paths.get(tmpDir.toString(), "iliexport.log"))
-def exportFileName = 'iliexport.xtf'
-def exportFile = file(Paths.get(zipContentDir.toString(), exportFileName))
-
-task exportGefkartMgdm(type: Ili2pgExport, dependsOn: 'mapGefkart2Mgdm') {
-    description = "Exportiert die ins Gefahrenkartierungs-MGDM umgebauten Daten in ein xtf-File."
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = "afu_gefahrenkartierung_export_ai"
-    models = "Hazard_Mapping_LV95_V1_2"
-    logFile = loggingFile
-    dataFile = exportFile
-}
-
-/*
-3. Package and upload to the KKGEO AI
-*/
-def zipName = 'iliexport.zip'
-
-task zipGefkartMgdm(type: Zip, dependsOn: 'exportGefkartMgdm'){
-    description = "Zipt das xtf-File mit den Gefahrenkartierungsdaten (MGDM vom Bund) für den Upload in die " +
-            "Aggregationsinfrastruktur."
-    archiveName zipName
-    destinationDir tmpDir
-            
-    from zipContentDir
-}
-
-task uploadGefkartMgdm {//(dependsOn: zipGefkartMgdm) {
-    description = "Lädt die Gefahrenkartierungsdaten (MGDM vom Bund) in die Aggregationsinfrastruktur hoch."
-
-    def aiLogin = aiUser + ":" + aiPwd
-    def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
-    def zipFile = new File(tmpDir, zipName)
-
-    def file_kb = Math.round(exportFile.length() / 1000.0)
-    def zip_kb = Math.round(zipFile.length() / 1000.0)
-
-    doLast {
-        println "Groesse der hochzuladenden Dateien (kb). XTF unkomprimiert: " + file_kb + " ZIP: " + zip_kb
-        def response = ["curl", "-u", aiLogin, "-F", "topic=gefahrenkarten", "-F",
-                        "lv95_file=@" + zipFile, "-F", "publish=true", serverUrl
-                        ].execute().text
-        println(response)
-    }
-}
-
-task removeShare(type: Delete, dependsOn: uploadGefkartMgdm){
-    description = "Entfernt das Verzeichnis [jobTempRoot] aus dem gretl share"
-    delete tmpDir
-}
-
-
-
-
