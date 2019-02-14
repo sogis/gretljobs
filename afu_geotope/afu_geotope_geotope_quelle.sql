@@ -29,9 +29,8 @@ SELECT
     ingesonr_alt AS alte_inventar_nummer,
     quelle AS hinweis_literatur,
     wkb_geometry AS geometrie,
-    'inKraft' AS rechtstatus,
-    'Amt für Umwelt' AS zustaendige_stelle_name,
-    'https://www.so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-umwelt/' AS zustaendige_stelle_amtimweb,
+    'inKraft' AS rechtsstatus,
+    geotope_zustaendige_stelle.t_id AS zustaendige_stelle,
     FALSE AS oereb_objekt
 FROM
     ingeso.hoehlen
@@ -47,6 +46,7 @@ FROM
         ON hoehlen.geowiss_wert = code_geowissenschaftlicher_wert.code_id
     LEFT JOIN ingeso.code AS code_anthropogene_gefaehrdung
         ON hoehlen.gefaehrdung = code_anthropogene_gefaehrdung.code_id
+    CROSS JOIN afu_geotope.geotope_zustaendige_stelle
 WHERE
     "archive" = 0
     AND

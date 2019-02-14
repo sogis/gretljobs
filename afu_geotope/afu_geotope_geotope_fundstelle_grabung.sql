@@ -304,14 +304,14 @@ SELECT
     fundstelle_grabung.alte_inventar_nummer,
     fundstelle_grabung.hinweis_literatur,
     fundstelle_grabung.geometrie,
-    'inKraft' AS rechtstatus,
-    'Amt für Umwelt' AS zustaendige_stelle_name,
-    'https://www.so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-umwelt/' AS zustaendige_stelle_amtimweb,
+    'inKraft' AS rechtsstatus,
+    geotope_zustaendige_stelle.t_id AS zustaendige_stelle,
     FALSE AS oereb_objekt
 FROM
     fundstelle_grabung,
     lithostratigraphie AS lithostratigraphie_von,
-    lithostratigraphie AS lithostratigraphie_bis
+    lithostratigraphie AS lithostratigraphie_bis,
+    afu_geotope.geotope_zustaendige_stelle
 WHERE
     fundstelle_grabung.geologische_schicht_von = lithostratigraphie_von.geologische_schicht_bezeichnung
     AND

@@ -300,14 +300,14 @@ SELECT
     aufschluss.alte_inventar_nummer,
     aufschluss.hinweis_literatur,
     aufschluss.geometrie,
-    'inKraft' AS rechtstatus,
-    'Amt für Umwelt' AS zustaendige_stelle_name,
-    'https://www.so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-umwelt/' AS zustaendige_stelle_amtimweb,
+    'inKraft' AS rechtsstatus,
+    geotope_zustaendige_stelle.t_id AS zustaendige_stelle,
     FALSE AS oereb_objekt
 FROM
     aufschluss,
     lithostratigraphie AS lithostratigraphie_von,
-    lithostratigraphie AS lithostratigraphie_bis
+    lithostratigraphie AS lithostratigraphie_bis,
+    afu_geotope.geotope_zustaendige_stelle
 WHERE
     aufschluss.geologische_schicht_von = lithostratigraphie_von.geologische_schicht_bezeichnung
     AND
