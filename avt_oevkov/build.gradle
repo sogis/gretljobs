@@ -30,13 +30,14 @@ task AuswertungKosten(type: SqlExecutor){
     sqlFiles = ['6_berechnung_kosten.sql']
 }
 
-do_Gesamtberechnung.dependsOn{
-    tasks.findAll { task -> task.name.startsWith('Auswertung')}
-}
 
 task do_Gesamtberechnung(){
     description = "This task performs all OEVKOV calculation tasks."
     doLast {
         println "Gesamtberechnung finished"
     }
+}
+
+do_Gesamtberechnung.dependsOn{
+    tasks.findAll { task -> task.name.startsWith('Auswertung')}
 }
