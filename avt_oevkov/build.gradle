@@ -7,13 +7,36 @@ description = "GRETL-Job für die Berechnung des OEVKOV in der Test sogis-DB"
 
 
 // OEVKOV Variablen
-def schema = 'avt_oevkov_2019'
 def currentYear = '2019'
 def lastYear = '2018'
 
+defaultTasks 'do_Gesamtberechnung'
 
-task BerechnungGesamtauswertung(type: SqlExecutor){
+task AuswertungGTFS(type: SqlExecutor){
     dsourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     sqlParameters = [currentYear: currentYear, lastYear: lastYear]
-     sqlFiles = ['4_insert_into_gtfs_auswertung.sql', '5_insert_into_gesamtauswertung.sql', '6_berechnung_kosten.sql']
+     sqlFiles = ['4_insert_into_gtfs_auswertung.sql']
+}
+
+task AuswertungGesamt(type: SqlExecutor){
+    dsourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlParameters = [currentYear: currentYear, lastYear: lastYear]
+     sqlFiles = ['5_insert_into_gesamtauswertung.sql']
+}
+
+task AuswertungKosten(type: SqlExecutor){
+    dsourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlParameters = [currentYear: currentYear, lastYear: lastYear]
+     sqlFiles = ['6_berechnung_kosten.sql']
+}
+
+do_Gesamtberechnung.dependsOn{
+    tasks.findAll { task -> task.name.startsWith('Auswertung')}
+}
+
+task do_Gesamtberechnung(){
+    description = "This task performs all OEVKOV calculation tasks."
+    doLast {
+        println "Gesamtberechnung finished"
+    }
 }

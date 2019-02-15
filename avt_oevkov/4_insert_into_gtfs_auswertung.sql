@@ -1,8 +1,8 @@
 -- Summe ungewichtete Abfahrten pro Haltestelle und Linie
 
-TRUNCATE TABLE avt_oevkov_2019.auswertung_auswertung_gtfs;
+TRUNCATE TABLE avt_oevkov_${currentYear}.auswertung_auswertung_gtfs;
 INSERT INTO
-    avt_oevkov_2019.auswertung_auswertung_gtfs
+    avt_oevkov_${currentYear}.auswertung_auswertung_gtfs
      (
      haltestellenname,
      linie,
@@ -33,20 +33,20 @@ INSERT INTO
                     THEN 3
             END AS verkehrsmittel
         FROM
-            avt_oevkov_2019.gtfs_agency AS agency,
-            avt_oevkov_2019.gtfs_route AS route,
-            avt_oevkov_2019.gtfs_trip AS trip,
-            avt_oevkov_2019.gtfs_stoptime AS stoptime,
-            avt_oevkov_2019.gtfs_stop AS stop,
-            avt_oevkov_2019.sachdaten_linie_route AS linie
---             avt_oevkov_2019.so_geodaten_gemeindegrenzen As gemeindegrenze             -- Gemeindegrenze nur für Einschränkung, später Daten so aufbereiten dass nur die erforderlichen Haltestellen vorhanden sind 
+            avt_oevkov_${currentYear}.gtfs_agency AS agency,
+            avt_oevkov_${currentYear}.gtfs_route AS route,
+            avt_oevkov_${currentYear}.gtfs_trip AS trip,
+            avt_oevkov_${currentYear}.gtfs_stoptime AS stoptime,
+            avt_oevkov_${currentYear}.gtfs_stop AS stop,
+            avt_oevkov_${currentYear}.sachdaten_linie_route AS linie
+--             avt_oevkov_${currentYear}.so_geodaten_gemeindegrenzen As gemeindegrenze             -- Gemeindegrenze nur für Einschränkung, später Daten so aufbereiten dass nur die erforderlichen Haltestellen vorhanden sind 
         WHERE                                                                                                                       -- > viel schneller so
             (
                 trip.service_id IN (
                     SELECT
                         service_id
                     FROM
-                        avt_oevkov_2019.gtfs_calendar
+                        avt_oevkov_${currentYear}.gtfs_calendar
                     WHERE thursday = 1
                 )
                 OR
@@ -54,12 +54,12 @@ INSERT INTO
                 SELECT
                     service_id
                 FROM
-                    avt_oevkov_2019.gtfs_calendar_dates
+                    avt_oevkov_${currentYear}.gtfs_calendar_dates
                 WHERE
                     datum = (SELECT
                                         stichtag
                                     FROM
-                                        avt_oevkov_2019.sachdaten_oevkov_daten)
+                                        avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
                 AND
                      exception_type = 1
                  )
@@ -69,12 +69,12 @@ INSERT INTO
                 SELECT
                     service_id
                 FROM
-                    avt_oevkov_2019.gtfs_calendar_dates
+                    avt_oevkov_${currentYear}.gtfs_calendar_dates
                 WHERE
                     datum = (SELECT
                                         stichtag
                                     FROM
-                                        avt_oevkov_2019.sachdaten_oevkov_daten)
+                                        avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
                 AND
                     exception_type = 2
             )
@@ -170,7 +170,7 @@ INSERT INTO
 
     --     Alle Haltestellen ergänzen,welche ausserhalb des Kantons liegen, aber einer
     --     Solothurner Gemeinde angerechnet werden, ausser die, welche unten als Speziallfall  behandelt werden
-    --     Die Zuordnung zu einer Gemeinde erfolgt über die Tabelle avt_oevkov_2019.sachdaten_haltestelle_anrechnung,
+    --     Die Zuordnung zu einer Gemeinde erfolgt über die Tabelle avt_oevkov_${currentYear}.sachdaten_haltestelle_anrechnung,
     --     welche durch die Abt. Oev festgelegt wird
     SELECT  
         stop.stop_name,
@@ -185,18 +185,18 @@ INSERT INTO
                 WHEN route_desc IN ('Regionalzug', 'S-Bahn',  'Tram')
                     THEN 3
             END AS verkehrsmittel
-    FROM avt_oevkov_2019.gtfs_agency AS agency,
-        avt_oevkov_2019.gtfs_route AS route,
-        avt_oevkov_2019.gtfs_trip AS trip,
-        avt_oevkov_2019.gtfs_stoptime AS stoptime,
-        avt_oevkov_2019.gtfs_stop AS stop,
-        avt_oevkov_2019.sachdaten_linie_route AS linie
+    FROM avt_oevkov_${currentYear}.gtfs_agency AS agency,
+        avt_oevkov_${currentYear}.gtfs_route AS route,
+        avt_oevkov_${currentYear}.gtfs_trip AS trip,
+        avt_oevkov_${currentYear}.gtfs_stoptime AS stoptime,
+        avt_oevkov_${currentYear}.gtfs_stop AS stop,
+        avt_oevkov_${currentYear}.sachdaten_linie_route AS linie
     WHERE
         (trip.service_id IN (
             SELECT
                 service_id
             FROM
-                avt_oevkov_2019.gtfs_calendar
+                avt_oevkov_${currentYear}.gtfs_calendar
             WHERE
                  thursday = 1
             )
@@ -204,12 +204,12 @@ INSERT INTO
             SELECT
             service_id
             FROM
-                avt_oevkov_2019.gtfs_calendar_dates
+                avt_oevkov_${currentYear}.gtfs_calendar_dates
             WHERE
                 datum = (SELECT
                                     stichtag
                                 FROM
-                                    avt_oevkov_2019.sachdaten_oevkov_daten)
+                                    avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
             AND
                 exception_type = 1
          )
@@ -219,12 +219,12 @@ INSERT INTO
             SELECT
                 service_id
             FROM
-                avt_oevkov_2019.gtfs_calendar_dates
+                avt_oevkov_${currentYear}.gtfs_calendar_dates
             WHERE
                 datum = (SELECT
                                     stichtag
                                 FROM
-                                    avt_oevkov_2019.sachdaten_oevkov_daten)
+                                    avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
                 AND
                 exception_type = 2
         )
@@ -581,16 +581,16 @@ INSERT INTO
         trip_id IN (
             SELECT trip_einschraenkung.trip_id                                                                   -- lässt sich nur so aufteilen!
         FROM
-            avt_oevkov_2019.gtfs_route AS route_einschraenkung,
-            avt_oevkov_2019.gtfs_trip AS trip_einschraenkung,
-            avt_oevkov_2019.gtfs_stop AS stop_einschraenkung,
-            avt_oevkov_2019.gtfs_stoptime AS stoptime_einschraenkung
+            avt_oevkov_${currentYear}.gtfs_route AS route_einschraenkung,
+            avt_oevkov_${currentYear}.gtfs_trip AS trip_einschraenkung,
+            avt_oevkov_${currentYear}.gtfs_stop AS stop_einschraenkung,
+            avt_oevkov_${currentYear}.gtfs_stoptime AS stoptime_einschraenkung
        WHERE
            (trip_einschraenkung.service_id IN (
                SELECT
                    service_id
                FROM
-                   avt_oevkov_2019.gtfs_calendar
+                   avt_oevkov_${currentYear}.gtfs_calendar
                WHERE
                    thursday = 1
            )
@@ -598,12 +598,12 @@ INSERT INTO
                     SELECT
                     service_id
                     FROM
-                    avt_oevkov_2019.gtfs_calendar_dates
+                    avt_oevkov_${currentYear}.gtfs_calendar_dates
                     WHERE
                         datum = (SELECT
                                             stichtag
                                         FROM
-                                            avt_oevkov_2019.sachdaten_oevkov_daten)
+                                            avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
                     AND
                     exception_type = 1
                  )
@@ -613,12 +613,12 @@ INSERT INTO
                 SELECT
                     service_id
                 FROM
-                    avt_oevkov_2019.gtfs_calendar_dates
+                    avt_oevkov_${currentYear}.gtfs_calendar_dates
                 WHERE
                     datum = (SELECT
                                         stichtag
                                     FROM
-                                        avt_oevkov_2019.sachdaten_oevkov_daten)
+                                        avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
                     AND
                     exception_type = 2
             )
@@ -746,22 +746,22 @@ INSERT INTO
     AND
         trip_id IN (SELECT trip_einschraenkung.trip_id 
             FROM 
-                avt_oevkov_2019.gtfs_route AS route_einschraenkung,
-                avt_oevkov_2019.gtfs_trip AS trip_einschraenkung,
-                avt_oevkov_2019.gtfs_stop AS stop_einschraenkung,
-                avt_oevkov_2019.gtfs_stoptime AS stoptime_einschraenkung
+                avt_oevkov_${currentYear}.gtfs_route AS route_einschraenkung,
+                avt_oevkov_${currentYear}.gtfs_trip AS trip_einschraenkung,
+                avt_oevkov_${currentYear}.gtfs_stop AS stop_einschraenkung,
+                avt_oevkov_${currentYear}.gtfs_stoptime AS stoptime_einschraenkung
             WHERE
-               (trip_einschraenkung.service_id IN (SELECT service_id FROM avt_oevkov_2019.gtfs_calendar WHERE thursday = 1)
+               (trip_einschraenkung.service_id IN (SELECT service_id FROM avt_oevkov_${currentYear}.gtfs_calendar WHERE thursday = 1)
                     OR trip_einschraenkung.service_id IN (
                         SELECT
                         service_id
                         FROM
-                        avt_oevkov_2019.gtfs_calendar_dates
+                        avt_oevkov_${currentYear}.gtfs_calendar_dates
                         WHERE
                             datum = (SELECT
                                                 stichtag
                                             FROM
-                                                avt_oevkov_2019.sachdaten_oevkov_daten)
+                                                avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
                         AND
                         exception_type = 1
                      )
@@ -771,12 +771,12 @@ INSERT INTO
                     SELECT
                         service_id
                     FROM
-                        avt_oevkov_2019.gtfs_calendar_dates
+                        avt_oevkov_${currentYear}.gtfs_calendar_dates
                     WHERE
                         datum = (SELECT
                                             stichtag
                                         FROM
-                                            avt_oevkov_2019.sachdaten_oevkov_daten)
+                                            avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
                         AND
                         exception_type = 2
                 )
@@ -852,22 +852,22 @@ INSERT INTO
     AND
         trip_id IN (SELECT trip_einschraenkung.trip_id 
             FROM 
-                avt_oevkov_2019.gtfs_route AS route_einschraenkung,
-                avt_oevkov_2019.gtfs_trip AS trip_einschraenkung,
-                avt_oevkov_2019.gtfs_stop AS stop_einschraenkung,
-                avt_oevkov_2019.gtfs_stoptime AS stoptime_einschraenkung
+                avt_oevkov_${currentYear}.gtfs_route AS route_einschraenkung,
+                avt_oevkov_${currentYear}.gtfs_trip AS trip_einschraenkung,
+                avt_oevkov_${currentYear}.gtfs_stop AS stop_einschraenkung,
+                avt_oevkov_${currentYear}.gtfs_stoptime AS stoptime_einschraenkung
               WHERE
-               (trip_einschraenkung.service_id IN (SELECT service_id FROM avt_oevkov_2019.gtfs_calendar WHERE thursday = 1)
+               (trip_einschraenkung.service_id IN (SELECT service_id FROM avt_oevkov_${currentYear}.gtfs_calendar WHERE thursday = 1)
                     OR trip_einschraenkung.service_id IN (
                         SELECT
                         service_id
                         FROM
-                        avt_oevkov_2019.gtfs_calendar_dates
+                        avt_oevkov_${currentYear}.gtfs_calendar_dates
                         WHERE
                             datum = (SELECT
                                                 stichtag
                                             FROM
-                                                avt_oevkov_2019.sachdaten_oevkov_daten)
+                                                avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
                         AND
                         exception_type = 1
                      )
@@ -877,12 +877,12 @@ INSERT INTO
                     SELECT
                         service_id
                     FROM
-                        avt_oevkov_2019.gtfs_calendar_dates
+                        avt_oevkov_${currentYear}.gtfs_calendar_dates
                     WHERE
                         datum = (SELECT
                                             stichtag
                                         FROM
-                                            avt_oevkov_2019.sachdaten_oevkov_daten)
+                                            avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
                         AND
                         exception_type = 2
                 )
@@ -1058,19 +1058,19 @@ INSERT INTO
                     THEN 3 
             END AS verkehrsmittel
         FROM
-             avt_oevkov_2019.gtfs_agency AS agency,
-            avt_oevkov_2019.gtfs_route AS route,
-            avt_oevkov_2019.gtfs_trip AS trip,
-            avt_oevkov_2019.gtfs_stoptime AS stoptime,
-            avt_oevkov_2019.gtfs_stop AS stop,
-            avt_oevkov_2019.sachdaten_linie_route AS linie
+             avt_oevkov_${currentYear}.gtfs_agency AS agency,
+            avt_oevkov_${currentYear}.gtfs_route AS route,
+            avt_oevkov_${currentYear}.gtfs_trip AS trip,
+            avt_oevkov_${currentYear}.gtfs_stoptime AS stoptime,
+            avt_oevkov_${currentYear}.gtfs_stop AS stop,
+            avt_oevkov_${currentYear}.sachdaten_linie_route AS linie
         WHERE
             (
                 trip.service_id IN (
                     SELECT
                         service_id
                     FROM
-                        avt_oevkov_2019.gtfs_calendar
+                        avt_oevkov_${currentYear}.gtfs_calendar
                     WHERE thursday = 1
                 )
                 OR
@@ -1078,12 +1078,12 @@ INSERT INTO
                 SELECT
                     service_id
                 FROM
-                    avt_oevkov_2019.gtfs_calendar_dates
+                    avt_oevkov_${currentYear}.gtfs_calendar_dates
                 WHERE
                     datum = (SELECT
                                         stichtag
                                     FROM
-                                        avt_oevkov_2019.sachdaten_oevkov_daten)
+                                        avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
                 AND
                      exception_type = 1
                  )
@@ -1093,12 +1093,12 @@ INSERT INTO
                 SELECT
                     service_id
                 FROM
-                    avt_oevkov_2019.gtfs_calendar_dates
+                    avt_oevkov_${currentYear}.gtfs_calendar_dates
                 WHERE
                     datum = (SELECT
                                         stichtag
                                     FROM
-                                        avt_oevkov_2019.sachdaten_oevkov_daten)
+                                        avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
                 AND
                     exception_type = 2
             )
@@ -1273,10 +1273,10 @@ UNION
 
 
 -- Alle  Haltestellen, die wegen pickup_type = 0 herausfallen oder 0 Abfahrten haben und nicht in Tabelle
--- avt_oevkov_2019.auswertung_auswertung_gtfs sind >>> ja, siehe Realisierungsphase: fragen_180925_erg_AVT.docx
+-- avt_oevkov_${currentYear}.auswertung_auswertung_gtfs sind >>> ja, siehe Realisierungsphase: fragen_180925_erg_AVT.docx
 
 INSERT INTO
-     avt_oevkov_2019.auswertung_auswertung_gtfs
+     avt_oevkov_${currentYear}.auswertung_auswertung_gtfs
      (
           haltestellenname,
           linie, unternehmer,
@@ -1298,13 +1298,13 @@ INSERT INTO
                      THEN 3
              END AS verkehrsmittel
          FROM
-            avt_oevkov_2019.gtfs_agency AS agency,
-            avt_oevkov_2019.gtfs_route AS route,
-            avt_oevkov_2019.gtfs_trip AS trip,
-            avt_oevkov_2019.gtfs_stoptime AS stoptime,
-            avt_oevkov_2019.gtfs_stop AS stop,
-            avt_oevkov_2019.sachdaten_linie_route AS linie
---             avt_oevkov_2019.so_geodaten_gemeindegrenzen AS gemeindegrenze
+            avt_oevkov_${currentYear}.gtfs_agency AS agency,
+            avt_oevkov_${currentYear}.gtfs_route AS route,
+            avt_oevkov_${currentYear}.gtfs_trip AS trip,
+            avt_oevkov_${currentYear}.gtfs_stoptime AS stoptime,
+            avt_oevkov_${currentYear}.gtfs_stop AS stop,
+            avt_oevkov_${currentYear}.sachdaten_linie_route AS linie
+--             avt_oevkov_${currentYear}.so_geodaten_gemeindegrenzen AS gemeindegrenze
 
     -- muss diese Bedingung noch angepasst werden??????????????????????????????????????????????
          WHERE
@@ -1313,7 +1313,7 @@ INSERT INTO
                       SELECT
                           service_id
                       FROM
-                          avt_oevkov_2019.gtfs_calendar
+                          avt_oevkov_${currentYear}.gtfs_calendar
                       WHERE thursday = 1
                   )
                   OR
@@ -1321,12 +1321,12 @@ INSERT INTO
                   SELECT
                       service_id
                   FROM
-                      avt_oevkov_2019.gtfs_calendar_dates
+                      avt_oevkov_${currentYear}.gtfs_calendar_dates
                   WHERE
                       datum = (SELECT
                                           stichtag
                                       FROM
-                                         avt_oevkov_2019.sachdaten_oevkov_daten)
+                                         avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
                   AND
                        exception_type = 1
                    )
@@ -1336,12 +1336,12 @@ INSERT INTO
                 SELECT
                     service_id
                 FROM
-                    avt_oevkov_2019.gtfs_calendar_dates
+                    avt_oevkov_${currentYear}.gtfs_calendar_dates
                 WHERE
                     datum = (SELECT
                                         stichtag
                                     FROM
-                                        avt_oevkov_2019.sachdaten_oevkov_daten)
+                                        avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
                 AND
                     exception_type = 2
             )
@@ -1350,7 +1350,7 @@ INSERT INTO
             SELECT
                 haltestellenname||linie
             FROM 
-                avt_oevkov_2019.auswertung_auswertung_gtfs
+                avt_oevkov_${currentYear}.auswertung_auswertung_gtfs
         )
 --          AND
 --         stop.geometrie && gemeindegrenze.geometrie
@@ -1382,11 +1382,11 @@ INSERT INTO
 
 -- Gewichtung schreiben
 UPDATE
-    avt_oevkov_2019.auswertung_auswertung_gtfs AS auswertung
+    avt_oevkov_${currentYear}.auswertung_auswertung_gtfs AS auswertung
 SET
     gewichtung = verkehrsmittel.gewichtung
 FROM
-    avt_oevkov_2019.sachdaten_verkehrsmittel AS verkehrsmittel
+    avt_oevkov_${currentYear}.sachdaten_verkehrsmittel AS verkehrsmittel
 WHERE
     auswertung.verkehrsmittel = verkehrsmittel.verkehrsmittel
 ;
