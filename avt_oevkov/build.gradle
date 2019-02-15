@@ -13,21 +13,21 @@ def lastYear = '2018'
 defaultTasks 'do_Gesamtberechnung'
 
 task AuswertungGTFS(type: SqlExecutor){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     sqlParameters = [currentYear: currentYear, lastYear: lastYear]
-     sqlFiles = ['4_insert_into_gtfs_auswertung.sql']
+    sqlFiles = ['4_insert_into_gtfs_auswertung.sql']
 }
 
 task AuswertungGesamt(type: SqlExecutor){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     sqlParameters = [currentYear: currentYear, lastYear: lastYear]
-     sqlFiles = ['5_insert_into_gesamtauswertung.sql']
+    sqlFiles = ['5_insert_into_gesamtauswertung.sql']
 }
 
 task AuswertungKosten(type: SqlExecutor){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     sqlParameters = [currentYear: currentYear, lastYear: lastYear]
-     sqlFiles = ['6_berechnung_kosten.sql']
+    sqlFiles = ['6_berechnung_kosten.sql']
 }
 
 do_Gesamtberechnung.dependsOn{
