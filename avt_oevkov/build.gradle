@@ -7,8 +7,8 @@ description = "GRETL-Job für die Berechnung des OEVKOV in der Test sogis-DB"
 
 
 // OEVKOV Variablen
-def currentYear = '2018'
-def lastYear = '2017'
+def currentYear = '2019'
+def lastYear = '2018'
 
 defaultTasks 'do_Gesamtberechnung'
 
