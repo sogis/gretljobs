@@ -174,4 +174,3 @@ WHERE
 AND
     korrektur.haltestellenname = '--- Alle'
 ;
-    
