@@ -20,7 +20,17 @@ SELECT
     gb_fuehrungsart,
     gb_nbident,
     flaechen_differenz,
-    fehlerart
+    fehlerart,
+    CASE
+        WHEN fehlerart = 1
+            THEN 'Liegenschaft mit falscher Art' 
+        WHEN fehlerart = 2
+            THEN 'Grundstücke mit Flächendifferenzen'
+        WHEN fehlerart = 3
+            THEN 'Grundstück kommt nur in der AV vor'
+        WHEN fehlerart = 4
+            THEN 'Grundstück kommt nur im Grundbuch vor'
+    END AS fehlerart_text
 FROM 
     agi_av_gb_abgleich_import.differenzen_staging
 ;
