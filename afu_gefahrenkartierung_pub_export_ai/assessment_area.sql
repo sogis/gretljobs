@@ -22,7 +22,8 @@ WITH
 			'not_assessed'::text AS su_state_subsidence,
 			'not_assessed'::text AS sh_state_sinkhole,
 			'not_assessed'::text AS if_state_ice_fall
-		FROM afu_gefahrenkartierung.erhebungsgebiet
+		FROM 
+			afu_gefahrenkartierung.erhebungsgebiet
 		WHERE 
 			bemerkung LIKE '%$OUTSIDE$%' 
 	),
@@ -45,7 +46,8 @@ WITH
 			'assessed'::text AS su_state_subsidence,
 			'assessed'::text AS sh_state_sinkhole,
 			'assessed'::text AS if_state_ice_fall
-		FROM afu_gefahrenkartierung.erhebungsgebiet
+		FROM 
+			afu_gefahrenkartierung.erhebungsgebiet
 		WHERE bemerkung IS NULL		
 			OR bemerkung NOT LIKE '%$OUTSIDE$%'
 	)

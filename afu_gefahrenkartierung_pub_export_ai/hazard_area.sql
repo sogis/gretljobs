@@ -29,26 +29,7 @@ SELECT
     CAST('SO' AS VARCHAR) AS data_responsibility,
     bemerkung AS comments,
     geometrie AS impact_zone
-FROM afu_gefahrenkartierung.gk_mgdm
+FROM 
+	afu_gefahrenkartierung.gk_mgdm
 LIMIT ALL
-;
-
-
-      
-  
-
-
-    
-
-
-
-    
-
-    
-
-     
-    
-    
-    
-     
-    
+;   

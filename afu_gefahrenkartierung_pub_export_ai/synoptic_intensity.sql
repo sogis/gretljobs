@@ -57,24 +57,6 @@ SELECT
 		ELSE 'MAPPING_ERROR' --mapping error, case statement must not go in else block
 	END AS subproc_synoptic_intensity,
 	CAST('complete' AS VARCHAR) AS sources_in_subprocesses_compl
-FROM afu_gefahrenkartierung.ik_synoptisch_mgdm
-;
-
-      
-  
-
-
-    
-
-
-
-    
-
-    
-
-     
-    
-    
-    
-     
-    
+FROM 
+	afu_gefahrenkartierung.ik_synoptisch_mgdm
+;   
