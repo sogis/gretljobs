@@ -1,0 +1,23 @@
+SELECT 
+	t_ili_tid, 
+	ngkid, 
+	peri_name, 
+	gk_n_mn, 
+	erst_art, 
+	erst_dat, 
+	bemerkung, 
+	ik_wasser, 
+	ik_sturz, 
+	ik_abs_ein, 
+	ik_hangm, 
+	ik_ru_spon, 
+	ik_ru_kont, 
+	gk_wasser, 
+	gk_sturz, 
+	gk_abs_ein, 
+	gk_hangm, 
+	gk_ru_spon, 
+	gk_ru_kont, 
+	geometrie
+FROM 
+	afu_gefahrenkartierung.gefahrenkartirung_perimeter_gefahrenkartierung;
