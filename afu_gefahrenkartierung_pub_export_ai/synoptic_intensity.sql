@@ -58,9 +58,7 @@ SELECT
 	END AS subproc_synoptic_intensity,
 	CAST('complete' AS VARCHAR) AS sources_in_subprocesses_compl
 FROM afu_gefahrenkartierung.ik_synoptisch_mgdm
-LIMIT ALL
 ;
-
 
       
   

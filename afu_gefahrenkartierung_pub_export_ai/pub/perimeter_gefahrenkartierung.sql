@@ -19,4 +19,5 @@ SELECT
 	gk_ru_spon, 
 	gk_ru_kont, 
 	geometrie
-FROM afu_gefahrenkartierung.gefahrenkartirung_perimeter_gefahrenkartierung;
+FROM 
+	afu_gefahrenkartierung.gefahrenkartirung_perimeter_gefahrenkartierung;

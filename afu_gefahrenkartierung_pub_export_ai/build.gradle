@@ -7,23 +7,23 @@ task pubGefkart(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-		new TransferSet('pub/perimeter_gefahrenkartierung.sql', 'afu_gefahrenkartierung.gefahrenkartirung_perimeter_gefahrenkartierung', true),
-		new TransferSet('pub/gk_synoptisch_generiert.sql', 'afu_gefahrenkartierung.gefahrenkartirung_gk_synoptisch_generiert', true),
-		new TransferSet('pub/gk_absenkung_einsturz.sql', 'afu_gefahrenkartierung.gefahrenkartirung_gk_absenkung_einsturz', true),
-		new TransferSet('pub/gk_hangmure.sql', 'afu_gefahrenkartierung.gefahrenkartirung_gk_hangmure', true),
-		new TransferSet('pub/gk_rutsch_spontan.sql', 'afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_spontan', true),
-		new TransferSet('pub/gk_rutsch_kont_sackung.sql', 'afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_kont_sackung', true), 
-		new TransferSet('pub/gk_sturz.sql', 'afu_gefahrenkartierung.gefahrenkartirung_gk_sturz', true), 
-		new TransferSet('pub/gk_wasser.sql', 'afu_gefahrenkartierung.gefahrenkartirung_gk_wasser', true),
-		new TransferSet('pub/prozessquelle_wasser.sql', 'afu_gefahrenkartierung.gefahrenkartirung_prozessquelle_wasser', true),
-		new TransferSet('pub/prozessquelle_sturz.sql', 'afu_gefahrenkartierung.gefahrenkartirung_prozessquelle_sturz', true),    
-		new TransferSet('pub/punktsignatur.sql', 'afu_gefahrenkartierung.gefahrenkartirung_punktsignatur', true),
-		new TransferSet('pub/ik_absenkung_einsturz.sql', 'afu_gefahrenkartierung.gefahrenkartirung_ik_absenkung_einsturz', true), 
-		new TransferSet('pub/ik_hangmure.sql', 'afu_gefahrenkartierung.gefahrenkartirung_ik_hangmure', true), 
-		new TransferSet('pub/ik_sturz.sql', 'afu_gefahrenkartierung.gefahrenkartirung_ik_sturz', true), 
-		new TransferSet('pub/ik_rutsch_kont_sackung.sql', 'afu_gefahrenkartierung.gefahrenkartirung_ik_rutsch_kont_sackung', true), 
-		new TransferSet('pub/ik_rutsch_spontan.sql', 'afu_gefahrenkartierung.gefahrenkartirung_ik_rutsch_spontan', true), 
-		new TransferSet('pub/ik_wasser.sql', 'afu_gefahrenkartierung.gefahrenkartirung_ik_wasser', true), 
-		new TransferSet('pub/ueberflutungskarte.sql', 'afu_gefahrenkartierung.gefahrenkartirung_ueberflutungskarte', true)		
+		new TransferSet('pub/perimeter_gefahrenkartierung.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_perimeter_gefahrenkartierung', true),
+		new TransferSet('pub/gk_synoptisch_generiert.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_gk_synoptisch_generiert', true),
+		new TransferSet('pub/gk_absenkung_einsturz.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_gk_absenkung_einsturz', true),
+		new TransferSet('pub/gk_hangmure.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_gk_hangmure', true),
+		new TransferSet('pub/gk_rutsch_spontan.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_gk_rutsch_spontan', true),
+		new TransferSet('pub/gk_rutsch_kont_sackung.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_gk_rutsch_kont_sackung', true), 
+		new TransferSet('pub/gk_sturz.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_gk_sturz', true), 
+		new TransferSet('pub/gk_wasser.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_gk_wasser', true),
+		new TransferSet('pub/prozessquelle_wasser.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_prozessquelle_wasser', true),
+		new TransferSet('pub/prozessquelle_sturz.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_prozessquelle_sturz', true),    
+		new TransferSet('pub/punktsignatur.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_punktsignatur', true),
+		new TransferSet('pub/ik_absenkung_einsturz.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_ik_absenkung_einsturz', true), 
+		new TransferSet('pub/ik_hangmure.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_ik_hangmure', true), 
+		new TransferSet('pub/ik_sturz.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_ik_sturz', true), 
+		new TransferSet('pub/ik_rutsch_kont_sackung.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_ik_rutsch_kont_sackung', true), 
+		new TransferSet('pub/ik_rutsch_spontan.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_ik_rutsch_spontan', true), 
+		new TransferSet('pub/ik_wasser.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_ik_wasser', true), 
+		new TransferSet('pub/ueberflutungskarte.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_ueberflutungskarte', true)		
 	];    
 }
