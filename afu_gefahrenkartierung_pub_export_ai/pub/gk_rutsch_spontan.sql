@@ -7,4 +7,5 @@ SELECT
 	publiziert,
 	ngkid,
 	geometrie
-FROM afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_spontan;
+FROM
+	afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_spontan;

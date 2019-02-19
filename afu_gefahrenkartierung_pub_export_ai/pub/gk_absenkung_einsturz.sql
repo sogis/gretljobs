@@ -7,4 +7,5 @@ SELECT
 	publiziert, 
 	ngkid, 
 	geometrie
-FROM afu_gefahrenkartierung.gefahrenkartirung_gk_absenkung_einsturz;
+FROM
+	afu_gefahrenkartierung.gefahrenkartirung_gk_absenkung_einsturz;

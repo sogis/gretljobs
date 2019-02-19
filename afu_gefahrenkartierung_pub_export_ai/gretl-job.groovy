@@ -5,8 +5,10 @@ def aiCredentialName = ''
 def gretljobsRepo = ''
 
 node("master") {
-    dbUriSogis = "${env.DB_URI_SOGIS}"
-    dbCredentialNameSogis = "${DB_CREDENTIAL_GRETL}"
+    dbUriPub = "${env.DB_URI_PUB}"
+    dbCredentialNamePub = "${DB_CREDENTIAL_GRETL}"
+    dbUriEdit = "${env.DB_URI_EDIT}"
+    dbCredentialNameEdit = "${DB_CREDENTIAL_GRETL}"
     aiServer = "${env.AI_SERVER}"
     aiCredentialName = "${AI_CREDENTIAL}"
     gretljobsRepo = "${env.GRETL_JOB_REPO_URL}"
@@ -18,7 +20,10 @@ node ("gretl") {
         git url: "${gretljobsRepo}", branch: gitBranch
         dir(env.JOB_BASE_NAME) {
             withCredentials([usernamePassword(credentialsId: "${dbCredentialNameSogis}", usernameVariable: 'dbUserSogis', passwordVariable: 'dbPwdSogis'), usernamePassword(credentialsId: "${aiCredentialName}", usernameVariable: 'aiUser', passwordVariable: 'aiPwd')]) {
-                sh "gradle --init-script /home/gradle/init.gradle -PdbUriSogis='${dbUriSogis}' -PdbUserSogis='${dbUserSogis}' -PdbPwdSogis='${dbPwdSogis}' -PaiServer='${aiServer}' -PaiUser='${aiUser}' -PaiPwd='${aiPwd}'"
+                sh "gradle --init-script /home/gradle/init.gradle \
+                -PdbUriPub='${dbUriPub}' -PdbUserPub='${dbUserPub}' -PdbPwdPub='${dbPwdPub}' \
+                -PdbUriEdit='${dbUriEdit}' -PdbUserEdit='${dbUserEdit}' -PdbPwdEdit='${dbPwdEdit}' \
+                -PaiServer='${aiServer}' -PaiUser='${aiUser}' -PaiPwd='${aiPwd}'"
             }
         }
     }
