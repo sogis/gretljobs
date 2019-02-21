@@ -15,19 +15,19 @@ defaultTasks 'do_Gesamtberechnung'
 task AuswertungGTFS(type: SqlExecutor){
     database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     sqlParameters = [currentYear: currentYear, lastYear: lastYear]
-    sqlFiles = ['4_insert_into_gtfs_auswertung.sql']
+    sqlFiles = ['insert_into_gtfs_auswertung.sql']
 }
 
 task AuswertungGesamt(type: SqlExecutor){
     database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     sqlParameters = [currentYear: currentYear, lastYear: lastYear]
-    sqlFiles = ['5_insert_into_gesamtauswertung.sql']
+    sqlFiles = ['insert_into_gesamtauswertung.sql']
 }
 
 task AuswertungKosten(type: SqlExecutor){
     database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     sqlParameters = [currentYear: currentYear, lastYear: lastYear]
-    sqlFiles = ['6_berechnung_kosten.sql']
+    sqlFiles = ['berechnung_kosten.sql']
 }
 
 
