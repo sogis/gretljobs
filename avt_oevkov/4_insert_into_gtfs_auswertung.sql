@@ -1,5 +1,5 @@
 -- Summe ungewichtete Abfahrten pro Haltestelle und Linie
-
+BEGIN;
 TRUNCATE TABLE avt_oevkov_${currentYear}.auswertung_auswertung_gtfs;
 INSERT INTO
     avt_oevkov_${currentYear}.auswertung_auswertung_gtfs
@@ -11,7 +11,40 @@ INSERT INTO
      verkehrsmittel
      )
      (
-    WITH abfahrten AS (
+    WITH calendar AS (
+        SELECT
+            service_id,
+        CASE
+        WHEN (SELECT BTRIM(lower(to_char((
+                         SELECT
+                                 stichtag
+                             FROM
+                                    avt_oevkov_${currentYear}.sachdaten_oevkov_daten), 'Day')))) = 'thursday'
+             THEN thursday
+        WHEN (SELECT BTRIM(lower(to_char((
+                         SELECT
+                                 stichtag
+                             FROM
+                                    avt_oevkov_${currentYear}.sachdaten_oevkov_daten), 'Day')))) = 'tuesday'
+             THEN tuesday
+        END AS dayofweek
+        FROM
+            avt_oevkov_${currentYear}.gtfs_calendar
+    ),
+    exception AS (
+        SELECT
+            service_id,
+            exception_type
+        FROM
+            avt_oevkov_${currentYear}.gtfs_calendar_dates
+        WHERE
+            datum = (
+                            SELECT
+                                stichtag
+                            FROM
+                                avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
+    ),
+    abfahrten AS (
         SELECT
             stop.stop_name,
             linie.linienname,
@@ -42,42 +75,32 @@ INSERT INTO
 --             avt_oevkov_${currentYear}.so_geodaten_gemeindegrenzen As gemeindegrenze             -- Gemeindegrenze nur für Einschränkung, später Daten so aufbereiten dass nur die erforderlichen Haltestellen vorhanden sind 
         WHERE                                                                                                                       -- > viel schneller so
             (
-                trip.service_id IN (
-                    SELECT
-                        service_id
-                    FROM
-                        avt_oevkov_${currentYear}.gtfs_calendar
-                    WHERE thursday = 1
-                )
-                OR
-                trip.service_id IN (
+            trip.service_id IN (
                 SELECT
                     service_id
                 FROM
-                    avt_oevkov_${currentYear}.gtfs_calendar_dates
-                WHERE
-                    datum = (SELECT
-                                        stichtag
-                                    FROM
-                                        avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
-                AND
-                     exception_type = 1
-                 )
+                    calendar
+                WHERE dayofweek = 1
             )
+            OR
+            trip.service_id IN (
+                SELECT
+                    service_id
+                FROM
+                    exception
+                WHERE
+                    exception_type = 1
+             )
+        )
         AND
             trip.service_id NOT IN (
                 SELECT
                     service_id
                 FROM
-                    avt_oevkov_${currentYear}.gtfs_calendar_dates
+                    exception
                 WHERE
-                    datum = (SELECT
-                                        stichtag
-                                    FROM
-                                        avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
-                AND
                     exception_type = 2
-            )
+        )
 --         AND
 --             stop.geometrie && gemeindegrenze.geometrie
 --         AND
@@ -86,7 +109,6 @@ INSERT INTO
             stop.stop_name NOT IN (
                 'Aarau', 'Langenthal', 'Murgenthal', 'Zofingen'
             )
-           -- AND stop.stop_name = 'Solothurn, Kunstmuseum' and route.route_id like '%19-9%' 
         AND
             agency.agency_id::text = route.agency_id
         AND
@@ -117,8 +139,9 @@ INSERT INTO
             trip.trip_id,
             trip_headsign,
             pickup_type,
-            verkehrsmittel                                                                                               order by stop.stop_name
+            verkehrsmittel
     )
+ 
 
     -- die meisten Haltestellen
     SELECT
@@ -166,7 +189,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
 
-    UNION
+    UNION ALL
 
     --     Alle Haltestellen ergänzen,welche ausserhalb des Kantons liegen, aber einer
     --     Solothurner Gemeinde angerechnet werden, ausser die, welche unten als Speziallfall  behandelt werden
@@ -178,13 +201,13 @@ INSERT INTO
         agency.agency_name,
         count(departure_time) AS gtfs_count,
         CASE                                                                                                                             -- Bedarfsangebot???
-                WHEN route_desc= 'Bus'
-                     THEN 1                                                                                                             -- Bus (200 ICB? weggelassen)
-                WHEN route_desc IN ('RegioExpress', 'InterRegio', 'Intercity')
-                     THEN 2                                                                                                             -- Intercity, Railjet, Schnellzug, Eurocity, ICE, TGV, Eurostar, InterRegio (105 Nachtzug weggelassen)
-                WHEN route_desc IN ('Regionalzug', 'S-Bahn',  'Tram')
-                    THEN 3
-            END AS verkehrsmittel
+            WHEN route_desc= 'Bus'
+                 THEN 1                                                                                                             -- Bus (200 ICB? weggelassen)
+            WHEN route_desc IN ('RegioExpress', 'InterRegio', 'Intercity')
+                 THEN 2                                                                                                             -- Intercity, Railjet, Schnellzug, Eurocity, ICE, TGV, Eurostar, InterRegio (105 Nachtzug weggelassen)
+            WHEN route_desc IN ('Regionalzug', 'S-Bahn',  'Tram')
+                THEN 3
+        END AS verkehrsmittel
     FROM avt_oevkov_${currentYear}.gtfs_agency AS agency,
         avt_oevkov_${currentYear}.gtfs_route AS route,
         avt_oevkov_${currentYear}.gtfs_trip AS trip,
@@ -192,42 +215,33 @@ INSERT INTO
         avt_oevkov_${currentYear}.gtfs_stop AS stop,
         avt_oevkov_${currentYear}.sachdaten_linie_route AS linie
     WHERE
-        (trip.service_id IN (
+        (
+        trip.service_id IN (
             SELECT
                 service_id
             FROM
-                avt_oevkov_${currentYear}.gtfs_calendar
-            WHERE
-                 thursday = 1
+                calendar
+            WHERE dayofweek = 1
             )
-        OR trip.service_id IN (
+        OR
+        trip.service_id IN (
             SELECT
-            service_id
+                service_id
             FROM
-                avt_oevkov_${currentYear}.gtfs_calendar_dates
+                exception
             WHERE
-                datum = (SELECT
-                                    stichtag
-                                FROM
-                                    avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
-            AND
                 exception_type = 1
-         )
-     )
+            )
+        )
     AND
         trip.service_id NOT IN (
             SELECT
                 service_id
             FROM
-                avt_oevkov_${currentYear}.gtfs_calendar_dates
+                exception
             WHERE
-                datum = (SELECT
-                                    stichtag
-                                FROM
-                                    avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
-                AND
                 exception_type = 2
-        )
+    )
     AND
         stop.stop_name IN (
             'Arlesheim, Obesunne', 'Erlinsbach, Oberdorf', 'Erlinsbach, Sagi',
@@ -259,10 +273,9 @@ INSERT INTO
         agency.agency_name,
         verkehrsmittel
 
-    -- **************************************************************************************
-
+-- **************************************************************************************
 -- ab hier werden die Bahnhöfe und andere Knotenpunkte behandelt, wegen Aufteilung in Linien
-    UNION
+    UNION ALL
 
      -- Bahnhof Solothurn: Linie - 410 Biel-Olten (RE)
     SELECT
@@ -289,7 +302,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
 
-    UNION
+    UNION ALL
 
     -- Bahnhof Solothurn: Linie - 410 Biel-Olten (ICN)
     SELECT
@@ -314,7 +327,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
 
-    UNION
+    UNION ALL
 
     -- Bahnhof Solothurn: Linie 411 Solothurn - Moutier
     SELECT
@@ -337,7 +350,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
 
-    UNION
+    UNION ALL
 
      -- Bahnhof Solothurn: Linie 304.1 Burgdorf - Solothurn
     SELECT
@@ -360,7 +373,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
 
-    UNION
+    UNION ALL
 
     -- Bahnhof Solothurn: Linie 413 Solothurn - Langenthal
     SELECT
@@ -384,7 +397,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
 
-    UNION
+    UNION ALL
 
     -- Bahnhof Solothurn:  Linie 308 Bern - Solothurn
     SELECT
@@ -392,7 +405,7 @@ INSERT INTO
         linienname,
         agency_name,
         sum(gtfs_count),
-        3 AS verkehrsmittel                                                                                                  -- Speziallfall
+        3 AS verkehrsmittel                                                                                            -- Speziallfall
     FROM
         abfahrten
     WHERE
@@ -407,7 +420,7 @@ INSERT INTO
         agency_name
 --         verkehrsmittel
 
-    UNION
+    UNION ALL
 
      -- Biberist RBS Linie 308 Bern - Solothurn
     SELECT
@@ -430,7 +443,7 @@ INSERT INTO
         agency_name
 --         verkehrsmittel
 
-    UNION
+    UNION ALL
 
      -- Lohn-Lüterkofen Linie 308 Bern - Solothurn
     SELECT
@@ -453,7 +466,7 @@ INSERT INTO
         agency_name
 --         verkehrsmittel
 
-    UNION
+    UNION ALL
 
     -- Bahnhof Oensingen
     SELECT
@@ -479,7 +492,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
      
-    UNION
+    UNION ALL
 
     -- Bahnhof Olten: Linie 410 Biel - Olten (RE)
     SELECT
@@ -504,7 +517,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
     
-    UNION
+    UNION ALL
     
     -- Bahnhof Olten: Linie 410 Biel - Olten (ICN)
     SELECT
@@ -520,8 +533,8 @@ INSERT INTO
     AND
         stop_name = 'Olten'
     AND
-        linienname = 'Linie 410 Biel - Olten (ICN)'                                    -- das muss zwingend stehen, weil und Linie 410 Biel - Olten (ICN) und Linie 650 Olten - Zürich (RE/IR/ICN) identische Route haben und unterschiedlich ausgewertet werden
-    AND
+        linienname = 'Linie 410 Biel - Olten (ICN)'                                    -- das muss zwingend stehen, weil und Linie 410 Biel - Olten (ICN) und Linie 650 Olten - Zürich (RE/IR/ICN
+    AND                                                                                                    --  identische Route haben und unterschiedlich ausgewertet werden
         trip_headsign IN ('Biel/Bienne',  'Genève-Aéroport',  'Lausanne') 
    AND
         route_desc IN ('InterRegio', 'Intercity')
@@ -531,7 +544,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
     
-   UNION
+   UNION ALL
     
     -- Bahnhof Olten: Linie 450 Langenthal - Olten (S23/S29)
     SELECT
@@ -558,7 +571,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
     
-    UNION
+    UNION ALL
 
  -- Bahnhof Olten: Linie 650 Olten - Zürich (RE/IR/ICN)          
     SELECT
@@ -587,40 +600,29 @@ INSERT INTO
             avt_oevkov_${currentYear}.gtfs_stoptime AS stoptime_einschraenkung
        WHERE
            (trip_einschraenkung.service_id IN (
-               SELECT
-                   service_id
-               FROM
-                   avt_oevkov_${currentYear}.gtfs_calendar
-               WHERE
-                   thursday = 1
+            SELECT
+                service_id
+            FROM
+                calendar
+            WHERE dayofweek = 1
            )
-                OR trip_einschraenkung.service_id IN (
-                    SELECT
-                    service_id
-                    FROM
-                    avt_oevkov_${currentYear}.gtfs_calendar_dates
-                    WHERE
-                        datum = (SELECT
-                                            stichtag
-                                        FROM
-                                            avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
-                    AND
-                    exception_type = 1
+           OR trip_einschraenkung.service_id IN (
+            SELECT
+                service_id
+            FROM
+                exception
+            WHERE
+                exception_type = 1
                  )
             )
         AND
             trip_einschraenkung.service_id NOT IN (
-                SELECT
-                    service_id
-                FROM
-                    avt_oevkov_${currentYear}.gtfs_calendar_dates
-                WHERE
-                    datum = (SELECT
-                                        stichtag
-                                    FROM
-                                        avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
-                    AND
-                    exception_type = 2
+            SELECT
+                service_id
+            FROM
+                exception
+            WHERE
+                exception_type = 2
             )
          AND
             stop_einschraenkung.stop_name IN ('Langenthal')
@@ -641,7 +643,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
 
-    UNION
+    UNION ALL
 
     -- Bahnhof Olten: Linie 500 Olten - Basel (S3)
     SELECT
@@ -668,7 +670,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
 
-     UNION
+     UNION ALL
 
     -- Bahnhof Olten: Linie 503 Olten - Sissach (S9)
     SELECT
@@ -695,9 +697,9 @@ INSERT INTO
         agency_name,
         verkehrsmittel
 
-    UNION
+    UNION ALL
 
-    -- Bahnhof Olten: Linie 510 Olten - Sursee (S8)          RegioExpress zählt hier zu R       Achtung: verkehrsmittel wird hier fix eingegeben!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    -- Bahnhof Olten: Linie 510 Olten - Sursee (S8)          RegioExpress zählt hier zu R       Achtung: verkehrsmittel wird hier fix eingegeben!!!
     SELECT
         stop_name,
         linienname,
@@ -711,7 +713,7 @@ INSERT INTO
     AND
         stop_name = 'Olten'
     AND
-        route_id = '12-8-j19-1'
+        linienname = 'Linie 510 Olten - Sursee (S8)'
     AND
         route_desc IN ('Regionalzug', 'S-Bahn')
     GROUP BY
@@ -720,7 +722,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
 
-    UNION
+    UNION ALL
 
     --- Bahnhof Olten: Linie 510 Olten - Luzern (IR/RE)          RegioExpress zählt hier zu R
     SELECT
@@ -728,7 +730,7 @@ INSERT INTO
         linienname,
         agency_name,
         sum(gtfs_count),
-        2 AS verkehrsmittel                                                                                                    -- Achtung: verkehrsmittel wird hier fix eingegeben!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        2 AS verkehrsmittel                                                                                                    -- Achtung: verkehrsmittel wird hier fix eingegeben!!!
     FROM
         abfahrten
     WHERE
@@ -740,7 +742,7 @@ INSERT INTO
             'Brig', 'Chiasso', 'Domodossoloa (I)', 'Erstfeld', 'Lugano', 'Luzern'
         )
     AND
-         linienname = 'Linie 510 Olten - Luzern (IR/RE)'                                              -- das muss zwingend stehen, weil route_id = 20-21-j19-1 für Olten-Basel und Olten-Luzern gilt, kann man das besser lösen??????)
+         linienname = 'Linie 510 Olten - Luzern (IR/RE)'                                              -- das muss zwingend stehen, weil route_id = 20-21-j19-1 für Olten-Basel und Olten-Luzern gilt, kann man das besser lösen?
     AND
         route_desc IN ('RegioExpress', 'InterRegio')
     AND
@@ -751,35 +753,31 @@ INSERT INTO
                 avt_oevkov_${currentYear}.gtfs_stop AS stop_einschraenkung,
                 avt_oevkov_${currentYear}.gtfs_stoptime AS stoptime_einschraenkung
             WHERE
-               (trip_einschraenkung.service_id IN (SELECT service_id FROM avt_oevkov_${currentYear}.gtfs_calendar WHERE thursday = 1)
-                    OR trip_einschraenkung.service_id IN (
-                        SELECT
-                        service_id
-                        FROM
-                        avt_oevkov_${currentYear}.gtfs_calendar_dates
-                        WHERE
-                            datum = (SELECT
-                                                stichtag
-                                            FROM
-                                                avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
-                        AND
-                        exception_type = 1
-                     )
-                )
-            AND
-                trip_einschraenkung.service_id NOT IN (
-                    SELECT
-                        service_id
-                    FROM
-                        avt_oevkov_${currentYear}.gtfs_calendar_dates
-                    WHERE
-                        datum = (SELECT
-                                            stichtag
-                                        FROM
-                                            avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
-                        AND
-                        exception_type = 2
-                )
+                (trip_einschraenkung.service_id IN (
+            SELECT
+                service_id
+            FROM
+                calendar
+            WHERE dayofweek = 1
+           )
+           OR trip_einschraenkung.service_id IN (
+            SELECT
+                service_id
+            FROM
+                exception
+            WHERE
+                exception_type = 1
+                 )
+            )
+        AND
+            trip_einschraenkung.service_id NOT IN (
+            SELECT
+                service_id
+            FROM
+                exception
+            WHERE
+                exception_type = 2
+            )
              AND
                 stop_einschraenkung.stop_name = 'Zofingen'
              AND
@@ -801,7 +799,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
 
-    UNION
+    UNION ALL
 
     -- Bahnhof Olten: Linie 650 Olten - Aarau (S23/S26/S29)
     SELECT
@@ -828,7 +826,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
 
-    UNION
+    UNION ALL
 
     -- Bahnhof Olten: Linie 650 Olten - Zürich (RE/IR/ICN)
     SELECT
@@ -857,35 +855,31 @@ INSERT INTO
                 avt_oevkov_${currentYear}.gtfs_stop AS stop_einschraenkung,
                 avt_oevkov_${currentYear}.gtfs_stoptime AS stoptime_einschraenkung
               WHERE
-               (trip_einschraenkung.service_id IN (SELECT service_id FROM avt_oevkov_${currentYear}.gtfs_calendar WHERE thursday = 1)
-                    OR trip_einschraenkung.service_id IN (
-                        SELECT
-                        service_id
-                        FROM
-                        avt_oevkov_${currentYear}.gtfs_calendar_dates
-                        WHERE
-                            datum = (SELECT
-                                                stichtag
-                                            FROM
-                                                avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
-                        AND
-                        exception_type = 1
-                     )
-                )
-            AND
-                trip_einschraenkung.service_id NOT IN (
-                    SELECT
-                        service_id
-                    FROM
-                        avt_oevkov_${currentYear}.gtfs_calendar_dates
-                    WHERE
-                        datum = (SELECT
-                                            stichtag
-                                        FROM
-                                            avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
-                        AND
-                        exception_type = 2
-                )
+                (trip_einschraenkung.service_id IN (
+            SELECT
+                service_id
+            FROM
+                calendar
+            WHERE dayofweek = 1
+           )
+           OR trip_einschraenkung.service_id IN (
+            SELECT
+                service_id
+            FROM
+                exception
+            WHERE
+                exception_type = 1
+                 )
+            )
+        AND
+            trip_einschraenkung.service_id NOT IN (
+            SELECT
+                service_id
+            FROM
+                exception
+            WHERE
+                exception_type = 2
+            )
             AND
                 stop_einschraenkung.stop_name = 'Aarau'
             AND
@@ -905,7 +899,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
 
-    UNION
+    UNION ALL
 
     -- Bahnhof Dulliken: (650 Olten-Zürich R, S und 450 Bern - Olten haben die gleichen route_ids!
     -- S-Bahn zählen alle, RegioExpress nur die Abfahrten Richtung Olten!
@@ -921,7 +915,7 @@ INSERT INTO
         'Linie 650 Olten - Aarau (S23/S26/S29)' AS linienname,
         agency_name,
         sum(gtfs_count),
-        3 AS verkehrsmittel                                          -- Speziallfall, RE Verkehrsmittel 3
+        3 AS verkehrsmittel                                                                                                                 -- Speziallfall, RE Verkehrsmittel 3
         FROM
         abfahrten
         WHERE
@@ -939,7 +933,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
         
-        UNION
+        UNION ALL
 
         -- Bahnhof Dulliken: S-Bahn zählen alle, RegioExpress nur die Abfahrten Richtung Olten!
         SELECT
@@ -947,7 +941,7 @@ INSERT INTO
         'Linie 650 Olten - Aarau (S23/S26/S29)' AS linienname,
         agency_name,
         sum(gtfs_count),
-        3 AS verkehrsmittel                                          -- Speziallfall
+        3 AS verkehrsmittel                                                                                                                  -- Speziallfall
         FROM
         abfahrten
         WHERE
@@ -972,7 +966,7 @@ INSERT INTO
         dulliken.agency_name,
         dulliken.verkehrsmittel
 
-    UNION
+    UNION ALL
 
     -- Bahnhof Grenchen Süd
     SELECT
@@ -995,7 +989,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
 
-    UNION
+    UNION ALL
 
     -- Bahnhof Däniken: (650 Olten-Zürich R,S und 450 Bern - Olten haben die gleichen route_ids!
     SELECT
@@ -1018,7 +1012,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
 
-    UNION
+    UNION ALL
 
      -- Bahnhof Schönenwerd SO
     SELECT
@@ -1041,7 +1035,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
 
-    UNION
+    UNION ALL
 
     -- Bahnhof Murgenthal: (650 Olten-Zürich R,S und 450 Bern - Olten haben die gleichen route_ids!
     SELECT
@@ -1066,72 +1060,62 @@ INSERT INTO
             avt_oevkov_${currentYear}.sachdaten_linie_route AS linie
         WHERE
             (
-                trip.service_id IN (
-                    SELECT
-                        service_id
-                    FROM
-                        avt_oevkov_${currentYear}.gtfs_calendar
-                    WHERE thursday = 1
-                )
-                OR
-                trip.service_id IN (
+            trip.service_id IN (
                 SELECT
                     service_id
                 FROM
-                    avt_oevkov_${currentYear}.gtfs_calendar_dates
-                WHERE
-                    datum = (SELECT
-                                        stichtag
-                                    FROM
-                                        avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
-                AND
-                     exception_type = 1
-                 )
+                    calendar
+                WHERE dayofweek = 1
             )
-        AND
-            trip.service_id NOT IN (
+            OR
+            trip.service_id IN (
                 SELECT
                     service_id
                 FROM
-                    avt_oevkov_${currentYear}.gtfs_calendar_dates
+                    exception
                 WHERE
-                    datum = (SELECT
-                                        stichtag
-                                    FROM
-                                        avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
-                AND
-                    exception_type = 2
-            )
-        AND
-            stop.stop_name = 'Murgenthal'
-        AND
-            linie.linienname = 'Linie 450 Langenthal - Olten (S23/S29)'
-        AND
-            pickup_type = 0
-        AND
-           route_desc IN (
-               'Intercity', 'ICE', 'InterRegio', 'RegioExpress',
-               'Regionalzug', 'S-Bahn', 'Bus', 'Tram'
-           )
-        AND
-            agency.agency_id::text = route.agency_id
-        AND
-            route.route_id = trip.route_id
-        AND
-            route.route_id = linie.route_id
-        AND
-            stop.stop_id = stoptime.stop_id
-        AND
-            stoptime.trip_id = trip.trip_id
-        AND
-            trip_headsign <> stop.stop_name
-        GROUP BY
-            stop.stop_name,
-            linie.linienname,
-            agency.agency_name,
-            verkehrsmittel
+                    exception_type = 1
+             )
+        )
+    AND
+        trip.service_id NOT IN (
+            SELECT
+                service_id
+            FROM
+                exception
+            WHERE
+                exception_type = 2
+    )
+    AND
+        stop.stop_name = 'Murgenthal'
+    AND
+        linie.linienname = 'Linie 450 Langenthal - Olten (S23/S29)'
+    AND
+        pickup_type = 0
+    AND
+       route_desc IN (
+           'Intercity', 'ICE', 'InterRegio', 'RegioExpress',
+           'Regionalzug', 'S-Bahn', 'Bus', 'Tram'
+       )
+    AND
+        agency.agency_id::text = route.agency_id
+    AND
+        route.route_id = trip.route_id
+    AND
+        route.route_id = linie.route_id
+    AND
+        stop.stop_id = stoptime.stop_id
+    AND
+        stoptime.trip_id = trip.trip_id
+    AND
+        trip_headsign <> stop.stop_name
+    GROUP BY
+        stop.stop_name,
+        linie.linienname,
+        agency.agency_name,
+        verkehrsmittel
 
-     UNION
+     UNION ALL
 
     -- Bahnhof Dornach-Arlesheim: 230 Biel - Delémont und 500 Basel-Olten S haben die gleiche route_id = 4-3-j19-1 
     SELECT
@@ -1154,7 +1138,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
 
-    UNION
+    UNION ALL
 
     SELECT
         stop_name,
@@ -1178,7 +1162,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
 
-    UNION
+    UNION ALL
 
     SELECT
         stop_name,
@@ -1198,7 +1182,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
 
-    UNION
+    UNION ALL
 
     -- Bahnhof Grenchen Nord
     SELECT
@@ -1221,7 +1205,7 @@ INSERT INTO
         agency_name,
         verkehrsmittel
 
-UNION
+    UNION ALL
 
 --     'Bahnhof: Flüh, Bahnhof'
 --     im GTFS keine Unterscheidung Flüh, Bahnhof (beides Tram und Bus), Abt. OeV wünscht aber unterscheidung
@@ -1245,7 +1229,7 @@ UNION
         agency_name,
         verkehrsmittel
 
-    UNION
+    UNION ALL
 
 --  'Bahnhof: Flüh, Bahnhof'
     SELECT
@@ -1271,7 +1255,6 @@ UNION
 )
 ;
 
-
 -- Alle  Haltestellen, die wegen pickup_type = 0 herausfallen oder 0 Abfahrten haben und nicht in Tabelle
 -- avt_oevkov_${currentYear}.auswertung_auswertung_gtfs sind >>> ja, siehe Realisierungsphase: fragen_180925_erg_AVT.docx
 
@@ -1284,99 +1267,116 @@ INSERT INTO
           verkehrsmittel
      )
      (
-         SELECT
-             stop_name,
-             linie.linienname,
-             agency.agency_name,
-             0 as gtfs_count,
-             CASE
-                 WHEN route_type = 700
-                     THEN 1
-                 WHEN (route_type > 100  AND route_type  < 106)
-                     THEN 2
-                 WHEN (route_type = 106 OR route_type = 400 OR route_type = 900)
-                     THEN 3
-             END AS verkehrsmittel
-         FROM
-            avt_oevkov_${currentYear}.gtfs_agency AS agency,
-            avt_oevkov_${currentYear}.gtfs_route AS route,
-            avt_oevkov_${currentYear}.gtfs_trip AS trip,
-            avt_oevkov_${currentYear}.gtfs_stoptime AS stoptime,
-            avt_oevkov_${currentYear}.gtfs_stop AS stop,
-            avt_oevkov_${currentYear}.sachdaten_linie_route AS linie
---             avt_oevkov_${currentYear}.so_geodaten_gemeindegrenzen AS gemeindegrenze
-
-    -- muss diese Bedingung noch angepasst werden??????????????????????????????????????????????
-         WHERE
-              (
-                  trip.service_id IN (
-                      SELECT
-                          service_id
-                      FROM
-                          avt_oevkov_${currentYear}.gtfs_calendar
-                      WHERE thursday = 1
-                  )
-                  OR
-                  trip.service_id IN (
-                  SELECT
-                      service_id
-                  FROM
-                      avt_oevkov_${currentYear}.gtfs_calendar_dates
-                  WHERE
-                      datum = (SELECT
-                                          stichtag
-                                      FROM
-                                         avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
-                  AND
-                       exception_type = 1
-                   )
-            )
-        AND
-            trip.service_id NOT IN (
-                SELECT
-                    service_id
-                FROM
-                    avt_oevkov_${currentYear}.gtfs_calendar_dates
-                WHERE
-                    datum = (SELECT
-                                        stichtag
-                                    FROM
-                                        avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
-                AND
-                    exception_type = 2
-            )
-         AND
-        stop.stop_name||linienname NOT IN (
-            SELECT
-                haltestellenname||linie
-            FROM 
-                avt_oevkov_${currentYear}.auswertung_auswertung_gtfs
+        WITH calendar AS (
+        SELECT
+            service_id,
+        CASE
+        WHEN (SELECT BTRIM(lower(to_char((
+                         SELECT
+                                 stichtag
+                             FROM
+                                    avt_oevkov_${currentYear}.sachdaten_oevkov_daten), 'Day')))) = 'thursday'
+             THEN thursday
+        WHEN (SELECT BTRIM(lower(to_char((
+                         SELECT
+                                 stichtag
+                             FROM
+                                    avt_oevkov_${currentYear}.sachdaten_oevkov_daten), 'Day')))) = 'tuesday'
+             THEN tuesday
+        END AS dayofweek
+        FROM
+            avt_oevkov_${currentYear}.gtfs_calendar
+    ),
+    exception AS (
+        SELECT
+            service_id,
+            exception_type
+        FROM
+            avt_oevkov_${currentYear}.gtfs_calendar_dates
+        WHERE
+            datum = (
+                            SELECT
+                                stichtag
+                            FROM
+                                avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
+    )
+     SELECT
+         stop_name,
+         linie.linienname,
+         agency.agency_name,
+         0 as gtfs_count,
+         CASE                                                                                                         -- Bedarfsangebot????
+                WHEN route_desc = 'Bus'
+                     THEN 1                                                                                             -- Bus (200 ICB? weggelassen)
+                WHEN route_desc IN ('RegioExpress', 'InterRegio', 'Intercity')
+                     THEN 2                                                                                             -- Railjet, Schnellzug, Eurocity, ICE, TGV, Eurostar, InterRegio (105 Nachtzug weggelassen)
+                WHEN route_desc IN ('Regionalzug', 'S-Bahn', 'Tram')
+                    THEN 3
+            END AS verkehrsmittel
+     FROM
+        avt_oevkov_${currentYear}.gtfs_agency AS agency,
+        avt_oevkov_${currentYear}.gtfs_route AS route,
+        avt_oevkov_${currentYear}.gtfs_trip AS trip,
+        avt_oevkov_${currentYear}.gtfs_stoptime AS stoptime,
+        avt_oevkov_${currentYear}.gtfs_stop AS stop,
+        avt_oevkov_${currentYear}.sachdaten_linie_route AS linie
+     WHERE
+         (
+         trip.service_id IN (
+             SELECT
+                 service_id
+             FROM
+                 calendar
+             WHERE
+                 dayofweek = 1
         )
---          AND
---         stop.geometrie && gemeindegrenze.geometrie
---     AND
---         ST_Contains(gemeindegrenze.geometrie, stop.geometrie)
-         AND
-             stop.stop_name NOT IN ('Aarau', 'Langenthal', 'Murgenthal', 'Zofingen')
-         AND
+        OR
+        trip.service_id IN (
+            SELECT
+                service_id
+            FROM
+                exception
+            WHERE
+                exception_type = 1
+         )
+    )
+    AND
+        trip.service_id NOT IN (
+            SELECT
+                service_id
+            FROM
+                exception
+            WHERE
+                exception_type = 2
+    )
+    AND
+    stop.stop_name||linienname NOT IN (
+        SELECT
+            haltestellenname||linie
+        FROM 
+            avt_oevkov_${currentYear}.auswertung_auswertung_gtfs
+    )
+    AND
+         stop.stop_name NOT IN ('Aarau', 'Langenthal', 'Murgenthal', 'Zofingen')
+    AND
         agency.agency_id::text = route.agency_id  
-         AND
+    AND
         route.route_id = trip.route_id
-         AND
+    AND
         route.route_id = linie.route_id
-         AND
+    AND
         stop.stop_id = stoptime.stop_id
-         AND
+    AND
         stoptime.trip_id = trip.trip_id
-         AND
+    AND
         pickup_type > 0
-         AND
+    AND
         route_desc = 'Bus'
-         GROUP BY
-        stop.stop_name,
-        linie.linienname,
-        agency.agency_name,
-        verkehrsmittel
+     GROUP BY
+    stop.stop_name,
+    linie.linienname,
+    agency.agency_name,
+    verkehrsmittel
 )
 ;
 
@@ -1390,5 +1390,5 @@ FROM
 WHERE
     auswertung.verkehrsmittel = verkehrsmittel.verkehrsmittel
 ;
-COMMIT
+COMMIT;
 ;
