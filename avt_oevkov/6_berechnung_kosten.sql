@@ -213,7 +213,8 @@ SET
     kosten_minus_schwellenwert = schwellenwert  *  einwohnerzahl
 FROM
       avt_oevkov_${currentYear}.sachdaten_oevkov_daten AS grunddaten
-WHERE gemeindekosten.kosten_pro_einwohner > grunddaten.schwellenwert
+WHERE
+    gemeindekosten.kosten_pro_einwohner > grunddaten.schwellenwert
 ;
 
 -- Kostenüber Schwellenwert
@@ -223,5 +224,6 @@ SET
     kosten_ueber_schwellenwert = kosten_total  -  kosten_minus_schwellenwert
 FROM
       avt_oevkov_${currentYear}.sachdaten_oevkov_daten AS grunddaten
-WHERE gemeindekosten.kosten_pro_einwohner > grunddaten.schwellenwert
+WHERE
+    gemeindekosten.kosten_pro_einwohner > grunddaten.schwellenwert
 ;
