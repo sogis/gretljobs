@@ -24,6 +24,7 @@ task pubGefkart(type: Db2Db){
 		new TransferSet('pub/ik_rutsch_kont_sackung.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_ik_rutsch_kont_sackung', true), 
 		new TransferSet('pub/ik_rutsch_spontan.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_ik_rutsch_spontan', true), 
 		new TransferSet('pub/ik_wasser.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_ik_wasser', true), 
-		new TransferSet('pub/ueberflutungskarte.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_ueberflutungskarte', true)		
+		new TransferSet('pub/ueberflutungskarte.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_ueberflutungskarte', true),
+		new TransferSet('pub/ik_synoptisch_mgdm.sql', 'afu_gefahrenkartierung_pub.gefahrenkartirung_ik_synoptisch_mgdm', true)			
 	];    
 }
