@@ -34,19 +34,6 @@ SELECT
     bhd,
     baumhoehe,
     CASE
-        WHEN waldplan.wpnr = 501
-            THEN 'Wirtschaftswald'
-        WHEN waldplan.wpnr = 502
-            THEN 'Schutzwald'
-        WHEN waldplan.wpnr = 503
-            THEN 'Erholungswald'
-        WHEN waldplan.wpnr = 504
-            THEN 'Natur und Landschaft'
-        WHEN waldplan.wpnr = 505
-            THEN 'Schutzwald / Natur und Landschaft'
-        ELSE ''
-    END AS betriebsart,
-    CASE
         WHEN merkmal_1 = 'm1_Stammdurchmesser_70'
             THEN 'Stammdurchmesser ≥ 70cm'
         WHEN merkmal_1 = 'm2_Spechtloecher_Bruthoehlen_Wurzelhoehlen'
@@ -250,7 +237,6 @@ GROUP BY
     baumart,
     bhd,
     baumhoehe,
-    betriebsart,
     merkmal_1,
     beschreibung_merkmal_1,
     merkmal_2,
