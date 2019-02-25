@@ -31,7 +31,7 @@ SELECT
             THEN 'Übrige Laubbäume'
         ELSE baumart
     END AS baumart,
-    bhd,
+    bhd, 
     baumhoehe, 
     CASE
         WHEN merkmal_1 = 'm1_Stammdurchmesser_70'
@@ -235,7 +235,7 @@ GROUP BY
     gesuchsnummer,
     waldeigentuemer_code,
     baumart,
-    bhd,
+    bhd, 
     baumhoehe, 
     merkmal_1,
     beschreibung_merkmal_1,
