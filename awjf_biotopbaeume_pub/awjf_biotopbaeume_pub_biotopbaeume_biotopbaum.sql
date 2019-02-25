@@ -236,7 +236,7 @@ GROUP BY
     waldeigentuemer_code,
     baumart,
     bhd,
-    baumhoehe, 
+    baumhoehe,
     merkmal_1,
     beschreibung_merkmal_1,
     merkmal_2,
