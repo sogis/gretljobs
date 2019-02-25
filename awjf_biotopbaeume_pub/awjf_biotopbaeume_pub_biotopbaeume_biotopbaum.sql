@@ -32,7 +32,7 @@ SELECT
         ELSE baumart
     END AS baumart,
     bhd,
-    baumhoehe, 
+    baumhoehe,
     CASE
         WHEN merkmal_1 = 'm1_Stammdurchmesser_70'
             THEN 'Stammdurchmesser ≥ 70cm'
@@ -236,7 +236,7 @@ GROUP BY
     waldeigentuemer_code,
     baumart,
     bhd,
-    baumhoehe, 
+    baumhoehe,
     merkmal_1,
     beschreibung_merkmal_1,
     merkmal_2,
