@@ -7,4 +7,7 @@ SELECT
 	ngkid, 
 	geometrie
 FROM 
-	afu_gefahrenkartierung.gefahrenkartirung_ueberflutungskarte;
+	afu_gefahrenkartierung.gefahrenkartirung_ueberflutungskarte
+WHERE
+	ueberfl_hb != 'keine_Ueberflutung'
+;
