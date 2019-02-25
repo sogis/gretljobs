@@ -911,54 +911,51 @@ INSERT INTO
         verkehrsmittel
     FROM (
         SELECT
-        stop_name,
-        'Linie 650 Olten - Aarau (S23/S26/S29)' AS linienname,
-        agency_name,
-        sum(gtfs_count),
-        3 AS verkehrsmittel                                                                                                                 -- Speziallfall, RE Verkehrsmittel 3
+            stop_name,
+            'Linie 650 Olten - Aarau (S23/S26/S29)' AS linienname,
+            agency_name,
+            sum(gtfs_count),
+            verkehrsmittel
         FROM
-        abfahrten
+            abfahrten
         WHERE
-        trip_headsign <> stop_name
+            trip_headsign <> stop_name
         AND
-        stop_name = 'Dulliken'
+            stop_name = 'Dulliken'
         AND
-        route_desc IN ('Regionalzug', 'S-Bahn')
+            route_desc IN ('Regionalzug', 'S-Bahn')
         AND
-            (linienname = 'Linie 650 Olten - Aarau (S23/S26/S29)'
-             OR linienname = 'Linie 650 Olten - Zürich (RE/IR/ICN)')
+            linienname = 'Linie 650 Olten - Aarau (S23/S26/S29)'
         GROUP BY
-        stop_name,
-        linienname,
-        agency_name,
-        verkehrsmittel
+            stop_name,
+            linienname,
+            agency_name,
+            verkehrsmittel
         
-        UNION ALL
+        UNION
 
         -- Bahnhof Dulliken: S-Bahn zählen alle, RegioExpress nur die Abfahrten Richtung Olten!
         SELECT
-        stop_name,
-        'Linie 650 Olten - Aarau (S23/S26/S29)' AS linienname,
-        agency_name,
-        sum(gtfs_count),
-        3 AS verkehrsmittel                                                                                                                  -- Speziallfall
+            stop_name,
+            'Linie 650 Olten - Zürich (RE/IR/ICN)' AS linienname,
+            agency_name,
+            sum(gtfs_count),
+            2 AS verkehrsmittel                                          -- Speziallfall
         FROM
-        abfahrten
+            abfahrten
         WHERE
-        trip_headsign <> stop_name
+            trip_headsign <> stop_name
         AND
-        stop_name = 'Dulliken'
+            stop_name = 'Dulliken'
         AND
-        route_desc IN ('RegioExpress')
+            route_desc IN ('RegioExpress')
         AND
-        (linienname = 'Linie 650 Olten - Aarau (S23/S26/S29)' OR linienname = 'Linie 650 Olten - Zürich (RE/IR/ICN)')
-        AND
-        trip_headsign IN ('Olten')
+            trip_headsign IN ('Olten')
         GROUP BY
-        stop_name,
-        linienname,
-        agency_name,
-        verkehrsmittel
+            stop_name,
+            linienname,
+            agency_name,
+            verkehrsmittel
     ) AS dulliken
     GROUP BY
         dulliken.stop_name,
