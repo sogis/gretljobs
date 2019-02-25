@@ -12,4 +12,7 @@ SELECT
 	ngkid, 
 	geometrie
 FROM
-	afu_gefahrenkartierung.gefahrenkartirung_ik_rutsch_kont_sackung;
+	afu_gefahrenkartierung.gefahrenkartirung_ik_rutsch_kont_sackung
+WHERE
+	int_stufe != 'keine'
+;

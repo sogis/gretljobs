@@ -7,4 +7,7 @@ SELECT
 	ngkid, 
 	geometrie
 FROM 
-	afu_gefahrenkartierung.gefahrenkartirung_ik_absenkung_einsturz;
+	afu_gefahrenkartierung.gefahrenkartirung_ik_absenkung_einsturz
+WHERE
+	int_stufe != 'keine'
+;

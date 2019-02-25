@@ -7,4 +7,7 @@ SELECT
 	ngkid, 
 	geometrie
 FROM 
-	afu_gefahrenkartierung.gefahrenkartirung_ik_hangmure;
+	afu_gefahrenkartierung.gefahrenkartirung_ik_hangmure
+WHERE
+	int_stufe != 'keine'
+;
