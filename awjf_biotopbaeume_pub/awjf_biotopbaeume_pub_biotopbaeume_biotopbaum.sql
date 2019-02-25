@@ -29,8 +29,8 @@ SELECT
             THEN 'Schneeballblättriger Ahorn'
         WHEN baumart = 'Uebrige_Laubbaeume'
             THEN 'Übrige Laubbäume'
-        ELSE baumart
-    END AS baumart,
+        ELSE baumart 
+    END AS baumart, 
     bhd, 
     baumhoehe, 
     CASE
@@ -235,7 +235,7 @@ GROUP BY
     gesuchsnummer,
     waldeigentuemer_code,
     baumart,
-    bhd, 
+    bhd,
     baumhoehe, 
     merkmal_1,
     beschreibung_merkmal_1,
