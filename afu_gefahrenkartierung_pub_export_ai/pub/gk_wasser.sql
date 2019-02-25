@@ -9,4 +9,7 @@ SELECT
 	ngkid,
 	geometrie
 FROM
-	afu_gefahrenkartierung.gefahrenkartirung_gk_wasser;
+	afu_gefahrenkartierung.gefahrenkartirung_gk_wasser
+WHERE
+	gef_stufe != 'keine'
+;

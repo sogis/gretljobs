@@ -7,4 +7,7 @@ SELECT
 	ngkid, 
 	geometrie
 FROM 
-	afu_gefahrenkartierung.gefahrenkartirung_ik_rutsch_spontan;
+	afu_gefahrenkartierung.gefahrenkartirung_ik_rutsch_spontan
+WHERE
+	int_stufe != 'keine'
+;
