@@ -1,5 +1,3 @@
--- Abfüllen der Tabelle "avt_oevkov_${currentYear}.auswertung_gesamtauswertung" für Jasper-Reports
-
 TRUNCATE TABLE avt_oevkov_${currentYear}.auswertung_gesamtauswertung
 ;
 

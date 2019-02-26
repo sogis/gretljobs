@@ -57,7 +57,7 @@ INSERT INTO
             trip.trip_headsign,
             stoptime.pickup_type,
             count(departure_time) AS gtfs_count,
-            CASE                                                                                                         -- Bedarfsangebot????
+            CASE                                                                                                         -- Bedarfsangebot?
                 WHEN route_desc = 'Bus'
                      THEN 1                                                                                             -- Bus (200 ICB? weggelassen)
                 WHEN route_desc IN ('RegioExpress', 'InterRegio', 'Intercity')
@@ -71,9 +71,8 @@ INSERT INTO
             avt_oevkov_${currentYear}.gtfs_trip AS trip,
             avt_oevkov_${currentYear}.gtfs_stoptime AS stoptime,
             avt_oevkov_${currentYear}.gtfs_stop AS stop,
-            avt_oevkov_${currentYear}.sachdaten_linie_route AS linie
---             avt_oevkov_${currentYear}.so_geodaten_gemeindegrenzen As gemeindegrenze             -- Gemeindegrenze nur für Einschränkung, später Daten so aufbereiten dass nur die erforderlichen Haltestellen vorhanden sind 
-        WHERE                                                                                                                       -- > viel schneller so
+            avt_oevkov_${currentYear}.sachdaten_linie_route AS linie 
+        WHERE
             (
             trip.service_id IN (
                 SELECT
@@ -101,10 +100,6 @@ INSERT INTO
                 WHERE
                     exception_type = 2
         )
---         AND
---             stop.geometrie && gemeindegrenze.geometrie
---         AND
---             ST_Contains(gemeindegrenze.geometrie, stop.geometrie)
         AND
             stop.stop_name NOT IN (
                 'Aarau', 'Langenthal', 'Murgenthal', 'Zofingen'
@@ -155,7 +150,7 @@ INSERT INTO
     WHERE
        trip_headsign <> stop_name
        
-    -- **************************************************************** hier kommen die Ausnahmen, die werden unten abgehandelt ****************************************************************************************
+    -- *********************** hier kommen die Ausnahmen, die werden unten abgehandelt ***********************
     AND
         -- Bahnhöfe werden separat behandelt wegenZuordnung zu den LInien
         stop_name NOT IN (
@@ -182,7 +177,7 @@ INSERT INTO
     AND
         -- wegen Unterscheidung Flüh Bahnhof (Tram 10) und Flüh, Bahnhof (Bus),  Flüh Station fehlt gtfs
         stop_name <> 'Flüh, Bahnhof' 
-    -- **************************************************************** Ende der Ausnahmen ***********************************************************************************************
+    -- ********************************************* Ende der Ausnahmen *******************************************
     GROUP BY
         stop_name,
         linienname,
@@ -200,7 +195,7 @@ INSERT INTO
         linie.linienname,
         agency.agency_name,
         count(departure_time) AS gtfs_count,
-        CASE                                                                                                                             -- Bedarfsangebot???
+        CASE                                                                                                                          -- Bedarfsangebot?
             WHEN route_desc= 'Bus'
                  THEN 1                                                                                                             -- Bus (200 ICB? weggelassen)
             WHEN route_desc IN ('RegioExpress', 'InterRegio', 'Intercity')
@@ -246,7 +241,7 @@ INSERT INTO
         stop.stop_name IN (
             'Arlesheim, Obesunne', 'Erlinsbach, Oberdorf', 'Erlinsbach, Sagi',
             'Gänsbrunnen', 'Gänsbrunnen, Bahnhof', 'Nuglar, Neunuglar', 
-             'Niederbipp Industrie', 'Walterswil-Striegel'                                                                  --   'Wisen (S=), Adlike-Rank' zählt definitiv nicht oder doch?????????????????????????????'''
+             'Niederbipp Industrie', 'Walterswil-Striegel'
          )
     AND
         agency.agency_id::text = route.agency_id 
@@ -699,7 +694,7 @@ INSERT INTO
 
     UNION ALL
 
-    -- Bahnhof Olten: Linie 510 Olten - Sursee (S8)          RegioExpress zählt hier zu R       Achtung: verkehrsmittel wird hier fix eingegeben!!!
+    -- Bahnhof Olten: Linie 510 Olten - Sursee (S8)          RegioExpress zählt hier zu R       Achtung: verkehrsmittel wird hier fix eingegeben!
     SELECT
         stop_name,
         linienname,
@@ -730,7 +725,7 @@ INSERT INTO
         linienname,
         agency_name,
         sum(gtfs_count),
-        2 AS verkehrsmittel                                                                                                    -- Achtung: verkehrsmittel wird hier fix eingegeben!!!
+        2 AS verkehrsmittel                                                                                            -- Achtung: verkehrsmittel wird hier fix eingegeben!!!
     FROM
         abfahrten
     WHERE
@@ -742,7 +737,7 @@ INSERT INTO
             'Brig', 'Chiasso', 'Domodossoloa (I)', 'Erstfeld', 'Lugano', 'Luzern'
         )
     AND
-         linienname = 'Linie 510 Olten - Luzern (IR/RE)'                                              -- das muss zwingend stehen, weil route_id = 20-21-j19-1 für Olten-Basel und Olten-Luzern gilt, kann man das besser lösen?
+         linienname = 'Linie 510 Olten - Luzern (IR/RE)'                                              -- das muss zwingend stehen, weil route_id = 20-21-j19-1 für Olten-Basel und Olten-Luzern gilt
     AND
         route_desc IN ('RegioExpress', 'InterRegio')
     AND
@@ -979,7 +974,7 @@ INSERT INTO
     AND
         stop_name = 'Grenchen Süd'
     AND
-        linienname IN ('Linie 410 Biel - Olten (ICN)', 'Linie 410 Biel - Olten (RE)')                                                      -- prüfen ob nötig
+        linienname IN ('Linie 410 Biel - Olten (ICN)', 'Linie 410 Biel - Olten (RE)')
     GROUP BY
         stop_name,
         linienname,
@@ -1002,7 +997,7 @@ INSERT INTO
     AND
         stop_name = 'Däniken'
     AND
-        linienname = 'Linie 650 Olten - Aarau (S23/S26/S29)'                                                     -- prüfen ob nötig
+        linienname = 'Linie 650 Olten - Aarau (S23/S26/S29)'
     GROUP BY
         stop_name,
         linienname,
@@ -1025,7 +1020,7 @@ INSERT INTO
     AND
         stop_name = 'Schönenwerd SO'
     AND
-        linienname = 'Linie 650 Olten - Aarau (S23/S26/S29)'                                                     -- prüfen ob nötig
+        linienname = 'Linie 650 Olten - Aarau (S23/S26/S29)'
     GROUP BY
         stop_name,
         linienname,
@@ -1040,7 +1035,7 @@ INSERT INTO
         linie.linienname,
         agency.agency_name,
         count(departure_time) as gtfs_count,
-        CASE                                                                                                               -- Bedarfsangebot???
+        CASE                                                                                                                 -- Bedarfsangebot?
                 WHEN route_desc= 'Bus'
                      THEN 1                                                                                                -- Bus (200 ICB? weggelassen)
                 WHEN route_desc IN ('RegioExpress', 'InterRegio', 'Intercity')
@@ -1128,7 +1123,7 @@ INSERT INTO
     AND
         stop_name = 'Dornach-Arlesheim'
     AND
-        linienname = 'Linie 230 Biel - Delémont (RE/ICN)'                                                -- warum?????????????????????????
+        linienname = 'Linie 230 Biel - Delémont (RE/ICN)'
     GROUP BY
         stop_name,
         linienname,
@@ -1148,7 +1143,7 @@ INSERT INTO
     WHERE
         trip_headsign <> stop_name
     AND
-        stop_name = 'Dornach, Bahnhof'                                                              -- warum?????????????????????????
+        stop_name = 'Dornach, Bahnhof'
     AND
         linienname <> 'L62 ????'
     AND
@@ -1195,7 +1190,7 @@ INSERT INTO
     AND
         stop_name = 'Grenchen Nord'
     AND
-        route_desc = 'RegioExpress'       -- InterCity werden nicht gezaehlt
+        route_desc = 'RegioExpress'                                                                          -- InterCity werden nicht gezaehlt
     GROUP BY
         stop_name,
         linienname,
@@ -1252,9 +1247,7 @@ INSERT INTO
 )
 ;
 
--- Alle  Haltestellen, die wegen pickup_type = 0 herausfallen oder 0 Abfahrten haben und nicht in Tabelle
--- avt_oevkov_${currentYear}.auswertung_auswertung_gtfs sind >>> ja, siehe Realisierungsphase: fragen_180925_erg_AVT.docx
-
+-- Alle  Haltestellen, die wegen pickup_type = 0 herausfallen oder am Stichtag 0 Abfahrten haben
 INSERT INTO
      avt_oevkov_${currentYear}.auswertung_auswertung_gtfs
      (
@@ -1302,11 +1295,11 @@ INSERT INTO
          linie.linienname,
          agency.agency_name,
          0 as gtfs_count,
-         CASE                                                                                                         -- Bedarfsangebot????
+         CASE
                 WHEN route_desc = 'Bus'
-                     THEN 1                                                                                             -- Bus (200 ICB? weggelassen)
+                     THEN 1
                 WHEN route_desc IN ('RegioExpress', 'InterRegio', 'Intercity')
-                     THEN 2                                                                                             -- Railjet, Schnellzug, Eurocity, ICE, TGV, Eurostar, InterRegio (105 Nachtzug weggelassen)
+                     THEN 2
                 WHEN route_desc IN ('Regionalzug', 'S-Bahn', 'Tram')
                     THEN 3
             END AS verkehrsmittel
