@@ -39,25 +39,4 @@ FROM
     arp_richtplan.richtplankarte_ueberlagernde_linie
     LEFT JOIN documents_json
             ON richtplankarte_ueberlagernde_linie.t_id = documents_json.ueberlagernder_linie_id
-
-UNION ALL
-
-/*Bahnlinien bestehend - Richtplankarte*/
-SELECT
-    uuid_generate_v4() AS t_ili_tid,
-    NULL AS objektname,
-    'Ausgangslage' AS abstimmungskategorie,
-    NULL AS bedeutung,
-    'rechtsgueltig' AS planungsstand,
-    NULL AS dokumente,
-    'bestehend' AS status,
-    NULL AS objektnummer,
-    'Bahnlinie.Schiene' AS objekttyp,
-    /*Unterscheidung Schiene und Tunnel fehlt noch -> benötigt ergänzendes Attribut unter public.avt_oev_netz und Nachführung der Daten*/
-    (ST_Dump(wkb_geometry)).geom AS geometrie
-FROM
-    public.avt_oev_netz
-WHERE
-    typ IN (2,3)
-    AND
-    "archive" = 0
+;
