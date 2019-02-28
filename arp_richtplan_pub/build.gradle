@@ -6,26 +6,42 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferArpRichtplanPub'
 
 
-def dbUriEntw = dbUriPub
-def dbUserEntw = dbUserPub
-def dbPwdEntw = dbPwdPub
-
-
-task transferArpRichtplanPub(type: Db2Db){
-    sourceDb = [dbUriEntw, dbUserEntw, dbPwdEntw] // [dbUriSogis, dbUserSogis, dbPwdSogis]
+task transferArpRichtplanPubEdit(type: Db2Db){
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub] //[dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('arp_richtplan_pub_detailkarten_ueberlagernder_Punkt.sql',
-                    'arp_richtplan_pub.detailkarten_ueberlagernder_punkt', true),  //Freizeitnutzungen fehlen noch
+                    'arp_richtplan_pub.detailkarten_ueberlagernder_punkt', true),
             new TransferSet('arp_richtplan_pub_detailkarten_ueberlagernde_Flaeche.sql',
-                    'arp_richtplan_pub.detailkarten_ueberlagernde_flaeche', true), //naturnahe Landschaftsräume fehlen noch
+                    'arp_richtplan_pub.detailkarten_ueberlagernde_flaeche', true),
             new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernder_punkt.sql',
                     'arp_richtplan_pub.richtplankarte_ueberlagernder_punkt', true),
             new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernde_linie.sql',
-                    'arp_richtplan_pub.richtplankarte_ueberlagernde_linie', true), //public.avt_oev_netz muss noch mit Attribut ergänzt werden -->anschliessend SQL-Query anpassen; IVS
-            new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernde_Flaeche.sql',
-                    'arp_richtplan_pub.richtplankarte_ueberlagernde_flaeche', true),
+                    'arp_richtplan_pub.richtplankarte_ueberlagernde_linie', true),
             new TransferSet('arp_richtplan_pub_richtplankarte_grundnutzung.sql',
-                    'arp_richtplan_pub.richtplankarte_grundnutzung', true) //für alle Grundnutzungsarten muss noch definiert werden welche Nutzungsplanungstypen welcher Richtplan-Grundnutzung entsprechen;URL-Umbau für Richtplan-Dokumente
+                    'arp_richtplan_pub.richtplankarte_grundnutzung', false), //URL-Umbau für Richtplan-Dokumente
+            new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernde_flaeche.sql',
+                    'arp_richtplan_pub.richtplankarte_ueberlagernde_flaeche', false),
     ]
+}
+
+
+task transferArpRichtplanPubSogis(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernde_linie_sogis.sql',
+                    'arp_richtplan_pub.richtplankarte_ueberlagernde_linie', true),
+            new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernde_flaeche_sogis.sql',
+                    'arp_richtplan_pub.richtplankarte_ueberlagernde_flaeche', true),
+            new TransferSet('arp_richtplan_pub_richtplankarte_grundnutzung_sogis.sql',
+                    'arp_richtplan_pub.richtplankarte_grundnutzung', true)
+    ]
+}
+
+task transferArpRichtplanPub {
+    dependsOn 'transferArpRichtplanPubSogis'
+    dependsOn 'transferArpRichtplanPubEdit'
+
+    tasks.findByName('transferArpRichtplanPubEdit').mustRunAfter 'transferArpRichtplanPubSogis'
 }
