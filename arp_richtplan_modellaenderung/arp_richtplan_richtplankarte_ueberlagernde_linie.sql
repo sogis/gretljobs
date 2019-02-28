@@ -10,5 +10,5 @@ SELECT
     status,
     geometrie
 FROM
-    arp_richtplan.richtplankarte_ueberlagernde_linie
+    arp_richtplan_delete.richtplankarte_ueberlagernde_linie
 ;

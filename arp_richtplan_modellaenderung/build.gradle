@@ -7,7 +7,7 @@ defaultTasks 'exportRichtplanDaten'
 
 task transferArpRichtplan(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
             new TransferSet('arp_richtplan_detailkarten_ueberlagernde_flaeche.sql',
                     'arp_richtplan.detailkarten_ueberlagernde_flaeche', true),
@@ -23,11 +23,3 @@ task transferArpRichtplan(type: Db2Db){
                     'arp_richtplan.richtplankarte_grundnutzung', true)
     ]
 }
-/*
-task exportRichtplanDaten(type:Ili2pgExport, dependsOn: transferArpRichtplan) {
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    dataFile = "richtplan_modellaenderung.xtf"
-    logFile = "richtplan_modellaenderung.log"
-    dbschema = "arp_richtplan"
-    models = "SO_ARP_Richtplan_20190222"
-}*/

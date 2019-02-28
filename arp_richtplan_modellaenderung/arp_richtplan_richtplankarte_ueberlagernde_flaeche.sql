@@ -15,5 +15,5 @@ SELECT
     status,
     geometrie
 FROM
-    arp_richtplan.richtplankarte_ueberlagernde_flaeche
+    arp_richtplan_delete.richtplankarte_ueberlagernde_flaeche
 ;
