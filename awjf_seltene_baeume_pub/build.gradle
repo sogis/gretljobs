@@ -9,6 +9,6 @@ task transferAwjfJagd(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('awjf_seltene_baeume.sql', 'awjf_seltene_baumarten_pub.seltene_baumarten_seltene_baumarten', true),
+            new TransferSet('awjf_seltene_baeume.sql', 'awjf_seltene_baeume_pub.seltene_baumarten_seltene_baumarten', true),
     ];
 }
