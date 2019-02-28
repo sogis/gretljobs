@@ -5,5 +5,5 @@ SELECT
     objekttyp,
     geometrie
 FROM
-    arp_richtplan.detailkarten_ueberlagernder_punkt
+    arp_richtplan_delete.detailkarten_ueberlagernder_punkt
 ;

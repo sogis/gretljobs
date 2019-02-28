@@ -6,5 +6,5 @@ SELECT
     planungsstand,
     geometrie
 FROM
-    arp_richtplan.richtplankarte_grundnutzung_erweitert
+    arp_richtplan_delete.richtplankarte_grundnutzung_erweitert
 ;

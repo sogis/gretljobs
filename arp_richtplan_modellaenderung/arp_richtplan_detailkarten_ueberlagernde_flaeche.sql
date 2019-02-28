@@ -6,5 +6,5 @@ SELECT
     abstimmungskategorie,
     geometrie
 FROM
-    arp_richtplan.detailkarten_ueberlagernde_flaeche
+    arp_richtplan_delete.detailkarten_ueberlagernde_flaeche
 ;
