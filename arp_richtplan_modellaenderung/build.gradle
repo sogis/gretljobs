@@ -3,10 +3,10 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferArpRichtplan'
+defaultTasks 'exportRichtplanDaten'
 
 task transferArpRichtplan(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('arp_richtplan_detailkarten_ueberlagernde_flaeche.sql',
@@ -18,6 +18,16 @@ task transferArpRichtplan(type: Db2Db){
             new TransferSet('arp_richtplan_richtplankarte_ueberlagernde_linie.sql',
                     'arp_richtplan.richtplankarte_ueberlagernde_linie', true),
             new TransferSet('arp_richtplan_richtplankarte_ueberlagernder_punkt.sql',
-                    'arp_richtplan.richtplankarte_ueberlagernder_punkt', true)
-    ];
+                    'arp_richtplan.richtplankarte_ueberlagernder_punkt', true),
+            new TransferSet('arp_richtplan_richtplankarte_grundnutzung.sql',
+                    'arp_richtplan.richtplankarte_grundnutzung', true)
+    ]
 }
+/*
+task exportRichtplanDaten(type:Ili2pgExport, dependsOn: transferArpRichtplan) {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dataFile = "richtplan_modellaenderung.xtf"
+    logFile = "richtplan_modellaenderung.log"
+    dbschema = "arp_richtplan"
+    models = "SO_ARP_Richtplan_20190222"
+}*/
