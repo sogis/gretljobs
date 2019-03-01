@@ -30,7 +30,7 @@ SELECT
     objektname,
     objekttyp,
     abstimmungskategorie,
-    geometrie,
+    ST_SnapToGrid(geometrie, 0.001) AS geometrie,
     NULL AS gemeinden
 FROM
     arp_richtplan.detailkarten_ueberlagernde_flaeche

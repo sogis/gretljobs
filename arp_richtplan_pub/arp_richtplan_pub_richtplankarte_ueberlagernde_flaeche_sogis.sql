@@ -453,7 +453,7 @@ SELECT
     NULL AS bedeutung,
     'rechtsgueltig' AS planungsstand,
     'bestehend' AS status,
-    ST_Multi(ueberlagernd_flaeche_geometrie_typ.geometrie) AS geometrie,
+    ST_SnapToGrid(ST_Multi(ueberlagernd_flaeche_geometrie_typ.geometrie), 0.001) AS geometrie,
     typ_ueberlagernd_flaeche_json_dokument_agg.dokumente AS dokumente,
     string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename) AS gemeindenamen
 FROM
