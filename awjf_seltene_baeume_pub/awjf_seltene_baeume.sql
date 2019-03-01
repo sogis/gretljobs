@@ -16,7 +16,7 @@
      freistellung.brusthoehendurchmesser, 
      st_buffer(freistellung.geometrie, 10, 'quad_segs=8') AS geometrie  
  FROM 
-     awjf_seltene_baumarten.seltene_baumarten_freistellung freistellung 
+     awjf_seltene_baeume.seltene_baumarten_freistellung freistellung 
  LEFT JOIN geo_gemeinden gemeinden 
      ON ST_DWithin(freistellung.geometrie, gemeinden.wkb_geometry,0) 
  LEFT JOIN ( 
@@ -32,7 +32,7 @@
                   ON geometrie.forstrevier = forstrevier.t_id
             ) forst 
             ON ST_DWithin(freistellung.geometrie, forst.geometrie,0)
- LEFT JOIN awjf_seltene_baumarten.seltene_baumarten_baumtyp baumart 
+ LEFT JOIN awjf_seltene_baeume.seltene_baumarten_baumtyp baumart 
      ON baumart.t_id = freistellung.baumtyp
  WHERE 
     gemeinden."archive"=0
@@ -58,7 +58,7 @@
       NULL AS brusthoehendurchmesser, 
       pflanzung.geometrie
   FROM 
-      awjf_seltene_baumarten.seltene_baumarten_pflanzung pflanzung 
+      awjf_seltene_baeume.seltene_baumarten_pflanzung pflanzung 
   LEFT JOIN geo_gemeinden gemeinden 
       ON ST_DWithin(pflanzung.geometrie, gemeinden.wkb_geometry,0) 
   LEFT JOIN ( 
@@ -79,8 +79,8 @@
                  beziehung.pflanzung, 
                  array_agg(coalesce(anzahl_baeume,1)||' '||baumart.baumart||' '||coalesce(info,'')) AS info
              FROM 
-                 awjf_seltene_baumarten.seltene_baumarten_beziehung_pflanzung_baumtyp beziehung 
-             LEFT JOIN awjf_seltene_baumarten.seltene_baumarten_baumtyp baumart 
+                 awjf_seltene_baeume.seltene_baumarten_beziehung_pflanzung_baumtyp beziehung 
+             LEFT JOIN awjf_seltene_baeume.seltene_baumarten_baumtyp baumart 
                  ON baumart.t_id = beziehung.baumtyp
              GROUP BY pflanzung
              ) info 
