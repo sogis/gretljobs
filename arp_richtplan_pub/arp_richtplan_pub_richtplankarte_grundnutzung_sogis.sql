@@ -412,7 +412,7 @@ zugeordnet_nicht_zugeordnet_laenge_gemeinsame_grenze AS (
         )
     
     UNION ALL
-    
+    /*Grundnutzung ohne Verkehrsflaechne*/
     SELECT
         grundnutzung.t_ili_tid,
         'Ausgangslage' AS abstimmungskategorie,
@@ -517,7 +517,7 @@ zugeordnet_nicht_zugeordnet_laenge_gemeinsame_grenze AS (
             'N440_Wald')
     
     UNION ALL
-    
+    /*Verkehrsflaechen */
     SELECT
         grundnutzung.t_ili_tid,
         'Ausgangslage' AS abstimmungskategorie,
@@ -572,13 +572,12 @@ zugeordnet_nicht_zugeordnet_laenge_gemeinsame_grenze AS (
             ON grundnutzung.t_id = zugewiesene_verkehrsflaechen.t_id_zugeordnet
         LEFT JOIN typ_grundnutzung_json_dokument_agg AS dokumente
             ON grundnutzung.typ_t_id = dokumente.typ_grundnutzung_t_id
-)
-
+), grundnutzung AS (
 SELECT
     abstimmungskategorie,
     grundnutzungsart,
     planungsstand,
-    (ST_Dump(ST_Buffer(ST_Buffer(ST_Union(geometrie),1),-1))).geom AS geometrie,
+    ST_SnapToGrid((ST_Dump(ST_Buffer(ST_Buffer(ST_Union(geometrie),1),-1))).geom, 0.001) AS geometrie,
     dokumente
 FROM
     grundnutzung_einzelflaechen
@@ -587,4 +586,18 @@ GROUP BY
     grundnutzungsart,
     planungsstand,
     dokumente
+)
+
+SELECT
+    abstimmungskategorie,
+    grundnutzungsart,
+    planungsstand,
+    geometrie,
+    dokumente
+FROM
+    grundnutzung
+WHERE
+    planungsstand IN ('rechtsgueltig', 'in_Auflage')
+    AND
+    geometrie IS NOT NULL
 ;
