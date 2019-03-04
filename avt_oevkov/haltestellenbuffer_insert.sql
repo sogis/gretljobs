@@ -24,10 +24,3 @@ INSERT INTO avt_oevkov_${currentYear}.so_geodaten_haltestellenbuffer
             ON stop.stop_name = auswertung.haltestellenname
     )
 ;
-DROP INDEX IF EXISTS avt_oevkov_${currentYear}.so_geodaten_haltestellenbuffer_idx
-;
-CREATE INDEX so_geodaten_haltestellenbuffer_idx
-    ON avt_oevkov_${currentYear}.so_geodaten_haltestellenbuffer
-    USING gist
-    (geometrie)
-;
