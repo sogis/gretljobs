@@ -5,7 +5,7 @@
      freistellung.waldgesellschaft, 
      freistellung.eigentuemer, 
      freistellung.sponsor, 
-     gemeinden."name" AS gemeinde, 
+     gemeinden.gemeindename AS gemeinde , 
      forst.forstrevier AS forstbetrieb, 
      forst.forstkreis, 
      freistellung.bemerkung, 
@@ -17,8 +17,8 @@
      st_buffer(freistellung.geometrie, 10, 'quad_segs=8') AS geometrie  
  FROM 
      awjf_seltene_baeume.seltene_baumarten_freistellung freistellung 
- LEFT JOIN geo_gemeinden gemeinden 
-     ON ST_DWithin(freistellung.geometrie, gemeinden.wkb_geometry,0) 
+LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze gemeinden 
+      ON ST_DWithin(freistellung.geometrie, gemeinden.geometrie,0)  
  LEFT JOIN ( 
              SELECT 
                   geometrie.geometrie, 
@@ -47,7 +47,7 @@
       pflanzung.waldgesellschaft, 
       pflanzung.eigentuemer, 
       pflanzung.sponsor, 
-      gemeinden."name" AS gemeinde, 
+      gemeinden.gemeindename AS gemeinde, 
       forst.forstrevier AS forstbetrieb, 
       forst.forstkreis, 
       pflanzung.bemerkung, 
@@ -59,8 +59,8 @@
       pflanzung.geometrie
   FROM 
       awjf_seltene_baeume.seltene_baumarten_pflanzung pflanzung 
-  LEFT JOIN geo_gemeinden gemeinden 
-      ON ST_DWithin(pflanzung.geometrie, gemeinden.wkb_geometry,0) 
+  LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze gemeinden 
+       ON ST_DWithin(pflanzung.geometrie, gemeinden.geometrie,0) 
   LEFT JOIN ( 
              SELECT 
                  geometrie.geometrie, 
