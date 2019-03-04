@@ -3,12 +3,14 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
+
 description = "GRETL-Job für die Berechnung des OEVKOV in der Test sogis-DB"
 
 
 // OEVKOV Variablen
 def currentYear = '2019'
 def lastYear = '2018'
+
 
 defaultTasks 'do_Gesamtberechnung'
 
@@ -28,6 +30,12 @@ task AuswertungKosten(type: SqlExecutor){
     database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     sqlParameters = [currentYear: currentYear, lastYear: lastYear]
     sqlFiles = ['berechnung_kosten.sql']
+}
+
+task AuswertungHaltestellenbuffer(type: SqlExecutor){
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlParameters = [currentYear: currentYear, lastYear: lastYear]
+    sqlFiles = ['haltestellenbuffer_insert.sql']
 }
 
 
