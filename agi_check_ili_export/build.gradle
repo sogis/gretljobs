@@ -110,7 +110,6 @@ models.each { model ->
                 errorInLog = true
             }
         }
-
     }
 
     task "checkDataFileForData_$modelName"(dependsOn: "checkLogFileForFailure_$modelName"){
