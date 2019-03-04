@@ -19,20 +19,58 @@ defaultTasks 'checkAllModels'
 
 ext {
     todaysDate = new Date().format('yyyy-MM-dd')
+    dbSogis = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    dbEdit = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = []
-    models.add(["SO_Agglomerationsprogramme_20170512", "arp_aggloprogramme", "arp_aggloprogramme_" + todaysDate ])
-    models.add(["SO_ARP_Nutzungsvereinbarung_20170512", "arp_nutzungsvereinbarung",
-                "arp_nutzungsvereinbarung_" + todaysDate ])
-    models.add(["SO_Forstreviere_20170512", "awjf_forstreviere", "awjf_forstreviere_" + todaysDate ])
-    models.add(["SO_Hoheitsgrenzen_20170623", "agi_hoheitsgrenzen", "agi_hoheitsgrenzen_" + todaysDate ])
-    models.add(["SO_AWJF_Wegsanierungen_20170629", "awjf_wegsanierungen", "awjf_wegsanierungen_" + todaysDate ])
-    models.add(["SO_BLN_20170904", "arp_bln", "arp_bln_" + todaysDate ])
-    models.add(["SO_ALW_Vernetzung_20171010", "alw_vernetzung", "alw_vernetzung_" + todaysDate ])
-    models.add(["SO_AWJF_Biotopbaeume_20171213", "awjf_biotopbaeume", "awjf_biotopbaeume_" + todaysDate ])
-    models.add(["SO_AMB_Notfalltreffpunkte_20180413", "amb_notfalltreffpunkte", "amb_notfalltreffpunkte_" + todaysDate ])
-    models.add(["SO_AGI_AV_GB_Administrative_Einteilungen_20180613", "agi_av_gb_admin_einteilung",
-                "agi_av_gb_admin_einteilung_" + todaysDate ])
-    models.add(["SO_ARP_Naturreservate_20180829", "arp_naturreservate", "arp_naturreservate_" + todaysDate ])
+    models.add(["SO_Agglomerationsprogramme_20170512",
+                "arp_aggloprogramme",
+                dbSogis])
+    models.add(["SO_ARP_Nutzungsvereinbarung_20170512",
+                "arp_nutzungsvereinbarung",
+                dbSogis ])
+    models.add(["SO_Forstreviere_20170512",
+                "awjf_forstreviere",
+                dbSogis ])
+    models.add(["SO_Hoheitsgrenzen_20170623",
+                "agi_hoheitsgrenzen",
+                dbSogis ])
+    models.add(["SO_AWJF_Wegsanierungen_20170629",
+                "awjf_wegsanierungen",
+                dbSogis])
+    models.add(["SO_BLN_20170904",
+                "arp_bln",
+                dbSogis ])
+    models.add(["SO_ALW_Vernetzung_20171010",
+                "alw_vernetzung",
+                dbSogis ])
+    models.add(["SO_AWJF_Biotopbaeume_20181217",
+                "awjf_biotopbaeume",
+                dbSogis ])
+    models.add(["SO_AMB_Notfalltreffpunkte_20180413",
+                "amb_notfalltreffpunkte",
+                dbSogis ])
+    models.add(["SO_AGI_AV_GB_Administrative_Einteilungen_20180613",
+                "agi_av_gb_admin_einteilung",
+                dbSogis ])
+    models.add(["SO_ARP_Naturreservate_20180829",
+                "arp_naturreservate",
+                dbSogis ])
+    models.add(["SO_AVT_Verkehrszaehlstellen_20190206",
+                "avt_verkehrszaehlstellen",
+                dbEdit])
+    models.add(["SO_ARP_Richtplan_20190222",
+                "arp_richtplan",
+                dbEdit])
+    models.add(["SO_AfU_Gefahrenkartierung_20181129",
+                "afu_gefahrenkartierung",
+                dbEdit])
+    models.add(["SO_AfU_Erdwaermesonden_20190204",
+                "afu_erdwaermesonden",
+                dbEdit])
+    models.add(["SO_Nutzungsplanung_20171118",
+                "arp_npl",
+                dbSogis])
+
 }
 
 def stringPathToTempFolder = System.getProperty("java.io.tmpdir").toString()
@@ -41,13 +79,15 @@ def stringPathToTempFolder = System.getProperty("java.io.tmpdir").toString()
 models.each { model ->
     def modelName = model.getAt(0)
     def dbSchema = model.getAt(1)
-    def filename = model.getAt(2)
+    def filename = model.getAt(1) + "_" + todaysDate
+    def db = model.getAt(2)
     def dataExists
+    def errorInLog
 
     
     task "checkModel_$modelName"(type: Ili2pgExport) {
         description = "INTERLIS validation against database schema: $dbSchema ($modelName)"
-        database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+        database = db
         dbschema = dbSchema
         models = modelName
         disableValidation = false
@@ -57,7 +97,23 @@ models.each { model ->
         finalizedBy "removeFiles_$modelName"
     }
 
-    task "checkDataFileForData_$modelName"(){
+    task "checkLogFileForFailure_$modelName"() {
+        description = "Checks if log-File ends with an error"
+
+        doLast {
+            def dataFile = file(Paths.get(stringPathToTempFolder, filename + ".log"))
+            def indexOfError = dataFile.findLastIndexOf { it =~ "Error: ...export failed" }
+
+            if (indexOfError == -1) {
+                errorInLog = false
+            } else {
+                errorInLog = true
+            }
+        }
+
+    }
+
+    task "checkDataFileForData_$modelName"(dependsOn: "checkLogFileForFailure_$modelName"){
         description = "Temporary workaround until ili2pgExport works correctly on failure during export. " +
                 "Checks if there is any data within datasection."
         doLast {
@@ -79,7 +135,7 @@ models.each { model ->
 
         onlyIf {
             //project.getTasksByName("checkModel_$modelName", false).getAt(0).state.failure == null
-            dataExists
+            dataExists && !errorInLog
         }
 
         delete file(Paths.get(stringPathToTempFolder, filename + ".log")),
