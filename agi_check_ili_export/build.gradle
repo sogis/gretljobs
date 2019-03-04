@@ -67,9 +67,9 @@ ext {
     models.add(["SO_AfU_Erdwaermesonden_20190204",
                 "afu_erdwaermesonden",
                 dbEdit])
-    models.add(["SO_Nutzungsplanung_20171118",
+    /*models.add(["SO_Nutzungsplanung_20171118",
                 "arp_npl",
-                dbSogis])
+                dbSogis])*/
 
 }
 
