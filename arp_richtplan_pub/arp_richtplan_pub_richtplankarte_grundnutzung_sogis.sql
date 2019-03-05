@@ -412,7 +412,7 @@ zugeordnet_nicht_zugeordnet_laenge_gemeinsame_grenze AS (
         )
     
     UNION ALL
-    /*Grundnutzung ohne Verkehrsflaechne*/
+    /*Grundnutzung ohne Verkehrsflaechen*/
     SELECT
         grundnutzung.t_ili_tid,
         'Ausgangslage' AS abstimmungskategorie,
