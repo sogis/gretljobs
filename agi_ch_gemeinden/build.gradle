@@ -9,7 +9,7 @@ apply plugin: "de.undercouch.download"
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'transferDataToPubDb'
+defaultTasks 'transferDataToEditDb'
 
 def nameOfZipWithBoundaries = 'INTERLIS_2_LV95_LN02.zip'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
@@ -106,6 +106,26 @@ task transferDataToPubDb(type: Db2Db, dependsOn: 'convertData'){
 
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_bezirk.sql',
+                    'agi_swissboundaries3d_pub.swissboundaries3d_bezirk', true),
+            new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_hoheitsgebiet.sql',
+                    'agi_swissboundaries3d_pub.swissboundaries3d_hoheitsgebiet', true),
+            new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_kanton.sql',
+                    'agi_swissboundaries3d_pub.swissboundaries3d_kanton', true),
+            new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_land.sql',
+                    'agi_swissboundaries3d_pub.swissboundaries3d_land', true)
+    ]
+}
+
+task transferDataToEditDb(type: Db2Db, dependsOn: 'transferDataToPubDb'){
+    description = "Transfer swissBoundaries3D-Data to edit-DB"
+    doLast {
+        println "SwissBoundaries3D-Data are transfered to edit."
+    }
+
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
             new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_bezirk.sql',
                     'agi_swissboundaries3d_pub.swissboundaries3d_bezirk', true),
