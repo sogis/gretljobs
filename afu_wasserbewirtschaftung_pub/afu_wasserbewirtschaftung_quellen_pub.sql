@@ -20,8 +20,9 @@
         WHEN a.verwendung = 3
         THEN 'Notbrunnen'
     END AS verwendungszweck,
+    'Quelle gefasst' AS objekttyp_anzeige,
     a.bezeichnung AS objektname, 
-    a.vegas_id AS objektnummer,
+    a.mobj_id AS objektnummer,
     a.beschreibung AS technische_angabe,
     a.bemerkung AS bemerkung,
     array_to_json(c.dokumente) AS dokumente, 
@@ -49,8 +50,9 @@ UNION ALL
     coalesce(a.schutzzone, FALSE) AS schutzzone,
     NULL AS nutzungstyp, --Die nicht gefassten Quellen werden logischerweise auch nicht genutzt. 
     NULL AS verwendungszweck, --Nicht gefasste Quellen werden nicht verwendet. 
+    'Quelle ungefasst' AS objekttyp_anzeige,
     a.bezeichnung AS objektname, 
-    a.vegas_id AS objektnummer, 
+    a.mobj_id AS objektnummer, 
     a.beschreibung AS technische_angabe,
     a.bemerkung AS bemerkung, 
     array_to_json(c.dokumente) AS dokumente, 
