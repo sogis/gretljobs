@@ -12,4 +12,6 @@ FROM
 	afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_kont_sackung
 WHERE
 	gef_stufe != 'keine'
+		AND
+			publiziert = true
 ;
