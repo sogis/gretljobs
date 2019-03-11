@@ -217,7 +217,7 @@ wohnen_arbeit AS (
             'N170_Zone_fuer_Freizeit_und_Erholung',
             'N190_Spezialzone')
 ),
-rest AS (
+landwirtschaft AS (
     SELECT
         t_id,
         geometrie
@@ -228,83 +228,190 @@ rest AS (
             'N210_Landwirtschaftszone',
             'N220_Spezielle_Landwirtschaftszone',
             'N230_Rebbauzone',
-            'N290_weitere_Landwirtschaftszonen',
-            'N440_Wald'
-         )
+            'N290_weitere_Landwirtschaftszonen'
+        )
 ),
-verkehr AS (
+wald AS (
     SELECT
         t_id,
         geometrie
     FROM
         grundnutzung_geometrie_typ
     WHERE
-        typ_typ_kt IN ('N180_Verkehrszone_Strasse',
-        'N181_Verkehrszone_Bahnareal',
-        'N182_Verkehrszone_Flugplatzareal',
-        'N189_weitere_Verkehrszonen',
+        typ_typ_kt ='N440_Wald'
+),
+verkehr_ausserhalb AS (
+    SELECT
+        t_id,
+        geometrie
+    FROM
+        grundnutzung_geometrie_typ
+    WHERE
+        typ_typ_kt IN (
         'N420_Verkehrsflaeche_Strasse',
         'N421_Verkehrsflaeche_Bahnareal',
         'N422_Verkehrsflaeche_Flugplatzareal',
         'N429_weitere_Verkehrsflaechen')
 ),
+verkehr_innerhalb AS (
+    SELECT
+        t_id,
+        geometrie
+    FROM
+        grundnutzung_geometrie_typ
+    WHERE
+        typ_typ_kt IN (
+        'N180_Verkehrszone_Strasse',
+        'N181_Verkehrszone_Bahnareal',
+        'N182_Verkehrszone_Flugplatzareal',
+        'N189_weitere_Verkehrszonen')
+),
+wohnen_arbeiten_verkehr_innerhalb_laenge_gemeinsame_grenze AS (
+    SELECT
+        wohnen_arbeit.t_id AS t_id_wohnen_arbeit,
+        verkehr_innerhalb.t_id AS t_id_verkehr,
+        ST_Length(ST_CollectionExtract(ST_Intersection(wohnen_arbeit.geometrie, verkehr_innerhalb.geometrie), 2)) AS laenge,
+        verkehr_innerhalb.geometrie
+    FROM
+        wohnen_arbeit,
+        verkehr_innerhalb
+    WHERE 
+        ST_Touches(wohnen_arbeit.geometrie, verkehr_innerhalb.geometrie)
+        OR
+        ST_Intersects(wohnen_arbeit.geometrie, verkehr_innerhalb.geometrie)
+),
+wohnen_arbeiten_verkehr_innerhalb_max_laenge AS (
+    SELECT
+        t_id_verkehr,
+        max(laenge) AS laenge
+    FROM
+        wohnen_arbeiten_verkehr_innerhalb_laenge_gemeinsame_grenze
+    WHERE
+        laenge IS NOT NULL
+    GROUP BY
+        t_id_verkehr
+),
 wohnen_arbeiten_verkehr_laenge_gemeinsame_grenze AS (
     SELECT
         wohnen_arbeit.t_id AS t_id_wohnen_arbeit,
-        verkehr.t_id AS t_id_verkehr,
-        ST_Length(ST_CollectionExtract(ST_Intersection(wohnen_arbeit.geometrie, verkehr.geometrie), 2)) AS laenge,
-        verkehr.geometrie
+        verkehr_ausserhalb.t_id AS t_id_verkehr,
+        ST_Length(ST_CollectionExtract(ST_Intersection(wohnen_arbeit.geometrie, verkehr_ausserhalb.geometrie), 2)) AS laenge,
+        verkehr_ausserhalb.geometrie
     FROM
         wohnen_arbeit,
-        verkehr
+        verkehr_ausserhalb
     WHERE 
-        ST_Touches(wohnen_arbeit.geometrie, verkehr.geometrie)
+        ST_Touches(wohnen_arbeit.geometrie, verkehr_ausserhalb.geometrie)
         OR
-        ST_Intersects(wohnen_arbeit.geometrie, verkehr.geometrie)
+        ST_Intersects(wohnen_arbeit.geometrie, verkehr_ausserhalb.geometrie)
 ),
 wohnen_arbeiten_verkehr_max_laenge AS (
     SELECT
         t_id_verkehr,
+        ST_Perimeter(geometrie) AS umfang,
         max(laenge) AS laenge
     FROM
         wohnen_arbeiten_verkehr_laenge_gemeinsame_grenze
     WHERE
         laenge IS NOT NULL
     GROUP BY
-        t_id_verkehr
+        t_id_verkehr,
+        ST_Perimeter(geometrie)
 ),
-rest_verkehr_laenge_gemeinsame_grenze AS (
+wald_landwirtschaft_verkehr_laenge_gemeinsame_grenze AS (
     SELECT
-        rest.t_id AS t_id_rest,
-        verkehr.t_id AS t_id_verkehr,
-        ST_Length(ST_CollectionExtract(ST_Intersection(rest.geometrie, verkehr.geometrie), 2)) AS laenge,
-        verkehr.geometrie
+        wald.t_id AS t_id_rest,
+        verkehr_ausserhalb.t_id AS t_id_verkehr,
+        ST_Length(ST_CollectionExtract(ST_Intersection(wald.geometrie, verkehr_ausserhalb.geometrie), 2)) AS laenge,
+        verkehr_ausserhalb.geometrie,
+        'wald' AS typ
     FROM
-        rest,
-        verkehr
+        wald,
+        verkehr_ausserhalb
     WHERE
         (
-            ST_Touches(rest.geometrie, verkehr.geometrie)
+            ST_Touches(wald.geometrie, verkehr_ausserhalb.geometrie)
             OR
-            ST_Intersects(rest.geometrie, verkehr.geometrie)
+            ST_Intersects(wald.geometrie, verkehr_ausserhalb.geometrie)
         )
         AND
-        verkehr.t_id NOT IN (SELECT t_id_verkehr FROM wohnen_arbeiten_verkehr_max_laenge)
-)
-, rest_verkehr_max_laenge AS (
+        verkehr_ausserhalb.t_id NOT IN (SELECT t_id_verkehr FROM wohnen_arbeiten_verkehr_max_laenge WHERE laenge/umfang > 0.05)
+    
+    UNION ALL
+    
+    SELECT
+        landwirtschaft.t_id AS t_id_rest,
+        verkehr_ausserhalb.t_id AS t_id_verkehr,
+        ST_Length(ST_CollectionExtract(ST_Intersection(landwirtschaft.geometrie, verkehr_ausserhalb.geometrie), 2)) AS laenge,
+        verkehr_ausserhalb.geometrie,
+        'landwirtschaft' AS typ
+    FROM
+        landwirtschaft,
+        verkehr_ausserhalb
+    WHERE
+        (
+            ST_Touches(landwirtschaft.geometrie, verkehr_ausserhalb.geometrie)
+            OR
+            ST_Intersects(landwirtschaft.geometrie, verkehr_ausserhalb.geometrie)
+        )
+        AND
+        verkehr_ausserhalb.t_id NOT IN (SELECT t_id_verkehr FROM wohnen_arbeiten_verkehr_max_laenge WHERE laenge/umfang > 0.05)
+),
+summe_lw_w_pro_verkehrsflaeche AS (
+    SELECT
+        sum(laenge) AS laenge,
+        t_id_verkehr,
+        typ
+    FROM
+        wald_landwirtschaft_verkehr_laenge_gemeinsame_grenze
+    GROUP BY
+        t_id_verkehr,
+        typ
+),
+max_laenge_landwirtschaft_wald_verkehr AS (
     SELECT
         t_id_verkehr,
         max(laenge) AS laenge
     FROM
-        rest_verkehr_laenge_gemeinsame_grenze
+        summe_lw_w_pro_verkehrsflaeche
     WHERE
         laenge IS NOT NULL
     GROUP BY
         t_id_verkehr
 ),
+zuordnung_max_laenge AS (
+    SELECT
+        summe_lw_w_pro_verkehrsflaeche.t_id_verkehr,
+        summe_lw_w_pro_verkehrsflaeche.typ,
+        wald_landwirtschaft_verkehr_laenge_gemeinsame_grenze.laenge
+    FROM
+        max_laenge_landwirtschaft_wald_verkehr
+        JOIN summe_lw_w_pro_verkehrsflaeche
+            ON 
+                max_laenge_landwirtschaft_wald_verkehr.t_id_verkehr = summe_lw_w_pro_verkehrsflaeche.t_id_verkehr
+                AND
+                max_laenge_landwirtschaft_wald_verkehr.laenge = summe_lw_w_pro_verkehrsflaeche.laenge
+        JOIN wald_landwirtschaft_verkehr_laenge_gemeinsame_grenze
+            ON 
+                wald_landwirtschaft_verkehr_laenge_gemeinsame_grenze.t_id_verkehr = summe_lw_w_pro_verkehrsflaeche.t_id_verkehr
+                AND
+                wald_landwirtschaft_verkehr_laenge_gemeinsame_grenze.typ = summe_lw_w_pro_verkehrsflaeche.typ
+),
+zuordnung_grundnutzung AS (
+    SELECT
+        max(laenge) AS laenge,
+        t_id_verkehr,
+        typ
+    FROM 
+        zuordnung_max_laenge
+    GROUP BY
+        t_id_verkehr,
+        typ
+),
+
 zugeordnet AS (
     SELECT
-        wohnen_arbeiten_verkehr_laenge_gemeinsame_grenze.t_id_wohnen_arbeit AS t_id_grundnutzung,
+        wohnen_arbeiten_verkehr_laenge_gemeinsame_grenze.t_id_wohnen_arbeit AS t_id_zugeordnet,
         wohnen_arbeiten_verkehr_laenge_gemeinsame_grenze.t_id_verkehr,
         wohnen_arbeiten_verkehr_laenge_gemeinsame_grenze.laenge,
         wohnen_arbeiten_verkehr_laenge_gemeinsame_grenze.geometrie
@@ -314,82 +421,37 @@ zugeordnet AS (
                 wohnen_arbeiten_verkehr_laenge_gemeinsame_grenze.t_id_verkehr = wohnen_arbeiten_verkehr_max_laenge.t_id_verkehr
                 AND
                 wohnen_arbeiten_verkehr_laenge_gemeinsame_grenze.laenge = wohnen_arbeiten_verkehr_max_laenge.laenge
-                
+    WHERE
+        wohnen_arbeiten_verkehr_laenge_gemeinsame_grenze.t_id_verkehr NOT IN (SELECT t_id_verkehr FROM wald_landwirtschaft_verkehr_laenge_gemeinsame_grenze)
+
     UNION ALL
     
     SELECT
-        rest_verkehr_laenge_gemeinsame_grenze.t_id_rest AS t_id_grundnutzung,
-        rest_verkehr_laenge_gemeinsame_grenze.t_id_verkehr,
-        rest_verkehr_laenge_gemeinsame_grenze.laenge,
-        rest_verkehr_laenge_gemeinsame_grenze.geometrie
-    FROM rest_verkehr_max_laenge
-        LEFT JOIN rest_verkehr_laenge_gemeinsame_grenze
+        wald_landwirtschaft_verkehr_laenge_gemeinsame_grenze.t_id_rest AS t_id_zugeordnet,
+        wald_landwirtschaft_verkehr_laenge_gemeinsame_grenze.t_id_verkehr,
+        wald_landwirtschaft_verkehr_laenge_gemeinsame_grenze.laenge,
+        wald_landwirtschaft_verkehr_laenge_gemeinsame_grenze.geometrie
+    FROM zuordnung_grundnutzung --rest_verkehr_max_laenge
+        LEFT JOIN wald_landwirtschaft_verkehr_laenge_gemeinsame_grenze
             ON 
-                rest_verkehr_laenge_gemeinsame_grenze.t_id_verkehr = rest_verkehr_max_laenge.t_id_verkehr
+                wald_landwirtschaft_verkehr_laenge_gemeinsame_grenze.t_id_verkehr = zuordnung_grundnutzung.t_id_verkehr
                 AND
-                rest_verkehr_laenge_gemeinsame_grenze.laenge = rest_verkehr_max_laenge.laenge
-),
-nicht_zugeordnet AS (
-    SELECT
-        t_id,
-        geometrie
-    FROM 
-        verkehr
-    WHERE 
-        t_id NOT IN (SELECT t_id_verkehr FROM zugeordnet)
-),
-zugeordnet_nicht_zugeordnet_laenge_gemeinsame_grenze AS (
-    SELECT
-        zugeordnet.t_id_grundnutzung AS t_id_zugeordnet,
-        nicht_zugeordnet.t_id AS t_id_nicht_zugeordnet,
-        ST_Length(ST_CollectionExtract(ST_Intersection(zugeordnet.geometrie, nicht_zugeordnet.geometrie), 2)) AS laenge,
-        nicht_zugeordnet.geometrie
-    FROM
-        zugeordnet,
-        nicht_zugeordnet
-    WHERE
-        (
-            ST_Touches(zugeordnet.geometrie, nicht_zugeordnet.geometrie)
-            OR
-            ST_Intersects(zugeordnet.geometrie, nicht_zugeordnet.geometrie)
-        )
-        AND
-        nicht_zugeordnet.t_id NOT IN (SELECT t_id_verkehr FROM zugeordnet)
-)
-, zugeordnet_nicht_zugeordnet_max_laenge AS (
-    SELECT
-        t_id_nicht_zugeordnet,
-        max(laenge) AS laenge
-    FROM
-        zugeordnet_nicht_zugeordnet_laenge_gemeinsame_grenze
-    WHERE
-        laenge IS NOT NULL
-    GROUP BY
-        t_id_nicht_zugeordnet
-)
-, zugewiesene_verkehrsflaechen AS (
-    SELECT
-        zugeordnet_nicht_zugeordnet_laenge_gemeinsame_grenze.t_id_zugeordnet,
-        zugeordnet_nicht_zugeordnet_laenge_gemeinsame_grenze.t_id_nicht_zugeordnet,
-        zugeordnet_nicht_zugeordnet_laenge_gemeinsame_grenze.laenge,
-        zugeordnet_nicht_zugeordnet_laenge_gemeinsame_grenze.geometrie
-    FROM zugeordnet_nicht_zugeordnet_max_laenge
-        LEFT JOIN zugeordnet_nicht_zugeordnet_laenge_gemeinsame_grenze
-            ON 
-                zugeordnet_nicht_zugeordnet_laenge_gemeinsame_grenze.t_id_nicht_zugeordnet = zugeordnet_nicht_zugeordnet_max_laenge.t_id_nicht_zugeordnet
-                AND
-                zugeordnet_nicht_zugeordnet_laenge_gemeinsame_grenze.laenge = zugeordnet_nicht_zugeordnet_max_laenge.laenge
-
+                wald_landwirtschaft_verkehr_laenge_gemeinsame_grenze.laenge = zuordnung_grundnutzung.laenge
     UNION ALL
-
+    
     SELECT
-        zugeordnet.t_id_grundnutzung,
-        zugeordnet.t_id_verkehr,
-        zugeordnet.laenge,
-        zugeordnet.geometrie
-    FROM
-        zugeordnet
-), grundnutzung_einzelflaechen AS (
+        wohnen_arbeiten_verkehr_innerhalb_laenge_gemeinsame_grenze.t_id_wohnen_arbeit AS t_id_zugeordnet,
+        wohnen_arbeiten_verkehr_innerhalb_laenge_gemeinsame_grenze.t_id_verkehr,
+        wohnen_arbeiten_verkehr_innerhalb_laenge_gemeinsame_grenze.laenge,
+        wohnen_arbeiten_verkehr_innerhalb_laenge_gemeinsame_grenze.geometrie
+    FROM wohnen_arbeiten_verkehr_innerhalb_max_laenge
+        LEFT JOIN wohnen_arbeiten_verkehr_innerhalb_laenge_gemeinsame_grenze
+            ON 
+                wohnen_arbeiten_verkehr_innerhalb_laenge_gemeinsame_grenze.t_id_verkehr = wohnen_arbeiten_verkehr_innerhalb_max_laenge.t_id_verkehr
+                AND
+                wohnen_arbeiten_verkehr_innerhalb_laenge_gemeinsame_grenze.laenge = wohnen_arbeiten_verkehr_innerhalb_max_laenge.laenge
+),
+grundnutzung_einzelflaechen AS (
     SELECT
         uuid_generate_v4() AS t_ili_tid,
         'Ausgangslage' AS abstimmungskategorie,
@@ -427,7 +489,8 @@ zugeordnet_nicht_zugeordnet_laenge_gemeinsame_grenze AS (
                 'N210_Landwirtschaftszone',
                 'N220_Spezielle_Landwirtschaftszone',
                 'N230_Rebbauzone',
-                'N290_weitere_Landwirtschaftszonen')
+                'N290_weitere_Landwirtschaftszonen',
+                'N329_weitere_Zonen_fuer_Gewaesser_und_ihre_Ufer')
                     THEN 'Landwirtschaftsgebiet'
             WHEN grundnutzung.typ_typ_kt IN (
                 'N110_Wohnzone_1_G',
@@ -510,6 +573,7 @@ zugeordnet_nicht_zugeordnet_laenge_gemeinsame_grenze AS (
             'N230_Rebbauzone',
             'N290_weitere_Landwirtschaftszonen',
             'N320_Gewaesser',
+            'N329_weitere_Zonen_fuer_Gewaesser_und_ihre_Ufer',
             'N430_Reservezone_Wohnzone_Mischzone_Kernzone_Zentrumszone',
             'N431_Reservezone_Arbeiten',
             'N432_Reservezone_OeBA',
@@ -564,20 +628,21 @@ zugeordnet_nicht_zugeordnet_laenge_gemeinsame_grenze AS (
                     THEN 'Siedlungsgebiet.Industrie_Arbeiten'
         END AS grundnutzungsart,
         'rechtsgueltig' AS planungsstand,
-        zugewiesene_verkehrsflaechen.geometrie,
+        zugeordnet.geometrie,
         dokumente.dokumente
     FROM
-        zugewiesene_verkehrsflaechen
+        zugeordnet
         LEFT JOIN grundnutzung_geometrie_typ AS grundnutzung 
-            ON grundnutzung.t_id = zugewiesene_verkehrsflaechen.t_id_zugeordnet
+            ON grundnutzung.t_id = zugeordnet.t_id_zugeordnet
         LEFT JOIN typ_grundnutzung_json_dokument_agg AS dokumente
             ON grundnutzung.typ_t_id = dokumente.typ_grundnutzung_t_id
-), grundnutzung AS (
+        
+), grundnutzung_vereinigt AS (
 SELECT
     abstimmungskategorie,
     grundnutzungsart,
     planungsstand,
-    ST_SnapToGrid((ST_Dump(ST_Buffer(ST_Buffer(ST_Union(geometrie),1),-1))).geom, 0.001) AS geometrie,
+    ST_SnapToGrid((ST_Dump(ST_Buffer(ST_Buffer(ST_Union(geometrie),0.001),-0.001))).geom, 0.001) AS geometrie,
     dokumente
 FROM
     grundnutzung_einzelflaechen
@@ -595,7 +660,7 @@ SELECT
     geometrie,
     dokumente
 FROM
-    grundnutzung
+    grundnutzung_vereinigt
 WHERE
     planungsstand IN ('rechtsgueltig', 'in_Auflage')
     AND

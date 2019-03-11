@@ -7,19 +7,19 @@ defaultTasks 'transferArpRichtplanPub'
 
 
 task transferArpRichtplanPubEdit(type: Db2Db){
-    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit] //[dbUriPub, dbUserPub, dbPwdPub]
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('arp_richtplan_pub_detailkarten_ueberlagernder_Punkt.sql',
                     'arp_richtplan_pub.detailkarten_ueberlagernder_punkt', true),
             new TransferSet('arp_richtplan_pub_detailkarten_ueberlagernde_Flaeche.sql',
                     'arp_richtplan_pub.detailkarten_ueberlagernde_flaeche', true),
-            /*new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernder_punkt.sql',
-                    'arp_richtplan_pub.richtplankarte_ueberlagernder_punkt', true),*/ //benoetigt agi_swissboundaries3d_pub in edit-DB!
+            new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernder_punkt.sql',
+                    'arp_richtplan_pub.richtplankarte_ueberlagernder_punkt', true),
             new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernde_linie.sql',
                     'arp_richtplan_pub.richtplankarte_ueberlagernde_linie', true),
             new TransferSet('arp_richtplan_pub_richtplankarte_grundnutzung.sql',
-                    'arp_richtplan_pub.richtplankarte_grundnutzung', false), //URL-Umbau für Richtplan-Dokumente
+                    'arp_richtplan_pub.richtplankarte_grundnutzung', false),
             new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernde_flaeche.sql',
                     'arp_richtplan_pub.richtplankarte_ueberlagernde_flaeche', false),
     ]
