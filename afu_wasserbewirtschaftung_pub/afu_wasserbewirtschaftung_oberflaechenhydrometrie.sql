@@ -27,7 +27,7 @@ UNION ALL
 (SELECT 
         'Oberflaechengewaessermessstation' AS hydrometrieobjekt,
         oberflaechenhydrometrie.betreiber AS besitzer,
-        'Oberflächengewässermessstation' AS objekttyp_anzeige, 
+        'Oberflächengewässer-Messstelle' AS objekttyp_anzeige, 
         oberflaechenhydrometrie.bezeichnung AS objektname, 
         oberflaechenhydrometrie.mobj_id AS objektnummer,
         oberflaechenhydrometrie.beschreibung AS technische_angabe,
