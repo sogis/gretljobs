@@ -20,7 +20,16 @@
         WHEN a.verwendung = 3
         THEN 'Notbrunnen'
     END AS verwendungszweck,
-    'Quelle gefasst' AS objekttyp_anzeige,
+    CASE 
+        WHEN a.nutzungsart_schutzzone = 3
+        THEN 'Private Quelle'
+        WHEN a.nutzungsart_schutzzone = 2
+        THEN 'Private Quelle von öffentl. Interesse'
+        WHEN a.nutzungsart_schutzzone = 1
+        THEN 'Öffentliche Quelle'
+        WHEN a.nutzungsart_schutzzone IS NULL OR a.nutzungsart_schutzzone > 3 
+        THEN 'Quelle'
+    END AS objekttyp_anzeige,
     a.bezeichnung AS objektname, 
     a.mobj_id AS objektnummer,
     a.beschreibung AS technische_angabe,
@@ -50,7 +59,7 @@ UNION ALL
     coalesce(a.schutzzone, FALSE) AS schutzzone,
     NULL AS nutzungstyp, --Die nicht gefassten Quellen werden logischerweise auch nicht genutzt. 
     NULL AS verwendungszweck, --Nicht gefasste Quellen werden nicht verwendet. 
-    'Quelle ungefasst' AS objekttyp_anzeige,
+    'ungefasste Quelle' AS objekttyp_anzeige,
     a.bezeichnung AS objektname, 
     a.mobj_id AS objektnummer, 
     a.beschreibung AS technische_angabe,
