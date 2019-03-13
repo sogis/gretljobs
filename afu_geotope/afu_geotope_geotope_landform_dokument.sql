@@ -1,6 +1,6 @@
 WITH fotos AS (
     SELECT 
-        landsformen.ingeso_oid,
+        landsformen.objektname,
         landsformen.ingesonr_alt,
         landsformen.foto1_name AS foto_name
     FROM
@@ -13,7 +13,7 @@ WITH fotos AS (
     UNION
 
     SELECT 
-        landsformen.ingeso_oid,
+        landsformen.objektname,
         landsformen.ingesonr_alt,
         landsformen.foto2_name
     FROM
@@ -33,7 +33,7 @@ fotos_mapping_with_new_modell AS (
         LEFT JOIN fotos
             ON fotos.foto_name = geotope_dokument.titel
         LEFT JOIN afu_geotope.geotope_landschaftsform
-            ON cast(fotos.ingeso_oid AS varchar) = geotope_landschaftsform.nummer
+            ON fotos.objektname = geotope_landschaftsform.objektname
     WHERE
         geotope_landschaftsform.t_id IS NOT NULL
 ),
@@ -48,7 +48,7 @@ dokuments_mapping_with_new_model AS (
         LEFT JOIN ingeso.landsformen
             ON dokumente.ingeso_id = landsformen.ingeso_id
         LEFT JOIN afu_geotope.geotope_landschaftsform
-            ON cast(landsformen.ingeso_oid AS varchar) = geotope_landschaftsform.nummer
+            ON landsformen.objektname = geotope_landschaftsform.objektname
     WHERE
         dokumente."archive" = 0
         AND
@@ -58,7 +58,7 @@ rrbs AS (
     SELECT
         trim(regexp_split_to_table(regexp_split_to_table(landsformen.rrb_nr, E'\\,'), 'und')) AS rrb_nr,
         trim(regexp_split_to_table(regexp_split_to_table(landsformen.rrb_date, E'\\,'), 'und')) AS rrb_date,
-        ingeso_oid
+        objektname
     FROM
         ingeso.landsformen
     WHERE
@@ -89,7 +89,7 @@ correct_rrbs AS (
                     THEN '02.05.1972'
             ELSE rrb_date
         END AS rrb_date,
-        ingeso_oid
+        objektname
     FROM
         rrbs
 ),
@@ -105,7 +105,7 @@ rrb_mapping_with_new_model AS (
                 AND
                 geotope_dokument.publiziert_ab = to_date(rrb_date, 'DD.MM.YYYY')
         LEFT JOIN afu_geotope.geotope_landschaftsform
-            ON geotope_landschaftsform.nummer = cast(correct_rrbs.ingeso_oid AS varchar)
+            ON geotope_landschaftsform.objektname = correct_rrbs.objektname
     WHERE
         geotope_dokument.t_id IS NOT NULL
 )

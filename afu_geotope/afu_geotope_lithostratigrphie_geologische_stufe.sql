@@ -61,10 +61,30 @@ FROM
     JOIN afu_geotope.lithostratigrphie_geologische_serie
         ON lithostratigrphie_geologische_serie.bezeichnung = code_parent.bezeichnung
 
-UNION
+UNION ALL
 
 SELECT
     'unbekannt' AS bezeichnung,
     lithostratigrphie_geologische_serie.t_id AS geologisches_serie
 FROM
     afu_geotope.lithostratigrphie_geologische_serie
+
+UNION ALL
+
+SELECT
+    'Piacenzien' AS bezeichnung,
+    lithostratigrphie_geologische_serie.t_id AS geologisches_serie
+FROM
+    afu_geotope.lithostratigrphie_geologische_serie
+WHERE
+    lithostratigrphie_geologische_serie.bezeichnung = 'Pliozaen'
+
+UNION ALL
+
+SELECT
+    'Zanclien' AS bezeichnung,
+    lithostratigrphie_geologische_serie.t_id AS geologisches_serie
+FROM
+    afu_geotope.lithostratigrphie_geologische_serie
+WHERE
+    lithostratigrphie_geologische_serie.bezeichnung = 'Pliozaen'

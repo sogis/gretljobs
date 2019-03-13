@@ -18,7 +18,7 @@ SELECT
 FROM afu_geotope.geotope_erratiker
     LEFT JOIN ingeso.erratiker
         ON 
-            geotope_erratiker.nummer = erratiker.ingeso_oid::varchar
+            geotope_erratiker.objektname = erratiker.objektname
             AND 
             geotope_erratiker.alte_inventar_nummer = erratiker.ingesonr_alt
     LEFT JOIN fachbereich
@@ -36,7 +36,7 @@ SELECT
 FROM afu_geotope.geotope_erratiker
     LEFT JOIN ingeso.erratiker
         ON 
-            geotope_erratiker.nummer = erratiker.ingeso_oid::varchar
+            geotope_erratiker.objektname = erratiker.objektname
             AND 
             geotope_erratiker.alte_inventar_nummer = erratiker.ingesonr_alt
     LEFT JOIN fachbereich
@@ -54,7 +54,7 @@ SELECT
 FROM afu_geotope.geotope_erratiker
     LEFT JOIN ingeso.erratiker
         ON 
-            geotope_erratiker.nummer = erratiker.ingeso_oid::varchar
+            geotope_erratiker.objektname = erratiker.objektname
             AND 
             geotope_erratiker.alte_inventar_nummer = erratiker.ingesonr_alt
     LEFT JOIN fachbereich

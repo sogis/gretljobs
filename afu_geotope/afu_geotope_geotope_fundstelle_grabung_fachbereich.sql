@@ -18,7 +18,7 @@ SELECT
 FROM afu_geotope.geotope_fundstelle_grabung
     LEFT JOIN ingeso.fundstl_grabungen
         ON 
-            geotope_fundstelle_grabung.nummer = fundstl_grabungen.ingeso_oid::varchar
+            geotope_fundstelle_grabung.objektname = fundstl_grabungen.objektname
             AND 
             geotope_fundstelle_grabung.alte_inventar_nummer = fundstl_grabungen.ingesonr_alt
     LEFT JOIN fachbereich
@@ -36,7 +36,7 @@ SELECT
 FROM afu_geotope.geotope_fundstelle_grabung
     LEFT JOIN ingeso.fundstl_grabungen
         ON 
-            geotope_fundstelle_grabung.nummer = fundstl_grabungen.ingeso_oid::varchar
+            geotope_fundstelle_grabung.objektname = fundstl_grabungen.objektname
             AND 
             geotope_fundstelle_grabung.alte_inventar_nummer = fundstl_grabungen.ingesonr_alt
     LEFT JOIN fachbereich
@@ -54,7 +54,7 @@ SELECT
 FROM afu_geotope.geotope_fundstelle_grabung
     LEFT JOIN ingeso.fundstl_grabungen
         ON 
-            geotope_fundstelle_grabung.nummer = fundstl_grabungen.ingeso_oid::varchar
+            geotope_fundstelle_grabung.objektname = fundstl_grabungen.objektname
             AND 
             geotope_fundstelle_grabung.alte_inventar_nummer = fundstl_grabungen.ingesonr_alt
     LEFT JOIN fachbereich

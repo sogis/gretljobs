@@ -1,6 +1,6 @@
 WITH fotos AS (
     SELECT 
-        erratiker.ingeso_oid,
+        erratiker.objektname,
         erratiker.ingesonr_alt,
         erratiker.foto1_name AS foto_name
     FROM
@@ -13,7 +13,7 @@ WITH fotos AS (
     UNION
 
     SELECT 
-        erratiker.ingeso_oid,
+        erratiker.objektname,
         erratiker.ingesonr_alt,
         erratiker.foto2_name
     FROM
@@ -33,7 +33,7 @@ fotos_mapping_with_new_modell AS (
         LEFT JOIN fotos
             ON fotos.foto_name = geotope_dokument.titel
         LEFT JOIN afu_geotope.geotope_erratiker
-            ON cast(fotos.ingeso_oid AS varchar) = geotope_erratiker.nummer
+            ON fotos.objektname = geotope_erratiker.objektname
     WHERE
         geotope_erratiker.t_id IS NOT NULL
 ),
@@ -48,7 +48,7 @@ dokuments_mapping_with_new_model AS (
         LEFT JOIN ingeso.erratiker
             ON dokumente.ingeso_id = erratiker.ingeso_id
         LEFT JOIN afu_geotope.geotope_erratiker
-            ON cast(erratiker.ingeso_oid AS varchar) = geotope_erratiker.nummer
+            ON erratiker.objektname = geotope_erratiker.objektname
     WHERE
         dokumente."archive" = 0
         AND
@@ -58,7 +58,7 @@ rrbs AS (
     SELECT
         trim(regexp_split_to_table(erratiker.rrb_nr, E'\\,')) AS rrb_nr,
         trim(regexp_split_to_table(erratiker.rrb_date, E'\\,')) AS rrb_date,
-        ingeso_oid
+        objektname
     FROM
         ingeso.erratiker
     WHERE
@@ -89,7 +89,7 @@ correct_rrbs AS (
                     THEN '02.05.1972'
             ELSE rrb_date
         END AS rrb_date,
-        ingeso_oid
+        objektname
     FROM
         rrbs
 ),
@@ -105,7 +105,7 @@ rrb_mapping_with_new_model AS (
                 AND
                 geotope_dokument.publiziert_ab = to_date(rrb_date, 'DD.MM.YYYY')
         LEFT JOIN afu_geotope.geotope_erratiker
-            ON geotope_erratiker.nummer = cast(correct_rrbs.ingeso_oid AS varchar)
+            ON geotope_erratiker.objektname = correct_rrbs.objektname
     WHERE
         geotope_dokument.t_id IS NOT NULL
 )

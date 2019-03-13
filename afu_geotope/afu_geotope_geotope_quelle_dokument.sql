@@ -1,6 +1,6 @@
 WITH fotos AS (
     SELECT 
-        hoehlen.ingeso_oid,
+        hoehlen.objektname,
         hoehlen.ingesonr_alt,
         hoehlen.foto1_name AS foto_name
     FROM
@@ -15,7 +15,7 @@ WITH fotos AS (
     UNION
 
     SELECT 
-        hoehlen.ingeso_oid,
+        hoehlen.objektname,
         hoehlen.ingesonr_alt,
         hoehlen.foto2_name
     FROM
@@ -31,13 +31,12 @@ fotos_mapping_with_new_modell AS (
     SELECT
         geotope_dokument.t_id AS dokument,
         geotope_quelle.t_id AS quelle
-        
     FROM
         afu_geotope.geotope_dokument
         LEFT JOIN fotos
             ON fotos.foto_name = geotope_dokument.titel
         LEFT JOIN afu_geotope.geotope_quelle
-            ON cast(fotos.ingeso_oid AS varchar) = geotope_quelle.nummer
+            ON fotos.objektname= geotope_quelle.objektname
     WHERE
         geotope_quelle.t_id IS NOT NULL
 ),
@@ -52,7 +51,7 @@ dokuments_mapping_with_new_model AS (
         LEFT JOIN ingeso.hoehlen
             ON dokumente.ingeso_id = hoehlen.ingeso_id
         LEFT JOIN afu_geotope.geotope_quelle
-            ON cast(hoehlen.ingeso_oid AS varchar) = geotope_quelle.nummer
+            ON hoehlen.objektname = geotope_quelle.objektname
     WHERE
         dokumente."archive" = 0
         AND
@@ -64,7 +63,7 @@ rrbs AS (
     SELECT
         trim(regexp_split_to_table(hoehlen.rrb_nr, E'\\,')) AS rrb_nr,
         trim(regexp_split_to_table(hoehlen.rrb_date, E'\\,')) AS rrb_date,
-        ingeso_oid
+        objektname
     FROM
         ingeso.hoehlen
     WHERE
@@ -97,7 +96,7 @@ correct_rrbs AS (
                     THEN '02.05.1972'
             ELSE rrb_date
         END AS rrb_date,
-        ingeso_oid
+        objektname
     FROM
         rrbs
 ),
@@ -113,7 +112,7 @@ rrb_mapping_with_new_model AS (
                 AND
                 geotope_dokument.publiziert_ab = to_date(rrb_date, 'DD.MM.YYYY')
         LEFT JOIN afu_geotope.geotope_quelle
-            ON geotope_quelle.nummer = cast(correct_rrbs.ingeso_oid AS varchar)
+            ON geotope_quelle.objektname = correct_rrbs.objektname
     WHERE
         geotope_dokument.t_id IS NOT NULL
 )

@@ -63,7 +63,6 @@ SELECT
     code_anthropogene_gefaehrdung.text AS anthropogene_gefaehrdung,
     lokalname,
     kantonal_gesch AS kant_geschuetztes_objekt,
-    ingeso_oid AS nummer,
     ingesonr_alt AS alte_inventar_nummer,
     regexp_replace(quelle, E'[\\n\\r]+', ' ', 'g' ) AS hinweis_literatur,
     wkb_geometry AS geometrie,

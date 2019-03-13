@@ -18,7 +18,7 @@ SELECT
 FROM afu_geotope.geotope_landschaftsform
     LEFT JOIN ingeso.landsformen
         ON 
-            geotope_landschaftsform.nummer = landsformen.ingeso_oid::varchar
+            geotope_landschaftsform.objektname = landsformen.objektname
             AND 
             geotope_landschaftsform.alte_inventar_nummer = landsformen.ingesonr_alt
     LEFT JOIN fachbereich
@@ -36,7 +36,7 @@ SELECT
 FROM afu_geotope.geotope_landschaftsform
     LEFT JOIN ingeso.landsformen
         ON 
-            geotope_landschaftsform.nummer = landsformen.ingeso_oid::varchar
+            geotope_landschaftsform.objektname = landsformen.objektname
             AND 
             geotope_landschaftsform.alte_inventar_nummer = landsformen.ingesonr_alt
     LEFT JOIN fachbereich
@@ -54,7 +54,7 @@ SELECT
 FROM afu_geotope.geotope_landschaftsform
     LEFT JOIN ingeso.landsformen
         ON 
-            geotope_landschaftsform.nummer = landsformen.ingeso_oid::varchar
+            geotope_landschaftsform.objektname = landsformen.objektname
             AND 
             geotope_landschaftsform.alte_inventar_nummer = landsformen.ingesonr_alt
     LEFT JOIN fachbereich
