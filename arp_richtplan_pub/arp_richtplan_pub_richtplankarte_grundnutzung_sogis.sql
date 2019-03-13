@@ -254,20 +254,6 @@ wohnen_arbeit AS (
             'N170_Zone_fuer_Freizeit_und_Erholung',
             'N190_Spezialzone')
 ),
-landwirtschaft AS (
-    SELECT
-        t_id,
-        geometrie
-    FROM
-        grundnutzung_geometrie_typ
-    WHERE
-        typ_typ_kt IN (
-            'N210_Landwirtschaftszone',
-            'N220_Spezielle_Landwirtschaftszone',
-            'N230_Rebbauzone',
-            'N290_weitere_Landwirtschaftszonen'
-        )
-),
 landwirtschaft_union AS (
     SELECT
         ST_Union(geometrie) AS geometrie,
@@ -287,15 +273,6 @@ landwirtschaft_union AS (
     GROUP BY
         dokumente.dokumente,
         typ
-),
-wald AS (
-    SELECT
-        t_id,
-        geometrie
-    FROM
-        grundnutzung_geometrie_typ
-    WHERE
-        typ_typ_kt ='N440_Wald'
 ),
 wald_union AS (
     SELECT
@@ -476,23 +453,8 @@ zuordnung_grundnutzung AS (
                 AND
                 wald_landwirtschaft_verkehr_laenge_gemeinsame_grenze.typ = summe_lw_w_pro_verkehrsflaeche.typ
 ),
-/*zuordnung_grundnutzung AS (
-    SELECT
-        max(laenge) AS laenge,
-        t_id_verkehr,
-        typ,
-        dokumente
-    FROM 
-        zuordnung_max_laenge
-    GROUP BY
-        t_id_verkehr,
-        typ,
-        dokumente
-),*/
-
 zugeordnet AS (
     SELECT
-        --wohnen_arbeiten_verkehr_laenge_gemeinsame_grenze.t_id_wohnen_arbeit AS t_id_zugeordnet,
         wohnen_arbeiten_verkehr_laenge_gemeinsame_grenze.t_id_verkehr,
         wohnen_arbeiten_verkehr_laenge_gemeinsame_grenze.laenge,
         wohnen_arbeiten_verkehr_laenge_gemeinsame_grenze.geometrie,
@@ -510,7 +472,6 @@ zugeordnet AS (
     UNION ALL
     
     SELECT
-        --wald_landwirtschaft_verkehr_laenge_gemeinsame_grenze.t_id_rest AS t_id_zugeordnet,
         wald_landwirtschaft_verkehr_laenge_gemeinsame_grenze.t_id_verkehr,
         wald_landwirtschaft_verkehr_laenge_gemeinsame_grenze.laenge,
         wald_landwirtschaft_verkehr_laenge_gemeinsame_grenze.geometrie,
@@ -525,7 +486,6 @@ zugeordnet AS (
     UNION ALL
     
     SELECT
-        --wohnen_arbeiten_verkehr_innerhalb_laenge_gemeinsame_grenze.t_id_wohnen_arbeit AS t_id_zugeordnet,
         wohnen_arbeiten_verkehr_innerhalb_laenge_gemeinsame_grenze.t_id_verkehr,
         wohnen_arbeiten_verkehr_innerhalb_laenge_gemeinsame_grenze.laenge,
         wohnen_arbeiten_verkehr_innerhalb_laenge_gemeinsame_grenze.geometrie,
@@ -540,7 +500,6 @@ zugeordnet AS (
 ),
 grundnutzung_einzelflaechen AS (
     SELECT
-        --uuid_generate_v4() AS t_ili_tid,
         'Ausgangslage' AS abstimmungskategorie,
         'Reservezone' AS grundnutzungsart,
         'rechtsgueltig' AS planungsstand,
@@ -563,7 +522,6 @@ grundnutzung_einzelflaechen AS (
     UNION ALL
     /*Grundnutzung ohne Verkehrsflaechen*/
     SELECT
-        --grundnutzung.t_ili_tid,
         'Ausgangslage' AS abstimmungskategorie,
         CASE
             WHEN grundnutzung.typ_typ_kt IN ('N320_Gewaesser')
@@ -670,7 +628,6 @@ grundnutzung_einzelflaechen AS (
     UNION ALL
     /*Verkehrsflaechen */
     SELECT
-        --grundnutzung.t_ili_tid,
         'Ausgangslage' AS abstimmungskategorie,
         typ AS grundnutzungsart,
         'rechtsgueltig' AS planungsstand,
