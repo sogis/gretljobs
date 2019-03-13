@@ -176,7 +176,6 @@ SELECT
     geotope_aufschluss.anthropogene_gefaehrdung,
     geotope_aufschluss.lokalname,
     geotope_aufschluss.kant_geschuetztes_objekt,
-    geotope_aufschluss.nummer,
     geotope_aufschluss.alte_inventar_nummer,
     geotope_aufschluss.hinweis_literatur,
     geotope_aufschluss.rechtsstatus,

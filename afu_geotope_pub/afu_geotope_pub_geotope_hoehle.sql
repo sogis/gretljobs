@@ -161,7 +161,6 @@ SELECT
     geotope_hoehle.anthropogene_gefaehrdung,
     geotope_hoehle.lokalname,
     geotope_hoehle.kant_geschuetztes_objekt,
-    geotope_hoehle.nummer,
     geotope_hoehle.alte_inventar_nummer,
     geotope_hoehle.hinweis_literatur,
     geotope_hoehle.rechtsstatus,

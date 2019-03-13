@@ -172,7 +172,6 @@ SELECT
     geotope_fundstelle_grabung.anthropogene_gefaehrdung,
     geotope_fundstelle_grabung.lokalname,
     geotope_fundstelle_grabung.kant_geschuetztes_objekt,
-    geotope_fundstelle_grabung.nummer,
     geotope_fundstelle_grabung.alte_inventar_nummer,
     geotope_fundstelle_grabung.hinweis_literatur,
     geotope_fundstelle_grabung.rechtsstatus,

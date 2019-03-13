@@ -168,7 +168,6 @@ SELECT
     geotope_landschaftsform.anthropogene_gefaehrdung,
     geotope_landschaftsform.lokalname,
     geotope_landschaftsform.kant_geschuetztes_objekt,
-    geotope_landschaftsform.nummer,
     geotope_landschaftsform.alte_inventar_nummer,
     geotope_landschaftsform.hinweis_literatur,
     geotope_landschaftsform.rechtsstatus,

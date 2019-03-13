@@ -168,7 +168,6 @@ SELECT
     geotope_erratiker.anthropogene_gefaehrdung,
     geotope_erratiker.lokalname,
     geotope_erratiker.kant_geschuetztes_objekt,
-    geotope_erratiker.nummer,
     geotope_erratiker.alte_inventar_nummer,
     geotope_erratiker.hinweis_literatur,
     geotope_erratiker.rechtsstatus,
