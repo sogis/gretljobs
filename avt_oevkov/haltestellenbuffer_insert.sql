@@ -1,8 +1,13 @@
 TRUNCATE avt_oevkov_${currentYear}.so_geodaten_haltestellenbuffer
 ;
 INSERT INTO avt_oevkov_${currentYear}.so_geodaten_haltestellenbuffer
-    (haltestellenname, verkehrsmittel, geometrie)
-    (SELECT
+    (
+    haltestellenname,
+    verkehrsmittel,
+    geometrie
+    )
+    (
+    SELECT
         DISTINCT stop.haltestellenname,
         CASE
             WHEN verkehrsmittel IN (1,4)
