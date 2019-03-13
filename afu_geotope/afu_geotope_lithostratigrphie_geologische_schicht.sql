@@ -80,3 +80,23 @@ SELECT
     lithostratigrphie_geologische_stufe.t_id AS geologische_stufe
 FROM
     afu_geotope.lithostratigrphie_geologische_stufe
+
+UNION ALL
+
+SELECT
+    'Wallmoraene' AS bezeichnung,
+    lithostratigrphie_geologische_stufe.t_id AS geologische_stufe
+FROM
+    afu_geotope.lithostratigrphie_geologische_stufe
+WHERE
+    lithostratigrphie_geologische_stufe.bezeichnung = 'Wuerm_Vergletscherung'
+
+UNION ALL
+
+SELECT
+    'Insekten_Mergel' AS bezeichnung,
+    lithostratigrphie_geologische_stufe.t_id AS geologische_stufe
+FROM
+    afu_geotope.lithostratigrphie_geologische_stufe
+WHERE
+    lithostratigrphie_geologische_stufe.bezeichnung = 'Callovien'

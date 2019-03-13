@@ -211,7 +211,6 @@ WITH aufschluss AS (
         trim(code_anthropogene_gefaehrdung.text) AS anthropogene_gefaehrdung,
         lokalname,
         kantonal_gesch AS kant_geschuetztes_objekt,
-        ingeso_oid AS nummer,
         ingesonr_alt AS alte_inventar_nummer,
         regexp_replace(quelle, E'[\\n\\r]+', ' ', 'g' ) AS hinweis_literatur,
         ST_Multi(ST_SnapToGrid(wkb_geometry, 0.001)) AS geometrie
@@ -296,7 +295,6 @@ SELECT
     aufschluss.anthropogene_gefaehrdung,
     aufschluss.lokalname,
     aufschluss.kant_geschuetztes_objekt,
-    aufschluss.nummer,
     aufschluss.alte_inventar_nummer,
     aufschluss.hinweis_literatur,
     aufschluss.geometrie,

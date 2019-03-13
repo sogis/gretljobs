@@ -18,7 +18,7 @@ SELECT
 FROM afu_geotope.geotope_aufschluss
     LEFT JOIN ingeso.aufschluesse
         ON 
-            geotope_aufschluss.nummer = aufschluesse.ingeso_oid::varchar
+            geotope_aufschluss.objektname = aufschluesse.objektname
             AND 
             geotope_aufschluss.alte_inventar_nummer = aufschluesse.ingesonr_alt
     LEFT JOIN fachbereich
@@ -36,7 +36,7 @@ SELECT
 FROM afu_geotope.geotope_aufschluss
     LEFT JOIN ingeso.aufschluesse
         ON 
-            geotope_aufschluss.nummer = aufschluesse.ingeso_oid::varchar
+            geotope_aufschluss.objektname = aufschluesse.objektname
             AND 
             geotope_aufschluss.alte_inventar_nummer = aufschluesse.ingesonr_alt
     LEFT JOIN fachbereich
@@ -54,7 +54,7 @@ SELECT
 FROM afu_geotope.geotope_aufschluss
     LEFT JOIN ingeso.aufschluesse
         ON 
-            geotope_aufschluss.nummer = aufschluesse.ingeso_oid::varchar
+            geotope_aufschluss.objektname = aufschluesse.objektname
             AND 
             geotope_aufschluss.alte_inventar_nummer = aufschluesse.ingesonr_alt
     LEFT JOIN fachbereich

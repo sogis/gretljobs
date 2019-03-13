@@ -18,7 +18,7 @@ SELECT
 FROM afu_geotope.geotope_hoehle
     LEFT JOIN ingeso.hoehlen
         ON 
-            geotope_hoehle.nummer = hoehlen.ingeso_oid::varchar
+            geotope_hoehle.objektname = hoehlen.objektname
             AND 
             geotope_hoehle.alte_inventar_nummer = hoehlen.ingesonr_alt
     LEFT JOIN fachbereich
@@ -38,7 +38,7 @@ SELECT
 FROM afu_geotope.geotope_hoehle
     LEFT JOIN ingeso.hoehlen
         ON 
-            geotope_hoehle.nummer = hoehlen.ingeso_oid::varchar
+            geotope_hoehle.objektname = hoehlen.objektname
             AND 
             geotope_hoehle.alte_inventar_nummer = hoehlen.ingesonr_alt
     LEFT JOIN fachbereich
@@ -58,7 +58,7 @@ SELECT
 FROM afu_geotope.geotope_hoehle
     LEFT JOIN ingeso.hoehlen
         ON 
-            geotope_hoehle.nummer = hoehlen.ingeso_oid::varchar
+            geotope_hoehle.objektname = hoehlen.objektname
             AND 
             geotope_hoehle.alte_inventar_nummer = hoehlen.ingesonr_alt
     LEFT JOIN fachbereich

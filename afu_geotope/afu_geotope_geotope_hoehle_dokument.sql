@@ -1,6 +1,6 @@
 WITH fotos AS (
     SELECT 
-        hoehlen.ingeso_oid,
+        hoehlen.objektname,
         hoehlen.ingesonr_alt,
         hoehlen.foto1_name AS foto_name
     FROM
@@ -15,7 +15,7 @@ WITH fotos AS (
     UNION
 
     SELECT 
-        hoehlen.ingeso_oid,
+        hoehlen.objektname,
         hoehlen.ingesonr_alt,
         hoehlen.foto2_name
     FROM
@@ -37,7 +37,7 @@ fotos_mapping_with_new_modell AS (
         LEFT JOIN fotos
             ON fotos.foto_name = geotope_dokument.titel
         LEFT JOIN afu_geotope.geotope_hoehle
-            ON cast(fotos.ingeso_oid AS varchar) = geotope_hoehle.nummer
+            ON fotos.objektname = geotope_hoehle.objektname
     WHERE
         geotope_hoehle.t_id IS NOT NULL
 ),
@@ -52,7 +52,7 @@ dokuments_mapping_with_new_model AS (
         LEFT JOIN ingeso.hoehlen
             ON dokumente.ingeso_id = hoehlen.ingeso_id
         LEFT JOIN afu_geotope.geotope_hoehle
-            ON cast(hoehlen.ingeso_oid AS varchar) = geotope_hoehle.nummer
+            ON hoehlen.objektname = geotope_hoehle.objektname
     WHERE
         dokumente."archive" = 0
         AND
@@ -64,7 +64,7 @@ rrbs AS (
     SELECT
         trim(regexp_split_to_table(hoehlen.rrb_nr, E'\\,')) AS rrb_nr,
         trim(regexp_split_to_table(hoehlen.rrb_date, E'\\,')) AS rrb_date,
-        ingeso_oid
+        objektname
     FROM
         ingeso.hoehlen
     WHERE
@@ -97,7 +97,7 @@ correct_rrbs AS (
                     THEN '02.05.1972'
             ELSE rrb_date
         END AS rrb_date,
-        ingeso_oid
+        objektname
     FROM
         rrbs
 ),
@@ -113,7 +113,7 @@ rrb_mapping_with_new_model AS (
                 AND
                 geotope_dokument.publiziert_ab = to_date(rrb_date, 'DD.MM.YYYY')
         LEFT JOIN afu_geotope.geotope_hoehle
-            ON geotope_hoehle.nummer = cast(correct_rrbs.ingeso_oid AS varchar)
+            ON geotope_hoehle.objektname = correct_rrbs.objektname
     WHERE
         geotope_dokument.t_id IS NOT NULL
 )
