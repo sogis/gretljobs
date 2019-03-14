@@ -61,9 +61,9 @@ ext {
     models.add(["SO_ARP_Richtplan_20190222",
                 "arp_richtplan",
                 dbEdit])
-    models.add(["SO_AfU_Gefahrenkartierung_20181129",
+    /*models.add(["SO_AfU_Gefahrenkartierung_20181129",
                 "afu_gefahrenkartierung",
-                dbEdit])
+                dbEdit])*/
     models.add(["SO_AfU_Erdwaermesonden_20190204",
                 "afu_erdwaermesonden",
                 dbEdit])
