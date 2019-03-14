@@ -980,6 +980,8 @@ INSERT INTO
             'Zürich HB'
         )
     AND
+        linienname <> 'L410 Biel - Olten - St. Gallen (IC)'
+    AND
         route_desc IN ('RegioExpress', 'InterRegio', 'Intercity')
     AND
         trip_id IN (SELECT trip_einschraenkung.trip_id 
