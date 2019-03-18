@@ -25,10 +25,10 @@ SELECT
             rrb_date < '2001-01-01'
             AND
             ZONE != 'SARE'
-                THEN 'nein'
+                THEN 'altrechtlich, nicht gesetzeskonform'
         WHEN rrb_date > '2001-01-01' 
-            THEN 'ja'
-    END AS gesetzeskonform,
+            THEN 'neurechtlich'
+    END AS gesetzeskonform_text,
     rrbnr,
     rrb_date
 FROM
