@@ -11,6 +11,6 @@ FROM
 	afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_spontan
 WHERE
 	gef_stufe != 'keine'
-		AND
-			publiziert = true
+	AND
+	publiziert = true
 ;

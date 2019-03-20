@@ -52,17 +52,14 @@ WITH
 			OR bemerkung NOT LIKE '%$OUTSIDE$%'
 	)
 	
-SELECT * FROM (
-	SELECT
-		*
-	FROM 
-		not_assessed_area
-	UNION ALL
 
-	SELECT 
-		*
-	FROM
-		assessed_area
-) AS ktso
-	LIMIT ALL
+SELECT
+	*
+FROM 
+	not_assessed_area
+UNION ALL
+SELECT 
+	*
+FROM
+	assessed_area
 ;

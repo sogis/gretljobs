@@ -31,5 +31,4 @@ SELECT
     geometrie AS impact_zone
 FROM 
 	afu_gefahrenkartierung.gefahrenkartirung_gk_mgdm
-LIMIT ALL
 ;   

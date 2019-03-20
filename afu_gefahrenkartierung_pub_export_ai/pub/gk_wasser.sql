@@ -12,6 +12,6 @@ FROM
 	afu_gefahrenkartierung.gefahrenkartirung_gk_wasser
 WHERE
 	gef_stufe != 'keine'
-		AND
-			publiziert = true
+	AND
+	publiziert = true
 ;
