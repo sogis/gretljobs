@@ -30,6 +30,5 @@ SELECT
     bemerkung AS comments,
     geometrie AS impact_zone
 FROM 
-	afu_gefahrenkartierung.gk_mgdm
-LIMIT ALL
+	afu_gefahrenkartierung.gefahrenkartirung_gk_mgdm
 ;   

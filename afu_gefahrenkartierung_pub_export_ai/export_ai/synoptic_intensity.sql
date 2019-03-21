@@ -1,7 +1,7 @@
 SELECT 
 	geometrie AS impact_zone,
 	t_ili_tid::varchar AS t_ili_tid,
-    'SO' AS data_responsibility,
+	'SO' AS data_responsibility,
 	bemerkung AS comments,
 	CASE 
 		WHEN int_stufe = 'keine'
@@ -58,5 +58,5 @@ SELECT
 	END AS subproc_synoptic_intensity,
 	CAST('complete' AS VARCHAR) AS sources_in_subprocesses_compl
 FROM 
-	afu_gefahrenkartierung.ik_synoptisch_mgdm
+	afu_gefahrenkartierung.gefahrenkartirung_ik_synoptisch_mgdm
 ;   

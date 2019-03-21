@@ -11,4 +11,6 @@ FROM
 	afu_gefahrenkartierung.gefahrenkartirung_gk_hangmure
 WHERE
 	gef_stufe != 'keine'
+	AND
+	publiziert = true
 ;

@@ -23,7 +23,7 @@ WITH
 			'not_assessed'::text AS sh_state_sinkhole,
 			'not_assessed'::text AS if_state_ice_fall
 		FROM 
-			afu_gefahrenkartierung.erhebungsgebiet
+			afu_gefahrenkartierung.gefahrenkartirung_erhebungsgebiet
 		WHERE 
 			bemerkung LIKE '%$OUTSIDE$%' 
 	),
@@ -47,22 +47,19 @@ WITH
 			'assessed'::text AS sh_state_sinkhole,
 			'assessed'::text AS if_state_ice_fall
 		FROM 
-			afu_gefahrenkartierung.erhebungsgebiet
+			afu_gefahrenkartierung.gefahrenkartirung_erhebungsgebiet
 		WHERE bemerkung IS NULL		
 			OR bemerkung NOT LIKE '%$OUTSIDE$%'
 	)
 	
-SELECT * FROM (
-	SELECT
-		*
-	FROM 
-		not_assessed_area
-	UNION ALL
 
-	SELECT 
-		*
-	FROM
-		assessed_area
-) AS ktso
-LIMIT ALL
+SELECT
+	*
+FROM 
+	not_assessed_area
+UNION ALL
+SELECT 
+	*
+FROM
+	assessed_area
 ;
