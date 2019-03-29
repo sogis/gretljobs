@@ -23,13 +23,11 @@ INSERT INTO avt_oevkov_${currentYear}.so_geodaten_haltestellenbuffer
         LEFT JOIN avt_oevkov_${currentYear}.auswertung_auswertung_gtfs AS auswertung
             ON stop.stop_name = auswertung.haltestellenname
     )
-;
-SET ROLE sogis_admin
-;
-DROP INDEX IF EXISTS so_geodaten_haltestellenbuffer_idx
-;
-CREATE INDEX IF NOT EXISTS so_geodaten_haltestellenbuffer_idx
-    ON avt_oevkov_${currentYear}.so_geodaten_haltestellenbuffer
-    USING gist
-    (geometrie)
-;
+
+-- DROP INDEX IF EXISTS so_geodaten_haltestellenbuffer_idx
+-- ;
+-- CREATE INDEX so_geodaten_haltestellenbuffer_idx
+--     ON avt_oevkov_${currentYear}.so_geodaten_haltestellenbuffer
+--     USING gist
+--     (geometrie)
+-- ;
