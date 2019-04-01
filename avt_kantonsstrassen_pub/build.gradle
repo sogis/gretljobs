@@ -9,8 +9,7 @@ task transferAvtKantonsstrassen(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('avt_kantonsstrassen_pub_bezugspunkt.sql', 'avt_kantonsstrassen_pub.bezugspunkt', true),
-            new TransferSet('avt_kantonsstrassen_pub_baustelle.sql', 'avt_kantonsstrassen_pub.baustelle', true),       
+            new TransferSet('avt_kantonsstrassen_pub_bezugspunkt.sql', 'avt_kantonsstrassen_pub.bezugspunkt', true),   
             new TransferSet('avt_kantonsstrassen_pub_kantonsstrassen.sql', 'avt_kantonsstrassen_pub.kantonsstrassen', true),
             new TransferSet('avt_kantonsstrassen_pub_vereinbarung.sql', 'avt_kantonsstrassen_pub.vereinbarung', true)
     ];
