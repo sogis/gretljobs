@@ -82,4 +82,6 @@ FROM
     abbaustellen.abbaustellen
 WHERE
     archive = 0
+    AND
+    planungsstand IS NULL
 ;
