@@ -4,23 +4,12 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'transferAfuAltlasten', 'transferAfuAltlast4Web'
-
-task transferAfuAltlasten(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
-    transferSets = [
-            //new TransferSet('afu_altlasten_pub_altlasten_belastete_standorte_internet.sql',
-            // 'afu_altlasten_pub.altlasten_belastete_standorte_internet', true)
-            new TransferSet('afu_altlasten_pub_belastete_standorte.sql','afu_altlasten_pub.belastete_standorte', true)
-    ];        
-}
+defaultTasks 'transferAfuAltlast4Web'
 
 task transferAfuAltlast4Web(type: Db2Db){
     sourceDb = [dbUriAltlast4web, dbUserAltlast4web, dbPwdAltlast4web]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('afu_altlasten_pub_belastete_standorte_altlast4web.sql',
-                    'afu_altlasten_pub.belastete_standorte_altlast4web', true)
+            new TransferSet('afu_altlasten_pub_belastete_standorte_altlast4web.sql','afu_altlasten_pub.belastete_standorte_altlast4web', true)
     ];
 }
