@@ -100,6 +100,7 @@ INSERT INTO
                     exception_type = 2
         )
         AND
+--         diese Haltestellen werden nur wegen Spezialfall Bahhof Olten benötigt
             stop.stop_name NOT IN (
                 'Aarau',
                 'Langenthal',
@@ -187,10 +188,11 @@ INSERT INTO
 
     UNION ALL
 
-    --     Alle Haltestellen ergänzen,welche ausserhalb des Kantons liegen, aber einer
-    --     Solothurner Gemeinde angerechnet werden, ausser die, welche unten als Speziallfall  behandelt werden
-    --     Die Zuordnung zu einer Gemeinde erfolgt über die Tabelle avt_oevkov_${currentYear}.sachdaten_haltestelle_anrechnung,
-    --     welche durch die Abt. Oev festgelegt wird
+--  Alle Haltestellen ergänzen,welche ausserhalb des Kantons liegen, aber einer
+--  Solothurner Gemeinde angerechnet werden, ausser die, welche unten als Speziallfall
+--  behandelt werden. Die Zuordnung zu einer Gemeinde erfolgt über die Tabelle
+--  avt_oevkov_${currentYear}.sachdaten_haltestelle_anrechnung, welche
+--  durch die Abt. Oev festgelegt wird
     SELECT  
         stop.stop_name,
         linie.linienname,
@@ -285,7 +287,7 @@ INSERT INTO
 
     UNION ALL
     
-     -- Bahnhof Solothurn
+-- Bahnhof Solothurn
     SELECT
         stop_name,
         linienname,
@@ -309,7 +311,7 @@ INSERT INTO
 
 UNION ALL
 
-  -- Bahnhof Olten: L410 Biel - Olten
+--   Bahnhof Olten: L410 Biel - Olten
     SELECT
         stop_name,
         linienname,
@@ -454,7 +456,7 @@ UNION ALL
 
     UNION ALL
 
-    -- Bahnhof Olten: L500 Olten - Basel (S3)
+-- Bahnhof Olten: L500 Olten - Basel (S3)
     SELECT
         stop_name,
         linienname,
@@ -477,7 +479,7 @@ UNION ALL
 
     UNION ALL
 
-    -- Bahnhof Olten: L503 Olten - Sissach (S9)
+-- Bahnhof Olten: L503 Olten - Sissach (S9)
     SELECT
         stop_name,
         linienname,
@@ -500,7 +502,7 @@ UNION ALL
 
     UNION ALL
 
-    -- Bahnhof Olten: L510 Olten - Sursee (S8)
+-- Bahnhof Olten: L510 Olten - Sursee (S8)
     SELECT
         stop_name,
         linienname,
@@ -523,13 +525,13 @@ UNION ALL
 
     UNION ALL
 
-    -- Bahnhof Olten: L510 Olten - Luzern (IR/RE)          RegioExpress zählt hier zu R
+-- Bahnhof Olten: L510 Olten - Luzern (IR/RE)          RegioExpress zählt hier zu R
     SELECT
         stop_name,
         linienname,
         agency_name,
         sum(gtfs_count),
-        verkehrsmittel                                                                                            -- Achtung: Spezialfall: 2 AS verkehrsmittel  verkehrsmittel wird hier fix eingegeben!!!
+        verkehrsmittel
     FROM
         abfahrten
     WHERE
@@ -598,7 +600,7 @@ UNION ALL
 
      UNION ALL
 
-    -- Bahnhof Olten: L650 Olten - Zürich HB (IC/IR/RE)
+-- Bahnhof Olten: L650 Olten - Zürich HB (IC/IR/RE)
     SELECT
         stop_name,
         linienname,
@@ -674,7 +676,7 @@ UNION ALL
 
     UNION ALL
 
-    -- Bahnhof Dulliken: (650 Olten-Zürich R, S und 450 Bern - Olten haben die gleichen route_ids!
+-- Bahnhof Dulliken: (650 Olten-Zürich R, S und 450 Bern - Olten haben die gleichen route_ids!
     SELECT
 	stop_name,
         linienname,
@@ -698,7 +700,7 @@ UNION ALL
 
     UNION ALL
 
-    -- Bahnhof Däniken (650 Olten-Zürich R, S und 450 Bern - Olten haben die gleichen route_ids!
+-- Bahnhof Däniken (650 Olten-Zürich R, S und 450 Bern - Olten haben die gleichen route_ids!
     SELECT
 	stop_name,
         linienname,
@@ -722,7 +724,7 @@ UNION ALL
 
      UNION ALL
 
-    -- Bahnhof Schönenwerd (650 Olten-Zürich R, S und 450 Bern - Olten haben die gleichen route_ids!
+-- Bahnhof Schönenwerd (650 Olten-Zürich R, S und 450 Bern - Olten haben die gleichen route_ids!
     SELECT
 	stop_name,
         linienname,
@@ -748,7 +750,7 @@ UNION ALL
         
     UNION ALL
 
-    -- Bahnhof Grenchen Süd
+-- Bahnhof Grenchen Süd
     SELECT
         stop_name,
         linienname,
@@ -771,7 +773,7 @@ UNION ALL
 
    UNION ALL
 
-    -- Bahnhof Murgenthal (650 Olten-Zürich R, S und 450 Bern - Olten haben die gleichen route_ids!
+-- Bahnhof Murgenthal (650 Olten-Zürich R, S und 450 Bern - Olten haben die gleichen route_ids!
     SELECT
 	stop_name,
         linienname,
@@ -795,7 +797,8 @@ UNION ALL
 
      UNION ALL
 
---     Bahnhof Dornach-Arlesheim: 230 Biel - Delémont und 500 Basel-Olten S haben die gleiche route_id = 4-3-j19-1 
+-- Bahnhof Dornach-Arlesheim: 230 Biel - Delémont und 500 Basel-Olten S
+-- haben die gleiche route_id = 4-3-j19-1 
     SELECT
         stop_name,
         linienname,
@@ -862,7 +865,7 @@ UNION ALL
 
     UNION ALL
 
-    -- Bahnhof Grenchen Nord
+-- Bahnhof Grenchen Nord
     SELECT
         stop_name,
         linienname,
@@ -885,8 +888,8 @@ UNION ALL
 
     UNION ALL
 
---     'Bahnhof: Flüh, Bahnhof'
---     im GTFS keine Unterscheidung Flüh, Bahnhof (beides Tram und Bus), Abt. OeV wünscht aber unterscheidung
+-- Flüh, Bahnhof (beide Tram und Bus), in GTFS Name für
+-- beide gleich, Abt. OeV wünscht Unterscheidung
     SELECT
         'Flüh Bahnhof' AS stop_name,
         linienname,
@@ -909,7 +912,7 @@ UNION ALL
 
     UNION ALL
 
---  'Bahnhof: Flüh, Bahnhof'
+-- Bahnhof: Flüh, Bahnhof
     SELECT
         'Flüh, Bahnhof' AS stop_name,
         linienname,
@@ -933,7 +936,8 @@ UNION ALL
 ;
 
 
--- Alle  Haltestellen, die wegen pickup_type = 0 herausfallen oder am Stichtag 0 Abfahrten haben
+-- Alle  Haltestellen, die wegen pickup_type = 0 herausfallen
+-- oder am Stichtag 0 Abfahrten haben
 INSERT INTO
      avt_oevkov_${currentYear}.auswertung_auswertung_gtfs
      (

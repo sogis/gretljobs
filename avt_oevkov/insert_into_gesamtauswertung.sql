@@ -71,31 +71,37 @@ INSERT INTO
 	    gewichtung_korrigiert,
 	    anrechnung.anrechnung,
 	    anzahl_abfahrten_linie AS abfahrten_gtfs,
-	    CASE
-		WHEN
-		    abfahrten_korrigiert IS NULL
+	    CASE                                                                                        -- sollen hier nur die einfach korrgierten Werte stehen?
+		    WHEN
+		        (abfahrten_korrigiert = 0 OR abfahrten_korrigiert IS NULL)
 			THEN NULL
 	        WHEN gewichtung_korrigiert >= 0
-	            THEN  anzahl_abfahrten_linie  *  gewichtung_korrigiert
+	            THEN anzahl_abfahrten_linie  *  gewichtung_korrigiert
 		ELSE
 		    abfahrten_korrigiert
 	    END AS abfahrten_gtfs_korrigiert,
 	    CASE
-		WHEN
-		    abfahrten_korrigiert IS NULL
+		    WHEN
+		        (abfahrten_korrigiert = 0 OR abfahrten_korrigiert IS NULL)
 			THEN anzahl_abfahrten_linie
-	        WHEN gewichtung_korrigiert >= 0
-	            THEN  anzahl_abfahrten_linie  *  gewichtung_korrigiert
 		ELSE
 		    (anzahl_abfahrten_linie  +  abfahrten_korrigiert)
 	    END AS abfahrten_ungewichtet,
 	    CASE
 		WHEN
-		    abfahrten_korrigiert IS NULL
+		    (abfahrten_korrigiert IS NOT NULL  AND abfahrten_korrigiert <> 0 AND gewichtung_korrigiert > 0)
+		    THEN
+		         ((anzahl_abfahrten_linie  +  abfahrten_korrigiert)  *  gewichtung_korrigiert  *  anrechnung  /  100)::numeric(5,1)
+		WHEN
+		    (abfahrten_korrigiert IS NOT NULL AND abfahrten_korrigiert <> 0 AND (gewichtung_korrigiert = 0 OR gewichtung_korrigiert IS NULL))
+		    THEN
+		        ((anzahl_abfahrten_linie  +  abfahrten_korrigiert)   *  gewichtung  *  anrechnung  /  100)::numeric(5,1)
+		WHEN
+		     (gewichtung_korrigiert > 0 AND (abfahrten_korrigiert = 0 OR abfahrten_korrigiert IS NULL))
 			THEN
-			    (anzahl_abfahrten_linie  *  gewichtung  *  anrechnung  /  100)::numeric(5,1)
+			    (anzahl_abfahrten_linie  *  gewichtung_korrigiert  *  anrechnung  /  100)::numeric(5,1)
 			ELSE
-			   ((anzahl_abfahrten_linie  +  abfahrten_korrigiert)  *  gewichtung *  anrechnung  /  100)::numeric(5,1)
+			   (anzahl_abfahrten_linie  *  gewichtung  *  anrechnung  /  100)::numeric(5,1)
 		END AS abfahrten_gewichtet,
 		bemerkungen
 	FROM
@@ -157,18 +163,18 @@ INSERT INTO
             korrektur.haltestellenname <> '--- Alle'
         )
 ;
-
--- Korrektur für ganze Linien (z.Bsp. gewichtung = 0 setzen, da Linie durch Gemeinde finanziert)
-UPDATE
-     avt_oevkov_${currentYear}.auswertung_gesamtauswertung AS auswertung
- SET
-    verkehrsmittel = korrektur.verkehrsmittel,
-    gewichtung = korrektur.gewichtung,
-    abfahrten_gewichtet = (abfahrten_ungewichtet  *  korrektur.gewichtung)
- FROM
-     avt_oevkov_${currentYear}.auswertung_abfahrten_korrigiert AS korrektur
-WHERE
-    auswertung.linie = korrektur.linie
-AND
-    korrektur.haltestellenname = '--- Alle'
-;
+-- 
+-- -- Korrektur für ganze Linien (z.Bsp. gewichtung = 0 setzen, da Linie durch Gemeinde finanziert)
+-- UPDATE
+--      avt_oevkov_${currentYear}.auswertung_gesamtauswertung AS auswertung
+--  SET
+--     verkehrsmittel = korrektur.verkehrsmittel,
+--     gewichtung = korrektur.gewichtung,
+--     abfahrten_gewichtet = (abfahrten_ungewichtet  *  korrektur.gewichtung)
+--  FROM
+--      avt_oevkov_${currentYear}.auswertung_abfahrten_korrigiert AS korrektur
+-- WHERE
+--     auswertung.linie = korrektur.linie
+-- AND
+--     korrektur.haltestellenname = '--- Alle'
+-- ;
