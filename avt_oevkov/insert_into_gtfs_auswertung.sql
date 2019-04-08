@@ -1,5 +1,7 @@
 -- Summe ungewichtete Abfahrten pro Haltestelle und Linie
-TRUNCATE TABLE avt_oevkov_${currentYear}.auswertung_auswertung_gtfs;
+TRUNCATE TABLE avt_oevkov_${currentYear}.auswertung_auswertung_gtfs
+;
+
 INSERT INTO
     avt_oevkov_${currentYear}.auswertung_auswertung_gtfs
      (
@@ -56,11 +58,11 @@ INSERT INTO
             trip.trip_headsign,
             stoptime.pickup_type,
             count(departure_time) AS gtfs_count,
-            CASE                                                                                                     -- Bedarfsangebot?
+            CASE                                                                                                    -- Bedarfsangebot?
                 WHEN route_desc = 'Bus'                                                                -- Bus (200 ICB? weggelassen)
                      THEN 1
-                WHEN route_desc IN ('RegioExpress', 'InterRegio', 'Intercity')       -- Railjet, Schnellzug, Eurocity, ICE, TGV,
-                     THEN 2                                                                                         -- Eurostar, InterRegio (105 Nachtzug weggelassen)
+                WHEN route_desc IN ('RegioExpress', 'InterRegio', 'Intercity')        -- Railjet, Schnellzug, Eurocity, ICE, TGV,
+                     THEN 2                                                                                       -- Eurostar, InterRegio (105 Nachtzug weggelassen)
                 WHEN route_desc IN ('Regionalzug', 'S-Bahn', 'Tram')
                     THEN 3
             END AS verkehrsmittel
@@ -116,8 +118,8 @@ INSERT INTO
             stop.stop_id = stoptime.stop_id
         AND
             stoptime.trip_id = trip.trip_id
-        -- AND
-    --        trip_headsign <> stop.stop_name                                 -- liefert zuerst alle Abfahrten: wird das unten benötigt? 1 mal, wegen Dornach, Bahnhof'
+--         AND
+--             trip_headsign <> stop.stop_name                                 -- liefert zuerst alle Abfahrten: wird das unten benötigt? 1 mal, wegen Dornach, Bahnhof'
         AND
             pickup_type = 0
         AND
@@ -146,7 +148,7 @@ INSERT INTO
     )
  
 
-    -- die meisten Haltestellen
+--     die meisten Haltestellen
     SELECT
         stop_name,
         linienname,
@@ -160,7 +162,7 @@ INSERT INTO
        
     -- *********** hier kommen die Ausnahmen, die werden unten abgehandelt ***********
     
-       -- Bahnhöfe werden separat behandelt wegen Zuordnung zu den LInien
+-- Bahnhöfe werden separat behandelt wegen Zuordnung zu den LInien
        AND
            stop_name NOT IN (
 --               'Biberist RBS',
@@ -1060,7 +1062,6 @@ INSERT INTO
 )
 ;
 
-
 -- Gewichtung schreiben
 UPDATE
     avt_oevkov_${currentYear}.auswertung_auswertung_gtfs AS auswertung
@@ -1070,4 +1071,4 @@ FROM
     avt_oevkov_${currentYear}.sachdaten_verkehrsmittel AS verkehrsmittel
 WHERE
     auswertung.verkehrsmittel = verkehrsmittel.verkehrsmittel
-; 
+;
