@@ -1069,4 +1069,4 @@ FROM
     avt_oevkov_${currentYear}.sachdaten_verkehrsmittel AS verkehrsmittel
 WHERE
     auswertung.verkehrsmittel = verkehrsmittel.verkehrsmittel
-;
+; 

@@ -177,4 +177,4 @@ INSERT INTO
 --     auswertung.linie = korrektur.linie
 -- AND
 --     korrektur.haltestellenname = '--- Alle'
--- ;
+-- ; 
