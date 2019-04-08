@@ -1060,6 +1060,7 @@ INSERT INTO
 )
 ;
 
+
 -- Gewichtung schreiben
 UPDATE
     avt_oevkov_${currentYear}.auswertung_auswertung_gtfs AS auswertung

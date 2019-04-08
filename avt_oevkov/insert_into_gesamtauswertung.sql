@@ -162,6 +162,7 @@ INSERT INTO
         AND
             korrektur.haltestellenname <> '--- Alle'
         )
+
 ;
 -- 
 -- -- Korrektur für ganze Linien (z.Bsp. gewichtung = 0 setzen, da Linie durch Gemeinde finanziert)
