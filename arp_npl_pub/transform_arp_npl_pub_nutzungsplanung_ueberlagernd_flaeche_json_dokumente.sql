@@ -26,6 +26,8 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS
     ON (last_ursprung = t1.ursprung)
   WHERE 
     t1.hinweis IS NOT NULL
+  AND
+    x.ursprung != t1.hinweis
 )
 , 
 doc_doc_references_all AS 
