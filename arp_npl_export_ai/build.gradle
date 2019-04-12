@@ -35,7 +35,9 @@ task zipNplch(type: Zip, dependsOn: 'exportNplch'){
     description = "Zippt das xtf-File mit den Nutzungsplanungsdaten (MGDM vom Bund) für den Upload in die " +
             "Aggregationsinfrastruktur."
     from pathToTempFolder
+    from "."
     include exportNplchFileName
+    include "config.toml"
     archiveName ZipName
     destinationDir(file(pathToTempFolder))
 }
@@ -47,6 +49,7 @@ task exportNplch(type: Ili2pgExport, dependsOn:'transferNplso2NplchPart3') {
     models = "Nutzungsplanung_LV95_V1_1"
     logFile = logExportNplch
     dataFile = exportNplchFile
+    disableValidation = true
 }
 
 task transferNplso2NplchPart3(type: SqlExecutor, dependsOn:'transferNplso2NplchPart2') {
@@ -110,7 +113,9 @@ task zipLaermempfindlichkeit(type: Zip, dependsOn: 'exportLaermempfindlichkeit')
     description = "Zippt das xtf-File mit den Lärmempfindlichkeitsdaten (MGDM vom Bund) für den Upload in die " +
             "Aggregationsinfrastruktur."
     from pathToTempFolder
+    from "."
     include exportLaermempfindlichkeitFileName
+    include "config.toml"
     archiveName ZipName
     destinationDir(file(pathToTempFolder))
 }
@@ -120,9 +125,9 @@ task exportLaermempfindlichkeit(type: Ili2pgExport, dependsOn: 'transferNplso2La
     database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     dbschema = "arp_laermempfindlichkeit_mgdm"
     models = "Laermempfindlichkeitsstufen_LV95_V1_1"
-    disableValidation = false
     logFile = logExportLaermempfindlichkeit
     dataFile = exportLaermempfindlichkeitFile
+    disableValidation = true
 }
 
 task transferNplso2LaermempfindlichkeitPart3(type: SqlExecutor, dependsOn:'transferNplso2LaermempfindlichkeitPart2'){

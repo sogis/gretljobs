@@ -4,7 +4,10 @@ INSERT INTO arp_laermempfindlichkeit_mgdm.localiseduri(
     multilingualuri_localisedtext
 )
 SELECT
-    'https://geoweb.so.ch/zonenplaene/Zonenplaene_pdf/' || textimweb  AS atext,
+    CASE 
+        WHEN textimweb IS NULL THEN 'http://document.not.available'
+        ELSE 'https://geoweb.so.ch/zonenplaene/Zonenplaene_pdf/' || textimweb  
+    END AS atext,
     'de' AS alanguage,
     multilingualuri.t_id AS multilingualuri_localisedtext
 FROM
