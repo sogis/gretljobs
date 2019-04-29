@@ -6,6 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 description = "GRETL-Job für die Berechnung des OEVKOV in der Test sogis-DB"
 
+def dataPath= '/home/barpasen/gretljobs/avt_oevkov_import/'
 
 // OEVKOV Variablen
 def currentYear = '2019'
@@ -48,4 +49,23 @@ task do_Gesamtberechnung(){
 
 do_Gesamtberechnung.dependsOn{
     tasks.findAll { task -> task.name.startsWith('Auswertung')}
+}
+
+
+task exportHaltestelleAnrechnung(type: CsvExport){
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    schemaName = 'avt_oevkov_'+currentYear
+    tableName = "sachdaten_haltestelle_anrechnung"
+    firstLineIsHeader=true
+    encoding="UTF-8"
+    dataFile = "sachdaten_haltestelle_anrechnung.csv"
+}
+
+task exportLinieRoute(type: CsvExport){
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    schemaName = 'avt_oevkov_'+currentYear
+    tableName = "sachdaten_linie_route"
+    firstLineIsHeader=true
+    encoding="UTF-8"
+    dataFile = "sachdaten_linie_route.csv"
 }
