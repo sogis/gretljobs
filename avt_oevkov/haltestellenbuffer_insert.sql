@@ -1,9 +1,14 @@
-TRUNCATE avt_oevkov_${currentYear}.so_geodaten_haltestellenbuffer
+DELETE FROM avt_oevkov_${currentYear}.so_geodaten_haltestellenbuffer
 ;
 INSERT INTO avt_oevkov_${currentYear}.so_geodaten_haltestellenbuffer
-    (haltestellenname, verkehrsmittel, geometrie)
-    (SELECT
-        DISTINCT stop_name,
+    (
+    haltestellenname,
+    verkehrsmittel,
+    geometrie
+    )
+    (
+    SELECT
+        DISTINCT ON (stop_name) stop_name,
         CASE
             WHEN verkehrsmittel IN (1,4)
                 THEN 'Bus'
@@ -23,11 +28,4 @@ INSERT INTO avt_oevkov_${currentYear}.so_geodaten_haltestellenbuffer
         LEFT JOIN avt_oevkov_${currentYear}.auswertung_auswertung_gtfs AS auswertung
             ON stop.stop_name = auswertung.haltestellenname
     )
-
--- DROP INDEX IF EXISTS so_geodaten_haltestellenbuffer_idx
--- ;
--- CREATE INDEX so_geodaten_haltestellenbuffer_idx
---     ON avt_oevkov_${currentYear}.so_geodaten_haltestellenbuffer
---     USING gist
---     (geometrie)
--- ;
+;
