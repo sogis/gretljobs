@@ -1,0 +1,17 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+description = "GRETL-Job für Datenumbau der Nutzungsvereinbarungsdaten von der sogis-DB in die pub-DB"
+
+defaultTasks 'transferArpNutzungsvereinbarung'
+
+task transferArpNutzungsvereinbarung(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('arp_nutzungsvereinbarung_pub_nutzungsvrnbrngen_nutzungsvreinbarungen.sql',
+                    'arp_nutzungsvereinbarung_pub.nutzungsvrnbrngen_nutzungsvereinbarungen', true)
+    ]
+}

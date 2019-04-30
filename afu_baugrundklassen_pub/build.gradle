@@ -6,8 +6,8 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferAfuBaugrundklassen'
 
 task transferAfuBaugrundklassen(type: Db2Db){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('afu_baugrundklassen_pub_baugrundklasse.sql', 'afu_baugrundklassen_pub.baugrundklasse', true)
     ];

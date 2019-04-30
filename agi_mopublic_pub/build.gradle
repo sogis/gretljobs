@@ -1,10 +1,3 @@
-description = """\n
-Gebäudeadressen: Import des PLZ/Ortschafts-Datensatz (von swisstopo) noch nicht
-nachhaltig und die bestehenden Daten sind veraltet und Struktur dürfte auch ändern
-aufgrund des Wechsels von ogr2ogr zu ili2pg. Daher wird mit Verschnitt der Gebäude-
-eingänge mit den PLZ/Orschaften zur Zeit verzichten.
-"""
-
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
@@ -12,8 +5,8 @@ defaultTasks 'transferAgiMopublic'
 
 task transferAgiMopublic(type: Db2Db){
     description = "Datenumbau in das SO-MOpublic-Publikationsmodell."    
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet("agi_mopublic_pub_mopublic_bodenbedeckung.sql", 'agi_mopublic_pub.mopublic_bodenbedeckung', true),
             new TransferSet("agi_mopublic_pub_mopublic_bodenbedeckung_proj.sql", 'agi_mopublic_pub.mopublic_bodenbedeckung_proj', true),

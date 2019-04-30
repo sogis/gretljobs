@@ -20,7 +20,8 @@ SELECT
         WHEN a2.max_bel::text = '4'::text 
             THEN 'belastet, weder überwachungs- noch sanierungsbedürftig'::text
         ELSE NULL::text
-    END AS max_bel_text
+    END AS max_bel_text,
+    standort.c_vflz_unterstand||', '||standort.c_vflz_bearbstand AS untersuchungsstand
 FROM 
     auszug_akt_altlasten17785.altlasten_belastete_standorte AS standort 
     LEFT JOIN 

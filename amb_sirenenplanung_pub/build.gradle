@@ -1,0 +1,15 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferAmbSirenenplanung'
+
+task transferAmbSirenenplanung(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('amb_sirenenplanung_pub_sirenen.sql', 'amb_sirenenplanung_pub.sirenen',
+                    true)
+    ];
+}

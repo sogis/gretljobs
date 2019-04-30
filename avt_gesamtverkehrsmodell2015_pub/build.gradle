@@ -1,0 +1,21 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferAvtGesamtverkehrsmodell2015'
+
+task transferAvtGesamtverkehrsmodell2015(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('avt_gesamtverkehrsmodell2015_pub_gvm_so_2015.sql',
+                    'avt_gesamtverkehrsmodell2015_pub.gvm_so_2015', true),
+            new TransferSet('avt_gesamtverkehrsmodell2015_pub_gvm_so_2015_prognose_2025.sql',
+                    'avt_gesamtverkehrsmodell2015_pub.gvm_so_2015_prognose_2025', true),
+            new TransferSet('avt_gesamtverkehrsmodell2015_pub_gvm_so_2015_prognose_2040.sql',
+                    'avt_gesamtverkehrsmodell2015_pub.gvm_so_2015_prognose_2040', true),
+            new TransferSet('avt_gesamtverkehrsmodell2015_pub_gvm_so_2015_oev.sql',
+                    'avt_gesamtverkehrsmodell2015_pub.gvm_so_2015_oev_passagiere', true)
+    ];
+}

@@ -1,0 +1,9 @@
+SELECT
+	t_ili_tid, 
+	id, 
+	bemerkung, 
+	bez_prozq, 
+	ngkid, 
+	geometrie
+FROM 
+	afu_gefahrenkartierung.gefahrenkartirung_prozessquelle_sturz;

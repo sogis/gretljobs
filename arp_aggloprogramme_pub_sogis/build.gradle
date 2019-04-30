@@ -1,0 +1,19 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+description = "GRETL-Job für den Datenumbau innerhalb der sogis-DB."
+
+defaultTasks 'transferArpAggloprogramme'
+
+task transferArpAggloprogramme(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = sourceDb
+    transferSets = [
+            new TransferSet('arp_aggloprogramme_pub_agglomrtnsprgrmme_agglomerationsprogramm.sql',
+                    'arp_aggloprogramme_pub.agglomrtnsprgrmme_agglomerationsprogramm', true),
+            new TransferSet('arp_aggloprogramme_pub_agglomrtnsprgrmme_massnahme.sql',
+                    'arp_aggloprogramme_pub.agglomrtnsprgrmme_massnahme', true)
+    ];
+}

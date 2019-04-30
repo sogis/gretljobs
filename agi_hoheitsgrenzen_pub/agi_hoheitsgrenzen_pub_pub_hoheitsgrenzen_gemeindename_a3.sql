@@ -1,0 +1,13 @@
+SELECT
+    t_id,
+    t_ili_tid,
+    bfs_gemeindenummer,
+    gemeindename,
+    ori,
+    hali,
+    vali,
+    beschriftungstext,
+    pos
+FROM
+    agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindename_a3
+;

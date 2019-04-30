@@ -1,0 +1,13 @@
+SELECT
+    t_id,
+    t_ili_tid,
+    bezirksnummer,
+    bezirksname,
+    ori, 
+    hali,
+    vali,
+    beschriftungstext,
+    pos
+FROM
+    agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksname_a3
+;

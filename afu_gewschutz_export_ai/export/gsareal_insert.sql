@@ -8,10 +8,10 @@
 with
 afu_gszoar as
 (
-	 SELECT aww_gszoar.ogc_fid, aww_gszoar.zone, aww_gszoar.rrbnr, 
+	 SELECT aww_gszoar.ogc_fid, aww_gszoar."zone", aww_gszoar.rrbnr, 
 	    aww_gszoar.rrb_date, aww_gszoar.wkb_geometry
 	   FROM aww_gszoar
-	  WHERE aww_gszoar.archive = 0 and zone = 'SARE'
+	  WHERE aww_gszoar.archive = 0 and "zone" = 'SARE'
 ),
 singlepolygon as 
 (

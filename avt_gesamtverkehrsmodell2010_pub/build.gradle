@@ -6,8 +6,8 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferAvtGesamtverkehrsmodell2010'
 
 task transferAvtGesamtverkehrsmodell2010(type: Db2Db){
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('avt_gesamtverkehrsmodell2010_pub_gesamtverkehrsmodell.sql',
                     'avt_gesamtverkehrsmodell2010_pub.gesamtverkehrsmodell', true),

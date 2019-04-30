@@ -1,0 +1,40 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferAgiLeitungskataster'
+
+task transferAgiLeitungskataster(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('agi_leitungskataster_pub_lk_abwasser_verfuegbarkeit.sql', 'agi_leitungskataster_pub.lk_abwasser_verfuegbarkeit', true),
+            new TransferSet('agi_leitungskataster_pub_lk_wasser_verfuegbarkeit.sql', 'agi_leitungskataster_pub.lk_wasser_verfuegbarkeit', true),
+            new TransferSet('agi_leitungskataster_pub_lk_elektro_verfuegbarkeit.sql', 'agi_leitungskataster_pub.lk_elektro_verfuegbarkeit', true),
+            new TransferSet('agi_leitungskataster_pub_wasser_leitung.sql', 'agi_leitungskataster_pub.wasser_leitung',
+                    true),
+            new TransferSet('agi_leitungskataster_pub_wasser_hydrant.sql', 'agi_leitungskataster_pub.wasser_hydrant', true),
+            new TransferSet('agi_leitungskataster_pub_wasser_absperrorgan.sql',
+                    'agi_leitungskataster_pub.wasser_absperrorgan', true),
+            new TransferSet('agi_leitungskataster_pub_wasser_rohrleitungsteil.sql',
+                    'agi_leitungskataster_pub.wasser_rohrleitungsteil', true),
+            new TransferSet('agi_leitungskataster_pub_wasser_kabelpunkt.sql',
+                    'agi_leitungskataster_pub.wasser_kabelpunkt', true),
+            new TransferSet('agi_leitungskataster_pub_wasser_anlagen.sql', 'agi_leitungskataster_pub.wasser_anlagen',
+                    true),
+            new TransferSet('agi_leitungskataster_pub_abwasser_bauwerk_text.sql',
+                    'agi_leitungskataster_pub.abwasser_bauwerk_text', true),
+            new TransferSet('agi_leitungskataster_pub_wasser_kabel.sql', 'agi_leitungskataster_pub.wasser_kabel', true),
+            new TransferSet('agi_leitungskataster_pub_abwasser_haltung.sql',
+                    'agi_leitungskataster_pub.abwasser_haltung', true),
+            new TransferSet('agi_leitungskataster_pub_abwasser_schacht.sql',
+                    'agi_leitungskataster_pub.abwasser_schacht', true),
+            new TransferSet('agi_leitungskataster_pub_abwasser_bauwerk.sql',
+                    'agi_leitungskataster_pub.abwasser_bauwerk', true),
+            new TransferSet('agi_leitungskataster_pub_elektrizitaet_trasse.sql',
+                    'agi_leitungskataster_pub.elektrizitaet_trasse', true),
+            new TransferSet('agi_leitungskataster_pub_elektrizitaet_trassepunkt.sql',
+                    'agi_leitungskataster_pub.elektrizitaet_trassepunkt', true)
+    ];
+}

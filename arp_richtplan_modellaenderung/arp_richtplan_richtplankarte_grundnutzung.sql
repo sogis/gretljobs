@@ -1,0 +1,10 @@
+SELECT
+    t_id,
+    t_ili_tid,
+    abstimmungskategorie,
+    grundnutzungsart,
+    planungsstand,
+    geometrie
+FROM
+    arp_richtplan_delete.richtplankarte_grundnutzung_erweitert
+;

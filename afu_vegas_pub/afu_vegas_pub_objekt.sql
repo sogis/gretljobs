@@ -1,4 +1,94 @@
- SELECT 
+WITH  
+    bohrung AS (
+        SELECT
+            bohrtyp,
+            bohr_durchmesser,
+            obere_hoehe,
+            obere_hoehe_bez,
+            tiefe,
+            sohle,
+            rohr_durchmesser,
+            uk_rohr,
+            ok_rohr,
+            limnigraf,
+            vegas_id,
+            piezometer,
+            'Bohrung'::text AS objekttyp
+        FROM 
+            vegas.obj_bohrung_
+        WHERE
+            piezometer = FALSE
+        
+        UNION
+        
+        SELECT
+            bohrtyp,
+            bohr_durchmesser,
+            obere_hoehe,
+            obere_hoehe_bez,
+            tiefe,
+            sohle,
+            rohr_durchmesser,
+            uk_rohr,
+            ok_rohr,
+            limnigraf,
+            vegas_id,
+            piezometer,
+            'Bohrung mit Piezometer'::text AS objekttyp
+        FROM 
+            vegas.obj_bohrung_
+        WHERE
+            piezometer = TRUE 
+    ),
+    baggerschlitz AS (
+        SELECT
+            tiefe_ab_okt,
+            vegas_id,
+            'Baggerschlitz'::text AS objekttyp
+        FROM
+            vegas.obj_baggerschlitz_
+    ),
+    gerammtes_piezometer AS (
+        SELECT
+            obere_hoehe,
+            obere_hoehe_bez,
+            limnigraf,
+            vegas_id,
+            'gerammtes Piezometer'::text AS objekttyp
+        FROM
+            vegas.obj_gerammtes_piezometer_
+    ),
+    hydrometrie AS (
+        SELECT 
+            CASE 
+                WHEN obj_messstation_.gewaesserart IN (1, 2, 3, 4)
+                    THEN 'Oberflächengewässer-Messstelle'
+                WHEN obj_messstation_.gewaesserart = 5
+                    THEN 'Grundwasser-Messstelle'
+                WHEN obj_messstation_.gewaesserart = 6
+                    THEN 'Niederschlags-Messstelle'
+            END AS vegas_typ, 
+            obj_objekt.vegas_id, 
+            CASE
+                WHEN adm_wva.symbol != 0
+                    THEN 'Ja'
+                ELSE 'Nein'
+            END AS wva
+        FROM
+            vegas.obj_objekt
+            LEFT JOIN vegas.obj_messstation_
+                ON obj_objekt.vegas_id = obj_messstation_.vegas_id 
+            LEFT JOIN vegas.adm_wva
+                ON adm_wva.vegas_id = obj_objekt.vegas_id
+        WHERE
+            obj_objekt.archive = 0 
+            AND
+            objekttyp_id = 22
+        ORDER BY
+            obj_objekt.mobj_id
+    )
+
+SELECT 
     obj_objekt.vegas_id, 
     obj_objekt.objekttyp_id, 
     obj_objekt.mobj_id, 
@@ -59,7 +149,7 @@
     END AS nutzungsart, 
     obj_filterbrunnen_.subtyp, 
     CASE
-        WHEN obj_filterbrunnen_.verwendung IS NOT NULL 
+        WHEN obj_filterbrunnen_.verwendung IS NOT NULL
             THEN obj_filterbrunnen_.verwendung
         WHEN obj_quelle_gefasst_.verwendung IS NOT NULL 
             THEN obj_quelle_gefasst_.verwendung
@@ -67,6 +157,30 @@
             THEN obj_sodbrunnen_.verwendung
         ELSE NULL::integer
     END AS verwendung, 
+    CASE
+        WHEN 
+            obj_filterbrunnen_.verwendung = 1
+            OR
+            obj_quelle_gefasst_.verwendung = 1
+            OR 
+            obj_sodbrunnen_.verwendung = 1
+                THEN 'Trinkwasser'
+        WHEN 
+            obj_filterbrunnen_.verwendung = 2
+            OR
+            obj_quelle_gefasst_.verwendung = 2
+            OR 
+            obj_sodbrunnen_.verwendung = 2
+                THEN 'Brauchwasser'
+        WHEN 
+            obj_filterbrunnen_.verwendung = 3
+            OR
+            obj_quelle_gefasst_.verwendung = 3
+            OR 
+            obj_sodbrunnen_.verwendung = 3
+                THEN 'Notbrunnen'
+        ELSE NULL
+    END AS verwendungstyp,
     obj_grundwasserwaerme_.schachttyp, 
     CASE
         WHEN gso_mobj.max_sch_sum IS NOT NULL 
@@ -82,10 +196,10 @@
             THEN obj_filterbrunnen_.limnigraf
         WHEN obj_quelle_gefasst_.limnigraf IS NOT NULL
             THEN obj_quelle_gefasst_.limnigraf
-        WHEN obj_bohrung_.limnigraf IS NOT NULL
-            THEN obj_bohrung_.limnigraf
-        WHEN obj_gerammtes_piezometer_.limnigraf IS NOT NULL
-            THEN obj_gerammtes_piezometer_.limnigraf
+        WHEN bohrung.limnigraf IS NOT NULL
+            THEN bohrung.limnigraf
+        WHEN gerammtes_piezometer.limnigraf IS NOT NULL
+            THEN gerammtes_piezometer.limnigraf
         WHEN obj_messstation_.limnigraf
             THEN obj_messstation_.limnigraf
         ELSE NULL
@@ -111,36 +225,36 @@
     CASE 
         WHEN obj_sodbrunnen_.tiefe IS NOT NULL
             THEN obj_sodbrunnen_.tiefe
-        WHEN obj_bohrung_.tiefe IS NOT NULL
-            THEN obj_bohrung_.tiefe
+        WHEN bohrung.tiefe IS NOT NULL
+            THEN bohrung.tiefe
         ELSE NULL
     END AS tiefe,
     CASE 
-        WHEN obj_bohrung_.obere_hoehe IS NOT NULL
-            THEN obj_bohrung_.obere_hoehe
-        WHEN obj_gerammtes_piezometer_.obere_hoehe IS NOT NULL
-            THEN obj_gerammtes_piezometer_.obere_hoehe
+        WHEN bohrung.obere_hoehe IS NOT NULL
+            THEN bohrung.obere_hoehe
+        WHEN gerammtes_piezometer.obere_hoehe IS NOT NULL
+            THEN gerammtes_piezometer.obere_hoehe
         ELSE NULL
     END AS obere_hoehe,
     CASE
-        WHEN obj_bohrung_.obere_hoehe_bez IS NOT NULL
-            THEN obj_bohrung_.obere_hoehe_bez
-        WHEN obj_gerammtes_piezometer_.obere_hoehe_bez IS NOT NULL
-            THEN obj_gerammtes_piezometer_.obere_hoehe_bez
+        WHEN bohrung.obere_hoehe_bez IS NOT NULL
+            THEN bohrung.obere_hoehe_bez
+        WHEN gerammtes_piezometer.obere_hoehe_bez IS NOT NULL
+            THEN gerammtes_piezometer.obere_hoehe_bez
         ELSE NULL
     END AS obere_hoehe_bez,
     obj_sodbrunnen_.durchmesser,
     obj_sodbrunnen_.aufgehoben,
     obj_quelle_gefasst_.rechtsstand_gwba,
     obj_quelle_gefasst_.pflichten_gwba,
-    obj_bohrung_.bohrtyp, 
-    obj_bohrung_.bohr_durchmesser, 
-    obj_bohrung_.sohle, 
-    obj_bohrung_.rohr_durchmesser, 
-    obj_bohrung_.uk_rohr, 
-    obj_bohrung_.ok_rohr, 
-    obj_bohrung_.piezometer,
-    obj_baggerschlitz_.tiefe_ab_okt,
+    bohrung.bohrtyp, 
+    bohrung.bohr_durchmesser, 
+    bohrung.sohle, 
+    bohrung.rohr_durchmesser, 
+    bohrung.uk_rohr, 
+    bohrung.ok_rohr, 
+    bohrung.piezometer,
+    baggerschlitz.tiefe_ab_okt,
     obj_messstation_.subtyp AS messstation_subtyp,
     obj_messstation_.region,
     obj_messstation_.gewaesserart,
@@ -156,8 +270,49 @@
     obj_einbauten_.ende_wasserhaltung,
     obj_einbauten_.einbaukote,
     obj_einbauten_.querschnittsverringerung,
-    obj_einbauten_.durchflussrelevantes_einbauvolumen
-    
+    obj_einbauten_.durchflussrelevantes_einbauvolumen,
+    CASE
+        WHEN bohrung.objekttyp IS NOT NULL
+            THEN bohrung.objekttyp
+        WHEN baggerschlitz.objekttyp IS NOT NULL
+            THEN baggerschlitz.objekttyp
+        WHEN gerammtes_piezometer.objekttyp IS NOT NULL
+            THEN gerammtes_piezometer.objekttyp
+        WHEN obj_objekt.objekttyp_id = 6
+            THEN 'Sodbrunnen'::text
+        WHEN
+            obj_objekt.objekttyp_id = 7
+            AND 
+            obj_filterbrunnen_.subtyp = 2
+                THEN 'Horizontalfilterbrunnen'
+        WHEN 
+            obj_objekt.objekttyp_id = 7
+            AND
+            obj_filterbrunnen_.subtyp = 1
+                THEN 'Vertikalfilterbrunnen'
+        WHEN obj_objekt.objekttyp_id = 9
+            THEN 'Quelle gefasst'
+        WHEN obj_objekt.objekttyp_id = 10
+            THEN 'Quelle ungefasst'
+        WHEN
+            obj_objekt.objekttyp_id = 18
+            AND
+            obj_grundwasserwaerme_.schachttyp = 2
+                THEN 'Versickerungsschacht'
+        WHEN
+            obj_objekt.objekttyp_id = 18
+            AND
+            (
+                obj_grundwasserwaerme_.schachttyp = 1
+                OR 
+                obj_grundwasserwaerme_.schachttyp IS NULL
+            )
+            AND 
+            obj_grundwasserwaerme_.zustand != 4
+                THEN 'Entnahmeschacht für eine Grundwasserwärmenutzung'
+    END AS objekttyp,
+    hydrometrie.vegas_typ,
+    hydrometrie.wva
     
 FROM 
     vegas.obj_objekt
@@ -175,16 +330,19 @@ FROM
         ON obj_objekt.mobj_id = gso_mobj.mobj_id
     LEFT JOIN vegas.obj_konzession 
         ON obj_objekt.vegas_id = obj_konzession.vegas_id
-    LEFT JOIN  vegas.obj_bohrung_
-        ON obj_objekt.vegas_id = obj_bohrung_.vegas_id
-    LEFT JOIN vegas.obj_baggerschlitz_
-        ON obj_objekt.vegas_id = obj_baggerschlitz_.vegas_id
-    LEFT JOIN vegas.obj_gerammtes_piezometer_
-        ON obj_objekt.vegas_id = obj_gerammtes_piezometer_.vegas_id
     LEFT JOIN vegas.obj_messstation_
         ON obj_objekt.vegas_id = obj_messstation_.vegas_id
     LEFT JOIN vegas.obj_einbauten_
         ON obj_objekt.vegas_id = obj_einbauten_.vegas_id
+    LEFT JOIN bohrung
+        ON obj_objekt.vegas_id = bohrung.vegas_id
+    LEFT JOIN baggerschlitz
+        ON obj_objekt.vegas_id = baggerschlitz.vegas_id
+    LEFT JOIN gerammtes_piezometer
+        ON obj_objekt.vegas_id = gerammtes_piezometer.vegas_id
+    LEFT JOIN hydrometrie
+        ON obj_objekt.vegas_id = hydrometrie.vegas_id
+        
 WHERE 
     archive = 0
 ;

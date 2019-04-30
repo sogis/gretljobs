@@ -1,19 +1,14 @@
 SELECT 
-    ogc_fid AS t_id,
-    ST_Force_2D(wkb_geometry) AS geometrie,
+    ST_Multi(ST_Force_2D(ST_Union(wkb_geometry))) AS geometrie,
     revier_id,
-    gnrso,
-    von,
-    bis,
-    gewaesser,
     grenzen,
-    eigentum,
-    bonitierung,
-    nutzung,
-    fischbestand,
-    fischerei
+    eigentum
 FROM 
     gewisso.jfv_fischenz
 WHERE 
     archive = 0
+GROUP BY
+    revier_id,
+    grenzen,
+    eigentum
 ;

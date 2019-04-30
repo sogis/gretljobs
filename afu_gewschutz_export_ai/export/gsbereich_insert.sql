@@ -30,7 +30,7 @@ fields_gszustr as -- gwsbereich felder gemappt aus aww_gszoar
 ),
 gsab as
 (
-	SELECT aww_gsab.ogc_fid, aww_gsab.wkb_geometry, aww_gsab.zone, aww_gsab.erfasser
+	SELECT aww_gsab.ogc_fid, aww_gsab.wkb_geometry, aww_gsab."zone", aww_gsab.erfasser
 	FROM aww_gsab where archive = 0
 ),
 singlepoly_gsab as
@@ -50,13 +50,13 @@ fields_gsab as -- gwsbereich felder gemappt aus aww_gszoar
 	select
 		ogc_fid,
 		case
-			when trim(zone) = 'B' then 'UB'
-			when trim(zone) = 'O' then 'Ao'
-			when trim(zone) = 'U' then 'Au'
+			when trim("zone") = 'B' then 'UB'
+			when trim("zone") = 'O' then 'Ao'
+			when trim("zone") = 'U' then 'Au'
 			else 'Umbauproblem: Nicht behandelte Codierung von Attibut [zone]'
 		end as typ,
 		concat('Erfasser: ', erfasser) as bemerkungen,
-		zone as kantonale_bezeichnung
+		"zone" as kantonale_bezeichnung
 	from gsab
 ),
 unionall as

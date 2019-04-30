@@ -1,1 +1,14 @@
-SELECT * FROM av_avdpool_ng.einzelobjekte_einzelobjekt;
+SELECT
+    ogc_fid,
+    tid,
+    entstehung,
+    qualitaet,
+    qualitaet_txt,
+    art,
+    art_txt,
+    gem_bfs,
+    los,
+    lieferdatum
+FROM
+    av_avdpool_ng.einzelobjekte_einzelobjekt
+;

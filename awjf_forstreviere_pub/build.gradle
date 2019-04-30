@@ -1,0 +1,17 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferAwjfForstreviere'
+
+task transferAwjfForstreviere(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('awjf_forstreviere_pub_forstreviere_forstrevier.sql',
+                    'awjf_forstreviere_pub.forstreviere_forstrevier', true),
+            new TransferSet('awjf_forstreviere_pub_forstreviere_forstkreis.sql',
+                    'awjf_forstreviere_pub.forstreviere_forstkreis', true)
+    ];
+}

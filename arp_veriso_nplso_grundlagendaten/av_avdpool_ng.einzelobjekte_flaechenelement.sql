@@ -1,1 +1,11 @@
-SELECT * FROM av_avdpool_ng.einzelobjekte_flaechenelement;
+SELECT
+    ogc_fid,
+    tid,
+    flaechenelement_von,
+    geometrie,
+    gem_bfs,
+    los,
+    lieferdatum
+FROM
+    av_avdpool_ng.einzelobjekte_flaechenelement
+;

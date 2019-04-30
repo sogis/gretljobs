@@ -1,0 +1,19 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferAfuWasserbewirtschaftung'
+
+task transferAfuWasserbewirtschaftung(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('afu_wasserbewirtschaftung_fassung_pub.sql', 'afu_wasserbewirtschaftung_pub.wassrbwrtschftung_fassung', true),
+            new TransferSet('afu_wasserbewirtschaftung_grundwassereinbauten_pub.sql', 'afu_wasserbewirtschaftung_pub.wassrbwrtschftung_grundwassereinbau', true),
+            new TransferSet('afu_wasserbewirtschaftung_grundwasserwaermepumpen_entnahmeschacht_pub.sql', 'afu_wasserbewirtschaftung_pub.wassrbwrtschftung_grundwasserwaermepumpen_entnahmeschacht', true),
+            new TransferSet('afu_wasserbewirtschaftung_quellen_pub.sql', 'afu_wasserbewirtschaftung_pub.wassrbwrtschftung_quelle', true),
+            new TransferSet('afu_wasserbewirtschaftung_trinkwasserobjekte_pub.sql', 'afu_wasserbewirtschaftung_pub.wassrbwrtschftung_trinkwasserversorgung', true), 
+            new TransferSet('afu_wasserbewirtschaftung_oberflaechenhydrometrie.sql', 'afu_wasserbewirtschaftung_pub.wassrbwrtschftung_oberflaechenhydrometrie', true)
+    ];
+}
