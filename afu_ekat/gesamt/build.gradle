@@ -9,8 +9,8 @@ defaultTasks 'calc_gesamt_gesamt'
 
 task calc_gesamt(type: Db2Db){
 
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
             new TransferSet('biogene_quellen_gem_mapserver.sql', 'ekat2015.biogene_quellen_gem_mapserver', true),
             new TransferSet('biogene_quellen_mapserver.sql', 'ekat2015.biogene_quellen_mapserver', true),
@@ -27,8 +27,8 @@ task calc_gesamt(type: Db2Db){
 
 task calc_gesamt_gesamt(type: Db2Db, dependsOn: [calc_gesamt]){
 
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
             new TransferSet('gesamt_mapserver.sql', 'ekat2015.gesamt_mapserver', true),
             new TransferSet('gesamt_gem_mapserver.sql', 'ekat2015.gesamt_gem_mapserver', true)

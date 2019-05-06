@@ -9,8 +9,8 @@ defaultTasks 'calc_qg_verkehr_gem'
 
 task calc_ug_bahn_gesamt(type: Db2Db){
 
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
             new TransferSet('ug_bahn/ug_bahn_gesamt.sql', 'ekat2015.ug_bahn_gesamt', true)
     ];
@@ -20,8 +20,8 @@ task calc_ug_bahn_gesamt(type: Db2Db){
 
 task calc_ug_flug_gesamt(type: Db2Db){
 
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
             new TransferSet('ug_flug/ug_flug_gesamt.sql', 'ekat2015.ug_flug_gesamt', true)
     ];
@@ -31,8 +31,8 @@ task calc_ug_flug_gesamt(type: Db2Db){
 
 task calc_ug_diff_verkehr(type: Db2Db){
 
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
             new TransferSet('ug_diff_verkehr/ug_diff_verkehr_eq_aufw_abr_lmw.sql', 'ekat2015.ug_diff_verkehr_eq_aufw_abr_lmw', true),
             new TransferSet('ug_diff_verkehr/ug_diff_verkehr_eq_aufw_abr_mr_2t.sql', 'ekat2015.ug_diff_verkehr_eq_aufw_abr_mr_2t', true),
@@ -47,8 +47,8 @@ task calc_ug_diff_verkehr(type: Db2Db){
 
 task calc_ug_diff_verkehr_gesamt(type: Db2Db, dependsOn: [calc_ug_diff_verkehr]){
 
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
             new TransferSet('ug_diff_verkehr/ug_diff_verkehr_gesamt.sql', 'ekat2015.ug_diff_verkehr_gesamt', true)
     ];
@@ -58,8 +58,8 @@ task calc_ug_diff_verkehr_gesamt(type: Db2Db, dependsOn: [calc_ug_diff_verkehr])
 
 task calc_ug_kaltstart(type: Db2Db){
 
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
             new TransferSet('ug_kaltstart/ug_kaltstart_eq_li.sql', 'ekat2015.ug_kaltstart_eq_li', true),
             new TransferSet('ug_kaltstart/ug_kaltstart_eq_pw.sql', 'ekat2015.ug_kaltstart_eq_pw', true)
@@ -70,8 +70,8 @@ task calc_ug_kaltstart(type: Db2Db){
 
 task calc_ug_kaltstart_gesamt(type: Db2Db, dependsOn: [calc_ug_kaltstart]){
 
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
             new TransferSet('ug_kaltstart/ug_kaltstart_gesamt.sql', 'ekat2015.ug_kaltstart_gesamt', true)
     ];
@@ -81,8 +81,8 @@ task calc_ug_kaltstart_gesamt(type: Db2Db, dependsOn: [calc_ug_kaltstart]){
 
 task calc_ug_strkvk(type: Db2Db){
 
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
             new TransferSet('ug_strkvk/ug_strkvk_eq_aufw_abr_lmw.sql', 'ekat2015.ug_strkvk_eq_aufw_abr_lmw', true),
             new TransferSet('ug_strkvk/ug_strkvk_eq_aufw_abr_mr_2t.sql', 'ekat2015.ug_strkvk_eq_aufw_abr_mr_2t', true),
@@ -103,8 +103,8 @@ task calc_ug_strkvk(type: Db2Db){
 
 task calc_ug_strkvk_gesamt(type: Db2Db, dependsOn: [calc_ug_strkvk]){
 
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
             new TransferSet('ug_strkvk/ug_strkvk_gesamt.sql', 'ekat2015.ug_strkvk_gesamt', true),
             new TransferSet('ug_strkvk/ug_strkvk_links_gesamt.sql', 'ekat2015.ug_strkvk_links_gesamt', true)
@@ -116,8 +116,8 @@ task calc_ug_strkvk_gesamt(type: Db2Db, dependsOn: [calc_ug_strkvk]){
 
 task calc_ug_verdampf(type: Db2Db){
 
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
             new TransferSet('ug_verdampf/ug_verdampf_eq_motabst_li.sql', 'ekat2015.ug_verdampf_eq_motabst_li', true),
             new TransferSet('ug_verdampf/ug_verdampf_eq_motabst_pw.sql', 'ekat2015.ug_verdampf_eq_motabst_pw', true),
@@ -134,8 +134,8 @@ task calc_ug_verdampf(type: Db2Db){
 
 task calc_ug_verdampf_gesamt(type: Db2Db, dependsOn: [calc_ug_verdampf]){
 
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
             new TransferSet('ug_verdampf/ug_verdampf_gesamt.sql', 'ekat2015.ug_verdampf_gesamt', true)
     ];
@@ -144,8 +144,8 @@ task calc_ug_verdampf_gesamt(type: Db2Db, dependsOn: [calc_ug_verdampf]){
 
 task calc_qg_verkehr(type: Db2Db, dependsOn: [calc_ug_bahn_gesamt, calc_ug_flug_gesamt, calc_ug_diff_verkehr_gesamt, calc_ug_kaltstart_gesamt, calc_ug_strkvk_gesamt, calc_ug_verdampf_gesamt]){
 
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
             new TransferSet('qg_verkehr.sql', 'ekat2015.qg_verkehr', true),
             new TransferSet('ug_bahn/ug_bahn_gesamt_gem.sql', 'ekat2015.ug_bahn_gesamt_gem', true),
@@ -159,8 +159,8 @@ task calc_qg_verkehr(type: Db2Db, dependsOn: [calc_ug_bahn_gesamt, calc_ug_flug_
 
 task calc_qg_verkehr_gem(type: Db2Db, dependsOn: [calc_qg_verkehr]){
 
-    sourceDb = [sourceDbUrl, sourceDbUser, sourceDbPass]
-    targetDb = [targetDbUrl, targetDbUser, targetDbPass]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
             new TransferSet('qg_verkehr_gemeinde.sql', 'ekat2015.qg_verkehr_gemeinde', true)
     ];

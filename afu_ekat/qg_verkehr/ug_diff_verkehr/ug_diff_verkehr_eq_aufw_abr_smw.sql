@@ -3,7 +3,7 @@ SELECT min(c.ogc_fid) AS ogc_fid, min(c.xkoord)::numeric AS xkoord,
     sum(c.emiss_pm10) AS emiss_pm10
    FROM ( SELECT k.ogc_fid, k.xkoord, k.ykoord, k.wkb_geometry, k.gem_bfs, 
                 CASE
-                    WHEN k.arb_plaetze_zone > 0::numeric OR k.einw_zone > 0::numeric THEN (k.p00btot + k.b05empts2 + k.b05empts3)::double precision * (((( SELECT b.schast_efak
+                    WHEN (k.arb_plaetze_zone > 0::numeric OR k.einw_zone > 0::numeric) AND (k.anz_smw + k.anz_lmw + k.anz_mr_2t + k.anz_mr_4t) > 0 THEN (k.p00btot + k.b05empts2 + k.b05empts3)::double precision * (((( SELECT b.schast_efak
                        FROM ekat2015.emiss_quelle a
                   LEFT JOIN ekat2015.quelle_emiss_efak b ON a.equelle_id = b.equelle_id
                  WHERE a.equelle_id = 58 AND b.s_code = 7 AND a.archive = 0 AND b.archive = 0)) * (k.anz_smw / (k.anz_smw + k.anz_lmw + k.anz_mr_2t + k.anz_mr_4t)))::double precision * (k.dtv_pw + k.dtv_li) * k.laenge * 365::numeric::double precision) / (k.arb_plaetze_zone + k.einw_zone)::double precision
