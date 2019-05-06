@@ -31,7 +31,7 @@ SELECT
     bezeichnung,
     zaehlart,
     gemeinde.gemeindename AS gemeinde,
-    documents.dokumente AS dokumente,
+    coalesce(documents.dokumente,'keine') AS dokumente,
     geometrie
 FROM
     avt_verkehrszaehlstellen.verkehrszhlstllen_verkehrszaehlstelle
