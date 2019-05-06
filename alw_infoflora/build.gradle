@@ -1,0 +1,79 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+
+
+apply plugin: "de.undercouch.download"
+apply plugin: 'ch.so.agi.gretl'
+
+
+defaultTasks 'convertData'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
+def pathToDataZip = Paths.get(pathToTempFolder, "6bf9eff014ab2a2c3b699bdc3e31b4632b0f4fe6.gz")
+def csvFilePath = Paths.get(pathToUnzipFolder.toString(), '6bf9eff014ab2a2c3b699bdc3e31b4632b0f4fe6', '6bf9eff014ab2a2c3b699bdc3e31b4632b0f4fe6.csv')
+
+
+task download(type: Download){
+    description = "Download Data from infoflora"
+    doLast {
+        println "File downloaded to: " + pathToTempFolder
+    }
+    src 'https://obs.infoflora.ch/assets/db_doc/3t/pi/6bf9eff014ab2a2c3b699bdc3e31b4632b0f4fe6.gz'
+    dest pathToTempFolder
+    overwrite true
+}
+
+
+task unzipData(type: Copy, dependsOn: 'download'){
+    description = "Unzip 6bf9eff014ab2a2c3b699bdc3e31b4632b0f4fe6.gz."
+    doLast {
+        println "File unzipped to directory: " + pathToUnzipFolder
+    }
+    from zipTree(pathToDataZip)
+    into file(pathToUnzipFolder)
+    include "**/*.itf"
+}
+
+
+task dbImport(type: Ili2pgImport, dependsOn: 'unzipData'){
+    description = "Import plz_ortschaften-Data into database"
+    doLast {
+        println "Data imported into db: " + dbUriSogis
+    }
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    dbschema = "agi_plz_ortschaften"
+    models = "PLZOCH1LV95D"
+    disableValidation = false
+    dataFile = file(xtfFilePath)
+    deleteData = true
+    strokeArcs = true
+}
+
+
+task convertData(type: Db2Db, dependsOn: 'dbImport'){
+    description = "Convert plz_ortschaften-Data"
+    doLast {
+        println "plz_ortschaften-Data are converted."
+    }
+    finalizedBy 'removeFiles'
+
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('plzortschaften_ortschaft.sql', 'agi_plz_ortschaften_pub.plzortschaften_ortschaft', true),
+            new TransferSet('plzortschaften_postleitzahl.sql', 'agi_plz_ortschaften_pub.plzortschaften_postleitzahl', true)
+    ];
+}
+
+
+task removeFiles(type: Delete) {
+    description = "Remove Files"
+    doLast {
+        println "Files removed."
+    }
+    delete file(pathToUnzipFolder), file(pathToDataZip)
+}
