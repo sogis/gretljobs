@@ -39,5 +39,4 @@ FROM
         ON gemeinde.t_id = verkehrszhlstllen_verkehrszaehlstelle.t_id
     LEFT JOIN documents
         ON documents.verkehrszaehlstelle = verkehrszhlstllen_verkehrszaehlstelle.t_id
-WHERE char_length(dokumente) < 500
 ;
