@@ -11,9 +11,7 @@ SELECT DISTINCT
                 THEN 'https://geo.so.ch/docs/ch.so.afu.erdwaermesonden/'||md5(trim(BOTH '.zip' FROM dokument.name))||'.pdf'
         ELSE 
             'keine'
-    END AS name, 
-    (anlage.anlageid::text || dokument.dokumenteid)::integer AS anlagedokument, 
-    dokument.doktyp,
+    END AS name,  
     CASE
         WHEN 
             pumpe.pumpeart = 'eso'
@@ -50,4 +48,6 @@ WHERE
     bohrung.archive = 0 
     AND 
     dokument.archive = 0
+    AND 
+    doktyp = 4
 ;
