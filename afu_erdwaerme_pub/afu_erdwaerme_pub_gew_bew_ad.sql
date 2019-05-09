@@ -5,7 +5,13 @@ SELECT DISTINCT
     pumpe.pumpeart, 
     bohrung.tiefebohrung AS bohrtiefe, 
     bewilligung.datum_bewilligung, 
-    dokument.name, 
+    CASE 
+        WHEN 
+            dokument.doktyp = 4 
+                THEN 'https://geo.so.ch/docs/ch.so.afu.erdwaermesonden/'||md5(trim(BOTH '.zip' FROM dokument.name))||'.pdf'
+        ELSE 
+            'keine'
+    END AS name, 
     (anlage.anlageid::text || dokument.dokumenteid)::integer AS anlagedokument, 
     dokument.doktyp,
     CASE
