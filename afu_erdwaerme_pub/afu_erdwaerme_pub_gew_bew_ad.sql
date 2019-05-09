@@ -5,8 +5,8 @@ SELECT
     NULL AS pumpeart, 
     bohrtiefe,
     datum_bewilligung, 
-    NULL AS name,
-    dokument.dokument_url AS anlagedokument, 
+    dokument.dokument_url AS name,
+    NULL AS anlagedokument, 
     NULL AS doktyp, 
     objekttyp
 FROM 
