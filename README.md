@@ -1,5 +1,5 @@
 # gretljobs
-Enthält sämtliche Konfigurationsdateien (`*.gradle`, `*.sql`) der GRETL-Jobs und eine GRETL-Entwicklungsumgebung.
+Enthält sämtliche Konfigurationsdateien (`*.gradle`, `*.sql`) der GRETL-Jobs und eine GRETL-Entwicklungsumgebung. Umfasst zudem das Job DSL Script `gretl_job_generator.groovy` für den *gretl-job-generator*, der in regelmässigen Abständen das *gretljobs*-Repository durchsucht und daraus in Jenkins entsprechende Jenkins-Pipelines generiert.
 
 
 ## Best Practice für das Erstellen von Jobs
