@@ -26,6 +26,7 @@ for (pipelineFil in pipelineFiles) {
     'authorization.permissions':'nobody',
     'logRotator.numToKeep':'15',
     'parameters.fileParam':'none',
+    'triggers.upstream':'none',
     'triggers.cron':''
   ])
   def propertiesFile = new File(base + '/' + realJobName + '/job.properties')
@@ -51,6 +52,11 @@ for (pipelineFil in pipelineFiles) {
     }
     logRotator {
       numToKeep(properties.getProperty('logRotator.numToKeep') as Integer)
+    }
+    if (properties.getProperty('triggers.upstream') != 'none') {
+      triggers {
+        upstream(properties.getProperty('triggers.upstream'), 'SUCCESS')
+      }
     }
     if (productionEnv) { // we want triggers only in production environment
       triggers {
