@@ -48,7 +48,7 @@ FROM
 ) anlage 
 LEFT JOIN 
     (SELECT 
-        'https://geo.so.ch/docs/ch.so.afu.erdwaermesonden/'||md5(trim(BOTH '.zip' FROM dok.name))||'.pdf' AS dokument_url, 
+        'https://geo.so.ch/docs/ch.so.afu.erdwaermesonden/'||md5(REPLACE(dok.name,'.zip',''))||'.pdf' AS dokument_url, 
         anlageid
      FROM 
          gerda.geschaeft_dokumente dok
