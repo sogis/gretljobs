@@ -21,4 +21,6 @@ SELECT
     ort
 FROM
     gelan.bienen_stao_v
+WHERE
+    jahr = ${publikationsjahr_wechsel_herbst}
 ;
