@@ -8,4 +8,6 @@ FROM
     gelan.feba_schobj
 WHERE
     archive = 0
+    AND
+    jahr = ${publikationsjahr_wechsel_herbst}
 ;
