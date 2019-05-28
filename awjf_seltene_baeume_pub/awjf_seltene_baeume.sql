@@ -34,8 +34,6 @@ LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze gemeinden
             ON ST_DWithin(freistellung.geometrie, forst.geometrie,0)
  LEFT JOIN awjf_seltene_baeume.seltene_baumarten_baumtyp baumart 
      ON baumart.t_id = freistellung.baumtyp
- WHERE 
-    gemeinden."archive"=0
  )
          
  UNION ALL 
@@ -85,6 +83,5 @@ LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze gemeinden
              GROUP BY pflanzung
              ) info 
              ON info.pflanzung = pflanzung.t_id
-  WHERE gemeinden."archive"=0
   )
 ;
