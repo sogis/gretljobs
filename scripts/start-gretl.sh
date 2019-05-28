@@ -77,7 +77,7 @@ echo "======================================================="
 docker run -i --rm \
     --entrypoint="/bin/sh" \
     -v "$job_directory":/home/gradle/project \
-    -v /tmp:/tmp/gretl-share \
+    -v /home/bjsvwsch/Schreibtisch/test_gradle:/tmp \
     --user $UID \
     "$docker_image" "-c" \
         "/usr/local/bin/run-jnlp-client > /dev/null 2>&1;cd /home/gradle/project;$gretl_cmd"

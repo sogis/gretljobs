@@ -1,7 +1,9 @@
 import ch.so.agi.gretl.api.TransferSet
 import ch.so.agi.gretl.tasks.*
 import java.nio.file.Paths
+import java.nio.file.Files
 import de.undercouch.gradle.tasks.download.Download
+import groovy.json.JsonSlurper
 
 
 
@@ -9,35 +11,81 @@ apply plugin: "de.undercouch.download"
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'convertData'
+defaultTasks 'csvimport'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
-def pathToDataZip = Paths.get(pathToTempFolder, "6bf9eff014ab2a2c3b699bdc3e31b4632b0f4fe6.gz")
-def csvFilePath = Paths.get(pathToUnzipFolder.toString(), '6bf9eff014ab2a2c3b699bdc3e31b4632b0f4fe6', '6bf9eff014ab2a2c3b699bdc3e31b4632b0f4fe6.csv')
+def pathToDataZip = Paths.get(pathToTempFolder, 'neophyten.gz')
+def csvFilePath = Paths.get(pathToUnzipFolder.toString(), 'data', 'data.csv')
 
+ext.filepath = 'irgendeinpath'
+ext.filename = 'irgendeinname'
 
-task download(type: Download){
-    description = "Download Data from infoflora"
+task download_json(type: Download){
+    description = "Download Json with filename"
     doLast {
-        println "File downloaded to: " + pathToTempFolder
+        def inputFile = new File(pathToTempFolder + "/filenames.json")
+        def json = new JsonSlurper().parseText(inputFile.text)
+        project.filename = json.data.file_name[0]
+        project.filepath = json.data.folder_name[0]
+        println "Filename = " + filename
     }
-    src 'https://obs.infoflora.ch/assets/db_doc/3t/pi/6bf9eff014ab2a2c3b699bdc3e31b4632b0f4fe6.gz'
-    dest pathToTempFolder
+    src 'https://obs.infoflora.ch/rest/v4/docs.json?projects=83505'
+    username 'lorenz.eugster@vd.so.ch'
+    password 'Ziziphora'
+    dest new File(pathToTempFolder, 'filenames.json')
     overwrite true
 }
 
+task download_file(dependsOn: download_json){
+    description = "Download Zip file"
 
-task unzipData(type: Copy, dependsOn: 'download'){
-    description = "Unzip 6bf9eff014ab2a2c3b699bdc3e31b4632b0f4fe6.gz."
-    doLast {
-        println "File unzipped to directory: " + pathToUnzipFolder
+    def localFileName = 'foo' 
+    def localPath = '/bar'
+    def url = 'https://obs.infoflora.ch/'
+
+    doFirst {
+        localFileName = project.filename
+        localPath = project.filepath
+        url = 'https://obs.infoflora.ch' + localPath + '/' + localFileName        
     }
-    from zipTree(pathToDataZip)
-    into file(pathToUnzipFolder)
-    include "**/*.itf"
+    doLast {
+        download {
+            src url
+            dest file(pathToDataZip)
+            overwrite true
+        }
+        println "FileSize = " + file(pathToDataZip).size()
+    }
 }
 
+task unpackFiles(dependsOn: download_file) {
+    doLast{
+        file(pathToUnzipFolder.toString()+'/neophyten.csv').withOutputStream { os ->
+        os << resources.gzip(pathToDataZip).read()
+        }
+     }
+}
+
+task csvimport(type: CsvImport, dependsOn: unpackFiles){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = "alw_infoflora"
+    tableName = "neophyten_neophytenstandorte"
+    firstLineIsHeader=true
+    valueSeparator = ";"
+    dataFile = file(pathToUnzipFolder.toString()+'/neophyten_neu.csv')
+}
+
+/*
+
+task csvimport(type: CsvImport, dependsOn: unpackFiles){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = "test"
+    tableName = "newtable"
+    firstLineIsHeader=true
+    valueSeparator = ";"
+    dataFile = file(pathToUnzipFolder.toString()+'/test.csv')
+}
 
 task dbImport(type: Ili2pgImport, dependsOn: 'unzipData'){
     description = "Import plz_ortschaften-Data into database"
@@ -77,3 +125,4 @@ task removeFiles(type: Delete) {
     }
     delete file(pathToUnzipFolder), file(pathToDataZip)
 }
+*/
