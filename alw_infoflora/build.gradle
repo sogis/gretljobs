@@ -20,7 +20,7 @@ def csvFilePath = Paths.get(pathToUnzipFolder.toString(), 'data', 'data.csv')
 
 ext.filepath = 'irgendeinpath'
 ext.filename = 'irgendeinname'
-
+/*
 task download_json(type: Download){
     description = "Download Json with filename"
     doLast {
@@ -67,7 +67,9 @@ task unpackFiles(dependsOn: download_file) {
      }
 }
 
-task csvimport(type: CsvImport, dependsOn: unpackFiles){
+dependsOn: unpackFiles
+*/
+task csvimport(type: CsvImport){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = "alw_infoflora"
     tableName = "neophyten_neophytenstandorte"
