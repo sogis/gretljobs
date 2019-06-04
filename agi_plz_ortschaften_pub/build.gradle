@@ -104,8 +104,8 @@ task copyDataPub(type: Db2Db, dependsOn: 'convertDataSogis'){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('plzortschaften_ortschaft_pub.sql', 'agi_plz_ortschaften_pub.plzortschaften_ortschaft', true),
-            new TransferSet('plzortschaften_postleitzahl_pub.sql', 'agi_plz_ortschaften_pub.plzortschaften_postleitzahl', true)
+            new TransferSet('plzortschaften_ortschaft.sql', 'agi_plz_ortschaften_pub.plzortschaften_ortschaft', true),
+            new TransferSet('plzortschaften_postleitzahl.sql', 'agi_plz_ortschaften_pub.plzortschaften_postleitzahl', true)
     ];
 }
 
