@@ -49,7 +49,7 @@ SELECT DISTINCT
             FALSE
     END as aufgestuft,
     verbindlichkeit,
-    bemerkungen
+    CAST('' AS TEXT) AS bemerkungen -- DISCTINCT funktioniert sonst nicht mehr (so wie man es eigentlich möchte -> Umbau broken by design).
 FROM
     arp_npl.nutzungsplanung_typ_ueberlagernd_flaeche AS ueberlagernd_flaeche
 WHERE 

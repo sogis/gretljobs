@@ -109,7 +109,7 @@ task uploadLaermempfindlichkeit(dependsOn: 'zipLaermempfindlichkeit') {
     finalizedBy 'removeFilesLaermempfindlichkeit'
 }
 
-task zipLaermempfindlichkeit(type: Zip, dependsOn: 'exportLaermempfindlichkeit'){
+task zipLaermempfindlichkeit(type: Zip, dependsOn: 'exportLaermempfindlichkeit') {
     description = "Zippt das xtf-File mit den Lärmempfindlichkeitsdaten (MGDM vom Bund) für den Upload in die " +
             "Aggregationsinfrastruktur."
     from pathToTempFolder

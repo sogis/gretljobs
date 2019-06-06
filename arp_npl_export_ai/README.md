@@ -1,3 +1,10 @@
+# Datenumbau
+Ich denke man muss die Übung wie sie jetzt abläuft, abbrechen. Der Datenumbau ist m.E. broken by design und nicht mehr zu retten. Dieses Verstückeln macht es zwar eigentlich übersichtlicher als eine grosse CTE, führt aber konsequent zu falschen Resultaten.
+
+Entweder CTE-Bandwurm oder mit ili2pg v4.1 exportieren.
+
+
+
 # Verändertes Modell
 
 ```
