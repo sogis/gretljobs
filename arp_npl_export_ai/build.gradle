@@ -42,7 +42,7 @@ task zipNplch(type: Zip, dependsOn: 'exportNplch'){
     destinationDir(file(pathToTempFolder))
 }
 
-task exportNplch(type: Ili2pgExport, dependsOn:'transferNplso2NplchPart3') {
+task exportNplch(type: Ili2pgExport, dependsOn:'transferNplso2Nplch') {
     description = "Exportiert die ins Nutzungsplanungs-MGDM umgebauten Daten in ein xtf-File."
     database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     dbschema = "arp_npl_mgdm"
@@ -52,35 +52,11 @@ task exportNplch(type: Ili2pgExport, dependsOn:'transferNplso2NplchPart3') {
     disableValidation = true
 }
 
-task transferNplso2NplchPart3(type: SqlExecutor, dependsOn:'transferNplso2NplchPart2') {
-    description = "Baut die Nutzungsplanungsdaten des Kanton Solothurn in das MGDM des Bundes um. Teil 3."
+task transferNplso2Nplch (type: SqlExecutor, dependsOn:'removeOldNplData') {
+    description = "Baut die Nutzungsplanungsdaten des Kanton Solothurn in das MGDM des Bundes um."
     database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     sqlFiles = [
-            'arp_npl_mgdm_geobasisdaten_grundnutzung_zonenflaeche.sql',
-            'arp_npl_mgdm_geobasisdaten_linienbezogene_festlegung.sql',
-            'arp_npl_mgdm_geobasisdaten_objektbezogene_festlegung.sql',
-            'arp_npl_mgdm_geobasisdaten_ueberlagernde_festlegung.sql',
-            'arp_npl_mgdm_geobasisdaten_typ_dokument.sql',
-            'arp_npl_mgdm_localiseduri.sql'
-    ]
-}
-
-task transferNplso2NplchPart2(type: SqlExecutor, dependsOn:'transferNplso2NplchPart1') {
-    description = "Baut die Nutzungsplanungsdaten des Kanton Solothurn in das MGDM des Bundes um. Teil 2."
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    sqlFiles = [
-            'arp_npl_mgdm_geobasisdaten_typ.sql',
-            'arp_npl_mgdm_rechtsvorschrften_hinweisweiteredokumente.sql',
-            'arp_npl_mgdm_multilingualuri.sql',
-    ]
-}
-
-task transferNplso2NplchPart1(type: SqlExecutor, dependsOn:'removeOldNplData') {
-    description = "Baut die Nutzungsplanungsdaten des Kanton Solothurn in das MGDM des Bundes um. Teil 1."
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    sqlFiles = [
-            'arp_npl_mgdm_geobasisdaten_typ_kt.sql',
-            'arp_npl_mgdm_rechtsvorschrften_dokument.sql',
+            'arp_nutzungsplanung_mgdm.sql'
     ]
 }
 
@@ -96,7 +72,6 @@ task removeNplchFiles(type: Delete){
     description = "Entfernt während der Ausführung des Jobs erstellte Nutzungsplanungsdateien."
     delete file(Paths.get(pathToTempFolder.toString(), ZipName)), exportNplchFile, logExportNplch
 }
-
 
 task uploadLaermempfindlichkeit(dependsOn: 'zipLaermempfindlichkeit') {
     description = "Lädt die Lärmempfindlichkeitsdaten (MGDM vom Bund) in die Aggregationsinfrastruktur hoch."
@@ -120,7 +95,7 @@ task zipLaermempfindlichkeit(type: Zip, dependsOn: 'exportLaermempfindlichkeit')
     destinationDir(file(pathToTempFolder))
 }
 
-task exportLaermempfindlichkeit(type: Ili2pgExport, dependsOn: 'transferNplso2LaermempfindlichkeitPart3') {
+task exportLaermempfindlichkeit(type: Ili2pgExport, dependsOn: 'transferNplso2Laermempfindlichkeit') {
     description = "Exportiert die ins Lärmempfindlichkeits-MGDM umgebauten Daten in ein xtf-File."
     database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     dbschema = "arp_laermempfindlichkeit_mgdm"
@@ -130,31 +105,11 @@ task exportLaermempfindlichkeit(type: Ili2pgExport, dependsOn: 'transferNplso2La
     disableValidation = true
 }
 
-task transferNplso2LaermempfindlichkeitPart3(type: SqlExecutor, dependsOn:'transferNplso2LaermempfindlichkeitPart2'){
+task transferNplso2Laermempfindlichkeit(type: SqlExecutor, dependsOn: 'removeOldLaermempfindlichkeitData') {
     description = "Baut die Lärmempfindlichkeitsdaten des Kanton Solothurn in das MGDM des Bundes um."
     database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     sqlFiles = [
-            'arp_laermempfindlichkeit_mgdm_localiseduri.sql'
-    ]
-}
-
-task transferNplso2LaermempfindlichkeitPart2(type: SqlExecutor, dependsOn:'transferNplso2LaermempfindlichkeitPart1'){
-    description = "Baut die Lärmempfindlichkeitsdaten des Kanton Solothurn in das MGDM des Bundes um."
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    sqlFiles = [
-            'arp_laermempfindlichkeit_mgdm_geobasisdaten_laermempfindlichkeit_zonenflaeche.sql',
-            'arp_laermempfindlichkeit_mgdm_rechtsvorschrften_hinweisweiteredokumente.sql',
-            'arp_laermempfindlichkeit_mgdm_geobasisdaten_typ_dokument.sql',
-            'arp_laermempfindlichkeit_mgdm_multilingualuri.sql'
-    ]
-}
-
-task transferNplso2LaermempfindlichkeitPart1(type: SqlExecutor, dependsOn:'removeOldLaermempfindlichkeitData'){
-    description = "Baut die Lärmempfindlichkeitsdaten des Kanton Solothurn in das MGDM des Bundes um."
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    sqlFiles = [
-            'arp_laermempfindlichkeit_mgdm_geobasisdaten_typ.sql',
-            'arp_laermempfindlichkeit_mgdm_rechtsvorschrften_dokument.sql',
+            'arp_laermempfindlichkeit_mgdm.sql'
     ]
 }
 
@@ -166,7 +121,7 @@ task removeOldLaermempfindlichkeitData(type: SqlExecutor) {
     ]
 }
 
-task removeFilesLaermempfindlichkeit(type: Delete){
+task removeFilesLaermempfindlichkeit(type: Delete) {
     description = "Entfernt während der Ausführung des Jobs erstellte Lärmempfindlichkeitsdateien."
     delete file(Paths.get(pathToTempFolder.toString(), ZipName)), exportLaermempfindlichkeitFile,
             logExportLaermempfindlichkeit
