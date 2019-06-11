@@ -69,7 +69,7 @@ task dbImportSogis(type: Ili2pgImport, dependsOn: 'dbImport'){
 task convertDataEdit(type: SqlExecutor, dependsOn: 'dbImportSogis'){
     description = "Convert plz_ortschaften-Data to Edit Schema"
     doLast {
-        println "plz_ortschaften-Data are converted."
+        println "plz_ortschaften-Data are converted to Edit Schema."
     }
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = [
@@ -83,7 +83,7 @@ task convertDataEdit(type: SqlExecutor, dependsOn: 'dbImportSogis'){
 task convertDataSogis(type: SqlExecutor, dependsOn: 'convertDataEdit'){
     description = "Convert plz_ortschaften-Data to Sogis Schema"
     doLast {
-        println "plz_ortschaften-Data are converted."
+        println "plz_ortschaften-Data are converted Sogis Schema."
     }
     database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     sqlFiles = [
@@ -97,7 +97,7 @@ task convertDataSogis(type: SqlExecutor, dependsOn: 'convertDataEdit'){
 task copyDataPub(type: Db2Db, dependsOn: 'convertDataSogis'){
     description = "Copy plz_ortschaften-Data to Pub Schema"
     doLast {
-        println "plz_ortschaften-Data are copied."
+        println "plz_ortschaften-Data are copied to Pub Schema."
     }
     finalizedBy 'removeFiles'
 
