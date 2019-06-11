@@ -1,4 +1,4 @@
-insert into agi_plz_ortschaften_pub.plzortschaften_postleitzahl(plz, zusatzziffer, status, geometrie)
+INSERT INTO agi_plz_ortschaften_pub.plzortschaften_postleitzahl(plz, zusatzziffer, status, geometrie)
 SELECT 
     plzortschaft_plz6.plz, 
     plzortschaft_plz6.zusatzziffern,

@@ -1,4 +1,4 @@
-insert into agi_plz_ortschaften_pub.plzortschaften_ortschaft(ortschaftsname, status, geometrie)
+INSERT INTO agi_plz_ortschaften_pub.plzortschaften_ortschaft(ortschaftsname, status, geometrie)
 (
 SELECT 
 	plzortschaft_ortschaftsname.atext AS ortschaftsname, 
@@ -12,4 +12,5 @@ LEFT JOIN
 GROUP BY
     plzortschaft_ortschaftsname.atext,
     plzortschaft_ortschaft.status
-);
+)
+;

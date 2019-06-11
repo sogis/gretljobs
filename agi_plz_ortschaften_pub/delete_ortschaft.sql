@@ -1,1 +1,2 @@
-delete from agi_plz_ortschaften_pub.plzortschaften_ortschaft
+DELETE FROM agi_plz_ortschaften_pub.plzortschaften_ortschaft
+;

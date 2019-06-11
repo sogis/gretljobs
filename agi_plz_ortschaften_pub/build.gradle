@@ -52,8 +52,8 @@ task dbImport(type: Ili2pgImport, dependsOn: 'unzipData'){
     strokeArcs = true
 }
 
-task dbImportSogis(type: Ili2pgImport, dependsOn: 'dbImport'){
- description = "Import plz_ortschaften-Data into Sogis database"
+task dbImportSogis(type: Ili2pgImport, dependsOn: 'unzipData'){
+    description = "Import plz_ortschaften-Data into Sogis database"
     doLast {
         println "Data imported into db: " + dbUriSogis
     }
@@ -66,35 +66,35 @@ task dbImportSogis(type: Ili2pgImport, dependsOn: 'dbImport'){
     strokeArcs = true
 }
 
-task convertDataEdit(type: SqlExecutor, dependsOn: 'dbImportSogis'){
+task convertDataEdit(type: SqlExecutor, dependsOn: 'dbImport'){
     description = "Convert plz_ortschaften-Data to Edit Schema"
     doLast {
         println "plz_ortschaften-Data are converted."
     }
-	database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = [
-            'delete_ortschaft.sql',
-            'delete_postleitzahl.sql',
-            'insert_ortschaft.sql',
-            'insert_postleitzahl.sql',
-	]
+        'delete_ortschaft.sql',
+        'delete_postleitzahl.sql',
+        'insert_ortschaft.sql',
+        'insert_postleitzahl.sql',
+    ]
 }
 
-task convertDataSogis(type: SqlExecutor, dependsOn: 'convertDataEdit'){
+task convertDataSogis(type: SqlExecutor, dependsOn: 'dbImportSogis'){
     description = "Convert plz_ortschaften-Data to Sogis Schema"
     doLast {
         println "plz_ortschaften-Data are converted."
     }
-	database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     sqlFiles = [
-            'delete_ortschaft.sql',
-            'delete_postleitzahl.sql',
-            'insert_ortschaft.sql',
-            'insert_postleitzahl.sql',
-	]
+        'delete_ortschaft.sql',
+        'delete_postleitzahl.sql',
+        'insert_ortschaft.sql',
+        'insert_postleitzahl.sql',
+    ]
 }
 
-task copyDataPub(type: Db2Db, dependsOn: 'convertDataSogis'){
+task copyDataPub(type: Db2Db, dependsOn: 'convertDataEdit'){
     description = "Copy plz_ortschaften-Data to Pub Schema"
     doLast {
         println "plz_ortschaften-Data are copied."
@@ -104,27 +104,10 @@ task copyDataPub(type: Db2Db, dependsOn: 'convertDataSogis'){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('plzortschaften_ortschaft.sql', 'agi_plz_ortschaften_pub.plzortschaften_ortschaft', true),
-            new TransferSet('plzortschaften_postleitzahl.sql', 'agi_plz_ortschaften_pub.plzortschaften_postleitzahl', true)
+        new TransferSet('plzortschaften_ortschaft.sql', 'agi_plz_ortschaften_pub.plzortschaften_ortschaft', true),
+        new TransferSet('plzortschaften_postleitzahl.sql', 'agi_plz_ortschaften_pub.plzortschaften_postleitzahl', true)
     ];
 }
-
-
-task copyDataSogisPub(type: Db2Db, dependsOn: 'copyDataPub'){
-    description = "Copy plz_ortschaften-Data to Sogis Pub"
-    doLast {
-        println "plz_ortschaften-Data are copied."
-    }
-    finalizedBy 'removeFiles'
-
-    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
-    transferSets = [
-            new TransferSet('plzortschaften_ortschaft_pub.sql', 'agi_plz_ortschaften_pub.plzortschaften_ortschaft', true),
-            new TransferSet('plzortschaften_postleitzahl_pub.sql', 'agi_plz_ortschaften_pub.plzortschaften_postleitzahl', true)
-    ];
-}
-
 
 task removeFiles(type: Delete) {
     description = "Remove Files"
