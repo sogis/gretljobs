@@ -1,6 +1,3 @@
-DELETE FROM arp_laermempfindlichkeit_mgdm.geobasisdaten_typ_dokument
-;
-
 INSERT INTO arp_laermempfindlichkeit_mgdm.geobasisdaten_typ_dokument (
     vorschrift,
     typ
@@ -20,11 +17,23 @@ FROM
     LEFT JOIN
         arp_laermempfindlichkeit_mgdm.rechtsvorschrften_dokument AS dokument_ch
         ON 
-            dokument_so.titel = dokument_ch.titel
-            AND 
-            dokument_so.offiziellertitel = dokument_ch.offiziellertitel
-            AND
-            dokument_so.publiziertab = dokument_ch.publiziertab
+            (
+                dokument_so.titel = dokument_ch.titel
+                AND 
+                dokument_so.offiziellertitel IS NULL
+                AND
+                dokument_ch.offiziellertitel IS NULL
+                AND
+                dokument_so.publiziertab = dokument_ch.publiziertab
+            )
+            OR
+            (
+                dokument_so.titel = dokument_ch.titel
+                AND 
+                dokument_so.offiziellertitel = dokument_ch.offiziellertitel
+                AND
+                dokument_so.publiziertab = dokument_ch.publiziertab
+            )
     LEFT JOIN 
         arp_laermempfindlichkeit_mgdm.geobasisdaten_typ
         ON geobasisdaten_typ.code = nutzungsplanung_typ_ueberlagernd_flaeche.code_kommunal

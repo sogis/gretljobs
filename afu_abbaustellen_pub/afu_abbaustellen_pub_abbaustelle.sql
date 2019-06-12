@@ -74,7 +74,7 @@ SELECT
         WHEN bschl = '3'
             THEN 'Verfügung'
     END AS bschl_text,
-    bschl_dat,
+    '[YYYYMMDD]: ' || bschl_dat AS bschl_dat,
     bschl_guel,
     bem,
     shape_area
@@ -82,4 +82,6 @@ FROM
     abbaustellen.abbaustellen
 WHERE
     archive = 0
+    AND
+    planungsstand IS NULL
 ;

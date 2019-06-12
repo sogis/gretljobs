@@ -1,6 +1,3 @@
-DELETE FROM arp_laermempfindlichkeit_mgdm.rechtsvorschrften_dokument
-;
-
 INSERT INTO arp_laermempfindlichkeit_mgdm.rechtsvorschrften_dokument (
     t_type,
     titel,

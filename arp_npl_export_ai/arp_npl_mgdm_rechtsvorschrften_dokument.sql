@@ -1,6 +1,3 @@
-DELETE FROM arp_npl_mgdm.rechtsvorschrften_dokument
-;
-
 INSERT INTO arp_npl_mgdm.rechtsvorschrften_dokument (
     t_type,
     titel,

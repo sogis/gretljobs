@@ -13,6 +13,7 @@ task transferAfuWasserbewirtschaftung(type: Db2Db){
             new TransferSet('afu_wasserbewirtschaftung_grundwassereinbauten_pub.sql', 'afu_wasserbewirtschaftung_pub.wassrbwrtschftung_grundwassereinbau', true),
             new TransferSet('afu_wasserbewirtschaftung_grundwasserwaermepumpen_entnahmeschacht_pub.sql', 'afu_wasserbewirtschaftung_pub.wassrbwrtschftung_grundwasserwaermepumpen_entnahmeschacht', true),
             new TransferSet('afu_wasserbewirtschaftung_quellen_pub.sql', 'afu_wasserbewirtschaftung_pub.wassrbwrtschftung_quelle', true),
-            new TransferSet('afu_wasserbewirtschaftung_trinkwasserobjekte_pub.sql', 'afu_wasserbewirtschaftung_pub.wassrbwrtschftung_trinkwasserversorgung', true)
+            new TransferSet('afu_wasserbewirtschaftung_trinkwasserobjekte_pub.sql', 'afu_wasserbewirtschaftung_pub.wassrbwrtschftung_trinkwasserversorgung', true), 
+            new TransferSet('afu_wasserbewirtschaftung_oberflaechenhydrometrie.sql', 'afu_wasserbewirtschaftung_pub.wassrbwrtschftung_oberflaechenhydrometrie', true)
     ];
 }

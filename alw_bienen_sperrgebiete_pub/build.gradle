@@ -1,0 +1,14 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferAlwBienensperrgebiete'
+
+task transferAlwBienensperrgebiete(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('alw_gelan_pub_bienen_sperrgebiete.sql', 'alw_gelan_pub.bienen_sperrgebiete', true)
+    ];
+}

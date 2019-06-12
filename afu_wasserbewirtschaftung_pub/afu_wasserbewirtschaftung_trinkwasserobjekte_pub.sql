@@ -1,7 +1,8 @@
 (SELECT 
     'Kontrollschacht' AS trinkwasserobjektart,
+    'Kontrollschacht' AS objekttyp_anzeige,
     kontrollschacht.bezeichnung AS objektname, 
-    kontrollschacht.vegas_id AS objektnummer,
+    kontrollschacht.mobj_id AS objektnummer,
     kontrollschacht.beschreibung AS technische_angabe,  
     kontrollschacht.bemerkung AS bemerkung,
     array_to_json(dokumente.dokumente) AS dokumente, 
@@ -20,8 +21,9 @@ LEFT JOIN
 UNION ALL 
 (SELECT 
     'Sammelbrunnenstube' AS trinkwasserobjektart,
+    'Sammelbrunnenstube' AS objekttyp_anzeige,
     sammelbrunnenstube.bezeichnung AS objektname, 
-    sammelbrunnenstube.vegas_id AS objektnummer, 
+    sammelbrunnenstube.mobj_id AS objektnummer, 
     sammelbrunnenstube.beschreibung AS technische_angabe,
     sammelbrunnenstube.bemerkung AS bemerkung, 
     array_to_json(dokumente.dokumente) AS dokumente,
@@ -40,8 +42,9 @@ LEFT JOIN
 UNION ALL 
 (SELECT 
     'Quellwasserbehaelter' AS trinkwasserobjektart,
+    'Quellwasserbehälter' AS objekttyp_anzeige,
     quellwasserbehaelter.bezeichnung AS objektname, 
-    quellwasserbehaelter.vegas_id AS objektnummer, 
+    quellwasserbehaelter.mobj_id AS objektnummer, 
     quellwasserbehaelter.beschreibung AS technische_angabe,
     quellwasserbehaelter.bemerkung AS bemerkung, 
     array_to_json(dokumente.dokumente) AS dokumente, 
@@ -60,8 +63,9 @@ LEFT JOIN
 UNION ALL
 (SELECT 
     'Netzmessstelle' AS trinkwasserobjektart,
+    'Netzmessstelle' AS objekttyp_anzeige,
     netzmessstelle.bezeichnung AS objektname, 
-    netzmessstelle.vegas_id AS objektnummer, 
+    netzmessstelle.mobj_id AS objektnummer, 
     netzmessstelle.beschreibung AS technische_angabe,
     netzmessstelle.bemerkung AS bemerkung, 
     array_to_json(dokumente.dokumente) AS dokumente, 
@@ -80,8 +84,9 @@ LEFT JOIN
 UNION ALL 
 (SELECT 
     'Pumpwerk' AS trinkwasserobjektart,
+    'Pumpwerk' AS objekttyp_anzeige,
     pumpwerk.bezeichnung AS objektname, 
-    pumpwerk.vegas_id AS objektnummer, 
+    pumpwerk.mobj_id AS objektnummer, 
     pumpwerk.beschreibung AS technische_angabe,
     pumpwerk.bemerkung AS bemerkung, 
     array_to_json(dokumente.dokumente) AS dokumente, 
@@ -100,8 +105,9 @@ LEFT JOIN
 UNION ALL 
 (SELECT 
     'Reservoir' AS trinkwasserobjektart,
+    'Reservoir' AS objekttyp_anzeige,
     reservoir.bezeichnung AS objektname, 
-    reservoir.vegas_id AS objektnummer, 
+    reservoir.mobj_id AS objektnummer, 
     reservoir.beschreibung AS technische_angabe,
     reservoir.bemerkung AS bemerkung, 
     array_to_json(dokumente.dokumente) AS dokumente, 

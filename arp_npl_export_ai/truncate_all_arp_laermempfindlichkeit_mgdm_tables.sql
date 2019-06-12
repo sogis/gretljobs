@@ -1,0 +1,14 @@
+DELETE FROM arp_laermempfindlichkeit_mgdm.geobasisdaten_typ_dokument
+;
+DELETE FROM arp_laermempfindlichkeit_mgdm.geobasisdaten_laermempfindlichkeit_zonenflaeche
+;
+DELETE FROM arp_laermempfindlichkeit_mgdm.geobasisdaten_typ
+;
+DELETE FROM arp_laermempfindlichkeit_mgdm.localiseduri
+;
+DELETE FROM arp_laermempfindlichkeit_mgdm.multilingualuri
+;
+DELETE FROM arp_laermempfindlichkeit_mgdm.rechtsvorschrften_hinweisweiteredokumente
+;
+DELETE FROM arp_laermempfindlichkeit_mgdm.rechtsvorschrften_dokument
+;

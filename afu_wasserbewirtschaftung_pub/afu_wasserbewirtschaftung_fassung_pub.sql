@@ -18,8 +18,9 @@
          WHEN sodbrunnen.verwendung = 3
          THEN 'Notbrunnen'
      END AS verwendungszweck,
+     'Sodbrunnen' AS objekttyp_anzeige,
      sodbrunnen.bezeichnung AS objektname, 
-     sodbrunnen.vegas_id AS objektnummer,
+     sodbrunnen.mobj_id AS objektnummer,
      sodbrunnen.beschreibung AS technische_angabe,
      sodbrunnen.bemerkung AS bemerkung,
      array_to_json(dokumente.dokumente) AS dokumente, 
@@ -55,8 +56,18 @@ UNION ALL
          WHEN horizontalfilterbrunnen.verwendung = 3
          THEN 'Notbrunnen'
      END AS verwendungszweck,
+     CASE 
+         WHEN horizontalfilterbrunnen.nutzungsart = 3 
+         THEN 'Privater Horizontalfilterbrunnen'
+         WHEN horizontalfilterbrunnen.nutzungsart = 2 
+         THEN 'Privater Horizontalfilterbrunnen von öffentlichem Interesse'
+         WHEN horizontalfilterbrunnen.nutzungsart = 1 
+         THEN 'Öffentlicher Horizontalfilterbrunnen' 
+         WHEN horizontalfilterbrunnen.nutzungsart IS NULL OR horizontalfilterbrunnen.nutzungsart > 3 
+         THEN 'Horizontalfilterbrunnen'
+     END AS objekttyp_anzeige,
      horizontalfilterbrunnen.bezeichnung AS objektname, 
-     horizontalfilterbrunnen.vegas_id AS objektnummer,
+     horizontalfilterbrunnen.mobj_id AS objektnummer,
      horizontalfilterbrunnen.beschreibung AS technische_angabe,
      horizontalfilterbrunnen.bemerkung AS bemerkung,
      array_to_json(dokumente.dokumente) AS dokumente, 
@@ -92,8 +103,18 @@ UNION ALL
          WHEN vertikalfilterbrunnen.verwendung = 3
          THEN 'Notbrunnen'
      END AS verwendungszweck,
+     CASE 
+         WHEN vertikalfilterbrunnen.nutzungsart = 3 
+         THEN 'Privater Vertikalfilterbrunnen'
+         WHEN vertikalfilterbrunnen.nutzungsart = 2 
+         THEN 'Privater Vertikalfilterbrunnen von öffentlichem Interesse'
+         WHEN vertikalfilterbrunnen.nutzungsart = 1 
+         THEN 'Öffentlicher Vertikalfilterbrunnen' 
+         WHEN vertikalfilterbrunnen.nutzungsart IS NULL OR vertikalfilterbrunnen.nutzungsart > 3 
+         THEN 'Vertikalfilterbrunnen'
+     END AS objekttyp_anzeige,
      vertikalfilterbrunnen.bezeichnung AS objektname, 
-     vertikalfilterbrunnen.vegas_id AS objektnummer,
+     vertikalfilterbrunnen.mobj_id AS objektnummer,
      vertikalfilterbrunnen.beschreibung AS technische_angabe,
      vertikalfilterbrunnen.bemerkung AS bemerkung,
      array_to_json(dokumente.dokumente) AS dokumente, 

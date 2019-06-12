@@ -3,16 +3,14 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAfuNaturgefahren'
+defaultTasks 'transferAfuNaturgefahrenhinweiskarte'
 
-task transferAfuNaturgefahren(type: Db2Db){
+task transferAfuNaturgefahrenhinweiskarte(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('afu_naturgefahren_pub_naturgefahren_ereignis.sql',
-                    'afu_naturgefahren_pub.naturgefahren_ereignis', true),
+            new TransferSet('afu_naturgefahren_pub_naturgefahren_ereignis.sql','afu_naturgefahren_pub.naturgefahren_ereignis', true),
             new TransferSet('afu_naturgefahren_pub_naturgefahren.sql','afu_naturgefahren_pub.naturgefahren', true),
-            new TransferSet('afu_naturgefahren_pub_doline.sql','afu_naturgefahren_pub.doline', true),
             new TransferSet('afu_naturgefahren_pub_ueberflutung.sql','afu_naturgefahren_pub.ueberflutung', true)
     ];
 }
