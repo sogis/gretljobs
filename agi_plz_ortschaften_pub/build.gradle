@@ -76,7 +76,7 @@ task convertDataEdit(type: SqlExecutor, dependsOn: 'dbImportSogis'){
         'delete_ortschaft.sql',
         'delete_postleitzahl.sql',
         'insert_ortschaft.sql',
-        'insert_postleitzahl.sql',
+        'insert_postleitzahl.sql'
     ]
 }
 
@@ -90,7 +90,7 @@ task convertDataSogis(type: SqlExecutor, dependsOn: 'convertDataEdit'){
         'delete_ortschaft.sql',
         'delete_postleitzahl.sql',
         'insert_ortschaft.sql',
-        'insert_postleitzahl.sql',
+        'insert_postleitzahl.sql'
     ]
 }
 
