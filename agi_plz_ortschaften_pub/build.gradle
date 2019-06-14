@@ -9,7 +9,7 @@ apply plugin: "de.undercouch.download"
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'copyDataPub'
+defaultTasks 'removeFiles'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
@@ -107,7 +107,7 @@ task copyDataPub(type: Db2Db, dependsOn: 'convertDataSogis'){
     ];
 }
 
-task removeFiles(type: Delete) {
+task removeFiles(type: Delete, dependsOn: 'copyDataPub') {
     description = "Remove Files"
     doLast {
         println "Files removed."
