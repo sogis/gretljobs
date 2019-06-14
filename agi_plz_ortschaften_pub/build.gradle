@@ -99,8 +99,6 @@ task copyDataPub(type: Db2Db, dependsOn: 'convertDataSogis'){
     doLast {
         println "plz_ortschaften-Data are copied to Pub Schema."
     }
-    finalizedBy 'removeFiles'
-
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
