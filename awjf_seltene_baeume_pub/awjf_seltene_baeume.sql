@@ -5,11 +5,7 @@
      freistellung.waldgesellschaft, 
      freistellung.eigentuemer, 
      freistellung.sponsor, 
-<<<<<<< HEAD
      gemeinden.gemeindename AS gemeinde , 
-=======
-     gemeinden."name" AS gemeinde, 
->>>>>>> 201bf8e8d26b680273668986e422cae66c46d0a7
      forst.forstrevier AS forstbetrieb, 
      forst.forstkreis, 
      freistellung.bemerkung, 
@@ -49,11 +45,7 @@ LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze gemeinden
       pflanzung.waldgesellschaft, 
       pflanzung.eigentuemer, 
       pflanzung.sponsor, 
-<<<<<<< HEAD
       gemeinden.gemeindename AS gemeinde, 
-=======
-      gemeinden."name" AS gemeinde, 
->>>>>>> 201bf8e8d26b680273668986e422cae66c46d0a7
       forst.forstrevier AS forstbetrieb, 
       forst.forstkreis, 
       pflanzung.bemerkung, 
