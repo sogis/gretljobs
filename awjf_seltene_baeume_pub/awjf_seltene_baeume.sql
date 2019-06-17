@@ -12,9 +12,9 @@
      freistellung.gesuchnummer, 
      freistellung.auszahlung_erfolgte, 
      freistellung.auszahlungsjahr, 
-     to_json(coalesce(freistellung.anzahl,1,0)||' '||baumart.baumart) AS bauminfo, 
+     coalesce(freistellung.anzahl,1,0)||' '||baumart.baumart AS bauminfo, 
      freistellung.brusthoehendurchmesser, 
-     st_buffer(freistellung.geometrie, 10, 'quad_segs=8') AS geometrie  
+     st_buffer(freistellung.geometrie, 8, 'quad_segs=8') AS geometrie  
  FROM 
      awjf_seltene_baeume.seltene_baumarten_freistellung freistellung 
 LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze gemeinden 
@@ -52,7 +52,7 @@ LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze gemeinden
       pflanzung.gesuchnummer,
       pflanzung.auszahlung_erfolgte, 
       pflanzung.auszahlungsjahr,
-      array_to_json(info.info) AS bauminfo, 
+      array_to_json(info.info)::text AS bauminfo, 
       NULL AS brusthoehendurchmesser, 
       pflanzung.geometrie
   FROM 
