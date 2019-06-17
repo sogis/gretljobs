@@ -12,7 +12,7 @@
      freistellung.gesuchnummer, 
      freistellung.auszahlung_erfolgte, 
      freistellung.auszahlungsjahr, 
-     coalesce(freistellung.anzahl,1,0)||' '||baumart.baumart AS bauminfo, 
+     coalesce(freistellung.anzahl,1,0)||' x '||baumart.baumart AS bauminfo, 
      freistellung.brusthoehendurchmesser, 
      st_buffer(freistellung.geometrie, 8, 'quad_segs=8') AS geometrie  
  FROM 
@@ -75,7 +75,7 @@ LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze gemeinden
   LEFT JOIN (
              SELECT 
                  beziehung.pflanzung, 
-                 array_agg(coalesce(anzahl_baeume,1)||' '||baumart.baumart||' '||coalesce(info,'')) AS info
+                 array_agg(coalesce(anzahl_baeume,1)||' x '||baumart.baumart||' '||coalesce(info,'')) AS info
              FROM 
                  awjf_seltene_baeume.seltene_baumarten_beziehung_pflanzung_baumtyp beziehung 
              LEFT JOIN awjf_seltene_baeume.seltene_baumarten_baumtyp baumart 
