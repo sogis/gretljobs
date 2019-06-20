@@ -1,25 +1,53 @@
 println "BUILD_NUMBER = ${BUILD_NUMBER}"
 
-def base = SEED_JOB.getWorkspace().toString()
-println 'job base dir: ' + base
+// set default values
+def gretlJobFilePath = '**'
+def gretlJobFileName = 'build.gradle'
+def jenkinsfileName = 'Jenkinsfile'
+def jobPropertiesFileName = 'job.properties'
 
-def jobFileDefinition = "${GRETL_JOB_FILE_PATH}/${GRETL_JOB_FILE_NAME}"
-println 'job file definition: ' + jobFileDefinition
+// override default values if environment variables are set
+if ("${GRETL_JOB_FILE_PATH}") {
+  gretlJobFilePath = "${GRETL_JOB_FILE_PATH}"
+  println 'gretlJobFilePath set to ' + gretlJobFilePath
+}
+if ("${GRETL_JOB_FILE_NAME}") {
+  gretlJobFileName = "${GRETL_JOB_FILE_NAME}"
+  println 'gretlJobFileName set to ' + gretlJobFileName
+}
 
-def pipelineFiles = new FileNameFinder().getFileNames(base, jobFileDefinition)
 
-for (pipelineFil in pipelineFiles) {
+def baseDir = SEED_JOB.getWorkspace().toString()
+println 'base dir: ' + baseDir
 
-  def relativeScriptPath = (pipelineFil - base).substring(1)
+// search for GRETL-Job (Gradle) scripts (gretlJobFileName)
+def jobFilePattern = "${gretlJobFilePath}/${gretlJobFileName}"
+println 'job file pattern: ' + jobFilePattern
+
+def jobFiles = new FileNameFinder().getFileNames(baseDir, jobFilePattern)
+
+
+// generate the jobs
+println 'generating the jobs...'
+for (jobFile in jobFiles) {
+
+  def relativeScriptPath = (jobFile - baseDir).substring(1)
   def _jobPath = relativeScriptPath.split('/')
 
   // take last folder for job name
   def namePosition = _jobPath.size() > 1 ? _jobPath.size() - 2 : 0
-  def realJobName = _jobPath[namePosition]
+  def jobName = _jobPath[namePosition]
+  println 'job name: ' + jobName
 
-  println 'job name: ' + realJobName
+  def pipelineFilePath = "${baseDir}/${jenkinsfileName}"
 
-  def releaseScript = readFileFromWorkspace(pipelineFil)
+  // check if job provides its own Jenkinsfile
+  def customPipelineFilePath = "${jobName}/${jenkinsfileName}"
+  if (new File(baseDir, customPipelineFilePath).exists()) {
+    pipelineFilePath = customPipelineFilePath
+    println 'custom pipeline file found: ' + customPipelineFilePath
+  }
+  def pipelineScript = readFileFromWorkspace(pipelineFilePath)
 
   // set defaults for job properties
   def properties = new Properties([
@@ -29,14 +57,16 @@ for (pipelineFil in pipelineFiles) {
     'triggers.upstream':'none',
     'triggers.cron':''
   ])
-  def propertiesFile = new File(base + '/' + realJobName + '/job.properties')
+  def propertiesFilePath = "${jobName}/${jobPropertiesFileName}"
+  def propertiesFile = new File(baseDir, propertiesFilePath)
   if (propertiesFile.exists()) {
+    println jobPropertiesFileName + ' file found: ' + propertiesFilePath
     properties.load(propertiesFile.newDataInputStream())
   }
   
   def productionEnv = ("${OPENSHIFT_BUILD_NAMESPACE}" == 'agi-gretl-production')
 
-  pipelineJob(realJobName) {
+  pipelineJob(jobName) {
     if (!productionEnv) { // we don't want the BRANCH parameter in production environment
       parameters {
         stringParam('BRANCH', 'master', 'Name of branch to check out')
@@ -65,7 +95,7 @@ for (pipelineFil in pipelineFiles) {
     }
     definition {
       cps {
-        script(releaseScript)
+        script(pipelineScript)
         sandbox()
       }
     }
