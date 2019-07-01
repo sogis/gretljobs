@@ -22,9 +22,9 @@ ext {
     dbSogis = [dbUriSogis, dbUserSogis, dbPwdSogis]
     dbEdit = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = []
-    models.add(["SO_Agglomerationsprogramme_20170512",
+    /*models.add(["SO_Agglomerationsprogramme_20170512",
                 "arp_aggloprogramme",
-                dbSogis])
+                dbSogis])*/
     models.add(["SO_ARP_Nutzungsvereinbarung_20170512",
                 "arp_nutzungsvereinbarung",
                 dbSogis ])
