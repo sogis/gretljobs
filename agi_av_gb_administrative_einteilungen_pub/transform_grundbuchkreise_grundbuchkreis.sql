@@ -26,7 +26,7 @@ SELECT
   kreis.grundbuchkreisnummer AS grundbuchkreisnummer,
   kreis.grundbuchkreis_bfsnr AS grundbuchkreis_bfsnr,
   kreis.bfsnr AS bfsnr,
-  nummerierungsbereich.geometrie AS perimeter,
+  ST_SnapToGrid(nummerierungsbereich.geometrie, 0.001) AS perimeter,
   amt.amtschreiberei AS amtschreiberei,
   amt.amt AS amt,
   amt.strasse AS strasse,
