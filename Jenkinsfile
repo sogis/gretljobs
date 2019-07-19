@@ -10,6 +10,8 @@ def dbUriAltlast4web = ''
 def dbCredentialNameAltlast4web = ''
 def dbUriKaso = ''
 def dbCredentialNameKaso = ''
+def dbUriCapitastra = ''
+def dbCredentialNameCapitastra = ''
 def aiServer = ''
 def aiCredentialName = ''
 def gretljobsRepo = ''
@@ -27,6 +29,8 @@ node("master") {
     dbCredentialNameAltlast4web = "${DB_CREDENTIAL_ALTLAST4WEB}"
     dbUriKaso = "${env.DB_URI_KASO}"
     dbCredentialNameKaso = "${DB_CREDENTIAL_KASO}"
+    dbUriCapitastra = "${env.DB_URI_CAPITASTRA}"
+    dbCredentialNameCapitastra = "${DB_CREDENTIAL_CAPITASTRA}"
     aiServer = "${env.AI_SERVER}"
     aiCredentialName = "${AI_CREDENTIAL}"
     gretljobsRepo = "${env.GRETL_JOB_REPO_URL}"
@@ -44,6 +48,7 @@ node ("gretl") {
                 usernamePassword(credentialsId: "${dbCredentialNameVerisoNplso}", usernameVariable: 'dbUserVerisoNplso', passwordVariable: 'dbPwdVerisoNplso'),
                 usernamePassword(credentialsId: "${dbCredentialNameAltlast4web}", usernameVariable: 'dbUserAltlast4web', passwordVariable: 'dbPwdAltlast4web'),
                 usernamePassword(credentialsId: "${dbCredentialNameKaso}", usernameVariable: 'dbUserKaso', passwordVariable: 'dbPwdKaso'),
+                usernamePassword(credentialsId: "${dbCredentialNameCapitastra}", usernameVariable: 'dbUserCapitastra', passwordVariable: 'dbPwdCapitastra'),
                 usernamePassword(credentialsId: "${aiCredentialName}", usernameVariable: 'aiUser', passwordVariable: 'aiPwd')
             ]
             withCredentials(credentials) {
@@ -54,6 +59,7 @@ node ("gretl") {
                 -PdbUriVerisoNplso='${dbUriVerisoNplso}' -PdbUserVerisoNplso='${dbUserVerisoNplso}' -PdbPwdVerisoNplso='${dbPwdVerisoNplso}' \
                 -PdbUriAltlast4web='${dbUriAltlast4web}' -PdbUserAltlast4web='${dbUserAltlast4web}' -PdbPwdAltlast4web='${dbPwdAltlast4web}' \
                 -PdbUriKaso='${dbUriKaso}' -PdbUserKaso='${dbUserKaso}' -PdbPwdKaso='${dbPwdKaso}' \
+                -PdbUriCapitastra='${dbUriCapitastra}' -PdbUserCapitastra='${dbUserCapitastra}' -PdbPwdCapitastra='${dbPwdCapitastra}' \
                 -PaiServer='${aiServer}' -PaiUser='${aiUser}' -PaiPwd='${aiPwd}'"
             }
         }
