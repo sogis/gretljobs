@@ -12,6 +12,8 @@ def dbUriKaso = ''
 def dbCredentialNameKaso = ''
 def dbUriCapitastra = ''
 def dbCredentialNameCapitastra = ''
+def ftpServerZivilschutz = ''
+def ftpCredentialNameZivilschutz = ''
 def aiServer = ''
 def aiCredentialName = ''
 def gretljobsRepo = ''
@@ -31,6 +33,8 @@ node("master") {
     dbCredentialNameKaso = "${DB_CREDENTIAL_KASO}"
     dbUriCapitastra = "${env.DB_URI_CAPITASTRA}"
     dbCredentialNameCapitastra = "${DB_CREDENTIAL_CAPITASTRA}"
+    ftpServerZivilschutz = "${env.FTP_SERVER_ZIVILSCHUTZ}"
+    ftpCredentialNameZivilschutz = "${FTP_CREDENTIAL_ZIVILSCHUTZ}"
     aiServer = "${env.AI_SERVER}"
     aiCredentialName = "${AI_CREDENTIAL}"
     gretljobsRepo = "${env.GRETL_JOB_REPO_URL}"
@@ -49,6 +53,7 @@ node ("gretl") {
                 usernamePassword(credentialsId: "${dbCredentialNameAltlast4web}", usernameVariable: 'dbUserAltlast4web', passwordVariable: 'dbPwdAltlast4web'),
                 usernamePassword(credentialsId: "${dbCredentialNameKaso}", usernameVariable: 'dbUserKaso', passwordVariable: 'dbPwdKaso'),
                 usernamePassword(credentialsId: "${dbCredentialNameCapitastra}", usernameVariable: 'dbUserCapitastra', passwordVariable: 'dbPwdCapitastra'),
+                usernamePassword(credentialsId: "${ftpCredentialNameZivilschutz}", usernameVariable: 'ftpUserZivilschutz', passwordVariable: 'ftpPwdZivilschutz'),
                 usernamePassword(credentialsId: "${aiCredentialName}", usernameVariable: 'aiUser', passwordVariable: 'aiPwd')
             ]
             withCredentials(credentials) {
@@ -60,6 +65,7 @@ node ("gretl") {
                 -PdbUriAltlast4web='${dbUriAltlast4web}' -PdbUserAltlast4web='${dbUserAltlast4web}' -PdbPwdAltlast4web='${dbPwdAltlast4web}' \
                 -PdbUriKaso='${dbUriKaso}' -PdbUserKaso='${dbUserKaso}' -PdbPwdKaso='${dbPwdKaso}' \
                 -PdbUriCapitastra='${dbUriCapitastra}' -PdbUserCapitastra='${dbUserCapitastra}' -PdbPwdCapitastra='${dbPwdCapitastra}' \
+                -PftpServerZivilschutz='${ftpServerZivilschutz}' -PftpUserZivilschutz='${ftpUserZivilschutz}' -PftpPwdZivilschutz='${ftpPwdZivilschutz}' \
                 -PaiServer='${aiServer}' -PaiUser='${aiUser}' -PaiPwd='${aiPwd}'"
             }
         }
