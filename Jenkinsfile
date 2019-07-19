@@ -43,7 +43,7 @@ node("master") {
 node ("gretl") {
     try {
         gitBranch = "${params.BRANCH ?: 'master'}"
-        git url: "${gretljobsRepo}", branch: gitBranch
+        git url: "${gretljobsRepo}", branch: gitBranch, changelog: false
         dir(env.JOB_BASE_NAME) {
             credentials = [
                 usernamePassword(credentialsId: "${dbCredentialNameSogis}", usernameVariable: 'dbUserSogis', passwordVariable: 'dbPwdSogis'),
