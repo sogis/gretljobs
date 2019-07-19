@@ -6,6 +6,8 @@ def dbUriPub = ''
 def dbCredentialNamePub = ''
 def dbUriVerisoNplso = ''
 def dbCredentialNameVerisoNplso = ''
+def dbUriAltlast4web = ''
+def dbCredentialNameAltlast4web = ''
 def aiServer = ''
 def aiCredentialName = ''
 def gretljobsRepo = ''
@@ -19,6 +21,8 @@ node("master") {
     dbCredentialNamePub = "${DB_CREDENTIAL_GRETL}"
     dbUriVerisoNplso = "${env.DB_URI_VERISO_NPLSO}"
     dbCredentialNameVerisoNplso = "${DB_CREDENTIAL_GRETL}"
+    dbUriAltlast4web = "${env.DB_URI_ALTLAST4WEB}"
+    dbCredentialNameAltlast4web = "${DB_CREDENTIAL_ALTLAST4WEB}"
     aiServer = "${env.AI_SERVER}"
     aiCredentialName = "${AI_CREDENTIAL}"
     gretljobsRepo = "${env.GRETL_JOB_REPO_URL}"
@@ -34,6 +38,7 @@ node ("gretl") {
                 usernamePassword(credentialsId: "${dbCredentialNameEdit}", usernameVariable: 'dbUserEdit', passwordVariable: 'dbPwdEdit'),
                 usernamePassword(credentialsId: "${dbCredentialNamePub}", usernameVariable: 'dbUserPub', passwordVariable: 'dbPwdPub'),
                 usernamePassword(credentialsId: "${dbCredentialNameVerisoNplso}", usernameVariable: 'dbUserVerisoNplso', passwordVariable: 'dbPwdVerisoNplso'),
+                usernamePassword(credentialsId: "${dbCredentialNameAltlast4web}", usernameVariable: 'dbUserAltlast4web', passwordVariable: 'dbPwdAltlast4web'),
                 usernamePassword(credentialsId: "${aiCredentialName}", usernameVariable: 'aiUser', passwordVariable: 'aiPwd')
             ]
             withCredentials(credentials) {
@@ -42,6 +47,7 @@ node ("gretl") {
                 -PdbUriEdit='${dbUriEdit}' -PdbUserEdit='${dbUserEdit}' -PdbPwdEdit='${dbPwdEdit}' \
                 -PdbUriPub='${dbUriPub}' -PdbUserPub='${dbUserPub}' -PdbPwdPub='${dbPwdPub}' \
                 -PdbUriVerisoNplso='${dbUriVerisoNplso}' -PdbUserVerisoNplso='${dbUserVerisoNplso}' -PdbPwdVerisoNplso='${dbPwdVerisoNplso}' \
+                -PdbUriAltlast4web='${dbUriAltlast4web}' -PdbUserAltlast4web='${dbUserAltlast4web}' -PdbPwdAltlast4web='${dbPwdAltlast4web}' \
                 -PaiServer='${aiServer}' -PaiUser='${aiUser}' -PaiPwd='${aiPwd}'"
             }
         }
