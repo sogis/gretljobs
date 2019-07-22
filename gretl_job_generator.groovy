@@ -37,7 +37,8 @@ for (jobFile in jobFiles) {
   // take last folder for job name
   def namePosition = _jobPath.size() > 1 ? _jobPath.size() - 2 : 0
   def jobName = _jobPath[namePosition]
-  println 'job name: ' + jobName
+  println 'Job ' + jobName
+  println 'script file: ' + relativeScriptPath
 
   def pipelineFilePath = "${baseDir}/${jenkinsfileName}"
 
@@ -60,7 +61,7 @@ for (jobFile in jobFiles) {
   def propertiesFilePath = "${jobName}/${jobPropertiesFileName}"
   def propertiesFile = new File(baseDir, propertiesFilePath)
   if (propertiesFile.exists()) {
-    println jobPropertiesFileName + ' file found: ' + propertiesFilePath
+    println 'properties file found: ' + propertiesFilePath
     properties.load(propertiesFile.newDataInputStream())
   }
   
