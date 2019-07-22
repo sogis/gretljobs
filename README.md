@@ -1,6 +1,20 @@
 # gretljobs
 Enthält sämtliche Konfigurationsdateien (`*.gradle`, `*.sql`) der GRETL-Jobs und eine GRETL-Entwicklungsumgebung. Umfasst zudem das Job DSL Script `gretl_job_generator.groovy` für den *gretl-job-generator*, der in regelmässigen Abständen das *gretljobs*-Repository durchsucht und daraus in Jenkins entsprechende Jenkins-Pipelines generiert.
 
+## Funktionsweise in Jenkins
+
+In Jenkins besteht zu Beginn nur ein Job *gretl-job-generator*; das Skript, das er ausführt, ist `gretl_job_generator.groovy`. Er checkt in regelmässigen Abständen das *gretljobs*-Repository aus und sucht in allen Ordnern (konfigurierbar) nach Skripten mit Name `build.gradle` (konfigurierbar).
+
+Wenn er ein solches findet, legt er einen Job an und definiert das Skript in der Datei `Jenkinsfile` als Code, den der Job ausführen soll. Falls der *gretl-job-generator* im Ordner des gerade anzulegenden Jobs neben `build.gradle` auch eine eigene Datei mit Namen `Jenkinsfile` findet, definiert er als Code für den Job statt des zentralen Jenkinsfiles den Inhalt dieses jobspezifischen Jenkinsfiles (Übersteuerbarkeit). Zudem weist der *gretl-job-generator* optional dem Job folgende Eigenschaften zu:
+
+* Wer den Job starten darf
+* Wieviele Ausführungen eines Jobs aufbewahrt werden sollen
+* Ob bei Start des Jobs eine Datei hochgeladen werden muss
+* Ob der Job nach Ausführung eines anderen Jobs gestartet werden soll
+* Ob der Job in regelmässigen Zeitintervallen gestartet werden soll
+
+Wenn ein GRETL-Job gestartet wird, ermittelt das zugewiesene Skript alle benötigten Parameter und Benutzernamen für den Zugriff auf DBs und andere externe Ressourcen und führt mit Gradle das Skript `build.gradle`, das im entsprechenden Job-Verzeichnis liegt, aus.
+
 
 ## Best Practice für das Erstellen von Jobs
 
@@ -41,46 +55,7 @@ git checkout -b branchname
 
 ### Files
 
-Jeder GRETL-Job braucht im Minimum das File `build.gradle`. Wenn er auch durch Jenkins gestartet werden soll, braucht er zusätzlich das File `gretl-job.groovy` und bei Bedarf das File `job.properties`.
-
-#### `gretl-job.groovy`
-`gretl-job.groovy` hat in der Regel folgenden Inhalt:
-
-```groovy
-def gretlShare = 'none'
-def dbUriSogis = ''
-def dbCredentialNameSogis = ''
-def dbUriEdit = ''
-def dbCredentialNameEdit = ''
-def dbUriPub = ''
-def dbCredentialNamePub = ''
-def gretljobsRepo = ''
-
-node("master") {
-    gretlShare = "${env.GRETL_SHARE}"
-    dbUriSogis = "${env.DB_URI_SOGIS}"
-    dbCredentialNameSogis = "${DB_CREDENTIAL_GRETL}"
-    dbUriEdit = "${env.DB_URI_EDIT}"
-    dbCredentialNameEdit = "${DB_CREDENTIAL_GRETL}"
-    dbUriPub = "${env.DB_URI_PUB}"
-    dbCredentialNamePub = "${DB_CREDENTIAL_GRETL}"
-    gretljobsRepo = "${env.GRETL_JOB_REPO_URL}"
-}
-
-node ("gretl") {
-    gitBranch = "${params.BRANCH ?: 'master'}"
-    git url: "${gretljobsRepo}", branch: gitBranch
-    dir(env.JOB_BASE_NAME) {
-        withCredentials([usernamePassword(credentialsId: "${dbCredentialNameSogis}", usernameVariable: 'dbUserSogis', passwordVariable: 'dbPwdSogis'), usernamePassword(credentialsId: "${dbCredentialNameEdit}", usernameVariable: 'dbUserEdit', passwordVariable: 'dbPwdEdit'), usernamePassword(credentialsId: "${dbCredentialNamePub}", usernameVariable: 'dbUserPub', passwordVariable: 'dbPwdPub')]) {
-            sh "gradle --init-script /home/gradle/init.gradle \
-                -PgretlShare='${gretlShare}' \
-                -PdbUriSogis='${dbUriSogis}' -PdbUserSogis='${dbUserSogis}' -PdbPwdSogis='${dbPwdSogis}' \
-                -PdbUriEdit='${dbUriEdit}' -PdbUserEdit='${dbUserEdit}' -PdbPwdEdit='${dbPwdEdit}' \
-                -PdbUriPub='${dbUriPub}' -PdbUserPub='${dbUserPub}' -PdbPwdPub='${dbPwdPub}'"
-        }
-    }
-}
-```
+Jeder GRETL-Job braucht im Minimum das File `build.gradle`. Bei Bedarf platziert man zudem ein File `job.properties` im Job-Ordner, um den Job in Jenkins zu konfigurieren. Falls der Job in Jenkins mit einem anderen Jenkinsfile als dem Standard-Jenkinsfile gestartet werden soll, muss sein spezifisches Jenkinsfile ebenfalls im Job-Ordner abgelegt werden.
 
 #### `job.properties`
 `job.properties` kann folgende Eigenschaften des GRETL-Jobs enthalten:
