@@ -14,7 +14,7 @@
      freistellung.auszahlungsjahr, 
      coalesce(freistellung.anzahl,1,0)||' x '||baumart.baumart AS bauminfo, 
      freistellung.brusthoehendurchmesser, 
-     st_buffer(freistellung.geometrie, 8, 'quad_segs=8') AS geometrie  
+     st_buffer(freistellung.geometrie, 5, 'quad_segs=8') AS geometrie  
  FROM 
      awjf_seltene_baeume.seltene_baumarten_freistellung freistellung 
 LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze gemeinden 
