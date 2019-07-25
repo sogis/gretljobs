@@ -16,6 +16,7 @@ def ftpServerZivilschutz = ''
 def ftpCredentialNameZivilschutz = ''
 def aiServer = ''
 def aiCredentialName = ''
+def solrIndexupdaterBaseUrl = ''
 def gretljobsRepo = ''
 
 node("master") {
@@ -37,6 +38,7 @@ node("master") {
     ftpCredentialNameZivilschutz = "${FTP_CREDENTIAL_ZIVILSCHUTZ}"
     aiServer = "${env.AI_SERVER}"
     aiCredentialName = "${AI_CREDENTIAL}"
+    solrIndexupdaterBaseUrl = "${env.SOLR_INDEXUPDATER_BASE_URL}"
     gretljobsRepo = "${env.GRETL_JOB_REPO_URL}"
 }
 
@@ -66,7 +68,8 @@ node ("gretl") {
                 -PdbUriKaso='${dbUriKaso}' -PdbUserKaso='${dbUserKaso}' -PdbPwdKaso='${dbPwdKaso}' \
                 -PdbUriCapitastra='${dbUriCapitastra}' -PdbUserCapitastra='${dbUserCapitastra}' -PdbPwdCapitastra='${dbPwdCapitastra}' \
                 -PftpServerZivilschutz='${ftpServerZivilschutz}' -PftpUserZivilschutz='${ftpUserZivilschutz}' -PftpPwdZivilschutz='${ftpPwdZivilschutz}' \
-                -PaiServer='${aiServer}' -PaiUser='${aiUser}' -PaiPwd='${aiPwd}'"
+                -PaiServer='${aiServer}' -PaiUser='${aiUser}' -PaiPwd='${aiPwd}' \
+                -PsolrIndexupdaterBaseUrl='${solrIndexupdaterBaseUrl}'"
             }
         }
     }
