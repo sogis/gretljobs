@@ -9,7 +9,7 @@ task replaceDataset (type: Ili2pgReplace) {
     description = "Ersetzt die Daten in der Edit-DB."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "avt_strassenlaerm"
-    models = "SO_AVT_Strassenlaerm_20190415"
+    models = "SO_AVT_Strassenlaerm_20190806"
     disableValidation = true
     dataset = "data"
     dataFile = "strassenlaerm.xtf" // name is injected by jenkins
