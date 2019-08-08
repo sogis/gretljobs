@@ -41,7 +41,7 @@ task validateDataset(type: IliValidator, dependsOn: 'checkXtfName') {
 
 task replaceDataset (type: Ili2pgReplace, dependsOn: 'validateDataset') {
     description = "Ersetzt einen Datensatz (=XTF) in der Erfassungsdatenbank."
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_npl"
     models = "SO_Nutzungsplanung_20171118"
     disableValidation = true
