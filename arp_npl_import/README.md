@@ -17,10 +17,15 @@ Zu importieren XTF in das Import-Job-Verzeichnis (`arp_npl_import`) kopieren, da
 Umgebungsvariablen für DB-Verbindung setzen. Diese werden im Docker-Container beim Ausführen des Jobs verwendet:
 
 ```
--- vor Umbau auf edit-DB: export DB_URI_SOGIS=jdbc:postgresql://geodb-t.verw.rootso.org:5432/sogis
+vor Umbau von Sogis auf edit-DB:
+-- export DB_URI_SOGIS=jdbc:postgresql://geodb-t.verw.rootso.org:5432/sogis
+-- export DB_USER_SOGIS=datasync
+-- export DB_PWD_SOGIS=datasync
+
+nach Umbau auf edit-DB:
 export DB_URI_SOGIS=jdbc:postgresql://geodb-t.rootso.org:5432/edit?sslmode=require
-export DB_USER_SOGIS=datasync
-export DB_PWD_SOGIS=datasync
+export DB_USER_SOGIS=<USERNAME>
+export DB_PWD_SOGIS=<PASSWORD>
 ```
 
 Im `scripts`-Ordner des geklonten Repos folgender Befehl ausführen, um den Import zu starten:
