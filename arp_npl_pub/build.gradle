@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 defaultTasks 'transferArpNpl'
 
 task transferArpNpl(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet("transform_arp_npl_pub_nutzungsplanung_grundnutzung_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_grundnutzung', true),
