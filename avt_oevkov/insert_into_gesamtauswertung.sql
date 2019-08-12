@@ -296,8 +296,10 @@ INSERT INTO
          verkehrsmittel,
          gewichtung,
          anrechnung,
+         abfahrten_gtfs_korrigiert,
          abfahrten_ungewichtet,
-         abfahrten_gewichtet
+         abfahrten_gewichtet,
+         bemerkungen
         )
         (
         SELECT
@@ -308,8 +310,10 @@ INSERT INTO
             verkehrsmittel,
             gewichtung,
             anrechnung,
+            abfahrten_korrigiert AS abfahrten_gtfs_korrigiert,
             abfahrten_korrigiert AS abfahrten_ungewichtet,
-            (abfahrten_korrigiert *  gewichtung  *  anrechnung  /  100)::numeric(5,1) AS abfahrten_gewichtet
+            (abfahrten_korrigiert *  gewichtung  *  anrechnung  /  100)::numeric(5,1) AS abfahrten_gewichtet,
+            bemerkungen
         FROM
             avt_oevkov_${currentYear}.auswertung_abfahrten_korrigiert AS korrektur
             LEFT JOIN avt_oevkov_${currentYear}.sachdaten_haltestelle_anrechnung AS anrechnung
