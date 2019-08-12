@@ -87,41 +87,68 @@ INSERT INTO
             anrechnung.anrechnung,
             anzahl_abfahrten_linie AS abfahrten_gtfs,
             CASE
-                WHEN
-                    (gtfs_abfahrten.abfahrten_korrigiert = 0
+                 WHEN
+                    ((gtfs_abfahrten.abfahrten_korrigiert = 0
                      OR
                          gtfs_abfahrten.abfahrten_korrigiert IS NULL)
+                     AND
+                         gewichtung_korrigiert <> 0
+                     AND
+                         gewichtung_korrigiert IS NOT NULL)
                     THEN
                         NULL
+                 WHEN
+                    ((gtfs_abfahrten.abfahrten_korrigiert = 0
+                     OR
+                         gtfs_abfahrten.abfahrten_korrigiert IS NULL)
+                     AND
+                         gewichtung_korrigiert = 0)
+                    THEN
+                      0  - anzahl_abfahrten_linie
                 ELSE
                     gtfs_abfahrten.abfahrten_korrigiert
             END AS abfahrten_gtfs_korrigiert,
             CASE
                 WHEN
-                    (gtfs_abfahrten.abfahrten_korrigiert = 0
+                    ((gtfs_abfahrten.abfahrten_korrigiert = 0
                      OR
                          gtfs_abfahrten.abfahrten_korrigiert IS NULL)
+                     AND
+                         gewichtung_korrigiert <> 0
+                     AND
+                         gewichtung_korrigiert IS NOT NULL
+                         )
                     THEN
                         anzahl_abfahrten_linie
+                WHEN
+                    gewichtung_korrigiert = 0
+                    THEN
+                        0
+                WHEN
+                   gtfs_abfahrten.abfahrten_korrigiert  <> 0
+                   AND
+                       gtfs_abfahrten.abfahrten_korrigiert  IS NOT NULL 
+                       THEN
+                            (anzahl_abfahrten_linie  +  gtfs_abfahrten.abfahrten_korrigiert)
                ELSE
-                   (anzahl_abfahrten_linie  +  gtfs_abfahrten.abfahrten_korrigiert)
+                   anzahl_abfahrten_linie
             END AS abfahrten_ungewichtet,
             CASE
                 WHEN
-                    (gtfs_abfahrten.abfahrten_korrigiert IS NOT NULL 
+                    gtfs_abfahrten.abfahrten_korrigiert IS NOT NULL 
                      AND
                          gtfs_abfahrten.abfahrten_korrigiert <> 0
                      AND
-                         gewichtung_korrigiert > 0)
-                THEN
-                   ((anzahl_abfahrten_linie  +  gtfs_abfahrten.abfahrten_korrigiert)
-                          *  gewichtung_korrigiert  *  anrechnung  /  100)::numeric(5,1)
+                         gewichtung_korrigiert > 0
+                    THEN
+                       ((anzahl_abfahrten_linie  +  gtfs_abfahrten.abfahrten_korrigiert)
+                              *  gewichtung_korrigiert  *  anrechnung  /  100)::numeric(5,1)
                 WHEN
-                    (gtfs_abfahrten.abfahrten_korrigiert IS NOT NULL
+                    gtfs_abfahrten.abfahrten_korrigiert IS NOT NULL
                     AND
                         gtfs_abfahrten.abfahrten_korrigiert <> 0
                     AND
-                     (gewichtung_korrigiert = 0 OR gewichtung_korrigiert IS NULL))
+                    gewichtung_korrigiert IS NULL
                    THEN
                     ((anzahl_abfahrten_linie  +  gtfs_abfahrten.abfahrten_korrigiert)
                          *  gtfs_abfahrten.gewichtung  *  anrechnung  /  100)::numeric(5,1)
@@ -129,8 +156,12 @@ INSERT INTO
                     (gewichtung_korrigiert > 0
                      AND (gtfs_abfahrten.abfahrten_korrigiert = 0
                          OR gtfs_abfahrten.abfahrten_korrigiert IS NULL))
-                THEN
-                    (anzahl_abfahrten_linie  *  gewichtung_korrigiert  *  anrechnung  /  100)::numeric(5,1)
+                    THEN
+                        (anzahl_abfahrten_linie  *  gewichtung_korrigiert  *  anrechnung  /  100)::numeric(5,1)
+                 WHEN
+                    gewichtung_korrigiert = 0
+                    THEN
+                        0
                 ELSE
                     (anzahl_abfahrten_linie  *  gtfs_abfahrten.gewichtung  *  anrechnung  /  100)::numeric(5,1)
             END AS abfahrten_gewichtet,
