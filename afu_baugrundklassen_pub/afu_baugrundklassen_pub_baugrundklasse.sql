@@ -11,26 +11,26 @@ SELECT
     gz,
     CASE
         WHEN bgk = 'A'
-            THEN '<b>Baugrundklasse A</b><br>
+            THEN 'Baugrundklasse A: 
                   Harter Fels (z.B. Kalk) oder weicher Fels (z.B. Sandstein, Nagelfluh, Mergel, Opalinuston) unter maximal 5 m Lockergesteinsbedeckung'
         WHEN bgk = 'C'
-            THEN '<b>Baugrundklasse C</b><br>
+            THEN 'Baugrundklasse C:
                   Ablagerungen von normal konsolidiertem und unzementierten Kies und Sand und/oder Moränenmaterial mit einer Mächtigkeit über 30m'
         WHEN bgk = 'D'
-            THEN '<b>Baugrundklasse D</b><br>
+            THEN 'Baugrundklasse D:
                   Ablagerungen von unkonsolidiertem Feinsand, Silt und Ton mit einer Mächtigkeit über 30m'
         WHEN bgk = 'E'
-            THEN '<b>Baugrundklasse E</b><br>
+            THEN 'Baugrundklasse E:
                   Alluviale Oberflächenschicht der Baugrundklassen C und D mit einer Mächtigkeit zwischen 5 und 30 m über einer steiferen Schicht der Baugrundklasse A oder B'
         WHEN bgk = 'F2'
-            THEN '<b>Baugrundklasse F2</b><br>
+            THEN 'Baugrundklasse F2: 
                   Aktive oder reaktivierbare Rutschungen'
     END AS bgk_txt,
     CASE
         WHEN gz = '1'
-            THEN '<b>Erdbebengefährdungszone: Z1</b>'
+            THEN 'Erdbebengefährdungszone: Z1'
         WHEN gz = '2'
-            THEN '<b>Erdbebengefährdungszone: Z2</b>'
+            THEN 'Erdbebengefährdungszone: Z2'
     END AS gz_txt,
     'https://geo.so.ch/docs/ch.so.afu.baugrundklassen/synthesebericht.pdf' AS bericht
     
