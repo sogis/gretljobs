@@ -177,9 +177,8 @@ INSERT INTO
               'Däniken',
               'Dornach-Arlesheim',
               'Dulliken',
-              'Flüh, Bahnhof',
               'Grenchen Nord',
-               'Grenchen Süd',
+              'Grenchen Süd',
               'Murgenthal',
               'Olten',
               'Schönenwerd SO',
@@ -860,53 +859,6 @@ UNION ALL
         stop_name = 'Grenchen Nord'
     AND
         route_desc = 'RegioExpress'              -- InterCity werden nicht gezaehlt
-    GROUP BY
-        stop_name,
-        linienname,
-        unternehmer,
-        verkehrsmittel
-
-    UNION ALL
-
--- Flüh, Bahnhof (beide Tram und Bus), in GTFS Name für
--- beide gleich, Abt. OeV wünscht Unterscheidung
-    SELECT
-        'Flüh Bahnhof' AS stop_name,
-        linienname,
-        unternehmer,
-        sum(gtfs_count),
-        verkehrsmittel
-    FROM
-        abfahrten
-    WHERE
-        trip_headsign <> 'Flüh, Bahnhof'
-    AND
-        stop_name = 'Flüh, Bahnhof'
-    AND
-        route_desc = 'Tram'
-    GROUP BY
-        stop_name,
-        linienname,
-        unternehmer,
-        verkehrsmittel
-
-    UNION ALL
-
--- Bahnhof: Flüh, Bahnhof
-    SELECT
-        'Flüh, Bahnhof' AS stop_name,
-        linienname,
-        unternehmer,
-        sum(gtfs_count),
-        verkehrsmittel
-    FROM
-        abfahrten
-    WHERE
-        trip_headsign <> 'Flüh, Bahnhof'
-    AND
-        stop_name = 'Flüh, Bahnhof'
-    AND
-         route_desc = 'Bus'
     GROUP BY
         stop_name,
         linienname,
