@@ -42,6 +42,11 @@ Anschliessend kann in der GRETL-Jenkins-Umgebung (`https://gretl-test.so.ch/`) d
 
 Wenn in der Test-Umgebung alles funktioniert hat, das Ganze nochmals auf der Produktion. In Zukunft dürfte wohl das Ausführen auf der Test-Umgebung überflüssig werden.
 
+# Gretljob arp_zonenplan_pub nachführen
+Der Gretljob arp_zonenplan_pub schliesst jene Gemeinden aus, welche die Nutzungsplanung schon abgeschlossen haben. 
+=> `gem_bfs NOT IN (2405,2408,2457,2473,2474,2476,2498,2501,2502,2580,2613,2614,2615)`
+Das File `arp_zonenplan_pub/arp_zonenplan_pub_digitalisierter_zonenplan.sql` muss bei jeder neu angelegten NPL-Gemeinde um die neue BFS-Nummer erweitert werden!!
+
 ### Alte Welt (QWC1)
 Da nun der Datenumbau direkt beim Transfer von Erfassungs-DB nach Pub-DB passiert, fehlt das Pub-Modell (resp. Schema des Pub-Modelles) auf der alten sogis-DB. Temporär muss es auch noch dort vorhanden sein, weil man immer noch den QWC1 bedienen will. Dazu wird der `arp_npl_pub`-Job lokal ausgeführt. Hier müssen noch die DB-Parameter gesetzt werden:
 
