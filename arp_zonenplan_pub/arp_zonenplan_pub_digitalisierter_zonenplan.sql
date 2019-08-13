@@ -13,5 +13,5 @@ FROM
 WHERE
     archive = 0
 AND 
-    gem_bfs NOT IN (SELECT DISTINCT t_datasetname::integer FROM arp_npl.nutzungsplanung_grundnutzung) --Jene Gemeinden ausschliessen, welche die Nutzungsplanung schon abgeschlossen haben! 
+    gem_bfs NOT IN (2405,2408,2457,2473,2474,2476,2498,2501,2502,2580,2613,2614,2615)
 ;
