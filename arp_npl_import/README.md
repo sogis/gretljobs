@@ -44,7 +44,7 @@ Wenn in der Test-Umgebung alles funktioniert hat, das Ganze nochmals auf der Pro
 
 Gretljob arp_zonenplan_pub nachführen:
 Der Gretljob arp_zonenplan_pub schliesst jene Gemeinden aus, welche die Nutzungsplanung schon abgeschlossen haben. 
-=> `gem_bfs NOT IN (2405,2408,2457,2473,2474,2476,2498,2501,2502,2580,2613,2614,2615)`
+=> `gem_bfs NOT IN (2405,2408,2457,2473,2474,2476,2498,2501,2502,2580,2613,2614,2615)`. 
 Das File `arp_zonenplan_pub/arp_zonenplan_pub_digitalisierter_zonenplan.sql` muss bei jeder neu angelegten NPL-Gemeinde um die neue BFS-Nummer erweitert werden!!
 
 ### Alte Welt (QWC1)
