@@ -58,9 +58,11 @@ ext {
     models.add(["SO_AVT_Verkehrszaehlstellen_20190206",
                 "avt_verkehrszaehlstellen",
                 dbEdit])
+    /*
     models.add(["SO_ARP_Richtplan_20190222",
                 "arp_richtplan",
                 dbEdit])
+    */
     /*models.add(["SO_AfU_Gefahrenkartierung_20181129",
                 "afu_gefahrenkartierung",
                 dbEdit])*/
