@@ -29,7 +29,7 @@ SET
 
 -- Gewichtete Haltestellenabfahrten Total
 UPDATE
-     avt_oevkov_${currentYear}.sachdaten_oevkov_daten AS oevkov_daten
+     avt_oevkov_${currentYear}.sachdaten_oevkov_daten
 SET
     total_gewichtete_haltestellenabfahrten =sum_abfahrten_gewichtet.total
 FROM
@@ -65,7 +65,6 @@ SET
 UPDATE
     avt_oevkov_${currentYear}.sachdaten_oevkov_daten
 SET
--- Gesamtkosten, Gemeindeanteil 37%
     schwellenwert = gemeindeanteil  /
          (
          SELECT
@@ -75,10 +74,7 @@ SET
          )  *  1.5
 ;
 
-
-
 -- Tabelle avt_oevkov_${currentYear}.auswertung_gemeinde_einwohner_kosten
-
 -- Zuerst alle Werte 0 setzen für Neuberechnung
 UPDATE
      avt_oevkov_${currentYear}.auswertung_gemeinde_einwohner_kosten
@@ -106,24 +102,24 @@ FROM
         (
         SELECT
              anrechnung.gemeindename, 
-         CASE
+            CASE
 --           wenn Korrekturen gemacht wurden
-         WHEN  korrektur.abfahrten_korrigiert IS NOT NULL
-             THEN
-                 sum((auswertung.anzahl_abfahrten_linie  +  korrektur.abfahrten_korrigiert)  * korrektur.gewichtung  * anrechnung  /  100)::numeric(5,1)
-             ELSE
-                sum((auswertung.anzahl_abfahrten_linie)  * auswertung.gewichtung  * anrechnung  /  100)::numeric(5,1)
-         END AS abfahrten_gewichtet,
-         korrektur.abfahrten_korrigiert
+                 WHEN  korrektur.abfahrten_korrigiert IS NOT NULL
+                    THEN
+                         sum((auswertung.anzahl_abfahrten_linie  +  korrektur.abfahrten_korrigiert)  * korrektur.gewichtung  * anrechnung  /  100)::numeric(5,1)
+                     ELSE
+                         sum((auswertung.anzahl_abfahrten_linie)  * auswertung.gewichtung  * anrechnung  /  100)::numeric(5,1)
+              END AS abfahrten_gewichtet,
+              korrektur.abfahrten_korrigiert
         FROM
-        avt_oevkov_${currentYear}.sachdaten_haltestelle_anrechnung AS anrechnung
-       LEFT JOIN avt_oevkov_${currentYear}.auswertung_auswertung_gtfs AS auswertung
-           ON auswertung.haltestellenname = anrechnung.haltestellenname
-      LEFT JOIN avt_oevkov_${currentYear}.auswertung_abfahrten_korrigiert AS korrektur
-               ON (korrektur.haltestellenname = anrechnung.haltestellenname
-            OR korrektur.haltestellenname = '--- Alle')
-           AND
-                korrektur.linie = auswertung.linie
+            avt_oevkov_${currentYear}.sachdaten_haltestelle_anrechnung AS anrechnung
+            LEFT JOIN avt_oevkov_${currentYear}.auswertung_auswertung_gtfs AS auswertung
+                ON auswertung.haltestellenname = anrechnung.haltestellenname
+            LEFT JOIN avt_oevkov_${currentYear}.auswertung_abfahrten_korrigiert AS korrektur
+                ON (korrektur.haltestellenname = anrechnung.haltestellenname
+                    OR korrektur.haltestellenname = '--- Alle')
+               AND
+                   korrektur.linie = auswertung.linie
         GROUP BY
             korrektur.haltestellenname,
             anrechnung.gemeindename,
@@ -145,17 +141,15 @@ FROM
                     haltestellenname||linie
                 FROM
                     avt_oevkov_${currentYear}.auswertung_auswertung_gtfs
-        )
---         AND
---             korrektur.haltestellenname <> '--- Alle'
+            )
         AND
             abfahrten_korrigiert <> 0
         GROUP BY
             korrektur.abfahrten_korrigiert,
             anrechnung.gemeindename 
         ) AS abfahrten
-    GROUP BY
-        gemeindename
+        GROUP BY
+            gemeindename
     ) AS gewichtete_abfahrten_gemeinde
    WHERE
         kosten.gemeindename = gewichtete_abfahrten_gemeinde.gemeindename
@@ -163,24 +157,28 @@ FROM
 
 -- Kosten gemäss Angebot
 UPDATE
-    avt_oevkov_${currentYear}.auswertung_gemeinde_einwohner_kosten AS kosten
+    avt_oevkov_${currentYear}.auswertung_gemeinde_einwohner_kosten
 SET
     kosten_angebot = (einwohnerzahl  *
-          (SELECT
+        (
+        SELECT
              gesamtkosten_angebot  /  7 * 2  /  total_einwohner  *  0.37
-         FROM
+        FROM
             avt_oevkov_${currentYear}.sachdaten_oevkov_daten
-        ))  +   (gewichtete_haltestellenabfahrten *
-          (SELECT
-             gesamtkosten_angebot  /  7 * 5  /  total_gewichtete_haltestellenabfahrten  *  0.37
-         FROM
-            avt_oevkov_${currentYear}.sachdaten_oevkov_daten
-        ))
+        )) 
+        +  (gewichtete_haltestellenabfahrten *
+               (
+               SELECT
+                   gesamtkosten_angebot  /  7 * 5  /  total_gewichtete_haltestellenabfahrten  *  0.37
+               FROM
+                   avt_oevkov_${currentYear}.sachdaten_oevkov_daten
+               )
+           )
 ;
 
 -- Kosten gemäss Anzahl Einwohner
 UPDATE
-    avt_oevkov_${currentYear}.auswertung_gemeinde_einwohner_kosten AS kosten
+    avt_oevkov_${currentYear}.auswertung_gemeinde_einwohner_kosten
 SET
     kosten_anzahl_einwohner = (einwohnerzahl  *
           (SELECT
