@@ -1,171 +1,4 @@
-WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS (
-    SELECT
-        ursprung,
-        hinweis,
-        ARRAY[ursprung] AS parents,
-        ursprung AS last_ursprung,
-        0 AS "depth"
-    FROM
-        arp_npl.rechtsvorschrften_hinweisweiteredokumente
-      
-    UNION ALL
-  
-    SELECT
-        x.ursprung,
-        x.hinweis,
-        parents || rechtsvorschrften_hinweisweiteredokumente.hinweis,
-        rechtsvorschrften_hinweisweiteredokumente.hinweis AS last_ursprung,
-        x."depth" + 1
-    FROM
-        x
-        INNER JOIN arp_npl.rechtsvorschrften_hinweisweiteredokumente
-            ON (last_ursprung = rechtsvorschrften_hinweisweiteredokumente.ursprung)
-    WHERE 
-        rechtsvorschrften_hinweisweiteredokumente.hinweis IS NOT NULL
-
-), doc_doc_references_all AS (
-    SELECT
-        ursprung,
-        hinweis,
-        parents,
-        depth
-    FROM
-        x
-    WHERE
-        depth = (
-            SELECT
-                max(sq."depth")
-            FROM
-                x AS sq 
-            WHERE
-                sq.ursprung = x.ursprung
-                )
-), 
-doc_doc_references AS (
-    SELECT 
-        ursprung,
-        a_parents AS dok_dok_referenzen
-    FROM
-        (
-            SELECT DISTINCT ON (a_parents)
-                doc_doc_references_all_a.ursprung,
-                doc_doc_references_all_a.parents AS a_parents,
-                doc_doc_references_all_b.parents AS b_parents
-            FROM
-                doc_doc_references_all AS doc_doc_references_all_a
-                LEFT JOIN doc_doc_references_all AS doc_doc_references_all_b
-                    ON 
-                        doc_doc_references_all_a.parents <@ doc_doc_references_all_b.parents
-                        AND
-                        doc_doc_references_all_a.parents != doc_doc_references_all_b.parents
-        ) AS subquery
-    WHERE
-        b_parents IS NULL
-), 
-json_documents_all AS (
-    SELECT
-        t_id, 
-        row_to_json(subquery)::text AS json_dokument -- Text-Repräsentation des JSON-Objektes. 
-    FROM
-        (
-            SELECT
-                t_id,
-                titel,
-                abkuerzung,
-                publiziertab,
-                bemerkungen,
-                ('https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/'||"textimweb")::text AS textimweb_absolut
-            FROM
-                arp_npl.rechtsvorschrften_dokument
-        ) AS subquery
-),
-json_documents_doc_doc_reference AS (
-    SELECT
-        t_id,
-        json_dokument
-    FROM
-        (
-            SELECT
-                ursprung AS dokument_t_id
-            FROM 
-                arp_npl.rechtsvorschrften_hinweisweiteredokumente
-
-            UNION 
-
-            SELECT
-                hinweis AS dokument_t_id
-            FROM 
-                arp_npl.rechtsvorschrften_hinweisweiteredokumente
-        ) AS subquery
-        LEFT JOIN json_documents_all
-            ON subquery.dokument_t_id = json_documents_all.t_id
-),
-typ_ueberlagernd_flaeche_dokument_ref AS(
-    SELECT DISTINCT ON(typ_ueberlagernd_flaeche, dok_referenz)
-        typ_ueberlagernd_flaeche,
-        dokument,
-        dok_referenz
-    FROM
-        (
-            SELECT DISTINCT
-                typ_ueberlagernd_flaeche_dokument.typ_ueberlagernd_flaeche,
-                dokument,
-                unnest(dok_dok_referenzen) AS dok_referenz
-            FROM
-                arp_npl.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS typ_ueberlagernd_flaeche_dokument
-                LEFT JOIN doc_doc_references
-                    ON typ_ueberlagernd_flaeche_dokument.dokument = doc_doc_references.ursprung
-
-            UNION
-
-            SELECT
-                typ_ueberlagernd_flaeche,
-                dokument,
-                dokument AS dok_referenz
-            FROM
-                arp_npl.nutzungsplanung_typ_ueberlagernd_flaeche_dokument
-        ) AS subquery
-),
-typ_ueberlagernd_flaeche_json_dokument AS (
-    SELECT
-        typ_ueberlagernd_flaeche,
-        dokument,
-        dok_referenz,
-        t_id,
-        json_dokument
-    FROM
-        typ_ueberlagernd_flaeche_dokument_ref
-        LEFT JOIN json_documents_all
-            ON json_documents_all.t_id = typ_ueberlagernd_flaeche_dokument_ref.dok_referenz
-),
-typ_ueberlagernd_flaeche_json_dokument_agg AS (
-    SELECT
-        typ_ueberlagernd_flaeche_t_id,
-        '[' || dokumente::varchar || ']' as dokumente
-    FROM
-        (
-            SELECT
-                typ_ueberlagernd_flaeche AS typ_ueberlagernd_flaeche_t_id,
-                string_agg(json_dokument, ',') AS dokumente
-            FROM
-                typ_ueberlagernd_flaeche_json_dokument
-            GROUP BY
-                typ_ueberlagernd_flaeche
-        ) as subquery
-),
-ueberlagernd_flaeche_geometrie_typ AS (
-    SELECT
-        nutzungsplanung_ueberlagernd_flaeche.t_id,
-        nutzungsplanung_ueberlagernd_flaeche.geometrie,
-        nutzungsplanung_typ_ueberlagernd_flaeche.t_id AS typ_t_id,
-        nutzungsplanung_typ_ueberlagernd_flaeche.typ_kt AS typ_typ_kt
-    FROM
-        arp_npl.nutzungsplanung_ueberlagernd_flaeche
-        LEFT JOIN arp_npl.nutzungsplanung_typ_ueberlagernd_flaeche
-            ON nutzungsplanung_ueberlagernd_flaeche.typ_ueberlagernd_flaeche = nutzungsplanung_typ_ueberlagernd_flaeche.t_id
-    WHERE
-        nutzungsplanung_typ_ueberlagernd_flaeche.typ_kt = 'N521_Juraschutzzone'
-), documents_naturreservate AS (
+WITH documents_naturreservate AS (
     SELECT DISTINCT 
         bezeichnung, 
         typ, 
@@ -322,6 +155,7 @@ documents_json_naturreservate AS (
         reservat
 )
 
+
 /* Grundwasserschutzzone_areal*/
 SELECT
     uuid_generate_v4() AS t_ili_tid,
@@ -374,10 +208,10 @@ WHERE
 GROUP BY 
     reservate_reservat.t_id,
     documents_json_naturreservate.dokumente
-
-UNION ALL
-
-/*Fruchtfolgeflaeche*/
+       
+UNION ALL   
+     
+  /*Fruchtfolgeflaeche*/
 SELECT
     uuid_generate_v4() AS t_ili_tid,
     NULL AS objektnummer,
@@ -401,11 +235,11 @@ WHERE
     AND
     ST_Multi(ST_SnapToGrid(wkb_geometry, 0.001)) IS NOT NULL
 GROUP BY
-    ogc_fid
-
-UNION ALL
-
-/*Abbaustelle*/
+    ogc_fid  
+    
+UNION ALL  
+    
+ /*Abbaustelle*/
 SELECT
     uuid_generate_v4() AS t_ili_tid,
     akten_nr_t AS objektnummer,
@@ -439,31 +273,4 @@ WHERE
     mat IN (1, 2, 3)
 GROUP BY
     ogc_fid
-
-UNION ALL
-
-/*Juraschutzzone aus NPL*/
-SELECT
-    uuid_generate_v4() AS t_ili_tid,
-    NULL AS nummer,
-    'Juraschutzzone' AS objekttyp,
-    NULL AS weitere_Informationen,
-    NULL as objektname,
-    'Ausgangslage' AS abstimmungskategorie,
-    NULL AS bedeutung,
-    'rechtsgueltig' AS planungsstand,
-    'bestehend' AS status,
-    ST_SnapToGrid(ST_Multi(ueberlagernd_flaeche_geometrie_typ.geometrie), 0.001) AS geometrie,
-    typ_ueberlagernd_flaeche_json_dokument_agg.dokumente AS dokumente,
-    string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename) AS gemeindenamen
-FROM
-    agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
-    ueberlagernd_flaeche_geometrie_typ
-    LEFT JOIN typ_ueberlagernd_flaeche_json_dokument_agg
-        ON ueberlagernd_flaeche_geometrie_typ.typ_t_id = typ_ueberlagernd_flaeche_json_dokument_agg.typ_ueberlagernd_flaeche_t_id
-WHERE
-    ST_Intersects(ueberlagernd_flaeche_geometrie_typ.geometrie, hoheitsgrenzen_gemeindegrenze.geometrie) = TRUE
-GROUP BY
-    typ_ueberlagernd_flaeche_json_dokument_agg.dokumente,
-    ueberlagernd_flaeche_geometrie_typ.geometrie
 ;
