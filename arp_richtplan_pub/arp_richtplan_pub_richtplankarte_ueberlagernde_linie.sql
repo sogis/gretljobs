@@ -64,6 +64,4 @@ FROM
             ON richtplankarte_ueberlagernde_linie.t_id = documents_json.ueberlagernder_linie_id
 WHERE
     richtplankarte_ueberlagernde_linie.planungsstand IN ('rechtsgueltig', 'in_Auflage')
-AND
-    richtplankarte_ueberlagernde_linie.objekttyp NOT IN ('Bahnlinie.Schiene')   -- die Bahnlienen kommen doch von arp_richtplan_pub_richtplankarte_ueberlagernde_linie_sogis.sql
 ;
