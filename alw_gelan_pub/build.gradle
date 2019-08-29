@@ -21,3 +21,7 @@ task transferAlwGelan(type: Db2Db){
                     true)
     ];
 }
+
+task refreshSolr(type:Exec, dependsOn:'transferAlwGelan') {
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.alw.bienenstandorte_und_sperrgebiete.bienenstandorte'
+}

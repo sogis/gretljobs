@@ -25,3 +25,7 @@ task transferAfuGewisso(type: Db2Db){
             new TransferSet('afu_gewisso_pub_gwn_25_l_mq.sql', 'afu_gewisso_pub.gwn_25_l_mq', true)
     ];        
 }
+
+task refreshSolr(type:Exec, dependsOn:'transferAfuGewisso') {
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.fischereiliche_nutzung,ch.so.awjf.fischereireviere'
+}

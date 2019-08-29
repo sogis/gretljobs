@@ -13,3 +13,7 @@ task transferAvtVerkehrszaehlstellen(type: Db2Db){
                     'avt_verkehrszaehlstellen_pub.verkehrszhlstllen_verkehrszaehlstelle', true)
     ]
 }
+
+task refreshSolr(type:Exec, dependsOn:'transferAvtVerkehrszaehlstellen') {
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.avt.verkehrszaehlstellen'
+}

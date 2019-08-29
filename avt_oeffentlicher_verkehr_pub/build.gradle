@@ -14,3 +14,8 @@ task transferAvtOeffentlicherVerkehr(type: Db2Db){
             new TransferSet('avt_oeffentlicher_verkehr_pub_netz.sql', 'avt_oeffentlicher_verkehr_pub.netz', true)
     ];
 }
+
+
+task refreshSolr(type:Exec, dependsOn:'transferAvtOeffentlicherVerkehr') {
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.avt.oev.haltestellen'
+}
