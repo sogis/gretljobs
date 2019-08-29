@@ -14,3 +14,7 @@ task transferAvtKantonsstrassen(type: Db2Db){
             new TransferSet('avt_kantonsstrassen_pub_vereinbarung.sql', 'avt_kantonsstrassen_pub.vereinbarung', true)
     ];
 }
+
+task refreshSolr(type:Exec, dependsOn:'transferAvtKantonsstrassen') {
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.avt.kantonsstrassen_achsen'
+}

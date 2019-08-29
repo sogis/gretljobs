@@ -17,3 +17,7 @@ task transferArpNaturreservate(type: Db2Db){
                     'arp_naturreservate_pub.naturreservate_teilgebiet', true)
     ];
 }
+
+task refreshSolr(type:Exec, dependsOn:'transferArpNaturreservate') {
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.arp.naturreservate.reservat'
+}

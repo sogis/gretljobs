@@ -21,3 +21,7 @@ task transferAfuErdwaerme(type: Db2Db){
             new TransferSet('afu_erdwaerme_pub_ews_max_tiefe.sql', 'afu_erdwaerme_pub.ews_max_tiefe', true)
     ];
 }
+
+task refreshSolr(type:Exec, dependsOn:'transferAfuErdwaerme') {
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.wasserbewirtschaftung.erdwaermenutzung_gerda'
+}

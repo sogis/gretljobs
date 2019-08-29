@@ -33,3 +33,7 @@ task transferAwjf(type: Db2Db){
             new TransferSet('awjf_wald_pub_sw_info.sql', 'awjf_wald_pub.sw_info', true)
     ];        
 }
+
+task refreshSolr(type:Exec, dependsOn:'transferAwjf') {
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.schutzwaldausscheidung,ch.so.awjf.schutzwald_hauptgefahrenpotentiale,ch.so.awjf.bestandeskarte_wald_flaechen,ch.so.awjf.waldplan.waldeigentum,ch.so.awjf.waldplan.waldfunktion,ch.so.awjf.waldplan.waldplantyp'
+}
