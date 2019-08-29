@@ -1,7 +1,8 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'transferAgiMopublic'
+defaultTasks 'refreshSolr'
+
 
 task transferAgiMopublic(type: Db2Db){
     description = "Datenumbau in das SO-MOpublic-Publikationsmodell."    
@@ -30,3 +31,9 @@ task transferAgiMopublic(type: Db2Db){
             new TransferSet("agi_mopublic_pub_mopublic_strassenachse.sql", 'agi_mopublic_pub.mopublic_strassenachse', true)
     ];        
 }
+
+task refreshSolr(type:Exec, dependsOn:transferAgiMopublic) {
+	commandLine 'curl', '-i', '--max-time', '20', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.agi.av.bodenbedeckung,ch.so.agi.av.gebaeudeadressen.gebaeudeeingaenge,ch.so.agi.av.grundstuecke.rechtskraeftig,ch.so.agi.av.grundstuecke.projektierte,ch.so.agi.av.nomenklatur.flurnamen,ch.so.agi.av.nomenklatur.gelaendenamen'
+}
+
+

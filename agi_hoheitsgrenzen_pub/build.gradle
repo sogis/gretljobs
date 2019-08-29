@@ -72,7 +72,11 @@ task transferAgiHoheitsgrenzenToPubDb(type: Db2Db, dependsOn:'createGeometriesAg
     ]
 }
 
-task transferAgiHoheitsgrenzenToEditDb(type: Db2Db, dependsOn:'transferAgiHoheitsgrenzenToPubDb'){
+task refreshSolr(type:Exec, dependsOn:'transferAgiHoheitsgrenzenToPubDb') {
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.agi.gemeindegrenzen,ch.so.agi.bezirksgrenzen'
+}
+
+task transferAgiHoheitsgrenzenToEditDb(type: Db2Db, dependsOn:'refreshSolr'){
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
@@ -102,3 +106,5 @@ task transferAgiHoheitsgrenzenToEditDb(type: Db2Db, dependsOn:'transferAgiHoheit
                     'agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsname_a4', true)
     ]
 }
+
+
