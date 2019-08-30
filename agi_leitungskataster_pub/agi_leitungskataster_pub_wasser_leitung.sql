@@ -1,4 +1,5 @@
 SELECT 
+    leitung.t_id,
     leitung.einbaujahr AS baujahr, 
     leitung.geometrie, 
     leitung.funktion AS funktion, 
