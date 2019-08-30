@@ -1,5 +1,5 @@
 SELECT 
-    schacht.t_id, 
+    row_number() over(order by schacht.t_id) AS t_id, 
     abw_bauwerktext.bauwerktext, 
     schacht.lage
 FROM 
