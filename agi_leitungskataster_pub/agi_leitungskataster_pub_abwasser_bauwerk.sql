@@ -1,5 +1,5 @@
 SELECT 
-    abw_bauwerk.bw_tid AS t_id, 
+    row_number() over()::integer AS t_id, 
     abw_bauwerk.detailgeometrie AS geometrie, 
     abw_bauwerk.baujahr, 
     abw_bauwerk.bw_bezeichnung AS bezeichnung, 
