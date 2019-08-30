@@ -37,5 +37,5 @@ FROM
         LEFT JOIN agi_leitungskataster_abw.sia405_abwassr_wi_organisation organisation ON organisation.t_id::text = bauwerk.eigentuemer::text
         LEFT JOIN agi_leitungskataster_abw.sia405_abwassr_wi_vorflutereinlauf vorfluter ON bauwerk.t_id::text = vorfluter.superclass::text
         LEFT JOIN agi_leitungskataster_abw.sia405_abwassr_wi_normschacht normschacht ON bauwerk.t_id::text = normschacht.superclass::text) schacht 
-WHERE abw_bauwerktext.abwasserbauwerkref::text = b.t_id::text
+WHERE abw_bauwerktext.abwasserbauwerkref::text = schacht.t_id::text
 ;
