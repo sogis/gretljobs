@@ -1,4 +1,5 @@
 SELECT 
+    hydrant.t_id,
     leitungsknoten.geometrie, 
     hydrant.name_nummer, 
     hydrant.art AS art, 
