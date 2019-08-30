@@ -1,6 +1,6 @@
 SELECT 
     abw_haltung.t_id, 
-    abw_haltung.verlauf, 
+    abw_haltung.verlauf AS geometrie, 
     abw_haltung.baujahr, 
     abw_haltung.bw_bezeichnung AS bezeichnung, 
     abw_haltung.baulicherzustand AS baulicherzustand, 
