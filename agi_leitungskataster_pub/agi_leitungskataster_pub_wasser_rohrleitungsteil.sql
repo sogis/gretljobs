@@ -1,4 +1,5 @@
 SELECT 
+    rohrleitungsteil.t_id,
     leitungsknoten.geometrie, 
     rohrleitungsteil.art AS art, 
     leitungsknoten.druckzone, 
