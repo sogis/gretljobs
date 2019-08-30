@@ -1,5 +1,5 @@
 SELECT 
-    row_number() OVER ()::integer AS ogc_fid, 
+    row_number() OVER ()::integer AS t_id, 
     abw_bauwerktext.bauwerktext, 
     schacht.lage
 FROM 
