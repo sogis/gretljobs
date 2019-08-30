@@ -1,5 +1,5 @@
 SELECT 
-    abw_bauwerk.bw_tid AS tid, 
+    abw_bauwerk.bw_tid AS t_id, 
     abw_bauwerk.detailgeometrie, 
     abw_bauwerk.baujahr, 
     abw_bauwerk.bw_bezeichnung AS bezeichnung, 
