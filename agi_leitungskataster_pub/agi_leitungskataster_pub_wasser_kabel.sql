@@ -11,8 +11,7 @@ SELECT
     zustand,
     eigentuemer,
     bemerkung,
-    letzte_aenderung,
-    t_datasetname AS gem_bfs
+    letzte_aenderung
 FROM
     agi_leitungskataster_was.sia405_wasser_wi_kabel
 ;
