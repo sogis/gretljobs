@@ -1,4 +1,5 @@
 SELECT 
+    absperrorgan.t_id,
     leitungsknoten.geometrie, 
     absperrorgan.name_nummer, 
     absperrorgan.art AS art, 
