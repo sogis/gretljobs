@@ -1,7 +1,7 @@
 SELECT 
     row_number() OVER ()::integer AS ogc_fid, 
     bauwerk.t_id AS t_id, 
-    knoten.lage, 
+    knoten.lage AS geometrie, 
     bauwerk.baujahr, 
     bauwerk.bezeichnung, 
     bauwerk.baulicherzustand AS baulicherzustand, 
