@@ -1,5 +1,5 @@
 SELECT 
-    row_number() OVER (ORDER BY anlagen.name_nummer) AS id, 
+    row_number() OVER (ORDER BY anlagen.name_nummer) AS t_id, 
     anlagen.name_nummer, 
     anlagen.art, 
     anlagen.geometrie
