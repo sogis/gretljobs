@@ -11,8 +11,7 @@ SELECT
     abw_bauwerk.sohlenkote, 
     abw_bauwerk.funktion AS funktion, 
     abw_bauwerk.hochwasserkote, 
-    spezialbauwerk.funktion AS sbw_funktion,
-    spezialbauwerk.t_datasetname
+    spezialbauwerk.funktion AS sbw_funktion
 FROM 
     (SELECT 
         bauwerk.t_id AS bw_tid, 
