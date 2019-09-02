@@ -36,6 +36,7 @@ SELECT
         WHEN leitung.material::text = 'Stahl.verzinkt'::text THEN 'STl'::text
         WHEN leitung.material::text = 'Steinzeug'::text THEN 'ST'::text
         WHEN leitung.material::text = 'Ton'::text THEN 'T'::text
+        ELSE ''::text
     END AS material_kurz,
     leitung.durchmesser, 
     leitung.nennweite, 
