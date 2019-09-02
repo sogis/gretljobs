@@ -12,6 +12,30 @@ SELECT
     abw_haltung.lichte_hoehe, 
     abw_haltung.lagebestimmung AS lagebestimmung, 
     abw_haltung.material AS material, 
+    CASE
+        WHEN abw_haltung.material::text = 'Asbestzement'::text THEN 'AZ'::text
+        WHEN abw_haltung.material::text = 'Beton_Normalbeton'::text THEN 'BN'::text
+        WHEN abw_haltung.material::text = 'Beton_Ortsbeton'::text THEN 'BO'::text
+        WHEN abw_haltung.material::text = 'Beton_Pressrohrbeton'::text THEN 'B'::text
+        WHEN abw_haltung.material::text = 'Beton_Spezialbeton'::text THEN 'BS'::text
+        WHEN abw_haltung.material::text = 'Beton_unbekannt'::text THEN 'B'::text
+        WHEN abw_haltung.material::text = 'Faserzement'::text THEN 'FZ'::text
+        WHEN abw_haltung.material::text = 'Guss_duktil'::text THEN 'GD'::text
+        WHEN abw_haltung.material::text = 'Guss_Grauguss'::text THEN 'GG'::text
+        WHEN abw_haltung.material::text = 'Kunststoff_Epoxydharz'::text THEN 'K'::text
+        WHEN abw_haltung.material::text = 'Kunststoff_Hartpolyethylen'::text THEN 'HDPE'::text
+        WHEN abw_haltung.material::text = 'Kunststoff_Polyester_GUP'::text THEN 'GUP'::text
+        WHEN abw_haltung.material::text = 'Kunststoff_Polyethylen'::text THEN 'PE'::text
+        WHEN abw_haltung.material::text = 'Kunststoff_Polypropylen'::text THEN 'PP'::text
+        WHEN abw_haltung.material::text = 'Kunststoff_Polyvinilchlorid'::text THEN 'PVZ'::text
+        WHEN abw_haltung.material::text = 'Kunststoff_unbekannt'::text THEN 'K'::text
+        WHEN abw_haltung.material::text = 'Stahl'::text THEN 'STE'::text
+        WHEN abw_haltung.material::text = 'Stahl_rostfrei'::text THEN 'STE'::text
+        WHEN abw_haltung.material::text = 'Steinzeug'::text THEN 'ST'::text
+        WHEN abw_haltung.material::text = 'Ton'::text THEN 'T'::text
+        WHEN abw_haltung.material::text = 'Zement'::text THEN 'Z'::text
+    ELSE
+    END as material_kurz,
     abw_haltung.profiltyp AS profil, 
     CASE
         WHEN abw_haltung.laengeeffektiv > 0::double precision THEN abw_haltung.laengeeffektiv
