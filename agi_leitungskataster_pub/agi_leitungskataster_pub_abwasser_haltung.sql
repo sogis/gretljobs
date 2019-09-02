@@ -34,7 +34,7 @@ SELECT
         WHEN abw_haltung.material::text = 'Steinzeug'::text THEN 'ST'::text
         WHEN abw_haltung.material::text = 'Ton'::text THEN 'T'::text
         WHEN abw_haltung.material::text = 'Zement'::text THEN 'Z'::text
-        ELSE ''::text THEN 'Z'::text
+        ELSE ''::text
     END as material_kurz,
     abw_haltung.profiltyp AS profil, 
     CASE
