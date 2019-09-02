@@ -7,36 +7,35 @@ SELECT
     leitung.material AS material, 
     CASE
         WHEN leitung.material::text = 'unbekannt'::text THEN 'u'::text
-        WHEN leitung.material::text = 'Faserzement_Faserzement'::text THEN 'FZ'::text
-        WHEN leitung.material::text = 'Faserzement_Asbestzement'::text THEN 'AZ'::text
+        WHEN leitung.material::text = 'Faserzement.Faserzement'::text THEN 'FZ'::text
+        WHEN leitung.material::text = 'Faserzement.Asbestzement'::text THEN 'AZ'::text
         WHEN leitung.material::text = 'Beton_unbekannt'::text THEN 'B'::text
-        WHEN leitung.material::text = 'Beton_armiert'::text THEN 'B'::text
-        WHEN leitung.material::text = 'Beton_nicht_armiert'::text THEN 'B'::text
-        WHEN leitung.material::text = 'Guss_unbekannt'::text THEN 'G'::text
-        WHEN leitung.material::text = 'Guss_Grauguss'::text THEN 'GG'::text
-        WHEN leitung.material::text = 'Guss_Guss_duktil'::text THEN 'GD'::text
-        WHEN leitung.material::text = 'Guss_Ahrens_Guss'::text THEN 'G'::text
-        WHEN leitung.material::text = 'Kunststoff_Epoxiharz'::text THEN 'KU'::text
-        WHEN leitung.material::text = 'Kunststoff_Glasfaserverstaerkter_Epoxiharz'::text THEN 'KU'::text
-        WHEN leitung.material::text = 'Kunststoff_Polypropylen'::text THEN 'PP'::text
-        WHEN leitung.material::text = 'Kunststoff_Polyvinylchlorid_unbekannt'::text THEN 'PVC'::text
-        WHEN leitung.material::text = 'Kunststoff_Polyvinylchlorid_GFK'::text THEN 'PVC'::text
-        WHEN leitung.material::text = 'Kunststoff_Polyvinylchlorid_PVC_hart'::text THEN 'PVC'::text
-        WHEN leitung.material::text = 'Kunststoff_Polyvinylchlorid_PVC_U'::text THEN 'PVC'::text
-        WHEN leitung.material::text = 'Kunststoff_Polyvinylchlorid_andere'::text THEN 'PVC'::text
-        WHEN leitung.material::text = 'Kunststoff_Polyethylen_unbekannt'::text THEN 'PP'::text
-        WHEN leitung.material::text = 'Kunststoff_Polyethylen_HDPE'::text THEN 'HDPE'::text
-        WHEN leitung.material::text = 'Kunststoff_Polyethylen_MDPE'::text THEN 'MDPE'::text
-        WHEN leitung.material::text = 'Kunststoff_Polyethylen_LDPE'::text THEN 'LDPE'::text
-        WHEN leitung.material::text = 'Kunststoff_Polyethylen_andere'::text THEN 'PP'::text
-        WHEN leitung.material::text = 'Stahl_unbekannt'::text THEN 'STl'::text
-        WHEN leitung.material::text = 'Stahl_nicht_rostbestaendig'::text THEN 'STl'::text
-        WHEN leitung.material::text = 'Stahl_rostbestaendig'::text THEN 'STl'::text
-        WHEN leitung.material::text = 'Stahl_Mannesmann'::text THEN 'STl'::text
-        WHEN leitung.material::text = 'Stahl_verzinkt'::text THEN 'STl'::text
+        WHEN leitung.material::text = 'Beton.armiert'::text THEN 'B'::text
+        WHEN leitung.material::text = 'Beton.nicht_armiert'::text THEN 'B'::text
+        WHEN leitung.material::text = 'Guss.unbekannt'::text THEN 'G'::text
+        WHEN leitung.material::text = 'Guss.Grauguss'::text THEN 'GG'::text
+        WHEN leitung.material::text = 'Guss.Guss_duktil'::text THEN 'GD'::text
+        WHEN leitung.material::text = 'Guss.Ahrens_Guss'::text THEN 'G'::text
+        WHEN leitung.material::text = 'Kunststoff.Epoxiharz'::text THEN 'KU'::text
+        WHEN leitung.material::text = 'Kunststoff.Glasfaserverstaerkter.Epoxiharz'::text THEN 'KU'::text
+        WHEN leitung.material::text = 'Kunststoff.Polypropylen'::text THEN 'PP'::text
+        WHEN leitung.material::text = 'Kunststoff.Polyvinylchlorid.unbekannt'::text THEN 'PVC'::text
+        WHEN leitung.material::text = 'Kunststoff.Polyvinylchlorid.GFK'::text THEN 'PVC'::text
+        WHEN leitung.material::text = 'Kunststoff.Polyvinylchlorid.PVC_hart'::text THEN 'PVC'::text
+        WHEN leitung.material::text = 'Kunststoff.Polyvinylchlorid.PVC_U'::text THEN 'PVC'::text
+        WHEN leitung.material::text = 'Kunststoff.Polyvinylchlorid.andere'::text THEN 'PVC'::text
+        WHEN leitung.material::text = 'Kunststoff.Polyethylen.unbekannt'::text THEN 'PP'::text
+        WHEN leitung.material::text = 'Kunststoff.Polyethylen.HDPE'::text THEN 'HDPE'::text
+        WHEN leitung.material::text = 'Kunststoff.Polyethylen.MDPE'::text THEN 'MDPE'::text
+        WHEN leitung.material::text = 'Kunststoff.Polyethylen.LDPE'::text THEN 'LDPE'::text
+        WHEN leitung.material::text = 'Kunststoff.Polyethylen.andere'::text THEN 'PP'::text
+        WHEN leitung.material::text = 'Stahl.unbekannt'::text THEN 'STl'::text
+        WHEN leitung.material::text = 'Stahl.nicht_rostbestaendig'::text THEN 'STl'::text
+        WHEN leitung.material::text = 'Stahl.rostbestaendig'::text THEN 'STl'::text
+        WHEN leitung.material::text = 'Stahl.Mannesmann'::text THEN 'STl'::text
+        WHEN leitung.material::text = 'Stahl.verzinkt'::text THEN 'STl'::text
         WHEN leitung.material::text = 'Steinzeug'::text THEN 'ST'::text
         WHEN leitung.material::text = 'Ton'::text THEN 'T'::text
-    ELSE 'u'::text
     END AS material_kurz,
     leitung.durchmesser, 
     leitung.nennweite, 
