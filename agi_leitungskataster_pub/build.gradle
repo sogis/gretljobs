@@ -6,12 +6,9 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferAgiLeitungskataster'
 
 task transferAgiLeitungskataster(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('agi_leitungskataster_pub_lk_abwasser_verfuegbarkeit.sql', 'agi_leitungskataster_pub.lk_abwasser_verfuegbarkeit', true),
-            new TransferSet('agi_leitungskataster_pub_lk_wasser_verfuegbarkeit.sql', 'agi_leitungskataster_pub.lk_wasser_verfuegbarkeit', true),
-            new TransferSet('agi_leitungskataster_pub_lk_elektro_verfuegbarkeit.sql', 'agi_leitungskataster_pub.lk_elektro_verfuegbarkeit', true),
             new TransferSet('agi_leitungskataster_pub_wasser_leitung.sql', 'agi_leitungskataster_pub.wasser_leitung',
                     true),
             new TransferSet('agi_leitungskataster_pub_wasser_hydrant.sql', 'agi_leitungskataster_pub.wasser_hydrant', true),
