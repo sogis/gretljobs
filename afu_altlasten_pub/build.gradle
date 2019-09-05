@@ -17,7 +17,7 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'transferAfuAltlasten', 'transferAfuAltlast4Web'
+defaultTasks 'refreshSolrA', 'refreshSolrA4W'
 
 task transferAfuAltlasten(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
@@ -35,6 +35,11 @@ task transferAfuAltlast4Web(type: Db2Db, dependsOn:'transferAfuAltlasten'){
     ];
 }
 
-task refreshSolr(type:Exec, dependsOn:'transferAfuAltlast4Web') {
-	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte,ch.so.afu.altlasten.standorte_geschuetzt'
+task refreshSolrA(type:Exec, dependsOn:'transferAfuAltlasten') {
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte'
 }
+
+task refreshSolrA4W(type:Exec, dependsOn:'transferAfuAltlast4Web') {
+        commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte_geschuetzt'
+}
+

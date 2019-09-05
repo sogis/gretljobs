@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAlwGelan'
+defaultTasks 'refreshSolr'
 
 task transferAlwGelan(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
