@@ -22,11 +22,11 @@
     END AS verwendungszweck,
     CASE 
         WHEN a.nutzungsart_schutzzone = 3
-        THEN 'Gefasste Quelle mit privater Nutzung'
+        THEN 'Private, gefasste Quelle'
         WHEN a.nutzungsart_schutzzone = 2
-        THEN 'Gefasste Quelle mit privater Nutzung von öffentlichem Interesse'
+        THEN 'Private, gefasste Quelle von öffentlichem Interesse'
         WHEN a.nutzungsart_schutzzone = 1
-        THEN 'Gefasste Quelle für die öffentliche Wasserversorgung'
+        THEN 'Öffentliche, gefasste Quelle'
         WHEN a.nutzungsart_schutzzone IS NULL OR a.nutzungsart_schutzzone > 3 
         THEN 'Gefasste Quelle'
     END AS objekttyp_anzeige,
