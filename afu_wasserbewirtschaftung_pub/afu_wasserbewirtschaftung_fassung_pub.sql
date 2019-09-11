@@ -58,11 +58,11 @@ UNION ALL
      END AS verwendungszweck,
      CASE 
          WHEN horizontalfilterbrunnen.nutzungsart = 3 
-         THEN 'Privater Horizontalfilterbrunnen'
+         THEN 'Horizontalfilterbrunnen mit privater Nutzung'
          WHEN horizontalfilterbrunnen.nutzungsart = 2 
-         THEN 'Privater Horizontalfilterbrunnen von öffentlichem Interesse'
+         THEN 'Horizontalfilterbrunnen mit privater Nutzung von öffentlichem Interesse'
          WHEN horizontalfilterbrunnen.nutzungsart = 1 
-         THEN 'Öffentlicher Horizontalfilterbrunnen' 
+         THEN 'Horizontalfilterbrunnen für die öffentliche Wasserversorgung' 
          WHEN horizontalfilterbrunnen.nutzungsart IS NULL OR horizontalfilterbrunnen.nutzungsart > 3 
          THEN 'Horizontalfilterbrunnen'
      END AS objekttyp_anzeige,
@@ -105,11 +105,11 @@ UNION ALL
      END AS verwendungszweck,
      CASE 
          WHEN vertikalfilterbrunnen.nutzungsart = 3 
-         THEN 'Privater Vertikalfilterbrunnen'
+         THEN 'Vertikalfilterbrunnen mit privater Nutzung'
          WHEN vertikalfilterbrunnen.nutzungsart = 2 
-         THEN 'Privater Vertikalfilterbrunnen von öffentlichem Interesse'
+         THEN 'Vertikalfilterbrunnen mit privater Nutzung von öffentlichem Interesse'
          WHEN vertikalfilterbrunnen.nutzungsart = 1 
-         THEN 'Öffentlicher Vertikalfilterbrunnen' 
+         THEN 'Vertikalfilterbrunnen für die öffentliche Wasserversorgung' 
          WHEN vertikalfilterbrunnen.nutzungsart IS NULL OR vertikalfilterbrunnen.nutzungsart > 3 
          THEN 'Vertikalfilterbrunnen'
      END AS objekttyp_anzeige,
