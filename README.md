@@ -58,7 +58,9 @@ git checkout -b branchname
 Jeder GRETL-Job braucht im Minimum das File `build.gradle`. Bei Bedarf platziert man zudem ein File `job.properties` im Job-Ordner, um den Job in Jenkins zu konfigurieren. Falls der Job in Jenkins mit einem anderen Jenkinsfile als dem Standard-Jenkinsfile gestartet werden soll, muss sein spezifisches Jenkinsfile ebenfalls im Job-Ordner abgelegt werden.
 
 #### `job.properties`
-`job.properties` kann folgende Eigenschaften des GRETL-Jobs enthalten:
+
+Die Datei `job.properties` muss in ISO 8859-1 encodiert sein, damit allfällige Umlaute etc. korrekt eingelesen werden.
+Sie kann folgende Eigenschaften des GRETL-Jobs enthalten:
 
 ```java
 logRotator.numToKeep=30
