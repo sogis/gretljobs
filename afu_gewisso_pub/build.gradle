@@ -27,5 +27,5 @@ task transferAfuGewisso(type: Db2Db){
 }
 
 task refreshSolr(type:Exec, dependsOn:'transferAfuGewisso') {
-	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.fischereiliche_nutzung,ch.so.awjf.fischereireviere'
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.fischereiliche_nutzung,ch.so.awjf.fischereireviere,ch.so.afu.fliessgewaesser.netz'
 }
