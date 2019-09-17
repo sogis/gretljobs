@@ -19,5 +19,5 @@ task transferAfuWasserbewirtschaftung(type: Db2Db){
 }
 
 task refreshSolr(type:Exec, dependsOn:'transferAfuWasserbewirtschaftung') {
-	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.gewaesserschutz.quellen,ch.so.afu.wasserbewirtschaftung.quellen,ch.so.afu.gewaesserschutz.fassungen,ch.so.afu.wasserbewirtschaftung.fassung,ch.so.afu.wasserbewirtschaftung.sondierung,ch.so.afu.wasserbewirtschaftung.versickerungsschacht,ch.so.afu.wasserbewirtschaftung.grundwasserwaermenutzung'
+	commandLine 'curl', '-i', '--max-time', '20', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.gewaesserschutz.quellen,ch.so.afu.wasserbewirtschaftung.quellen,ch.so.afu.gewaesserschutz.fassungen,ch.so.afu.wasserbewirtschaftung.fassung,ch.so.afu.wasserbewirtschaftung.sondierung,ch.so.afu.wasserbewirtschaftung.versickerungsschacht,ch.so.afu.wasserbewirtschaftung.grundwasserwaermenutzung'
 }
