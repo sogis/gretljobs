@@ -53,6 +53,8 @@ resource_parameters=(
 -PaiServer=\'$AI_SERVER\' \
 -PaiUser=\'$AI_USER\' \
 -PaiPwd=\'$AI_PWD\' \
+-PinfofloraUser=\'$INFOFLORA_USER\' \
+-PinfofloraPwd=\'$INFOFLORA_PWD\' \
 -PsolrIndexupdaterBaseUrl=\'$SOLR_INDEXUPDATER_BASE_URL\' \
 )
 # For accessing the "GRETL share", use the gretlShare variable.

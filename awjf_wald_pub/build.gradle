@@ -35,5 +35,5 @@ task transferAwjf(type: Db2Db){
 }
 
 task refreshSolr(type:Exec, dependsOn:'transferAwjf') {
-	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.schutzwaldausscheidung,ch.so.awjf.schutzwald_hauptgefahrenpotentiale,ch.so.awjf.bestandeskarte_wald_flaechen,ch.so.awjf.waldplan.waldeigentum,ch.so.awjf.waldplan.waldfunktion,ch.so.awjf.waldplan.waldplantyp'
+	commandLine 'curl', '-i', '--max-time', '20', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.schutzwaldausscheidung,ch.so.awjf.schutzwald_hauptgefahrenpotentiale,ch.so.awjf.bestandeskarte_wald_flaechen,ch.so.awjf.waldplan.waldeigentum,ch.so.awjf.waldplan.waldfunktion,ch.so.awjf.waldplan.waldplantyp'
 }

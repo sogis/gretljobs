@@ -55,6 +55,7 @@ for (jobFile in jobFiles) {
     'authorization.permissions':'nobody',
     'logRotator.numToKeep':'15',
     'parameters.fileParam':'none',
+    'parameters.stringParam':'none',
     'triggers.upstream':'none',
     'triggers.cron':''
   ])
@@ -76,6 +77,14 @@ for (jobFile in jobFiles) {
     if (properties.getProperty('parameters.fileParam') != 'none') {
       parameters {
         fileParam(properties.getProperty('parameters.fileParam'), 'Select file to upload')
+      }
+    }
+    if (properties.getProperty('parameters.stringParam') != 'none') {
+      def propertyValues = properties.getProperty('parameters.stringParam').split(';')
+      if (propertyValues.length == 3) {
+        parameters {
+          stringParam(propertyValues[0], propertyValues[1], propertyValues[2])
+        }
       }
     }
     authorization {

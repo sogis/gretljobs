@@ -16,6 +16,7 @@ def ftpServerZivilschutz = ''
 def ftpCredentialNameZivilschutz = ''
 def aiServer = ''
 def aiCredentialName = ''
+def infofloraCredentialName = ''
 def solrIndexupdaterBaseUrl = ''
 def gretljobsRepo = ''
 
@@ -38,6 +39,7 @@ node("master") {
     ftpCredentialNameZivilschutz = "${FTP_CREDENTIAL_ZIVILSCHUTZ}"
     aiServer = "${env.AI_SERVER}"
     aiCredentialName = "${AI_CREDENTIAL}"
+    infofloraCredentialName = "${INFOFLORA_CREDENTIAL}"
     solrIndexupdaterBaseUrl = "${env.SOLR_INDEXUPDATER_BASE_URL}"
     gretljobsRepo = "${env.GRETL_JOB_REPO_URL}"
 }
@@ -56,7 +58,8 @@ node ("gretl") {
                 usernamePassword(credentialsId: "${dbCredentialNameKaso}", usernameVariable: 'dbUserKaso', passwordVariable: 'dbPwdKaso'),
                 usernamePassword(credentialsId: "${dbCredentialNameCapitastra}", usernameVariable: 'dbUserCapitastra', passwordVariable: 'dbPwdCapitastra'),
                 usernamePassword(credentialsId: "${ftpCredentialNameZivilschutz}", usernameVariable: 'ftpUserZivilschutz', passwordVariable: 'ftpPwdZivilschutz'),
-                usernamePassword(credentialsId: "${aiCredentialName}", usernameVariable: 'aiUser', passwordVariable: 'aiPwd')
+                usernamePassword(credentialsId: "${aiCredentialName}", usernameVariable: 'aiUser', passwordVariable: 'aiPwd'),
+                usernamePassword(credentialsId: "${infofloraCredentialName}", usernameVariable: 'infofloraUser', passwordVariable: 'infofloraPwd')
             ]
             withCredentials(credentials) {
                 sh "gradle --init-script /home/gradle/init.gradle \
@@ -69,6 +72,7 @@ node ("gretl") {
                 -PdbUriCapitastra='${dbUriCapitastra}' -PdbUserCapitastra='${dbUserCapitastra}' -PdbPwdCapitastra='${dbPwdCapitastra}' \
                 -PftpServerZivilschutz='${ftpServerZivilschutz}' -PftpUserZivilschutz='${ftpUserZivilschutz}' -PftpPwdZivilschutz='${ftpPwdZivilschutz}' \
                 -PaiServer='${aiServer}' -PaiUser='${aiUser}' -PaiPwd='${aiPwd}' \
+                -PinfofloraUser='${infofloraUser}' -PaiPwd='${infofloraPwd}' \
                 -PsolrIndexupdaterBaseUrl='${solrIndexupdaterBaseUrl}'"
             }
         }
