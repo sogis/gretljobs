@@ -11,15 +11,17 @@ apply plugin: "de.undercouch.download"
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'csvimport'
+defaultTasks 'deleteFileOnServer'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
 def pathToDataZip = Paths.get(pathToTempFolder, 'neophyten.gz')
 def csvFilePath = Paths.get(pathToUnzipFolder.toString(), 'data', 'data.csv')
 
-ext.filepath = 'irgendeinpath'
-ext.filename = 'irgendeinname'
+
+ext.filepath = 'foo'
+ext.filename = 'bar'
+
 /*
 task download_json(type: Download){
     description = "Download Json with filename"
@@ -67,41 +69,17 @@ task unpackFiles(dependsOn: download_file) {
      }
 }
 
-dependsOn: unpackFiles
-*/
-task csvimport(type: CsvImport){
+task csvimport(type: CsvImport, dependsOn: unpackFiles){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = "alw_infoflora"
     tableName = "neophyten_neophytenstandorte"
     firstLineIsHeader=true
     valueSeparator = ";"
-    dataFile = file(pathToUnzipFolder.toString()+'/neophyten_neu.csv')
+    println "Importiere folgendes file: "+pathToUnzipFolder.toString()+'/neophyten.csv'
+    dataFile = file(pathToUnzipFolder.toString()+'/neophyten.csv')
 }
 
-/*
 
-task csvimport(type: CsvImport, dependsOn: unpackFiles){
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    schemaName = "test"
-    tableName = "newtable"
-    firstLineIsHeader=true
-    valueSeparator = ";"
-    dataFile = file(pathToUnzipFolder.toString()+'/test.csv')
-}
-
-task dbImport(type: Ili2pgImport, dependsOn: 'unzipData'){
-    description = "Import plz_ortschaften-Data into database"
-    doLast {
-        println "Data imported into db: " + dbUriSogis
-    }
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    dbschema = "agi_plz_ortschaften"
-    models = "PLZOCH1LV95D"
-    disableValidation = false
-    dataFile = file(xtfFilePath)
-    deleteData = true
-    strokeArcs = true
-}
 
 
 task convertData(type: Db2Db, dependsOn: 'dbImport'){
@@ -128,3 +106,9 @@ task removeFiles(type: Delete) {
     delete file(pathToUnzipFolder), file(pathToDataZip)
 }
 */
+
+task deleteFileOnServer(type:Exec) {
+
+    commandLine 'curl --max-time 20 -X "DELETE" -d "_format=gz" -H "Content-type:application/x-www-form-urlencoded" -H "username:lorenz.eugster@vd.so.ch" -H "password:Ziziphora" https://obs.infoflora.ch/rest/v4/docs/b353a034aa40f75f1a99c004c8f96a4ff9e27bf6.gz"'
+
+}
