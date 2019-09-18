@@ -50,6 +50,9 @@ resource_parameters=(
 -PaiServer=\'$AI_SERVER\' \
 -PaiUser=\'$AI_USER\' \
 -PaiPwd=\'$AI_PWD\' \
+-PinfofloraUser=\'$INFOFLORA_USER\' \
+-PinfofloraPwd=\'$INFOFLORA_PWD\' \
+-PsolrIndexupdaterBaseUrl=\'$SOLR_INDEXUPDATER_BASE_URL\' \
 )
 # For accessing the "GRETL share", use the gretlShare variable.
 
@@ -77,7 +80,7 @@ echo "======================================================="
 docker run -i --rm \
     --entrypoint="/bin/sh" \
     -v "$job_directory":/home/gradle/project \
-    -v /home/bjsvwsch/Schreibtisch/test_gradle:/tmp \
+    -v /tmp:/tmp/gretl-share \
     --user $UID \
     "$docker_image" "-c" \
         "/usr/local/bin/run-jnlp-client > /dev/null 2>&1;cd /home/gradle/project;$gretl_cmd"
