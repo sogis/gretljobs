@@ -11,7 +11,7 @@ apply plugin: "de.undercouch.download"
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'deleteFileOnServer'
+defaultTasks 'csvimport'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
@@ -21,20 +21,22 @@ def csvFilePath = Paths.get(pathToUnzipFolder.toString(), 'data', 'data.csv')
 
 ext.filepath = 'foo'
 ext.filename = 'bar'
+ext.fileid = 'nobody'
 
-/*
 task download_json(type: Download){
     description = "Download Json with filename"
     doLast {
         def inputFile = new File(pathToTempFolder + "/filenames.json")
         def json = new JsonSlurper().parseText(inputFile.text)
+        println "There is/are " + json.data.size() + " files in the JSON"
         project.filename = json.data.file_name[0]
         project.filepath = json.data.folder_name[0]
-        println "Filename = " + filename
+        project.fileid = json.data.id[0]
+        println "Filename 0 = " + filename
     }
     src 'https://obs.infoflora.ch/rest/v4/docs.json?projects=83505'
-    username 'lorenz.eugster@vd.so.ch'
-    password 'Ziziphora'
+    username infofloraUser
+    password infofloraPwd
     dest new File(pathToTempFolder, 'filenames.json')
     overwrite true
 }
@@ -79,36 +81,9 @@ task csvimport(type: CsvImport, dependsOn: unpackFiles){
     dataFile = file(pathToUnzipFolder.toString()+'/neophyten.csv')
 }
 
-
-
-
-task convertData(type: Db2Db, dependsOn: 'dbImport'){
-    description = "Convert plz_ortschaften-Data"
-    doLast {
-        println "plz_ortschaften-Data are converted."
-    }
-    finalizedBy 'removeFiles'
-
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
-    transferSets = [
-            new TransferSet('plzortschaften_ortschaft.sql', 'agi_plz_ortschaften_pub.plzortschaften_ortschaft', true),
-            new TransferSet('plzortschaften_postleitzahl.sql', 'agi_plz_ortschaften_pub.plzortschaften_postleitzahl', true)
-    ];
-}
-
-
-task removeFiles(type: Delete) {
-    description = "Remove Files"
-    doLast {
-        println "Files removed."
-    }
-    delete file(pathToUnzipFolder), file(pathToDataZip)
-}
-*/
-
 task deleteFileOnServer(type:Exec) {
 
-    commandLine 'curl --max-time 20 -X "DELETE" -d "_format=gz" -H "Content-type:application/x-www-form-urlencoded" -H "username:lorenz.eugster@vd.so.ch" -H "password:Ziziphora" https://obs.infoflora.ch/rest/v4/docs/b353a034aa40f75f1a99c004c8f96a4ff9e27bf6.gz"'
+    commandLine 'curl -i -u ' + infofloraUser + ':' + infofloraPwd + ' -k -X DELETE https://obs.infoflora.ch/rest/v4/docs/' + fileid + '.json --header "Content-Type:application/json"'
+    println "Deleted file " + filename + " from Server" 
 
 }
