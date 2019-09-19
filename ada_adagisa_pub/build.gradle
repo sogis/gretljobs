@@ -18,5 +18,5 @@ task transferAdagisa(type: Db2Db){
 }
 
 task refreshSolr(type:Exec, dependsOn:'transferAdagisa') {
-	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.ada.adagisa.flaechenfundstellen_geschuetzt,ch.so.ada.adagisa.punktfundstellen_geschuetzt,ch.so.ada.adagisa.punktfundstellen_ungeschuetzt'
+	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.ada.adagisa.flaechenfundstellen_geschuetzt,ch.so.ada.adagisa.punktfundstellen_geschuetzt,ch.so.ada.adagisa.punktfundstellen_ungeschuetzt'
 }
