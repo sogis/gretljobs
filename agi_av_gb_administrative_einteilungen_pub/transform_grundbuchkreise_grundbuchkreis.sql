@@ -3,7 +3,7 @@ WITH nummerierungsbereich AS
   SELECT
     nbgeometrie.t_datasetname,
     nbbereich.kt || nbbereich.nbnummer AS nbident,
-    ST_Multi(ST_Union(nbgeometrie.geometrie)) AS geometrie,
+    ST_Multi(ST_Union(ST_CurveToLine(nbgeometrie.geometrie, 32, 0, 1))) AS geometrie,
     gemeindegrenze.gemeindename
   FROM
     agi_dm01avso24.nummerierngsbrche_nbgeometrie AS nbgeometrie
