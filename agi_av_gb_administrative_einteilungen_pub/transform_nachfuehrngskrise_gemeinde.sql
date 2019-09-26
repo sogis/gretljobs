@@ -14,7 +14,7 @@ SELECT
   standort.telefon AS telefon,
   standort.web AS web,
   standort.email AS email,
-  standort.uid AS uid
+  standort.auid AS uid
 FROM
   agi_av_gb_admin_einteilung.nachfuehrngskrise_gemeinde AS gemeinde
   LEFT JOIN agi_av_gb_admin_einteilung.nachfuehrngskrise_nachfuehrungsgeometer AS geometer
