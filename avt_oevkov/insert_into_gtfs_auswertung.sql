@@ -12,23 +12,26 @@ INSERT INTO
     verkehrsmittel
     )
     (
--- Diesen Block bis unten kopieren und in SQL abfahrten_oev_guete.sql einfügen
--- *******************************************************************************
+-- *********************************************************************************
+-- Diesen Block bis Markierung unten kopieren und in SQL abfahrten_oev_guete.sql 
+-- einfügen (Block zusätzliche Bedingung für OeV-Güteklassen auskommentieren
+-- *********************************************************************************
+
     WITH calendar AS (
         SELECT
             service_id,
         CASE
         WHEN (SELECT BTRIM(lower(to_char((
-                         SELECT
-                                 stichtag
-                             FROM
-                                    avt_oevkov_${currentYear}.sachdaten_oevkov_daten), 'Day')))) = 'thursday'
+                  SELECT
+                      stichtag
+                  FROM
+                      avt_oevkov_${currentYear}.sachdaten_oevkov_daten), 'Day')))) = 'thursday'
              THEN thursday
         WHEN (SELECT BTRIM(lower(to_char((
-                         SELECT
-                                 stichtag
-                             FROM
-                                    avt_oevkov_${currentYear}.sachdaten_oevkov_daten), 'Day')))) = 'tuesday'
+                  SELECT
+                      stichtag
+                  FROM
+                      avt_oevkov_${currentYear}.sachdaten_oevkov_daten), 'Day')))) = 'tuesday'
              THEN tuesday
         END AS dayofweek
         FROM
@@ -42,10 +45,10 @@ INSERT INTO
             avt_oevkov_${currentYear}.gtfs_calendar_dates
         WHERE
             datum = (
-                            SELECT
-                                stichtag
-                            FROM
-                                avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
+                     SELECT
+                         stichtag
+                     FROM
+                         avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
     ),
     abfahrten AS (
         SELECT
@@ -111,6 +114,11 @@ INSERT INTO
                 'Zofingen'
             )
         AND
+-- diese Unternehmen fahren offizielle Haltestellen an, werden aber nicht berücksichtigt
+            agency.unternehmer NOT IN (
+                'Domo Swiss Express AG'
+            )
+        AND
             agency.agency_id::text = route.agency_id
         AND
             route.route_id = trip.route_id
@@ -136,11 +144,11 @@ INSERT INTO
                'Tram'
            )
 /*
--- ***************** zusätzliche Bedingung für OeV-Güteklassen *****************
+-- ************************** zusätzliche Bedingung für OeV-Güteklassen ****************************
         AND
             substring(departure_time from 1 for 2) IN
                 ('06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19')
--- *******************************************************************************
+--**************** *********************************************************************************
 */
         GROUP BY
             stop.stop_name,
@@ -864,7 +872,9 @@ UNION ALL
         linienname,
         unternehmer,
         verkehrsmittel
--- **************** Ende Block für abfahrten_oev_guete.sql ********************
+--  ******************** ********************
+-- Ende Block für abfahrten_oev_guete.sql
+--  ******************** ********************
 )
 ;
 
@@ -908,10 +918,10 @@ INSERT INTO
             avt_oevkov_${currentYear}.gtfs_calendar_dates
         WHERE
             datum = (
-                            SELECT
-                                stichtag
-                            FROM
-                                avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
+                     SELECT
+                         stichtag
+                     FROM
+                         avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
     )
      SELECT
          stop_name,
