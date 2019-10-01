@@ -1,4 +1,4 @@
--- Tabelle avt_oevkov_${currentYear}.sachdaten_oevkov_daten
+-- Tabelle avt_oevkov_${currentYear}.sachdaten_oevkov_daten 
 
 -- OeV Kosten Total
 UPDATE
