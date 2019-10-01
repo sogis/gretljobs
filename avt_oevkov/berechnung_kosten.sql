@@ -103,7 +103,7 @@ FROM
         SELECT
              anrechnung.gemeindename, 
             CASE
---           wenn Korrekturen gemacht wurden
+-- wenn Korrekturen gemacht wurden
                  WHEN  korrektur.abfahrten_korrigiert IS NOT NULL
                     THEN
                          sum((auswertung.anzahl_abfahrten_linie  +  korrektur.abfahrten_korrigiert)  * korrektur.gewichtung  * anrechnung  /  100)::numeric(5,1)
