@@ -180,19 +180,27 @@ INSERT INTO
 -- *********** hier kommen die Ausnahmen, die werden unten abgehandelt ***********
     
 -- gewisse Bahnhöfe werden separat behandelt wegen Zuordnung zu den LInien
+--  oder ausserkantonale Haltestellen, welche mitberechent werden
        AND
            stop_name NOT IN (
+              'Arlesheim, Obesunne',
               'Däniken',
               'Dornach-Arlesheim',
               'Dulliken',
+              'Erlinsbach, Oberdorf',
+              'Erlinsbach, Sagi',
+              'Gänsbrunnen',
+              'Gänsbrunnen, Bahnhof',
               'Grenchen Nord',
               'Grenchen Süd',
               'Murgenthal',
+              'Niederbipp Industrie',
+              'Nuglar, Neunuglar', 
               'Olten',
               'Schönenwerd SO',
-              'Solothurn'
+              'Solothurn',
+              'Walterswil-Striegel'
         )
-    -- ***************************** Ende der Ausnahmen *********************************
 
     GROUP BY
         stop_name,
@@ -295,6 +303,7 @@ INSERT INTO
         linie.linienname,
         agency.unternehmer,
         verkehrsmittel
+-- ***************************** Ende der Ausnahmen *********************************
 
 -- **************************************************************************************
 -- ab hier werden die Bahnhöfe und andere Knotenpunkte behandelt,
