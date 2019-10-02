@@ -72,7 +72,7 @@ node ("gretl") {
                 -PdbUriCapitastra='${dbUriCapitastra}' -PdbUserCapitastra='${dbUserCapitastra}' -PdbPwdCapitastra='${dbPwdCapitastra}' \
                 -PftpServerZivilschutz='${ftpServerZivilschutz}' -PftpUserZivilschutz='${ftpUserZivilschutz}' -PftpPwdZivilschutz='${ftpPwdZivilschutz}' \
                 -PaiServer='${aiServer}' -PaiUser='${aiUser}' -PaiPwd='${aiPwd}' \
-                -PinfofloraUser='${infofloraUser}' -PaiPwd='${infofloraPwd}' \
+                -PinfofloraUser='${infofloraUser}' -PinfofloraPwd='${infofloraPwd}' \
                 -PsolrIndexupdaterBaseUrl='${solrIndexupdaterBaseUrl}'"
             }
         }
