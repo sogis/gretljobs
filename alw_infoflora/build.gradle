@@ -44,7 +44,7 @@ task download_json(type: Download){
 task download_file(dependsOn: download_json){
     description = "Download Zip file"
 
-    def localFileName = 'foo' 
+    def = 'foo' 
     def localPath = '/bar'
     def url = 'https://obs.infoflora.ch/'
 
@@ -65,7 +65,7 @@ task download_file(dependsOn: download_json){
 
 task unpackFiles(dependsOn: download_file) {
     doLast{
-        file(pathToUnzipFolder.toString()+'/neophyten').withOutputStream { os ->
+        file(pathToUnzipFolder.toString()+'/neophyten.csv').withOutputStream { os ->
         os << resources.gzip(pathToDataZip).read()
         }
      }
@@ -77,8 +77,8 @@ task csvimport(type: CsvImport, dependsOn: unpackFiles){
     tableName = "neophyten_neophytenstandorte"
     firstLineIsHeader=true
     valueSeparator = ";"
-    println "Importiere folgendes file: "+pathToUnzipFolder.toString()+'/neophyten'
-    dataFile = file(pathToUnzipFolder.toString()+'/neophyten')
+    println "Importiere folgendes file: "+pathToUnzipFolder.toString()+'/neophyten.csv'
+    dataFile = file(pathToUnzipFolder.toString()+'/neophyten.csv')
 }
 
 task deleteFileOnServer(type:Exec) {
