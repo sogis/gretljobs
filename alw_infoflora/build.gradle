@@ -44,7 +44,7 @@ task download_json(type: Download){
 task download_file(dependsOn: download_json){
     description = "Download Zip file"
 
-    def = 'foo' 
+    def localFileName = 'foo' 
     def localPath = '/bar'
     def url = 'https://obs.infoflora.ch/'
 
