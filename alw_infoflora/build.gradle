@@ -14,7 +14,7 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'csvimport'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
-def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
+def pathToUnzipFolder = Paths.get(pathToTempFolder)
 def pathToDataZip = Paths.get(pathToTempFolder, 'neophyten.gz')
 def csvFilePath = Paths.get(pathToUnzipFolder.toString(), 'data', 'data.csv')
 
@@ -65,7 +65,7 @@ task download_file(dependsOn: download_json){
 
 task unpackFiles(dependsOn: download_file) {
     doLast{
-        file(pathToUnzipFolder.toString()+'/neophyten.csv').withOutputStream { os ->
+        file(pathToUnzipFolder.toString()+'/neophyten').withOutputStream { os ->
         os << resources.gzip(pathToDataZip).read()
         }
      }
@@ -77,8 +77,8 @@ task csvimport(type: CsvImport, dependsOn: unpackFiles){
     tableName = "neophyten_neophytenstandorte"
     firstLineIsHeader=true
     valueSeparator = ";"
-    println "Importiere folgendes file: "+pathToUnzipFolder.toString()+'/neophyten.csv'
-    dataFile = file(pathToUnzipFolder.toString()+'/neophyten.csv')
+    println "Importiere folgendes file: "+pathToUnzipFolder.toString()+'/neophyten'
+    dataFile = file(pathToUnzipFolder.toString()+'/neophyten')
 }
 
 task deleteFileOnServer(type:Exec) {
