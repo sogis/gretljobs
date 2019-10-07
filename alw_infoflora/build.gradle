@@ -11,7 +11,7 @@ apply plugin: "de.undercouch.download"
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'csvimport'
+defaultTasks 'deleteFileOnServer'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder)
@@ -33,6 +33,7 @@ task download_json(type: Download){
         project.filepath = json.data.folder_name[0]
         project.fileid = json.data.id[0]
         println "Filename 0 = " + filename
+        println "Fileid 0 = " + fileid
     }
     src 'https://obs.infoflora.ch/rest/v4/docs.json?projects=83505'
     username infofloraUser
@@ -71,19 +72,37 @@ task unpackFiles(dependsOn: download_file) {
      }
 }
 
-task csvimport(type: CsvImport, dependsOn: unpackFiles){
+task truncateTable(type: SqlExecutor, dependsOn:unpackFiles) {
+    description = "Leert die Tabelle alw_infoflora.neophyten_neophytenstandorte"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = [
+            'truncate_table.sql'
+    ]
+}
+
+task csvimport(type: CsvImport, dependsOn: truncateTable){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = "alw_infoflora"
     tableName = "neophyten_neophytenstandorte"
     firstLineIsHeader=true
     valueSeparator = ";"
+    encoding = "UTF-8"
     println "Importiere folgendes file: "+pathToUnzipFolder.toString()+'/neophyten'
     dataFile = file(pathToUnzipFolder.toString()+'/neophyten')
 }
 
-task deleteFileOnServer(type:Exec) {
-
-    commandLine 'curl -i -u ' + infofloraUser + ':' + infofloraPwd + ' -k -X DELETE https://obs.infoflora.ch/rest/v4/docs/' + fileid + '.json --header "Content-Type:application/json"'
-    println "Deleted file " + filename + " from Server" 
-
+task deleteFileOnServer(dependsOn: csvimport){
+    def String localFileid
+    
+    doFirst {
+        localFileid = project.fileid
+    }
+    doLast {
+        println "project.fileid = " + project.fileid
+        exec {
+            workingDir '/tmp'
+            commandLine 'curl', '-i', '-u', infofloraUser + ':' + infofloraPwd, '-k', '-X', 'DELETE', '--header', 'Content-T    ype:application/json', 'https://obs.infoflora.ch/rest/v4/docs/'+localFileid+'.json'
+            println "Deleted file " + filename + ", ID: " + localFileid + " from Server"
+        }    
+    }
 }
