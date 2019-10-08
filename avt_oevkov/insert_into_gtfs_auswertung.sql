@@ -177,132 +177,27 @@ INSERT INTO
     WHERE
        trip_headsign <> stop_name
        
--- *********** hier kommen die Ausnahmen, die werden unten abgehandelt ***********
+-- *********** hier kommen die Ausnahmen, die werden weiter unten abgehandelt ***********
     
--- gewisse Bahnhöfe werden separat behandelt wegen Zuordnung zu den LInien
---  oder ausserkantonale Haltestellen, welche mitberechent werden
-       AND
-           stop_name NOT IN (
-              'Arlesheim, Obesunne',
-              'Däniken',
-              'Dornach-Arlesheim',
-              'Dulliken',
-              'Erlinsbach, Oberdorf',
-              'Erlinsbach, Sagi',
-              'Gänsbrunnen',
-              'Gänsbrunnen, Bahnhof',
-              'Grenchen Nord',
-              'Grenchen Süd',
-              'Murgenthal',
-              'Niederbipp Industrie',
-              'Nuglar, Neunuglar', 
-              'Olten',
-              'Schönenwerd SO',
-              'Solothurn',
-              'Walterswil-Striegel'
+-- gewisse Bahnhöfe werden separat behandelt wegen Zuordnung zu den Linien
+    AND
+        stop_name NOT IN (
+            'Däniken',
+            'Dornach-Arlesheim',
+            'Dulliken',
+            'Grenchen Nord',
+            'Grenchen Süd',
+            'Murgenthal',
+            'Olten',
+            'Schönenwerd SO',
+            'Solothurn'
         )
-
     GROUP BY
         stop_name,
         linienname,
         unternehmer,
         verkehrsmittel
 
-    UNION ALL
-
---  Alle Haltestellen ergänzen,welche ausserhalb des Kantons liegen, aber einer
---  Solothurner Gemeinde angerechnet werden, ausser die, welche unten als Speziallfall
---  behandelt werden. Die Zuordnung zu einer Gemeinde erfolgt über die Tabelle
---  avt_oevkov_${currentYear}.sachdaten_haltestelle_anrechnung, welche
---  durch die Abt. OeV festgelegt wird
-    SELECT  
-        stop.stop_name,
-        linie.linienname,
-        agency.unternehmer,
-        count(departure_time) AS gtfs_count,
-        CASE
-            WHEN route_desc= 'Bus'
-                 THEN 1 
-            WHEN route_desc IN ('RegioExpress', 'InterRegio', 'Intercity')
-                 THEN 2
-            WHEN route_desc IN ('Regionalzug', 'S-Bahn',  'Tram')
-                THEN 3
-        END AS verkehrsmittel
-    FROM avt_oevkov_${currentYear}.gtfs_agency AS agency,
-        avt_oevkov_${currentYear}.gtfs_route AS route,
-        avt_oevkov_${currentYear}.gtfs_trip AS trip,
-        avt_oevkov_${currentYear}.gtfs_stoptime AS stoptime,
-        avt_oevkov_${currentYear}.gtfs_stop AS stop,
-        avt_oevkov_${currentYear}.sachdaten_linie_route AS linie
-    WHERE
-        (
-        trip.service_id IN (
-            SELECT
-                service_id
-            FROM
-                calendar
-            WHERE dayofweek = 1
-            )
-        OR
-        trip.service_id IN (
-            SELECT
-                service_id
-            FROM
-                exception
-            WHERE
-                exception_type = 1
-            )
-        )
-    AND
-        trip.service_id NOT IN (
-            SELECT
-                service_id
-            FROM
-                exception
-            WHERE
-                exception_type = 2
-    )
-    AND
-        stop.stop_name IN (
-            'Arlesheim, Obesunne',
-            'Erlinsbach, Oberdorf',
-            'Erlinsbach, Sagi',
-            'Gänsbrunnen',
-            'Gänsbrunnen, Bahnhof',
-            'Nuglar, Neunuglar', 
-            'Niederbipp Industrie',
-            'Walterswil-Striegel'
-         )
-    AND
-        agency.agency_id::text = route.agency_id 
-    AND
-        route.route_id = trip.route_id
-    AND
-        route.route_id = linie.route_id 
-    AND
-        stop.stop_id = stoptime.stop_id
-    AND
-        stoptime.trip_id = trip.trip_id
-    AND
-        trip_headsign <> stop.stop_name
-    AND
-        pickup_type = 0
-    AND
-       route_desc IN (
-           'Intercity',
-           'ICE',
-           'InterRegio',
-           'RegioExpress',
-           'Regionalzug',
-           'S-Bahn',
-           'Bus',
-           'Tram'
-       )
-    GROUP BY
-        stop.stop_name,
-        linie.linienname,
-        agency.unternehmer,
-        verkehrsmittel
 -- ***************************** Ende der Ausnahmen *********************************
 
 -- **************************************************************************************

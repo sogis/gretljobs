@@ -10,7 +10,7 @@ def dataPath= '/home/barpasen/gretljobs/avt_oevkov_import/'
 
 // OEVKOV Variablen
 def currentYear = '2019'
-def lastYear = '2018'
+def lastYear = ((currentYear as Integer) - 1).toString()
 
 
 defaultTasks 'do_Gesamtberechnung'
