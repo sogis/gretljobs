@@ -1,0 +1,9 @@
+SELECT 
+    maximale_bohrtiefe, 
+    wirtgestein, 
+    standortgebiet, 
+    nagra_tiefenzone, 
+    geometrie
+FROM 
+    afu_erdwaermesonden_nagra.nagra_bohrtiefen_bohrtiefen
+;
