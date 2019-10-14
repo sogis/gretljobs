@@ -91,7 +91,15 @@ task csvimport(type: CsvImport, dependsOn: truncateTable){
     dataFile = file(pathToUnzipFolder.toString()+'/neophyten')
 }
 
-task deleteFileOnServer(dependsOn: csvimport){
+task makeGeometry(type: SqlExecutor, dependsOn:csvimport){
+    description = "Macht aus x und y Koordinate eine Geometrie"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = [
+            'makegeometry.sql'
+    ]
+}
+
+task deleteFileOnServer(dependsOn: makeGeometry){
     def String localFileid
     
     doFirst {
