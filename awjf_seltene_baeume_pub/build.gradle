@@ -9,6 +9,7 @@ task transferAwjfSelteneBaeume(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('awjf_seltene_baeume.sql', 'awjf_seltene_baeume_pub.seltene_baumarten_seltene_baumarten', true),
+            new TransferSet('awjf_seltene_baeume_freistellung.sql', 'awjf_seltene_baeume_pub.seltene_baumarten_freistellung', true),
+            new TransferSet('awjf_seltene_baeume_pflanzung.sql', 'awjf_seltene_baeume_pub.seltene_baumarten_pflanzung', true)
     ];
 }
