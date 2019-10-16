@@ -8,7 +8,7 @@ INSERT INTO avt_oevkov_${currentYear}.so_geodaten_haltestellenbuffer
     )
     (
     SELECT
-        DISTINCT ON (stop_name) stop_name,
+        DISTINCT ON (haltestelle.haltestellenname) haltestelle.haltestellenname,
         CASE
             WHEN verkehrsmittel IN (1,4)
                 THEN 'Bus'
@@ -18,14 +18,15 @@ INSERT INTO avt_oevkov_${currentYear}.so_geodaten_haltestellenbuffer
         END AS verkehrsmittel,
         CASE
             WHEN verkehrsmittel IN (1,4)
-                THEN ST_Buffer(stop.geometrie, 250, 'quad_segs=16')
+                THEN ST_Buffer(haltestelle.geometrie, 250, 'quad_segs=16')
             WHEN verkehrsmittel IN (2, 3) 
-                THEN ST_Buffer(stop.geometrie, 500, 'quad_segs=16')
-           ELSE ST_Buffer(stop.geometrie, 50, 'quad_segs=16')
+                THEN ST_Buffer(haltestelle.geometrie, 500, 'quad_segs=16')
+           ELSE ST_Buffer(haltestelle.geometrie, 50, 'quad_segs=16')
         END AS geometrie
     FROM
-        avt_oevkov_${currentYear}.gtfs_stop AS stop
-        LEFT JOIN avt_oevkov_${currentYear}.auswertung_auswertung_gtfs AS auswertung
-            ON stop.stop_name = auswertung.haltestellenname
+        avt_oevkov_${currentYear}.so_geodaten_haltestellen AS haltestelle
+        LEFT JOIN avt_oevkov_${currentYear}.auswertung_gesamtauswertung AS auswertung
+            ON haltestelle.haltestellenname = auswertung.haltestellenname 
+    WHERE auswertung.anrechnung > 0
     )
 ;
