@@ -10,15 +10,15 @@ SELECT
     a2.max_bel, 
     CASE
         WHEN a2.max_bel::text = '5'::text 
-            THEN 'belastet, nicht untersuchungsbedürftig'::text
+            THEN 'Belastet, keine schädlichen oder lästigen Einwirkungen zu erwarten'::text
         WHEN a2.max_bel::text = '3'::text 
-            THEN 'belastet, untersuchungsbedürftig'::text
+            THEN 'Belastet, untersuchungsbedürftig'::text
         WHEN a2.max_bel::text = '2'::text 
-            THEN 'belastet, überwachungsbedürftig'::text
+            THEN 'Belastet, überwachungsbedürftig'::text
         WHEN a2.max_bel::text = '1'::text 
-            THEN 'belastet, sanierungsbedürftig'::text
+            THEN 'Belastet, sanierungsbedürftig'::text
         WHEN a2.max_bel::text = '4'::text 
-            THEN 'belastet, weder überwachungs- noch sanierungsbedürftig'::text
+            THEN 'Belastet, weder überwachungs- noch sanierungsbedürftig'::text
         ELSE NULL::text
     END AS max_bel_text,
     standort.c_vflz_unterstand||', '||standort.c_vflz_bearbstand AS untersuchungsstand
@@ -45,6 +45,6 @@ FROM
             auszug_akt_altlasten17785.altlasten_belastete_standorte 
         GROUP BY 
             "left"(vflz_combined_id_kt::text, 12)
-        ) AS a2 
+        ) AS a2
         ON "left"(standort.vflz_combined_id_kt::text, 12) = a2.bel
 ;
