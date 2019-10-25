@@ -16,8 +16,8 @@ WITH evaluation_exposure_limit_value AS
         SELECT 
             pointofdetermination.t_id,
             LEAST(
-                CAST(SUBSTRING(exposure_limit_value_catalogue_d.code, 4, 1) AS INTEGER),
-                CAST(SUBSTRING(exposure_limit_value_catalogue_n.code, 4, 1) AS INTEGER)
+                CAST(SUBSTRING(exposure_limit_value_catalogue_d.acode, 4, 1) AS INTEGER),
+                CAST(SUBSTRING(exposure_limit_value_catalogue_n.acode, 4, 1) AS INTEGER)
             ) AS min_exposure_limit
         FROM
             avt_strassenlaerm.immission_strasse_pointofdetermination AS pointofdetermination
@@ -34,8 +34,8 @@ SELECT
     pointofdetermination.grenzwert_tag AS immissionsgrenzwert_tag,
     pointofdetermination.grenzwert_nacht AS immissionsgrenzwert_nacht,
     evaluation_exposure_limit_value.beurteilung AS beurteilung,
-    pointofdetermination_catalogue.definition_de AS typ_ermittlungspunkt,
-    operation_status_catalogue.definition_de AS betriebsstatus,
+    pointofdetermination_catalogue.adefinition_de AS typ_ermittlungspunkt,
+    operation_status_catalogue.adefinition_de AS betriebsstatus,
     pointofdetermination.address_pod AS adresse,
     -- gemeinde
     -- parzellennummer
