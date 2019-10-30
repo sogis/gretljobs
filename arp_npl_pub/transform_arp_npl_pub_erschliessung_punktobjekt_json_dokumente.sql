@@ -41,9 +41,9 @@ doc_doc_references_all AS
     depth = (SELECT max(sq."depth") FROM x sq WHERE sq.ursprung = x.ursprung)
 )
 ,
--- Rekursion liefert alle Möglichkeiten, dh. zum Beispiel
--- auch [3,4]. Wir sind aber nur längster Variante einer 
--- Kaskade interessiert: [1,2,3,4,5].
+-- Rekursion liefert alle M?glichkeiten, dh. zum Beispiel
+-- auch [3,4]. Wir sind aber nur l?ngster Variante einer 
+-- Kasksade interessiert: [1,2,3,4,5].
 doc_doc_references AS 
 (
   SELECT 
@@ -68,7 +68,7 @@ json_documents_all AS
 (
   SELECT
     t_id, 
-    row_to_json(t)::text AS json_dokument -- Text-Repräsentation des JSON-Objektes. 
+    row_to_json(t)::text AS json_dokument -- Text-Repr?sentation des JSON-Objektes. 
   FROM
   (
     SELECT
@@ -81,9 +81,12 @@ json_documents_all AS
   ) AS t
 )
 ,
+-- TODO:
 -- Alle Dokumente (die in HinweisWeitereDokumente vorkommen) 
--- als JSON-Objekte (resp. als Text-Repräsentation).
--- Muss noch genauer überlegt werden, wie genau mit JSON hantiert wird.
+-- als JSON-Objekte (resp. als Text-Repr?sentation).
+-- Muss noch genauer ?berlegt werden, wie genau mit JSON hantiert wird.
+
+-- TODO: Brauch ich jetzt diese Tabelle ?berhaupt noch?
 json_documents_doc_doc_reference AS 
 (
   SELECT
@@ -109,97 +112,91 @@ json_documents_doc_doc_reference AS
   ON foo.dokument_t_id = bar.t_id
 )
 ,
--- Mit unnest und späteren group by (aggregieren) geht
--- ziemlich sicher die Reihenfolge der Kaskade / des
--- Bandwurms flöten. Respektive ist nicht sichergestellt.
--- Momentan damit leben.
--- Hierarchie geht verloren: [1, 3] und [1, 5] kann
--- zu [5, 1, 3] werden. -> Es gibt schlussendlich und temporär
--- halt einfache ein Liste mit den Dokumenten-Objekten pro Geometrie 
--- (resp. Typ).
-typ_grundnutzung_dokument_ref AS
+-- TODO: 
+-- Erstes SELECT liefert nur die Dokumente, die auch in der hinweisweiteredokumente-Tabelle
+-- vorkommen. Daher das Union mit der "punktobjekt_dokument"-Tabelle, um auch wirklich
+-- alle Dokumente zu erhalten, die mit einem Typ assoziiert sind.
+-- -> Nochmals ?berlegen, ob man das nicht besser l?sen kann.
+typ_erschliessung_punktobjekt_dokument_ref AS 
 (
-  SELECT DISTINCT ON (typ_grundnutzung, dok_referenz)
+  SELECT DISTINCT ON (typ_erschliessung_punktobjekt, dok_referenz)
     *
   FROM
   (
     SELECT DISTINCT
-      --string_agg(json_dokument, ';')
-      typ_grundnutzung_dokument.typ_grundnutzung,
+      typ_erschliessung_punktobjekt_dokument.typ_erschliessung_punktobjekt,
       dokument,
-      --dok_dok_referenzen
       unnest(dok_dok_referenzen) AS dok_referenz
     FROM
-      arp_npl.nutzungsplanung_typ_grundnutzung_dokument AS typ_grundnutzung_dokument
+      arp_npl.erschlssngsplnung_typ_erschliessung_punktobjekt_dokument AS typ_erschliessung_punktobjekt_dokument
       LEFT JOIN doc_doc_references
-      ON typ_grundnutzung_dokument.dokument = doc_doc_references.ursprung
-      
+      ON typ_erschliessung_punktobjekt_dokument.dokument = doc_doc_references.ursprung
+    
     UNION 
     
     SELECT
-      typ_grundnutzung,
+      typ_erschliessung_punktobjekt,
       dokument,
       dokument AS dok_referenz
     FROM
-      arp_npl.nutzungsplanung_typ_grundnutzung_dokument   
-   ) AS foo
+      arp_npl.erschlssngsplnung_typ_erschliessung_punktobjekt_dokument
+  ) AS foo
 )
---SELECT * FROM typ_grundnutzung_dokument_ref
 ,
-typ_grundnutzung_json_dokument AS 
+-- Dieses Joinen muss folgerichtig mit *allen* Json-Dokumenten geschehen,
+-- sonst gibt es NULL bei den Dokumenten, die nicht in hinweisweiteredokumente
+-- auftreten.
+typ_erschliessung_punktobjekt_json_dokument AS 
 (
   SELECT
     *
   FROM
-    typ_grundnutzung_dokument_ref
+    typ_erschliessung_punktobjekt_dokument_ref
     LEFT JOIN json_documents_all
-    ON json_documents_all.t_id = typ_grundnutzung_dokument_ref.dok_referenz
+    ON json_documents_all.t_id = typ_erschliessung_punktobjekt_dokument_ref.dok_referenz
 )
 ,
-typ_grundnutzung_json_dokument_agg AS 
+typ_erschliessung_punktobjekt_json_dokument_agg AS 
 (
   SELECT
-    typ_grundnutzung_t_id,
+    typ_erschliessung_punktobjekt_t_id,
     '[' || dokumente::varchar || ']' as dokumente
   FROM
   (
     SELECT
-      typ_grundnutzung AS typ_grundnutzung_t_id,
+      typ_erschliessung_punktobjekt AS typ_erschliessung_punktobjekt_t_id,
       string_agg(json_dokument, ',') AS dokumente
     FROM
-      typ_grundnutzung_json_dokument
+      typ_erschliessung_punktobjekt_json_dokument
     GROUP BY
-      typ_grundnutzung
+      typ_erschliessung_punktobjekt
   ) as foo
 )
 ,
-grundnutzung_geometrie_typ AS
+erschliessung_punktobjekt_geometrie_typ AS
 (
   SELECT 
-    g.t_id,
-    g.t_datasetname::int4 AS bfs_nr,
-    g.t_ili_tid,
-    g.name_nummer,
-    g.rechtsstatus,
-    g.publiziertab,
-    g.bemerkungen,
-    g.erfasser,
-    g.datum,
-    g.geometrie,
+    f.t_datasetname::int4 AS bfs_nr,
+    f.t_id,
+    f.t_ili_tid,
+    f.name_nummer,
+    f.rechtsstatus,
+    f.publiziertab,
+    f.bemerkungen,
+    f.erfasser,
+    f.datum,
+    f.geometrie,
     t.t_id AS typ_t_id,
     t.typ_kt AS typ_typ_kt,
     t.code_kommunal AS typ_code_kommunal,
-    t.nutzungsziffer AS typ_nutzungsziffer,
-    t.nutzungsziffer_art AS typ_nutzungsziffer_art,
-    t.geschosszahl AS typ_geschosszahl,
     t.bezeichnung AS typ_bezeichnung,
     t.abkuerzung AS typ_abkuerzung,
     t.verbindlichkeit AS typ_verbindlichkeit,
     t.bemerkungen AS typ_bemerkungen 
   FROM
-    arp_npl.nutzungsplanung_grundnutzung AS g
-    LEFT JOIN arp_npl.nutzungsplanung_typ_grundnutzung AS t
-    ON g.typ_grundnutzung = t.t_id
+    arp_npl.erschlssngsplnung_erschliessung_punktobjekt AS f
+    LEFT JOIN arp_npl.erschlssngsplnung_typ_erschliessung_punktobjekt AS t
+    ON f.typ_erschliessung_punktobjekt = t.t_id
 )
 SELECT
   g.t_id,
@@ -209,10 +206,7 @@ SELECT
   g.typ_verbindlichkeit,
   g.typ_bemerkungen,
   g.typ_typ_kt AS typ_kt,
-  g.typ_code_kommunal::int4 AS typ_code_kommunal,
-  g.typ_nutzungsziffer,
-  g.typ_nutzungsziffer_art,
-  g.typ_geschosszahl,
+  g.typ_code_kommunal,
   g.geometrie,
   g.name_nummer,
   g.rechtsstatus,
@@ -223,7 +217,6 @@ SELECT
   d.dokumente::jsonb AS dokumente,
   g.bfs_nr
 FROM  
-  grundnutzung_geometrie_typ AS g 
-  LEFT JOIN typ_grundnutzung_json_dokument_agg AS d
-  ON g.typ_t_id = d.typ_grundnutzung_t_id
-;
+  erschliessung_punktobjekt_geometrie_typ AS g 
+  LEFT JOIN typ_erschliessung_punktobjekt_json_dokument_agg AS d
+  ON g.typ_t_id = d.typ_erschliessung_punktobjekt_t_id;

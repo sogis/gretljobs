@@ -71,8 +71,10 @@ json_documents_all AS
   FROM
   (
     SELECT
-      *,
-      ('https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/'||"textimweb")::text AS textimweb_absolut
+      t_id, dokumentid, titel, offiziellertitel AS offizieller_titel, abkuerzung,
+      offiziellenr AS offizielle_nr, kanton, gemeinde, publiziertab AS publiziert_ab, rechtsstatus,
+      ('https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/'||"textimweb")::text AS textimweb,
+      bemerkungen, rechtsvorschrift
     FROM
       arp_npl.rechtsvorschrften_dokument
   ) AS t
@@ -184,25 +186,26 @@ ueberlagernd_linie_geometrie_typ AS
     LEFT JOIN arp_npl.nutzungsplanung_typ_ueberlagernd_linie AS t
     ON l.typ_ueberlagernd_linie = t.t_id
 )
--- Es muss noch die möglichen zusätzlichen Dokumente (Geometrie -> Dokument)
+-- Es muss noch die m?glichen zusätzlichen Dokumente (Geometrie -> Dokument)
 -- hinzugefügt werden. Plural, da auch Kaskade wieder möglich.
 SELECT
-  g.bfs_nr,
+  g.t_id,
   g.t_ili_tid,
-  g.name_nummer,
-  g.rechtsstatus,
-  g.publiziertab,
-  g.bemerkungen,
-  g.erfasser,
-  g.datum,
-  g.geometrie,
-  g.typ_typ_kt AS typ_kt,
-  g.typ_code_kommunal,
   g.typ_bezeichnung,
   g.typ_abkuerzung,
   g.typ_verbindlichkeit,
   g.typ_bemerkungen,
-  d.dokumente AS dok_id
+  g.typ_typ_kt AS typ_kt,
+  g.typ_code_kommunal::int4 AS typ_code_kommunal,
+  g.geometrie,
+  g.name_nummer,
+  g.rechtsstatus,
+  g.publiziertab AS publiziert_ab,
+  g.bemerkungen,
+  g.erfasser,
+  g.datum AS datum_erfassung,
+  d.dokumente::jsonb AS dokumente,
+  g.bfs_nr
 FROM  
   ueberlagernd_linie_geometrie_typ AS g 
   LEFT JOIN typ_ueberlagernd_linie_json_dokument_agg AS d
