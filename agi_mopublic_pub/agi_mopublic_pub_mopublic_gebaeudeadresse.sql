@@ -1,60 +1,72 @@
 WITH strassenname AS (
   SELECT 
-    lokalisation.tid AS lok_tid,
-    lokalisationsname."text" AS strassenname
+    lokalisation.t_id AS lok_t_id,
+    lokalisationsname.atext AS strassenname
   FROM
-    av_avdpool_ng.gebaeudeadressen_lokalisation AS lokalisation
-    LEFT JOIN av_avdpool_ng.gebaeudeadressen_lokalisationsname AS lokalisationsname
-    ON lokalisationsname.benannte = lokalisation.tid
-  WHERE lokalisation.istoffiziellebezeichnung = 0
+    agi_dm01avso24.gebaeudeadressen_lokalisation AS lokalisation
+    LEFT JOIN agi_dm01avso24.gebaeudeadressen_lokalisationsname AS lokalisationsname
+    ON lokalisationsname.benannte = lokalisation.t_id
+  WHERE lokalisation.istoffiziellebezeichnung = 'ja'
 ),
 gebaeudeeingang AS (
   SELECT
-    gebauedeeingang.gebaeudeeingang_von AS lok_tid,
+    gebauedeeingang.gebaeudeeingang_von AS lok_t_id,
     gebauedeeingang.hoehenlage,
     gebauedeeingang.lage,
     gebauedeeingang.hausnummer,
     gebauedeeingang.gwr_egid AS egid,
     gebauedeeingang.gwr_edid AS edid,
-    gebauedeeingang.status_txt AS status,
+    gebauedeeingang.astatus AS status,
     CASE 
-      WHEN istoffiziellebezeichnung_txt = 'ja' 
+      WHEN istoffiziellebezeichnung = 'ja' 
         THEN TRUE
       ELSE FALSE 
     END AS ist_offizielle_bezeichnung,
-    name."text" AS gebaeudename, -- always empty?
-    gebauedeeingang.gem_bfs AS bfs_nr,
+    aname.atext AS gebaeudename, -- always empty?
+    CAST(gebauedeeingang.t_datasetname AS INT) AS bfs_nr,    
     CASE
       WHEN hausnummer.ori IS NULL 
         THEN (100 - 100) * 0.9
       ELSE (100 - hausnummer.ori) * 0.9 
     END AS orientierung,
     CASE 
-      WHEN hausnummer.hali_txt IS NULL 
+      WHEN hausnummer.hali IS NULL 
         THEN 'Center'
-      ELSE hausnummer.hali_txt
+      ELSE hausnummer.hali
     END AS hali,
     CASE 
-      WHEN hausnummer.vali_txt IS NULL 
+      WHEN hausnummer.vali IS NULL 
         THEN 'Half'
-      ELSE hausnummer.vali_txt
+      ELSE hausnummer.vali
     END AS vali,
-    gebauedeeingang.lieferdatum AS importdatum,
-    to_date(nachfuehrung.gueltigereintrag, 'YYYYMMDD') AS nachfuehrung,
+    aimport.importdate AS importdatum,
+    nachfuehrung.gueltigereintrag AS nachfuehrung,
     hausnummer.pos
 FROM
-    av_avdpool_ng.gebaeudeadressen_gebaeudeeingang AS gebauedeeingang
-    LEFT JOIN av_avdpool_ng.gebaeudeadressen_hausnummerpos AS hausnummer
-    ON hausnummer.hausnummerpos_von = gebauedeeingang.tid
-    LEFT JOIN av_avdpool_ng.gebaeudeadressen_gebnachfuehrung AS nachfuehrung
-    ON gebauedeeingang.entstehung = nachfuehrung.tid
-    LEFT JOIN av_avdpool_ng.gebaeudeadressen_gebaeudename AS name
-    ON name.gebaeudename_von = gebauedeeingang.tid
+    agi_dm01avso24.gebaeudeadressen_gebaeudeeingang AS gebauedeeingang
+    LEFT JOIN agi_dm01avso24.gebaeudeadressen_hausnummerpos AS hausnummer
+    ON hausnummer.hausnummerpos_von = gebauedeeingang.t_id
+    LEFT JOIN agi_dm01avso24.gebaeudeadressen_gebnachfuehrung AS nachfuehrung
+    ON gebauedeeingang.entstehung = nachfuehrung.t_id
+    LEFT JOIN agi_dm01avso24.gebaeudeadressen_gebaeudename AS aname
+    ON aname.gebaeudename_von = gebauedeeingang.t_id
+    LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+    ON gebauedeeingang.t_basket = basket.t_id
+    LEFT JOIN 
+    (
+    	SELECT
+			max(importdate) AS importdate, dataset
+		FROM
+			agi_dm01avso24.t_ili2db_import
+		GROUP BY
+			dataset 
+    ) AS  aimport
+    ON basket.dataset = aimport.dataset
 ),
 gebaeudeeingang_strassenname AS
 (
   SELECT
-    strassenname.lok_tid, 
+    strassenname.lok_t_id, 
     strassenname.strassenname, 
     gebaeudeeingang.hoehenlage, 
     gebaeudeeingang.lage, 
@@ -74,12 +86,12 @@ gebaeudeeingang_strassenname AS
   FROM
     strassenname
     RIGHT JOIN gebaeudeeingang
-    ON strassenname.lok_tid = gebaeudeeingang.lok_tid
+    ON strassenname.lok_t_id = gebaeudeeingang.lok_t_id
 ),
 gebaeudeeingang_strassenname_plz_ortschaft AS 
 (
   SELECT
-    gebaeudeeingang_strassenname.lok_tid, 
+    gebaeudeeingang_strassenname.lok_t_id, 
     gebaeudeeingang_strassenname.strassenname, 
     gebaeudeeingang_strassenname.hoehenlage, 
     gebaeudeeingang_strassenname.lage, 
@@ -107,9 +119,9 @@ gebaeudeeingang_strassenname_plz_ortschaft AS
     LEFT JOIN agi_plz_ortschaften.plzortschaft_ortschaftsname AS ortschaftsname
     ON ortschaftsname.ortschaftsname_von = ortschaft.t_id
     WHERE 
-      plz.status != 'vergangen'
+      plz.astatus != 'vergangen'
       AND
-      ortschaft.status != 'vergangen'
+      ortschaft.astatus != 'vergangen'
       AND 
       strassenname IS NOT NULL
       AND
@@ -122,7 +134,7 @@ SELECT
   gebaeudeeingang_strassenname_plz_ortschaft.edid,
   gebaeudeeingang_strassenname_plz_ortschaft.plz,
   gebaeudeeingang_strassenname_plz_ortschaft.ortschaft,
-  gebaeudeeingang_strassenname_plz_ortschaft.status,
+  gebaeudeeingang_strassenname_plz_ortschaft.status AS astatus,
   gebaeudeeingang_strassenname_plz_ortschaft.ist_offizielle_bezeichnung,
   gebaeudeeingang_strassenname_plz_ortschaft.hoehenlage,
   gebaeudeeingang_strassenname_plz_ortschaft.gebaeudename,

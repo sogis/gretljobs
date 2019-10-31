@@ -1,15 +1,14 @@
 SELECT 
     hoheitsgrenzpunkt.identifikator AS nummer,
-    hoheitsgrenzpunkt.punktzeichen AS punktzeichen,
-    hoheitsgrenzpunkt.punktzeichen_txt AS punktzeichen_txt,
+    hoheitsgrenzpunkt.punktzeichen AS punktzeichen_txt,
     CASE
-        WHEN hoheitsgrenzpunkt.hoheitsgrenzstein_txt = 'ja' 
+        WHEN hoheitsgrenzpunkt.hoheitsgrenzstein = 'ja' 
             THEN TRUE
         ELSE false
     END AS schoener_stein,
     hoheitsgrenzpunkt.lagegen AS lagegenauigkeit,
     CASE
-        WHEN hoheitsgrenzpunkt.lagezuv_txt = 'ja' 
+        WHEN hoheitsgrenzpunkt.lagezuv = 'ja' 
             THEN TRUE
         ELSE false
     END AS lagezuverlaessigkeit,
@@ -19,26 +18,38 @@ SELECT
         ELSE (100 - symbol.ori) * 0.9
     END AS symbolorientierung,
     CASE
-        WHEN pos.hali_txt IS NULL 
+        WHEN pos.hali IS NULL 
             THEN 'Left'
-        ELSE pos.hali_txt
+        ELSE pos.hali
     END AS hali,
     CASE
-        WHEN pos.vali_txt IS NULL 
+        WHEN pos.vali IS NULL 
             THEN 'Bottom'
-        ELSE pos.vali_txt
+        ELSE pos.vali
     END AS vali,
-    hoheitsgrenzpunkt.gem_bfs AS bfs_nr,
-    hoheitsgrenzpunkt.lieferdatum AS importdatum,
-    to_date(nachfuehrung.gueltigereintrag, 'YYYYMMDD') AS nachfuehrung,
+    CAST(hoheitsgrenzpunkt.t_datasetname AS INT) AS bfs_nr,    
+    aimport.importdate AS importdatum,
+    nachfuehrung.gueltigereintrag AS nachfuehrung,
     hoheitsgrenzpunkt.geometrie,
     pos.pos
 FROM
-    av_avdpool_ng.gemeindegrenzen_hoheitsgrenzpunkt AS hoheitsgrenzpunkt
-    LEFT JOIN av_avdpool_ng.gemeindegrenzen_hoheitsgrenzpunktpos AS pos 
-        ON pos.hoheitsgrenzpunktpos_von = hoheitsgrenzpunkt.tid
-    LEFT JOIN av_avdpool_ng.gemeindegrenzen_hoheitsgrenzpunktsymbol AS symbol 
-        ON symbol.hoheitsgrenzpunktsymbol_von = pos.tid
-    LEFT JOIN av_avdpool_ng.gemeindegrenzen_gemnachfuehrung AS nachfuehrung
-        ON hoheitsgrenzpunkt.entstehung = nachfuehrung.tid
+    agi_dm01avso24.gemeindegrenzen_hoheitsgrenzpunkt AS hoheitsgrenzpunkt
+    LEFT JOIN agi_dm01avso24.gemeindegrenzen_hoheitsgrenzpunktpos AS pos 
+        ON pos.hoheitsgrenzpunktpos_von = hoheitsgrenzpunkt.t_id
+    LEFT JOIN agi_dm01avso24.gemeindegrenzen_hoheitsgrenzpunktsymbol AS symbol 
+        ON symbol.hoheitsgrenzpunktsymbol_von = pos.t_id
+    LEFT JOIN agi_dm01avso24.gemeindegrenzen_gemnachfuehrung AS nachfuehrung
+        ON hoheitsgrenzpunkt.entstehung = nachfuehrung.t_id
+    LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+        ON hoheitsgrenzpunkt.t_basket = basket.t_id    
+    LEFT JOIN 
+    (
+        SELECT
+            max(importdate) AS importdate, dataset
+        FROM
+            agi_dm01avso24.t_ili2db_import
+        GROUP BY
+            dataset 
+    ) AS aimport
+        ON basket.dataset = aimport.dataset    
 ;
