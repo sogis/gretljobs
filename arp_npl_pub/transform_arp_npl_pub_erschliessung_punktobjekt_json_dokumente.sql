@@ -199,7 +199,7 @@ erschliessung_punktobjekt_geometrie_typ AS
     ON f.typ_erschliessung_punktobjekt = t.t_id
 )
 SELECT
-  g.t_id,
+  --g.t_id,
   g.t_ili_tid,
   g.typ_bezeichnung,
   g.typ_abkuerzung,

@@ -1,5 +1,5 @@
 SELECT
-    vspos.t_id,
+    --vspos.t_id,
     vspos.t_ili_tid,
     vsperim.verfahrensstufe,
     vsperim.name_nummer,

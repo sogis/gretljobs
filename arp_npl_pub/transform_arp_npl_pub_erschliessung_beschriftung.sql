@@ -76,7 +76,7 @@ WITH beschriftung AS (
           ON typ_erschliessung_punkt.t_id = erschliessung_punkt.typ_erschliessung_punktobjekt
 )  
 SELECT  
-    g.t_id,
+    --g.t_id,
     g.t_ili_tid,
     g.bezeichnung AS typ_bezeichnung,
     g.abkuerzung AS typ_abkuerzung,

@@ -189,7 +189,7 @@ ueberlagernd_linie_geometrie_typ AS
 -- Es muss noch die m?glichen zusätzlichen Dokumente (Geometrie -> Dokument)
 -- hinzugefügt werden. Plural, da auch Kaskade wieder möglich.
 SELECT
-  g.t_id,
+  --g.t_id,
   g.t_ili_tid,
   g.typ_bezeichnung,
   g.typ_abkuerzung,

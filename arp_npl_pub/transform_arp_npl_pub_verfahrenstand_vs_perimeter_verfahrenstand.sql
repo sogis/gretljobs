@@ -1,5 +1,5 @@
 SELECT
-    vsperim.t_id,
+    --vsperim.t_id,
     vsperim.t_ili_tid,
     vsperim.geometrie,
     vsperim.planungsart,
