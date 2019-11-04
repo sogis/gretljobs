@@ -1,10 +1,10 @@
 def gretljobsRepo = ''
 
-node("master") {
+node('master') {
     gretljobsRepo = "${env.GRETL_JOB_REPO_URL}"
 }
 
-node ("gretl") {
+node (params.nodeLabel ?: 'gretl') {
     try {
         gitBranch = "${params.BRANCH ?: 'master'}"
         git url: "${gretljobsRepo}", branch: gitBranch, changelog: false
