@@ -5,7 +5,7 @@ SELECT
     y, 
     xy_precision AS kreisradius, 
     locality_descript AS fundortbeschreibung, 
-    CASE 
+    CASE   
         WHEN typo_ch = '1' 
             THEN 'Gewässer' 
         WHEN typo_ch = '2'
@@ -97,7 +97,7 @@ SELECT
         WHEN typo_ch LIKE '8.1%' 
             THEN 'Baumschulen, Obstgärten, Rebberge' 
         WHEN typo_ch LIKE '8.2%'
-            THEN 'Feldkulturen (Äcker)'
+            THEN 'Feldkulturen (Äcker)' 
         WHEN typo_ch LIKE '9.1%'
             THEN 'Lagerplätze, Deponien' 
         WHEN typo_ch LIKE '9.2%'
@@ -107,7 +107,7 @@ SELECT
         WHEN typo_ch LIKE '9.4%' 
             THEN 'Versiegelter Sportplatz, Parkplatz etc.'
         ELSE typo_ch 
-    END AS lebensraum, 
+    END AS lebensraum,  
     taxon_id AS schweizerflora_id, 
     taxon AS artenname_latein, 
     name_de AS artenname_deutsch, 
@@ -119,7 +119,7 @@ SELECT
     eradication_descript AS populationskontrolle_ergebnis, 
     control_type_descript AS bekaempfungsmethode, 
     cover_code_descript AS deckung, 
-    CASE 
+    CASE  
         WHEN count_unit_descript = 'Fläche [m²]' 
             THEN abundance_code_descript||' m2' 
         ELSE abundance_code_descript||' '||count_unit_descript 
@@ -136,6 +136,6 @@ SELECT
     remarks AS bemerkungen, 
     geometrie
 FROM alw_infoflora.neophyten_neophytenstandorte
-WHERE presence IN (681, 686);
+WHERE presence IN (681, 686); 
 
 
