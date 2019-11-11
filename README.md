@@ -106,32 +106,57 @@ mit dem Label `gretl` ausgeführt (der Standard).
 
 ## GRETL Runtime Docker Image verwenden
 
-Docker Image mit der GRETL runtime starten für die Job Entwicklung.
+Für die Entwicklung von GRETL-Jobs kann GRETL mit dem folgenden Skript als Docker-Container gestartet werden (Beispiel):
 
 ```
-scripts/start-gretl.sh --docker-image sogis/gretl-runtime:latest --job-directory ~/gretljobs/jobname [taskName...] [--option-name...]
+./start-gretl.sh --docker-image sogis/gretl-runtime:latest [--docker-network NETWORK] --job-directory $PWD/jobname [taskName...] [--option-name...]
 ```
 
-Bei [--option-name...] können beliebige Gradle-Optionen verwendet werden, auch z.B. `-Pmyprop=myvalue` und `-Dmyprop=myvalue`. Die Gradle-Optionen sind unter https://docs.gradle.org/current/userguide/command_line_interface.html beschrieben oder aus der Ausgabe des Befehls `gradle -h` ersichtlich. Die Reihenfolge aller Optionen ist beliebig.
+Mit `--docker-image IMAGE:TAG` wird angegeben,
+welches Image man starten möchte.
 
-Meistens benötigt ein GRETL-Job Zugriff auf Datenbanken. Hierfür können lokal für die Entwicklung von GRETL-Jobs folgende Umgebungsvariablen gesetzt werden (Werte entsprechend anpassen); sie werden von *start-gretl.sh* der GRETL Runtime als Parameter übergeben und können im GRETL-Skript als Variablen (Namen siehe bei der Beschreibung von *build.gradle*) genutzt werden:
+Mit `--docker-network NETWORK` (optional) kann angegeben werden,
+dass der GRETL-Container an ein bestimmtes Docker-Netzwerk
+angebunden werden soll.
+(Die Namen der verfügbaren Docker-Netzwerke
+können mit dem Befehl `docker network ls` ermittelt werden.)
+
+Mit `--job-directory $PWD/jobname` wird
+das Verzeichnis zum auszuführenden Job angegeben.
+Dies muss ein absoluter Pfad sein;
+deshalb steht hier der Vorschlag, `$PWD` zu verwenden.
+
+Mit `[taskName...]` (optional) können ein oder mehrere Tasks angegeben werden,
+die von GRETL ausgeführt werden sollen.
+
+Mit `[--option-name...]` können beliebige Gradle-Optionen verwendet werden,
+auch z.B. `-Pmyprop=myvalue` und `-Dmyprop=myvalue`.
+Die Gradle-Optionen sind unter
+https://docs.gradle.org/current/userguide/command_line_interface.html
+beschrieben oder aus der Ausgabe des Befehls `gradle -h` ersichtlich.
+Die Reihenfolge aller Optionen ist beliebig.
+
+Benötigt ein GRETL-Job Zugriff auf Datenbanken,
+können für die Entwicklung lokal Umgebungsvariablen
+nach dem folgenden Muster gesetzt werden;
+sie werden vom Skript `start-gretl.sh` dem GRETL-Container übergeben
+und können im `build.gradle` als Variablen genutzt werden
+(Namen siehe bei der Beschreibung von *build.gradle*):
 
 ```
-export DB_URI_SOGIS=jdbc:postgresql://127.0.0.1/foodb
-export DB_USER_SOGIS=foo
-export DB_PWD_SOGIS=foopassword
-export DB_URI_EDIT=jdbc:postgresql://localhost/bardb?ssl=true\&sslfactory=org.postgresql.ssl.NonValidatingFactory
-export DB_USER_EDIT=bar
-export DB_PWD_EDIT=barpassword
-export DB_URI_PUB=jdbc:postgresql://localhost:5432/bazdb?ssl=true\&sslfactory=org.postgresql.ssl.NonValidatingFactory
-export DB_USER_PUB=barbar
-export DB_PWD_PUB=barbarpassword
+export ORG_GRADLE_PROJECT_dbUriFoo=jdbc:postgresql://127.0.0.1/foodb
+export ORG_GRADLE_PROJECT_dbUserFoo=foo
+export ORG_GRADLE_PROJECT_dbPwdFoo=foopassword
+export ORG_GRADLE_PROJECT_dbUriBar=jdbc:postgresql://localhost/bardb?sslmode=require
+export ORG_GRADLE_PROJECT_dbUserBar=bar
+export ORG_GRADLE_PROJECT_dbPwdBar=barpassword
+export ORG_GRADLE_PROJECT_dbUriBaz=jdbc:postgresql://localhost:5432/bazdb?sslmode=require
+export ORG_GRADLE_PROJECT_dbUserBaz=barbar
+export ORG_GRADLE_PROJECT_dbPwdBaz=barbarpassword
 ```
 
 Unter Ubuntu können diese Befehle in die Datei ~/.profile eingetragen werden, damit die Umgebungsvariablen immer verfügbar sind.
 
-
-Oder das test Skript *test-gretl.sh* verwenden.
 
 ### Troubleshooting
 Wenn folgende Fehlermeldung auftritt, muss das *.gradle* Ordner im Job Ordner gelöscht werden.
