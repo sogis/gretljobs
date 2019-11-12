@@ -839,7 +839,7 @@ SELECT
     bodeneinheit_auspraegung_t.nfkapwe_ub,
     bodeneinheit_auspraegung_t.nfkapwe,
     CASE
-        WHEN
+        WHEN   
             bodeneinheit_auspraegung_t.nfkapwe < 50
             AND
             bodeneinheit_onlinedata_t.is_wald IS FALSE
