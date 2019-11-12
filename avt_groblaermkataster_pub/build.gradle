@@ -1,0 +1,15 @@
+apply plugin: 'ch.so.agi.gretl'
+
+import ch.so.agi.gretl.tasks.*
+
+defaultTasks 'replaceDataset'
+
+task replaceDataset (type: Ili2pgImport) {
+    description = "Löscht die Daten in der Pub-DB und importiert einen neuen Datensatz."
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = "avt_groblaermkataster_pub"
+    models = "SO_AVT_Groblaermkataster_20190709"
+    disableValidation = true
+    deleteData = true
+    dataFile = "groblaermkataster.xtf" // name is injected by jenkins
+}

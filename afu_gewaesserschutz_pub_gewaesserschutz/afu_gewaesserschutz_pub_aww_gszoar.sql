@@ -18,7 +18,7 @@ SELECT
         WHEN zone = 'GZ3B'
             THEN 'S3B weitere Schutzzone mit spez. Regelungen'
         WHEN zone = 'SARE'
-            THEN ' SA Schutzareal'
+            THEN 'SA Schutzareal'
     END AS zone_text,
     CASE 
         WHEN

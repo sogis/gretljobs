@@ -1,0 +1,35 @@
+allprojects {
+    buildscript {
+        repositories {
+            mavenLocal()
+            maven {
+                url "http://jars.interlis.ch"
+            }
+            maven {
+                url "http://download.osgeo.org/webdav/geotools/"
+            }
+            mavenCentral()
+            maven {
+                url "https://plugins.gradle.org/m2/"
+            }            
+        }
+
+        dependencies {
+            classpath group: 'ch.so.agi', name: 'gretl',  version: '1.0.5-SNAPSHOT'
+        }
+        ext {
+            dbUriSogis = "jdbc:postgresql://geodb-t.verw.rootso.org:5432/sogis"
+            dbUserSogis = "XXXXXXX"
+            dbPwdSogis = "YYYYYYY"
+            //dbUriSogis = "jdbc:postgresql://192.168.50.5/sogis"
+            //dbUserSogis = "ddluser"
+            //dbPwdSogis = "ddluser"
+            dbUriPub = "jdbc:postgresql://192.168.50.XXX/pub"
+            dbUserPub = "sogis_admin"
+            dbPwdPub = "sogis_admin"
+            aiServer = "geodienste.ch"
+            aiUser = "XXXXXXXXX"
+            aiPwd = "YYYYYYYY"
+        }
+    }
+}
