@@ -122,7 +122,7 @@ SELECT
     CASE 
         WHEN count_unit_descript = 'Fläche [m²]' 
         THEN abundance_code_descript||' m2' 
-        ELSE abundance_code_descript||' '||coalesce(count_unit_descript,'') 
+        ELSE abundance_code_descript||' '||coalesce(count_unit_descript,'')  
     END AS abundanz, 
     obs_type_descript AS meldungstyp, 
     vitality_codes_descript entwicklung, 
