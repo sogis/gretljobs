@@ -28,7 +28,7 @@ WITH charakter_wasserhaushalt AS (
                 )
                 THEN 'tiefgründiger Boden, d.h. pflanzennutzbare Gründigkeit > 70 cm'
             WHEN
-                bodeneinheit_onlinedata_t.is_wald IS TRUE
+                bodeneinheit_onlinedata_t.is_wald IS TRUE         
                 AND
                 (
                     wasserhhgr_t.code  IN ('c', 'd', 'g', 'h', 'l', 'm', 'q', 't', 'v', 'x')
