@@ -67,7 +67,7 @@ WITH charakter_wasserhaushalt AS (
             WHEN
                 bodeneinheit_onlinedata_t.is_wald IS TRUE
                 AND
-                (
+                ((
                     wasserhhgr_t.code IN ('e', 'i', 'n')
                     OR
                     (
@@ -101,7 +101,7 @@ WITH charakter_wasserhaushalt AS (
                     )
                     OR
                     wasserhhgr_t.code IN ('y', 'z')
-                )
+                ))
                 THEN 'flachgründiger Boden, d.h. pflanzennutzbare Gründigkeit < 30 cm'
         END AS wald_charakter_wasserhaushalt
     FROM
