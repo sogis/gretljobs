@@ -7,7 +7,7 @@ defaultTasks 'transferAfuGeotopeLithostratigraphie', 'transferAfuGeotope'
 
 task generateZustaendigeStelle(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
             new TransferSet('afu_geotope_geotope_zustaendige_stelle.sql', 'afu_geotope.geotope_zustaendige_stelle',
                     true)
@@ -16,7 +16,7 @@ task generateZustaendigeStelle(type: Db2Db){
 
 task transferAfuGeotopeBasic(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
             new TransferSet('afu_geotope_geotope_aufschluss.sql', 'afu_geotope.geotope_aufschluss', true), //Query bei geologisches System korrigieren
             new TransferSet('afu_geotope_geotope_erratiker.sql', 'afu_geotope.geotope_erratiker', true),
@@ -32,7 +32,7 @@ task transferAfuGeotopeBasic(type: Db2Db){
 
 task transferAfuGeotopeRelations(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
             new TransferSet('afu_geotope_geotope_aufschluss_fachbereich.sql',
                     'afu_geotope.geotope_aufschluss_fachbereich', true),
@@ -72,7 +72,7 @@ task transferAfuGeotope {
 
 task transferAfuGeotopeGeologischesSystem(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
             new TransferSet('afu_geotope_lithostratigrphie_geologisches_system.sql',
                     'afu_geotope.lithostratigrphie_geologisches_system', true)
@@ -81,7 +81,7 @@ task transferAfuGeotopeGeologischesSystem(type: Db2Db){
 
 task transferAfuGeotopeGeologischeSerie(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
             new TransferSet('afu_geotope_lithostratigrphie_geologische_serie.sql',
                     'afu_geotope.lithostratigrphie_geologische_serie', true)
@@ -90,7 +90,7 @@ task transferAfuGeotopeGeologischeSerie(type: Db2Db){
 
 task transferAfuGeotopeGeologischeStufe(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
             new TransferSet('afu_geotope_lithostratigrphie_geologische_stufe.sql',
                     'afu_geotope.lithostratigrphie_geologische_stufe', true)
@@ -99,7 +99,7 @@ task transferAfuGeotopeGeologischeStufe(type: Db2Db){
 
 task transferAfuGeotopeGeologischeSchicht(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
             new TransferSet('afu_geotope_lithostratigrphie_geologische_schicht.sql',
                     'afu_geotope.lithostratigrphie_geologische_schicht', true)
