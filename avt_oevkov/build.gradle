@@ -4,9 +4,8 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 
 
-description = "GRETL-Job für die Berechnung des OEVKOV in der Test sogis-DB"
+description = "GRETL-Job für die Berechnung des OEVKOV in der Sogis-DB"
 
-def dataPath= '/home/barpasen/gretljobs/avt_oevkov_import/'
 
 // OEVKOV Variablen
 def currentYear = '2019'
