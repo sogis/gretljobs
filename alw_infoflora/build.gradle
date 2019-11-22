@@ -42,7 +42,6 @@ task download_json(type: Download){
             Date fileDate = sdfo.parse(it.last_modified_when)
             if ((todayDate - fileDate) > 2) {
                 project.fileid.add(it.id)
-                println "Will delete file id "+fileid
             }
             /* Falls Gewünscht, dass nur das aktuelle file (0 Tage alt) importiert wird. Andersfalls wird einfach das neuste importiert.
             if ((todayDate - fileDate) == 0) {
@@ -77,7 +76,6 @@ task download_file(dependsOn: download_json){
         localFileName = project.filename
         localPath = project.filepath
         url = 'https://obs.infoflora.ch' + localPath + '/' + localFileName 
-        println url       
     }
     doLast {
         download {
@@ -126,7 +124,6 @@ task makeGeometry(type: SqlExecutor, dependsOn:csvimport){
 
 task deleteFileOnServer(dependsOn: makeGeometry){
     doLast {
-        println "project.fileid = " + project.fileid
         if (project.fileid.isEmpty()) {
             println "No file will be deleted!"
         }
