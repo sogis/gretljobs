@@ -6,6 +6,9 @@ import de.undercouch.gradle.tasks.download.Download
 import groovy.json.JsonSlurper
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.ArrayList
+import java.util.Iterator
+import java.util.List
 
 
 apply plugin: "de.undercouch.download"
@@ -22,7 +25,7 @@ def csvFilePath = Paths.get(pathToUnzipFolder.toString(), 'data', 'data.csv')
 
 ext.filepath = 'foo'
 ext.filename = 'bar'
-ext.fileid = 'nobody'
+ext.fileid = new ArrayList<String>()
 
 task download_json(type: Download){
     description = "Download Json with filename"
@@ -38,14 +41,23 @@ task download_json(type: Download){
         sortedJson.each {
             Date fileDate = sdfo.parse(it.last_modified_when)
             if ((todayDate - fileDate) > 2) {
-                project.fileid = it.id
+                project.fileid.add(it.id)
                 println "Will delete file id "+fileid
-            }     
+            }
+            /* Falls Gewünscht, dass nur das aktuelle file (0 Tage alt) importiert wird. Andersfalls wird einfach das neuste importiert.
+            if ((todayDate - fileDate) == 0) {
+                project.filename = it.file_name 
+                project.filepath = it.folder_name    
+                println "Filename = " + filename
+            }
+        */
         }
-
         project.filename = sortedJson.file_name[0]
         project.filepath = sortedJson.folder_name[0]
-        println "Filename 0 = " + filename
+
+        if (project.filename == 'bar') {
+            throw new GradleException("Kein file auf dem Server!")
+        }
     }
     src 'https://obs.infoflora.ch/rest/v4/docs.json?projects=83505'
     username infofloraUser
@@ -64,7 +76,8 @@ task download_file(dependsOn: download_json){
     doFirst {
         localFileName = project.filename
         localPath = project.filepath
-        url = 'https://obs.infoflora.ch' + localPath + '/' + localFileName        
+        url = 'https://obs.infoflora.ch' + localPath + '/' + localFileName 
+        println url       
     }
     doLast {
         download {
@@ -112,24 +125,19 @@ task makeGeometry(type: SqlExecutor, dependsOn:csvimport){
 }
 
 task deleteFileOnServer(dependsOn: makeGeometry){
-    def String localFileid
-    
-    doFirst {
-        localFileid = project.fileid
-    }
     doLast {
         println "project.fileid = " + project.fileid
-        exec {
-            if(localFileid != 'nobody') {
-                workingDir '/tmp'
-                commandLine 'curl', '-i', '-u', infofloraUser + ':' + infofloraPwd, '-k', '-X', 'DELETE', '--header', 'Content-T    ype:application/json', 'https://obs.infoflora.ch/rest/v4/docs/'+localFileid+'.json'
-                println "Deleted file " + filename + ", ID: " + localFileid + " from Server"
-            }
-            else {
-                commandLine 'cd'
-                println "Did not delete any file"
+        if (project.fileid.isEmpty()) {
+            println "No file will be deleted!"
+        }
+        else {
+            for (String localFileid : project.fileid) {
+                exec {
+                    workingDir '/tmp'
+                    commandLine 'curl', '-i', '-u', infofloraUser + ':' + infofloraPwd, '-k', '-X', 'DELETE', '--header', 'Content-T    ype:application/json', 'https://obs.infoflora.ch/rest/v4/docs/'+localFileid+'.json'
+                    println "Deleted file " + filename + ", ID: " + localFileid + " from Server"
+                }
             }
         }    
     }
-
 }
