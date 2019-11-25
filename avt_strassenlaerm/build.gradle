@@ -10,7 +10,7 @@ defaultTasks 'replaceDataset'
 
 ext {
     pathToTempFolder = System.getProperty("java.io.tmpdir")
-    xtfFilePath = Paths.get(pathToUnzipFolder.toString(), 'strassenlaerm_KGDM_20191023.xtf')
+    xtfFilePath = Paths.get(pathToTempFolder.toString(), 'strassenlaerm_KGDM_20191023.xtf')
 }
 
 task downloadData(type: Download) {
