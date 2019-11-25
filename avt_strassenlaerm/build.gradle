@@ -3,9 +3,10 @@ apply plugin: 'de.undercouch.download'
 
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
 
 //defaultTasks 'transferData'
-defaultTasks 'downloadData'
+defaultTasks 'replaceDataset'
 
 ext {
     pathToTempFolder = System.getProperty("java.io.tmpdir")
@@ -23,7 +24,7 @@ task downloadData(type: Download) {
 }
 
 
-task replaceDataset (type: Ili2pgReplace) {
+task replaceDataset (type: Ili2pgReplace, dependsOn: downloadData) {
     description = "Ersetzt die Daten in der Edit-DB."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "avt_strassenlaerm"
