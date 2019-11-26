@@ -26,8 +26,6 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS
     ON (last_ursprung = t1.ursprung)
   WHERE 
     t1.hinweis IS NOT NULL
-  AND
-    x.ursprung != t1.hinweis
 )
 , 
 doc_doc_references_all AS 
@@ -43,8 +41,8 @@ doc_doc_references_all AS
     depth = (SELECT max(sq."depth") FROM x sq WHERE sq.ursprung = x.ursprung)
 )
 ,
--- Rekursion liefert alle Möglichkeiten, dh. zum Beispiel
--- auch [3,4]. Wir sind aber nur längster Variante einer 
+-- Rekursion liefert alle M?glichkeiten, dh. zum Beispiel
+-- auch [3,4]. Wir sind aber nur l?ngster Variante einer 
 -- Kasksade interessiert: [1,2,3,4,5].
 doc_doc_references AS 
 (
@@ -83,9 +81,12 @@ json_documents_all AS
   ) AS t
 )
 ,
+-- TODO:
 -- Alle Dokumente (die in HinweisWeitereDokumente vorkommen) 
 -- als JSON-Objekte (resp. als Text-Repr?sentation).
--- Muss noch genauer überlegt werden, wie genau mit JSON hantiert wird.
+-- Muss noch genauer ?berlegt werden, wie genau mit JSON hantiert wird.
+
+-- TODO: Brauch ich jetzt diese Tabelle ?berhaupt noch?
 json_documents_doc_doc_reference AS 
 (
   SELECT
@@ -110,72 +111,73 @@ json_documents_doc_doc_reference AS
   LEFT JOIN json_documents_all AS bar
   ON foo.dokument_t_id = bar.t_id
 )
---SELECT * FROM json_documents_doc_doc_reference
 ,
--- Dokumente, die nicht auf weitere Dokumente verweisen,
--- verweisen auf sich selbst (= dok_referenz). Damit
--- ist dok_referenz matchentscheidend. Und es kann
--- zu guter Letzt mit diesem Attribut "distinced"
--- werden, um z.B. mehrfache RRB pro Typ zu verhindern.
-typ_ueberlagernd_flaeche_dokument_ref AS
+-- TODO: 
+-- Erstes SELECT liefert nur die Dokumente, die auch in der hinweisweiteredokumente-Tabelle
+-- vorkommen. Daher das Union mit der "punktobjekt_dokument"-Tabelle, um auch wirklich
+-- alle Dokumente zu erhalten, die mit einem Typ assoziiert sind.
+-- -> Nochmals ?berlegen, ob man das nicht besser l?sen kann.
+typ_erschliessung_punktobjekt_dokument_ref AS 
 (
-  SELECT DISTINCT ON(typ_ueberlagernd_flaeche, dok_referenz)
+  SELECT DISTINCT ON (typ_erschliessung_punktobjekt, dok_referenz)
     *
   FROM
   (
     SELECT DISTINCT
-      typ_ueberlagernd_flaeche_dokument.typ_ueberlagernd_flaeche,
+      typ_erschliessung_punktobjekt_dokument.typ_erschliessung_punktobjekt,
       dokument,
       unnest(dok_dok_referenzen) AS dok_referenz
     FROM
-      arp_npl.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS typ_ueberlagernd_flaeche_dokument
+      arp_npl.erschlssngsplnung_typ_erschliessung_punktobjekt_dokument AS typ_erschliessung_punktobjekt_dokument
       LEFT JOIN doc_doc_references
-      ON typ_ueberlagernd_flaeche_dokument.dokument = doc_doc_references.ursprung
-  
+      ON typ_erschliessung_punktobjekt_dokument.dokument = doc_doc_references.ursprung
+    
     UNION 
     
     SELECT
-      typ_ueberlagernd_flaeche,
+      typ_erschliessung_punktobjekt,
       dokument,
       dokument AS dok_referenz
     FROM
-      arp_npl.nutzungsplanung_typ_ueberlagernd_flaeche_dokument
+      arp_npl.erschlssngsplnung_typ_erschliessung_punktobjekt_dokument
   ) AS foo
 )
---SELECT * FROM typ_ueberlagernd_flaeche_dokument_ref
 ,
-typ_ueberlagernd_flaeche_json_dokument AS 
+-- Dieses Joinen muss folgerichtig mit *allen* Json-Dokumenten geschehen,
+-- sonst gibt es NULL bei den Dokumenten, die nicht in hinweisweiteredokumente
+-- auftreten.
+typ_erschliessung_punktobjekt_json_dokument AS 
 (
   SELECT
     *
   FROM
-    typ_ueberlagernd_flaeche_dokument_ref
+    typ_erschliessung_punktobjekt_dokument_ref
     LEFT JOIN json_documents_all
-    ON json_documents_all.t_id = typ_ueberlagernd_flaeche_dokument_ref.dok_referenz
+    ON json_documents_all.t_id = typ_erschliessung_punktobjekt_dokument_ref.dok_referenz
 )
 ,
-typ_ueberlagernd_flaeche_json_dokument_agg AS 
+typ_erschliessung_punktobjekt_json_dokument_agg AS 
 (
   SELECT
-  typ_ueberlagernd_flaeche_t_id,
-  '[' || dokumente::varchar || ']' as dokumente
+    typ_erschliessung_punktobjekt_t_id,
+    '[' || dokumente::varchar || ']' as dokumente
   FROM
   (
     SELECT
-      typ_ueberlagernd_flaeche AS typ_ueberlagernd_flaeche_t_id,
+      typ_erschliessung_punktobjekt AS typ_erschliessung_punktobjekt_t_id,
       string_agg(json_dokument, ',') AS dokumente
     FROM
-      typ_ueberlagernd_flaeche_json_dokument
+      typ_erschliessung_punktobjekt_json_dokument
     GROUP BY
-      typ_ueberlagernd_flaeche
+      typ_erschliessung_punktobjekt
   ) as foo
 )
 ,
-ueberlagernd_flaeche_geometrie_typ AS
+erschliessung_punktobjekt_geometrie_typ AS
 (
-  SELECT
-    f.t_id,
+  SELECT 
     f.t_datasetname::int4 AS bfs_nr,
+    f.t_id,
     f.t_ili_tid,
     f.name_nummer,
     f.rechtsstatus,
@@ -192,9 +194,9 @@ ueberlagernd_flaeche_geometrie_typ AS
     t.verbindlichkeit AS typ_verbindlichkeit,
     t.bemerkungen AS typ_bemerkungen 
   FROM
-    arp_npl.nutzungsplanung_ueberlagernd_flaeche AS f
-    LEFT JOIN arp_npl.nutzungsplanung_typ_ueberlagernd_flaeche AS t
-    ON f.typ_ueberlagernd_flaeche = t.t_id
+    arp_npl.erschlssngsplnung_erschliessung_punktobjekt AS f
+    LEFT JOIN arp_npl.erschlssngsplnung_typ_erschliessung_punktobjekt AS t
+    ON f.typ_erschliessung_punktobjekt = t.t_id
 )
 SELECT
   --g.t_id,
@@ -204,7 +206,7 @@ SELECT
   g.typ_verbindlichkeit,
   g.typ_bemerkungen,
   g.typ_typ_kt AS typ_kt,
-  g.typ_code_kommunal::int4 AS typ_code_kommunal,
+  g.typ_code_kommunal,
   g.geometrie,
   g.name_nummer,
   g.rechtsstatus,
@@ -215,7 +217,6 @@ SELECT
   d.dokumente::jsonb AS dokumente,
   g.bfs_nr
 FROM  
-  ueberlagernd_flaeche_geometrie_typ AS g 
-  LEFT JOIN typ_ueberlagernd_flaeche_json_dokument_agg AS d
-  ON g.typ_t_id = d.typ_ueberlagernd_flaeche_t_id
-;
+  erschliessung_punktobjekt_geometrie_typ AS g 
+  LEFT JOIN typ_erschliessung_punktobjekt_json_dokument_agg AS d
+  ON g.typ_t_id = d.typ_erschliessung_punktobjekt_t_id;
