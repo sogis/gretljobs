@@ -20,7 +20,7 @@ SELECT
       WHEN zcode = 151 THEN '150_Zone_fuer_oeffentliche_Bauten'
       WHEN zcode = 152 THEN '151_Zone_fuer_oeffentliche_Anlagen'
       WHEN zcode = 211 THEN '142_Erhaltungszone'
-      WHEN zcode IN (221,223,612,614,811) THEN '160_Gruen-_und_Freihaltezone_innerhalb_Bauzone'
+      WHEN zcode IN (221,223,612,614,811) THEN '160_Gruen_und_Freihaltezone_innerhalb_Bauzone'
       WHEN zcode = 311 THEN '190_Spezialzone'
       WHEN zcode = 315 THEN '162_Landwirtschaftliche_Kernzone'
       WHEN zcode = 322 THEN '181_Verkehrszone_Bahnareal'
