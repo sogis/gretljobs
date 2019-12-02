@@ -134,7 +134,7 @@ SELECT
   gebaeudeeingang_strassenname_plz_ortschaft.edid,
   gebaeudeeingang_strassenname_plz_ortschaft.plz,
   gebaeudeeingang_strassenname_plz_ortschaft.ortschaft,
-  gebaeudeeingang_strassenname_plz_ortschaft.status AS astatus,
+  gebaeudeeingang_strassenname_plz_ortschaft.status AS status,
   gebaeudeeingang_strassenname_plz_ortschaft.ist_offizielle_bezeichnung,
   gebaeudeeingang_strassenname_plz_ortschaft.hoehenlage,
   gebaeudeeingang_strassenname_plz_ortschaft.gebaeudename,
