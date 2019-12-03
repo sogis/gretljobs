@@ -16,7 +16,7 @@ gebaeudeeingang AS (
     gebauedeeingang.hausnummer,
     gebauedeeingang.gwr_egid AS egid,
     gebauedeeingang.gwr_edid AS edid,
-    gebauedeeingang.astatus AS status,
+    gebauedeeingang.astatus AS astatus,
     CASE 
       WHEN istoffiziellebezeichnung = 'ja' 
         THEN TRUE
@@ -134,7 +134,7 @@ SELECT
   gebaeudeeingang_strassenname_plz_ortschaft.edid,
   gebaeudeeingang_strassenname_plz_ortschaft.plz,
   gebaeudeeingang_strassenname_plz_ortschaft.ortschaft,
-  gebaeudeeingang_strassenname_plz_ortschaft.status AS status,
+  gebaeudeeingang_strassenname_plz_ortschaft.status AS astatus,
   gebaeudeeingang_strassenname_plz_ortschaft.ist_offizielle_bezeichnung,
   gebaeudeeingang_strassenname_plz_ortschaft.hoehenlage,
   gebaeudeeingang_strassenname_plz_ortschaft.gebaeudename,
