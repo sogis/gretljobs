@@ -157,5 +157,6 @@ LEFT JOIN
       ON CAST(nummerierungsbereich.t_datasetname AS integer) = kreis.bfsnr AND nummerierungsbereich.nbident = kreis.nbident
 ) AS grundbuchkreis 
 --ON ST_Intersects(ST_PointOnSurface(ST_Buffer(foo.geometrie,0)), grundbuchkreis.geometrie)
-ON ST_Intersects(ST_PointOnSurface(st_makevalid(foo.geometrie)), grundbuchkreis.geometrie)
+--Aenderung vom 04.12.2019, sc: ST_Buffer ersetzt durch ST_MakeValid (ST_Buffer hat nicht auf allen Liegenschaften den Grundbuchkreis abgefüllt)
+ON ST_Intersects(ST_PointOnSurface(ST_MakeValid(foo.geometrie)), grundbuchkreis.geometrie)
 ;
