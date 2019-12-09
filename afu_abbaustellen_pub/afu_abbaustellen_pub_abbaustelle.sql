@@ -74,7 +74,7 @@ SELECT
         WHEN bschl = '3'
             THEN 'Verfügung'
     END AS bschl_text,
-    '[YYYYMMDD]: ' || bschl_dat AS bschl_dat,
+    bschl_dat,
     bschl_guel,
     bem,
     shape_area
