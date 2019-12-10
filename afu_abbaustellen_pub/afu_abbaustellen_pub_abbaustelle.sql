@@ -73,8 +73,8 @@ SELECT
             THEN 'Richtplanbeschluss'
         WHEN bschl = '3'
             THEN 'Verfügung'
-    END AS bschl_text,
-    bschl_dat,
+    END AS bschl_text,    	
+    to_date(bschl_dat,YYYYMMDD) AS to_date,
     bschl_guel,
     bem,
     shape_area
