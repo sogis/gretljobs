@@ -1,0 +1,19 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferAfuGeotope'
+
+task transferAfuGeotope(type: Db2Db){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('afu_geotope_pub_geotope_aufschluss.sql', 'afu_geotope_pub.geotope_aufschluss', true),
+            new TransferSet('afu_geotope_pub_geotope_erratiker.sql', 'afu_geotope_pub.geotope_erratiker', true),
+            new TransferSet('afu_geotope_pub_geotope_fundstelle_grabung.sql', 'afu_geotope_pub.geotope_fundstelle_grabung', true),
+            new TransferSet('afu_geotope_pub_geotope_hoehle.sql', 'afu_geotope_pub.geotope_hoehle', true),
+            new TransferSet('afu_geotope_pub_geotope_landschaftsform.sql', 'afu_geotope_pub.geotope_landschaftsform', true),
+            new TransferSet('afu_geotope_pub_geotope_quelle.sql', 'afu_geotope_pub.geotope_quelle', true)
+    ]
+}
