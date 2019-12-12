@@ -50,7 +50,8 @@ WITH
             gemeindename,
 --            to_char(importdatum, 'DD.MM.YYYY') AS lieferdatum
 -- Korrektur 05.12.2019, sc
-            importdatum AS lieferdatum
+            to_char(importdatum::Date, 'DD.MM.YYYY') AS lieferdatum
+--            importdatum AS lieferdatum
         FROM 
             agi_mopublic_pub.mopublic_gemeindegrenze
         ORDER BY 
