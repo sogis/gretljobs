@@ -132,7 +132,7 @@ task deleteFileOnServer(dependsOn: makeGeometry){
                 exec {
                     workingDir '/tmp'
                     commandLine 'curl', '-i', '-u', infofloraUser + ':' + infofloraPwd, '-k', '-X', 'DELETE', '--header', 'Content-T    ype:application/json', 'https://obs.infoflora.ch/rest/v4/docs/'+localFileid+'.json'
-                    println "Deleted file " + filename + ", ID: " + localFileid + " from Server"
+                    println "Deleted file ID: " + localFileid + " from Server"
                 }
             }
         }    
