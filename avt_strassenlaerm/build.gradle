@@ -5,8 +5,8 @@ import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 import java.nio.file.Paths
 
-//defaultTasks 'transferData'
-defaultTasks 'replaceDataset'
+defaultTasks 'transferData'
+//defaultTasks 'replaceDataset'
 
 ext {
     pathToTempFolder = System.getProperty("java.io.tmpdir")
@@ -36,7 +36,7 @@ task replaceDataset (type: Ili2pgReplace, dependsOn: downloadData) {
     //dataFile = "strassenlaerm.xtf" // name is injected by jenkins
 }
 
-/*
+
 task transferData(type: Db2Db, dependsOn: replaceDataset) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
@@ -44,4 +44,3 @@ task transferData(type: Db2Db, dependsOn: replaceDataset) {
             new TransferSet("transform_immission_strasse_pointofdetermination.sql", 'avt_strassenlaerm_pub.strassenlaerm_belastung', true)
     ];
 }
-*/
