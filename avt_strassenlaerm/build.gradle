@@ -30,6 +30,7 @@ task replaceDataset (type: Ili2pgReplace, dependsOn: downloadData) {
     dbschema = "avt_strassenlaerm"
     models = "SO_AVT_Strassenlaerm_20190806"
     disableValidation = true
+    importTid = true
     dataset = "data"
     dataFile = file(xtfFilePath)
     //dataFile = "strassenlaerm.xtf" // name is injected by jenkins
