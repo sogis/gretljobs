@@ -1,21 +1,15 @@
 SELECT
-    0 AS typ,
     'LFP1' AS typ_txt,
     lagefixpunkt.nbident, 
     lagefixpunkt.nummer,
     lagefixpunkt.hoehegeom AS hoehe,
-    lagefixpunkt.gem_bfs AS bfs_nr,
+    CAST(lagefixpunkt.t_datasetname AS INT) AS bfs_nr,    
     lagefixpunkt.lagegen AS lagegenauigkeit,
     lagefixpunkt.hoehegen AS hoehengenauigkeit,
     CASE 
         WHEN lagefixpunkt.punktzeichen IS NULL 
-            THEN 7 -- should not reach here
-        ELSE lagefixpunkt.punktzeichen
-    END AS punktzeichen,
-    CASE 
-        WHEN lagefixpunkt.punktzeichen_txt IS NULL 
             THEN 'weitere' -- should not reach here
-        ELSE lagefixpunkt.punktzeichen_txt
+        ELSE lagefixpunkt.punktzeichen
     END AS punktzeichen_txt,
     CASE
         WHEN pos.ori IS NULL 
@@ -23,46 +17,53 @@ SELECT
         ELSE (100 - pos.ori) * 0.9 
     END AS orientierung,
     CASE 
-        WHEN pos.hali_txt IS NULL 
+        WHEN pos.hali IS NULL 
             THEN 'Left'
-        ELSE pos.hali_txt
+        ELSE pos.hali
     END AS hali,
     CASE 
-        WHEN pos.vali_txt IS NULL 
+        WHEN pos.vali IS NULL 
             THEN 'Bottom'
-        ELSE pos.vali_txt
+        ELSE pos.vali
     END AS vali,
-    lagefixpunkt.lieferdatum AS importdatum,
-    to_date(nachfuehrung.gueltigereintrag, 'YYYYMMDD') AS nachfuehrung,
+    aimport.importdate AS importdatum,
+    nachfuehrung.gueltigereintrag AS nachfuehrung,
     lagefixpunkt.geometrie,
-    pos.pos
+    pos.pos,
+    trim(to_char(ST_X(lagefixpunkt.geometrie), '9999999.000'))||' / '||trim(to_char(ST_Y(lagefixpunkt.geometrie), '9999999.000')) AS koordinate
 FROM
-    av_avdpool_ng.fixpunktekategorie1_lfp1 AS lagefixpunkt
-    LEFT JOIN av_avdpool_ng.fixpunktekategorie1_lfp1pos AS pos 
-        ON pos.lfp1pos_von = lagefixpunkt.tid
-    LEFT JOIN av_avdpool_ng.fixpunktekategorie1_lfp1nachfuehrung AS nachfuehrung
-        ON lagefixpunkt.entstehung = nachfuehrung.tid
-
+    agi_dm01avso24.fixpunktekatgrie1_lfp1 AS lagefixpunkt
+    LEFT JOIN agi_dm01avso24.fixpunktekatgrie1_lfp1pos AS pos 
+        ON pos.lfp1pos_von = lagefixpunkt.t_id
+    LEFT JOIN agi_dm01avso24.fixpunktekatgrie1_lfp1nachfuehrung AS nachfuehrung
+        ON lagefixpunkt.entstehung = nachfuehrung.t_id
+    LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+    	ON lagefixpunkt.t_basket = basket.t_id
+    LEFT JOIN 
+    (
+    	SELECT
+			max(importdate) AS importdate, dataset
+		FROM
+			agi_dm01avso24.t_ili2db_import
+		GROUP BY
+			dataset 
+    ) AS  aimport
+    	ON basket.dataset = aimport.dataset
+        
 UNION ALL
 
 SELECT
-    1 AS typ,
     'LFP2' AS typ_txt,
     lagefixpunkt.nbident, 
     lagefixpunkt.nummer,
     lagefixpunkt.hoehegeom AS hoehe,
-    lagefixpunkt.gem_bfs AS bfs_nr,
+    CAST(lagefixpunkt.t_datasetname AS INT) AS bfs_nr,    
     lagefixpunkt.lagegen AS lagegenauigkeit,
     lagefixpunkt.hoehegen AS hoehengenauigkeit,
     CASE 
         WHEN lagefixpunkt.punktzeichen IS NULL 
-            THEN 7 -- should not reach here
-        ELSE lagefixpunkt.punktzeichen
-    END AS punktzeichen,
-    CASE 
-        WHEN lagefixpunkt.punktzeichen_txt IS NULL 
             THEN 'weitere' -- should not reach here
-        ELSE lagefixpunkt.punktzeichen_txt
+        ELSE lagefixpunkt.punktzeichen
     END AS punktzeichen_txt,
     CASE
         WHEN pos.ori IS NULL 
@@ -70,46 +71,53 @@ SELECT
         ELSE (100 - pos.ori) * 0.9 
     END AS orientierung,
     CASE 
-        WHEN pos.hali_txt IS NULL 
+        WHEN pos.hali IS NULL 
             THEN 'Left'
-        ELSE pos.hali_txt
+        ELSE pos.hali
     END AS hali,
     CASE 
-        WHEN pos.vali_txt IS NULL 
+        WHEN pos.vali IS NULL 
             THEN 'Bottom'
-        ELSE pos.vali_txt
+        ELSE pos.vali
     END AS vali,
-    lagefixpunkt.lieferdatum AS importdatum,
-    to_date(nachfuehrung.gueltigereintrag, 'YYYYMMDD') AS nachfuehrung,
+    aimport.importdate AS importdatum,
+    nachfuehrung.gueltigereintrag AS nachfuehrung,
     lagefixpunkt.geometrie,
-    pos.pos
+    pos.pos,
+    trim(to_char(ST_X(lagefixpunkt.geometrie), '9999999.000'))||' / '||trim(to_char(ST_Y(lagefixpunkt.geometrie), '9999999.000')) AS koordinate
 FROM
-    av_avdpool_ng.fixpunktekategorie2_lfp2 AS lagefixpunkt
-    LEFT JOIN av_avdpool_ng.fixpunktekategorie2_lfp2pos AS pos 
-        ON pos.lfp2pos_von = lagefixpunkt.tid
-    LEFT JOIN av_avdpool_ng.fixpunktekategorie2_lfp2nachfuehrung AS nachfuehrung
-        ON lagefixpunkt.entstehung = nachfuehrung.tid
+    agi_dm01avso24.fixpunktekatgrie2_lfp2 AS lagefixpunkt
+    LEFT JOIN agi_dm01avso24.fixpunktekatgrie2_lfp2pos AS pos 
+        ON pos.lfp2pos_von = lagefixpunkt.t_id
+    LEFT JOIN agi_dm01avso24.fixpunktekatgrie2_lfp2nachfuehrung AS nachfuehrung
+        ON lagefixpunkt.entstehung = nachfuehrung.t_id
+    LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+    	ON lagefixpunkt.t_basket = basket.t_id
+    LEFT JOIN 
+    (
+    	SELECT
+			max(importdate) AS importdate, dataset
+		FROM
+			agi_dm01avso24.t_ili2db_import
+		GROUP BY
+			dataset 
+    ) AS  aimport
+    	ON basket.dataset = aimport.dataset        
 
 UNION ALL
 
 SELECT
-    2 AS typ,
     'LFP3' AS typ_txt,
     lagefixpunkt.nbident, 
     lagefixpunkt.nummer,
     lagefixpunkt.hoehegeom AS hoehe,
-    lagefixpunkt.gem_bfs AS bfs_nr,
+    CAST(lagefixpunkt.t_datasetname AS INT) AS bfs_nr,    
     lagefixpunkt.lagegen AS lagegenauigkeit,
     lagefixpunkt.hoehegen AS hoehengenauigkeit,
     CASE 
         WHEN lagefixpunkt.punktzeichen IS NULL 
-            THEN 7 -- should not reach here
-        ELSE lagefixpunkt.punktzeichen
-    END AS punktzeichen,
-    CASE 
-        WHEN lagefixpunkt.punktzeichen_txt IS NULL 
             THEN 'weitere' -- should not reach here
-        ELSE lagefixpunkt.punktzeichen_txt
+        ELSE lagefixpunkt.punktzeichen
     END AS punktzeichen_txt,
     CASE
         WHEN pos.ori IS NULL 
@@ -117,38 +125,49 @@ SELECT
         ELSE (100 - pos.ori) * 0.9 
     END AS orientierung,
     CASE 
-        WHEN pos.hali_txt IS NULL 
+        WHEN pos.hali IS NULL 
             THEN 'Left'
-        ELSE pos.hali_txt
+        ELSE pos.hali
     END AS hali,
     CASE 
-        WHEN pos.vali_txt IS NULL 
+        WHEN pos.vali IS NULL 
             THEN 'Bottom'
-        ELSE pos.vali_txt
+        ELSE pos.vali
     END AS vali,
-    lagefixpunkt.lieferdatum AS importdatum,
-    to_date(nachfuehrung.gueltigereintrag, 'YYYYMMDD') AS nachfuehrung,
+    aimport.importdate AS importdatum,
+    nachfuehrung.gueltigereintrag AS nachfuehrung,
     lagefixpunkt.geometrie,
-    pos.pos
+    pos.pos,
+    trim(to_char(ST_X(lagefixpunkt.geometrie), '9999999.000'))||' / '||trim(to_char(ST_Y(lagefixpunkt.geometrie), '9999999.000')) AS koordinate
 FROM
-    av_avdpool_ng.fixpunktekategorie3_lfp3 AS lagefixpunkt
-    LEFT JOIN av_avdpool_ng.fixpunktekategorie3_lfp3pos AS pos 
-        ON pos.lfp3pos_von = lagefixpunkt.tid
-    LEFT JOIN av_avdpool_ng.fixpunktekategorie3_lfp3nachfuehrung AS nachfuehrung
-        ON lagefixpunkt.entstehung = nachfuehrung.tid
-    
+    agi_dm01avso24.fixpunktekatgrie3_lfp3 AS lagefixpunkt
+    LEFT JOIN agi_dm01avso24.fixpunktekatgrie3_lfp3pos AS pos 
+        ON pos.lfp3pos_von = lagefixpunkt.t_id
+    LEFT JOIN agi_dm01avso24.fixpunktekatgrie3_lfp3nachfuehrung AS nachfuehrung
+        ON lagefixpunkt.entstehung = nachfuehrung.t_id
+    LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+    	ON lagefixpunkt.t_basket = basket.t_id
+    LEFT JOIN 
+    (
+    	SELECT
+			max(importdate) AS importdate, dataset
+		FROM
+			agi_dm01avso24.t_ili2db_import
+		GROUP BY
+			dataset 
+    ) AS  aimport
+    	ON basket.dataset = aimport.dataset
+
 UNION ALL
 
 SELECT
-    3 AS typ,
     'HFP1' AS typ_txt,
     hoehenfixpunkt.nbident, 
     hoehenfixpunkt.nummer,
     hoehenfixpunkt.hoehegeom AS hoehe,
-    hoehenfixpunkt.gem_bfs AS bfs_nr,
+    CAST(hoehenfixpunkt.t_datasetname AS INT) AS bfs_nr,    
     hoehenfixpunkt.lagegen AS lagegenauigkeit,
     hoehenfixpunkt.hoehegen AS hoehengenauigkeit,
-    7 AS punktzeichen,
     'weitere' AS punktzeichen_txt,
     CASE
         WHEN pos.ori IS NULL 
@@ -156,38 +175,49 @@ SELECT
         ELSE (100 - pos.ori) * 0.9 
     END AS orientierung,
     CASE 
-        WHEN pos.hali_txt IS NULL 
+        WHEN pos.hali IS NULL 
             THEN 'Left'
-        ELSE pos.hali_txt
+        ELSE pos.hali
     END AS hali,
     CASE 
-        WHEN pos.vali_txt IS NULL 
+        WHEN pos.vali IS NULL 
             THEN 'Bottom'
-        ELSE pos.vali_txt
+        ELSE pos.vali
     END AS vali,
-    hoehenfixpunkt.lieferdatum AS importdatum,
-    to_date(nachfuehrung.gueltigereintrag, 'YYYYMMDD') AS nachfuehrung,
+    aimport.importdate AS importdatum,
+    nachfuehrung.gueltigereintrag AS nachfuehrung,
     hoehenfixpunkt.geometrie,
-    pos.pos
+    pos.pos,
+    trim(to_char(ST_X(hoehenfixpunkt.geometrie), '9999999.000'))||' / '||trim(to_char(ST_Y(hoehenfixpunkt.geometrie), '9999999.000')) AS koordinate
 FROM
-    av_avdpool_ng.fixpunktekategorie1_hfp1 AS hoehenfixpunkt
-    LEFT JOIN av_avdpool_ng.fixpunktekategorie1_hfp1pos AS pos 
-        ON pos.hfp1pos_von = hoehenfixpunkt.tid
-    LEFT JOIN av_avdpool_ng.fixpunktekategorie1_hfp1nachfuehrung AS nachfuehrung
-        ON hoehenfixpunkt.entstehung = nachfuehrung.tid
+    agi_dm01avso24.fixpunktekatgrie1_hfp1 AS hoehenfixpunkt
+    LEFT JOIN agi_dm01avso24.fixpunktekatgrie1_hfp1pos AS pos 
+        ON pos.hfp1pos_von = hoehenfixpunkt.t_id
+    LEFT JOIN agi_dm01avso24.fixpunktekatgrie1_hfp1nachfuehrung AS nachfuehrung
+        ON hoehenfixpunkt.entstehung = nachfuehrung.t_id
+    LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+    	ON hoehenfixpunkt.t_basket = basket.t_id
+    LEFT JOIN 
+    (
+    	SELECT
+			max(importdate) AS importdate, dataset
+		FROM
+			agi_dm01avso24.t_ili2db_import
+		GROUP BY
+			dataset 
+    ) AS  aimport
+    	ON basket.dataset = aimport.dataset
 
 UNION ALL
 
 SELECT
-    4 AS typ,
     'HFP2' AS typ_txt,
     hoehenfixpunkt.nbident, 
     hoehenfixpunkt.nummer,
     hoehenfixpunkt.hoehegeom AS hoehe,
-    hoehenfixpunkt.gem_bfs AS bfs_nr,
+    CAST(hoehenfixpunkt.t_datasetname AS INT) AS bfs_nr,    
     hoehenfixpunkt.lagegen AS lagegenauigkeit,
     hoehenfixpunkt.hoehegen AS hoehengenauigkeit,
-    7 AS punktzeichen,
     'weitere' AS punktzeichen_txt,
     CASE
         WHEN pos.ori IS NULL 
@@ -195,38 +225,49 @@ SELECT
         ELSE (100 - pos.ori) * 0.9 
     END AS orientierung,
     CASE 
-        WHEN pos.hali_txt IS NULL 
+        WHEN pos.hali IS NULL 
             THEN 'Left'
-        ELSE pos.hali_txt
+        ELSE pos.hali
     END AS hali,
     CASE 
-        WHEN pos.vali_txt IS NULL 
+        WHEN pos.vali IS NULL 
             THEN 'Bottom'
-        ELSE pos.vali_txt
+        ELSE pos.vali
     END AS vali,
-    hoehenfixpunkt.lieferdatum AS importdatum,
-    to_date(nachfuehrung.gueltigereintrag, 'YYYYMMDD') AS nachfuehrung,
+    aimport.importdate AS importdatum,
+    nachfuehrung.gueltigereintrag AS nachfuehrung,
     hoehenfixpunkt.geometrie,
-    pos.pos
+    pos.pos,
+    trim(to_char(ST_X(hoehenfixpunkt.geometrie), '9999999.000'))||' / '||trim(to_char(ST_Y(hoehenfixpunkt.geometrie), '9999999.000')) AS koordinate
 FROM
-    av_avdpool_ng.fixpunktekategorie2_hfp2 AS hoehenfixpunkt
-    LEFT JOIN av_avdpool_ng.fixpunktekategorie2_hfp2pos AS pos 
-        ON pos.hfp2pos_von = hoehenfixpunkt.tid
-    LEFT JOIN av_avdpool_ng.fixpunktekategorie2_hfp2nachfuehrung AS nachfuehrung
-        ON hoehenfixpunkt.entstehung = nachfuehrung.tid
+    agi_dm01avso24.fixpunktekatgrie2_hfp2 AS hoehenfixpunkt
+    LEFT JOIN agi_dm01avso24.fixpunktekatgrie2_hfp2pos AS pos 
+        ON pos.hfp2pos_von = hoehenfixpunkt.t_id
+    LEFT JOIN agi_dm01avso24.fixpunktekatgrie2_hfp2nachfuehrung AS nachfuehrung
+        ON hoehenfixpunkt.entstehung = nachfuehrung.t_id
+    LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+    	ON hoehenfixpunkt.t_basket = basket.t_id
+    LEFT JOIN 
+    (
+    	SELECT
+			max(importdate) AS importdate, dataset
+		FROM
+			agi_dm01avso24.t_ili2db_import
+		GROUP BY
+			dataset 
+    ) AS  aimport
+    	ON basket.dataset = aimport.dataset
 
 UNION ALL
     
 SELECT
-    5 AS typ,
     'HFP3' AS typ_txt,
     hoehenfixpunkt.nbident, 
     hoehenfixpunkt.nummer,
     hoehenfixpunkt.hoehegeom AS hoehe,
-    hoehenfixpunkt.gem_bfs AS bfs_nr,
+    CAST(hoehenfixpunkt.t_datasetname AS INT) AS bfs_nr,    
     hoehenfixpunkt.lagegen AS lagegenauigkeit,
     hoehenfixpunkt.hoehegen AS hoehengenauigkeit,
-    7 AS punktzeichen,
     'weitere' AS punktzeichen_txt,
     CASE
         WHEN pos.ori IS NULL 
@@ -234,23 +275,36 @@ SELECT
         ELSE (100 - pos.ori) * 0.9 
     END AS orientierung,
     CASE 
-        WHEN pos.hali_txt IS NULL 
+        WHEN pos.hali IS NULL 
             THEN 'Left'
-        ELSE pos.hali_txt
+        ELSE pos.hali
     END AS hali,
     CASE 
-        WHEN pos.vali_txt IS NULL 
+        WHEN pos.vali IS NULL 
             THEN 'Bottom'
-        ELSE pos.vali_txt
+        ELSE pos.vali
     END AS vali,
-    hoehenfixpunkt.lieferdatum AS importdatum,
-    to_date(nachfuehrung.gueltigereintrag, 'YYYYMMDD') AS nachfuehrung,
+    aimport.importdate AS importdatum,
+    nachfuehrung.gueltigereintrag AS nachfuehrung,
     hoehenfixpunkt.geometrie,
-    pos.pos
+    pos.pos,
+    trim(to_char(ST_X(hoehenfixpunkt.geometrie), '9999999.000'))||' / '||trim(to_char(ST_Y(hoehenfixpunkt.geometrie), '9999999.000')) AS koordinate
 FROM
-    av_avdpool_ng.fixpunktekategorie3_hfp3 AS hoehenfixpunkt
-    LEFT JOIN av_avdpool_ng.fixpunktekategorie3_hfp3pos AS pos 
-        ON pos.hfp3pos_von = hoehenfixpunkt.tid
-    LEFT JOIN av_avdpool_ng.fixpunktekategorie3_hfp3nachfuehrung AS nachfuehrung
-        ON hoehenfixpunkt.entstehung = nachfuehrung.tid
+    agi_dm01avso24.fixpunktekatgrie3_hfp3 AS hoehenfixpunkt
+    LEFT JOIN agi_dm01avso24.fixpunktekatgrie3_hfp3pos AS pos 
+        ON pos.hfp3pos_von = hoehenfixpunkt.t_id
+    LEFT JOIN agi_dm01avso24.fixpunktekatgrie3_hfp3nachfuehrung AS nachfuehrung
+        ON hoehenfixpunkt.entstehung = nachfuehrung.t_id
+    LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+    	ON hoehenfixpunkt.t_basket = basket.t_id
+    LEFT JOIN 
+    (
+    	SELECT
+			max(importdate) AS importdate, dataset
+		FROM
+			agi_dm01avso24.t_ili2db_import
+		GROUP BY
+			dataset 
+    ) AS  aimport
+    	ON basket.dataset = aimport.dataset        
 ;
