@@ -256,7 +256,14 @@ SELECT
     'Ausgangslage' AS abstimmungskategorie,
     NULL AS bedeutung,
     'rechtsgueltig' AS planungsstand,
-    'bestehend' AS status,
+    CASE 
+        WHEN rip_darstellung = 1
+            THEN 'Ausgangslage'
+        WHEN rip_darstellung = 2
+            THEN 'Erweiterung'
+        WHEN rip_darstellung = 3
+            THEN 'neu'
+        END AS status,
     ST_Multi(ST_SnapToGrid(wkb_geometry, 0.001)) AS geometrie,
     NULL AS dokumente,
     string_agg(hoheitsgrenzen_gemeindegrenze.gemeindename, ', ') AS gemeindenamen
@@ -265,12 +272,14 @@ FROM
     agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze
 WHERE
     ST_DWithin(abbaustellen.wkb_geometry, hoheitsgrenzen_gemeindegrenze.geometrie, 0)
-    AND
+AND
     ST_Intersects(abbaustellen.wkb_geometry, hoheitsgrenzen_gemeindegrenze.geometrie)
-    AND
+AND
     "archive" = 0
-    AND
+AND
     mat IN (1, 2, 3)
+AND
+    rip_darstellung IN (1, 2, 3)
 GROUP BY
     ogc_fid
 ;
