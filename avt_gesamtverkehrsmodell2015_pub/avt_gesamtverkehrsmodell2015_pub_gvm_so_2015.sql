@@ -94,7 +94,7 @@ SELECT
             THEN 0
         ELSE gvm_so_2015_dwv."VOLVEHPR_5" + gvm_so_2015_dwv."GR_VOLVE_5"
     END AS dwv2015_lz,
-    verkehrsmodell.lineslope(gvm_so_2015_dtv.wkb_geometry) AS neigung_be, 
+    round((verkehrsmodell.lineslope(gvm_so_2015_dtv.wkb_geometry)*100)::numeric,4) AS neigung_be, 
     trim(TRAILING 'km/h' FROM gvm_so_2015_dtv."V0PRT") AS geschwindigkeit, 
     gvm_so_2015_dtv."Shape_Leng" AS laenge, 
     gvm_so_2015_dtv."CAPPRT" AS kapazitaet, 
