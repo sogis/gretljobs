@@ -1,5 +1,5 @@
 SELECT
-    'https://geo.so.ch/docs/ch.so.awjf.schutzwald/'||pdf,
+    'https://geo.so.ch/docs/ch.so.awjf.schutzwald/'||pdf AS pdf,
     jahr,
     code,
     "text",
