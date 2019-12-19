@@ -127,7 +127,25 @@ SELECT
     status,
     name_2,
     gem_name,
-    gem_bfs
+    gem_bfs, 
+    CASE 
+        WHEN status = 0 
+        THEN 'Keine Angabe'
+        WHEN status = 1 
+        THEN 'Handlungsbedarf erkannt / gemeldet'
+        WHEN status = 2
+        THEN 'Projektierung'
+        WHEN status = 3 
+        THEN 'Projekt in Umsetzung (Teilfläche)'
+        WHEN status = 4 
+        THEN 'Projekt in Umsetzung (ganze Fläche)'
+        WHEN status = 5 
+        THEN 'Projekt behandelt (Teilfläche)'
+        WHEN status = 6 
+        THEN 'Projekt behandelt (ganze Fläche)'
+        WHEN status = 7 
+        THEN 'Waldzustand i.O. nur NaiS konforme Pflege möglich'
+    END AS status_txt
 FROM 
     awjf.sw_funktion_ar
 WHERE 
