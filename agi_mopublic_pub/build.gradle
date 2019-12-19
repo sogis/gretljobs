@@ -1,7 +1,7 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'transferAgiMopublic'
+defaultTasks 'refreshSolr'
 
 task transferAgiMopublic(type: Db2Db){
     description = "Datenumbau in das SO-MOpublic-Publikationsmodell."    
