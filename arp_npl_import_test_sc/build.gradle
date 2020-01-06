@@ -1,0 +1,60 @@
+description = """\n
+Importiert Nutzungsplanungs-INTERLIS-Daten in die Datenbank
+und baut diese in das Publikationsmodell um.
+
+Momentan wird noch nicht parametrisiert (also pro Gemeinde)
+umgebaut, sondern immer der gesamte Datensatz als Quelle
+verwendet. Der parametrisierte Umbau kann erst erfolgen,
+wenn die benötigten GRETL-Steps dies unterstützen.
+
+Die Performance des Umbau-Schrittes dürfte bei erst wenig
+vorhandenen Gemeinden in der Quell-Datenbank nicht
+problematisch sein.
+
+gradle -I init.gradle checkXtfName -Pxtf=path/to/XXXX_fubar.xtf
+"""
+
+apply plugin: 'ch.so.agi.gretl'
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+defaultTasks 'replaceDataset'
+
+ext {
+    setNonExistingPropertyToUndefinedValue('xtf')
+}
+
+task checkXtfName() {
+    description = "Prüft, ob die ersten vier Buchstaben im XTF-Filenamen einer Nummer entsprechen, die im BfS-Range des Kt. SO liegt."    
+    doFirst {
+        def bfsRange = 2401..2622
+        def bfsNr = file(xtf).getName().take(4) as int
+        assert true == bfsRange.contains(bfsNr)
+    }
+}
+
+task validateDataset(type: IliValidator, dependsOn: 'checkXtfName') {
+    description = "Validiert einen Datensatz (=XTF)."    
+    dataFiles = [xtf]
+}
+
+task replaceDataset (type: Ili2pgReplace, dependsOn: 'validateDataset') {
+    description = "Ersetzt einen Datensatz (=XTF) in der Erfassungsdatenbank."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "arp_npl"
+    models = "SO_Nutzungsplanung_20171118"
+    disableValidation = true
+    dataset = file(xtf).getName().take(4)
+    dataFile = xtf 
+}
+
+def setNonExistingPropertyToUndefinedValue(propertyName) {
+    setNonExistingPropertyToDefaultValue(propertyName, 'UNDEFINED')
+}
+
+def setNonExistingPropertyToDefaultValue(propertyName, defaultValue) {
+    if (!project.hasProperty(propertyName)) {
+        ext[propertyName] = defaultValue
+    }
+}
