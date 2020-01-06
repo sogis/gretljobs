@@ -42,7 +42,7 @@ task validateDataset(type: IliValidator, dependsOn: 'checkXtfName') {
 task replaceDataset (type: Ili2pgReplace, dependsOn: 'validateDataset') {
     description = "Ersetzt einen Datensatz (=XTF) in der Erfassungsdatenbank."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = "arp_npl"
+    dbschema = "arp_npl_test_sc"
     models = "SO_Nutzungsplanung_20171118"
     disableValidation = true
     dataset = file(xtf).getName().take(4)
