@@ -6,7 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'upsertTable'
 
 task upsertTable(type: SqlExecutor){
-    database = [dbUriEdit dbUserEdit, dbPwdEdit]
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['agi_gb2av_vollzugsmeldung_av_delta.sql']
 }
 
