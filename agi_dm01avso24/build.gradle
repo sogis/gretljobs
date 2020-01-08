@@ -1,3 +1,4 @@
+/*
 buildscript {
   repositories {
     maven { url "http://jars.interlis.ch" }
@@ -11,7 +12,7 @@ buildscript {
     classpath "de.undercouch:gradle-download-task:4.0.2"
   }
 }
-
+*/
 
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
@@ -46,8 +47,8 @@ cadastralSurveyingDataSets.each { cadastralSurveyingDataSet ->
 
     task "replaceCadastralSurveyingData_$dataSet"(type: Ili2pgReplace, dependsOn: "downloadCadastralSurveyingData_$dataSet") {
         description = "Import AV-Datensatz: ${dataSet}"
-        //database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-        database = ["jdbc:postgresql://localhost:54321/edit", "admin", "admin"]
+        database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+        //database = ["jdbc:postgresql://localhost:54321/edit", "admin", "admin"]
         models = 'DM01AVSO24LV95'
         dbschema = 'agi_dm01avso24'
         dataFile = file(Paths.get(pathToTempFolder.toString(), dataSet + "00.itf"))
