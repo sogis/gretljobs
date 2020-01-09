@@ -6,6 +6,8 @@ Der AV-Import wird mit Apache Camel gemacht. Der Download und die Transformation
 
 ## Developing
 
+**Achtung:** Encoding-Problem bei mir lokal. Scheint in der GDI zu funkionieren. Needs further investigation...
+
 ```
 docker run --rm --name edit-db -p 54321:5432 --hostname primary \
 -e PG_DATABASE=edit -e PG_PRIMARY_PORT=5432 -e PG_MODE=primary \
@@ -34,3 +36,8 @@ export ORG_GRADLE_PROJECT_dbPwdEdit="gretl"
 ```
 scripts/start-gretl.sh --docker-image sogis/gretl-runtime:latest --job-directory agi_dm01avso24/ tasks --all
 ```
+
+
+
+
+
