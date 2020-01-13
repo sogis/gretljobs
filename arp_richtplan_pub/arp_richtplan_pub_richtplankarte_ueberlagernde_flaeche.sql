@@ -1,4 +1,160 @@
-WITH documents_richtplan AS (
+WITH documents_naturreservate AS (
+    SELECT DISTINCT 
+        bezeichnung, 
+        typ, 
+        rechtsstatus, 
+        publiziertab, 
+        rechtsvorschrift, 
+        offiziellenr,
+        reservate_reservat_dokument.reservat,
+        CASE
+            WHEN 
+                reservate_dokument.typ = 'RRB'  
+                AND 
+                position('/opt/sogis_pic/documents/ch.so.arp.naturreservate/rrb/' IN reservate_dokument.dateipfad) != 0 
+                AND 
+                reservate_dokument.bezeichnung != ''
+                AND 
+                reservate_dokument.bezeichnung IS NOT NULL
+                THEN 'https://geo.so.ch/docs/'
+                                || split_part(reservate_dokument.dateipfad, '/documents/', 2)
+            WHEN 
+                reservate_dokument.typ = 'RRB' 
+                AND 
+                position('/opt/sogis_pic/documents/ch.so.arp.naturreservate/rrb/' IN reservate_dokument.dateipfad) != 0 
+                AND 
+                (
+                    reservate_dokument.bezeichnung = ''
+                    OR 
+                    reservate_dokument.bezeichnung IS NULL
+                )
+                THEN 'https://geo.so.ch/docs/'
+                                || split_part(reservate_dokument.dateipfad, '/documents/', 2)
+                                
+            WHEN 
+                reservate_dokument.typ = 'RRB' 
+                AND 
+                position('opt/sogis_pic/daten_aktuell/arp/Zonenplaene/Zonenplaene_pdf/' IN reservate_dokument.dateipfad) != 0
+                AND 
+                reservate_dokument.bezeichnung != ''
+                AND 
+                reservate_dokument.bezeichnung IS NOT NULL
+                THEN 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/'
+                                || split_part(reservate_dokument.dateipfad, '/Zonenplaene/', 2)
+                                
+            WHEN 
+                reservate_dokument.typ = 'RRB'
+                AND 
+                position('opt/sogis_pic/daten_aktuell/arp/Zonenplaene/Zonenplaene_pdf/' IN reservate_dokument.dateipfad) != 0
+                AND 
+                (
+                    reservate_dokument.bezeichnung = ''
+                    OR 
+                    reservate_dokument.bezeichnung IS NULL
+                )
+                THEN 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/'
+                                || split_part(reservate_dokument.dateipfad, '/Zonenplaene/', 2)
+            WHEN 
+                (
+                    reservate_dokument.typ = 'Kommunale_Inventare'
+                    OR
+                    reservate_dokument.typ = 'Bericht'
+                    OR
+                    reservate_dokument.typ = 'Pflegekonzept'
+                )
+                AND 
+                reservate_dokument.bezeichnung != ''
+                AND 
+                reservate_dokument.bezeichnung IS NOT NULL
+                THEN 'https://geo.so.ch/docs/'
+                                || split_part(reservate_dokument.dateipfad, '/documents/', 2)                              
+            WHEN 
+                (
+                    reservate_dokument.typ = 'Kommunale_Inventare'
+                    OR
+                    reservate_dokument.typ = 'Bericht'
+                    OR
+                    reservate_dokument.typ = 'Pflegekonzept'
+                )
+                AND 
+                (
+                    reservate_dokument.bezeichnung = ''
+                    OR 
+                    reservate_dokument.bezeichnung IS NULL
+                )
+                THEN  'https://geo.so.ch/docs/'
+                                || split_part(reservate_dokument.dateipfad, '/documents/', 2)
+            WHEN 
+                (
+                    reservate_dokument.typ = 'Sonderbauvorschriften'
+                    OR 
+                    reservate_dokument.typ = 'Gestaltungsplan'
+                )
+                AND 
+                reservate_dokument.bezeichnung != ''
+                AND 
+                reservate_dokument.bezeichnung IS NOT NULL
+                THEN 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/'
+                                || split_part(reservate_dokument.dateipfad, '/Zonenplaene/', 2)                
+            WHEN 
+                (
+                    reservate_dokument.typ = 'Sonderbauvorschriften'
+                    OR 
+                    reservate_dokument.typ = 'Gestaltungsplan'
+                )
+                AND 
+                (
+                    reservate_dokument.bezeichnung = ''
+                    OR 
+                    reservate_dokument.bezeichnung IS NULL
+                )
+                THEN 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/'
+                                || split_part(reservate_dokument.dateipfad, '/Zonenplaene/', 2)
+            ELSE NULL 
+        END AS dokumente
+    FROM 
+        arp_naturreservate.reservate_reservat_dokument
+        LEFT JOIN arp_naturreservate.reservate_dokument
+            ON reservate_dokument.t_id = reservate_reservat_dokument.dokument
+    
+    UNION
+    
+    SELECT 
+        'Objektblatt' AS bezeichnung, 
+        'Objektblatt' AS typ, 
+        'laufendeAenderung' AS rechtsstatus, 
+        NULL AS publiziertab, 
+        FALSE AS rechtsvorschrift, 
+        NULL AS offiziellenr,
+        reservate_reservat.t_id,
+        'https://geo.so.ch/api/v1/document/Naturreservate?feature=' || reservate_reservat.t_id
+    FROM
+        arp_naturreservate.reservate_reservat
+        
+    UNION
+    
+    SELECT 
+        'Fotos' AS bezeichnung, 
+        'Fotos' AS typ, 
+        'laufendeAenderung' AS rechtsstatus, 
+        NULL AS publiziertab, 
+        FALSE AS rechtsvorschrift, 
+        NULL AS offiziellenr,
+        reservate_reservat.t_id,
+        'http://faust.so.ch/suche_start.fau?prj=ARP&dm=FVARP02&rpos=3&ro_zeile_2=' || reservate_reservat.nummer
+    FROM
+        arp_naturreservate.reservate_reservat
+),
+documents_json_naturreservate AS (
+    SELECT 
+        array_to_json(array_agg(row_to_json(documents_naturreservate)))::text AS dokumente, 
+        reservat
+    FROM 
+        documents_naturreservate
+    GROUP BY 
+        reservat
+),
+documents_richtplan AS (
     SELECT DISTINCT
         richtplankarte_dokument.t_id,
         richtplankarte_dokument.t_ili_tid,
@@ -60,7 +216,6 @@ betroffene_gemeinden AS (
         richtplankarte_ueberlagernde_flaeche.t_id
 )
 
-
 /* Deponie
  * Windenergie,
  * Naturpark,
@@ -84,7 +239,7 @@ SELECT
     richtplankarte_ueberlagernde_flaeche.planungsstand,
     richtplankarte_ueberlagernde_flaeche.status,
     richtplankarte_ueberlagernde_flaeche.geometrie,
-    documents_json_richtplan.dokumente,
+    documents_json_richtplan.dokumente::text,
     betroffene_gemeinden.gemeindenamen
 FROM
     arp_richtplan.richtplankarte_ueberlagernde_flaeche
@@ -94,4 +249,33 @@ FROM
         ON betroffene_gemeinden.t_id = richtplankarte_ueberlagernde_flaeche.t_id
 WHERE
     richtplankarte_ueberlagernde_flaeche.planungsstand IN ('rechtsgueltig', 'in_Auflage')
+
+UNION ALL
+    
+/*kantonales_Naturreservat*/
+SELECT
+    uuid_generate_v4() AS t_ili_tid,
+    CAST(reservate_reservat.nummer AS varchar) AS nummer,
+    'kantonales_Naturreservat' AS objekttyp,
+    NULL AS weitere_Informationen,
+    reservate_reservat.reservatsname as objektname,
+    'Ausgangslage' AS abstimmungskategorie,
+    NULL AS bedeutung,
+    'rechtsgueltig' AS planungsstand,
+    'bestehend' AS status,
+    ST_Multi(ST_Union(ST_SnapToGrid(reservate_teilgebiet.geometrie, 0.001))) AS geometrie,
+    documents_json_naturreservate.dokumente AS dokumente,
+    string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename) AS gemeindenamen
+FROM
+    agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
+    arp_naturreservate.reservate_reservat
+    LEFT JOIN arp_naturreservate.reservate_teilgebiet
+        ON reservate_teilgebiet.reservat = reservate_reservat.t_id
+    LEFT JOIN documents_json_naturreservate
+        ON documents_json_naturreservate.reservat = reservate_reservat.t_id
+WHERE 
+    ST_Intersects(reservate_teilgebiet.geometrie, hoheitsgrenzen_gemeindegrenze.geometrie) = TRUE
+GROUP BY 
+    reservate_reservat.t_id,
+    documents_json_naturreservate.dokumente
 ;
