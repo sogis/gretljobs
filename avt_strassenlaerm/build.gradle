@@ -10,12 +10,13 @@ defaultTasks 'transferData'
 
 ext {
     pathToTempFolder = System.getProperty("java.io.tmpdir")
-    xtfFilePath = Paths.get(pathToTempFolder.toString(), 'strassenlaerm_KGDM_20191023.xtf')
+    xtfFilePath = Paths.get(pathToTempFolder.toString(), 'strassenlaerm_KGDM_SO_20200115.xtf')
+    filename = 'strassenlaerm_KGDM_SO_20200115.xtf'
 }
 
 task downloadData(type: Download) {
     //src 'https://s3.eu-central-1.amazonaws.com/ch.so.avt.strassenlaerm/strassenlaerm_KGDM_20191023.xtf'
-    src 'https://s3.eu-central-1.amazonaws.com/ch.so.avt.strassenlaerm/strassenlaerm_KGDM_SO_20200115.xtf'
+    src 'https://s3.eu-central-1.amazonaws.com/ch.so.avt.strassenlaerm/' + filename
     dest pathToTempFolder
     overwrite true
 
