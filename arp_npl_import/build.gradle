@@ -25,6 +25,7 @@ ext {
     setNonExistingPropertyToUndefinedValue('xtf')
 }
 
+
 task checkXtfName() {
     description = "Prüft, ob die ersten vier Buchstaben im XTF-Filenamen einer Nummer entsprechen, die im BfS-Range des Kt. SO liegt."    
     doFirst {
