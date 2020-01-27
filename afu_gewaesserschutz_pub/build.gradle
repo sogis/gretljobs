@@ -3,19 +3,23 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAfuGewaesserschutz'
+defaultTasks 'transferSurroundingCantons'
 
 task transferAfuGewaesserschutz(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            /*
-            aww_gsab.sql, aww_gszoak.sql sind immernoch auf der sogis-db. Wird in ticket 3913 bearbeitet
-            new TransferSet('aww_gsab.sql', 'afu_gewaesserschutz_pub.aww_gsab', true),
-            new TransferSet('aww_gszoak.sql', 'afu_gewaesserschutz_pub.aww_gszoak', true),
-            */
             new TransferSet('gwsbereich.sql', 'afu_gewaesserschutz_pub.gewaesserschutz_bereich', true),
             new TransferSet('gwszone.sql', 'afu_gewaesserschutz_pub.gewaesserschutz_zone_areal', true),
             new TransferSet('gwsareal.sql', 'afu_gewaesserschutz_pub.gewaesserschutz_zone_areal', false) // false, da Zieltabelle identisch wie bei gwszone.sql
+    ]
+}
+
+
+task transferSurroundingCantons(type: Db2Db, dependsOn:transferAfuGewaesserschutz){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('sogis/aww_gszoak.sql', 'afu_gewaesserschutz_ausserkantonal_pub.aww_gszoak', true),
     ]
 }

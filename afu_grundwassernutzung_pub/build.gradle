@@ -1,0 +1,20 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferAfuGrundwassernutzung'
+
+task transferAfuGrundwassernutzung (type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('aww_gshiso.sql', 'afu_grundwassernutzung_pub.aww_gshiso', true),
+            new TransferSet('aww_gshora.sql', 'afu_grundwassernutzung_pub.aww_gshora', true),
+            new TransferSet('aww_gwomac.sql', 'afu_grundwassernutzung_pub.aww_gwomac', true),
+            new TransferSet('aww_gsmora.sql', 'afu_grundwassernutzung_pub.aww_gsmora', true),
+            new TransferSet('aww_gsmiso.sql', 'afu_grundwassernutzung_pub.aww_gsmiso', true),
+            new TransferSet('aww_gstira.sql', 'afu_grundwassernutzung_pub.aww_gstira', true),
+            new TransferSet('aww_gstiso.sql', 'afu_grundwassernutzung_pub.aww_gstiso', true)
+    ]
+}
