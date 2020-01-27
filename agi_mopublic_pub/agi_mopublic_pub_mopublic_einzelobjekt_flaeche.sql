@@ -4,7 +4,7 @@ SELECT
     objektnummer.gwr_egid AS egid,
     aimport.importdate AS importdatum,
     nachfuehrung.gueltigereintrag AS nachfuehrung,
-    ST_CurveToLine(flaeche.geometrie, 0.002, 1, 1) AS geometrie
+    flaeche.geometrie AS geometrie
 FROM
     agi_dm01avso24.einzelobjekte_flaechenelement AS flaeche
     LEFT JOIN agi_dm01avso24.einzelobjekte_einzelobjekt AS einzelobjekt

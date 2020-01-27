@@ -4,7 +4,7 @@ SELECT
     CAST(objekt.t_datasetname AS INT) AS bfs_nr,    
     aimport.importdate AS importdatum,
     nachfuehrung.gueltigereintrag AS nachfuehrung,
-    ST_CurveToLine(linie.geometrie, 0.002, 1, 1) AS geometrie 
+    linie.geometrie AS geometrie 
 FROM
     agi_dm01avso24.rohrleitungen_linienelement AS linie  
     LEFT JOIN agi_dm01avso24.rohrleitungen_leitungsobjekt AS objekt 

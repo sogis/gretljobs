@@ -4,7 +4,7 @@ SELECT
     CAST(strasse.t_datasetname AS INT) AS bfs_nr,    
     aimport.importdate AS importdatum,
     nachfuehrung.gueltigereintrag AS nachfuehrung,
-    ST_CurveToLine(strasse.geometrie, 0.002, 1, 1) AS geometrie 
+    strasse.geometrie AS geometrie 
 FROM
     agi_dm01avso24.gebaeudeadressen_strassenstueck AS strasse
     LEFT JOIN agi_dm01avso24.gebaeudeadressen_lokalisation AS lokalisation

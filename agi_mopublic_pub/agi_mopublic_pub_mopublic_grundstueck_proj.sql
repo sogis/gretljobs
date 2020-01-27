@@ -3,7 +3,7 @@ WITH nummerierungsbereich AS
   SELECT
     nbgeometrie.t_datasetname,
     nbbereich.kt || nbbereich.nbnummer AS nbident,
-    ST_Multi(ST_Union(ST_CurveToLine(nbgeometrie.geometrie, 0.002, 1, 1))) AS geometrie
+    ST_Multi(ST_Union(nbgeometrie.geometrie)) AS geometrie
   FROM
     agi_dm01avso24.nummerierngsbrche_nbgeometrie AS nbgeometrie
     LEFT JOIN agi_dm01avso24.nummerierngsbrche_nummerierungsbereich AS nbbereich
@@ -89,7 +89,7 @@ FROM
         pos.vali,
         aimport.importdate AS importdatum,
         nachfuehrung.gueltigereintrag AS nachfuehrung,
-        ST_CurveToLine(liegenschaft.geometrie, 0.002, 1, 1) AS geometrie,    
+        liegenschaft.geometrie AS geometrie,    
         pos.pos
     FROM
         agi_dm01avso24.liegenschaften_projgrundstueck AS grundstueck
@@ -129,7 +129,7 @@ FROM
         pos.vali,
         aimport.importdate AS importdatum,
         nachfuehrung.gueltigereintrag AS nachfuehrung,
-        ST_CurveToLine(selbstrecht.geometrie, 0.002, 1, 1) AS geometrie,    
+        selbstrecht.geometrie AS geometrie,    
         pos.pos
     FROM
         agi_dm01avso24.liegenschaften_projgrundstueck AS grundstueck
@@ -171,7 +171,7 @@ LEFT JOIN
           SELECT
             nbgeometrie.t_datasetname,
             nbbereich.kt || nbbereich.nbnummer AS nbident,
-            ST_Multi(ST_Union(ST_CurveToLine(nbgeometrie.geometrie, 0.002, 1, 1))) AS geometrie
+            ST_Multi(ST_Union(nbgeometrie.geometrie)) AS geometrie
           FROM
             agi_dm01avso24.nummerierngsbrche_nbgeometrie AS nbgeometrie
             LEFT JOIN agi_dm01avso24.nummerierngsbrche_nummerierungsbereich AS nbbereich
