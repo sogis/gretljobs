@@ -18,7 +18,7 @@ SELECT
     CAST(ortsname.t_datasetname AS INT) AS bfs_nr,    
     aimport.importdate AS importdatum,
     nachfuehrung.gueltigereintrag AS nachfuehrung,
-    ST_CurveToLine(ortsname.geometrie, 0.002, 1, 1) AS geometrie,    
+    ortsname.geometrie AS geometrie,    
     pos.pos
 FROM
     agi_dm01avso24.nomenklatur_ortsname AS ortsname 

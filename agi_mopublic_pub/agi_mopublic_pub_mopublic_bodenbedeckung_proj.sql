@@ -10,7 +10,7 @@ SELECT
     gebaeudenummer.gwr_egid AS egid,
     aimport.importdate AS importdatum,
     nachfuehrung.gueltigereintrag AS nachfuehrung,
-    ST_CurveToLine(bodenbedeckung.geometrie, 0.002, 1, 1) AS geometrie
+    bodenbedeckung.geometrie AS geometrie
 FROM
     agi_dm01avso24.bodenbedeckung_projboflaeche AS bodenbedeckung
     LEFT JOIN agi_dm01avso24.bodenbedeckung_projgebaeudenummer AS gebaeudenummer

@@ -3,7 +3,7 @@ SELECT
     CAST(gemeinde.t_datasetname AS INT) AS bfs_nr,    
     aimport.importdate AS importdatum,
     nachfuehrung.gueltigereintrag AS nachfuehrung,
-    ST_CurveToLine(grenze.geometrie, 0.002, 1, 1) AS geometrie
+    grenze.geometrie AS geometrie
 FROM
     agi_dm01avso24.gemeindegrenzen_gemeinde AS gemeinde  
     RIGHT JOIN agi_dm01avso24.gemeindegrenzen_projgemeindegrenze AS grenze

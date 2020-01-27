@@ -32,7 +32,7 @@ SELECT
         ELSE pos.vali
     END AS vali,
     aimport.importdate AS importdatum,
-    ST_CurveToLine(flurname.geometrie, 0.002, 1, 1) AS geometrie,
+    flurname.geometrie AS geometrie,
     pos.pos,
     pos.gemeinde AS gemeinde
 FROM
