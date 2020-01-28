@@ -37,7 +37,7 @@ Anschliessend kann in der GRETL-Jenkins-Umgebung (`https://gretl-test.so.ch/`) d
 
 Wenn in der Test-Umgebung alles funktioniert hat, das Ganze nochmals auf der Produktion. In Zukunft dürfte wohl das Ausführen auf der Test-Umgebung überflüssig werden.
 
-### retljob arp_npl_pub nachführen:
+### Gretljob arp_npl_pub nachführen:
 Der Gretljob arp_npl_pub  schliesst jene Gemeinden aus, welche die Nutzungsplanung schon abgeschlossen haben. 
 => `gem_bfs NOT IN (2405,2408,2457,2473,2474,2476,2498,2501,2502,2580,2613,2614,2615)`. 
 Das File `arp_npl_pub/uebertrag_alte_sogisdaten_zonenplan_grundnutzung.sql` muss bei jeder neu angelegten NPL-Gemeinde um die neue BFS-Nummer erweitert werden!!
