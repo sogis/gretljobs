@@ -53,18 +53,18 @@ Der Gretljob arp_richtplan_pub schliesst jene Gemeinden aus, welche die Nutzungs
 Das File `arp_richtplan_pub/arp_richtplan_pub_richtplankarte_grundnutzung_sogis.sql` muss bei jeder neu angelegten NPL-Gemeinde um die neue BFS-Nummer erweitert werden!!
 
 ### XTF-File ablegen:
-xtf-File nach dem Importieren unter '/opt/sogis_pic/geodata/ch.so.arp.nutzungsplanung' ablegen (<BFS-Nr>.xtf) damit sie online verfügbar sind. 
+xtf-File nach dem Importieren unter `/opt/sogis_pic/geodata/ch.so.arp.nutzungsplanung` ablegen (BFS-Nr.xtf) damit sie online verfügbar sind. 
 
 ## Entwicklung
 See: [https://geoweb.rootso.org/redmine/issues/3891](https://geoweb.rootso.org/redmine/issues/3891)
 
-'java -jar /usr/local/ili2pg-4.3.1/ili2pg.jar \
+`java -jar /usr/local/ili2pg-4.3.1/ili2pg.jar \
 --dbschema arp_npl --models SO_Nutzungsplanung_20171118 \
 --defaultSrsCode 2056 --strokeArcs --createGeomIdx --createFk --createFkIdx --createEnumTabs --beautifyEnumDispName --createMetaInfo --createUnique --createNumChecks --nameByTopic \
 --createBasketCol --createDatasetCol \
---createscript arp_npl.sql'
+--createscript arp_npl.sql`
 
-'psql -h geodb-t.rootso.org -d edit -c "SET ROLE admin" --single-transaction -f arp_npl.sql -f postscript.sql'
+`psql -h geodb-t.rootso.org -d edit -c "SET ROLE admin" --single-transaction -f arp_npl.sql -f postscript.sql`
 
 
 Dient hier sogleich zum Testen mit einer lokalen Vagrant-Kiste.
