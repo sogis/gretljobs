@@ -11,11 +11,9 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferDataToEditDb'
 
-def nameOfZipWithBoundaries = 'INTERLIS_2_LV95_LN02.zip'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
-def pathToDataZip = Paths.get(pathToTempFolder, "data.zip")
-def pathToZipWithBoundaries = Paths.get(pathToUnzipFolder.toString(), nameOfZipWithBoundaries)
+def pathToDataZip = Paths.get(pathToTempFolder, 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill.zip')
 def xtfFilePath = Paths.get(pathToUnzipFolder.toString(),'INTERLIS_2_LV95_LN02','swissBOUNDARIES3D_1_3.xtf')
 
 
@@ -24,29 +22,18 @@ task download(type: Download){
     doLast {
         println "File downloaded to: " + pathToTempFolder
     }
-    src 'https://data.geo.admin.ch/ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill/data.zip'
+    src 'https://data.geo.admin.ch/ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill/xtf/2056/ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill.zip'
     dest pathToTempFolder
     overwrite true
 }
 
 
-task unzipData(type: Copy, dependsOn: 'download'){
-    description = "Unzip Data.zip."
+task unzipSwissBoundaries3D(type: Copy, dependsOn: 'download'){
+    description = "Unzip swissBOUNDARIES3D_1_3.xtf from ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill.zip."
     doLast {
         println "File unzipped to directory: " + pathToUnzipFolder
     }
-    from zipTree(file(pathToDataZip))
-    into pathToUnzipFolder
-    include nameOfZipWithBoundaries
-}
-
-
-task unzipSwissBoundaries3D(type: Copy, dependsOn: 'unzipData'){
-    description = "Unzip swissBOUNDARIES3D_ili2_LV95_V1_3.itf from swissBOUNDARIES3D.zip."
-    doLast {
-        println "File unzipped to directory: " + pathToUnzipFolder
-    }
-    from zipTree(pathToZipWithBoundaries)
+    from zipTree(pathToDataZip)
     into file(pathToUnzipFolder)
     include "**/*.xtf"
 }
