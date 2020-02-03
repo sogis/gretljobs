@@ -14,7 +14,7 @@ defaultTasks 'transferDataToEditDb'
 def nameOfZipWithBoundaries = 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill.zip'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
-def pathToDataZip = Paths.get(pathToTempFolder, "ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill.zip")
+def pathToDataZip = Paths.get(pathToTempFolder, "data.zip")
 def pathToZipWithBoundaries = Paths.get(pathToUnzipFolder.toString(), nameOfZipWithBoundaries)
 def xtfFilePath = Paths.get(pathToUnzipFolder.toString(),'INTERLIS_2_LV95_LN02','swissBOUNDARIES3D_1_3.xtf')
 
@@ -25,7 +25,7 @@ task download(type: Download){
         println "File downloaded to: " + pathToTempFolder
     }
     src 'https://data.geo.admin.ch/ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill/xtf/2056/ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill.zip'
-    dest pathToTempFolder
+    dest pathToUnzipFolder
     overwrite true
 }
 
