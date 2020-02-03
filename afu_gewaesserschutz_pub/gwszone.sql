@@ -5,9 +5,9 @@ docs_gesamttitel AS (
 	SELECT
 		t_id AS dok_id,
 		CASE titel
-			WHEN 'Regierungsratsbeschluss' THEN concat('RRB ', date_part('year', publiziertab), '/', offiziellenr, ': ',  offiziellertitel)
-			WHEN 'Schutzzonenreglement' THEN concat('Reglement: ', offiziellertitel)
-			WHEN 'Schutzzonenplan' THEN concat('Plan: ', offiziellertitel)
+			WHEN 'Regierungsratsbeschluss' THEN concat('RRB ', date_part('year', publiziertab), '/', offiziellenr)
+			WHEN 'Schutzzonenreglement' THEN 'Reglement'
+			WHEN 'Schutzzonenplan' THEN 'Plan'
 			ELSE offiziellertitel
 		END AS titel,
 		CASE titel
