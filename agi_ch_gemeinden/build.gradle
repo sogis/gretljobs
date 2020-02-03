@@ -41,7 +41,7 @@ task unzipData(type: Copy, dependsOn: 'download'){
 }
 
 
-task unzipSwissBoundaries3D(type: Copy, dependsOn: 'Download'){
+task unzipSwissBoundaries3D(type: Copy, dependsOn: 'download'){
     description = "Unzip swissBOUNDARIES3D_ili2_LV95_V1_3.itf from swissBOUNDARIES3D.zip."
     doLast {
         println "File unzipped to directory: " + pathToUnzipFolder
