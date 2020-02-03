@@ -11,7 +11,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferDataToEditDb'
 
-def nameOfZipWithBoundaries = 'INTERLIS_2_LV95_LN02.zip'
+def nameOfZipWithBoundaries = 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill.zip'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
 def pathToDataZip = Paths.get(pathToTempFolder, "ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill.zip")
