@@ -5,7 +5,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferErdwaermeAdditionals'
 
-task transferErdwaermeAdditionals(type: Db2Db, dependsOn:'transferErdwaerme'){
+task transferErdwaermeAdditionals(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
