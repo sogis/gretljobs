@@ -21,5 +21,6 @@ task transferSurroundingCantons(type: Db2Db, dependsOn:transferAfuGewaesserschut
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('sogis/aww_gszoak.sql', 'afu_gewaesserschutz_ausserkantonal_pub.aww_gszoak', true),
+            new TransferSet('sogis/aww_gszustr.sql', 'afu_gewaesserschutz_ausserkantonal_pub.aww_gszustr', true)
     ]
 }
