@@ -15,7 +15,6 @@ task transferAfuGewaesserschutz(type: Db2Db){
     ]
 }
 
-
 task transferSurroundingCantons(type: Db2Db, dependsOn:transferAfuGewaesserschutz){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]

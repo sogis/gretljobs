@@ -5,8 +5,8 @@ SELECT
 	im_kanton, 
 	typ, 
 	typ_text
-FROM 
-	afu_gewaesserschutz_pub.aww_gszustr
+FROM	
+	public.aww_gszustr
 WHERE
-	im_kanton = 0
+	archive = 0	AND im_kanton = 0
 ;
