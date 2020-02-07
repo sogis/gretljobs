@@ -22,13 +22,13 @@ WITH
         SELECT
             grundstueck.nummer,
             liegenschaft.geometrie,
-            gemeinde.gemeindename as name
+            gemeinde.aname as name
         FROM
             agi_dm01avso24.liegenschaften_liegenschaft AS liegenschaft
             JOIN agi_dm01avso24.liegenschaften_grundstueck AS grundstueck
                 ON liegenschaft.liegenschaft_von = grundstueck.t_id
-            LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS gemeinde
-                ON gemeinde.bfs_gemeindenummer = CAST(grundstueck.t_datasetname as INTEGER)
+            LEFT JOIN agi_dm01avso24.gemeindegrenzen_gemeinde AS gemeinde
+                ON gemeinde.t_datasetname = grundstueck.t_datasetname
     ),
     flurname AS (
         SELECT
