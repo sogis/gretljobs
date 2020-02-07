@@ -45,6 +45,7 @@ SELECT
     nutzungsvereinbarung.datum,
     nutzungsvereinbarung.flaechenart,
 --    nutzungsvereinbarung.bewirtschafter AS bewirtschafter_name,
+    'fehlt noch' as bewirtschafter_name,
     nutzungsvereinbarung.projekt AS projekte,
     string_agg(DISTINCT grundstueck.name, ', ' ORDER BY grundstueck.name) AS gemeinde,
     string_agg(DISTINCT grundstueck.nummer, ', ' ORDER BY grundstueck.nummer) AS grundstueck_nr,
