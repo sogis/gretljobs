@@ -1,6 +1,9 @@
-plugins {
-    id 'org.hidetake.ssh' version '2.9.0'
-}
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
 
 remotes {
     ftpServer {
@@ -9,11 +12,6 @@ remotes {
         password = "${ftpPwdZivilschutz}"
     }
 }
-
-import ch.so.agi.gretl.tasks.*
-import ch.so.agi.gretl.api.TransferSet
-
-apply plugin: 'ch.so.agi.gretl'
 
 def adressenDelete = 'amb_zivilschutz_adressen_staging_adressen_zivilschutz_delete.sql'
 def adressenInsert = 'amb_zivilschutz_adressen_staging_adressen_zivilschutz.sql'
