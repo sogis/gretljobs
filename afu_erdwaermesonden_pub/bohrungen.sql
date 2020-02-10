@@ -19,8 +19,8 @@ SELECT
 	bohrtiefe,
 	vorkommnisse,
 	bohrprofil_link,
-	COALESCE(FALSE, bohrprofil_vorhanden) AS bohrprofil_vorhanden,
-	erdwaermesonden_bohrung.geometrie
+	COALESCE(bohrprofil_vorhanden, FALSE) AS bohrprofil_vorhanden,
+	COALESCE(erdwaermesonden_bohrung.geometrie, erdwaermesonden_anlage.geometrie) AS geometrie
 FROM
 	afu_erdwaermesonden.erdwaermesonden_anlage
 	LEFT JOIN afu_erdwaermesonden.erdwaermesonden_bohrung
