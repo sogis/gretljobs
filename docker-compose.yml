@@ -1,0 +1,36 @@
+version: '3'
+services:
+  edit-db:
+    build: .
+    image: sogis/postgis-db:localbuild
+    environment:
+      PG_DATABASE: edit
+      PG_LOCALE: de_CH.UTF-8
+      PG_PRIMARY_PORT: 5432
+      PG_MODE: primary
+      PG_USER: admin
+      PG_PASSWORD: admin
+      PG_PRIMARY_USER: repl
+      PG_PRIMARY_PASSWORD: repl
+      PG_ROOT_PASSWORD: secret
+    ports:
+      - "54321:5432"
+    volumes:
+      - ${PWD}/development_dbs/setup.sql:/pgconf/setup.sql
+  pub-db:
+    build: .
+    image: sogis/postgis-db:localbuild
+    environment:
+      PG_DATABASE: pub
+      PG_LOCALE: de_CH.UTF-8
+      PG_PRIMARY_PORT: 5432
+      PG_MODE: primary
+      PG_USER: admin
+      PG_PASSWORD: admin
+      PG_PRIMARY_USER: repl
+      PG_PRIMARY_PASSWORD: repl
+      PG_ROOT_PASSWORD: secret
+    ports:
+      - "54322:5432"
+    volumes:
+      - ${PWD}/development_dbs/setup.sql:/pgconf/setup.sql
