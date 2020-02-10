@@ -104,6 +104,30 @@ wird der Job auf einem Jenkins Agent
 mit dem Label `gretl` ausgeführt (der Standard).
 
 
+## Entwicklungs-DBs starten
+
+Mit diesem Repository wird die Konfiguration für den Start von zwei leeren Entwicklungs-DBs mitgeliefert. Mit folgenden Befehlen kann man diese starten, um danach Daten zu importieren und mit der Entwicklung von GRETL-Jobs zu starten.
+
+Zwei Docker-DB-Server starten; einer enthält die edit-DB, der andere die pub-DB:
+```
+docker-compose down # (dieser Befehl ist optional; er kann benutzt werden, um bereits gestartete DB-Container zu stoppen und zu löschen)
+docker-compose up
+```
+
+Die Verbindungen zu den DBs konfigurieren:
+```
+export ORG_GRADLE_PROJECT_dbUriEdit=jdbc:postgresql://edit-db/edit
+export ORG_GRADLE_PROJECT_dbUserEdit=gretl
+export ORG_GRADLE_PROJECT_dbPwdEdit=gretl
+export ORG_GRADLE_PROJECT_dbUriPub=jdbc:postgresql://pub-db/pub
+export ORG_GRADLE_PROJECT_dbUserPub=gretl
+export ORG_GRADLE_PROJECT_dbPwdPub=gretl
+```
+
+Nun können in den DBs nach Beliben Schemas angelegt und Daten importiert werden.
+
+
+
 ## GRETL Runtime Docker Image verwenden
 
 Für die Entwicklung von GRETL-Jobs kann GRETL mit dem folgenden Skript als Docker-Container gestartet werden (Beispiel):
