@@ -26,13 +26,11 @@ docs_json AS (
 	SELECT
 		dok_id,
 		sort,
-		CASE rechtsstatus
-			WHEN 'inKraft' THEN 0
-			ELSE 1
-		END AS nicht_in_kraft,
 		json_build_object('titel', titel,'url', url) AS json_rec
 	FROM
 		docs_gesamttitel
+	WHERE 
+		rechtsstatus = 'inKraft'
 ),
 
 zone_docs AS (
@@ -45,8 +43,6 @@ zone_docs AS (
 		ON docs_json.dok_id = gwszonen_rechtsvorschriftgwszone.rechtsvorschrift
 	GROUP BY 
 		gwszone
-	HAVING 
-		sum(nicht_in_kraft) < 1 --Nur zonen publizieren, bei denen alle Dokumente in Kraft sind.
 ),
 
 zone_and_status AS (
@@ -73,5 +69,5 @@ SELECT
 	apolygon
 FROM
 	zone_and_status
-		INNER JOIN zone_docs
+		LEFT JOIN zone_docs
 			ON zone_and_status.t_id = zone_docs.zone_id
