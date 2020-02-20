@@ -65,7 +65,7 @@ echo "======================================================="
 #    b. change to project directory
 #    c. run gradle with given task and parameter using init script from image
 
-docker run -i --rm \
+docker run -i --rm --name gretl \
     --entrypoint="/bin/sh" \
     -v "$job_directory":/home/gradle/project \
     -v /tmp:/tmp/gretl-share \
