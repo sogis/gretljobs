@@ -9,7 +9,7 @@ node (params.nodeLabel ?: 'gretl') {
         gitBranch = "${params.BRANCH ?: 'master'}"
         git url: "${gretljobsRepo}", branch: gitBranch, changelog: false
         dir(env.JOB_BASE_NAME) {
-            sh "gradle --init-script /home/gradle/init.gradle"
+            sh "gradle -Dorg.gradle.jvmargs=-Xmx2G --init-script /home/gradle/init.gradle"
         }
     }
     catch (e) {
