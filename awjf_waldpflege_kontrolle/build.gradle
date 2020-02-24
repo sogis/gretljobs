@@ -13,13 +13,9 @@ task transferAwjfWaldpflegeErfassung(type: Db2Db){
             new TransferSet('awjf_waldpflege_kontrolle.sql',
                     'awjf_waldpflege_kontrolle.waldpflege_waldpflege', true)
     ];
-    
-    
-        finalizedBy {
+    finalizedBy {
         deleteFromAwjfWaldpflegeErfassung
     }
-    
-    
 }
 
 task deleteFromAwjfWaldpflegeErfassung(type: SqlExecutor){
