@@ -1,0 +1,31 @@
+SELECT
+    t_id,
+    t_ili_tid,
+    kontrolle_forstkreis,
+    bemerkung_forstkreis,
+    mehrfachpflege,
+    beitrag,
+    gesuchsteller,
+    eigentuemerart,
+    forstrevier,
+    forstkreis,
+    anrede,
+    name1,
+    name2,
+    adresszusatz,
+    strasse_hausnummer,
+    plz,
+    ortschaft,
+    bemerkung_stab,
+    kreditorennummer,
+    abstufung_50_100,
+    flaeche,
+    geometrie,
+    bemerkung,
+    jahr,
+    gesuchnummer,
+    dauerwald,
+    erfasser
+FROM 
+   awjf_waldpflege_erfassung.waldpflege_waldpflege_kontrolle
+;

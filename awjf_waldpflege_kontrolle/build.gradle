@@ -1,0 +1,28 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferAwjfWaldpflegeErfassung'
+
+
+task transferAwjfWaldpflegeErfassung(type: Db2Db){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('awjf_waldpflege_kontrolle.sql',
+                    'awjf_waldpflege_kontrolle.waldpflege_waldpflege', true)
+    ];
+    
+    
+        finalizedBy {
+        deleteFromAwjfWaldpflegeErfassung
+    }
+    
+    
+}
+
+task deleteFromAwjfWaldpflegeErfassung(type: SqlExecutor){
+    database = [dbLocalUriEdit, dbLocalUserEdit, dbLocalPwdEdit]
+    sqlFiles = ['delete_from_awjf_waldpflege_erfassung.sql']
+}
