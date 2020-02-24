@@ -1,5 +1,5 @@
 SELECT
-    gemeindegrenze.geometrie AS wkb_geometry,
+    ST_Multi(gemeindegrenze.geometrie) AS wkb_geometry,
     gemeinde.aname AS name,
     CAST(gemeinde.t_datasetname AS INT) AS gem_bfs,
     0 AS archive,

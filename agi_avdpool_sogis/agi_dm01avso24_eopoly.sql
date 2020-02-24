@@ -1,5 +1,5 @@
 SELECT
-    flaechenelement.geometrie AS wkb_geometry,
+    ST_Multi(flaechenelement.geometrie) AS wkb_geometry,
     CASE 
         WHEN einzelobjekt.art = 'Mauer.Mauer'
             THEN 0   

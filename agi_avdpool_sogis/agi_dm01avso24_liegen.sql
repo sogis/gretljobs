@@ -1,5 +1,5 @@
 SELECT
-    liegenschaft.geometrie AS wkb_geometry,
+    ST_Multi(liegenschaft.geometrie) AS wkb_geometry,
     liegenschaft.flaechenmass AS flaechen,
     0 AS art,
     grundstueck.nummer,

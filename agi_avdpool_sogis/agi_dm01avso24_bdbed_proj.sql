@@ -1,5 +1,5 @@
 SELECT
-    projboflaeche.geometrie AS wkb_geometry,
+    ST_Multi(projboflaeche.geometrie) AS wkb_geometry,
     CASE
         WHEN projboflaeche.art = 'Gebaeude'
             THEN 0

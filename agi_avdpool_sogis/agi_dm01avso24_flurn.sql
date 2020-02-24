@@ -1,5 +1,5 @@
 SELECT
-    flurname.geometrie AS wkb_geometry,
+    ST_Multi(flurname.geometrie) AS wkb_geometry,
     CAST(flurname.t_datasetname AS INT) AS gem_bfs,
     0 AS archive,
     CAST('9999-01-01' AS timestamp) AS archive_date,
