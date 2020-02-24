@@ -1,5 +1,5 @@
 SELECT
-    plangeometrie.geometrie AS wkb_geometry,
+    ST_Multi(plangeometrie.geometrie) AS wkb_geometry,
     plan.nummer,
     CAST(plan.t_datasetname AS INT) AS gem_bfs,
     0 AS archive,

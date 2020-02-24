@@ -1,5 +1,5 @@
 SELECT
-    strassenstueck.geometrie AS wkb_geometry,
+    ST_Multi(strassenstueck.geometrie) AS wkb_geometry,
     strassenstueck.ordnung,
     lokalisationsname.atext AS TEXT,
     CAST(strassenstueck.t_datasetname AS INT) AS gem_bfs,
