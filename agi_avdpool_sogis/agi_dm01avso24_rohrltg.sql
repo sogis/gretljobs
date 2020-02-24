@@ -1,5 +1,5 @@
 SELECT
-    st_multi(linienelement.geometrie) AS wkb_geometry,
+    ST_Multi(linienelement.geometrie) AS wkb_geometry,
     CASE
         WHEN leitungsobjekt.art = 'Oel'
             THEN 0
