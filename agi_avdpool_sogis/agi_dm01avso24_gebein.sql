@@ -36,4 +36,5 @@ FROM
             dataset 
     ) AS  aimport
         ON basket.dataset = aimport.dataset
+WHERE lokalisation.t_id = gebaeudeeingang.gebaeudeeingang_von
 ;
