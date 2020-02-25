@@ -27,5 +27,5 @@ SELECT
     dauerwald,
     erfasser
 FROM 
-   awjf_waldpflege_erfassung.waldpflege_waldpflege_kontrolle
+   awjf_waldpflege_kontrolle.waldpflege_waldpflege
 ;
