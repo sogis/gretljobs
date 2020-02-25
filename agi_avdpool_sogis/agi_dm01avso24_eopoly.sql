@@ -18,7 +18,7 @@ SELECT
         WHEN einzelobjekt.art = 'Bruecke_Passerelle'
             THEN 6   
         WHEN einzelobjekt.art = 'Bahnsteig'
-            THEN 10   
+            THEN 40   
         WHEN einzelobjekt.art = 'Brunnen'
             THEN 7   
         WHEN einzelobjekt.art = 'Reservoir'
@@ -91,8 +91,6 @@ SELECT
             THEN 37   
         WHEN einzelobjekt.art = 'Bezugspunkt'
             THEN 38   
-        WHEN einzelobjekt.art = 'weitere'
-            THEN -9   
     END AS art,
     CAST(flaechenelement.t_datasetname AS INT) AS gem_bfs,
     0 AS archive,
