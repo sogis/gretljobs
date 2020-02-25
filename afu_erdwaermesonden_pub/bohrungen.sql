@@ -21,7 +21,7 @@ SELECT
 	CASE
 		WHEN bohrprofil_link IS NULL THEN NULL
 		WHEN bohrprofil_link = '' THEN NULL
-		ELSE CONCAT_WS('', bohrprofil_link, ' \r\n Aufgrund einer Stoerung kann der Link nicht aus dem Internet aufgerufen werden. Die Stoerung wird schnellstmoeglich behoben.')
+		ELSE CONCAT_WS('', bohrprofil_link, '    Aufgrund einer Stoerung kann der Link nicht aus dem Internet aufgerufen werden. Die Stoerung wird schnellstmoeglich behoben.')
 	END AS bohrprofil_link,
 	COALESCE(bohrprofil_vorhanden, FALSE) AS bohrprofil_vorhanden,
 	COALESCE(erdwaermesonden_bohrung.geometrie, erdwaermesonden_anlage.geometrie) AS geometrie
