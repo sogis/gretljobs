@@ -18,7 +18,3 @@ task transferAwjfWaldpflegeErfassung(type: Db2Db){
     }
 }
 
-task deleteFromAwjfWaldpflegeErfassung(type: SqlExecutor){
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ['delete_from_awjf_waldpflege_erfassung.sql']
-}
