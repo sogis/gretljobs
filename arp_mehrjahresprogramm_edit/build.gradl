@@ -11,7 +11,7 @@ task transferArpMehrjahresprogramm(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
-            new TransferSet('mjpnatur_personen.sql','mjpnatur.personen', true),
-            new TransferSet('mjpnatur_flaechen.sql','mjpnatur.flaechen', true)
+            new TransferSet('mjpnatur_personen.sql','arp_mehrjahresprogramm.mehrjahresprgramm_person', true),
+            new TransferSet('mjpnatur_flaechen.sql','arp_mehrjahresprogramm.mehrjahresprgramm_vereinbarungensflaechen', true)
     ]
 }
