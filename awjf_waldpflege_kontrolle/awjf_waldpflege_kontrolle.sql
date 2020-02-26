@@ -17,7 +17,7 @@ SELECT
     NULL AS bemerkung_stab,
     gesuchsteller.kreditorennummer,
     gesuchsteller.abstufung_50_100,
-    ST_Area(waldpflege.geometrie) / 10000 AS flaeche,
+    ST_Area(waldpflege.geometrie) / 100 AS flaeche,
     waldpflege.geometrie,
     waldpflege.bemerkung,
     waldpflege.jahr,
