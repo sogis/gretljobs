@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-description = "GRETL-Job für Datenumbau der Nutzungsvereinbarungsdaten von der sogis-DB in die pub-DB"
+description = "GRETL-Job für Daten der Mehrjahresplanung aus der Sogis-DB welche in anderen Gretljobs aus der edit-DB benötigt werden. Gretljob kann Abgelöst werden wenn die Daten der Mehrjahresplanung auf der edit-DB sind."
 
 defaultTasks 'transferArpMehrjahresprogramm'
 
