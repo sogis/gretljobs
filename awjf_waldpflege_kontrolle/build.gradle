@@ -11,7 +11,7 @@ task transferAwjfWaldpflegeErfassung(type: Db2Db){
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
             new TransferSet('awjf_waldpflege_kontrolle.sql',
-                    'awjf_waldpflege_kontrolle.waldpflege_waldpflege', true)
+                    'awjf_waldpflege_kontrolle.waldpflege_waldpflege', false)
     ];
     
     
