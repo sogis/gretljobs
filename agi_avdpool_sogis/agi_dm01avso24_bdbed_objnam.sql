@@ -60,4 +60,5 @@ FROM
             dataset 
     ) AS  aimport
         ON basket.dataset = aimport.dataset
+WHERE objektname.t_id = objektnamepos.objektnamepos_von
 ;
