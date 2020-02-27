@@ -8,7 +8,7 @@ description = "GRETL-Job für Datenumbau der Nutzungsvereinbarungsdaten von der 
 defaultTasks 'transferArpNutzungsvereinbarung'
 
 task transferArpNutzungsvereinbarung(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('arp_nutzungsvereinbarung_pub_nutzungsvrnbrngen_nutzungsvreinbarungen.sql',
