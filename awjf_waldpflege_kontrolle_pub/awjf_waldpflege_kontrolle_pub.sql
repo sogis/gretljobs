@@ -1,6 +1,4 @@
 SELECT
-    t_id,
-    t_ili_tid,
     kontrolle_forstkreis,
     bemerkung_forstkreis,
     mehrfachpflege,
