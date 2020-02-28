@@ -8,7 +8,7 @@ SELECT
     valignment.itfcode AS vali,
     gebaeudenummerpos.vali AS vali_txt,
     schriftgroesse.itfcode AS groesse,
-    gebaeudenummerpos.groesse,
+    gebaeudenummerpos.groesse as groesse_txt,
     CAST(gebaeudenummerpos.t_datasetname AS INT) AS gem_bfs,
     0 AS los,
     aimport.importdate AS lieferdatum
