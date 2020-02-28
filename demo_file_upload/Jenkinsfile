@@ -1,0 +1,32 @@
+def gretljobsRepo = ''
+def uploadFileName = 'data.xtf'
+
+node('master') {
+    gretljobsRepo = "${env.GRETL_JOB_REPO_URL}"
+    def inputFile = input message: 'Datei hochladen', parameters: [file(name: "$uploadFileName", description: 'Hochzuladende Datei auswählen')]
+    dir("$JENKINS_HOME/jobs/$JOB_BASE_NAME/builds/$BUILD_NUMBER") {
+        stash name: 'uploadFile', includes: "$uploadFileName"
+    }
+    sh "rm $inputFile"
+}
+
+node (params.nodeLabel ?: 'gretl') {
+    try {
+        gitBranch = "${params.BRANCH ?: 'master'}"
+        git url: "${gretljobsRepo}", branch: gitBranch, changelog: false
+        dir(env.JOB_BASE_NAME) {
+            unstash name: 'uploadFile'
+            sh "gradle -Dorg.gradle.jvmargs=-Xmx2G --init-script /home/gradle/init.gradle"
+        }
+    }
+    catch (e) {
+        echo 'Job failed'
+        emailext (
+                to: '${DEFAULT_RECIPIENTS}',
+                recipientProviders: [requestor()],
+                subject: "GRETL-Job ${env.JOB_NAME} (${env.BUILD_DISPLAY_NAME}) ist fehlgeschlagen",
+                body: "Der GRETL-Job ${env.JOB_NAME} (${env.BUILD_DISPLAY_NAME}) war leider nicht erfolgreich. Details dazu finden Sie in den Log-Meldungen unter ${env.BUILD_URL}."
+        )
+        throw e
+    }
+}
