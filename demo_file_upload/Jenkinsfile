@@ -4,9 +4,10 @@ def uploadFileName = 'data.xtf'
 node('master') {
     gretljobsRepo = "${env.GRETL_JOB_REPO_URL}"
     def inputFile = input message: 'Datei hochladen', parameters: [file(name: "$uploadFileName", description: 'Hochzuladende Datei auswählen')]
-    sh "mv $JENKINS_HOME/jobs/$JOB_NAME/builds/$BUILD_NUMBER/$uploadFileName $workspace/"
-    stash name: 'uploadFile', includes: "$uploadFileName"
-    sh "rm $uploadFileName"
+    dir("$JENKINS_HOME/jobs/$JOB_BASE_NAME/builds/$BUILD_NUMBER") {
+        stash name: 'uploadFile', includes: "$uploadFileName"
+        sh "rm $uploadFileName"
+    }
 }
 
 node (params.nodeLabel ?: 'gretl') {
