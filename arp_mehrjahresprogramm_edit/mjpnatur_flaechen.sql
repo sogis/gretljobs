@@ -7,4 +7,4 @@ FROM mjpnatur.flaechen_geom_t AS fla_geom_t
         ON fla_attr.vereinbarungid = fla_geom_t.polyid
     LEFT JOIN mjpnatur.vereinbarung AS vereinbarung
         ON fla_attr.vereinbarungid = vereinbarung.vereinbarungsid
-WHERE fla_geom_t.archive = 0 AND vereinbarung.persid IS NOT NULL
+WHERE vereinbarung.archive = 0 AND vereinbarung.persid IS NOT NULL
