@@ -3,10 +3,8 @@ def uploadFileName = 'data.xtf'
 
 node('master') {
     gretljobsRepo = "${env.GRETL_JOB_REPO_URL}"
-    // Hack: The following line implicitly creates the $workspace directory
-    // which otherwise would be missing before the first build
-    sh 'pwd'
-    def inputFile = input message: 'Datei hochladen', parameters: [file(name: "$workspace/$uploadFileName", description: 'Hochzuladende Datei auswählen')]
+    def inputFile = input message: 'Datei hochladen', parameters: [file(name: "$uploadFileName", description: 'Hochzuladende Datei auswählen')]
+    sh "mv $JENKINS_HOME/jobs/$JOB_NAME/builds/$BUILD_NUMBER/$uploadFileName $workspace/"
     stash name: 'uploadFile', includes: "$uploadFileName"
     sh "rm $uploadFileName"
 }
