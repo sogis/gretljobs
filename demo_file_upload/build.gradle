@@ -1,6 +1,6 @@
 defaultTasks 'demo'
 
 task demo(type: Exec){
-    commandLine 'head', 'data.xtf'
+    commandLine 'head', 'data'
 }
 
