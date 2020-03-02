@@ -63,7 +63,11 @@ SELECT
     code_anthropogene_gefaehrdung.text AS anthropogene_gefaehrdung,
     lokalname,
     kantonal_gesch AS kant_geschuetztes_objekt,
-    ingesonr_alt AS alte_inventar_nummer,
+    CASE 
+        WHEN ingesonr_alt IS NOT NULL 
+            THEN (coalesce(ingeso_oid::character varying,'')||','||ingesonr_alt)
+        ELSE coalesce(ingeso_oid::character varying,'') 
+    END AS alte_inventar_nummer,
     regexp_replace(quelle, E'[\\n\\r]+', ' ', 'g' ) AS hinweis_literatur,
     wkb_geometry AS geometrie,
     'inKraft' AS rechtsstatus,
