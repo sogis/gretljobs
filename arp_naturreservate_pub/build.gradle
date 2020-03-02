@@ -3,10 +3,10 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferArpNaturreservate'
+defaultTasks 'refreshSolr'
 
 task transferArpNaturreservate(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('arp_naturreservate_pub_naturreservate_pflanzenliste.sql',
@@ -16,4 +16,8 @@ task transferArpNaturreservate(type: Db2Db){
             new TransferSet('arp_naturreservate_pub_naturreservate_teilgebiete.sql',
                     'arp_naturreservate_pub.naturreservate_teilgebiet', true)
     ];
+}
+
+task refreshSolr(type:Exec, dependsOn:'transferArpNaturreservate') {
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.arp.naturreservate.reservat'
 }

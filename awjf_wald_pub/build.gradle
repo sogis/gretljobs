@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAwjf'
+defaultTasks 'refreshSolr'
 
 task transferAwjf(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
@@ -32,4 +32,8 @@ task transferAwjf(type: Db2Db){
                     'awjf_wald_pub.silvaprotecteinteilig_grs_kor', true),
             new TransferSet('awjf_wald_pub_sw_info.sql', 'awjf_wald_pub.sw_info', true)
     ];        
+}
+
+task refreshSolr(type:Exec, dependsOn:'transferAwjf') {
+	commandLine 'curl', '-i', '--max-time', '20', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.schutzwaldausscheidung,ch.so.awjf.schutzwald_hauptgefahrenpotentiale,ch.so.awjf.bestandeskarte_wald_flaechen,ch.so.awjf.waldplan.waldeigentum,ch.so.awjf.waldplan.waldfunktion,ch.so.awjf.waldplan.waldplantyp'
 }

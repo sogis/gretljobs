@@ -1,0 +1,14 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferAfuEkat2015'
+
+task transferAfuEkat2015(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('ekat2015_pub.sql', 'afu_ekat2015_pub.ekat_ekat', true)
+    ];
+}

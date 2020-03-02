@@ -1,25 +1,17 @@
 SELECT
-    pk_id AS t_id,
-    ogc_fid,
-    tid,
+    t_id,
     name_nummer,
     geometrie,
-    art,
-    art_txt,
-    lagebestimmung,
-    lagebestimmung_txt,
+    art AS art_txt,
+    lagebestimmung AS lagebestimmung_txt,
     hoehe,
-    hoehenbestimmung,
-    hoehenbestimmung_txt,
+    hoehenbestimmung AS hoehenbestimmung_txt,
     einbaujahr,
     ueberdeckung,
     zustand,
     eigentuemer,
     bemerkung,
-    letzte_aenderung,
-    gem_bfs,
-    los,
-    lieferdatum
+    letzte_aenderung
 FROM
-    gemgis.t_sia405_wasser_wi_kabelpunkt
+    agi_leitungskataster_was.sia405_wasser_wi_kabelpunkt
 ;

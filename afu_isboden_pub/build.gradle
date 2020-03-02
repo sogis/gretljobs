@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAfuIsboden'
+defaultTasks 'refreshSolr'
 
 task transferAfuIsboden(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
@@ -20,3 +20,8 @@ task transferAfuIsboden(type: Db2Db){
                     'afu_isboden_pub.bodenprofilstandort_profilskizze', true)
     ]
 }
+
+task refreshSolr(type:Exec, dependsOn:'transferAfuIsboden') {
+        commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.bodeninformationen.bodenprofilstandorte'
+}
+

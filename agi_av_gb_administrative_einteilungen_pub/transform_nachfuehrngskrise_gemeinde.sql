@@ -1,7 +1,7 @@
 SELECT
   gemeindegrenze.gemeindename AS gemeindename,
   gemeinde.bfsnr AS bfsnr,
-  gemeindegrenze.geometrie AS perimeter,
+  ST_Multi(ST_Buffer(ST_SnapToGrid(gemeindegrenze.geometrie, 0.001), 0)) AS perimeter,
   geometer.aname AS nfg_name,
   geometer.vorname AS nfg_vorname,
   geometer.titel AS nfg_titel,
@@ -14,7 +14,7 @@ SELECT
   standort.telefon AS telefon,
   standort.web AS web,
   standort.email AS email,
-  standort.uid AS uid
+  standort.auid AS uid
 FROM
   agi_av_gb_admin_einteilung.nachfuehrngskrise_gemeinde AS gemeinde
   LEFT JOIN agi_av_gb_admin_einteilung.nachfuehrngskrise_nachfuehrungsgeometer AS geometer

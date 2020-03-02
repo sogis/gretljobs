@@ -216,7 +216,7 @@ SELECT
         WHEN belastungstyp = 11 AND bezeichnung = '15'
             THEN '15m seitlich ab Fahrbahnrand (die Darstellung ist nicht lagegenau)'
         WHEN belastungstyp = 12
-            THEN 'Übertragungsleitungsmast vor 1970 erbaut - 25m zum Objekt,<br>Übertragungsleitungsmast nach 1970 erbaut und alle weiteren Stahlmasten - 10m zum Objekt'
+            THEN 'Übertragungsleitungsmast vor 1970 erbaut - 25m zum Objekt, Übertragungsleitungsmast nach 1970 erbaut und alle weiteren Stahlmasten - 10m zum Objekt'
     END AS ausdehnung_belastungsflaeche_1,
     CASE
         WHEN belastungstyp = 7
@@ -272,7 +272,7 @@ SELECT
         WHEN belastungstyp = 7
             THEN 'Hg, Pb'
         WHEN belastungstyp = 8 OR belastungstyp = 220
-            THEN 'Pb, Cd, Cu, Zn, Hg, PAK'
+            THEN 'Pb, Cd, Cu, Zn, Hg, PAK, Pestizide'
         WHEN belastungstyp = 9
             THEN 'Pb, Cd, Cu, Zn, PAK'
         WHEN belastungstyp = 11

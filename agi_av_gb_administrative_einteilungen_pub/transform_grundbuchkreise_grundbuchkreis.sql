@@ -1,21 +1,21 @@
 WITH nummerierungsbereich AS
 (
   SELECT
-    nbgeometrie.gem_bfs,
-    nbbereich.kt_txt || nbbereich.nbnummer AS nbident,
-    ST_Multi(ST_Union(nbgeometrie.geometrie)) AS geometrie,
+    nbgeometrie.t_datasetname,
+    nbbereich.kt || nbbereich.nbnummer AS nbident,
+    ST_Multi(ST_Union(ST_CurveToLine(nbgeometrie.geometrie, 32, 0, 1))) AS geometrie,
     gemeindegrenze.gemeindename
   FROM
-    av_avdpool_ng.nummerierungsbereiche_nbgeometrie AS nbgeometrie
-    LEFT JOIN av_avdpool_ng.nummerierungsbereiche_nummerierungsbereich AS nbbereich
-    ON nbgeometrie.nbgeometrie_von = nbbereich.tid
+    agi_dm01avso24.nummerierngsbrche_nbgeometrie AS nbgeometrie
+    LEFT JOIN agi_dm01avso24.nummerierngsbrche_nummerierungsbereich AS nbbereich
+    ON nbgeometrie.nbgeometrie_von = nbbereich.t_id
     LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS gemeindegrenze
-    ON nbgeometrie.gem_bfs = gemeindegrenze.bfs_gemeindenummer
+    ON nbgeometrie.t_datasetname = gemeindegrenze.bfs_gemeindenummer::text
   WHERE
-    nbbereich.kt_txt =  'SO'
+    nbbereich.kt =  'SO'
   GROUP BY
-    nbgeometrie.gem_bfs,
-    nbbereich.kt_txt,
+    nbgeometrie.t_datasetname,
+    nbbereich.kt,
     nbbereich.nbnummer,
     gemeindegrenze.gemeindename
 )
@@ -26,7 +26,7 @@ SELECT
   kreis.grundbuchkreisnummer AS grundbuchkreisnummer,
   kreis.grundbuchkreis_bfsnr AS grundbuchkreis_bfsnr,
   kreis.bfsnr AS bfsnr,
-  nummerierungsbereich.geometrie AS perimeter,
+  ST_Multi(ST_Buffer(ST_SnapToGrid(nummerierungsbereich.geometrie, 0.001), 0)) AS perimeter,
   amt.amtschreiberei AS amtschreiberei,
   amt.amt AS amt,
   amt.strasse AS strasse,
@@ -36,11 +36,11 @@ SELECT
   amt.telefon AS telefon,
   amt.web AS web,
   amt.email AS email,
-  amt.uid AS uid
+  amt.auid AS uid
 FROM
   agi_av_gb_admin_einteilung.grundbuchkreise_grundbuchkreis AS kreis
   LEFT JOIN agi_av_gb_admin_einteilung.grundbuchkreise_grundbuchamt AS amt
   ON kreis.r_grundbuchamt = amt.t_id
   LEFT JOIN nummerierungsbereich
-  ON nummerierungsbereich.gem_bfs = kreis.bfsnr AND nummerierungsbereich.nbident = kreis.nbident
+  ON nummerierungsbereich.t_datasetname::integer = kreis.bfsnr AND nummerierungsbereich.nbident = kreis.nbident
 ;

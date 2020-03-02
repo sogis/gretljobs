@@ -9,14 +9,12 @@ apply plugin: "de.undercouch.download"
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'transferDataToPubDb'
+defaultTasks 'transferDataToEditDb'
 
-def nameOfZipWithBoundaries = 'swissBOUNDARIES3D_LV95.zip'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
-def pathToDataZip = Paths.get(pathToTempFolder, "data.zip")
-def pathToZipWithBoundaries = Paths.get(pathToUnzipFolder.toString(), nameOfZipWithBoundaries)
-def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), 'swissBOUNDARIES3D_LV95','INTERLIS_2_LV95_LN02','swissBOUNDARIES3D_1_3.xtf')
+def pathToDataZip = Paths.get(pathToTempFolder, 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill.zip')
+def xtfFilePath = Paths.get(pathToUnzipFolder.toString(),'INTERLIS_2_LV95_LN02','swissBOUNDARIES3D_1_3.xtf')
 
 
 task download(type: Download){
@@ -24,29 +22,18 @@ task download(type: Download){
     doLast {
         println "File downloaded to: " + pathToTempFolder
     }
-    src 'https://data.geo.admin.ch/ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill/data.zip'
+    src 'https://data.geo.admin.ch/ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill/xtf/2056/ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill.zip'
     dest pathToTempFolder
     overwrite true
 }
 
 
-task unzipData(type: Copy, dependsOn: 'download'){
-    description = "Unzip Data.zip."
+task unzipSwissBoundaries3D(type: Copy, dependsOn: 'download'){
+    description = "Unzip swissBOUNDARIES3D_1_3.xtf from ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill.zip."
     doLast {
         println "File unzipped to directory: " + pathToUnzipFolder
     }
-    from zipTree(file(pathToDataZip))
-    into pathToUnzipFolder
-    include nameOfZipWithBoundaries
-}
-
-
-task unzipSwissBoundaries3D(type: Copy, dependsOn: 'unzipData'){
-    description = "Unzip swissBOUNDARIES3D_ili2_LV95_V1_3.itf from swissBOUNDARIES3D.zip."
-    doLast {
-        println "File unzipped to directory: " + pathToUnzipFolder
-    }
-    from zipTree(pathToZipWithBoundaries)
+    from zipTree(pathToDataZip)
     into file(pathToUnzipFolder)
     include "**/*.xtf"
 }
@@ -106,6 +93,26 @@ task transferDataToPubDb(type: Db2Db, dependsOn: 'convertData'){
 
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_bezirk.sql',
+                    'agi_swissboundaries3d_pub.swissboundaries3d_bezirk', true),
+            new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_hoheitsgebiet.sql',
+                    'agi_swissboundaries3d_pub.swissboundaries3d_hoheitsgebiet', true),
+            new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_kanton.sql',
+                    'agi_swissboundaries3d_pub.swissboundaries3d_kanton', true),
+            new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_land.sql',
+                    'agi_swissboundaries3d_pub.swissboundaries3d_land', true)
+    ]
+}
+
+task transferDataToEditDb(type: Db2Db, dependsOn: 'transferDataToPubDb'){
+    description = "Transfer swissBoundaries3D-Data to edit-DB"
+    doLast {
+        println "SwissBoundaries3D-Data are transfered to edit."
+    }
+
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
             new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_bezirk.sql',
                     'agi_swissboundaries3d_pub.swissboundaries3d_bezirk', true),

@@ -1,0 +1,2 @@
+DELETE FROM awjf_waldpflege_erfassung.waldpflege_waldpflege
+;

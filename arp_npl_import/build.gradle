@@ -25,6 +25,7 @@ ext {
     setNonExistingPropertyToUndefinedValue('xtf')
 }
 
+
 task checkXtfName() {
     description = "Prüft, ob die ersten vier Buchstaben im XTF-Filenamen einer Nummer entsprechen, die im BfS-Range des Kt. SO liegt."    
     doFirst {
@@ -34,14 +35,9 @@ task checkXtfName() {
     }
 }
 
-task validateDataset(type: IliValidator, dependsOn: 'checkXtfName') {
-    description = "Validiert einen Datensatz (=XTF)."    
-    dataFiles = [xtf]
-}
-
-task replaceDataset (type: Ili2pgReplace, dependsOn: 'validateDataset') {
+task replaceDataset (type: Ili2pgReplace, dependsOn: 'checkXtfName') {
     description = "Ersetzt einen Datensatz (=XTF) in der Erfassungsdatenbank."
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_npl"
     models = "SO_Nutzungsplanung_20171118"
     disableValidation = true

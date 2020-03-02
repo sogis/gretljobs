@@ -29,23 +29,10 @@ SELECT
             THEN 'Schneeballblättriger Ahorn'
         WHEN baumart = 'Uebrige_Laubbaeume'
             THEN 'Übrige Laubbäume'
-        ELSE baumart
-    END AS baumart,
-    bhd,
-    baumhoehe,
-    CASE
-        WHEN waldplan.wpnr = 501
-            THEN 'Wirtschaftswald'
-        WHEN waldplan.wpnr = 502
-            THEN 'Schutzwald'
-        WHEN waldplan.wpnr = 503
-            THEN 'Erholungswald'
-        WHEN waldplan.wpnr = 504
-            THEN 'Natur und Landschaft'
-        WHEN waldplan.wpnr = 505
-            THEN 'Schutzwald / Natur und Landschaft'
-        ELSE ''
-    END AS betriebsart,
+        ELSE baumart 
+    END AS baumart, 
+    bhd, 
+    baumhoehe, 
     CASE
         WHEN merkmal_1 = 'm1_Stammdurchmesser_70'
             THEN 'Stammdurchmesser ≥ 70cm'
@@ -249,8 +236,7 @@ GROUP BY
     waldeigentuemer_code,
     baumart,
     bhd,
-    baumhoehe,
-    betriebsart,
+    baumhoehe, 
     merkmal_1,
     beschreibung_merkmal_1,
     merkmal_2,

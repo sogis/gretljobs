@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAdagisa'
+defaultTasks 'refreshSolr'
 
 task transferAdagisa(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
@@ -15,4 +15,8 @@ task transferAdagisa(type: Db2Db){
             new TransferSet('ada_adagisa_pub_gemeindegrenzen_adagisa.sql', 'ada_adagisa_pub.gemeindegrenzen_adagisa',
                     true)
     ];
+}
+
+task refreshSolr(type:Exec, dependsOn:'transferAdagisa') {
+	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.ada.adagisa.flaechenfundstellen_geschuetzt,ch.so.ada.adagisa.punktfundstellen_geschuetzt,ch.so.ada.adagisa.punktfundstellen_ungeschuetzt'
 }

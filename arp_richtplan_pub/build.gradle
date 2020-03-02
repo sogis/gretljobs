@@ -1,0 +1,47 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferArpRichtplanPub'
+
+
+task transferArpRichtplanPubEdit(type: Db2Db){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('arp_richtplan_pub_detailkarten_ueberlagernder_Punkt.sql',
+                    'arp_richtplan_pub.detailkarten_ueberlagernder_punkt', true),
+            new TransferSet('arp_richtplan_pub_detailkarten_ueberlagernde_Flaeche.sql',
+                    'arp_richtplan_pub.detailkarten_ueberlagernde_flaeche', true),
+            new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernder_punkt.sql',
+                    'arp_richtplan_pub.richtplankarte_ueberlagernder_punkt', true),
+            new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernde_linie.sql',
+                    'arp_richtplan_pub.richtplankarte_ueberlagernde_linie', false),
+            new TransferSet('arp_richtplan_pub_richtplankarte_grundnutzung.sql',
+                    'arp_richtplan_pub.richtplankarte_grundnutzung', false),
+            new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernde_flaeche.sql',
+                    'arp_richtplan_pub.richtplankarte_ueberlagernde_flaeche', false)
+    ]
+}
+
+
+task transferArpRichtplanPubSogis(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('arp_richtplan_pub_richtplankarte_grundnutzung_sogis.sql',
+                    'arp_richtplan_pub.richtplankarte_grundnutzung', true),
+            new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernde_linie_sogis.sql',
+                    'arp_richtplan_pub.richtplankarte_ueberlagernde_linie', true),
+            new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernde_flaeche_sogis.sql',
+                    'arp_richtplan_pub.richtplankarte_ueberlagernde_flaeche', true)
+    ]
+}
+
+task transferArpRichtplanPub {
+    dependsOn 'transferArpRichtplanPubSogis'
+    dependsOn 'transferArpRichtplanPubEdit'
+
+    tasks.findByName('transferArpRichtplanPubEdit').mustRunAfter 'transferArpRichtplanPubSogis'
+}

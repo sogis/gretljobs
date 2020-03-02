@@ -8,18 +8,19 @@ SELECT
             THEN 'Grundwasserwärmepumpe bewilligt'
         ELSE 'unbekannter_Verfahrensstand'
         END AS verfahrensstand, 
+        'Grundwasserwärmepumpen Entnahmeschacht' AS objekttyp_anzeige,
         grundwasserwaerme.bezeichnung AS objektname, 
-        grundwasserwaerme.vegas_id AS objektnummer, 
+        grundwasserwaerme.mobj_id AS objektnummer, 
         grundwasserwaerme.beschreibung AS technische_angabe, 
         grundwasserwaerme.bemerkung AS bemerkung, 
-        dokumente.dokumente, 
+        array_to_json(dokumente.dokumente) AS dokumente, 
         grundwasserwaerme.wkb_geometry AS geometrie
 FROM 
     vegas.obj_grundwasserwaerme grundwasserwaerme,
     vegas.obj_objekt objekt
 LEFT JOIN 
     (SELECT 
-         array_agg(x.bezeichnung) AS dokumente, 
+         array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
          y.vegas_id
      FROM 
          vegas.adm_dokument x, 

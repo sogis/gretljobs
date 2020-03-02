@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAfuIngeso'
+defaultTasks 'refreshSolr'
 
 task transferAfuIngeso(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
@@ -12,4 +12,8 @@ task transferAfuIngeso(type: Db2Db){
             new TransferSet('afu_ingeso_pub_flaechenobjekt.sql', 'afu_ingeso_pub.flaechenobjekt', true),
             new TransferSet('afu_ingeso_pub_punktobjekt.sql', 'afu_ingeso_pub.punktobjekt', true)
     ];
+}
+
+task refreshSolr(type:Exec, dependsOn:'transferAfuIngeso') {
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.geotope.flaechenobjekte,ch.so.afu.geotope.punktobjekte'
 }

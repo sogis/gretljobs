@@ -28,7 +28,7 @@ WITH charakter_wasserhaushalt AS (
                 )
                 THEN 'tiefgründiger Boden, d.h. pflanzennutzbare Gründigkeit > 70 cm'
             WHEN
-                bodeneinheit_onlinedata_t.is_wald IS TRUE
+                bodeneinheit_onlinedata_t.is_wald IS TRUE         
                 AND
                 (
                     wasserhhgr_t.code  IN ('c', 'd', 'g', 'h', 'l', 'm', 'q', 't', 'v', 'x')
@@ -65,9 +65,9 @@ WITH charakter_wasserhaushalt AS (
                 )
                 THEN 'mittelgründiger Boden, d.h. pflanzennutzbare Gründigkeit 30 - 70 cm'
             WHEN
-                bodeneinheit_onlinedata_t.is_wald IS TRUE
+                bodeneinheit_onlinedata_t.is_wald IS TRUE  
                 AND
-                (
+                ((   
                     wasserhhgr_t.code IN ('e', 'i', 'n')
                     OR
                     (
@@ -101,7 +101,7 @@ WITH charakter_wasserhaushalt AS (
                     )
                     OR
                     wasserhhgr_t.code IN ('y', 'z')
-                )
+                )) 
                 THEN 'flachgründiger Boden, d.h. pflanzennutzbare Gründigkeit < 30 cm'
         END AS wald_charakter_wasserhaushalt
     FROM
@@ -209,7 +209,7 @@ SELECT
     begelfor_t.code AS gelform,
     begelfor_t.beschreibung AS gelform_beschreibung,
     CASE
-        WHEN
+        WHEN 
             begelfor_t.code IN ('a', 'b', 'c', 'd', 'e')
             AND
             bodeneinheit_onlinedata_t.is_wald IS FALSE
@@ -276,7 +276,7 @@ SELECT
                 THEN 'sehr viele Steine (20-30%)'
         WHEN
             skelett_t_ub.code >= 6
-            AND
+            AND 
             bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'extrem viele Steine (> 30%)'
     END AS skelett_ub_text,
@@ -381,7 +381,7 @@ SELECT
             AND
             bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN 'sauer'
-        WHEN
+        WHEN 
             bodeneinheit_auspraegung_t.ph_ob > 5.0
             AND
             bodeneinheit_auspraegung_t.ph_ob <= 6.1
@@ -532,7 +532,7 @@ SELECT
             AND
             bodeneinheit_onlinedata_t.is_wald IS TRUE
                 THEN '2.0 - 4.9%: schwach humos'
-        WHEN
+        WHEN 
             bodeneinheit_auspraegung_t.humusgeh_ah >= 5
             AND
             bodeneinheit_auspraegung_t.humusgeh_ah < 10
@@ -639,7 +639,7 @@ SELECT
                 gefueggr_t_ob.code IN ('5', '6')
             )
             OR
-            (
+            ( 
                 gefuegeform_t_ob.code = 'Fr'
                 AND
                 gefueggr_t_ob.code IN ('4', '5')
@@ -839,7 +839,7 @@ SELECT
     bodeneinheit_auspraegung_t.nfkapwe_ub,
     bodeneinheit_auspraegung_t.nfkapwe,
     CASE
-        WHEN
+        WHEN   
             bodeneinheit_auspraegung_t.nfkapwe < 50
             AND
             bodeneinheit_onlinedata_t.is_wald IS FALSE
@@ -858,7 +858,7 @@ SELECT
             AND
             bodeneinheit_onlinedata_t.is_wald IS FALSE
                 THEN '100 - 150 mm'
-        WHEN
+        WHEN 
             bodeneinheit_auspraegung_t.nfkapwe >= 150
             AND
             bodeneinheit_auspraegung_t.nfkapwe < 200
@@ -1066,4 +1066,4 @@ WHERE
     bodeneinheit_t.archive = 0
     AND
     bodeneinheit_t.los = bodeneinheit_onlinedata_t.los
-;
+; 

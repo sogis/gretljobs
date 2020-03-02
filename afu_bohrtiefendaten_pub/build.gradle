@@ -1,0 +1,29 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferAfuBaugrundklassen'
+
+task transferAfuBaugrundklassen(type: Db2Db){
+
+    def dbUriTestSys = appendTestSuffix(dbUriSogis)    
+
+    sourceDb = [dbUriTestSys, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    transferSets = [
+            new TransferSet('afu_bohrtiefendaten_pub.sql', 'entscheidung.ebene_daten', true)
+    ];
+}
+
+/*
+Ergaenzt den Hostnamen der DB-URI mit -t
+*/
+def appendTestSuffix(String dbUri) {
+	String testSysUri = dbUri.replaceFirst("\\.", "-t.")
+	
+	println 'Orig DBURI: ' + dbUri
+	println 'Appended DBURI: ' + testSysUri
+	
+	return testSysUri
+}

@@ -1,0 +1,51 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+
+description = "GRETL-Job für die Berechnung des OEVKOV in der Sogis-DB"
+
+
+// OEVKOV Variablen
+def currentYear = '2019'
+
+
+defaultTasks 'do_Gesamtberechnung'
+
+task AuswertungGTFS(type: SqlExecutor){
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlParameters = [currentYear: currentYear]
+    sqlFiles = ['insert_into_gtfs_auswertung.sql']
+}
+
+task AuswertungGesamt(type: SqlExecutor){
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlParameters = [currentYear: currentYear]
+    sqlFiles = ['insert_into_gesamtauswertung.sql']
+}
+
+task AuswertungKosten(type: SqlExecutor){
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlParameters = [currentYear: currentYear]
+    sqlFiles = ['berechnung_kosten.sql']
+}
+
+task AuswertungHaltestellenbuffer(type: SqlExecutor){
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlParameters = [currentYear: currentYear]
+    sqlFiles = ['haltestellenbuffer_insert.sql']
+}
+
+
+task do_Gesamtberechnung(){
+    description = "This task performs all OEVKOV calculation tasks."
+    doLast {
+        println "Gesamtberechnung finished"
+    }
+}
+
+do_Gesamtberechnung.dependsOn{
+    tasks.findAll { task -> task.name.startsWith('Auswertung')}
+}
+

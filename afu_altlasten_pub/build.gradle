@@ -1,26 +1,45 @@
+/*
+Falls nach der Anpassung des Datenflusses für Oereb noch ein Thema:
+Dieser Datenfluss muss an der Quelle bereinigt werden. 
+Dafür muss geops eine neue bereinigte View erstellen, welche alle
+notwendigen Informationen in einfach verständlicher Form zur Verfügung stellt:
+- In der offenen Ansicht zu zeigende Objekte
+- In der geschützten Ansicht zusätzlich zu zeigende Objekte
+- Filterspalte, mit welcher die geschützten Objekte aus dem
+öffentlichen DataSetView herausgefiltert werden können.
+Die Filterspalte kann beispielsweise [protected] heissen,
+mit Wert 'true' für alle zugriffsgeschützten Objekte
+*/
+
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'transferAfuAltlasten', 'transferAfuAltlast4Web'
+defaultTasks 'refreshSolrA', 'refreshSolrA4W'
 
 task transferAfuAltlasten(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            //new TransferSet('afu_altlasten_pub_altlasten_belastete_standorte_internet.sql',
-            // 'afu_altlasten_pub.altlasten_belastete_standorte_internet', true)
             new TransferSet('afu_altlasten_pub_belastete_standorte.sql','afu_altlasten_pub.belastete_standorte', true)
     ];        
 }
 
-task transferAfuAltlast4Web(type: Db2Db){
+task transferAfuAltlast4Web(type: Db2Db, dependsOn:'transferAfuAltlasten'){
     sourceDb = [dbUriAltlast4web, dbUserAltlast4web, dbPwdAltlast4web]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('afu_altlasten_pub_belastete_standorte_altlast4web.sql',
-                    'afu_altlasten_pub.belastete_standorte_altlast4web', true)
+            new TransferSet('afu_altlasten_pub_belastete_standorte_altlast4web.sql', 'afu_altlasten_pub.belastete_standorte_altlast4web', true)
     ];
 }
+
+task refreshSolrA(type:Exec, dependsOn:'transferAfuAltlasten') {
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte'
+}
+
+task refreshSolrA4W(type:Exec, dependsOn:'transferAfuAltlast4Web') {
+        commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte_geschuetzt'
+}
+

@@ -9,7 +9,9 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS
     0 AS "depth" 
   FROM 
     arp_npl.rechtsvorschrften_hinweisweiteredokumente
-  
+  WHERE
+    ursprung != hinweis
+
   UNION ALL
   
   SELECT 
@@ -24,6 +26,8 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS
     ON (last_ursprung = t1.ursprung)
   WHERE 
     t1.hinweis IS NOT NULL
+  AND
+    x.ursprung != t1.hinweis
 )
 , 
 doc_doc_references_all AS 
@@ -66,20 +70,21 @@ json_documents_all AS
 (
   SELECT
     t_id, 
-    row_to_json(t)::text AS json_dokument -- Text-Repräsentation des JSON-Objektes. 
+    row_to_json(t)::text AS json_dokument -- Text-Repr?sentation des JSON-Objektes. 
   FROM
   (
     SELECT
-      *,
-      ('https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/'||"textimweb")::text AS textimweb_absolut
+      t_id, dokumentid, titel, offiziellertitel AS offizieller_titel, abkuerzung,
+      offiziellenr AS offizielle_nr, kanton, gemeinde, publiziertab AS publiziert_ab, rechtsstatus,
+      ('https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/'||"textimweb")::text AS textimweb,
+      bemerkungen, rechtsvorschrift
     FROM
       arp_npl.rechtsvorschrften_dokument
   ) AS t
 )
---SELECT * FROM json_documents_all
 ,
 -- Alle Dokumente (die in HinweisWeitereDokumente vorkommen) 
--- als JSON-Objekte (resp. als Text-Repräsentation).
+-- als JSON-Objekte (resp. als Text-Repr?sentation).
 -- Muss noch genauer überlegt werden, wie genau mit JSON hantiert wird.
 json_documents_doc_doc_reference AS 
 (
@@ -192,22 +197,23 @@ ueberlagernd_flaeche_geometrie_typ AS
     ON f.typ_ueberlagernd_flaeche = t.t_id
 )
 SELECT
-  g.bfs_nr,
+  --g.t_id,
   g.t_ili_tid,
-  g.name_nummer,
-  g.rechtsstatus,
-  g.publiziertab,
-  g.bemerkungen,
-  g.erfasser,
-  g.datum,
-  g.geometrie,
-  g.typ_typ_kt AS typ_kt,
-  g.typ_code_kommunal,
   g.typ_bezeichnung,
   g.typ_abkuerzung,
   g.typ_verbindlichkeit,
   g.typ_bemerkungen,
-  d.dokumente AS dok_id
+  g.typ_typ_kt AS typ_kt,
+  g.typ_code_kommunal::int4 AS typ_code_kommunal,
+  g.geometrie,
+  g.name_nummer,
+  g.rechtsstatus,
+  g.publiziertab AS publiziert_ab,
+  g.bemerkungen,
+  g.erfasser,
+  g.datum AS datum_erfassung,
+  d.dokumente::jsonb AS dokumente,
+  g.bfs_nr
 FROM  
   ueberlagernd_flaeche_geometrie_typ AS g 
   LEFT JOIN typ_ueberlagernd_flaeche_json_dokument_agg AS d

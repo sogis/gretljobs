@@ -1,0 +1,9 @@
+SELECT
+    t_id,
+    t_ili_tid,
+    status,
+    objekttyp,
+    geometrie
+FROM
+    arp_richtplan_delete.detailkarten_ueberlagernder_punkt
+;

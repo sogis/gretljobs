@@ -9,7 +9,9 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS
     0 AS "depth" 
   FROM 
     arp_npl.rechtsvorschrften_hinweisweiteredokumente
-  
+  WHERE
+    ursprung != hinweis
+
   UNION ALL
   
   SELECT 
@@ -24,6 +26,8 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS
     ON (last_ursprung = t1.ursprung)
   WHERE 
     t1.hinweis IS NOT NULL
+  AND
+    x.ursprung != t1.hinweis
 )
 , 
 doc_doc_references_all AS 
@@ -69,8 +73,10 @@ json_documents_all AS
   FROM
   (
     SELECT
-      *,
-      ('https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/'||"textimweb")::text AS textimweb_absolut
+      t_id, dokumentid, titel, offiziellertitel AS offizieller_titel, abkuerzung,
+      offiziellenr AS offizielle_nr, kanton, gemeinde, publiziertab AS publiziert_ab, rechtsstatus,
+      ('https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/'||"textimweb")::text AS textimweb,
+      bemerkungen, rechtsvorschrift
     FROM
       arp_npl.rechtsvorschrften_dokument
   ) AS t
@@ -78,7 +84,7 @@ json_documents_all AS
 ,
 -- Alle Dokumente (die in HinweisWeitereDokumente vorkommen) 
 -- als JSON-Objekte (resp. als Text-Repräsentation).
--- Muss noch genauer überlegt werden, wie genau mit JSON hantiert wird.
+-- Muss noch genauer ?berlegt werden, wie genau mit JSON hantiert wird.
 json_documents_doc_doc_reference AS 
 (
   SELECT
@@ -118,7 +124,7 @@ typ_ueberlagernd_punkt_dokument_ref AS
       arp_npl.nutzungsplanung_typ_ueberlagernd_punkt_dokument AS typ_ueberlagernd_punkt_dokument
       LEFT JOIN doc_doc_references
       ON typ_ueberlagernd_punkt_dokument.dokument = doc_doc_references.ursprung
-      
+   
     UNION 
     
     SELECT
@@ -146,7 +152,7 @@ typ_ueberlagernd_punkt_json_dokument_agg AS
     typ_ueberlagernd_punkt_t_id,
     '[' || dokumente::varchar || ']' as dokumente
   FROM
-  (  
+  (
     SELECT
       typ_ueberlagernd_punkt AS typ_ueberlagernd_punkt_t_id,
       string_agg(json_dokument, ',') AS dokumente
@@ -182,25 +188,28 @@ ueberlagernd_punkt_geometrie_typ AS
     LEFT JOIN arp_npl.nutzungsplanung_typ_ueberlagernd_punkt AS t
     ON l.typ_ueberlagernd_punkt = t.t_id
 )
+-- Es müssen noch die möglichen zusätzlichen Dokumente (Geometrie -> Dokument)
+-- hinzugefügt werden. Plural, da auch Kaskade wieder möglich.
 SELECT
-  g.bfs_nr,
+  --g.t_id,
   g.t_ili_tid,
-  g.name_nummer,
-  g.rechtsstatus,
-  g.publiziertab,
-  g.bemerkungen,
-  g.erfasser,
-  g.datum,
-  g.geometrie,
-  g.typ_typ_kt AS typ_kt,
-  g.typ_code_kommunal,
   g.typ_bezeichnung,
   g.typ_abkuerzung,
   g.typ_verbindlichkeit,
   g.typ_bemerkungen,
-  d.dokumente AS dok_id
+  g.typ_typ_kt AS typ_kt,
+  g.typ_code_kommunal::int4 AS typ_code_kommunal,
+  g.geometrie,
+  g.name_nummer,
+  g.rechtsstatus,
+  g.publiziertab AS publiziert_ab,
+  g.bemerkungen,
+  g.erfasser,
+  g.datum AS datum_erfassung,
+  d.dokumente::jsonb AS dokumente,
+  g.bfs_nr
 FROM  
   ueberlagernd_punkt_geometrie_typ AS g 
   LEFT JOIN typ_ueberlagernd_punkt_json_dokument_agg AS d
   ON g.typ_t_id = d.typ_ueberlagernd_punkt_t_id
-;
+  ;

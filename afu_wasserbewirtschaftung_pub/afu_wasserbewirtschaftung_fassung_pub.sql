@@ -18,8 +18,9 @@
          WHEN sodbrunnen.verwendung = 3
          THEN 'Notbrunnen'
      END AS verwendungszweck,
+     'Sodbrunnen' AS objekttyp_anzeige,
      sodbrunnen.bezeichnung AS objektname, 
-     sodbrunnen.vegas_id AS objektnummer,
+     sodbrunnen.mobj_id AS objektnummer,
      sodbrunnen.beschreibung AS technische_angabe,
      sodbrunnen.bemerkung AS bemerkung,
      array_to_json(dokumente.dokumente) AS dokumente, 
@@ -27,7 +28,7 @@
  FROM (SELECT * FROM vegas.obj_objekt_v where objekttyp_id = 6 AND archive=0) sodbrunnen
  LEFT JOIN 
      (SELECT 
-          array_agg(x.bezeichnung) AS dokumente, 
+          array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
           y.vegas_id
       FROM 
           vegas.adm_dokument x, 
@@ -55,8 +56,18 @@ UNION ALL
          WHEN horizontalfilterbrunnen.verwendung = 3
          THEN 'Notbrunnen'
      END AS verwendungszweck,
+     CASE 
+         WHEN horizontalfilterbrunnen.nutzungsart = 3 
+         THEN 'Horizontalfilterbrunnen mit privater Nutzung'
+         WHEN horizontalfilterbrunnen.nutzungsart = 2 
+         THEN 'Horizontalfilterbrunnen mit privater Nutzung von öffentlichem Interesse'
+         WHEN horizontalfilterbrunnen.nutzungsart = 1 
+         THEN 'Horizontalfilterbrunnen für die öffentliche Wasserversorgung' 
+         WHEN horizontalfilterbrunnen.nutzungsart IS NULL OR horizontalfilterbrunnen.nutzungsart > 3 
+         THEN 'Horizontalfilterbrunnen'
+     END AS objekttyp_anzeige,
      horizontalfilterbrunnen.bezeichnung AS objektname, 
-     horizontalfilterbrunnen.vegas_id AS objektnummer,
+     horizontalfilterbrunnen.mobj_id AS objektnummer,
      horizontalfilterbrunnen.beschreibung AS technische_angabe,
      horizontalfilterbrunnen.bemerkung AS bemerkung,
      array_to_json(dokumente.dokumente) AS dokumente, 
@@ -64,7 +75,7 @@ UNION ALL
  FROM (SELECT * FROM vegas.obj_objekt_v where objekttyp_id = 7 AND subtyp = 2 AND archive=0) horizontalfilterbrunnen
  LEFT JOIN 
      (SELECT 
-          array_agg(x.bezeichnung) AS dokumente, 
+          array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente,
           y.vegas_id
       FROM 
           vegas.adm_dokument x, 
@@ -92,8 +103,18 @@ UNION ALL
          WHEN vertikalfilterbrunnen.verwendung = 3
          THEN 'Notbrunnen'
      END AS verwendungszweck,
+     CASE 
+         WHEN vertikalfilterbrunnen.nutzungsart = 3 
+         THEN 'Vertikalfilterbrunnen mit privater Nutzung'
+         WHEN vertikalfilterbrunnen.nutzungsart = 2 
+         THEN 'Vertikalfilterbrunnen mit privater Nutzung von öffentlichem Interesse'
+         WHEN vertikalfilterbrunnen.nutzungsart = 1 
+         THEN 'Vertikalfilterbrunnen für die öffentliche Wasserversorgung' 
+         WHEN vertikalfilterbrunnen.nutzungsart IS NULL OR vertikalfilterbrunnen.nutzungsart > 3 
+         THEN 'Vertikalfilterbrunnen'
+     END AS objekttyp_anzeige,
      vertikalfilterbrunnen.bezeichnung AS objektname, 
-     vertikalfilterbrunnen.vegas_id AS objektnummer,
+     vertikalfilterbrunnen.mobj_id AS objektnummer,
      vertikalfilterbrunnen.beschreibung AS technische_angabe,
      vertikalfilterbrunnen.bemerkung AS bemerkung,
      array_to_json(dokumente.dokumente) AS dokumente, 
@@ -101,7 +122,7 @@ UNION ALL
  FROM (SELECT * FROM vegas.obj_objekt_v where objekttyp_id = 7 AND subtyp = 1 AND archive=0) vertikalfilterbrunnen
  LEFT JOIN 
      (SELECT 
-          array_agg(x.bezeichnung) AS dokumente, 
+          array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente,
           y.vegas_id
       FROM 
           vegas.adm_dokument x, 

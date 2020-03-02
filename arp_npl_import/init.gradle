@@ -24,6 +24,9 @@ allprojects {
             dbUriPub = "jdbc:postgresql://192.168.50.XXX/pub"
             dbUserPub = "sogis_admin"
             dbPwdPub = "sogis_admin"
+            dbUriEdit = "jdbc:postgresql://geodb-t.rootso.org/edit"
+            dbUserEdit = "admin"
+            dbPwdEdit = "admin"
         }
     }
 }

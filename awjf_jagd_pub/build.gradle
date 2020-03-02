@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAwjfJagd'
+defaultTasks 'refreshSolr'
 
 task transferAwjfJagd(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
@@ -12,4 +12,8 @@ task transferAwjfJagd(type: Db2Db){
             new TransferSet('awjf_jagd_pub_jagdbanngebiete.sql', 'awjf_jagd_pub.jagdbanngebiete', true),
             new TransferSet('awjf_jagd_pub_jagdreviere.sql', 'awjf_jagd_pub.jagdreviere', true)
     ];
+}
+
+task refreshSolr(type:Exec, dependsOn:'transferAwjfJagd') {
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.jagdreviere'
 }

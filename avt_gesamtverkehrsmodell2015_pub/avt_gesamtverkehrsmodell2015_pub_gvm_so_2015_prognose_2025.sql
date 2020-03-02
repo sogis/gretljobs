@@ -35,8 +35,8 @@ SELECT
             THEN 0
         ELSE gvm_so_2015_prognose_2025."VOLVEHPR_5" + gvm_so_2015_prognose_2025."GR_VOLVE_5"
     END AS dtv2025_lz, 
-    verkehrsmodell.lineslope(gvm_so_2015_prognose_2025.wkb_geometry) AS neigung_be, 
-    gvm_so_2015_prognose_2025."V0PRT" AS geschwindigkeit, 
+    round((verkehrsmodell.lineslope(gvm_so_2015_prognose_2025.wkb_geometry)*100)::numeric,1) AS neigung_be, 
+    trim(TRAILING 'km/h' FROM gvm_so_2015_prognose_2025."V0PRT") AS geschwindigkeit,
     st_length(gvm_so_2015_prognose_2025.wkb_geometry) AS laenge, 
     gvm_so_2015_prognose_2025."CAPPRT" AS kapazitaet, 
     CASE

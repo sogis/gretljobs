@@ -1,0 +1,19 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'refreshSolr'
+
+task transferAvtVerkehrszaehlstellen(type: Db2Db){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('avt_verkehrszaehlstellen_pub_verkehrszhlstllen_verkehrszaehlstelle.sql',
+                    'avt_verkehrszaehlstellen_pub.verkehrszhlstllen_verkehrszaehlstelle', true)
+    ]
+}
+
+task refreshSolr(type:Exec, dependsOn:'transferAvtVerkehrszaehlstellen') {
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.avt.verkehrszaehlstellen'
+}

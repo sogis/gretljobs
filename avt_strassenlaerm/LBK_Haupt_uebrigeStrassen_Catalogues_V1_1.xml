@@ -1,0 +1,756 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- File LBK_Haupt_uebrigeStrassen_Catalogues_V1_1.xml 2018-09-12 (https://models.geo.admin.ch/BAFU/) -->
+<TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <HEADERSECTION VERSION="2.3" SENDER="BAFU">
+    <MODELS>
+      <MODEL NAME="CoordSys" URI="http://www.interlis.ch/models" VERSION="2015-11-24"/>
+      <MODEL NAME="Units" URI="http://www.interlis.ch/models" VERSION="2012-02-20"/>
+      <MODEL NAME="LocalisationCH_V1" URI="http://models.geo.admin.ch" VERSION="2011-08-30"/>
+      <MODEL NAME="CatalogueObjects_V1" URI="http://models.geo.admin.ch" VERSION="2011-08-30"/>
+      <MODEL NAME="GeometryCHLV03_V1" URI="http://models.geo.admin.ch" VERSION="2017-12-04"/>
+      <MODEL NAME="GeometryCHLV95_V1" URI="http://www.geo.admin.ch" VERSION="2017-12-04"/>
+      <MODEL NAME="LBK_Haupt_uebrigeStrassen_Codelisten_V1_1" URI="https://models.geo.admin.ch/BAFU/" VERSION="2018-09-12"/>
+      <MODEL NAME="LBK_Haupt_uebrigeStrassen_LV03_V1_1" URI="https://models.geo.admin.ch/BAFU/" VERSION="2018-09-12"/>
+      <MODEL NAME="LBK_Haupt_uebrigeStrassen_LV95_V1_1" URI="https://models.geo.admin.ch/BAFU/" VERSION="2018-09-12"/>
+    </MODELS>
+  </HEADERSECTION>
+
+  <DATASECTION>
+    <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten BID="ch.admin.bafu.lbk_haupt_uebrigeStrassen_catalogues_v1_1">
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.used_roadspeed_Catalogue TID="1001">
+        <Code>k1w1</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Signalisierte Geschwindigkeit</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Vitesse signalisée</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Velocità di cartello</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>signalled</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.used_roadspeed_Catalogue>
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.used_roadspeed_Catalogue TID="1002">
+        <Code>k1w2</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Gefahrene Geschwindigkeit</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Vitesse effective</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Velocità effettiva</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>driven</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.used_roadspeed_Catalogue>
+
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.emodel_street_Catalogue TID="2001">
+        <Code>k2w1</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>sonROAD</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>sonROAD</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>sonROAD</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>sonROAD</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.emodel_street_Catalogue>
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.emodel_street_Catalogue TID="2002">
+        <Code>k2w2</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Stl86+</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Stl86+</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Stl86+</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>Stl86+</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.emodel_street_Catalogue>
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.emodel_street_Catalogue TID="2003">
+        <Code>k2w3</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>andere</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>autres</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>altri</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>other</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.emodel_street_Catalogue>
+
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.pointofdetermination_Catalogue TID="3001">
+        <Code>k3w1</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Fassadenpunkt</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Point de façade</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Punto in facciata</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>facade</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.pointofdetermination_Catalogue>
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.pointofdetermination_Catalogue TID="3002">
+        <Code>k3w2</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Freifeldpunkt</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Point en champ libre</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Punto in campo libero</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>free field</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.pointofdetermination_Catalogue>
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.pointofdetermination_Catalogue TID="3003">
+        <Code>k3w3</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Baulinienpunkt</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Point sur un alignement des constructions</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Punto sulla linea di edificazione</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>building line</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.pointofdetermination_Catalogue>
+
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.operation_status_Catalogue TID="4001">
+        <Code>k4w1</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Betrieb</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Exploitation</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Esercizio</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>Operation</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.operation_status_Catalogue>
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.operation_status_Catalogue TID="4002">
+        <Code>k4w2</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Nicht Betrieb</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Pas une exploitation</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Non esercizio</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>no operation</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.operation_status_Catalogue>
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.operation_status_Catalogue TID="4003">
+        <Code>k4w3</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>nicht berücksichtigt</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>pas pris en compte</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>non considerato</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>not considered</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.operation_status_Catalogue>
+
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.noisebarriertype_Catalogue TID="5001">
+        <Code>k5w1</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Lärmschutzwand</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Paroi antibruit</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Parete antirumore</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>noisebarrier</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.noisebarriertype_Catalogue>
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.noisebarriertype_Catalogue TID="5002">
+        <Code>k5w2</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Wall</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Digue</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Collina</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>wall/barrier</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.noisebarriertype_Catalogue>
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.noisebarriertype_Catalogue TID="5003">
+        <Code>k5w3</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Überdeckung, Galerie</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Recouvrement, galerie</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Copertura, galleria</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>covering, gallery</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.noisebarriertype_Catalogue>
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.noisebarriertype_Catalogue TID="5004">
+        <Code>k5w4</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Verkleidung, Tunnelportal</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Revêtement,  portail de tunnel</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Rivestimento portale galleria</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>tunnel portal</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.noisebarriertype_Catalogue>
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.noisebarriertype_Catalogue TID="5005">
+        <Code>k5w5</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>andere</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>autres</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>altri</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>other</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.noisebarriertype_Catalogue>     
+
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.tram_noise_Catalogue TID="6001">
+        <Code>k6w1</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>nein</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>non</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>no</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>no</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.tram_noise_Catalogue>
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.tram_noise_Catalogue TID="6002">
+        <Code>k6w2</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Ja, auf eigenem Trasse</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Oui, sur un tracé distinct</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Si, tracciato proprio</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>yes, not on the street</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.tram_noise_Catalogue>
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.tram_noise_Catalogue TID="6003">
+        <Code>k6w3</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Ja, auf der Strasse</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Oui, sur la route</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Si, sulla strada</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>yes on the street</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.tram_noise_Catalogue>
+
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.trafficcollection_Catalogue TID="7001">
+        <Code>k7w1</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Verkehrszählung</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Comptage de la circulation</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Conteggio dei veicoli</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>traffic survey</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.trafficcollection_Catalogue>
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.trafficcollection_Catalogue TID="7002">
+        <Code>k7w2</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Verkehrsmodell</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Modèle du trafic</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Modello di traffico</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>trafic model</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.trafficcollection_Catalogue>
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.trafficcollection_Catalogue TID="7003">
+        <Code>k7w3</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Umweltverträglichkeitsbericht</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Rapport d’impact sur l’environnement </Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Rapporto d’impatto sull'ambiente</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>environmental impact report</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.trafficcollection_Catalogue>
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.trafficcollection_Catalogue TID="7004">
+        <Code>k7w4</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Andere Verkehrsanalyse</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Autre analyse du trafic</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Altra analisi del traffico</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>other traffic analysis</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.trafficcollection_Catalogue>
+
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.exposure_limit_value_Catalogue TID="8001">
+        <Code>k8w1</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>&gt;= AW</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>&gt;= VA</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>&gt;= VA</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>&gt;= AW</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.exposure_limit_value_Catalogue>
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.exposure_limit_value_Catalogue TID="8002">
+        <Code>k8w2</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>&gt;= IGW, &lt; AW</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>&gt;= VLI, &lt; VA</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>&gt;= VLI, &lt; VA</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>&gt;= IGW, &lt; AW</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.exposure_limit_value_Catalogue>
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.exposure_limit_value_Catalogue TID="8003">
+        <Code>k8w3</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>&gt;= PW, &lt; IGW YES</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>&gt;= VP, &lt; VLI YES</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>&gt;= VP, &lt; VLI YES</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>&gt;= PW, &lt; IGW YES</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.exposure_limit_value_Catalogue>
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.exposure_limit_value_Catalogue TID="8004">
+        <Code>k8w4</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>&gt;= PW, &lt; IGW NO</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>&gt;= VP, &lt; VLI NO</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>&gt;= VP, &lt; VLI NO</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>&gt;= PW, &lt; IGW NO</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.exposure_limit_value_Catalogue> 
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.exposure_limit_value_Catalogue TID="8005">
+        <Code>k8w5</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>&lt; PW</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>&lt; VP</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>&lt; VP</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>&lt; PW</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.exposure_limit_value_Catalogue>
+      <LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.exposure_limit_value_Catalogue TID="8006">
+        <Code>k8w6</Code>
+        <Definition>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Keine ES</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Pas de DS</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Nessun GS</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>en</Language>
+                <Text>No ES</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Definition>
+      </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten.exposure_limit_value_Catalogue>
+
+    </LBK_Haupt_uebrigeStrassen_Codelisten_V1_1.Codelisten>
+
+  </DATASECTION>
+</TRANSFER>

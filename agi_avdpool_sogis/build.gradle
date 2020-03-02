@@ -1,0 +1,54 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+description = "GRETL-Job für Datenumbau der amtlichen Vermessung von der edit-DB in die sogis-DB. Die Tabellen * werden nicht in die sogis-DB geschrieben."
+
+defaultTasks 'transferavdpool'
+
+task deleteData(type: SqlExecutor){
+    description = "Löscht die Daten mit archiv=0 im Schema avdpool"
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlFiles = ['avdpool_delete_data.sql']
+}
+
+task transferavdpool(type: Db2Db, dependsOn:'deleteData'){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    transferSets = [
+            new TransferSet('agi_dm01avso24_bdbed.sql','avdpool.bdbed', false),
+            new TransferSet('agi_dm01avso24_bdbed_objnam.sql','avdpool.bdbed_objnam', false),
+            new TransferSet('agi_dm01avso24_bdbed_proj.sql','avdpool.bdbed_proj', false),
+            new TransferSet('agi_dm01avso24_bdbed_symbol.sql','avdpool.bdbed_symbol', false),
+            new TransferSet('agi_dm01avso24_eoline.sql','avdpool.eoline', false),
+            new TransferSet('agi_dm01avso24_eopnt.sql','avdpool.eopnt', false),
+            new TransferSet('agi_dm01avso24_eopoly.sql','avdpool.eopoly', false),
+            new TransferSet('agi_dm01avso24_flurn.sql','avdpool.flurn', false),
+            new TransferSet('agi_dm01avso24_flurn_pos.sql','avdpool.flurn_pos', false),
+            new TransferSet('agi_dm01avso24_gebadr.sql','avdpool.gebadr', false), 
+            new TransferSet('agi_dm01avso24_gebein.sql','avdpool.gebein', false),
+            new TransferSet('agi_dm01avso24_gelaendename.sql','avdpool.gelaendename', false),
+            new TransferSet('agi_dm01avso24_gemgre.sql','avdpool.gemgre', false),
+            new TransferSet('agi_dm01avso24_grenzpnt.sql','avdpool.grenzpnt', false),
+            new TransferSet('agi_dm01avso24_hfp2.sql','avdpool.hfp2', false),
+            new TransferSet('agi_dm01avso24_hfp3.sql','avdpool.hfp3', false),
+            new TransferSet('agi_dm01avso24_hgpkt.sql','avdpool.hgpkt', false),
+            new TransferSet('agi_dm01avso24_hohgre_bez.sql','avdpool.hohgre', false),
+            new TransferSet('agi_dm01avso24_hohgre_kant.sql','avdpool.hohgre', false),
+            new TransferSet('agi_dm01avso24_hohgre_land.sql','avdpool.hohgre', false),
+            new TransferSet('agi_dm01avso24_lfp3.sql','avdpool.lfp3', false),
+            new TransferSet('agi_dm01avso24_liegen.sql','avdpool.liegen', false),
+            new TransferSet('agi_dm01avso24_liegen_pos.sql','avdpool.liegen_pos', false),
+            new TransferSet('agi_dm01avso24_ortsnam.sql','avdpool.ortsnam', false),
+            new TransferSet('agi_dm01avso24_ortsnam_pos.sql','avdpool.ortsnam_pos', false),
+            new TransferSet('agi_dm01avso24_planeinteilung.sql','avdpool.planeinteilung', false),
+            new TransferSet('agi_dm01avso24_proj_grund.sql','avdpool.proj_grund', false),
+            new TransferSet('agi_dm01avso24_proj_grund_pos.sql','avdpool.proj_grund_pos', false),
+            new TransferSet('agi_dm01avso24_rohrltg.sql','avdpool.rohrltg', false),
+            new TransferSet('agi_dm01avso24_selbstrecht.sql','avdpool.selbstrecht', false),
+            new TransferSet('agi_dm01avso24_strnam.sql','avdpool.strnam', false),
+            new TransferSet('agi_dm01avso24_strstueck.sql','avdpool.strstueck', false),
+            new TransferSet('agi_dm01avso24_toleranzstufe.sql','avdpool.toleranzstufe', false)
+    ]
+}

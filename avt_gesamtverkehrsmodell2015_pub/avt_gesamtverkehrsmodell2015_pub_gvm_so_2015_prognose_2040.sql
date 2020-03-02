@@ -95,8 +95,8 @@ SELECT
             THEN 0
         ELSE c."VOLVEHPR_5" + c."GR_VOLVE_5"
     END AS dwv2040_lz,
-    verkehrsmodell.lineslope(a.wkb_geometry) AS neigung_be, 
-    a."V0PRT" AS geschwindigkeit, 
+    round((verkehrsmodell.lineslope(a.wkb_geometry)*100)::numeric,1) AS neigung_be, 
+    trim(TRAILING 'km/h' FROM a."V0PRT") AS geschwindigkeit, 
     st_length(a.wkb_geometry) AS laenge, 
     a."CAPPRT" AS kapazitaet, 
     CASE

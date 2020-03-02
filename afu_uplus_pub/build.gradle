@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAfuUplus'
+defaultTasks 'refreshSolr'
 
 task transferAfuUplus(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
@@ -12,4 +12,8 @@ task transferAfuUplus(type: Db2Db){
             new TransferSet('afu_uplus_pub_anlage.sql', 'afu_uplus_pub.anlage', true),
             new TransferSet('afu_uplus_pub_tank.sql', 'afu_uplus_pub.tank', true)
     ];
+}
+
+task refreshSolr(type:Exec, dependsOn:'transferAfuUplus') {
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.tankanlage'
 }

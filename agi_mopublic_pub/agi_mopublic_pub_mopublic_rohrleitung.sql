@@ -1,15 +1,26 @@
 SELECT
-    objekt.art,
-    objekt.art_txt,
+    objekt.art AS art_txt,
     objekt.betreiber,
-    objekt.gem_bfs AS bfs_nr,
-    objekt.lieferdatum AS importdatum,
-    to_date(nachfuehrung.gueltigereintrag, 'YYYYMMDD') AS nachfuehrung,
-    linie.geometrie 
+    CAST(objekt.t_datasetname AS INT) AS bfs_nr,    
+    aimport.importdate AS importdatum,
+    nachfuehrung.gueltigereintrag AS nachfuehrung,
+    linie.geometrie AS geometrie 
 FROM
-    av_avdpool_ng.rohrleitungen_linienelement AS linie  
-    LEFT JOIN av_avdpool_ng.rohrleitungen_leitungsobjekt AS objekt 
-        ON linie.linienelement_von = objekt.tid
-    LEFT JOIN av_avdpool_ng.rohrleitungen_rlnachfuehrung AS nachfuehrung
-        ON objekt.entstehung = nachfuehrung.tid
+    agi_dm01avso24.rohrleitungen_linienelement AS linie  
+    LEFT JOIN agi_dm01avso24.rohrleitungen_leitungsobjekt AS objekt 
+        ON linie.linienelement_von = objekt.t_id
+    LEFT JOIN agi_dm01avso24.rohrleitungen_rlnachfuehrung AS nachfuehrung
+        ON objekt.entstehung = nachfuehrung.t_id
+    LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+        ON objekt.t_basket = basket.t_id    
+    LEFT JOIN 
+    (
+        SELECT
+            max(importdate) AS importdate, dataset
+        FROM
+            agi_dm01avso24.t_ili2db_import
+        GROUP BY
+            dataset 
+    ) AS aimport
+        ON basket.dataset = aimport.dataset    
 ;

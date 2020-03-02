@@ -111,7 +111,7 @@ SELECT
     g.verbindlichkeit AS typ_verbindlichkeit,
     g.typ_bemerkungen,
     g.typ_kt,
-    g.code_kommunal AS typ_code_kommunal,
+    g.code_kommunal::int4 AS typ_code_kommunal,
     g.ori AS pos_ori,
     g.hali AS pos_hali,
     g.vali AS pos_vali,
