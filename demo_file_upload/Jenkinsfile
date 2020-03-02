@@ -1,32 +1,38 @@
-def gretljobsRepo = ''
-def uploadFileName = 'data.xtf'
-
+// Start with a scripted pipeline part
 node('master') {
-    gretljobsRepo = "${env.GRETL_JOB_REPO_URL}"
-    def inputFile = input message: 'Datei hochladen', parameters: [file(name: "$uploadFileName", description: 'Hochzuladende Datei auswählen')]
-    dir("$JENKINS_HOME/jobs/$JOB_BASE_NAME/builds/$BUILD_NUMBER") {
-        stash name: 'uploadFile', includes: "$uploadFileName"
+    stage('Prepare') {
+        gretlJobRepoUrl = env.GRETL_JOB_REPO_URL
+        uploadFileName = 'data'
+        inputFile = input message: 'Datei hochladen', parameters: [file(name: "$uploadFileName", description: 'Hochzuladende Datei auswählen')]
+        dir("$JENKINS_HOME/jobs/$JOB_BASE_NAME/builds/$BUILD_NUMBER") {
+            stash name: 'dataFile', includes: "$uploadFileName"
+        }
+        sh "rm $inputFile"
     }
-    sh "rm $inputFile"
 }
 
-node (params.nodeLabel ?: 'gretl') {
-    try {
-        gitBranch = "${params.BRANCH ?: 'master'}"
-        git url: "${gretljobsRepo}", branch: gitBranch, changelog: false
-        dir(env.JOB_BASE_NAME) {
-            unstash name: 'uploadFile'
-            sh "gradle -Dorg.gradle.jvmargs=-Xmx2G --init-script /home/gradle/init.gradle"
+// Declarative pipeline starts here
+pipeline {
+    agent { label params.nodeLabel ?: 'gretl' }
+    stages {
+        stage('Run GRETL-Job') {
+            steps {
+                git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
+                dir(env.JOB_BASE_NAME) {
+                    unstash name: 'dataFile'
+                    sh 'gretl -Dorg.gradle.jvmargs=-Xmx2G'
+                }
+            }
         }
     }
-    catch (e) {
-        echo 'Job failed'
-        emailext (
+    post {
+        unsuccessful {
+            emailext (
                 to: '${DEFAULT_RECIPIENTS}',
                 recipientProviders: [requestor()],
-                subject: "GRETL-Job ${env.JOB_NAME} (${env.BUILD_DISPLAY_NAME}) ist fehlgeschlagen",
-                body: "Der GRETL-Job ${env.JOB_NAME} (${env.BUILD_DISPLAY_NAME}) war leider nicht erfolgreich. Details dazu finden Sie in den Log-Meldungen unter ${env.BUILD_URL}."
-        )
-        throw e
+                subject: "GRETL-Job ${JOB_NAME} (${BUILD_DISPLAY_NAME}) ist fehlgeschlagen",
+                body: "Die Ausführung des GRETL-Jobs ${JOB_NAME} (${BUILD_DISPLAY_NAME}) war nicht erfolgreich. Details dazu finden Sie in den Log-Meldungen unter ${RUN_DISPLAY_URL}."
+            )
+        }
     }
 }
