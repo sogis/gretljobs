@@ -182,23 +182,23 @@ WITH documents AS (
 ), mjpnatur AS (
     SELECT 
         reservate_teilgebiet.t_id,
-        string_agg(DISTINCT flaechen_geom.vbnr, ', ' ORDER BY flaechen_geom.vbnr) AS vereinbarungsflaechen,
+        string_agg(DISTINCT flaechen_geom.vereinbarungsnummer, ', ' ORDER BY flaechen_geom.vereinbarungsnummer) AS vereinbarungsflaechen,
         string_agg(DISTINCT 
             CASE
                 WHEN 
-                    personen.name IS NOT NULL 
+                    personen.aname IS NOT NULL 
                     AND 
-                    personen.name != '' 
+                    personen.aname != '' 
                     AND 
                     personen.vorname IS NOT NULL 
                     AND 
                     personen.vorname != ''
-                        THEN personen.name || ', ' || personen.vorname
+                        THEN personen.aname || ', ' || personen.vorname
                 WHEN 
                     (
-                        personen.name IS NULL 
+                        personen.aname IS NULL 
                         OR 
-                        personen.name = ''
+                        personen.aname = ''
                     ) 
                     AND 
                     personen.vorname IS NOT NULL 
@@ -206,26 +206,26 @@ WITH documents AS (
                     personen.vorname != ''
                         THEN personen.vorname
                 WHEN 
-                    personen.name IS NOT NULL 
+                    personen.aname IS NOT NULL 
                     AND 
-                    personen.name != '' 
+                    personen.aname != '' 
                     AND 
                     (
                         personen.vorname IS NULL 
                         OR 
                         personen.vorname = ''
                     )
-                        THEN personen.name
+                        THEN personen.aname
                 ELSE NULL 
             END
             , '; ') AS bewirtschafter
     FROM 
         arp_naturreservate.reservate_teilgebiet,
-        mjpnatur.flaechen_geom 
-        LEFT JOIN mjpnatur.personen
-            ON personen.persid = flaechen_geom.persid
+        arp_mehrjahresprogramm.mehrjahresprgramm_vereinbarungensflaechen flaechen_geom 
+        LEFT JOIN arp_mehrjahresprogramm.mehrjahresprgramm_person personen
+            ON personen.personenid = flaechen_geom.personenid
     WHERE 
-        ST_Intersects(reservate_teilgebiet.geometrie, flaechen_geom.wkb_geometry) = TRUE
+        ST_Intersects(reservate_teilgebiet.geometrie, flaechen_geom.geometrie) = TRUE
     GROUP BY 
         reservate_teilgebiet.t_id
 )
@@ -239,7 +239,7 @@ SELECT
     ST_Area(reservate_teilgebiet.geometrie)/10000 AS flaeche,
     string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename) AS gemeinden,
     documents_json.dokumente AS dokumente,
-    string_agg(DISTINCT liegen.nummer || '(' || liegen.gem_bfs|| ')', ', ' ORDER BY liegen.nummer || '(' || liegen.gem_bfs || ')') AS parzellennummern,
+    string_agg(DISTINCT liegen.nummer || '(' || liegen.t_datasetname|| ')', ', ' ORDER BY liegen.nummer || '(' || liegen.t_datasetname || ')') AS parzellennummern,
     reservate_reservat.nummer AS reservatsnummer,
     reservate_reservat.reservatsname AS reservatsname,
     mjpnatur.vereinbarungsflaechen,
@@ -247,7 +247,13 @@ SELECT
     reservate_teilgebiet.geometrie
 FROM
     agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
-    avdpool.liegen,
+    (SELECT nummer, 
+	        liegenschaften_grundstueck.t_datasetname, 
+	        geometrie 
+	 FROM agi_dm01avso24.liegenschaften_grundstueck 
+	 LEFT JOIN agi_dm01avso24.liegenschaften_liegenschaft 
+	     ON liegenschaften_liegenschaft.liegenschaft_von = liegenschaften_grundstueck.t_id) 
+    liegen,
     arp_naturreservate.reservate_teilgebiet
     LEFT JOIN arp_naturreservate.reservate_reservat
         ON reservate_teilgebiet.reservat = reservate_reservat.t_id
@@ -258,9 +264,7 @@ FROM
 WHERE 
     ST_Intersects(reservate_teilgebiet.geometrie, hoheitsgrenzen_gemeindegrenze.geometrie) = TRUE 
     AND
-    ST_Intersects(reservate_teilgebiet.geometrie, liegen.wkb_geometry) = TRUE
-    AND 
-    liegen.ARCHIVE = 0
+    ST_Intersects(reservate_teilgebiet.geometrie, liegen.geometrie) = TRUE
 GROUP BY
     reservate_teilgebiet.t_id,
     reservate_reservat.t_id,
