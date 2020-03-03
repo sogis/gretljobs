@@ -76,7 +76,7 @@ task transferavdpool(type: Db2Db){
             new TransferSet('agi_dm01avso24_gebaeudeadressen_lokalisation.sql','av_avdpool_ng.gebaeudeadressen_lokalisation', true),
             new TransferSet('agi_dm01avso24_gebaeudeadressen_lokalisationsname.sql','av_avdpool_ng.gebaeudeadressen_lokalisationsname', true),
             new TransferSet('agi_dm01avso24_gebaeudeadressen_lokalisationsnamepos.sql','av_avdpool_ng.gebaeudeadressen_lokalisationsnamepos', true),
-            new TransferSet('agi_dm01avso24_gebaeudeadressen_strassensteuck.sql','av_avdpool_ng.gebaeudeadressen_strassenstueck', true),
+            new TransferSet('agi_dm01avso24_gebaeudeadressen_strassenstueck.sql','av_avdpool_ng.gebaeudeadressen_strassenstueck', true),
             new TransferSet('agi_dm01avso24_gemeindegrenzen_gemeinde.sql','av_avdpool_ng.gemeindegrenzen_gemeinde', true),
             new TransferSet('agi_dm01avso24_gemeindegrenzen_gemeindegrenze.sql','av_avdpool_ng.gemeindegrenzen_gemeindegrenze', true),
             new TransferSet('agi_dm01avso24_gemeindegrenzen_gemnachfuehrung.sql','av_avdpool_ng.gemeindegrenzen_gemnachfuehrung', true),
