@@ -18,7 +18,7 @@ FROM
     LEFT JOIN agi_dm01avso24.zuverlaessigkeit AS lagezuv
         ON einzelpunkt.lagezuv = lagezuv.ilicode
     LEFT JOIN agi_dm01avso24.bodenbedeckung_einzelpunkt_exaktdefiniert AS exaktdefiniert
-        ON einzelpunkt.lagezuv = exaktdefiniert.ilicode
+        ON einzelpunkt.exaktdefiniert = exaktdefiniert.ilicode
     LEFT JOIN 
     (
         SELECT
