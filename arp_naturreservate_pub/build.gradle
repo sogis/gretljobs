@@ -19,5 +19,5 @@ task transferArpNaturreservate(type: Db2Db){
 }
 
 task refreshSolr(type:Exec, dependsOn:'transferArpNaturreservate') {
-	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.arp.naturreservate.reservat'
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.arp.naturreservate.reservate'
 }
