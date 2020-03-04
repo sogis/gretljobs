@@ -7,7 +7,7 @@ SET
     total_oev_kosten = gesamtkosten_angebot + gesamtkosten_fabi_beitraege
 ;
 
--- Gemeindenateil (37% der Total Kosten OeV)
+-- Gemeindenanteil (37% der Totalkosten OeV)
 UPDATE
     avt_oevkov_${currentYear}.sachdaten_oevkov_daten
 SET
