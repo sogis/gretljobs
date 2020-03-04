@@ -114,7 +114,7 @@ INSERT INTO
                 'Zofingen'
             )
         AND
--- diese Unternehmen fahren offizielle Haltestellen an, werden aber nicht berücksichtigt
+-- diese Unternehmen fahren offizielle Haltestellen an, werden aber im OEVKOV nicht berücksichtigt
             agency.unternehmer NOT IN (
                 'Domo Swiss Express AG'
             )
@@ -144,7 +144,7 @@ INSERT INTO
                'Tram'
            )
 /*
--- ************************** zusätzliche Bedingung für OeV-Güteklassen ****************************
+-- ****************** zusätzliche Bedingung für OeV-Güteklassen auskommentieren ********************
         AND
             substring(departure_time from 1 for 2) IN
                 ('06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19')

@@ -285,7 +285,7 @@ INSERT INTO
         )
 ;
 
--- Haltestellen einfügen, welche in der Auswertung fehlen, aber eine Korrektur eingetragen wurde
+-- Haltestellen einfügen, welche in der Auswertung fehlen, für die aber eine Korrektur eingetragen wurde
 INSERT INTO
     avt_oevkov_${currentYear}.auswertung_gesamtauswertung
         (

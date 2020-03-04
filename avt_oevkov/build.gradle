@@ -4,11 +4,11 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 
 
-description = "GRETL-Job für die Berechnung des OEVKOV in der Sogis-DB"
+description = "GRETL-Job für die Berechnung des OEVKOV in der Edit-DB"
 
 
 // OEVKOV Variablen
-def currentYear = '2019'
+def currentYear = '2020'
 
 
 defaultTasks 'do_Gesamtberechnung'
