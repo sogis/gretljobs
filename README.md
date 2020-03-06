@@ -125,6 +125,21 @@ export ORG_GRADLE_PROJECT_dbPwdPub=gretl
 ```
 
 Nun können in den DBs nach Beliben Schemas angelegt und Daten importiert werden.
+Die DBs sind mit folgenden Verbindungsparametern erreichbar:
+
+#### Edit-DB
+
+* Hostname: `localhost`
+* Port: `54321`
+* DB-Name: `edit`
+* Benutzer: `gretl` (für Lese- und Schreibzugriff) oder `admin` (zum Anlegen von Schemen, Tabellen usw.); das Passwort lautet jeweils gleich wie der Benutzername
+
+#### Publikations-DB
+
+* Hostname: `localhost`
+* Port: `54322`
+* DB-Name: `pub`
+* Benutzer: `gretl` (für Lese- und Schreibzugriff) oder `admin` (zum Anlegen von Schemen, Tabellen usw.); das Passwort lautet jeweils gleich wie der Benutzername
 
 
 
