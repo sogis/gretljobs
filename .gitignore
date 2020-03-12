@@ -16,3 +16,6 @@
 
 # macOS
 .DS_Store
+
+# exclude upload directories
+**/upload/
