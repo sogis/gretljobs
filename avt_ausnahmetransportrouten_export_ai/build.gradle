@@ -1,0 +1,52 @@
+/*
+Publiziert die AVT Ausnahmetransportrouten nach geodienste.ch
+*/
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
+
+defaultTasks 'uploadMgdm'
+
+/*
+Package and upload to the KKGEO AI
+*/
+def exportFileName = 'data'
+def pathToUploadFolder = 'upload'
+def zipName = 'iliexport.zip'
+
+
+task addXtfSuffixToData(type: Copy) {
+    from pathToUploadFolder + "/data"
+    into pathToUploadFolder + "/xtf"
+
+    rename '(.*)', '$1.xtf'
+}
+
+task zipMgdm(type: Zip, dependsOn: addXtfSuffixToData) {
+    archiveName = zipName
+    destinationDir = file(pathToUploadFolder)
+
+    from pathToUploadFolder + "/xtf"
+}
+
+task uploadMgdm (dependsOn: zipMgdm) {
+    description = "Lädt die Daten in die Aggregationsinfrastruktur hoch."
+
+    def aiLogin = aiUser + ":" + aiPwd
+    def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
+    def zipFilePath = Paths.get(pathToUploadFolder.toString(), zipName)
+
+    doLast {    
+        def response = ["curl", "-u", aiLogin, "-F", "topic=kantonale_ausnahmetransportrouten", "-F",
+                        "lv95_file=@" + zipFilePath, "-F", "publish=true", serverUrl
+                        ].execute().text
+        println(response)
+    }
+}
+
+
+
