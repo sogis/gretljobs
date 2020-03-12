@@ -15,7 +15,7 @@ defaultTasks 'uploadMgdm'
 Package and upload to the KKGEO AI
 */
 def exportFileName = 'data'
-def pathToUploadFolder = '.upload'
+def pathToUploadFolder = 'upload'
 def zipName = 'iliexport.zip'
 
 
