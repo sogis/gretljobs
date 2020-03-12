@@ -19,7 +19,10 @@ pipeline {
             steps {
                 git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
                 dir(env.JOB_BASE_NAME) {
-                    unstash name: 'dataFile'
+                    sh 'mkdir upload'
+                    dir('upload') {
+                        unstash name: 'dataFile'
+                    }
                     sh 'gretl -Dorg.gradle.jvmargs=-Xmx2G'
                 }
             }
