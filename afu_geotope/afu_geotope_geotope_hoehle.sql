@@ -26,6 +26,7 @@ SELECT
     lokalname,
     kantonal_gesch AS kant_geschuetztes_objekt,
     ingesonr_alt AS alte_inventar_nummer,
+    ingeso_oid AS ingeso_oid, 
     quelle AS hinweis_literatur,
     wkb_geometry AS geometrie,
     'inKraft' AS rechtsstatus,

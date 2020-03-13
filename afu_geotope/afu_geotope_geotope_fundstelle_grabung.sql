@@ -218,6 +218,7 @@ WITH fundstelle_grabung AS (
         lokalname,
         kantonal_gesch AS kant_geschuetztes_objekt,
         ingesonr_alt AS alte_inventar_nummer,
+        ingeso_oid AS ingeso_oid,
         regexp_replace(quelle, E'[\\n\\r]+', ' ', 'g' ) AS hinweis_literatur,
         wkb_geometry AS geometrie
     FROM
@@ -300,6 +301,7 @@ SELECT
     fundstelle_grabung.lokalname,
     fundstelle_grabung.kant_geschuetztes_objekt,
     fundstelle_grabung.alte_inventar_nummer,
+    fundstelle_grabung.ingeso_oid,
     fundstelle_grabung.hinweis_literatur,
     fundstelle_grabung.geometrie,
     'inKraft' AS rechtsstatus,
