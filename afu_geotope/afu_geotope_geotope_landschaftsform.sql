@@ -62,6 +62,7 @@ SELECT
     lokalname,
     kantonal_gesch AS kant_geschuetztes_objekt,
     ingesonr_alt AS alte_inventar_nummer,
+    ingeso_oid AS ingeso_oid,
     quelle AS hinweis_literatur,
     ST_Multi(ST_SnapToGrid(wkb_geometry, 0.001)) AS geometrie,
     'inKraft' AS rechtsstatus,
