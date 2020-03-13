@@ -212,7 +212,7 @@ WITH aufschluss AS (
         lokalname,
         kantonal_gesch AS kant_geschuetztes_objekt,
         ingesonr_alt AS alte_inventar_nummer,
-        ingeso_oid AS ingeso_oid
+        ingeso_oid AS ingeso_oid,
         regexp_replace(quelle, E'[\\n\\r]+', ' ', 'g' ) AS hinweis_literatur,
         ST_Multi(ST_SnapToGrid(wkb_geometry, 0.001)) AS geometrie
     FROM
