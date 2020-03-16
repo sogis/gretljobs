@@ -14,23 +14,17 @@ defaultTasks 'uploadMgdm'
 /*
 Package and upload to the KKGEO AI
 */
-def exportFileName = 'data'
+def exportFileName = 'data.xtf'
 def pathToUploadFolder = 'upload'
 def zipName = 'iliexport.zip'
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
 
-task addXtfSuffixToData(type: Copy) {
-    from pathToUploadFolder + "/data"
-    into pathToUploadFolder + "/xtf"
-
-    rename '(.*)', '$1.xtf'
-}
-
-task zipMgdm(type: Zip, dependsOn: addXtfSuffixToData) {
+task zipMgdm(type: Zip) {
     archiveName = zipName
-    destinationDir = file(pathToUploadFolder)
+    destinationDir = file(pathToTempFolder)
 
-    from pathToUploadFolder + "/xtf"
+    from Paths.get(pathToUploadFolder)
 }
 
 task uploadMgdm (dependsOn: zipMgdm) {
@@ -38,7 +32,7 @@ task uploadMgdm (dependsOn: zipMgdm) {
 
     def aiLogin = aiUser + ":" + aiPwd
     def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
-    def zipFilePath = Paths.get(pathToUploadFolder.toString(), zipName)
+    def zipFilePath = Paths.get(pathToTempFolder, zipName)
 
     doLast {    
         def response = ["curl", "-u", aiLogin, "-F", "topic=kantonale_ausnahmetransportrouten", "-F",
