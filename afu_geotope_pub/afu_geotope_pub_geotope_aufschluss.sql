@@ -1,6 +1,6 @@
 WITH fachbereich AS (
     SELECT 
-        string_agg(geotope_fachbereich.fachbereichsname, ',' ORDER BY fachbereichsname ASC) AS fachbereiche,
+        string_agg(geotope_fachbereich.fachbereichsname, ', ' ORDER BY fachbereichsname ASC) AS fachbereiche,
         geotope_aufschluss.t_id
     FROM
         afu_geotope.geotope_aufschluss_fachbereich
@@ -153,30 +153,53 @@ WITH fachbereich AS (
 
 SELECT
     geotope_aufschluss.t_ili_tid,
-    geotope_aufschluss.petrografie,
-    geotope_aufschluss.entstehung,
+    CASE 
+        WHEN geotope_aufschluss.petrografie = 'Penninischer_Gruenschiefer'
+            THEN 'Penninischer Grünschiefer'
+        ELSE replace(geotope_aufschluss.petrografie,'_',' ') 
+    END AS petrografie,
+    CASE 
+        WHEN geotope_aufschluss.entstehung = 'natuerlich'
+            THEN 'natürlich' 
+        ELSE geotope_aufschluss.entstehung
+    END AS entstehung,
     geotope_aufschluss.oberflaechenform,
     gemeinden.gemeinden AS gemeinden,
     ortschaften.ortschaften,
-    geologische_schicht_von.bezeichnung AS geologische_schicht_von,
-    geologische_schicht_bis.bezeichnung AS geologische_schicht_bis,
-    geologische_stufe_von.bezeichnung AS geologische_stufe_von,
-    geologische_stufe_bis.bezeichnung AS geologische_stufe_bis,
-    geologische_serie_von.bezeichnung AS geologische_serie_von,
-    geologische_serie_bis.bezeichnung AS geologische_serie_bis,
-    geologisches_system_von.bezeichnung AS geologisches_system_von,
-    geologisches_system_bis.bezeichnung AS geologisches_system_bis,
+    replace(geologische_schicht_von.bezeichnung,'_',' ') AS geologische_schicht_von,
+    replace(geologische_schicht_bis.bezeichnung,'_',' ') AS geologische_schicht_bis,
+    replace(geologische_stufe_von.bezeichnung,'_',' ') AS geologische_stufe_von,
+    replace(geologische_stufe_bis.bezeichnung,'_',' ') AS geologische_stufe_bis,
+    replace(geologische_serie_von.bezeichnung,'_',' ') AS geologische_serie_von,
+    replace(geologische_serie_bis.bezeichnung,'_',' ') AS geologische_serie_bis,
+    replace(geologisches_system_von.bezeichnung,'_',' ') AS geologisches_system_von,
+    replace(geologisches_system_bis.bezeichnung,'_',' ') AS geologisches_system_bis,
     geotope_aufschluss.objektname,
     geotope_aufschluss.regionalgeologische_einheit,
     geotope_aufschluss.bedeutung,
-    geotope_aufschluss.zustand,
+    CASE 
+        WHEN geotope_aufschluss.zustand = 'gering_beeintraechtigt'
+            THEN 'gering beeinträchtigt'
+        WHEN geotope_aufschluss.zustand = 'nicht_beeintraechtigt'
+            THEN 'nicht beeinträchtigt' 
+        WHEN geotope_aufschluss.zustand = 'stark_beeintraechtigt'
+            THEN 'stark beeinträchtigt' 
+        ELSE geotope_aufschluss.zustand 
+    END AS zustand,
     geotope_aufschluss.beschreibung,
-    geotope_aufschluss.schutzwuerdigkeit,
+    CASE 
+        WHEN geotope_aufschluss.schutzwuerdigkeit = 'geschuetzt' 
+            THEN 'geschützt' 
+        WHEN geotope_aufschluss.schutzwuerdigkeit = 'schutzwuerdig' 
+            THEN 'schutzwürdig'
+        ELSE geotope_aufschluss.schutzwuerdigkeit
+    END AS schutzwuerdigkeit,
     geotope_aufschluss.geowissenschaftlicher_wert,
     geotope_aufschluss.anthropogene_gefaehrdung,
     geotope_aufschluss.lokalname,
     geotope_aufschluss.kant_geschuetztes_objekt,
     geotope_aufschluss.alte_inventar_nummer,
+    geotope_aufschluss.ingeso_oid, 
     geotope_aufschluss.hinweis_literatur,
     geotope_aufschluss.rechtsstatus,
     geotope_aufschluss.publiziert_ab,

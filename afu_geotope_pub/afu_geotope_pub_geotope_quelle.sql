@@ -154,14 +154,29 @@ SELECT
     geotope_quelle.objektname,
     geotope_quelle.regionalgeologische_einheit,
     geotope_quelle.bedeutung,
-    geotope_quelle.zustand,
+    CASE 
+        WHEN geotope_quelle.zustand = 'gering_beeintraechtigt'
+            THEN 'gering beeinträchtigt'
+        WHEN geotope_quelle.zustand = 'nicht_beeintraechtigt'
+            THEN 'nicht beeinträchtigt' 
+        WHEN geotope_quelle.zustand = 'stark_beeintraechtigt'
+            THEN 'stark beeinträchtigt' 
+        ELSE geotope_quelle.zustand 
+    END AS zustand,
     geotope_quelle.beschreibung,
-    geotope_quelle.schutzwuerdigkeit,
+    CASE 
+        WHEN geotope_quelle.schutzwuerdigkeit = 'geschuetzt' 
+            THEN 'geschützt' 
+        WHEN geotope_quelle.schutzwuerdigkeit = 'schutzwuerdig' 
+            THEN 'schutzwürdig'
+        ELSE geotope_quelle.schutzwuerdigkeit
+    END AS schutzwuerdigkeit,
     geotope_quelle.geowissenschaftlicher_wert,
     geotope_quelle.anthropogene_gefaehrdung,
     geotope_quelle.lokalname,
     geotope_quelle.kant_geschuetztes_objekt,
     geotope_quelle.alte_inventar_nummer,
+    geotope_quelle.ingeso_oid,
     geotope_quelle.hinweis_literatur,
     geotope_quelle.rechtsstatus,
     geotope_quelle.publiziert_ab,

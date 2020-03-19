@@ -154,14 +154,29 @@ SELECT
     geotope_hoehle.objektname,
     geotope_hoehle.regionalgeologische_einheit,
     geotope_hoehle.bedeutung,
-    geotope_hoehle.zustand,
+    CASE 
+        WHEN geotope_hoehle.zustand = 'gering_beeintraechtigt'
+            THEN 'gering beeinträchtigt'
+        WHEN geotope_hoehle.zustand = 'nicht_beeintraechtigt'
+            THEN 'nicht beeinträchtigt' 
+        WHEN geotope_hoehle.zustand = 'stark_beeintraechtigt'
+            THEN 'stark beeinträchtigt' 
+        ELSE geotope_hoehle.zustand 
+    END AS zustand,
     geotope_hoehle.beschreibung,
-    geotope_hoehle.schutzwuerdigkeit,
+    CASE 
+        WHEN geotope_hoehle.schutzwuerdigkeit = 'geschuetzt' 
+            THEN 'geschützt' 
+        WHEN geotope_hoehle.schutzwuerdigkeit = 'schutzwuerdig' 
+            THEN 'schutzwürdig'
+        ELSE geotope_hoehle.schutzwuerdigkeit
+    END AS schutzwuerdigkeit,
     geotope_hoehle.geowissenschaftlicher_wert,
     geotope_hoehle.anthropogene_gefaehrdung,
     geotope_hoehle.lokalname,
     geotope_hoehle.kant_geschuetztes_objekt,
     geotope_hoehle.alte_inventar_nummer,
+    geotope_hoehle.ingeso_oid, 
     geotope_hoehle.hinweis_literatur,
     geotope_hoehle.rechtsstatus,
     geotope_hoehle.publiziert_ab,

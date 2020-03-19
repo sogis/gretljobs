@@ -151,28 +151,47 @@ SELECT
     geotope_fundstelle_grabung.t_ili_tid,
     geotope_fundstelle_grabung.aufenthaltsort,
     geotope_fundstelle_grabung.fundgegenstaende,
-    geotope_fundstelle_grabung.petrografie,
+    CASE 
+        WHEN geotope_fundstelle_grabung.petrografie = 'Penninischer_Gruenschiefer'
+            THEN 'Penninischer Grünschiefer'
+        ELSE replace(geotope_fundstelle_grabung.petrografie,'_',' ') 
+    END AS petrografie,
     gemeinden.gemeinde,
     ortschaften.ortschaft,
-    geologische_schicht_von.bezeichnung AS geologische_schicht_von,
-    geologische_schicht_bis.bezeichnung AS geologische_schicht_bis,
-    geologische_stufe_von.bezeichnung AS geologische_stufe_von,
-    geologische_stufe_bis.bezeichnung AS geologische_stufe_bis,
-    geologische_serie_von.bezeichnung AS geologische_serie_von,
-    geologische_serie_bis.bezeichnung AS geologische_serie_bis,
-    geologisches_system_von.bezeichnung AS geologisches_system_von,
-    geologisches_system_bis.bezeichnung AS geologisches_system_bis,
+    replace(geologische_schicht_von.bezeichnung,'_',' ') AS geologische_schicht_von,
+    replace(geologische_schicht_bis.bezeichnung,'_',' ') AS geologische_schicht_bis,
+    replace(geologische_stufe_von.bezeichnung,'_',' ') AS geologische_stufe_von,
+    replace(geologische_stufe_bis.bezeichnung,'_',' ') AS geologische_stufe_bis,
+    replace(geologische_serie_von.bezeichnung,'_',' ') AS geologische_serie_von,
+    replace(geologische_serie_bis.bezeichnung,'_',' ') AS geologische_serie_bis,
+    replace(geologisches_system_von.bezeichnung,'_',' ') AS geologisches_system_von,
+    replace(geologisches_system_bis.bezeichnung,'_',' ') AS geologisches_system_bis,
     geotope_fundstelle_grabung.objektname,
     geotope_fundstelle_grabung.regionalgeologische_einheit,
     geotope_fundstelle_grabung.bedeutung,
-    geotope_fundstelle_grabung.zustand,
+    CASE 
+        WHEN geotope_fundstelle_grabung.zustand = 'gering_beeintraechtigt'
+            THEN 'gering beeinträchtigt'
+        WHEN geotope_fundstelle_grabung.zustand = 'nicht_beeintraechtigt'
+            THEN 'nicht beeinträchtigt' 
+        WHEN geotope_fundstelle_grabung.zustand = 'stark_beeintraechtigt'
+            THEN 'stark beeinträchtigt' 
+        ELSE geotope_fundstelle_grabung.zustand 
+    END AS zustand,
     geotope_fundstelle_grabung.beschreibung,
-    geotope_fundstelle_grabung.schutzwuerdigkeit,
+    CASE 
+        WHEN geotope_fundstelle_grabung.schutzwuerdigkeit = 'geschuetzt' 
+            THEN 'geschützt' 
+        WHEN geotope_fundstelle_grabung.schutzwuerdigkeit = 'schutzwuerdig' 
+            THEN 'schutzwürdig'
+        ELSE geotope_fundstelle_grabung.schutzwuerdigkeit
+    END AS schutzwuerdigkeit,
     geotope_fundstelle_grabung.geowissenschaftlicher_wert,
     geotope_fundstelle_grabung.anthropogene_gefaehrdung,
     geotope_fundstelle_grabung.lokalname,
     geotope_fundstelle_grabung.kant_geschuetztes_objekt,
     geotope_fundstelle_grabung.alte_inventar_nummer,
+    geotope_fundstelle_grabung.ingeso_oid,
     geotope_fundstelle_grabung.hinweis_literatur,
     geotope_fundstelle_grabung.rechtsstatus,
     geotope_fundstelle_grabung.publiziert_ab,

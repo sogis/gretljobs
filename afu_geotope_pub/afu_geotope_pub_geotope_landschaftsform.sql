@@ -154,21 +154,40 @@ WITH fachbereich AS (
 SELECT
     geotope_landschaftsform.t_ili_tid,
     geotope_landschaftsform.landschaftstyp,
-    geotope_landschaftsform.entstehung,
+    CASE 
+        WHEN geotope_landschaftsform.entstehung = 'natuerlich'
+            THEN 'natürlich' 
+        ELSE geotope_landschaftsform.entstehung
+    END AS entstehung,
     geotope_landschaftsform.oberflaechenform,
     gemeinden.gemeinden,
     ortschaften.ortschaften,
     geotope_landschaftsform.objektname,
     geotope_landschaftsform.regionalgeologische_einheit,
     geotope_landschaftsform.bedeutung,
-    geotope_landschaftsform.zustand,
+    CASE 
+        WHEN geotope_landschaftsform.zustand = 'gering_beeintraechtigt'
+            THEN 'gering beeinträchtigt'
+        WHEN geotope_landschaftsform.zustand = 'nicht_beeintraechtigt'
+            THEN 'nicht beeinträchtigt' 
+        WHEN geotope_landschaftsform.zustand = 'stark_beeintraechtigt'
+            THEN 'stark beeinträchtigt' 
+        ELSE geotope_landschaftsform.zustand 
+    END AS zustand,
     geotope_landschaftsform.beschreibung,
-    geotope_landschaftsform.schutzwuerdigkeit,
+    CASE 
+        WHEN geotope_landschaftsform.schutzwuerdigkeit = 'geschuetzt' 
+            THEN 'geschützt' 
+        WHEN geotope_landschaftsform.schutzwuerdigkeit = 'schutzwuerdig' 
+            THEN 'schutzwürdig'
+        ELSE geotope_landschaftsform.schutzwuerdigkeit
+    END AS schutzwuerdigkeit,
     geotope_landschaftsform.geowissenschaftlicher_wert,
     geotope_landschaftsform.anthropogene_gefaehrdung,
     geotope_landschaftsform.lokalname,
     geotope_landschaftsform.kant_geschuetztes_objekt,
     geotope_landschaftsform.alte_inventar_nummer,
+    geotope_landschaftsform.ingeso_oid, 
     geotope_landschaftsform.hinweis_literatur,
     geotope_landschaftsform.rechtsstatus,
     geotope_landschaftsform.publiziert_ab,
