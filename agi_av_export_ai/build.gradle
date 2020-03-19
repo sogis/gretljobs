@@ -42,7 +42,7 @@ task downloadFiles(type: Download) {
     def UrlArray =[]
 
     BfsNrGemeinden.each {
-        UrlArray << "http://geoweb.so.ch/av_datenabgabe/av_daten/itf_ch/ch_"+ it + "00.zip"
+        UrlArray << "https://s3.eu-central-1.amazonaws.com/ch.so.agi.av.dm01avch24lv95d/"+ it + "00.itf.zip"
     }
 
     src(UrlArray)
@@ -62,7 +62,7 @@ BfsNrGemeinden.each {
 
     task "unzipData_$bfsNr"(type: Copy, dependsOn: 'downloadFiles'){
         description = "Entzippt AV-Daten der entsprechenden Gemeinde."
-        def pathToZippedData =  Paths.get(pathToTempFolder, "ch_"+ bfsNr + "00.zip")
+        def pathToZippedData =  Paths.get(pathToTempFolder, bfsNr + "00.itf.zip")
 
         doLast {
             println "File unzipped to directory: " + pathToUnzipFolder
