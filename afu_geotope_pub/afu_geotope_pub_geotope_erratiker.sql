@@ -154,21 +154,44 @@ SELECT
     geotope_erratiker.herkunft,
     geotope_erratiker.schalenstein,
     geotope_erratiker.aufenthaltsort,
-    geotope_erratiker.petrografie,
-    geotope_erratiker.entstehung,
+    CASE 
+        WHEN geotope_erratiker.petrografie = 'Penninischer_Gruenschiefer'
+            THEN 'Penninischer Grünschiefer'
+        ELSE replace(geotope_erratiker.petrografie,'_',' ') 
+    END AS petrografie,
+    CASE 
+        WHEN geotope_erratiker.entstehung = 'natuerlich'
+            THEN 'natürlich' 
+        ELSE geotope_erratiker.entstehung
+    END AS entstehung,
     gemeinden.gemeinde,
     ortschaften.ortschaft,
     geotope_erratiker.objektname,
     geotope_erratiker.regionalgeologische_einheit,
     geotope_erratiker.bedeutung,
-    geotope_erratiker.zustand,
+    CASE 
+        WHEN geotope_erratiker.zustand = 'gering_beeintraechtigt'
+            THEN 'gering beeinträchtigt'
+        WHEN geotope_erratiker.zustand = 'nicht_beeintraechtigt'
+            THEN 'nicht beeinträchtigt' 
+        WHEN geotope_erratiker.zustand = 'stark_beeintraechtigt'
+            THEN 'stark beeinträchtigt' 
+        ELSE geotope_erratiker.zustand 
+    END AS zustand,
     geotope_erratiker.beschreibung,
-    geotope_erratiker.schutzwuerdigkeit,
+    CASE 
+        WHEN geotope_erratiker.schutzwuerdigkeit = 'geschuetzt' 
+            THEN 'geschützt' 
+        WHEN geotope_erratiker.schutzwuerdigkeit = 'schutzwuerdig' 
+            THEN 'schutzwürdig'
+        ELSE geotope_erratiker.schutzwuerdigkeit
+    END AS schutzwuerdigkeit,
     geotope_erratiker.geowissenschaftlicher_wert,
     geotope_erratiker.anthropogene_gefaehrdung,
     geotope_erratiker.lokalname,
     geotope_erratiker.kant_geschuetztes_objekt,
     geotope_erratiker.alte_inventar_nummer,
+    geotope_erratiker.ingeso_oid,
     geotope_erratiker.hinweis_literatur,
     geotope_erratiker.rechtsstatus,
     geotope_erratiker.publiziert_ab,
