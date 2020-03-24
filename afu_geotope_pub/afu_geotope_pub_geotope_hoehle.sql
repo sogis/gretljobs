@@ -1,6 +1,6 @@
 WITH fachbereich AS (
     SELECT 
-        string_agg(geotope_fachbereich.fachbereichsname, ',' ORDER BY fachbereichsname ASC) AS fachbereiche,
+        string_agg(geotope_fachbereich.fachbereichsname, ', ' ORDER BY fachbereichsname ASC) AS fachbereiche,
         geotope_hoehle.t_id
     FROM
         afu_geotope.geotope_hoehle_fachbereich
