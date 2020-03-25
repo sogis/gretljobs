@@ -9,7 +9,6 @@ SELECT
             THEN 'GZ3'
     END AS zone,
     current_date AS new_date,
-    '9999-01-01 00:00:00' AS archive_date,
     '0' AS archive
 FROM afu_gewaesserschutz.gwszonen_gwszone
 UNION
@@ -17,6 +16,5 @@ SELECT
     geometrie AS wkb_geometry,
     'SARE' AS zone,
     current_date AS new_date,
-    '9999-01-01 00:00:00' AS archive_date,
     '0' AS archive
 FROM afu_gewaesserschutz.gwszonen_gwsareal
