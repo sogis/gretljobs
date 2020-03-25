@@ -1,5 +1,3 @@
-SET ROLE sogis_admin
-;
 UPDATE afu_gewaesserschutz_sogis.aww_gszoar 
     SET 
         archive = 1, 
