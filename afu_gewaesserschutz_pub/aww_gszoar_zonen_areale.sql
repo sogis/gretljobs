@@ -9,12 +9,12 @@ SELECT
             THEN 'GZ3'
     END AS zone,
     current_date AS new_date,
-    '0' AS archive
+    0 AS archive
 FROM afu_gewaesserschutz.gwszonen_gwszone
 UNION
 SELECT 
     geometrie AS wkb_geometry,
     'SARE' AS zone,
     current_date AS new_date,
-    '0' AS archive
+    0 AS archive
 FROM afu_gewaesserschutz.gwszonen_gwsareal
