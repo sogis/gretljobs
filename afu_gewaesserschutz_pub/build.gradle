@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferSurroundingCantons'
+defaultTasks 'transferZonen'
 
 task transferAfuGewaesserschutz(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -21,5 +21,18 @@ task transferSurroundingCantons(type: Db2Db, dependsOn:transferAfuGewaesserschut
     transferSets = [
             new TransferSet('sogis/aww_gszoak.sql', 'afu_gewaesserschutz_ausserkantonal_pub.aww_gszoak', true),
             new TransferSet('sogis/aww_gszustr.sql', 'afu_gewaesserschutz_ausserkantonal_pub.aww_gszustr', true)
+    ]
+}
+task archiveData(type: SqlExecutor, dependsOn:transferSurroundingCantons){
+    description = "Archiviert die Daten mit archiv=0 im Schema aww_gszoar"
+    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sqlFiles = ['aww_gszoar_status_archivierung.sql']
+}
+task transferZonen(type: Db2Db, dependsOn:archiveData){
+    description = "Datenübernahme auf edit-DB für Nadelstich"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    transferSets = [
+            new TransferSet('aww_gszoar_zonen_areale.sql', 'public.aww_gszoar', false)
     ]
 }
