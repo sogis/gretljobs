@@ -29,7 +29,7 @@ task archiveData(type: SqlExecutor, dependsOn:transferSurroundingCantons){
     sqlFiles = ['aww_gszoar_status_archivierung.sql']
 }
 task transferZonen(type: Db2Db, dependsOn:archiveData){
-    description = "Datenübernahme aud edit-DB für Nadelstich"
+    description = "Datenübernahme auf edit-DB für Nadelstich"
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
