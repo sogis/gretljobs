@@ -124,7 +124,7 @@ export ORG_GRADLE_PROJECT_dbUserPub=gretl
 export ORG_GRADLE_PROJECT_dbPwdPub=gretl
 ```
 
-Nun können in den DBs nach Beliben Schemas angelegt und Daten importiert werden.
+Nun können in den DBs nach Belieben Schemas angelegt und Daten importiert werden.
 Die DBs sind mit folgenden Verbindungsparametern erreichbar:
 
 #### Edit-DB
