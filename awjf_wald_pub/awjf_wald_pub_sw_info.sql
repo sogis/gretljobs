@@ -15,6 +15,20 @@ SELECT
     sw_name,
     z_typ,
     nais_code,
+    CASE
+        WHEN nais_code = 11
+        THEN 'Handlungsbedarf vorhanden, Dringlichkeit klein'
+        WHEN nais_code = 12
+        THEN 'Handlungsbedarf vorhanden, Dringlichkeit mittel'
+        WHEN nais_code = 13
+        THEN 'Handlungsbedarf vorhanden, Dringlichkeit gross'
+        WHEN nais_code = 20
+        THEN 'kein Handlungsbedarf, keine Priorität'
+        WHEN nais_code = 99
+        THEN 'keine Ansprache durchgeführt'
+        WHEN nais_code = 10
+        THEN 'ohne Ansprache (Strasse etc.)'
+    END AS nais_code_txt,
     sw_info_fl,
     zeitstand,
     beh_einheit, 
