@@ -11,6 +11,6 @@ task transferAwjfWaldpflegeKontrollePub(type: Db2Db){
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('awjf_waldpflege_kontrolle_pub.sql',
-                    'awjf_waldpflege_kontrolle.waldpflege_waldpflege', false)
+                    'awjf_waldpflege_kontrolle.waldpflege_waldpflege', true)
     ];
 }
