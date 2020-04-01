@@ -49,6 +49,7 @@ LEFT JOIN
          vegas.adm_objekt_dokument y 
      WHERE x.dokument_id = y.dokument_id
      GROUP BY y.vegas_id) c ON a.vegas_id = c.vegas_id
+WHERE a.archive = 0
 )
 UNION ALL 
 (SELECT 
@@ -79,4 +80,5 @@ LEFT JOIN
          vegas.adm_objekt_dokument y 
      WHERE x.dokument_id = y.dokument_id
      GROUP BY y.vegas_id) c ON a.vegas_id = c.vegas_id
+WHERE a.archive = 0
 );
