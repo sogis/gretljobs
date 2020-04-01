@@ -17,7 +17,9 @@ LEFT JOIN
          vegas.adm_dokument x, 
          vegas.adm_objekt_dokument y 
      WHERE x.dokument_id = y.dokument_id
-     GROUP BY y.vegas_id) dokumente ON kontrollschacht.vegas_id = dokumente.vegas_id) 
+     GROUP BY y.vegas_id) dokumente ON kontrollschacht.vegas_id = dokumente.vegas_id
+WHERE archive = 0
+) 
 UNION ALL 
 (SELECT 
     'Sammelbrunnenstube' AS trinkwasserobjektart,
@@ -38,7 +40,9 @@ LEFT JOIN
          vegas.adm_dokument x, 
          vegas.adm_objekt_dokument y 
      WHERE x.dokument_id = y.dokument_id
-     GROUP BY y.vegas_id) dokumente ON sammelbrunnenstube.vegas_id = dokumente.vegas_id) 
+     GROUP BY y.vegas_id) dokumente ON sammelbrunnenstube.vegas_id = dokumente.vegas_id
+WHERE archive = 0
+) 
 UNION ALL 
 (SELECT 
     'Quellwasserbehaelter' AS trinkwasserobjektart,
@@ -59,7 +63,9 @@ LEFT JOIN
          vegas.adm_dokument x, 
          vegas.adm_objekt_dokument y 
      WHERE x.dokument_id = y.dokument_id
-     GROUP BY y.vegas_id) dokumente ON Quellwasserbehaelter.vegas_id = dokumente.vegas_id) 
+     GROUP BY y.vegas_id) dokumente ON Quellwasserbehaelter.vegas_id = dokumente.vegas_id
+WHERE archive = 0
+) 
 UNION ALL
 (SELECT 
     'Netzmessstelle' AS trinkwasserobjektart,
@@ -80,7 +86,9 @@ LEFT JOIN
          vegas.adm_dokument x, 
          vegas.adm_objekt_dokument y 
      WHERE x.dokument_id = y.dokument_id
-     GROUP BY y.vegas_id) dokumente ON netzmessstelle.vegas_id = dokumente.vegas_id) 
+     GROUP BY y.vegas_id) dokumente ON netzmessstelle.vegas_id = dokumente.vegas_id
+WHERE archive = 0
+) 
 UNION ALL 
 (SELECT 
     'Pumpwerk' AS trinkwasserobjektart,
@@ -101,7 +109,9 @@ LEFT JOIN
          vegas.adm_dokument x, 
          vegas.adm_objekt_dokument y 
      WHERE x.dokument_id = y.dokument_id
-     GROUP BY y.vegas_id) dokumente ON pumpwerk.vegas_id = dokumente.vegas_id)
+     GROUP BY y.vegas_id) dokumente ON pumpwerk.vegas_id = dokumente.vegas_id
+WHERE archive = 0
+)
 UNION ALL 
 (SELECT 
     'Reservoir' AS trinkwasserobjektart,
@@ -122,4 +132,5 @@ LEFT JOIN
          vegas.adm_dokument x, 
          vegas.adm_objekt_dokument y 
      WHERE x.dokument_id = y.dokument_id
-     GROUP BY y.vegas_id) dokumente ON reservoir.vegas_id = dokumente.vegas_id)
+     GROUP BY y.vegas_id) dokumente ON reservoir.vegas_id = dokumente.vegas_id
+WHERE archive = 0)
