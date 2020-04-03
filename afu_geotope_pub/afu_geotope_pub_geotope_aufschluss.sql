@@ -134,11 +134,7 @@ WITH fachbereich AS (
         ST_Intersects(geotope_aufschluss.geometrie, richtplankarte_ueberlagernde_flaeche.geometrie) = TRUE
         AND
         (
-            richtplankarte_ueberlagernde_flaeche.objekttyp = 'Juraschutzzone.ueberlagert_Landwirtschaftsgebiet'
-            OR
-            richtplankarte_ueberlagernde_flaeche.objekttyp = 'Juraschutzzone.ueberlagert_Wald'
-        )
-    /* muss noch ergaenzt werden mit dem npl daten, da Juraschutzonen aus npl und richtplan kommen */
+            richtplankarte_ueberlagernde_flaeche.objekttyp = 'Juraschutzzone')
 ), zusammengefasster_schutz AS (
     SELECT
         geotope_aufschluss.t_id,
