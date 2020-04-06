@@ -1,9 +1,12 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferZonen'
+defaultTasks 'removeTmpFiles'
 
 task transferAfuGewaesserschutz(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -23,12 +26,12 @@ task transferSurroundingCantons(type: Db2Db, dependsOn:transferAfuGewaesserschut
             new TransferSet('sogis/aww_gszustr.sql', 'afu_gewaesserschutz_ausserkantonal_pub.aww_gszustr', true)
     ]
 }
-task archiveData(type: SqlExecutor, dependsOn:transferSurroundingCantons){
+/*task archiveData(type: SqlExecutor, dependsOn:transferSurroundingCantons){
     description = "Archiviert die Daten mit archiv=0 im Schema aww_gszoar"
     database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     sqlFiles = ['aww_gszoar_status_archivierung.sql']
 }
-task transferZonen(type: Db2Db, dependsOn:archiveData){
+task transferZonen(type: Db2Db, dependsOn:transferSurroundingCantons){
     description = "Datenübernahme auf edit-DB für Nadelstich"
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
@@ -36,3 +39,51 @@ task transferZonen(type: Db2Db, dependsOn:archiveData){
             new TransferSet('aww_gszoar_zonen_areale.sql', 'public.aww_gszoar', false)
     ]
 }
+*/
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def exportFileName = 'gefkart.xtf'
+def exportFile = file(Paths.get(pathToTempFolder.toString(), exportFileName))
+
+task exportGefkartMgdm(type: Ili2pgExport, dependsOn: transferSurroundingCantons) {
+    description = "Exportiert die Gewässerschutzdaten in ein xtf-File."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "afu_gewaesserschutz" 
+    models = "PlanerischerGewaesserschutz_V1_1"
+    dataFile = exportFile
+}
+
+/*
+4. Package and upload to the KKGEO AI
+*/
+def zipName = 'iliexport.zip'
+
+task zipGefkartMgdm(type: Zip, dependsOn: 'exportGefkartMgdm'){
+    description = "Zipt das xtf-File mit den Gewässerschutzdaten für den Upload in die " +
+            "Aggregationsinfrastruktur."
+    from pathToTempFolder
+    include exportFileName
+    archiveName zipName
+	destinationDir(file(pathToTempFolder))
+}
+
+
+task uploadGefkartMgdm (dependsOn: zipGefkartMgdm) {
+    description = "Lädt die Gewässerschutzdaten in die Aggregationsinfrastruktur hoch."
+
+    def aiLogin = aiUser + ":" + aiPwd
+    def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
+    def zipFilePath = Paths.get(pathToTempFolder.toString(), zipName)
+
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=planerischer_gewaesserschutz", "-F",
+                        "lv95_file=@" + zipFilePath, "-F", "publish=true", serverUrl
+                        ].execute().text
+        println(response)
+    }
+}
+
+task removeTmpFiles(type: Delete, dependsOn: uploadGefkartMgdm){
+    description = "Entfernt während der Ausführung des Jobs erstellte Dateien."
+	delete file(Paths.get(pathToTempFolder.toString(), zipName)), exportFile
+}
+
