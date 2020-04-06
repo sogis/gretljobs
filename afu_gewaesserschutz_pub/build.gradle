@@ -44,7 +44,7 @@ def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def exportFileName = 'gefkart.xtf'
 def exportFile = file(Paths.get(pathToTempFolder.toString(), exportFileName))
 
-task exportGefkartMgdm(type: Ili2pgExport, dependsOn: transferZonen) {
+task exportGefkartMgdm(type: Ili2pgExport, dependsOn: transferSurroundingCantons) {
     description = "Exportiert die Gewässerschutzdaten in ein xtf-File."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "afu_gewaesserschutz"
