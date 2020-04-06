@@ -30,7 +30,7 @@ task transferSurroundingCantons(type: Db2Db, dependsOn:transferAfuGewaesserschut
     description = "Archiviert die Daten mit archiv=0 im Schema aww_gszoar"
     database = [dbUriSogis, dbUserSogis, dbPwdSogis]
     sqlFiles = ['aww_gszoar_status_archivierung.sql']
-}*/
+}
 task transferZonen(type: Db2Db, dependsOn:transferSurroundingCantons){
     description = "Datenübernahme auf edit-DB für Nadelstich"
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -39,7 +39,7 @@ task transferZonen(type: Db2Db, dependsOn:transferSurroundingCantons){
             new TransferSet('aww_gszoar_zonen_areale.sql', 'public.aww_gszoar', false)
     ]
 }
-
+*/
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def exportFileName = 'gefkart.xtf'
 def exportFile = file(Paths.get(pathToTempFolder.toString(), exportFileName))
