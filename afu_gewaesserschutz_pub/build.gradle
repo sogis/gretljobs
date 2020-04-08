@@ -7,7 +7,7 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: "de.undercouch.download"
 
-defaultTasks 'removeTmpFiles'
+defaultTasks 'transferZonen'
 
 task transferAfuGewaesserschutz(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -18,7 +18,7 @@ task transferAfuGewaesserschutz(type: Db2Db){
             new TransferSet('gwsareal.sql', 'afu_gewaesserschutz_pub.gewaesserschutz_zone_areal', false) // false, da Zieltabelle identisch wie bei gwszone.sql
     ]
 }
-/*
+
 task transferSurroundingCantons(type: Db2Db, dependsOn:transferAfuGewaesserschutz){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
@@ -41,7 +41,7 @@ task transferZonen(type: Db2Db, dependsOn:transferSurroundingCantons){
             new TransferSet('aww_gszoar_zonen_areale.sql', 'public.aww_gszoar', false)
     ]
 }
-*/
+/*
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def exportFileName = 'gefkart.xtf'
 def exportFile = file(Paths.get(pathToTempFolder.toString(), exportFileName))
@@ -87,4 +87,4 @@ task removeTmpFiles(type: Delete, dependsOn: uploadGefkartMgdm){
     description = "Entfernt während der Ausführung des Jobs erstellte Dateien."
 	delete file(Paths.get(pathToTempFolder.toString(), zipName)), exportFile
 }
-
+*/
