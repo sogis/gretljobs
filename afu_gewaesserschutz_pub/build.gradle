@@ -53,10 +53,11 @@ task exportGefkartMgdm(type: Ili2pgExport, dependsOn:transferAfuGewaesserschutz)
     models = "PlanerischerGewaesserschutz_LV03_V1_1"
     dataFile = exportFile
 }
-
+*/
 /*
 4. Package and upload to the KKGEO AI
 */
+/*
 def zipName = 'iliexport.zip'
 
 task zipGefkartMgdm(type: Zip, dependsOn: exportGefkartMgdm){
