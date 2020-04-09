@@ -72,6 +72,6 @@ FROM digizone.zonenplan
     archive = 0
   AND 
 		-- needs to be updated whenever a new municipality is migrated to the new model
-    gem_bfs NOT IN (2401,2403,2405,2407,2408,2456,2457,2473,2474,2475,2476,2477,2479,2491,2498,2501,2502,2514,2573,2551,2580,2613,2614,2615,2616)
+    gem_bfs NOT IN (2401,2403,2405,2407,2408,2456,2457,2473,2474,2475,2476,2479,2491,2498,2501,2502,2514,2573,2551,2580,2613,2614,2615,2616)
 )
 SELECT * FROM tmp_result;
