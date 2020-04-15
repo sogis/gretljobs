@@ -1,0 +1,41 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: "de.undercouch.download"
+apply plugin: "ch.so.agi.gretl"
+
+
+defaultTasks "importData"
+
+
+// Download-Verzeichnis
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def pathToUnzipFolder = Paths.get(pathToTempFolder, "unzip_data")
+def pathToDataZip = Paths.get(pathToTempFolder, "NachF_LWZ_INTERLIS2.zip")
+
+
+ task "downloadData"(type: Download){
+        description = "Download Landwirtschaftliche Zonengrenzen"
+        src "https://data.geo.admin.ch/ch.blw.landwirtschaftliche-zonengrenzen/NachF_LWZ_INTERLIS2.zip"
+        dest pathToTempFolder
+        overwrite true
+    }
+
+    task unzipData(type: Copy, dependsOn: downloadData){
+        description = "Unzip Data.zip"
+        from zipTree(pathToDataZip)
+        into file(pathToUnzipFolder)
+        include "**/*.xtf"
+    }
+
+    task importData(type: Ili2pgImport, dependsOn: unzipData){
+            description = "Import der Landwirtschaftlichen Zonengrenzen"
+            database = [dbUriPub, dbUserPub, dbPwdPub]
+            dbschema = "alw_zonengrenzen_pub"
+            models = "Landwirtschaftliche_Zonengrenzen_LV95_V1_2"
+            dataFile = file(Paths.get(pathToUnzipFolder.toString(), "NachF_LWZ_INTERLIS2.xtf"))
+            deleteData = true
+            strokeArcs = true
+        }
