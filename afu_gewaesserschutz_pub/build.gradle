@@ -52,6 +52,10 @@ task exportGefkartMgdm(type: Ili2pgExport) {
     dbschema = 'afu_gewaesserschutz' 
     models = 'PlanerischerGewaesserschutz_LV03_V1_1'
     dataFile = exportFile
+    
+    doLast {
+            println "Data exportet to: " + dataFile
+        }        
 }
 /*
 4. Package and upload to the KKGEO AI
