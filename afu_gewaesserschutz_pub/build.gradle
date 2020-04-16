@@ -43,7 +43,7 @@ task transferZonen(type: Db2Db, dependsOn:archiveData){
 }
  
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
-def exportFileName = 'gewschutz.xtf'
+def exportFileName = 'SO_gefkart.xtf'
 def exportFile = file(Paths.get(pathToTempFolder.toString(), exportFileName))
 
 task exportGefkartMgdm(type: Ili2pgExport, dependsOn:transferZonen) {
