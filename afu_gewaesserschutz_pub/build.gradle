@@ -43,15 +43,17 @@ task transferZonen(type: Db2Db, dependsOn:archiveData){
 }
  
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
-def exportFileName = 'SO_gefkart.xtf'
+def exportFileName = 'SO_gewschutz.xtf'
 def exportFile = file(Paths.get(pathToTempFolder.toString(), exportFileName))
 
-task exportGefkartMgdm(type: Ili2pgExport, dependsOn:transferZonen) {
+task exportGefkartMgdm(type: Ili2pgExport, dependsOn: transferZonen) {
     description = "Exportiert die Gewässerschutzdaten in ein xtf-File."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'afu_gewaesserschutz' 
-    models = 'PlanerischerGewaesserschutz_LV03_V1_1'
+    models = 'PlanerischerGewaesserschutz_LV95_V1_1'
     dataFile = exportFile
+    disableValidation = true
+  
 }
  
 /*
