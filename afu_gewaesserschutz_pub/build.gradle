@@ -43,24 +43,21 @@ task transferZonen(type: Db2Db, dependsOn:archiveData){
 }
 */ 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
-def exportFileName = 'SO_gefkart.xtf'
+def exportFileName = 'SO_gewschutz.xtf'
 def exportFile = file(Paths.get(pathToTempFolder.toString(), exportFileName))
 
 task exportGefkartMgdm(type: Ili2pgExport) {
     description = "Exportiert die Gewässerschutzdaten in ein xtf-File."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'afu_gewaesserschutz' 
-    models = 'PlanerischerGewaesserschutz_LV03_V1_1'
+    models = 'PlanerischerGewaesserschutz_LV95_V1_1'
     dataFile = exportFile
-    
-    doLast {
-            println "Data exportet to: " + dataFile
-        }        
+    disableValidation = true
+   
 }
 /*
 4. Package and upload to the KKGEO AI
 */
-/* 
  
 def zipName = 'iliexport.zip'
 
@@ -91,4 +88,3 @@ task removeTmpFiles(type: Delete, dependsOn: uploadGefkartMgdm){
     description = "Entfernt während der Ausführung des Jobs erstellte Dateien."
 	delete file(Paths.get(pathToTempFolder.toString(), zipName)), exportFile
 }
-*/ 
