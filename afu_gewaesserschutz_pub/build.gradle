@@ -6,8 +6,8 @@ apply plugin: 'ch.so.agi.gretl'
 apply plugin: "de.undercouch.download"
 
 
-defaultTasks 'removeTmpFiles'
-
+defaultTasks 'exportGefkartMgdm'
+/*
 task transferAfuGewaesserschutz(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
@@ -41,7 +41,7 @@ task transferZonen(type: Db2Db, dependsOn:archiveData){
             new TransferSet('aww_gszoar_zonen_areale.sql', 'public.aww_gszoar', false)
     ]
 }
- 
+*/ 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def exportFileName = 'SO_gefkart.xtf'
 def exportFile = file(Paths.get(pathToTempFolder.toString(), exportFileName))
@@ -53,10 +53,10 @@ task exportGefkartMgdm(type: Ili2pgExport, dependsOn:transferZonen) {
     models = 'PlanerischerGewaesserschutz_LV03_V1_1'
     dataFile = exportFile
 }
- 
 /*
 4. Package and upload to the KKGEO AI
 */
+/* 
  
 def zipName = 'iliexport.zip'
 
@@ -87,4 +87,4 @@ task removeTmpFiles(type: Delete, dependsOn: uploadGefkartMgdm){
     description = "Entfernt während der Ausführung des Jobs erstellte Dateien."
 	delete file(Paths.get(pathToTempFolder.toString(), zipName)), exportFile
 }
- 
+*/ 
