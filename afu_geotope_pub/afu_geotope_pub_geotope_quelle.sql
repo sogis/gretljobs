@@ -169,7 +169,7 @@ SELECT
             THEN 'schutzwürdig'
         ELSE geotope_quelle.schutzwuerdigkeit
     END AS schutzwuerdigkeit,
-    geotope_quelle.geowissenschaftlicher_wert,
+    replace(geotope_quelle.geowissenschaftlicher_wert,'_',' ') AS geowissenschaftlicher_wert,
     geotope_quelle.anthropogene_gefaehrdung,
     geotope_quelle.lokalname,
     geotope_quelle.kant_geschuetztes_objekt,
