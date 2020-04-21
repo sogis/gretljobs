@@ -125,6 +125,10 @@ export ORG_GRADLE_PROJECT_dbPwdPub=gretl
 ```
 
 Nun können in den DBs nach Belieben Schemas angelegt und Daten importiert werden.
+Dies kann z.B. mit *ili2pg* erfolgen
+oder durch Ausführen von SQL-Skripten
+oder durch Restoren aus einem Dump.
+
 Die DBs sind mit folgenden Verbindungsparametern erreichbar:
 
 #### Edit-DB
@@ -140,6 +144,31 @@ Die DBs sind mit folgenden Verbindungsparametern erreichbar:
 * Port: `54322`
 * DB-Name: `pub`
 * Benutzer: `gretl` (für Lese- und Schreibzugriff) oder `admin` (zum Anlegen von Schemen, Tabellen usw.); das Passwort lautet jeweils gleich wie der Benutzername
+
+### Die Rollen (Benutzer und Gruppen) der produktiven DBs importieren
+
+Um auch die in den produktiven DBs vorhandenen DB-Rollen
+in den Entwicklungs-DBs verfügbar zu haben,
+kopiert man die Datei mit den DB-Rollen (die "Globals")
+vom geoutil-Server auf seine lokale Maschine,
+entfernt mit einem `sed`-Befehl diejenigen Zeilen,
+die für die Entwicklungs-DBs nicht nötig sind,
+und importiert sie dann mit `psql` in die Entwicklungs-DBs:
+```
+scp geoutil.verw.rootso.org:/opt/workspace/dbdump/globals_geodb.rootso.org.dmp /tmp
+sed -E -i.bak '/^CREATE ROLE (postgres|admin|gretl)\;/d; /^ALTER ROLE (postgres|admin|gretl) /d' /tmp/globals_geodb.rootso.org.dmp
+psql --single-transaction -h localhost -p 54321 -d edit -U postgres -f /tmp/globals_geodb.rootso.org.dmp
+psql --single-transaction -h localhost -p 54322 -d pub -U postgres -f /tmp/globals_geodb.rootso.org.dmp
+```
+Für den Fall, dass `psql` auf der lokalen Maschine nicht installiert ist,
+kopiert man stattdessen die Globals zuerst in den laufenden Container
+und führt danach den `psql`-Befehl innerhalb des Containers aus:
+```
+docker cp /tmp/globals_geodb.rootso.org.dmp gretljobs_pub-db_1:/tmp
+docker exec -e PGHOST=/tmp -it gretljobs_pub-db_1 psql --single-transaction -d pub -f /tmp/globals_geodb.rootso.org.dmp
+docker cp /tmp/globals_geodb.rootso.org.dmp gretljobs_edit-db_1:/tmp
+docker exec -e PGHOST=/tmp -it gretljobs_edit-db_1 psql --single-transaction -d pub -f /tmp/globals_geodb.rootso.org.dmp
+```
 
 
 
