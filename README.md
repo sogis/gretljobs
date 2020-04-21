@@ -114,16 +114,6 @@ docker-compose down # (dieser Befehl ist optional; er kann benutzt werden, um be
 docker-compose up
 ```
 
-Die Verbindungen zu den DBs konfigurieren:
-```
-export ORG_GRADLE_PROJECT_dbUriEdit=jdbc:postgresql://edit-db/edit
-export ORG_GRADLE_PROJECT_dbUserEdit=gretl
-export ORG_GRADLE_PROJECT_dbPwdEdit=gretl
-export ORG_GRADLE_PROJECT_dbUriPub=jdbc:postgresql://pub-db/pub
-export ORG_GRADLE_PROJECT_dbUserPub=gretl
-export ORG_GRADLE_PROJECT_dbPwdPub=gretl
-```
-
 Nun können in den DBs nach Belieben Schemas angelegt und Daten importiert werden.
 Dies kann z.B. mit *ili2pg* erfolgen
 oder durch Ausführen von SQL-Skripten
@@ -174,7 +164,20 @@ docker exec -e PGHOST=/tmp -it gretljobs_edit-db_1 psql --single-transaction -d 
 
 ## GRETL Runtime Docker Image verwenden
 
-Für die Entwicklung von GRETL-Jobs kann GRETL mit dem folgenden Skript als Docker-Container gestartet werden (Beispiel):
+Für die Entwicklung von GRETL-Jobs
+kann GRETL mit einem Wrapper-Skript als Docker-Container gestartet werden.
+
+Zunächst müssen die Verbindungsparameter zu den DBs konfiguriert werden:
+```
+export ORG_GRADLE_PROJECT_dbUriEdit=jdbc:postgresql://edit-db/edit
+export ORG_GRADLE_PROJECT_dbUserEdit=gretl
+export ORG_GRADLE_PROJECT_dbPwdEdit=gretl
+export ORG_GRADLE_PROJECT_dbUriPub=jdbc:postgresql://pub-db/pub
+export ORG_GRADLE_PROJECT_dbUserPub=gretl
+export ORG_GRADLE_PROJECT_dbPwdPub=gretl
+```
+
+Danach kann der GRETL-Container gestartet werden. Beispiel-Aufruf:
 
 ```
 ./start-gretl.sh --docker-image sogis/gretl-runtime:latest [--docker-network NETWORK] --job-directory $PWD/jobname [taskName...] [--option-name...]
