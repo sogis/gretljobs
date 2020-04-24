@@ -15,27 +15,58 @@ def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, "unzip_data")
 def pathToDataZip = Paths.get(pathToTempFolder, "NachF_LWZ_INTERLIS2.zip")
 
+// später löschen
+def pathToHomeFolder =  System.getProperty("user.dir")
 
- task "downloadData"(type: Download){
-        description = "Download Landwirtschaftliche Zonengrenzen"
-        src "https://data.geo.admin.ch/ch.blw.landwirtschaftliche-zonengrenzen/NachF_LWZ_INTERLIS2.zip"
-        dest pathToTempFolder
-        overwrite true
-    }
 
-    task unzipData(type: Copy, dependsOn: downloadData){
-        description = "Unzip Data.zip"
-        from zipTree(pathToDataZip)
-        into file(pathToUnzipFolder)
-        include "**/*.xtf"
-    }
 
-    task importData(type: Ili2pgImport, dependsOn: unzipData){
-            description = "Import der Landwirtschaftlichen Zonengrenzen"
-            database = [dbUriPub, dbUserPub, dbPwdPub]
-            dbschema = "alw_zonengrenzen_pub"
-            models = "Landwirtschaftliche_Zonengrenzen_LV95_V1_2"
-            dataFile = file(Paths.get(pathToUnzipFolder.toString(), "NachF_LWZ_INTERLIS2.xtf"))
-            deleteData = true
-            strokeArcs = true
-        }
+task downloadKataloge(type: Download){
+    description = "Download der Kataloge"
+    src "https://models.geo.admin.ch/BLW/landwirtschaftliche_zonengrenzen_kataloge_20140701.xml"
+    dest pathToTempFolder
+    overwrite true
+}
+
+
+task importKataloge(type: Ili2pgImport, dependsOn: 'downloadKataloge'){
+     description = "Import der Kataloge"
+     database = [dbUriPub, dbUserPub, dbPwdPub]
+     dbschema = "alw_zonengrenzen_pub"
+     models = "Landwirtschaftliche_Zonengrenzen_Kataloge_V1_2"
+     dataFile = file(Paths.get(pathToTempFolder.toString(), "landwirtschaftliche_zonengrenzen_kataloge_20140701.xml"))
+     deleteData = true
+}
+
+
+task "downloadData"(type: Download, dependsOn: 'importKataloge'){
+    description = "Download Landwirtschaftliche Zonengrenzen"
+    src "https://data.geo.admin.ch/ch.blw.landwirtschaftliche-zonengrenzen/NachF_LWZ_INTERLIS2.zip"
+    dest pathToTempFolder
+    overwrite true
+}
+
+task unzipData(type: Copy, dependsOn: downloadData){
+    description = "Unzip Data.zip"
+    from zipTree(pathToDataZip)
+    into file(pathToUnzipFolder)
+    include "**/*.xtf"
+}
+
+
+task importData(type: Ili2pgImport, dependsOn: unzipData){
+    description = "Import der Landwirtschaftlichen Zonengrenzen"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = "alw_zonengrenzen_pub"
+    models = "Landwirtschaftliche_Zonengrenzen_LV95_V1_2"
+    
+            
+    //dataFile = file(Paths.get(pathToUnzipFolder.toString(), "NachF_LWZ_INTERLIS2.xtf"))
+    
+    // später löschen
+    dataFile = file(Paths.get(pathToHomeFolder.toString(), "NachF_LWZ_INTERLIS2_small.xtf"))
+            
+        
+    deleteData = true
+    strokeArcs = true
+    disableValidation = true
+}
