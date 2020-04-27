@@ -6,6 +6,7 @@ INSERT INTO
     avt_oevkov_${currentYear}.auswertung_auswertung_gtfs
     (
     haltestellenname,
+    route_id,
     linie,
     unternehmer,
     anzahl_abfahrten_linie,
@@ -168,6 +169,7 @@ INSERT INTO
 -- die meisten Haltestellen
     SELECT
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         sum(gtfs_count) AS gtfs_count,
@@ -194,6 +196,7 @@ INSERT INTO
         )
     GROUP BY
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         verkehrsmittel
@@ -209,6 +212,7 @@ INSERT INTO
 -- Bahnhof Solothurn
     SELECT
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         sum(gtfs_count),
@@ -224,6 +228,7 @@ INSERT INTO
             ('L304', 'L308', 'L410', 'L411', 'L413')
     GROUP BY
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         verkehrsmittel
@@ -233,6 +238,7 @@ UNION ALL
 --   Bahnhof Olten: L410 Biel - Olten
     SELECT
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         sum(gtfs_count) AS gtfs_count,
@@ -302,6 +308,7 @@ UNION ALL
          )
     GROUP BY
         stop_name,
+        route_id,
         linienname,
         gtfs_count,
         unternehmer,
@@ -312,6 +319,7 @@ UNION ALL
 -- Bahnhof Olten:  L450 Olten - Bern
     SELECT
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         sum(gtfs_count),
@@ -374,6 +382,7 @@ UNION ALL
          )
     GROUP BY
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         verkehrsmittel
@@ -383,6 +392,7 @@ UNION ALL
 -- Bahnhof Olten: L500 Olten - Basel (S3)
     SELECT
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         sum(gtfs_count),
@@ -397,6 +407,7 @@ UNION ALL
        linienname = 'L500 Olten - Basel (S3)'
     GROUP BY
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         verkehrsmittel
@@ -406,6 +417,7 @@ UNION ALL
 -- Bahnhof Olten: L503 Olten - Sissach (S9)
     SELECT
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         sum(gtfs_count),
@@ -420,6 +432,7 @@ UNION ALL
         linienname = 'L503 Olten - Sissach (S9)'
     GROUP BY
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         verkehrsmittel
@@ -429,6 +442,7 @@ UNION ALL
 -- Bahnhof Olten: L510 Olten - Sursee (S8)
     SELECT
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         sum(gtfs_count),
@@ -443,6 +457,7 @@ UNION ALL
         linienname = 'L510 Olten - Sursee (S8)'
     GROUP BY
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         verkehrsmittel
@@ -452,6 +467,7 @@ UNION ALL
 -- Bahnhof Olten: L510 Olten - Luzern (IR/RE), RegioExpress zählt hier zu R
     SELECT
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         sum(gtfs_count),
@@ -521,6 +537,7 @@ UNION ALL
          )
     GROUP BY
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         verkehrsmittel
@@ -530,6 +547,7 @@ UNION ALL
 -- Bahnhof Olten: L650 Olten - Zürich HB (IC/IR/RE)
     SELECT
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         sum(gtfs_count),
@@ -600,6 +618,7 @@ UNION ALL
          )
     GROUP BY
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         verkehrsmittel
@@ -610,6 +629,7 @@ UNION ALL
 -- (650 Olten-Zürich R, S und 450 Bern - Olten haben die gleichen route_ids!
     SELECT
     stop_name,
+        route_id,
         linienname,
         unternehmer,
         sum(gtfs_count) AS gtfs_count,
@@ -624,6 +644,7 @@ UNION ALL
         substring(linienname from 1 for 4) = 'L650'
     GROUP BY
         stop_name,
+        route_id,
         linienname,
         gtfs_count,
         unternehmer,
@@ -635,6 +656,7 @@ UNION ALL
 -- (650 Olten-Zürich R, S und 450 Bern - Olten haben die gleichen route_ids!
     SELECT
     stop_name,
+        route_id,
         linienname,
         unternehmer,
         sum(gtfs_count) AS gtfs_count,
@@ -649,6 +671,7 @@ UNION ALL
         substring(linienname from 1 for 4) = 'L650'        
     GROUP BY
         stop_name,
+        route_id,
         linienname,
         gtfs_count,
         unternehmer,
@@ -660,6 +683,7 @@ UNION ALL
 -- (650 Olten-Zürich R, S und 450 Bern - Olten haben die gleichen route_ids!
     SELECT
     stop_name,
+        route_id,
         linienname,
         unternehmer,
         sum(gtfs_count) AS gtfs_count,
@@ -676,6 +700,7 @@ UNION ALL
         linienname LIKE 'L650%'
     GROUP BY
         stop_name,
+        route_id,
         linienname,
         gtfs_count,
         unternehmer,
@@ -686,6 +711,7 @@ UNION ALL
 -- Bahnhof Grenchen Süd
     SELECT
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         sum(gtfs_count),
@@ -700,6 +726,7 @@ UNION ALL
         substring(linienname from 1 for 4) = 'L410'
     GROUP BY
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         verkehrsmittel
@@ -710,6 +737,7 @@ UNION ALL
 -- (650 Olten-Zürich R, S und 450 Bern - Olten haben die gleichen route_ids!
     SELECT
     stop_name,
+        route_id,
         linienname,
         unternehmer,
         sum(gtfs_count) AS gtfs_count,
@@ -724,6 +752,7 @@ UNION ALL
         substring(linienname from 1 for 4) = 'L450'
     GROUP BY
         stop_name,
+        route_id,
         linienname,
         gtfs_count,
         unternehmer,
@@ -736,6 +765,7 @@ UNION ALL
 -- haben die gleiche route_id = 4-3-j19-1 
     SELECT
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         sum(gtfs_count),
@@ -750,6 +780,7 @@ UNION ALL
         linienname = 'L230 Basel - Delémont (S3)'
     GROUP BY
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         verkehrsmittel
@@ -759,6 +790,7 @@ UNION ALL
 -- Bahnhof Grenchen Nord
     SELECT
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         sum(gtfs_count),
@@ -773,6 +805,7 @@ UNION ALL
         route_desc = 'RegioExpress'              -- InterCity werden nicht gezaehlt
     GROUP BY
         stop_name,
+        route_id,
         linienname,
         unternehmer,
         verkehrsmittel
@@ -789,7 +822,9 @@ INSERT INTO
      avt_oevkov_${currentYear}.auswertung_auswertung_gtfs
      (
           haltestellenname,
-          linie, unternehmer,
+          route_id,
+          linie,
+          unternehmer,
           anzahl_abfahrten_linie,
           verkehrsmittel
      )
@@ -800,15 +835,15 @@ INSERT INTO
         CASE
         WHEN (SELECT BTRIM(lower(to_char((
                          SELECT
-                                 stichtag
-                             FROM
-                                    avt_oevkov_${currentYear}.sachdaten_oevkov_daten), 'Day')))) = 'thursday'
+                             stichtag
+                         FROM
+                             avt_oevkov_${currentYear}.sachdaten_oevkov_daten), 'Day')))) = 'thursday'
              THEN thursday
         WHEN (SELECT BTRIM(lower(to_char((
                          SELECT
-                                 stichtag
-                             FROM
-                                    avt_oevkov_${currentYear}.sachdaten_oevkov_daten), 'Day')))) = 'tuesday'
+                             stichtag
+                         FROM
+                             avt_oevkov_${currentYear}.sachdaten_oevkov_daten), 'Day')))) = 'tuesday'
              THEN tuesday
         END AS dayofweek
         FROM
@@ -829,6 +864,7 @@ INSERT INTO
     )
      SELECT
          stop_name,
+         route.route_id,
          linie.linienname,
          agency.unternehmer,
          0 as gtfs_count,
@@ -899,11 +935,13 @@ INSERT INTO
         route_desc = 'Bus'
      GROUP BY
     stop.stop_name,
+    route.route_id,
     linie.linienname,
     agency.unternehmer,
     verkehrsmittel
 )
 ;
+
 
 -- Gewichtung schreiben
 UPDATE
@@ -914,4 +952,36 @@ FROM
     avt_oevkov_${currentYear}.sachdaten_verkehrsmittel AS verkehrsmittel
 WHERE
     auswertung.verkehrsmittel = verkehrsmittel.verkehrsmittel
+;
+
+
+-- Alle Einträge in Tabelle sachdaten_linie_route als "nicht verwendet" markieren,
+-- welche nicht in der GTFS-Auswertung enthalten sind
+
+-- zuerst Kommentare für bereits verwendeten Stichtag löschen
+UPDATE avt_oevkov_${currentYear}.sachdaten_linie_route
+SET
+    kommentar = NULL
+WHERE
+    kommentar LIKE 'nicht verwendet am Stichtag %'
+;
+
+WITH stichtag AS (
+SELECT
+    to_char(stichtag, 'dd.mm.YYYY') AS stichtag
+FROM
+    avt_oevkov_${currentYear}.sachdaten_oevkov_daten
+)
+UPDATE avt_oevkov_${currentYear}.sachdaten_linie_route
+SET
+    kommentar = 'nicht verwendet am Stichtag '||stichtag.stichtag
+FROM
+   stichtag
+WHERE
+    route_id NOT IN (
+        SELECT
+            route_id
+        FROM
+            avt_oevkov_${currentYear}.auswertung_auswertung_gtfs
+    )
 ;
