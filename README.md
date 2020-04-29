@@ -157,7 +157,7 @@ und führt danach den `psql`-Befehl innerhalb des Containers aus:
 docker cp /tmp/globals_geodb.rootso.org.dmp gretljobs_pub-db_1:/tmp
 docker exec -e PGHOST=/tmp -it gretljobs_pub-db_1 psql --single-transaction -d pub -f /tmp/globals_geodb.rootso.org.dmp
 docker cp /tmp/globals_geodb.rootso.org.dmp gretljobs_edit-db_1:/tmp
-docker exec -e PGHOST=/tmp -it gretljobs_edit-db_1 psql --single-transaction -d pub -f /tmp/globals_geodb.rootso.org.dmp
+docker exec -e PGHOST=/tmp -it gretljobs_edit-db_1 psql --single-transaction -d edit -f /tmp/globals_geodb.rootso.org.dmp
 ```
 
 
