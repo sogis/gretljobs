@@ -20,7 +20,7 @@ SELECT
 	standort.flurname AS flurname, 
 	standort.bfsnummeraktuell AS bfs_nummer, 
         standort.standortid AS profilnummer,
-	standort.bfsnummer AS bfsnummer_erfassung,
+	standort.bfsnummer AS bfs_nummer_erfassung,
 	st_x(standort.koordinaten)||' / '||st_y(standort.koordinaten) AS koordinaten,  
 	profil.profilbezeichnung1 AS profilbezeichnung,
 	bich_klassifikation.codeid AS klassifikationssystem, 
