@@ -18,7 +18,7 @@ SELECT
 	standort_kleinrelief.codetext_de AS kleinrelief_text, 
 	standort.gemeinde AS gemeinde, 
 	standort.flurname AS flurname, 
-	standort.bfsnummeraktuell AS bfsnummer, 
+	standort.bfsnummeraktuell AS bfs_nummer, 
         standort.standortid AS profilnummer,
 	standort.bfsnummer AS bfsnummer_erfassung,
 	st_x(standort.koordinaten)||' / '||st_y(standort.koordinaten) AS koordinaten,  
