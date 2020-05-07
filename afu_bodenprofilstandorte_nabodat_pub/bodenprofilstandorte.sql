@@ -31,8 +31,7 @@ SELECT
 	erhebung.erhebungsdatum AS erhebungsdatum, 
 	profil_bodentyp.codeid AS bodentyp, 
 	profil_bodentyp.codetext_de AS bodentyp_text,
-        boden_untertypen.codeid AS untertyp,
-	boden_untertypen.codetext_de AS untertyp_text, 
+        boden_untertypen.untertyp_string AS untertyp, 
 	oberbodenskelett.codeid AS skelettgehalt_oberboden, 
 	oberbodenskelett.codetext_de AS skelettgehalt_oberboden_text, 
 	unterbodenskelett.codeid AS skelettgehalt_unterboden, 
@@ -227,7 +226,7 @@ LEFT JOIN
     afu_bodendaten_nabodat.codelistnprfldten_bodentyp profil_bodentyp
 	ON profil.bodentyp = profil_bodentyp.t_id
 LEFT JOIN 
-    (SELECT  untertyp.profil, string_agg(code.codeid,', ') AS codeid, string_agg(code.codetext_de,', ') AS codetext_de 
+    (SELECT  untertyp.profil, row_to_json(row(string_agg(code.codeid,', '), string_agg(code.codetext_de,', '))) AS untertyp_string 
      FROM
      afu_bodendaten_nabodat.punktdaten_untertyp untertyp
      LEFT JOIN 
