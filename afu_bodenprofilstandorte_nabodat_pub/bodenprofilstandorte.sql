@@ -44,7 +44,7 @@ SELECT
 	bodenwasserhaushaltsgruppe.codetext_de AS bodenwasserhaushaltsgruppe_text, 
 	pflanzengruendigkeit.codeid AS pflanzengruendigkeit, 
 	profil.pflanzennutzbaregruendigkeitwert AS pflanzengruendigkeitswert, 
-	pflanzengruendigkeit.codetext_de AS pflanzengruendigkeit_text, 
+	pflanzengruendigkeit.codetext_de AS pflanzengruendigkeitswert_text, 
 	standorteigenschaften.neigungprozent AS neigung,
 	standort_gelaendeform.codeid As gelaendeform, 
 	standort_gelaendeform .codetext_de AS gelaendeform_text,
