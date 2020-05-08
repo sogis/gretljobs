@@ -80,7 +80,7 @@ SELECT
 	humusform.codetext_de AS humusform_text,
 	produktionsfaehigkeitsstufe.codeid AS produktionsfaehigkeitsstufe,
 	produktionsfaehigkeitsstufe.codetext_de AS produktionsfaehigkeitsstufe_text,
-	wald.waldproduktionspunkte AS produktivitaetsfaehigkeit_punkte
+	wald.waldproduktionspunkte AS produktionsfaehigkeit_punkte
 FROM 
     afu_bodendaten_nabodat.punktdaten_standort standort
 -- Standort
