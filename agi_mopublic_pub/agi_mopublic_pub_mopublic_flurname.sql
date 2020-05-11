@@ -12,6 +12,15 @@ WITH pos AS
        agi_dm01avso24.nomenklatur_flurnamepos AS pos
        LEFT JOIN agi_dm01avso24.gemeindegrenzen_gemeinde AS gemeinde
        ON gemeinde.bfsnr = CAST(pos.t_datasetname AS integer)
+),
+aimport AS
+(
+	SELECT
+		max(importdate) AS importdate, dataset
+	FROM
+		agi_dm01avso24.t_ili2db_import
+	GROUP BY
+		dataset 
 )
 SELECT
     flurname.aname AS flurname,
@@ -43,14 +52,6 @@ FROM
         ON flurname.entstehung = nachfuehrung.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
         ON flurname.t_basket = basket.t_id
-    LEFT JOIN 
-    (
-        SELECT
-            max(importdate) AS importdate, dataset
-        FROM
-            agi_dm01avso24.t_ili2db_import
-        GROUP BY
-            dataset 
-    ) AS  aimport
-        ON basket.dataset = aimport.dataset        
+    LEFT JOIN aimport
+        ON basket.dataset = aimport.dataset    
 ;
