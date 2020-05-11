@@ -29,24 +29,18 @@ pos AS
         pos
     FROM 
         agi_dm01avso24.liegenschaften_grundstueckpos
-)
-SELECT 
-    nbident,
-    nummer,
-    art_txt,
-    flaechenmass,
-    egrid,
-    bfs_nr,    
-    orientierung,
-    hali,
-    vali,
-    importdatum,
-    nachfuehrung,
-    foo.geometrie,  
-    pos,  
-    gemeinde.aname AS gemeinde,
-    grundbuchkreis.aname AS grundbuch
-FROM 
+),
+aimport AS
+(
+	SELECT
+		max(importdate) AS importdate, dataset
+	FROM
+		agi_dm01avso24.t_ili2db_import
+	GROUP BY
+		dataset 
+),
+-- Grundstuecke
+grundstueck AS
 (
     SELECT
         grundstueck.nbident,
@@ -61,6 +55,7 @@ FROM
         aimport.importdate AS importdatum,
         nachfuehrung.gueltigereintrag AS nachfuehrung,
         liegenschaft.geometrie AS geometrie,    
+	    ST_PointOnSurface(ST_MakeValid(liegenschaft.geometrie)) AS point_on_surface,
         pos.pos
     FROM
         agi_dm01avso24.liegenschaften_grundstueck AS grundstueck
@@ -72,15 +67,7 @@ FROM
             ON grundstueck.entstehung = nachfuehrung.t_id
         LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
             ON grundstueck.t_basket = basket.t_id    
-        LEFT JOIN 
-        (
-            SELECT
-                max(importdate) AS importdate, dataset
-            FROM
-                agi_dm01avso24.t_ili2db_import
-            GROUP BY
-                dataset 
-        ) AS aimport
+        LEFT JOIN aimport
             ON basket.dataset = aimport.dataset    
         
     WHERE 
@@ -100,7 +87,8 @@ FROM
         pos.vali,
         aimport.importdate AS importdatum,
         nachfuehrung.gueltigereintrag AS nachfuehrung,
-        selbstrecht.geometrie AS geometrie,    
+        selbstrecht.geometrie AS geometrie,
+	    ST_PointOnSurface(ST_MakeValid(selbstrecht.geometrie)) AS point_on_surface,
         pos.pos
     FROM
         agi_dm01avso24.liegenschaften_grundstueck AS grundstueck
@@ -113,22 +101,14 @@ FROM
         LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
             ON grundstueck.t_basket = basket.t_id    
         LEFT JOIN 
-        (
-            SELECT
-                max(importdate) AS importdate, dataset
-            FROM
-                agi_dm01avso24.t_ili2db_import
-            GROUP BY
-                dataset 
-        ) AS aimport
+aimport
             ON basket.dataset = aimport.dataset    
         
     WHERE 
         selbstrecht.geometrie IS NOT NULL
-) AS foo
-LEFT JOIN gemeinde 
-ON gemeinde.bfsnr = foo.bfs_nr
-LEFT JOIN 
+),
+-- grundbuchkreise
+grundbuchkreis AS 
 (
     SELECT
       kreis.aname AS aname,
@@ -155,8 +135,30 @@ LEFT JOIN
             nbbereich.nbnummer
       ) AS nummerierungsbereich
       ON CAST(nummerierungsbereich.t_datasetname AS integer) = kreis.bfsnr AND nummerierungsbereich.nbident = kreis.nbident
-) AS grundbuchkreis 
---ON ST_Intersects(ST_PointOnSurface(ST_Buffer(foo.geometrie,0)), grundbuchkreis.geometrie)
---Aenderung vom 04.12.2019, sc: ST_Buffer ersetzt durch ST_MakeValid (ST_Buffer hat nicht auf allen Liegenschaften den Grundbuchkreis abgefüllt)
-ON ST_Intersects(ST_PointOnSurface(ST_MakeValid(foo.geometrie)), grundbuchkreis.geometrie)
+)
+-- Main query
+SELECT 
+    nbident,
+    nummer,
+    art_txt,
+    flaechenmass,
+    egrid,
+    bfs_nr,    
+    orientierung,
+    hali,
+    vali,
+    importdatum,
+    nachfuehrung,
+    grundstueck.geometrie,  
+    pos,  
+    gemeinde.aname AS gemeinde,
+    grundbuchkreis.aname AS grundbuch
+FROM 
+ grundstueck
+LEFT JOIN gemeinde 
+  ON gemeinde.bfsnr = grundstueck.bfs_nr
+LEFT JOIN grundbuchkreis 
+  --ON ST_Intersects(ST_PointOnSurface(ST_Buffer(grundstueck.geometrie,0)), grundbuchkreis.geometrie)
+  --Aenderung vom 04.12.2019, sc: ST_Buffer ersetzt durch ST_MakeValid (ST_Buffer hat nicht auf allen Liegenschaften den Grundbuchkreis abgefüllt)
+  ON ST_Intersects(grundstueck.point_on_surface, grundbuchkreis.geometrie)
 ;
