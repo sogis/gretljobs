@@ -1,3 +1,12 @@
+WITH aimport AS
+(
+	SELECT
+		max(importdate) AS importdate, dataset
+	FROM
+		agi_dm01avso24.t_ili2db_import
+	GROUP BY
+		dataset 
+)
 SELECT
     'LFP1' AS typ_txt,
     lagefixpunkt.nbident, 
@@ -39,16 +48,8 @@ FROM
         ON lagefixpunkt.entstehung = nachfuehrung.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
     	ON lagefixpunkt.t_basket = basket.t_id
-    LEFT JOIN 
-    (
-    	SELECT
-			max(importdate) AS importdate, dataset
-		FROM
-			agi_dm01avso24.t_ili2db_import
-		GROUP BY
-			dataset 
-    ) AS  aimport
-    	ON basket.dataset = aimport.dataset
+    LEFT JOIN aimport
+        ON basket.dataset = aimport.dataset    
         
 UNION ALL
 
@@ -93,16 +94,8 @@ FROM
         ON lagefixpunkt.entstehung = nachfuehrung.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
     	ON lagefixpunkt.t_basket = basket.t_id
-    LEFT JOIN 
-    (
-    	SELECT
-			max(importdate) AS importdate, dataset
-		FROM
-			agi_dm01avso24.t_ili2db_import
-		GROUP BY
-			dataset 
-    ) AS  aimport
-    	ON basket.dataset = aimport.dataset        
+    LEFT JOIN aimport
+        ON basket.dataset = aimport.dataset    
 
 UNION ALL
 
@@ -147,16 +140,8 @@ FROM
         ON lagefixpunkt.entstehung = nachfuehrung.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
     	ON lagefixpunkt.t_basket = basket.t_id
-    LEFT JOIN 
-    (
-    	SELECT
-			max(importdate) AS importdate, dataset
-		FROM
-			agi_dm01avso24.t_ili2db_import
-		GROUP BY
-			dataset 
-    ) AS  aimport
-    	ON basket.dataset = aimport.dataset
+    LEFT JOIN aimport
+        ON basket.dataset = aimport.dataset    
 
 UNION ALL
 
@@ -197,16 +182,8 @@ FROM
         ON hoehenfixpunkt.entstehung = nachfuehrung.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
     	ON hoehenfixpunkt.t_basket = basket.t_id
-    LEFT JOIN 
-    (
-    	SELECT
-			max(importdate) AS importdate, dataset
-		FROM
-			agi_dm01avso24.t_ili2db_import
-		GROUP BY
-			dataset 
-    ) AS  aimport
-    	ON basket.dataset = aimport.dataset
+    LEFT JOIN aimport
+        ON basket.dataset = aimport.dataset    
 
 UNION ALL
 
@@ -247,16 +224,8 @@ FROM
         ON hoehenfixpunkt.entstehung = nachfuehrung.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
     	ON hoehenfixpunkt.t_basket = basket.t_id
-    LEFT JOIN 
-    (
-    	SELECT
-			max(importdate) AS importdate, dataset
-		FROM
-			agi_dm01avso24.t_ili2db_import
-		GROUP BY
-			dataset 
-    ) AS  aimport
-    	ON basket.dataset = aimport.dataset
+    LEFT JOIN aimport
+        ON basket.dataset = aimport.dataset    
 
 UNION ALL
     
@@ -297,14 +266,6 @@ FROM
         ON hoehenfixpunkt.entstehung = nachfuehrung.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
     	ON hoehenfixpunkt.t_basket = basket.t_id
-    LEFT JOIN 
-    (
-    	SELECT
-			max(importdate) AS importdate, dataset
-		FROM
-			agi_dm01avso24.t_ili2db_import
-		GROUP BY
-			dataset 
-    ) AS  aimport
-    	ON basket.dataset = aimport.dataset        
+    LEFT JOIN aimport
+        ON basket.dataset = aimport.dataset    
 ;
