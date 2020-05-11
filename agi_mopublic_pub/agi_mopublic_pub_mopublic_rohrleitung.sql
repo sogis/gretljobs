@@ -1,3 +1,12 @@
+WITH aimport AS
+(
+	SELECT
+		max(importdate) AS importdate, dataset
+	FROM
+		agi_dm01avso24.t_ili2db_import
+	GROUP BY
+		dataset 
+)
 SELECT
     objekt.art AS art_txt,
     objekt.betreiber,
@@ -13,14 +22,6 @@ FROM
         ON objekt.entstehung = nachfuehrung.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
         ON objekt.t_basket = basket.t_id    
-    LEFT JOIN 
-    (
-        SELECT
-            max(importdate) AS importdate, dataset
-        FROM
-            agi_dm01avso24.t_ili2db_import
-        GROUP BY
-            dataset 
-    ) AS aimport
+    LEFT JOIN aimport
         ON basket.dataset = aimport.dataset    
 ;
