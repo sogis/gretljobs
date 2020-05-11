@@ -1,3 +1,12 @@
+WITH aimport AS
+(
+	SELECT
+		max(importdate) AS importdate, dataset
+	FROM
+		agi_dm01avso24.t_ili2db_import
+	GROUP BY
+		dataset 
+)
 SELECT
     gelaendename.aname AS gelaendename,
     CAST(gelaendename.t_datasetname AS INT) AS bfs_nr,    
@@ -30,14 +39,6 @@ FROM
         ON gelaendename.entstehung = nachfuehrung.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
         ON gelaendename.t_basket = basket.t_id
-    LEFT JOIN 
-    (
-        SELECT
-            max(importdate) AS importdate, dataset
-        FROM
-            agi_dm01avso24.t_ili2db_import
-        GROUP BY
-            dataset 
-    ) AS  aimport
-        ON basket.dataset = aimport.dataset      
+    LEFT JOIN aimport
+        ON basket.dataset = aimport.dataset    
 ;
