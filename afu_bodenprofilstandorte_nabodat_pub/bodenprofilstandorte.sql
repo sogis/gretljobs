@@ -226,7 +226,11 @@ LEFT JOIN
     afu_bodendaten_nabodat.codelistnprfldten_bodentyp profil_bodentyp
 	ON profil.bodentyp = profil_bodentyp.t_id
 LEFT JOIN 
-    (SELECT  untertyp.profil, row_to_json(row(string_agg(code.codeid,', '), string_agg(code.codetext_de,', '))) AS untertyp_string 
+    (SELECT  untertyp.profil, 
+             json_build_object(
+                 'untertyp', string_agg(code.codeid,', '), 
+                 'untertyp_text', string_agg(code.codetext_de,', ')
+             ) AS untertyp_string 
      FROM
      afu_bodendaten_nabodat.punktdaten_untertyp untertyp
      LEFT JOIN 
@@ -354,15 +358,37 @@ LEFT JOIN
 LEFT JOIN 
     (SELECT 
         horizont.profil,
-	    json_agg(row_to_json(row(horizont.tiefebis, 
-								 row_to_json(row(gefuege_form.codeid, gefuege_form.codetext_de, gefuege_groesse.codeid, gefuege_groesse.codetext_de)),
-		    		    messung.zustand_org_substanz, messung.zustand_org_substanz_messwert, messung.tongehalt, messung.tongehalt_labor, 
-			    	    messung.schluffgehalt, messung.schluffgehalt_labor, messung.sandgehalt, messung.sandgehalt_labor, messung.kies, messung.steine, 
-				        messung.kalk, messung.kalk_labor, messung.ph_wert, messung.cacl2_wert, 
-								 row_to_json(row(messung.farbtonzahl, messung.farbton, messung.farbe_helligkeit, messung.farbe_intensitaet))
-								)
-							)
-				) AS horizontwert
+	    json_agg(
+			json_build_object(
+				'tiefe', horizont.tiefebis, 
+				'gefuege', json_build_object(
+					'gefuegeform', gefuege_form.codeid, 
+					'gefuegeform_text', gefuege_form.codetext_de, 
+					'gefuegegroesse', gefuege_groesse.codeid, 
+					'gefuegegroesse_text', gefuege_groesse.codetext_de
+				),
+				'zustand_organische_substanz', messung.zustand_org_substanz, 
+				'zustand_organische_substanz_labor', messung.zustand_org_substanz_messwert, 
+				'tongehalt', messung.tongehalt, 
+				'tongehalt_labor', messung.tongehalt_labor,
+				'schluffgehalt', messung.schluffgehalt, 
+				'schluffgehalt_labor', messung.schluffgehalt_labor, 
+				'sandgehalt', messung.sandgehalt, 
+				'sandgehalt_labor', messung.sandgehalt_labor, 
+				'kies', messung.kies, 
+				'steine', messung.steine,
+				'kalk', messung.kalk, 
+				'kalk_labor', messung.kalk_labor, 
+				'ph_wert', messung.ph_wert, 
+				' cacl2_wert', messung.cacl2_wert, 
+				'farbe', json_build_object(
+					'farbtonzahl', messung.farbtonzahl, 
+					'farbton', messung.farbton, 
+					'farbton_helligkeit', messung.farbe_helligkeit, 
+					'farbton_intensitaet', messung.farbe_intensitaet
+				)
+			)
+		) AS horizontwert
     FROM 
         afu_bodendaten_nabodat.punktdaten_horizont horizont
     --Gefuege	
