@@ -8,6 +8,15 @@ WITH strassenname AS (
     ON lokalisationsname.benannte = lokalisation.t_id
   WHERE lokalisation.istoffiziellebezeichnung = 'ja'
 ),
+aimport AS
+(
+	SELECT
+		max(importdate) AS importdate, dataset
+	FROM
+		agi_dm01avso24.t_ili2db_import
+	GROUP BY
+		dataset 
+),
 gebaeudeeingang AS (
   SELECT
     gebauedeeingang.gebaeudeeingang_von AS lok_t_id,
@@ -52,16 +61,8 @@ FROM
     ON aname.gebaeudename_von = gebauedeeingang.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
     ON gebauedeeingang.t_basket = basket.t_id
-    LEFT JOIN 
-    (
-    	SELECT
-			max(importdate) AS importdate, dataset
-		FROM
-			agi_dm01avso24.t_ili2db_import
-		GROUP BY
-			dataset 
-    ) AS  aimport
-    ON basket.dataset = aimport.dataset
+    LEFT JOIN aimport
+        ON basket.dataset = aimport.dataset    
 ),
 gebaeudeeingang_strassenname AS
 (
@@ -115,7 +116,7 @@ gebaeudeeingang_strassenname_plz_ortschaft AS
     LEFT JOIN agi_plz_ortschaften.plzortschaft_plz6 AS plz
     ON ST_Intersects(gebaeudeeingang_strassenname.lage, plz.flaeche)
     LEFT JOIN agi_plz_ortschaften.plzortschaft_ortschaft AS ortschaft
-    ON ST_Intersects(gebaeudeeingang_strassenname.lage, ortschaft.flaeche)
+    ON plz.plz6_von = ortschaft.t_id
     LEFT JOIN agi_plz_ortschaften.plzortschaft_ortschaftsname AS ortschaftsname
     ON ortschaftsname.ortschaftsname_von = ortschaft.t_id
     WHERE 
