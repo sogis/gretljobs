@@ -1,11 +1,11 @@
 WITH aimport AS
 (
-	SELECT
-		max(importdate) AS importdate, dataset
-	FROM
-		agi_dm01avso24.t_ili2db_import
-	GROUP BY
-		dataset 
+    SELECT
+        max(importdate) AS importdate, dataset
+    FROM
+        agi_dm01avso24.t_ili2db_import
+    GROUP BY
+        dataset 
 )
 SELECT 
     hoheitsgrenzpunkt.identifikator AS nummer,

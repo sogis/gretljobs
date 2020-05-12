@@ -1,11 +1,11 @@
 WITH aimport AS
 (
-	SELECT
-		max(importdate) AS importdate, dataset
-	FROM
-		agi_dm01avso24.t_ili2db_import
-	GROUP BY
-		dataset 
+    SELECT
+        max(importdate) AS importdate, dataset
+    FROM
+        agi_dm01avso24.t_ili2db_import
+    GROUP BY
+        dataset 
 )
 SELECT
     'LFP1' AS typ_txt,
@@ -47,7 +47,7 @@ FROM
     LEFT JOIN agi_dm01avso24.fixpunktekatgrie1_lfp1nachfuehrung AS nachfuehrung
         ON lagefixpunkt.entstehung = nachfuehrung.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
-    	ON lagefixpunkt.t_basket = basket.t_id
+        ON lagefixpunkt.t_basket = basket.t_id
     LEFT JOIN aimport
         ON basket.dataset = aimport.dataset    
         
@@ -93,7 +93,7 @@ FROM
     LEFT JOIN agi_dm01avso24.fixpunktekatgrie2_lfp2nachfuehrung AS nachfuehrung
         ON lagefixpunkt.entstehung = nachfuehrung.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
-    	ON lagefixpunkt.t_basket = basket.t_id
+        ON lagefixpunkt.t_basket = basket.t_id
     LEFT JOIN aimport
         ON basket.dataset = aimport.dataset    
 
@@ -139,7 +139,7 @@ FROM
     LEFT JOIN agi_dm01avso24.fixpunktekatgrie3_lfp3nachfuehrung AS nachfuehrung
         ON lagefixpunkt.entstehung = nachfuehrung.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
-    	ON lagefixpunkt.t_basket = basket.t_id
+        ON lagefixpunkt.t_basket = basket.t_id
     LEFT JOIN aimport
         ON basket.dataset = aimport.dataset    
 
@@ -181,7 +181,7 @@ FROM
     LEFT JOIN agi_dm01avso24.fixpunktekatgrie1_hfp1nachfuehrung AS nachfuehrung
         ON hoehenfixpunkt.entstehung = nachfuehrung.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
-    	ON hoehenfixpunkt.t_basket = basket.t_id
+        ON hoehenfixpunkt.t_basket = basket.t_id
     LEFT JOIN aimport
         ON basket.dataset = aimport.dataset    
 
@@ -223,7 +223,7 @@ FROM
     LEFT JOIN agi_dm01avso24.fixpunktekatgrie2_hfp2nachfuehrung AS nachfuehrung
         ON hoehenfixpunkt.entstehung = nachfuehrung.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
-    	ON hoehenfixpunkt.t_basket = basket.t_id
+        ON hoehenfixpunkt.t_basket = basket.t_id
     LEFT JOIN aimport
         ON basket.dataset = aimport.dataset    
 
@@ -265,7 +265,7 @@ FROM
     LEFT JOIN agi_dm01avso24.fixpunktekatgrie3_hfp3nachfuehrung AS nachfuehrung
         ON hoehenfixpunkt.entstehung = nachfuehrung.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
-    	ON hoehenfixpunkt.t_basket = basket.t_id
+        ON hoehenfixpunkt.t_basket = basket.t_id
     LEFT JOIN aimport
         ON basket.dataset = aimport.dataset    
 ;
