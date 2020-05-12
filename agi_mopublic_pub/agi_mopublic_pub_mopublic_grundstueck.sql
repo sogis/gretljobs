@@ -32,12 +32,12 @@ pos AS
 ),
 aimport AS
 (
-	SELECT
-		max(importdate) AS importdate, dataset
-	FROM
-		agi_dm01avso24.t_ili2db_import
-	GROUP BY
-		dataset 
+    SELECT
+        max(importdate) AS importdate, dataset
+    FROM
+        agi_dm01avso24.t_ili2db_import
+    GROUP BY
+        dataset 
 ),
 -- Grundstuecke
 grundstueck AS
@@ -55,7 +55,7 @@ grundstueck AS
         aimport.importdate AS importdatum,
         nachfuehrung.gueltigereintrag AS nachfuehrung,
         liegenschaft.geometrie AS geometrie,    
-	    ST_PointOnSurface(ST_MakeValid(liegenschaft.geometrie)) AS point_on_surface,
+        ST_PointOnSurface(ST_MakeValid(liegenschaft.geometrie)) AS point_on_surface,
         pos.pos
     FROM
         agi_dm01avso24.liegenschaften_grundstueck AS grundstueck
@@ -88,7 +88,7 @@ grundstueck AS
         aimport.importdate AS importdatum,
         nachfuehrung.gueltigereintrag AS nachfuehrung,
         selbstrecht.geometrie AS geometrie,
-	    ST_PointOnSurface(ST_MakeValid(selbstrecht.geometrie)) AS point_on_surface,
+        ST_PointOnSurface(ST_MakeValid(selbstrecht.geometrie)) AS point_on_surface,
         pos.pos
     FROM
         agi_dm01avso24.liegenschaften_grundstueck AS grundstueck
@@ -111,30 +111,30 @@ aimport
 grundbuchkreis AS 
 (
     SELECT
-      kreis.aname AS aname,
-      nummerierungsbereich.geometrie
+    kreis.aname AS aname,
+    nummerierungsbereich.geometrie
     FROM
-      agi_av_gb_admin_einteilung.grundbuchkreise_grundbuchkreis AS kreis
-      LEFT JOIN agi_av_gb_admin_einteilung.grundbuchkreise_grundbuchamt AS amt
-      ON kreis.r_grundbuchamt = amt.t_id
-      LEFT JOIN 
-      (
-          SELECT
+    agi_av_gb_admin_einteilung.grundbuchkreise_grundbuchkreis AS kreis
+    LEFT JOIN agi_av_gb_admin_einteilung.grundbuchkreise_grundbuchamt AS amt
+    ON kreis.r_grundbuchamt = amt.t_id
+    LEFT JOIN 
+    (
+        SELECT
             nbgeometrie.t_datasetname,
             nbbereich.kt || nbbereich.nbnummer AS nbident,
             ST_Multi(ST_Union(nbgeometrie.geometrie)) AS geometrie
-          FROM
+        FROM
             agi_dm01avso24.nummerierngsbrche_nbgeometrie AS nbgeometrie
             LEFT JOIN agi_dm01avso24.nummerierngsbrche_nummerierungsbereich AS nbbereich
             ON nbgeometrie.nbgeometrie_von = nbbereich.t_id
-          WHERE
+        WHERE
             nbbereich.kt =  'SO'
-          GROUP BY
+        GROUP BY
             nbgeometrie.t_datasetname,
             nbbereich.kt,
             nbbereich.nbnummer
-      ) AS nummerierungsbereich
-      ON CAST(nummerierungsbereich.t_datasetname AS integer) = kreis.bfsnr AND nummerierungsbereich.nbident = kreis.nbident
+    ) AS nummerierungsbereich
+    ON CAST(nummerierungsbereich.t_datasetname AS integer) = kreis.bfsnr AND nummerierungsbereich.nbident = kreis.nbident
 )
 -- Main query
 SELECT 
@@ -154,11 +154,11 @@ SELECT
     gemeinde.aname AS gemeinde,
     grundbuchkreis.aname AS grundbuch
 FROM 
- grundstueck
+grundstueck
 LEFT JOIN gemeinde 
-  ON gemeinde.bfsnr = grundstueck.bfs_nr
+ON gemeinde.bfsnr = grundstueck.bfs_nr
 LEFT JOIN grundbuchkreis 
-  --ON ST_Intersects(ST_PointOnSurface(ST_Buffer(grundstueck.geometrie,0)), grundbuchkreis.geometrie)
-  --Aenderung vom 04.12.2019, sc: ST_Buffer ersetzt durch ST_MakeValid (ST_Buffer hat nicht auf allen Liegenschaften den Grundbuchkreis abgefüllt)
-  ON ST_Intersects(grundstueck.point_on_surface, grundbuchkreis.geometrie)
+--ON ST_Intersects(ST_PointOnSurface(ST_Buffer(grundstueck.geometrie,0)), grundbuchkreis.geometrie)
+--Aenderung vom 04.12.2019, sc: ST_Buffer ersetzt durch ST_MakeValid (ST_Buffer hat nicht auf allen Liegenschaften den Grundbuchkreis abgefüllt)
+ON ST_Intersects(grundstueck.point_on_surface, grundbuchkreis.geometrie)
 ;

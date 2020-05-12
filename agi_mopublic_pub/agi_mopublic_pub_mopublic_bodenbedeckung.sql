@@ -1,11 +1,11 @@
 WITH aimport AS
 (
-	SELECT
-		max(importdate) AS importdate, dataset
-	FROM
-		agi_dm01avso24.t_ili2db_import
-	GROUP BY
-		dataset 
+    SELECT
+        max(importdate) AS importdate, dataset
+    FROM
+        agi_dm01avso24.t_ili2db_import
+    GROUP BY
+        dataset 
 )
 SELECT
     CASE 
@@ -27,7 +27,7 @@ FROM
     LEFT JOIN agi_dm01avso24.bodenbedeckung_bbnachfuehrung AS nachfuehrung
         ON bodenbedeckung.entstehung = nachfuehrung.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
-    	ON bodenbedeckung.t_basket = basket.t_id
+        ON bodenbedeckung.t_basket = basket.t_id
     LEFT JOIN aimport
         ON basket.dataset = aimport.dataset    
 ;

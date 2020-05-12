@@ -5,7 +5,7 @@ WITH einzelobjekt_flaeche AS
         einzelobjekt.t_id,
         einzelobjekt.entstehung,
         split_part(einzelobjekt.art,'.',array_upper(string_to_array(einzelobjekt.art,'.'), 1)) AS art_txt,
-    	nachfuehrung.gueltigereintrag AS nachfuehrung
+        nachfuehrung.gueltigereintrag AS nachfuehrung
     FROM
         agi_dm01avso24.einzelobjekte_flaechenelement AS flaeche
         LEFT JOIN agi_dm01avso24.einzelobjekte_einzelobjekt AS einzelobjekt
@@ -20,7 +20,7 @@ einzelobjekt_linie AS
         einzelobjekt.t_id,
         einzelobjekt.entstehung,
         split_part(einzelobjekt.art,'.',array_upper(string_to_array(einzelobjekt.art,'.'), 1)) AS art_txt,
-    	nachfuehrung.gueltigereintrag AS nachfuehrung
+        nachfuehrung.gueltigereintrag AS nachfuehrung
     FROM
         agi_dm01avso24.einzelobjekte_linienelement AS linie
         LEFT JOIN agi_dm01avso24.einzelobjekte_einzelobjekt AS einzelobjekt
@@ -35,7 +35,7 @@ einzelobjekt_punkt AS
         einzelobjekt.t_id,
         einzelobjekt.entstehung,
         split_part(einzelobjekt.art,'.',array_upper(string_to_array(einzelobjekt.art,'.'), 1)) AS art_txt,
-    	nachfuehrung.gueltigereintrag AS nachfuehrung
+        nachfuehrung.gueltigereintrag AS nachfuehrung
     FROM
         agi_dm01avso24.einzelobjekte_punktelement AS punkt
         LEFT JOIN agi_dm01avso24.einzelobjekte_einzelobjekt AS einzelobjekt
@@ -70,10 +70,10 @@ einzelobjekt_position AS
         agi_dm01avso24.einzelobjekte_objektname AS objekt
         INNER JOIN agi_dm01avso24.einzelobjekte_objektnamepos AS pos
             ON pos.objektnamepos_von = objekt.t_id
-	    LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
-	    	ON pos.t_basket = basket.t_id
-	    LEFT JOIN agi_dm01avso24.t_ili2db_import AS aimport
-	    	ON basket.dataset = aimport.dataset
+        LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+            ON pos.t_basket = basket.t_id
+        LEFT JOIN agi_dm01avso24.t_ili2db_import AS aimport
+            ON basket.dataset = aimport.dataset
     WHERE 
         pos.pos IS NOT NULL
 )
@@ -116,9 +116,9 @@ FROM
     LEFT JOIN agi_dm01avso24.bodenbedeckung_bbnachfuehrung AS nachfuehrung
         ON bodenbedeckung.entstehung = nachfuehrung.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
-    	ON pos.t_basket = basket.t_id
+        ON pos.t_basket = basket.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_import AS aimport
-    	ON basket.dataset = aimport.dataset        
+        ON basket.dataset = aimport.dataset        
     
 UNION ALL
 
@@ -161,12 +161,12 @@ FROM
     LEFT JOIN agi_dm01avso24.bodenbedeckung_bbnachfuehrung AS nachfuehrung
         ON bodenbedeckung.entstehung = nachfuehrung.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
-    	ON pos.t_basket = basket.t_id
+        ON pos.t_basket = basket.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_import AS aimport
-    	ON basket.dataset = aimport.dataset        
+        ON basket.dataset = aimport.dataset        
 
 UNION ALL
- 
+
 SELECT
     einzelobjekt_position.objektname,
     einzelobjekt_position.orientierung,
@@ -183,9 +183,9 @@ FROM
     einzelobjekt_flaeche
     INNER JOIN einzelobjekt_position
         ON einzelobjekt_flaeche.t_id = einzelobjekt_position.objektname_von
-   
+
 UNION ALL
-  
+
 SELECT
     einzelobjekt_position.objektname,
     einzelobjekt_position.orientierung,

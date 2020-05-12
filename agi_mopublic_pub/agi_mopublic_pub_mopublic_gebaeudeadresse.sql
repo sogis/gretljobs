@@ -1,24 +1,24 @@
 WITH strassenname AS (
-  SELECT 
+SELECT 
     lokalisation.t_id AS lok_t_id,
     lokalisationsname.atext AS strassenname
-  FROM
+FROM
     agi_dm01avso24.gebaeudeadressen_lokalisation AS lokalisation
     LEFT JOIN agi_dm01avso24.gebaeudeadressen_lokalisationsname AS lokalisationsname
     ON lokalisationsname.benannte = lokalisation.t_id
-  WHERE lokalisation.istoffiziellebezeichnung = 'ja'
+WHERE lokalisation.istoffiziellebezeichnung = 'ja'
 ),
 aimport AS
 (
-	SELECT
-		max(importdate) AS importdate, dataset
-	FROM
-		agi_dm01avso24.t_ili2db_import
-	GROUP BY
-		dataset 
+    SELECT
+        max(importdate) AS importdate, dataset
+    FROM
+        agi_dm01avso24.t_ili2db_import
+    GROUP BY
+        dataset 
 ),
 gebaeudeeingang AS (
-  SELECT
+SELECT
     gebauedeeingang.gebaeudeeingang_von AS lok_t_id,
     gebauedeeingang.hoehenlage,
     gebauedeeingang.lage,
@@ -27,26 +27,26 @@ gebaeudeeingang AS (
     gebauedeeingang.gwr_edid AS edid,
     gebauedeeingang.astatus AS astatus,
     CASE 
-      WHEN istoffiziellebezeichnung = 'ja' 
+    WHEN istoffiziellebezeichnung = 'ja' 
         THEN TRUE
-      ELSE FALSE 
+    ELSE FALSE 
     END AS ist_offizielle_bezeichnung,
     aname.atext AS gebaeudename, -- always empty?
     CAST(gebauedeeingang.t_datasetname AS INT) AS bfs_nr,    
     CASE
-      WHEN hausnummer.ori IS NULL 
+    WHEN hausnummer.ori IS NULL 
         THEN (100 - 100) * 0.9
-      ELSE (100 - hausnummer.ori) * 0.9 
+    ELSE (100 - hausnummer.ori) * 0.9 
     END AS orientierung,
     CASE 
-      WHEN hausnummer.hali IS NULL 
+    WHEN hausnummer.hali IS NULL 
         THEN 'Center'
-      ELSE hausnummer.hali
+    ELSE hausnummer.hali
     END AS hali,
     CASE 
-      WHEN hausnummer.vali IS NULL 
+    WHEN hausnummer.vali IS NULL 
         THEN 'Half'
-      ELSE hausnummer.vali
+    ELSE hausnummer.vali
     END AS vali,
     aimport.importdate AS importdatum,
     nachfuehrung.gueltigereintrag AS nachfuehrung,
@@ -66,7 +66,7 @@ FROM
 ),
 gebaeudeeingang_strassenname AS
 (
-  SELECT
+SELECT
     strassenname.lok_t_id, 
     strassenname.strassenname, 
     gebaeudeeingang.hoehenlage, 
@@ -84,14 +84,14 @@ gebaeudeeingang_strassenname AS
     gebaeudeeingang.importdatum,
     gebaeudeeingang.nachfuehrung,
     gebaeudeeingang.pos
-  FROM
+FROM
     strassenname
     RIGHT JOIN gebaeudeeingang
     ON strassenname.lok_t_id = gebaeudeeingang.lok_t_id
 ),
 gebaeudeeingang_strassenname_plz_ortschaft AS 
 (
-  SELECT
+SELECT
     gebaeudeeingang_strassenname.lok_t_id, 
     gebaeudeeingang_strassenname.strassenname, 
     gebaeudeeingang_strassenname.hoehenlage, 
@@ -111,7 +111,7 @@ gebaeudeeingang_strassenname_plz_ortschaft AS
     gebaeudeeingang_strassenname.pos,
     plz.plz,
     ortschaftsname.atext AS ortschaft
-  FROM
+FROM
     gebaeudeeingang_strassenname
     LEFT JOIN agi_plz_ortschaften.plzortschaft_plz6 AS plz
     ON ST_Intersects(gebaeudeeingang_strassenname.lage, plz.flaeche)
@@ -120,34 +120,34 @@ gebaeudeeingang_strassenname_plz_ortschaft AS
     LEFT JOIN agi_plz_ortschaften.plzortschaft_ortschaftsname AS ortschaftsname
     ON ortschaftsname.ortschaftsname_von = ortschaft.t_id
     WHERE 
-      plz.status != 'vergangen'
-      AND
-      ortschaft.status != 'vergangen'
-      AND 
-      strassenname IS NOT NULL
-      AND
-      hausnummer IS NOT NULL
+    plz.status != 'vergangen'
+    AND
+    ortschaft.status != 'vergangen'
+    AND 
+    strassenname IS NOT NULL
+    AND
+    hausnummer IS NOT NULL
 )
 SELECT
-  gebaeudeeingang_strassenname_plz_ortschaft.strassenname,
-  gebaeudeeingang_strassenname_plz_ortschaft.hausnummer,
-  gebaeudeeingang_strassenname_plz_ortschaft.egid,
-  gebaeudeeingang_strassenname_plz_ortschaft.edid,
-  gebaeudeeingang_strassenname_plz_ortschaft.plz,
-  gebaeudeeingang_strassenname_plz_ortschaft.ortschaft,
-  gebaeudeeingang_strassenname_plz_ortschaft.astatus AS astatus,
-  gebaeudeeingang_strassenname_plz_ortschaft.ist_offizielle_bezeichnung,
-  gebaeudeeingang_strassenname_plz_ortschaft.hoehenlage,
-  gebaeudeeingang_strassenname_plz_ortschaft.gebaeudename,
-  gebaeudeeingang_strassenname_plz_ortschaft.bfs_nr,
-  gebaeudeeingang_strassenname_plz_ortschaft.orientierung,
-  gebaeudeeingang_strassenname_plz_ortschaft.hali,
-  gebaeudeeingang_strassenname_plz_ortschaft.vali,
-  gebaeudeeingang_strassenname_plz_ortschaft.importdatum,
-  gebaeudeeingang_strassenname_plz_ortschaft.nachfuehrung,
-  gebaeudeeingang_strassenname_plz_ortschaft.lage,
-  gebaeudeeingang_strassenname_plz_ortschaft.pos
+gebaeudeeingang_strassenname_plz_ortschaft.strassenname,
+gebaeudeeingang_strassenname_plz_ortschaft.hausnummer,
+gebaeudeeingang_strassenname_plz_ortschaft.egid,
+gebaeudeeingang_strassenname_plz_ortschaft.edid,
+gebaeudeeingang_strassenname_plz_ortschaft.plz,
+gebaeudeeingang_strassenname_plz_ortschaft.ortschaft,
+gebaeudeeingang_strassenname_plz_ortschaft.astatus AS astatus,
+gebaeudeeingang_strassenname_plz_ortschaft.ist_offizielle_bezeichnung,
+gebaeudeeingang_strassenname_plz_ortschaft.hoehenlage,
+gebaeudeeingang_strassenname_plz_ortschaft.gebaeudename,
+gebaeudeeingang_strassenname_plz_ortschaft.bfs_nr,
+gebaeudeeingang_strassenname_plz_ortschaft.orientierung,
+gebaeudeeingang_strassenname_plz_ortschaft.hali,
+gebaeudeeingang_strassenname_plz_ortschaft.vali,
+gebaeudeeingang_strassenname_plz_ortschaft.importdatum,
+gebaeudeeingang_strassenname_plz_ortschaft.nachfuehrung,
+gebaeudeeingang_strassenname_plz_ortschaft.lage,
+gebaeudeeingang_strassenname_plz_ortschaft.pos
 
 FROM
-  gebaeudeeingang_strassenname_plz_ortschaft
+gebaeudeeingang_strassenname_plz_ortschaft
 ;
