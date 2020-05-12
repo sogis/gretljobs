@@ -45,6 +45,7 @@ git checkout -b branchname
   * `dbUriVerisoNplso`, `dbUserVerisoNplso`, `dbPwdVerisoNplso`
   * `dbUriEdit`, `dbUserEdit`, `dbPwdEdit`
   * `dbUriPub`, `dbUserPub`, `dbPwdPub`
+  * `dbUriOereb`, `dbUserOereb`, `dbPwdOereb`
   * `dbUriAltlast4web`, `dbUserAltlast4web`, `PdbPwdAltlast4web`
   * `dbUriKaso`, `dbUserKaso`, `dbPwdKaso`
   * `dbUriCapitastra`, `dbUserCapitastra`, `dbPwdCapitastra`
