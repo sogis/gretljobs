@@ -4,7 +4,7 @@ raw_columns AS (
 	select
 		rowdef.*
 	from 
-		afu_igel.standort s
+		afu_igel.igel_standort s
 	CROSS JOIN LATERAL
 		jsonb_to_record(s.content::jsonb) as rowdef(
 			"IdStao" int,

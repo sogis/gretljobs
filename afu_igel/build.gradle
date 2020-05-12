@@ -1,4 +1,5 @@
 import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
 import java.nio.file.Paths
 import de.undercouch.gradle.tasks.download.Download
 
@@ -38,4 +39,13 @@ task dbImport() {
     doLast {
         println "Data import into db finished."
     }
+}
+
+task transformAndPub(type: Db2Db, dependsOn: dbImport){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('stall.sql', 'afu_igel_pub.stall', true),
+            new TransferSet('standort.sql', 'afu_igel_pub.standort', true)
+    ];
 }
