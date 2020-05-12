@@ -50,6 +50,8 @@ git checkout -b branchname
   * `dbUriCapitastra`, `dbUserCapitastra`, `dbPwdCapitastra`
   * `ftpServerZivilschutz`, `ftpUserZivilschutz`, `ftpPwdZivilschutz`
   * `aiServer`, `aiUser`, `aiPwd`
+  * `infofloraUser`, `infofloraPwd`
+  * `igelToken`
   * `gretlShare`
 
 
