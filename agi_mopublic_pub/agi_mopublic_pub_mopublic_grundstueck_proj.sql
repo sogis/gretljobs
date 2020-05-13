@@ -9,8 +9,8 @@ pos AS
 (
     SELECT
         -- one pos per parcel
-        DISTINCT ON (grundstueckpos_von)
-        grundstueckpos_von,
+        DISTINCT ON (projgrundstueckpos_von)
+        projgrundstueckpos_von,
         CASE 
             WHEN ori IS NULL 
                 THEN (100 - 100) * 0.9
@@ -28,7 +28,7 @@ pos AS
         END AS vali,
         pos
     FROM 
-        agi_dm01avso24.liegenschaften_grundstueckpos
+        agi_dm01avso24.liegenschaften_projgrundstueckpos
 ),
 aimport AS
 (
@@ -58,11 +58,11 @@ grundstueck AS
         ST_PointOnSurface(ST_MakeValid(liegenschaft.geometrie)) AS point_on_surface,
         pos.pos
     FROM
-        agi_dm01avso24.liegenschaften_grundstueck AS grundstueck
-        LEFT JOIN agi_dm01avso24.liegenschaften_liegenschaft AS liegenschaft
-            ON liegenschaft.liegenschaft_von = grundstueck.t_id
+        agi_dm01avso24.liegenschaften_projgrundstueck AS grundstueck
+        LEFT JOIN agi_dm01avso24.liegenschaften_projliegenschaft AS liegenschaft
+            ON liegenschaft.projliegenschaft_von = grundstueck.t_id
         LEFT JOIN pos
-            ON pos.grundstueckpos_von = grundstueck.t_id
+            ON pos.projgrundstueckpos_von = grundstueck.t_id
         LEFT JOIN agi_dm01avso24.liegenschaften_lsnachfuehrung AS nachfuehrung
             ON grundstueck.entstehung = nachfuehrung.t_id
         LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
@@ -91,11 +91,11 @@ grundstueck AS
         ST_PointOnSurface(ST_MakeValid(selbstrecht.geometrie)) AS point_on_surface,
         pos.pos
     FROM
-        agi_dm01avso24.liegenschaften_grundstueck AS grundstueck
-        LEFT JOIN agi_dm01avso24.liegenschaften_selbstrecht AS selbstrecht 
-            ON selbstrecht.selbstrecht_von = grundstueck.t_id
+        agi_dm01avso24.liegenschaften_projgrundstueck AS grundstueck
+        LEFT JOIN agi_dm01avso24.liegenschaften_projselbstrecht AS selbstrecht 
+            ON selbstrecht.projselbstrecht_von = grundstueck.t_id
         LEFT JOIN pos
-            ON pos.grundstueckpos_von = grundstueck.t_id
+            ON pos.projgrundstueckpos_von = grundstueck.t_id
         LEFT JOIN agi_dm01avso24.liegenschaften_lsnachfuehrung AS nachfuehrung
             ON grundstueck.entstehung = nachfuehrung.t_id
         LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
