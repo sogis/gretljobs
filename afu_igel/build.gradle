@@ -15,6 +15,10 @@ igelTypes.each { igelType ->
         dest pathToTempFolder + "/"+igelType+".json"
         overwrite true
 
+        doFirst {
+            println "https://igel.softec.ch/so/api/export/"+igelType+"?token="+igelToken
+        }
+
         doLast {
             println "File downloaded to: " + pathToTempFolder
         }
