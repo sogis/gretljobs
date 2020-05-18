@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'moveConvertedDataToPubDb'
+defaultTasks 'removeImportedData'
 
 task transferGbData(type: Db2Db){
     sourceDb = [dbUriCapitastra, dbUserCapitastra, dbPwdCapitastra]
@@ -30,11 +30,11 @@ task moveConvertedDataToPubDb(type: Db2Db, dependsOn: 'convertData'){
                     'agi_av_gb_abgleich_pub.uebersicht_des_vergleichs', true)
     ]
 }
-/*
+
 task removeImportedData(type: SqlExecutor, dependsOn: moveConvertedDataToPubDb){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = [
             'delete_from_agi_av_gb_abgleich_import.sql'
     ]
 }
-*/
+
