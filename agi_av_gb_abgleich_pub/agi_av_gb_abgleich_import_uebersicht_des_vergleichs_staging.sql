@@ -38,7 +38,7 @@ INSERT INTO agi_av_gb_abgleich_import.uebersicht_des_vergleichs_staging (
     t_id,
     geometrie,
     gem_bfs,
-    name,
+    aname,
     anzahl_differenzen
 )
 SELECT 

@@ -2,70 +2,116 @@ DELETE FROM agi_av_gb_abgleich_import.differenzen_staging
 ;
 
 WITH 
-    projektierte_liegenschaften_selbstrecht AS (
+grundbuchkreise AS (
+    SELECT
+      kreis.aname AS grundbuch,
+      kreis.art AS art,
+      kreis.nbident AS nbident,
+      kreis.grundbuchkreisnummer AS kreis_nr,
+      kreis.grundbuchkreis_bfsnr AS gb_gemnr,
+      kreis.bfsnr AS gem_bfs,
+      gemeinde.aname AS gemeinde
+    FROM
+      agi_av_gb_admin_einteilung.grundbuchkreise_grundbuchkreis AS kreis  
+      LEFT JOIN agi_dm01avso24.gemeindegrenzen_gemeinde AS gemeinde 
+      ON gemeinde.bfsnr = kreis.bfsnr
+),
+projektierte_liegenschaften_selbstrecht AS (
         SELECT
             liegenschaften_lsnachfuehrung.identifikator,
             liegenschaften_lsnachfuehrung.beschreibung,
             liegenschaften_projgrundstueck.nummer,
             liegenschaften_projgrundstueck.nbident
         FROM
-            av_avdpool_ng.liegenschaften_projgrundstueck
-            LEFT JOIN av_avdpool_ng.liegenschaften_lsnachfuehrung
-                ON liegenschaften_lsnachfuehrung.tid = liegenschaften_projgrundstueck.entstehung
-    ),
-    av_grundstuecke AS (
+            agi_dm01avso24.liegenschaften_projgrundstueck
+            LEFT JOIN agi_dm01avso24.liegenschaften_lsnachfuehrung
+                ON liegenschaften_lsnachfuehrung.t_id = liegenschaften_projgrundstueck.entstehung
+),
+av_grundstuecke AS (
         SELECT 
             liegenschaften_liegenschaft.geometrie, 
-            liegenschaften_grundstueck.gem_bfs AS av_gem_bfs, 
+            CAST(liegenschaften_grundstueck.t_datasetname AS integer) AS av_gem_bfs, 
             liegenschaften_grundstueck.nbident AS av_nbident, 
             grundbuchkreise.gemeinde AS av_gemeinde, 
             liegenschaften_grundstueck.nummer::text AS av_nummer, 
-            liegenschaften_grundstueck.art AS av_art, 
-            liegenschaften_grundstueck.art_txt AS av_art_txt, 
+            grundstuecksart.itfcode AS av_art, 
+            liegenschaften_grundstueck.art AS av_art_txt, 
             liegenschaften_liegenschaft.flaechenmass AS av_flaeche, 
-            liegenschaften_grundstueck.lieferdatum AS av_lieferdatum,
+            aimport.importdate AS av_lieferdatum, 
             projektierte_liegenschaften_selbstrecht.identifikator AS av_mutation_id, 
             projektierte_liegenschaften_selbstrecht.beschreibung AS av_mut_beschreibung       
         FROM 
-            av_avdpool_ng.liegenschaften_grundstueck
-            JOIN av_avdpool_ng.liegenschaften_liegenschaft
-                ON liegenschaften_liegenschaft.liegenschaft_von::text = liegenschaften_grundstueck.tid::text
+            agi_dm01avso24.liegenschaften_grundstueck
+            LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+                ON liegenschaften_grundstueck.t_basket = basket.t_id
+            LEFT JOIN agi_dm01avso24.liegenschaften_grundstuecksart AS grundstuecksart
+                ON liegenschaften_grundstueck.art = grundstuecksart.ilicode
+            LEFT JOIN 
+            (
+                SELECT
+                    max(importdate) AS importdate,
+                    dataset
+                FROM
+                    agi_dm01avso24.t_ili2db_import
+                GROUP BY
+                    dataset 
+            ) AS  aimport
+                 ON basket.dataset = aimport.dataset
+            JOIN agi_dm01avso24.liegenschaften_liegenschaft
+                ON liegenschaften_liegenschaft.liegenschaft_von::text = liegenschaften_grundstueck.t_id::text
             LEFT JOIN projektierte_liegenschaften_selbstrecht
                 ON 
                     projektierte_liegenschaften_selbstrecht.nummer::text = liegenschaften_grundstueck.nummer::text
                     AND 
                     liegenschaften_grundstueck.nbident::text = projektierte_liegenschaften_selbstrecht.nbident::text
-            LEFT JOIN av_grundbuch.grundbuchkreise
+            LEFT JOIN grundbuchkreise
                 ON liegenschaften_grundstueck.nbident = grundbuchkreise.nbident
           
         UNION ALL 
     
         SELECT 
             liegenschaften_selbstrecht.geometrie, 
-            liegenschaften_grundstueck.gem_bfs AS av_gem_bfs, 
+            CAST(liegenschaften_grundstueck.t_datasetname AS integer) AS av_gem_bfs, 
             liegenschaften_grundstueck.nbident AS av_nbident, 
             grundbuchkreise.gemeinde AS av_gemeinde, 
             liegenschaften_grundstueck.nummer::text AS av_nummer, 
-            liegenschaften_grundstueck.art AS av_art, 
-            liegenschaften_grundstueck.art_txt AS av_art_txt, 
+            grundstuecksart.itfcode AS av_art, 
+            liegenschaften_grundstueck.art AS av_art_txt, 
             liegenschaften_selbstrecht.flaechenmass AS av_flaeche,
-            liegenschaften_grundstueck.lieferdatum AS av_lieferdatum,  
+            aimport.importdate AS av_lieferdatum,  
             projektierte_liegenschaften_selbstrecht.identifikator AS av_mutation_id, 
             projektierte_liegenschaften_selbstrecht.beschreibung AS av_mut_beschreibung 
         FROM 
-            av_avdpool_ng.liegenschaften_grundstueck
-            JOIN av_avdpool_ng.liegenschaften_selbstrecht
-                ON liegenschaften_selbstrecht.selbstrecht_von::text = liegenschaften_grundstueck.tid::text 
+            agi_dm01avso24.liegenschaften_grundstueck
+            LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+                ON liegenschaften_grundstueck.t_basket = basket.t_id
+            LEFT JOIN agi_dm01avso24.liegenschaften_grundstuecksart AS grundstuecksart
+                ON liegenschaften_grundstueck.art = grundstuecksart.ilicode
+            LEFT JOIN 
+            (
+                SELECT
+                    max(importdate) AS importdate,
+                    dataset
+                FROM
+                    agi_dm01avso24.t_ili2db_import
+                GROUP BY
+                    dataset 
+            ) AS  aimport
+                 ON basket.dataset = aimport.dataset
+            JOIN agi_dm01avso24.liegenschaften_selbstrecht
+                ON liegenschaften_selbstrecht.selbstrecht_von::text = liegenschaften_grundstueck.t_id::text 
             LEFT JOIN projektierte_liegenschaften_selbstrecht
                 ON 
                     projektierte_liegenschaften_selbstrecht.nummer::text = liegenschaften_grundstueck.nummer::text
                     AND 
                     liegenschaften_grundstueck.nbident::text = projektierte_liegenschaften_selbstrecht.nbident::text
-            LEFT JOIN av_grundbuch.grundbuchkreise
+            JOIN agi_dm01avso24.liegenschaften_liegenschaft
+                ON liegenschaften_liegenschaft.liegenschaft_von::text = liegenschaften_grundstueck.t_id::text
+            LEFT JOIN grundbuchkreise
                 ON liegenschaften_grundstueck.nbident = grundbuchkreise.nbident
                  
-    ),
-    gb_grundstuecke AS (
+ ),
+gb_grundstuecke AS (
         SELECT
             gb_daten.bfs_nr AS gb_gem_bfs,
             gb_daten.kreis_nr AS gb_kreis_nr,
@@ -77,18 +123,18 @@ WITH
             grundbuchkreise.nbident AS gb_nbident
         FROM
             agi_av_gb_abgleich_import.gb_daten 
-            JOIN av_grundbuch.grundbuchkreise
+            JOIN grundbuchkreise
                 ON 
                     grundbuchkreise.gem_bfs = gb_daten.bfs_nr 
                     AND 
-                    (
+                   (
                         CASE 
                             WHEN grundbuchkreise.kreis_nr IS NULL
                                 THEN gb_daten.kreis_nr IS NULL
                             ELSE grundbuchkreise.kreis_nr = gb_daten.kreis_nr
                         END
                     )    
-    )
+)
 
 INSERT INTO agi_av_gb_abgleich_import.differenzen_staging (
     geometrie,
@@ -115,7 +161,7 @@ INSERT INTO agi_av_gb_abgleich_import.differenzen_staging (
 )
     
 SELECT
-    geometrie,
+    ST_CurveToLine(geometrie, 0.002, 1, 1) AS geometrie,
     av_gem_bfs,
     av_nbident,
     av_gemeinde,
@@ -151,7 +197,7 @@ WHERE
 UNION ALL 
 
 SELECT 
-    geometrie,
+    ST_CurveToLine(geometrie, 0.002, 1, 1) AS geometrie,
     av_gem_bfs,
     av_nbident,
     av_gemeinde,
@@ -185,7 +231,7 @@ WHERE
 UNION ALL 
 
 SELECT
-    geometrie,
+    ST_CurveToLine(geometrie, 0.002, 1, 1) AS geometrie,
     av_gem_bfs,
     av_nbident,
     av_gemeinde,
@@ -219,7 +265,7 @@ WHERE
 UNION ALL 
 
 SELECT 
-    geometrie,
+    ST_CurveToLine(geometrie, 0.002, 1, 1) AS geometrie,
     av_gem_bfs,
     av_nbident,
     av_gemeinde,
