@@ -193,8 +193,6 @@ WHERE
     av_grundstuecke.av_art = 0 -- Liegenschaft
     AND 
     gb_grundstuecke.gb_art != 'Liegenschaft'
-    AND 
-    geometrie IS NOT NULL
   
 UNION ALL 
 
@@ -229,9 +227,7 @@ FROM
             gb_grundstuecke.gb_nbident = av_grundstuecke.av_nbident
 WHERE 
     av_grundstuecke.av_flaeche - gb_grundstuecke.gb_flaeche != 0 
-    AND 
-    geometrie IS NOT NULL
-  
+    
 UNION ALL 
 
 SELECT
@@ -265,8 +261,6 @@ FROM
             gb_grundstuecke.gb_nbident = av_grundstuecke.av_nbident
 WHERE 
     gb_grundstuecke.gb_nummer IS NULL
-    AND 
-    geometrie IS NOT NULL
     
 UNION ALL 
 
@@ -301,5 +295,3 @@ FROM
             gb_grundstuecke.gb_nbident = av_grundstuecke.av_nbident
 WHERE 
     av_grundstuecke.av_nummer IS NULL
-    AND 
-    geometrie IS NOT NULL;
