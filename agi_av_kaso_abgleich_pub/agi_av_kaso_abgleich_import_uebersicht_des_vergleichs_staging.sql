@@ -4,12 +4,14 @@ DELETE FROM agi_av_kaso_abgleich_import.uebersicht_des_vergleichs_staging
 WITH 
     gemeinde AS (
         SELECT 
-            t_id, 
-            geometrie, 
-            bfs_gemeindenummer, 
-            gemeindename
+            gemeindegrenze.t_id, 
+            gemeindegrenze.geometrie, 
+            CAST(gemeindegrenze.t_datasetname AS integer) AS bfs_gemeindenummer, 
+            gemeinde.aname AS gemeindename
         FROM 
-            agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze
+            agi_dm01avso24.gemeindegrenzen_gemeindegrenze AS gemeindegrenze
+            LEFT JOIN agi_dm01avso24.gemeindegrenzen_gemeinde AS gemeinde
+                ON gemeinde.t_id = gemeindegrenze.gemeindegrenze_von
     ), 
     diff_av AS (
         SELECT 
@@ -42,13 +44,13 @@ INSERT INTO agi_av_kaso_abgleich_import.uebersicht_des_vergleichs_staging (
     t_id,
     geometrie,
     gem_bfs,
-    name,
+    aname,
     anzahl_differenzen
 )
 (
     SELECT 
         gemeinde.t_id, 
-        gemeinde.geometrie, 
+        ST_Multi(ST_CurveToLine(gemeinde.geometrie, 0.002, 1, 1)) AS geometrie,
         gemeinde.bfs_gemeindenummer AS gem_bfs, 
         gemeinde.gemeindename AS name, 
         COALESCE(diff_av.anzahl, 0::bigint) + COALESCE(diff_kaso.anzahl, 0::bigint) AS anzahl_differenzen

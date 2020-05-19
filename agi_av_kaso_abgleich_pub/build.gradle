@@ -3,26 +3,26 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'moveConvertedDataToPubDb'
+defaultTasks 'removeImportedData'
 
 task transferKasoData(type: Db2Db){
     sourceDb = [dbUriKaso, dbUserKaso, dbPwdKaso]
-    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
             new TransferSet('agi_av_kaso_abgleich_import_kaso_daten.sql', 'agi_av_kaso_abgleich_import.kaso_daten', true)
     ];
 }
 
 task convertData(type: SqlExecutor, dependsOn: 'transferKasoData'){
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = [
             'agi_av_kaso_abgleich_import_differenzen_staging.sql',
-            'agi_av_kaso_abgleich_import_uebersicht_des_vergleichs_staging.sql'
+            'agi_av_kaso_abgleich_import_uebersicht_des_vergleichs_staging.sql' 
     ]
 }
 
-task moveConvertedDataToPubDb(type: Db2Db, dependsOn: 'convertData'){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+task moveConvertedDataToPubDb(type: Db2Db, dependsOn: convertData){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('agi_av_kaso_abgleich_pub_differenzen.sql', 'agi_av_kaso_abgleich_pub.differenzen', true),
@@ -30,14 +30,13 @@ task moveConvertedDataToPubDb(type: Db2Db, dependsOn: 'convertData'){
                     'agi_av_kaso_abgleich_pub.uebersicht_des_vergleichs', true)
     ]
 
-    finalizedBy 'removeImportedData'
 }
-
-
-
-task removeImportedData(type: SqlExecutor){
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+task removeImportedData(type: SqlExecutor, dependsOn: moveConvertedDataToPubDb){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = [
             'delete_from_agi_av_kaso_abgleich_import.sql'
     ]
 }
+
+
+
