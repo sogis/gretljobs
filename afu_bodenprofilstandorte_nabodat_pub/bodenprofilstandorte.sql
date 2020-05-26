@@ -199,7 +199,7 @@ LEFT JOIN
 	ON standorteigenschaften.t_id = standort_ausgangsmaterial_oben.punktdtn_strtgnschften_ausgangsmaterialoben 
 LEFT JOIN 
     afu_bodendaten_nabodat.punktdaten_ausgangsmaterial standort_ausgangsmaterial_unten 
-	ON standorteigenschaften.t_id = standort_ausgangsmaterial_oben.punktdtn_strtgnschften_ausgangsmaterialunten
+	ON standorteigenschaften.t_id = standort_ausgangsmaterial_unten.punktdtn_strtgnschften_ausgangsmaterialunten
 LEFT JOIN 
      afu_bodendaten_nabodat.codlstnpktstndort_ausgangsmaterial ausgangsmaterial_oben
 	 ON standort_ausgangsmaterial_oben.ausgangsmaterial = ausgangsmaterial_oben.t_id
@@ -403,7 +403,58 @@ LEFT JOIN
 	    ON gefuege.groesse = gefuege_groesse.t_id
     --MESSUNGEN
     LEFT JOIN 
-        afu_bodendaten_nabodat.messresultate messung 
+        ( SELECT 
+              profil.t_id AS profil_tid,
+              horizont.profil AS horizontprofil,
+              horizont.t_id AS horizont_id,
+              horizont.horizontnr AS horizont,
+              horizont.tiefevon AS tiefe,
+              gefuege.form AS gefuegeform,
+              gefuege_form.codetext_de AS gefuegeform_text,
+              gefuege.groesse AS gefuegegroesse,
+              gefuege_groesse.codetext_de AS gefuegegroesse_text,
+              zustand_organischesubstanz.codetext_de AS zustand_org_substanz,
+	      horizont.humusgehaltfeld AS humusgehalt_feld,
+              (messung.messwerte) ->> 'Bodenkennwerte // Organische Substanz'::text AS zustand_org_substanz_messwert,
+              horizont.tonfeld AS tongehalt,
+              (messung.messwerte) ->> 'Bodenkennwerte // Tongehalt (< 0.002 mm)'::text AS tongehalt_labor,
+              horizont.schlufffeld AS schluffgehalt,
+              (messung.messwerte) ->> 'Bodenkennwerte // Schluffgehalt (0.002 - 0.05 mm)'::text AS schluffgehalt_labor,
+              horizont.sandfeld AS sandgehalt,
+              (messung.messwerte) ->> 'Bodenkennwerte // Sandgehalt (0.05 - 2 mm)'::text AS sandgehalt_labor,
+              horizont.kiesfeld AS kies,
+              horizont.steinefeld AS steine,
+              kalk_code.codeid AS kalk,
+              (messung.messwerte) ->> 'Bodenkennwerte // Kalk (CaCO3)'::text AS kalk_labor,
+              horizont.phfeld AS ph_wert,
+              (messung.messwerte) ->> 'Bodenkennwerte // pH-Wert'::text AS cacl2_wert,
+              farbtonzahl_code.codeid AS farbtonzahl,
+              farbtontext_code.codetext_de AS farbton,
+              farbtonhelligkeit_code.codeid AS farbe_helligkeit,
+              farbtonintensitaet_code.codeid AS farbe_intensitaet,
+              (messung.messwerte) ->> 'Bodenkennwerte // Potentielle Kationenaustauschkapazität'::text AS kationenaustauschkapazitaet_potentiell,
+              (messung.messwerte) ->> 'Bodenkennwerte // Effektive Kationenaustauschkapazität'::text AS kationenaustauschkapazitaet_effektiv
+           FROM afu_bodendaten_nabodat.punktdaten_profil profil
+               LEFT JOIN afu_bodendaten_nabodat.punktdaten_horizont horizont ON horizont.profil = profil.t_id
+               LEFT JOIN afu_bodendaten_nabodat.punktdaten_horizontbezeichnung horizontbezeichnung ON horizont.horizontbezeichnung = horizontbezeichnung.t_id
+               LEFT JOIN afu_bodendaten_nabodat.punktdaten_gefuege gefuege ON gefuege.horizont = horizont.t_id
+	       LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_zustandorgsubst zustand_organischesubstanz ON horizontbezeichnung.zustandorgsubst = zustand_organischesubstanz.t_id
+               LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_groesse gefuege_groesse ON gefuege.groesse = gefuege_groesse.t_id
+               LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_form gefuege_form ON gefuege.form = gefuege_form.t_id
+               LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_kalkreaktionhcl kalk_code ON horizont.kalkreaktionhcl = kalk_code.t_id
+               LEFT JOIN afu_bodendaten_nabodat.punktdaten_bodenfarbe bodenfarbe ON bodenfarbe.horizont = horizont.t_id
+               LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_farbtonzahl farbtonzahl_code ON bodenfarbe.farbtonzahl = farbtonzahl_code.t_id
+               LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_farbtontext farbtontext_code ON bodenfarbe.farbtontext = farbtontext_code.t_id
+               LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_helligkeit farbtonhelligkeit_code ON bodenfarbe.helligkeit = farbtonhelligkeit_code.t_id
+               LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_intensitaet farbtonintensitaet_code ON bodenfarbe.intensitaet = farbtonintensitaet_code.t_id
+               LEFT JOIN afu_bodendaten_nabodat.erhebung_probe_profil hilfsview ON hilfsview.erhebung_profil = profil.erhebung
+               LEFT JOIN afu_bodendaten_nabodat.punktdaten_probe probe ON hilfsview.erhebung_probe = probe.erhebung AND probe.tiefevon = horizont.tiefevon
+               LEFT JOIN ( SELECT json_object_agg(analyseparameter.parametertext_de, messung_1.messwert) AS messwerte,
+                      messung_1.probe
+                     FROM afu_bodendaten_nabodat.punktdaten_messung messung_1
+                       LEFT JOIN afu_bodendaten_nabodat.codelistnnlysdten_analyseparameter analyseparameter ON messung_1.analyseparameter = analyseparameter.t_id
+                    GROUP BY messung_1.probe) messung ON messung.probe = probe.t_id
+    ) messung 
 	    ON messung.horizont_id = horizont.t_id
 	GROUP BY 
 	    horizont.profil
