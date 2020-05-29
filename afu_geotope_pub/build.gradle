@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAfuGeotope'
+defaultTasks 'refreshSolr'
 
 task transferAfuGeotope(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -16,4 +16,8 @@ task transferAfuGeotope(type: Db2Db){
             new TransferSet('afu_geotope_pub_geotope_landschaftsform.sql', 'afu_geotope_pub.geotope_landschaftsform', true),
             new TransferSet('afu_geotope_pub_geotope_quelle.sql', 'afu_geotope_pub.geotope_quelle', true)
     ]
+}
+
+task refreshSolr(type:Exec, dependsOn:'transferAfuGeotope') {
+	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.geotope.aufschluss,ch.so.afu.geotope.erratiker,ch.so.afu.geotope.fundstelle_grabung_geschuetzt,ch.so.afu.geotope.hoehle,ch.so.afu.geotope.landschaftsform,ch.so.afu.geotope.quelle'
 }
