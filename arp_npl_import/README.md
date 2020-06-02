@@ -4,16 +4,16 @@ Es gibt für den Import und Datenumbau zur Zeit je einen GRETL-Job. Ziel ist es 
 
 Vertretbar solange Lieferungen noch eine seltene Ausnahmeerscheinung sind...
 
-## xtf-File umbenennen (Für Nachvollziehbarkeit in der Tabelle arp_npl.t_ili2db_import in der edit-DB)
+### xtf-File umbenennen (Für Nachvollziehbarkeit in der Tabelle `arp_npl.t_ili2db_import` in der edit-DB)
 ```
 [BSFNr]_[Datum].xtf
 Beispiel: 2507_20200529.xtf
 ```
 
-## xtf-File prüfen vor dem Datenimport (Nur ein selbst geprüftes XTF-File in die DB importieren)
+### xtf-File prüfen vor dem Datenimport (Nur ein selbst geprüftes XTF-File in die DB importieren)
 https://geo.so.ch/ilivalidator
 
-## Import-Datenumbau-Workflow
+### Import-Datenumbau-Workflow
 
 Gretljobs-Repo (lokal) klonen:
 
