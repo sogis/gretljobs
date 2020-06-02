@@ -4,13 +4,15 @@ Es gibt für den Import und Datenumbau zur Zeit je einen GRETL-Job. Ziel ist es 
 
 Vertretbar solange Lieferungen noch eine seltene Ausnahmeerscheinung sind...
 
-# xtf-File umbenennen (Für Nachvollziehbarkeit in der Tabelle `arp_npl.t_ili2db_import` in der edit-DB)
+### xtf-File umbenennen 
+Für Nachvollziehbarkeit in der Tabelle `arp_npl.t_ili2db_import` in der edit-DB
 ```
 [BSFNr]_[Datum].xtf
 Beispiel: 2507_20200529.xtf
 ```
 
-### xtf-File prüfen vor dem Datenimport (Nur ein selbst geprüftes XTF-File in die DB importieren)
+### xtf-File prüfen vor dem Datenimport 
+Nur ein selbst geprüftes XTF-File in die DB importieren
 https://geo.so.ch/ilivalidator
 
 ### Import-Datenumbau-Workflow
@@ -56,8 +58,10 @@ Der Gretljob arp_richtplan_pub schliesst jene Gemeinden aus, welche die Nutzungs
 => `gem_bfs NOT IN (2405,2408,2457,2473,2474,2476,2498,2501,2502,2580,2613,2614,2615)`. 
 Das File `arp_richtplan_pub/arp_richtplan_pub_richtplankarte_grundnutzung_sogis.sql` muss bei jeder neu angelegten NPL-Gemeinde um die neue BFS-Nummer erweitert werden!!
 
-### XTF-File ablegen unter `/opt/sogis_pic/geodata/ch.so.arp.nutzungsplanung`:
-Bereits bestehendes XTF-File archivieren:
+### XTF-File ablegen 
+`/opt/sogis_pic/geodata/ch.so.arp.nutzungsplanung`
+
+Vorgängig bereits bestehendes XTF-File archivieren:
 ```
 cd /opt/sogis_pic/geodata/ch.so.arp.nutzungsplanung
 sudo mv [BFS-Nr].xtf /opt/sogis_pic/daten_archiv/arp/ch.so.arp.nutzungsplanung/[BFS-Nr]_[Archivdate].xtf
