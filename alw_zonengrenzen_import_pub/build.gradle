@@ -36,7 +36,6 @@ task importKataloge(type: Ili2pgReplace, dependsOn: 'downloadKataloge'){
      models = "Landwirtschaftliche_Zonengrenzen_LV95_V1_2"
      dataFile = file(Paths.get(pathToTempFolder.toString(), "landwirtschaftliche_zonengrenzen_kataloge_20140701.xml"))
      dataset = "landwirtschaftliche_zonengrenzen_kataloge_20140701.xml-2938"
-     importTid = true
 }
 
 task "downloadData"(type: Download, dependsOn: 'importKataloge'){
@@ -62,5 +61,4 @@ task importData(type: Ili2pgReplace, dependsOn: 'unzipData'){
     dataset = "NachF_LWZ_INTERLIS2.xtf"
     strokeArcs = true
     disableValidation = true           //muss zwingend gesetzt sein wegen Heap Space
-    importTid = true
 }
