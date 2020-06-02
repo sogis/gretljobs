@@ -61,6 +61,6 @@ task importData(type: Ili2pgReplace, dependsOn: 'unzipData'){
     dataFile = file(Paths.get(pathToUnzipFolder.toString(), "NachF_LWZ_INTERLIS2.xtf"))
     dataset = "NachF_LWZ_INTERLIS2.xtf"
     strokeArcs = true
-    importTid = true
     disableValidation = true           //muss zwingend gesetzt sein wegen Heap Space
+    importTid = true
 }
