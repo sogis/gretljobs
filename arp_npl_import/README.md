@@ -8,7 +8,7 @@ Vertretbar solange Lieferungen noch eine seltene Ausnahmeerscheinung sind...
 Für Nachvollziehbarkeit in der Tabelle `arp_npl.t_ili2db_import` in der edit-DB
 ```
 [BSFNr]_[Lieferdatum].xtf
-Beispiel: 2507_20200529.xtf
+Beispiel: 2507_2020-05-29.xtf
 ```
 
 ### xtf-File prüfen vor dem Datenimport 
@@ -65,11 +65,14 @@ XTF-File archivieren:
 ```
 cd /opt/sogis_pic/daten_archiv/arp/ch.so.arp.nutzungsplanung/
 [BFS-Nr]_[Lieferdatum].xtf
+Beispiel: 2507_2020-05-29.xtf
+Rechte setzen: sudo chmod 644 [BFS-Nr]_[Lieferdatum].xtf
 ```
 XTF-File Ablegen damit es Online zur Vefügung steht:
 ```
 cd opt/sogis_pic/geodata/ch.so.arp.nutzungsplanung
 [BFS-Nr].xtf
+Rechte setzen: sudo chmod 644 [BFS-Nr].xtf
 ```
 
 ### Datenupdate für Oereb:
