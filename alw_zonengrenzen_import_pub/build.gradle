@@ -15,28 +15,29 @@ def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, "unzip_data")
 def pathToDataZip = Paths.get(pathToTempFolder, "NachF_LWZ_INTERLIS2.zip")
 
-// später löschen
-def pathToHomeFolder =  System.getProperty("user.dir")
 
+task deleteFromZonengrenzenTables(type: SqlExecutor) {
+    description = "Löscht die Daten aus dem Schema."
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ["delete_landwirtschaftliche_zonengrenzen_pub_tables.sql"]
+}
 
-
-task downloadKataloge(type: Download){
+task downloadKataloge(type: Download, dependsOn: 'deleteFromZonengrenzenTables'){
     description = "Download der Kataloge"
     src "https://models.geo.admin.ch/BLW/landwirtschaftliche_zonengrenzen_kataloge_20140701.xml"
     dest pathToTempFolder
     overwrite true
 }
 
-
-task importKataloge(type: Ili2pgImport, dependsOn: 'downloadKataloge'){
+task importKataloge(type: Ili2pgReplace, dependsOn: 'downloadKataloge'){
      description = "Import der Kataloge"
      database = [dbUriPub, dbUserPub, dbPwdPub]
      dbschema = "alw_zonengrenzen_pub"
-     models = "Landwirtschaftliche_Zonengrenzen_Kataloge_V1_2"
+     models = "Landwirtschaftliche_Zonengrenzen_LV95_V1_2"
      dataFile = file(Paths.get(pathToTempFolder.toString(), "landwirtschaftliche_zonengrenzen_kataloge_20140701.xml"))
-     deleteData = true
+     dataset = "landwirtschaftliche_zonengrenzen_kataloge_20140701.xml-2938"
+     importTid = true
 }
-
 
 task "downloadData"(type: Download, dependsOn: 'importKataloge'){
     description = "Download Landwirtschaftliche Zonengrenzen"
@@ -45,28 +46,21 @@ task "downloadData"(type: Download, dependsOn: 'importKataloge'){
     overwrite true
 }
 
-task unzipData(type: Copy, dependsOn: downloadData){
+task unzipData(type: Copy, dependsOn: 'downloadData'){
     description = "Unzip Data.zip"
     from zipTree(pathToDataZip)
     into file(pathToUnzipFolder)
     include "**/*.xtf"
 }
 
-
-task importData(type: Ili2pgImport, dependsOn: unzipData){
+task importData(type: Ili2pgReplace, dependsOn: 'unzipData'){
     description = "Import der Landwirtschaftlichen Zonengrenzen"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = "alw_zonengrenzen_pub"
     models = "Landwirtschaftliche_Zonengrenzen_LV95_V1_2"
-    
-            
-    //dataFile = file(Paths.get(pathToUnzipFolder.toString(), "NachF_LWZ_INTERLIS2.xtf"))
-    
-    // später löschen
-    dataFile = file(Paths.get(pathToHomeFolder.toString(), "NachF_LWZ_INTERLIS2_small.xtf"))
-            
-        
-    deleteData = true
+    dataFile = file(Paths.get(pathToUnzipFolder.toString(), "NachF_LWZ_INTERLIS2.xtf"))
+    dataset = "NachF_LWZ_INTERLIS2.xtf"
     strokeArcs = true
-    disableValidation = true
+    importTid = true
+    disableValidation = true           //muss zwingend gesetzt sein wegen Heap Space
 }
