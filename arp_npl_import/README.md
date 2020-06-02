@@ -66,7 +66,7 @@ Vorgängig bereits bestehendes XTF-File archivieren:
 cd /opt/sogis_pic/geodata/ch.so.arp.nutzungsplanung
 sudo mv [BFS-Nr].xtf /opt/sogis_pic/daten_archiv/arp/ch.so.arp.nutzungsplanung/[BFS-Nr]_[Archivdate].xtf
 ```
-Neues xtf-File nach dem erfolgreichen Importieren unter `/opt/sogis_pic/geodata/ch.so.arp.nutzungsplanung` ablegen als [BFS-Nr].xtf damit sie online verfügbar sind. 
+Neues xtf-File nach dem erfolgreichen Importieren unter `/opt/sogis_pic/geodata/ch.so.arp.nutzungsplanung` ablegen als `[BFS-Nr].xtf` damit sie online verfügbar sind. 
 
 ### Datenupdate für Oereb:
 Nach dem erfolgreichen Import in die edit-DB und pub-DB muss der Oereb nachgeführt werden.
