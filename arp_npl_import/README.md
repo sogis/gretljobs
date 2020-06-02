@@ -7,7 +7,7 @@ Vertretbar solange Lieferungen noch eine seltene Ausnahmeerscheinung sind...
 ### xtf-File umbenennen 
 Für Nachvollziehbarkeit in der Tabelle `arp_npl.t_ili2db_import` in der edit-DB
 ```
-[BSFNr]_[Datum].xtf
+[BSFNr]_[Lieferdatum].xtf
 Beispiel: 2507_20200529.xtf
 ```
 
@@ -44,9 +44,9 @@ Ein absoluter Pfad zum `--job_directory` verursacht m.E. am wenigsten Probleme.
 
 Wenn der Job erfolgreich durchgelaufen ist, in QGIS o.ä. überprüfen, ob die Daten tatsächlich sauber importiert wurden.
 
-Anschliessend kann in der GRETL-Jenkins-Umgebung (`https://gretl-test.so.ch/`) der Job `arp_npl_pub` ausgeführt werden. Der zugehörige Job liegt im Verzeichnis `arp_npl_pub`. Logfiles anschauen und in QGIS o.ä. überprüfen. 
+Anschliessend kann in der GRETL-Jenkins-Umgebung (`https://gretl-test.so.ch/`) der Job `arp_npl_pub` ausgeführt werden. Der zugehörige Job liegt im Verzeichnis `arp_npl_pub`. Logfiles anschauen und im Web GIS Client o.ä. überprüfen. 
 
-Wenn in der Test-Umgebung alles funktioniert hat, das Ganze nochmals auf der Produktion. In Zukunft dürfte wohl das Ausführen auf der Test-Umgebung überflüssig werden.
+Wenn in der Test-Umgebung alles funktioniert hat, das Ganze nochmals auf der Integration und anschliessend in der Produktion. In Zukunft dürfte wohl das Ausführen auf der Test-Umgebung überflüssig werden.
 
 ### Gretljob arp_npl_pub nachführen:
 Der Gretljob arp_npl_pub  schliesst jene Gemeinden aus, welche die Nutzungsplanung schon abgeschlossen haben. 
@@ -59,14 +59,18 @@ Der Gretljob arp_richtplan_pub schliesst jene Gemeinden aus, welche die Nutzungs
 Das File `arp_richtplan_pub/arp_richtplan_pub_richtplankarte_grundnutzung_sogis.sql` muss bei jeder neu angelegten NPL-Gemeinde um die neue BFS-Nummer erweitert werden!!
 
 ### XTF-File ablegen 
-`/opt/sogis_pic/geodata/ch.so.arp.nutzungsplanung`
+`/opt/sogis_pic/geodata/ch.so.arp.nutzungsplanung` und `/opt/sogis_pic/daten_archiv/arp/ch.so.arp.nutzungsplanung/`
 
-Vorgängig bereits bestehendes XTF-File archivieren:
+XTF-File archivieren:
 ```
-cd /opt/sogis_pic/geodata/ch.so.arp.nutzungsplanung
-sudo mv [BFS-Nr].xtf /opt/sogis_pic/daten_archiv/arp/ch.so.arp.nutzungsplanung/[BFS-Nr]_[Archivdate].xtf
+cd /opt/sogis_pic/daten_archiv/arp/ch.so.arp.nutzungsplanung/
+[BFS-Nr]_[Lieferdatum].xtf
 ```
-Neues xtf-File nach dem erfolgreichen Importieren unter `/opt/sogis_pic/geodata/ch.so.arp.nutzungsplanung` ablegen als `[BFS-Nr].xtf` damit sie online verfügbar sind. 
+XTF-File Ablegen damit es Online zur Vefügung steht:
+```
+cd opt/sogis_pic/geodata/ch.so.arp.nutzungsplanung
+[BFS-Nr].xtf
+```
 
 ### Datenupdate für Oereb:
 Nach dem erfolgreichen Import in die edit-DB und pub-DB muss der Oereb nachgeführt werden.
