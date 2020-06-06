@@ -1,0 +1,54 @@
+Info: ilivalidator-1.11.3-0de2d606b648b74ab53fce8201a0fdf70b208a47
+Info: ili2c-5.0.6-20200302
+Info: iox-ili-1.20.17-51a4dc2860303f36b64fcb29b9a7189f72b2ced5
+Info: User <stefan>
+Info: Start date 2020-06-06 19:42
+Info: maxMemory 466432 KB
+Info: dataFile </Users/stefan/sources/gretljobs/agi_ilivalidator_plugin_test/ch.so.sk.gesetze.xtf>
+Info: ilidirs <%ITF_DIR;http://models.interlis.ch/;%JAR_DIR/ilimodels>
+Info: lookup model <OeREBKRMvs_V1_1> in repository </Users/stefan/sources/gretljobs/agi_ilivalidator_plugin_test/>
+Info: lookup model <OeREBKRMvs_V1_1> in repository <http://models.interlis.ch/>
+Warning: TID=1001: ignored; unknown class <IliRepository20.RepositoryIndex.ModelMetadata>
+Warning: TID=1002: ignored; unknown class <IliRepository20.RepositoryIndex.ModelMetadata>
+Warning: TID=1003: ignored; unknown class <IliRepository20.RepositoryIndex.ModelMetadata>
+Warning: TID=1004: ignored; unknown class <IliRepository20.RepositoryIndex.ModelMetadata>
+Warning: TID=1005: ignored; unknown class <IliRepository20.RepositoryIndex.ModelMetadata>
+Warning: TID=1006: ignored; unknown class <IliRepository20.RepositoryIndex.ModelMetadata>
+Warning: TID=1007: ignored; unknown class <IliRepository20.RepositoryIndex.ModelMetadata>
+Warning: TID=1008: ignored; unknown class <IliRepository20.RepositoryIndex.ModelMetadata>
+Info: lookup model <OeREBKRMvs_V1_1> in repository <http://models.geo.admin.ch/>
+Info: lookup model <CHAdminCodes_V1> 2.3 in repository </Users/stefan/sources/gretljobs/agi_ilivalidator_plugin_test/>
+Info: lookup model <CHAdminCodes_V1> 2.3 in repository <http://models.interlis.ch/>
+Info: lookup model <CHAdminCodes_V1> 2.3 in repository <http://models.geo.admin.ch/>
+Info: lookup model <LocalisationCH_V1> 2.3 in repository </Users/stefan/sources/gretljobs/agi_ilivalidator_plugin_test/>
+Info: lookup model <LocalisationCH_V1> 2.3 in repository <http://models.interlis.ch/>
+Info: lookup model <LocalisationCH_V1> 2.3 in repository <http://models.geo.admin.ch/>
+Info: lookup model <OeREBKRM_V1_1> 2.3 in repository </Users/stefan/sources/gretljobs/agi_ilivalidator_plugin_test/>
+Info: lookup model <OeREBKRM_V1_1> 2.3 in repository <http://models.interlis.ch/>
+Info: lookup model <OeREBKRM_V1_1> 2.3 in repository <http://models.geo.admin.ch/>
+Info: lookup model <CatalogueObjects_V1> 2.3 in repository </Users/stefan/sources/gretljobs/agi_ilivalidator_plugin_test/>
+Info: lookup model <CatalogueObjects_V1> 2.3 in repository <http://models.interlis.ch/>
+Info: lookup model <CatalogueObjects_V1> 2.3 in repository <http://models.geo.admin.ch/>
+Info: ilifile </Users/stefan/.ilicache/models.geo.admin.ch/CH/CHBase_Part2_LOCALISATION_20110830.ili>
+Info: ilifile </Users/stefan/.ilicache/models.geo.admin.ch/CH/CHBase_Part3_CATALOGUEOBJECTS_20110830.ili>
+Info: ilifile </Users/stefan/.ilicache/models.geo.admin.ch/CH/CHBase_Part4_ADMINISTRATIVEUNITS_20110830.ili>
+Info: ilifile </Users/stefan/.ilicache/models.geo.admin.ch/V_D/OeREB/OeREBKRM_V1_1.ili>
+Info: ilifile </Users/stefan/.ilicache/models.geo.admin.ch/V_D/OeREB/OeREBKRMvs_V1_1.ili>
+Info: validate data...
+Info: assume unknown external objects
+Info: first validation pass...
+Error: line 204: OeREBKRMvs_V1_1.Vorschriften.Dokument: tid ch.so.sk.bgs.931.12: Attribute OffizielleNr is length restricted to 20
+Info: second validation pass...
+Info: validate unique constraint Localisation_V1.MultilingualText.Constraint1...
+Info: validate mandatory constraint LocalisationCH_V1.LocalisedText.Constraint1...
+Info: validate multiplicity of role OeREBKRMvs_V1_1.Vorschriften.ZustaendigeStelleDokument.Dokument...
+Info: validate unique constraint OeREBKRM_V1_1.MultilingualUri.Constraint1...
+Info: validate target of role OeREBKRMvs_V1_1.Vorschriften.ZustaendigeStelleDokument.ZustaendigeStelle...
+Info: validate multiplicity of role OeREBKRMvs_V1_1.Vorschriften.HinweisWeitereDokumente.Hinweis...
+Info: validate multiplicity of role OeREBKRMvs_V1_1.Vorschriften.ZustaendigeStelleDokument.ZustaendigeStelle...
+Info: validate multiplicity of role OeREBKRMvs_V1_1.Vorschriften.HinweisWeitereDokumente.Ursprung...
+Info: validate multiplicity of role OeREBKRMvs_V1_1.Vorschriften.DokumentArtikel.Artikel...
+Info: /Users/stefan/sources/gretljobs/agi_ilivalidator_plugin_test/ch.so.sk.gesetze.xtf: OeREBKRMvs_V1_1.HinweiseGesetzlicheGrundlagen BID=b1
+Info:       1 objects in CLASS OeREBKRMvs_V1_1.Vorschriften.Amt
+Info:       9 objects in CLASS OeREBKRMvs_V1_1.Vorschriften.Dokument
+Info: ...validation failed

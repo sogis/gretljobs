@@ -1,0 +1,30 @@
+buildscript {
+  repositories {
+    maven { url "https://repo.osgeo.org/repository/release/" }
+    maven { url "https://plugins.gradle.org/m2/" }
+    maven { url "http://jars.interlis.ch" }    
+    mavenLocal()   
+
+  }
+  dependencies {
+    classpath "ch.so.agi:gretl:2.0.9999"
+  }
+}
+
+apply plugin: "ch.so.agi.gretl"
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+
+defaultTasks "validateFile"
+
+task validateFile(type: IliValidator) {
+    description = "Validiert die Transferdatei mit zusätzlichen Checks."
+    dataFiles = ["ch.so.sk.gesetze.xtf"]
+    logFile = "ilivalidator.log"
+    allObjectsAccessible = false
+    //configFile = "validateData.toml"
+    //pluginFolder = "/home/gradle/plugins/"
+    //pluginFolder = "./plugins/"
+}
