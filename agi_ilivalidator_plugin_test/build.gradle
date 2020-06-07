@@ -1,3 +1,4 @@
+/*
 buildscript {
   repositories {
     maven { url "https://repo.osgeo.org/repository/release/" }
@@ -8,64 +9,24 @@ buildscript {
   }
   dependencies {
     classpath "ch.so.agi:gretl:2.0.9999"
-    classpath "ch.interlis:ilivalidator:1.11.3"
-    //classpath "ch.interlis:iox-ili:1.29.9-SNAPSHOT"
   }
-}
-plugins {
-    id 'java'
-}
-
-configurations {
-    validator
 }
 
 apply plugin: "ch.so.agi.gretl"
-
-
-  repositories {
-    maven { url "http://jars.interlis.ch" }    
-    mavenLocal()   
-
-  }
-  dependencies {
-    compile "ch.interlis:ilivalidator:1.11.3"
-    compile "ch.interlis:iox-ili:1.29.9-SNAPSHOT"
-  }
-
-dependencies {
-    validator "ch.interlis:ilivalidator:1.11.3"
-    validator "ch.interlis:iox-ili:1.29.9-SNAPSHOT"
-}
-
+*/
 
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 import java.nio.file.Paths
-import java.net.URL;
-import java.net.URLClassLoader;
-import ch.interlis.iox_j.validator.InterlisFunction
-
-/*
-URLClassLoader loader = buildscript.classLoader
-configurations.validator.each { File file ->
-    loader.addURL(file.toURI().toURL())
-}   
-Class interlisFunctionClass = loader.loadClass(new String("ch.interlis.iox_j.validator.InterlisFunction"));
-*/
 
 
 defaultTasks "validateFile"
 
 task validateFile(type: IliValidator) {
-    doFirst {
-        buildscript.configurations.classpath.each { println it }
-    }
     description = "Validiert die Transferdatei mit zusätzlichen Checks."
     dataFiles = ["ch.so.sk.gesetze.xtf"]
-    logFile = "ilivalidator.log"
+    logFile = "/tmp/gretl-share/ilivalidator.log"
     allObjectsAccessible = false
-    //configFile = "validateData.toml"
+    configFile = "validateData.toml"
     //pluginFolder = "/home/gradle/plugins/"
-    pluginFolder = "./plugins/"
 }
