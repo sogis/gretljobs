@@ -386,7 +386,9 @@ LEFT JOIN
 					'farbton', messung.farbton, 
 					'farbton_helligkeit', messung.farbe_helligkeit, 
 					'farbton_intensitaet', messung.farbe_intensitaet
-				)
+				), 
+                                'kak_pot', kationenaustauschkapazitaet_potentiell, 
+                                'kak_eff', kationenaustauschkapazitaet_effektiv
 			)
 		) AS horizontwert
     FROM 
