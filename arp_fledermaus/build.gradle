@@ -1,0 +1,93 @@
+buildscript {
+    repositories {
+        maven { url "https://repo.osgeo.org/repository/release/" }
+        maven { url "http://jars.interlis.ch" }
+        maven { url "https://plugins.gradle.org/m2/" }
+        mavenCentral()
+    }
+    dependencies {
+        classpath "ch.so.agi:gretl:2.0.204"
+        classpath 'commons-net:commons-net:3.6'
+
+    }
+}
+
+apply plugin: "ch.so.agi.gretl"
+
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import java.nio.file.Files
+import org.apache.commons.net.ftp.*;
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+task fubar() {
+    doLast {
+        println "fubar"
+    }
+}
+
+task downloadData() {
+    doLast {
+        ant {
+            get(src: "ftp://sl50.web.hostpoint.ch/export.csv", dest: "/Users/stefan/tmp/export.csv", username: 'XXXXXXXXX', password: 'YYYYYYYYY', verbose: 'on')
+        }
+    }
+}
+
+task downloadData2() {
+    doLast {
+        def server = "sl50.web.hostpoint.ch"
+        def user = "XXXXXXXXX"
+        def password = "YYYYYYYYY"
+        def systemTypeKey = "UNIX"; // WINDOWS || UNIX
+
+
+        def ftp = new FTPSClient()
+        try {
+            ftp.connect(server,21);
+            ftp.login(user, password);
+            //ftp.enterLocalPassiveMode();
+            ftp.configure(new FTPClientConfig(systemTypeKey));
+
+
+            for (FTPFile f : ftp.listFiles()) {
+                System.out.println("downloading " + f.getName() + " ...");
+            }
+
+
+        } catch (Exception e) {
+            System.out.println("" + e);
+        }
+
+       /* 
+      try {
+
+         ftp.connect(server,21);
+         ftp.login(user,password);
+         ftp.enterLocalPassiveMode();
+
+         System.out.println("\nretrieving files from " + server + "\n");
+         for (FTPFile f : ftp.listFiles(remoteDir + "\\" + pattern)) {
+            System.out.println("downloading " + f.getName() + " ...");
+            OutputStream output;
+            output = new FileOutputStream(f.getName());
+            ftp.retrieveFile(remoteDir + "\\" + f.getName(),output);
+            output.close();
+            System.out.println("done.");
+         }
+
+         ftp.logout();
+         ftp.disconnect();
+
+      }
+      catch (Exception e) {
+         System.out.println("" + e);
+      }
+    */
+
+    }
+}
+
+
+

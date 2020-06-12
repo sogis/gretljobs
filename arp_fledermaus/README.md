@@ -1,0 +1,2 @@
+- Job momentan nur zum Testen der Downloadschnittstelle und der CSV-Formatierung
+- Job läuft nicht im Docker-Image, sondern nur mit Plugin "direkt".
