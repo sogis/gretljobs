@@ -39,8 +39,8 @@ task downloadData() {
 task downloadData2() {
     doLast {
         def server = "sl50.web.hostpoint.ch"
-        def user = "aaso@fledermausschutz.ch"
-        def password = "Y68vRtM5Qg!MuV6"
+        def user = "yyyy"
+        def password = "xxxx"
         def systemTypeKey = "UNIX"; // WINDOWS || UNIX
 
 
