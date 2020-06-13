@@ -38,18 +38,20 @@ task downloadData() {
 task downloadData2() {
     doLast {
         def server = "sl50.web.hostpoint.ch"
-        def user = "XXXXXXXXX"
-        def password = "YYYYYYYYY"
+        def user = "yyyy"
+        def password = "xxxx"
         def systemTypeKey = "UNIX"; // WINDOWS || UNIX
 
 
-        def ftp = new FTPSClient()
+        def ftp = new FTPClient()
         try {
             ftp.connect(server,21);
             ftp.login(user, password);
             //ftp.enterLocalPassiveMode();
-            ftp.configure(new FTPClientConfig(systemTypeKey));
+            //ftp.configure(new FTPClientConfig(systemTypeKey));
 
+            boolean reply = ftp.getReplyCode();
+            println reply
 
             for (FTPFile f : ftp.listFiles()) {
                 System.out.println("downloading " + f.getName() + " ...");
@@ -57,8 +59,11 @@ task downloadData2() {
 
 
         } catch (Exception e) {
+            System.out.println("exception");
             System.out.println("" + e);
         }
+
+        println "downloadData2"
 
        /* 
       try {
