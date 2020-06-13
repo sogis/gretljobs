@@ -18,6 +18,7 @@ import ch.so.agi.gretl.tasks.*
 import java.nio.file.Paths
 import java.nio.file.Files
 import org.apache.commons.net.ftp.*;
+import org.apache.commons.net.util.TrustManagerUtils
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
@@ -38,20 +39,28 @@ task downloadData() {
 task downloadData2() {
     doLast {
         def server = "sl50.web.hostpoint.ch"
-        def user = "yyyy"
-        def password = "xxxx"
+        def user = "aaso@fledermausschutz.ch"
+        def password = "Y68vRtM5Qg!MuV6"
         def systemTypeKey = "UNIX"; // WINDOWS || UNIX
 
 
         def ftp = new FTPClient()
+        //ftp.setTrustManager(TrustManagerUtils.getAcceptAllTrustManager())
         try {
             ftp.connect(server,21);
             ftp.login(user, password);
             //ftp.enterLocalPassiveMode();
             //ftp.configure(new FTPClientConfig(systemTypeKey));
 
-            boolean reply = ftp.getReplyCode();
+            int reply = ftp.getReplyCode();
             println reply
+
+  
+            if(!FTPReply.isPositiveCompletion(reply)) {
+                 ftp.disconnect();
+        System.err.println("FTP server refused connection.");
+        //System.exit(1);
+            }
 
             for (FTPFile f : ftp.listFiles()) {
                 System.out.println("downloading " + f.getName() + " ...");
