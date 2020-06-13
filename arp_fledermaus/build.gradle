@@ -15,93 +15,59 @@ buildscript {
 apply plugin: "ch.so.agi.gretl"
 
 import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.util.TaskUtil
 import java.nio.file.Paths
 import java.nio.file.Files
-import org.apache.commons.net.ftp.*;
-import org.apache.commons.net.util.TrustManagerUtils
+import java.io.FileOutputStream
+//import java.io.PrintWriter
+import org.apache.commons.net.ftp.*
+//import org.apache.commons.net.PrintCommandListener
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def remoteFileName = "export.csv"
+def localFileName = "export.csv"
 
-task fubar() {
-    doLast {
-        println "fubar"
-    }
-}
+def server = "sl50.web.hostpoint.ch"
+def user = fledermausUser
+def password = fledermausPwd
 
 task downloadData() {
     doLast {
-        ant {
-            get(src: "ftp://sl50.web.hostpoint.ch/export.csv", dest: "/Users/stefan/tmp/export.csv", username: 'XXXXXXXXX', password: 'YYYYYYYYY', verbose: 'on')
-        }
-    }
-}
-
-task downloadData2() {
-    doLast {
-        def server = "sl50.web.hostpoint.ch"
-        def user = "yyyy"
-        def password = "xxxx"
-        def systemTypeKey = "UNIX"; // WINDOWS || UNIX
-
-
         def ftp = new FTPClient()
-        //ftp.setTrustManager(TrustManagerUtils.getAcceptAllTrustManager())
+
         try {
             ftp.connect(server,21);
             ftp.login(user, password);
-            //ftp.enterLocalPassiveMode();
-            //ftp.configure(new FTPClientConfig(systemTypeKey));
+            ftp.enterLocalPassiveMode();
+
+            // Aus Dokumentationsgründen.
+            //def systemTypeKey = "UNIX"; // WINDOWS || UNIX
+            //ftp.configure(new FTPClientConfig(systemTypeKey)); 
 
             int reply = ftp.getReplyCode();
-            println reply
-
-  
             if(!FTPReply.isPositiveCompletion(reply)) {
-                 ftp.disconnect();
-        System.err.println("FTP server refused connection.");
-        //System.exit(1);
+                throw new Exception("FTP server refused connection.")
             }
 
-            for (FTPFile f : ftp.listFiles()) {
-                System.out.println("downloading " + f.getName() + " ...");
+            String fileName = Paths.get(pathToTempFolder, localFileName).toFile().getAbsoluteFile()
+            FileOutputStream fos = new FileOutputStream(fileName)
+
+            boolean response = ftp.retrieveFile(remoteFileName, fos)
+            if (respone == false) {
+                throw new Exception("Could not retrieve file: " + remoteFileName)
             }
-
-
+            println "File downloaded: " + fileName
         } catch (Exception e) {
-            System.out.println("exception");
-            System.out.println("" + e);
+            GradleException ge = TaskUtil.toGradleException(e)
+            throw ge;
+        } finally {
+            if(ftp.isConnected()) {
+                try {
+                    ftp.disconnect()
+                } catch(IOException e) {
+                    // do nothing
+                }
+            }
         }
-
-        println "downloadData2"
-
-       /* 
-      try {
-
-         ftp.connect(server,21);
-         ftp.login(user,password);
-         ftp.enterLocalPassiveMode();
-
-         System.out.println("\nretrieving files from " + server + "\n");
-         for (FTPFile f : ftp.listFiles(remoteDir + "\\" + pattern)) {
-            System.out.println("downloading " + f.getName() + " ...");
-            OutputStream output;
-            output = new FileOutputStream(f.getName());
-            ftp.retrieveFile(remoteDir + "\\" + f.getName(),output);
-            output.close();
-            System.out.println("done.");
-         }
-
-         ftp.logout();
-         ftp.disconnect();
-
-      }
-      catch (Exception e) {
-         System.out.println("" + e);
-      }
-    */
-
     }
 }
-
-
-
