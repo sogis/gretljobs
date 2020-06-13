@@ -8,7 +8,6 @@ buildscript {
     dependencies {
         classpath "ch.so.agi:gretl:2.0.204"
         classpath 'commons-net:commons-net:3.6'
-
     }
 }
 
@@ -38,7 +37,7 @@ task downloadData() {
         try {
             ftp.connect(server,21);
             ftp.login(user, password);
-            ftp.enterLocalPassiveMode();
+            //ftp.enterLocalPassiveMode();
 
             // Aus Dokumentationsgründen.
             //def systemTypeKey = "UNIX"; // WINDOWS || UNIX
