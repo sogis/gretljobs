@@ -52,7 +52,7 @@ task downloadData() {
             FileOutputStream fos = new FileOutputStream(fileName)
 
             boolean response = ftp.retrieveFile(remoteFileName, fos)
-            if (respone == false) {
+            if (response == false) {
                 throw new Exception("Could not retrieve file: " + remoteFileName)
             }
             println "File downloaded: " + fileName
