@@ -12,6 +12,9 @@ export ORG_GRADLE_PROJECT_dbUriPub=jdbc:postgresql://pub-db/pub
 export ORG_GRADLE_PROJECT_dbUserPub=gretl
 export ORG_GRADLE_PROJECT_dbPwdPub=gretl
 
-export ORG_GRADLE_PROJECT_fledermausUser=xxxxx
-export ORG_GRADLE_PROJECT_fledermausPwd='yy!yy'
+export ORG_GRADLE_PROJECT_ftpServerFledermaus=sl50.web.hostpoint.ch
+export ORG_GRADLE_PROJECT_ftpUserFledermaus=xxxxx
+export ORG_GRADLE_PROJECT_ftpPwdFledermaus='yyyy!yyyy'
 ```
+
+

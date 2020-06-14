@@ -24,18 +24,19 @@ def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def remoteFileName = "export.csv"
 def localFileName = "export.csv"
 
-def server = "sl50.web.hostpoint.ch"
-def user = fledermausUser
-def password = fledermausPwd
+def server = ftpServerFledermaus
+def user = ftpUserFledermaus
+def password = ftpPwdFledermaus
 
 task downloadData() {
     doLast {
-        def ftp = new FTPClient()
+        def ftp = new FTPSClient()
 
         try {
             ftp.connect(server,21);
             ftp.login(user, password);
-            //ftp.enterLocalPassiveMode();
+            // Use passive mode with ftps
+            ftp.enterLocalPassiveMode(); 
 
             // Aus Dokumentationsgründen.
             //def systemTypeKey = "UNIX"; // WINDOWS || UNIX
