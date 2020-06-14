@@ -18,9 +18,7 @@ import ch.so.agi.gretl.util.TaskUtil
 import java.nio.file.Paths
 import java.nio.file.Files
 import java.io.FileOutputStream
-//import java.io.PrintWriter
 import org.apache.commons.net.ftp.*
-//import org.apache.commons.net.PrintCommandListener
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def remoteFileName = "export.csv"
