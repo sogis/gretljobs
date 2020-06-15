@@ -31,13 +31,19 @@ def password = ftpPwdFledermaus
 
 task downloadData() {
     doLast {
-        def ftp = new FTPSClient()
+        def ftp = new FTPClient()
 
         try {
-            ftp.connect(server,21);
-            ftp.login(user, password);
+            ftp.setDefaultTimeout(60000)
+            ftp.setConnectTimeout(30000)
+            ftp.setDataTimeout(30000)
+            
+            ftp.connect(server, 21)
+            ftp.setSoTimeout(30000)
+
+            ftp.login(user, password)
             // Use passive mode with ftps
-            ftp.enterLocalPassiveMode(); 
+            //ftp.enterLocalPassiveMode(); 
 
             // Aus Dokumentationsgründen.
             //def systemTypeKey = "UNIX"; // WINDOWS || UNIX
