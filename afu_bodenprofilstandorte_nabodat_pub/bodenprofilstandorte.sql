@@ -375,7 +375,7 @@ LEFT JOIN
 				'kalk', messung.kalk, 
 				'kalk_labor', messung.kalk_labor, 
 				'ph_wert', messung.ph_wert, 
-				' cacl2_wert', messung.cacl2_wert, 
+				'cacl2_wert', messung.cacl2_wert, 
 				'farbe', bodenfarbe.farbe, 
                 'kak_pot', kationenaustauschkapazitaet_potentiell, 
                 'kak_eff', kationenaustauschkapazitaet_effektiv
@@ -396,7 +396,12 @@ LEFT JOIN
 				) 
 			)AS gefuege_json
         FROM
-            afu_bodendaten_nabodat.punktdaten_gefuege gefuege 
+            (SELECT 
+                 * 
+             FROM 
+                 afu_bodendaten_nabodat.punktdaten_gefuege
+             ORDER BY
+                 t_id) gefuege 
         LEFT JOIN 
             afu_bodendaten_nabodat.codelistnprfldten_form gefuege_form
 	        ON gefuege.form = gefuege_form.t_id
@@ -418,8 +423,13 @@ LEFT JOIN
 					'farbton_intensitaet', farbtonintensitaet_code.codeid
 				)
 			) farbe
-		FROM 
-		afu_bodendaten_nabodat.punktdaten_bodenfarbe bodenfarbe
+	FROM 
+	    (SELECT 
+                 * 
+             FROM 
+                 afu_bodendaten_nabodat.punktdaten_bodenfarbe 
+             ORDER BY 
+                 t_id) bodenfarbe
         LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_farbtonzahl farbtonzahl_code 
 				ON bodenfarbe.farbtonzahl = farbtonzahl_code.t_id
         LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_farbtontext farbtontext_code 
