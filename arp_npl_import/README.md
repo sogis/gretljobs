@@ -4,7 +4,18 @@ Es gibt für den Import und Datenumbau zur Zeit je einen GRETL-Job. Ziel ist es 
 
 Vertretbar solange Lieferungen noch eine seltene Ausnahmeerscheinung sind...
 
-## Import-Datenumbau-Workflow
+### xtf-File umbenennen 
+Für Nachvollziehbarkeit in der Tabelle `arp_npl.t_ili2db_import` in der edit-DB
+```
+[BSFNr]_[Lieferdatum].xtf
+Beispiel: 2507_2020-05-29.xtf
+```
+
+### xtf-File prüfen vor dem Datenimport 
+Nur ein selbst geprüftes XTF-File in die DB importieren
+https://geo.so.ch/ilivalidator
+
+### Import-Datenumbau-Workflow
 
 Gretljobs-Repo (lokal) klonen:
 
@@ -33,9 +44,9 @@ Ein absoluter Pfad zum `--job_directory` verursacht m.E. am wenigsten Probleme.
 
 Wenn der Job erfolgreich durchgelaufen ist, in QGIS o.ä. überprüfen, ob die Daten tatsächlich sauber importiert wurden.
 
-Anschliessend kann in der GRETL-Jenkins-Umgebung (`https://gretl-test.so.ch/`) der Job `arp_npl_pub` ausgeführt werden. Der zugehörige Job liegt im Verzeichnis `arp_npl_pub`. Logfiles anschauen und in QGIS o.ä. überprüfen. 
+Anschliessend kann in der GRETL-Jenkins-Umgebung (`https://gretl-test.so.ch/`) der Job `arp_npl_pub` ausgeführt werden. Der zugehörige Job liegt im Verzeichnis `arp_npl_pub`. Logfiles anschauen und im Web GIS Client o.ä. überprüfen. 
 
-Wenn in der Test-Umgebung alles funktioniert hat, das Ganze nochmals auf der Produktion. In Zukunft dürfte wohl das Ausführen auf der Test-Umgebung überflüssig werden.
+Wenn in der Test-Umgebung alles funktioniert hat, das Ganze nochmals auf der Integration und anschliessend in der Produktion. In Zukunft dürfte wohl das Ausführen auf der Test-Umgebung überflüssig werden.
 
 ### Gretljob arp_npl_pub nachführen:
 Der Gretljob arp_npl_pub  schliesst jene Gemeinden aus, welche die Nutzungsplanung schon abgeschlossen haben. 
@@ -47,8 +58,26 @@ Der Gretljob arp_richtplan_pub schliesst jene Gemeinden aus, welche die Nutzungs
 => `gem_bfs NOT IN (2405,2408,2457,2473,2474,2476,2498,2501,2502,2580,2613,2614,2615)`. 
 Das File `arp_richtplan_pub/arp_richtplan_pub_richtplankarte_grundnutzung_sogis.sql` muss bei jeder neu angelegten NPL-Gemeinde um die neue BFS-Nummer erweitert werden!!
 
-### XTF-File ablegen:
-xtf-File nach dem Importieren unter `/opt/sogis_pic/geodata/ch.so.arp.nutzungsplanung` ablegen (BFS-Nr.xtf) damit sie online verfügbar sind. 
+### XTF-File ablegen 
+`/opt/sogis_pic/geodata/ch.so.arp.nutzungsplanung` und `/opt/sogis_pic/daten_archiv/arp/ch.so.arp.nutzungsplanung/`
+
+XTF-File archivieren:
+```
+cd /opt/sogis_pic/daten_archiv/arp/ch.so.arp.nutzungsplanung/
+[BFS-Nr]_[Lieferdatum].xtf
+Beispiel: 2507_2020-05-29.xtf
+Rechte setzen: sudo chmod 644 [BFS-Nr]_[Lieferdatum].xtf
+```
+XTF-File Ablegen damit es Online zur Vefügung steht:
+```
+cd opt/sogis_pic/geodata/ch.so.arp.nutzungsplanung
+[BFS-Nr].xtf
+Rechte setzen: sudo chmod 644 [BFS-Nr].xtf
+```
+
+### Datenupdate für Oereb:
+Nach dem erfolgreichen Import in die edit-DB und pub-DB muss der Oereb nachgeführt werden.
+
 
 ## Entwicklung
 See: [https://geoweb.rootso.org/redmine/issues/3891](https://geoweb.rootso.org/redmine/issues/3891)

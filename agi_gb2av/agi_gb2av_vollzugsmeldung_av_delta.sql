@@ -2,16 +2,11 @@ WITH geometer AS
 (
     SELECT
         nfgemeinde.bfsnr,
-        grundbuchkreis.nbident,
         standort.firma
     FROM
-        agi_av_gb_admin_einteilung.grundbuchkreise_grundbuchkreis AS grundbuchkreis
-        LEFT JOIN agi_av_gb_admin_einteilung.nachfuehrngskrise_gemeinde AS nfgemeinde
-        ON nfgemeinde.bfsnr = grundbuchkreis.bfsnr
-        LEFT JOIN agi_av_gb_admin_einteilung.nachfuehrngskrise_nachfuehrungsgeometer AS nfgeometer
-        ON nfgeometer.t_id = nfgemeinde.r_geometer
+        agi_av_gb_admin_einteilung.nachfuehrngskrise_gemeinde AS nfgemeinde
         LEFT JOIN agi_av_gb_admin_einteilung.nachfuehrngskrise_standort AS standort
-        ON standort.t_id = nfgemeinde.r_standort  
+        ON nfgemeinde.r_standort = standort.t_id      
 ),
 controlling AS 
 (
@@ -57,7 +52,7 @@ controlling AS
         LEFT JOIN agi_dm01avso24.liegenschaften_lsnachfuehrung AS lsnachfuerhung
         ON (lsnachfuerhung.nbident = vollzugsgegenstand.gb_nbident AND lsnachfuerhung.identifikator = vollzugsgegenstand.gb_mutnummer)
         LEFT JOIN geometer 
-        ON geometer.nbident = vollzugsgegenstand.gb_nbident
+        ON geometer.bfsnr::text = substring(vollzugsgegenstand.gb_nbident, 9, 4)
     WHERE
         gbeintrag IS NULL AND lsnachfuerhung.t_id IS NOT NULL
     ORDER BY 
