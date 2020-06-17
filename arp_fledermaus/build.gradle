@@ -1,4 +1,4 @@
-/*
+
 buildscript {
     repositories {
         maven { url "https://repo.osgeo.org/repository/release/" }
@@ -7,13 +7,13 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "ch.so.agi:gretl:2.0.204"
+        //classpath "ch.so.agi:gretl:2.0.204"
         // TODO add dependendy in gretl-runtime
         classpath 'commons-net:commons-net:3.6'
     }
 }
 
-
+/*
 apply plugin: "ch.so.agi.gretl"
 */
 
