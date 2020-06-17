@@ -24,7 +24,7 @@ import java.nio.file.Files
 import java.io.FileOutputStream
 import org.apache.commons.net.ftp.*
 
-defaultTasks downloadData
+defaultTasks "downloadData"
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def remoteFileName = "export.csv"
