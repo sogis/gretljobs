@@ -401,7 +401,7 @@ LEFT JOIN
              FROM 
                  afu_bodendaten_nabodat.punktdaten_gefuege
              ORDER BY
-                 t_id) gefuege 
+                 t_ili_tid) gefuege 
         LEFT JOIN 
             afu_bodendaten_nabodat.codelistnprfldten_form gefuege_form
 	        ON gefuege.form = gefuege_form.t_id
@@ -429,7 +429,7 @@ LEFT JOIN
              FROM 
                  afu_bodendaten_nabodat.punktdaten_bodenfarbe 
              ORDER BY 
-                 t_id) bodenfarbe
+                 t_ili_tid) bodenfarbe
         LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_farbtonzahl farbtonzahl_code 
 				ON bodenfarbe.farbtonzahl = farbtonzahl_code.t_id
         LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_farbtontext farbtontext_code 
