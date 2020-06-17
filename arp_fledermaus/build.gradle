@@ -1,0 +1,83 @@
+/*
+buildscript {
+    repositories {
+        maven { url "https://repo.osgeo.org/repository/release/" }
+        maven { url "http://jars.interlis.ch" }
+        maven { url "https://plugins.gradle.org/m2/" }
+        mavenCentral()
+    }
+    dependencies {
+        classpath "ch.so.agi:gretl:2.0.204"
+        // TODO add dependendy in gretl-runtime
+        classpath 'commons-net:commons-net:3.6'
+    }
+}
+
+
+apply plugin: "ch.so.agi.gretl"
+*/
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.util.TaskUtil
+import java.nio.file.Paths
+import java.nio.file.Files
+import java.io.FileOutputStream
+import org.apache.commons.net.ftp.*
+
+defaultTasks downloadData
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def remoteFileName = "export.csv"
+def localFileName = "export.csv"
+
+def server = ftpServerFledermaus
+def user = ftpUserFledermaus
+def password = ftpPwdFledermaus
+
+task downloadData() {
+    doLast {
+        def ftp = new FTPClient()
+
+        try {
+            ftp.setDefaultTimeout(60000)
+            ftp.setConnectTimeout(30000)
+            ftp.setDataTimeout(30000)
+            
+            ftp.connect(server, 21)
+            ftp.setSoTimeout(30000)
+
+            ftp.login(user, password)
+            // Use passive mode with ftps
+            //ftp.enterLocalPassiveMode(); 
+
+            // Aus Dokumentationsgründen.
+            //def systemTypeKey = "UNIX"; // WINDOWS || UNIX
+            //ftp.configure(new FTPClientConfig(systemTypeKey)); 
+
+            int reply = ftp.getReplyCode();
+            if(!FTPReply.isPositiveCompletion(reply)) {
+                throw new Exception("FTP server refused connection.")
+            }
+
+            String fileName = Paths.get(pathToTempFolder, localFileName).toFile().getAbsoluteFile()
+            FileOutputStream fos = new FileOutputStream(fileName)
+
+            boolean response = ftp.retrieveFile(remoteFileName, fos)
+            if (response == false) {
+                throw new Exception("Could not retrieve file: " + remoteFileName)
+            }
+            println "File downloaded: " + fileName
+        } catch (Exception e) {
+            GradleException ge = TaskUtil.toGradleException(e)
+            throw ge;
+        } finally {
+            if(ftp.isConnected()) {
+                try {
+                    ftp.disconnect()
+                } catch(IOException e) {
+                    // do nothing
+                }
+            }
+        }
+    }
+}
