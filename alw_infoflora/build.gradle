@@ -39,9 +39,14 @@ task download_json(type: Download){
         Date date = new Date()
         Date todayDate = sdfo.parse(sdfo.format(date)) 
         sortedJson.each {
-            Date fileDate = sdfo.parse(it.last_modified_when)
-            if ((todayDate - fileDate) > 2) {
+			if (it.last_modified_when == null) {
                 project.fileid.add(it.id)
+            }
+            else {
+                Date fileDate = sdfo.parse(it.last_modified_when)
+                if ((todayDate - fileDate) > 2) {
+                    project.fileid.add(it.id)
+                }
             }
             /* Falls Gewünscht, dass nur das aktuelle file (0 Tage alt) importiert wird. Andersfalls wird einfach das neuste importiert.
             if ((todayDate - fileDate) == 0) {
@@ -59,8 +64,8 @@ task download_json(type: Download){
         }
     }
     src 'https://obs.infoflora.ch/rest/v4/docs.json?projects=83505'
-    username infofloraUser
-    password infofloraPwd
+    username 'lorenz.eugster@vd.so.ch'
+    password 'Ziziphora'
     dest new File(pathToTempFolder, 'filenames.json')
     overwrite true
 }
