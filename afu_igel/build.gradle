@@ -45,7 +45,7 @@ task transformAndPub(type: Db2Db, dependsOn: dbImport){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('stall.sql', 'afu_igel_pub.stall', true),
-            new TransferSet('standort.sql', 'afu_igel_pub.standort', true)
+            new TransferSet('stall.sql', 'afu_igel_pub.igel_stall', true),
+            new TransferSet('standort.sql', 'afu_igel_pub.igel_standort', true)
     ];
 }

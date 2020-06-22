@@ -36,7 +36,7 @@ mapped_columns AS (
 		"IdStao" AS id,
 		"Name" AS aname,
 		"IsAktiv" AS aktiv,
-		"Typ" AS typ_standort,
+		"Typ" AS typ_standort_code,
 		"TypBetrieb" AS typ_betrieb_code,
 		"Adresse" AS strasse_hausnr,
 		"Gemeinde" AS plz_ort,
@@ -45,7 +45,7 @@ mapped_columns AS (
 		"IgelPid" AS igel_pid,
 		"BewirtschafterName" AS name_bewirtschafter,
 		to_date("DatumAktuellsteErhebung", 'DD.MM.YYYY') AS aktuellsteerhebung,
-		"HaushaltAbwasserAbleitungen" AS  abwasserableitung_codes, 
+		"HaushaltAbwasserAbleitungen" AS  abwasserableitungen_codes, 
 		"HaushaltAbwasserTotal" AS abwasser_total,
 		"GuelleIst" AS guelle_ist,
 		"GuelleSoll" AS guelle_soll,
@@ -63,7 +63,7 @@ mapped_columns AS (
 abwasser_code AS ( -- Erstellt für jeden Abwasserableitungs-Code eines Standortes eine Zeile mit Spalten [id, abwasser_code]
 	SELECT 
 		id,
-		jsonb_array_elements(abwasserableitung_codes)::int AS abwasser_code
+		jsonb_array_elements(abwasserableitungen_codes)::int AS abwasser_code
 	FROM 
 		mapped_columns
 ),
@@ -129,13 +129,41 @@ betrieb_lookup AS ( -- Codetabelle gemäss softec.ch
 			('KeinLandwirtschaftsbetrieb', 99)
 	) 
 	AS t (val, code)
+),
+
+stall_ids_raw AS (
+	SELECT
+		rowdef.*
+	FROM 
+		afu_igel.igel_stall s
+	CROSS JOIN LATERAL
+		jsonb_to_record(s.content::jsonb) as rowdef(
+			"idStall"int,
+			"idStao" int,
+			"koordinateE" int,
+			"koordinateN" int
+		)
+),
+
+stall_ids AS (
+	SELECT
+		"idStao" AS id,
+		to_json(array_agg("idStall")) AS stall_ids
+	FROM
+		stall_ids_raw
+	WHERE
+		"koordinateE" IS NOT NULL 
+		AND 
+		"koordinateN" IS NOT NULL 
+	GROUP BY 
+		"idStao"
 )
 
 SELECT 
 	mapped_columns.id,
 	aname,
 	aktiv,
-	typ_standort,
+	typ_standort_code,
 	strasse_hausnr,
 	plz_ort,
 	hda_nr,
@@ -150,10 +178,11 @@ SELECT
 	mist_soll,
 	gve_total,
 	geometrie,
-	abwasserableitung_codes::varchar(100) AS abwasserableitung_codes,
-	abwasser_values::varchar(512) AS abwasserableitung_texte,
+	abwasserableitungen_codes,
+	abwasser_values AS abwasserableitungen_texte,
 	typ_betrieb_code,
-	val AS typ_betrieb_text
+	val AS typ_betrieb_text,
+	stall_ids
 FROM 
 	mapped_columns
 LEFT JOIN
@@ -162,3 +191,6 @@ LEFT JOIN
 LEFT JOIN
 	betrieb_lookup
 		ON mapped_columns.typ_betrieb_code = betrieb_lookup.code
+LEFT JOIN 
+	stall_ids
+		ON mapped_columns.id = stall_ids.id
