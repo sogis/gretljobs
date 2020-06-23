@@ -64,8 +64,8 @@ task download_json(type: Download){
         }
     }
     src 'https://obs.infoflora.ch/rest/v4/docs.json?projects=83505'
-    username 'lorenz.eugster@vd.so.ch'
-    password 'Ziziphora'
+    username infofloraUser
+    password infofloraPwd
     dest new File(pathToTempFolder, 'filenames.json')
     overwrite true
 }
