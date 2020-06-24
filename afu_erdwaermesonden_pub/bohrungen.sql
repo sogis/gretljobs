@@ -11,7 +11,7 @@ SELECT
 	sondenmeter_summe AS anlage_sondenmeter_summe,
 	leistung AS anlage_leistung,
 	CASE
-	WHEN 'ja' = LOWER(waermeeintrag) THEN TRUE
+	WHEN 'ja' = LOWER(waermeeintrag_text) THEN TRUE
 	ELSE FALSE
 	END AS anlage_waermeeintrag,
 	waermequelle_code,
@@ -22,8 +22,8 @@ SELECT
 	COALESCE(bohrprofil_vorhanden, FALSE) AS bohrprofil_vorhanden,
 	COALESCE(erdwaermesonden_bohrung.geometrie, erdwaermesonden_anlage.geometrie) AS geometrie
 FROM
-	afu_erdwaermesonden.erdwaermesonden_anlage
-	LEFT JOIN afu_erdwaermesonden.erdwaermesonden_bohrung
+	afu_erdwaermesonden_v2.erdwaermesonden_anlage
+	LEFT JOIN afu_erdwaermesonden_v2.erdwaermesonden_bohrung
 		ON erdwaermesonden_anlage.anlage_uuid = erdwaermesonden_bohrung.anlage_uuid
 WHERE 
 	geschaeftsstatus_code = 'ComEwsStatusVgr-abg'
