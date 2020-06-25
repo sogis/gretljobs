@@ -80,7 +80,9 @@ task zipAllDataToOneZipArchiv(type: Zip, dependsOn: unzipAllData){
     from pathToUnzipFolder
     archiveName ZipName
     destinationDir(file(pathToTempFolder))
+    include "**/2*00.itf"
 }
+
 
 task uploadAvCh(dependsOn: zipAllDataToOneZipArchiv) {
     description = "Lädt die Daten der amtlichen Vermessung (DM01 vom Bund) in die Aggregationsinfrastruktur hoch."
@@ -98,6 +100,6 @@ task removeAvFiles(type: Delete){
     delete file(Paths.get(pathToTempFolder.toString(), ZipName)),
             pathToUnzipFolder,
             fileTree(pathToTempFolder).matching {
-                include "**/ch*00.zip"
-    }
+                include "**/2*00.itf*"
+    }  
 }
