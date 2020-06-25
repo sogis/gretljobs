@@ -1,5 +1,3 @@
-DELETE FROM agi_av_gb_abgleich_import.gb_daten
-;
 SELECT
     "BFS_Nr" AS bfs_nr,
     TO_NUMBER("Kreis_Nr") AS kreis_nr,
