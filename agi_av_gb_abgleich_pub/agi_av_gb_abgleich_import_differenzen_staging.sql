@@ -83,6 +83,8 @@ av_grundstuecke AS (
             projektierte_liegenschaften_selbstrecht.beschreibung AS av_mut_beschreibung 
         FROM 
             agi_dm01avso24.liegenschaften_grundstueck
+            JOIN agi_dm01avso24.liegenschaften_selbstrecht
+                ON liegenschaften_selbstrecht.selbstrecht_von::text = liegenschaften_grundstueck.t_id::text 
             LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
                 ON liegenschaften_grundstueck.t_basket = basket.t_id
             LEFT JOIN agi_dm01avso24.liegenschaften_grundstuecksart AS grundstuecksart
@@ -98,19 +100,14 @@ av_grundstuecke AS (
                     dataset 
             ) AS  aimport
                  ON basket.dataset = aimport.dataset
-            JOIN agi_dm01avso24.liegenschaften_selbstrecht
-                ON liegenschaften_selbstrecht.selbstrecht_von::text = liegenschaften_grundstueck.t_id::text 
             LEFT JOIN projektierte_liegenschaften_selbstrecht
                 ON 
                     projektierte_liegenschaften_selbstrecht.nummer::text = liegenschaften_grundstueck.nummer::text
                     AND 
                     liegenschaften_grundstueck.nbident::text = projektierte_liegenschaften_selbstrecht.nbident::text
-            JOIN agi_dm01avso24.liegenschaften_liegenschaft
-                ON liegenschaften_liegenschaft.liegenschaft_von::text = liegenschaften_grundstueck.t_id::text
             LEFT JOIN grundbuchkreise
                 ON liegenschaften_grundstueck.nbident = grundbuchkreise.nbident
-                 
- ),
+  ),
 gb_grundstuecke AS (
         SELECT
             gb_daten.bfs_nr AS gb_gem_bfs,
