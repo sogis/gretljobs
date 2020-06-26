@@ -1,6 +1,3 @@
-DELETE FROM agi_av_gb_abgleich_import.uebersicht_des_vergleichs_staging
-;
-
 WITH 
     gemeinde AS (
         SELECT 
