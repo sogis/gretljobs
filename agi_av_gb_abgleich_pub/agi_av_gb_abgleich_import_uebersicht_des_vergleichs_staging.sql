@@ -10,26 +10,30 @@ WITH
     ), 
     diff_av AS (
         SELECT 
-            av_gem_bfs, 
-            count(av_gem_bfs) AS anzahl
+            av.av_gem_bfs, 
+            count(av.av_gem_bfs) AS anzahl
         FROM 
-            agi_av_gb_abgleich_import.differenzen_staging
+            agi_av_gb_abgleich_import.differenzen_staging AS av
         WHERE 
-            av_gem_bfs IS NOT NULL
+            av.av_gem_bfs IS NOT NULL 
+            AND 
+            av.fehlerart <> 1
         GROUP BY 
-            av_gem_bfs
-    ), 
+            av.av_gem_bfs
+), 
     diff_gb AS (
         SELECT 
-            gb_gem_bfs, 
-            count(gb_gem_bfs) AS anzahl
+            gb.gb_gem_bfs, 
+            count(gb.gb_gem_bfs) AS anzahl
         FROM 
-            agi_av_gb_abgleich_import.differenzen_staging
+            agi_av_gb_abgleich_import.differenzen_staging AS gb
         WHERE 
-            gb_nummer::integer < 90000
+            gb.gb_gem_bfs IS NOT NULL 
+            AND 
+            gb.fehlerart = 4
         GROUP BY 
-            gb_gem_bfs
-    )
+            gb.gb_gem_bfs
+)
 
 INSERT INTO agi_av_gb_abgleich_import.uebersicht_des_vergleichs_staging (
     t_id,
