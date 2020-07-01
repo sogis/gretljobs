@@ -3,62 +3,70 @@ import ch.so.agi.gretl.tasks.*
 import java.nio.file.Paths
 import de.undercouch.gradle.tasks.download.Download
 
-apply plugin: "de.undercouch.download"
-apply plugin: "ch.so.agi.gretl"
+apply plugin: 'de.undercouch.download'
+apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks "importData"
+defaultTasks 'transferAlwZonengrenzen'
 
 
 // Download-Verzeichnis
-def pathToTempFolder = System.getProperty("java.io.tmpdir")
-def pathToUnzipFolder = Paths.get(pathToTempFolder, "unzip_data")
-def pathToDataZip = Paths.get(pathToTempFolder, "NachF_LWZ_INTERLIS2.zip")
+def pathToTempFolder = System.getProperty('java.io.tmpdir')
+def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
+def pathToDataZip = Paths.get(pathToTempFolder, 'NachF_LWZ_INTERLIS2.zip')
 
 
 task deleteFromZonengrenzenTables(type: SqlExecutor) {
-    description = "Löscht die Daten aus dem Schema."
+    description = 'Löscht die Daten aus dem Schema.'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ["delete_landwirtschaftliche_zonengrenzen_tables.sql"]
+    sqlFiles = ['delete_landwirtschaftliche_zonengrenzen_tables.sql']
 }
 
 task downloadKataloge(type: Download, dependsOn: 'deleteFromZonengrenzenTables'){
-    description = "Download der Kataloge"
-    src "https://models.geo.admin.ch/BLW/landwirtschaftliche_zonengrenzen_kataloge_20140701.xml"
+    description = 'Download der Kataloge'
+    src 'https://models.geo.admin.ch/BLW/landwirtschaftliche_zonengrenzen_kataloge_20140701.xml'
     dest pathToTempFolder
     overwrite true
 }
 
 task importKataloge(type: Ili2pgReplace, dependsOn: 'downloadKataloge'){
-     description = "Import der Kataloge"
+     description = 'Import der Kataloge'
      database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-     dbschema = "alw_zonengrenzen"
-     models = "Landwirtschaftliche_Zonengrenzen_LV95_V1_2"
-     dataFile = file(Paths.get(pathToTempFolder.toString(), "landwirtschaftliche_zonengrenzen_kataloge_20140701.xml"))
-     dataset = "landwirtschaftliche_zonengrenzen_kataloge_20140701.xml-2938"
+     dbschema = 'alw_zonengrenzen'
+     models = 'Landwirtschaftliche_Zonengrenzen_LV95_V1_2'
+     dataFile = file(Paths.get(pathToTempFolder.toString(), 'landwirtschaftliche_zonengrenzen_kataloge_20140701.xml'))
+     dataset = 'landwirtschaftliche_zonengrenzen_kataloge_20140701.xml-2938'
 }
 
-task "downloadData"(type: Download, dependsOn: 'importKataloge'){
-    description = "Download Landwirtschaftliche Zonengrenzen"
-    src "https://data.geo.admin.ch/ch.blw.landwirtschaftliche-zonengrenzen/NachF_LWZ_INTERLIS2.zip"
+task 'downloadData'(type: Download, dependsOn: 'importKataloge'){
+    description = 'Download Landwirtschaftliche Zonengrenzen'
+    src 'https://data.geo.admin.ch/ch.blw.landwirtschaftliche-zonengrenzen/NachF_LWZ_INTERLIS2.zip'
     dest pathToTempFolder
     overwrite true
 }
 
 task unzipData(type: Copy, dependsOn: 'downloadData'){
-    description = "Unzip Data.zip"
+    description = 'Unzip Data.zip'
     from zipTree(pathToDataZip)
     into file(pathToUnzipFolder)
-    include "**/*.xtf"
+    include '**/*.xtf'
 }
 
 task importData(type: Ili2pgReplace, dependsOn: 'unzipData'){
-    description = "Import der Landwirtschaftlichen Zonengrenzen"
+    description = 'Import der Landwirtschaftlichen Zonengrenzen'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = "alw_zonengrenzen"
-    models = "Landwirtschaftliche_Zonengrenzen_LV95_V1_2"
-    dataFile = file(Paths.get(pathToUnzipFolder.toString(), "NachF_LWZ_INTERLIS2.xtf"))
-    dataset = "NachF_LWZ_INTERLIS2.xtf"
+    dbschema = 'alw_zonengrenzen'
+    models = 'Landwirtschaftliche_Zonengrenzen_LV95_V1_2'
+    dataFile = file(Paths.get(pathToUnzipFolder.toString(), 'NachF_LWZ_INTERLIS2.xtf'))
+    dataset = 'NachF_LWZ_INTERLIS2.xtf'
     strokeArcs = true
     disableValidation = true           //muss zwingend gesetzt sein wegen Heap Space
+}
+
+task transferAlwZonengrenzen(type: Db2Db, dependsOn: 'importKataloge'){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('alw_zonengrenzen_pub.sql', 'alw_zonengrenzen_pub.zonengrenzen_zonengrenze', true)
+    ];
 }
