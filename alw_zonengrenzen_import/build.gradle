@@ -63,7 +63,7 @@ task importData(type: Ili2pgReplace, dependsOn: 'unzipData'){
     disableValidation = true           //muss zwingend gesetzt sein wegen Heap Space
 }
 
-task transferAlwZonengrenzen(type: Db2Db, dependsOn: 'importKataloge'){
+task transferAlwZonengrenzen(type: Db2Db, dependsOn: 'importData'){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
