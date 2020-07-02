@@ -6,10 +6,10 @@ WITH dokumente AS (
         schdstfflstt_bden_dokument.dateipfad,
         schdstfflstt_bden_eisenbahn.t_id AS eisenbahn
     FROM
-        afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_dokument_eisenbahn
-        LEFT JOIN afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_eisenbahn
+        afu_schadstoffbelastete_boeden.schdstfflstt_bden_dokument_eisenbahn
+        LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_eisenbahn
             ON schdstfflstt_bden_eisenbahn.t_id = schdstfflstt_bden_dokument_eisenbahn.eisenbahn
-        LEFT JOIN afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_dokument
+        LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_dokument
             ON schdstfflstt_bden_dokument.t_id = schdstfflstt_bden_dokument_eisenbahn.dokument
 ), dokumente_json AS (
     SELECT
@@ -42,10 +42,10 @@ WITH dokumente AS (
         schdstfflstt_bden_schadstoff.kuerzel,
         schdstfflstt_bden_eisenbahn.t_id AS eisenbahn
     FROM
-        afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_schadstoff_eisenbahn
-        LEFT JOIN afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_eisenbahn
+        afu_schadstoffbelastete_boeden.schdstfflstt_bden_schadstoff_eisenbahn
+        LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_eisenbahn
             ON schdstfflstt_bden_eisenbahn.t_id = schdstfflstt_bden_schadstoff_eisenbahn.eisenbahn
-        LEFT JOIN afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_schadstoff
+        LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_schadstoff
             ON schdstfflstt_bden_schadstoff.t_id = schdstfflstt_bden_schadstoff_eisenbahn.schadstoff
 ), schadstoffe_json AS (
     SELECT
@@ -76,7 +76,7 @@ WITH dokumente AS (
         string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename ASC) AS gemeinden
     FROM
         agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
-        afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_eisenbahn
+        afu_schadstoffbelastete_boeden.schdstfflstt_bden_eisenbahn
     WHERE
         ST_DWithin(schdstfflstt_bden_eisenbahn.geometrie, hoheitsgrenzen_gemeindegrenze.geometrie, 0)
         OR
@@ -89,7 +89,7 @@ WITH dokumente AS (
         string_agg(DISTINCT CAST(hoheitsgrenzen_gemeindegrenze.bfs_gemeindenummer AS varchar), ', ' ORDER BY CAST(hoheitsgrenzen_gemeindegrenze.bfs_gemeindenummer AS varchar) ASC) AS bfs_nummern
     FROM
         agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
-        afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_eisenbahn
+        afu_schadstoffbelastete_boeden.schdstfflstt_bden_eisenbahn
     WHERE
         ST_DWithin(schdstfflstt_bden_eisenbahn.geometrie, hoheitsgrenzen_gemeindegrenze.geometrie, 0)
         OR
@@ -101,8 +101,14 @@ WITH dokumente AS (
         schdstfflstt_bden_eisenbahn.t_id,
         string_agg(DISTINCT liegen.nummer || '(' || liegen.bfs_nr|| ')', ', ' ORDER BY liegen.nummer || '(' || liegen.bfs_nr || ')') AS grundbuchnummern
     FROM
-        agi_mopublic_pub.mopublic_grundstueck liegen,
-        afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_eisenbahn
+        (SELECT liegenschaften_grundstueck.nummer, 
+		         liegenschaften_grundstueck.t_datasetname AS bfs_nr,
+		         liegenschaften_liegenschaft.geometrie 
+		 FROM agi_dm01avso24.liegenschaften_grundstueck 
+		 LEFT JOIN agi_dm01avso24.liegenschaften_liegenschaft 
+		     ON liegenschaften_liegenschaft.liegenschaft_von = liegenschaften_grundstueck.t_id
+		) liegen,
+        afu_schadstoffbelastete_boeden.schdstfflstt_bden_eisenbahn
     WHERE
         (
             ST_DWithin(schdstfflstt_bden_eisenbahn.geometrie, liegen.geometrie, 0)
@@ -116,8 +122,13 @@ WITH dokumente AS (
         schdstfflstt_bden_eisenbahn.t_id,
          string_agg(DISTINCT flurname.flurname, ', ' ORDER BY flurname.flurname) AS flurname
     FROM
-        agi_mopublic_pub.mopublic_flurname AS flurname,
-        afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_eisenbahn
+        ( SELECT 
+		     aname AS flurname, 
+		     geometrie 
+		 FROM 
+		     agi_dm01avso24.nomenklatur_flurname
+		 ) flurname,
+        afu_schadstoffbelastete_boeden.schdstfflstt_bden_eisenbahn
     WHERE
         ST_DWithin(schdstfflstt_bden_eisenbahn.geometrie, flurname.geometrie, 0)
         OR
@@ -153,12 +164,12 @@ SELECT
     parzellennummern.grundbuchnummern,
     flurnamen.flurname AS flurnamen
 FROM
-    afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_eisenbahn
+    afu_schadstoffbelastete_boeden.schdstfflstt_bden_eisenbahn
     LEFT JOIN dokumente_json
         ON dokumente_json.eisenbahn = schdstfflstt_bden_eisenbahn.t_id
     LEFT JOIN schadstoffe_json
         ON schadstoffe_json.eisenbahn = schdstfflstt_bden_eisenbahn.t_id
-    LEFT JOIN afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_transportunternehmen
+    LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_transportunternehmen
         ON schdstfflstt_bden_eisenbahn.transportunternehmen = schdstfflstt_bden_transportunternehmen.t_id
     LEFT JOIN gemeinden
         ON gemeinden.t_id = schdstfflstt_bden_eisenbahn.t_id
