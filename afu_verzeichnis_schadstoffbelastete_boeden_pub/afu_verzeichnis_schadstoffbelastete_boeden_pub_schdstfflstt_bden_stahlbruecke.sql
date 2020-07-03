@@ -6,10 +6,10 @@ WITH dokumente AS (
         schdstfflstt_bden_dokument.dateipfad,
         schdstfflstt_bden_stahlbruecke.t_id AS stahlbruecke
     FROM
-        afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_dokument_stahlbruecke
-        LEFT JOIN afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_stahlbruecke
+        afu_schadstoffbelastete_boeden.schdstfflstt_bden_dokument_stahlbruecke
+        LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_stahlbruecke
             ON schdstfflstt_bden_stahlbruecke.t_id = schdstfflstt_bden_dokument_stahlbruecke.stahlbruecke
-        LEFT JOIN afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_dokument
+        LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_dokument
             ON schdstfflstt_bden_dokument.t_id = schdstfflstt_bden_dokument_stahlbruecke.dokument
 ), dokumente_json AS (
     SELECT
@@ -42,10 +42,10 @@ WITH dokumente AS (
         schdstfflstt_bden_schadstoff.kuerzel,
         schdstfflstt_bden_stahlbruecke.t_id AS stahlbruecke
     FROM
-        afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_schadstoff_stahlbruecke
-        LEFT JOIN afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_stahlbruecke
+        afu_schadstoffbelastete_boeden.schdstfflstt_bden_schadstoff_stahlbruecke
+        LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_stahlbruecke
             ON schdstfflstt_bden_stahlbruecke.t_id = schdstfflstt_bden_schadstoff_stahlbruecke.stahlbruecke
-        LEFT JOIN afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_schadstoff
+        LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_schadstoff
             ON schdstfflstt_bden_schadstoff.t_id = schdstfflstt_bden_schadstoff_stahlbruecke.schadstoff
 ), schadstoffe_json AS (
     SELECT
@@ -76,7 +76,7 @@ WITH dokumente AS (
         string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename ASC) AS gemeinden
     FROM
         agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
-        afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_stahlbruecke
+        afu_schadstoffbelastete_boeden.schdstfflstt_bden_stahlbruecke
     WHERE
         ST_DWithin(schdstfflstt_bden_stahlbruecke.geometrie, hoheitsgrenzen_gemeindegrenze.geometrie, 0)
     GROUP BY
@@ -87,7 +87,7 @@ WITH dokumente AS (
         string_agg(DISTINCT CAST(hoheitsgrenzen_gemeindegrenze.bfs_gemeindenummer AS varchar), ', ' ORDER BY CAST(hoheitsgrenzen_gemeindegrenze.bfs_gemeindenummer AS varchar) ASC) AS bfs_nummern
     FROM
         agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
-        afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_stahlbruecke
+        afu_schadstoffbelastete_boeden.schdstfflstt_bden_stahlbruecke
     WHERE
         ST_DWithin(schdstfflstt_bden_stahlbruecke.geometrie, hoheitsgrenzen_gemeindegrenze.geometrie, 0)
     GROUP BY
@@ -97,8 +97,14 @@ WITH dokumente AS (
         schdstfflstt_bden_stahlbruecke.t_id,
       string_agg(DISTINCT liegen.nummer || '(' || liegen.bfs_nr|| ')', ', ' ORDER BY liegen.nummer || '(' || liegen.bfs_nr || ')') AS grundbuchnummern
     FROM
-        agi_mopublic_pub.mopublic_grundstueck liegen,
-        afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_stahlbruecke
+        (SELECT liegenschaften_grundstueck.nummer, 
+		         liegenschaften_grundstueck.t_datasetname AS bfs_nr,
+		         liegenschaften_liegenschaft.geometrie 
+		 FROM agi_dm01avso24.liegenschaften_grundstueck 
+		 LEFT JOIN agi_dm01avso24.liegenschaften_liegenschaft 
+		     ON liegenschaften_liegenschaft.liegenschaft_von = liegenschaften_grundstueck.t_id
+		) liegen,
+        afu_schadstoffbelastete_boeden.schdstfflstt_bden_stahlbruecke
     WHERE
         ST_DWithin(schdstfflstt_bden_stahlbruecke.geometrie, liegen.geometrie, 0)
     GROUP BY
@@ -108,8 +114,13 @@ WITH dokumente AS (
         schdstfflstt_bden_stahlbruecke.t_id,
        string_agg(DISTINCT flurname.flurname, ', ' ORDER BY flurname.flurname) AS flurname
     FROM
-        agi_mopublic_pub.mopublic_flurname AS flurname,
-        afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_stahlbruecke
+        ( SELECT 
+		     aname AS flurname, 
+		     geometrie 
+		 FROM 
+		     agi_dm01avso24.nomenklatur_flurname
+		 ) flurname,
+        afu_schadstoffbelastete_boeden.schdstfflstt_bden_stahlbruecke
     WHERE
         ST_DWithin(schdstfflstt_bden_stahlbruecke.geometrie, flurname.geometrie, 0)
     GROUP BY
@@ -140,7 +151,7 @@ SELECT
     parzellennummern.grundbuchnummern,
     flurnamen.flurname AS flurnamen
 FROM
-    afu_verzeichnis_schadstoffbelastete_boeden.schdstfflstt_bden_stahlbruecke
+    afu_schadstoffbelastete_boeden.schdstfflstt_bden_stahlbruecke
     LEFT JOIN dokumente_json
         ON dokumente_json.stahlbruecke = schdstfflstt_bden_stahlbruecke.t_id
     LEFT JOIN schadstoffe_json
