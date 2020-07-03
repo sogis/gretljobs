@@ -12,77 +12,77 @@ task transferAfuVerzeichnisSchadstoffbelastetBoeden(type: Db2Db){
            
             new TransferSet(
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_rebbau.sql',
-                    'afu_verzeichnis_schadstoffbelastete_boeden_pub.schdstfflstt_bden_rebbau',
+                    'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_rebbau',
                     true
             ),
             new TransferSet(
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_hopfenbau.sql',
-                    'afu_verzeichnis_schadstoffbelastete_boeden_pub.schdstfflstt_bden_hopfenbau',
+                    'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_hopfenbau',
                     true
             ),
             new TransferSet(
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_bodenbelastungsgebiet.sql',
-                    'afu_verzeichnis_schadstoffbelastete_boeden_pub.schdstfflstt_bden_bodenbelastungsgebiet',
+                    'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_bodenbelastungsgebiet',
                     true
             ),
             new TransferSet(
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_eisenbahn.sql',
-                    'afu_verzeichnis_schadstoffbelastete_boeden_pub.schdstfflstt_bden_eisenbahn',
+                    'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_eisenbahn',
                     true
             ),
             new TransferSet(
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_flugplatz.sql',
-                    'afu_verzeichnis_schadstoffbelastete_boeden_pub.schdstfflstt_bden_flugplatz',
+                    'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_flugplatz',
                     true
             ),
             new TransferSet(
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_schrebergarten.sql',
-                    'afu_verzeichnis_schadstoffbelastete_boeden_pub.schdstfflstt_bden_schrebergarten',
+                    'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_schrebergarten',
                     true
             ), 
             new TransferSet(
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_gaertnerei.sql',
-                    'afu_verzeichnis_schadstoffbelastete_boeden_pub.schdstfflstt_bden_gaertnerei',
+                    'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_gaertnerei',
                     true
             ),
             new TransferSet(
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_geogene_bodenbelastung.sql',
-                    'afu_verzeichnis_schadstoffbelastete_boeden_pub.schdstfflstt_bden_geogene_bodenbelastung',
+                    'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_geogene_bodenbelastung',
                     true
             ),
             new TransferSet(
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_militaerischer_schiessplatz.sql',
-                    'afu_verzeichnis_schadstoffbelastete_boeden_pub.schdstfflstt_bden_militaerischer_schiessplatz',
+                    'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_militaerischer_schiessplatz',
                     true
             ),
             new TransferSet(
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_schiessanlage.sql',
-                    'afu_verzeichnis_schadstoffbelastete_boeden_pub.schdstfflstt_bden_schiessanlage',
+                    'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_schiessanlage',
                     true
             ),// ACHTUNG: Hier (beim Siedlungsgebiet) kommt: ERROR: pgaudit stack is not empty
             new TransferSet(
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_siedlungsgebiet.sql',
-                    'afu_verzeichnis_schadstoffbelastete_boeden_pub.schdstfflstt_bden_siedlungsgebiet',
+                    'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_siedlungsgebiet',
                     true
             ),
             new TransferSet(
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_stahlbruecke.sql',
-                    'afu_verzeichnis_schadstoffbelastete_boeden_pub.schdstfflstt_bden_stahlbruecke',
+                    'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_stahlbruecke',
                     true
             ),
             new TransferSet(
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_stahlkonstruktion.sql',
-                    'afu_verzeichnis_schadstoffbelastete_boeden_pub.schdstfflstt_bden_stahlkonstruktion',
+                    'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_stahlkonstruktion',
                     true
             ),
             new TransferSet(
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_stahlmast.sql',
-                    'afu_verzeichnis_schadstoffbelastete_boeden_pub.schdstfflstt_bden_stahlmast',
+                    'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_stahlmast',
                     true
-            ), //Achtung hier gibt es ein paar Masten die ausserhalb des Kantons liegen. Damit die Query trotzdem durchlaeuft wurden sie rausgefiltert
+            ), 
             new TransferSet(
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_strasse.sql',
-                    'afu_verzeichnis_schadstoffbelastete_boeden_pub.schdstfflstt_bden_strasse',
+                    'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_strasse',
                     true
             )
     ]
