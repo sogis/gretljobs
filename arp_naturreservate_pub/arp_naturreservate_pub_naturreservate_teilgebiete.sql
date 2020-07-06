@@ -131,9 +131,8 @@ WITH documents AS (
         NULL AS offiziellenr,
         reservate_teilgebiet.reservat,
         reservate_teilgebiet.t_id,
-        'https://geo.so.ch/api/v1/document/Pflanzenliste?feature=' || reservate_teilgebiet.t_id,
-	einzelschutz
-    FROM
+        'https://geo.so.ch/api/v1/document/Pflanzenliste?feature=' || reservate_teilgebiet.t_id
+        FROM
         arp_naturreservate.reservate_teilgebiet
     WHERE 
         t_id IN (SELECT DISTINCT teilgebiet FROM arp_naturreservate.reservate_teilgebiet_pflanze)
@@ -149,8 +148,7 @@ WITH documents AS (
         NULL AS offiziellenr,
         reservate_reservat.t_id,
         reservate_teilgebiet.t_id,
-        'https://geo.so.ch/api/v1/document/Naturreservate?feature=' || reservate_reservat.t_id,
-	einzelschutz
+        'https://geo.so.ch/api/v1/document/Naturreservate?feature=' || reservate_reservat.t_id
     FROM
         arp_naturreservate.reservate_reservat
         RIGHT JOIN arp_naturreservate.reservate_teilgebiet
@@ -167,8 +165,7 @@ WITH documents AS (
         NULL AS offiziellenr,
         reservate_reservat.t_id,
         reservate_teilgebiet.t_id,
-        'http://faust.so.ch/suche_start.fau?prj=ARP&dm=FVARP02&rpos=3&ro_zeile_2=' || reservate_reservat.nummer,
-	einzelschutz
+        'http://faust.so.ch/suche_start.fau?prj=ARP&dm=FVARP02&rpos=3&ro_zeile_2=' || reservate_reservat.nummer
     FROM
         arp_naturreservate.reservate_reservat
         RIGHT JOIN arp_naturreservate.reservate_teilgebiet
@@ -245,19 +242,18 @@ SELECT
     string_agg(DISTINCT liegen.nummer || '(' || liegen.t_datasetname|| ')', ', ' ORDER BY liegen.nummer || '(' || liegen.t_datasetname || ')') AS parzellennummern,
     reservate_reservat.nummer AS reservatsnummer,
     reservate_reservat.reservatsname AS reservatsname,
-    reservate_teilgebiet.einzelschutz,
     mjpnatur.vereinbarungsflaechen,
     mjpnatur.bewirtschafter,
     reservate_teilgebiet.geometrie,
-    reservate_teilgebiet.einzelschutz
+    reservate_reservat.einzelschutz
 FROM
     agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
     (SELECT nummer, 
-	        liegenschaften_grundstueck.t_datasetname, 
-	        geometrie 
-	 FROM agi_dm01avso24.liegenschaften_grundstueck 
-	 LEFT JOIN agi_dm01avso24.liegenschaften_liegenschaft 
-	     ON liegenschaften_liegenschaft.liegenschaft_von = liegenschaften_grundstueck.t_id) 
+            liegenschaften_grundstueck.t_datasetname, 
+            geometrie 
+     FROM agi_dm01avso24.liegenschaften_grundstueck 
+     LEFT JOIN agi_dm01avso24.liegenschaften_liegenschaft 
+         ON liegenschaften_liegenschaft.liegenschaft_von = liegenschaften_grundstueck.t_id) 
     liegen,
     arp_naturreservate.reservate_teilgebiet
     LEFT JOIN arp_naturreservate.reservate_reservat
