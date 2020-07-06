@@ -138,6 +138,7 @@ SELECT
     schdstfflstt_bden_siedlungsgebiet.datum_aus_vsb_entlassen,
     schdstfflstt_bden_siedlungsgebiet.bemerkung,
     schdstfflstt_bden_siedlungsgebiet.nutzungseinschraenkung,
+    schdstfflstt_bden_siedlungsgebiet.nutzungsverbot,
     dokumente_json.dokumente,
     schadstoffe_json.schadstoffe,
     schdstfflstt_bden_siedlungsgebiet.geometrie,
