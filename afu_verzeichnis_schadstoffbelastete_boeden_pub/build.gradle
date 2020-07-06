@@ -59,13 +59,13 @@ task transferAfuVerzeichnisSchadstoffbelastetBoeden(type: Db2Db){
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_schiessanlage.sql',
                     'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_schiessanlage',
                     true
-            ) // ACHTUNG: Hier (beim Siedlungsgebiet) kommt: ERROR: pgaudit stack is not empty
-              /*
+            ), // ACHTUNG: Hier (beim Siedlungsgebiet) kommt: ERROR: pgaudit stack is not empty
             new TransferSet(
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_siedlungsgebiet.sql',
                     'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_siedlungsgebiet',
                     true
-            ),
+            )
+              /*
             new TransferSet(
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_stahlbruecke.sql',
                     'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_stahlbruecke',
