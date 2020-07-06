@@ -49,13 +49,13 @@ task transferAfuVerzeichnisSchadstoffbelastetBoeden(type: Db2Db){
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_geogene_bodenbelastung.sql',
                     'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_geogene_bodenbelastung',
                     true
-            )
-              /*
+            ),
             new TransferSet(
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_militaerischer_schiessplatz.sql',
                     'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_militaerischer_schiessplatz',
                     true
-            ),
+            )
+              /*
             new TransferSet(
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_schiessanlage.sql',
                     'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_schiessanlage',
