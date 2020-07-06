@@ -248,7 +248,8 @@ SELECT
     reservate_teilgebiet.einzelschutz,
     mjpnatur.vereinbarungsflaechen,
     mjpnatur.bewirtschafter,
-    reservate_teilgebiet.geometrie
+    reservate_teilgebiet.geometrie,
+    reservate_teilgebiet.einzelschutz
 FROM
     agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
     (SELECT nummer, 
