@@ -127,7 +127,8 @@ WITH documents AS (
         FALSE AS rechtsvorschrift, 
         NULL AS offiziellenr,
         reservate_reservat.t_id,
-        'https://geo.so.ch/api/v1/document/Naturreservate?feature=' || reservate_reservat.t_id
+        'https://geo.so.ch/api/v1/document/Naturreservate?feature=' || reservate_reservat.t_id,
+	einzelschutz
     FROM
         arp_naturreservate.reservate_reservat
         
@@ -141,7 +142,8 @@ WITH documents AS (
         FALSE AS rechtsvorschrift, 
         NULL AS offiziellenr,
         reservate_reservat.t_id,
-        'http://faust.so.ch/suche_start.fau?prj=ARP&dm=FVARP02&rpos=3&ro_zeile_2=' || reservate_reservat.nummer
+        'http://faust.so.ch/suche_start.fau?prj=ARP&dm=FVARP02&rpos=3&ro_zeile_2=' || reservate_reservat.nummer,
+	einzelschutz
     FROM
         arp_naturreservate.reservate_reservat
     
@@ -162,6 +164,7 @@ SELECT
     reservate_reservat.nsi_nummer,
     reservate_reservat.reservatsname as aname,
     reservate_reservat.beschreibung,
+    reservate_reservat.einzelschutz,
     ST_Area(ST_Union(reservate_teilgebiet.geometrie))/10000 AS flaeche,
     string_agg(DISTINCT reservate_teilgebiet.teilgebietsname, ', ' ORDER BY reservate_teilgebiet.teilgebietsname) AS teilgebietsnamen,
     string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename) AS gemeinden,
