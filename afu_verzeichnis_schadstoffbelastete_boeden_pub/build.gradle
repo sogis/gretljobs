@@ -14,13 +14,13 @@ task transferAfuVerzeichnisSchadstoffbelastetBoeden(type: Db2Db){
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_rebbau.sql',
                     'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_rebbau',
                     true
-            )
-            /*
+            ),
             new TransferSet(
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_hopfenbau.sql',
                     'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_hopfenbau',
                     true
-            ),
+            )
+            /*
             new TransferSet(
                     'afu_verzeichnis_schadstoffbelastete_boeden_pub_schdstfflstt_bden_bodenbelastungsgebiet.sql',
                     'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_bodenbelastungsgebiet',
