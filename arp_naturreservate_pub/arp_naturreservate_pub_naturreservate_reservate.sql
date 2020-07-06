@@ -1,11 +1,11 @@
 WITH documents AS (
     SELECT DISTINCT 
-        bezeichnung, 
-        typ, 
-        rechtsstatus, 
-        publiziertab, 
-        rechtsvorschrift, 
-        offiziellenr,
+        reservate_dokument.bezeichnung, 
+        reservate_dokument.typ, 
+        reservate_dokument.rechtsstatus, 
+        reservate_dokument.publiziertab, 
+        reservate_dokument.rechtsvorschrift, 
+        reservate_dokument.offiziellenr,
         reservate_reservat_dokument.reservat,
         CASE
             WHEN 
@@ -111,11 +111,14 @@ WITH documents AS (
                 THEN 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/'
                                 || split_part(reservate_dokument.dateipfad, '/Zonenplaene/', 2)
             ELSE NULL 
-        END AS dokumente
-    FROM 
+         END AS dokumente,
+         reservate_reservat.einzelschutz
+   FROM 
         arp_naturreservate.reservate_reservat_dokument
         LEFT JOIN arp_naturreservate.reservate_dokument
             ON reservate_dokument.t_id = reservate_reservat_dokument.dokument
+        LEFT JOIN arp_naturreservate.reservate_reservat
+            ON reservate_reservat.t_id = reservate_reservat_dokument.reservat
     
     UNION
     
