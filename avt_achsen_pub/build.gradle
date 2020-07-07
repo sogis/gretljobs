@@ -21,7 +21,7 @@ task deleteAllFeatures(type: SqlExecutor, dependsOn: unpackShapes){
 
 task importAchsen(type: ShpImport, dependsOn: deleteAllFeatures){
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    schemaName = "avt_achsen_pub"
+    schemaName = "avt_kantonsstrassen_pub"
     tableName = "achse"
     dataFile = Paths.get(pathToShpFolder, shpNameAchsen) 
     encoding = "UTF-8"
@@ -29,7 +29,7 @@ task importAchsen(type: ShpImport, dependsOn: deleteAllFeatures){
 
 task importPunkte(type: ShpImport, dependsOn: importAchsen){
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    schemaName = "avt_achsen_pub"
+    schemaName = "avt_kantonsstrassen_pub"
     tableName = "bezugspunkt"
     dataFile = Paths.get(pathToShpFolder, shpNamePunkte) 
     encoding = "UTF-8"
