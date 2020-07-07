@@ -1,0 +1,45 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
+import ch.so.agi.gretl.tasks.*
+
+defaultTasks 'importPunkte'
+
+def shpNameAchsen = 'achsen.shp'
+def shpNamePunkte = 'bezugspunkte.shp'
+def pathToShpFolder = Paths.get(System.getProperty("java.io.tmpdir"), "avt_achsen").toString() 
+
+task unpackShapes(type: Copy) {
+    from zipTree("shapes.zip") // @Andi: Dies ist der "Uebernahmepunkt" für das zip.  
+    into pathToShpFolder
+}
+
+task deleteAllFeatures(type: SqlExecutor, dependsOn: unpackShapes){
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['delete_achsen_u_punkte.sql']
+}
+
+task importAchsen(type: ShpImport, dependsOn: deleteAllFeatures){
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    schemaName = "avt_achsen_pub"
+    tableName = "achse"
+    dataFile = Paths.get(pathToShpFolder, shpNameAchsen) 
+    encoding = "UTF-8"
+}
+
+task importPunkte(type: ShpImport, dependsOn: importAchsen){
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    schemaName = "avt_achsen_pub"
+    tableName = "bezugspunkt"
+    dataFile = Paths.get(pathToShpFolder, shpNamePunkte) 
+    encoding = "UTF-8"
+}
+
+
+/*
+task validate(type: ShpValidator){
+    models = "SO_AVT_Achsen_Publikation_20200707"
+    dataFiles = ["_shp/Bezugspunkte_ohneK2_point_point.shp","_shp/Achsen_line_line.shp"]
+}
+*/
+
