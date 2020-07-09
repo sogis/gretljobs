@@ -151,7 +151,8 @@ WITH fachbereich AS (
 
 SELECT
     geotope_landschaftsform.t_ili_tid,
-    replace(geotope_landschaftsform.landschaftstyp,'_',' ') AS landschaftstyp,
+    geotope_landschaftsform.landschaftstyp,
+    replace(geotope_landschaftsform.landschaftstyp,'_',' ') AS landschaftstyp_text,
     geotope_landschaftsform.entstehung,
     CASE 
         WHEN geotope_landschaftsform.entstehung = 'natuerlich'
