@@ -149,6 +149,7 @@ SELECT
     geotope_erratiker.t_ili_tid,
     geotope_erratiker.groesse,
     geotope_erratiker.eiszeit,
+    geotope_erratiker.eiszeit AS eiszeit_text,
     geotope_erratiker.herkunft,
     geotope_erratiker.schalenstein,
     geotope_erratiker.aufenthaltsort,
