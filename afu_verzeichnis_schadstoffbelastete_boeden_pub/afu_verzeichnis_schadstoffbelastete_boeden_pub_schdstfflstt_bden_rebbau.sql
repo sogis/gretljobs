@@ -155,7 +155,7 @@ SELECT
     gemeinden.gemeinden AS gemeindenamen,
     parzellennummern.grundbuchnummern,
     flurnamen.flurname AS flurnamen, 
-    schdstfflstt_bden_anbaugebiet.nutzungsverbot
+    schdstfflstt_bden_anbaugebiet.nutzungsverbot,
     status.description AS status_txt,
     begruendung_vsb_entlassen.description AS begruendung_aus_vsb_entlassen_txt
 FROM
