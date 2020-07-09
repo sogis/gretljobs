@@ -152,17 +152,22 @@ WITH fachbereich AS (
 SELECT
     geotope_landschaftsform.t_ili_tid,
     replace(geotope_landschaftsform.landschaftstyp,'_',' ') AS landschaftstyp,
+    geotope_landschaftsform.entstehung,
     CASE 
         WHEN geotope_landschaftsform.entstehung = 'natuerlich'
             THEN 'natürlich' 
         ELSE geotope_landschaftsform.entstehung
-    END AS entstehung,
-    geotope_landschaftsform.oberflaechenform,
+    END AS entstehung_text,
+    geotope_landschaftsform.oberflaechenform AS oberflaechenform,
+    replace(geotope_landschaftsform.oberflaechenform,'_',' ') AS oberflaechenform_text,
     gemeinden.gemeinden,
     ortschaften.ortschaften,
     geotope_landschaftsform.objektname,
     geotope_landschaftsform.regionalgeologische_einheit,
+    geotope_landschaftsform.regionalgeologische_einheit AS regionalgeologische_einheit_text,
     geotope_landschaftsform.bedeutung,
+    geotope_landschaftsform.bedeutung AS bedeutung_text,
+    geotope_landschaftsform.zustand,
     CASE 
         WHEN geotope_landschaftsform.zustand = 'gering_beeintraechtigt'
             THEN 'gering beeinträchtigt'
@@ -171,23 +176,27 @@ SELECT
         WHEN geotope_landschaftsform.zustand = 'stark_beeintraechtigt'
             THEN 'stark beeinträchtigt' 
         ELSE geotope_landschaftsform.zustand 
-    END AS zustand,
+    END AS zustand_text,
     geotope_landschaftsform.beschreibung,
+    geotope_landschaftsform.schutzwuerdigkeit,
     CASE 
         WHEN geotope_landschaftsform.schutzwuerdigkeit = 'geschuetzt' 
-            THEN 'geschützt' 
+            THEN 'geschützt'
         WHEN geotope_landschaftsform.schutzwuerdigkeit = 'schutzwuerdig' 
             THEN 'schutzwürdig'
         ELSE geotope_landschaftsform.schutzwuerdigkeit
-    END AS schutzwuerdigkeit,
-    replace(geotope_landschaftsform.geowissenschaftlicher_wert,'_',' ') AS geowissenschaftlicher_wert,
+    END AS schutzwuerdigkeit_text,
+    geotope_landschaftsform.geowissenschaftlicher_wert,
+    replace(geotope_landschaftsform.geowissenschaftlicher_wert,'_',' ') AS geowissenschaftlicher_wert_text,
     geotope_landschaftsform.anthropogene_gefaehrdung,
+    geotope_landschaftsform.anthropogene_gefaehrdung AS anthropogene_gefaehrdung_text,
     geotope_landschaftsform.lokalname,
     geotope_landschaftsform.kant_geschuetztes_objekt,
     geotope_landschaftsform.alte_inventar_nummer,
     geotope_landschaftsform.ingeso_oid, 
     geotope_landschaftsform.hinweis_literatur,
     geotope_landschaftsform.rechtsstatus,
+    replace(geotope_landschaftsform.rechtsstatus,'_',' ') AS rechtsstatus_text,
     geotope_landschaftsform.publiziert_ab,
     geotope_landschaftsform.oereb_objekt,
     fachbereich.fachbereiche,

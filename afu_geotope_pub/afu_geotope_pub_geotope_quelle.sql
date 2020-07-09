@@ -151,7 +151,10 @@ SELECT
     ortschaften.ortschaft,
     geotope_quelle.objektname,
     geotope_quelle.regionalgeologische_einheit,
+    geotope_quelle.regionalgeologische_einheit AS regionalgeologische_einheit_text,
     geotope_quelle.bedeutung,
+    geotope_quelle.bedeutung AS bedeutung_text,
+    geotope_quelle.zustand,
     CASE 
         WHEN geotope_quelle.zustand = 'gering_beeintraechtigt'
             THEN 'gering beeinträchtigt'
@@ -160,23 +163,27 @@ SELECT
         WHEN geotope_quelle.zustand = 'stark_beeintraechtigt'
             THEN 'stark beeinträchtigt' 
         ELSE geotope_quelle.zustand 
-    END AS zustand,
+    END AS zustand_text,
     geotope_quelle.beschreibung,
+    geotope_quelle.schutzwuerdigkeit,
     CASE 
         WHEN geotope_quelle.schutzwuerdigkeit = 'geschuetzt' 
-            THEN 'geschützt' 
+            THEN 'geschützt'
         WHEN geotope_quelle.schutzwuerdigkeit = 'schutzwuerdig' 
             THEN 'schutzwürdig'
         ELSE geotope_quelle.schutzwuerdigkeit
-    END AS schutzwuerdigkeit,
-    replace(geotope_quelle.geowissenschaftlicher_wert,'_',' ') AS geowissenschaftlicher_wert,
+    END AS schutzwuerdigkeit_text,
+    geotope_quelle.geowissenschaftlicher_wert,
+    replace(geotope_quelle.geowissenschaftlicher_wert,'_',' ') AS geowissenschaftlicher_wert_text,
     geotope_quelle.anthropogene_gefaehrdung,
+    geotope_quelle.anthropogene_gefaehrdung AS anthropogene_gefaehrdung_text,
     geotope_quelle.lokalname,
     geotope_quelle.kant_geschuetztes_objekt,
     geotope_quelle.alte_inventar_nummer,
     geotope_quelle.ingeso_oid,
     geotope_quelle.hinweis_literatur,
     geotope_quelle.rechtsstatus,
+    replace(geotope_quelle.rechtsstatus,'_',' ') AS rechtsstatus_text,
     geotope_quelle.publiziert_ab,
     geotope_quelle.oereb_objekt,
     fachbereich.fachbereiche,
