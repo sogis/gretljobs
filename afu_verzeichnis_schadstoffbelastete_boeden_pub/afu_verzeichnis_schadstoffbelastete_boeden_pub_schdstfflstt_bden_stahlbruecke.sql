@@ -149,7 +149,10 @@ SELECT
     bfs_nummern.bfs_nummern AS bfs_gemeindenummern,
     gemeinden.gemeinden AS gemeindenamen,
     parzellennummern.grundbuchnummern,
-    flurnamen.flurname AS flurnamen
+    flurnamen.flurname AS flurnamen,
+    stahlbruecke_brueckentyp.dispname AS brueckentyp_txt,
+    status.description AS status_txt,
+    begruendung_vsb_entlassen.description AS begruendung_aus_vsb_entlassen_txt
 FROM
     afu_schadstoffbelastete_boeden.schdstfflstt_bden_stahlbruecke
     LEFT JOIN dokumente_json
@@ -164,4 +167,11 @@ FROM
         ON parzellennummern.t_id = schdstfflstt_bden_stahlbruecke.t_id
     LEFT JOIN flurnamen
         ON flurnamen.t_id = schdstfflstt_bden_stahlbruecke.t_id
+    LEFT JOIN afu_schadstoffbelastete_boeden.schadstoffbelasteter_boden_status status
+        ON status.ilicode = schdstfflstt_bden_stahlbruecke.astatus
+    LEFT JOIN afu_schadstoffbelastete_boeden.schdstfstt_bden_stahlbruecke_brueckentyp stahlbruecke_brueckentyp
+        ON stahlbruecke_brueckentyp.ilicode = schdstfflstt_bden_stahlbruecke.brueckentyp
+    LEFT JOIN afu_schadstoffbelastete_boeden.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
+        ON begruendung_vsb_entlassen.ilicode = schdstfflstt_bden_stahlbruecke.begruendung_aus_vsb_entlassen
 ;
+

@@ -162,7 +162,12 @@ SELECT
     bfs_nummern.bfs_nummern AS bfs_gemeindenummern,
     gemeinden.gemeinden AS gemeindenamen,
     parzellennummern.grundbuchnummern,
-    flurnamen.flurname AS flurnamen
+    flurnamen.flurname AS flurnamen,
+    eisenbahn_flaechentyp.dispname AS flaechentyp_txt,
+    eisenbahn_verkehrsfrequenz.dispname AS verkehrsfrequenz_txt,
+    eisenbahn_verdachtsstreifenbreite.dispname AS verdachtsstreifenbreite_txt,
+    status.description AS status_txt,
+    begruendung_vsb_entlassen.description AS begruendung_aus_vsb_entlassen_txt
 FROM
     afu_schadstoffbelastete_boeden.schdstfflstt_bden_eisenbahn
     LEFT JOIN dokumente_json
@@ -179,4 +184,14 @@ FROM
         ON parzellennummern.t_id = schdstfflstt_bden_eisenbahn.t_id
     LEFT JOIN flurnamen
         ON flurnamen.t_id = schdstfflstt_bden_eisenbahn.t_id
+    LEFT JOIN afu_schadstoffbelastete_boeden.schdstfstt_bden_eisenbahn_flaechentyp eisenbahn_flaechentyp
+        ON eisenbahn_flaechentyp.ilicode = schdstfflstt_bden_eisenbahn.flaechentyp
+    LEFT JOIN afu_schadstoffbelastete_boeden.schdstfstt_bden_eisenbahn_verkehrsfrequenz eisenbahn_verkehrsfrequenz
+        ON eisenbahn_verkehrsfrequenz.ilicode = schdstfflstt_bden_eisenbahn.verkehrsfrequenz
+    LEFT JOIN afu_schadstoffbelastete_boeden.schdstfstt_bden_eisenbahn_verdachtsstreifenbreite eisenbahn_verdachtsstreifenbreite
+        ON eisenbahn_verdachtsstreifenbreite.ilicode = schdstfflstt_bden_eisenbahn.verdachtsstreifenbreite
+    LEFT JOIN afu_schadstoffbelastete_boeden.schadstoffbelasteter_boden_status status
+        ON status.ilicode = schdstfflstt_bden_eisenbahn.astatus
+    LEFT JOIN afu_schadstoffbelastete_boeden.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
+        ON begruendung_vsb_entlassen.ilicode = schdstfflstt_bden_eisenbahn.begruendung_aus_vsb_entlassen
 ;

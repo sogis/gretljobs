@@ -149,11 +149,14 @@ SELECT
     schdstfflstt_bden_stahlmast.nutzungsverbot,
     dokumente_json.dokumente,
     schadstoffe_json.schadstoffe,
-    st_multi(st_buffer(schdstfflstt_bden_stahlmast.geometrie,0.1)) AS geometrie, --Unschön, aber im Pub-Modell wird Multipolygon verlangt.... 
+    st_multi(st_buffer(schdstfflstt_bden_stahlmast.geometrie, cast(replace(schdstfflstt_bden_stahlmast.radius,'m_','')AS INTEGER))) AS geometrie,
     bfs_nummern.bfs_nummern AS bfs_gemeindenummern,
     gemeinden.gemeinden AS gemeindenamen,
     parzellennummern.grundbuchnummern,
-    flurnamen.flurname AS flurnamen
+    flurnamen.flurname AS flurnamen,
+    stahlmast_radius.description AS radius_txt,
+    status.description AS status_txt,
+    begruendung_vsb_entlassen.description AS begruendung_aus_vsb_entlassen_txt
 FROM
     afu_schadstoffbelastete_boeden.schdstfflstt_bden_stahlmast
     LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_leitung
@@ -170,6 +173,13 @@ FROM
         ON parzellennummern.t_id = schdstfflstt_bden_stahlmast.t_id
     LEFT JOIN flurnamen
         ON flurnamen.t_id = schdstfflstt_bden_stahlmast.t_id
+    LEFT JOIN afu_schadstoffbelastete_boeden.schdstfstt_bden_stahlmast_radius stahlmast_radius
+        ON stahlmast_radius.ilicode = schdstfflstt_bden_stahlmast.radius
+    LEFT JOIN afu_schadstoffbelastete_boeden.schadstoffbelasteter_boden_status status
+        ON status.ilicode = schdstfflstt_bden_stahlmast.astatus
+    LEFT JOIN afu_schadstoffbelastete_boeden.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
+        ON begruendung_vsb_entlassen.ilicode = schdstfflstt_bden_stahlmast.begruendung_aus_vsb_entlassen
 WHERE
     bfs_nummern.bfs_nummern IS NOT NULL
 ;
+

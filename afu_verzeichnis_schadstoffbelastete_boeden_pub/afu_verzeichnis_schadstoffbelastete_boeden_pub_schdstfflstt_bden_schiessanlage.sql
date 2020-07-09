@@ -179,14 +179,19 @@ SELECT
     schdstfflstt_bden_schiessanlage.datum_aus_vsb_entlassen,
     schdstfflstt_bden_schiessanlage.bemerkung,
     schdstfflstt_bden_schiessanlage.nutzungseinschraenkung,
-	schdstfflstt_bden_schiessanlage.nutzungsverbot,
+    schdstfflstt_bden_schiessanlage.nutzungsverbot,
     dokumente_json.dokumente,
     schadstoffe_json.schadstoffe,
     schdstfflstt_bden_schiessanlage.geometrie,
     bfs_nummern.bfs_nummern AS bfs_gemeindenummern,
     gemeinden.gemeinden AS gemeindenamen,
     parzellennummern.grundbuchnummern,
-    flurnamen.flurname AS flurnamen
+    flurnamen.flurname AS flurnamen,
+    schiessanlage_trennkriterium.dispname AS trennkriterium_txt,
+    lage.aname AS lage_txt,
+    schiessanlage_sanierungsstatus.dispname AS sanierungsstatus_txt,
+    status.description AS status_txt,
+    begruendung_vsb_entlassen.description AS begruendung_aus_vsb_entlassen_txt
 FROM
     afu_schadstoffbelastete_boeden.schdstfflstt_bden_schiessanlage
     LEFT JOIN dokumente_json
@@ -203,4 +208,14 @@ FROM
         ON parzellennummern.t_id = schdstfflstt_bden_schiessanlage.t_id
     LEFT JOIN flurnamen
         ON flurnamen.t_id = schdstfflstt_bden_schiessanlage.t_id
+    LEFT JOIN afu_schadstoffbelastete_boeden.schdstfstt_bden_schiessanlage_trennkriterium schiessanlage_trennkriterium
+        ON schiessanlage_trennkriterium.ilicode = schdstfflstt_bden_schiessanlage.trennkriterium
+    LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_lage lage
+        ON lage.t_id = schdstfflstt_bden_schiessanlage.lage
+    LEFT JOIN afu_schadstoffbelastete_boeden.schdstfstt_bden_schiessanlage_sanierungsstatus schiessanlage_sanierungsstatus
+        ON schiessanlage_sanierungsstatus.ilicode = schdstfflstt_bden_schiessanlage.sanierungsstatus
+    LEFT JOIN afu_schadstoffbelastete_boeden.schadstoffbelasteter_boden_status status
+        ON status.ilicode = schdstfflstt_bden_schiessanlage.astatus
+    LEFT JOIN afu_schadstoffbelastete_boeden.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
+        ON begruendung_vsb_entlassen.ilicode = schdstfflstt_bden_schiessanlage.begruendung_aus_vsb_entlassen
 ;
