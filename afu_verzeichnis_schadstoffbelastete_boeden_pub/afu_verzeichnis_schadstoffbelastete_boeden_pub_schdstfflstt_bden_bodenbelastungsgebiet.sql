@@ -182,7 +182,7 @@ FROM
     LEFT JOIN afu_schadstoffbelastete_boeden.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
         ON begruendung_vsb_entlassen.ilicode = schdstfflstt_bden_bodenbelastungsgebiet.begruendung_aus_vsb_entlassen
     LEFT JOIN afu_schadstoffbelastete_boeden.schdstfstt_bden_eisenbahn_flaechentyp flaechentyp
-        ON eisenbahn_flaechentyp.ilicode = schdstfflstt_bden_bodenbelastungsgebiet.flaechentyp
+        ON flaechentyp.ilicode = schdstfflstt_bden_bodenbelastungsgebiet.flaechentyp
     LEFT JOIN afu_schadstoffbelastete_boeden.schdstfstt_bden_bodenbelastungsgebiet_verursacher verursacher
         ON verursacher.ilicode = schdstfflstt_bden_bodenbelastungsgebiet.verursacher
 ;
