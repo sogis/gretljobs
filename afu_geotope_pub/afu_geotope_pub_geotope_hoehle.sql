@@ -151,6 +151,7 @@ SELECT
     ortschaften.ortschaft,
     geotope_hoehle.objektname,
     geotope_hoehle.regionalgeologische_einheit,
+    geotope_hoehle.regionalgeologische_einheit AS regionalgeologische_einheit_text,
     geotope_hoehle.bedeutung,
     geotope_hoehle.bedeutung AS bedeutung_text,
     geotope_hoehle.zustand,
