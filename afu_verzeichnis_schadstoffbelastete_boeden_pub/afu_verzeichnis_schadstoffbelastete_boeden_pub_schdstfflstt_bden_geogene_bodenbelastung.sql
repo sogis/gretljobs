@@ -147,6 +147,8 @@ SELECT
     gemeinden.gemeinden AS gemeindenamen,
     parzellennummern.grundbuchnummern,
     flurnamen.flurname AS flurnamen
+    status.description AS status_txt,
+    begruendung_vsb_entlassen.description AS begruendung_aus_vsb_entlassen_txt
 FROM
     afu_schadstoffbelastete_boeden.schdstfflstt_bden_geogene_bodenbelastung
     LEFT JOIN dokumente_json
@@ -161,4 +163,9 @@ FROM
         ON parzellennummern.t_id = schdstfflstt_bden_geogene_bodenbelastung.t_id
     LEFT JOIN flurnamen
         ON flurnamen.t_id = schdstfflstt_bden_geogene_bodenbelastung.t_id
+    LEFT JOIN afu_schadstoffbelastete_boeden.schadstoffbelasteter_boden_status status
+        ON status.ilicode = schdstfflstt_bden_geogene_bodenbelastung.astatus
+    LEFT JOIN afu_schadstoffbelastete_boeden.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
+        ON begruendung_vsb_entlassen.ilicode = schdstfflstt_bden_geogene_bodenbelastung.begruendung_aus_vsb_entlassen
 ;
+

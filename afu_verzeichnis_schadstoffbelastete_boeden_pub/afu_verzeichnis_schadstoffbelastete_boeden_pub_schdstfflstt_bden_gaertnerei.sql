@@ -148,7 +148,9 @@ SELECT
     bfs_nummern.bfs_nummern AS bfs_gemeindenummern,
     gemeinden.gemeinden AS gemeindenamen,
     parzellennummern.grundbuchnummern,
-    flurnamen.flurname AS flurnamen
+    flurnamen.flurname AS flurnamen,
+    status.description AS status_txt,
+    begruendung_vsb_entlassen.description AS begruendung_aus_vsb_entlassen_txt
 FROM
     afu_schadstoffbelastete_boeden.schdstfflstt_bden_gartenbau
     LEFT JOIN dokumente_json
@@ -163,6 +165,11 @@ FROM
         ON parzellennummern.t_id = schdstfflstt_bden_gartenbau.t_id
     LEFT JOIN flurnamen
         ON flurnamen.t_id = schdstfflstt_bden_gartenbau.t_id
-WHERE 
+    LEFT JOIN afu_schadstoffbelastete_boeden.schadstoffbelasteter_boden_status status
+        ON status.ilicode = schdstfflstt_bden_gartenbau.astatus
+    LEFT JOIN afu_schadstoffbelastete_boeden.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
+        ON begruendung_vsb_entlassen.ilicode = schdstfflstt_bden_gartenbau.begruendung_aus_vsb_entlassen
+WHERE
     schdstfflstt_bden_gartenbau.flaechentyp = 'Gaertnerei'
 ;
+
