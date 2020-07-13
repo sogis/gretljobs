@@ -6,20 +6,35 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferAwjfWaldpflegeErfassung'
 
 
-task transferAwjfWaldpflegeErfassung(type: Db2Db){
+def pathToUploadFolder = 'upload'
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+
+task deleteFromAwjfGesuchsteller(type: SqlExecutor){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['delete_from_awjf_gesuchsteller.sql']
+}
+
+task importGesuchsteller(type: CsvImport, dependsOn: 'deleteFromAwjfGesuchsteller'){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = 'awjf_gesuchsteller'
+    tableName = 'gesuchsteller_gesuchsteller'
+    firstLineIsHeader=true
+    valueSeparator = ','
+    encoding = 'UTF-8'
+    dataFile = "upload/uploadFile"
+}
+
+task transferAwjfWaldpflegeErfassung(type: Db2Db, dependsOn: 'importGesuchsteller'){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
             new TransferSet('awjf_waldpflege_kontrolle.sql',
                     'awjf_waldpflege_kontrolle.waldpflege_waldpflege', false)
     ];
-    
-    
         finalizedBy {
         deleteFromAwjfWaldpflegeErfassung
     }
-    
-    
 }
 
 task deleteFromAwjfWaldpflegeErfassung(type: SqlExecutor){
