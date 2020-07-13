@@ -6,13 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferAwjfWaldpflegeErfassung'
 
 
-def pathToUploadFolder = 'upload'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
-
-
-task uploadGesuchsteller(type: Exec){
-    commandLine 'head', 'upload/uploadFile'
-}
 
 
 task deleteFromAwjfGesuchsteller(type: SqlExecutor){
