@@ -1,6 +1,7 @@
 DELETE FROM avt_oevkov_${currentYear}.auswertung_gesamtauswertung
 ;
 
+
 INSERT INTO
     avt_oevkov_${currentYear}.auswertung_gesamtauswertung
         (
