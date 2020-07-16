@@ -81,8 +81,8 @@ SELECT
 	produktionsfaehigkeitsstufe.codeid AS produktionsfaehigkeitsstufe,
 	produktionsfaehigkeitsstufe.codetext_de AS produktionsfaehigkeitsstufe_text,
 	wald.waldproduktionspunkte AS produktionsfaehigkeit_punkte,
-	ausgangsmaterial_eiszeit_unten.codeid AS eiszeit_oberboden,
-	ausgangsmaterial_eiszeit_unten.codetext_de AS eiszeit_oberboden_text,
+	ausgangsmaterial_eiszeit_unten.codeid AS eiszeit_unterboden,
+	ausgangsmaterial_eiszeit_unten.codetext_de AS eiszeit_unterboden_text,
 	standort.gemeindeaktuell AS gemeinde_aktuell
 FROM 
     afu_bodendaten_nabodat.punktdaten_standort standort
