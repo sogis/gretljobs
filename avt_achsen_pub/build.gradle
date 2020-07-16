@@ -10,7 +10,7 @@ def shpNamePunkte = 'bezugspunkte.shp'
 def pathToShpFolder = Paths.get(System.getProperty("java.io.tmpdir"), "avt_achsen").toString() 
 
 task unpackShapes(type: Copy) {
-    from zipTree("shapes.zip") // @Andi: Dies ist der "Uebernahmepunkt" für das zip.  
+    from zipTree("uploadFile")
     into pathToShpFolder
 }
 
