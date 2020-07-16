@@ -3,7 +3,7 @@ node('master') {
     stage('Prepare') {
         gretlJobRepoUrl = env.GRETL_JOB_REPO_URL
         uploadDirName = 'upload'
-        uploadFileName = 'data.xtf'
+        uploadFileName = 'uploadFile'
         // By default the uploaded file is stored in the following directory:
         buildDir = "$JENKINS_HOME/jobs/$JOB_BASE_NAME/builds/$BUILD_NUMBER"
         // Create a subdirectory for the uploaded file:
