@@ -8,9 +8,10 @@ defaultTasks 'importPunkte'
 def shpNameAchsen = 'achsen.shp'
 def shpNamePunkte = 'bezugspunkte.shp'
 def pathToShpFolder = Paths.get(System.getProperty("java.io.tmpdir"), "avt_achsen").toString() 
+def uploadFile = 'upload/uploadFile'
 
 task unpackShapes(type: Copy) {
-    from zipTree("uploadFile")
+    from zipTree(uploadFile)
     into pathToShpFolder
 }
 
