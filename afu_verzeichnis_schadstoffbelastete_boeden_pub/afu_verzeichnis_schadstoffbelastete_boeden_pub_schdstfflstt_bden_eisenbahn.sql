@@ -165,7 +165,7 @@ SELECT
     flurnamen.flurname AS flurnamen,
     eisenbahn_flaechentyp.dispname AS flaechentyp_txt,
     eisenbahn_verkehrsfrequenz.dispname AS verkehrsfrequenz_txt,
-    eisenbahn_verdachtsstreifenbreite.dispname AS verdachtsstreifenbreite_txt,
+    eisenbahn_verdachtsstreifenbreite.description AS verdachtsstreifenbreite_txt,
     status.description AS status_txt,
     begruendung_vsb_entlassen.description AS begruendung_aus_vsb_entlassen_txt
 FROM
