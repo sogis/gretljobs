@@ -7,7 +7,7 @@ apply plugin: 'org.hidetake.ssh'
 
 remotes {
     ftpServer {
-        host = "${ftpURLZivilschutz}"
+        host = "${ftpServerZivilschutz}"
         user = "${ftpUserZivilschutz}"
         password = "${ftpPwdZivilschutz}"
     }
