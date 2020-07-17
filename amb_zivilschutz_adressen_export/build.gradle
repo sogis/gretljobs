@@ -7,7 +7,7 @@ apply plugin: 'org.hidetake.ssh'
 
 remotes {
     ftpServer {
-        host = "${ftpServerZivilschutz}"
+        host = "${ftpURLZivilschutz}"
         user = "${ftpUserZivilschutz}"
         password = "${ftpPwdZivilschutz}"
     }
@@ -17,29 +17,32 @@ def adressenDelete = 'amb_zivilschutz_adressen_staging_adressen_zivilschutz_dele
 def adressenInsert = 'amb_zivilschutz_adressen_staging_adressen_zivilschutz.sql'
 def csvFileName = "Adressen_Kanton_Solothurn_${new Date().format('yyyy-MM-dd')}.csv"
 
-defaultTasks 'uploadCsvFile'
+defaultTasks 'exportAdressenZivilschutz'
 
 task stageAdressenZivilschutz(type: SqlExecutor){
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = [adressenDelete, adressenInsert]
 }
-
+/*
 task clearStaging(type: SqlExecutor){
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = [adressenDelete]
 }
+*/
 
 task exportAdressenZivilschutz(type: CsvExport, dependsOn: stageAdressenZivilschutz){
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    schemaName = "amb_zivilschutz_adressen_staging"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    schemaName = "amb_zivilschutz_adressen_staging_pub"
     tableName = "adressen_zivilschutz"
     dataFile = csvFileName
     encoding = "UTF-8"
     valueSeparator = ';'
     attributes = ['lokalisationsname', 'hausnummer', 'plz', 'ortschaft', 'gemeinde', 'gwr_egid', 'gwr_edid', 'koord_ost', 'koord_nord', 'status', 'objektname', 'grundstuecknummer', 'grundbuchkreis']
+/*
     finalizedBy clearStaging
+*/
 }
-
+/*
 task deleteCsvFile(type: Delete){
     delete "${csvFileName}"
 }
@@ -59,3 +62,4 @@ task uploadCsvFile (dependsOn: exportAdressenZivilschutz){
     }
     finalizedBy deleteCsvFile
 }
+*/

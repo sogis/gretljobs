@@ -2,59 +2,62 @@
 WITH
 adressen AS (
     SELECT
-        DISTINCT ON (a.str_name, a.hausnummer, a.ortschaft) -- in Tabelle adressen.adressen gibt es doppelte Adresse wegen EO.Flaechenelement
-        a.ogc_fid,
-        a.str_name AS lokalisationsname,
+        DISTINCT ON (a.strassenname, a.hausnummer, a.ortschaft) -- in Tabelle adressen.adressen gibt es doppelte Adresse wegen EO.Flaechenelement
+        a.t_id,
+        a.strassenname AS lokalisationsname,
         a.hausnummer,
-        a.plz4 As plz,
+        a.plz AS plz,
         a.ortschaft,
-        a.gem_name AS gemeinde,
-        a.gwr_egid,
-        a.gwr_edid,
-        a.koord_lv95_x AS koord_ost,
-        a.koord_lv95_y  AS koord_nord,
-        a.status_txt AS status,
-        a.gwr_egid_geom,
-        a.gwr_edid_geom,
-        a.gem_bfs
+        g.gemeindename AS gemeinde,
+        a.egid AS gwr_egid,
+        a.edid AS gwr_edid,
+        ST_X(a.lage) AS koord_ost,
+        st_y(a.lage) AS koord_nord,
+        a.astatus AS status,
+        b.geometrie AS gwr_egid_geom,
+        a.lage AS gwr_edid_geom,
+        a.bfs_nr
     FROM
-        adressen.adressen AS a
-    WHERE
-        a.archive = 0  -- nur die aktuellen
+        agi_mopublic_pub.mopublic_gebaeudeadresse AS a
+    LEFT JOIN agi_mopublic_pub.mopublic_bodenbedeckung AS b
+        ON 
+        a.lage && b.geometrie
         AND
-        a.hausnummer is not null -- nur die mit Hausnummern
+        st_distance(a.lage, b.geometrie) = 0
+    LEFT JOIN agi_mopublic_pub.mopublic_gemeindegrenze AS g
+        ON a.bfs_nr = g.bfs_nr
+    WHERE
+        a.hausnummer IS NOT NULL -- nur die mit Hausnummern
+    AND
+        b.art_txt = 'Gebaeude'
 ),
 grundstueck AS (
     SELECT
         ls.nummer AS grundstuecknummer,
         ls.geometrie,
-        g.grundbuch AS grundbuchkreis,
-        ls.gem_bfs
+        g.aname AS grundbuchkreis,
+        ls.bfs_nr
     FROM
-        av_avdpool_ng.v_liegenschaften_liegenschaft AS ls
-    LEFT JOIN av_grundbuch.grundbuchkreise AS g
+        agi_mopublic_pub.mopublic_grundstueck AS ls
+    LEFT JOIN agi_av_gb_admin_einteilung_pub.grundbuchkreise_grundbuchkreis AS g
         ON g.nbident = ls.nbident
 ),
 geb_objektnamen AS (
     SELECT
-        a.ogc_fid,
-        STRING_AGG(o.name, ', ') as objektname -- mehrere Objektnamen pro BB.Gebäude möglich
-    FROM adressen AS a,
-        av_avdpool_ng.bodenbedeckung_objektname AS o
-    LEFT JOIN
-        av_avdpool_ng.bodenbedeckung_boflaeche AS b
-        ON b.tid = o.objektname_von
-    WHERE
-        b.art = 0 -- nur die Objektnamen die einem Gebäude zugewiesen sind
+        a.t_id,
+        STRING_AGG(o.objektname, ', ') AS objektname -- mehrere Objektnamen pro BB.Gebäude möglich
+    FROM adressen AS a
+    JOIN
+        agi_mopublic_pub.mopublic_objektname_pos AS o 
+        ON 
+        o.pos && a.gwr_egid_geom
         AND
-        a.gwr_edid_geom && b.geometrie
-        AND
-        st_distance(a.gwr_egid_geom, b.geometrie) = 0
+        st_distance(o.pos, a.gwr_egid_geom) = 0
     GROUP BY
-        a.ogc_fid
+        a.t_id
 )
 
-INSERT INTO amb_zivilschutz_adressen_staging.adressen_zivilschutz
+INSERT INTO amb_zivilschutz_adressen_staging_pub.adressen_zivilschutz
 (
     SELECT
     a.lokalisationsname,
@@ -74,13 +77,13 @@ INSERT INTO amb_zivilschutz_adressen_staging.adressen_zivilschutz
         adressen AS a
         LEFT JOIN
         geb_objektnamen AS o
-        ON a.ogc_fid = o.ogc_fid,
+        ON a.t_id = o.t_id,
         grundstueck AS g
     WHERE
         a.gwr_edid_geom && g.geometrie
         AND
         st_distance(a.gwr_edid_geom, g.geometrie) = 0
         AND
-        a.gem_bfs = g.gem_bfs
+        a.bfs_nr = g.bfs_nr
 )
 ;
