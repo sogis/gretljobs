@@ -23,12 +23,12 @@ task stageAdressenZivilschutz(type: SqlExecutor){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = [adressenDelete, adressenInsert]
 }
-/*
+
 task clearStaging(type: SqlExecutor){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = [adressenDelete]
 }
-*/
+
 
 task exportAdressenZivilschutz(type: CsvExport, dependsOn: stageAdressenZivilschutz){
     database = [dbUriPub, dbUserPub, dbPwdPub]
@@ -38,11 +38,11 @@ task exportAdressenZivilschutz(type: CsvExport, dependsOn: stageAdressenZivilsch
     encoding = "UTF-8"
     valueSeparator = ';'
     attributes = ['lokalisationsname', 'hausnummer', 'plz', 'ortschaft', 'gemeinde', 'gwr_egid', 'gwr_edid', 'koord_ost', 'koord_nord', 'status', 'objektname', 'grundstuecknummer', 'grundbuchkreis']
-/*
+
     finalizedBy clearStaging
-*/
+
 }
-/*
+
 task deleteCsvFile(type: Delete){
     delete "${csvFileName}"
 }
@@ -62,4 +62,4 @@ task uploadCsvFile (dependsOn: exportAdressenZivilschutz){
     }
     finalizedBy deleteCsvFile
 }
-*/
+
