@@ -18,7 +18,7 @@ WITH fachbereich AS (
         geotope_dokument.titel,
         geotope_dokument.offizieller_titel,
         geotope_dokument.abkuerzung,
-        replace(geotope_dokument.pfad,'G:\documents\ch.so.afu.geotope','https://geo.so.ch/docs/ch.so.afu.geotope') AS pfad,
+        REGEXP_REPLACE(replace(geotope_dokument.pfad,'G:\documents\ch.so.afu.geotope','https://geo.so.ch/docs/ch.so.afu.geotope/'), '\\', '','g') AS pfad,
         geotope_dokument.typ,
         geotope_dokument.offizielle_nr,
         geotope_dokument.rechtsstatus,
