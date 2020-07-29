@@ -18,7 +18,7 @@ WITH fachbereich AS (
         geotope_dokument.titel,
         geotope_dokument.offizieller_titel,
         geotope_dokument.abkuerzung,
-        replace(geotope_dokument.pfad,'G:\documents\ch.so.afu.geotope','https://geo.so.ch/docs/ch.so.afu.geotope') AS pfad,
+        REGEXP_REPLACE(replace(geotope_dokument.pfad,'G:\documents\ch.so.afu.geotope','https://geo.so.ch/docs/ch.so.afu.geotope/'), '\\', '','g') AS pfad,
         geotope_dokument.typ,
         geotope_dokument.offizielle_nr,
         geotope_dokument.rechtsstatus,
@@ -149,24 +149,36 @@ SELECT
     geotope_fundstelle_grabung.t_ili_tid,
     geotope_fundstelle_grabung.aufenthaltsort,
     geotope_fundstelle_grabung.fundgegenstaende,
+    geotope_fundstelle_grabung.petrografie,
     CASE 
         WHEN geotope_fundstelle_grabung.petrografie = 'Penninischer_Gruenschiefer'
             THEN 'Penninischer Grünschiefer'
         ELSE replace(geotope_fundstelle_grabung.petrografie,'_',' ') 
-    END AS petrografie,
+    END AS petrografie_text,
     gemeinden.gemeinde,
     ortschaften.ortschaft,
-    replace(geologische_schicht_von.bezeichnung,'_',' ') AS geologische_schicht_von,
-    replace(geologische_schicht_bis.bezeichnung,'_',' ') AS geologische_schicht_bis,
-    replace(geologische_stufe_von.bezeichnung,'_',' ') AS geologische_stufe_von,
-    replace(geologische_stufe_bis.bezeichnung,'_',' ') AS geologische_stufe_bis,
-    replace(geologische_serie_von.bezeichnung,'_',' ') AS geologische_serie_von,
-    replace(geologische_serie_bis.bezeichnung,'_',' ') AS geologische_serie_bis,
-    replace(geologisches_system_von.bezeichnung,'_',' ') AS geologisches_system_von,
-    replace(geologisches_system_bis.bezeichnung,'_',' ') AS geologisches_system_bis,
+    geologische_schicht_von.bezeichnung AS geologische_schicht_von,
+    replace(geologische_schicht_von.bezeichnung,'_',' ') AS geologische_schicht_von_text,
+    geologische_schicht_bis.bezeichnung AS geologische_schicht_bis,
+    replace(geologische_schicht_bis.bezeichnung,'_',' ') AS geologische_schicht_bis_text,
+    geologische_stufe_von.bezeichnung AS geologische_stufe_von,
+    replace(geologische_stufe_von.bezeichnung,'_',' ') AS geologische_stufe_von_text,
+    geologische_stufe_bis.bezeichnung AS geologische_stufe_bis,
+    replace(geologische_stufe_bis.bezeichnung,'_',' ') AS geologische_stufe_bis_text,
+    geologische_serie_von.bezeichnung AS geologische_serie_von,
+    replace(geologische_stufe_bis.bezeichnung,'_',' ') AS geologische_serie_von_text,
+    geologische_serie_bis.bezeichnung AS geologische_serie_bis,
+    replace(geologische_serie_bis.bezeichnung,'_',' ') AS geologische_serie_bis_text,
+    geologisches_system_von.bezeichnung AS geologisches_system_von,
+    replace(geologisches_system_von.bezeichnung,'_',' ') AS geologisches_system_von_text,
+    geologisches_system_bis.bezeichnung AS geologisches_system_bis,
+    replace(geologisches_system_bis.bezeichnung,'_',' ') AS geologisches_system_bis_text,
     geotope_fundstelle_grabung.objektname,
     geotope_fundstelle_grabung.regionalgeologische_einheit,
+    geotope_fundstelle_grabung.regionalgeologische_einheit AS regionalgeologische_einheit_text,
     geotope_fundstelle_grabung.bedeutung,
+    geotope_fundstelle_grabung.bedeutung AS bedeutung_text,
+    geotope_fundstelle_grabung.zustand,
     CASE 
         WHEN geotope_fundstelle_grabung.zustand = 'gering_beeintraechtigt'
             THEN 'gering beeinträchtigt'
@@ -175,23 +187,27 @@ SELECT
         WHEN geotope_fundstelle_grabung.zustand = 'stark_beeintraechtigt'
             THEN 'stark beeinträchtigt' 
         ELSE geotope_fundstelle_grabung.zustand 
-    END AS zustand,
+    END AS zustand_text,
     geotope_fundstelle_grabung.beschreibung,
+    geotope_fundstelle_grabung.schutzwuerdigkeit,
     CASE 
         WHEN geotope_fundstelle_grabung.schutzwuerdigkeit = 'geschuetzt' 
-            THEN 'geschützt' 
+            THEN 'geschützt'
         WHEN geotope_fundstelle_grabung.schutzwuerdigkeit = 'schutzwuerdig' 
             THEN 'schutzwürdig'
         ELSE geotope_fundstelle_grabung.schutzwuerdigkeit
-    END AS schutzwuerdigkeit,
-    replace(geotope_fundstelle_grabung.geowissenschaftlicher_wert,'_',' ') AS geowissenschaftlicher_wert,
+    END AS schutzwuerdigkeit_text,
+    geotope_fundstelle_grabung.geowissenschaftlicher_wert,
+    replace(geotope_fundstelle_grabung.geowissenschaftlicher_wert,'_',' ') AS geowissenschaftlicher_wert_text,
     geotope_fundstelle_grabung.anthropogene_gefaehrdung,
+    geotope_fundstelle_grabung.anthropogene_gefaehrdung AS anthropogene_gefaehrdung_text,
     geotope_fundstelle_grabung.lokalname,
     geotope_fundstelle_grabung.kant_geschuetztes_objekt,
     geotope_fundstelle_grabung.alte_inventar_nummer,
     geotope_fundstelle_grabung.ingeso_oid,
     geotope_fundstelle_grabung.hinweis_literatur,
     geotope_fundstelle_grabung.rechtsstatus,
+    replace(geotope_fundstelle_grabung.rechtsstatus,'_',' ') AS rechtsstatus_text,
     geotope_fundstelle_grabung.publiziert_ab,
     geotope_fundstelle_grabung.oereb_objekt,
     fachbereich.fachbereiche,

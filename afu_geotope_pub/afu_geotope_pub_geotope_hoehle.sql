@@ -18,7 +18,7 @@ WITH fachbereich AS (
         geotope_dokument.titel,
         geotope_dokument.offizieller_titel,
         geotope_dokument.abkuerzung,
-        replace(geotope_dokument.pfad,'G:\documents\ch.so.afu.geotope','https://geo.so.ch/docs/ch.so.afu.geotope') AS pfad,
+        REGEXP_REPLACE(replace(geotope_dokument.pfad,'G:\documents\ch.so.afu.geotope','https://geo.so.ch/docs/ch.so.afu.geotope/'), '\\', '','g') AS pfad,
         geotope_dokument.typ,
         geotope_dokument.offizielle_nr,
         geotope_dokument.rechtsstatus,
@@ -151,7 +151,10 @@ SELECT
     ortschaften.ortschaft,
     geotope_hoehle.objektname,
     geotope_hoehle.regionalgeologische_einheit,
+    geotope_hoehle.regionalgeologische_einheit AS regionalgeologische_einheit_text,
     geotope_hoehle.bedeutung,
+    geotope_hoehle.bedeutung AS bedeutung_text,
+    geotope_hoehle.zustand,
     CASE 
         WHEN geotope_hoehle.zustand = 'gering_beeintraechtigt'
             THEN 'gering beeinträchtigt'
@@ -160,23 +163,27 @@ SELECT
         WHEN geotope_hoehle.zustand = 'stark_beeintraechtigt'
             THEN 'stark beeinträchtigt' 
         ELSE geotope_hoehle.zustand 
-    END AS zustand,
+    END AS zustand_text, 
     geotope_hoehle.beschreibung,
+    geotope_hoehle.schutzwuerdigkeit,
     CASE 
         WHEN geotope_hoehle.schutzwuerdigkeit = 'geschuetzt' 
-            THEN 'geschützt' 
+            THEN 'geschützt'
         WHEN geotope_hoehle.schutzwuerdigkeit = 'schutzwuerdig' 
             THEN 'schutzwürdig'
         ELSE geotope_hoehle.schutzwuerdigkeit
-    END AS schutzwuerdigkeit,
-    replace(geotope_hoehle.geowissenschaftlicher_wert,'_',' ') AS geowissenschaftlicher_wert,
+    END AS schutzwuerdigkeit_text,
+    geotope_hoehle.geowissenschaftlicher_wert,
+    replace(geotope_hoehle.geowissenschaftlicher_wert,'_',' ') AS geowissenschaftlicher_wert_text,
     geotope_hoehle.anthropogene_gefaehrdung,
+    geotope_hoehle.anthropogene_gefaehrdung AS anthropogene_gefaehrdung_text,
     geotope_hoehle.lokalname,
     geotope_hoehle.kant_geschuetztes_objekt,
     geotope_hoehle.alte_inventar_nummer,
     geotope_hoehle.ingeso_oid, 
     geotope_hoehle.hinweis_literatur,
     geotope_hoehle.rechtsstatus,
+    replace(geotope_hoehle.rechtsstatus,'_',' ') AS rechtsstatus_text,
     geotope_hoehle.publiziert_ab,
     geotope_hoehle.oereb_objekt,
     fachbereich.fachbereiche,

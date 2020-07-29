@@ -18,7 +18,7 @@ WITH fachbereich AS (
         geotope_dokument.titel,
         geotope_dokument.offizieller_titel,
         geotope_dokument.abkuerzung,
-        replace(geotope_dokument.pfad,'G:\documents\ch.so.afu.geotope','https://geo.so.ch/docs/ch.so.afu.geotope') AS pfad,
+        REGEXP_REPLACE(replace(geotope_dokument.pfad,'G:\documents\ch.so.afu.geotope','https://geo.so.ch/docs/ch.so.afu.geotope/'), '\\', '','g') AS pfad,
         geotope_dokument.typ,
         geotope_dokument.offizielle_nr,
         geotope_dokument.rechtsstatus,
@@ -149,24 +149,30 @@ SELECT
     geotope_erratiker.t_ili_tid,
     geotope_erratiker.groesse,
     geotope_erratiker.eiszeit,
+    geotope_erratiker.eiszeit AS eiszeit_text,
     geotope_erratiker.herkunft,
     geotope_erratiker.schalenstein,
     geotope_erratiker.aufenthaltsort,
+    geotope_erratiker.petrografie,
     CASE 
         WHEN geotope_erratiker.petrografie = 'Penninischer_Gruenschiefer'
             THEN 'Penninischer Grünschiefer'
         ELSE replace(geotope_erratiker.petrografie,'_',' ') 
-    END AS petrografie,
+    END AS petrografie_text,
+    geotope_erratiker.entstehung,
     CASE 
         WHEN geotope_erratiker.entstehung = 'natuerlich'
             THEN 'natürlich' 
         ELSE geotope_erratiker.entstehung
-    END AS entstehung,
+    END AS entstehung_text,
     gemeinden.gemeinde,
     ortschaften.ortschaft,
     geotope_erratiker.objektname,
     geotope_erratiker.regionalgeologische_einheit,
+    geotope_erratiker.regionalgeologische_einheit AS regionalgeologische_einheit_text,
     geotope_erratiker.bedeutung,
+    geotope_erratiker.bedeutung AS bedeutung_text,
+    geotope_erratiker.zustand,
     CASE 
         WHEN geotope_erratiker.zustand = 'gering_beeintraechtigt'
             THEN 'gering beeinträchtigt'
@@ -175,23 +181,27 @@ SELECT
         WHEN geotope_erratiker.zustand = 'stark_beeintraechtigt'
             THEN 'stark beeinträchtigt' 
         ELSE geotope_erratiker.zustand 
-    END AS zustand,
+    END AS zustand_text,
     geotope_erratiker.beschreibung,
+    geotope_erratiker.schutzwuerdigkeit,
     CASE 
         WHEN geotope_erratiker.schutzwuerdigkeit = 'geschuetzt' 
             THEN 'geschützt' 
         WHEN geotope_erratiker.schutzwuerdigkeit = 'schutzwuerdig' 
             THEN 'schutzwürdig'
         ELSE geotope_erratiker.schutzwuerdigkeit
-    END AS schutzwuerdigkeit,
-    replace(geotope_erratiker.geowissenschaftlicher_wert,'_',' ') AS geowissenschaftlicher_wert,
+    END AS schutzwuerdigkeit_text,
+    geotope_erratiker.geowissenschaftlicher_wert,
+    replace(geotope_erratiker.geowissenschaftlicher_wert,'_',' ') AS geowissenschaftlicher_wert_text,
     geotope_erratiker.anthropogene_gefaehrdung,
+    geotope_erratiker.anthropogene_gefaehrdung AS anthropogene_gefaehrdung_text,
     geotope_erratiker.lokalname,
     geotope_erratiker.kant_geschuetztes_objekt,
     geotope_erratiker.alte_inventar_nummer,
     geotope_erratiker.ingeso_oid,
     geotope_erratiker.hinweis_literatur,
     geotope_erratiker.rechtsstatus,
+    geotope_erratiker.rechtsstatus AS rechtsstatus_text,
     geotope_erratiker.publiziert_ab,
     geotope_erratiker.oereb_objekt,
     fachbereich.fachbereiche,
