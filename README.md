@@ -50,9 +50,11 @@ git checkout -b branchname
   * `dbUriKaso`, `dbUserKaso`, `dbPwdKaso`
   * `dbUriCapitastra`, `dbUserCapitastra`, `dbPwdCapitastra`
   * `ftpServerZivilschutz`, `ftpUserZivilschutz`, `ftpPwdZivilschutz`
+  * `ftpServerFledermaus`, `ftpUserFledermaus`, `ftpPwdFledermaus`
   * `aiServer`, `aiUser`, `aiPwd`
   * `infofloraUser`, `infofloraPwd`
   * `igelToken`
+  * `awsAccessKeyAda`, `awsSecretAccessKeyAda`
   * `gretlShare`
 
 
