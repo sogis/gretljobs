@@ -183,6 +183,7 @@ export ORG_GRADLE_PROJECT_dbPwdPub=gretl
 Danach kann der GRETL-Container gestartet werden. Beispiel-Aufruf:
 
 ```
+docker pull sogis/gretl-runtime:latest
 ./start-gretl.sh --docker-image sogis/gretl-runtime:latest [--docker-network NETWORK] --job-directory $PWD/jobname [taskName...] [--option-name...]
 ```
 
