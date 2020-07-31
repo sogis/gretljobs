@@ -163,8 +163,8 @@ SELECT
     gemeinden.gemeinden AS gemeindenamen,
     parzellennummern.grundbuchnummern,
     flurnamen.flurname AS flurnamen,
-    eisenbahn_flaechentyp.dispname AS flaechentyp_txt,
-    eisenbahn_verkehrsfrequenz.dispname AS verkehrsfrequenz_txt,
+    eisenbahn_flaechentyp.description AS flaechentyp_txt,
+    eisenbahn_verkehrsfrequenz.description AS verkehrsfrequenz_txt,
     eisenbahn_verdachtsstreifenbreite.description AS verdachtsstreifenbreite_txt,
     status.description AS status_txt,
     begruendung_vsb_entlassen.description AS begruendung_aus_vsb_entlassen_txt

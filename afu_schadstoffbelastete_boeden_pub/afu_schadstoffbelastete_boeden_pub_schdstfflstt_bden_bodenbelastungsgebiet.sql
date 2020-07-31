@@ -154,11 +154,11 @@ SELECT
     gemeinden.gemeinden AS gemeindenamen,
     parzellennummern.grundbuchnummern,
     flurnamen.flurname AS flurnamen,
-    belastungsstufe.dispname AS belastungsstufe_txt,
+    belastungsstufe.description AS belastungsstufe_txt,
     status.description AS status_txt,
     begruendung_vsb_entlassen.description AS begruendung_aus_vsb_entlassen_txt,
-    flaechentyp.dispname AS flaechentyp_txt,
-    verursacher.dispname AS verursacher_txt
+    flaechentyp.description AS flaechentyp_txt,
+    verursacher.description AS verursacher_txt
 FROM
     afu_schadstoffbelastete_boeden.schdstfflstt_bden_bodenbelastungsgebiet
     LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_gebiet
