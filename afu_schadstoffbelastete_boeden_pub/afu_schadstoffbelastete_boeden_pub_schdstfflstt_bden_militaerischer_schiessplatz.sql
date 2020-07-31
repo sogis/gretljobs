@@ -153,7 +153,7 @@ SELECT
     gemeinden.gemeinden AS gemeindenamen,
     parzellennummern.grundbuchnummern,
     flurnamen.flurname AS flurnamen,
-    schiessplatz_betriebsstatus.dispname AS betriebsstatus_txt,
+    schiessplatz_betriebsstatus.description AS betriebsstatus_txt,
     status.description AS status_txt,
     begruendung_vsb_entlassen.description AS begruendung_aus_vsb_entlassen_txt
 FROM

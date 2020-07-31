@@ -187,9 +187,9 @@ SELECT
     gemeinden.gemeinden AS gemeindenamen,
     parzellennummern.grundbuchnummern,
     flurnamen.flurname AS flurnamen,
-    schiessanlage_trennkriterium.dispname AS trennkriterium_txt,
+    schiessanlage_trennkriterium.description AS trennkriterium_txt,
     lage.aname AS lage_txt,
-    schiessanlage_sanierungsstatus.dispname AS sanierungsstatus_txt,
+    schiessanlage_sanierungsstatus.description AS sanierungsstatus_txt,
     status.description AS status_txt,
     begruendung_vsb_entlassen.description AS begruendung_aus_vsb_entlassen_txt
 FROM

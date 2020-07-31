@@ -150,7 +150,7 @@ SELECT
     gemeinden.gemeinden AS gemeindenamen,
     parzellennummern.grundbuchnummern,
     flurnamen.flurname AS flurnamen,
-    stahlbruecke_brueckentyp.dispname AS brueckentyp_txt,
+    stahlbruecke_brueckentyp.description AS brueckentyp_txt,
     status.description AS status_txt,
     begruendung_vsb_entlassen.description AS begruendung_aus_vsb_entlassen_txt
 FROM

@@ -151,7 +151,7 @@ SELECT
     gemeinden.gemeinden AS gemeindenamen,
     parzellennummern.grundbuchnummern,
     flurnamen.flurname AS flurnamen,
-    strasse_strassentyp.dispname AS strassentyp_txt,
+    strasse_strassentyp.description AS strassentyp_txt,
     strasse_verkehrsfrequenz.description AS verkehrsfrequenz_txt,
     strasse_verdachtsstreifenbreite.description AS verdachtsstreifenbreite_txt,
     status.description AS status_txt,
