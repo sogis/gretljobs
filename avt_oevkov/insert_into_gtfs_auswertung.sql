@@ -190,6 +190,7 @@ INSERT INTO
             'Grenchen Nord',
             'Grenchen Süd',
             'Murgenthal',
+            'Oensingen',
             'Olten',
             'Schönenwerd SO',
             'Solothurn'
@@ -233,6 +234,32 @@ INSERT INTO
         unternehmer,
         verkehrsmittel
 
+        UNION ALL
+
+--   Bahnhof Oensingen: L410 Biel - Olten
+    SELECT
+        stop_name,
+        route_id,
+        linienname,
+        unternehmer,
+        sum(gtfs_count) AS gtfs_count,
+        verkehrsmittel
+    FROM
+        abfahrten
+    WHERE
+        trip_headsign <> stop_name
+    AND
+        stop_name = 'Oensingen'
+    AND
+        substring(linienname from 1 for 4) IN ('L410', 'L412', 'L413')
+    GROUP BY
+        stop_name,
+        route_id,
+        linienname,
+        gtfs_count,
+        unternehmer,
+        verkehrsmittel
+        
 UNION ALL
 
 --   Bahnhof Olten: L410 Biel - Olten
@@ -256,12 +283,13 @@ UNION ALL
              'Langendorf',
              'Lausanne',
              'Lommiswil',
+             'Morges',
              'Oensingen',
              'Solothurn'
          )
     AND
-        linienname LIKE 'L410%'
-     AND
+        substring(linienname from 1 for 4) = 'L410'
+    AND
         trip_id IN (
             SELECT
                 trip_einschraenkung.trip_id
@@ -333,7 +361,7 @@ UNION ALL
     AND
         trip_headsign IN ('Bern', 'Langenthal')
     AND
-        linienname LIKE 'L450%'
+        substring(linienname from 1 for 4) = 'L450'
     AND
         trip_id IN (
             SELECT
@@ -439,7 +467,7 @@ UNION ALL
 
     UNION ALL
 
--- Bahnhof Olten: L510 Olten - Sursee (S8)
+-- Bahnhof Olten: L650 Turgi - Sursee (S29)
     SELECT
         stop_name,
         route_id,
@@ -454,15 +482,46 @@ UNION ALL
     AND
         stop_name = 'Olten'
     AND
-        linienname = 'L510 Olten - Sursee (S8)'
+        linienname = 'L650 Turgi - Olten (S29)'
+    AND
+       trip_headsign IN ('Brugg AG', 'Turgi')
     GROUP BY
         stop_name,
         route_id,
+        trip_headsign,
         linienname,
         unternehmer,
         verkehrsmittel
 
     UNION ALL
+    
+    SELECT
+        stop_name,
+        route_id,
+        linienname,
+        unternehmer,
+        sum(gtfs_count),
+        verkehrsmittel
+    FROM
+        abfahrten
+    WHERE
+        trip_headsign <> stop_name
+    AND
+        stop_name = 'Olten'
+    AND
+        linienname = 'L510 Olten - Sursee (S29)'
+    AND
+       trip_headsign = 'Sursee'
+    GROUP BY
+        stop_name,
+        route_id,
+        trip_headsign,
+        linienname,
+        unternehmer,
+        verkehrsmittel
+
+    UNION ALL
+
 
 -- Bahnhof Olten: L510 Olten - Luzern (IR/RE), RegioExpress zählt hier zu R
     SELECT
@@ -570,7 +629,9 @@ UNION ALL
             'Zürich HB'
         )
     AND
-        linienname LIKE 'L650%'
+        substring(linienname from 1 for 4) = 'L650'
+    AND
+        linienname <> 'L650 Turgi - Olten (S29)'
     AND
         trip_id IN (
             SELECT
@@ -696,8 +757,6 @@ UNION ALL
         stop_name = 'Schönenwerd SO'
     AND
         substring(linienname from 1 for 4) = 'L650'
-    AND
-        linienname LIKE 'L650%'
     GROUP BY
         stop_name,
         route_id,
@@ -802,7 +861,7 @@ UNION ALL
     AND
         stop_name = 'Grenchen Nord'
     AND
-        route_desc = 'RegioExpress'              -- InterCity werden nicht gezaehlt
+        route_desc = 'RegioExpress'              -- InterCity werden nicht gezählt
     GROUP BY
         stop_name,
         route_id,
