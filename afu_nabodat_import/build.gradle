@@ -1,0 +1,27 @@
+/*
+Import der Nabodat-Daten in die Edit-DB
+*/
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
+
+defaultTasks 'importNabodat'
+
+/*
+Package and upload to the KKGEO AI
+*/
+def uploadFileName = 'uploadFile'
+def exportFileName = 'data.xtf'
+def pathToUploadFolder = 'upload'
+
+task importNabodat(type: Ili2pgReplace){
+     description = 'Import der Nabodat-Daten'
+     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+     dbschema = 'afu_bodendaten_nabodat'
+     models = 'NABODAT_ErgebnisseBodenbelastung_Punktdaten_LV95_V1_1'
+     modeldir = '.;http://models.geo.admin.ch'
+     dataFile = 'upload/data.xtf'
+     dataset = 'punktdaten'
+     importTid = true
+}
