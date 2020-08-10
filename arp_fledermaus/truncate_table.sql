@@ -1,0 +1,1 @@
+DELETE FROM arp_fledermaus.fledermausfundrte_fledermausfundort; 
