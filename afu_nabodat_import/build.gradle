@@ -31,5 +31,5 @@ task importNabodat(type: Ili2pgReplace, dependsOn: unpackFiles){
      modeldir = '.;http://models.geo.admin.ch'
      dataFile = 'upload/data.xtf'
      dataset = 'punktdaten'
-     importTid = true
+     importTid = 'true'
 }
