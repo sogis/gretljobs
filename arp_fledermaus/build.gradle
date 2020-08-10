@@ -26,14 +26,6 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks "downloadData"
 
-def pathToTempFolder = System.getProperty("java.io.tmpdir")
-def remoteFileName = "export.csv"
-def localFileName = "export.csv"
-
-def server = ftpServerFledermaus
-def user = ftpUserFledermaus
-def password = ftpPwdFledermaus
-
 def pathToTempFolder = Files.createTempDirectory("arpfledermaus-").toFile().getAbsolutePath()
 def remoteFileName = "export.csv"
 def localFileName = "export.csv"
