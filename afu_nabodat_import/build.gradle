@@ -15,7 +15,15 @@ def uploadFileName = 'uploadFile'
 def exportFileName = 'data.xtf'
 def pathToUploadFolder = 'upload'
 
-task importNabodat(type: Ili2pgReplace){
+task unpackFiles() {
+    doLast{
+        file('upload/data.xtf').withOutputStream { os ->
+        os << resources.gzip('upload/data.xtf.gz').read()
+        }
+     }
+}
+
+task importNabodat(type: Ili2pgReplace, dependsOn: unpackFiles){
      description = 'Import der Nabodat-Daten'
      database = [dbUriEdit, dbUserEdit, dbPwdEdit]
      dbschema = 'afu_bodendaten_nabodat'
@@ -23,5 +31,5 @@ task importNabodat(type: Ili2pgReplace){
      modeldir = '.;http://models.geo.admin.ch'
      dataFile = 'upload/data.xtf'
      dataset = 'punktdaten'
-     importTid = true
+     importTid = 'true'
 }
