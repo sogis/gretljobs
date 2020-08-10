@@ -74,3 +74,8 @@ task truncateTable(type: SqlExecutor, dependsOn: 'downloadData') {
     ]
 }
 
+task validateCsv(type: CsvValidator, dependsOn: 'truncateTable') {
+    models = "SO_ARP_Fledermausfundorte_20200728"
+    firstLineIsHeader = true
+    dataFiles = [pathToTempFolder.toString()+"/export.csv"]
+}
