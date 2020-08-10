@@ -1,4 +1,4 @@
-
+/*
 buildscript {
     repositories {
         maven { url "https://repo.osgeo.org/repository/release/" }
@@ -12,9 +12,6 @@ buildscript {
         classpath 'commons-net:commons-net:3.6'
     }
 }
-
-/*
-apply plugin: "ch.so.agi.gretl"
 */
 
 import ch.so.agi.gretl.tasks.*
@@ -24,9 +21,20 @@ import java.nio.file.Files
 import java.io.FileOutputStream
 import org.apache.commons.net.ftp.*
 
+apply plugin: 'ch.so.agi.gretl'
+
+
 defaultTasks "downloadData"
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def remoteFileName = "export.csv"
+def localFileName = "export.csv"
+
+def server = ftpServerFledermaus
+def user = ftpUserFledermaus
+def password = ftpPwdFledermaus
+
+def pathToTempFolder = Files.createTempDirectory("arpfledermaus-").toFile().getAbsolutePath()
 def remoteFileName = "export.csv"
 def localFileName = "export.csv"
 
@@ -39,20 +47,8 @@ task downloadData() {
         def ftp = new FTPClient()
 
         try {
-            ftp.setDefaultTimeout(60000)
-            ftp.setConnectTimeout(30000)
-            ftp.setDataTimeout(30000)
-            
             ftp.connect(server, 21)
-            ftp.setSoTimeout(30000)
-
             ftp.login(user, password)
-            // Use passive mode with ftps
-            //ftp.enterLocalPassiveMode(); 
-
-            // Aus Dokumentationsgründen.
-            //def systemTypeKey = "UNIX"; // WINDOWS || UNIX
-            //ftp.configure(new FTPClientConfig(systemTypeKey)); 
 
             int reply = ftp.getReplyCode();
             if(!FTPReply.isPositiveCompletion(reply)) {
