@@ -8,17 +8,19 @@ import java.io.File
 
 defaultTasks 'importNabodat'
 
-/*
-Package and upload to the KKGEO AI
-*/
 def uploadFileName = 'uploadFile'
 def exportFileName = 'data.xtf'
 def pathToUploadFolder = 'upload'
 
+/*
+SEHR UNSCHÖN: Das gezipte xtf wird hochgeladen und heisst dann data.xtf obwohl es eigentlich ein .gz-file ist. Dann wird es entzipt und heisst dann data_neu.xtf. 
+Das sollte noch schöner gemacht werden! 
+*/
+
 task unpackFiles() {
     doLast{
-        file('upload/data.xtf').withOutputStream { os ->
-        os << resources.gzip('upload/data.xtf.gz').read()
+        file('upload/data_neu.xtf').withOutputStream { os ->
+        os << resources.gzip('upload/data.xtf').read()
         }
      }
 }
@@ -29,7 +31,7 @@ task importNabodat(type: Ili2pgReplace, dependsOn: unpackFiles){
      dbschema = 'afu_bodendaten_nabodat'
      models = 'NABODAT_ErgebnisseBodenbelastung_Punktdaten_LV95_V1_1'
      modeldir = '.;http://models.geo.admin.ch'
-     dataFile = 'upload/data.xtf'
+     dataFile = 'upload/data_neu.xtf'
      dataset = 'punktdaten'
      importTid = 'true'
 }
