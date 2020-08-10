@@ -20,7 +20,7 @@ import org.apache.commons.net.ftp.*
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks "downloadData"
+defaultTasks "truncateTable"
 
 def pathToTempFolder = Files.createTempDirectory("arpfledermaus-").toFile().getAbsolutePath()
 def remoteFileName = "export.csv"
@@ -65,3 +65,12 @@ task downloadData() {
         }
     }
 }
+
+task truncateTable(type: SqlExecutor, dependsOn: 'downloadData') {
+    description = "Leert die Tabelle arp_fledermaus.fledermausfundrte_fledermausfundort"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = [
+            'truncate_table.sql'
+    ]
+}
+
