@@ -28,7 +28,8 @@ endresult AS (
       ON grunutz.bfs_nr = bfs.bfs_nr AND grunutz.typ_kt = zones.typ_kt
     LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze gem
       ON bfs.bfs_nr = gem.bfs_gemeindenummer
-    LEFT JOIN agi_mopublic_pub.mopublic_bodenbedeckung bobe ON bobe.art_txt = 'Gebaeude' AND ST_Intersects(grunutz.geometrie,bobe.geometrie)
+    LEFT JOIN agi_mopublic_pub.mopublic_bodenbedeckung bobe
+      ON bobe.art_txt = 'Gebaeude' AND ST_Intersects(grunutz.geometrie,bobe.geometrie)
     GROUP BY bfs.bfs_nr, zones.typ_kt, gem.gemeindename
     ORDER BY bfs_nr ASC, typ_kt ASC
 )
