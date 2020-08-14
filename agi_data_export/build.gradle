@@ -93,6 +93,8 @@ task exportVersion3Data() {
 }
 */
 
+// Z.B Upload nur falls Prüfung i.O. Das sollte gehen, oder? Weil IliValidator einen Output hat man darauf zugreifen kann?
+// Einmal alle exportieren ist nur temporär (eigentlich) und muss so stabil sein, dass ein Fehler nicht alles mitreisst. Stabilität aber nicht nur Job, sondern auch ili-Tools
 // Zippen
 // Umwandeln
 // Upload
