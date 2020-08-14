@@ -1,0 +1,98 @@
+/*
+buildscript {
+    repositories {
+        maven { url "https://repo.osgeo.org/repository/release/" }
+        maven { url "http://jars.interlis.ch" }
+        maven { url "https://plugins.gradle.org/m2/" }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'commons-net:commons-net:3.6'
+    }
+}
+*/
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.api.Connector
+import ch.so.agi.gretl.util.TaskUtil
+import java.nio.file.Paths
+import java.nio.file.Files
+import java.io.FileOutputStream
+
+apply plugin: 'ch.so.agi.gretl'
+
+class Dataset {
+    String models
+    String dbschema
+    Connector database
+    String datasetId
+    boolean version3
+
+    Dataset(String models, String dbschema, ArrayList database, String datasetId, boolean version3) {
+        this.models = models
+        this.dbschema = dbschema
+        this.database = database
+        this.datasetId = datasetId
+        this.version3 = version3
+    }
+
+    Dataset(String models, String dbschema, ArrayList database, String datasetId) {
+        this(models, dbschema, database, datasetId, false)
+    }    
+}
+
+defaultTasks 'exportAllData'
+
+def pathToTempFolder = Files.createTempDirectory("agidataexport-").toFile().getAbsolutePath()
+def todaysDate = new Date().format('yyyy-MM-dd')
+def dbEdit = [dbUriEdit, dbUserEdit, dbPwdEdit]
+def dbPub = [dbUriPub, dbUserPub, dbPwdPub]
+
+def datasets = []
+datasets.add(new Dataset("PlanerischerGewaesserschutz_LV95_V1_1", "afu_gewaesserschutz", dbEdit, "ch.so.afu.gewaesserschutz"))
+
+datasets.each { dataset ->
+    def modelNames = dataset.models
+    def schema = dataset.dbschema
+    def dbdatabase = dataset.database
+    def datasetId = dataset.datasetId
+    def version3 = dataset.version3
+
+    task "exportDataset_$datasetId"(type: Ili2pgExport) {
+        database = dbdatabase
+        dbschema = schema
+        models = modelNames
+        disableValidation = true
+        logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_export.log"))
+        dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf"))
+    }
+
+    task "validateData_$datasetId"(type: IliValidator, dependsOn: "exportDataset_$datasetId") {
+        dataFiles = [Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf")]
+        failOnError = false
+
+        // TODO:
+        // * toml oder z.B. AREA standardmässig ausschalten (weil AV, NPL Overlaps haben). Resp. etwas standard, kann aber überschrieben werden
+        // logfile
+    }
+
+}
+
+task exportAllData() {
+    description = "Aggregation task."
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('validateData_') }
+    }
+}
+
+// In der Forschleife auswerten und continue...
+/*
+task exportVersion3Data() {
+
+}
+*/
+
+// Zippen
+// Umwandeln
+// Upload
