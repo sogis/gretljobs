@@ -58,14 +58,23 @@ def dbEdit = [dbUriEdit, dbUserEdit, dbPwdEdit]
 def dbPub = [dbUriPub, dbUserPub, dbPwdPub]
 
 def datasets = []
-//datasets.add(new Dataset("PlanerischerGewaesserschutz_LV95_V1_1", "afu_gewaesserschutz", dbEdit, "ch.so.afu.gewaesserschutz"))
 //datasets.add(new Dataset("SO_ADA_Denkmal_20191128", "ada_denkmalschutz", dbEdit, "ch.so.ada.denkmalschutz"))
 //datasets.add(new Dataset("OeREBKRMtrsfr_V1_1", "ada_denkmalschutz_oereb", dbEdit, "ch.so.ada.denkmalschutz_oereb")) // TODO: Exportieren? Oder im Kontext des ÖREB-Katasters exportieren? Weil URL ohne Postprocessing falsch und EXTERNAL Prüfungen hier (noch?) nicht möglich.
 // afu_bodendaten_nabodat: Nabodat aus Edit-DB wird nicht exportiert. Das XTF wird an uns geliefert.
 //datasets.add(new Dataset("SO_AfU_Erdwaermesonden_20190204", "afu_erdwaermesonden", dbEdit, "ch.so.afu.erdwaermesonden", true))
 //datasets.add(new Dataset("SO_AFU_Nagra_Bohrtiefen_20190927", "afu_erdwaermesonden_nagra", dbEdit, "ch.so.afu.erdwaermesonden_nagra", true))
 //datasets.add(new Dataset("SO_AfU_Erdwaermesonden_20200421", "afu_erdwaermesonden_v2", dbEdit, "ch.so.afu.erdwaermesonden_v2"))
-datasets.add(new Dataset("SO_AfU_Gefahrenkartierung_20181129", "afu_gefahrenkartierung", dbEdit, "ch.so.afu.gefahrenkartierung", true))
+//datasets.add(new Dataset("SO_AfU_Gefahrenkartierung_20181129", "afu_gefahrenkartierung", dbEdit, "ch.so.afu.gefahrenkartierung", true))
+//TODO: MGDM.... datasets.add(new Dataset("SO_AfU_Gefahrenkartierung_20181129", "afu_gefahrenkartierung", dbEdit, "ch.so.afu.gefahrenkartierung", true))
+//datasets.add(new Dataset("SO_AFU_Geotope_20200312", "afu_geotope", dbEdit, "ch.so.afu.geotope"))
+// TODO: afu_geotope_oereb? Siehe andere ÖREB-Themen.
+//datasets.add(new Dataset("PlanerischerGewaesserschutz_LV95_V1_1", "afu_gewaesserschutz", dbEdit, "ch.so.afu.gewaesserschutz"))
+// TODO afu_grundwasserschutz_oereb
+//datasets.add(new Dataset("SO_AFU_Igel_202000429", "afu_igel", dbEdit, "ch.so.afu.igel"))
+//datasets.add(new Dataset("SO_AFU_Verzeichnis_schadstoffbelastete_Boeden_20200622", "afu_schadstoffbelastete_boeden", dbEdit, "ch.so.afu.schadstoffbelastete_boeden"))
+//datasets.add(new Dataset("SO_AGEM_Fila_20190318", "agem_fila", dbEdit, "ch.so.agem.fila", true))
+datasets.add(new Dataset("SO_AGI_AVGB_abgleich_import_20200515", "agi_av_gb_abgleich_import", dbEdit, "ch.so.agi.av_gb_abgleich"))
+
 
 datasets.each { dataset ->
     def modelNames = dataset.models
@@ -73,13 +82,7 @@ datasets.each { dataset ->
     def dbdatabase = dataset.database
     def datasetId = dataset.datasetId
     def isVersion3 = dataset.version3
-    def validationConfig = null
 
-/*
-    if () {
-
-    }
-*/
     task "exportDataset_$datasetId"(type: Ili2pgExport) {
         database = dbdatabase
         dbschema = schema
@@ -95,11 +98,8 @@ datasets.each { dataset ->
         logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_validation.log"))
         failOnError = false
 
-        configFile = datasetId + ".toml"
+        if (new File("config/"+datasetId + ".toml").isFile()) configFile = "config/"+datasetId + ".toml"
 
-        // TODO:
-        // * toml oder z.B. AREA standardmässig ausschalten (weil AV, NPL Overlaps haben). Resp. etwas standard, kann aber überschrieben werden
-        // logfile
 
     }
 
