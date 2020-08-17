@@ -37,7 +37,7 @@ export ORG_GRADLE_PROJECT_dbPwdEdit=<PASSWORD>
 Im `scripts`-Ordner des geklonten Repos folgender Befehl ausführen, um den Import zu starten:
 
 ```
-sudo -E ../start-gretl.sh --docker-image sogis/gretl-runtime:latest --job-directory /home/bjsvwcur/gretljob-Repo/gretljobs/arp_npl_import/ replaceDataset -Pxtf=2580_091_2018-02-13.xtf
+sudo -E ../start-gretl.sh --docker-image sogis/gretl-runtime:latest --job-directory /home/bjsvwcur/Repos-AGI/gretljobs/arp_npl_import/ replaceDataset -Pxtf=2580_091_2018-02-13.xtf
 ```
 
 Ein absoluter Pfad zum `--job_directory` verursacht m.E. am wenigsten Probleme.
