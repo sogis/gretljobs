@@ -67,7 +67,13 @@ task downloadData() {
     }
 }
 
-task truncateTable(type: SqlExecutor, dependsOn: 'downloadData') {
+task validateCsv(type: CsvValidator, dependsOn: 'downloadData') {
+    models = "SO_ARP_Fledermausfundorte_20200728"
+    firstLineIsHeader = true
+    dataFiles = [pathToTempFolder.toString()+"/export.csv"]
+}
+
+task truncateTable(type: SqlExecutor, dependsOn: 'validateCsv') {
     description = "Leert die Tabelle arp_fledermaus.fledermausfundrte_fledermausfundort"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = [
@@ -75,13 +81,7 @@ task truncateTable(type: SqlExecutor, dependsOn: 'downloadData') {
     ]
 }
 
-task validateCsv(type: CsvValidator, dependsOn: 'truncateTable') {
-    models = "SO_ARP_Fledermausfundorte_20200728"
-    firstLineIsHeader = true
-    dataFiles = [pathToTempFolder.toString()+"/export.csv"]
-}
-
-task importCsv(type: CsvImport, dependsOn: 'validateCsv') {
+task importCsv(type: CsvImport, dependsOn: 'truncateTable') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = "arp_fledermaus"
     tableName = "fledermausfundrte_fledermausfundort"
