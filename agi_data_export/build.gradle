@@ -19,6 +19,7 @@ import ch.so.agi.gretl.util.TaskUtil
 import java.nio.file.Paths
 import java.nio.file.Files
 import java.io.FileOutputStream
+import java.util.UUID
 
 apply plugin: 'ch.so.agi.gretl'
 
@@ -44,7 +45,14 @@ class Dataset {
 
 defaultTasks 'exportAllData'
 
-def pathToTempFolder = Files.createTempDirectory("agidataexport-").toFile().getAbsolutePath()
+//def pathToTempFolder = Files.createTempDirectory("agidataexport-").toFile().getAbsolutePath()
+String uuid = UUID.randomUUID().toString()
+File tmpFolder = new File("/tmp/gretl-share","agidataexport-"+uuid);
+if(!tmpFolder.exists()) {
+    tmpFolder.mkdirs();
+}
+def pathToTempFolder = tmpFolder.getAbsolutePath()
+
 def todaysDate = new Date().format('yyyy-MM-dd')
 def dbEdit = [dbUriEdit, dbUserEdit, dbPwdEdit]
 def dbPub = [dbUriPub, dbUserPub, dbPwdPub]
@@ -75,6 +83,7 @@ datasets.each { dataset ->
         // TODO:
         // * toml oder z.B. AREA standardmässig ausschalten (weil AV, NPL Overlaps haben). Resp. etwas standard, kann aber überschrieben werden
         // logfile
+
     }
 
 }
