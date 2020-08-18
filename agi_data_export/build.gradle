@@ -73,8 +73,21 @@ def datasets = []
 //datasets.add(new Dataset("SO_AFU_Igel_202000429", "afu_igel", dbEdit, "ch.so.afu.igel"))
 //datasets.add(new Dataset("SO_AFU_Verzeichnis_schadstoffbelastete_Boeden_20200622", "afu_schadstoffbelastete_boeden", dbEdit, "ch.so.afu.schadstoffbelastete_boeden"))
 //datasets.add(new Dataset("SO_AGEM_Fila_20190318", "agem_fila", dbEdit, "ch.so.agem.fila", true))
-datasets.add(new Dataset("SO_AGI_AVGB_abgleich_import_20200515", "agi_av_gb_abgleich_import", dbEdit, "ch.so.agi.av_gb_abgleich"))
-
+//datasets.add(new Dataset("SO_AGI_AVGB_abgleich_import_20200515", "agi_av_gb_abgleich_import", dbEdit, "ch.so.agi.av_gb_abgleich")) // TODO: Ist das von Interesse? Werden Daten nach Import nicht gelöscht?
+//datasets.add(new Dataset("SO_AGI_AV_GB_Administrative_Einteilungen_20180613", "agi_av_gb_admin_einteilung", dbEdit, "ch.so.agi.av_gb_admin_einteilung"))
+// TODO: Da scheint mir was am Schema falsch. Es fehlt die t_ili_tid-Spalte in der uebersicht-Tabelle. datasets.add(new Dataset("SO_AGI_AV_KASO_abgleich_import_20200515", "agi_av_kaso_abgleich_import", dbEdit, "ch.so.agi.av_kaso_abgleich_import"))
+// TODO: agi_gb2av Nicht sinnvoll, da Originaldaten als XTF vorhanden.
+//datasets.add(new Dataset("SO_AGI_Inventar_Hoheitsgrenzen_20191129", "agi_inventar_hoheitsgrenzen", dbEdit, "ch.so.agi.inventar_hoheitsgrenzen"))
+// TODO: LK-Zeugs werden als sehr schlechte ITF geliefert. Sind voller Fehler.
+//datasets.add(new Dataset("OeREB_ExtractAnnex_V1_0", "agi_oereb_annex", dbEdit, "ch.so.agi.annex.oereb"))
+// TODO: agi_plz_ortschaften Import via ITF/XTF
+// TODO: agi_swissboundaries3d_pub Import via ITF/XTF (oder?)
+//datasets.add(new Dataset("SO_ALW_Infoflora_20190912", "alw_infoflora", dbEdit, "ch.so.alw.infoflora", true))
+// TODO: alw_zonengrenzen Import via XTF
+//datasets.add(new Dataset("SO_Agglomerationsprogramme_20200618", "arp_agglomerationsprogramme", dbEdit, "ch.so.arp.aggloprogramme"))
+//datasets.add(new Dataset("SO_ARP_Baugis_20190612", "arp_baugis", dbEdit, "ch.so.arp.baugis", true))
+datasets.add(new Dataset("SO_ARP_Mehrjahresprogramm_20200228", "arp_mehrjahresprogramm", dbEdit, "ch.so.arp.mehrjahresprogramm"))
+//datasets.add(new Dataset("SO_ARP_Naturreservate_20200609", "arp_naturreservate", dbEdit, "ch.so.arp.naturreservate"))
 
 datasets.each { dataset ->
     def modelNames = dataset.models
