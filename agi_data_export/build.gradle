@@ -86,8 +86,13 @@ def datasets = []
 // TODO: alw_zonengrenzen Import via XTF
 //datasets.add(new Dataset("SO_Agglomerationsprogramme_20200618", "arp_agglomerationsprogramme", dbEdit, "ch.so.arp.aggloprogramme"))
 //datasets.add(new Dataset("SO_ARP_Baugis_20190612", "arp_baugis", dbEdit, "ch.so.arp.baugis", true))
-datasets.add(new Dataset("SO_ARP_Mehrjahresprogramm_20200228", "arp_mehrjahresprogramm", dbEdit, "ch.so.arp.mehrjahresprogramm"))
+//datasets.add(new Dataset("SO_ARP_Mehrjahresprogramm_20200228", "arp_mehrjahresprogramm", dbEdit, "ch.so.arp.mehrjahresprogramm"))
 //datasets.add(new Dataset("SO_ARP_Naturreservate_20200609", "arp_naturreservate", dbEdit, "ch.so.arp.naturreservate"))
+// TODO arp_npl: Originaldaten als XTF
+// TODO arp_npl_oereb: Im Kontext OEREB-Kataster wirds geprüft.
+//datasets.add(new Dataset("SO_ARP_Nutzungsvereinbarung_20170512", "arp_nutzungsvereinbarung", dbEdit, "ch.so.arp.nutzungsvereinbarung"))
+datasets.add(new Dataset("SO_AVT_OevKov_20200420", "avt_oevkov_2020", dbEdit, "ch.so.arp.oevkov2020")) // TODO: Ist das Modell online? Nein -> nicht prüfbar.
+
 
 datasets.each { dataset ->
     def modelNames = dataset.models
