@@ -1,0 +1,23 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferArpAggloprogramme'
+
+task transferArpAggloprogramme(type: Db2Db){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('arp_agglomerationsprogramme_pub_agglomrtnsprgrmme_massnahme.sql',
+                    'arp_agglomerationsprogramme_pub.agglomrtnsprgrmme_massnahme', true),
+            new TransferSet('arp_agglomerationsprogramme_pub_agglomrtnsprgrmme_massnahme_punkt.sql',
+                    'arp_agglomerationsprogramme_pub.agglomrtnsprgrmme_massnahme_punkt', true)
+	    new TransferSet('arp_agglomerationsprogramme_pub_agglomrtnsprgrmme_massnahme_linie.sql',
+                    'arp_agglomerationsprogramme_pub.agglomrtnsprgrmme_massnahme_linie', true)		
+            new TransferSet('arp_agglomerationsprogramme_pub_agglomrtnsprgrmme_massnahme_flaeche.sql',
+                    'arp_agglomerationsprogramme_pub.agglomrtnsprgrmme_massnahme_flaeche', true)		
+            new TransferSet('arp_agglomerationsprogramme_pub_agglomrtnsprgrmme_uebersicht_gemeinde.sql',
+                    'arp_agglomerationsprogramme_pub.agglomrtnsprgrmme_uebersicht_gemeinde', true)				
+    ];
+}
