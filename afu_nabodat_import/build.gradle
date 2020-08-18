@@ -19,8 +19,8 @@ Das sollte noch schöner gemacht werden!
 
 task unpackFiles() {
     doLast{
-        file('upload/data_neu.xtf').withOutputStream { os ->
-        os << resources.gzip('upload/data.xtf').read()
+        file('upload/data.xtf').withOutputStream { os ->
+        os << resources.gzip('upload/uploadFile').read()
         }
      }
 }
@@ -31,7 +31,7 @@ task importNabodat(type: Ili2pgReplace, dependsOn: unpackFiles){
      dbschema = 'afu_bodendaten_nabodat'
      models = 'NABODAT_ErgebnisseBodenbelastung_Punktdaten_LV95_V1_1'
      modeldir = '.;http://models.geo.admin.ch'
-     dataFile = 'upload/data_neu.xtf'
+     dataFile = 'upload/data.xtf'
      dataset = 'punktdaten'
      importTid = 'true'
 }
