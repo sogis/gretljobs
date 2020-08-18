@@ -46,7 +46,6 @@ SELECT
             THEN 'Flaechengeometrie'
         ELSE 'keine_Geometrie'
     END AS geometrietyp
-
 FROM
     arp_agglomerationsprogramme.agglomrtnsprgrmme_massnahme massnahme
     LEFT JOIN arp_agglomerationsprogramme.agglomrtnsprgrmme_agglomerationsprogramm aggloprogramm
