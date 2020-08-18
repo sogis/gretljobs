@@ -1,6 +1,6 @@
 SELECT
     massnahme.t_id,
-    aggloprogramm.aname AS aggloprogramm,
+    aggloprogramm.aname AS agglomerationsprogramm,
     aggloprogramm.generation,
     aggloprogramm.agglo_nu AS agglomerationsprogramm_nr,
     aggloprogramm.url AS agglomerationsprogramm_url,
