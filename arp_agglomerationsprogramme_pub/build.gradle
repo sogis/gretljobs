@@ -10,7 +10,7 @@ task transferArpAggloprogramme(type: Db2Db){
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
         new TransferSet('arp_agglomerationsprogramme_pub_agglomrtnsprgrmme_massnahme.sql',
-            'arp_agglomerationsprogramme_pub.agglomrtnsprgrmme_massnahme', true),
+            'arp_agglomerationsprogramme_pub.agglomrtnsprgrmme_massnahmen', true),
         new TransferSet('arp_agglomerationsprogramme_pub_agglomrtnsprgrmme_massnahme_punkt.sql',
             'arp_agglomerationsprogramme_pub.agglomrtnsprgrmme_massnahme_punkt', true),
         new TransferSet('arp_agglomerationsprogramme_pub_agglomrtnsprgrmme_massnahme_linie.sql',
