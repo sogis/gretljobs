@@ -134,6 +134,7 @@ datasets.add(new Dataset("SO_SGV_Erschliessung_ausserhalb_Bauzone_20190611", "sg
 */
 
 // Pub-DB
+
 // Nicht exportiert und geprüft werden:
 // - ch.so.afu.bodendaten_nabodat: JSON-Abbildung falsch verwendet.
 // - ch.so.afu.gewaesserschutz: JSON-Abbildung falsch verwendet. 
