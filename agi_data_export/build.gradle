@@ -61,8 +61,9 @@ def dbPub = [dbUriPub, dbUserPub, dbPwdPub]
 // Fehlerkorrektur: 
 // - Erste Anlaufstelle ist die Person, welche die letzte Modelländerung gemacht hat.
 // - Oder Variante "Tandem".
+
 // Arbeiten, die auch noch gemacht werden müssen:
-// - UTF-8
+// - UTF-8 ("oe" etc. sind nicht mehr notwendig!)
 // - saubere Kommentare, inkl. Metaattribute
 // - ili2pg V4 Migration
 
@@ -73,6 +74,9 @@ def dbPub = [dbUriPub, dbUserPub, dbPwdPub]
 // * numeric gedöns
 // * Fremdschlüssel auf Aufzähltpyen? createEnumTabsWithId: müsste man mal ausprobieren.
 // - Was ist eigentlich mit unserem Geometry-Super-Check-Tool? Ist das etabliert?
+// - Wird der Range der Geometrie nicht in der DB abgebildet.
+// - Kardinalitäten der Rollen? "should associate X to Y target objects (instead of Z)"
+// - JSON richtig machen -> Dokumentieren. Wo?
 
 def datasets = []
 // Edit-DB
@@ -110,7 +114,7 @@ datasets.add(new Dataset("OeREB_ExtractAnnex_V1_0", "agi_oereb_annex", dbEdit, "
 // TODO: agi_swissboundaries3d_pub Import via ITF/XTF (oder?)
 datasets.add(new Dataset("SO_ALW_Infoflora_20190912", "alw_infoflora", dbEdit, "ch.so.alw.infoflora_edit", true))
 // TODO: alw_zonengrenzen Import via XTF
-datasets.add(new Dataset("SO_Agglomerationsprogramme_20200618", "arp_agglomerationsprogramme", dbEdit, "ch.so.arp.aggloprogramme_edit"))
+datasets.add(new Dataset("SO_Agglomerationsprogramme_20200618", "arp_agglomerationsprogramme", dbEdit, "ch.so.arp.agglomerationsprogramme_edit"))
 datasets.add(new Dataset("SO_ARP_Baugis_20190612", "arp_baugis", dbEdit, "ch.so.arp.baugis_edit", true))
 datasets.add(new Dataset("SO_ARP_Mehrjahresprogramm_20200228", "arp_mehrjahresprogramm", dbEdit, "ch.so.arp.mehrjahresprogramm_edit"))
 datasets.add(new Dataset("SO_ARP_Naturreservate_20200609", "arp_naturreservate", dbEdit, "ch.so.arp.naturreservate_edit"))
@@ -142,7 +146,7 @@ datasets.add(new Dataset("SO_SGV_Erschliessung_ausserhalb_Bauzone_20190611", "sg
 // - ch.so.alw_zonengrenzen: Dauert lange. Noch prüfen.
 // - SO_Nutzungsplanung_Publikation_20190909: JSON-Abbildung falsch verwendet und komischer Rounding-Error beim Export.
 
-
+/*
 datasets.add(new Dataset("SO_ADA_Denkmal_Pub_20200527", "ada_denkmalschutz_pub", dbPub, "ch.so.ada.denkmalschutz")) 
 datasets.add(new Dataset("SO_AfU_BauGK_CCCCache_20180507", "afu_baugk_ccccache", dbPub, "ch.so.afu.baugk_ccccache", true)) 
 //datasets.add(new Dataset("SO_AFU_Bodenprofilstandorte_Publikation_20200713", "afu_bodendaten_nabodat_pub", dbPub, "ch.so.afu.bodendaten_nabodat")) // TODO: Kann ich nicht exportieren. Unknown Class TAG? Missing @type...
@@ -180,6 +184,10 @@ datasets.add(new Dataset("SO_AWJF_Seltene_Baumarten_Publikation_20191015", "awjf
 datasets.add(new Dataset("SO_AWJF_Statische_Waldgrenzen_Publikation_20191119", "awjf_statische_waldgrenze_pub", dbPub, "ch.so.awjf.statische_waldgrenzen")) 
 datasets.add(new Dataset("SO_AWJF_Waldpflege_Erfassung_20200127", "awjf_waldpflege_kontrolle_pub", dbPub, "ch.so.awjf.waldpflege_kontrolle")) 
 datasets.add(new Dataset("SO_AWJF_Wegsanierungen_Publikation_20170629", "awjf_wegsanierungen_pub", dbPub, "ch.so.awjf.wegsanierungen", true)) 
+*/
+
+datasets.add(new Dataset("SO_Agglomerationsprogramme_20200618", "arp_agglomerationsprogramme", dbEdit, "ch.so.arp.agglomerationsprogramme_edit"))
+datasets.add(new Dataset("SO_Agglomerationsprogramme_Publikation_20200813", "arp_agglomerationsprogramme_pub", dbPub, "ch.so.arp_agglomerationsprogramme")) 
 
 
 datasets.each { dataset ->
