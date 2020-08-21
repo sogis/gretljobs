@@ -198,6 +198,8 @@ datasets.each { dataset ->
         failOnError = false
         if (new File("config/"+datasetId + ".toml").isFile()) configFile = "config/"+datasetId + ".toml"
     }
+
+    // Zip data with log
 }
 
 task exportAllData() {
