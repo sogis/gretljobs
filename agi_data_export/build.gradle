@@ -72,9 +72,9 @@ def dbPub = [dbUriPub, dbUserPub, dbPwdPub]
 // - Sicher alle Constraints mit ili2pg setzen, die möglich sind:
 // * unique
 // * numeric gedöns
-// * Fremdschlüssel auf Aufzähltpyen? createEnumTabsWithId: müsste man mal ausprobieren.
+// * Fremdschlüssel auf Aufzähltpyen? createEnumTabsWithId: müsste man mal ausprobieren. -> Scheint zu funkionieren. Es wird nicht mehr der Wert gespeichert, sondern der FK. Im Edit-Modell funktioniert das mit QGIS gut (Value Relation Key_column ist neu t_id).
 // - Was ist eigentlich mit unserem Geometry-Super-Check-Tool? Ist das etabliert?
-// - Wird der Range der Geometrie nicht in der DB abgebildet.
+// - Wird der Range der Geometrie nicht in der DB abgebildet. -> Anscheinend nicht.
 // - Kardinalitäten der Rollen? "should associate X to Y target objects (instead of Z)"
 // - JSON richtig machen -> Dokumentieren. Wo?
 
