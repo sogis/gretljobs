@@ -6,7 +6,8 @@ apply plugin: 'ch.so.agi.gretl'
 apply plugin: "de.undercouch.download"
 
 
-defaultTasks 'removeTmpFiles'
+//defaultTasks 'removeTmpFiles'
+defaultTasks 'transferSurroundingCantons'
 
 task transferAfuGewaesserschutz(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
