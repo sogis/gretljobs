@@ -80,27 +80,7 @@ WITH dokumente AS (
             ON schdstfflstt_bden_schiessanlage_schiessanlagentyp.schiessanlage = schdstfflstt_bden_schiessanlage.t_id
         LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_schiessanlagentyp
             ON schdstfflstt_bden_schiessanlage_schiessanlagentyp.schiessanlagentyp = schdstfflstt_bden_schiessanlagentyp.t_id
-), schiessanlagentyp_json AS (
-    SELECT
-        array_to_json(
-            array_agg(
-                row_to_json((
-                    SELECT
-                        typen
-                    FROM 
-                        (
-                            SELECT
-                                typ,
-                                schiessdistanz
-                        ) typen
-                ))
-            )
-        ) AS schiessanlagentypen,
-        schiessanlage
-    FROM
-        schiessanlagentyp
-    GROUP BY
-        schiessanlage
+
 ), gemeinden AS (
     SELECT
         schdstfflstt_bden_schiessanlage.t_id,
@@ -169,7 +149,7 @@ SELECT
     schdstfflstt_bden_schiessanlage.betriebsstatus,
     schdstfflstt_bden_schiessanlage.kbs_nummer,
     schdstfflstt_bden_schiessanlage.sanierungsstatus,
-    schiessanlagentyp_json.schiessanlagentypen,
+    schiessanlagentyp.typ  || ' ' ||  schiessanlagentyp.schiessdistanz || 'm'  AS schiessanlagentypen,
     schdstfflstt_bden_schiessanlage.bezeichnung,
     schdstfflstt_bden_schiessanlage.astatus,
     schdstfflstt_bden_schiessanlage.aktiv,
@@ -198,8 +178,8 @@ FROM
         ON dokumente_json.schiessanlage = schdstfflstt_bden_schiessanlage.t_id
     LEFT JOIN schadstoffe_json
         ON schadstoffe_json.schiessanlage = schdstfflstt_bden_schiessanlage.t_id
-    LEFT JOIN schiessanlagentyp_json
-        ON schiessanlagentyp_json.schiessanlage = schdstfflstt_bden_schiessanlage.t_id
+    LEFT JOIN schiessanlagentyp
+        ON schiessanlagentyp.schiessanlage = schdstfflstt_bden_schiessanlage.t_id
     LEFT JOIN gemeinden
         ON gemeinden.t_id = schdstfflstt_bden_schiessanlage.t_id
     LEFT JOIN bfs_nummern
@@ -218,4 +198,3 @@ FROM
         ON status.ilicode = schdstfflstt_bden_schiessanlage.astatus
     LEFT JOIN afu_schadstoffbelastete_boeden.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
         ON begruendung_vsb_entlassen.ilicode = schdstfflstt_bden_schiessanlage.begruendung_aus_vsb_entlassen
-;
