@@ -19,7 +19,7 @@ create user "PG_USER" with password 'PG_PASSWORD';
 -- Additional privilege:
 ALTER USER "PG_USER" CREATEROLE;
 -- Additional user:
-create user gretl with password 'gretl';
+CREATE USER gretl WITH PASSWORD 'gretl';
 
 create table primarytable (key varchar(20), value varchar(20));
 grant all on primarytable to PG_PRIMARY_USER;
@@ -41,7 +41,7 @@ create extension pg_stat_statements;
 create extension pgaudit;
 --create extension plr;
 -- Additional extension needed for working with ili2pg:
-create extension "uuid-ossp";
+CREATE EXTENSION "uuid-ossp";
 
 \c PG_DATABASE "PG_USER";
 
