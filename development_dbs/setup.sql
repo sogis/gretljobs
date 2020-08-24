@@ -16,6 +16,8 @@ alter user postgres password 'PG_ROOT_PASSWORD';
 
 create user PG_PRIMARY_USER with REPLICATION  PASSWORD 'PG_PRIMARY_PASSWORD';
 create user "PG_USER" with password 'PG_PASSWORD';
+-- Additional privilege:
+ALTER USER "PG_USER" CREATEROLE;
 -- Additional user:
 create user gretl with password 'gretl';
 
