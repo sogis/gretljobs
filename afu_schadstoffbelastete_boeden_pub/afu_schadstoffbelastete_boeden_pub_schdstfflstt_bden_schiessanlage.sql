@@ -149,7 +149,7 @@ SELECT
     schdstfflstt_bden_schiessanlage.betriebsstatus,
     schdstfflstt_bden_schiessanlage.kbs_nummer,
     schdstfflstt_bden_schiessanlage.sanierungsstatus,
-    schiessanlagentyp.typ  || ' ' ||  schiessanlagentyp.schiessdistanz || 'm'  AS schiessanlagentypen,
+    schiessanlagentyp.typ  || ' ' ||   coalesce( "schiessdistanz" ||  ' m', '') AS schiessanlagentypen,
     schdstfflstt_bden_schiessanlage.bezeichnung,
     schdstfflstt_bden_schiessanlage.astatus,
     schdstfflstt_bden_schiessanlage.aktiv,
