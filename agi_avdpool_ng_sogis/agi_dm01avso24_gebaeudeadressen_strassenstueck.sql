@@ -1,6 +1,7 @@
 SELECT
     strassenstueck.t_id AS tid,
     strassenstueck.strassenstueck_von,
+    strassenstueck.geometrie,
     strassenstueck.anfangspunkt,
     strassenstueck.ordnung,
     str_istachse.itfcode AS istachse,
