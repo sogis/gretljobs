@@ -3,7 +3,7 @@ import java.nio.file.Paths
 import java.io.File
 import ch.so.agi.gretl.tasks.*
 
-defaultTasks 'importPunkte'
+defaultTasks 'refreshSolr'
 
 def shpNameAchsen = 'achsen.shp'
 def shpNamePunkte = 'bezugspunkte.shp'
@@ -34,6 +34,10 @@ task importPunkte(type: ShpImport, dependsOn: importAchsen){
     tableName = "bezugspunkt"
     dataFile = Paths.get(pathToShpFolder, shpNamePunkte) 
     encoding = "UTF-8"
+}
+}
+task refreshSolr(type:Exec, dependsOn:'importPunkte') {
+        commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.avt.kantonsstrassen_achsen,ch.so.avt.kantonsstrassen_bezugspunkte'
 }
 
 
