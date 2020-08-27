@@ -56,6 +56,7 @@ git checkout -b branchname
   * `igelToken`
   * `awsAccessKeyAda`, `awsSecretAccessKeyAda`
   * `gretlShare`
+  * `gretlEnvironment` (der Wert dieser Variable ist je nach Umgebung `test`, `integration` oder `production`)
 
 
 ### Files
