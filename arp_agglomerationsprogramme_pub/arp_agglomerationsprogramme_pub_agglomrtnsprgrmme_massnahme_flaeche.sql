@@ -1,5 +1,4 @@
 SELECT
-    massnahme.t_id,
     aggloprogramm.aname AS agglomerationsprogramm,
     aggloprogramm.generation,
     aggloprogramm.agglo_nu AS agglomerationsprogramm_nr,
@@ -57,7 +56,6 @@ FROM
 	ON umsetzungsstand.ilicode = massnahme.umsetzungsstand 	
 
 GROUP BY
-    massnahme.t_id,
     aggloprogramm.t_id,
     paket.t_id,
     flaechenobjekt.t_id,
