@@ -112,13 +112,21 @@ mit dem Label `gretl` ausgeführt (der Standard).
 
 ## Entwicklungs-DBs starten
 
-Mit diesem Repository wird die Konfiguration für den Start von zwei leeren Entwicklungs-DBs mitgeliefert. Mit folgenden Befehlen kann man diese starten, um danach Daten zu importieren und mit der Entwicklung von GRETL-Jobs zu starten.
+Zum starten von zwei leeren Entwicklungs-DBs
+steht in diesem Repository
+eine Konfiguration für Docker Compose zur Verfügung.
+Mit folgendem Befehl werden diese DBs gestartet;
+danach kann man Daten importieren
+und mit der Entwicklung von GRETL-Jobs beginnen.
 
-Zwei Docker-DB-Server starten; einer enthält die edit-DB, der andere die pub-DB:
+Zwei Docker-DB-Server starten; einer enthält die *edit*-DB, der andere die *pub*-DB:
 ```
-docker-compose down # (dieser Befehl ist optional; er kann benutzt werden, um bereits gestartete DB-Container zu stoppen und zu löschen)
-docker-compose up
+docker-compose up --force-recreate
 ```
+(Die Option `--force-recreate` bewirkt, dass man mit leeren DBs startet;
+falls man bereits Daten importiert hat
+und die Container unter Beibehaltung dieser Daten neu starten möchte,
+lässt man diese Option weg.)
 
 Nun können in den DBs nach Belieben Schemas angelegt und Daten importiert werden.
 Dies kann z.B. mit *ili2pg* erfolgen
