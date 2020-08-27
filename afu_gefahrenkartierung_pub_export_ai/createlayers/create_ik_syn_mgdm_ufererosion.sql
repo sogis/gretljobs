@@ -1,7 +1,7 @@
 /* Erstellt den Teilprozess Ufererosion für die IK synoptisch MGDM aus dem Layer IK Wasser. 
  * */
 
-WITH 
+WITH
 
 int_ufererosion AS (
     SELECT
@@ -25,7 +25,7 @@ int_ufererosion_keine AS ( -- wird für alle Jährlichkeiten aus dem ganzen Peri
     FROM
         afu_gefahrenkartierung.gefahrenkartirung_perimeter_gefahrenkartierung
     WHERE
-        ik_wasser = true    
+        ik_wasser = true
 ),
 
 int_ufererosion_0_bis_30_gt_keine AS ( -- Jaehrlichkeit 0 - 30 Jahre - keine Intensitaeten
@@ -52,7 +52,7 @@ int_ufererosion_0_bis_30_keine_umgebung AS ( -- Gibt die umgebenden Polygone als
         int_ufererosion_0_bis_30_gt_keine
         ON ST_Intersects(int_ufererosion_keine.geometrie, int_ufererosion_0_bis_30_gt_keine.geometrie)
     GROUP BY
-        int_ufererosion_keine.t_id 
+        int_ufererosion_keine.t_id
 ),
 
 int_ufererosion_0_bis_30_keine_diff AS ( -- Gibt alle "vorhanden" Teilpolygone zurück, welche nicht von einer höheren Intensität überdeckt werden
@@ -75,7 +75,7 @@ int_ufererosion_0_bis_30_schwach AS ( -- schwache Intensitaeten
     SELECT
         t_id,
         int_stufe,
-        bez_kanton,        
+        bez_kanton,
         geometrie
     FROM
         int_ufererosion
@@ -108,7 +108,7 @@ int_ufererosion_0_bis_30_schwach_umgebung AS ( -- Gibt die umgebenden Polygone a
         int_ufererosion_0_bis_30_gt_schwach
         ON ST_Intersects(int_ufererosion_0_bis_30_schwach.geometrie, int_ufererosion_0_bis_30_gt_schwach.geometrie)
     GROUP BY
-        int_ufererosion_0_bis_30_schwach.t_id 
+        int_ufererosion_0_bis_30_schwach.t_id
 ),
 
 int_ufererosion_0_bis_30_schwach_diff AS ( -- Gibt alle "vorhanden" Teilpolygone zurück, welche nicht von einer höheren Intensität überdeckt werden
@@ -164,7 +164,7 @@ int_ufererosion_0_bis_30_mittel_umgebung AS ( -- Gibt die umgebenden Polygone al
         int_ufererosion_0_bis_30_gt_mittel
         ON ST_Intersects(int_ufererosion_0_bis_30_mittel.geometrie, int_ufererosion_0_bis_30_gt_mittel.geometrie)
     GROUP BY
-        int_ufererosion_0_bis_30_mittel.t_id 
+        int_ufererosion_0_bis_30_mittel.t_id
 ),
 
 int_ufererosion_0_bis_30_mittel_diff AS ( -- Gibt alle "vorhanden" Teilpolygone zurück, welche nicht von einer höheren Intensität überdeckt werden
@@ -221,7 +221,7 @@ int_ufererosion_30_bis_100_keine_umgebung AS ( -- Gibt die umgebenden Polygone a
         int_ufererosion_30_bis_100_gt_keine
         ON ST_Intersects(int_ufererosion_keine.geometrie, int_ufererosion_30_bis_100_gt_keine.geometrie)
     GROUP BY
-        int_ufererosion_keine.t_id 
+        int_ufererosion_keine.t_id
 ),
 
 int_ufererosion_30_bis_100_keine_diff AS ( -- Gibt alle "vorhanden" Teilpolygone zurück, welche nicht von einer höheren Intensität überdeckt werden
@@ -244,7 +244,7 @@ int_ufererosion_30_bis_100_schwach AS ( -- schwache Intensitaeten
     SELECT
         t_id,
         int_stufe,
-        bez_kanton,        
+        bez_kanton,
         geometrie
     FROM
         int_ufererosion
@@ -277,7 +277,7 @@ int_ufererosion_30_bis_100_schwach_umgebung AS ( -- Gibt die umgebenden Polygone
         int_ufererosion_30_bis_100_gt_schwach
         ON ST_Intersects(int_ufererosion_30_bis_100_schwach.geometrie, int_ufererosion_30_bis_100_gt_schwach.geometrie)
     GROUP BY
-        int_ufererosion_30_bis_100_schwach.t_id 
+        int_ufererosion_30_bis_100_schwach.t_id
 ),
 
 int_ufererosion_30_bis_100_schwach_diff AS ( -- Gibt alle "vorhanden" Teilpolygone zurück, welche nicht von einer höheren Intensität überdeckt werden
@@ -333,7 +333,7 @@ int_ufererosion_30_bis_100_mittel_umgebung AS ( -- Gibt die umgebenden Polygone 
         int_ufererosion_30_bis_100_gt_mittel
         ON ST_Intersects(int_ufererosion_30_bis_100_mittel.geometrie, int_ufererosion_30_bis_100_gt_mittel.geometrie)
     GROUP BY
-        int_ufererosion_30_bis_100_mittel.t_id 
+        int_ufererosion_30_bis_100_mittel.t_id
 ),
 
 int_ufererosion_30_bis_100_mittel_diff AS ( -- Gibt alle "vorhanden" Teilpolygone zurück, welche nicht von einer höheren Intensität überdeckt werden
@@ -389,7 +389,7 @@ int_ufererosion_100_bis_300_keine_umgebung AS ( -- Gibt die umgebenden Polygone 
         int_ufererosion_100_bis_300_gt_keine
         ON ST_Intersects(int_ufererosion_keine.geometrie, int_ufererosion_100_bis_300_gt_keine.geometrie)
     GROUP BY
-        int_ufererosion_keine.t_id 
+        int_ufererosion_keine.t_id
 ),
 
 int_ufererosion_100_bis_300_keine_diff AS ( -- Gibt alle "vorhanden" Teilpolygone zurück, welche nicht von einer höheren Intensität überdeckt werden
@@ -445,7 +445,7 @@ int_ufererosion_100_bis_300_schwach_umgebung AS ( -- Gibt die umgebenden Polygon
         int_ufererosion_100_bis_300_gt_schwach
         ON ST_Intersects(int_ufererosion_100_bis_300_schwach.geometrie, int_ufererosion_100_bis_300_gt_schwach.geometrie)
     GROUP BY
-        int_ufererosion_100_bis_300_schwach.t_id 
+        int_ufererosion_100_bis_300_schwach.t_id
 ),
 
 int_ufererosion_100_bis_300_schwach_diff AS ( -- Gibt alle "vorhanden" Teilpolygone zurück, welche nicht von einer höheren Intensität überdeckt werden
@@ -501,7 +501,7 @@ int_ufererosion_100_bis_300_mittel_umgebung AS ( -- Gibt die umgebenden Polygone
         int_ufererosion_100_bis_300_gt_mittel
         ON ST_Intersects(int_ufererosion_100_bis_300_mittel.geometrie, int_ufererosion_100_bis_300_gt_mittel.geometrie)
     GROUP BY
-        int_ufererosion_100_bis_300_mittel.t_id 
+        int_ufererosion_100_bis_300_mittel.t_id
 ),
 
 int_ufererosion_100_bis_300_mittel_diff AS ( -- Gibt alle "vorhanden" Teilpolygone zurück, welche nicht von einer höheren Intensität überdeckt werden
@@ -558,7 +558,7 @@ int_ufererosion_groesser_300_keine_umgebung AS ( -- Gibt die umgebenden Polygone
         int_ufererosion_groesser_300_gt_keine
         ON ST_Intersects(int_ufererosion_keine.geometrie, int_ufererosion_groesser_300_gt_keine.geometrie)
     GROUP BY
-        int_ufererosion_keine.t_id 
+        int_ufererosion_keine.t_id
 ),
 
 int_ufererosion_groesser_300_keine_diff AS ( -- Gibt alle "vorhanden" Teilpolygone zurück, welche nicht von einer höheren Intensität überdeckt werden
@@ -606,9 +606,9 @@ UNION ALL
 SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "schwach"-Flächen entfernt werden. Dump, damit das Endresultat nicht ein Monster-Multipolygon ist.
     (ST_Dump(ST_MakeValid(ST_SnapToGrid((ST_Dump(ST_Union(res_poly))).geom, 0.001)))).geom AS geometrie,
     'schwach' AS int_stufe,
-    'von_0_bis_30_Jahre' AS wkp,    
+    'von_0_bis_30_Jahre' AS wkp,
     'Ufererosion' AS teilproz,
-    bez_kanton,    
+    bez_kanton,
     '' AS bemerkung
 FROM int_ufererosion_0_bis_30_schwach_diff
 GROUP BY bez_kanton
@@ -616,10 +616,10 @@ UNION ALL
 SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "mittel"-Flächen entfernt werden. Dump, damit das Endresultat nicht ein Monster-Multipolygon ist.
     (ST_Dump(ST_MakeValid(ST_SnapToGrid((ST_Dump(ST_Union(res_poly))).geom, 0.001)))).geom AS geometrie,
     'mittel' AS int_stufe,
-    'von_0_bis_30_Jahre' AS wkp,    
+    'von_0_bis_30_Jahre' AS wkp,
     'Ufererosion' AS teilproz,
-    bez_kanton,    
-    '' AS bemerkung    
+    bez_kanton,
+    '' AS bemerkung
 FROM int_ufererosion_0_bis_30_mittel_diff
 GROUP BY bez_kanton
 UNION ALL
@@ -628,7 +628,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "stark"-Flächen
     'stark' AS int_stufe,
     'von_0_bis_30_Jahre' AS wkp,
     'Ufererosion' AS teilproz,
-    bez_kanton,    
+    bez_kanton,
     '' AS bemerkung
 FROM int_ufererosion_0_bis_30_stark
 GROUP BY bez_kanton
@@ -647,9 +647,9 @@ UNION ALL
 SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "schwach"-Flächen entfernt werden. Dump, damit das Endresultat nicht ein Monster-Multipolygon ist.
     (ST_Dump(ST_MakeValid(ST_SnapToGrid((ST_Dump(ST_Union(res_poly))).geom, 0.001)))).geom AS geometrie,
     'schwach' AS int_stufe,
-    'von_30_bis_100_Jahre' AS wkp,    
+    'von_30_bis_100_Jahre' AS wkp,
     'Ufererosion' AS teilproz,
-    bez_kanton,    
+    bez_kanton,
     '' AS bemerkung
 FROM int_ufererosion_30_bis_100_schwach_diff
 GROUP BY bez_kanton
@@ -657,10 +657,10 @@ UNION ALL
 SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "mittel"-Flächen entfernt werden. Dump, damit das Endresultat nicht ein Monster-Multipolygon ist.
     (ST_Dump(ST_MakeValid(ST_SnapToGrid((ST_Dump(ST_Union(res_poly))).geom, 0.001)))).geom AS geometrie,
     'mittel' AS int_stufe,
-    'von_30_bis_100_Jahre' AS wkp,    
+    'von_30_bis_100_Jahre' AS wkp,
     'Ufererosion' AS teilproz,
-    bez_kanton,    
-    '' AS bemerkung    
+    bez_kanton,
+    '' AS bemerkung
 FROM int_ufererosion_30_bis_100_mittel_diff
 GROUP BY bez_kanton
 UNION ALL
@@ -669,7 +669,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "stark"-Flächen
     'stark' AS int_stufe,
     'von_30_bis_100_Jahre' AS wkp,
     'Ufererosion' AS teilproz,
-    bez_kanton,    
+    bez_kanton,
     '' AS bemerkung
 FROM int_ufererosion_30_bis_100_stark
 GROUP BY bez_kanton
@@ -688,9 +688,9 @@ UNION ALL
 SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "schwach"-Flächen entfernt werden. Dump, damit das Endresultat nicht ein Monster-Multipolygon ist.
     (ST_Dump(ST_MakeValid(ST_SnapToGrid((ST_Dump(ST_Union(res_poly))).geom, 0.001)))).geom AS geometrie,
     'schwach' AS int_stufe,
-    'von_100_bis_300_Jahre' AS wkp,    
+    'von_100_bis_300_Jahre' AS wkp,
     'Ufererosion' AS teilproz,
-    bez_kanton,    
+    bez_kanton,
     '' AS bemerkung
 FROM int_ufererosion_100_bis_300_schwach_diff
 GROUP BY bez_kanton
@@ -698,10 +698,10 @@ UNION ALL
 SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "mittel"-Flächen entfernt werden. Dump, damit das Endresultat nicht ein Monster-Multipolygon ist.
     (ST_Dump(ST_MakeValid(ST_SnapToGrid((ST_Dump(ST_Union(res_poly))).geom, 0.001)))).geom AS geometrie,
     'mittel' AS int_stufe,
-    'von_100_bis_300_Jahre' AS wkp,    
+    'von_100_bis_300_Jahre' AS wkp,
     'Ufererosion' AS teilproz,
-    bez_kanton,    
-    '' AS bemerkung    
+    bez_kanton,
+    '' AS bemerkung
 FROM int_ufererosion_100_bis_300_mittel_diff
 GROUP BY bez_kanton
 UNION ALL
@@ -710,7 +710,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "stark"-Flächen
     'stark' AS int_stufe,
     'von_100_bis_300_Jahre' AS wkp,
     'Ufererosion' AS teilproz,
-    bez_kanton,    
+    bez_kanton,
     '' AS bemerkung
 FROM int_ufererosion_100_bis_300_stark
 GROUP BY bez_kanton
@@ -721,7 +721,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "stark"-Flächen
     'keine' AS int_stufe,
     'groesser_300_Jahre' AS wkp,
     'Ufererosion' AS teilproz,
-    bez_kanton,    
+    bez_kanton,
     '' AS bemerkung
 FROM int_ufererosion_groesser_300_keine_diff
 GROUP BY bez_kanton
@@ -731,7 +731,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "stark"-Flächen
     'vorhanden' AS int_stufe,
     'groesser_300_Jahre' AS wkp,
     'Ufererosion' AS teilproz,
-    bez_kanton,    
+    bez_kanton,
     '' AS bemerkung
 FROM int_ufererosion_groesser_300_vorhanden
 GROUP BY bez_kanton
