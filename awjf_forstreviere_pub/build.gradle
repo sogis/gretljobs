@@ -6,7 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferAwjfForstreviere'
 
 task transferAwjfForstreviere(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('awjf_forstreviere_pub_forstreviere_forstrevier.sql',
