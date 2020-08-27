@@ -173,7 +173,11 @@ datasets.add(new Dataset("SO_AWJF_Waldpflege_Erfassung_20200127", "awjf_waldpfle
 datasets.add(new Dataset("SO_AWJF_Wegsanierungen_Publikation_20170629", "awjf_wegsanierungen_pub", dbPub, "ch.so.awjf.wegsanierungen", true)) 
 */
 
+//datasets.add(new Dataset("SO_ARP_Naturreservate_Publikation_20200609", "arp_naturreservate_pub", dbPub, "ch.so.arp_naturreservate")) 
+//datasets.add(new Dataset("SO_Forstreviere_Publikation_20170428", "awjf_forstreviere_pub", dbPub, "ch.so.awjf.forstreviere", true)) 
 datasets.add(new Dataset("SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822", "agi_av_gb_admin_einteilung_pub", dbPub, "ch.so.agi_av_gb_administrative_einteilungen", true))
+//datasets.add(new Dataset("SO_ALW_Infoflora_Publikation_20191028", "alw_infoflora_pub", dbPub, "ch.so.alw_infoflora", true))
+
 
 datasets.each { dataset ->
     def modelNames = dataset.models
@@ -199,22 +203,79 @@ datasets.each { dataset ->
         if (new File("config/"+datasetId + ".toml").isFile()) configFile = "config/"+datasetId + ".toml"
     }
 
-    // Zip data with log
+    // TODO: only if successful?
+    task "zipDatasetXtf_$datasetId"(type: Zip, dependsOn: "validateData_$datasetId") {
+        from pathToTempFolder
+        include "$datasetId*"
+        archiveName datasetId + "_xtf.zip"
+        destinationDir(file(pathToTempFolder))
+    }
+
+    task "importDatasetGpkg_$datasetId"(type: Ili2gpkgImport, dependsOn: "zipDatasetXtf_$datasetId") {
+        models = modelNames
+        dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf"))
+        dbfile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".gpkg"))
+        disableValidation = true
+        defaultSrsCode = 2056
+        nameByTopic = true
+        createEnumTabs = true
+        createMetaInfo = true
+        strokeArcs = true
+        coalesceJson = true
+    }
+
+    task "zipDatasetGpkg_$datasetId"(type: Zip, dependsOn: "importDatasetGpkg_$datasetId") {
+        from pathToTempFolder
+        include "$datasetId*.gpkg"
+        include "$datasetId*_validation.log"
+        archiveName datasetId + "_gpkg.zip"
+        destinationDir(file(pathToTempFolder))
+    }    
+
+    task "gpkg2Shp_$datasetId"(type: Gpkg2Shp, dependsOn: "zipDatasetGpkg_$datasetId") {
+        dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".gpkg")) 
+        outputDir = file(pathToTempFolder)
+    }
+
+    task "zipDatasetShp_$datasetId"(type: Zip, dependsOn: "gpkg2Shp_$datasetId") {
+        from pathToTempFolder
+        include "*.shp"
+        include "*.dbf"
+        include "*.shx"
+        include "*.prj"
+        include "$datasetId*_validation.log"
+        archiveName datasetId + "_shp.zip"
+        destinationDir(file(pathToTempFolder))
+
+        finalizedBy "removeShpFiles"
+    }      
+
+    task "uploadDatasetXtf_$datasetId"(type: S3Upload) {
+
+    }
+
+}
+
+task removeShpFiles(type: Delete) {
+    delete fileTree(pathToTempFolder) {
+        include '**/*.shp'
+        include '**/*.dbf'
+        include '**/*.shx'
+        include '**/*.prj'
+        include '**/*.fix'
+    }
 }
 
 task exportAllData() {
     description = "Aggregation task."
     dependsOn {
-        tasks.findAll { task -> task.name.startsWith('validateData_') }
+        tasks.findAll { task -> task.name.startsWith('zipDatasetShp_') }
     }
 }
 
+
+
 // Z.B Upload nur falls Prüfung i.O. Das sollte gehen, oder? Weil IliValidator einen Output hat man darauf zugreifen kann?
 // Einmal alle exportieren ist nur temporär (eigentlich) und muss so stabil sein, dass ein Fehler nicht alles mitreisst. Stabilität aber nicht nur Job, sondern auch ili-Tools
-
-// Zippen
-
-// Umwandeln
-// - --coalesceJson default? Woher weiss man das sonst?
 
 // Upload
