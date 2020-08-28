@@ -46,7 +46,7 @@ def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def exportFileName = 'SO_gewschutz.xtf'
 def exportFile = file(Paths.get(pathToTempFolder.toString(), exportFileName))
 
-task exportGefkartMgdm(type: Ili2pgExport, dependsOn: transferZonen) {
+task exportAfuGewaesserschutz(type: Ili2pgExport, dependsOn: transferZonen) {
     description = "Exportiert die Gewässerschutzdaten in ein xtf-File."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'afu_gewaesserschutz' 
@@ -62,7 +62,7 @@ task exportGefkartMgdm(type: Ili2pgExport, dependsOn: transferZonen) {
  
 def zipName = 'iliexport.zip'
 
-task zipGefkartMgdm(type: Zip, dependsOn: exportGefkartMgdm){
+task zipAfuGewaesserschutz(type: Zip, dependsOn: exportAfuGewaesserschutz){
     description = "Zipt das xtf-File mit den Gewässerschutzdaten für den Upload in die AI."
     from pathToTempFolder
     include exportFileName
@@ -70,7 +70,7 @@ task zipGefkartMgdm(type: Zip, dependsOn: exportGefkartMgdm){
 	destinationDir(file(pathToTempFolder))
 }
 
-task uploadGefkartMgdm (dependsOn: zipGefkartMgdm) {
+task uploadAfuGewaesserschutz (dependsOn: zipAfuGewaesserschutz) {
     description = "Lädt die Gewässerschutzdaten in die Aggregationsinfrastruktur hoch."
 
     def aiLogin = aiUser + ":" + aiPwd
@@ -85,7 +85,7 @@ task uploadGefkartMgdm (dependsOn: zipGefkartMgdm) {
     }
 }
 
-task removeTmpFiles(type: Delete, dependsOn: uploadGefkartMgdm){
+task removeTmpFiles(type: Delete, dependsOn: uploadAfuGewaesserschutz){
     description = "Entfernt während der Ausführung des Jobs erstellte Dateien."
 	delete file(Paths.get(pathToTempFolder.toString(), zipName)), exportFile
 }
