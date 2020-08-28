@@ -56,7 +56,7 @@ def pathToTempFolder = tmpFolder.getAbsolutePath()
 def todaysDate = new Date().format('yyyy-MM-dd')
 def dbEdit = [dbUriEdit, dbUserEdit, dbPwdEdit]
 def dbPub = [dbUriPub, dbUserPub, dbPwdPub]
-
+def dataBucketName = "ch.so.agi.geodata"
 
 // Fehlerkorrektur: 
 // - Erste Anlaufstelle ist die Person, welche die letzte Modelländerung gemacht hat.
@@ -173,10 +173,10 @@ datasets.add(new Dataset("SO_AWJF_Waldpflege_Erfassung_20200127", "awjf_waldpfle
 datasets.add(new Dataset("SO_AWJF_Wegsanierungen_Publikation_20170629", "awjf_wegsanierungen_pub", dbPub, "ch.so.awjf.wegsanierungen", true)) 
 */
 
-//datasets.add(new Dataset("SO_ARP_Naturreservate_Publikation_20200609", "arp_naturreservate_pub", dbPub, "ch.so.arp_naturreservate")) 
-//datasets.add(new Dataset("SO_Forstreviere_Publikation_20170428", "awjf_forstreviere_pub", dbPub, "ch.so.awjf.forstreviere", true)) 
+datasets.add(new Dataset("SO_ARP_Naturreservate_Publikation_20200609", "arp_naturreservate_pub", dbPub, "ch.so.arp_naturreservate")) 
+datasets.add(new Dataset("SO_Forstreviere_Publikation_20170428", "awjf_forstreviere_pub", dbPub, "ch.so.awjf.forstreviere", true)) 
 datasets.add(new Dataset("SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822", "agi_av_gb_admin_einteilung_pub", dbPub, "ch.so.agi_av_gb_administrative_einteilungen", true))
-//datasets.add(new Dataset("SO_ALW_Infoflora_Publikation_20191028", "alw_infoflora_pub", dbPub, "ch.so.alw_infoflora", true))
+datasets.add(new Dataset("SO_ALW_Infoflora_Publikation_20191028", "alw_infoflora_pub", dbPub, "ch.so.alw_infoflora", true))
 
 
 datasets.each { dataset ->
@@ -206,7 +206,9 @@ datasets.each { dataset ->
     // TODO: only if successful?
     task "zipDatasetXtf_$datasetId"(type: Zip, dependsOn: "validateData_$datasetId") {
         from pathToTempFolder
-        include "$datasetId*"
+        include "$datasetId*.xtf"
+        include "$datasetId*_export.log"
+        include "$datasetId*_validation.log"
         archiveName datasetId + "_xtf.zip"
         destinationDir(file(pathToTempFolder))
     }
@@ -250,8 +252,14 @@ datasets.each { dataset ->
         finalizedBy "removeShpFiles"
     }      
 
-    task "uploadDatasetXtf_$datasetId"(type: S3Upload) {
-
+    task "uploadDatasetXtf_$datasetId"(type: S3Upload, dependsOn: "zipDatasetShp_$datasetId") {
+        accessKey = awsAccessKeyAgi
+        secretKey = awsSecretAccessKeyAgi
+        sourceDir = file(Paths.get(pathToTempFolder, datasetId + "_xtf.zip"))
+        bucketName = dataBucketName
+        endPoint = "https://s3.amazonaws.com/"
+        region = "eu-central-1"
+        acl = "PublicRead"
     }
 
 }
@@ -269,7 +277,7 @@ task removeShpFiles(type: Delete) {
 task exportAllData() {
     description = "Aggregation task."
     dependsOn {
-        tasks.findAll { task -> task.name.startsWith('zipDatasetShp_') }
+        tasks.findAll { task -> task.name.startsWith('uploadDatasetXtf_') }
     }
 }
 
