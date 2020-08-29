@@ -79,7 +79,7 @@ metadata["ch.so.alw.infoflora"] =
         resolutionScope: "500",
         publishingDate: "2020-08-29",
         lastEditingDate: "2020-08-29",
-        title: "Invasiven Neophyten.",
+        title: "Invasive Neophyten.",
         shortDiscription: "In Infoflora (www.infoflora.ch) erfassten Bestände von invasiven Neophyten, welche prioritär zu bekämpfen sind. Und weitere Arten.",
         keywords: "Naturreservat,Schutzverfügung,Nutzungsplan,Biotop,schützenswert,ARP",
         servicer: "https://agi.so.ch",
