@@ -13,17 +13,17 @@ WITH gemeinden AS (
 
 SELECT
     jagdreviere.nummer,
-	jagdreviere.aname,
-	jagdreviere.pacht,
-	jagdreviere.geometrie,
-	round(st_perimeter(jagdreviere.geometrie))::integer AS umfang,
-	round(st_area(jagdreviere.geometrie))::integer AS flache,
-	hegering.aname AS hegering,
-	gemeinden.gemeinden
+    jagdreviere.aname,
+    jagdreviere.pacht,
+    jagdreviere.geometrie,
+    round(st_perimeter(jagdreviere.geometrie))::integer AS umfang,
+    round(st_area(jagdreviere.geometrie))::integer AS flache,
+    hegering.aname AS hegering,
+    gemeinden.gemeinden
 	
 FROM
     awjf_jagdreviere_jagdbanngebiete.jagdreviere_jagdreviere jagdreviere
     LEFT JOIN awjf_jagdreviere_jagdbanngebiete.jagdreviere_hegering hegering
         ON jagdreviere.hegering_jagdrevier = hegering.t_id
-	LEFT JOIN gemeinden
+    LEFT JOIN gemeinden
         ON gemeinden.t_id = jagdreviere.t_id
