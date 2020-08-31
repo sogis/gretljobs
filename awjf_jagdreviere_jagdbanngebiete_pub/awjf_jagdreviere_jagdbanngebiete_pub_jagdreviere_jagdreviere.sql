@@ -17,7 +17,7 @@ SELECT
     jagdreviere.pacht,
     jagdreviere.geometrie,
     round(st_perimeter(jagdreviere.geometrie))::integer AS umfang,
-    round(st_area(jagdreviere.geometrie))::integer AS flache,
+    round(st_area(jagdreviere.geometrie))::integer AS flaeche,
     hegering.aname AS hegering,
     gemeinden.gemeinden
 	
