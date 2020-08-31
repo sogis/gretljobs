@@ -1,7 +1,7 @@
 /* Erstellt die GK MGDM Rutschung aus den Prozessgefahrenkarten Hangmure und Rutschung spontan und Rutschung kontinuierlich/Sackung. 
  * */
 
-WITH  
+WITH
 
 gk_rutschung AS (
     SELECT
@@ -43,7 +43,7 @@ stufe_keine AS (
         gk_hangm = true
     OR  
         gk_ru_spon = true
-    OR 
+    OR
         gk_ru_kont = true
 ),
 
@@ -93,7 +93,7 @@ stufe_vorhanden AS (
         geometrie
     FROM
         gk_rutschung
-    WHERE 
+    WHERE
         gef_stufe = 'vorhanden'
 ),
 
