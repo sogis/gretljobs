@@ -56,6 +56,7 @@ FROM
 	ON umsetzungsstand.ilicode = massnahme.umsetzungsstand 	
 
 GROUP BY
+    massnahme.t_id,
     aggloprogramm.t_id,
     paket.t_id,
     punktobjekt.t_id,
