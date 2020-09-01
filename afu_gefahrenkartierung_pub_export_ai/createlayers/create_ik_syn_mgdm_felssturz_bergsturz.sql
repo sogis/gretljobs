@@ -63,7 +63,7 @@ int_felssturz_0_bis_30_keine_diff AS ( -- Gibt alle Teilpolygone zurück, welche
         bez_kanton,
         COALESCE(
             ST_Difference(geometrie, mpoly_umgebung),
-             geometrie
+            geometrie
         ) AS res_poly
     FROM
         int_felssturz_keine
@@ -120,7 +120,7 @@ int_felssturz_30_bis_100_keine_diff AS ( -- Gibt alle Teilpolygone zurück, welc
         bez_kanton,
         COALESCE(
             ST_Difference(geometrie, mpoly_umgebung),
-             geometrie
+            geometrie
         ) AS res_poly
     FROM
         int_felssturz_keine
@@ -176,7 +176,7 @@ int_felssturz_100_bis_300_keine_diff AS ( -- Gibt alle "vorhanden" Teilpolygone 
         bez_kanton,
         COALESCE(
             ST_Difference(geometrie, mpoly_umgebung),
-             geometrie
+            geometrie
         ) AS res_poly
     FROM
         int_felssturz_keine
@@ -233,7 +233,7 @@ int_felssturz_groesser_300_keine_diff AS ( -- Gibt alle Teilpolygone zurück, we
         bez_kanton,
         COALESCE(
             ST_Difference(geometrie, mpoly_umgebung),
-             geometrie
+            geometrie
         ) AS res_poly
     FROM
         int_felssturz_keine
