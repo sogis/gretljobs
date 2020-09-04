@@ -24,6 +24,6 @@ FROM
             dataset
     ) AS  aimport
         ON basket.dataset = aimport.dataset
-WHERE 
+WHERE
     gebaeudeadressen_lokalisation.art = 'BenanntesGebiet'
 ;
