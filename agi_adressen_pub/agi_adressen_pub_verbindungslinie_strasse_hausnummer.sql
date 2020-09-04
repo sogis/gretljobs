@@ -4,35 +4,35 @@ WITH
             ST_Union(geometrie) as geometrie, 
             strassenstueck_von
         FROM 
-            av_avdpool_ng.gebaeudeadressen_strassenstueck
+            agi_dm01avso24.gebaeudeadressen_strassenstueck
         GROUP BY 
             strassenstueck_von
     ),
     hausnummern AS ( 
         SELECT 
-            tid, 
+            t_id,
             hausnummerpos_von, 
             pos, 
-            gem_bfs
+            CAST(t_datasetname AS INT) AS gem_bfs
         FROM 
-            av_avdpool_ng.gebaeudeadressen_hausnummerpos
+            agi_dm01avso24.gebaeudeadressen_hausnummerpos
     )
 
 SELECT 
-    gebaeudeadressen_lokalisationsname."text" AS strname, 
+    gebaeudeadressen_lokalisationsname.atext AS strname,
     gebaeudeadressen_gebaeudeeingang.hausnummer, 
-    hausnummern.tid AS hausnummerpos_tid, 
-    gebaeudeadressen_gebaeudeeingang.tid AS gebaeudeeingang_tid, 
+    hausnummern.t_id AS hausnummerpos_tid,
+    gebaeudeadressen_gebaeudeeingang.t_id AS gebaeudeeingang_tid,
     gebaeudeadressen_gebaeudeeingang.gebaeudeeingang_von AS lok_tid, 
     ST_ShortestLine(hausnummern.pos, strassen.geometrie) AS geometrie, 
     hausnummern.gem_bfs,
     now() AS datum
 FROM 
     hausnummern
-    LEFT JOIN av_avdpool_ng.gebaeudeadressen_gebaeudeeingang
-        ON gebaeudeadressen_gebaeudeeingang.tid = hausnummern.hausnummerpos_von
+    LEFT JOIN agi_dm01avso24.gebaeudeadressen_gebaeudeeingang
+        ON gebaeudeadressen_gebaeudeeingang.t_id = hausnummern.hausnummerpos_von
     LEFT JOIN strassen
         ON strassen.strassenstueck_von = gebaeudeadressen_gebaeudeeingang.gebaeudeeingang_von
-    LEFT JOIN av_avdpool_ng.gebaeudeadressen_lokalisationsname
+    LEFT JOIN agi_dm01avso24.gebaeudeadressen_lokalisationsname
         ON gebaeudeadressen_lokalisationsname.benannte = gebaeudeadressen_gebaeudeeingang.gebaeudeeingang_von
 ;
