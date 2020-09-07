@@ -1,5 +1,13 @@
 # gretljobs
-Enthält sämtliche Konfigurationsdateien (`*.gradle`, `*.sql`) der GRETL-Jobs und eine GRETL-Entwicklungsumgebung. Umfasst zudem das Job DSL Script `gretl_job_generator.groovy` für den *gretl-job-generator*, der in regelmässigen Abständen das *gretljobs*-Repository durchsucht und daraus in Jenkins entsprechende Jenkins-Pipelines generiert.
+
+Enthält sämtliche Konfigurationsdateien (`build.gradle`, `*.sql`)
+der GRETL-Jobs
+und eine GRETL-Job-Entwicklungsumgebung.
+Umfasst zudem das Job DSL Script `gretl_job_generator.groovy`
+für den *gretl-job-generator* Job in Jenkins,
+der in regelmässigen Abständen das *gretljobs*-Repository durchsucht
+und daraus entsprechende Jenkins-Pipelines generiert
+und ihnen das `Jenkinsfile` zuweist.
 
 ## Funktionsweise in Jenkins
 
@@ -61,7 +69,12 @@ git checkout -b branchname
 
 ### Files
 
-Jeder GRETL-Job braucht im Minimum das File `build.gradle`. Bei Bedarf platziert man zudem ein File `job.properties` im Job-Ordner, um den Job in Jenkins zu konfigurieren. Falls der Job in Jenkins mit einem anderen Jenkinsfile als dem Standard-Jenkinsfile gestartet werden soll, muss sein spezifisches Jenkinsfile ebenfalls im Job-Ordner abgelegt werden.
+Jeder GRETL-Job braucht im Minimum das File `build.gradle`.
+Bei Bedarf platziert man zudem ein File `job.properties` im Job-Ordner,
+um den Job in Jenkins zu konfigurieren.
+Falls der Job in Jenkins mit einem anderen `Jenkinsfile`
+als dem Standard-Jenkinsfile gestartet werden soll,
+muss sein spezifisches Jenkinsfile ebenfalls im Job-Ordner abgelegt werden.
 
 #### `job.properties`
 
@@ -108,6 +121,37 @@ mit dem Label `gretl-ili2pg4` ausgeführt.
 Lässt man diese Property weg,
 wird der Job auf einem Jenkins Agent
 mit dem Label `gretl` ausgeführt (der Standard).
+
+#### `Jenkinsfile`
+
+Das Jenkinsfile sorgt dafür,
+dass ein GRETL-Job aus Jenkins heraus gestartet werden kann.
+In der Regel braucht ein GRETL-Job kein eigenes Jenkinsfile;
+in diesem Fall kommt automatisch
+das zentrale [Jenkinsfile](Jenkinsfile) zum Einsatz.
+
+In folgenden beiden Fällen kommen spezielle Jenkinsfiles zum Einsatz;
+diese dürfen in ähnlichen Fällen in den GRETL-Job-Ordner kopiert werden,
+sollen dabei aber wenn möglich nicht modifiziert werden,
+damit alle gleich bleiben.
+
+##### Nach dem Start des GRETL-Jobs in Jenkins eine Datei hochladen
+
+Beispiel: [avt_ausnahmetransportrouten_export_ai/Jenkinsfile](avt_ausnahmetransportrouten_export_ai/Jenkinsfile)
+
+In `build.gradle` kann über den relativen Pfad `upload/uploadFile`
+(die Datei heisst nach dem Upload also immer `uploadFile`)
+auf die hochgeladene Datei zugegriffen werden.
+
+##### Nach dem Start des GRETL-Jobs in Jenkins eine Datei hochladen und zusätzlich den Dataset-Namen (z.B. BFS-Nummer) angeben
+
+Beispiel: https://github.com/sogis/gretljobs/blob/4e9739dbb44561c2a8f28fd9f9ca05276b36506e/arp_npl_pub/Jenkinsfile
+
+In diesem Fall ist in `build.gradle` die hochgeladene Datei
+ebenfalls unter `upload/uploadFile` verfügbar.
+Zudem kann auf den angegebenen Dataset-Namen
+über die Variable `dataset` zugegriffen werden.
+
 
 
 ## Entwicklungs-DBs starten
