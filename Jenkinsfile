@@ -1,4 +1,4 @@
-// Start with a scripted pipeline part for initializing a variable
+// Start with a scripted pipeline part
 node('master') {
     stage('Prepare') {
         gretlJobRepoUrl = env.GRETL_JOB_REPO_URL
@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Run GRETL-Job') {
             steps {
-                git url: "${gretlJobRepoUrl}", branch: "${params.BRANCH ?: 'master'}", changelog: false
+                git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
                 dir(env.JOB_BASE_NAME) {
                     sh 'gretl -Dorg.gradle.jvmargs=-Xmx2G'
                 }
