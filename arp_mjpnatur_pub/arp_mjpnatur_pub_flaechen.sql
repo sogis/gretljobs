@@ -3,7 +3,8 @@ SELECT
     vereinbarung.vereinbarungsid AS vereinbarungid, 
     vereinbarung.vbnr, 
     vereinbarung.pid, 
-    vereinbarung.persid, 
+    vereinbarung.persid,
+    person.name_vorname AS bewirtschafter,
     flaechenart.bez::character varying(30) AS flaechenart, 
     ST_Multi(flaechen_geom_t.wkb_geometry) AS geometrie, 
     vereinbarung.fallid, 
@@ -111,6 +112,9 @@ FROM
             vbart_flaechenart.vbartid = vereinbarung.vbartid 
             AND 
             vbart_flaechenart.flaechenartid = flaechen.flaechenartid
+    LEFT JOIN mjpnatur.personen person
+        ON
+            vereinbarung.persid = person.persid
 WHERE 
     flaechen_geom_t.archive = 0 
     AND 
@@ -123,4 +127,6 @@ WHERE
     coda.codetypid::text = 'FLK'::text 
     AND 
     vbart_flaechenart.archive = 0
+    AND
+    person.archive = 0
 ;
