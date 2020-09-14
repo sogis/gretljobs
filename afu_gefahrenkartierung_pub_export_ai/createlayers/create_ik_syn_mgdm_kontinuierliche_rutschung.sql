@@ -18,7 +18,7 @@ int_rutsch_kont AS (
 int_rutsch_kont_keine AS ( -- wird für alle Jährlichkeiten aus dem ganzen Perimeter generiert, da oft nicht vorhanden
     SELECT
         t_id,
-        'keine' AS int_stufe,
+        '' AS int_stufe,
         'Rutsch_kont, Sackung' AS bez_kanton,
         geometrie
     FROM
@@ -189,7 +189,7 @@ ik_syn_mgdm AS (
 SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "keine"-Flächen entfernt werden. Dump, damit das Endresultat nicht ein Monster-Multipolygon ist.
     (ST_Dump(ST_MakeValid(ST_SnapToGrid((ST_Dump(ST_Union(res_poly))).geom, 0.001)))).geom AS geometrie,
     'keine' AS int_stufe,
-    'keine' AS wkp,
+    '' AS wkp,
     'permanente_Rutschung' AS teilproz,
     bez_kanton,
     '' AS bemerkung
@@ -199,7 +199,7 @@ UNION ALL
 SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "schwach"-Flächen entfernt werden. Dump, damit das Endresultat nicht ein Monster-Multipolygon ist.
     (ST_Dump(ST_MakeValid(ST_SnapToGrid((ST_Dump(ST_Union(res_poly))).geom, 0.001)))).geom AS geometrie,
     'schwach' AS int_stufe,
-    'keine' AS wkp,
+    '' AS wkp,
     'permanente_Rutschung' AS teilproz,
     bez_kanton,
     '' AS bemerkung
@@ -209,7 +209,7 @@ UNION ALL
 SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "mittel"-Flächen entfernt werden. Dump, damit das Endresultat nicht ein Monster-Multipolygon ist.
     (ST_Dump(ST_MakeValid(ST_SnapToGrid((ST_Dump(ST_Union(res_poly))).geom, 0.001)))).geom AS geometrie,
     'mittel' AS int_stufe,
-    'keine' AS wkp,
+    '' AS wkp,
     'permanente_Rutschung' AS teilproz,
     bez_kanton,
     '' AS bemerkung
@@ -219,7 +219,7 @@ UNION ALL
 SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "stark"-Flächen entfernt werden. Dump, damit das Endresultat nicht ein Monster-Multipolygon ist.
     (ST_Dump(ST_MakeValid(ST_SnapToGrid((ST_Dump(ST_Union(geometrie))).geom, 0.001)))).geom AS geometrie,
     'stark' AS int_stufe,
-    'keine' AS wkp,
+    '' AS wkp,
     'permanente_Rutschung' AS teilproz,
     bez_kanton,
     '' AS bemerkung
