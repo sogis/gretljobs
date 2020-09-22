@@ -154,7 +154,28 @@ datasets.each { dataset ->
         }
     }
 
-    task "uploadDatasetXtf_$datasetId"(type: S3Upload, dependsOn: "zipDatasetShp_$datasetId") {
+    task "gpkg2Dxf_$datasetId"(type: Gpkg2Dxf, dependsOn: "zipDatasetShp_$datasetId") {
+        dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".gpkg")) 
+        outputDir = file(pathToTempFolder)
+    }
+
+    task "zipDatasetDxf_$datasetId"(type: Zip, dependsOn: "gpkg2Dxf_$datasetId") {
+        from pathToTempFolder
+        include "*.dxf"
+        include "$datasetId*_validation.log"
+        archiveName datasetId + "_dxf.zip"
+        destinationDir(file(pathToTempFolder))
+
+        finalizedBy "removeDxfFiles_$datasetId"
+    }      
+
+    task "removeDxfFiles_$datasetId"(type: Delete) {
+        delete fileTree(pathToTempFolder) {
+            include '**/*.dxf'
+        }
+    }    
+
+    task "uploadDatasetXtf_$datasetId"(type: S3Upload, dependsOn: "zipDatasetDxf_$datasetId") {
         accessKey = awsAccessKeyAgi
         secretKey = awsSecretAccessKeyAgi
         sourceDir = file(Paths.get(pathToTempFolder, datasetId + "_xtf.zip"))
@@ -162,6 +183,7 @@ datasets.each { dataset ->
         endPoint = "https://s3.amazonaws.com/"
         region = "eu-central-1"
         acl = "PublicRead"
+        metaData = ["lastEditingDate":todaysDate]
     }
 
     task "uploadDatasetGpkg_$datasetId"(type: S3Upload, dependsOn: "uploadDatasetXtf_$datasetId") {
@@ -172,6 +194,7 @@ datasets.each { dataset ->
         endPoint = "https://s3.amazonaws.com/"
         region = "eu-central-1"
         acl = "PublicRead"
+        metaData = ["lastEditingDate":todaysDate]
     }    
 
     task "uploadDatasetShp_$datasetId"(type: S3Upload, dependsOn: "uploadDatasetGpkg_$datasetId") {
@@ -182,12 +205,24 @@ datasets.each { dataset ->
         endPoint = "https://s3.amazonaws.com/"
         region = "eu-central-1"
         acl = "PublicRead"
-    }    
+        metaData = ["lastEditingDate":todaysDate]
+    }   
+
+    task "uploadDatasetDxf_$datasetId"(type: S3Upload, dependsOn: "uploadDatasetShp_$datasetId") {
+        accessKey = awsAccessKeyAgi
+        secretKey = awsSecretAccessKeyAgi
+        sourceDir = file(Paths.get(pathToTempFolder, datasetId + "_dxf.zip"))
+        bucketName = dataBucketName
+        endPoint = "https://s3.amazonaws.com/"
+        region = "eu-central-1"
+        acl = "PublicRead"
+        metaData = ["lastEditingDate":todaysDate]
+    }       
 }
 
 task exportAllData() {
     description = "Aggregation task."
     dependsOn {
-        tasks.findAll { task -> task.name.startsWith('uploadDatasetShp_') }
+        tasks.findAll { task -> task.name.startsWith('uploadDatasetDxf_') }
     }
 }

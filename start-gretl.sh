@@ -71,7 +71,7 @@ mkdir -p /tmp/gretl-share
 docker run -i --rm \
     --entrypoint="/bin/sh" \
     -v "$job_directory":/home/gradle/project \
-    -v /tmp/gretl-share:/tmp/gretl-share \
+    -v /tmp/gretl-share:/tmp/gretl-share:delegated \
      ${envvars_string} \
     --user $UID \
     ${network_string} \

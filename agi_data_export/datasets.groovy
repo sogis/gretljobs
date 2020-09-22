@@ -98,24 +98,24 @@ datasets.add(new Dataset("SO_AfU_BauGK_CCCCache_20180507", "afu_baugk_ccccache",
 datasets.add(new Dataset("SO_AFU_Ekat_Publikation_20190222", "afu_ekat2015_pub", dbPub, "ch.so.afu.ekat2015", true)) 
 datasets.add(new Dataset("SO_AFU_Nagra_Bohrtiefen_20190927", "afu_erdwaermesonden_nagra_pub", dbPub, "ch.so.afu.erdwaermesonden_nagra", true)) 
 datasets.add(new Dataset("SO_AfU_Erdwaermesonden_Publikation_20200113", "afu_erdwaermesonden_pub", dbPub, "ch.so.afu.erdwaermesonden")) 
-datasets.add(new Dataset("SO_AfU_Gefahrenkartierung_20181129", "afu_gefahrenkartierung_pub", dbPub, "ch.so.afu.gefahrenkartierung", true)) 
+//////datasets.add(new Dataset("SO_AfU_Gefahrenkartierung_20181129", "afu_gefahrenkartierung_pub", dbPub, "ch.so.afu.gefahrenkartierung", true)) 
 datasets.add(new Dataset("SO_AFU_Geotope_Publikation_20200623", "afu_geotope_pub", dbPub, "ch.so.afu.geotope")) 
 //datasets.add(new Dataset("SO_AfU_Gewaesserschutz_Publikation_20200115", "afu_gewaesserschutz_pub", dbPub, "ch.so.afu.gewaesserschutz")) // TODO: unknown class TAG ???? -> "@type": "SO_AfU_Gewaesserschutz_Publikation_20200115.Gewaesserschutz.Dokument", is missing. Ob Gross-/Kleinschreibung auch noch relevant ist, habe ich nicht ausprobiert.
 datasets.add(new Dataset("SO_AFU_Igel_Publikation_20200429", "afu_igel_pub", dbPub, "ch.so.afu.igel")) // TODO: --createNumChecks	nicht gesetzt?
 datasets.add(new Dataset("SO_AFU_Verzeichnis_schadstoffbelastete_Boeden_Publikation_20200622", "afu_schadstoffbelastete_boeden_pub", dbPub, "ch.so.afu.schadstoffbelastete_boeden")) 
 datasets.add(new Dataset("SO_AGEM_Fila_Publikation_20190318", "agem_fila_pub", dbPub, "ch.so.agem.fila", true))
-datasets.add(new Dataset("SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822", "agi_av_gb_admin_einteilung_pub", dbPub, "ch.so.agi_av_gb_administrative_einteilungen", true))
-datasets.add(new Dataset("SO_AGI_Grundbuchplan_20190930", "agi_grundbuchplan_pub", dbPub, "ch.so.agi_grundbuchplan")) // TODO: zwei Self-Intersections gefunden. Wie kommen die Geometrien zustande? Was anderes als ili2pg-Import (strokeArcs)? Dann müsste man ili2pg Bug melden und fixen lassen.
-datasets.add(new Dataset("SO_Hoheitsgrenzen_Publikation_20170626", "agi_hoheitsgrenzen_pub", dbPub, "ch.so.agi_hoheitsgrenzen", true))
+//////datasets.add(new Dataset("SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822", "agi_av_gb_admin_einteilung_pub", dbPub, "ch.so.agi_av_gb_administrative_einteilungen", true))
+//////datasets.add(new Dataset("SO_AGI_Grundbuchplan_20190930", "agi_grundbuchplan_pub", dbPub, "ch.so.agi_grundbuchplan")) // TODO: zwei Self-Intersections gefunden. Wie kommen die Geometrien zustande? Was anderes als ili2pg-Import (strokeArcs)? Dann müsste man ili2pg Bug melden und fixen lassen.
+//////datasets.add(new Dataset("SO_Hoheitsgrenzen_Publikation_20170626", "agi_hoheitsgrenzen_pub", dbPub, "ch.so.agi_hoheitsgrenzen", true))
 datasets.add(new Dataset("SO_AGI_Lidarprodukte_Publikation_20180202", "agi_lidar_pub", dbPub, "ch.so.agi_lidar", true))
-datasets.add(new Dataset("SO_AGI_MOpublic_20190424", "agi_mopublic_pub", dbPub, "ch.so.agi_mopublic")) // TODO: ein paar Self-Intersections bei BB und Grundstücke. Siehe auch agi_grundbuchplan_pub
+//////datasets.add(new Dataset("SO_AGI_MOpublic_20190424", "agi_mopublic_pub", dbPub, "ch.so.agi_mopublic")) // TODO: ein paar Self-Intersections bei BB und Grundstücke. Siehe auch agi_grundbuchplan_pub
 datasets.add(new Dataset("SO_AGI_PLZ_Ortschaften_Publikation_20180406", "agi_plz_ortschaften_pub", dbPub, "ch.so.agi_plz_ortschaften", true)) // TODO: abgeleitet aus fremden Daten
 datasets.add(new Dataset("SO_AGI_swissBOUNDARIES3D_Publikation_20171026", "agi_swissboundaries3d_pub", dbPub, "ch.so.agi_swissboundaries3d", true)) // TODO: abgeleitet aus fremden Daten
-datasets.add(new Dataset("SO_ALW_Infoflora_Publikation_20191028", "alw_infoflora_pub", dbPub, "ch.so.alw_infoflora", true))
+//////datasets.add(new Dataset("SO_ALW_Infoflora_Publikation_20191028", "alw_infoflora_pub", dbPub, "ch.so.alw_infoflora", true))
 //datasets.add(new Dataset("SO_ALW_Landwirtschaftliche_Zonengrenzen_Publikation_20200630", "alw_zonengrenzen_pub", dbPub, "ch.so.alw_zonengrenzen")) // TODO: abgeleitet aus fremden Daten? Validierung nicht zu Ende geführt. Dauert lange.
 datasets.add(new Dataset("SO_AMB_Notfalltreffpunkte_Publikation_20180822", "amb_notfalltreffpunkte_pub", dbPub, "ch.so.amb_notfalltreffpunkte", true)) 
 datasets.add(new Dataset("SO_Agglomerationsprogramme_Publikation_20200813", "arp_agglomerationsprogramme_pub", dbPub, "ch.so.arp_agglomerationsprogramme")) 
-datasets.add(new Dataset("SO_ARP_Naturreservate_Publikation_20200609", "arp_naturreservate_pub", dbPub, "ch.so.arp_naturreservate")) 
+//////datasets.add(new Dataset("SO_ARP_Naturreservate_Publikation_20200609", "arp_naturreservate_pub", dbPub, "ch.so.arp_naturreservate")) 
 //datasets.add(new Dataset("SO_Nutzungsplanung_Publikation_20190909", "arp_npl_pub", dbPub, "ch.so.arp.nutzungsplanung")) // TODO: Json falsch angewandt. Und ganz schräger Fehler beim Export. BigDecimal rounding error. Vielleicht sogar in Geometrie? Weil roundSegment etc.
 datasets.add(new Dataset("SO_ARP_Richtplan_Publikation_20190301", "arp_richtplan_pub", dbPub, "ch.so.arp.richtplan", true)) 
 datasets.add(new Dataset("SO_AVT_Groblaermkataster_20190709", "avt_groblaermkataster_pub", dbPub, "ch.so.avt.groblaermkataster", true)) 
@@ -123,14 +123,30 @@ datasets.add(new Dataset("SO_AVT_Strassenlaerm_Publikation_20190802", "avt_stras
 datasets.add(new Dataset("SO_AVT_Verkehrszaehlstellen_Publikation_20190206", "avt_verkehrszaehlstellen_pub", dbPub, "ch.so.avt.verkehrszaehlstellen", true)) 
 datasets.add(new Dataset("SO_AWJF_Biotopbaeume_Publikation_20190107", "awjf_biotopbaeume_pub", dbPub, "ch.so.awjf.biotopbaeume", true)) //TODO: Warum setting leer?
 datasets.add(new Dataset("SO_AWJF_Foerderprogramm_Biodiversitaet_Publikation_20200330", "awjf_foerderprogramm_biodiversitaet_pub", dbPub, "ch.so.awjf.foerderprogramm_biodiversitaet")) 
-datasets.add(new Dataset("SO_Forstreviere_Publikation_20170428", "awjf_forstreviere_pub", dbPub, "ch.so.awjf.forstreviere", true)) 
+//////datasets.add(new Dataset("SO_Forstreviere_Publikation_20170428", "awjf_forstreviere_pub", dbPub, "ch.so.awjf.forstreviere", true)) 
 datasets.add(new Dataset("SO_AWJF_Seltene_Baumarten_Publikation_20191015", "awjf_seltene_baeume_pub", dbPub, "ch.so.awjf.seltene_baeume", true)) 
 datasets.add(new Dataset("SO_AWJF_Statische_Waldgrenzen_Publikation_20191119", "awjf_statische_waldgrenze_pub", dbPub, "ch.so.awjf.statische_waldgrenzen")) 
-datasets.add(new Dataset("SO_AWJF_Waldpflege_Erfassung_20200127", "awjf_waldpflege_kontrolle_pub", dbPub, "ch.so.awjf.waldpflege_kontrolle")) 
+//////datasets.add(new Dataset("SO_AWJF_Waldpflege_Erfassung_20200127", "awjf_waldpflege_kontrolle_pub", dbPub, "ch.so.awjf.waldpflege_kontrolle")) 
 datasets.add(new Dataset("SO_AWJF_Wegsanierungen_Publikation_20170629", "awjf_wegsanierungen_pub", dbPub, "ch.so.awjf.wegsanierungen", true)) 
 */
 
-datasets.add(new Dataset("SO_ARP_Naturreservate_Publikation_20200609", "arp_naturreservate_pub", dbPub, "ch.so.arp.naturreservate")) 
-datasets.add(new Dataset("SO_Forstreviere_Publikation_20170428", "awjf_forstreviere_pub", dbPub, "ch.so.awjf.forstreviere", true)) 
-datasets.add(new Dataset("SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822", "agi_av_gb_admin_einteilung_pub", dbPub, "ch.so.agi.av_gb_administrative_einteilungen", true))
-datasets.add(new Dataset("SO_ALW_Infoflora_Publikation_20191028", "alw_infoflora_pub", dbPub, "ch.so.alw.infoflora", true))
+//datasets.add(new Dataset("SO_ARP_Naturreservate_Publikation_20200609", "arp_naturreservate_pub", dbPub, "ch.so.arp.naturreservate")) 
+//datasets.add(new Dataset("SO_Forstreviere_Publikation_20170428", "awjf_forstreviere_pub", dbPub, "ch.so.awjf.forstreviere", true)) 
+//datasets.add(new Dataset("SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822", "agi_av_gb_admin_einteilung_pub", dbPub, "ch.so.agi.av_gb_administrative_einteilungen", true))
+//datasets.add(new Dataset("SO_ALW_Infoflora_Publikation_20191028", "alw_infoflora_pub", dbPub, "ch.so.alw.infoflora", true))
+//datasets.add(new Dataset("SO_Hoheitsgrenzen_Publikation_20170626", "agi_hoheitsgrenzen_pub", dbPub, "ch.so.agi_hoheitsgrenzen", true))
+
+//datasets.add(new Dataset("SO_ADA_Denkmal_Pub_20200527", "ada_denkmalschutz_pub", dbPub, "ch.so.ada.denkmalschutz")) 
+//datasets.add(new Dataset("SO_AfU_BauGK_CCCCache_20180507", "afu_baugk_ccccache", dbPub, "ch.so.afu.baugk_ccccache", true)) 
+//datasets.add(new Dataset("SO_AFU_Ekat_Publikation_20190222", "afu_ekat2015_pub", dbPub, "ch.so.afu.ekat2015", true)) 
+//datasets.add(new Dataset("SO_AFU_Nagra_Bohrtiefen_20190927", "afu_erdwaermesonden_nagra_pub", dbPub, "ch.so.afu.erdwaermesonden_nagra", true)) 
+//datasets.add(new Dataset("SO_AfU_Erdwaermesonden_Publikation_20200113", "afu_erdwaermesonden_pub", dbPub, "ch.so.afu.erdwaermesonden")) 
+//datasets.add(new Dataset("SO_AFU_Geotope_Publikation_20200623", "afu_geotope_pub", dbPub, "ch.so.afu.geotope")) 
+//datasets.add(new Dataset("SO_AFU_Igel_Publikation_20200429", "afu_igel_pub", dbPub, "ch.so.afu.igel")) // TODO: --createNumChecks	nicht gesetzt?
+//datasets.add(new Dataset("SO_AFU_Verzeichnis_schadstoffbelastete_Boeden_Publikation_20200622", "afu_schadstoffbelastete_boeden_pub", dbPub, "ch.so.afu.schadstoffbelastete_boeden")) 
+//datasets.add(new Dataset("SO_AGEM_Fila_Publikation_20190318", "agem_fila_pub", dbPub, "ch.so.agem.fila", true))
+//datasets.add(new Dataset("SO_AGI_Lidarprodukte_Publikation_20180202", "agi_lidar_pub", dbPub, "ch.so.agi_lidar", true))
+datasets.add(new Dataset("SO_AGI_PLZ_Ortschaften_Publikation_20180406", "agi_plz_ortschaften_pub", dbPub, "ch.so.agi_plz_ortschaften", true)) // TODO: abgeleitet aus fremden Daten
+datasets.add(new Dataset("SO_AGI_swissBOUNDARIES3D_Publikation_20171026", "agi_swissboundaries3d_pub", dbPub, "ch.so.agi_swissboundaries3d", true)) // TODO: abgeleitet aus fremden Daten
+//datasets.add(new Dataset("SO_AMB_Notfalltreffpunkte_Publikation_20180822", "amb_notfalltreffpunkte_pub", dbPub, "ch.so.amb_notfalltreffpunkte", true)) 
+//datasets.add(new Dataset("SO_Agglomerationsprogramme_Publikation_20200813", "arp_agglomerationsprogramme_pub", dbPub, "ch.so.arp_agglomerationsprogramme")) 
