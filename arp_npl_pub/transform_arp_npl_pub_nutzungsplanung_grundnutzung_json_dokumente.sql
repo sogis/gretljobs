@@ -77,7 +77,7 @@ json_documents_all AS
       t_id, dokumentid, titel, offiziellertitel AS offizieller_titel, abkuerzung,
       offiziellenr AS offizielle_nr, kanton, gemeinde, publiziertab AS publiziert_ab, rechtsstatus,
       ('https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/'||"textimweb")::text AS textimweb,
-      bemerkungen, rechtsvorschrift
+      bemerkungen, rechtsvorschrift, 'SO_Nutzungsplanung_Publikation_20190909.Nutzungsplanung.Dokument' AS "@type"
     FROM
       arp_npl.rechtsvorschrften_dokument
   ) AS t
@@ -162,7 +162,7 @@ typ_grundnutzung_json_dokument_agg AS
 (
   SELECT
     typ_grundnutzung_t_id,
-    '[ "@type": "SO_Nutzungsplanung_Publikation_20190909.Nutzungsplanung.Dokument", ' || dokumente::varchar || ']' as dokumente
+    '[' || dokumente::varchar || ']' as dokumente
   FROM
   (
     SELECT
