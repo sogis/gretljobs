@@ -175,7 +175,7 @@ ueberlagernd_linie_geometrie_typ AS
     l.bemerkungen,
     l.erfasser,
     l.datum,
-    l.geometrie,
+    ST_MakeValid(ST_RemoveRepeatedPoints(ST_SnapToGrid(l.geometrie, 0.001))) AS geometrie,
     t.t_id AS typ_t_id,
     t.typ_kt AS typ_typ_kt,
     t.code_kommunal AS typ_code_kommunal,
