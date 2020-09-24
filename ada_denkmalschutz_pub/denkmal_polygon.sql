@@ -30,5 +30,4 @@ FROM
 JOIN
 	mpoly 
 		ON fachapplikation_denkmal.id = mpoly.denkmal_id
-WHERE schutzstufe_code IN ('geschuetzt')
 ;
