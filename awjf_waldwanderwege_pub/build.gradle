@@ -9,8 +9,8 @@ task transferWaldwanderwege(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('waldwanderwege_posten.sql', 'awjf_waldwanderwege.waldwanderwege_posten', true),
-            new TransferSet('waldwanderwege_wanderwege.sql', 'awjf_waldwanderwege.waldwanderwege_wanderwege', true)
+            new TransferSet('waldwanderwege_posten.sql', 'awjf_waldwanderwege_pub.waldwanderwege_posten', true),
+            new TransferSet('waldwanderwege_wanderwege.sql', 'awjf_waldwanderwege_pub.waldwanderwege_wanderwege', true)
     ];        
 }
 
