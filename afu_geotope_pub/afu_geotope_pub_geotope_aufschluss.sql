@@ -18,7 +18,7 @@ WITH fachbereich AS (
         geotope_dokument.titel,
         geotope_dokument.offizieller_titel,
         geotope_dokument.abkuerzung,
-        replace(geotope_dokument.pfad,'G:\documents\ch.so.afu.geotope','https://geo.so.ch/docs/ch.so.afu.geotope') AS pfad,
+        REGEXP_REPLACE(replace(geotope_dokument.pfad,'G:\documents\ch.so.afu.geotope','https://geo.so.ch/docs/ch.so.afu.geotope/'), '\\', '','g') AS pfad,
         geotope_dokument.typ,
         geotope_dokument.offizielle_nr,
         geotope_dokument.rechtsstatus,
@@ -149,30 +149,44 @@ WITH fachbereich AS (
 
 SELECT
     geotope_aufschluss.t_ili_tid,
+    geotope_aufschluss.petrografie,
     CASE 
         WHEN geotope_aufschluss.petrografie = 'Penninischer_Gruenschiefer'
             THEN 'Penninischer Grünschiefer'
         ELSE replace(geotope_aufschluss.petrografie,'_',' ') 
-    END AS petrografie,
+    END AS petrografie_text,
+    geotope_aufschluss.entstehung,
     CASE 
         WHEN geotope_aufschluss.entstehung = 'natuerlich'
             THEN 'natürlich' 
         ELSE geotope_aufschluss.entstehung
-    END AS entstehung,
-    geotope_aufschluss.oberflaechenform,
+    END AS entstehung_text,
+    geotope_aufschluss.oberflaechenform AS oberflaechenform,
+    replace(geotope_aufschluss.oberflaechenform,'_',' ') AS oberflaechenform_text,
     gemeinden.gemeinden AS gemeinden,
     ortschaften.ortschaften,
-    replace(geologische_schicht_von.bezeichnung,'_',' ') AS geologische_schicht_von,
-    replace(geologische_schicht_bis.bezeichnung,'_',' ') AS geologische_schicht_bis,
-    replace(geologische_stufe_von.bezeichnung,'_',' ') AS geologische_stufe_von,
-    replace(geologische_stufe_bis.bezeichnung,'_',' ') AS geologische_stufe_bis,
-    replace(geologische_serie_von.bezeichnung,'_',' ') AS geologische_serie_von,
-    replace(geologische_serie_bis.bezeichnung,'_',' ') AS geologische_serie_bis,
-    replace(geologisches_system_von.bezeichnung,'_',' ') AS geologisches_system_von,
-    replace(geologisches_system_bis.bezeichnung,'_',' ') AS geologisches_system_bis,
+    geologische_schicht_von.bezeichnung AS geologische_schicht_von,
+    replace(geologische_schicht_von.bezeichnung,'_',' ') AS geologische_schicht_von_text,
+    geologische_schicht_bis.bezeichnung AS geologische_schicht_bis,
+    replace(geologische_schicht_bis.bezeichnung,'_',' ') AS geologische_schicht_bis_text,
+    geologische_stufe_von.bezeichnung AS geologische_stufe_von,
+    replace(geologische_stufe_von.bezeichnung,'_',' ') AS geologische_stufe_von_text,
+    geologische_stufe_bis.bezeichnung AS geologische_stufe_bis,
+    replace(geologische_stufe_bis.bezeichnung,'_',' ') AS geologische_stufe_bis_text,
+    geologische_serie_von.bezeichnung AS geologische_serie_von,
+    replace(geologische_stufe_bis.bezeichnung,'_',' ') AS geologische_serie_von_text,
+    geologische_serie_bis.bezeichnung AS geologische_serie_bis,
+    replace(geologische_serie_bis.bezeichnung,'_',' ') AS geologische_serie_bis_text,
+    geologisches_system_von.bezeichnung AS geologisches_system_von,
+    replace(geologisches_system_von.bezeichnung,'_',' ') AS geologisches_system_von_text,
+    geologisches_system_bis.bezeichnung AS geologisches_system_bis,
+    replace(geologisches_system_bis.bezeichnung,'_',' ') AS geologisches_system_bis_text,
     geotope_aufschluss.objektname,
     geotope_aufschluss.regionalgeologische_einheit,
+    geotope_aufschluss.regionalgeologische_einheit AS regionalgeologische_einheit_text,
     geotope_aufschluss.bedeutung,
+    geotope_aufschluss.bedeutung AS bedeutung_text,
+    geotope_aufschluss.zustand,
     CASE 
         WHEN geotope_aufschluss.zustand = 'gering_beeintraechtigt'
             THEN 'gering beeinträchtigt'
@@ -181,23 +195,27 @@ SELECT
         WHEN geotope_aufschluss.zustand = 'stark_beeintraechtigt'
             THEN 'stark beeinträchtigt' 
         ELSE geotope_aufschluss.zustand 
-    END AS zustand,
+    END AS zustand_text,
     geotope_aufschluss.beschreibung,
+    geotope_aufschluss.schutzwuerdigkeit,
     CASE 
         WHEN geotope_aufschluss.schutzwuerdigkeit = 'geschuetzt' 
-            THEN 'geschützt' 
+            THEN 'geschützt'
         WHEN geotope_aufschluss.schutzwuerdigkeit = 'schutzwuerdig' 
             THEN 'schutzwürdig'
         ELSE geotope_aufschluss.schutzwuerdigkeit
-    END AS schutzwuerdigkeit,
-    replace(geotope_aufschluss.geowissenschaftlicher_wert,'_',' ') AS geowissenschaftlicher_wert,
+    END AS schutzwuerdigkeit_text,
+    geotope_aufschluss.geowissenschaftlicher_wert,
+    replace(geotope_aufschluss.geowissenschaftlicher_wert,'_',' ') AS geowissenschaftlicher_wert_text,
     geotope_aufschluss.anthropogene_gefaehrdung,
+    geotope_aufschluss.anthropogene_gefaehrdung AS anthropogene_gefaehrdung_text,
     geotope_aufschluss.lokalname,
     geotope_aufschluss.kant_geschuetztes_objekt,
     geotope_aufschluss.alte_inventar_nummer,
     geotope_aufschluss.ingeso_oid, 
     geotope_aufschluss.hinweis_literatur,
     geotope_aufschluss.rechtsstatus,
+    replace(geotope_aufschluss.rechtsstatus,'_',' ') AS rechtsstatus_text,
     geotope_aufschluss.publiziert_ab,
     geotope_aufschluss.oereb_objekt,
     fachbereich.fachbereiche,

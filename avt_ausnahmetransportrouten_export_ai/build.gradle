@@ -11,6 +11,7 @@ defaultTasks 'uploadMgdm'
 /*
 Package and upload to the KKGEO AI
 */
+def uploadFileName = 'uploadFile'
 def exportFileName = 'data.xtf'
 def pathToUploadFolder = 'upload'
 def zipName = 'iliexport.zip'
@@ -22,6 +23,7 @@ task zipMgdm(type: Zip) {
     destinationDir = file(pathToTempFolder)
 
     from Paths.get(pathToUploadFolder)
+    rename uploadFileName, exportFileName
 }
 
 task uploadMgdm (dependsOn: zipMgdm) {
@@ -38,6 +40,3 @@ task uploadMgdm (dependsOn: zipMgdm) {
         println(response)
     }
 }
-
-
-

@@ -1,11 +1,11 @@
 WITH documents AS (
     SELECT DISTINCT 
-        bezeichnung, 
-        typ, 
-        rechtsstatus, 
-        publiziertab, 
-        rechtsvorschrift, 
-        offiziellenr,
+        reservate_dokument.bezeichnung, 
+        reservate_dokument.typ, 
+        reservate_dokument.rechtsstatus, 
+        reservate_dokument.publiziertab, 
+        reservate_dokument.rechtsvorschrift, 
+        reservate_dokument.offiziellenr,
         reservate_reservat_dokument.reservat,
         CASE
             WHEN 
@@ -111,11 +111,14 @@ WITH documents AS (
                 THEN 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/'
                                 || split_part(reservate_dokument.dateipfad, '/Zonenplaene/', 2)
             ELSE NULL 
-        END AS dokumente
-    FROM 
+         END AS dokumente,
+         reservate_reservat.einzelschutz
+   FROM 
         arp_naturreservate.reservate_reservat_dokument
         LEFT JOIN arp_naturreservate.reservate_dokument
             ON reservate_dokument.t_id = reservate_reservat_dokument.dokument
+        LEFT JOIN arp_naturreservate.reservate_reservat
+            ON reservate_reservat.t_id = reservate_reservat_dokument.reservat
     
     UNION
     
@@ -127,7 +130,8 @@ WITH documents AS (
         FALSE AS rechtsvorschrift, 
         NULL AS offiziellenr,
         reservate_reservat.t_id,
-        'https://geo.so.ch/api/v1/document/Naturreservate?feature=' || reservate_reservat.t_id
+        'https://geo.so.ch/api/v1/document/Naturreservate?feature=' || reservate_reservat.t_id,
+	einzelschutz
     FROM
         arp_naturreservate.reservate_reservat
         
@@ -141,7 +145,8 @@ WITH documents AS (
         FALSE AS rechtsvorschrift, 
         NULL AS offiziellenr,
         reservate_reservat.t_id,
-        'http://faust.so.ch/suche_start.fau?prj=ARP&dm=FVARP02&rpos=3&ro_zeile_2=' || reservate_reservat.nummer
+        'http://faust.so.ch/suche_start.fau?prj=ARP&dm=FVARP02&rpos=3&ro_zeile_2=' || reservate_reservat.nummer,
+	einzelschutz
     FROM
         arp_naturreservate.reservate_reservat
     
@@ -162,6 +167,7 @@ SELECT
     reservate_reservat.nsi_nummer,
     reservate_reservat.reservatsname as aname,
     reservate_reservat.beschreibung,
+    reservate_reservat.einzelschutz,
     ST_Area(ST_Union(reservate_teilgebiet.geometrie))/10000 AS flaeche,
     string_agg(DISTINCT reservate_teilgebiet.teilgebietsname, ', ' ORDER BY reservate_teilgebiet.teilgebietsname) AS teilgebietsnamen,
     string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename) AS gemeinden,

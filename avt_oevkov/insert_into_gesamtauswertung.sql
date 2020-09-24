@@ -1,6 +1,7 @@
 DELETE FROM avt_oevkov_${currentYear}.auswertung_gesamtauswertung
 ;
 
+
 INSERT INTO
     avt_oevkov_${currentYear}.auswertung_gesamtauswertung
         (
@@ -35,7 +36,7 @@ INSERT INTO
                 ELSE
                     NULL
             END AS gewichtung_korrigiert,
-            auswertung.anzahl_abfahrten_linie,
+            sum(auswertung.anzahl_abfahrten_linie) AS anzahl_abfahrten_linie,
             korrektur.abfahrten_korrigiert,
             bemerkungen
          FROM

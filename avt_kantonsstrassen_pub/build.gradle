@@ -1,18 +1,49 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
 import ch.so.agi.gretl.tasks.*
-import ch.so.agi.gretl.api.TransferSet
-
-apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'refreshSolr'
 
-task transferAvtKantonsstrassen(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
-    transferSets = [
-            new TransferSet('avt_kantonsstrassen_pub_kantonsstrassen.sql', 'avt_kantonsstrassen_pub.kantonsstrassen', true)
-    ];
+def shpNameAchsen = 'achsen.shp'
+def shpNamePunkte = 'bezugspunkte.shp'
+def pathToShpFolder = Paths.get(System.getProperty("java.io.tmpdir"), "avt_achsen").toString() 
+def uploadFile = 'upload/uploadFile'
+
+task unpackShapes(type: Copy) {
+    from zipTree(uploadFile)
+    into pathToShpFolder
 }
 
-task refreshSolr(type:Exec, dependsOn:'transferAvtKantonsstrassen') {
-	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.avt.kantonsstrassen_achsen'
+task deleteAllFeatures(type: SqlExecutor, dependsOn: unpackShapes){
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['delete_achsen_u_punkte.sql']
 }
+
+task importAchsen(type: ShpImport, dependsOn: deleteAllFeatures){
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    schemaName = "avt_kantonsstrassen_pub"
+    tableName = "achse"
+    dataFile = Paths.get(pathToShpFolder, shpNameAchsen) 
+    encoding = "UTF-8"
+}
+
+task importPunkte(type: ShpImport, dependsOn: importAchsen){
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    schemaName = "avt_kantonsstrassen_pub"
+    tableName = "bezugspunkt"
+    dataFile = Paths.get(pathToShpFolder, shpNamePunkte) 
+    encoding = "UTF-8"
+}
+task refreshSolr(type:Exec, dependsOn:'importPunkte') {
+        commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.avt.kantonsstrassen_achsen,ch.so.avt.kantonsstrassen_bezugspunkte'
+}
+
+
+/*
+task validate(type: ShpValidator){
+    models = "SO_AVT_Achsen_Publikation_20200707"
+    dataFiles = ["_shp/Bezugspunkte_ohneK2_point_point.shp","_shp/Achsen_line_line.shp"]
+}
+*/
+

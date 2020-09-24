@@ -10,8 +10,8 @@ SELECT
 	ausgangsmaterial_oben.codetext_de AS ausgangsmaterial_oben_text, 
 	ausgangsmaterial_unten.codeid AS ausgangsmaterial_unten, 
 	ausgangsmaterial_unten.codetext_de AS ausgangsmaterial_unten_text,
-	ausgangsmaterial_eiszeit.codeid AS eiszeit,
-	ausgangsmaterial_eiszeit.codetext_de AS eiszeit_text,
+	ausgangsmaterial_eiszeit_oben.codeid AS eiszeit_oberboden,
+	ausgangsmaterial_eiszeit_oben.codetext_de AS eiszeit_oberboden_text,
 	standort_landschaftselement.codeid AS landschaftselement,
 	standort_landschaftselement.codetext_de AS landschaftselement_text,
 	standort_kleinrelief.codeid AS kleinrelief,
@@ -54,7 +54,7 @@ SELECT
 	profilskizze_dokument.originaldokumentname AS profilskizze,
 	horizontwerte.horizontwert AS horizonte, 
 	profil.bemerkung AS bemerkung, 
-	erhebung.bemerkung AS bemerkung_erhebung, 
+	bichqualitaet.bemerkung AS bemerkung_erhebung, 
 	standortbeurteilung_krumen.codeid AS krumenzustand, 
 	standortbeurteilung_krumen.codetext_de AS krumenzustand_text, 
 	limitierende_eigenschaften.codeid AS limitierungen, 
@@ -80,7 +80,10 @@ SELECT
 	humusform.codetext_de AS humusform_text,
 	produktionsfaehigkeitsstufe.codeid AS produktionsfaehigkeitsstufe,
 	produktionsfaehigkeitsstufe.codetext_de AS produktionsfaehigkeitsstufe_text,
-	wald.waldproduktionspunkte AS produktionsfaehigkeit_punkte
+	wald.waldproduktionspunkte AS produktionsfaehigkeit_punkte,
+	ausgangsmaterial_eiszeit_unten.codeid AS eiszeit_unterboden,
+	ausgangsmaterial_eiszeit_unten.codetext_de AS eiszeit_unterboden_text,
+	standort.gemeindeaktuell AS gemeinde_aktuell
 FROM 
     afu_bodendaten_nabodat.punktdaten_standort standort
 -- Standort
@@ -207,9 +210,12 @@ LEFT JOIN
      afu_bodendaten_nabodat.codlstnpktstndort_ausgangsmaterial ausgangsmaterial_unten
 	 ON standort_ausgangsmaterial_unten.ausgangsmaterial = ausgangsmaterial_unten.t_id
 LEFT JOIN 
-     afu_bodendaten_nabodat.codlstnpktstndort_eiszeit ausgangsmaterial_eiszeit
-	 ON standort_ausgangsmaterial_oben.eiszeit = ausgangsmaterial_eiszeit.t_id
-
+     afu_bodendaten_nabodat.codlstnpktstndort_eiszeit ausgangsmaterial_eiszeit_oben
+	 ON standort_ausgangsmaterial_oben.eiszeit = ausgangsmaterial_eiszeit_oben.t_id
+LEFT JOIN 
+     afu_bodendaten_nabodat.codlstnpktstndort_eiszeit ausgangsmaterial_eiszeit_unten
+	 ON standort_ausgangsmaterial_unten.eiszeit = ausgangsmaterial_eiszeit_unten.t_id
+	 
 --ERHEBUNG
 LEFT JOIN 
     afu_bodendaten_nabodat.punktdaten_erhebung erhebung
@@ -358,7 +364,7 @@ LEFT JOIN
 LEFT JOIN 
     (SELECT 
         horizont.profil,
-	    json_agg(
+	    json_agg( 
 			json_build_object(
 				'tiefe', horizont.tiefebis, 
 				'gefuege', gefuege.gefuege_json,
@@ -450,11 +456,7 @@ LEFT JOIN
               horizont.t_id AS horizont_id,
               horizont.horizontnr AS horizont,
               horizont.tiefevon AS tiefe,
-              gefuege.form AS gefuegeform,
-              gefuege_form.codetext_de AS gefuegeform_text,
-              gefuege.groesse AS gefuegegroesse,
-              gefuege_groesse.codetext_de AS gefuegegroesse_text,
-	      horizont.humusgehaltfeld AS zustand_org_substanz,
+	          horizont.humusgehaltfeld AS zustand_org_substanz,
               (messung.messwerte) ->> 'Bodenkennwerte // Organische Substanz'::text AS zustand_org_substanz_messwert,
               horizont.tonfeld AS tongehalt,
               (messung.messwerte) ->> 'Bodenkennwerte // Tongehalt (< 0.002 mm)'::text AS tongehalt_labor,
@@ -473,10 +475,7 @@ LEFT JOIN
            FROM afu_bodendaten_nabodat.punktdaten_profil profil
                LEFT JOIN afu_bodendaten_nabodat.punktdaten_horizont horizont ON horizont.profil = profil.t_id
                LEFT JOIN afu_bodendaten_nabodat.punktdaten_horizontbezeichnung horizontbezeichnung ON horizont.horizontbezeichnung = horizontbezeichnung.t_id
-               LEFT JOIN afu_bodendaten_nabodat.punktdaten_gefuege gefuege ON gefuege.horizont = horizont.t_id
 	       LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_zustandorgsubst zustand_organischesubstanz ON horizontbezeichnung.zustandorgsubst = zustand_organischesubstanz.t_id
-               LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_groesse gefuege_groesse ON gefuege.groesse = gefuege_groesse.t_id
-               LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_form gefuege_form ON gefuege.form = gefuege_form.t_id
                LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_kalkreaktionhcl kalk_code ON horizont.kalkreaktionhcl = kalk_code.t_id
                LEFT JOIN afu_bodendaten_nabodat.erhebung_probe_profil hilfsview ON hilfsview.erhebung_profil = profil.erhebung
                LEFT JOIN afu_bodendaten_nabodat.punktdaten_probe probe ON hilfsview.erhebung_probe = probe.erhebung AND probe.tiefevon = horizont.tiefevon

@@ -1,5 +1,13 @@
 # gretljobs
-Enthält sämtliche Konfigurationsdateien (`*.gradle`, `*.sql`) der GRETL-Jobs und eine GRETL-Entwicklungsumgebung. Umfasst zudem das Job DSL Script `gretl_job_generator.groovy` für den *gretl-job-generator*, der in regelmässigen Abständen das *gretljobs*-Repository durchsucht und daraus in Jenkins entsprechende Jenkins-Pipelines generiert.
+
+Enthält sämtliche Konfigurationsdateien (`build.gradle`, `*.sql`)
+der GRETL-Jobs
+und eine GRETL-Job-Entwicklungsumgebung.
+Umfasst zudem das Job DSL Script `gretl_job_generator.groovy`
+für den *gretl-job-generator* Job in Jenkins,
+der in regelmässigen Abständen das *gretljobs*-Repository durchsucht
+und daraus entsprechende Jenkins-Pipelines generiert
+und ihnen das `Jenkinsfile` zuweist.
 
 ## Funktionsweise in Jenkins
 
@@ -50,15 +58,23 @@ git checkout -b branchname
   * `dbUriKaso`, `dbUserKaso`, `dbPwdKaso`
   * `dbUriCapitastra`, `dbUserCapitastra`, `dbPwdCapitastra`
   * `ftpServerZivilschutz`, `ftpUserZivilschutz`, `ftpPwdZivilschutz`
+  * `ftpServerFledermaus`, `ftpUserFledermaus`, `ftpPwdFledermaus`
   * `aiServer`, `aiUser`, `aiPwd`
   * `infofloraUser`, `infofloraPwd`
   * `igelToken`
+  * `awsAccessKeyAda`, `awsSecretAccessKeyAda`
   * `gretlShare`
+  * `gretlEnvironment` (der Wert dieser Variable ist je nach Umgebung `test`, `integration` oder `production`)
 
 
 ### Files
 
-Jeder GRETL-Job braucht im Minimum das File `build.gradle`. Bei Bedarf platziert man zudem ein File `job.properties` im Job-Ordner, um den Job in Jenkins zu konfigurieren. Falls der Job in Jenkins mit einem anderen Jenkinsfile als dem Standard-Jenkinsfile gestartet werden soll, muss sein spezifisches Jenkinsfile ebenfalls im Job-Ordner abgelegt werden.
+Jeder GRETL-Job braucht im Minimum das File `build.gradle`.
+Bei Bedarf platziert man zudem ein File `job.properties` im Job-Ordner,
+um den Job in Jenkins zu konfigurieren.
+Falls der Job in Jenkins mit einem anderen `Jenkinsfile`
+als dem Standard-Jenkinsfile gestartet werden soll,
+muss sein spezifisches Jenkinsfile ebenfalls im Job-Ordner abgelegt werden.
 
 #### `job.properties`
 
@@ -106,16 +122,55 @@ Lässt man diese Property weg,
 wird der Job auf einem Jenkins Agent
 mit dem Label `gretl` ausgeführt (der Standard).
 
+#### `Jenkinsfile`
+
+Das Jenkinsfile sorgt dafür,
+dass ein GRETL-Job aus Jenkins heraus gestartet werden kann.
+In der Regel braucht ein GRETL-Job kein eigenes Jenkinsfile;
+in diesem Fall kommt automatisch
+das zentrale [Jenkinsfile](Jenkinsfile) zum Einsatz.
+
+In folgenden beiden Fällen kommen spezielle Jenkinsfiles zum Einsatz;
+diese dürfen in ähnlichen Fällen in den GRETL-Job-Ordner kopiert werden,
+sollen dabei aber wenn möglich nicht modifiziert werden,
+damit alle gleich bleiben.
+
+##### Nach dem Start des GRETL-Jobs in Jenkins eine Datei hochladen
+
+Beispiel: [avt_ausnahmetransportrouten_export_ai/Jenkinsfile](avt_ausnahmetransportrouten_export_ai/Jenkinsfile)
+
+In `build.gradle` kann über den relativen Pfad `upload/uploadFile`
+(die Datei heisst nach dem Upload also immer `uploadFile`)
+auf die hochgeladene Datei zugegriffen werden.
+
+##### Nach dem Start des GRETL-Jobs in Jenkins eine Datei hochladen und zusätzlich den Dataset-Namen (z.B. BFS-Nummer) angeben
+
+Beispiel: https://github.com/sogis/gretljobs/blob/4e9739dbb44561c2a8f28fd9f9ca05276b36506e/arp_npl_pub/Jenkinsfile
+
+In diesem Fall ist in `build.gradle` die hochgeladene Datei
+ebenfalls unter `upload/uploadFile` verfügbar.
+Zudem kann auf den angegebenen Dataset-Namen
+über die Variable `dataset` zugegriffen werden.
+
+
 
 ## Entwicklungs-DBs starten
 
-Mit diesem Repository wird die Konfiguration für den Start von zwei leeren Entwicklungs-DBs mitgeliefert. Mit folgenden Befehlen kann man diese starten, um danach Daten zu importieren und mit der Entwicklung von GRETL-Jobs zu starten.
+Zum starten von zwei leeren Entwicklungs-DBs
+steht in diesem Repository
+eine Konfiguration für Docker Compose zur Verfügung.
+Mit folgendem Befehl werden diese DBs gestartet;
+danach kann man Daten importieren
+und mit der Entwicklung von GRETL-Jobs beginnen.
 
-Zwei Docker-DB-Server starten; einer enthält die edit-DB, der andere die pub-DB:
+Zwei Docker-DB-Server starten; einer enthält die *edit*-DB, der andere die *pub*-DB:
 ```
-docker-compose down # (dieser Befehl ist optional; er kann benutzt werden, um bereits gestartete DB-Container zu stoppen und zu löschen)
-docker-compose up
+docker-compose up --force-recreate
 ```
+(Die Option `--force-recreate` bewirkt, dass man mit leeren DBs startet;
+falls man bereits Daten importiert hat
+und die Container unter Beibehaltung dieser Daten neu starten möchte,
+lässt man diese Option weg.)
 
 Nun können in den DBs nach Belieben Schemas angelegt und Daten importiert werden.
 Dies kann z.B. mit *ili2pg* erfolgen
@@ -183,6 +238,7 @@ export ORG_GRADLE_PROJECT_dbPwdPub=gretl
 Danach kann der GRETL-Container gestartet werden. Beispiel-Aufruf:
 
 ```
+docker pull sogis/gretl-runtime:latest
 ./start-gretl.sh --docker-image sogis/gretl-runtime:latest [--docker-network NETWORK] --job-directory $PWD/jobname [taskName...] [--option-name...]
 ```
 

@@ -1,4 +1,13 @@
-WITH einzelobjekt_flaeche AS
+WITH aimport AS
+(
+    SELECT
+        max(importdate) AS importdate, dataset
+    FROM
+        agi_dm01avso24.t_ili2db_import
+    GROUP BY
+        dataset
+),
+einzelobjekt_flaeche AS
 (
     SELECT
         DISTINCT ON (einzelobjekt.t_id)    
@@ -72,7 +81,7 @@ einzelobjekt_position AS
             ON pos.objektnamepos_von = objekt.t_id
         LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
             ON pos.t_basket = basket.t_id
-        LEFT JOIN agi_dm01avso24.t_ili2db_import AS aimport
+        LEFT JOIN aimport
             ON basket.dataset = aimport.dataset
     WHERE 
         pos.pos IS NOT NULL
@@ -117,7 +126,7 @@ FROM
         ON bodenbedeckung.entstehung = nachfuehrung.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
         ON pos.t_basket = basket.t_id
-    LEFT JOIN agi_dm01avso24.t_ili2db_import AS aimport
+    LEFT JOIN aimport
         ON basket.dataset = aimport.dataset        
     
 UNION ALL
@@ -162,7 +171,7 @@ FROM
         ON bodenbedeckung.entstehung = nachfuehrung.t_id
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
         ON pos.t_basket = basket.t_id
-    LEFT JOIN agi_dm01avso24.t_ili2db_import AS aimport
+    LEFT JOIN aimport
         ON basket.dataset = aimport.dataset        
 
 UNION ALL
