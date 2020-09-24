@@ -162,7 +162,7 @@ typ_grundnutzung_json_dokument_agg AS
 (
   SELECT
     typ_grundnutzung_t_id,
-    '[' || dokumente::varchar || ']' as dokumente
+    '[ "@type": "SO_Nutzungsplanung_Publikation_20190909.Nutzungsplanung.Dokument", ' || dokumente::varchar || ']' as dokumente
   FROM
   (
     SELECT
