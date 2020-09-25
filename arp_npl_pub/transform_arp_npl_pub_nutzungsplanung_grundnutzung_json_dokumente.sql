@@ -76,7 +76,7 @@ json_documents_all AS
     SELECT
       t_id, 
       dokumentid AS Dokument_ID, 
-      titel AS , 
+      titel AS Titel, 
       offiziellertitel AS Offizieller_Titel, 
       abkuerzung AS Abkuerzung,
       offiziellenr AS Offizielle_Nr, 
