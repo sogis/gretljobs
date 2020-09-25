@@ -12,11 +12,11 @@ task transferArpNpl(type: Db2Db) {
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             //new TransferSet("transform_arp_npl_pub_nutzungsplanung_grundnutzung_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_grundnutzung', true),
-            new TransferSet("transform_arp_npl_pub_nutzungsplanung_ueberlagernd_flaeche_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_ueberlagernd_flaeche', true),
-            new TransferSet("transform_arp_npl_pub_nutzungsplanung_ueberlagernd_linie_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_ueberlagernd_linie', true),
-            //new TransferSet("transform_arp_npl_pub_nutzungsplanung_ueberlagernd_punkt_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_ueberlagernd_punkt', true),
-            //new TransferSet("transform_arp_npl_pub_nutzungsplanung_beschriftung.sql", 'arp_npl_pub.nutzungsplanung_nutzungsplanung_beschriftung', true),
-            //new TransferSet("transform_arp_npl_pub_erschliessung_flaechenobjekt_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_erschliessung_flaechenobjekt', true),
+            //new TransferSet("transform_arp_npl_pub_nutzungsplanung_ueberlagernd_flaeche_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_ueberlagernd_flaeche', true),
+            //new TransferSet("transform_arp_npl_pub_nutzungsplanung_ueberlagernd_linie_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_ueberlagernd_linie', true),
+            new TransferSet("transform_arp_npl_pub_nutzungsplanung_ueberlagernd_punkt_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_ueberlagernd_punkt', true),
+            new TransferSet("transform_arp_npl_pub_nutzungsplanung_beschriftung.sql", 'arp_npl_pub.nutzungsplanung_nutzungsplanung_beschriftung', true),
+            new TransferSet("transform_arp_npl_pub_erschliessung_flaechenobjekt_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_erschliessung_flaechenobjekt', true),
             //new TransferSet("transform_arp_npl_pub_erschliessung_linienobjekt_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_erschliessung_linienobjekt', true),
             //new TransferSet("transform_arp_npl_pub_erschliessung_punktobjekt_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_erschliessung_punktobjekt', true),
             //new TransferSet("transform_arp_npl_pub_erschliessung_beschriftung.sql", 'arp_npl_pub.nutzungsplanung_erschliessung_beschriftung', true),
