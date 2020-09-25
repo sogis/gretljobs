@@ -220,7 +220,7 @@ SELECT
   g.typ_typ_kt AS typ_kt,
   g.typ_code_kommunal::int4 AS typ_code_kommunal,
   --ST_GeometryN(ST_CollectionExtract(ST_MakeValid(ST_RemoveRepeatedPoints(ST_SnapToGrid(g.geometrie, 0.001))), 3), 1) AS geometrie, / *SQL Error [XX000]: ERROR: IllegalArgumentException: RobustDeterminant encountered non-finite numbers */
-    ST_RemoveRepeatedPoints(ST_SnapToGrid(g.geometrie, 0.001)) AS geometrie,
+  ST_Buffer(ST_RemoveRepeatedPoints(ST_SnapToGrid(g.geometrie, 0.001)),0) AS geometrie,
   --g.geometrie,
   g.name_nummer,
   g.rechtsstatus,
