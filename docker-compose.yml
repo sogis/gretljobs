@@ -17,7 +17,7 @@ services:
       - "54321:5432"
     volumes:
       - ${PWD}/development_dbs/setup.sql:/pgconf/setup.sql
-      - ~/pgdata-edit:/pgdata:delegated
+      - ~/crunchy-pgdata-edit:/pgdata:delegated
   pub-db:
     build: .
     image: sogis/postgis-db:localbuild
@@ -35,4 +35,4 @@ services:
       - "54322:5432"
     volumes:
       - ${PWD}/development_dbs/setup.sql:/pgconf/setup.sql
-      - ~/pgdata-pub:/pgdata:delegated
+      - ~/crunchy-pgdata-pub:/pgdata:delegated
