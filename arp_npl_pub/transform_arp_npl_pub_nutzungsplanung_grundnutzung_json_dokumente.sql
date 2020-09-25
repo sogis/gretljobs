@@ -227,7 +227,7 @@ SELECT
   g.typ_geschosszahl,
   --ST_Buffer(ST_GeometryN(ST_CollectionExtract(ST_MakeValid(ST_RemoveRepeatedPoints(ST_SnapToGrid(g.geometrie, 0.001))), 3), 1), 0) AS geometrie,
   --ST_Buffer(g.geometrie, 0) AS geometrie,
-  ST_MakeValid(g.geometrie) as geometrie
+  ST_MakeValid(g.geometrie) as geometrie,
   --g.geometrie,
   g.name_nummer,
   g.rechtsstatus,
