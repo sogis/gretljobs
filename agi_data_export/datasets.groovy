@@ -142,11 +142,14 @@ datasets.add(new Dataset("SO_AWJF_Wegsanierungen_Publikation_20170629", "awjf_we
 //datasets.add(new Dataset("SO_AFU_Nagra_Bohrtiefen_20190927", "afu_erdwaermesonden_nagra_pub", dbPub, "ch.so.afu.erdwaermesonden_nagra", true)) 
 //datasets.add(new Dataset("SO_AfU_Erdwaermesonden_Publikation_20200113", "afu_erdwaermesonden_pub", dbPub, "ch.so.afu.erdwaermesonden")) 
 //datasets.add(new Dataset("SO_AFU_Geotope_Publikation_20200623", "afu_geotope_pub", dbPub, "ch.so.afu.geotope")) 
+//datasets.add(new Dataset("SO_AfU_Gewaesserschutz_Publikation_20200115", "afu_gewaesserschutz_pub", dbPub, "ch.so.afu.gewaesserschutz")) // Integration (temporär)
 //datasets.add(new Dataset("SO_AFU_Igel_Publikation_20200429", "afu_igel_pub", dbPub, "ch.so.afu.igel")) // TODO: --createNumChecks	nicht gesetzt?
 //datasets.add(new Dataset("SO_AFU_Verzeichnis_schadstoffbelastete_Boeden_Publikation_20200622", "afu_schadstoffbelastete_boeden_pub", dbPub, "ch.so.afu.schadstoffbelastete_boeden")) 
 //datasets.add(new Dataset("SO_AGEM_Fila_Publikation_20190318", "agem_fila_pub", dbPub, "ch.so.agem.fila", true))
 //datasets.add(new Dataset("SO_AGI_Lidarprodukte_Publikation_20180202", "agi_lidar_pub", dbPub, "ch.so.agi_lidar", true))
-datasets.add(new Dataset("SO_AGI_PLZ_Ortschaften_Publikation_20180406", "agi_plz_ortschaften_pub", dbPub, "ch.so.agi_plz_ortschaften", true)) // TODO: abgeleitet aus fremden Daten
-datasets.add(new Dataset("SO_AGI_swissBOUNDARIES3D_Publikation_20171026", "agi_swissboundaries3d_pub", dbPub, "ch.so.agi_swissboundaries3d", true)) // TODO: abgeleitet aus fremden Daten
+//datasets.add(new Dataset("SO_AGI_PLZ_Ortschaften_Publikation_20180406", "agi_plz_ortschaften_pub", dbPub, "ch.so.agi_plz_ortschaften", true)) // TODO: abgeleitet aus fremden Daten
+//datasets.add(new Dataset("SO_AGI_swissBOUNDARIES3D_Publikation_20171026", "agi_swissboundaries3d_pub", dbPub, "ch.so.agi_swissboundaries3d", true)) // TODO: abgeleitet aus fremden Daten
 //datasets.add(new Dataset("SO_AMB_Notfalltreffpunkte_Publikation_20180822", "amb_notfalltreffpunkte_pub", dbPub, "ch.so.amb_notfalltreffpunkte", true)) 
 //datasets.add(new Dataset("SO_Agglomerationsprogramme_Publikation_20200813", "arp_agglomerationsprogramme_pub", dbPub, "ch.so.arp_agglomerationsprogramme")) 
+//datasets.add(new Dataset("SO_ARP_Richtplan_Publikation_20190301", "arp_richtplan_pub", dbPub, "ch.so.arp.richtplan", true)) 
+datasets.add(new Dataset("SO_Nutzungsplanung_Publikation_20190909", "arp_npl_pub", dbPub, "ch.so.arp.nutzungsplanung")) 

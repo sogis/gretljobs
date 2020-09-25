@@ -86,6 +86,8 @@ datasets.each { dataset ->
         logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_export.log"))
         dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf"))
         export3 = isVersion3 ? true : false
+        disableRounding = true // TEMP
+        //trace = true
     }
 
     task "validateData_$datasetId"(type: IliValidator, dependsOn: "exportDataset_$datasetId") {
@@ -96,7 +98,7 @@ datasets.each { dataset ->
     }
 
     // TODO: only if successful?
-    task "zipDatasetXtf_$datasetId"(type: Zip, dependsOn: "validateData_$datasetId") {
+    task "zipDatasetXtf_$datasetId"(type: Zip, dependsOn: "exportDataset_$datasetId") {
         from pathToTempFolder
         include "$datasetId*.xtf"
         include "$datasetId*_export.log"
