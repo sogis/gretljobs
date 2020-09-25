@@ -35,8 +35,7 @@ task transferAlteGrundnutzung(type: Db2Db, dependsOn: "transferArpNpl") {
     ];
 }
 
-//task updateAggregationGrundnutzungsflaechen(type: SqlExecutor, dependsOn: "transferAlteGrundnutzung") {
-task updateAggregationGrundnutzungsflaechen(type: SqlExecutor, dependsOn: "transferArpNpl") {
+task updateAggregationGrundnutzungsflaechen(type: SqlExecutor, dependsOn: "transferAlteGrundnutzung") {
     description = "Aktualisierung der aggregierten Zonenflächen pro Gemeinde"
     group = GROUP
     database = [dbUriPub, dbUserPub, dbPwdPub]
