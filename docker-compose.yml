@@ -18,6 +18,7 @@ services:
     volumes:
       - ${PWD}/development_dbs/setup.sql:/pgconf/setup.sql
       - ~/crunchy-pgdata-edit:/pgdata:delegated
+    hostname: primary  
   pub-db:
     build: .
     image: sogis/postgis-db:localbuild
@@ -36,3 +37,4 @@ services:
     volumes:
       - ${PWD}/development_dbs/setup.sql:/pgconf/setup.sql
       - ~/crunchy-pgdata-pub:/pgdata:delegated
+    hostname: primary  
