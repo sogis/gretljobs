@@ -93,7 +93,7 @@ json_documents_all AS
                   ) docs
               ))
          )
-     ) AS dokumente,
+     ) AS json_dokument,
      t_id
   FROM
       arp_npl.rechtsvorschrften_dokument
