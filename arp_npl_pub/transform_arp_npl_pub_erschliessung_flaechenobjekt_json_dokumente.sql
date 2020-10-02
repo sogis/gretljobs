@@ -68,30 +68,38 @@ doc_doc_references AS
 json_documents_all AS 
 (
   SELECT
-    t_id, 
-    row_to_json(t)::text AS json_dokument -- Text-Repräsentation des JSON-Objektes. 
+      array_to_json(
+          array_agg(
+              row_to_json((
+                  SELECT
+                      docs
+                  FROM 
+                  (
+                      SELECT
+                          dokumentid AS "Dokument_ID", 
+                          titel AS "Titel", 
+                          offiziellertitel AS "Offizieller_Titel", 
+                          abkuerzung AS "Abkuerzung",
+                          offiziellenr AS "Offizielle_Nr", 
+                          kanton AS "Kanton", 
+                          gemeinde AS "Gemeinde", 
+                          publiziertab AS "publiziert_ab", 
+                          rechtsstatus AS "Rechtsstatus",
+                          ('https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/'||"textimweb")::text AS "Text_im_Web",
+                          bemerkungen AS "Bemerkungen", 
+                          rechtsvorschrift AS "Rechtsvorschrift", 
+                          'SO_Nutzungsplanung_Publikation_20190909.Nutzungsplanung.Dokument' AS "@type"
+                  ) docs
+              ))
+         )
+     ) AS dokumente,
+     t_id
   FROM
-  (
-    SELECT
-      t_id, 
-      dokumentid AS "Dokument_ID", 
-      titel AS "Titel", 
-      offiziellertitel AS "Offizieller_Titel", 
-      abkuerzung AS "Abkuerzung",
-      offiziellenr AS "Offizielle_Nr", 
-      kanton AS "Kanton", 
-      gemeinde AS "Gemeinde", 
-      publiziertab AS "publiziert_ab", 
-      rechtsstatus AS "Rechtsstatus",
-      ('https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/'||"textimweb")::text AS "Text_im_Web",
-      bemerkungen AS "Bemerkungen", 
-      rechtsvorschrift AS "Rechtsvorschrift", 
-      'SO_Nutzungsplanung_Publikation_20190909.Nutzungsplanung.Dokument' AS "@type"
-    FROM
       arp_npl.rechtsvorschrften_dokument
-  ) AS t
-)
-,
+  GROUP BY
+      t_id
+ ) 
+ ,
 -- Alle Dokumente (die in HinweisWeitereDokumente vorkommen) 
 -- als JSON-Objekte (resp. als Text-Repräsentation).
 -- Muss noch genauer überlegt werden, wie genau mit JSON hantiert wird.
