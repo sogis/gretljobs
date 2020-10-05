@@ -7,14 +7,13 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: "de.undercouch.download"
 apply plugin: "ch.so.agi.gretl"
 
-defaultTasks 'dbImport'
-//defaultTasks 'transferToPub'
+//defaultTasks 'dbImport'
+defaultTasks 'transferToPub'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
 def pathToDataZip = Paths.get(pathToTempFolder, "ch.swisstopo.amtliches-gebaeudeadressverzeichnis.zip")
 def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), 'pure_adr.xtf')
-
 
 task download(type: Download){
     description = "Download official index of addresses from swisstopo"
@@ -26,7 +25,7 @@ task download(type: Download){
     overwrite true
 }
 
-task unzipData(type: Copy, dependsOn: 'download'){
+task unzipData(type: Copy, dependsOn: 'download') {
     description = "Unzip file."
     doLast {
         println "File unzipped to directory: " + pathToUnzipFolder
@@ -36,7 +35,7 @@ task unzipData(type: Copy, dependsOn: 'download'){
     include "**/*.xtf"
 }
 
-task dbImport(type: Ili2pgImport, dependsOn: 'unzipData'){
+task dbImport(type: Ili2pgImport, dependsOn: 'unzipData') {
     description = "Import addresses into Edit database"
     doLast {
         println "Data imported into db: " + dbUriEdit
@@ -57,7 +56,7 @@ task transferToPub(type: Db2Db, dependsOn: 'dbImport') {
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet("transform_swisstopo_gebaeudeadressen_pub.sql", 'swisstopo_gebaeudeadressen_pub.gebaeudeadressen_adresse', true)
-    ];
+    ]
     fetchSize = 1000
     batchSize = 1000
 }
