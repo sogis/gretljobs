@@ -42,7 +42,7 @@ task dbImport(type: Ili2pgImport, dependsOn: 'unzipData'){
         println "Data imported into db: " + dbUriEdit
     }
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = "swisstopo_gebaeudeadressen"
+    dbschema = "agi_swisstopo_gebaeudeadressen"
     models = "OfficialIndexOfAddresses_V1"
     disableValidation = true
     dataFile = file(xtfFilePath)
