@@ -55,7 +55,7 @@ task transferToPub(type: Db2Db, dependsOn: 'dbImport') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet("transform_swisstopo_gebaeudeadressen_pub.sql", 'swisstopo_gebaeudeadressen_pub.gebaeudeadressen_adresse', true)
+            new TransferSet("transform_swisstopo_gebaeudeadressen_pub.sql", 'agi_swisstopo_gebaeudeadressen_pub.gebaeudeadressen_adresse', true)
     ]
     fetchSize = 1000
     batchSize = 1000
