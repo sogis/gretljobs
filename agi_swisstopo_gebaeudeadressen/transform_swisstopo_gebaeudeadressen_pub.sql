@@ -27,12 +27,12 @@ SELECT
     modinfo.latestmodification AS letzteaenderung,
     address.pnt_shape AS geometrie
 FROM
-    swisstopo_gebaeudeadressen.officlndxfddrsses_address AS address
-    LEFT JOIN swisstopo_gebaeudeadressen.officlndxfddrsses_localisationname AS localisationname
+    agi_swisstopo_gebaeudeadressen.officlndxfddrsses_address AS address
+    LEFT JOIN agi_swisstopo_gebaeudeadressen.officlndxfddrsses_localisationname AS localisationname
     ON localisationname.offclndxfddrsss_ddress_stn_name = address.t_id 
-    LEFT JOIN swisstopo_gebaeudeadressen.officlndxfddrsses_zip6 AS zip
+    LEFT JOIN agi_swisstopo_gebaeudeadressen.officlndxfddrsses_zip6 AS zip
     ON zip.offclndxfddrsss_ddress_adr_zip = address.t_id 
-    LEFT JOIN swisstopo_gebaeudeadressen.modinfo AS modinfo
+    LEFT JOIN agi_swisstopo_gebaeudeadressen.modinfo AS modinfo
     ON modinfo.offclndxfddrsss_ddress_adr_modified = address.t_id 
 --LIMIT 100000   
 ;
