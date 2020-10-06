@@ -541,7 +541,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "keine"-Flächen
     'von_0_bis_30_Jahre' AS wkp,
     'spontane_Rutschung' AS teilproz,
     bez_kanton,
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_rutsch_spontan_0_bis_30_keine_diff
 GROUP BY bez_kanton
 UNION ALL
@@ -551,7 +551,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "schwach"-Fläch
     'von_0_bis_30_Jahre' AS wkp,    
     'spontane_Rutschung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_rutsch_spontan_0_bis_30_schwach_diff
 GROUP BY bez_kanton
 UNION ALL
@@ -561,7 +561,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "mittel"-Fläche
     'von_0_bis_30_Jahre' AS wkp,    
     'spontane_Rutschung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung    
+    null AS bemerkung    
 FROM int_rutsch_spontan_0_bis_30_mittel_diff
 GROUP BY bez_kanton
 UNION ALL
@@ -571,7 +571,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "stark"-Flächen
     'von_0_bis_30_Jahre' AS wkp,
     'spontane_Rutschung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_rutsch_spontan_0_bis_30_stark
 GROUP BY bez_kanton
 
@@ -582,7 +582,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "keine"-Flächen
     'von_30_bis_100_Jahre' AS wkp,
     'spontane_Rutschung' AS teilproz,
     bez_kanton,
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_rutsch_spontan_30_bis_100_keine_diff
 GROUP BY bez_kanton
 UNION ALL
@@ -592,7 +592,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "schwach"-Fläch
     'von_30_bis_100_Jahre' AS wkp,    
     'spontane_Rutschung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_rutsch_spontan_30_bis_100_schwach_diff
 GROUP BY bez_kanton
 UNION ALL
@@ -602,7 +602,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "mittel"-Fläche
     'von_30_bis_100_Jahre' AS wkp,    
     'spontane_Rutschung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung    
+    null AS bemerkung    
 FROM int_rutsch_spontan_30_bis_100_mittel_diff
 GROUP BY bez_kanton
 UNION ALL
@@ -612,7 +612,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "stark"-Flächen
     'von_30_bis_100_Jahre' AS wkp,
     'spontane_Rutschung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_rutsch_spontan_30_bis_100_stark
 GROUP BY bez_kanton
 
@@ -623,7 +623,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "keine"-Flächen
     'von_100_bis_300_Jahre' AS wkp,
     'spontane_Rutschung' AS teilproz,
     bez_kanton,
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_rutsch_spontan_100_bis_300_keine_diff
 GROUP BY bez_kanton
 UNION ALL
@@ -633,7 +633,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "schwach"-Fläch
     'von_100_bis_300_Jahre' AS wkp,    
     'spontane_Rutschung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_rutsch_spontan_100_bis_300_schwach_diff
 GROUP BY bez_kanton
 UNION ALL
@@ -643,7 +643,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "mittel"-Fläche
     'von_100_bis_300_Jahre' AS wkp,    
     'spontane_Rutschung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung    
+    null AS bemerkung    
 FROM int_rutsch_spontan_100_bis_300_mittel_diff
 GROUP BY bez_kanton
 UNION ALL
@@ -653,7 +653,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "stark"-Flächen
     'von_100_bis_300_Jahre' AS wkp,
     'spontane_Rutschung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_rutsch_spontan_100_bis_300_stark
 GROUP BY bez_kanton
 ),
