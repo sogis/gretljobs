@@ -241,7 +241,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "keine"-Flächen
     ST_MakeValid(ST_SnapToGrid((ST_Dump(ST_Union(res_poly))).geom, 0.001)) AS geometrie,
     'Sturz' AS prozessa,
     'keine' AS gef_stufe,
-    '' AS bemerkung
+    null AS bemerkung
 FROM keine_diff
 GROUP BY t_id
 UNION ALL
@@ -250,7 +250,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "vorhanden"-Flä
     (ST_Dump(ST_MakeValid(ST_SnapToGrid((ST_Dump(ST_Union(res_poly))).geom, 0.001)))).geom AS geometrie,
     'Sturz' AS prozessa,
     'vorhanden' AS gef_stufe,
-    '' AS bemerkung
+    null AS bemerkung
 FROM vorhanden_diff
 GROUP BY t_id
 UNION ALL
@@ -259,7 +259,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "gering"-Fläche
     (ST_Dump(ST_MakeValid(ST_SnapToGrid((ST_Dump(ST_Union(res_poly))).geom, 0.001)))).geom AS geometrie,
     'Sturz' AS prozessa,
     'gering' AS gef_stufe,
-    '' AS bemerkung    
+    null AS bemerkung    
 FROM gering_diff
 GROUP BY t_id
 UNION ALL
@@ -268,7 +268,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "mittel"-Fläche
     (ST_Dump(ST_MakeValid(ST_SnapToGrid((ST_Dump(ST_Union(res_poly))).geom, 0.001)))).geom AS geometrie,
     'Sturz' AS prozessa,
     'mittel' AS gef_stufe,
-    '' AS bemerkung
+    null AS bemerkung
 FROM mittel_diff
 GROUP BY t_id
 UNION ALL
@@ -277,7 +277,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "erheblich"-Flä
     (ST_Dump(ST_MakeValid(ST_SnapToGrid((ST_Dump(ST_Union(geometry))).geom, 0.001)))).geom AS geometrie,
     'Sturz' AS prozessa,
     'erheblich' AS gef_stufe,
-    '' AS bemerkung    
+    null AS bemerkung    
 FROM stufe_erheblich
 GROUP BY t_id
 ),
