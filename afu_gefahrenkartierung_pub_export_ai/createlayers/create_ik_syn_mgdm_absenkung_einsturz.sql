@@ -203,7 +203,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "keine"-Flächen
     'von_0_bis_30_Jahre' AS wkp,
     'Einsturz_Absenkung' AS teilproz,
     bez_kanton,
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_absenkung_0_bis_30_keine_diff
 GROUP BY bez_kanton
 UNION ALL
@@ -213,7 +213,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "mittel"-Fläche
     'von_0_bis_30_Jahre' AS wkp,    
     'Einsturz_Absenkung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung    
+    null AS bemerkung    
 FROM int_absenkung_0_bis_30_mittel
 GROUP BY bez_kanton
 
@@ -224,7 +224,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "keine"-Flächen
     'von_30_bis_100_Jahre' AS wkp,
     'Einsturz_Absenkung' AS teilproz,
     bez_kanton,
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_absenkung_30_bis_100_keine_diff
 GROUP BY bez_kanton
 UNION ALL
@@ -234,7 +234,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "mittel"-Fläche
     'von_30_bis_100_Jahre' AS wkp,    
     'Einsturz_Absenkung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung    
+    null AS bemerkung    
 FROM int_absenkung_30_bis_100_mittel
 GROUP BY bez_kanton
 
@@ -245,7 +245,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "keine"-Flächen
     'von_100_bis_300_Jahre' AS wkp,
     'Einsturz_Absenkung' AS teilproz,
     bez_kanton,
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_absenkung_100_bis_300_keine_diff
 GROUP BY bez_kanton
 UNION ALL
@@ -255,7 +255,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "mittel"-Fläche
     'von_100_bis_300_Jahre' AS wkp,    
     'Einsturz_Absenkung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung    
+    null AS bemerkung    
 FROM int_absenkung_100_bis_300_mittel
 GROUP BY bez_kanton
 ),
