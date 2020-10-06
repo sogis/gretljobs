@@ -264,7 +264,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "keine"-Flächen
     'von_0_bis_30_Jahre' AS wkp,
     'Felssturz_Bergsturz' AS teilproz,
     bez_kanton,
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_felssturz_0_bis_30_keine_diff
 GROUP BY bez_kanton
 UNION ALL
@@ -274,7 +274,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "stark"-Flächen
     'von_0_bis_30_Jahre' AS wkp,
     'Felssturz_Bergsturz' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_felssturz_0_bis_30_stark
 GROUP BY bez_kanton
 
@@ -285,7 +285,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "keine"-Flächen
     'von_30_bis_100_Jahre' AS wkp,
     'Felssturz_Bergsturz' AS teilproz,
     bez_kanton,
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_felssturz_30_bis_100_keine_diff
 GROUP BY bez_kanton
 UNION ALL
@@ -295,7 +295,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "stark"-Flächen
     'von_30_bis_100_Jahre' AS wkp,
     'Felssturz_Bergsturz' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_felssturz_30_bis_100_stark
 GROUP BY bez_kanton
 
@@ -306,7 +306,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "keine"-Flächen
     'von_100_bis_300_Jahre' AS wkp,
     'Felssturz_Bergsturz' AS teilproz,
     bez_kanton,
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_felssturz_100_bis_300_keine_diff
 GROUP BY bez_kanton
 UNION ALL
@@ -316,7 +316,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "stark"-Flächen
     'von_100_bis_300_Jahre' AS wkp,
     'Felssturz_Bergsturz' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_felssturz_100_bis_300_stark
 GROUP BY bez_kanton
 
@@ -327,7 +327,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "stark"-Flächen
     'groesser_300_Jahre' AS wkp,
     'Felssturz_Bergsturz' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_felssturz_groesser_300_keine_diff
 GROUP BY bez_kanton
 UNION ALL
@@ -337,7 +337,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "stark"-Flächen
     'groesser_300_Jahre' AS wkp,
     'Felssturz_Bergsturz' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_felssturz_groesser_300_vorhanden
 GROUP BY bez_kanton
 ),
