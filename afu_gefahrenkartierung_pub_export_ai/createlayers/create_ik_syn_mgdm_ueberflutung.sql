@@ -600,7 +600,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "keine"-Flächen
     'von_0_bis_30_Jahre' AS wkp,
     'Ueberschwemmung' AS teilproz,
     bez_kanton,
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_ueberschwemmung_0_bis_30_keine_diff
 WHERE ST_Area(res_poly) > 0.1
 GROUP BY bez_kanton
@@ -611,7 +611,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "schwach"-Fläch
     'von_0_bis_30_Jahre' AS wkp,    
     'Ueberschwemmung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_ueberschwemmung_0_bis_30_schwach_diff
 WHERE ST_Area(res_poly) > 0.1
 GROUP BY bez_kanton
@@ -622,7 +622,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "mittel"-Fläche
     'von_0_bis_30_Jahre' AS wkp,    
     'Ueberschwemmung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung    
+    null AS bemerkung    
 FROM int_ueberschwemmung_0_bis_30_mittel_diff
 WHERE ST_Area(res_poly) > 0.1
 GROUP BY bez_kanton
@@ -633,7 +633,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "stark"-Flächen
     'von_0_bis_30_Jahre' AS wkp,
     'Ueberschwemmung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_ueberschwemmung_0_bis_30_stark
 WHERE ST_Area(geometrie) > 0.1
 GROUP BY bez_kanton
@@ -645,7 +645,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "keine"-Flächen
     'von_30_bis_100_Jahre' AS wkp,
     'Ueberschwemmung' AS teilproz,
     bez_kanton,
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_ueberschwemmung_30_bis_100_keine_diff
 WHERE ST_Area(res_poly) > 0.1
 GROUP BY bez_kanton
@@ -656,7 +656,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "schwach"-Fläch
     'von_30_bis_100_Jahre' AS wkp,    
     'Ueberschwemmung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_ueberschwemmung_30_bis_100_schwach_diff
 WHERE ST_Area(res_poly) > 0.1
 GROUP BY bez_kanton
@@ -667,7 +667,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "mittel"-Fläche
     'von_30_bis_100_Jahre' AS wkp,    
     'Ueberschwemmung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung    
+    null AS bemerkung    
 FROM int_ueberschwemmung_30_bis_100_mittel_diff
 WHERE ST_Area(res_poly) > 0.1
 GROUP BY bez_kanton
@@ -678,7 +678,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "stark"-Flächen
     'von_30_bis_100_Jahre' AS wkp,
     'Ueberschwemmung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_ueberschwemmung_30_bis_100_stark
 WHERE ST_Area(geometrie) > 0.1
 GROUP BY bez_kanton
@@ -690,7 +690,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "keine"-Flächen
     'von_100_bis_300_Jahre' AS wkp,
     'Ueberschwemmung' AS teilproz,
     bez_kanton,
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_ueberschwemmung_100_bis_300_keine_diff
 WHERE ST_Area(res_poly) > 0.1
 GROUP BY bez_kanton
@@ -701,7 +701,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "schwach"-Fläch
     'von_100_bis_300_Jahre' AS wkp,    
     'Ueberschwemmung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_ueberschwemmung_100_bis_300_schwach_diff
 WHERE ST_Area(res_poly) > 0.1
 GROUP BY bez_kanton
@@ -712,7 +712,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "mittel"-Fläche
     'von_100_bis_300_Jahre' AS wkp,    
     'Ueberschwemmung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung    
+    null AS bemerkung    
 FROM int_ueberschwemmung_100_bis_300_mittel_diff
 WHERE ST_Area(res_poly) > 0.1
 GROUP BY bez_kanton
@@ -723,7 +723,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "stark"-Flächen
     'von_100_bis_300_Jahre' AS wkp,
     'Ueberschwemmung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_ueberschwemmung_100_bis_300_stark
 WHERE ST_Area(geometrie) > 0.1
 GROUP BY bez_kanton
@@ -735,7 +735,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "stark"-Flächen
     'groesser_300_Jahre' AS wkp,
     'Ueberschwemmung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_ueberschwemmung_groesser_300_keine_diff
 WHERE ST_Area(res_poly) > 0.1
 GROUP BY bez_kanton
@@ -746,7 +746,7 @@ SELECT -- Union, damit allfällige Ueberlappungen innerhalb der "stark"-Flächen
     'groesser_300_Jahre' AS wkp,
     'Ueberschwemmung' AS teilproz,
     bez_kanton,    
-    '' AS bemerkung
+    null AS bemerkung
 FROM int_ueberschwemmung_groesser_300_vorhanden
 WHERE ST_Area(geometrie) > 0.1
 GROUP BY bez_kanton
