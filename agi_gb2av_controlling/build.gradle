@@ -1,0 +1,26 @@
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+//defaultTasks 'upsertTable'
+
+task upsertVollzugsmeldungen(type: SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['agi_gb2av_controlling_vollzugsmeldungen.sql']
+}
+
+task upsertAvMutationen(type: SqlExecutor, dependsOn: 'upsertVollzugsmeldungen') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['agi_gb2av_controlling_vollzugsmeldungen.sql']
+}
+
+task transferData(type: Db2Db, dependsOn: 'upsertAvMutationen') {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('agi_gb2av_controlling_pub_controlling_gb2av_vollzugsmeldung_delta.sql', 'agi_gb2av_controlling_pub.controlling_gb2av_vollzugsmeldung_delta', true),
+            new TransferSet('agi_gb2av_controlling_pub_controlling_av2gb_mutationen.sql', 'agi_gb2av_controlling_pub.controlling_av2gb_mutationen', true)
+    ];
+}
