@@ -6,6 +6,8 @@ import java.nio.file.Files
 import java.io.FileOutputStream
 import org.apache.commons.net.ftp.*
 
+defaultTasks 'transferData'
+
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def localFileName = "mocheckso_errors.csv"
 
@@ -13,7 +15,7 @@ def server = ftpServerInfogrips
 def systemTypeKey = "WINDOWS" 
 def user = ftpUserInfogrips
 def password = ftpPwdInfogrips
-def remoteFileName = "\\DM01AVSO24LV95\\ERROR\\MOCHECKSO_ERRORS.CSV"
+def remoteFileName = "/DM01AVSO24LV95/ERROR/MOCHECKSO_ERRORS.CSV"
 
 task downloadCsv() {
     doLast {
@@ -21,6 +23,7 @@ task downloadCsv() {
 
         try {            
             ftp.connect(server, 21)
+            ftp.enterLocalPassiveMode() // Not needed when running locally on MacOS.
             ftp.login(user, password)
             ftp.configure(new FTPClientConfig(systemTypeKey)); 
 
@@ -33,8 +36,9 @@ task downloadCsv() {
             FileOutputStream fos = new FileOutputStream(fileName)
 
             boolean response = ftp.retrieveFile(remoteFileName, fos)
+
             if (response == false) {
-                throw new Exception("Could not retrieve file: " + remoteFileNameFile)
+                throw new Exception("Could not retrieve file: " + remoteFileName)
             }
             println "File downloaded: " + fileName
         } catch (Exception e) {
@@ -54,13 +58,12 @@ task downloadCsv() {
         // Achtung: Das gesamte File wird in den Memory gelesen.
         def fileContent = new File(pathToTempFolder.toString()+"/mocheckso_errors.csv").getText('windows-1252')
         new File(pathToTempFolder.toString()+"/mocheckso_errors_semicolon.csv").write(fileContent.replace("\t",";"),'utf-8')
-
     }
 }
 
 task validateCsv(type: CsvValidator, dependsOn: 'downloadCsv') {
+    description = "Validiert die heruntergeladene CSV-Datei (Tabs ersetzt mit Semikolon)"
     models = "SO_AGI_MOCheckSO_20200715"
-    modeldir = "./model;http://models.geo.admin.ch"
     firstLineIsHeader = true
     valueDelimiter = null
     valueSeparator = ';'
@@ -69,9 +72,21 @@ task validateCsv(type: CsvValidator, dependsOn: 'downloadCsv') {
 }
 
 task truncateTable(type: SqlExecutor, dependsOn: 'validateCsv') {
-    description = "Leert die Tabelle arp_fledermaus.fledermausfundrte_fledermausfundort"
+    description = "Leert die Tabelle agi_av_mocheckso.mocheckso_errors_mocheckso_error"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = [
             'truncate_table.sql'
     ]
 }
+
+task importCsv(type: CsvImport, dependsOn: 'truncateTable') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = "agi_av_mocheckso"
+    tableName = "mocheckso_errors_mocheckso_error"
+    firstLineIsHeader = true
+    valueDelimiter = null
+    valueSeparator = ';'
+    encoding = "UTF-8"
+    dataFile = file(pathToTempFolder.toString()+"/mocheckso_errors_semicolon.csv")
+}
+
