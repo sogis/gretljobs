@@ -6,7 +6,7 @@ import java.nio.file.Files
 import java.io.FileOutputStream
 import org.apache.commons.net.ftp.*
 
-defaultTasks 'transferData'
+defaultTasks 'transferDataPub'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def localFileName = "mocheckso_errors.csv"
@@ -90,3 +90,10 @@ task importCsv(type: CsvImport, dependsOn: 'truncateTable') {
     dataFile = file(pathToTempFolder.toString()+"/mocheckso_errors_semicolon.csv")
 }
 
+task transferDataPub(type: Db2Db, dependsOn: 'importCsv') {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('agi_av_validierung_pub.sql', 'agi_av_validierung_pub.errorlog_error', true)
+    ];
+}
