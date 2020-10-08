@@ -16,7 +16,7 @@ services:
     ports:
       - "54321:5432"
     volumes:
-      - ${PWD}/development_dbs/setup.sql:/pgconf/setup.sql
+      - ./development_dbs/setup.sql:/pgconf/setup.sql
     hostname: primary  
   pub-db:
     build: .
@@ -34,5 +34,5 @@ services:
     ports:
       - "54322:5432"
     volumes:
-      - ${PWD}/development_dbs/setup.sql:/pgconf/setup.sql
+      - ./development_dbs/setup.sql:/pgconf/setup.sql
     hostname: primary  
