@@ -11,7 +11,7 @@ task upsertVollzugsmeldungen(type: SqlExecutor) {
 
 task upsertAvMutationen(type: SqlExecutor, dependsOn: 'upsertVollzugsmeldungen') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ['agi_gb2av_controlling_vollzugsmeldungen.sql']
+    sqlFiles = ['agi_gb2av_controlling_av_mutationen.sql']
 }
 
 task transferData(type: Db2Db, dependsOn: 'upsertAvMutationen') {
