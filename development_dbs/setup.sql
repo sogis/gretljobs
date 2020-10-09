@@ -9,7 +9,7 @@ SET application_name="container_setup";
 --create extension fuzzystrmatch;
 --create extension postgis_tiger_geocoder;
 create extension pg_stat_statements;
-create extension pgaudit;
+--create extension pgaudit;
 --create extension plr;
 
 alter user postgres password 'PG_ROOT_PASSWORD';
@@ -38,7 +38,7 @@ create extension postgis;
 create extension fuzzystrmatch;
 --create extension postgis_tiger_geocoder;
 create extension pg_stat_statements;
-create extension pgaudit;
+--create extension pgaudit;
 --create extension plr;
 -- Additional extension needed for working with ili2pg:
 CREATE EXTENSION "uuid-ossp";
