@@ -182,10 +182,11 @@ docker volume prune
 Dabei werden alle Docker Volumes, die nicht an einen Container angebunden sind,
 unwiderruflich gelöscht.
 (Falls man nur die Volumes dieser Entwicklungs-DBs löschen möchte,
-kann man folgendes versuchen (wobei der *Value* des Labels nicht zwingend
-immer *gretljobs* ist;
-man kann ihn durch `docker volume inspect VOLUMENAME` herausfinden:
+kann man den folgenden Befehl verwenden:
 `docker volume prune --filter 'label=com.docker.compose.project=gretljobs'`
+Wobei der *Value* des Labels nicht zwingend immer *gretljobs* ist,
+sondern vom Verzeichnisnamen abhängt, in welchem `docker-compose.yml` liegt;
+man kann ihn durch `docker volume inspect VOLUMENAME` herausfinden.)
 
 Die DBs sind mit folgenden Verbindungsparametern erreichbar:
 
