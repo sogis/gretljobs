@@ -23,7 +23,7 @@ services:
       - pgwal_edit:/pgwal
       - recover_edit:/recover
       - backrestrepo_edit:/backrestrepo
-    hostname: primary  
+    hostname: primary-edit
   pub-db:
     build: .
     image: sogis/postgis-db:localbuild
@@ -47,7 +47,7 @@ services:
       - pgwal_pub:/pgwal
       - recover_pub:/recover
       - backrestrepo_pub:/backrestrepo
-    hostname: primary  
+    hostname: primary-pub
 volumes:
   sshd_edit:
   pgconf_edit:
