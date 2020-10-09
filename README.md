@@ -165,17 +165,27 @@ und mit der Entwicklung von GRETL-Jobs beginnen.
 
 Zwei Docker-DB-Server starten; einer enthält die *edit*-DB, der andere die *pub*-DB:
 ```
-docker-compose up --force-recreate
+docker-compose up
 ```
-(Die Option `--force-recreate` bewirkt, dass man mit leeren DBs startet;
-falls man bereits Daten importiert hat
-und die Container unter Beibehaltung dieser Daten neu starten möchte,
-lässt man diese Option weg.)
-
 Nun können in den DBs nach Belieben Schemas angelegt und Daten importiert werden.
 Dies kann z.B. mit *ili2pg* erfolgen
 oder durch Ausführen von SQL-Skripten
 oder durch Restoren aus einem Dump.
+
+Die Daten bleiben auch
+z.B. nach `docker-compose stop` oder `docker-compose down` erhalten.
+Falls man mit leeren DBs neu starten möchte:
+```
+docker-compose down
+docker volume prune
+```
+Dabei werden alle Docker Volumes, die nicht an einen Container angebunden sind,
+unwiderruflich gelöscht.
+(Falls man nur die Volumes dieser Entwicklungs-DBs löschen möchte,
+kann man folgendes versuchen (wobei der *Value* des Labels nicht zwingend
+immer *gretljobs* ist;
+man kann ihn durch `docker volume inspect VOLUMENAME` herausfinden:
+`docker volume prune --filter 'label=com.docker.compose.project=gretljobs'`
 
 Die DBs sind mit folgenden Verbindungsparametern erreichbar:
 

@@ -17,6 +17,12 @@ services:
       - "54321:5432"
     volumes:
       - ./development_dbs/setup.sql:/pgconf/setup.sql
+      - sshd_edit:/sshd
+      - pgconf_edit:/pgconf
+      - pgdata_edit:/pgdata
+      - pgwal_edit:/pgwal
+      - recover_edit:/recover
+      - backrestrepo_edit:/backrestrepo
     hostname: primary  
   pub-db:
     build: .
@@ -35,4 +41,23 @@ services:
       - "54322:5432"
     volumes:
       - ./development_dbs/setup.sql:/pgconf/setup.sql
+      - sshd_pub:/sshd
+      - pgconf_pub:/pgconf
+      - pgdata_pub:/pgdata
+      - pgwal_pub:/pgwal
+      - recover_pub:/recover
+      - backrestrepo_pub:/backrestrepo
     hostname: primary  
+volumes:
+  sshd_edit:
+  pgconf_edit:
+  pgdata_edit:
+  pgwal_edit:
+  recover_edit:
+  backrestrepo_edit:
+  sshd_pub:
+  pgconf_pub:
+  pgdata_pub:
+  pgwal_pub:
+  recover_pub:
+  backrestrepo_pub:
