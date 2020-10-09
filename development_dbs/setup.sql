@@ -8,7 +8,7 @@ SET application_name="container_setup";
 --create extension postgis_topology;
 --create extension fuzzystrmatch;
 --create extension postgis_tiger_geocoder;
-create extension pg_stat_statements;
+--create extension pg_stat_statements;
 --create extension pgaudit;
 --create extension plr;
 
