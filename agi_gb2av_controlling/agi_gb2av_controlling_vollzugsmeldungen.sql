@@ -21,9 +21,9 @@ WITH geometrie AS
             SELECT
                 g.t_id, 
                 CASE 
-                    WHEN l.geometrie IS NOT NULL THEN ST_MakeValid(ST_CurveToLine(l.geometrie , 6, 0, 1)) 
-                    WHEN s.geometrie IS NOT NULL THEN ST_MakeValid(ST_CurveToLine(s.geometrie , 6, 0, 1)) 
-                    WHEN b.geometrie IS NOT NULL THEN ST_MakeValid(ST_CurveToLine(b.geometrie , 6, 0, 1)) 
+                    WHEN l.geometrie IS NOT NULL THEN l.geometrie
+                    WHEN s.geometrie IS NOT NULL THEN s.geometrie
+                    WHEN b.geometrie IS NOT NULL THEN b.geometrie
                 END AS geometrie,
                 g.art,
                 g.entstehung 
