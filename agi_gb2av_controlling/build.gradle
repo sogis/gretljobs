@@ -6,15 +6,15 @@ defaultTasks 'transferData'
 
 def gdiEnv
 if (gretlEnvironment == "test") {
-    gdiEnv = '-test'
+    gdiEnv = "'-test'"
 }
 else if (gretlEnvironment == "integration") {
-    gdiEnv = '-int'
+    gdiEnv = "'-int'"
 }
 else if (gretlEnvironment == "production") {
     gdiEnv = ''
 } else {
-    gdiEnv = '-dev'
+    gdiEnv = "'-dev'"
 }
 
 task upsertVollzugsmeldungen(type: SqlExecutor) {
@@ -30,7 +30,8 @@ task upsertAvMutationen(type: SqlExecutor, dependsOn: 'upsertVollzugsmeldungen')
 task transferData(type: Db2Db, dependsOn: 'upsertAvMutationen') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlParameters = [gdi_env: '-int']
+    sqlParameters = [gdi_env: gdiEnv]
+
     transferSets = [
             new TransferSet('agi_gb2av_controlling_pub_controlling_gb2av_vollzugsmeldung_delta.sql', 'agi_gb2av_controlling_pub.controlling_gb2av_vollzugsmeldung_delta', true),
             new TransferSet('agi_gb2av_controlling_pub_controlling_av2gb_mutationen.sql', 'agi_gb2av_controlling_pub.controlling_av2gb_mutationen', true)
