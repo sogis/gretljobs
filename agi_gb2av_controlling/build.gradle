@@ -6,15 +6,15 @@ defaultTasks 'transferData'
 
 def gdiEnv
 if (gretlEnvironment == "test") {
-    gdiEnv = "-test"
+    gdiEnv = '-test'
 }
 else if (gretlEnvironment == "integration") {
-    gdiEnv = "-int"
+    gdiEnv = '-int'
 }
 else if (gretlEnvironment == "production") {
-    gdiEnv = ""
+    gdiEnv = ''
 } else {
-    gdiEnv = "-dev"
+    gdiEnv = '-dev'
 }
 
 task upsertVollzugsmeldungen(type: SqlExecutor) {

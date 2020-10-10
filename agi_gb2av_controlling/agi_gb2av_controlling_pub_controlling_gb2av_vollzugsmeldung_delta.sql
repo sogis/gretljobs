@@ -13,7 +13,7 @@ SELECT
     av_gueltigereintrag,
     av_gbeintrag,
     av_firma,
-    'https://s3.eu-central-1.amazonaws.com/ch.so.agi.av.gb2av'||'${gdi_env}'||'/'||datasetname||'.xml' AS datasetname,
+    'https://s3.eu-central-1.amazonaws.com/ch.so.agi.av.gb2av'||COALESCE(${gdi_env}, ''::text)||'/'||datasetname||'.xml' AS datasetname,
     perimeter,
     grundstuecksart
 FROM 
