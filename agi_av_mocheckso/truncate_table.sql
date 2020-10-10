@@ -1,0 +1,1 @@
+DELETE FROM agi_av_mocheckso.mocheckso_errors_mocheckso_error; 
