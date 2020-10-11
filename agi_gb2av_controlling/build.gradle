@@ -4,17 +4,16 @@ import ch.so.agi.gretl.api.TransferSet
 
 defaultTasks 'transferData'
 
-def gdiEnv
+def bucket
 if (gretlEnvironment == "test") {
-    gdiEnv = "'-test'"
+    bucket = "'https://s3.eu-central-1.amazonaws.com/ch.so.agi.av.gb2av-test/'"
 }
 else if (gretlEnvironment == "integration") {
-    gdiEnv = "'-int'"
-}
-else if (gretlEnvironment == "production") {
-    gdiEnv = ''
+    bucket = "'https://s3.eu-central-1.amazonaws.com/ch.so.agi.av.gb2av-int/'"
+} else if (gretlEnvironment == "production") {
+    bucket = "'https://s3.eu-central-1.amazonaws.com/ch.so.agi.av.gb2av/'"
 } else {
-    gdiEnv = "'-dev'"
+    bucket = "'https://s3.eu-central-1.amazonaws.com/ch.so.agi.av.gb2av-dev/'"
 }
 
 task upsertVollzugsmeldungen(type: SqlExecutor) {
@@ -30,7 +29,7 @@ task upsertAvMutationen(type: SqlExecutor, dependsOn: 'upsertVollzugsmeldungen')
 task transferData(type: Db2Db, dependsOn: 'upsertAvMutationen') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlParameters = [gdi_env: gdiEnv]
+    sqlParameters = [bucket: bucket]
 
     transferSets = [
             new TransferSet('agi_gb2av_controlling_pub_controlling_gb2av_vollzugsmeldung_delta.sql', 'agi_gb2av_controlling_pub.controlling_gb2av_vollzugsmeldung_delta', true),
