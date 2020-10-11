@@ -1,8 +1,3 @@
-WITH const AS
-(
-    SELECT ${gdi_env} AS gdi_env
-)
-
 SELECT 
     t_ili_tid,
     mutationsnummer,
