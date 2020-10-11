@@ -13,7 +13,7 @@ SELECT
     av_gueltigereintrag,
     av_gbeintrag,
     av_firma,
-    ${bucket}||'/'||datasetname||'.xml' AS datasetname,
+    ${bucket}||datasetname||'.xml' AS datasetname,
     perimeter,
     grundstuecksart
 FROM 
