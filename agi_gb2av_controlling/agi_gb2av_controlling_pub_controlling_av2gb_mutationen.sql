@@ -3,7 +3,7 @@ SELECT
     mutationsnummer,
     nbident,
     beschrieb,
-    ${bucket}||dateinameplan||'.pdf' AS dateinameplan,
+    ${bucket}||dateinameplan AS dateinameplan,
     endetechnbereit,
     meldungen,
     grundbucheintrag,
