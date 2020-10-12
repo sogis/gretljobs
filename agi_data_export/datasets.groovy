@@ -152,4 +152,5 @@ datasets.add(new Dataset("SO_AWJF_Wegsanierungen_Publikation_20170629", "awjf_we
 //datasets.add(new Dataset("SO_AMB_Notfalltreffpunkte_Publikation_20180822", "amb_notfalltreffpunkte_pub", dbPub, "ch.so.amb_notfalltreffpunkte", true)) 
 //datasets.add(new Dataset("SO_Agglomerationsprogramme_Publikation_20200813", "arp_agglomerationsprogramme_pub", dbPub, "ch.so.arp_agglomerationsprogramme")) 
 //datasets.add(new Dataset("SO_ARP_Richtplan_Publikation_20190301", "arp_richtplan_pub", dbPub, "ch.so.arp.richtplan", true)) 
-datasets.add(new Dataset("SO_Nutzungsplanung_Publikation_20190909", "arp_npl_pub", dbPub, "ch.so.arp.nutzungsplanung")) 
+//datasets.add(new Dataset("SO_Nutzungsplanung_Publikation_20190909", "arp_npl_pub", dbPub, "ch.so.arp.nutzungsplanung")) 
+datasets.add(new Dataset("SO_AGI_GB2AV_Controlling_20201002", "agi_gb2av_controlling_pub", dbPub, "ch.so.agi.gb2av.controlling")) 
