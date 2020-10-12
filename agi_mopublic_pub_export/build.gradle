@@ -1,0 +1,162 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import java.nio.file.Files
+import java.io.FileOutputStream
+import java.util.UUID
+
+defaultTasks 'exportAllDatasets'
+
+String uuid = UUID.randomUUID().toString()
+File tmpFolder = new File(System.getProperty("java.io.tmpdir"),"mopublicexport-"+uuid);
+if(!tmpFolder.exists()) {
+    tmpFolder.mkdirs();
+}
+def pathToTempFolder = tmpFolder.getAbsolutePath()
+
+def todaysDate = new Date().format('yyyy-MM-dd')
+
+//def datasets = [2401,2402,2403,2404,2405,2406,2407,2408,2421,2422,2423,2424,2425,2426,2427,2428,2429,2445,2455,2456,2457,2461,2463,2464,2465,2472,2473,2474,2475,2476,2477,2478,2479,2480,2481,2491,2492,2493,2495,2497,2498,2499,2500,2501,2502,2503,2511,2513,2514,2516,2517,2518,2519,2520,2523,2524,2525,2526,2527,2528,2529,2530,2532,2534,2535,2541,2542,2543,2544,2545,2546,2547,2548,2549,2550,2551,2553,2554,2555,2556,2571,2572,2573,2574,2575,2576,2578,2579,2580,2581,2582,2583,2584,2585,2586,2601,2611,2612,2613,2614,2616,2617,2618,2619,2620,2621,2622]
+
+def datasets = [2401,2402]
+//def datasets = [2620,2621,2622]
+
+def s3Bucket
+if (gretlEnvironment == "test") {
+    s3Bucket = "ch.so.agi.av.mopublic-test"
+}
+else if (gretlEnvironment == "integration") {
+    s3Bucket = "ch.so.agi.av.mopublic-int"
+}
+else if (gretlEnvironment == "production") {
+    s3Bucket = "ch.so.agi.av.mopublic"
+} else {
+    s3Bucket = "ch.so.agi.av.mopublic-dev"
+}
+
+datasets.each { dataset ->
+    task "transferData_$dataset"(type: SqlExecutor) {
+        database = [dbUriPub, dbUserPub, dbPwdPub]
+        sqlParameters = [gem_bfs: dataset as String]
+        sqlFiles = ['empty_tables.sql', 'transfer_data.sql']
+    }
+
+    task "exportDataset_$dataset"(type: Ili2pgExport, dependsOn: "transferData_$dataset") {
+        database = [dbUriPub, dbUserPub, dbPwdPub]
+        dbschema = "agi_mopublic_pub_export"
+        models = "SO_AGI_MOpublic_20201009"
+        logFile = file(Paths.get(pathToTempFolder, dataset.toString() + "_" + todaysDate  + "_export.log"))
+        dataFile = file(Paths.get(pathToTempFolder, dataset.toString() + ".xtf"))
+        disableValidation = true
+
+        finalizedBy "emptyTables_$dataset"
+    } 
+
+    task "emptyTables_$dataset"(type: SqlExecutor) {
+        database = [dbUriPub, dbUserPub, dbPwdPub]
+        sqlFiles = ['empty_tables.sql']
+    }      
+
+    task "validateDataset_$dataset"(type: IliValidator, dependsOn: "exportDataset_$dataset") {
+        dataFiles = [Paths.get(pathToTempFolder, dataset.toString() + ".xtf")]
+        logFile = file(Paths.get(pathToTempFolder, dataset.toString() + "_" + todaysDate  + "_validation.log"))
+        failOnError = false
+        //if (new File("config/"+datasetId + ".toml").isFile()) configFile = "config/"+datasetId + ".toml"
+    }
+
+    task "zipDatasetXtf_$dataset"(type: Zip, dependsOn: "validateDataset_$dataset") {
+        from pathToTempFolder
+        include "$dataset*.xtf"
+        include "$dataset*_export.log"
+        include "$dataset*_validation.log"
+        archiveName dataset.toString() + "_xtf.zip"
+        destinationDir(file(pathToTempFolder))
+    }
+
+    task "importDatasetGpkg_$dataset"(type: Ili2gpkgImport, dependsOn: "zipDatasetXtf_$dataset") {
+        models = "SO_AGI_MOpublic_20201009"
+        dataFile = file(Paths.get(pathToTempFolder, dataset.toString() + ".xtf"))
+        dbfile = file(Paths.get(pathToTempFolder, dataset.toString() + ".gpkg"))
+        disableValidation = true
+        defaultSrsCode = 2056
+        nameByTopic = true
+        createEnumTabs = true
+        createMetaInfo = true
+        strokeArcs = true
+        coalesceJson = true
+    }
+
+    task "zipDatasetGpkg_$dataset"(type: Zip, dependsOn: "importDatasetGpkg_$dataset") {
+        from pathToTempFolder
+        include "$dataset*.gpkg"
+        include "$dataset*_validation.log"
+        archiveName dataset.toString() + "_gpkg.zip"
+        destinationDir(file(pathToTempFolder))
+    }   
+
+    task "gpkg2Shp_$dataset"(type: Gpkg2Shp, dependsOn: "zipDatasetGpkg_$dataset") {
+        dataFile = file(Paths.get(pathToTempFolder, dataset.toString() + ".gpkg")) 
+        outputDir = file(pathToTempFolder)
+    }  
+
+    task "zipDatasetShp_$dataset"(type: Zip, dependsOn: "gpkg2Shp_$dataset") {
+        from pathToTempFolder
+        include "*.shp"
+        include "*.dbf"
+        include "*.shx"
+        include "*.prj"
+        include "$dataset*_validation.log"
+        archiveName dataset.toString() + "_shp.zip"
+        destinationDir(file(pathToTempFolder))
+
+        finalizedBy "removeShpFiles_$dataset"
+    }     
+
+    task "removeShpFiles_$dataset"(type: Delete) {
+        delete fileTree(pathToTempFolder) {
+            include '**/*.shp'
+            include '**/*.dbf'
+            include '**/*.shx'
+            include '**/*.prj'
+            include '**/*.fix'
+        }
+    }     
+
+    task "uploadXtf_$dataset"(type: S3Upload, dependsOn: "zipDatasetShp_$dataset") {
+        accessKey = awsAccessKeyAgi
+        secretKey = awsSecretAccessKeyAgi
+        sourceFile = file(Paths.get(pathToTempFolder, dataset.toString() + "_xtf.zip"))
+        endPoint = "https://s3.amazonaws.com/"
+        region = "eu-central-1"
+        bucketName = s3Bucket
+        acl = "PublicRead"
+    }     
+
+    task "uploadGpkg_$dataset"(type: S3Upload, dependsOn: "uploadXtf_$dataset") {
+        accessKey = awsAccessKeyAgi
+        secretKey = awsSecretAccessKeyAgi
+        sourceFile = file(Paths.get(pathToTempFolder, dataset.toString() + "_gpkg.zip"))
+        endPoint = "https://s3.amazonaws.com/"
+        region = "eu-central-1"
+        bucketName = s3Bucket
+        acl = "PublicRead"
+    }  
+
+    task "uploadShp_$dataset"(type: S3Upload, dependsOn: "uploadGpkg_$dataset") {
+        accessKey = awsAccessKeyAgi
+        secretKey = awsSecretAccessKeyAgi
+        sourceFile = file(Paths.get(pathToTempFolder, dataset.toString() + "_shp.zip"))
+        endPoint = "https://s3.amazonaws.com/"
+        region = "eu-central-1"
+        bucketName = s3Bucket
+        acl = "PublicRead"
+    }              
+}
+
+task exportAllDatasets() {
+    description = "Aggregation task."
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('uploadShp_') }
+    }
+}
+
