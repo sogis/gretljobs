@@ -1,7 +1,10 @@
 /*
  * AV-Mutationen werden - falls noch nicht vorhanden - in die Tabelle
  * INSERTed. Falls sie bereits vorhanden ist, werden nur die Meldungen
- * vom Grundbuch an die amtliche Vermessung UPDATEd.
+ * vom Grundbuch an die amtliche Vermessung UPDATEd (Attribut 'meldungen').
+ * Falls keine Geometrie (proj. Grunstücke) in den Daten der amtlichen Vermessung
+ * vorhanden ist, wird kein Record erstellt (siehe WHERE-Clause). Falls keine 
+ * AV-Mutationsmeldung vorhanden ist, wird kein Record erstellt.
  */
 WITH meldungen AS 
 (
