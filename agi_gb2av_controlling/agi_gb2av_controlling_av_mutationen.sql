@@ -13,6 +13,7 @@ WITH meldungen AS
         mutationsnummer.nbident,
         json_agg(json_build_object
         (
+            '@type', 'SO_AGI_GB2AV_Controlling_20201002.Controlling.Vollzugsmeldung',
             'Nummer', mutationsnummer.nummer,
             'NBIdent', mutationsnummer.nbident,
             'Status', vollzugsgegenstand.astatus,
