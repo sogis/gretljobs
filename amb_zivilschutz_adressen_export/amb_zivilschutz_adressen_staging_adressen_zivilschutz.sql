@@ -84,6 +84,6 @@ INSERT INTO amb_zivilschutz_adressen_staging_pub.adressen_zivilschutz
         AND
         st_distance(a.gwr_edid_geom, g.geometrie) = 0
         AND
-        a.bfsnr = g.bfs_nr
+        a.bfsnr::int = g.bfs_nr
 )
 ;
