@@ -46,7 +46,7 @@ task exportAdressenZivilschutz(type: CsvExport, dependsOn: stageAdressenZivilsch
 task deleteCsvFile(type: Delete){
     delete "${csvFileName}"
 }
-
+/*
 task uploadCsvFile (dependsOn: exportAdressenZivilschutz){
     description = "Upload file to FTP server"
     doLast {
@@ -62,4 +62,4 @@ task uploadCsvFile (dependsOn: exportAdressenZivilschutz){
     }
     finalizedBy deleteCsvFile
 }
-
+*/
