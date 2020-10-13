@@ -2,32 +2,32 @@
 WITH
 adressen AS (
     SELECT
-        DISTINCT ON (a.strassenname, a.hausnummer, a.ortschaft) -- in Tabelle adressen.adressen gibt es doppelte Adresse wegen EO.Flaechenelement
+        DISTINCT ON (a.strassenname, a.nummer, a.ortschaft) -- in Tabelle adressen.adressen gibt es doppelte Adresse wegen EO.Flaechenelement
         a.t_id,
         a.strassenname AS lokalisationsname,
-        a.hausnummer,
-        a.plz AS plz,
+        a.nummer,
+        a.plz4 AS plz,
         a.ortschaft,
         g.gemeindename AS gemeinde,
         a.egid AS gwr_egid,
         a.edid AS gwr_edid,
-        ST_X(a.lage) AS koord_ost,
-        st_y(a.lage) AS koord_nord,
-        a.astatus AS status,
+        ST_X(a.geometrie) AS koord_ost,
+        st_y(a.geometrie) AS koord_nord,
+        a.astatus,
         b.geometrie AS gwr_egid_geom,
-        a.lage AS gwr_edid_geom,
-        a.bfs_nr
+        a.geometrie AS gwr_edid_geom,
+        a.bfsnr
     FROM
-        agi_mopublic_pub.mopublic_gebaeudeadresse AS a
+        agi_swisstopo_gebaeudeadressen_pub.gebaeudeadressen_adresse AS a
     LEFT JOIN agi_mopublic_pub.mopublic_bodenbedeckung AS b
         ON 
-        a.lage && b.geometrie
+        a.geometrie && b.geometrie
         AND
-        st_distance(a.lage, b.geometrie) = 0
+        st_distance(a.geometrie, b.geometrie) = 0
     LEFT JOIN agi_mopublic_pub.mopublic_gemeindegrenze AS g
-        ON a.bfs_nr = g.bfs_nr
+        ON a.bfsnr::int = g.bfs_nr
     WHERE
-        a.hausnummer IS NOT NULL -- nur die mit Hausnummern
+        a.nummer IS NOT NULL -- nur die mit Hausnummern
     AND
         b.art_txt = 'Gebaeude'
 ),
@@ -69,7 +69,7 @@ INSERT INTO amb_zivilschutz_adressen_staging_pub.adressen_zivilschutz
         a.gwr_edid,
         a.koord_ost,
         a.koord_nord,
-        a.status,
+        a.astatus,
         o.objektname,
         g.grundstuecknummer,
         g.grundbuchkreis
@@ -84,6 +84,6 @@ INSERT INTO amb_zivilschutz_adressen_staging_pub.adressen_zivilschutz
         AND
         st_distance(a.gwr_edid_geom, g.geometrie) = 0
         AND
-        a.bfs_nr = g.bfs_nr
+        a.bfsnr = g.bfs_nr
 )
 ;
