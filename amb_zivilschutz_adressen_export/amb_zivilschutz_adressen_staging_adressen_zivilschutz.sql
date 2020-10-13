@@ -5,7 +5,7 @@ adressen AS (
         DISTINCT ON (a.strassenname, a.nummer, a.ortschaft) -- in Tabelle adressen.adressen gibt es doppelte Adresse wegen EO.Flaechenelement
         a.t_id,
         a.strassenname AS lokalisationsname,
-        a.nummer,
+        a.nummer as hausnummer,
         a.plz4 AS plz,
         a.ortschaft,
         g.gemeindename AS gemeinde,
@@ -60,8 +60,8 @@ geb_objektnamen AS (
 INSERT INTO amb_zivilschutz_adressen_staging_pub.adressen_zivilschutz
 (
     SELECT
-    a.lokalisationsname,
-    a.hausnummer,
+        a.lokalisationsname,
+        a.hausnummer,
         a.plz,
         a.ortschaft,
         a.gemeinde,
