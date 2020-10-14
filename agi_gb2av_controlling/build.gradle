@@ -2,7 +2,7 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'transferData'
+defaultTasks 'refreshSolr'
 
 def bucket
 if (gretlEnvironment == "test") {
@@ -34,4 +34,8 @@ task transferData(type: Db2Db, dependsOn: 'upsertAvMutationen') {
             new TransferSet('agi_gb2av_controlling_pub_controlling_gb2av_vollzugsmeldung_delta.sql', 'agi_gb2av_controlling_pub.controlling_gb2av_vollzugsmeldung_delta', true),
             new TransferSet('agi_gb2av_controlling_pub_controlling_av2gb_mutationen.sql', 'agi_gb2av_controlling_pub.controlling_av2gb_mutationen', true)
     ];
+}
+
+task refreshSolr(type:Exec, dependsOn:'transferData') {
+	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.agi.av.gb2av.controlling_mutationen,ch.so.agi.av.gb2av.controlling_vollzugsmeldungen' 
 }
