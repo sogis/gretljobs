@@ -3,8 +3,8 @@ SELECT
     reservate_pflanze.deutscher_name,
     reservate_pflanze.geschuetzt,
     reservate_pflanze.rote_liste,
-    reservate_erhebung.jahr,
-    reservate_erhebung.projekt,
+    reservate_erhebung.jahr AS erhebungsjahr,
+    reservate_erhebung.projekt AS erhebungsprojekt,
     reservate_teilgebiet.teilgebietsname AS teilgebietsname,
     reservate_reservat.nummer AS reservatsnummer,
     reservate_teilgebiet.t_id AS teilgebietsnummer
