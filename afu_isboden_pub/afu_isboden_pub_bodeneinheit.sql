@@ -1044,7 +1044,7 @@ FROM
                 CASE
                     WHEN regexp_replace(regexp_replace(regexp_replace(regexp_replace(array_agg(untertyp_t.code)::text, '({|})'::text, ''::text, 'g'::text), '(E|K|I|G|R|P).'::text, ''::text, 'g'::text), '( ,|^,)'::text, ''::text, 'g'::text), '( |^,)'::text, ''::text, 'g'::text) = ''::text 
                         THEN NULL::text
-                    ELSE regexp_replace(string_agg(untertyp_t.code,', ')::text, '(E|K|I|G|R|P).(,|})'::text, ''::text, 'g'::text)
+                    ELSE REPLACE(regexp_replace(regexp_replace(regexp_replace(regexp_replace(array_agg(untertyp_t.code)::text, '(E|K|I|G|R|P).(,|})'::text, ''::text, 'g'::text), '({|})'::text, ''::text, 'g'::text), '( ,|^,)'::text, ''::text, 'g'::text), '( |,$)'::text, ''::text, 'g'::text)::text,',',', ')
                 END AS untertyp_div
             FROM
                 afu_isboden.zw_bodeneinheit_untertyp AS zw_bodeneinheit_untertyp_t
