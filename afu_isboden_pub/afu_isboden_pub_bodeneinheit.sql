@@ -1019,32 +1019,32 @@ FROM
                 zw_bodeneinheit_untertyp_t.fk_bodeneinheit,
                 (
                     SELECT
-                        afu_isboden.filter_array(array_agg(untertyp_t.code)::text[], 'E') AS filter_array
+                        REPLACE(afu_isboden.filter_array(array_agg(untertyp_t.code)::text[], 'E'),',',', ') AS filter_array
                 ) AS untertyp_e,
                 (
                     SELECT
-                        afu_isboden.filter_array(array_agg(untertyp_t.code)::text[], 'K') AS filter_array
+                        REPLACE(afu_isboden.filter_array(array_agg(untertyp_t.code)::text[], 'K'),',',', ') AS filter_array
                 ) AS untertyp_k,
                 (
                     SELECT
-                        afu_isboden.filter_array(array_agg(untertyp_t.code)::text[], 'I') AS filter_array
+                        REPLACE(afu_isboden.filter_array(array_agg(untertyp_t.code)::text[], 'I'),',',', ') AS filter_array
                 ) AS untertyp_i,
                 (
                     SELECT
-                        afu_isboden.filter_array(array_agg(untertyp_t.code)::text[], 'G') AS filter_array
+                        REPLACE(afu_isboden.filter_array(array_agg(untertyp_t.code)::text[], 'G'),',',', ') AS filter_array
                 ) AS untertyp_g,
                 (
                     SELECT
-                        afu_isboden.filter_array(array_agg(untertyp_t.code)::text[], 'R') AS filter_array
+                        REPLACE(afu_isboden.filter_array(array_agg(untertyp_t.code)::text[], 'R'),',',', ') AS filter_array
                 ) AS untertyp_r,
                 (
                     SELECT
-                        afu_isboden.filter_array(array_agg(untertyp_t.code)::text[], 'P') AS filter_array
+                        REPLACE(afu_isboden.filter_array(array_agg(untertyp_t.code)::text[], 'P'),',',', ') AS filter_array
                 ) AS untertyp_p,
                 CASE
                     WHEN regexp_replace(regexp_replace(regexp_replace(regexp_replace(array_agg(untertyp_t.code)::text, '({|})'::text, ''::text, 'g'::text), '(E|K|I|G|R|P).'::text, ''::text, 'g'::text), '( ,|^,)'::text, ''::text, 'g'::text), '( |^,)'::text, ''::text, 'g'::text) = ''::text 
                         THEN NULL::text
-                    ELSE REPLACE(regexp_replace(regexp_replace(regexp_replace(regexp_replace(array_agg(untertyp_t.code)::text, '(E|K|I|G|R|P).(,|})'::text, ''::text, 'g'::text), '({|})'::text, ''::text, 'g'::text), '( ,|^,)'::text, ''::text, 'g'::text), '( |,$)'::text, ''::text, 'g'::text)::text,',',', ')
+                    ELSE REPLACE(REPLACE(regexp_replace(regexp_replace(regexp_replace(regexp_replace(array_agg(untertyp_t.code)::text, '(E|K|I|G|R|P).(,|})'::text, ''::text, 'g'::text), '({|})'::text, ''::text, 'g'::text), '( ,|^,)'::text, ''::text, 'g'::text), '( |,$)'::text, ''::text, 'g'::text)::text,',',', '),'',NULL)
                 END AS untertyp_div
             FROM
                 afu_isboden.zw_bodeneinheit_untertyp AS zw_bodeneinheit_untertyp_t
