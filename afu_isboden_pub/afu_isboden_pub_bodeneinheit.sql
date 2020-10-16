@@ -1042,9 +1042,9 @@ FROM
                         REPLACE(afu_isboden.filter_array(array_agg(untertyp_t.code)::text[], 'P'),',',', ') AS filter_array
                 ) AS untertyp_p,
                 CASE
-                    WHEN regexp_replace(regexp_replace(regexp_replace(regexp_replace(array_agg(untertyp_t.code)::text, '({|})'::text, ''::text, 'g'::text), '(E|K|I|G|R|P).'::text, ''::text, 'g'::text), '( ,|^,)'::text, ''::text, 'g'::text), '( |^,)'::text, ''::text, 'g'::text) = ''::text 
+                    WHEN REPLACE(regexp_replace(regexp_replace(regexp_replace(regexp_replace(array_agg(untertyp_t.code)::text, '(E|K|I|G|R|P).(,|})'::text, ''::text, 'g'::text), '({|})'::text, ''::text, 'g'::text), '( ,|^,)'::text, ''::text, 'g'::text), '( |,$)'::text, ''::text, 'g'::text),',',', ') = ''::text 
                         THEN NULL::text
-                    ELSE REPLACE(REPLACE(regexp_replace(regexp_replace(regexp_replace(regexp_replace(array_agg(untertyp_t.code)::text, '(E|K|I|G|R|P).(,|})'::text, ''::text, 'g'::text), '({|})'::text, ''::text, 'g'::text), '( ,|^,)'::text, ''::text, 'g'::text), '( |,$)'::text, ''::text, 'g'::text)::text,',',', '),'',NULL)
+                    ELSE REPLACE(regexp_replace(regexp_replace(regexp_replace(regexp_replace(array_agg(untertyp_t.code)::text, '(E|K|I|G|R|P).(,|})'::text, ''::text, 'g'::text), '({|})'::text, ''::text, 'g'::text), '( ,|^,)'::text, ''::text, 'g'::text), '( |,$)'::text, ''::text, 'g'::text),',',', ')
                 END AS untertyp_div
             FROM
                 afu_isboden.zw_bodeneinheit_untertyp AS zw_bodeneinheit_untertyp_t
