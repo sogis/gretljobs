@@ -973,7 +973,8 @@ SELECT
     bodeneinheit_auspraegung_t.wassastoss,
     bodeneinheit_auspraegung_t.is_hauptauspraegung,
     bodeneinheit_auspraegung_t.gewichtung_auspraegung,
-    bodeneinheit_onlinedata_t.geom AS geometrie
+    bodeneinheit_onlinedata_t.geom AS geometrie, 
+    bodeneinheit_t.gemnr_aktuell
 FROM
     afu_isboden.bodeneinheit_onlinedata_t
     LEFT JOIN afu_isboden.bodeneinheit_t
