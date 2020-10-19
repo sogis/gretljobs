@@ -67,6 +67,7 @@ git checkout -b branchname
   * `gretlShare`
   * `gretlEnvironment` (der Wert dieser Variable ist je nach Umgebung `test`, `integration` oder `production`)
 
+Die Anleitung, wie man solche Ressourcen (z.B. DB-Verbindungen) in Jenkins definiert oder bestehende Ressourcen bearbeitet, ist unter https://github.com/sogis/gretl/tree/master/openshift#create-or-update-resources-to-be-used-by-gretl. Die Anleitung, wie man neue Credentials anlegt oder bestehende bearbeitet, ist unter https://github.com/sogis/gretl/tree/master/openshift#create-or-update-secrets-to-be-used-by-gretl.
 
 ### Files
 
