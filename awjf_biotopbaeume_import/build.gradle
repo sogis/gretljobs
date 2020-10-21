@@ -3,6 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 defaultTasks 'transferBiotopbaeume'
 
+
 task copyCsvFile(type: Copy) {
     from "upload/"
     into "upload/"
@@ -11,35 +12,17 @@ task copyCsvFile(type: Copy) {
 }
 
 task validateCsvFile(type: CsvValidator, dependsOn: 'copyCsvFile') {
-    models = "SO_AWJF_Biotopbaeume_20170426"
+    models = "SO_AWJF_Foerderprogramm_Biodiversitaet_20200526"
     firstLineIsHeader=true
     valueSeparator = ';'
     encoding = 'UTF-8'
     dataFiles = [file("upload/uploadFile.csv")]
 }
 
-/*
-task deleteFromAwjfBiotopbaumImport(type: SqlExecutor, dependsOn: 'validateCsvFile') {
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ['awjf_biotopbaeume_import_delete.sql']
-}
-*/
-
-task importBiotopbaeume(type: CsvImport, dependsOn: 'validateCsvFile') {
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    schemaName = 'awjf_foerderprogramm_biodiversitaet'
-    tableName = 'biotopbaeume_biotopbaum_import'
-    firstLineIsHeader = true
-    valueSeparator=';'
-    encoding = 'UTF-8'
-    dataFile = "upload/uploadFile"
-}
-
-task transferBiotopbaeume(type: SqlExecutor, dependsOn: 'importBiotopbaeume') {
+task transferBiotopbaeume(type: SqlExecutor, dependsOn: 'validateCsvFile') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['awjf_biotopbaeume_transfer.sql']
     finalizedBy "deleteImportData"
-    }
 }
 
 task deleteImportData(type: SqlExecutor) {
