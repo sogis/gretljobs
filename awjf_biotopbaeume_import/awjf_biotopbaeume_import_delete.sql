@@ -1,0 +1,2 @@
+DELETE FROM awjf_foerderprogramm_biodiversitaet.biotopbaeume_biotopbaum_import
+;
