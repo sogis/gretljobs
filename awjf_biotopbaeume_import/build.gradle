@@ -19,7 +19,17 @@ task validateCsvFile(type: CsvValidator, dependsOn: 'copyCsvFile') {
     dataFiles = [file("upload/uploadFile.csv")]
 }
 
-task transferBiotopbaeume(type: SqlExecutor, dependsOn: 'validateCsvFile') {
+task importBiotopbaeume(type: CsvImport, dependsOn: 'validateCsvFile') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = 'awjf_foerderprogramm_biodiversitaet'
+    tableName = 'biotopbaeume_biotopbaum_import'
+    firstLineIsHeader = true
+    valueSeparator=';'
+    encoding = 'UTF-8'
+    dataFile = "upload/uploadFile"
+}
+
+task transferBiotopbaeume(type: SqlExecutor, dependsOn: 'importBiotopbaeume') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['awjf_biotopbaeume_transfer.sql']
     finalizedBy "deleteImportData"
