@@ -12,7 +12,7 @@ task copyCsvFile(type: Copy) {
 }
 
 task validateCsvFile(type: CsvValidator, dependsOn: 'copyCsvFile') {
-    models = "SO_AWJF_Foerderprogramm_Biodiversitaet_20200526"
+    models = "SO_AWJF_Foerderprogramm_Biodiversitaet_20201021"
     firstLineIsHeader=true
     valueSeparator = ';'
     encoding = 'UTF-8'
