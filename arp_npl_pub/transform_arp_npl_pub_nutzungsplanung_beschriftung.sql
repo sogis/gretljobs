@@ -105,7 +105,7 @@ WITH beschriftung AS (
 )		   
 SELECT  
     g.t_datasetname::int4 AS bfs_nr,
-    g.t_ili_tid,
+    --g.t_ili_tid,
     g.bezeichnung AS typ_bezeichnung,
     g.abkuerzung AS typ_abkuerzung,
     g.verbindlichkeit AS typ_verbindlichkeit,
