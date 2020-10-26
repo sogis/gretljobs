@@ -6,10 +6,6 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferAwjfWaldpflegeErfassung'
 
 
-def pathToTempFolder = System.getProperty("java.io.tmpdir")
-
-def pathToUserDir = System.getProperty("user.dir")
-
 
 task copyCsvFile(type: Copy) {
     from "upload/"
@@ -17,7 +13,6 @@ task copyCsvFile(type: Copy) {
     include("uploadFile")
     rename("uploadFile", "uploadFile.csv")
 }
-
 
 task validateCsvFile(type: CsvValidator, dependsOn: 'copyCsvFile') {
     models = "SO_AWJF_Gesuchsteller_20201012"
