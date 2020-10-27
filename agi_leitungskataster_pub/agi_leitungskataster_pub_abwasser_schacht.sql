@@ -5,7 +5,7 @@ SELECT
     bauwerk.bezeichnung, 
     bauwerk.baulicherzustand AS baulicherzustand, 
     organisation.bezeichnung AS eigentuemer, 
-    bauwerk.status AS status, 
+    bauwerk.astatus AS status, 
     bauwerk.zugaenglichkeit AS zugaenglichkeit, 
     deckel.kote AS deckelkote, 
     round(st_x(knoten.lage)::numeric, 2) AS xkoord, 
