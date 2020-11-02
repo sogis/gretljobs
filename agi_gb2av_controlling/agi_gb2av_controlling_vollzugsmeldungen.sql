@@ -150,7 +150,7 @@ DO
 ;
 
 /*
- * UPDATEd das Attribut av_gbeintrag damit man sieht, dass das Geschäft
+ * UPDATEd die Attribute av_gbeintrag und av_gueltigkeit damit man sieht, dass das Geschäft
  * auch in der amtlichen Vermessung vollzogen ist und das Delta nicht
  * mehr UPDATEd wird.
  */
@@ -159,7 +159,8 @@ WITH subquery AS
     SELECT 
         identifikator,
         nbident,
-        gbeintrag
+        gbeintrag,
+        gueltigkeit
     FROM 
         agi_dm01avso24.liegenschaften_lsnachfuehrung 
     WHERE 
@@ -168,7 +169,8 @@ WITH subquery AS
 UPDATE 
     agi_gb2av_controlling.controlling_gb2av_vollzugsmeldung_delta 
 SET 
-    av_gbeintrag = subquery.gbeintrag
+    av_gbeintrag = subquery.gbeintrag,
+    av_gueltigkeit = subquery.gueltigkeit
 FROM 
     subquery 
 WHERE 
