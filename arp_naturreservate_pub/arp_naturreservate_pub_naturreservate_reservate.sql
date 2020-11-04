@@ -7,111 +7,36 @@ WITH documents AS (
         reservate_dokument.rechtsvorschrift, 
         reservate_dokument.offiziellenr,
         reservate_reservat_dokument.reservat,
+        
         CASE
             WHEN 
                 reservate_dokument.typ = 'RRB' 
-                AND 
-                position('/opt/sogis_pic/documents/ch.so.arp.naturreservate/rrb/' IN reservate_dokument.dateipfad) != 0 
-                AND 
-                reservate_dokument.bezeichnung != ''
-                AND 
-                reservate_dokument.bezeichnung IS NOT NULL
-                THEN 'https://geo.so.ch/docs/'
-                                || split_part(reservate_dokument.dateipfad, '/documents/', 2)
+                
+                THEN replace(reservate_dokument.dateipfad,'G:\documents\ch.so.arp.naturreservate\rrb\', 'https://geo.so.ch/docs/ch.so.arp.naturreservate/rrb/')
+                
+                
             WHEN 
-                reservate_dokument.typ = 'RRB' 
-                AND 
-                position('/opt/sogis_pic/documents/ch.so.arp.naturreservate/rrb/' IN reservate_dokument.dateipfad) != 0 
-                AND 
-                (
-                    reservate_dokument.bezeichnung = ''
-                    OR 
-                    reservate_dokument.bezeichnung IS NULL
-                )
-                THEN 'https://geo.so.ch/docs/'
-                                || split_part(reservate_dokument.dateipfad, '/documents/', 2)
-                                
+                reservate_dokument.typ = 'Bericht'
+        
+                THEN replace(reservate_dokument.dateipfad,'G:\documents\ch.so.arp.naturreservate\bericht\','https://geo.so.ch/docs/ch.so.arp.naturreservate/bericht/')
+                
             WHEN 
-                reservate_dokument.typ = 'RRB' 
-                AND 
-                position('opt/sogis_pic/daten_aktuell/arp/Zonenplaene/Zonenplaene_pdf/' IN reservate_dokument.dateipfad) != 0
-                AND 
-                reservate_dokument.bezeichnung != ''
-                AND 
-                reservate_dokument.bezeichnung IS NOT NULL
-                THEN 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/'
-                                || split_part(reservate_dokument.dateipfad, '/Zonenplaene/', 2)
-                                
+                reservate_dokument.typ = 'Kommunale_Inventare'
+        
+                THEN replace(reservate_dokument.dateipfad,'G:\documents\ch.so.arp.naturreservate\kommunale_inventare\','https://geo.so.ch/docs/ch.so.arp.naturreservate/kommunale_inventare/')
+                    
             WHEN 
-                reservate_dokument.typ = 'RRB'
-                AND 
-                position('opt/sogis_pic/daten_aktuell/arp/Zonenplaene/Zonenplaene_pdf/' IN reservate_dokument.dateipfad) != 0
-                AND 
-                (
-                    reservate_dokument.bezeichnung = ''
-                    OR 
-                    reservate_dokument.bezeichnung IS NULL
-                )
-                THEN 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/'
-                                || split_part(reservate_dokument.dateipfad, '/Zonenplaene/', 2)
+                reservate_dokument.typ = 'Pflegekonzept'
+        
+                THEN replace(reservate_dokument.dateipfad,'G:\documents\ch.so.arp.naturreservate\pflegekonzept\','https://geo.so.ch/docs/ch.so.arp.naturreservate/pflegekonzept/')
+                
             WHEN 
-                (
-                    reservate_dokument.typ = 'Kommunale_Inventare'
-                    OR
-                    reservate_dokument.typ = 'Bericht'
-                    OR
-                    reservate_dokument.typ = 'Pflegekonzept'
-                )
-                AND 
-                reservate_dokument.bezeichnung != ''
-                AND 
-                reservate_dokument.bezeichnung IS NOT NULL
-                THEN 'https://geo.so.ch/docs/'
-                                || split_part(reservate_dokument.dateipfad, '/documents/', 2)                              
-            WHEN 
-                (
-                    reservate_dokument.typ = 'Kommunale_Inventare'
-                    OR
-                    reservate_dokument.typ = 'Bericht'
-                    OR
-                    reservate_dokument.typ = 'Pflegekonzept'
-                )
-                AND 
-                (
-                    reservate_dokument.bezeichnung = ''
-                    OR 
-                    reservate_dokument.bezeichnung IS NULL
-                )
-                THEN  'https://geo.so.ch/docs/'
-                                || split_part(reservate_dokument.dateipfad, '/documents/', 2)
-            WHEN 
-                (
-                    reservate_dokument.typ = 'Sonderbauvorschriften'
-                    OR 
-                    reservate_dokument.typ = 'Gestaltungsplan'
-                )
-                AND 
-                reservate_dokument.bezeichnung != ''
-                AND 
-                reservate_dokument.bezeichnung IS NOT NULL
-                THEN 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/'
-                                || split_part(reservate_dokument.dateipfad, '/Zonenplaene/', 2)                
-            WHEN 
-                (
-                    reservate_dokument.typ = 'Sonderbauvorschriften'
-                    OR 
-                    reservate_dokument.typ = 'Gestaltungsplan'
-                )
-                AND 
-                (
-                    reservate_dokument.bezeichnung = ''
-                    OR 
-                    reservate_dokument.bezeichnung IS NULL
-                )
-                THEN 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/'
-                                || split_part(reservate_dokument.dateipfad, '/Zonenplaene/', 2)
-            ELSE NULL 
+                reservate_dokument.typ = 'Gestaltungsplan'
+        
+                THEN replace(reservate_dokument.dateipfad,'G:\documents\ch.so.arp.zonenplaene\','https://geo.so.ch/docs/ch.so.arp.zonenplaene/') 
+                                     
          END AS dokumente,
+         
          reservate_reservat.einzelschutz
    FROM 
         arp_naturreservate.reservate_reservat_dokument
