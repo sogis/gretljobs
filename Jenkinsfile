@@ -13,7 +13,7 @@ pipeline {
             steps {
                 git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
                 dir(env.JOB_BASE_NAME) {
-                    sh 'gretl -Dorg.gradle.jvmargs=-Xmx2G'
+                    sh 'gretl -Dorg.gradle.jvmargs=-Xmx1G'
                 }
             }
         }
