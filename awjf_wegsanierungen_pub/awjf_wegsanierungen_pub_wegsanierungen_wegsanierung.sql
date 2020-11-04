@@ -5,7 +5,7 @@ SELECT
     wegsanierungen_wegsanierung.projekt,
     ST_Length(wegsanierungen_wegsanierung.geometrie) AS laenge_gemessen,
     wegsanierungen_wegsanierung.laenge_beitrag,
-    wegsanierungen_wegsanierung.status,
+    wegsanierungen_wegsanierung.status AS astatus,
     wegsanierungen_wegsanierung.fid_ges_nr,
     wegsanierungen_wegsanierung.jahr,
     wegsanierungen_wegsanierung.kosten,
