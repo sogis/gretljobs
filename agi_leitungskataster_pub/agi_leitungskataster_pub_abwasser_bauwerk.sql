@@ -5,7 +5,7 @@ SELECT
     abw_bauwerk.bw_bezeichnung AS bezeichnung, 
     abw_bauwerk.baulicherzustand, 
     abw_bauwerk.o_bezeichnung AS eigentuemer, 
-    abw_bauwerk.status AS status, 
+    abw_bauwerk.astatus AS status, 
     abw_bauwerk.zugaenglichkeit AS zugaenglichkeit, 
     abw_bauwerk.rueckstaukote, 
     abw_bauwerk.sohlenkote, 
@@ -18,9 +18,9 @@ FROM
         bauwerk.detailgeometrie, 
         bauwerk.baujahr, 
         bauwerk.bezeichnung AS bw_bezeichnung, 
-        bauwerk.baulicherzustand, 
+        baulicherzustand.itfcode AS baulicherzustand, 
         organisation.bezeichnung AS o_bezeichnung, 
-        bauwerk.status, 
+        bauwerk.astatus, 
         bauwerk.zugaenglichkeit, 
         k.rueckstaukote, 
         k.sohlenkote, 
@@ -32,6 +32,8 @@ FROM
     LEFT JOIN agi_leitungskataster_abw.sia405_abwassr_wi_abwasserknoten k ON netzelement.t_id::text = k.superclass::text
     LEFT JOIN agi_leitungskataster_abw.sia405_abwassr_wi_normschacht normschacht ON bauwerk.t_id::text = normschacht.superclass::text
     LEFT JOIN agi_leitungskataster_abw.sia405_abwassr_wi_vorflutereinlauf vorfluter ON bauwerk.t_id::text = vorfluter.superclass::text
+    LEFT JOIN agi_leitungskataster_abw.sia405_bwssr_wi_abwasserbauwerk_baulicherzustand baulicherzustand ON baulicherzustand.dispname = bauwerk.baulicherzustand
+    
     WHERE bauwerk.detailgeometrie IS NOT null) abw_bauwerk
 RIGHT JOIN 
     (SELECT DISTINCT ON (sia405_abwassr_wi_spezialbauwerk.superclass) 

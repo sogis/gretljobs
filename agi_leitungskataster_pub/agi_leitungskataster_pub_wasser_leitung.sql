@@ -41,7 +41,7 @@ SELECT
     leitung.durchmesser, 
     leitung.nennweite, 
     leitung.lagebestimmung AS lagebestimmung, 
-    leitung.status AS status, 
+    leitung.astatus AS status, 
     leitung.druckzone, 
     leitung.eigentuemer, 
     CASE

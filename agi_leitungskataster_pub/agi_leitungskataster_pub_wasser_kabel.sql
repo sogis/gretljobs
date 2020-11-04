@@ -5,7 +5,7 @@ SELECT
     funktion AS funktion_txt,
     kabelart AS kabelart_txt,
     lagebestimmung AS lagebestimmung_txt,
-    status AS status_txt,
+    astatus AS status_txt,
     einbaujahr,
     ueberdeckung,
     zustand,
