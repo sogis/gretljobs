@@ -36,7 +36,7 @@ SELECT
   amt.telefon AS telefon,
   amt.web AS web,
   amt.email AS email,
-  amt.auid AS uid
+  amt.auid
 FROM
   agi_av_gb_admin_einteilung.grundbuchkreise_grundbuchkreis AS kreis
   LEFT JOIN agi_av_gb_admin_einteilung.grundbuchkreise_grundbuchamt AS amt
