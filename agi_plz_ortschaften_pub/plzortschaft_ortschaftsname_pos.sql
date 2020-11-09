@@ -1,0 +1,11 @@
+SELECT
+    t_id,
+    ori,
+    hali,
+    vali,
+    groesse,
+    ortschaftsname_pos_von,
+    pos
+FROM 
+    agi_plz_ortschaften.plzortschaft_ortschaftsname_pos
+;
