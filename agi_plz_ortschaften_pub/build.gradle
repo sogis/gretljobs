@@ -89,8 +89,8 @@ task convertDataSogis(type: SqlExecutor, dependsOn: 'convertDataEdit'){
     sqlFiles = [
         'delete_ortschaft.sql',
         'delete_postleitzahl.sql',
-        'insert_ortschaft.sql',
-        'insert_postleitzahl.sql'
+        'insert_ortschaft_sogis.sql',
+        'insert_postleitzahl_sogis.sql'
     ]
 }
 

@@ -1,6 +1,6 @@
 SELECT 
     ortschaftsname, 
-    status, 
+    astatus, 
     geometrie
 FROM 
     agi_plz_ortschaften_pub.plzortschaften_ortschaft
