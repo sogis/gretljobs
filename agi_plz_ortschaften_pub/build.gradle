@@ -88,19 +88,16 @@ task copyDataSogis(type: Db2Db, dependsOn: 'copyDataPubSogis'){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
-        new TransferSet('plzortschaften_ortschaft.sql', 'agi_plz_ortschaften.nummerierngsbrche_kantonskuerzel', true),
-        new TransferSet('plzortschaften_postleitzahl.sql', 'agi_plz_ortschaften.nummerierngsbrche_nbgeometrie', true),
+        new TransferSet('nummerierngsbrche_nbgeometrie.sql', 'agi_plz_ortschaften.nummerierngsbrche_nbgeometrie', true),
         new TransferSet('nummerierngsbrche_nummerierungsbereich.sql', 'agi_plz_ortschaften.nummerierngsbrche_nummerierungsbereich', true),
         new TransferSet('nummerierngsbrche_nummerierungsbereichpos.sql', 'agi_plz_ortschaften.nummerierngsbrche_nummerierungsbereichpos', true),
         new TransferSet('plzortschaft_ortschaft.sql', 'agi_plz_ortschaften.plzortschaft_ortschaft', true),
-        new TransferSet('plzortschaft_ortschaft_inaenderung.sql', 'agi_plz_ortschaften.plzortschaft_ortschaft_inaenderung', true),
         new TransferSet('plzortschaft_ortschaftsname.sql', 'agi_plz_ortschaften.plzortschaft_ortschaftsname', true),
         new TransferSet('plzortschaft_ortschaftsname_pos.sql', 'agi_plz_ortschaften.plzortschaft_ortschaftsname_pos', true),
         new TransferSet('plzortschaft_ortschaftsverbund.sql', 'agi_plz_ortschaften.plzortschaft_ortschaftsverbund', true),
         new TransferSet('plzortschaft_ortschaftsverbundtext.sql', 'agi_plz_ortschaften.plzortschaft_ortschaftsverbundtext', true),
         new TransferSet('plzortschaft_osnachfuehrung.sql', 'agi_plz_ortschaften.plzortschaft_osnachfuehrung', true),
         new TransferSet('plzortschaft_plz6.sql', 'agi_plz_ortschaften.plzortschaft_plz6', true),
-        new TransferSet('plzortschaft_plz6_inaenderung.sql', 'agi_plz_ortschaften.plzortschaft_plz6_inaenderung', true),
         new TransferSet('plzortschaft_plz6nachfuehrung.sql', 'agi_plz_ortschaften.plzortschaft_plz6nachfuehrung', true)
     ];
 }
