@@ -52,7 +52,7 @@ task dbImport(type: Ili2pgImport, dependsOn: 'unzipData'){
     strokeArcs = true
 }
 
-task convertDataEdit(type: SqlExecutor, dependsOn: 'dbImportSogis'){
+task convertDataEdit(type: SqlExecutor, dependsOn: 'dbImport'){
     description = "Convert plz_ortschaften-Data to Edit Schema"
     doLast {
         println "plz_ortschaften-Data are converted to Edit Schema."
@@ -102,7 +102,7 @@ task copyDataSogis(type: Db2Db, dependsOn: 'copyDataPubSogis'){
     ];
 }
 
-task copyDataPub(type: Db2Db, dependsOn: 'convertDataSogis'){
+task copyDataPub(type: Db2Db, dependsOn: 'copyDataSogis'){
     description = "Copy plz_ortschaften-Data to Pub Schema"
     doLast {
         println "plz_ortschaften-Data are copied to Pub Schema."
