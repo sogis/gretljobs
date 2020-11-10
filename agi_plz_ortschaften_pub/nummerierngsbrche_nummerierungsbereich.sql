@@ -1,7 +1,9 @@
 SELECT
     t_id,
-    nbgeometrie_von,
-    geometrie
+    kt,
+    nbnummer,
+    techdossier,
+    gueltigereintrag
 FROM 
-    agi_plz_ortschaften.nummerierngsbrche_nbgeometrie
+    agi_plz_ortschaften.nummerierngsbrche_nummerierungsbereich
 ;
