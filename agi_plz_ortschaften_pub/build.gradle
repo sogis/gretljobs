@@ -66,7 +66,6 @@ task convertDataEdit(type: SqlExecutor, dependsOn: 'dbImport'){
     ]
 }
 
-/*
 task copyDataPubSogis(type: Db2Db, dependsOn: 'convertDataEdit'){
     description = "Copy plz_ortschaften-Data to Sogis Pub Schema"
     doLast {
@@ -102,9 +101,8 @@ task copyDataSogis(type: Db2Db, dependsOn: 'copyDataPubSogis'){
         new TransferSet('plzortschaft_plz6nachfuehrung.sql', 'agi_plz_ortschaften.plzortschaft_plz6nachfuehrung', true)
     ];
 }
-*/
 
-task copyDataPub(type: Db2Db, dependsOn: 'convertDataEdit'){
+task copyDataPub(type: Db2Db, dependsOn: 'copyDataSogis'){
     description = "Copy plz_ortschaften-Data to Pub Schema"
     doLast {
         println "plz_ortschaften-Data are copied to Pub Schema."
