@@ -5,11 +5,11 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferAwjfBiotopbaeume'
 
-task transferAwjfBiotopbaeume(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+task transferAwjfBiotopbaeume(type: Db2Db) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('awjf_biotopbaeume_pub_biotopbaeume_biotopbaum.sql',
-                    'awjf_biotopbaeume_pub.biotopbaeume_biotopbaum', true)
+                            'awjf_foerderprogramm_biodiversitaet_pub.biotopbaeume_biotopbaum', true)
     ];
 }
