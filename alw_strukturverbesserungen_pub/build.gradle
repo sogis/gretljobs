@@ -9,7 +9,9 @@ task transfer_SV-GIS(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('beizugsgebiete.sql', 'alw_strukturverbesserungen_pub.strukturvrbssrung_beizugsgebiet', true),
-            new TransferSet('gemeinde.sql', 'alw_strukturverbesserungen_pub.strukturvrbssrung_gemeinde', true)
+            new TransferSet('beizugsgebiet.sql', 'alw_strukturverbesserungen_pub.strukturvrbssrung_beizugsgebiet', true),
+            new TransferSet('gemeinde.sql', 'alw_strukturverbesserungen_pub.strukturvrbssrung_gemeinde', true),
+            new TransferSet('genossenschaft.sql', 'alw_strukturverbesserungen_pub.strukturvrbssrung_genossenschaft', true),
+            new TransferSet('massnahme.sql', 'alw_strukturverbesserungen_pub.strukturvrbssrung_massnahme', true)
     ];
 }
