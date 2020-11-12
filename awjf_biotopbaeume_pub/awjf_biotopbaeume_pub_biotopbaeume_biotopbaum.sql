@@ -40,15 +40,13 @@ SELECT
             THEN 'Bäume mit Spechtlöchern, Bruthöhlen oder Wurzelhöhlen'
         WHEN merkmal_1 = 'm3_Horstbaeume'
             THEN 'Horstbäume'
-        WHEN merkmal_1 = 'm4_Sitz_Schlafbaeume_Auerwilds'
-            THEN 'Sitz- und Schlafbäume des Auerwilds'
-        WHEN merkmal_1 = 'm5_Alte_ehemalige_Weidebaeume'
+        WHEN merkmal_1 = 'm4_Alte_ehemalige_Weidebaeume'
             THEN 'Alte, ehemalige Weidebäume im Bestandesinnern, besondere Überhälter'
-        WHEN merkmal_1 = 'm6_Lebende_Baeume_Efeu_Mistelbewuchs'
+        WHEN merkmal_1 = 'm5_Lebende_Baeume_Efeu_Mistelbewuchs'
             THEN 'Lebende Bäume mit starkem Efeu- oder Mistelbewuchs'
-        WHEN merkmal_1 = 'm7_Baeume_mit_markanten_Schaeden'
+        WHEN merkmal_1 = 'm6_Baeume_mit_markanten_Schaeden'
             THEN 'Bäume mit markanten Schäden'
-        WHEN merkmal_1 = 'm8_Baeume_mit_besonderem_Wuchs'
+        WHEN merkmal_1 = 'm7_Baeume_mit_besonderem_Wuchs'
             THEN 'Bäume mit besonderem Wuchs'
         WHEN merkmal_1 = 'm20_Stehendes_Totholz'
             THEN 'Stehendes Totholz'
@@ -68,15 +66,13 @@ SELECT
             THEN 'Bäume mit Spechtlöchern, Bruthöhlen oder Wurzelhöhlen'
         WHEN merkmal_2 = 'm3_Horstbaeume'
             THEN 'Horstbäume'
-        WHEN merkmal_2 = 'm4_Sitz_Schlafbaeume_Auerwilds'
-            THEN 'Sitz- und Schlafbäume des Auerwilds'
-        WHEN merkmal_2 = 'm5_Alte_ehemalige_Weidebaeume'
+        WHEN merkmal_2 = 'm4_Alte_ehemalige_Weidebaeume'
             THEN 'Alte, ehemalige Weidebäume im Bestandesinnern, besondere Überhälter'
-        WHEN merkmal_2 = 'm6_Lebende_Baeume_Efeu_Mistelbewuchs'
+        WHEN merkmal_2 = 'm5_Lebende_Baeume_Efeu_Mistelbewuchs'
             THEN 'Lebende Bäume mit starkem Efeu- oder Mistelbewuchs'
-        WHEN merkmal_2 = 'm7_Baeume_mit_markanten_Schaeden'
+        WHEN merkmal_2 = 'm6_Baeume_mit_markanten_Schaeden'
             THEN 'Bäume mit markanten Schäden'
-        WHEN merkmal_2 = 'm8_Baeume_mit_besonderem_Wuchs'
+        WHEN merkmal_2 = 'm7_Baeume_mit_besonderem_Wuchs'
             THEN 'Bäume mit besonderem Wuchs'
         WHEN merkmal_2 = 'm20_Stehendes_Totholz'
             THEN 'Stehendes Totholz'
@@ -96,15 +92,13 @@ SELECT
             THEN 'Bäume mit Spechtlöchern, Bruthöhlen oder Wurzelhöhlen'
         WHEN merkmal_3 = 'm3_Horstbaeume'
             THEN 'Horstbäume'
-        WHEN merkmal_3 = 'm4_Sitz_Schlafbaeume_Auerwilds'
-            THEN 'Sitz- und Schlafbäume des Auerwilds'
-        WHEN merkmal_3 = 'm5_Alte_ehemalige_Weidebaeume'
+        WHEN merkmal_3 = 'm4_Alte_ehemalige_Weidebaeume'
             THEN 'Alte, ehemalige Weidebäume im Bestandesinnern, besondere Überhälter'
-        WHEN merkmal_3 = 'm6_Lebende_Baeume_Efeu_Mistelbewuchs'
+        WHEN merkmal_3 = 'm5_Lebende_Baeume_Efeu_Mistelbewuchs'
             THEN 'Lebende Bäume mit starkem Efeu- oder Mistelbewuchs'
-        WHEN merkmal_3 = 'm7_Baeume_mit_markanten_Schaeden'
+        WHEN merkmal_3 = 'm6_Baeume_mit_markanten_Schaeden'
             THEN 'Bäume mit markanten Schäden'
-        WHEN merkmal_3 = 'm8_Baeume_mit_besonderem_Wuchs'
+        WHEN merkmal_3 = 'm7_Baeume_mit_besonderem_Wuchs'
             THEN 'Bäume mit besonderem Wuchs'
         WHEN merkmal_3 = 'm20_Stehendes_Totholz'
             THEN 'Stehendes Totholz'
@@ -119,7 +113,6 @@ SELECT
     beschreibung_merkmal_3,
     massnahmen,
     besonderheiten,
-    biotopflaeche AS biotopbaumflaeche,
     bemerkungen,
     CASE
         WHEN tp_inventar = 'TP_aber_nicht_Inventar_nicht_im_TP'
@@ -152,13 +145,14 @@ SELECT
                 THEN  gemeindegrenze.bfs_gemeindenummer
         ELSE gemeindegrenze_ausserkantonal.bfs_nummer
     END AS gemeindenummer,
-    flurname.name AS flurname,
+    flurname.aname AS flurname,
     round(ST_X(biotopbaum.geometrie)::NUMERIC, 0) AS x_koordinate,
     round(ST_Y(biotopbaum.geometrie)::NUMERIC, 0) AS y_koordinate,
-    waldgesellschaft.ges_neu AS waldgesellschaft,
+    --waldgesellschaft.ges_neu AS waldgesellschaft,                  /* später ändern, wenn waldgesellschaften neu modelliert
+    NULL AS waldgesellschaft,
     ablage AS foto
 FROM
-    awjf_biotopbaeume.biotopbaeume_biotopbaum biotopbaum
+    awjf_foerderprogramm_biodiversitaet.biotopbaeume_biotopbaum AS biotopbaum
     LEFT JOIN awjf_forstreviere.forstreviere_forstreviergeometrie AS forstgeometrie
         ON
             forstgeometrie.geometrie && biotopbaum.geometrie
@@ -187,27 +181,27 @@ FROM
             ST_Contains(gemeindegrenze_ausserkantonal.geometrie, biotopbaum.geometrie)
             AND 
             gemeindegrenze_ausserkantonal.kanton <> 'Solothurn'
-    LEFT JOIN avdpool.flurn AS flurname
+    LEFT JOIN agi_dm01avso24.nomenklatur_flurname AS flurname
         ON
-            flurname.wkb_geometry && biotopbaum.geometrie
+            flurname.geometrie && biotopbaum.geometrie
             AND
-            ST_Contains(flurname.wkb_geometry, biotopbaum.geometrie)
-            AND
-            flurname.archive = 0
-    LEFT JOIN  awjf.wap_bst AS waldplan                   -- Waldplan noch nicht vollständig (Stand 17.01.2018)
+            ST_Contains(flurname.geometrie, biotopbaum.geometrie)
+/*    LEFT JOIN  awjf.wap_bst AS waldplan                   -- Waldplan noch nicht vollständig (Stand 17.01.2018)
         ON
             waldplan.wkb_geometry && biotopbaum.geometrie
             AND
             ST_Contains(waldplan.wkb_geometry, biotopbaum.geometrie)
             AND 
             waldplan.archive = 0
-    LEFT JOIN awjf.waldge AS waldgesellschaft
+*/
+/*    LEFT JOIN awjf.waldge AS waldgesellschaft
         ON
             waldgesellschaft.wkb_geometry && biotopbaum.geometrie
             AND
             ST_Contains(waldgesellschaft.wkb_geometry, biotopbaum.geometrie)
             AND
             waldgesellschaft.archive = 0
+*/
     LEFT JOIN
         (
             SELECT 
@@ -218,49 +212,13 @@ FROM
                         ablage, 
                         biotopbaum
                     FROM
-                        awjf_biotopbaeume.biotopbaeume_foto
+                        awjf_foerderprogramm_biodiversitaet.biotopbaeume_foto
                 ) AS foto,
-                awjf_biotopbaeume.biotopbaeume_biotopbaum AS biotopbaum
+                awjf_foerderprogramm_biodiversitaet.biotopbaeume_biotopbaum AS biotopbaum
             WHERE
                 foto.biotopbaum = biotopbaum.t_id
             GROUP BY 
                 biotopbaum
         ) AS foto
         ON foto.biotopbaum = biotopbaum.t_id
-GROUP BY
-    baum_id,
-    baumkategorie,
-    inventur_jahr,
-    wirtschaftszone,
-    gesuchsnummer,
-    waldeigentuemer_code,
-    baumart,
-    bhd,
-    baumhoehe, 
-    merkmal_1,
-    beschreibung_merkmal_1,
-    merkmal_2,
-    beschreibung_merkmal_2,
-    merkmal_3,
-    beschreibung_merkmal_3,
-    massnahmen,
-    besonderheiten,
-    biotopflaeche,
-    bemerkungen,
-    tp_inventar,
-    auszahlung_beitrag,
-    auszahlung_beitrag_jahr,
-    biotopbaum.geometrie,
-    waldgesellschaft.legende,
-    waldplan.wpnr,
-    forstkreis.aname,
-    forstrevier.aname,
-    kanton.geometrie,
-    kanton.kantonskuerzel,
-    bfs_gemeindenummer,
-    gemeindegrenze_ausserkantonal.bfs_nummer,
-    gemeindegrenze_ausserkantonal.kanton,
-    flurname.name,
-    waldgesellschaft.ges_neu,
-    foto.ablage
 ;
