@@ -1,0 +1,225 @@
+WITH gen AS (
+  SELECT
+    t_id,
+    t_ili_tid,
+    typ,
+    aname,
+    unterhaltsobjekt AS unterhaltsobjekte,
+    gruendungsdatum,
+    genehmigungsdatum,
+    reorganisationsdatum,
+    aufloesungsdatum,
+    bemerkung,
+    geometrie  
+  FROM
+    alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft
+),
+projekte AS (
+    --Bewässerung Flächen
+    SELECT DISTINCT
+      gen.t_id,
+      proj.kantonsnummer,
+      proj.geschaeftsnummer
+    FROM
+      gen
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON gen.t_id = ztgenel.genossenschaft_element AND ztgenel.element_genossenschaft_raeumlichlmnt_bw_flchn_bwssrung IS NOT NULL
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_bew_flaechen_bewaesserung el ON el.t_id = ztgenel.element_genossenschaft_raeumlichlmnt_bw_flchn_bwssrung
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
+  UNION
+    --Bewässerung Linien
+    SELECT DISTINCT
+      gen.t_id,
+      proj.kantonsnummer,
+      proj.geschaeftsnummer
+    FROM
+      gen
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON gen.t_id = ztgenel.genossenschaft_element AND ztgenel.element_genossenschaft_raeumlicheelemnte_bewssrng_lnie IS NOT NULL
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_bewaesserung_linie el ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_bewssrng_lnie
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
+  UNION
+    --Bewässerung Punkte
+    SELECT DISTINCT
+      gen.t_id,
+      proj.kantonsnummer,
+      proj.geschaeftsnummer
+    FROM
+      gen
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON gen.t_id = ztgenel.genossenschaft_element AND ztgenel.element_genossenschaft_raeumlicheelemnte_bewssrng_lnie IS NOT NULL
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_bewaesserung_linie el ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_bewssrng_lnie
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
+  UNION
+    --Entwässerung Bodenstruktur Fläche
+    SELECT DISTINCT
+      gen.t_id,
+      proj.kantonsnummer,
+      proj.geschaeftsnummer
+    FROM
+      gen
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON gen.t_id = ztgenel.genossenschaft_element AND ztgenel.element_genossenschaft_raemlchlmnt_ntw_bdnstrktr_flche IS NOT NULL
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_entw_bodenstruktur_flaeche el ON el.t_id = ztgenel.element_genossenschaft_raemlchlmnt_ntw_bdnstrktr_flche
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
+  UNION
+    --Entwässerung Entwässerung Bodenstruktur Linie
+    SELECT DISTINCT
+      gen.t_id,
+      proj.kantonsnummer,
+      proj.geschaeftsnummer
+    FROM
+      gen
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON gen.t_id = ztgenel.genossenschaft_element AND ztgenel.element_genossenschaft_raeumlchlmnt_ntw_bdnstrktr_lnie IS NOT NULL
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_entw_bodenstruktur_linie el ON el.t_id = ztgenel.element_genossenschaft_raeumlchlmnt_ntw_bdnstrktr_lnie
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
+  UNION
+    --Entwässerung Entwässerung Bodenstruktur Pumpwerk
+    SELECT DISTINCT
+      gen.t_id,
+      proj.kantonsnummer,
+      proj.geschaeftsnummer
+    FROM
+      gen
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON gen.t_id = ztgenel.genossenschaft_element AND ztgenel.element_genossenschaft_raemlchlmnt_ntwdnstrktr_pmpwerk IS NOT NULL
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_entw_bodenstruktur_pumpwerk el ON el.t_id = ztgenel.element_genossenschaft_raemlchlmnt_ntwdnstrktr_pmpwerk
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
+  UNION
+    --Elektrizitätsversorgung Linie
+    SELECT DISTINCT
+      gen.t_id,
+      proj.kantonsnummer,
+      proj.geschaeftsnummer
+    FROM
+      gen
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON gen.t_id = ztgenel.genossenschaft_element AND ztgenel.element_genossenschaft_raeumlicheelemnte_ev_linie IS NOT NULL
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_ev_linie el ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_ev_linie
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
+  UNION
+    --Elektrizitätsversorgung Punkt
+    SELECT DISTINCT
+      gen.t_id,
+      proj.kantonsnummer,
+      proj.geschaeftsnummer
+    FROM
+      gen
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON gen.t_id = ztgenel.genossenschaft_element AND ztgenel.element_genossenschaft_raeumlicheelemnte_ev_punkt IS NOT NULL
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_ev_punkt el ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_ev_punkt
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
+  UNION
+    --Ökologie Fläche
+    SELECT DISTINCT
+      gen.t_id,
+      proj.kantonsnummer,
+      proj.geschaeftsnummer
+    FROM
+      gen
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON gen.t_id = ztgenel.genossenschaft_element AND ztgenel.element_genossenschaft_raeumlicheelemnte_oekolog_flche IS NOT NULL
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_oekologie_flaeche el ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_oekolog_flche
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
+  UNION
+    --Ökologie Linie
+    SELECT DISTINCT
+      gen.t_id,
+      proj.kantonsnummer,
+      proj.geschaeftsnummer
+    FROM
+      gen
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON gen.t_id = ztgenel.genossenschaft_element AND ztgenel.element_genossenschaft_raeumlicheelemnte_oekologi_lnie IS NOT NULL
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_oekologie_linie el ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_oekologi_lnie
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
+  UNION
+    --Ökologie Punkt
+    SELECT DISTINCT
+      gen.t_id,
+      proj.kantonsnummer,
+      proj.geschaeftsnummer
+    FROM
+      gen
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON gen.t_id = ztgenel.genossenschaft_element AND ztgenel.element_genossenschaft_raeumlicheelemnte_oekologi_pnkt IS NOT NULL
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_oekologie_punkt el ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_oekologi_pnkt
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
+  UNION
+    --Ökologie Trockenmauer
+    SELECT DISTINCT
+      gen.t_id,
+      proj.kantonsnummer,
+      proj.geschaeftsnummer
+    FROM
+      gen
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON gen.t_id = ztgenel.genossenschaft_element AND ztgenel.element_genossenschaft_raeumlicheelemnte_klg_trcknmuer IS NOT NULL
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_oekologie_trockenmauer el ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_klg_trcknmuer
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
+  UNION
+    --Wasserversorgung Leitung
+    SELECT DISTINCT
+      gen.t_id,
+      proj.kantonsnummer,
+      proj.geschaeftsnummer
+    FROM
+      gen
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON gen.t_id = ztgenel.genossenschaft_element AND ztgenel.element_genossenschaft_raemlchlmnt_wv_tng_wssrvrsrgung IS NOT NULL
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_wv_leitung_wasserversorgung el ON el.t_id = ztgenel.element_genossenschaft_raemlchlmnt_wv_tng_wssrvrsrgung
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
+  UNION
+    --Wasserversorgung Punkt
+    SELECT DISTINCT
+      gen.t_id,
+      proj.kantonsnummer,
+      proj.geschaeftsnummer
+    FROM
+      gen
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON gen.t_id = ztgenel.genossenschaft_element AND ztgenel.element_genossenschaft_raeumlichelmnt_wssrvrsrgng_pnkt IS NOT NULL
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_wasserversorgung_punkt el ON el.t_id = ztgenel.element_genossenschaft_raeumlichelmnt_wssrvrsrgng_pnkt
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
+  UNION
+    --Wegebau Linie
+    SELECT DISTINCT
+      gen.t_id,
+      proj.kantonsnummer,
+      proj.geschaeftsnummer
+    FROM
+      gen
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON gen.t_id = ztgenel.genossenschaft_element AND ztgenel.element_genossenschaft_raeumlicheelemnte_wegebau_linie IS NOT NULL
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_wegebau_linie el ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_wegebau_linie
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
+  UNION
+    --Wegebau Brücken
+    SELECT DISTINCT
+      gen.t_id,
+      proj.kantonsnummer,
+      proj.geschaeftsnummer
+    FROM
+      gen
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON gen.t_id = ztgenel.genossenschaft_element AND ztgenel.element_genossenschaft_raeumlichlmnt_wg_brck_lhnnvdukt IS NOT NULL
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_wege_bruecke_lehnenviadukt el ON el.t_id = ztgenel.element_genossenschaft_raeumlichlmnt_wg_brck_lhnnvdukt
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
+  UNION
+    --Wiederherstellung Punkt
+    SELECT DISTINCT
+      gen.t_id,
+      proj.kantonsnummer,
+      proj.geschaeftsnummer
+    FROM
+      gen
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON gen.t_id = ztgenel.genossenschaft_element AND ztgenel.element_genossenschaft_raeumlichelmnt_wdrhrstllng_pnkt IS NOT NULL
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_wiederherstellung_punkt el ON el.t_id = ztgenel.element_genossenschaft_raeumlichelmnt_wdrhrstllng_pnkt
+      LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
+)
+
+SELECT
+  gen.*,
+  string_agg(proj.kantonsnummer,', ') AS kantonsnummern,
+  string_agg(proj.geschaeftsnummer,', ') AS geschaeftsnummern
+  FROM gen
+    LEFT JOIN projekte proj ON gen.t_id = proj.t_id
+  GROUP BY
+    gen.t_id,
+    gen.t_ili_tid,
+    gen.typ,
+    gen.aname,
+    gen.unterhaltsobjekte,
+    gen.gruendungsdatum,
+    gen.genehmigungsdatum,
+    gen.reorganisationsdatum,
+    gen.aufloesungsdatum,
+    gen.bemerkung,
+    gen.geometrie
+  ORDER BY t_id ASC
+;
