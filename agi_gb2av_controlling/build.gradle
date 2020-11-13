@@ -7,7 +7,7 @@ defaultTasks 'refreshSolr'
 def bucket
 if (gretlEnvironment == "test") {
     bucket = "'https://s3.eu-central-1.amazonaws.com/ch.so.agi.av.gb2av-test/'"
-} else if (gretlEnvironment == "int") {
+} else if (gretlEnvironment == "integration") {
     bucket = "'https://s3.eu-central-1.amazonaws.com/ch.so.agi.av.gb2av-int/'"
 } else if (gretlEnvironment == "production") {
     bucket = "'https://s3.eu-central-1.amazonaws.com/ch.so.agi.av.gb2av/'"
