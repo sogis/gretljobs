@@ -25,7 +25,7 @@ def s3Bucket
 if (gretlEnvironment == "test") {
     s3Bucket = "ch.so.agi.av.mopublic-test"
 }
-else if (gretlEnvironment == "integration") {
+else if (gretlEnvironment == "int") {
     s3Bucket = "ch.so.agi.av.mopublic-int"
 }
 else if (gretlEnvironment == "production") {
