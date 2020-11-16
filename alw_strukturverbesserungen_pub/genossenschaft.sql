@@ -1,18 +1,33 @@
 WITH gen AS (
   SELECT
-    t_id,
-    t_ili_tid,
-    typ,
-    aname,
-    unterhaltsobjekt AS unterhaltsobjekte,
-    gruendungsdatum,
-    genehmigungsdatum,
-    reorganisationsdatum,
-    aufloesungsdatum,
-    bemerkung,
-    geometrie  
+    gen.t_id,
+    gen.t_ili_tid,
+    gen.typ,
+    gen.aname,
+    gen.unterhaltsobjekt AS unterhaltsobjekte,
+    gen.gruendungsdatum,
+    gen.genehmigungsdatum,
+    gen.reorganisationsdatum,
+    gen.aufloesungsdatum,
+    gen.bemerkung,
+    gen.geometrie,
+    (
+      WITH docs AS (
+        SELECT json_build_object(
+                't_id',dok.t_id,
+                'titel',dok.titel,
+                'typ',dok.typ,
+                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+              ) AS jsondok
+        FROM
+          alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_dokument ztdok
+          LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_dokument dok ON ztdok.dokument = dok.t_id
+            WHERE ztdok.genossenschaft = gen.t_id
+        )
+        SELECT json_agg(jsondok) FROM docs
+    )::jsonb AS dokumente
   FROM
-    alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft
+    alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft gen
 ),
 projekte AS (
     --Bewässerung Flächen
@@ -204,9 +219,20 @@ projekte AS (
 )
 
 SELECT
-  gen.*,
-  string_agg(proj.kantonsnummer,', ') AS kantonsnummern,
-  string_agg(proj.geschaeftsnummer,', ') AS geschaeftsnummern
+    gen.t_id,
+    gen.t_ili_tid,
+    gen.typ,
+    gen.aname,
+    gen.unterhaltsobjekte,
+    gen.gruendungsdatum,
+    gen.genehmigungsdatum,
+    gen.reorganisationsdatum,
+    gen.aufloesungsdatum,
+    gen.bemerkung,
+    gen.geometrie,
+    string_agg(proj.kantonsnummer,', ') AS kantonsnummern,
+    string_agg(proj.geschaeftsnummer,', ') AS geschaeftsnummern,
+    gen.dokumente
   FROM gen
     LEFT JOIN projekte proj ON gen.t_id = proj.t_id
   GROUP BY
@@ -220,6 +246,7 @@ SELECT
     gen.reorganisationsdatum,
     gen.aufloesungsdatum,
     gen.bemerkung,
-    gen.geometrie
+    gen.geometrie,
+    gen.dokumente
   ORDER BY t_id ASC
 ;
