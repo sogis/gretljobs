@@ -7,7 +7,7 @@ task transferAgiKantonsgrenzsteine(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('agi_inventar_hoheitsgrenzen_pub_kantonsgrenzstein.sql.sql',
+            new TransferSet('agi_inventar_hoheitsgrenzen_pub_kantonsgrenzstein.sql',
                             'agi_inventar_hoheitsgrenzen_pub.invntr_hhtsgrnzen_kantonsgrenzstein', true)
     ];
 }
