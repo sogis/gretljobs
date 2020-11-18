@@ -1,15 +1,3 @@
-buildscript {
-    repositories {
-        maven { url "https://repo.osgeo.org/repository/release/" }
-        maven { url "http://jars.interlis.ch" }
-        maven { url "https://plugins.gradle.org/m2/" }
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'commons-net:commons-net:3.6'
-    }
-}
-
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 import ch.so.agi.gretl.util.TaskUtil
@@ -20,51 +8,18 @@ import org.apache.commons.net.ftp.*
 
 apply plugin: 'ch.so.agi.gretl'
 
-
 defaultTasks "transferFledermausPub"
 
 def pathToTempFolder = Files.createTempDirectory("arpfledermaus-").toFile().getAbsolutePath()
-def remoteFileName = "export.csv"
-def localFileName = "export.csv"
 
-def server = ftpServerFledermaus
-def user = ftpUserFledermaus
-def password = ftpPwdFledermaus
 
-task downloadData() {
-    doLast {
-        def ftp = new FTPClient()
-
-        try {
-            ftp.connect(server, 21)
-            ftp.login(user, password)
-
-            int reply = ftp.getReplyCode();
-            if(!FTPReply.isPositiveCompletion(reply)) {
-                throw new Exception("FTP server refused connection.")
-            }
-
-            String fileName = Paths.get(pathToTempFolder, localFileName).toFile().getAbsoluteFile()
-            FileOutputStream fos = new FileOutputStream(fileName)
-
-            boolean response = ftp.retrieveFile(remoteFileName, fos)
-            if (response == false) {
-                throw new Exception("Could not retrieve file: " + remoteFileName)
-            }
-            println "File downloaded: " + fileName
-        } catch (Exception e) {
-            GradleException ge = TaskUtil.toGradleException(e)
-            throw ge;
-        } finally {
-            if(ftp.isConnected()) {
-                try {
-                    ftp.disconnect()
-                } catch(IOException e) {
-                    // do nothing
-                }
-            }
-        }
-    }
+task downloadData(type: FtpDownload){
+    server = "sl50.web.hostpoint.ch"
+    user = "so@fledermausschutz.ch"
+    password = "Y68vRtM5Qg!MuV6"
+    localDir = pathToTempFolder
+    remoteDir = ""
+    remoteFile = "export.csv"
 }
 
 task validateCsv(type: CsvValidator, dependsOn: 'downloadData') {
@@ -72,6 +27,7 @@ task validateCsv(type: CsvValidator, dependsOn: 'downloadData') {
     firstLineIsHeader = true
     dataFiles = [pathToTempFolder.toString()+"/export.csv"]
 }
+
 
 task truncateTable(type: SqlExecutor, dependsOn: 'validateCsv') {
     description = "Leert die Tabelle arp_fledermaus.fledermausfundrte_fledermausfundort"
