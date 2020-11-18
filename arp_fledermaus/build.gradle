@@ -14,9 +14,9 @@ def pathToTempFolder = Files.createTempDirectory("arpfledermaus-").toFile().getA
 
 
 task downloadData(type: FtpDownload){
-    server = "sl50.web.hostpoint.ch"
-    user = "so@fledermausschutz.ch"
-    password = "Y68vRtM5Qg!MuV6"
+    server = ftpServerFledermaus
+    user = ftpUserFledermaus
+    password = ftpPwdFledermaus
     localDir = pathToTempFolder
     remoteDir = ""
     remoteFile = "export.csv"

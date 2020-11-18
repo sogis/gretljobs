@@ -6,7 +6,8 @@ import java.nio.file.Files
 import java.io.FileOutputStream
 import org.apache.commons.net.ftp.*
 
-defaultTasks 'transferDataPub'
+//defaultTasks 'transferDataPub'
+defaultTasks 'validateCsv'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def localFileName = "mocheckso_errors.csv"
@@ -54,6 +55,7 @@ task downloadCsv() {
             }
         }
 
+        // Bug in ehibasics: https://github.com/claeis/ehibasics/commit/e231dc9583b4d1f9d08352c51486ae60ab408021
         // TODO: In Rote Faden Doku!!!!
         // Achtung: Das gesamte File wird in den Memory gelesen.
         def fileContent = new File(pathToTempFolder.toString()+"/mocheckso_errors.csv").getText('windows-1252')
@@ -71,6 +73,7 @@ task validateCsv(type: CsvValidator, dependsOn: 'downloadCsv') {
     dataFiles = [pathToTempFolder.toString()+"/mocheckso_errors_semicolon.csv"]
 }
 
+/*
 task truncateTable(type: SqlExecutor, dependsOn: 'validateCsv') {
     description = "Leert die Tabelle agi_av_mocheckso.mocheckso_errors_mocheckso_error"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -97,3 +100,4 @@ task transferDataPub(type: Db2Db, dependsOn: 'importCsv') {
             new TransferSet('agi_av_validierung_pub.sql', 'agi_av_validierung_pub.errorlog_error', true)
     ];
 }
+*/
