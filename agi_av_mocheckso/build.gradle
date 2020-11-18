@@ -6,58 +6,23 @@ import java.nio.file.Files
 import java.io.FileOutputStream
 import org.apache.commons.net.ftp.*
 
-//defaultTasks 'transferDataPub'
-defaultTasks 'validateCsv'
+defaultTasks 'transferDataPub'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def localFileName = "mocheckso_errors.csv"
 
-def server = ftpServerInfogrips
-def systemTypeKey = "WINDOWS" 
-def user = ftpUserInfogrips
-def password = ftpPwdInfogrips
-def remoteFileName = "/DM01AVSO24LV95/ERROR/MOCHECKSO_ERRORS.CSV"
+task downloadCsv(type: FtpDownload){
+    server = ftpServerInfogrips
+    user = ftpUserInfogrips
+    password = ftpPwdInfogrips
+    systemType = "WINDOWS"
+    localDir = pathToTempFolder
+    remoteDir = "\\DM01AVSO24LV95\\ERROR"
+    remoteFile = "mocheckso_errors.csv"
 
-task downloadCsv() {
+    // Bug in ehibasics: https://github.com/claeis/ehibasics/commit/e231dc9583b4d1f9d08352c51486ae60ab408021
+    // Achtung: Das gesamte File wird in den Memory gelesen.
     doLast {
-        def ftp = new FTPClient()
-
-        try {            
-            ftp.connect(server, 21)
-            ftp.enterLocalPassiveMode() // Not needed when running locally on MacOS.
-            ftp.login(user, password)
-            ftp.configure(new FTPClientConfig(systemTypeKey)); 
-
-            int reply = ftp.getReplyCode();
-            if(!FTPReply.isPositiveCompletion(reply)) {
-                throw new Exception("FTP server refused connection.")
-            }
-
-            String fileName = Paths.get(pathToTempFolder, localFileName).toFile().getAbsoluteFile()
-            FileOutputStream fos = new FileOutputStream(fileName)
-
-            boolean response = ftp.retrieveFile(remoteFileName, fos)
-
-            if (response == false) {
-                throw new Exception("Could not retrieve file: " + remoteFileName)
-            }
-            println "File downloaded: " + fileName
-        } catch (Exception e) {
-            GradleException ge = TaskUtil.toGradleException(e)
-            throw ge
-        } finally {
-            if (ftp.isConnected()) {
-                try {
-                    ftp.disconnect()
-                } catch(IOException e) {
-                    // do nothing
-                }
-            }
-        }
-
-        // Bug in ehibasics: https://github.com/claeis/ehibasics/commit/e231dc9583b4d1f9d08352c51486ae60ab408021
-        // TODO: In Rote Faden Doku!!!!
-        // Achtung: Das gesamte File wird in den Memory gelesen.
         def fileContent = new File(pathToTempFolder.toString()+"/mocheckso_errors.csv").getText('windows-1252')
         new File(pathToTempFolder.toString()+"/mocheckso_errors_semicolon.csv").write(fileContent.replace("\t",";"),'utf-8')
     }
@@ -73,7 +38,6 @@ task validateCsv(type: CsvValidator, dependsOn: 'downloadCsv') {
     dataFiles = [pathToTempFolder.toString()+"/mocheckso_errors_semicolon.csv"]
 }
 
-/*
 task truncateTable(type: SqlExecutor, dependsOn: 'validateCsv') {
     description = "Leert die Tabelle agi_av_mocheckso.mocheckso_errors_mocheckso_error"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -100,4 +64,3 @@ task transferDataPub(type: Db2Db, dependsOn: 'importCsv') {
             new TransferSet('agi_av_validierung_pub.sql', 'agi_av_validierung_pub.errorlog_error', true)
     ];
 }
-*/
