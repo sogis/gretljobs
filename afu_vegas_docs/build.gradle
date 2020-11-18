@@ -41,7 +41,6 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'uploadFilesToS3'
 
-//def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToTempFolder = Files.createTempDirectory("afuvegas-").toFile().getAbsolutePath()
 
 def s3Bucket = "ch.so.afu.grundwasserbewirtschaftung"
