@@ -1,0 +1,134 @@
+buildscript {
+	repositories {
+		maven { url "http://jars.interlis.ch" }
+		maven { url "http://jars.umleditor.org" }
+		maven { url "https://repo.osgeo.org/repository/release/" }
+		maven { url "https://plugins.gradle.org/m2/" }
+		maven { url "https://dl.bintray.com/sogis/iox-wkf" } // temporary
+		mavenCentral()
+	}
+	dependencies {
+		classpath group: 'ch.so.agi', name: 'gretl',  version: '2.0.+'
+	}
+}
+
+import java.text.SimpleDateFormat
+import java.nio.file.Paths
+import java.nio.file.Files
+import java.io.File
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import groovy.sql.*
+
+repositories { 
+    mavenCentral() 
+}
+
+configurations { 
+    driver 
+}
+
+dependencies { 
+    driver 'org.postgresql:postgresql:42.2.5' 
+}
+
+URLClassLoader loader = GroovyObject.class.classLoader
+configurations.driver.each {File file ->
+    loader.addURL(file.toURL())
+}
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'uploadFilesToS3'
+
+//def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def pathToTempFolder = Files.createTempDirectory("afuvegas-").toFile().getAbsolutePath()
+
+def s3Bucket = "ch.so.afu.grundwasserbewirtschaftung"
+if (gretlEnvironment == "test") {
+    s3Bucket += "-test"
+}
+else if (gretlEnvironment == "integration") {
+    s3Bucket += "-int"
+}
+else if (gretlEnvironment == "production") {
+    // do nothing
+} else {
+    s3Bucket += "-test"
+}
+
+task exportFiles() {
+    doLast {
+        def stmt = 
+"""
+SELECT 
+    obj.vegas_id, obj.dokument_id, dok.bezeichnung, dok.dateiendung, atype.bezeichnung as dokuart
+FROM 
+    vegas.adm_objekt_dokument AS obj 
+    LEFT JOIN vegas.adm_dokument AS dok 
+    ON dok.dokument_id = obj.dokument_id 
+    LEFT JOIN vegas.lookup_dokutyp_v AS atype 
+    ON dok.dokutyp = atype.code_id 
+WHERE 
+    vegas_id IN 
+    (
+        SELECT 
+            vegas_id 
+        FROM 
+            vegas.obj_objekt_v
+    )
+LIMIT 10
+;
+"""
+        Sql.withInstance(dbUriSogis, dbUserSogis, dbPwdSogis, "org.postgresql.Driver") { sql ->
+            sql.eachRow(stmt) { row ->
+                def vegasId = row.vegas_id
+                def dokuId = row.dokument_id
+                def dokuExt = row.dateiendung
+                def filename = vegasId  + "_" + dokuId + "." + dokuExt
+                println filename
+
+                def dataStmt = "SELECT dokument_id, daten FROM vegas.adm_dokument WHERE dokument_id = $dokuId"
+                Sql.withInstance(dbUriSogis, dbUserSogis, dbPwdSogis, "org.postgresql.Driver") { dataSql ->
+                    def dataRow = dataSql.firstRow(dataStmt)
+
+                    new File(Paths.get(pathToTempFolder, filename).toString()).withOutputStream {
+                        it.write dataRow.daten
+                    }
+                }
+            }   
+        }
+    }
+}
+
+task timestamp(dependsOn: "exportFiles")  {
+    doLast {
+        file(Paths.get(pathToTempFolder, "timestamp.txt")).text = "${new SimpleDateFormat("yyyyMMdd").format(new Date())}"
+        println Paths.get(pathToTempFolder, "timestamp.txt")
+    }
+}
+
+task uploadFilesToS3(type: S3Upload, dependsOn: "timestamp") {
+    accessKey = awsAccessKeyAfu
+    secretKey = awsSecretAccessKeyAfu
+    sourceDir = file(pathToTempFolder)
+    endPoint = "https://s3.amazonaws.com/"
+    region = "eu-central-1"
+    bucketName = s3Bucket
+    acl = "PublicRead"
+
+    finalizedBy "removeFiles"
+}
+
+task removeFiles(type: Delete) {
+    delete fileTree(pathToTempFolder) {
+        include '**/*.BMP'
+        include '**/*.jpg'
+        include '**/*.JPG'
+        include '**/*.bmp'
+        include '**/*.doc'
+        include '**/*.docx'
+        include '**/*.pdf'
+        include '**/*.txt'
+    }
+}
