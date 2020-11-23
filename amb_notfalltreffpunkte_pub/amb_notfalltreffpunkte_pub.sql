@@ -22,6 +22,8 @@ FROM
             ortschaft, 
             gwr_egid_geom 
         FROM adressen.adressen 
-        WHERE ARCHIVE = 0
+        WHERE ARCHIVE = 0 
+	    AND 
+	       ((plz4 >= '2000') AND (plz4 <= '6000'))
     ) b 
         ON st_dwithin(a.geometrie,b.gwr_egid_geom,0);
