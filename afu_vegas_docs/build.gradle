@@ -1,3 +1,4 @@
+/*
 buildscript {
 	repositories {
 		maven { url "http://jars.interlis.ch" }
@@ -11,6 +12,7 @@ buildscript {
 		classpath group: 'ch.so.agi', name: 'gretl',  version: '2.0.+'
 	}
 }
+*/
 
 import java.text.SimpleDateFormat
 import java.nio.file.Paths
@@ -20,8 +22,17 @@ import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.*
 import groovy.sql.*
 
+/*
 repositories { 
     mavenCentral() 
+}
+*/
+
+// Wegen spezielle Config notwendig.
+repositories {
+    flatDir {
+        dirs '/home/gradle/libs'
+    }
 }
 
 configurations { 
@@ -37,7 +48,7 @@ configurations.driver.each {File file ->
     loader.addURL(file.toURL())
 }
 
-apply plugin: 'ch.so.agi.gretl'
+//apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'uploadFilesToS3'
 
@@ -46,21 +57,17 @@ def pathToTempFolder = Files.createTempDirectory("afuvegas-").toFile().getAbsolu
 def s3Bucket = "ch.so.afu.grundwasserbewirtschaftung"
 if (gretlEnvironment == "test") {
     s3Bucket += "-test"
-}
-else if (gretlEnvironment == "integration") {
+} else if (gretlEnvironment == "integration") {
     s3Bucket += "-int"
-}
-else if (gretlEnvironment == "production") {
+} else if (gretlEnvironment == "production") {
     // do nothing
 } else {
     s3Bucket += "-test"
 }
 
-// TODO: Prüfen, ob man den `DatabaseDocumentExport` aufbohren kann.
+def fullExport = false
 
-task exportFiles() {
-    doLast {
-        def stmt = 
+def stmt = 
 """
 SELECT 
     obj.vegas_id, obj.dokument_id, dok.bezeichnung, dok.dateiendung, atype.bezeichnung as dokuart
@@ -78,9 +85,20 @@ WHERE
         FROM 
             vegas.obj_objekt_v
     )
-LIMIT 10
-;
 """
+
+// TODO: Prüfen, ob man den `DatabaseDocumentExport` aufbohren kann.
+task exportFiles() {
+    doLast {
+        if (!fullExport) {
+        stmt += 
+"""
+ORDER BY 
+    vegas_id DESC
+LIMIT 100;
+"""
+        }
+
         Sql.withInstance(dbUriSogis, dbUserSogis, dbPwdSogis, "org.postgresql.Driver") { sql ->
             sql.eachRow(stmt) { row ->
                 def vegasId = row.vegas_id
