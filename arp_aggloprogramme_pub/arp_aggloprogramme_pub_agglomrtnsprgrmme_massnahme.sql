@@ -5,7 +5,7 @@ SELECT
     CASE 
         WHEN generation = 3
             THEN 'in Prüfung'
-    END AS status,
+    END AS astatus,
     paket.handlungsfeld,
     paket.handlungspaket,
     paket.massnahmepaket AS massnahmenpaket,
