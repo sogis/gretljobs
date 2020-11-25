@@ -120,9 +120,9 @@ FROM
     LEFT JOIN agi_plz_ortschaften.plzortschaft_ortschaftsname AS ortschaftsname
     ON ortschaftsname.ortschaftsname_von = ortschaft.t_id
     WHERE 
-    plz.status != 'vergangen'
+    plz.astatus != 'vergangen'
     AND
-    ortschaft.status != 'vergangen'
+    ortschaft.astatus != 'vergangen'
     AND 
     strassenname IS NOT NULL
     AND
