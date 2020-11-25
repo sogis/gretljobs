@@ -22,6 +22,8 @@ FROM
         ON grenzstein.t_id = grenzstein_gemeinde.stein
     Left JOIN agi_inventar_hoheitsgrenzen.invntr_hhtsgrnzen_gemeinde AS gemeinde
         ON grenzstein_gemeinde.gemeinde = gemeinde.t_id
+WHERE
+    schoener_stein IS TRUE 
 GROUP BY
     geometrie,
     steinnummer,
