@@ -22,9 +22,59 @@ ext {
     dbSogis = [dbUriSogis, dbUserSogis, dbPwdSogis]
     dbEdit = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = []
+    models.add(["SO_Agglomerationsprogramme_20170512",
+                "arp_aggloprogramme",
+                dbSogis])
+    models.add(["SO_ARP_Nutzungsvereinbarung_20170512",
+                "arp_nutzungsvereinbarung",
+                dbSogis ])
+    models.add(["SO_Forstreviere_20170512",
+                "awjf_forstreviere",
+                dbSogis ])
+    models.add(["SO_Hoheitsgrenzen_20170623",
+                "agi_hoheitsgrenzen",
+                dbSogis ])
+    models.add(["SO_AWJF_Wegsanierungen_20170629",
+                "awjf_wegsanierungen",
+                dbSogis])
+    models.add(["SO_BLN_20170904",
+                "arp_bln",
+                dbSogis ])
+    models.add(["SO_ALW_Vernetzung_20171010",
+                "alw_vernetzung",
+                dbSogis ])
+    models.add(["SO_AWJF_Biotopbaeume_20181217",
+                "awjf_biotopbaeume",
+                dbSogis ])
+    models.add(["SO_AMB_Notfalltreffpunkte_20180413",
+                "amb_notfalltreffpunkte",
+                dbSogis ])
+    models.add(["SO_AGI_AV_GB_Administrative_Einteilungen_20180613",
+                "agi_av_gb_admin_einteilung",
+                dbSogis ])
+    models.add(["SO_ARP_Naturreservate_20180829",
+                "arp_naturreservate",
+                dbSogis ])
+    /*
     models.add(["SO_AVT_Verkehrszaehlstellen_20190206",
                 "avt_verkehrszaehlstellen",
                 dbEdit])
+    */
+    /*
+    models.add(["SO_ARP_Richtplan_20190222",
+                "arp_richtplan",
+                dbEdit])
+    */
+    /*models.add(["SO_AfU_Gefahrenkartierung_20181129",
+                "afu_gefahrenkartierung",
+                dbEdit])*/
+    models.add(["SO_AfU_Erdwaermesonden_20190204",
+                "afu_erdwaermesonden",
+                dbEdit])
+    /*models.add(["SO_Nutzungsplanung_20171118",
+                "arp_npl",
+                dbSogis])*/
+
 }
 
 def stringPathToTempFolder = System.getProperty("java.io.tmpdir").toString()
