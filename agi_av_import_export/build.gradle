@@ -1,0 +1,52 @@
+buildscript {
+	repositories {
+		maven { url "http://jars.interlis.ch" }
+		maven { url "http://jars.umleditor.org" }
+		maven { url "https://repo.osgeo.org/repository/release/" }
+		maven { url "https://plugins.gradle.org/m2/" }
+		maven { url "https://dl.bintray.com/sogis/iox-wkf" } // temporary
+		mavenCentral()
+	}
+	dependencies {
+		classpath group: 'ch.so.agi', name: 'gretl',  version: '2.0.+'
+	}
+}
+
+import java.text.SimpleDateFormat
+import java.nio.file.Paths
+import java.nio.file.Files
+import java.io.File
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+
+apply plugin: 'ch.so.agi.gretl'
+
+//defaultTasks 'uploadFilesToS3'
+
+def pathToTempFolder = Files.createTempDirectory("agiavimport-").toFile().getAbsolutePath()
+def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
+
+/*
+def s3Bucket = "ch.so.afu.grundwasserbewirtschaftung"
+if (gretlEnvironment == "test") {
+    s3Bucket += "-test"
+} else if (gretlEnvironment == "integration") {
+    s3Bucket += "-int"
+} else if (gretlEnvironment == "production") {
+    // do nothing
+} else {
+    s3Bucket += "-test"
+}
+*/
+
+task downloadFiles(type: FtpDownload){
+    server = ftpServerInfogrips
+    user = ftpUserInfogrips
+    password = ftpPwdInfogrips
+    systemType = "WINDOWS"
+    localDir = pathToTempFolder
+    //localDir = System.getProperty("java.io.tmpdir") + "/gretl-share/"
+    remoteDir = "\\dm01avso24lv95\\itf"
+    remoteFile = "*.zip"
+}
+
