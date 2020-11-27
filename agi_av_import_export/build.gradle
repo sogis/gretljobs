@@ -28,7 +28,8 @@ apply plugin: 'ch.so.agi.gretl'
 //defaultTasks 'uploadFilesToS3'
 
 def pathToTempFolder = Files.createTempDirectory("agiavimport-").toFile().getAbsolutePath()
-def pathToUnzipFolder = Files.createTempDirectory("agiavimport-unzip_data-").toFile().getAbsolutePath()
+def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
+//def pathToUnzipFolder = Files.createTempDirectory("agiavimport-unzip_data-").toFile().getAbsolutePath()
 
 /*
 def s3Bucket = "ch.so.afu.grundwasserbewirtschaftung"
@@ -109,35 +110,100 @@ task downloadFiles(type: FtpDownload){
 //     }
 // }
 
-import java.util.zip.ZipInputStream
-import java.util.zip.ZipEntry
-import java.io.FileOutputStream
+// import java.util.zip.ZipInputStream
+// import java.util.zip.ZipEntry
+// import java.io.FileOutputStream
 
-task unzipData(/*type: Copy, */ dependsOn: 'downloadFiles') {
+task unzipData(dependsOn: 'downloadFiles') {
+    doLast {
+        fileTree(pathToTempFolder).files.each { 
+            String fileName = it
+            copy {
+                from zipTree(fileName)
+                into file(pathToUnzipFolder)
+
+                include "**/*.itf"
+                include "**/*.ITF"
+
+                rename { String jt ->
+                    return jt.toLowerCase()
+                }
+            }
+        }
+        println "File unzipped to directory: " + pathToUnzipFolder
+    }
+}
+
+        ArrayList<String> foo = ['foo', 'bar']
+
+task importData(type: Ili2pgReplace, dependsOn: 'unzipData') {
+        doFirst {
+            foo = fileTree(pathToUnzipFolder).filter { it.isFile() }.files.name
+            println foo.getClass()
+            println foo
+        }
+
+        database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+        models = 'DM01AVSO24LV95'
+        dbschema = 'agi_dm01avso24'
+        dataFile = fileTree(pathToUnzipFolder) { include '**/*.itf' }
+        //dataset = fileTree(pathToUnzipFolder).filter { it.isFile() }.files.name
+        dataset = fileTree(pathToUnzipFolder) { include '**/*.itf' }
+        disableValidation = true
+
+        doLast {
+            println "Data imported into db: " + dbUriEdit
+        }        
+
+}
+//GrETL
+/*
+
+        System.out.println(dataset);
+        if (dataset != null) {
+            if(dataset instanceof String) {
+                datasetNames=new ArrayList<String>();
+                datasetNames.add((String)dataset);
+            }else {
+                System.out.println(dataset.getClass());
+                System.out.println(((FileTree)dataset).getFiles().size());
+//                System.out.println(((java.util.List)dataset).size());
+                datasetNames=(java.util.List)dataset;
+                System.out.println("fuuuubar");
+                System.out.println(datasetNames.size());
+
+            }
+            if(files.size()!=datasetNames.size()) {
+                throw new GradleException("number of dataset names ("+datasetNames.size()+") doesn't match number of files ("+files.size()+")");
+            }
+        }
+
+*/
+
     //from zipTree("/var/folders/5r/cn9700vd4s719l1555_2zcs80000gn/T/agiavimport-1358060795632308263/240200.zip")
     //into file(pathToUnzipFolder)
     // include "**/*.itf"
     // include "**/*.ITF"
 
-    doLast {
-        //ant.unzip( src: "/var/folders/5r/cn9700vd4s719l1555_2zcs80000gn/T/agiavimport-748409883795499027/240100.zip", dest: "/Users/stefan/tmp/" )
-        //def zf = new java.util.zip.ZipFile(file("/var/folders/5r/cn9700vd4s719l1555_2zcs80000gn/T/agiavimport-748409883795499027/240100.zip"))
-Long MILLS_IN_DAY = 86400000L;
-        String fileName = Paths.get(pathToTempFolder, localFileName).toFile().getAbsoluteFile()
-        try {
-            FileInputStream fis = new FileInputStream(fileName);
-            BufferedInputStream bis = new BufferedInputStream(fis);
-                ZipInputStream zis = new ZipInputStream(bis) 
+//     doLast {
+//         //ant.unzip( src: "/var/folders/5r/cn9700vd4s719l1555_2zcs80000gn/T/agiavimport-748409883795499027/240100.zip", dest: "/Users/stefan/tmp/" )
+//         //def zf = new java.util.zip.ZipFile(file("/var/folders/5r/cn9700vd4s719l1555_2zcs80000gn/T/agiavimport-748409883795499027/240100.zip"))
+// Long MILLS_IN_DAY = 86400000L;
+//         String fileName = Paths.get(pathToTempFolder, localFileName).toFile().getAbsoluteFile()
+//         try {
+//             FileInputStream fis = new FileInputStream(fileName);
+//             BufferedInputStream bis = new BufferedInputStream(fis);
+//                 ZipInputStream zis = new ZipInputStream(bis) 
             
-            ZipEntry ze;
+//             ZipEntry ze;
 
-            while ((ze = zis.getNextEntry()) != null) {
+//             while ((ze = zis.getNextEntry()) != null) {
 
            
-            }
-        } catch (Exception e) {
-            println e.printStackTrace()
-        }
+//             }
+//         } catch (Exception e) {
+//             println e.printStackTrace()
+//         }
 
 
     /*
@@ -171,30 +237,7 @@ Long MILLS_IN_DAY = 86400000L;
 	        zis.closeEntry();
 	        zis.close();
             */
-    }
 
-
-    
- /*
-    doLast {
-        fileTree(pathToTempFolder).files.each { 
-            String fileName = it
-            println fileName
-            println fileName.class
-
-
-            copy {
-                from zipTree("/var/folders/5r/cn9700vd4s719l1555_2zcs80000gn/T/agiavimport-3082173239807124656/240100.zip")
-                into file(pathToUnzipFolder)
-            }       
-
-        }
-
-
-
-        println "File unzipped to directory: " + pathToUnzipFolder
-    }
-*/
 /*
     from pathToTempFolder 
     into pathToUnzipFolder
@@ -204,18 +247,17 @@ Long MILLS_IN_DAY = 86400000L;
     }
 */
 
-}
 
 
-	public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
-	    File destFile = new File(destinationDir, zipEntry.getName());
+	// public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+	//     File destFile = new File(destinationDir, zipEntry.getName());
 	 
-	    String destDirPath = destinationDir.getCanonicalPath();
-	    String destFilePath = destFile.getCanonicalPath();
+	//     String destDirPath = destinationDir.getCanonicalPath();
+	//     String destFilePath = destFile.getCanonicalPath();
 	 
-	    if (!destFilePath.startsWith(destDirPath + File.separator)) {
-	        throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
-	    }
+	//     if (!destFilePath.startsWith(destDirPath + File.separator)) {
+	//         throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+	//     }
 	 
-	    return destFile;
-	}
+	//     return destFile;
+	// }
