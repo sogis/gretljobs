@@ -60,54 +60,54 @@ task downloadFiles(type: FtpDownload){
     }   
 }
 
-def systemTypeKey = "WINDOWS" 
-def remoteFileName = "DM01AVSO24LV95\\itf\\240100.zip"
-def localFileName = "240100.zip"
+// def systemTypeKey = "WINDOWS" 
+// def remoteFileName = "DM01AVSO24LV95\\itf\\240100.zip"
+// def localFileName = "240100.zip"
 
-task downloadFile() {
-    doLast {
-        def ftp = new FTPClient()
+// task downloadFile() {
+//     doLast {
+//         def ftp = new FTPClient()
 
-        try {            
-            ftp.connect("ftp.infogrips.ch", 21)
+//         try {            
+//             ftp.connect("ftp.infogrips.ch", 21)
 
-            ftp.enterLocalPassiveMode() // Not needed when running locally on MacOS.
-            ftp.login("vaso", "vaso123")
+//             ftp.enterLocalPassiveMode() // Not needed when running locally on MacOS.
+//             ftp.login("vaso", "vaso123")
 
-            //ftp.setFileType(FTP.BINARY_FILE_TYPE);
-            //ftp.setFileTransferMode(org.apache.commons.net.ftp.FTP.COMPRESSED_TRANSFER_MODE);
-            //ftp.setAutodetectUTF8(true);
+//             //ftp.setFileType(FTP.BINARY_FILE_TYPE);
+//             //ftp.setFileTransferMode(org.apache.commons.net.ftp.FTP.COMPRESSED_TRANSFER_MODE);
+//             //ftp.setAutodetectUTF8(true);
 
-            ftp.configure(new FTPClientConfig(systemTypeKey)); 
+//             ftp.configure(new FTPClientConfig(systemTypeKey)); 
 
-            int reply = ftp.getReplyCode();
-            if(!FTPReply.isPositiveCompletion(reply)) {
-                throw new Exception("FTP server refused connection.")
-            }
+//             int reply = ftp.getReplyCode();
+//             if(!FTPReply.isPositiveCompletion(reply)) {
+//                 throw new Exception("FTP server refused connection.")
+//             }
 
-            String fileName = Paths.get(pathToTempFolder, localFileName).toFile().getAbsoluteFile()
-            FileOutputStream fos = new FileOutputStream(fileName)
+//             String fileName = Paths.get(pathToTempFolder, localFileName).toFile().getAbsoluteFile()
+//             FileOutputStream fos = new FileOutputStream(fileName)
 
-            boolean response = ftp.retrieveFile(remoteFileName, fos)
+//             boolean response = ftp.retrieveFile(remoteFileName, fos)
 
-            if (response == false) {
-                throw new Exception("Could not retrieve file: " + remoteFileName)
-            }
-            println "File downloaded: " + fileName
-        } catch (Exception e) {
-            GradleException ge = TaskUtil.toGradleException(e)
-            throw ge
-        } finally {
-            if (ftp.isConnected()) {
-                try {
-                    ftp.disconnect()
-                } catch(IOException e) {
-                    // do nothing
-                }
-            }
-        }
-    }
-}
+//             if (response == false) {
+//                 throw new Exception("Could not retrieve file: " + remoteFileName)
+//             }
+//             println "File downloaded: " + fileName
+//         } catch (Exception e) {
+//             GradleException ge = TaskUtil.toGradleException(e)
+//             throw ge
+//         } finally {
+//             if (ftp.isConnected()) {
+//                 try {
+//                     ftp.disconnect()
+//                 } catch(IOException e) {
+//                     // do nothing
+//                 }
+//             }
+//         }
+//     }
+// }
 
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipEntry
