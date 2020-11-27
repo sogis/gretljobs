@@ -1,5 +1,6 @@
 buildscript {
 	repositories {
+        mavenLocal()
 		maven { url "http://jars.interlis.ch" }
 		maven { url "http://jars.umleditor.org" }
 		maven { url "https://repo.osgeo.org/repository/release/" }
@@ -18,13 +19,16 @@ import java.nio.file.Files
 import java.io.File
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.*
+import ch.so.agi.gretl.util.TaskUtil
+import org.apache.commons.net.ftp.*
+
 
 apply plugin: 'ch.so.agi.gretl'
 
 //defaultTasks 'uploadFilesToS3'
 
 def pathToTempFolder = Files.createTempDirectory("agiavimport-").toFile().getAbsolutePath()
-def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
+def pathToUnzipFolder = Files.createTempDirectory("agiavimport-unzip_data-").toFile().getAbsolutePath()
 
 /*
 def s3Bucket = "ch.so.afu.grundwasserbewirtschaftung"
@@ -44,9 +48,174 @@ task downloadFiles(type: FtpDownload){
     user = ftpUserInfogrips
     password = ftpPwdInfogrips
     systemType = "WINDOWS"
+    fileType = "BINARY"
     localDir = pathToTempFolder
     //localDir = System.getProperty("java.io.tmpdir") + "/gretl-share/"
     remoteDir = "\\dm01avso24lv95\\itf"
-    remoteFile = "*.zip"
+    //remoteFile = "*.zip"
+    remoteFile = "240100.zip"
+
+    doLast {
+        println "Files downloaded: " + pathToTempFolder
+    }   
 }
 
+def systemTypeKey = "WINDOWS" 
+def remoteFileName = "DM01AVSO24LV95\\itf\\240100.zip"
+def localFileName = "240100.zip"
+
+task downloadFile() {
+    doLast {
+        def ftp = new FTPClient()
+
+        try {            
+            ftp.connect("ftp.infogrips.ch", 21)
+
+            ftp.enterLocalPassiveMode() // Not needed when running locally on MacOS.
+            ftp.login("vaso", "vaso123")
+
+            //ftp.setFileType(FTP.BINARY_FILE_TYPE);
+            //ftp.setFileTransferMode(org.apache.commons.net.ftp.FTP.COMPRESSED_TRANSFER_MODE);
+            //ftp.setAutodetectUTF8(true);
+
+            ftp.configure(new FTPClientConfig(systemTypeKey)); 
+
+            int reply = ftp.getReplyCode();
+            if(!FTPReply.isPositiveCompletion(reply)) {
+                throw new Exception("FTP server refused connection.")
+            }
+
+            String fileName = Paths.get(pathToTempFolder, localFileName).toFile().getAbsoluteFile()
+            FileOutputStream fos = new FileOutputStream(fileName)
+
+            boolean response = ftp.retrieveFile(remoteFileName, fos)
+
+            if (response == false) {
+                throw new Exception("Could not retrieve file: " + remoteFileName)
+            }
+            println "File downloaded: " + fileName
+        } catch (Exception e) {
+            GradleException ge = TaskUtil.toGradleException(e)
+            throw ge
+        } finally {
+            if (ftp.isConnected()) {
+                try {
+                    ftp.disconnect()
+                } catch(IOException e) {
+                    // do nothing
+                }
+            }
+        }
+    }
+}
+
+import java.util.zip.ZipInputStream
+import java.util.zip.ZipEntry
+import java.io.FileOutputStream
+
+task unzipData(/*type: Copy, */ dependsOn: 'downloadFiles') {
+    //from zipTree("/var/folders/5r/cn9700vd4s719l1555_2zcs80000gn/T/agiavimport-1358060795632308263/240200.zip")
+    //into file(pathToUnzipFolder)
+    // include "**/*.itf"
+    // include "**/*.ITF"
+
+    doLast {
+        //ant.unzip( src: "/var/folders/5r/cn9700vd4s719l1555_2zcs80000gn/T/agiavimport-748409883795499027/240100.zip", dest: "/Users/stefan/tmp/" )
+        //def zf = new java.util.zip.ZipFile(file("/var/folders/5r/cn9700vd4s719l1555_2zcs80000gn/T/agiavimport-748409883795499027/240100.zip"))
+Long MILLS_IN_DAY = 86400000L;
+        String fileName = Paths.get(pathToTempFolder, localFileName).toFile().getAbsoluteFile()
+        try {
+            FileInputStream fis = new FileInputStream(fileName);
+            BufferedInputStream bis = new BufferedInputStream(fis);
+                ZipInputStream zis = new ZipInputStream(bis) 
+            
+            ZipEntry ze;
+
+            while ((ze = zis.getNextEntry()) != null) {
+
+           
+            }
+        } catch (Exception e) {
+            println e.printStackTrace()
+        }
+
+
+    /*
+        String fileZip = Paths.get(pathToTempFolder, localFileName).toFile().getAbsoluteFile()
+	    File destDir = new File("/Users/stefan/tmp/");
+	        byte[] buffer = new byte[1024];
+	        ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
+	        ZipEntry zipEntry = zis.getNextEntry();
+	        while (zipEntry != null) {
+                File newFile = newFile(destDir, zipEntry);
+                    if (zipEntry.isDirectory()) {
+                        if (!newFile.isDirectory() && !newFile.mkdirs()) {
+                            throw new IOException("Failed to create directory " + newFile);
+                        }
+                    } else {
+                        // fix for Windows-created archives
+                        File parent = newFile.getParentFile();
+                        if (!parent.isDirectory() && !parent.mkdirs()) {
+                            throw new IOException("Failed to create directory " + parent);
+                        }
+                        
+                        // write file content
+                        FileOutputStream fos = new FileOutputStream(newFile);
+                        int len;
+                        while ((len = zis.read(buffer)) > 0) {
+                            fos.write(buffer, 0, len);
+                        }
+                        fos.close();
+                    }
+	        }
+	        zis.closeEntry();
+	        zis.close();
+            */
+    }
+
+
+    
+ /*
+    doLast {
+        fileTree(pathToTempFolder).files.each { 
+            String fileName = it
+            println fileName
+            println fileName.class
+
+
+            copy {
+                from zipTree("/var/folders/5r/cn9700vd4s719l1555_2zcs80000gn/T/agiavimport-3082173239807124656/240100.zip")
+                into file(pathToUnzipFolder)
+            }       
+
+        }
+
+
+
+        println "File unzipped to directory: " + pathToUnzipFolder
+    }
+*/
+/*
+    from pathToTempFolder 
+    into pathToUnzipFolder
+
+    eachFile { fileCopyDetails -> 
+        println fileCopyDetails
+    }
+*/
+
+}
+
+
+	public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+	    File destFile = new File(destinationDir, zipEntry.getName());
+	 
+	    String destDirPath = destinationDir.getCanonicalPath();
+	    String destFilePath = destFile.getCanonicalPath();
+	 
+	    if (!destFilePath.startsWith(destDirPath + File.separator)) {
+	        throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+	    }
+	 
+	    return destFile;
+	}
