@@ -4,6 +4,7 @@ SELECT
       bzgb.geometrie,
       datum_nachfuehrung AS datum_nachfuehrung,
       bzgbtyp.dispname AS typ,
+      --TODO Modell anpassen und substring entfernen
       substr(string_agg(prj.geschaeftsnummer,', '),1,10) AS geschaeftsnummern,
       string_agg(prj.kantonsnummer,', ') AS kantonsnummern,
       string_agg(prj.projekttyp,', ') AS projekttyp
