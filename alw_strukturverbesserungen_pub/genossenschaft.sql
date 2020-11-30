@@ -230,8 +230,10 @@ SELECT
     gen.aufloesungsdatum,
     gen.bemerkung,
     gen.geometrie,
-    string_agg(proj.kantonsnummer,', ') AS kantonsnummern,
-    string_agg(proj.geschaeftsnummer,', ') AS geschaeftsnummern,
+    --TODO Modell anpassen und substring entfernen
+    substr(string_agg(proj.kantonsnummer,', '),1,10) AS kantonsnummern,
+     --TODO Modell anpassen und substring entfernen
+    substr(string_agg(proj.geschaeftsnummer,', '),1,10) AS geschaeftsnummern,
     gen.dokumente
   FROM gen
     LEFT JOIN projekte proj ON gen.t_id = proj.t_id
