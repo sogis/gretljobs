@@ -3,7 +3,7 @@ SELECT std.t_id,
        std.bfsnr,
        gem.gemeindename,
        --TODO: Modell auf Multipolygon umbauen
-       ST_ExteriorRing(gem.geometrie)::geometry(Polygon,2056) AS gemeinde_geometrie,
+       ST_GeometryN(gem.geometrie,1) AS gemeinde_geometrie,
        stand.dispname AS stand_gueterregulierung,
        (
            WITH docs AS (
