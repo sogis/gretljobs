@@ -21,7 +21,7 @@ SELECT
     proj.geschaeftsnummer,
     proj.kantonsnummer,
     COALESCE(prj.dispname,'unbekannt') AS projekttyp,
-    //TODO: genossenschaft_typ verlängern im Modell
+    --TODO: genossenschaft_typ verlängern im Modell
     substr(string_agg(gentyp.dispname,', '),1,10) AS genossenschaft_typ,
     string_agg(genoss.aname,', ') genossenschaft_name,
     NULL::geometry(Point,2056) AS punktgeometrie,
