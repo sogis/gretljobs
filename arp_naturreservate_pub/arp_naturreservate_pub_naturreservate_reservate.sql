@@ -33,7 +33,12 @@ WITH documents AS (
             WHEN 
                 reservate_dokument.typ = 'Gestaltungsplan'
         
-                THEN replace(reservate_dokument.dateipfad,'G:\documents\ch.so.arp.zonenplaene\','https://geo.so.ch/docs/ch.so.arp.zonenplaene/') 
+                THEN replace(reservate_dokument.dateipfad,'G:\documents\ch.so.arp.naturreservate\gestaltungsplan\','https://geo.so.ch/docs/ch.so.arp.naturreservate/gestaltungsplan/') 
+
+            WHEN 
+                reservate_dokument.typ = 'Sonderbauvorschriften'
+        
+                THEN replace(reservate_dokument.dateipfad,'G:\documents\ch.so.arp.naturreservate\sonderbauvorschriften\','https://geo.so.ch/docs/ch.so.arp.naturreservate/sonderbauvorschriften/') 
                                      
          END AS dokumente,
          
