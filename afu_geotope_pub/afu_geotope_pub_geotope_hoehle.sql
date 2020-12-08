@@ -78,7 +78,7 @@ WITH fachbereich AS (
             ON plzortschaft_ortschaftsname.ortschaftsname_von = plzortschaft_ortschaft.t_id
     GROUP BY
         plzortschaft_ortschaftsname.atext,
-        plzortschaft_ortschaft.status
+        plzortschaft_ortschaft.astatus
 ), ortschaften AS (
     SELECT
         geotope_hoehle.t_id,
