@@ -70,7 +70,7 @@ WITH fachbereich AS (
 ), ortschaft AS (
     SELECT 
         plzortschaft_ortschaftsname.atext AS ortschaftsname,
-        plzortschaft_ortschaft.status,
+        plzortschaft_ortschaft.astatus AS status,
         ST_Multi(ST_Union(plzortschaft_ortschaft.flaeche)) AS geometrie
     FROM 
         agi_plz_ortschaften.plzortschaft_ortschaftsname
