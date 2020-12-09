@@ -63,6 +63,7 @@ git checkout -b branchname
   * `infofloraUser`, `infofloraPwd`
   * `igelToken`
   * `awsAccessKeyAda`, `awsSecretAccessKeyAda`
+  * `awsAccessKeyAfu`, `awsSecretAccessKeyAfu`
   * `awsAccessKeyAgi`, `awsSecretAccessKeyAgi`
   * `gretlShare`
   * `gretlEnvironment` (der Wert dieser Variable ist je nach Umgebung `test`, `integration` oder `production`)
