@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAgiLeitungskataster'
+defaultTasks 'datenBereinigungPostProcessing'
 
 task transferAgiLeitungskataster(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -34,4 +34,10 @@ task transferAgiLeitungskataster(type: Db2Db){
             new TransferSet('agi_leitungskataster_pub_elektrizitaet_trassepunkt.sql',
                     'agi_leitungskataster_pub.elektrizitaet_trassepunkt', true)
     ];
+}
+
+task datenBereinigungPostProcessing(type: SqlExecutor, dependsOn:'transferAgiLeitungskataster'){
+    description = "Datenbereinigung wegen invaliden Geometrien, kann nach ili2pg-Upgrade entfernt werden"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['agi_leitungskataster_pub_datenbereinigung_postprocessing.sql']
 }
