@@ -35,7 +35,13 @@ task transferAlteGrundnutzung(type: Db2Db, dependsOn: "transferArpNpl") {
     ];
 }
 
-task updateAggregationGrundnutzungsflaechen(type: SqlExecutor, dependsOn: "transferAlteGrundnutzung") {
+task datenBereinigungPostProcessing(type: SqlExecutor, dependsOn:'transferAlteGrundnutzung'){
+    description = "Datenbereinigung wegen invaliden Geometrien, kann nach ili2pg-Upgrade entfernt werden"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['arp_npl_pub_datenbereinigung.sql']
+}
+
+task updateAggregationGrundnutzungsflaechen(type: SqlExecutor, dependsOn: "datenBereinigungPostProcessing") {
     description = "Aktualisierung der aggregierten Zonenflächen pro Gemeinde"
     group = GROUP
     database = [dbUriPub, dbUserPub, dbPwdPub]
