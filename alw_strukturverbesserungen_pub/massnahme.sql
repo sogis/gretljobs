@@ -1,3 +1,4 @@
+-- Kombination verschiedener Massnahmen
 -- Bewässerung Flächen
 SELECT
     el.t_id,
@@ -19,9 +20,9 @@ SELECT
     NULL::character varying(30) AS funktionstyp_wegbau,
     proj.geschaeftsnummer,
     proj.kantonsnummer,
-    prj.dispname AS projekttyp,
-    string_agg(gentyp.dispname,', ') genossenschaft_typ,
-    string_agg(genoss.aname,', ') genossenschaft_name,
+    COALESCE(prj.dispname,'unbekannt') AS projekttyp,
+    string_agg(gentyp.dispname,', ') AS genossenschaft_typ,
+    string_agg(genoss.aname,', ') AS genossenschaft_name,
     NULL::geometry(Point,2056) AS punktgeometrie,
     NULL::geometry(MultiLineString,2056) AS liniengeometrie,
     el.geometrie AS flaechengeometrie,
@@ -46,7 +47,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.astatus status ON el.astatus = status.ilicode
     LEFT JOIN alw_strukturverbesserungen.bewaesserung_flaechen bwfltyp ON el.typ = bwfltyp.ilicode
     LEFT JOIN alw_strukturverbesserungen.bautyp btyp ON el.bautyp = btyp.ilicode
-    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttypen = prj.ilicode
+    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttyp = prj.ilicode
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_werkseigentum werkeig ON el.werkeigentum = werkeig.t_id
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlichlmnt_bw_flchn_bwssrung
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
@@ -88,9 +89,9 @@ SELECT
     NULL::character varying(30) AS funktionstyp_wegbau,
     proj.geschaeftsnummer,
     proj.kantonsnummer,
-    prj.dispname AS projekttyp,
-    string_agg(gentyp.dispname,', ') genossenschaft_typ,
-    string_agg(genoss.aname,', ') genossenschaft_name,
+    COALESCE(prj.dispname,'unbekannt') AS projekttyp,
+    string_agg(gentyp.dispname,', ') AS genossenschaft_typ,
+    string_agg(genoss.aname,', ') AS genossenschaft_name,
     NULL::geometry(Point,2056) AS punktgeometrie,
     el.geometrie AS liniengeometrie,
     NULL::geometry(MultiPolygon,2056) AS flaechengeometrie,
@@ -115,7 +116,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.astatus status ON el.astatus = status.ilicode
     LEFT JOIN alw_strukturverbesserungen.bewaesserung_linien bwlintyp ON el.typ = bwlintyp.ilicode
     LEFT JOIN alw_strukturverbesserungen.bautyp btyp ON el.bautyp = btyp.ilicode
-    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttypen = prj.ilicode
+    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttyp = prj.ilicode
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_werkseigentum werkeig ON el.werkeigentum = werkeig.t_id
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_bewssrng_lnie
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
@@ -157,9 +158,9 @@ SELECT
     NULL::character varying(30) AS funktionstyp_wegbau,
     proj.geschaeftsnummer,
     proj.kantonsnummer,
-    prj.dispname AS projekttyp,
-    string_agg(gentyp.dispname,', ') genossenschaft_typ,
-    string_agg(genoss.aname,', ') genossenschaft_name,
+    COALESCE(prj.dispname,'unbekannt') AS projekttyp,
+    string_agg(gentyp.dispname,', ') AS genossenschaft_typ,
+    string_agg(genoss.aname,', ') AS genossenschaft_name,
     el.geometrie AS punktgeometrie,
     NULL::geometry(MultiLineString,2056) AS liniengeometrie,
     NULL::geometry(MultiPOlygon,2056) AS flaechengeometrie,
@@ -184,7 +185,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.astatus status ON el.astatus = status.ilicode
     LEFT JOIN alw_strukturverbesserungen.bewaesserung_punkte bwpkttyp ON el.typ = bwpkttyp.ilicode
     LEFT JOIN alw_strukturverbesserungen.bautyp btyp ON el.bautyp = btyp.ilicode
-    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttypen = prj.ilicode
+    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttyp = prj.ilicode
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_werkseigentum werkeig ON el.werkeigentum = werkeig.t_id
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_bewssrng_pnkt
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
@@ -226,9 +227,9 @@ SELECT
     NULL::character varying(30) AS funktionstyp_wegbau,
     proj.geschaeftsnummer,
     proj.kantonsnummer,
-    prj.dispname AS projekttyp,
-    string_agg(gentyp.dispname,', ') genossenschaft_typ,
-    string_agg(genoss.aname,', ') genossenschaft_name,
+    COALESCE(prj.dispname,'unbekannt') AS projekttyp,
+    string_agg(gentyp.dispname,', ') AS genossenschaft_typ,
+    string_agg(genoss.aname,', ') AS genossenschaft_name,
     NULL::geometry(Point,2056) AS punktgeometrie,
     NULL::geometry(MultiLineString,2056) AS liniengeometrie,
     el.geometrie AS flaechengeometrie,
@@ -253,7 +254,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.astatus status ON el.astatus = status.ilicode
     LEFT JOIN alw_strukturverbesserungen.entw_bodenstruktur_flaechen entwbsfltyp ON el.typ = entwbsfltyp.ilicode
     LEFT JOIN alw_strukturverbesserungen.bautyp btyp ON el.bautyp = btyp.ilicode
-    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttypen = prj.ilicode
+    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttyp = prj.ilicode
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_werkseigentum werkeig ON el.werkeigentum = werkeig.t_id
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raemlchlmnt_ntw_bdnstrktr_flche
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
@@ -295,9 +296,9 @@ SELECT
     NULL::character varying(30) AS funktionstyp_wegbau,
     proj.geschaeftsnummer,
     proj.kantonsnummer,
-    prj.dispname AS projekttyp,
-    string_agg(gentyp.dispname,', ') genossenschaft_typ,
-    string_agg(genoss.aname,', ') genossenschaft_name,
+    COALESCE(prj.dispname,'unbekannt') AS projekttyp,
+    string_agg(gentyp.dispname,', ') AS genossenschaft_typ,
+    string_agg(genoss.aname,', ') AS genossenschaft_name,
     NULL::geometry(Point,2056) AS punktgeometrie,
     el.geometrie AS liniengeometrie,
     NULL::geometry(MultiPolygon,2056) AS flaechengeometrie,
@@ -322,7 +323,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.astatus status ON el.astatus = status.ilicode
     LEFT JOIN alw_strukturverbesserungen.entw_bodenstruktur_linien entwbslintyp ON el.typ = entwbslintyp.ilicode
     LEFT JOIN alw_strukturverbesserungen.bautyp btyp ON el.bautyp = btyp.ilicode
-    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttypen = prj.ilicode
+    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttyp = prj.ilicode
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_werkseigentum werkeig ON el.werkeigentum = werkeig.t_id
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlchlmnt_ntw_bdnstrktr_lnie
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
@@ -364,9 +365,9 @@ SELECT
     NULL::character varying(30) AS funktionstyp_wegbau,
     proj.geschaeftsnummer,
     proj.kantonsnummer,
-    prj.dispname AS projekttyp,
-    string_agg(gentyp.dispname,', ') genossenschaft_typ,
-    string_agg(genoss.aname,', ') genossenschaft_name,
+    COALESCE(prj.dispname,'unbekannt') AS projekttyp,
+    string_agg(gentyp.dispname,', ') AS genossenschaft_typ,
+    string_agg(genoss.aname,', ') AS genossenschaft_name,
     el.geometrie AS punktgeometrie,
     NULL::geometry(MultiLineString,2056) AS liniengeometrie,
     NULL::geometry(MultiPolygon,2056) AS flaechengeometrie,
@@ -390,7 +391,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
     LEFT JOIN alw_strukturverbesserungen.astatus status ON el.astatus = status.ilicode
     LEFT JOIN alw_strukturverbesserungen.bautyp btyp ON el.bautyp = btyp.ilicode
-    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttypen = prj.ilicode
+    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttyp = prj.ilicode
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_werkseigentum werkeig ON el.werkeigentum = werkeig.t_id
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raemlchlmnt_ntwdnstrktr_pmpwerk
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
@@ -431,9 +432,9 @@ SELECT
     NULL::character varying(30) AS funktionstyp_wegbau,
     proj.geschaeftsnummer,
     proj.kantonsnummer,
-    prj.dispname AS projekttyp,
-    string_agg(gentyp.dispname,', ') genossenschaft_typ,
-    string_agg(genoss.aname,', ') genossenschaft_name,
+    COALESCE(prj.dispname,'unbekannt') AS projekttyp,
+    string_agg(gentyp.dispname,', ') AS genossenschaft_typ,
+    string_agg(genoss.aname,', ') AS genossenschaft_name,
     NULL::geometry(Point,2056) AS punktgeometrie,
     el.geometrie AS liniengeometrie,
     NULL::geometry(MultiPolygon,2056) AS flaechengeometrie,
@@ -458,7 +459,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.astatus status ON el.astatus = status.ilicode
     LEFT JOIN alw_strukturverbesserungen.elektrizitaet_linien evlintyp ON el.typ = evlintyp.ilicode
     LEFT JOIN alw_strukturverbesserungen.bautyp btyp ON el.bautyp = btyp.ilicode
-    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttypen = prj.ilicode
+    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttyp = prj.ilicode
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_werkseigentum werkeig ON el.werkeigentum = werkeig.t_id
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_ev_linie
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
@@ -500,9 +501,9 @@ SELECT
     NULL::character varying(30) AS funktionstyp_wegbau,
     proj.geschaeftsnummer,
     proj.kantonsnummer,
-    prj.dispname AS projekttyp,
-    string_agg(gentyp.dispname,', ') genossenschaft_typ,
-    string_agg(genoss.aname,', ') genossenschaft_name,
+    COALESCE(prj.dispname,'unbekannt') AS projekttyp,
+    string_agg(gentyp.dispname,', ') AS genossenschaft_typ,
+    string_agg(genoss.aname,', ') AS genossenschaft_name,
     el.geometrie AS punktgeometrie,
     NULL::geometry(MultiLineString,2056) AS liniengeometrie,
     NULL::geometry(MultiPolygon,2056) AS flaechengeometrie,
@@ -527,7 +528,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.astatus status ON el.astatus = status.ilicode
     LEFT JOIN alw_strukturverbesserungen.elektrizitaet_punkte evpkttyp ON el.typ = evpkttyp.ilicode
     LEFT JOIN alw_strukturverbesserungen.bautyp btyp ON el.bautyp = btyp.ilicode
-    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttypen = prj.ilicode
+    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttyp = prj.ilicode
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_werkseigentum werkeig ON el.werkeigentum = werkeig.t_id
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_ev_punkt
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
@@ -569,9 +570,9 @@ SELECT
     NULL::character varying(30) AS funktionstyp_wegbau,
     proj.geschaeftsnummer,
     proj.kantonsnummer,
-    prj.dispname AS projekttyp,
-    string_agg(gentyp.dispname,', ') genossenschaft_typ,
-    string_agg(genoss.aname,', ') genossenschaft_name,
+    COALESCE(prj.dispname,'unbekannt') AS projekttyp,
+    string_agg(gentyp.dispname,', ') AS genossenschaft_typ,
+    string_agg(genoss.aname,', ') AS genossenschaft_name,
     NULL::geometry(Point,2056) AS punktgeometrie,
     el.geometrie AS liniengeometrie,
     NULL::geometry(MultiPolygon,2056) AS flaechengeometrie,
@@ -595,7 +596,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
     LEFT JOIN alw_strukturverbesserungen.astatus status ON el.astatus = status.ilicode
     LEFT JOIN alw_strukturverbesserungen.bautyp btyp ON el.bautyp = btyp.ilicode
-    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttypen = prj.ilicode
+    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttyp = prj.ilicode
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_werkseigentum werkeig ON el.werkeigentum = werkeig.t_id
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raemlchlmnt_wv_tng_wssrvrsrgung
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
@@ -636,9 +637,9 @@ SELECT
     NULL::character varying(30) AS funktionstyp_wegbau,
     proj.geschaeftsnummer,
     proj.kantonsnummer,
-    prj.dispname AS projekttyp,
-    string_agg(gentyp.dispname,', ') genossenschaft_typ,
-    string_agg(genoss.aname,', ') genossenschaft_name,
+    COALESCE(prj.dispname,'unbekannt') AS projekttyp,
+    string_agg(gentyp.dispname,', ') AS genossenschaft_typ,
+    string_agg(genoss.aname,', ') AS genossenschaft_name,
     el.geometrie AS punktgeometrie,
     NULL::geometry(MultiLineString,2056) AS liniengeometrie,
     NULL::geometry(MultiPolygon,2056) AS flaechengeometrie,
@@ -663,7 +664,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.astatus status ON el.astatus = status.ilicode
     LEFT JOIN alw_strukturverbesserungen.wasserversorgung_punkte wvpkttyp ON el.typ = wvpkttyp.ilicode
     LEFT JOIN alw_strukturverbesserungen.bautyp btyp ON el.bautyp = btyp.ilicode
-    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttypen = prj.ilicode
+    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttyp = prj.ilicode
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_werkseigentum werkeig ON el.werkeigentum = werkeig.t_id
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlichelmnt_wssrvrsrgng_pnkt
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
@@ -705,9 +706,9 @@ SELECT
     NULL::character varying(30) AS funktionstyp_wegbau,
     proj.geschaeftsnummer,
     proj.kantonsnummer,
-    prj.dispname AS projekttyp,
-    string_agg(gentyp.dispname,', ') genossenschaft_typ,
-    string_agg(genoss.aname,', ') genossenschaft_name,
+    COALESCE(prj.dispname,'unbekannt') AS projekttyp,
+    string_agg(gentyp.dispname,', ') AS genossenschaft_typ,
+    string_agg(genoss.aname,', ') AS genossenschaft_name,
     NULL::geometry(Point,2056) AS punktgeometrie,
     NULL::geometry(MultiLineString,2056) AS liniengeometrie,
     el.geometrie AS flaechengeometrie,
@@ -732,7 +733,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.astatus status ON el.astatus = status.ilicode
     LEFT JOIN alw_strukturverbesserungen.oekologische_flaechen oekfltyp ON el.typ = oekfltyp.ilicode
     LEFT JOIN alw_strukturverbesserungen.bautyp btyp ON el.bautyp = btyp.ilicode
-    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttypen = prj.ilicode
+    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttyp = prj.ilicode
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_werkseigentum werkeig ON el.werkeigentum = werkeig.t_id
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_oekolog_flche
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
@@ -774,9 +775,9 @@ SELECT
     NULL::character varying(30) AS funktionstyp_wegbau,
     proj.geschaeftsnummer,
     proj.kantonsnummer,
-    prj.dispname AS projekttyp,
-    string_agg(gentyp.dispname,', ') genossenschaft_typ,
-    string_agg(genoss.aname,', ') genossenschaft_name,
+    COALESCE(prj.dispname,'unbekannt') AS projekttyp,
+    string_agg(gentyp.dispname,', ') AS genossenschaft_typ,
+    string_agg(genoss.aname,', ') AS genossenschaft_name,
     NULL::geometry(Point,2056) AS punktgeometrie,
     el.geometrie AS liniengeometrie,
     NULL::geometry(MultiPolygon,2056) AS flaechengeometrie,
@@ -801,7 +802,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.astatus status ON el.astatus = status.ilicode
     LEFT JOIN alw_strukturverbesserungen.oekologie_linien oeklintyp ON el.typ = oeklintyp.ilicode
     LEFT JOIN alw_strukturverbesserungen.bautyp btyp ON el.bautyp = btyp.ilicode
-    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttypen = prj.ilicode
+    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttyp = prj.ilicode
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_werkseigentum werkeig ON el.werkeigentum = werkeig.t_id
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_oekologi_lnie
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
@@ -843,9 +844,9 @@ SELECT
     NULL::character varying(30) AS funktionstyp_wegbau,
     proj.geschaeftsnummer,
     proj.kantonsnummer,
-    prj.dispname AS projekttyp,
-    string_agg(gentyp.dispname,', ') genossenschaft_typ,
-    string_agg(genoss.aname,', ') genossenschaft_name,
+    COALESCE(prj.dispname,'unbekannt') AS projekttyp,
+    string_agg(gentyp.dispname,', ') AS genossenschaft_typ,
+    string_agg(genoss.aname,', ') AS genossenschaft_name,
     el.geometrie AS punktgeometrie,
     NULL::geometry(MultiLineString,2056) AS liniengeometrie,
     NULL::geometry(MultiPolygon,2056) AS flaechengeometrie,
@@ -869,7 +870,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
     LEFT JOIN alw_strukturverbesserungen.astatus status ON el.astatus = status.ilicode
     LEFT JOIN alw_strukturverbesserungen.oekologie_punkte oekpkttyp ON el.typ = oekpkttyp.ilicode
-    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttypen = prj.ilicode
+    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttyp = prj.ilicode
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_werkseigentum werkeig ON el.werkeigentum = werkeig.t_id
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_oekologi_pnkt
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
@@ -910,9 +911,9 @@ SELECT
     NULL::character varying(30) AS funktionstyp_wegbau,
     proj.geschaeftsnummer,
     proj.kantonsnummer,
-    prj.dispname AS projekttyp,
-    string_agg(gentyp.dispname,', ') genossenschaft_typ,
-    string_agg(genoss.aname,', ') genossenschaft_name,
+    COALESCE(prj.dispname,'unbekannt') AS projekttyp,
+    string_agg(gentyp.dispname,', ') AS genossenschaft_typ,
+    string_agg(genoss.aname,', ') AS genossenschaft_name,
     NULL::geometry(Point,2056) AS punktgeometrie,
     el.geometrie AS liniengeometrie,
     NULL::geometry(MultiPolygon,2056) AS flaechengeometrie,
@@ -937,7 +938,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.astatus status ON el.astatus = status.ilicode
     LEFT JOIN alw_strukturverbesserungen.oekologie_trockenmauern oektrcktyp ON el.typ = oektrcktyp.ilicode
     LEFT JOIN alw_strukturverbesserungen.bautyp btyp ON el.bautyp = btyp.ilicode
-    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttypen = prj.ilicode
+    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttyp = prj.ilicode
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_werkseigentum werkeig ON el.werkeigentum = werkeig.t_id
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_klg_trcknmuer
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
@@ -979,9 +980,9 @@ SELECT
     funkttyp.dispname AS funktionstyp_wegbau,
     proj.geschaeftsnummer,
     proj.kantonsnummer,
-    prj.dispname AS projekttyp,
-    string_agg(gentyp.dispname,', ') genossenschaft_typ,
-    string_agg(genoss.aname,', ') genossenschaft_name,
+    COALESCE(prj.dispname,'unbekannt') AS projekttyp,
+    string_agg(gentyp.dispname,', ') AS genossenschaft_typ,
+    string_agg(genoss.aname,', ') AS genossenschaft_name,
     NULL::geometry(Point,2056) AS punktgeometrie,
     el.geometrie AS liniengeometrie,
     NULL::geometry(MultiPolygon,2056) AS flaechengeometrie,
@@ -1007,7 +1008,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.wege wegtyp ON el.typ = wegtyp.ilicode
     LEFT JOIN alw_strukturverbesserungen.bautyp btyp ON el.bautyp = btyp.ilicode
     LEFT JOIN alw_strukturverbesserungen.funktionstyp funkttyp ON el.funktionstyp = funkttyp.ilicode
-    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttypen = prj.ilicode
+    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttyp = prj.ilicode
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_werkseigentum werkeig ON el.werkeigentum = werkeig.t_id
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_wegebau_linie
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
@@ -1052,9 +1053,9 @@ SELECT
     NULL::character varying(30) AS funktionstyp_wegbau,
     proj.geschaeftsnummer,
     proj.kantonsnummer,
-    prj.dispname AS projekttyp,
-    string_agg(gentyp.dispname,', ') genossenschaft_typ,
-    string_agg(genoss.aname,', ') genossenschaft_name,
+    COALESCE(prj.dispname,'unbekannt') AS projekttyp,
+    string_agg(gentyp.dispname,', ') AS genossenschaft_typ,
+    string_agg(genoss.aname,', ') AS genossenschaft_name,
     el.geometrie AS punktgeometrie,
     NULL::geometry(MultiLineString,2056) AS liniengeometrie,
     NULL::geometry(MultiPolygon,2056) AS flaechengeometrie,
@@ -1079,7 +1080,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.astatus status ON el.astatus = status.ilicode
     LEFT JOIN alw_strukturverbesserungen.raeumlichelmnte_wege_bruecke_lehnenviadukt_material mat ON el.material = mat.ilicode
     LEFT JOIN alw_strukturverbesserungen.bautyp btyp ON el.bautyp = btyp.ilicode
-    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttypen = prj.ilicode
+    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttyp = prj.ilicode
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_werkseigentum werkeig ON el.werkeigentum = werkeig.t_id
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlichlmnt_wg_brck_lhnnvdukt
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
@@ -1124,9 +1125,9 @@ SELECT
     NULL::character varying(30) AS funktionstyp_wegbau,
     proj.geschaeftsnummer,
     proj.kantonsnummer,
-    prj.dispname AS projekttyp,
-    string_agg(gentyp.dispname,', ') genossenschaft_typ,
-    string_agg(genoss.aname,', ') genossenschaft_name,
+    COALESCE(prj.dispname,'unbekannt') AS projekttyp,
+    string_agg(gentyp.dispname,', ') AS genossenschaft_typ,
+    string_agg(genoss.aname,', ') AS genossenschaft_name,
     el.geometrie AS punktgeometrie,
     NULL::geometry(MultiLineString,2056) AS liniengeometrie,
     NULL::geometry(MultiPolygon,2056) AS flaechengeometrie,
@@ -1150,7 +1151,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
     LEFT JOIN alw_strukturverbesserungen.astatus status ON el.astatus = status.ilicode
     LEFT JOIN alw_strukturverbesserungen.wiederherstellung_punkte wdhtyp ON el.typ = wdhtyp.ilicode
-    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttypen = prj.ilicode
+    LEFT JOIN alw_strukturverbesserungen.projekt prj ON proj.projekttyp = prj.ilicode
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_werkseigentum werkeig ON el.werkeigentum = werkeig.t_id
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlichelmnt_wdrhrstllng_pnkt
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id

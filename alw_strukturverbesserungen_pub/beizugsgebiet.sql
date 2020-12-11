@@ -6,7 +6,7 @@ SELECT
       bzgbtyp.dispname AS typ,
       string_agg(prj.geschaeftsnummer,', ') AS geschaeftsnummern,
       string_agg(prj.kantonsnummer,', ') AS kantonsnummern,
-      string_agg(prj.projekttypen,', ') AS projekttyp
+      string_agg(prj.projekttyp,', ') AS projekttyp
   FROM alw_strukturverbesserungen.raeumlicheelemnte_beizugsgebiet bzgb
     LEFT JOIN alw_strukturverbesserungen.beizugsgebiete bzgbtyp ON bzgb.typ = bzgbtyp.ilicode
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_beizugsgebiet_projekt zt ON bzgb.t_id = zt.beizugsgebiet
