@@ -2,8 +2,7 @@ SELECT std.t_id,
        std.t_ili_tid,
        std.bfsnr,
        gem.gemeindename,
-       --TODO: Modell auf Multipolygon umbauen
-       ST_GeometryN(gem.geometrie,1) AS gemeinde_geometrie,
+       gem.geometrie AS gemeinde_geometrie,
        stand.dispname AS stand_gueterregulierung,
        (
            WITH docs AS (
