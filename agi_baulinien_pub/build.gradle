@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 defaultTasks 'transferAgiBaulinien'
 
 task transferAgiBaulinien(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('agi_baulinien_pub_baulinie.sql', 'agi_baulinien_pub.baulinie', true)
