@@ -3,8 +3,8 @@ SELECT
     abstand.art, 
     geom.geometrie
 FROM 
-    av_baulinien_ng.baulinien_abstandslinie abstand, 
-    av_baulinien_ng.baulinien_linienelementabstand geom
+    agi_av_baulinien_ng.baulinien_abstandslinie abstand, 
+    agi_av_baulinien_ng.baulinien_linienelementabstand geom
 WHERE 
     geom.objekt = abstand.t_id
 ;
