@@ -114,35 +114,35 @@ SELECT analysedaten.standort_untersuchung,
     analysedaten.analysegruppecode,
     analysedaten.erhebungsnr,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..61'::text AND analysedaten.methodeaufschluss::text !~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..61'::text AND analysedaten.methodeaufschluss::text !~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_cd_kg,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND (analysedaten.analyseparameter::text = ANY (ARRAY['SM..63'::character varying, 'SM..10147'::character varying]::text[])) AND analysedaten.methodeaufschluss::text !~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND (analysedaten.analyseparameter::text = ANY (ARRAY['SM..63'::character varying, 'SM..10147'::character varying]::text[])) AND analysedaten.methodeaufschluss::text !~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_cr_kg,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..64'::text AND analysedaten.methodeaufschluss::text !~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..64'::text AND analysedaten.methodeaufschluss::text !~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_cu_kg,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..66'::text AND analysedaten.methodeaufschluss::text !~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..66'::text AND analysedaten.methodeaufschluss::text !~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_hg_kg,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..68'::text AND analysedaten.methodeaufschluss::text !~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..68'::text AND analysedaten.methodeaufschluss::text !~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_ni_kg,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..69'::text AND analysedaten.methodeaufschluss::text !~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..69'::text AND analysedaten.methodeaufschluss::text !~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_pb_kg,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..73'::text AND analysedaten.methodeaufschluss::text !~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..73'::text AND analysedaten.methodeaufschluss::text !~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_zn_kg,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..67'::text AND analysedaten.methodeaufschluss::text !~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..67'::text AND analysedaten.methodeaufschluss::text !~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_mo_kg,
         CASE
@@ -154,19 +154,19 @@ SELECT analysedaten.standort_untersuchung,
             ELSE NULL::numeric
         END AS pak_16epa,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..61'::text AND analysedaten.methodeaufschluss::text ~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..61'::text AND analysedaten.methodeaufschluss::text ~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_cd_l,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..63'::text AND analysedaten.methodeaufschluss::text ~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..63'::text AND analysedaten.methodeaufschluss::text ~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_zn_l,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..64'::text AND analysedaten.methodeaufschluss::text ~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..64'::text AND analysedaten.methodeaufschluss::text ~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_cu_l,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..68'::text AND analysedaten.methodeaufschluss::text ~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..68'::text AND analysedaten.methodeaufschluss::text ~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_ni_l,
         CASE
