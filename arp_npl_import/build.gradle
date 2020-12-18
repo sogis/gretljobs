@@ -48,7 +48,7 @@ task replaceDataset (type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
     models = "SO_Nutzungsplanung_20171118"
     disableValidation = false
     dataset = 'dataset'
-    dataFile = [file("upload/uploadFile.xtf")]
+    dataFile = "upload/uploadFile.xtf"
 }
 
 def setNonExistingPropertyToUndefinedValue(propertyName) {
