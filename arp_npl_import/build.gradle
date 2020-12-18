@@ -25,12 +25,18 @@ ext {
     setNonExistingPropertyToUndefinedValue('xtf')
 }
 
+task copyXtfFile(type: Copy) {
+    from "upload/"
+    into "upload/"
+    include("uploadFile")
+    rename("uploadFile", "uploadFile.xtf")
+}
 
-task checkXtfName() {
-    description = "Prüft, ob die ersten vier Buchstaben im XTF-Filenamen einer Nummer entsprechen, die im BfS-Range des Kt. SO liegt."    
+task checkXtfName(dependsOn: 'opyXtfFile') {
+    description = "Prüft, ob die ersten vier Buchstaben der BFS-Nr. einer Nummer entsprechen, die im BfS-Range des Kt. SO liegt."    
     doFirst {
         def bfsRange = 2401..2622
-        def bfsNr = file(xtf).getName().take(4) as int
+        def bfsNr = [string('dataset']
         assert true == bfsRange.contains(bfsNr)
     }
 }
@@ -40,9 +46,9 @@ task replaceDataset (type: Ili2pgReplace, dependsOn: 'checkXtfName') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_npl"
     models = "SO_Nutzungsplanung_20171118"
-    disableValidation = true
-    dataset = file(xtf).getName().take(4)
-    dataFile = xtf 
+    disableValidation = false
+    dataset = [string('dataset']
+    dataFile = [file("upload/uploadFile.xtf")]
 }
 
 def setNonExistingPropertyToUndefinedValue(propertyName) {
