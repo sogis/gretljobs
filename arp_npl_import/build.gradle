@@ -31,8 +31,8 @@ task copyXtfFile(type: Copy) {
     include("uploadFile")
     rename("uploadFile", "uploadFile.xtf")
 }
-/*
-task checkXtfName(dependsOn: 'copyXtfFile') {
+
+task checkBsfNummer(dependsOn: 'copyXtfFile') {
     description = "Prüft, ob die ersten vier Buchstaben der BFS-Nr. einer Nummer entsprechen, die im BfS-Range des Kt. SO liegt."    
     doFirst {
         def bfsRange = 2401..2622
@@ -40,8 +40,8 @@ task checkXtfName(dependsOn: 'copyXtfFile') {
         assert true == bfsRange.contains(bfsNr)
     }
 }
-*/
-task replaceDataset (type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
+
+task replaceDataset (type: Ili2pgReplace, dependsOn: 'checkBsfNummer') {
     description = "Ersetzt einen Datensatz (=XTF) in der Erfassungsdatenbank."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_npl"
