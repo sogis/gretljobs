@@ -9,7 +9,8 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath group: 'ch.so.agi', name: 'gretl',  version: '2.1.58'
+		//classpath group: 'ch.so.agi', name: 'gretl',  version: '2.1.59'
+		classpath group: 'ch.so.agi', name: 'gretl',  version: '2.1.9999'
 	}
 }
 
@@ -29,6 +30,9 @@ apply plugin: 'ch.so.agi.gretl'
 
 def pathToTempFolder = Files.createTempDirectory("agiavimport-").toFile().getAbsolutePath()
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
+pathToUnzipFolder = "/var/folders/1y/52jlt1cd1l557f_hgd9xxgm00000gn/T/agiavimport-9037765408044600052/unzip_data"
+def pathToFederalFolder = Paths.get(pathToTempFolder, 'ch')
+def pathToGeobauFolder = Paths.get(pathToTempFolder, 'geobau')
 //def pathToUnzipFolder = Files.createTempDirectory("agiavimport-unzip_data-").toFile().getAbsolutePath()
 
 /*
@@ -44,79 +48,6 @@ if (gretlEnvironment == "test") {
 }
 */
 
-/*
-task downloadFiles(type: FtpDownload){
-    server = ftpServerInfogrips
-    user = ftpUserInfogrips
-    password = ftpPwdInfogrips
-    systemType = "WINDOWS"
-    fileType = "BINARY"
-    localDir = pathToTempFolder
-    //localDir = System.getProperty("java.io.tmpdir") + "/gretl-share/"
-    remoteDir = "\\dm01avso24lv95\\itf"
-    //remoteFile = "*.zip"
-    remoteFile = "240100.zip"
-
-    doLast {
-        println "Files downloaded: " + pathToTempFolder
-    }   
-}
-*/
-
-/*
-def systemTypeKey = "WINDOWS" 
-def remoteFileName = "DM01AVSO24LV95\\itf\\240100.zip"
-def localFileName = "240100.zip"
-
-task downloadFile() {
-    doLast {
-        def ftp = new FTPClient()
-
-        try {            
-            ftp.connect("ftp.infogrips.ch", 21)
-
-            ftp.enterLocalPassiveMode() // Not needed when running locally on MacOS.
-            ftp.login("vaso", "vaso123")
-
-            ftp.setFileType(FTP.BINARY_FILE_TYPE);
-            //ftp.setFileTransferMode(org.apache.commons.net.ftp.FTP.COMPRESSED_TRANSFER_MODE);
-            //ftp.setAutodetectUTF8(true);
-
-            ftp.configure(new FTPClientConfig(systemTypeKey)); 
-
-            int reply = ftp.getReplyCode();
-            if(!FTPReply.isPositiveCompletion(reply)) {
-                throw new Exception("FTP server refused connection.")
-            }
-
-            String fileName = Paths.get(pathToTempFolder, localFileName).toFile().getAbsoluteFile()
-            FileOutputStream fos = new FileOutputStream(fileName)
-
-            boolean response = ftp.retrieveFile(remoteFileName, fos)
-
-            if (response == false) {
-                throw new Exception("Could not retrieve file: " + remoteFileName)
-            }
-            println "File downloaded: " + fileName
-        } catch (Exception e) {
-            GradleException ge = TaskUtil.toGradleException(e)
-            throw ge
-        } finally {
-            if (ftp.isConnected()) {
-                try {
-                    ftp.disconnect()
-                } catch(IOException e) {
-                    // do nothing
-                }
-            }
-        }
-    }
-}
-*/
-// import java.util.zip.ZipInputStream
-// import java.util.zip.ZipEntry
-// import java.io.FileOutputStream
-
 task downloadFiles(type: FtpDownload ){ 
     server = ftpServerInfogrips
     user = ftpUserInfogrips
@@ -128,6 +59,10 @@ task downloadFiles(type: FtpDownload ){
     localDir = pathToTempFolder
     remoteDir = "\\dm01avso24lv95\\itf" 
     remoteFile = "*.zip" 
+
+    doLast {
+        println "Files downloaded: " + pathToTempFolder
+    }       
 } 
 
 task unzipData(dependsOn: 'downloadFiles') {
@@ -150,14 +85,41 @@ task unzipData(dependsOn: 'downloadFiles') {
     }
 }
 
-task importData(type: Ili2pgReplace, dependsOn: 'unzipData') {
+task createFederalFiles(type: Av2ch) {
+    inputFile = fileTree(pathToUnzipFolder) { include '*.itf' }
+    outputDirectory = file(pathToFederalFolder)
+    zip = true
+
+    doLast {
+        println "Federal files created: " + pathToFederalFolder
+    }
+}
+
+// TODO: Upload federal files
+
+task createDxfGeobauFiles(type: Av2geobau, dependsOn: 'createFederalFiles') {
+    itfFiles = fileTree(pathToFederalFolder) { include "*.itf" }
+    dxfDirectory = file(pathToGeobauFolder)
+    zip = true
+
+    doLast {
+        println "Geobau files created: " + pathToGeobauFolder
+    }
+}
+
+// TODO: Upload geobau files
+
+//task importData(type: Ili2pgReplace, dependsOn: 'unzipData') {
+task importData(type: Ili2pgReplace) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = 'DM01AVSO24LV95'
     dbschema = 'agi_dm01avso24'
-    //dataFile = fileTree(pathToUnzipFolder) { include '*.itf' }
+    dataFile = fileTree(pathToUnzipFolder) { include '*.itf' }
+    dataset = fileTree(pathToUnzipFolder) { include '*.itf' }
     //dataset = fileTree(pathToUnzipFolder).matching { include "*.itf" }
-    dataFile = "/var/folders/5r/cn9700vd4s719l1555_2zcs80000gn/T/agiavimport-3802844963390050294/unzip_data/240100.ITF"
-    dataset = "240100"
+    //dataset = ["240100","240200"]
+    //dataFile = "/var/folders/5r/cn9700vd4s719l1555_2zcs80000gn/T/agiavimport-3802844963390050294/unzip_data/240100.ITF"
+    //dataset = "240100"
 
     disableValidation = true
 
@@ -165,108 +127,3 @@ task importData(type: Ili2pgReplace, dependsOn: 'unzipData') {
         println "Data imported into db: " + dbUriEdit
     }
 }
-//GrETL
-/*
-
-        System.out.println(dataset);
-        if (dataset != null) {
-            if(dataset instanceof String) {
-                datasetNames=new ArrayList<String>();
-                datasetNames.add((String)dataset);
-            }else {
-                System.out.println(dataset.getClass());
-                System.out.println(((FileTree)dataset).getFiles().size());
-//                System.out.println(((java.util.List)dataset).size());
-                datasetNames=(java.util.List)dataset;
-                System.out.println("fuuuubar");
-                System.out.println(datasetNames.size());
-
-            }
-            if(files.size()!=datasetNames.size()) {
-                throw new GradleException("number of dataset names ("+datasetNames.size()+") doesn't match number of files ("+files.size()+")");
-            }
-        }
-
-*/
-
-    //from zipTree("/var/folders/5r/cn9700vd4s719l1555_2zcs80000gn/T/agiavimport-1358060795632308263/240200.zip")
-    //into file(pathToUnzipFolder)
-    // include "**/*.itf"
-    // include "**/*.ITF"
-
-//     doLast {
-//         //ant.unzip( src: "/var/folders/5r/cn9700vd4s719l1555_2zcs80000gn/T/agiavimport-748409883795499027/240100.zip", dest: "/Users/stefan/tmp/" )
-//         //def zf = new java.util.zip.ZipFile(file("/var/folders/5r/cn9700vd4s719l1555_2zcs80000gn/T/agiavimport-748409883795499027/240100.zip"))
-// Long MILLS_IN_DAY = 86400000L;
-//         String fileName = Paths.get(pathToTempFolder, localFileName).toFile().getAbsoluteFile()
-//         try {
-//             FileInputStream fis = new FileInputStream(fileName);
-//             BufferedInputStream bis = new BufferedInputStream(fis);
-//                 ZipInputStream zis = new ZipInputStream(bis) 
-            
-//             ZipEntry ze;
-
-//             while ((ze = zis.getNextEntry()) != null) {
-
-           
-//             }
-//         } catch (Exception e) {
-//             println e.printStackTrace()
-//         }
-
-
-    /*
-        String fileZip = Paths.get(pathToTempFolder, localFileName).toFile().getAbsoluteFile()
-	    File destDir = new File("/Users/stefan/tmp/");
-	        byte[] buffer = new byte[1024];
-	        ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
-	        ZipEntry zipEntry = zis.getNextEntry();
-	        while (zipEntry != null) {
-                File newFile = newFile(destDir, zipEntry);
-                    if (zipEntry.isDirectory()) {
-                        if (!newFile.isDirectory() && !newFile.mkdirs()) {
-                            throw new IOException("Failed to create directory " + newFile);
-                        }
-                    } else {
-                        // fix for Windows-created archives
-                        File parent = newFile.getParentFile();
-                        if (!parent.isDirectory() && !parent.mkdirs()) {
-                            throw new IOException("Failed to create directory " + parent);
-                        }
-                        
-                        // write file content
-                        FileOutputStream fos = new FileOutputStream(newFile);
-                        int len;
-                        while ((len = zis.read(buffer)) > 0) {
-                            fos.write(buffer, 0, len);
-                        }
-                        fos.close();
-                    }
-	        }
-	        zis.closeEntry();
-	        zis.close();
-            */
-
-/*
-    from pathToTempFolder 
-    into pathToUnzipFolder
-
-    eachFile { fileCopyDetails -> 
-        println fileCopyDetails
-    }
-*/
-
-
-
-	// public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
-	//     File destFile = new File(destinationDir, zipEntry.getName());
-	 
-	//     String destDirPath = destinationDir.getCanonicalPath();
-	//     String destFilePath = destFile.getCanonicalPath();
-	 
-	//     if (!destFilePath.startsWith(destDirPath + File.separator)) {
-	//         throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
-	//     }
-	 
-	//     return destFile;
-	// }
