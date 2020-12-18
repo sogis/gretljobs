@@ -9,7 +9,7 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath group: 'ch.so.agi', name: 'gretl',  version: '2.0.100'
+		classpath group: 'ch.so.agi', name: 'gretl',  version: '2.1.58'
 	}
 }
 
@@ -117,7 +117,20 @@ task downloadFile() {
 // import java.util.zip.ZipEntry
 // import java.io.FileOutputStream
 
-task unzipData(/* dependsOn: 'downloadFile' */) {
+task downloadFiles(type: FtpDownload ){ 
+    server = ftpServerInfogrips
+    user = ftpUserInfogrips
+    password = ftpPwdInfogrips
+    systemType = "WINDOWS"
+    fileType = "BINARY"
+    //localDir = System.getProperty("java.io.tmpdir") + "/gretl-share/" 
+    //remoteDir = "/DM01AVSO24LV95/ITF/" 
+    localDir = pathToTempFolder
+    remoteDir = "\\dm01avso24lv95\\itf" 
+    remoteFile = "*.zip" 
+} 
+
+task unzipData(dependsOn: 'downloadFiles') {
     doLast {
         fileTree(pathToTempFolder).files.each { 
             String fileName = it
@@ -136,7 +149,6 @@ task unzipData(/* dependsOn: 'downloadFile' */) {
         println "File unzipped to directory: " + pathToUnzipFolder
     }
 }
-
 
 task importData(type: Ili2pgReplace, dependsOn: 'unzipData') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
