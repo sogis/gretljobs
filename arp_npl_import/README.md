@@ -11,8 +11,8 @@ https://geo.so.ch/ilivalidator
 * Gretljobs starten
 * Build
 * Datei hochladen => "Please redirect to approve" auswählen
-** File auswählen
-** BFS-Nr. angeben
+  * File auswählen
+  * BFS-Nr. angeben
 * Proceed
 
 Wenn in der Test-Umgebung alles funktioniert hat, das Ganze nochmals auf der Integration und anschliessend in der Produktion. 
