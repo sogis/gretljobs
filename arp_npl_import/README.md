@@ -1,15 +1,6 @@
 # Import und Datenumbau der Nutzungsplanung
 
-Es gibt für den Import und Datenumbau zur Zeit je einen GRETL-Job. Ziel ist es alles in einem Job konsolidieren. Dazu fehlt aber die Anbindung eines Filesystems an GRETL-Jenkins, um auf zu importierende XTF zugreifen zu können. Der Importjob muss aus diesem Grund lokal ausgeführt werden. Wird ein GRETL-Job lokal ausgeführt, kann er aber nicht auf die notwendigen DB-Credentials für die Pub-DB zugreifen, die man für das Schreiben (also den Datenumbau) in die Pub-DB braucht. Aus diesem Grund sind zwei einzelne Jobs notwendig. Der Importrozess wird lokal "on-demand" ausgeführt, der Datenumbau-Prozess wird in GRETL-Jenkins "on-demand" ausgeführt.
-
-Vertretbar solange Lieferungen noch eine seltene Ausnahmeerscheinung sind...
-
-### xtf-File umbenennen 
-Für Nachvollziehbarkeit in der Tabelle `arp_npl.t_ili2db_import` in der edit-DB
-```
-[BSFNr]_[Lieferdatum].xtf
-Beispiel: 2507_2020-05-29.xtf
-```
+Es gibt für den Import und Datenumbau zur Zeit je einen GRETL-Job. Ziel ist es alles in einem Job konsolidieren. 
 
 ### xtf-File prüfen vor dem Datenimport 
 Nur ein selbst geprüftes XTF-File in die DB importieren
@@ -17,36 +8,14 @@ https://geo.so.ch/ilivalidator
 
 ### Import-Datenumbau-Workflow
 
-Gretljobs-Repo (lokal) klonen:
+* Gretljobs starten
+* Build
+* Datei hochladen => "Please redirect to approve" auswählen
+** File auswählen
+** BFS-Nr. angeben
+* Proceed
 
-```
-git clone https://github.com/sogis/gretljobs.git gretljobs-npl-import
-```
-
-Zu importieren XTF in das Import-Job-Verzeichnis (`arp_npl_import`) kopieren, damit diese für Gretl im Docker-Container sichbar sind.
-
-Umgebungsvariablen für DB-Verbindung setzen. Diese werden im Docker-Container beim Ausführen des Jobs verwendet:
-
-```
-nach Umbau auf edit-DB:
-export ORG_GRADLE_PROJECT_dbUriEdit=jdbc:postgresql://geodb-t.rootso.org:5432/edit?sslmode=require
-export ORG_GRADLE_PROJECT_dbUserEdit=<USERNAME>
-export ORG_GRADLE_PROJECT_dbPwdEdit=<PASSWORD>
-```
-
-Im `scripts`-Ordner des geklonten Repos folgender Befehl ausführen, um den Import zu starten:
-
-```
-sudo -E ../start-gretl.sh --docker-image sogis/gretl-runtime:latest --job-directory /home/bjsvwcur/Repos-AGI/gretljobs/arp_npl_import/ replaceDataset -Pxtf=2580_091_2018-02-13.xtf
-```
-
-Ein absoluter Pfad zum `--job_directory` verursacht m.E. am wenigsten Probleme.
-
-Wenn der Job erfolgreich durchgelaufen ist, in QGIS o.ä. überprüfen, ob die Daten tatsächlich sauber importiert wurden.
-
-Anschliessend kann in der GRETL-Jenkins-Umgebung (`https://gretl-test.so.ch/`) der Job `arp_npl_pub` ausgeführt werden. Der zugehörige Job liegt im Verzeichnis `arp_npl_pub`. Logfiles anschauen und im Web GIS Client o.ä. überprüfen. 
-
-Wenn in der Test-Umgebung alles funktioniert hat, das Ganze nochmals auf der Integration und anschliessend in der Produktion. In Zukunft dürfte wohl das Ausführen auf der Test-Umgebung überflüssig werden.
+Wenn in der Test-Umgebung alles funktioniert hat, das Ganze nochmals auf der Integration und anschliessend in der Produktion. 
 
 ### Gretljob arp_npl_pub nachführen:
 Der Gretljob arp_npl_pub  schliesst jene Gemeinden aus, welche die Nutzungsplanung schon abgeschlossen haben. 
