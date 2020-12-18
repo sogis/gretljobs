@@ -31,7 +31,7 @@ pipeline {
                 git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
                 dir(env.JOB_BASE_NAME) {
                     unstash name: 'uploadDir'
-                    sh "gretl -Dorg.gradle.jvmargs=-Xmx2G -Pdataset=$inputFile.Ili2pgDataset
+                    sh "gretl -Dorg.gradle.jvmargs=-Xmx2G -Pdataset=$inputFile.dataset
                 }
             }
         }
