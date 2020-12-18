@@ -36,7 +36,7 @@ task checkBsfNummer(dependsOn: 'copyXtfFile') {
     description = "Prüft, ob die ersten vier Buchstaben der BFS-Nr. einer Nummer entsprechen, die im BfS-Range des Kt. SO liegt."    
     doFirst {
         def bfsRange = 2401..2622
-        def bfsNr = 'Ili2pgDataset'
+        def bfsNr = 'Ili2pgDataset' as int
         assert true == bfsRange.contains(bfsNr)
     }
 }
