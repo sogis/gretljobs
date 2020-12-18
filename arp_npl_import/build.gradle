@@ -46,8 +46,8 @@ task replaceDataset (type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_npl"
     models = "SO_Nutzungsplanung_20171118"
-    disableValidation = false
-    dataset = 'dataset'
+    disableValidation = true
+    dataset = dataset
     dataFile = "upload/uploadFile.xtf"
 }
 
