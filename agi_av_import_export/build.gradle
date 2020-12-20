@@ -55,7 +55,6 @@ if (gretlEnvironment == "test") {
     bucketNameGeobau += "-dev"
 }
 
-
 task downloadFiles(type: FtpDownload ){ 
     server = ftpServerInfogrips
     user = ftpUserInfogrips
