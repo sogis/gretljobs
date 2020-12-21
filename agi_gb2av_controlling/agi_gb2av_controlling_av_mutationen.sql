@@ -96,18 +96,14 @@ INSERT INTO
         mutationen.beschrieb,  
         mutationen.dateinameplan,        
         meldungen.meldung AS meldungen,
-        CASE 
-            WHEN items."Grundbucheintrag" LIKE '20%' THEN TRUE
-            ELSE FALSE
-        END AS grundbucheintrag,
+        FALSE AS grundbucheintrag,
         mutationen.endetechnbereit,        
         mutationen.geometrie,
         mutationen.istprojektmutation        
     FROM 
         meldungen 
         LEFT JOIN mutationen 
-        ON mutationen.nummer = meldungen.nummer AND mutationen.nbident = meldungen.nbident,
-        jsonb_to_recordset(meldungen.meldung::jsonb) AS items("Grundbucheintrag" text)
+        ON mutationen.nummer = meldungen.nummer AND mutationen.nbident = meldungen.nbident
     WHERE 
         geometrie IS NOT NULL
 ON CONFLICT (dateinameplan)
@@ -116,4 +112,27 @@ DO
     SET 
         meldungen = EXCLUDED.meldungen,
         grundbucheintrag = EXCLUDED.grundbucheintrag
+;
+
+/*
+Das Attribut grundbucheintrag kann nicht in der Upsert-Query nachgeführt werden, weil ein Join mit
+'agi_gb2av_controlling.controlling_av2gb_mutationen' zu doppelten Records führt, da es ja mehrere Meldungen
+geben kann.
+*/
+WITH subquery AS (
+    SELECT 
+        t_id
+    FROM      
+        agi_gb2av_controlling.controlling_av2gb_mutationen,
+        jsonb_to_recordset(controlling_av2gb_mutationen.meldungen) AS items("Grundbucheintrag" text, "Datasetname" text)
+    WHERE 
+        items."Grundbucheintrag" LIKE '20%';
+)
+UPDATE 
+    agi_gb2av_controlling.controlling_av2gb_mutationen
+SET 
+    grundbucheintrag = TRUE
+FROM 
+    subquery
+WHERE controlling_av2gb_mutationen.t_id = subquery.t_id
 ;
