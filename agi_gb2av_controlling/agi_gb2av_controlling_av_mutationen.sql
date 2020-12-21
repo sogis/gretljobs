@@ -97,7 +97,7 @@ INSERT INTO
         mutationen.dateinameplan,        
         meldungen.meldung AS meldungen,
         CASE 
-            WHEN meldungen.meldung->>'Grundbucheintrag' LIKE '20%' THEN TRUE
+            WHEN items."Grundbucheintrag" LIKE '20%' THEN TRUE
             ELSE FALSE
         END AS grundbucheintrag,
         mutationen.endetechnbereit,        
@@ -106,7 +106,8 @@ INSERT INTO
     FROM 
         meldungen 
         LEFT JOIN mutationen 
-        ON mutationen.nummer = meldungen.nummer AND mutationen.nbident = meldungen.nbident
+        ON mutationen.nummer = meldungen.nummer AND mutationen.nbident = meldungen.nbident,
+        jsonb_to_recordset(meldungen.meldung::jsonb) AS items("Grundbucheintrag" text)
     WHERE 
         geometrie IS NOT NULL
 ON CONFLICT (dateinameplan)
