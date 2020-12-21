@@ -158,7 +158,7 @@ SELECT analysedaten.standort_untersuchung,
             ELSE NULL::numeric
         END AS sm_cd_l,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..63'::text AND analysedaten.methodeaufschluss::text ~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..73'::text AND analysedaten.methodeaufschluss::text ~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_zn_l,
         CASE
