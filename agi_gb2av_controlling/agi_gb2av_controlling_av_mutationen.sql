@@ -126,7 +126,7 @@ WITH subquery AS (
         agi_gb2av_controlling.controlling_av2gb_mutationen,
         jsonb_to_recordset(controlling_av2gb_mutationen.meldungen) AS items("Grundbucheintrag" text, "Datasetname" text)
     WHERE 
-        items."Grundbucheintrag" LIKE '20%';
+        items."Grundbucheintrag" LIKE '20%'
 )
 UPDATE 
     agi_gb2av_controlling.controlling_av2gb_mutationen
@@ -134,5 +134,6 @@ SET
     grundbucheintrag = TRUE
 FROM 
     subquery
-WHERE controlling_av2gb_mutationen.t_id = subquery.t_id
+WHERE 
+    controlling_av2gb_mutationen.t_id = subquery.t_id
 ;
