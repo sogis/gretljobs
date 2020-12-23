@@ -45,6 +45,28 @@ ext.datasets = []
 // - avt_oevkov_2020: Permission denied für bjsvwzie. Und Modell nicht im Modell-Repo.
 // - Leitungskataster-Daten: Die Daten werden an uns geliefert und sind voller INTERLIS-Fehler.
 
+// AGI-Veranstaltung:
+
+// Edit-DB
+/*
+datasets.add(new Dataset("SO_ADA_Denkmal_20191128", "ada_denkmalschutz", dbEdit, "ch.so.ada.denkmalschutz_edit"))
+datasets.add(new Dataset("SO_AfU_Erdwaermesonden_20190204", "afu_erdwaermesonden", dbEdit, "ch.so.afu.erdwaermesonden_edit", true))
+datasets.add(new Dataset("SO_AFU_Nagra_Bohrtiefen_20190927", "afu_erdwaermesonden_nagra", dbEdit, "ch.so.afu.erdwaermesonden_nagra_edit", true))
+datasets.add(new Dataset("SO_AfU_Erdwaermesonden_20200421", "afu_erdwaermesonden_v2", dbEdit, "ch.so.afu.erdwaermesonden_v2_edit"))
+datasets.add(new Dataset("SO_AfU_Gefahrenkartierung_20181129", "afu_gefahrenkartierung", dbEdit, "ch.so.afu.gefahrenkartierung_edit", true))
+datasets.add(new Dataset("Hazard_Mapping_LV95_V1_2", "afu_gefahrenkartierung_mgdm", dbEdit, "ch.so.afu.gefahrenkartierung_mgdm", true))
+*/
+
+datasets.add(new Dataset("SO_AFU_Geotope_20200312", "afu_geotope", dbEdit, "ch.so.afu.geotope_edit"))
+datasets.add(new Dataset("PlanerischerGewaesserschutz_LV95_V1_1", "afu_gewaesserschutz", dbEdit, "ch.so.afu.gewaesserschutz_edit"))
+datasets.add(new Dataset("SO_AFU_Igel_202000429", "afu_igel", dbEdit, "ch.so.afu.igel_edit"))
+datasets.add(new Dataset("SO_AFU_Verzeichnis_schadstoffbelastete_Boeden_20200622", "afu_schadstoffbelastete_boeden", dbEdit, "ch.so.afu.schadstoffbelastete_boeden_edit"))
+datasets.add(new Dataset("SO_AGEM_Fila_20190318", "agem_fila", dbEdit, "ch.so.agem.fila_edit"))
+
+//datasets.add(new Dataset("SO_AGI_AVGB_abgleich_import_20200515", "agi_av_gb_abgleich_import", dbEdit, "ch.so.agi.av_gb_abgleich_edit")) // TODO: Ist das von Interesse? Werden Daten nach Import nicht gelöscht?
+//datasets.add(new Dataset("SO_AGI_AV_GB_Administrative_Einteilungen_20180613", "agi_av_gb_admin_einteilung", dbEdit, "ch.so.agi.av_gb_admin_einteilung_edit"))
+
+
 /*
 datasets.add(new Dataset("SO_ADA_Denkmal_20191128", "ada_denkmalschutz", dbEdit, "ch.so.ada.denkmalschutz_edit"))
 datasets.add(new Dataset("SO_AfU_Erdwaermesonden_20190204", "afu_erdwaermesonden", dbEdit, "ch.so.afu.erdwaermesonden_edit", true))
@@ -153,4 +175,4 @@ datasets.add(new Dataset("SO_AWJF_Wegsanierungen_Publikation_20170629", "awjf_we
 //datasets.add(new Dataset("SO_Agglomerationsprogramme_Publikation_20200813", "arp_agglomerationsprogramme_pub", dbPub, "ch.so.arp_agglomerationsprogramme")) 
 //datasets.add(new Dataset("SO_ARP_Richtplan_Publikation_20190301", "arp_richtplan_pub", dbPub, "ch.so.arp.richtplan", true)) 
 //datasets.add(new Dataset("SO_Nutzungsplanung_Publikation_20190909", "arp_npl_pub", dbPub, "ch.so.arp.nutzungsplanung")) 
-datasets.add(new Dataset("SO_AGI_GB2AV_Controlling_20201002", "agi_gb2av_controlling_pub", dbPub, "ch.so.agi.gb2av.controlling")) 
+//datasets.add(new Dataset("SO_AGI_GB2AV_Controlling_20201002", "agi_gb2av_controlling_pub", dbPub, "ch.so.agi.gb2av.controlling")) 

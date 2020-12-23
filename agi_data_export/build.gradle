@@ -86,7 +86,7 @@ datasets.each { dataset ->
         logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_export.log"))
         dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf"))
         export3 = isVersion3 ? true : false
-        disableRounding = true // TEMP
+        //disableRounding = true // TEMP
         //trace = true
     }
 
@@ -226,5 +226,12 @@ task exportAllData() {
     description = "Aggregation task."
     dependsOn {
         tasks.findAll { task -> task.name.startsWith('uploadDatasetDxf_') }
+    }
+}
+
+task validateAllData() {
+    description = "Validation aggregation task."
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('validateData_') }
     }
 }
