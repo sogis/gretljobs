@@ -31,7 +31,7 @@ WITH gen AS (
     alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft gen
 ),
 projekte AS (
-    --Bewässerung Flächen
+    --Bewaesserung Flächen
     SELECT DISTINCT
       gen.t_id,
       proj.kantonsnummer,
@@ -42,7 +42,7 @@ projekte AS (
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_bew_flaechen_bewaesserung el ON el.t_id = ztgenel.element_genossenschaft_raeumlichlmnt_bw_flchn_bwssrung
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
   UNION
-    --Bewässerung Linien
+    --Bewaesserung Linien
     SELECT DISTINCT
       gen.t_id,
       proj.kantonsnummer,
@@ -53,7 +53,7 @@ projekte AS (
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_bewaesserung_linie el ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_bewssrng_lnie
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
   UNION
-    --Bewässerung Punkte
+    --Bewaesserung Punkte
     SELECT DISTINCT
       gen.t_id,
       proj.kantonsnummer,
@@ -64,7 +64,7 @@ projekte AS (
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_bewaesserung_linie el ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_bewssrng_lnie
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
   UNION
-    --Entwässerung Bodenstruktur Fläche
+    --Entwaesserung Bodenstruktur Flaeche
     SELECT DISTINCT
       gen.t_id,
       proj.kantonsnummer,
@@ -75,7 +75,7 @@ projekte AS (
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_entw_bodenstruktur_flaeche el ON el.t_id = ztgenel.element_genossenschaft_raemlchlmnt_ntw_bdnstrktr_flche
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
   UNION
-    --Entwässerung Entwässerung Bodenstruktur Linie
+    --Entwaesserung Bodenstruktur Linie
     SELECT DISTINCT
       gen.t_id,
       proj.kantonsnummer,
@@ -86,7 +86,7 @@ projekte AS (
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_entw_bodenstruktur_linie el ON el.t_id = ztgenel.element_genossenschaft_raeumlchlmnt_ntw_bdnstrktr_lnie
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
   UNION
-    --Entwässerung Entwässerung Bodenstruktur Pumpwerk
+    --Entwaesserung Bodenstruktur Pumpwerk
     SELECT DISTINCT
       gen.t_id,
       proj.kantonsnummer,
@@ -97,7 +97,7 @@ projekte AS (
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_entw_bodenstruktur_pumpwerk el ON el.t_id = ztgenel.element_genossenschaft_raemlchlmnt_ntwdnstrktr_pmpwerk
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
   UNION
-    --Elektrizitätsversorgung Linie
+    --Elektrizitaetsversorgung Linie
     SELECT DISTINCT
       gen.t_id,
       proj.kantonsnummer,
@@ -108,7 +108,7 @@ projekte AS (
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_ev_linie el ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_ev_linie
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
   UNION
-    --Elektrizitätsversorgung Punkt
+    --Elektrizitaetsversorgung Punkt
     SELECT DISTINCT
       gen.t_id,
       proj.kantonsnummer,
@@ -119,7 +119,7 @@ projekte AS (
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_ev_punkt el ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_ev_punkt
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
   UNION
-    --Ökologie Fläche
+    --Oeologie Flaeche
     SELECT DISTINCT
       gen.t_id,
       proj.kantonsnummer,
@@ -130,7 +130,7 @@ projekte AS (
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_oekologie_flaeche el ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_oekolog_flche
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
   UNION
-    --Ökologie Linie
+    --Oekologie Linie
     SELECT DISTINCT
       gen.t_id,
       proj.kantonsnummer,
@@ -141,7 +141,7 @@ projekte AS (
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_oekologie_linie el ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_oekologi_lnie
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
   UNION
-    --Ökologie Punkt
+    --Oekologie Punkt
     SELECT DISTINCT
       gen.t_id,
       proj.kantonsnummer,
@@ -152,7 +152,7 @@ projekte AS (
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_oekologie_punkt el ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_oekologi_pnkt
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
   UNION
-    --Ökologie Trockenmauer
+    --Oekologie Trockenmauer
     SELECT DISTINCT
       gen.t_id,
       proj.kantonsnummer,
@@ -196,7 +196,7 @@ projekte AS (
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_wegebau_linie el ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_wegebau_linie
       LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
   UNION
-    --Wegebau Brücken
+    --Wegebau Bruecken
     SELECT DISTINCT
       gen.t_id,
       proj.kantonsnummer,
