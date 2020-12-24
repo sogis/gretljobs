@@ -37,9 +37,11 @@ class Dataset {
 
 ext.datasets = []
 
+// Edit-DB
+
+
 datasets.add(new Dataset("SO_ADA_Denkmal_20191128", "ada_denkmalschutz", dbEdit, "ch.so.ada.denkmalschutz_edit"))
 
-// Edit-DB
 /*
 datasets.add(new Dataset("SO_ADA_Denkmal_20191128", "ada_denkmalschutz", dbEdit, "ch.so.ada.denkmalschutz_edit"))
 datasets.add(new Dataset("SO_AfU_Erdwaermesonden_20190204", "afu_erdwaermesonden", dbEdit, "ch.so.afu.erdwaermesonden_edit", true))
@@ -81,13 +83,13 @@ datasets.add(new Dataset("SO_AWJF_Waldpflege_Kontrolle_20200127", "awjf_waldpfle
 datasets.add(new Dataset("SO_AWJF_Waldwanderwege_202000804", "awjf_waldwanderwege", dbEdit, "ch.so.awjf.waldwanderwege_edit")) 
 datasets.add(new Dataset("SO_SGV_Erschliessung_ausserhalb_Bauzone_20190611", "sgv_erschliessungen", dbEdit, "ch.so.sgv.erschliessungen_edit", true)) 
 
-*/
+
 
 // SOGIS-DB
 // Die paar Modelle scheinen nicht auf die Schnelle exportierbar zu sein. Macht uns zu einem späteren Zeitpunkt vielleicht noch Bauchweh.
 
 // Pub-DB
-/*
+
 datasets.add(new Dataset("SO_ADA_Denkmal_Pub_20200527", "ada_denkmalschutz_pub", dbPub, "ch.so.ada.denkmalschutz")) 
 datasets.add(new Dataset("SO_AfU_BauGK_CCCCache_20180507", "afu_baugk_ccccache", dbPub, "ch.so.afu.baugk_ccccache", true)) 
 // datasets.add(new Dataset("SO_AFU_Bodenprofilstandorte_Publikation_20200713", "afu_bodendaten_nabodat_pub", dbPub, "ch.so.afu.bodendaten_nabodat")) // Falsches Json -> Ticket gemacht
@@ -104,11 +106,11 @@ datasets.add(new Dataset("SO_AGEM_Fila_Publikation_20190318", "agem_fila_pub", d
 datasets.add(new Dataset("SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822", "agi_av_gb_admin_einteilung_pub", dbPub, "ch.so.agi_av_gb_administrative_einteilungen"))
 datasets.add(new Dataset("IliVErrors", "agi_av_validierung_pub", dbPub, "ch.so.agi.av_validierung"))
 datasets.add(new Dataset("SO_AGI_GB2AV_Controlling_20201002", "agi_gb2av_controlling_pub", dbPub, "ch.so.agi.gb2av_controlling"))
-datasets.add(new Dataset("SO_AGI_Grundbuchplan_20190930", "agi_grundbuchplan_pub", dbPub, "ch.so.agi_grundbuchplan")) 
+//datasets.add(new Dataset("SO_AGI_Grundbuchplan_20190930", "agi_grundbuchplan_pub", dbPub, "ch.so.agi_grundbuchplan")) 
 datasets.add(new Dataset("SO_Hoheitsgrenzen_Publikation_20170626", "agi_hoheitsgrenzen_pub", dbPub, "ch.so.agi.hoheitsgrenzen"))
 datasets.add(new Dataset("SO_AGI_Inventar_Hoheitsgrenzen_Publikation_20191129", "agi_inventar_hoheitsgrenzen_pub", dbPub, "ch.so.agi.inventar_hoheitsgrenzen"))
 datasets.add(new Dataset("SO_AGI_Lidarprodukte_Publikation_20180202", "agi_lidar_pub", dbPub, "ch.so.agi.lidar"))
-datasets.add(new Dataset("SO_AGI_MOpublic_20190424", "agi_mopublic_pub", dbPub, "ch.so.agi_mopublic")) 
+//datasets.add(new Dataset("SO_AGI_MOpublic_20190424", "agi_mopublic_pub", dbPub, "ch.so.agi_mopublic")) 
 datasets.add(new Dataset("SO_ALW_Infoflora_Publikation_20191028", "alw_infoflora_pub", dbPub, "ch.so.alw_infoflora"))
 datasets.add(new Dataset("SO_AMB_Notfalltreffpunkte_Publikation_20180822", "amb_notfalltreffpunkte_pub", dbPub, "ch.so.amb_notfalltreffpunkte")) 
 datasets.add(new Dataset("SO_AMB_Zivilschutz_Adressen_Export_20201013", "amb_zivilschutz_adressen_staging_pub", dbPub, "ch.so.amb.zivilschutz_adressen")) 
@@ -117,7 +119,7 @@ datasets.add(new Dataset("SO_Agglomerationsprogramme_Publikation_20180620", "arp
 datasets.add(new Dataset("SO_ARP_Fledermausfundorte_Publikation_20200806", "arp_fledermaus_pub", dbPub, "ch.so.arp.fledermausfundorte")) 
 datasets.add(new Dataset("SO_ARP_Naturreservate_Publikation_20200609", "arp_naturreservate_pub", dbPub, "ch.so.arp.naturreservate")) 
 datasets.add(new Dataset("SO_Nutzungsplanung_Publikation_20190909", "arp_npl_pub", dbPub, "ch.so.arp.nutzungsplanung")) 
-datasets.add(new Dataset("??????", "arp_nutzungsvereinbarung_pub", dbPub, "ch.so.arp.nutzungsvereinbarung")) 
+//datasets.add(new Dataset("??????", "arp_nutzungsvereinbarung_pub", dbPub, "ch.so.arp.nutzungsvereinbarung")) 
 datasets.add(new Dataset("SO_ARP_Richtplan_Publikation_20190301", "arp_richtplan_pub", dbPub, "ch.so.arp.richtplan", true)) 
 datasets.add(new Dataset("SO_AVT_Groblaermkataster_20190709", "avt_groblaermkataster_pub", dbPub, "ch.so.avt.groblaermkataster")) 
 datasets.add(new Dataset("SO_AVT_Kantonsstrassen_Publikation_20200707", "avt_kantonsstrassen_pub", dbPub, "ch.so.avt.kantonsstrassen")) 

@@ -26,7 +26,6 @@ subprojects {
     apply plugin: 'ch.so.agi.gretl'
 }
 
-apply from: "$rootDir/metadata.groovy"
 apply from: "$rootDir/datasets.groovy"
 
 defaultTasks 'uploadZipFileLatest'
@@ -44,6 +43,11 @@ def todaysDate = new Date().format('yyyy-MM-dd')
 def dbEdit = [dbUriEdit, dbUserEdit, dbPwdEdit]
 def dbPub = [dbUriPub, dbUserPub, dbPwdPub]
 def dataBucketName = "ch.so.agi.geodata"
+
+
+// TODO:
+// - xtflog
+// - xtflog -> db? oder etwas ähnliches
 
 
 datasets.each { dataset ->
@@ -66,6 +70,7 @@ datasets.each { dataset ->
     task "validateData_$datasetId"(type: IliValidator, dependsOn: "exportDataset_$datasetId") {
         dataFiles = [Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf")]
         logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_validation.log"))
+        xtflogFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_validation.xtf"))
         failOnError = false
         if (new File("config/"+datasetId + ".toml").isFile()) configFile = "config/"+datasetId + ".toml"
     }
@@ -82,6 +87,7 @@ task zipFiles(type: Zip, dependsOn: "validateAllData") {
     from pathToTempFolder
     include "*_export.log"
     include "*_validation.log"
+    include "*_validation.xtf"
     archiveName  "datenvalidierung_"+todaysDate+".zip"
     destinationDir(file(pathToTempFolder))
 }   
@@ -94,6 +100,8 @@ task copyZipFile(type: Copy, dependsOn: "zipFiles") {
         fileName.replace("datenvalidierung_"+todaysDate+".zip", "datenvalidierung_latest.zip")
     } 
 }
+
+// TODO: different buckets for different envs.
 
 task uploadZipFileDate(type: S3Upload, dependsOn: "copyZipFile") {
     accessKey = awsAccessKeyAgi
