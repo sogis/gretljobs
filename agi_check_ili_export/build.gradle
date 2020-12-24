@@ -1,156 +1,250 @@
-import java.nio.file.Paths
+/*
+buildscript {
+    repositories {
+        maven { url "https://repo.osgeo.org/repository/release/" }
+        maven { url "http://jars.interlis.ch" }
+        maven { url "https://plugins.gradle.org/m2/" }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'commons-net:commons-net:3.6'
+    }
+}
+*/
+
 import ch.so.agi.gretl.tasks.*
-
-
-apply plugin: 'ch.so.agi.gretl'
-
-description = """\n
-Exportiert sämtliche modellbasierten Datenerfassungen in eine 
-INTERLIS-Transferdatei, um die Modellkonformität zu prüfen.
-
-In Zukunft könnte auch eine direktere Prüfung in der Datenbank
-stattfinden, ohne zu versuchen die Datei zu exportieren
-(Feature request für ilivalidator).
-"""
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.api.Connector
+import ch.so.agi.gretl.util.TaskUtil
+import java.nio.file.Paths
+import java.nio.file.Files
+import java.io.FileOutputStream
+import java.util.UUID
 
 apply plugin: 'ch.so.agi.gretl'
-
-defaultTasks 'checkAllModels'
-
-ext {
-    todaysDate = new Date().format('yyyy-MM-dd')
-    dbSogis = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    dbEdit = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    models = []
-    models.add(["SO_Agglomerationsprogramme_20170512",
-                "arp_aggloprogramme",
-                dbSogis])
-    models.add(["SO_ARP_Nutzungsvereinbarung_20170512",
-                "arp_nutzungsvereinbarung",
-                dbSogis ])
-    models.add(["SO_Forstreviere_20170512",
-                "awjf_forstreviere",
-                dbSogis ])
-    models.add(["SO_Hoheitsgrenzen_20170623",
-                "agi_hoheitsgrenzen",
-                dbSogis ])
-    models.add(["SO_AWJF_Wegsanierungen_20170629",
-                "awjf_wegsanierungen",
-                dbSogis])
-    models.add(["SO_BLN_20170904",
-                "arp_bln",
-                dbSogis ])
-    models.add(["SO_ALW_Vernetzung_20171010",
-                "alw_vernetzung",
-                dbSogis ])
-    models.add(["SO_AWJF_Biotopbaeume_20181217",
-                "awjf_biotopbaeume",
-                dbSogis ])
-    models.add(["SO_AMB_Notfalltreffpunkte_20180413",
-                "amb_notfalltreffpunkte",
-                dbSogis ])
-    models.add(["SO_AGI_AV_GB_Administrative_Einteilungen_20180613",
-                "agi_av_gb_admin_einteilung",
-                dbSogis ])
-    models.add(["SO_ARP_Naturreservate_20180829",
-                "arp_naturreservate",
-                dbSogis ])
-    /*
-    models.add(["SO_AVT_Verkehrszaehlstellen_20190206",
-                "avt_verkehrszaehlstellen",
-                dbEdit])
-    */
-    /*
-    models.add(["SO_ARP_Richtplan_20190222",
-                "arp_richtplan",
-                dbEdit])
-    */
-    /*models.add(["SO_AfU_Gefahrenkartierung_20181129",
-                "afu_gefahrenkartierung",
-                dbEdit])*/
-    models.add(["SO_AfU_Erdwaermesonden_20190204",
-                "afu_erdwaermesonden",
-                dbEdit])
-    /*models.add(["SO_Nutzungsplanung_20171118",
-                "arp_npl",
-                dbSogis])*/
-
+subprojects {
+    apply plugin: 'ch.so.agi.gretl'
 }
 
-def stringPathToTempFolder = System.getProperty("java.io.tmpdir").toString()
+apply from: "$rootDir/metadata.groovy"
+apply from: "$rootDir/datasets.groovy"
 
-// Create a dynamic task for every model we want to validate and for cleaning up if validaton was successful.
-models.each { model ->
-    def modelName = model.getAt(0)
-    def dbSchema = model.getAt(1)
-    def filename = model.getAt(1) + "_" + todaysDate
-    def db = model.getAt(2)
-    def dataExists
-    def errorInLog
+defaultTasks 'uploadZipFileLatest'
 
-    
-    task "checkModel_$modelName"(type: Ili2pgExport) {
-        description = "INTERLIS validation against database schema: $dbSchema ($modelName)"
-        database = db
-        dbschema = dbSchema
-        models = modelName
-        disableValidation = false
-        logFile = file(Paths.get(stringPathToTempFolder, filename + ".log"))
-        dataFile = file(Paths.get(stringPathToTempFolder, filename + ".xtf"))
+//def pathToTempFolder = Files.createTempDirectory("agidataexport-").toFile().getAbsolutePath()
 
-        finalizedBy "removeFiles_$modelName"
+String uuid = UUID.randomUUID().toString()
+File tmpFolder = new File("/tmp/gretl-share","agidataexport-"+uuid);
+if(!tmpFolder.exists()) {
+    tmpFolder.mkdirs();
+}
+def pathToTempFolder = tmpFolder.getAbsolutePath()
+
+def todaysDate = new Date().format('yyyy-MM-dd')
+def dbEdit = [dbUriEdit, dbUserEdit, dbPwdEdit]
+def dbPub = [dbUriPub, dbUserPub, dbPwdPub]
+def dataBucketName = "ch.so.agi.geodata"
+
+
+datasets.each { dataset ->
+    def modelNames = dataset.models
+    def schema = dataset.dbschema
+    def dbdatabase = dataset.database
+    def datasetId = dataset.datasetId
+    def isVersion3 = dataset.version3
+
+    task "exportDataset_$datasetId"(type: Ili2pgExport) {
+        database = dbdatabase
+        dbschema = schema
+        models = modelNames
+        disableValidation = true
+        logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_export.log"))
+        dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf"))
+        export3 = isVersion3 ? true : false
     }
 
-    task "checkLogFileForFailure_$modelName"() {
-        description = "Checks if log-File ends with an error"
-
-        doLast {
-            def dataFile = file(Paths.get(stringPathToTempFolder, filename + ".log"))
-            def indexOfError = dataFile.findLastIndexOf { it =~ "Error: ...export failed" }
-
-            if (indexOfError == -1) {
-                errorInLog = false
-            } else {
-                errorInLog = true
-            }
-        }
-    }
-
-    task "checkDataFileForData_$modelName"(dependsOn: "checkLogFileForFailure_$modelName"){
-        description = "Temporary workaround until ili2pgExport works correctly on failure during export. " +
-                "Checks if there is any data within datasection."
-        doLast {
-            def dataFile = file(Paths.get(stringPathToTempFolder, filename + ".xtf"))
-            def indexStartDatasection = dataFile.findLastIndexOf { it =~ "<DATASECTION>" }
-            def indexEndDatasection = dataFile.findLastIndexOf { it =~ "</DATASECTION>" }
-            def lineDifference = indexEndDatasection - indexStartDatasection
-
-            if (lineDifference <= 1){
-                dataExists = false
-            } else if (lineDifference > 1) {
-                dataExists = true
-            }
-        }
-    }
-
-    task "removeFiles_$modelName"(type: Delete, dependsOn: "checkDataFileForData_$modelName") {
-        description = "Remove files from model export: $modelName"
-
-        onlyIf {
-            //project.getTasksByName("checkModel_$modelName", false).getAt(0).state.failure == null
-            dataExists && !errorInLog
-        }
-
-        delete file(Paths.get(stringPathToTempFolder, filename + ".log")),
-                file(Paths.get(stringPathToTempFolder, filename + ".xtf"))
+    task "validateData_$datasetId"(type: IliValidator, dependsOn: "exportDataset_$datasetId") {
+        dataFiles = [Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf")]
+        logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_validation.log"))
+        failOnError = false
+        if (new File("config/"+datasetId + ".toml").isFile()) configFile = "config/"+datasetId + ".toml"
     }
 }
 
-task checkAllModels() {
-    description = "Validate all models."
-    //ignoreFailures = true
+task validateAllData() {
+    description = "Validation aggregation task."
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('validateData_') }
+    }
 }
 
-checkAllModels.finalizedBy {
-    tasks.findAll { task -> task.name.startsWith('checkModel_') }
+task zipFiles(type: Zip, dependsOn: "validateAllData") {
+    from pathToTempFolder
+    include "*_export.log"
+    include "*_validation.log"
+    archiveName  "datenvalidierung_"+todaysDate+".zip"
+    destinationDir(file(pathToTempFolder))
+}   
+
+task copyZipFile(type: Copy, dependsOn: "zipFiles") {
+    from pathToTempFolder
+    into pathToTempFolder
+    include "datenvalidierung_"+todaysDate+".zip"
+    rename { String fileName ->
+        fileName.replace("datenvalidierung_"+todaysDate+".zip", "datenvalidierung_latest.zip")
+    } 
 }
+
+task uploadZipFileDate(type: S3Upload, dependsOn: "copyZipFile") {
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    sourceFile = file(Paths.get(pathToTempFolder, "datenvalidierung_"+todaysDate+".zip"))
+    bucketName = "ch.so.agi.geodata"
+    endPoint = "https://s3.amazonaws.com/"
+    region = "eu-central-1"
+    acl = "PublicRead"
+}
+
+task uploadZipFileLatest(type: S3Upload, dependsOn: "uploadZipFileDate") {
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    sourceFile = file(Paths.get(pathToTempFolder, "datenvalidierung_latest.zip"))
+    bucketName = "ch.so.agi.geodata"
+    endPoint = "https://s3.amazonaws.com/"
+    region = "eu-central-1"
+    acl = "PublicRead"
+}
+
+    // TODO: only if successful?
+//     task "zipDatasetXtf_$datasetId"(type: Zip, dependsOn: "exportDataset_$datasetId") {
+//         from pathToTempFolder
+//         include "$datasetId*.xtf"
+//         include "$datasetId*_export.log"
+//         include "$datasetId*_validation.log"
+//         archiveName datasetId + "_xtf.zip"
+//         destinationDir(file(pathToTempFolder))
+//     }
+
+//     task "importDatasetGpkg_$datasetId"(type: Ili2gpkgImport, dependsOn: "zipDatasetXtf_$datasetId") {
+//         models = modelNames
+//         dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf"))
+//         dbfile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".gpkg"))
+//         disableValidation = true
+//         defaultSrsCode = 2056
+//         nameByTopic = true
+//         createEnumTabs = true
+//         createMetaInfo = true
+//         strokeArcs = true
+//         coalesceJson = true
+//     }
+
+//     task "zipDatasetGpkg_$datasetId"(type: Zip, dependsOn: "importDatasetGpkg_$datasetId") {
+//         from pathToTempFolder
+//         include "$datasetId*.gpkg"
+//         include "$datasetId*_validation.log"
+//         archiveName datasetId + "_gpkg.zip"
+//         destinationDir(file(pathToTempFolder))
+//     }    
+
+//     task "gpkg2Shp_$datasetId"(type: Gpkg2Shp, dependsOn: "zipDatasetGpkg_$datasetId") {
+//         dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".gpkg")) 
+//         outputDir = file(pathToTempFolder)
+//     }
+
+//     task "zipDatasetShp_$datasetId"(type: Zip, dependsOn: "gpkg2Shp_$datasetId") {
+//         from pathToTempFolder
+//         include "*.shp"
+//         include "*.dbf"
+//         include "*.shx"
+//         include "*.prj"
+//         include "$datasetId*_validation.log"
+//         archiveName datasetId + "_shp.zip"
+//         destinationDir(file(pathToTempFolder))
+
+//         finalizedBy "removeShpFiles_$datasetId"
+//     }      
+
+//     task "removeShpFiles_$datasetId"(type: Delete) {
+//         delete fileTree(pathToTempFolder) {
+//             include '**/*.shp'
+//             include '**/*.dbf'
+//             include '**/*.shx'
+//             include '**/*.prj'
+//             include '**/*.fix'
+//         }
+//     }
+
+//     task "gpkg2Dxf_$datasetId"(type: Gpkg2Dxf, dependsOn: "zipDatasetShp_$datasetId") {
+//         dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".gpkg")) 
+//         outputDir = file(pathToTempFolder)
+//     }
+
+//     task "zipDatasetDxf_$datasetId"(type: Zip, dependsOn: "gpkg2Dxf_$datasetId") {
+//         from pathToTempFolder
+//         include "*.dxf"
+//         include "$datasetId*_validation.log"
+//         archiveName datasetId + "_dxf.zip"
+//         destinationDir(file(pathToTempFolder))
+
+//         finalizedBy "removeDxfFiles_$datasetId"
+//     }      
+
+//     task "removeDxfFiles_$datasetId"(type: Delete) {
+//         delete fileTree(pathToTempFolder) {
+//             include '**/*.dxf'
+//         }
+//     }    
+
+//     task "uploadDatasetXtf_$datasetId"(type: S3Upload, dependsOn: "zipDatasetDxf_$datasetId") {
+//         accessKey = awsAccessKeyAgi
+//         secretKey = awsSecretAccessKeyAgi
+//         sourceDir = file(Paths.get(pathToTempFolder, datasetId + "_xtf.zip"))
+//         bucketName = dataBucketName
+//         endPoint = "https://s3.amazonaws.com/"
+//         region = "eu-central-1"
+//         acl = "PublicRead"
+//         metaData = ["lastEditingDate":todaysDate]
+//     }
+
+//     task "uploadDatasetGpkg_$datasetId"(type: S3Upload, dependsOn: "uploadDatasetXtf_$datasetId") {
+//         accessKey = awsAccessKeyAgi
+//         secretKey = awsSecretAccessKeyAgi
+//         sourceDir = file(Paths.get(pathToTempFolder, datasetId + "_gpkg.zip"))
+//         bucketName = dataBucketName
+//         endPoint = "https://s3.amazonaws.com/"
+//         region = "eu-central-1"
+//         acl = "PublicRead"
+//         metaData = ["lastEditingDate":todaysDate]
+//     }    
+
+//     task "uploadDatasetShp_$datasetId"(type: S3Upload, dependsOn: "uploadDatasetGpkg_$datasetId") {
+//         accessKey = awsAccessKeyAgi
+//         secretKey = awsSecretAccessKeyAgi
+//         sourceDir = file(Paths.get(pathToTempFolder, datasetId + "_shp.zip"))
+//         bucketName = dataBucketName
+//         endPoint = "https://s3.amazonaws.com/"
+//         region = "eu-central-1"
+//         acl = "PublicRead"
+//         metaData = ["lastEditingDate":todaysDate]
+//     }   
+
+//     task "uploadDatasetDxf_$datasetId"(type: S3Upload, dependsOn: "uploadDatasetShp_$datasetId") {
+//         accessKey = awsAccessKeyAgi
+//         secretKey = awsSecretAccessKeyAgi
+//         sourceDir = file(Paths.get(pathToTempFolder, datasetId + "_dxf.zip"))
+//         bucketName = dataBucketName
+//         endPoint = "https://s3.amazonaws.com/"
+//         region = "eu-central-1"
+//         acl = "PublicRead"
+//         metaData = ["lastEditingDate":todaysDate]
+//     }       
+// }
+
+// task exportAllData() {
+//     description = "Aggregation task."
+//     dependsOn {
+//         tasks.findAll { task -> task.name.startsWith('uploadDatasetDxf_') }
+//     }
+// }
+
+
