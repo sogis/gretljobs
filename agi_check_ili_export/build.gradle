@@ -26,7 +26,6 @@ subprojects {
     apply plugin: 'ch.so.agi.gretl'
 }
 
-apply from: "$rootDir/metadata.groovy"
 apply from: "$rootDir/datasets.groovy"
 
 defaultTasks 'uploadZipFileLatest'
