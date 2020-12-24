@@ -242,6 +242,7 @@ SELECT
     gen.t_ili_tid,
     gen.typ,
     gen.aname,
+    gen.adresse,
     gen.unterhaltsobjekte,
     gen.gruendungsdatum,
     gen.genehmigungsdatum,
