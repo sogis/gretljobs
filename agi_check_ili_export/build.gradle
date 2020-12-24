@@ -94,6 +94,8 @@ task copyZipFile(type: Copy, dependsOn: "zipFiles") {
     } 
 }
 
+// TODO: different buckets for different envs.
+
 task uploadZipFileDate(type: S3Upload, dependsOn: "copyZipFile") {
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
