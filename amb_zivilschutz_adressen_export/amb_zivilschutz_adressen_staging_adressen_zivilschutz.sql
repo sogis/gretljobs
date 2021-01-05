@@ -57,7 +57,7 @@ geb_objektnamen AS (
         a.t_id
 )
 
-INSERT INTO amb_zivilschutz_adressen_staging_pub.adressen_zivilschutz (lokalisationsname,hausnummer,plz,ortschaft,gemeinde,gwr_egid,gwr_edid,koord_ost,koord_nord,astatus,objektname,grundstuecknummer,grundbuchkreis)
+INSERT INTO amb_zivilschutz_adressen_staging_pub.adressen_zivilschutz (lokalisationsname,hausnummer,plz,ortschaft,gemeinde,gwr_egid,gwr_edid,koord_ost,koord_nord,status,objektname,grundstuecknummer,grundbuchkreis)
 (
     SELECT
         a.lokalisationsname,
