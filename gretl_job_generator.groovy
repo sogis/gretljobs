@@ -90,8 +90,10 @@ for (jobFile in jobFiles) {
     authorization {
       permissions(properties.getProperty('authorization.permissions'), ['hudson.model.Item.Build', 'hudson.model.Item.Read'])
     }
-    logRotator {
-      numToKeep(properties.getProperty('logRotator.numToKeep') as Integer)
+    if (properties.getProperty('logRotator.numToKeep') != 'unlimited') {
+      logRotator {
+        numToKeep(properties.getProperty('logRotator.numToKeep') as Integer)
+      }
     }
     if (properties.getProperty('triggers.upstream') != 'none') {
       triggers {
