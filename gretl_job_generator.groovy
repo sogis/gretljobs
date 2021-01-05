@@ -63,7 +63,7 @@ for (jobFile in jobFiles) {
   def propertiesFile = new File(baseDir, propertiesFilePath)
   if (propertiesFile.exists()) {
     println 'properties file found: ' + propertiesFilePath
-    properties.load(propertiesFile.newDataInputStream())
+    properties.load(new FileReader(propertiesFile))
   }
   
   def productionEnv = ("${OPENSHIFT_BUILD_NAMESPACE}" == 'agi-gretl-production')

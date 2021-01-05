@@ -81,8 +81,7 @@ muss sein spezifisches Jenkinsfile ebenfalls im Job-Ordner abgelegt werden.
 
 #### `job.properties`
 
-Die Datei `job.properties` muss in ISO 8859-1 encodiert sein, damit allfällige Umlaute etc. korrekt eingelesen werden.
-Sie kann folgende Eigenschaften des GRETL-Jobs enthalten:
+Die Datei `job.properties` kann folgende Eigenschaften des GRETL-Jobs enthalten:
 
 ```java
 logRotator.numToKeep=30
