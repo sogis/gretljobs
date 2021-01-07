@@ -12,6 +12,7 @@ task transferbodenprofilstandorte(type: Db2Db){
             new TransferSet('bodenprofilstandorte.sql', 'afu_bodendaten_nabodat_pub.bodenproflstndrte_bodenprofilstandort', true)
     ];
 }
+
 task refreshSolr(type:Exec, dependsOn:'transferbodenprofilstandorte') {
         commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.bodeninformationen.bodenprofilstandorte'
 }
