@@ -28,7 +28,8 @@ subprojects {
 
 apply from: "$rootDir/datasets.groovy"
 
-defaultTasks 'uploadZipFileLatest'
+//defaultTasks 'uploadZipFileLatest'
+defaultTasks 'showClasspath'
 
 //def pathToTempFolder = Files.createTempDirectory("agidataexport-").toFile().getAbsolutePath()
 
@@ -45,76 +46,82 @@ def dbPub = [dbUriPub, dbUserPub, dbPwdPub]
 def dataBucketName = "ch.so.agi.geodata"
 
 
-datasets.each { dataset ->
-    def modelNames = dataset.models
-    def schema = dataset.dbschema
-    def dbdatabase = dataset.database
-    def datasetId = dataset.datasetId
-    def isVersion3 = dataset.version3
-
-    task "exportDataset_$datasetId"(type: Ili2pgExport) {
-        database = dbdatabase
-        dbschema = schema
-        models = modelNames
-        disableValidation = true
-        logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_export.log"))
-        dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf"))
-        export3 = isVersion3 ? true : false
-    }
-
-    task "validateData_$datasetId"(type: IliValidator, dependsOn: "exportDataset_$datasetId") {
-        dataFiles = [Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf")]
-        logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_validation.log"))
-        failOnError = false
-        if (new File("config/"+datasetId + ".toml").isFile()) configFile = "config/"+datasetId + ".toml"
+task showClasspath  {
+    doLast {
+        buildscript.configurations.classpath.each { println it.name }
     }
 }
 
-task validateAllData() {
-    description = "Validation aggregation task."
-    dependsOn {
-        tasks.findAll { task -> task.name.startsWith('validateData_') }
-    }
-}
+// datasets.each { dataset ->
+//     def modelNames = dataset.models
+//     def schema = dataset.dbschema
+//     def dbdatabase = dataset.database
+//     def datasetId = dataset.datasetId
+//     def isVersion3 = dataset.version3
 
-task zipFiles(type: Zip, dependsOn: "validateAllData") {
-    from pathToTempFolder
-    include "*_export.log"
-    include "*_validation.log"
-    archiveName  "datenvalidierung_"+todaysDate+".zip"
-    destinationDir(file(pathToTempFolder))
-}   
+//     task "exportDataset_$datasetId"(type: Ili2pgExport) {
+//         database = dbdatabase
+//         dbschema = schema
+//         models = modelNames
+//         disableValidation = true
+//         logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_export.log"))
+//         dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf"))
+//         export3 = isVersion3 ? true : false
+//     }
 
-task copyZipFile(type: Copy, dependsOn: "zipFiles") {
-    from pathToTempFolder
-    into pathToTempFolder
-    include "datenvalidierung_"+todaysDate+".zip"
-    rename { String fileName ->
-        fileName.replace("datenvalidierung_"+todaysDate+".zip", "datenvalidierung_latest.zip")
-    } 
-}
+//     task "validateData_$datasetId"(type: IliValidator, dependsOn: "exportDataset_$datasetId") {
+//         dataFiles = [Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf")]
+//         logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_validation.log"))
+//         failOnError = false
+//         if (new File("config/"+datasetId + ".toml").isFile()) configFile = "config/"+datasetId + ".toml"
+//     }
+// }
 
-// TODO: different buckets for different envs.
+// task validateAllData() {
+//     description = "Validation aggregation task."
+//     dependsOn {
+//         tasks.findAll { task -> task.name.startsWith('validateData_') }
+//     }
+// }
 
-task uploadZipFileDate(type: S3Upload, dependsOn: "copyZipFile") {
-    accessKey = awsAccessKeyAgi
-    secretKey = awsSecretAccessKeyAgi
-    sourceFile = file(Paths.get(pathToTempFolder, "datenvalidierung_"+todaysDate+".zip"))
-    bucketName = "ch.so.agi.geodata"
-    endPoint = "https://s3.amazonaws.com/"
-    region = "eu-central-1"
-    acl = "PublicRead"
-}
+// task zipFiles(type: Zip, dependsOn: "validateAllData") {
+//     from pathToTempFolder
+//     include "*_export.log"
+//     include "*_validation.log"
+//     archiveName  "datenvalidierung_"+todaysDate+".zip"
+//     destinationDir(file(pathToTempFolder))
+// }   
 
-task uploadZipFileLatest(type: S3Upload, dependsOn: "uploadZipFileDate") {
-    accessKey = awsAccessKeyAgi
-    secretKey = awsSecretAccessKeyAgi
-    sourceFile = file(Paths.get(pathToTempFolder, "datenvalidierung_latest.zip"))
-    bucketName = "ch.so.agi.geodata"
-    endPoint = "https://s3.amazonaws.com/"
-    region = "eu-central-1"
-    acl = "PublicRead"
-}
+// task copyZipFile(type: Copy, dependsOn: "zipFiles") {
+//     from pathToTempFolder
+//     into pathToTempFolder
+//     include "datenvalidierung_"+todaysDate+".zip"
+//     rename { String fileName ->
+//         fileName.replace("datenvalidierung_"+todaysDate+".zip", "datenvalidierung_latest.zip")
+//     } 
+// }
+
+// // TODO: different buckets for different envs.
+
+// task uploadZipFileDate(type: S3Upload, dependsOn: "copyZipFile") {
+//     accessKey = awsAccessKeyAgi
+//     secretKey = awsSecretAccessKeyAgi
+//     sourceFile = file(Paths.get(pathToTempFolder, "datenvalidierung_"+todaysDate+".zip"))
+//     bucketName = "ch.so.agi.geodata"
+//     endPoint = "https://s3.amazonaws.com/"
+//     region = "eu-central-1"
+//     acl = "PublicRead"
+// }
+
+// task uploadZipFileLatest(type: S3Upload, dependsOn: "uploadZipFileDate") {
+//     accessKey = awsAccessKeyAgi
+//     secretKey = awsSecretAccessKeyAgi
+//     sourceFile = file(Paths.get(pathToTempFolder, "datenvalidierung_latest.zip"))
+//     bucketName = "ch.so.agi.geodata"
+//     endPoint = "https://s3.amazonaws.com/"
+//     region = "eu-central-1"
+//     acl = "PublicRead"
+// }
 
     // TODO: only if successful?
 //     task "zipDatasetXtf_$datasetId"(type: Zip, dependsOn: "exportDataset_$datasetId") {
