@@ -28,8 +28,7 @@ subprojects {
 
 apply from: "$rootDir/datasets.groovy"
 
-//defaultTasks 'uploadZipFileLatest'
-defaultTasks 'showClasspath'
+defaultTasks 'validateAllData'
 
 //def pathToTempFolder = Files.createTempDirectory("agidataexport-").toFile().getAbsolutePath()
 
@@ -45,44 +44,37 @@ def dbEdit = [dbUriEdit, dbUserEdit, dbPwdEdit]
 def dbPub = [dbUriPub, dbUserPub, dbPwdPub]
 def dataBucketName = "ch.so.agi.geodata"
 
+datasets.each { dataset ->
+    def modelNames = dataset.models
+    def schema = dataset.dbschema
+    def dbdatabase = dataset.database
+    def datasetId = dataset.datasetId
+    def isVersion3 = dataset.version3
 
-task showClasspath  {
-    doLast {
-        buildscript.configurations.classpath.each { println it.name }
+    task "exportDataset_$datasetId"(type: Ili2pgExport) {
+        database = dbdatabase
+        dbschema = schema
+        models = modelNames
+        disableValidation = true
+        logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_export.log"))
+        dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf"))
+        //export3 = isVersion3 ? true : false
+    }
+
+    task "validateData_$datasetId"(type: IliValidator, dependsOn: "exportDataset_$datasetId") {
+        dataFiles = [Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf")]
+        logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_validation.log"))
+        failOnError = false
+        if (new File("config/"+datasetId + ".toml").isFile()) configFile = "config/"+datasetId + ".toml"
     }
 }
 
-// datasets.each { dataset ->
-//     def modelNames = dataset.models
-//     def schema = dataset.dbschema
-//     def dbdatabase = dataset.database
-//     def datasetId = dataset.datasetId
-//     def isVersion3 = dataset.version3
-
-//     task "exportDataset_$datasetId"(type: Ili2pgExport) {
-//         database = dbdatabase
-//         dbschema = schema
-//         models = modelNames
-//         disableValidation = true
-//         logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_export.log"))
-//         dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf"))
-//         export3 = isVersion3 ? true : false
-//     }
-
-//     task "validateData_$datasetId"(type: IliValidator, dependsOn: "exportDataset_$datasetId") {
-//         dataFiles = [Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf")]
-//         logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_validation.log"))
-//         failOnError = false
-//         if (new File("config/"+datasetId + ".toml").isFile()) configFile = "config/"+datasetId + ".toml"
-//     }
-// }
-
-// task validateAllData() {
-//     description = "Validation aggregation task."
-//     dependsOn {
-//         tasks.findAll { task -> task.name.startsWith('validateData_') }
-//     }
-// }
+task validateAllData() {
+    description = "Validation aggregation task."
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('validateData_') }
+    }
+}
 
 // task zipFiles(type: Zip, dependsOn: "validateAllData") {
 //     from pathToTempFolder
