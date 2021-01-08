@@ -60,8 +60,8 @@ datasets.each { dataset ->
         disableValidation = true
         logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_export.log"))
         dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf"))
-        export3 = false
-        //export3 = isVersion3 ? true : false
+        //export3 = false
+        export3 = isVersion3 ? true : false
     }
 
     task "validateData_$datasetId"(type: IliValidator, dependsOn: "exportDataset_$datasetId") {
