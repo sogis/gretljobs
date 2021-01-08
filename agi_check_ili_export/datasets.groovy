@@ -40,7 +40,7 @@ ext.datasets = []
 // Edit-DB
 
 datasets.add(new Dataset("SO_ADA_Denkmal_20191128", "ada_denkmalschutz", dbEdit, "ch.so.ada.denkmalschutz_edit"))
-/*datasets.add(new Dataset("SO_AfU_Erdwaermesonden_20190204", "afu_erdwaermesonden", dbEdit, "ch.so.afu.erdwaermesonden_edit", true))
+datasets.add(new Dataset("SO_AfU_Erdwaermesonden_20190204", "afu_erdwaermesonden", dbEdit, "ch.so.afu.erdwaermesonden_edit", true))
 datasets.add(new Dataset("SO_AFU_Nagra_Bohrtiefen_20190927", "afu_erdwaermesonden_nagra", dbEdit, "ch.so.afu.erdwaermesonden_nagra_edit", true))
 datasets.add(new Dataset("SO_AfU_Erdwaermesonden_20200421", "afu_erdwaermesonden_v2", dbEdit, "ch.so.afu.erdwaermesonden_v2_edit"))
 datasets.add(new Dataset("SO_AfU_Gefahrenkartierung_20181129", "afu_gefahrenkartierung", dbEdit, "ch.so.afu.gefahrenkartierung_edit", true))
@@ -53,7 +53,7 @@ datasets.add(new Dataset("SO_AfU_Luftreinhaltung_20191105", "afu_uplus_luft", db
 datasets.add(new Dataset("SO_AfU_Tankanlage_20191105", "afu_uplus_tank", dbEdit, "ch.so.afu.uplus_tank_edit"))
 datasets.add(new Dataset("SO_AGEM_Fila_20190318", "agem_fila", dbEdit, "ch.so.agem.fila_edit"))
 datasets.add(new Dataset("SO_AGI_AV_GB_Administrative_Einteilungen_20180613", "agi_av_gb_admin_einteilung", dbEdit, "ch.so.agi.av_gb_admin_einteilung_edit"))
-
+/*
 datasets.add(new Dataset("SO_AGI_MOCheckSO_20200715", "agi_av_mocheckso", dbEdit, "ch.so.agi.av_mocheckso_edit"))
 datasets.add(new Dataset("SO_AGI_GB2AV_Controlling_20201002", "agi_gb2av_controlling", dbEdit, "ch.so.agi.gb2av_controlling_edit"))
 datasets.add(new Dataset("SO_AGI_Inventar_Hoheitsgrenzen_20191129", "agi_inventar_hoheitsgrenzen", dbEdit, "ch.so.agi.inventar_hoheitsgrenzen_edit"))
