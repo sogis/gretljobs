@@ -51,8 +51,6 @@ datasets.each { dataset ->
     def datasetId = dataset.datasetId
     def isVersion3 = dataset.version3
 
-    println "isVersion3: " + isVersion3
-
     task "exportDataset_$datasetId"(type: Ili2pgExport) {
         database = dbdatabase
         dbschema = schema
@@ -60,7 +58,6 @@ datasets.each { dataset ->
         disableValidation = true
         logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_export.log"))
         dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf"))
-        //export3 = false
         export3 = isVersion3 ? true : false
     }
 
@@ -79,44 +76,44 @@ task validateAllData() {
     }
 }
 
-// task zipFiles(type: Zip, dependsOn: "validateAllData") {
-//     from pathToTempFolder
-//     include "*_export.log"
-//     include "*_validation.log"
-//     archiveName  "datenvalidierung_"+todaysDate+".zip"
-//     destinationDir(file(pathToTempFolder))
-// }   
+task zipFiles(type: Zip, dependsOn: "validateAllData") {
+    from pathToTempFolder
+    include "*_export.log"
+    include "*_validation.log"
+    archiveName  "datenvalidierung_"+todaysDate+".zip"
+    destinationDir(file(pathToTempFolder))
+}   
 
-// task copyZipFile(type: Copy, dependsOn: "zipFiles") {
-//     from pathToTempFolder
-//     into pathToTempFolder
-//     include "datenvalidierung_"+todaysDate+".zip"
-//     rename { String fileName ->
-//         fileName.replace("datenvalidierung_"+todaysDate+".zip", "datenvalidierung_latest.zip")
-//     } 
-// }
+task copyZipFile(type: Copy, dependsOn: "zipFiles") {
+    from pathToTempFolder
+    into pathToTempFolder
+    include "datenvalidierung_"+todaysDate+".zip"
+    rename { String fileName ->
+        fileName.replace("datenvalidierung_"+todaysDate+".zip", "datenvalidierung_latest.zip")
+    } 
+}
 
-// // TODO: different buckets for different envs.
+// TODO: different buckets for different envs.
 
-// task uploadZipFileDate(type: S3Upload, dependsOn: "copyZipFile") {
-//     accessKey = awsAccessKeyAgi
-//     secretKey = awsSecretAccessKeyAgi
-//     sourceFile = file(Paths.get(pathToTempFolder, "datenvalidierung_"+todaysDate+".zip"))
-//     bucketName = "ch.so.agi.geodata"
-//     endPoint = "https://s3.amazonaws.com/"
-//     region = "eu-central-1"
-//     acl = "PublicRead"
-// }
+task uploadZipFileDate(type: S3Upload, dependsOn: "copyZipFile") {
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    sourceFile = file(Paths.get(pathToTempFolder, "datenvalidierung_"+todaysDate+".zip"))
+    bucketName = "ch.so.agi.geodata"
+    endPoint = "https://s3.amazonaws.com/"
+    region = "eu-central-1"
+    acl = "PublicRead"
+}
 
-// task uploadZipFileLatest(type: S3Upload, dependsOn: "uploadZipFileDate") {
-//     accessKey = awsAccessKeyAgi
-//     secretKey = awsSecretAccessKeyAgi
-//     sourceFile = file(Paths.get(pathToTempFolder, "datenvalidierung_latest.zip"))
-//     bucketName = "ch.so.agi.geodata"
-//     endPoint = "https://s3.amazonaws.com/"
-//     region = "eu-central-1"
-//     acl = "PublicRead"
-// }
+task uploadZipFileLatest(type: S3Upload, dependsOn: "uploadZipFileDate") {
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    sourceFile = file(Paths.get(pathToTempFolder, "datenvalidierung_latest.zip"))
+    bucketName = "ch.so.agi.geodata"
+    endPoint = "https://s3.amazonaws.com/"
+    region = "eu-central-1"
+    acl = "PublicRead"
+}
 
     // TODO: only if successful?
 //     task "zipDatasetXtf_$datasetId"(type: Zip, dependsOn: "exportDataset_$datasetId") {
