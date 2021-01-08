@@ -28,16 +28,21 @@ subprojects {
 
 apply from: "$rootDir/datasets.groovy"
 
-defaultTasks 'validateAllData'
+defaultTasks 'uploadZipFileLatest'
 
 //def pathToTempFolder = Files.createTempDirectory("agidataexport-").toFile().getAbsolutePath()
 
+/*
 String uuid = UUID.randomUUID().toString()
 File tmpFolder = new File("/tmp/gretl-share","agidataexport-"+uuid);
 if(!tmpFolder.exists()) {
     tmpFolder.mkdirs();
 }
+
 def pathToTempFolder = tmpFolder.getAbsolutePath()
+*/
+
+def pathToTempFolder = System.getProperty('java.io.tmpdir')
 
 def todaysDate = new Date().format('yyyy-MM-dd')
 def dbEdit = [dbUriEdit, dbUserEdit, dbPwdEdit]
