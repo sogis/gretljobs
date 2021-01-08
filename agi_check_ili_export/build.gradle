@@ -47,7 +47,15 @@ def pathToTempFolder = System.getProperty('java.io.tmpdir')
 def todaysDate = new Date().format('yyyy-MM-dd')
 def dbEdit = [dbUriEdit, dbUserEdit, dbPwdEdit]
 def dbPub = [dbUriPub, dbUserPub, dbPwdPub]
-def dataBucketName = "ch.so.agi.geodata"
+
+def bucket = "ch.so.agi.geodata-dev"
+if (gretlEnvironment == "test") {
+    bucket = "'https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata-test/'"
+} else if (gretlEnvironment == "integration") {
+    bucket = "'https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata-int/'"
+} else if (gretlEnvironment == "production") {
+    bucket = "'https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata/'"
+} 
 
 datasets.each { dataset ->
     def modelNames = dataset.models
@@ -98,13 +106,11 @@ task copyZipFile(type: Copy, dependsOn: "zipFiles") {
     } 
 }
 
-// TODO: different buckets for different envs.
-
 task uploadZipFileDate(type: S3Upload, dependsOn: "copyZipFile") {
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
     sourceFile = file(Paths.get(pathToTempFolder, "datenvalidierung_"+todaysDate+".zip"))
-    bucketName = "ch.so.agi.geodata"
+    bucketName = bucket
     endPoint = "https://s3.amazonaws.com/"
     region = "eu-central-1"
     acl = "PublicRead"
@@ -114,7 +120,7 @@ task uploadZipFileLatest(type: S3Upload, dependsOn: "uploadZipFileDate") {
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
     sourceFile = file(Paths.get(pathToTempFolder, "datenvalidierung_latest.zip"))
-    bucketName = "ch.so.agi.geodata"
+    bucketName = bucket
     endPoint = "https://s3.amazonaws.com/"
     region = "eu-central-1"
     acl = "PublicRead"
