@@ -51,6 +51,8 @@ datasets.each { dataset ->
     def datasetId = dataset.datasetId
     def isVersion3 = dataset.version3
 
+    println "isVersion3: " + isVersion3
+
     task "exportDataset_$datasetId"(type: Ili2pgExport) {
         database = dbdatabase
         dbschema = schema
