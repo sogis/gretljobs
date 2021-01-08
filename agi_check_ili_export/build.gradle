@@ -50,11 +50,11 @@ def dbPub = [dbUriPub, dbUserPub, dbPwdPub]
 
 def bucket = "ch.so.agi.geodata-dev"
 if (gretlEnvironment == "test") {
-    bucket = "'https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata-test/'"
+    bucket = "ch.so.agi.geodata-test"
 } else if (gretlEnvironment == "integration") {
-    bucket = "'https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata-int/'"
+    bucket = "ch.so.agi.geodata-int"
 } else if (gretlEnvironment == "production") {
-    bucket = "'https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata/'"
+    bucket = "ch.so.agi.geodata"
 } 
 
 datasets.each { dataset ->
