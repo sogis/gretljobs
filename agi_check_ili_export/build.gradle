@@ -58,6 +58,7 @@ datasets.each { dataset ->
         disableValidation = true
         logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_export.log"))
         dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf"))
+        export3 = false
         //export3 = isVersion3 ? true : false
     }
 
