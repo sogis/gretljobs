@@ -17,7 +17,7 @@ def adressenDelete = 'amb_zivilschutz_adressen_staging_adressen_zivilschutz_dele
 def adressenInsert = 'amb_zivilschutz_adressen_staging_adressen_zivilschutz.sql'
 def csvFileName = "Adressen_Kanton_Solothurn_${new Date().format('yyyy-MM-dd')}.csv"
 
-defaultTasks 'exportAdressenZivilschutz'
+defaultTasks 'uploadCsvFile'
 
 task stageAdressenZivilschutz(type: SqlExecutor){
     database = [dbUriPub, dbUserPub, dbPwdPub]
@@ -47,7 +47,7 @@ task exportAdressenZivilschutz(type: CsvExport, dependsOn: stageAdressenZivilsch
 task deleteCsvFile(type: Delete){
     delete "${csvFileName}"
 }
-/*
+
 task uploadCsvFile (dependsOn: exportAdressenZivilschutz){
     description = "Upload file to FTP server"
     doLast {
@@ -63,4 +63,4 @@ task uploadCsvFile (dependsOn: exportAdressenZivilschutz){
     }
     finalizedBy deleteCsvFile
 }
-*/
+
