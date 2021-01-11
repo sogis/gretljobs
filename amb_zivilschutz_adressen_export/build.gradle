@@ -36,7 +36,7 @@ task exportAdressenZivilschutz(type: CsvExport, dependsOn: stageAdressenZivilsch
     tableName = "adressen_zivilschutz"
     dataFile = csvFileName
     encoding = "UTF-8"
-    valueSeparator = ';
+    valueSeparator = ';'
     valueDelimiter = null
     attributes = ['lokalisationsname', 'hausnummer', 'plz', 'ortschaft', 'gemeinde', 'gwr_egid', 'gwr_edid', 'koord_ost', 'koord_nord', 'status', 'objektname', 'grundstuecknummer', 'grundbuchkreis']
 
