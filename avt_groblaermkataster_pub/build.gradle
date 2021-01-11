@@ -11,12 +11,12 @@ task copyCsvFile(type: Copy) {
     rename("uploadFile", "uploadFile.xtf")
 }
 
-task replaceDataset (type: Ili2pgImport, dependsOn:copyCsvFile) {
+task replaceDataset (type: Ili2pgImport, dependsOn: 'copyCsvFile') {
     description = "Löscht die Daten in der Pub-DB und importiert einen neuen Datensatz."
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = "avt_groblaermkataster_pub"
     models = "SO_AVT_Groblaermkataster_20190709"
     disableValidation = true
     deleteData = true
-    dataFile = "upload/uploadFile"  // name is injected by jenkins
+    dataFile = "upload/uploadFile.xtf"  // name is injected by jenkins
 }
