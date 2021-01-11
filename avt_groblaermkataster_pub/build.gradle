@@ -4,6 +4,13 @@ import ch.so.agi.gretl.tasks.*
 
 defaultTasks 'replaceDataset'
 
+task copyCsvFile(type: Copy) {
+    from "upload/"
+    into "upload/"
+    include("uploadFile")
+    rename("uploadFile", "uploadFile.xtf")
+}
+
 task replaceDataset (type: Ili2pgImport) {
     description = "Löscht die Daten in der Pub-DB und importiert einen neuen Datensatz."
     database = [dbUriPub, dbUserPub, dbPwdPub]
@@ -11,5 +18,5 @@ task replaceDataset (type: Ili2pgImport) {
     models = "SO_AVT_Groblaermkataster_20190709"
     disableValidation = true
     deleteData = true
-    dataFile = "groblaermkataster.xtf" // name is injected by jenkins
+    dataFile = "upload/uploadFile"  // name is injected by jenkins
 }
