@@ -20,24 +20,28 @@ def csvFileName = "Adressen_Kanton_Solothurn_${new Date().format('yyyy-MM-dd')}.
 defaultTasks 'uploadCsvFile'
 
 task stageAdressenZivilschutz(type: SqlExecutor){
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = [adressenDelete, adressenInsert]
 }
 
 task clearStaging(type: SqlExecutor){
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = [adressenDelete]
 }
 
+
 task exportAdressenZivilschutz(type: CsvExport, dependsOn: stageAdressenZivilschutz){
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    schemaName = "amb_zivilschutz_adressen_staging"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    schemaName = "amb_zivilschutz_adressen_staging_pub"
     tableName = "adressen_zivilschutz"
     dataFile = csvFileName
     encoding = "UTF-8"
     valueSeparator = ';'
+    valueDelimiter = null
     attributes = ['lokalisationsname', 'hausnummer', 'plz', 'ortschaft', 'gemeinde', 'gwr_egid', 'gwr_edid', 'koord_ost', 'koord_nord', 'status', 'objektname', 'grundstuecknummer', 'grundbuchkreis']
+
     finalizedBy clearStaging
+
 }
 
 task deleteCsvFile(type: Delete){
@@ -59,3 +63,4 @@ task uploadCsvFile (dependsOn: exportAdressenZivilschutz){
     }
     finalizedBy deleteCsvFile
 }
+

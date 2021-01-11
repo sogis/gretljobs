@@ -1,1 +1,1 @@
-DELETE FROM amb_zivilschutz_adressen_staging.adressen_zivilschutz; 
+DELETE FROM amb_zivilschutz_adressen_staging_pub.adressen_zivilschutz; 
