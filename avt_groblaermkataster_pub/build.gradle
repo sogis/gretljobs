@@ -11,7 +11,7 @@ task copyCsvFile(type: Copy) {
     rename("uploadFile", "uploadFile.xtf")
 }
 
-task replaceDataset (type: Ili2pgImport) {
+task replaceDataset (type: Ili2pgImport, dependsOn:copyCsvFile) {
     description = "Löscht die Daten in der Pub-DB und importiert einen neuen Datensatz."
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = "avt_groblaermkataster_pub"
