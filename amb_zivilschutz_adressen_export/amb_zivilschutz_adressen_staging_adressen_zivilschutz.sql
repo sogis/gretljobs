@@ -1,6 +1,6 @@
 --Adresse für das Projekt Zivilschutz; für Frima Om Computer
 WITH
-adressen AS (
+adressenZusammenfuehren AS (
     SELECT
         DISTINCT ON (a.strassenname, a.nummer, a.ortschaft) -- in Tabelle adressen.adressen gibt es doppelte Adresse wegen EO.Flaechenelement
         a.t_id,
@@ -30,6 +30,56 @@ adressen AS (
         a.nummer IS NOT NULL -- nur die mit Hausnummern
     AND
         b.art_txt = 'Gebaeude'
+UNION ALL
+    SELECT
+        DISTINCT ON (a.strassenname, a.hausnummer, a.ortschaft) -- in Tabelle adressen.adressen gibt es doppelte Adresse wegen EO.Flaechenelement
+        a.t_id,
+        a.strassenname AS lokalisationsname,
+        a.hausnummer,
+        a.plz,
+        a.ortschaft,
+        g.gemeindename AS gemeinde,
+        a.egid AS gwr_egid,
+        a.edid AS gwr_edid,
+        ST_X(a.lage) AS koord_ost,
+        st_y(a.lage) AS koord_nord,
+        a.astatus,
+        b.geometrie AS gwr_egid_geom,
+        a.lage AS gwr_edid_geom,
+        CAST(a.bfs_nr AS varchar(20)) AS bfs_nr
+    FROM
+        agi_mopublic_pub.mopublic_gebaeudeadresse AS a
+    LEFT JOIN agi_mopublic_pub.mopublic_bodenbedeckung AS b
+        ON 
+        a.lage && b.geometrie
+        AND
+        st_distance(a.lage, b.geometrie) = 0
+    LEFT JOIN agi_mopublic_pub.mopublic_gemeindegrenze AS g
+        ON a.bfs_nr::int = g.bfs_nr
+    WHERE
+        a.hausnummer IS NOT NULL -- nur die mit Hausnummern
+    AND
+        b.art_txt = 'Gebaeude'
+),
+adressen AS (
+    SELECT
+        DISTINCT ON (lokalisationsname, hausnummer, ortschaft) -- in Tabelle adressen.adressen gibt es doppelte Adresse wegen EO.Flaechenelement
+        t_id,
+        lokalisationsname,
+        hausnummer,
+        plz,
+        ortschaft,
+        gemeinde,
+        gwr_egid,
+        gwr_edid,
+        koord_ost,
+        koord_nord,
+        astatus,
+        gwr_egid_geom,
+        gwr_edid_geom,
+        bfsnr
+    FROM
+        adressenZusammenfuehren
 ),
 grundstueck AS (
     SELECT
