@@ -59,7 +59,7 @@ UNION ALL
     WHERE
         a.hausnummer IS NOT NULL -- nur die mit Hausnummern
     AND
-        b.art_txt = 'Gebaeude'
+        b.art_txt = 'Gebaeude' AND a.egid IS NULL
 ),
 adressen AS (
     SELECT
