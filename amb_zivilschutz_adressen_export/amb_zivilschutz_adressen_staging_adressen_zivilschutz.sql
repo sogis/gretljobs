@@ -91,6 +91,7 @@ grundstueck AS (
         agi_mopublic_pub.mopublic_grundstueck AS ls
     LEFT JOIN agi_av_gb_admin_einteilung_pub.grundbuchkreise_grundbuchkreis AS g
         ON g.nbident = ls.nbident
+    WHERE ls.art_txt = 'Liegenschaft'
 ),
 geb_objektnamen AS (
     SELECT
