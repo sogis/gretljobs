@@ -62,92 +62,85 @@ if (gretlEnvironment == "test") {
 }
 */
 
-task showClasspath  {
+task downloadFiles(type: FtpDownload) { 
+    server = ftpServerInfogrips
+    user = ftpUserInfogrips
+    password = ftpPwdInfogrips
+    systemType = "WINDOWS"
+    fileType = "BINARY"
+    localDir = pathToTempFolder
+    //remoteDir = "\\dm01avso24lv95_2\\itf" 
+    remoteDir = "\\dm01avso24lv95\\itf" 
+    remoteFile = "*.zip" 
+
     doLast {
-        buildscript.configurations.classpath.each { println it.name }
+        println "Files downloaded: " + pathToTempFolder
+    }       
+} 
+
+task uploadFiles(type: S3Upload, dependsOn: 'downloadFiles') {
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    bucketName = bucketNameCanton
+    sourceFiles = fileTree(pathToTempFolder) { include "*.zip" }
+    acl = "PublicRead"
+}
+
+task unzipFiles(dependsOn: 'uploadFiles') {
+    doLast {
+        fileTree(pathToTempFolder).files.each { 
+            String fileName = it
+            copy {
+                from zipTree(fileName)
+                into file(pathToUnzipFolder)
+
+                include "**/*.itf"
+                include "**/*.ITF"
+
+                rename { String jt ->
+                    return jt.toLowerCase()
+                }
+            }
+        }
+        println "File unzipped to directory: " + pathToUnzipFolder
     }
 }
 
+task createFederalFiles(type: Av2ch, dependsOn: 'unzipFiles') {
+    inputFile = fileTree(pathToUnzipFolder) { include '*.itf' }
+    outputDirectory = file(pathToFederalFolder)
+    zip = true
 
-// task downloadFiles(type: FtpDownload) { 
-//     server = ftpServerInfogrips
-//     user = ftpUserInfogrips
-//     password = ftpPwdInfogrips
-//     systemType = "WINDOWS"
-//     fileType = "BINARY"
-//     localDir = pathToTempFolder
-//     //remoteDir = "\\dm01avso24lv95_2\\itf" 
-//     remoteDir = "\\dm01avso24lv95\\itf" 
-//     remoteFile = "*.zip" 
+    doLast {
+        println "Federal files created: " + pathToFederalFolder
+    }
+}
 
-//     doLast {
-//         println "Files downloaded: " + pathToTempFolder
-//     }       
-// } 
+task uploadFederalFiles(type: S3Upload, dependsOn: 'createFederalFiles') {
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    bucketName = bucketNameFederal
+    sourceFiles = fileTree(pathToTempFolder) { include "*.zip" }
+    acl = "PublicRead"
+}
 
-// task uploadFiles(type: S3Upload, dependsOn: 'downloadFiles') {
-//     accessKey = awsAccessKeyAgi
-//     secretKey = awsSecretAccessKeyAgi
-//     bucketName = bucketNameCanton
-//     sourceFiles = fileTree(pathToTempFolder) { include "*.zip" }
-//     acl = "PublicRead"
-// }
+task createDxfGeobauFiles(type: Av2geobau, dependsOn: 'uploadFederalFiles') {
+    itfFiles = fileTree(pathToFederalFolder) { include "*.itf" }
+    dxfDirectory = file(pathToGeobauFolder)
+    zip = true
 
-// task unzipFiles(dependsOn: 'uploadFiles') {
-//     doLast {
-//         fileTree(pathToTempFolder).files.each { 
-//             String fileName = it
-//             copy {
-//                 from zipTree(fileName)
-//                 into file(pathToUnzipFolder)
+    doLast {
+        println "Geobau files created: " + pathToGeobauFolder
+    }
+}
 
-//                 include "**/*.itf"
-//                 include "**/*.ITF"
-
-//                 rename { String jt ->
-//                     return jt.toLowerCase()
-//                 }
-//             }
-//         }
-//         println "File unzipped to directory: " + pathToUnzipFolder
-//     }
-// }
-
-// task createFederalFiles(type: Av2ch, dependsOn: 'unzipFiles') {
-//     inputFile = fileTree(pathToUnzipFolder) { include '*.itf' }
-//     outputDirectory = file(pathToFederalFolder)
-//     zip = true
-
-//     doLast {
-//         println "Federal files created: " + pathToFederalFolder
-//     }
-// }
-
-// task uploadFederalFiles(type: S3Upload, dependsOn: 'createFederalFiles') {
-//     accessKey = awsAccessKeyAgi
-//     secretKey = awsSecretAccessKeyAgi
-//     bucketName = bucketNameFederal
-//     sourceFiles = fileTree(pathToTempFolder) { include "*.zip" }
-//     acl = "PublicRead"
-// }
-
-// task createDxfGeobauFiles(type: Av2geobau, dependsOn: 'uploadFederalFiles') {
-//     itfFiles = fileTree(pathToFederalFolder) { include "*.itf" }
-//     dxfDirectory = file(pathToGeobauFolder)
-//     zip = true
-
-//     doLast {
-//         println "Geobau files created: " + pathToGeobauFolder
-//     }
-// }
-
-// task uploadDxfGeobauFiles(type: S3Upload, dependsOn: 'createDxfGeobauFiles') {
-//     accessKey = awsAccessKeyAgi
-//     secretKey = awsSecretAccessKeyAgi
-//     bucketName = bucketNameGeobau
-//     sourceFiles = fileTree(pathToTempFolder) { include "*.zip" }
-//     acl = "PublicRead"
-// }
+task uploadDxfGeobauFiles(type: S3Upload, dependsOn: 'createDxfGeobauFiles') {
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    bucketName = bucketNameGeobau
+    sourceFiles = fileTree(pathToTempFolder) { include "*.zip" }
+    acl = "PublicRead"
+}
 
 /*
 //task importData(type: Ili2pgReplace, dependsOn: 'unzipData') {
