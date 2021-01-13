@@ -1,3 +1,4 @@
+/*
 buildscript {
 	repositories {
         mavenLocal()
@@ -9,10 +10,11 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		//classpath group: 'ch.so.agi', name: 'gretl',  version: '2.1.59'
-		classpath group: 'ch.so.agi', name: 'gretl',  version: '2.1.9999'
+		classpath group: 'ch.so.agi', name: 'gretl',  version: '2.1.70'
+		//classpath group: 'ch.so.agi', name: 'gretl',  version: '2.1.9999'
 	}
 }
+*/
 
 import java.text.SimpleDateFormat
 import java.nio.file.Paths
@@ -23,22 +25,27 @@ import ch.so.agi.gretl.api.*
 import ch.so.agi.gretl.util.TaskUtil
 import org.apache.commons.net.ftp.*
 
-
 apply plugin: 'ch.so.agi.gretl'
 
-//defaultTasks 'uploadFilesToS3'
+defaultTasks 'uploadDxfGeobauFiles'
 
 def pathToTempFolder = Files.createTempDirectory("agiavimport-").toFile().getAbsolutePath()
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
-pathToUnzipFolder = "/var/folders/1y/52jlt1cd1l557f_hgd9xxgm00000gn/T/agiavimport-9037765408044600052/unzip_data"
+//pathToUnzipFolder = "/var/folders/1y/52jlt1cd1l557f_hgd9xxgm00000gn/T/agiavimport-9037765408044600052/unzip_data"
 def pathToFederalFolder = Paths.get(pathToTempFolder, 'ch')
 def pathToGeobauFolder = Paths.get(pathToTempFolder, 'geobau')
 //def pathToUnzipFolder = Files.createTempDirectory("agiavimport-unzip_data-").toFile().getAbsolutePath()
 
-def bucketNameCanton = "0.ch.so.agi.av.dm01avch24lv95d"
+def bucketNameCanton = "0.ch.so.agi.av.dm01avso24lv95"
 def bucketNameFederal = "0.ch.so.agi.av.dm01avch24lv95d"
 def bucketNameGeobau = "0.ch.so.agi.av.dxfgeobau"
 
+// FIXME
+bucketNameCanton += "-dev"
+bucketNameFederal += "-dev"
+bucketNameGeobau += "-dev"
+
+/*
 if (gretlEnvironment == "test") {
     bucketNameCanton += "-test"
     bucketNameFederal += "-test"
@@ -54,6 +61,7 @@ if (gretlEnvironment == "test") {
     bucketNameFederal += "-dev"
     bucketNameGeobau += "-dev"
 }
+*/
 
 task downloadFiles(type: FtpDownload ){ 
     server = ftpServerInfogrips
@@ -99,7 +107,7 @@ task unzipFiles(dependsOn: 'uploadFiles') {
     }
 }
 
-task createFederalFiles(type: Av2ch) {
+task createFederalFiles(type: Av2ch, dependsOn: 'unzipFiles') {
     inputFile = fileTree(pathToUnzipFolder) { include '*.itf' }
     outputDirectory = file(pathToFederalFolder)
     zip = true
@@ -127,7 +135,7 @@ task createDxfGeobauFiles(type: Av2geobau, dependsOn: 'uploadFederalFiles') {
     }
 }
 
-task uploadGeobauFiles(type: S3Upload, dependsOn: 'createGeobauFiles') {
+task uploadDxfGeobauFiles(type: S3Upload, dependsOn: 'createDxfGeobauFiles') {
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
     bucketName = bucketNameGeobau
@@ -135,6 +143,7 @@ task uploadGeobauFiles(type: S3Upload, dependsOn: 'createGeobauFiles') {
     acl = "PublicRead"
 }
 
+/*
 //task importData(type: Ili2pgReplace, dependsOn: 'unzipData') {
 task importData(type: Ili2pgReplace) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -149,15 +158,18 @@ task importData(type: Ili2pgReplace) {
         println "Data imported into db: " + dbUriEdit
     }
 }
+*/
 
-//TODO test!
 task deleteFtpFiles(type: FtpDelete) {
+    onlyIf {
+        gretlEnvironment == "production"
+    }
     server = ftpServerInfogrips
     user = ftpUserInfogrips
     password = ftpPwdInfogrips
     systemType = "WINDOWS"
+    //remoteDir = "\\dm01avso24lv95_2\\itf"
     remoteDir = "\\dm01avso24lv95\\itf"
     remoteFile = fileTree(pathToTempFolder) { include '*.zip' } 
-    //remoteFile = "*.zip"
 }
 
