@@ -168,7 +168,7 @@ task importData(type: Ili2pgReplace) {
 
 // task deleteFtpFiles(type: FtpDelete) {
 //     onlyIf {
-//         gretlEnvironment == "production"
+//         gretlEnvironment == "XXXXXXX"
 //     }
 //     server = ftpServerInfogrips
 //     user = ftpUserInfogrips
