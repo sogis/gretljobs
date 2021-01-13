@@ -26,7 +26,7 @@ import ch.so.agi.gretl.util.TaskUtil
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'uploadDxfGeobauFiles'
+defaultTasks 'showClasspath'
 
 def pathToTempFolder = Files.createTempDirectory("agiavimport-").toFile().getAbsolutePath()
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
@@ -62,85 +62,92 @@ if (gretlEnvironment == "test") {
 }
 */
 
-task downloadFiles(type: FtpDownload) { 
-    server = ftpServerInfogrips
-    user = ftpUserInfogrips
-    password = ftpPwdInfogrips
-    systemType = "WINDOWS"
-    fileType = "BINARY"
-    localDir = pathToTempFolder
-    //remoteDir = "\\dm01avso24lv95_2\\itf" 
-    remoteDir = "\\dm01avso24lv95\\itf" 
-    remoteFile = "*.zip" 
-
+task showClasspath  {
     doLast {
-        println "Files downloaded: " + pathToTempFolder
-    }       
-} 
-
-task uploadFiles(type: S3Upload, dependsOn: 'downloadFiles') {
-    accessKey = awsAccessKeyAgi
-    secretKey = awsSecretAccessKeyAgi
-    bucketName = bucketNameCanton
-    sourceFiles = fileTree(pathToTempFolder) { include "*.zip" }
-    acl = "PublicRead"
-}
-
-task unzipFiles(dependsOn: 'uploadFiles') {
-    doLast {
-        fileTree(pathToTempFolder).files.each { 
-            String fileName = it
-            copy {
-                from zipTree(fileName)
-                into file(pathToUnzipFolder)
-
-                include "**/*.itf"
-                include "**/*.ITF"
-
-                rename { String jt ->
-                    return jt.toLowerCase()
-                }
-            }
-        }
-        println "File unzipped to directory: " + pathToUnzipFolder
+        buildscript.configurations.classpath.each { println it.name }
     }
 }
 
-task createFederalFiles(type: Av2ch, dependsOn: 'unzipFiles') {
-    inputFile = fileTree(pathToUnzipFolder) { include '*.itf' }
-    outputDirectory = file(pathToFederalFolder)
-    zip = true
 
-    doLast {
-        println "Federal files created: " + pathToFederalFolder
-    }
-}
+// task downloadFiles(type: FtpDownload) { 
+//     server = ftpServerInfogrips
+//     user = ftpUserInfogrips
+//     password = ftpPwdInfogrips
+//     systemType = "WINDOWS"
+//     fileType = "BINARY"
+//     localDir = pathToTempFolder
+//     //remoteDir = "\\dm01avso24lv95_2\\itf" 
+//     remoteDir = "\\dm01avso24lv95\\itf" 
+//     remoteFile = "*.zip" 
 
-task uploadFederalFiles(type: S3Upload, dependsOn: 'createFederalFiles') {
-    accessKey = awsAccessKeyAgi
-    secretKey = awsSecretAccessKeyAgi
-    bucketName = bucketNameFederal
-    sourceFiles = fileTree(pathToTempFolder) { include "*.zip" }
-    acl = "PublicRead"
-}
+//     doLast {
+//         println "Files downloaded: " + pathToTempFolder
+//     }       
+// } 
 
-task createDxfGeobauFiles(type: Av2geobau, dependsOn: 'uploadFederalFiles') {
-    itfFiles = fileTree(pathToFederalFolder) { include "*.itf" }
-    dxfDirectory = file(pathToGeobauFolder)
-    zip = true
+// task uploadFiles(type: S3Upload, dependsOn: 'downloadFiles') {
+//     accessKey = awsAccessKeyAgi
+//     secretKey = awsSecretAccessKeyAgi
+//     bucketName = bucketNameCanton
+//     sourceFiles = fileTree(pathToTempFolder) { include "*.zip" }
+//     acl = "PublicRead"
+// }
 
-    doLast {
-        println "Geobau files created: " + pathToGeobauFolder
-    }
-}
+// task unzipFiles(dependsOn: 'uploadFiles') {
+//     doLast {
+//         fileTree(pathToTempFolder).files.each { 
+//             String fileName = it
+//             copy {
+//                 from zipTree(fileName)
+//                 into file(pathToUnzipFolder)
 
-task uploadDxfGeobauFiles(type: S3Upload, dependsOn: 'createDxfGeobauFiles') {
-    accessKey = awsAccessKeyAgi
-    secretKey = awsSecretAccessKeyAgi
-    bucketName = bucketNameGeobau
-    sourceFiles = fileTree(pathToTempFolder) { include "*.zip" }
-    acl = "PublicRead"
-}
+//                 include "**/*.itf"
+//                 include "**/*.ITF"
+
+//                 rename { String jt ->
+//                     return jt.toLowerCase()
+//                 }
+//             }
+//         }
+//         println "File unzipped to directory: " + pathToUnzipFolder
+//     }
+// }
+
+// task createFederalFiles(type: Av2ch, dependsOn: 'unzipFiles') {
+//     inputFile = fileTree(pathToUnzipFolder) { include '*.itf' }
+//     outputDirectory = file(pathToFederalFolder)
+//     zip = true
+
+//     doLast {
+//         println "Federal files created: " + pathToFederalFolder
+//     }
+// }
+
+// task uploadFederalFiles(type: S3Upload, dependsOn: 'createFederalFiles') {
+//     accessKey = awsAccessKeyAgi
+//     secretKey = awsSecretAccessKeyAgi
+//     bucketName = bucketNameFederal
+//     sourceFiles = fileTree(pathToTempFolder) { include "*.zip" }
+//     acl = "PublicRead"
+// }
+
+// task createDxfGeobauFiles(type: Av2geobau, dependsOn: 'uploadFederalFiles') {
+//     itfFiles = fileTree(pathToFederalFolder) { include "*.itf" }
+//     dxfDirectory = file(pathToGeobauFolder)
+//     zip = true
+
+//     doLast {
+//         println "Geobau files created: " + pathToGeobauFolder
+//     }
+// }
+
+// task uploadDxfGeobauFiles(type: S3Upload, dependsOn: 'createDxfGeobauFiles') {
+//     accessKey = awsAccessKeyAgi
+//     secretKey = awsSecretAccessKeyAgi
+//     bucketName = bucketNameGeobau
+//     sourceFiles = fileTree(pathToTempFolder) { include "*.zip" }
+//     acl = "PublicRead"
+// }
 
 /*
 //task importData(type: Ili2pgReplace, dependsOn: 'unzipData') {
@@ -159,16 +166,16 @@ task importData(type: Ili2pgReplace) {
 }
 */
 
-task deleteFtpFiles(type: FtpDelete) {
-    onlyIf {
-        gretlEnvironment == "production"
-    }
-    server = ftpServerInfogrips
-    user = ftpUserInfogrips
-    password = ftpPwdInfogrips
-    systemType = "WINDOWS"
-    //remoteDir = "\\dm01avso24lv95_2\\itf"
-    remoteDir = "\\dm01avso24lv95\\itf"
-    remoteFile = fileTree(pathToTempFolder) { include '*.zip' } 
-}
+// task deleteFtpFiles(type: FtpDelete) {
+//     onlyIf {
+//         gretlEnvironment == "production"
+//     }
+//     server = ftpServerInfogrips
+//     user = ftpUserInfogrips
+//     password = ftpPwdInfogrips
+//     systemType = "WINDOWS"
+//     //remoteDir = "\\dm01avso24lv95_2\\itf"
+//     remoteDir = "\\dm01avso24lv95\\itf"
+//     remoteFile = fileTree(pathToTempFolder) { include '*.zip' } 
+// }
 
