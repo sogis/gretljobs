@@ -26,7 +26,7 @@ import ch.so.agi.gretl.util.TaskUtil
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'showClasspath'
+defaultTasks 'uploadDxfGeobauFiles'
 
 def pathToTempFolder = Files.createTempDirectory("agiavimport-").toFile().getAbsolutePath()
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
