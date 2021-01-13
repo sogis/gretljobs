@@ -62,7 +62,7 @@ if (gretlEnvironment == "test") {
 }
 */
 
-task downloadFiles(type: FtpDownload ){ 
+task downloadFiles(type: FtpDownload) { 
     server = ftpServerInfogrips
     user = ftpUserInfogrips
     password = ftpPwdInfogrips
