@@ -26,7 +26,7 @@ import ch.so.agi.gretl.util.TaskUtil
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'uploadDxfGeobauFiles'
+defaultTasks 'importData'
 
 def pathToTempFolder = Files.createTempDirectory("agiavimport-").toFile().getAbsolutePath()
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
@@ -142,9 +142,9 @@ task uploadDxfGeobauFiles(type: S3Upload, dependsOn: 'createDxfGeobauFiles') {
     acl = "PublicRead"
 }
 
-/*
+
 //task importData(type: Ili2pgReplace, dependsOn: 'unzipData') {
-task importData(type: Ili2pgReplace) {
+task importData(type: Ili2pgReplace, dependsOn: 'uploadDxfGeobauFiles') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = 'DM01AVSO24LV95'
     dbschema = 'agi_dm01avso24'
@@ -157,7 +157,7 @@ task importData(type: Ili2pgReplace) {
         println "Data imported into db: " + dbUriEdit
     }
 }
-*/
+
 
 // task deleteFtpFiles(type: FtpDelete) {
 //     onlyIf {
