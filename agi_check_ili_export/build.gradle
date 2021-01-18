@@ -28,7 +28,7 @@ subprojects {
 
 apply from: "$rootDir/datasets.groovy"
 
-defaultTasks 'uploadZipFileLatest'
+defaultTasks 'exportAllData'
 
 //def pathToTempFolder = Files.createTempDirectory("agidataexport-").toFile().getAbsolutePath()
 
@@ -70,25 +70,48 @@ datasets.each { dataset ->
         models = modelNames
         disableValidation = true
         logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_export.log"))
-        dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf"))
+        //dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf"))
+        dataFile = file(Paths.get(pathToTempFolder, datasetId + ".xtf"))
         export3 = isVersion3 ? true : false
     }
 
     task "validateData_$datasetId"(type: IliValidator, dependsOn: "exportDataset_$datasetId") {
-        dataFiles = [Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf")]
+        //dataFiles = [Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf")]
+        dataFiles = [Paths.get(pathToTempFolder, datasetId + ".xtf")]
         logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_validation.log"))
         failOnError = false
         if (new File("config/"+datasetId + ".toml").isFile()) configFile = "config/"+datasetId + ".toml"
     }
-}
 
-task validateAllData() {
-    description = "Validation aggregation task."
-    dependsOn {
-        tasks.findAll { task -> task.name.startsWith('validateData_') }
+    task "zipDatasetXtf_$datasetId"(type: Zip, dependsOn: "validateData_$datasetId") {
+        from pathToTempFolder
+        include "$datasetId*.xtf"
+        include "$datasetId*_export.log"
+        include "$datasetId*_validation.log"
+        archiveName datasetId + "_xtf.zip"
+        destinationDir(file(pathToTempFolder))
+    }
+
+    task "uploadDatasetXtf_$datasetId"(type: S3Upload, dependsOn: "zipDatasetXtf_$datasetId") {
+        accessKey = awsAccessKeyAgi
+        secretKey = awsSecretAccessKeyAgi
+        sourceDir = file(Paths.get(pathToTempFolder, datasetId + "_xtf.zip"))
+        bucketName = bucket
+        endPoint = "https://s3.amazonaws.com/" // https://s3.eu-central-1.amazonaws.com
+        region = "eu-central-1"
+        acl = "AuthenticatedRead" // authenticated-read
+        metaData = ["lastEditingDate":todaysDate]
     }
 }
 
+task exportAllData() {
+    description = "Validation aggregation task."
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('uploadDatasetXtf_') }
+    }
+}
+
+/*
 task zipFiles(type: Zip, dependsOn: "validateAllData") {
     from pathToTempFolder
     include "*_export.log"
@@ -125,7 +148,7 @@ task uploadZipFileLatest(type: S3Upload, dependsOn: "uploadZipFileDate") {
     region = "eu-central-1"
     acl = "PublicRead"
 }
-
+*/
     // TODO: only if successful?
 //     task "zipDatasetXtf_$datasetId"(type: Zip, dependsOn: "exportDataset_$datasetId") {
 //         from pathToTempFolder

@@ -38,7 +38,8 @@ class Dataset {
 ext.datasets = []
 
 // Edit-DB
-
+datasets.add(new Dataset("SO_AVT_OevKov_20200420", "avt_oevkov_2020", dbEdit, "ch.so.avt.oevkov2020_edit")) 
+/*
 datasets.add(new Dataset("SO_ADA_Denkmal_20191128", "ada_denkmalschutz", dbEdit, "ch.so.ada.denkmalschutz_edit"))
 datasets.add(new Dataset("SO_AfU_Erdwaermesonden_20190204", "afu_erdwaermesonden", dbEdit, "ch.so.afu.erdwaermesonden_edit", true))
 datasets.add(new Dataset("SO_AFU_Nagra_Bohrtiefen_20190927", "afu_erdwaermesonden_nagra", dbEdit, "ch.so.afu.erdwaermesonden_nagra_edit", true))
@@ -53,7 +54,7 @@ datasets.add(new Dataset("SO_AfU_Luftreinhaltung_20191105", "afu_uplus_luft", db
 datasets.add(new Dataset("SO_AfU_Tankanlage_20191105", "afu_uplus_tank", dbEdit, "ch.so.afu.uplus_tank_edit"))
 datasets.add(new Dataset("SO_AGEM_Fila_20190318", "agem_fila", dbEdit, "ch.so.agem.fila_edit"))
 datasets.add(new Dataset("SO_AGI_AV_GB_Administrative_Einteilungen_20180613", "agi_av_gb_admin_einteilung", dbEdit, "ch.so.agi.av_gb_admin_einteilung_edit"))
-/*
+
 datasets.add(new Dataset("SO_AGI_MOCheckSO_20200715", "agi_av_mocheckso", dbEdit, "ch.so.agi.av_mocheckso_edit"))
 datasets.add(new Dataset("SO_AGI_GB2AV_Controlling_20201002", "agi_gb2av_controlling", dbEdit, "ch.so.agi.gb2av_controlling_edit"))
 datasets.add(new Dataset("SO_AGI_Inventar_Hoheitsgrenzen_20191129", "agi_inventar_hoheitsgrenzen", dbEdit, "ch.so.agi.inventar_hoheitsgrenzen_edit"))
@@ -64,10 +65,10 @@ datasets.add(new Dataset("SO_ARP_Fledermausfundorte_20200728", "arp_fledermaus",
 datasets.add(new Dataset("SO_ARP_Mehrjahresprogramm_20200228", "arp_mehrjahresprogramm", dbEdit, "ch.so.arp.mehrjahresprogramm_edit"))
 datasets.add(new Dataset("SO_ARP_Naturreservate_20200609", "arp_naturreservate", dbEdit, "ch.so.arp.naturreservate_edit"))
 datasets.add(new Dataset("SO_ARP_Nutzungsvereinbarung_20170512", "arp_nutzungsvereinbarung", dbEdit, "ch.so.arp.nutzungsvereinbarung_edit"))
-// keine Rechte: datasets.add(new Dataset("SO_ARP_Richtplan_20190222", "arp_richtplan", dbEdit, "ch.so.arp.richtplan_edit", true)) // TODO: Warum ist Settings-Tabelle leer?
-// keine Rechte: datasets.add(new Dataset("????", "avt_oevkov_2018", dbEdit, "ch.so.avt.oevkov2018_edit")) 
-// keine Rechte: datasets.add(new Dataset("("????",", "avt_oevkov_2019", dbEdit, "ch.so.avt.oevkov2019_edit")) 
-// Modell nicht im Repo: datasets.add(new Dataset("SO_AVT_OevKov_20200420", "avt_oevkov_2020", dbEdit, "ch.so.avt.oevkov2020_edit")) 
+datasets.add(new Dataset("SO_ARP_Richtplan_20190222", "arp_richtplan", dbEdit, "ch.so.arp.richtplan_edit", true))
+// keine Rechte: datasets.add(new Dataset("SO_AVT_OevKov_20181107", "avt_oevkov_2018", dbEdit, "ch.so.avt.oevkov2018_edit")) 
+// keine Rechte: datasets.add(new Dataset("("SO_AVT_OevKov_20190805",", "avt_oevkov_2019", dbEdit, "ch.so.avt.oevkov2019_edit")) 
+datasets.add(new Dataset("SO_AVT_OevKov_20200420", "avt_oevkov_2020", dbEdit, "ch.so.avt.oevkov2020_edit")) 
 datasets.add(new Dataset("SO_AVT_Verkehrszaehlstellen_20190206", "avt_verkehrszaehlstellen", dbEdit, "ch.so.avt.verkehrszaehlstellen_edit")) 
 datasets.add(new Dataset("SO_AWJF_Foerderprogramm_Biodiversitaet_20200526", "awjf_foerderprogramm_biodiversitaet", dbEdit, "ch.so.awjf.foerderprogramm_biodiversitaet_edit")) 
 datasets.add(new Dataset("SO_Forstreviere_20170512", "awjf_forstreviere", dbEdit, "ch.so.awjf.forstreviere_edit")) 
