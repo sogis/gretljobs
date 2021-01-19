@@ -86,11 +86,6 @@ datasets.add(new Dataset("SO_SGV_Erschliessung_ausserhalb_Bauzone_20190611", "sg
 
 // Pub-DB
 
-datasets.add(new Dataset("SO_AGI_PLZ_Ortschaften_Publikation_20180406", "agi_plz_ortschaften_pub", dbPub, "ch.so.agi.plz_ortschaften")) 
-datasets.add(new Dataset("SO_AGI_swissBOUNDARIES3D_Publikation_20171026", "agi_swissboundaries3d_pub", dbPub, "ch.so.agi.swissboundaries3d")) 
-
-/*
-
 datasets.add(new Dataset("SO_ADA_Denkmal_Pub_20200527", "ada_denkmalschutz_pub", dbPub, "ch.so.ada.denkmalschutz")) 
 datasets.add(new Dataset("SO_AfU_BauGK_CCCCache_20180507", "afu_baugk_ccccache", dbPub, "ch.so.afu.baugk_ccccache", true)) 
 //datasets.add(new Dataset("SO_AFU_Bodenprofilstandorte_Publikation_20200713", "afu_bodendaten_nabodat_pub", dbPub, "ch.so.afu.bodendaten_nabodat")) // Falsches Json -> Ticket gemacht
@@ -112,6 +107,8 @@ datasets.add(new Dataset("SO_Hoheitsgrenzen_Publikation_20170626", "agi_hoheitsg
 datasets.add(new Dataset("SO_AGI_Inventar_Hoheitsgrenzen_Publikation_20191129", "agi_inventar_hoheitsgrenzen_pub", dbPub, "ch.so.agi.inventar_hoheitsgrenzen"))
 datasets.add(new Dataset("SO_AGI_Lidarprodukte_Publikation_20180202", "agi_lidar_pub", dbPub, "ch.so.agi.lidar_idx"))
 datasets.add(new Dataset("SO_AGI_MOpublic_20190424", "agi_mopublic_pub", dbPub, "ch.so.agi.mopublic")) 
+datasets.add(new Dataset("SO_AGI_PLZ_Ortschaften_Publikation_20180406", "agi_plz_ortschaften_pub", dbPub, "ch.so.agi.plz_ortschaften")) 
+datasets.add(new Dataset("SO_AGI_swissBOUNDARIES3D_Publikation_20171026", "agi_swissboundaries3d_pub", dbPub, "ch.so.agi.swissboundaries3d")) 
 datasets.add(new Dataset("SO_ALW_Infoflora_Publikation_20191028", "alw_infoflora_pub", dbPub, "ch.so.alw.infoflora"))
 datasets.add(new Dataset("SO_AMB_Notfalltreffpunkte_Publikation_20180822", "amb_notfalltreffpunkte_pub", dbPub, "ch.so.amb_notfalltreffpunkte")) 
 //datasets.add(new Dataset("SO_AMB_Zivilschutz_Adressen_Export_20201013", "amb_zivilschutz_adressen_staging_pub", dbPub, "ch.so.amb.zivilschutz_adressen")) // status vs astatus -> Ticket gemacht
@@ -134,6 +131,7 @@ datasets.add(new Dataset("SO_AWJF_Statische_Waldgrenzen_Publikation_20191119", "
 datasets.add(new Dataset("SO_AWJF_Waldpflege_Erfassung_20200127", "awjf_waldpflege_kontrolle_pub", dbPub, "ch.so.awjf.waldpflege_kontrolle")) 
 datasets.add(new Dataset("SO_AWJF_Waldwanderwege_202000804", "awjf_waldwanderwege_pub", dbPub, "ch.so.awjf.waldwanderwege")) 
 datasets.add(new Dataset("SO_AWJF_Wegsanierungen_Publikation_20170629", "awjf_wegsanierungen_pub", dbPub, "ch.so.awjf.wegsanierungen")) 
+/*
 */
 
 
