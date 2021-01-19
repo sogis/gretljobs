@@ -29,6 +29,7 @@ subprojects {
 apply from: "$rootDir/datasets.groovy"
 
 defaultTasks 'exportAllData'
+//defaultTasks 'exportAllData','fubar'
 
 //def pathToTempFolder = Files.createTempDirectory("agidataexport-").toFile().getAbsolutePath()
 
@@ -99,18 +100,26 @@ datasets.each { dataset ->
         bucketName = bucket
         endPoint = "https://s3.amazonaws.com/" // https://s3.eu-central-1.amazonaws.com
         region = "eu-central-1"
-        acl = "AuthenticatedRead" // authenticated-read
+        //acl = "AuthenticatedRead" // authenticated-read
+        acl = "Private" // authenticated-read
         metaData = ["lastEditingDate":todaysDate]
     }
 }
 
 task exportAllData() {
-    description = "Validation aggregation task."
+    description = "Export aggregation task."
     dependsOn {
         tasks.findAll { task -> task.name.startsWith('uploadDatasetXtf_') }
     }
 }
 
+/*
+task fubar() {
+    doLast {
+        println "*****************"
+    }
+}
+*/
 /*
 task zipFiles(type: Zip, dependsOn: "validateAllData") {
     from pathToTempFolder
