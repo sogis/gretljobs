@@ -12,6 +12,8 @@ buildscript {
 }
 */
 
+gradle.startParameter.continueOnFailure = true
+
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 import ch.so.agi.gretl.api.Connector
