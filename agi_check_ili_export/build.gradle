@@ -30,7 +30,7 @@ subprojects {
 
 apply from: "$rootDir/datasets.groovy"
 
-defaultTasks 'exportAllData', 'zipLogFiles'
+defaultTasks 'exportAllData', 'uploadLogZipFileLatest'
 //defaultTasks 'exportAllData','fubar'
 
 //def pathToTempFolder = Files.createTempDirectory("agidataexport-").toFile().getAbsolutePath()
