@@ -113,13 +113,14 @@ task exportAllData() {
     }
 }
 
-/*
+
 task fubar() {
     doLast {
         println "*****************"
+        println "Tasks, die gar keine Abhängigkeit zu failenden Tasks aufweisen, werden trotzdem ausgeführt."
     }
 }
-*/
+
 /*
 task zipFiles(type: Zip, dependsOn: "validateAllData") {
     from pathToTempFolder
