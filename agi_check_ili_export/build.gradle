@@ -31,7 +31,6 @@ subprojects {
 apply from: "$rootDir/datasets.groovy"
 
 defaultTasks 'exportAllData', 'uploadLogZipFileLatest'
-//defaultTasks 'exportAllData','fubar'
 
 //def pathToTempFolder = Files.createTempDirectory("agidataexport-").toFile().getAbsolutePath()
 
@@ -82,6 +81,7 @@ datasets.each { dataset ->
         //dataFiles = [Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf")]
         dataFiles = [Paths.get(pathToTempFolder, datasetId + ".xtf")]
         logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_validation.log"))
+        xtflogFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_validation.xtf"))
         failOnError = false
         if (new File("config/"+datasetId + ".toml").isFile()) configFile = "config/"+datasetId + ".toml"
     }
