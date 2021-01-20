@@ -115,14 +115,6 @@ task exportAllData() {
     }
 }
 
-
-task fubar() {
-    doLast {
-        println "*****************"
-        println "Tasks, die gar keine Abhängigkeit zu failenden Tasks aufweisen, werden trotzdem ausgeführt."
-    }
-}
-
 task zipLogFiles(type: Zip) {
     from pathToTempFolder
     include "*_export.log"
