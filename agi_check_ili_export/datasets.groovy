@@ -87,6 +87,7 @@ datasets.add(new Dataset("SO_SGV_Erschliessung_ausserhalb_Bauzone_20190611", "sg
 // Pub-DB
 
 datasets.add(new Dataset("SO_ADA_Denkmal_Pub_20200527", "ada_denkmalschutz_pub", dbPub, "ch.so.ada.denkmalschutz")) 
+/*
 datasets.add(new Dataset("SO_AfU_BauGK_CCCCache_20180507", "afu_baugk_ccccache", dbPub, "ch.so.afu.baugk_ccccache", true)) 
 //datasets.add(new Dataset("SO_AFU_Bodenprofilstandorte_Publikation_20200713", "afu_bodendaten_nabodat_pub", dbPub, "ch.so.afu.bodendaten_nabodat")) // Falsches Json -> Ticket gemacht
 datasets.add(new Dataset("SO_AFU_Bodendaten_schadstoffuntersuchung_Publikation_20200928", "afu_bodendaten_schadstoffuntersuchung_pub", dbPub, "ch.so.afu.bodendaten_schadstoffuntersuchung")) 
@@ -131,7 +132,7 @@ datasets.add(new Dataset("SO_AWJF_Statische_Waldgrenzen_Publikation_20191119", "
 datasets.add(new Dataset("SO_AWJF_Waldpflege_Erfassung_20200127", "awjf_waldpflege_kontrolle_pub", dbPub, "ch.so.awjf.waldpflege_kontrolle")) 
 datasets.add(new Dataset("SO_AWJF_Waldwanderwege_202000804", "awjf_waldwanderwege_pub", dbPub, "ch.so.awjf.waldwanderwege")) 
 datasets.add(new Dataset("SO_AWJF_Wegsanierungen_Publikation_20170629", "awjf_wegsanierungen_pub", dbPub, "ch.so.awjf.wegsanierungen")) 
-/*
+
 */
 
 

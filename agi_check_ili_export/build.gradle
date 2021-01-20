@@ -123,8 +123,7 @@ task fubar() {
     }
 }
 
-/*
-task zipFiles(type: Zip, dependsOn: "validateAllData") {
+task zipLogFiles(type: Zip, mustRunAfter: 'exportAllData') {
     from pathToTempFolder
     include "*_export.log"
     include "*_validation.log"
@@ -132,7 +131,7 @@ task zipFiles(type: Zip, dependsOn: "validateAllData") {
     destinationDir(file(pathToTempFolder))
 }   
 
-task copyZipFile(type: Copy, dependsOn: "zipFiles") {
+task copyLogZipFile(type: Copy, dependsOn: "zipLogFiles") {
     from pathToTempFolder
     into pathToTempFolder
     include "datenvalidierung_"+todaysDate+".zip"
@@ -141,7 +140,7 @@ task copyZipFile(type: Copy, dependsOn: "zipFiles") {
     } 
 }
 
-task uploadZipFileDate(type: S3Upload, dependsOn: "copyZipFile") {
+task uploadLogZipFileDate(type: S3Upload, dependsOn: "copyLogZipFile") {
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
     sourceFile = file(Paths.get(pathToTempFolder, "datenvalidierung_"+todaysDate+".zip"))
@@ -151,7 +150,7 @@ task uploadZipFileDate(type: S3Upload, dependsOn: "copyZipFile") {
     acl = "PublicRead"
 }
 
-task uploadZipFileLatest(type: S3Upload, dependsOn: "uploadZipFileDate") {
+task uploadLogZipFileLatest(type: S3Upload, dependsOn: "uploadLogZipFileDate") {
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
     sourceFile = file(Paths.get(pathToTempFolder, "datenvalidierung_latest.zip"))
@@ -160,6 +159,9 @@ task uploadZipFileLatest(type: S3Upload, dependsOn: "uploadZipFileDate") {
     region = "eu-central-1"
     acl = "PublicRead"
 }
+
+
+/*
 */
     // TODO: only if successful?
 //     task "zipDatasetXtf_$datasetId"(type: Zip, dependsOn: "exportDataset_$datasetId") {
