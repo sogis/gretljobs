@@ -30,7 +30,7 @@ subprojects {
 
 apply from: "$rootDir/datasets.groovy"
 
-defaultTasks 'exportAllData'
+defaultTasks 'exportAllData', 'zipLogFiles'
 //defaultTasks 'exportAllData','fubar'
 
 //def pathToTempFolder = Files.createTempDirectory("agidataexport-").toFile().getAbsolutePath()
@@ -123,13 +123,14 @@ task fubar() {
     }
 }
 
-task zipLogFiles(type: Zip, mustRunAfter: 'exportAllData') {
+task zipLogFiles(type: Zip) {
     from pathToTempFolder
     include "*_export.log"
     include "*_validation.log"
     archiveName  "datenvalidierung_"+todaysDate+".zip"
     destinationDir(file(pathToTempFolder))
 }   
+zipLogFiles.mustRunAfter exportAllData
 
 task copyLogZipFile(type: Copy, dependsOn: "zipLogFiles") {
     from pathToTempFolder
