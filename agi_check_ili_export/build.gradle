@@ -12,6 +12,8 @@ buildscript {
 }
 */
 
+gradle.startParameter.continueOnFailure = true
+
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 import ch.so.agi.gretl.api.Connector
@@ -28,8 +30,7 @@ subprojects {
 
 apply from: "$rootDir/datasets.groovy"
 
-defaultTasks 'exportAllData'
-//defaultTasks 'exportAllData','fubar'
+defaultTasks 'exportAllData', 'uploadLogZipFileLatest'
 
 //def pathToTempFolder = Files.createTempDirectory("agidataexport-").toFile().getAbsolutePath()
 
@@ -80,6 +81,7 @@ datasets.each { dataset ->
         //dataFiles = [Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf")]
         dataFiles = [Paths.get(pathToTempFolder, datasetId + ".xtf")]
         logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_validation.log"))
+        xtflogFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_validation.xtf"))
         failOnError = false
         if (new File("config/"+datasetId + ".toml").isFile()) configFile = "config/"+datasetId + ".toml"
     }
@@ -113,23 +115,16 @@ task exportAllData() {
     }
 }
 
-/*
-task fubar() {
-    doLast {
-        println "*****************"
-    }
-}
-*/
-/*
-task zipFiles(type: Zip, dependsOn: "validateAllData") {
+task zipLogFiles(type: Zip) {
     from pathToTempFolder
     include "*_export.log"
     include "*_validation.log"
     archiveName  "datenvalidierung_"+todaysDate+".zip"
     destinationDir(file(pathToTempFolder))
 }   
+zipLogFiles.mustRunAfter exportAllData
 
-task copyZipFile(type: Copy, dependsOn: "zipFiles") {
+task copyLogZipFile(type: Copy, dependsOn: "zipLogFiles") {
     from pathToTempFolder
     into pathToTempFolder
     include "datenvalidierung_"+todaysDate+".zip"
@@ -138,7 +133,7 @@ task copyZipFile(type: Copy, dependsOn: "zipFiles") {
     } 
 }
 
-task uploadZipFileDate(type: S3Upload, dependsOn: "copyZipFile") {
+task uploadLogZipFileDate(type: S3Upload, dependsOn: "copyLogZipFile") {
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
     sourceFile = file(Paths.get(pathToTempFolder, "datenvalidierung_"+todaysDate+".zip"))
@@ -148,7 +143,7 @@ task uploadZipFileDate(type: S3Upload, dependsOn: "copyZipFile") {
     acl = "PublicRead"
 }
 
-task uploadZipFileLatest(type: S3Upload, dependsOn: "uploadZipFileDate") {
+task uploadLogZipFileLatest(type: S3Upload, dependsOn: "uploadLogZipFileDate") {
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
     sourceFile = file(Paths.get(pathToTempFolder, "datenvalidierung_latest.zip"))
@@ -157,6 +152,9 @@ task uploadZipFileLatest(type: S3Upload, dependsOn: "uploadZipFileDate") {
     region = "eu-central-1"
     acl = "PublicRead"
 }
+
+
+/*
 */
     // TODO: only if successful?
 //     task "zipDatasetXtf_$datasetId"(type: Zip, dependsOn: "exportDataset_$datasetId") {
