@@ -33,12 +33,9 @@ task exportAdressenZivilschutz(type: CsvExport, dependsOn: stageAdressenZivilsch
     valueSeparator = ';'
     valueDelimiter = null
     attributes = ['lokalisationsname', 'hausnummer', 'plz', 'ortschaft', 'gemeinde', 'gwr_egid', 'gwr_edid', 'koord_ost', 'koord_nord', 'status', 'objektname', 'grundstuecknummer', 'grundbuchkreis']
-
-    finalizedBy clearStaging
-
 }
 
-task replaceStatus(dependsOn: stageAdressenZivilschutz) {
+task replaceStatus(dependsOn: exportAdressenZivilschutz) {
     description = "Ersetzt astatus zu status."
     doLast {
         ant.replace(
