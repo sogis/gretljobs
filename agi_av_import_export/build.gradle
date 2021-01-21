@@ -26,7 +26,7 @@ import ch.so.agi.gretl.util.TaskUtil
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'uploadDxfGeobauFiles'
+defaultTasks 'deleteFtpFiles'
 
 def pathToTempFolder = Files.createTempDirectory("agiavimport-").toFile().getAbsolutePath()
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
@@ -35,16 +35,15 @@ def pathToFederalFolder = Paths.get(pathToTempFolder, 'ch')
 def pathToGeobauFolder = Paths.get(pathToTempFolder, 'geobau')
 //def pathToUnzipFolder = Files.createTempDirectory("agiavimport-unzip_data-").toFile().getAbsolutePath()
 
-def bucketNameCanton = "0.ch.so.agi.av.dm01avso24lv95"
-def bucketNameFederal = "0.ch.so.agi.av.dm01avch24lv95d"
-def bucketNameGeobau = "0.ch.so.agi.av.dxfgeobau"
+def bucketNameCanton = "ch.so.agi.av.dm01avso24lv95"
+def bucketNameFederal = "ch.so.agi.av.dm01avch24lv95d"
+def bucketNameGeobau = "ch.so.agi.av.dxfgeobau"
 
 // FIXME
-bucketNameCanton += "-dev"
-bucketNameFederal += "-dev"
-bucketNameGeobau += "-dev"
+//bucketNameCanton += "-dev"
+//bucketNameFederal += "-dev"
+//bucketNameGeobau += "-dev"
 
-/*
 if (gretlEnvironment == "test") {
     bucketNameCanton += "-test"
     bucketNameFederal += "-test"
@@ -60,7 +59,6 @@ if (gretlEnvironment == "test") {
     bucketNameFederal += "-dev"
     bucketNameGeobau += "-dev"
 }
-*/
 
 task downloadFiles(type: FtpDownload) { 
     server = ftpServerInfogrips
@@ -69,7 +67,6 @@ task downloadFiles(type: FtpDownload) {
     systemType = "WINDOWS"
     fileType = "BINARY"
     localDir = pathToTempFolder
-    //remoteDir = "\\dm01avso24lv95_2\\itf" 
     remoteDir = "\\dm01avso24lv95\\itf" 
     remoteFile = "*.zip" 
 
@@ -142,7 +139,7 @@ task uploadDxfGeobauFiles(type: S3Upload, dependsOn: 'createDxfGeobauFiles') {
     acl = "PublicRead"
 }
 
-/*
+
 //task importData(type: Ili2pgReplace, dependsOn: 'unzipData') {
 task importData(type: Ili2pgReplace, dependsOn: 'uploadDxfGeobauFiles') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -157,18 +154,15 @@ task importData(type: Ili2pgReplace, dependsOn: 'uploadDxfGeobauFiles') {
         println "Data imported into db: " + dbUriEdit
     }
 }
-*/
 
-// task deleteFtpFiles(type: FtpDelete) {
-//     onlyIf {
-//         gretlEnvironment == "XXXXXXX"
-//     }
-//     server = ftpServerInfogrips
-//     user = ftpUserInfogrips
-//     password = ftpPwdInfogrips
-//     systemType = "WINDOWS"
-//     //remoteDir = "\\dm01avso24lv95_2\\itf"
-//     remoteDir = "\\dm01avso24lv95\\itf"
-//     remoteFile = fileTree(pathToTempFolder) { include '*.zip' } 
-// }
-
+task deleteFtpFiles(type: FtpDelete, dependsOn: 'importData') {
+    onlyIf {
+        gretlEnvironment == "production"
+    }
+    server = ftpServerInfogrips
+    user = ftpUserInfogrips
+    password = ftpPwdInfogrips
+    systemType = "WINDOWS"
+    remoteDir = "\\dm01avso24lv95\\itf"
+    remoteFile = fileTree(pathToTempFolder) { include '*.zip' } 
+}
