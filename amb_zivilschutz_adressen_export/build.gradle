@@ -39,7 +39,7 @@ task replaceStatus(dependsOn: exportAdressenZivilschutz) {
     description = "Ersetzt astatus zu status."
     doLast {
         ant.replace(
-        file: ${csvFileName},
+        file: csvFileName,
         token: 'astatus',
         value: 'status',
         encoding: 'UTF-8')
