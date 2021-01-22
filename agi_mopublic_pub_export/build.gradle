@@ -126,30 +126,30 @@ datasets.each { dataset ->
         accessKey = awsAccessKeyAgi
         secretKey = awsSecretAccessKeyAgi
         sourceFile = file(Paths.get(pathToTempFolder, dataset.toString() + "_xtf.zip"))
-        endPoint = "https://s3.amazonaws.com/"
+        endPoint = "https://s3.eu-central-1.amazonaws.com"
         region = "eu-central-1"
         bucketName = s3Bucket
-        acl = "PublicRead"
+        acl = "public-read"
     }     
 
     task "uploadGpkg_$dataset"(type: S3Upload, dependsOn: "uploadXtf_$dataset") {
         accessKey = awsAccessKeyAgi
         secretKey = awsSecretAccessKeyAgi
         sourceFile = file(Paths.get(pathToTempFolder, dataset.toString() + "_gpkg.zip"))
-        endPoint = "https://s3.amazonaws.com/"
+        endPoint = "https://s3.eu-central-1.amazonaws.com"
         region = "eu-central-1"
         bucketName = s3Bucket
-        acl = "PublicRead"
+        acl = "public-read"
     }  
 
     task "uploadShp_$dataset"(type: S3Upload, dependsOn: "uploadGpkg_$dataset") {
         accessKey = awsAccessKeyAgi
         secretKey = awsSecretAccessKeyAgi
         sourceFile = file(Paths.get(pathToTempFolder, dataset.toString() + "_shp.zip"))
-        endPoint = "https://s3.amazonaws.com/"
+        endPoint = "https://s3.eu-central-1.amazonaws.com"
         region = "eu-central-1"
         bucketName = s3Bucket
-        acl = "PublicRead"
+        acl = "public-read"
 
         finalizedBy "removeFiles_$dataset"
     }  
