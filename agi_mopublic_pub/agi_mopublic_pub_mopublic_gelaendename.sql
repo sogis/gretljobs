@@ -9,7 +9,7 @@ WITH aimport AS
 )
 SELECT
     gelaendename.aname AS gelaendename,
-    CAST(gelaendename.t_datasetname AS INT) AS bfs_nr,    
+    CAST(SUBSTRING(gelaendename.t_datasetname,1,4) AS INT) AS bfs_nr,
     aimport.importdate AS importdatum,
     nachfuehrung.gueltigereintrag AS nachfuehrung,
     CASE

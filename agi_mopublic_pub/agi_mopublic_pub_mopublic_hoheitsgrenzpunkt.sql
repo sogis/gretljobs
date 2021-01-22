@@ -36,7 +36,7 @@ SELECT
             THEN 'Bottom'
         ELSE pos.vali
     END AS vali,
-    CAST(hoheitsgrenzpunkt.t_datasetname AS INT) AS bfs_nr,    
+    CAST(SUBSTRING(hoheitsgrenzpunkt.t_datasetname,1,4) AS INT) AS bfs_nr,
     aimport.importdate AS importdatum,
     nachfuehrung.gueltigereintrag AS nachfuehrung,
     hoheitsgrenzpunkt.geometrie,

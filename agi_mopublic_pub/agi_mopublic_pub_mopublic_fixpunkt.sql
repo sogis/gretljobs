@@ -12,7 +12,7 @@ SELECT
     lagefixpunkt.nbident, 
     lagefixpunkt.nummer,
     lagefixpunkt.hoehegeom AS hoehe,
-    CAST(lagefixpunkt.t_datasetname AS INT) AS bfs_nr,    
+    CAST(SUBSTRING(lagefixpunkt.t_datasetname,1,4) AS INT) AS bfs_nr,
     lagefixpunkt.lagegen AS lagegenauigkeit,
     lagefixpunkt.hoehegen AS hoehengenauigkeit,
     CASE 

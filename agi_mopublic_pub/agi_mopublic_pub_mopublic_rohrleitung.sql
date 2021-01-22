@@ -10,7 +10,7 @@ WITH aimport AS
 SELECT
     objekt.art AS art_txt,
     objekt.betreiber,
-    CAST(objekt.t_datasetname AS INT) AS bfs_nr,    
+    CAST(SUBSTRING(objekt.t_datasetname,1,4) AS INT) AS bfs_nr,
     aimport.importdate AS importdatum,
     nachfuehrung.gueltigereintrag AS nachfuehrung,
     linie.geometrie AS geometrie 

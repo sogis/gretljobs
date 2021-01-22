@@ -9,7 +9,7 @@ WITH aimport AS
 )
 SELECT
     split_part(einzelobjekt.art,'.',array_upper(string_to_array(einzelobjekt.art,'.'), 1)) AS art_txt,
-    CAST(einzelobjekt.t_datasetname AS INT) AS bfs_nr,    
+    CAST(SUBSTRING(einzelobjekt.t_datasetname,1,4) AS INT) AS bfs_nr,
     objektnummer.gwr_egid AS egid,
     aimport.importdate AS importdatum,
     nachfuehrung.gueltigereintrag AS nachfuehrung,

@@ -14,7 +14,7 @@ SELECT
             THEN 0
         ELSE (100 - punkt.ori) * 0.9
     END AS symbolorientierung,
-    CAST(einzelobjekt.t_datasetname AS INT) AS bfs_nr,    
+    CAST(SUBSTRING(einzelobjekt.t_datasetname,1,4) AS INT) AS bfs_nr,
     aimport.importdate AS importdatum,
     nachfuehrung.gueltigereintrag AS nachfuehrung,
     punkt.geometrie

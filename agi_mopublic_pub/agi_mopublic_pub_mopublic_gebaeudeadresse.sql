@@ -32,7 +32,7 @@ SELECT
     ELSE FALSE 
     END AS ist_offizielle_bezeichnung,
     aname.atext AS gebaeudename, -- always empty?
-    CAST(gebauedeeingang.t_datasetname AS INT) AS bfs_nr,    
+    CAST(SUBSTRING(gebauedeeingang.t_datasetname,1,4) AS INT) AS bfs_nr,
     CASE
     WHEN hausnummer.ori IS NULL 
         THEN (100 - 100) * 0.9

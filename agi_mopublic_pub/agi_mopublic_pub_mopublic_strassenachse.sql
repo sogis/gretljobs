@@ -10,7 +10,7 @@ WITH aimport AS
 SELECT
     aname.atext AS strassenname,
     strasse.ordnung,
-    CAST(strasse.t_datasetname AS INT) AS bfs_nr,    
+    CAST(SUBSTRING(strasse.t_datasetname,1,4) AS INT) AS bfs_nr,
     aimport.importdate AS importdatum,
     nachfuehrung.gueltigereintrag AS nachfuehrung,
     strasse.geometrie AS geometrie 

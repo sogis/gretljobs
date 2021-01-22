@@ -73,7 +73,7 @@ einzelobjekt_position AS
             ELSE pos.vali
         END AS vali,
         pos.pos,
-        CAST(pos.t_datasetname AS INT) AS bfs_nr,    
+	CAST(SUBSTRING(pos.t_datasetname,1,4) AS INT) AS bfs_nr,
         aimport.importdate AS importdatum
     FROM
         agi_dm01avso24.einzelobjekte_objektname AS objekt

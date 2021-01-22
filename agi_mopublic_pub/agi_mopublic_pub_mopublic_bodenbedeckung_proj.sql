@@ -15,7 +15,7 @@ SELECT
             THEN 'stehendes Gewaesser'
         ELSE split_part(bodenbedeckung.art,'.', array_upper(string_to_array(bodenbedeckung.art, '.'), 1))
     END AS art_txt,
-    CAST(bodenbedeckung.t_datasetname AS INT) AS bfs_nr,
+    CAST(SUBSTRING(bodenbedeckung.t_datasetname,1,4) AS INT) AS bfs_nr,
     gebaeudenummer.gwr_egid AS egid,
     aimport.importdate AS importdatum,
     nachfuehrung.gueltigereintrag AS nachfuehrung,

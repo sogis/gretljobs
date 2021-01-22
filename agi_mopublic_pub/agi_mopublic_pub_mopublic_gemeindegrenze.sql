@@ -9,7 +9,7 @@ WITH aimport AS
 )
 SELECT
     gemeinde.aname AS gemeindename,
-    CAST(gemeinde.t_datasetname AS INT) AS bfs_nr,    
+    CAST(SUBSTRING(gemeinde.t_datasetname,1,4) AS INT) AS bfs_nr,
     aimport.importdate AS importdatum,
     nachfuehrung.gueltigereintrag AS nachfuehrung,
     grenze.geometrie AS geometrie

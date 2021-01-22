@@ -48,7 +48,7 @@ grundstueck AS
         grundstueck.art AS art_txt,
         liegenschaft.flaechenmass,
         grundstueck.egris_egrid AS egrid,
-        CAST(grundstueck.t_datasetname AS INT) AS bfs_nr,    
+	CAST(SUBSTRING(grundstueck.t_datasetname,1,4) AS INT) AS bfs_nr,
         orientierung,
         pos.hali,
         pos.vali,

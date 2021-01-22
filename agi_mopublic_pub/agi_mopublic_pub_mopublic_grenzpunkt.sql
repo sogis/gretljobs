@@ -21,7 +21,7 @@ SELECT
             THEN (100 - 0) * 0.9
         ELSE (100 - symbol.ori) * 0.9
     END AS symbolorientierung,
-    CAST(grenzpunkt.t_datasetname AS INT) AS bfs_nr,    
+    CAST(SUBSTRING(grenzpunkt.t_datasetname,1,4) AS INT) AS bfs_nr,
     aimport.importdate AS importdatum,
     nachfuehrung.gueltigereintrag AS nachfuehrung,
     nachfuehrung.gueltigkeit AS gueltigkeit

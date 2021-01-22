@@ -24,7 +24,7 @@ SELECT
             THEN 'Half'
         ELSE pos.vali
     END AS vali,
-    CAST(aname.t_datasetname AS INT) AS bfs_nr,    
+    CAST(SUBSTRING(aname.t_datasetname,1,4) AS INT) AS bfs_nr,
     aimport.importdate AS importdatum,
     nachfuehrung.gueltigereintrag AS nachfuehrung,
     pos.pos

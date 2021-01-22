@@ -24,7 +24,7 @@ aimport AS
 )
 SELECT
     flurname.aname AS flurname,
-    CAST(flurname.t_datasetname AS INT) AS bfs_nr,    
+    CAST(SUBSTRING(flurname.t_datasetname,1,4) AS INT) AS bfs_nr,
     CASE
         WHEN pos.ori IS NULL 
             THEN (100 - 100) * 0.9
