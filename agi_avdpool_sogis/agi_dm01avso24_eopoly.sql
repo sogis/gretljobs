@@ -92,7 +92,7 @@ SELECT
         WHEN einzelobjekt.art = 'Bezugspunkt'
             THEN 38   
     END AS art,
-    CAST(flaechenelement.t_datasetname AS INT) AS gem_bfs,
+    CAST(SUBSTRING(flaechenelement.t_datasetname,1,4) AS INT) AS gem_bfs,
     0 AS archive,
     CAST('9999-01-01' AS timestamp) AS archive_date,
     aimport.importdate AS new_date,    

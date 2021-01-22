@@ -30,7 +30,7 @@ SELECT
             THEN 2
     END AS namhoehe,       
     flurname.aname AS name,
-    CAST(flurnamepos.t_datasetname AS INT) AS gem_bfs,
+    CAST(SUBSTRING(flurnamepos.t_datasetname,1,4) AS INT) AS gem_bfs,
     CASE
         WHEN flurnamepos.ori >= 0 AND flurnamepos.ori < 100
             THEN (100-flurnamepos.ori)*0.9

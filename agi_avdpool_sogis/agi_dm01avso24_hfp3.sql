@@ -31,7 +31,7 @@ SELECT
         WHEN hfp3pos.ori > 100 AND hfp3pos.ori <= 400
             THEN ((100-hfp3pos.ori)*0.9)+360
     END AS txt_rot,
-    CAST(hfp3.t_datasetname AS INT) AS gem_bfs,
+    CAST(SUBSTRING(hfp3.t_datasetname,1,4) AS INT) AS gem_bfs,
     0 AS archive,
     CAST('9999-01-01' AS timestamp) AS archive_date,
     aimport.importdate AS new_date,   

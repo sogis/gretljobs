@@ -3,7 +3,7 @@ SELECT
     liegenschaft.flaechenmass AS flaechen,
     0 AS art,
     grundstueck.nummer,
-    CAST(liegenschaft.t_datasetname AS INT) AS gem_bfs,
+    CAST(SUBSTRING(liegenschaft.t_datasetname,1,4) AS INT) AS gem_bfs,
     0 AS archive,
     CAST('9999-01-01' AS timestamp) AS archive_date,
     aimport.importdate AS new_date,    

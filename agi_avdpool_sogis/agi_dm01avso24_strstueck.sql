@@ -2,7 +2,7 @@ SELECT
     ST_Multi(strassenstueck.geometrie) AS wkb_geometry,
     strassenstueck.ordnung,
     lokalisationsname.atext AS TEXT,
-    CAST(strassenstueck.t_datasetname AS INT) AS gem_bfs,
+    CAST(SUBSTRING(strassenstueck.t_datasetname,1,4) AS INT) AS gem_bfs,
     0 AS archive,
     CAST('9999-01-01' AS timestamp) AS archive_date,
     aimport.importdate AS new_date,   

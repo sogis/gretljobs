@@ -1,7 +1,7 @@
 SELECT
     landesgrenzabschnitt.geometrie AS wkb_geometry,
     2 AS art,
-    CAST(landesgrenzabschnitt.t_datasetname AS INT) AS gem_bfs,
+    CAST(SUBSTRING(landesgrenzabschnitt.t_datasetname,1,4) AS INT) AS gem_bfs,
     0 AS archive,
     CAST('9999-01-01' AS timestamp) AS archive_date,
     aimport.importdate AS new_date,    

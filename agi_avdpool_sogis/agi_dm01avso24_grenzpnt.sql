@@ -55,7 +55,7 @@ SELECT
         WHEN grenzpunktpos.ori > 100 AND grenzpunktpos.ori <= 400
             THEN ((100-grenzpunktpos.ori)*0.9)+360
     END AS txt_rot,
-    CAST(grenzpunkt.t_datasetname AS INT) AS gem_bfs,
+    CAST(SUBSTRING(grenzpunkt.t_datasetname,1,4) AS INT) AS gem_bfs,
     0 AS archive,
     CAST('9999-01-01' AS timestamp) AS archive_date,
     aimport.importdate AS new_date,   

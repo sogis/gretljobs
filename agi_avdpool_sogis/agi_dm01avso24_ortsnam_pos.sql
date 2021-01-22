@@ -30,7 +30,7 @@ SELECT
             THEN 2
     END AS namhoehe,       
     ortsname.aname AS name,
-    CAST(ortsnamepos.t_datasetname AS INT) AS gem_bfs,
+    CAST(SUBSTRING(ortsnamepos.t_datasetname,1,4) AS INT) AS gem_bfs,
     CASE
         WHEN ortsnamepos.ori >= 0 AND ortsnamepos.ori < 100
             THEN (100-ortsnamepos.ori)*0.9

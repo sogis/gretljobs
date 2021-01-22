@@ -56,7 +56,7 @@ SELECT
         WHEN hoheitsgrenzpunktpos.ori > 100 AND hoheitsgrenzpunktpos.ori <= 400
             THEN ((100-hoheitsgrenzpunktpos.ori)*0.9)+360
     END AS txt_rot,
-    CAST(hoheitsgrenzpunkt.t_datasetname AS INT) AS gem_bfs,
+    CAST(SUBSTRING(hoheitsgrenzpunkt.t_datasetname,1,4) AS INT) AS gem_bfs,
     0 AS archive,
     CAST('9999-01-01' AS timestamp) AS archive_date,
     aimport.importdate AS new_date,   

@@ -37,7 +37,7 @@ SELECT
         WHEN gelaendenamepos.ori > 100 AND gelaendenamepos.ori <= 400
             THEN ((100-gelaendenamepos.ori)*0.9)+360
     END AS txt_rot,
-    CAST(gelaendename.t_datasetname AS INT) AS gem_bfs,
+    CAST(SUBSTRING(gelaendename.t_datasetname,1,4) AS INT) AS gem_bfs,
     0 AS archive,
     CAST('9999-01-01' AS timestamp) AS archive_date,
     aimport.importdate AS new_date,   

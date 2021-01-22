@@ -84,7 +84,7 @@ SELECT
         WHEN projboflaeche.art = 'vegetationslos.uebrige_vegetationslose'
             THEN 38
     END AS art,
-    CAST(projboflaeche.t_datasetname AS INT) AS gem_bfs,
+    CAST(SUBSTRING(projboflaeche.t_datasetname,1,4) AS INT) AS gem_bfs,
     aimport.importdate AS new_date,    
     CAST('9999-01-01' AS timestamp) AS archive_date,
     0 AS archive,

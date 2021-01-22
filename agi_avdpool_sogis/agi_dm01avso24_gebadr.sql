@@ -23,7 +23,7 @@ SELECT
             THEN 4   
     END AS numvali,
     lokalisationsname.atext AS strasse1,
-    CAST(hausnummerpos.t_datasetname AS INT) AS gem_bfs,
+    CAST(SUBSTRING(hausnummerpos.t_datasetname,1,4) AS INT) AS gem_bfs,
     0 AS archive,
     CASE
         WHEN hausnummerpos.ori >= 0 AND hausnummerpos.ori < 100

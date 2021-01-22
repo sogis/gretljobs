@@ -2,7 +2,7 @@ SELECT
     hfp2.geometrie AS wkb_geometry,
     hfp2.nummer,
     hfp2.hoehegeom AS hoehegeo,
-    CAST(hfp2.t_datasetname AS INT) AS gem_bfs,
+    CAST(SUBSTRING(hfp2.t_datasetname,1,4) AS INT) AS gem_bfs,
     0 AS archive,
     CAST('9999-01-01' AS timestamp) AS archive_date,
     aimport.importdate AS new_date,   

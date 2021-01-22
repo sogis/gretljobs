@@ -29,7 +29,7 @@ SELECT
         WHEN lokalisationsnamepos.ori > 100 AND lokalisationsnamepos.ori <= 400
             THEN ((100-lokalisationsnamepos.ori)*0.9)+360
     END AS txt_rot,
-    CAST(lokalisationsnamepos.t_datasetname AS INT) AS gem_bfs,
+    CAST(SUBSTRING(lokalisationsnamepos.t_datasetname,1,4) AS INT) AS gem_bfs,
     0 AS archive,
     CAST('9999-01-01' AS timestamp) AS archive_date,
     aimport.importdate AS new_date,   

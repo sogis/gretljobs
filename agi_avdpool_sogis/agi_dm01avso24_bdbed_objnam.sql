@@ -30,7 +30,7 @@ SELECT
             THEN 2
     END AS namhoehe,       
     objektname.aname AS name,
-    CAST(objektname.t_datasetname AS INT) AS gem_bfs,
+    CAST(SUBSTRING(objektname.t_datasetname,1,4) AS INT) AS gem_bfs,
     CAST('9999-01-01' AS timestamp) AS archive_date,
     0 AS archive,
     CASE

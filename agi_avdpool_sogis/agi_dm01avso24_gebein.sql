@@ -12,7 +12,7 @@ SELECT
         WHEN gebaeudeeingang.astatus = 'vergangen'
             THEN 2   
     END AS status,
-    CAST(gebaeudeeingang.t_datasetname AS INT) AS gem_bfs,
+    CAST(SUBSTRING(gebaeudeeingang.t_datasetname,1,4) AS INT) AS gem_bfs,
     0 AS archive,
     CAST('9999-01-01' AS timestamp) AS archive_date,
     aimport.importdate AS new_date,    

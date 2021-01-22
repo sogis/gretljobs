@@ -1,7 +1,7 @@
 SELECT
     ST_Multi(plangeometrie.geometrie) AS wkb_geometry,
     plan.nummer,
-    CAST(plan.t_datasetname AS INT) AS gem_bfs,
+    CAST(SUBSTRING(plan.t_datasetname,1,4) AS INT) AS gem_bfs,
     0 AS archive,
     CAST('9999-01-01' AS timestamp) AS archive_date,
     aimport.importdate AS new_date,   

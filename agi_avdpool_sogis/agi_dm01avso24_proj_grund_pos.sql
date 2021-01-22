@@ -22,7 +22,7 @@ SELECT
             THEN 4   
     END AS numvali,
     projgrundstueck.nummer,
-    CAST(projgrundstueckpos.t_datasetname AS INT) AS gem_bfs,
+    CAST(SUBSTRING(projgrundstueckpos.t_datasetname,1,4) AS INT) AS gem_bfs,
     CASE
         WHEN projgrundstueckpos.ori >= 0 AND projgrundstueckpos.ori < 100
             THEN (100-projgrundstueckpos.ori)*0.9

@@ -1,7 +1,7 @@
 SELECT
     bezirksgrenzabschnitt.geometrie AS wkb_geometry,
     0 AS art,
-    CAST(bezirksgrenzabschnitt.t_datasetname AS INT) AS gem_bfs,
+    CAST(SUBSTRING(bezirksgrenzabschnitt.t_datasetname,1,4) AS INT) AS gem_bfs,
     0 AS archive,
     CAST('9999-01-01' AS timestamp) AS archive_date,
     aimport.importdate AS new_date,    

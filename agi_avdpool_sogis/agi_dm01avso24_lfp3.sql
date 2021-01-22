@@ -31,7 +31,7 @@ SELECT
         WHEN lfp3pos.ori > 100 AND lfp3pos.ori <= 400
             THEN ((100-lfp3pos.ori)*0.9)+360
     END AS txt_rot,
-    CAST(lfp3.t_datasetname AS INT) AS gem_bfs,
+    CAST(SUBSTRING(lfp3.t_datasetname,1,4) AS INT) AS gem_bfs,
     0 AS archive,
     CAST('9999-01-01' AS timestamp) AS archive_date,
     aimport.importdate AS new_date,   

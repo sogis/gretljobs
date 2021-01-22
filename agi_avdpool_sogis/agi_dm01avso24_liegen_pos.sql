@@ -22,7 +22,7 @@ SELECT
             THEN 4   
     END AS numvali,
     grundstueck.nummer,
-    CAST(grundstueckpos.t_datasetname AS INT) AS gem_bfs,
+    CAST(SUBSTRING(grundstueckpos.t_datasetname,1,4) AS INT) AS gem_bfs,
     CASE
         WHEN grundstueckpos.ori >= 0 AND grundstueckpos.ori < 100
             THEN (100-grundstueckpos.ori)*0.9
