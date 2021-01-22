@@ -80,7 +80,7 @@ task uploadFiles(type: S3Upload, dependsOn: 'downloadFiles') {
     secretKey = awsSecretAccessKeyAgi
     bucketName = bucketNameCanton
     sourceFiles = fileTree(pathToTempFolder) { include "*.zip" }
-    acl = "PublicRead"
+    acl = "public-read"
 }
 
 task unzipFiles(dependsOn: 'uploadFiles') {
@@ -118,7 +118,7 @@ task uploadFederalFiles(type: S3Upload, dependsOn: 'createFederalFiles') {
     secretKey = awsSecretAccessKeyAgi
     bucketName = bucketNameFederal
     sourceFiles = fileTree(pathToTempFolder) { include "*.zip" }
-    acl = "PublicRead"
+    acl = "public-read"
 }
 
 task createDxfGeobauFiles(type: Av2geobau, dependsOn: 'uploadFederalFiles') {
@@ -136,7 +136,7 @@ task uploadDxfGeobauFiles(type: S3Upload, dependsOn: 'createDxfGeobauFiles') {
     secretKey = awsSecretAccessKeyAgi
     bucketName = bucketNameGeobau
     sourceFiles = fileTree(pathToTempFolder) { include "*.zip" }
-    acl = "PublicRead"
+    acl = "public-read"
 }
 
 
