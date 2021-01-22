@@ -1,4 +1,4 @@
-SELECT
+SELECT DISTINCT ON (t_id)
     a.t_id, 
     a.t_ili_tid, 
     a.bezeichnung,
