@@ -100,10 +100,9 @@ datasets.each { dataset ->
         secretKey = awsSecretAccessKeyAgi
         sourceDir = file(Paths.get(pathToTempFolder, datasetId + "_xtf.zip"))
         bucketName = bucket
-        endPoint = "https://s3.amazonaws.com/" // https://s3.eu-central-1.amazonaws.com
+        endPoint = "https://s3.eu-central-1.amazonaws.com" 
         region = "eu-central-1"
-        //acl = "AuthenticatedRead" // authenticated-read
-        acl = "Private" // authenticated-read
+        acl = "private" 
         metaData = ["lastEditingDate":todaysDate]
     }
 }
@@ -138,9 +137,9 @@ task uploadLogZipFileDate(type: S3Upload, dependsOn: "copyLogZipFile") {
     secretKey = awsSecretAccessKeyAgi
     sourceFile = file(Paths.get(pathToTempFolder, "datenvalidierung_"+todaysDate+".zip"))
     bucketName = bucket
-    endPoint = "https://s3.amazonaws.com/"
+    endPoint = "https://s3.eu-central-1.amazonaws.com"
     region = "eu-central-1"
-    acl = "PublicRead"
+    acl = "public-read"
 }
 
 task uploadLogZipFileLatest(type: S3Upload, dependsOn: "uploadLogZipFileDate") {
@@ -148,9 +147,9 @@ task uploadLogZipFileLatest(type: S3Upload, dependsOn: "uploadLogZipFileDate") {
     secretKey = awsSecretAccessKeyAgi
     sourceFile = file(Paths.get(pathToTempFolder, "datenvalidierung_latest.zip"))
     bucketName = bucket
-    endPoint = "https://s3.amazonaws.com/"
+    endPoint = "https://s3.eu-central-1.amazonaws.com"
     region = "eu-central-1"
-    acl = "PublicRead"
+    acl = "public-read"
 }
 
 
