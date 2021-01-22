@@ -62,7 +62,7 @@ datasets.add(new Dataset("SO_ARP_Fledermausfundorte_20200728", "arp_fledermaus",
 datasets.add(new Dataset("SO_ARP_Mehrjahresprogramm_20200228", "arp_mehrjahresprogramm", dbEdit, "ch.so.arp.mehrjahresprogramm_edit"))
 datasets.add(new Dataset("SO_ARP_Naturreservate_20200609", "arp_naturreservate", dbEdit, "ch.so.arp.naturreservate_edit"))
 datasets.add(new Dataset("SO_ARP_Nutzungsvereinbarung_20170512", "arp_nutzungsvereinbarung", dbEdit, "ch.so.arp.nutzungsvereinbarung_edit"))
-datasets.add(new Dataset("SO_ARP_Richtplan_20190222", "arp_richtplan", dbEdit, "ch.so.arp.richtplan_edit"))
+datasets.add(new Dataset("SO_ARP_Richtplan_20210118", "arp_richtplan", dbEdit, "ch.so.arp.richtplan_edit"))
 datasets.add(new Dataset("SO_AVT_OevKov_20181107", "avt_oevkov_2018", dbEdit, "ch.so.avt.oevkov2018_edit", true)) 
 datasets.add(new Dataset("SO_AVT_OevKov_20190805", "avt_oevkov_2019", dbEdit, "ch.so.avt.oevkov2019_edit", true)) 
 datasets.add(new Dataset("SO_AVT_OevKov_20200420", "avt_oevkov_2020", dbEdit, "ch.so.avt.oevkov2020_edit")) 
