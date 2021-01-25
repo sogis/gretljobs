@@ -6,7 +6,7 @@ WITH
         SELECT 
             gemeindegrenze.t_id, 
             gemeindegrenze.geometrie, 
-            CAST(gemeindegrenze.t_datasetname AS integer) AS bfs_gemeindenummer, 
+            CAST(SUBSTRING(gemeindegrenze.t_datasetname,1,4) AS integer) AS bfs_gemeindenummer, 
             gemeinde.aname AS gemeindename
         FROM 
             agi_dm01avso24.gemeindegrenzen_gemeindegrenze AS gemeindegrenze
