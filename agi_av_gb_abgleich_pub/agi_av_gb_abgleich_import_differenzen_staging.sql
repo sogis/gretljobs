@@ -27,7 +27,7 @@ projektierte_liegenschaften_selbstrecht AS (
 av_grundstuecke AS (
         SELECT 
             liegenschaften_liegenschaft.geometrie, 
-            CAST(liegenschaften_grundstueck.t_datasetname AS integer) AS av_gem_bfs, 
+            CAST(SUBSTRING(liegenschaften_grundstueck.t_datasetname,1,4) AS integer) AS av_gem_bfs,
             liegenschaften_grundstueck.nbident AS av_nbident, 
             grundbuchkreise.gemeinde AS av_gemeinde, 
             liegenschaften_grundstueck.nummer::text AS av_nummer, 
@@ -68,7 +68,7 @@ av_grundstuecke AS (
     
         SELECT 
             liegenschaften_selbstrecht.geometrie, 
-            CAST(liegenschaften_grundstueck.t_datasetname AS integer) AS av_gem_bfs, 
+            CAST(SUBSTRING(liegenschaften_grundstueck.t_datasetname,1,4) AS integer) AS av_gem_bfs,
             liegenschaften_grundstueck.nbident AS av_nbident, 
             grundbuchkreise.gemeinde AS av_gemeinde, 
             liegenschaften_grundstueck.nummer::text AS av_nummer, 
