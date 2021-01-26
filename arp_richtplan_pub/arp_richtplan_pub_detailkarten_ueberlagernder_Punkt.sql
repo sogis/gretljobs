@@ -21,7 +21,7 @@ UNION ALL
 SELECT
     t_ili_tid,
     objekttyp,
-    status,
+    astatus,
     geometrie,
     NULL AS gemeindename
 FROM
