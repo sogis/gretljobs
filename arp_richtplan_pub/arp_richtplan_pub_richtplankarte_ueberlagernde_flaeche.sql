@@ -278,4 +278,57 @@ WHERE
 GROUP BY 
     reservate_reservat.t_id,
     documents_json_naturreservate.dokumente
+    
+UNION ALL
+
+/* Grundwasserschutzzone_areal*/
+SELECT
+    uuid_generate_v4() AS t_ili_tid,
+    NULL AS nummer,
+    'Grundwasserschutzzone_areal' AS objekttyp,
+    "typ" AS weitere_Informationen,
+    NULL AS objektname,
+    'Ausgangslage' AS abstimmungskategorie,
+    NULL AS bedeutung,
+    'rechtsgueltig' AS planungsstand,
+    'bestehend' AS status,
+    schutzzone.geometrie AS geometrie,
+    NULL AS dokumente,
+    string_agg(DISTINCT gemeindegrenze.gemeindename, ', ' ORDER BY gemeindegrenze.gemeindename) AS gemeindenamen
+FROM
+    (
+        -- Grundwasserschutzzonen
+        SELECT
+            typ,
+            ST_Union(ST_SnapToGrid(gwszone.geometrie, 0.001)) AS geometrie
+        FROM
+            afu_gewaesserschutz.gwszonen_gwszone AS gwszone
+            LEFT JOIN afu_gewaesserschutz.gwszonen_status AS status
+        ON gwszone.astatus = status.t_id
+        WHERE
+            rechtsstatus = 'inKraft'
+        GROUP BY 
+        "typ"
+        
+        UNION ALL
+         
+        -- Grundwasserschutzareale
+        SELECT
+            typ,
+            ST_Union(ST_SnapToGrid(gwsareal.geometrie, 0.001)) AS geometrie
+        FROM
+            afu_gewaesserschutz.gwszonen_gwsareal AS gwsareal
+            LEFT JOIN afu_gewaesserschutz.gwszonen_status AS status
+        ON gwsareal.astatus = status.t_id
+        WHERE
+            rechtsstatus = 'inKraft'
+        GROUP BY 
+            "typ"
+    ) AS schutzzone,
+    agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS gemeindegrenze
+WHERE
+    ST_Intersects(schutzzone.geometrie, gemeindegrenze.geometrie) = TRUE
+GROUP BY 
+    "typ",
+    schutzzone.geometrie
 ;
