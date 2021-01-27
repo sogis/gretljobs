@@ -237,7 +237,7 @@ SELECT
     richtplankarte_ueberlagernde_flaeche.abstimmungskategorie,
     richtplankarte_ueberlagernde_flaeche.bedeutung,
     richtplankarte_ueberlagernde_flaeche.planungsstand,
-    richtplankarte_ueberlagernde_flaeche.status,
+    richtplankarte_ueberlagernde_flaeche.astatus,
     richtplankarte_ueberlagernde_flaeche.geometrie,
     documents_json_richtplan.dokumente::text,
     betroffene_gemeinden.gemeindenamen
