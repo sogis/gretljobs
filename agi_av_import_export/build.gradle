@@ -146,7 +146,7 @@ task importData(type: Ili2pgReplace, dependsOn: 'uploadDxfGeobauFiles') {
     models = 'DM01AVSO24LV95'
     dbschema = 'agi_dm01avso24'
     dataFile = fileTree(pathToUnzipFolder) { include '*.itf' }
-    dataset = fileTree(pathToUnzipFolder) { include '*.itf' }
+    dataset = dataFile.collect { it.getName().substring(0,4)}         
 
     disableValidation = true
 
