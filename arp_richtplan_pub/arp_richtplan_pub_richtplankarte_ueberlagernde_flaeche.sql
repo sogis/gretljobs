@@ -299,7 +299,7 @@ FROM
     (
         -- Grundwasserschutzzonen
         SELECT
-            typ,
+            'Zone' AS typ,
             ST_Union(ST_SnapToGrid(gwszone.geometrie, 0.001)) AS geometrie
         FROM
             afu_gewaesserschutz.gwszonen_gwszone AS gwszone
@@ -307,14 +307,12 @@ FROM
         ON gwszone.astatus = status.t_id
         WHERE
             rechtsstatus = 'inKraft'
-        GROUP BY 
-        "typ"
         
         UNION ALL
          
         -- Grundwasserschutzareale
         SELECT
-            typ,
+            'Areal' AS typ,
             ST_Union(ST_SnapToGrid(gwsareal.geometrie, 0.001)) AS geometrie
         FROM
             afu_gewaesserschutz.gwszonen_gwsareal AS gwsareal
@@ -322,13 +320,10 @@ FROM
         ON gwsareal.astatus = status.t_id
         WHERE
             rechtsstatus = 'inKraft'
-        GROUP BY 
-            "typ"
     ) AS schutzzone,
     agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS gemeindegrenze
 WHERE
     ST_Intersects(schutzzone.geometrie, gemeindegrenze.geometrie) = TRUE
 GROUP BY 
-    "typ",
-    schutzzone.geometrie
-;
+    schutzzone.geometrie,
+    schutzzone.typ
