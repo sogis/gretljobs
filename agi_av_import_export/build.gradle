@@ -148,7 +148,8 @@ task importData(type: Ili2pgReplace, dependsOn: 'unzipData') {
     dbschema = 'agi_dm01avso24'
     //dataFile = fileTree(pathToUnzipFolder) { include '*.itf' }
     dataFile = fileTree(dir: pathToUnzipFolder, include: '*.itf')
-    dataset = fileTree(dir: pathToUnzipFolder, include: '*.itf').collect { it.getName().substring(0,4)}         
+    dataset = dataFile
+    substring = 0..4     
 
     disableValidation = true
 
