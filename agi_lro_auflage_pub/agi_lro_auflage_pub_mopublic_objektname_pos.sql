@@ -3,7 +3,7 @@ WITH aimport AS
     SELECT
         max(importdate) AS importdate, dataset
     FROM
-        agi_dm01avso24.t_ili2db_import
+        agi_lro_auflage.t_ili2db_import
     GROUP BY
         dataset
 ),
@@ -16,10 +16,10 @@ einzelobjekt_flaeche AS
         split_part(einzelobjekt.art,'.',array_upper(string_to_array(einzelobjekt.art,'.'), 1)) AS art_txt,
         nachfuehrung.gueltigereintrag AS nachfuehrung
     FROM
-        agi_dm01avso24.einzelobjekte_flaechenelement AS flaeche
-        LEFT JOIN agi_dm01avso24.einzelobjekte_einzelobjekt AS einzelobjekt
+        agi_lro_auflage.einzelobjekte_flaechenelement AS flaeche
+        LEFT JOIN agi_lro_auflage.einzelobjekte_einzelobjekt AS einzelobjekt
             ON flaeche.flaechenelement_von = einzelobjekt.t_id
-        LEFT JOIN agi_dm01avso24.einzelobjekte_eonachfuehrung AS nachfuehrung
+        LEFT JOIN agi_lro_auflage.einzelobjekte_eonachfuehrung AS nachfuehrung
             ON einzelobjekt.entstehung = nachfuehrung.t_id
 ),
 einzelobjekt_linie AS
@@ -31,10 +31,10 @@ einzelobjekt_linie AS
         split_part(einzelobjekt.art,'.',array_upper(string_to_array(einzelobjekt.art,'.'), 1)) AS art_txt,
         nachfuehrung.gueltigereintrag AS nachfuehrung
     FROM
-        agi_dm01avso24.einzelobjekte_linienelement AS linie
-        LEFT JOIN agi_dm01avso24.einzelobjekte_einzelobjekt AS einzelobjekt
+        agi_lro_auflage.einzelobjekte_linienelement AS linie
+        LEFT JOIN agi_lro_auflage.einzelobjekte_einzelobjekt AS einzelobjekt
             ON linie.linienelement_von = einzelobjekt.t_id
-        LEFT JOIN agi_dm01avso24.einzelobjekte_eonachfuehrung AS nachfuehrung
+        LEFT JOIN agi_lro_auflage.einzelobjekte_eonachfuehrung AS nachfuehrung
             ON einzelobjekt.entstehung = nachfuehrung.t_id
 ),
 einzelobjekt_punkt AS
@@ -46,10 +46,10 @@ einzelobjekt_punkt AS
         split_part(einzelobjekt.art,'.',array_upper(string_to_array(einzelobjekt.art,'.'), 1)) AS art_txt,
         nachfuehrung.gueltigereintrag AS nachfuehrung
     FROM
-        agi_dm01avso24.einzelobjekte_punktelement AS punkt
-        LEFT JOIN agi_dm01avso24.einzelobjekte_einzelobjekt AS einzelobjekt
+        agi_lro_auflage.einzelobjekte_punktelement AS punkt
+        LEFT JOIN agi_lro_auflage.einzelobjekte_einzelobjekt AS einzelobjekt
             ON punkt.punktelement_von = einzelobjekt.t_id
-        LEFT JOIN agi_dm01avso24.einzelobjekte_eonachfuehrung AS nachfuehrung
+        LEFT JOIN agi_lro_auflage.einzelobjekte_eonachfuehrung AS nachfuehrung
             ON einzelobjekt.entstehung = nachfuehrung.t_id
 ),
 einzelobjekt_position AS
@@ -76,10 +76,10 @@ einzelobjekt_position AS
         CAST(pos.t_datasetname AS INT) AS bfs_nr,    
         aimport.importdate AS importdatum
     FROM
-        agi_dm01avso24.einzelobjekte_objektname AS objekt
-        INNER JOIN agi_dm01avso24.einzelobjekte_objektnamepos AS pos
+        agi_lro_auflage.einzelobjekte_objektname AS objekt
+        INNER JOIN agi_lro_auflage.einzelobjekte_objektnamepos AS pos
             ON pos.objektnamepos_von = objekt.t_id
-        LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+        LEFT JOIN agi_lro_auflage.t_ili2db_basket AS basket
             ON pos.t_basket = basket.t_id
         LEFT JOIN aimport
             ON basket.dataset = aimport.dataset
@@ -117,14 +117,14 @@ SELECT
     'realisiert' AS astatus,
     pos.pos 
 FROM
-    agi_dm01avso24.bodenbedeckung_objektnamepos AS pos 
-    LEFT JOIN agi_dm01avso24.bodenbedeckung_objektname AS objekt
+    agi_lro_auflage.bodenbedeckung_objektnamepos AS pos 
+    LEFT JOIN agi_lro_auflage.bodenbedeckung_objektname AS objekt
         ON pos.objektnamepos_von = objekt.t_id
-    LEFT JOIN agi_dm01avso24.bodenbedeckung_boflaeche AS bodenbedeckung
+    LEFT JOIN agi_lro_auflage.bodenbedeckung_boflaeche AS bodenbedeckung
         ON objekt.objektname_von = bodenbedeckung.t_id
-    LEFT JOIN agi_dm01avso24.bodenbedeckung_bbnachfuehrung AS nachfuehrung
+    LEFT JOIN agi_lro_auflage.bodenbedeckung_bbnachfuehrung AS nachfuehrung
         ON bodenbedeckung.entstehung = nachfuehrung.t_id
-    LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+    LEFT JOIN agi_lro_auflage.t_ili2db_basket AS basket
         ON pos.t_basket = basket.t_id
     LEFT JOIN aimport
         ON basket.dataset = aimport.dataset        
@@ -162,14 +162,14 @@ SELECT
     'projektiert' AS astatus,
     pos.pos 
 FROM
-    agi_dm01avso24.bodenbedeckung_projobjektnamepos AS pos
-    LEFT JOIN agi_dm01avso24.bodenbedeckung_projobjektname AS objekt
+    agi_lro_auflage.bodenbedeckung_projobjektnamepos AS pos
+    LEFT JOIN agi_lro_auflage.bodenbedeckung_projobjektname AS objekt
         ON pos.projobjektnamepos_von = objekt.t_id
-    LEFT JOIN agi_dm01avso24.bodenbedeckung_projboflaeche AS bodenbedeckung
+    LEFT JOIN agi_lro_auflage.bodenbedeckung_projboflaeche AS bodenbedeckung
         ON objekt.projobjektname_von = bodenbedeckung.t_id
-    LEFT JOIN agi_dm01avso24.bodenbedeckung_bbnachfuehrung AS nachfuehrung
+    LEFT JOIN agi_lro_auflage.bodenbedeckung_bbnachfuehrung AS nachfuehrung
         ON bodenbedeckung.entstehung = nachfuehrung.t_id
-    LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+    LEFT JOIN agi_lro_auflage.t_ili2db_basket AS basket
         ON pos.t_basket = basket.t_id
     LEFT JOIN aimport
         ON basket.dataset = aimport.dataset        

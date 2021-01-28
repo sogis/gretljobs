@@ -3,7 +3,7 @@ WITH aimport AS
     SELECT
         max(importdate) AS importdate, dataset
     FROM
-        agi_dm01avso24.t_ili2db_import
+        agi_lro_auflage.t_ili2db_import
     GROUP BY
         dataset 
 )
@@ -26,14 +26,14 @@ SELECT
     nachfuehrung.gueltigereintrag AS nachfuehrung,
     nachfuehrung.gueltigkeit AS gueltigkeit
 FROM
-    agi_dm01avso24.liegenschaften_grenzpunkt AS grenzpunkt 
-    LEFT JOIN agi_dm01avso24.liegenschaften_grenzpunktpos AS pos 
+    agi_lro_auflage.liegenschaften_grenzpunkt AS grenzpunkt 
+    LEFT JOIN agi_lro_auflage.liegenschaften_grenzpunktpos AS pos 
         ON pos.grenzpunktpos_von = grenzpunkt.t_id
-    LEFT JOIN agi_dm01avso24.liegenschaften_grenzpunktsymbol AS symbol 
+    LEFT JOIN agi_lro_auflage.liegenschaften_grenzpunktsymbol AS symbol 
         ON symbol.grenzpunktsymbol_von = grenzpunkt.t_id 
-    LEFT JOIN agi_dm01avso24.liegenschaften_lsnachfuehrung AS nachfuehrung  
+    LEFT JOIN agi_lro_auflage.liegenschaften_lsnachfuehrung AS nachfuehrung  
         ON grenzpunkt.entstehung = nachfuehrung.t_id
-    LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+    LEFT JOIN agi_lro_auflage.t_ili2db_basket AS basket
         ON grenzpunkt.t_basket = basket.t_id    
     LEFT JOIN aimport
         ON basket.dataset = aimport.dataset    

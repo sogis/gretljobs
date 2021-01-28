@@ -3,7 +3,7 @@ WITH aimport AS
     SELECT
         max(importdate) AS importdate, dataset
     FROM
-        agi_dm01avso24.t_ili2db_import
+        agi_lro_auflage.t_ili2db_import
     GROUP BY
         dataset 
 )
@@ -42,14 +42,14 @@ SELECT
     hoheitsgrenzpunkt.geometrie,
     pos.pos
 FROM
-    agi_dm01avso24.gemeindegrenzen_hoheitsgrenzpunkt AS hoheitsgrenzpunkt
-    LEFT JOIN agi_dm01avso24.gemeindegrenzen_hoheitsgrenzpunktpos AS pos 
+    agi_lro_auflage.gemeindegrenzen_hoheitsgrenzpunkt AS hoheitsgrenzpunkt
+    LEFT JOIN agi_lro_auflage.gemeindegrenzen_hoheitsgrenzpunktpos AS pos 
         ON pos.hoheitsgrenzpunktpos_von = hoheitsgrenzpunkt.t_id
-    LEFT JOIN agi_dm01avso24.gemeindegrenzen_hoheitsgrenzpunktsymbol AS symbol 
+    LEFT JOIN agi_lro_auflage.gemeindegrenzen_hoheitsgrenzpunktsymbol AS symbol 
         ON symbol.hoheitsgrenzpunktsymbol_von = pos.t_id
-    LEFT JOIN agi_dm01avso24.gemeindegrenzen_gemnachfuehrung AS nachfuehrung
+    LEFT JOIN agi_lro_auflage.gemeindegrenzen_gemnachfuehrung AS nachfuehrung
         ON hoheitsgrenzpunkt.entstehung = nachfuehrung.t_id
-    LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+    LEFT JOIN agi_lro_auflage.t_ili2db_basket AS basket
         ON hoheitsgrenzpunkt.t_basket = basket.t_id    
     LEFT JOIN aimport
         ON basket.dataset = aimport.dataset    

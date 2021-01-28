@@ -3,7 +3,7 @@ WITH aimport AS
     SELECT
         max(importdate) AS importdate, dataset
     FROM
-        agi_dm01avso24.t_ili2db_import
+        agi_lro_auflage.t_ili2db_import
     GROUP BY
         dataset 
 )
@@ -30,12 +30,12 @@ SELECT
     ortsname.geometrie AS geometrie,    
     pos.pos
 FROM
-    agi_dm01avso24.nomenklatur_ortsname AS ortsname 
-    LEFT JOIN agi_dm01avso24.nomenklatur_ortsnamepos AS pos
+    agi_lro_auflage.nomenklatur_ortsname AS ortsname 
+    LEFT JOIN agi_lro_auflage.nomenklatur_ortsnamepos AS pos
         ON pos.ortsnamepos_von = ortsname.t_id
-    LEFT JOIN agi_dm01avso24.nomenklatur_nknachfuehrung AS nachfuehrung
+    LEFT JOIN agi_lro_auflage.nomenklatur_nknachfuehrung AS nachfuehrung
         ON ortsname.entstehung = nachfuehrung.t_id
-    LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+    LEFT JOIN agi_lro_auflage.t_ili2db_basket AS basket
         ON ortsname.t_basket = basket.t_id    
     LEFT JOIN aimport
         ON basket.dataset = aimport.dataset    

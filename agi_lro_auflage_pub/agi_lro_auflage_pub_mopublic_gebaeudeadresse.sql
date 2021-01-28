@@ -3,8 +3,8 @@ SELECT
     lokalisation.t_id AS lok_t_id,
     lokalisationsname.atext AS strassenname
 FROM
-    agi_dm01avso24.gebaeudeadressen_lokalisation AS lokalisation
-    LEFT JOIN agi_dm01avso24.gebaeudeadressen_lokalisationsname AS lokalisationsname
+    agi_lro_auflage.gebaeudeadressen_lokalisation AS lokalisation
+    LEFT JOIN agi_lro_auflage.gebaeudeadressen_lokalisationsname AS lokalisationsname
     ON lokalisationsname.benannte = lokalisation.t_id
 WHERE lokalisation.istoffiziellebezeichnung = 'ja'
 ),
@@ -13,7 +13,7 @@ aimport AS
     SELECT
         max(importdate) AS importdate, dataset
     FROM
-        agi_dm01avso24.t_ili2db_import
+        agi_lro_auflage.t_ili2db_import
     GROUP BY
         dataset 
 ),
@@ -52,14 +52,14 @@ SELECT
     nachfuehrung.gueltigereintrag AS nachfuehrung,
     hausnummer.pos
 FROM
-    agi_dm01avso24.gebaeudeadressen_gebaeudeeingang AS gebauedeeingang
-    LEFT JOIN agi_dm01avso24.gebaeudeadressen_hausnummerpos AS hausnummer
+    agi_lro_auflage.gebaeudeadressen_gebaeudeeingang AS gebauedeeingang
+    LEFT JOIN agi_lro_auflage.gebaeudeadressen_hausnummerpos AS hausnummer
     ON hausnummer.hausnummerpos_von = gebauedeeingang.t_id
-    LEFT JOIN agi_dm01avso24.gebaeudeadressen_gebnachfuehrung AS nachfuehrung
+    LEFT JOIN agi_lro_auflage.gebaeudeadressen_gebnachfuehrung AS nachfuehrung
     ON gebauedeeingang.entstehung = nachfuehrung.t_id
-    LEFT JOIN agi_dm01avso24.gebaeudeadressen_gebaeudename AS aname
+    LEFT JOIN agi_lro_auflage.gebaeudeadressen_gebaeudename AS aname
     ON aname.gebaeudename_von = gebauedeeingang.t_id
-    LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+    LEFT JOIN agi_lro_auflage.t_ili2db_basket AS basket
     ON gebauedeeingang.t_basket = basket.t_id
     LEFT JOIN aimport
         ON basket.dataset = aimport.dataset    
