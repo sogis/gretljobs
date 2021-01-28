@@ -3,7 +3,7 @@ WITH aimport AS
     SELECT
         max(importdate) AS importdate, dataset
     FROM
-        agi_dm01avso24.t_ili2db_import
+        agi_lro_auflage.t_ili2db_import
     GROUP BY
         dataset 
 )
@@ -30,14 +30,14 @@ SELECT
     pos.pos,
     gemeinde.aname AS gemeinde
 FROM
-    agi_dm01avso24.nomenklatur_gelaendename AS gelaendename  
-    LEFT JOIN agi_dm01avso24.nomenklatur_gelaendenamepos AS pos  
+    agi_lro_auflage.nomenklatur_gelaendename AS gelaendename  
+    LEFT JOIN agi_lro_auflage.nomenklatur_gelaendenamepos AS pos  
         ON pos.gelaendenamepos_von = gelaendename.t_id
-    LEFT JOIN agi_dm01avso24.gemeindegrenzen_gemeinde AS gemeinde
+    LEFT JOIN agi_lro_auflage.gemeindegrenzen_gemeinde AS gemeinde
         ON gemeinde.bfsnr = CAST(pos.t_datasetname AS integer)
-    LEFT JOIN agi_dm01avso24.nomenklatur_nknachfuehrung AS nachfuehrung 
+    LEFT JOIN agi_lro_auflage.nomenklatur_nknachfuehrung AS nachfuehrung 
         ON gelaendename.entstehung = nachfuehrung.t_id
-    LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+    LEFT JOIN agi_lro_auflage.t_ili2db_basket AS basket
         ON gelaendename.t_basket = basket.t_id
     LEFT JOIN aimport
         ON basket.dataset = aimport.dataset    

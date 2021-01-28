@@ -3,7 +3,7 @@ WITH aimport AS
     SELECT
         max(importdate) AS importdate, dataset
     FROM
-        agi_dm01avso24.t_ili2db_import
+        agi_lro_auflage.t_ili2db_import
     GROUP BY
         dataset 
 )
@@ -21,12 +21,12 @@ SELECT
     nachfuehrung.gueltigereintrag AS nachfuehrung,
     bodenbedeckung.geometrie AS geometrie
 FROM
-    agi_dm01avso24.bodenbedeckung_boflaeche AS bodenbedeckung
-    LEFT JOIN agi_dm01avso24.bodenbedeckung_gebaeudenummer AS gebaeudenummer
+    agi_lro_auflage.bodenbedeckung_boflaeche AS bodenbedeckung
+    LEFT JOIN agi_lro_auflage.bodenbedeckung_gebaeudenummer AS gebaeudenummer
         ON gebaeudenummer.gebaeudenummer_von = bodenbedeckung.t_id
-    LEFT JOIN agi_dm01avso24.bodenbedeckung_bbnachfuehrung AS nachfuehrung
+    LEFT JOIN agi_lro_auflage.bodenbedeckung_bbnachfuehrung AS nachfuehrung
         ON bodenbedeckung.entstehung = nachfuehrung.t_id
-    LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+    LEFT JOIN agi_lro_auflage.t_ili2db_basket AS basket
         ON bodenbedeckung.t_basket = basket.t_id
     LEFT JOIN aimport
         ON basket.dataset = aimport.dataset    

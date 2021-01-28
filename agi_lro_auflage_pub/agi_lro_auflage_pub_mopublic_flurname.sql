@@ -9,8 +9,8 @@ WITH pos AS
         pos,
         gemeinde.aname AS gemeinde
     FROM
-    agi_dm01avso24.nomenklatur_flurnamepos AS pos
-    LEFT JOIN agi_dm01avso24.gemeindegrenzen_gemeinde AS gemeinde
+    agi_lro_auflage.nomenklatur_flurnamepos AS pos
+    LEFT JOIN agi_lro_auflage.gemeindegrenzen_gemeinde AS gemeinde
     ON gemeinde.bfsnr = CAST(pos.t_datasetname AS integer)
 ),
 aimport AS
@@ -18,7 +18,7 @@ aimport AS
     SELECT
         max(importdate) AS importdate, dataset
     FROM
-        agi_dm01avso24.t_ili2db_import
+        agi_lro_auflage.t_ili2db_import
     GROUP BY
         dataset 
 )
@@ -46,11 +46,11 @@ SELECT
     pos.gemeinde AS gemeinde
 FROM
     pos 
-    LEFT JOIN agi_dm01avso24.nomenklatur_flurname AS flurname
+    LEFT JOIN agi_lro_auflage.nomenklatur_flurname AS flurname
         ON pos.flurnamepos_von = flurname.t_id
-    LEFT JOIN agi_dm01avso24.nomenklatur_nknachfuehrung AS nachfuehrung
+    LEFT JOIN agi_lro_auflage.nomenklatur_nknachfuehrung AS nachfuehrung
         ON flurname.entstehung = nachfuehrung.t_id
-    LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+    LEFT JOIN agi_lro_auflage.t_ili2db_basket AS basket
         ON flurname.t_basket = basket.t_id
     LEFT JOIN aimport
         ON basket.dataset = aimport.dataset    
