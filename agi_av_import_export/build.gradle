@@ -141,7 +141,7 @@ task uploadDxfGeobauFiles(type: S3Upload, dependsOn: 'createDxfGeobauFiles') {
 }
 */
 
-task importData(type: Ili2pgReplace, dependsOn: 'unzipData') {
+task importData(type: Ili2pgReplace, dependsOn: 'unzipFiles') {
 //task importData(type: Ili2pgReplace, dependsOn: 'uploadDxfGeobauFiles') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = 'DM01AVSO24LV95'
