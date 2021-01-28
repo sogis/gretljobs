@@ -103,7 +103,6 @@ task unzipFiles(dependsOn: 'uploadFiles') {
     }
 }
 
-/*
 task createFederalFiles(type: Av2ch, dependsOn: 'unzipFiles') {
     inputFile = fileTree(pathToUnzipFolder) { include '*.itf' }
     outputDirectory = file(pathToFederalFolder)
@@ -139,14 +138,12 @@ task uploadDxfGeobauFiles(type: S3Upload, dependsOn: 'createDxfGeobauFiles') {
     sourceFiles = fileTree(pathToTempFolder) { include "*.zip" }
     acl = "public-read"
 }
-*/
 
-task importData(type: Ili2pgReplace, dependsOn: 'unzipFiles') {
-//task importData(type: Ili2pgReplace, dependsOn: 'uploadDxfGeobauFiles') {
+//task importData(type: Ili2pgReplace, dependsOn: 'unzipFiles') {
+task importData(type: Ili2pgReplace, dependsOn: 'uploadDxfGeobauFiles') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = 'DM01AVSO24LV95'
     dbschema = 'agi_dm01avso24'
-    //dataFile = fileTree(pathToUnzipFolder) { include '*.itf' }
     dataFile = fileTree(dir: pathToUnzipFolder, include: '*.itf')
     dataset = dataFile
     substring = 0..4     
