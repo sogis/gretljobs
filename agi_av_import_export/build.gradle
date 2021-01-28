@@ -146,7 +146,7 @@ task importData(type: Ili2pgReplace, dependsOn: 'uploadDxfGeobauFiles') {
     dbschema = 'agi_dm01avso24'
     dataFile = fileTree(dir: pathToUnzipFolder, include: '*.itf')
     dataset = dataFile
-    substring = 0..4     
+    datasetSubstring = 0..4     
 
     disableValidation = true
 
