@@ -2,7 +2,7 @@ SELECT std.t_id,
        std.t_ili_tid,
        std.bfsnr,
        gem.gemeindename,
-       gem.geometrie AS gemeinde_geometrie,
+       ST_RemoveRepeatedPoints(gem.geometrie,0.001) AS gemeinde_geometrie,
        stand.dispname AS stand_gueterregulierung,
        (
            WITH docs AS (
