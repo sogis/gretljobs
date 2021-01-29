@@ -31,6 +31,7 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
+                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
                  'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
@@ -100,6 +101,7 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
+                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
                  'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
@@ -169,6 +171,7 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
+                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
                  'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
@@ -238,6 +241,7 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
+                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
                  'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
@@ -307,6 +311,7 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
+                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
                  'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
@@ -376,6 +381,7 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
+                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
                  'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
@@ -443,6 +449,7 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
+                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
                  'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
@@ -512,6 +519,7 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
+                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
                  'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
@@ -581,6 +589,7 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
+                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
                  'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
@@ -648,6 +657,7 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
+                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
                  'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
@@ -717,6 +727,7 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
+                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
                  'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
@@ -786,6 +797,7 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
+                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
                  'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
@@ -855,6 +867,7 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
+                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
                  'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
@@ -922,6 +935,7 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
+                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
                  'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
@@ -991,6 +1005,7 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
+                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
                  'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
@@ -1064,6 +1079,7 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
+                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
                  'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
@@ -1136,6 +1152,7 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
+                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
                  'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
