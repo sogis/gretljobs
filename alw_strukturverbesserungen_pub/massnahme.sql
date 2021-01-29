@@ -33,7 +33,7 @@ SELECT
                 't_id',dok.t_id,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -102,7 +102,7 @@ SELECT
                 't_id',dok.t_id,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -171,7 +171,7 @@ SELECT
                 't_id',dok.t_id,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -240,7 +240,7 @@ SELECT
                 't_id',dok.t_id,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -309,7 +309,7 @@ SELECT
                 't_id',dok.t_id,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -378,7 +378,7 @@ SELECT
                 't_id',dok.t_id,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -445,7 +445,7 @@ SELECT
                 't_id',dok.t_id,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -514,7 +514,7 @@ SELECT
                 't_id',dok.t_id,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -583,7 +583,7 @@ SELECT
                 't_id',dok.t_id,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -650,7 +650,7 @@ SELECT
                 't_id',dok.t_id,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -719,7 +719,7 @@ SELECT
                 't_id',dok.t_id,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -788,7 +788,7 @@ SELECT
                 't_id',dok.t_id,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -857,7 +857,7 @@ SELECT
                 't_id',dok.t_id,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -924,7 +924,7 @@ SELECT
                 't_id',dok.t_id,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -993,7 +993,7 @@ SELECT
                 't_id',dok.t_id,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -1066,7 +1066,7 @@ SELECT
                 't_id',dok.t_id,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -1138,7 +1138,7 @@ SELECT
                 't_id',dok.t_id,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
