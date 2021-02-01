@@ -135,7 +135,7 @@ task uploadDxfGeobauFiles(type: S3Upload, dependsOn: 'createDxfGeobauFiles') {
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
     bucketName = bucketNameGeobau
-    sourceFiles = fileTree(pathToTempFolder) { include "*.zip" }
+    sourceFiles = fileTree(pathToGeobauFolder) { include "*.zip" }
     acl = "public-read"
 }
 
