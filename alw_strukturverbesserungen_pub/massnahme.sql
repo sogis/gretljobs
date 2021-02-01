@@ -1,5 +1,5 @@
 -- Kombination verschiedener Massnahmen
--- Bewässerung Flächen 
+-- Bewässerung Flächen
 SELECT
     el.t_id,
     el.t_ili_tid,
