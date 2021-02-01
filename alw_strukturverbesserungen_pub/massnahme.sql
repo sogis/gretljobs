@@ -31,10 +31,10 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
-                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/',''),
+                 'SO_ALW_Strukturverbesserungen_Publikation_20190905.Strukturverbesserung.Dokument' AS "@type"
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -101,10 +101,10 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
-                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/',''),
+                 'SO_ALW_Strukturverbesserungen_Publikation_20190905.Strukturverbesserung.Dokument' AS "@type"
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -171,10 +171,10 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
-                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/',''),
+                 'SO_ALW_Strukturverbesserungen_Publikation_20190905.Strukturverbesserung.Dokument' AS "@type"
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -241,10 +241,10 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
-                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/',''),
+                 'SO_ALW_Strukturverbesserungen_Publikation_20190905.Strukturverbesserung.Dokument' AS "@type"
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -311,10 +311,10 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
-                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/',''),
+                 'SO_ALW_Strukturverbesserungen_Publikation_20190905.Strukturverbesserung.Dokument' AS "@type"
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -381,10 +381,10 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
-                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/',''),
+                 'SO_ALW_Strukturverbesserungen_Publikation_20190905.Strukturverbesserung.Dokument' AS "@type"
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -449,10 +449,10 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
-                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/',''),
+                 'SO_ALW_Strukturverbesserungen_Publikation_20190905.Strukturverbesserung.Dokument' AS "@type"
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -519,10 +519,10 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
-                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/',''),
+                 'SO_ALW_Strukturverbesserungen_Publikation_20190905.Strukturverbesserung.Dokument' AS "@type"
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -589,10 +589,10 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
-                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/',''),
+                 'SO_ALW_Strukturverbesserungen_Publikation_20190905.Strukturverbesserung.Dokument' AS "@type"
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -657,10 +657,10 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
-                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/',''),
+                 'SO_ALW_Strukturverbesserungen_Publikation_20190905.Strukturverbesserung.Dokument' AS "@type"
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -727,10 +727,10 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
-                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/',''),
+                 'SO_ALW_Strukturverbesserungen_Publikation_20190905.Strukturverbesserung.Dokument' AS "@type"
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -797,10 +797,10 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
-                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/',''),
+                 'SO_ALW_Strukturverbesserungen_Publikation_20190905.Strukturverbesserung.Dokument' AS "@type"
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -867,10 +867,10 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
-                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/',''),
+                 'SO_ALW_Strukturverbesserungen_Publikation_20190905.Strukturverbesserung.Dokument' AS "@type"
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -935,10 +935,10 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
-                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/',''),
+                 'SO_ALW_Strukturverbesserungen_Publikation_20190905.Strukturverbesserung.Dokument' AS "@type"
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -1005,10 +1005,10 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
-                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/',''),
+                 'SO_ALW_Strukturverbesserungen_Publikation_20190905.Strukturverbesserung.Dokument' AS "@type"
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -1079,10 +1079,10 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
-                't_seq',NULL::bigint,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/',''),
+                 'SO_ALW_Strukturverbesserungen_Publikation_20190905.Strukturverbesserung.Dokument' AS "@type"
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok
@@ -1152,10 +1152,10 @@ SELECT
       WITH docs AS (
         SELECT json_build_object(
                 't_id',dok.t_id,
-                't_seq',NULL::bigint,
-                'titel',dok.titel,
+                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'dateipfad','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/',''),
+                 'SO_ALW_Strukturverbesserungen_Publikation_20190905.Strukturverbesserung.Dokument' AS "@type"
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_raeumliches_element_dokument ztdok

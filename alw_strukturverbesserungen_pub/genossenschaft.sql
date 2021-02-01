@@ -18,7 +18,8 @@ WITH gen AS (
                 't_id',dok.t_id,
                 'titel',dok.titel,
                 'typ',dok.typ,
-                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
+                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/',''),
+                 'SO_ALW_Strukturverbesserungen_Publikation_20190905.Strukturverbesserung.Dokument' AS "@type"
               ) AS jsondok
         FROM
           alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_dokument ztdok
