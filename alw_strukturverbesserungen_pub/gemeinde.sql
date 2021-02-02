@@ -7,10 +7,10 @@ SELECT std.t_id,
        (
            WITH docs AS (
             SELECT json_build_object(
-                'Titel',dok.titel,
-                'typ',dok.typ,
-                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/',''),
-                 '@type','SO_ALW_Strukturverbesserungen_Publikation_20190905.Strukturverbesserung.Dokument'
+                 '@type','SO_ALW_Strukturverbesserungen_Publikation_20190905.Strukturverbesserung.Dokument',
+                 'Titel',dok.titel,
+                 'typ',dok.typ,
+                 'url','https://geo.so.ch/docs/' || replace(dok.dateipfad,'G:/documents/','')
               ) AS jsondok
             FROM
               alw_strukturverbesserungen.raeumlicheelemnte_gemeinde_flurreglement_dokument ztdok
