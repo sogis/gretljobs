@@ -117,7 +117,7 @@ task uploadFederalFiles(type: S3Upload, dependsOn: 'createFederalFiles') {
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
     bucketName = bucketNameFederal
-    sourceFiles = fileTree(pathToTempFolder) { include "*.zip" }
+    sourceFiles = fileTree(pathToFederalFolder) { include "*.zip" }
     acl = "public-read"
 }
 
