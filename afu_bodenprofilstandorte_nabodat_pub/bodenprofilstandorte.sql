@@ -389,7 +389,8 @@ LEFT JOIN
 				'CaCl2_Wert', messung.cacl2_wert, 
 				'Farbe', bodenfarbe.farbe, 
                 'Kak_Pot', kationenaustauschkapazitaet_potentiell, 
-                'Kak_Eff', kationenaustauschkapazitaet_effektiv
+                'Kak_Eff', kationenaustauschkapazitaet_effektiv, 
+                'HorizontbezeichungAusgangsinfo', horizontbezeichungausgangsinfo 
 			)
 		) AS horizontwert
     FROM 
