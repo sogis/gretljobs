@@ -1,4 +1,4 @@
- WITH analysedaten AS (
+WITH analysedaten AS (
  SELECT
     COALESCE(standort.standortid, ' '::text)::text||' '||COALESCE(probedbf.untersuchungskampagne::text,''::text)::text AS standort_untersuchung,
     standort.standortid AS standort_id,
@@ -88,7 +88,7 @@
                             AND methodeaufschluss.codeid::text = ANY (ARRAY['HNO3_(VBBo_total)'::character varying::text, 'NaNO3_(VBBo_loeslich)'::character varying::text, 'HNO3+Citronensaeure'::character varying::text])) 
 			OR  
 			(analyseparameter.parameterid::text = 'PCB..117'::text 
-			    AND projekt.aname::text <> 'sanierte Fl√§chen'::text) 
+			    AND projekt.aname::text <> 'sanierte Fl‰chen'::text) 
 			OR  
 			(analyseparameter.parameterid::text = ANY (ARRAY['PAK..97'::character varying::text, 'PAK..87'::character varying::text]) )
                         
@@ -114,35 +114,35 @@ SELECT analysedaten.standort_untersuchung,
     analysedaten.analysegruppecode,
     analysedaten.erhebungsnr,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..61'::text AND analysedaten.methodeaufschluss::text !~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..61'::text AND analysedaten.methodeaufschluss::text !~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_cd_kg,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND (analysedaten.analyseparameter::text = ANY (ARRAY['SM..63'::character varying, 'SM..10147'::character varying]::text[])) AND analysedaten.methodeaufschluss::text !~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND (analysedaten.analyseparameter::text = ANY (ARRAY['SM..63'::character varying, 'SM..10147'::character varying]::text[])) AND analysedaten.methodeaufschluss::text !~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_cr_kg,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..64'::text AND analysedaten.methodeaufschluss::text !~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..64'::text AND analysedaten.methodeaufschluss::text !~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_cu_kg,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..66'::text AND analysedaten.methodeaufschluss::text !~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..66'::text AND analysedaten.methodeaufschluss::text !~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_hg_kg,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..68'::text AND analysedaten.methodeaufschluss::text !~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..68'::text AND analysedaten.methodeaufschluss::text !~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_ni_kg,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..69'::text AND analysedaten.methodeaufschluss::text !~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..69'::text AND analysedaten.methodeaufschluss::text !~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_pb_kg,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..73'::text AND analysedaten.methodeaufschluss::text !~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..73'::text AND analysedaten.methodeaufschluss::text !~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_zn_kg,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..67'::text AND analysedaten.methodeaufschluss::text !~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..67'::text AND analysedaten.methodeaufschluss::text !~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_mo_kg,
         CASE
@@ -154,19 +154,19 @@ SELECT analysedaten.standort_untersuchung,
             ELSE NULL::numeric
         END AS pak_16epa,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..61'::text AND analysedaten.methodeaufschluss::text ~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..61'::text AND analysedaten.methodeaufschluss::text ~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_cd_l,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..63'::text AND analysedaten.methodeaufschluss::text ~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..73'::text AND analysedaten.methodeaufschluss::text ~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_zn_l,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..64'::text AND analysedaten.methodeaufschluss::text ~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..64'::text AND analysedaten.methodeaufschluss::text ~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_cu_l,
         CASE
-            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..68'::text AND analysedaten.methodeaufschluss::text ~~ 'loeslich'::text THEN round(analysedaten.messwert, 3)
+            WHEN analysedaten.analysegruppecode = 'SM'::text AND analysedaten.analyseparameter::text = 'SM..68'::text AND analysedaten.methodeaufschluss::text ~~ '%loeslich%'::text THEN round(analysedaten.messwert, 3)
             ELSE NULL::numeric
         END AS sm_ni_l,
         CASE
@@ -229,7 +229,7 @@ SELECT
     round(dissolve_values.pcdd_f2_kg,1) AS diox_pcddf,
         CASE
             WHEN dissolve_values.sm_cu_kg >= 1000::numeric OR dissolve_values.sm_cu_l >= 4::numeric OR dissolve_values.sm_zn_kg >= 2000::numeric OR dissolve_values.sm_zn_l >= 5::numeric OR dissolve_values.sm_cd_kg >= 20::numeric OR dissolve_values.sm_cd_l >= 0.1 OR dissolve_values.sm_pb_kg >= 1000::numeric OR dissolve_values.pak_bap >= 10000::numeric OR dissolve_values.pak_16epa >= 100000::numeric OR dissolve_values.pcb_s7_kg >= 1000::numeric OR dissolve_values.pcdd_f2_kg >= 100::numeric THEN 'Sanierungswert'::text
-            WHEN dissolve_values.sm_cu_kg >= 150::numeric OR dissolve_values.sm_cu_l >= 0.7 OR dissolve_values.sm_cd_kg >= 2::numeric OR dissolve_values.sm_cd_l >= 0.02 OR dissolve_values.sm_hg_kg >= 0.5 OR dissolve_values.sm_pb_kg >= 200::numeric OR dissolve_values.pak_bap >= 1000::numeric OR dissolve_values.pak_16epa >= 10000::numeric OR dissolve_values.pcb_s7_kg >= 100::numeric OR dissolve_values.pcdd_f2_kg >= 20::numeric THEN 'Pr√ºfwert'::text
+            WHEN dissolve_values.sm_cu_kg >= 150::numeric OR dissolve_values.sm_cu_l >= 0.7 OR dissolve_values.sm_cd_kg >= 2::numeric OR dissolve_values.sm_cd_l >= 0.02 OR dissolve_values.sm_hg_kg >= 0.5 OR dissolve_values.sm_pb_kg >= 200::numeric OR dissolve_values.pak_bap >= 1000::numeric OR dissolve_values.pak_16epa >= 10000::numeric OR dissolve_values.pcb_s7_kg >= 100::numeric OR dissolve_values.pcdd_f2_kg >= 20::numeric THEN 'Pr¸fwert'::text
             WHEN dissolve_values.sm_cr_kg >= 50::numeric OR dissolve_values.sm_ni_kg >= 50::numeric OR dissolve_values.sm_ni_l >= 0.2 OR dissolve_values.sm_cu_kg >= 40::numeric OR dissolve_values.sm_cu_l >= 0.7 OR dissolve_values.sm_zn_kg >= 150::numeric OR dissolve_values.sm_zn_l >= 0.5 OR dissolve_values.sm_mo_kg >= 5::numeric OR dissolve_values.sm_cd_kg >= 0.8 OR dissolve_values.sm_cd_l >= 0.02 OR dissolve_values.sm_hg_kg >= 0.5 OR dissolve_values.sm_pb_kg >= 50::numeric OR dissolve_values.pak_bap >= 200::numeric OR dissolve_values.pak_16epa >= 1000::numeric OR dissolve_values.pcdd_f2_kg >= 5::numeric THEN 'Richtwert'::text
             ELSE 'unbelastet'::text
         END AS beurteilung,
