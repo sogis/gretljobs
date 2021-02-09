@@ -320,6 +320,8 @@ FROM
         ON gwsareal.astatus = status.t_id
         WHERE
             rechtsstatus = 'inKraft'
+        AND
+            typ = 'Areal'
     ) AS schutzzone,
     agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS gemeindegrenze
 WHERE
