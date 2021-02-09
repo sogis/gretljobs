@@ -9,7 +9,7 @@ task transferbodenprofilstandorte(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('bodenprofilstandorte.sql', 'afu_bodendaten_nabodat_pub_v2.bodenproflstndrte_bodenprofilstandort', true)
+            new TransferSet('bodenprofilstandorte.sql', 'afu_bodendaten_nabodat_pub.bodenproflstndrte_bodenprofilstandort', true)
     ];
 }
 
