@@ -8,7 +8,7 @@ SELECT
     'Ausgangslage' AS abstimmungskategorie,
     NULL AS bedeutung,
     'rechtsgueltig' AS planungsstand,
-    'bestehend' AS status,
+    'bestehend' AS astatus,
     ST_Multi(ST_SnapToGrid(wkb_geometry, 0.001)) AS geometrie,
     NULL AS dokumente,
     string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename) AS gemeindenamen
@@ -50,7 +50,7 @@ SELECT
             THEN 'Erweiterung'
         WHEN rip_darstellung = 3
             THEN 'neu'
-        END AS status,
+        END AS astatus,
     ST_Multi(ST_SnapToGrid(wkb_geometry, 0.001)) AS geometrie,
     NULL AS dokumente,
     string_agg(hoheitsgrenzen_gemeindegrenze.gemeindename, ', ') AS gemeindenamen

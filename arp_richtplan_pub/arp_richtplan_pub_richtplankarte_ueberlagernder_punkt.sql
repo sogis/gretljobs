@@ -71,7 +71,7 @@ SELECT
     ueberlagernde_punkte_mit_documents.bedeutung,
     ueberlagernde_punkte_mit_documents.planungsstand,
     ueberlagernde_punkte_mit_documents.dokumente,
-    ueberlagernde_punkte_mit_documents.astatus AS status,
+    ueberlagernde_punkte_mit_documents.astatus,
     ueberlagernde_punkte_mit_documents.objekttyp,
     ueberlagernde_punkte_mit_documents.spezifikation,
     ueberlagernde_punkte_mit_documents.geometrie,

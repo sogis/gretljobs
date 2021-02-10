@@ -54,7 +54,7 @@ SELECT
     richtplankarte_ueberlagernde_linie.bedeutung,
     richtplankarte_ueberlagernde_linie.planungsstand,
     documents_json.dokumente,
-    richtplankarte_ueberlagernde_linie.astatus AS status,
+    richtplankarte_ueberlagernde_linie.astatus,
     richtplankarte_ueberlagernde_linie.objektnummer,
     richtplankarte_ueberlagernde_linie.objekttyp,
     richtplankarte_ueberlagernde_linie.geometrie

@@ -237,7 +237,7 @@ SELECT
     richtplankarte_ueberlagernde_flaeche.abstimmungskategorie,
     richtplankarte_ueberlagernde_flaeche.bedeutung,
     richtplankarte_ueberlagernde_flaeche.planungsstand,
-    richtplankarte_ueberlagernde_flaeche.astatus AS status,
+    richtplankarte_ueberlagernde_flaeche.astatus,
     richtplankarte_ueberlagernde_flaeche.geometrie,
     documents_json_richtplan.dokumente::text,
     betroffene_gemeinden.gemeindenamen
@@ -262,7 +262,7 @@ SELECT
     'Ausgangslage' AS abstimmungskategorie,
     NULL AS bedeutung,
     'rechtsgueltig' AS planungsstand,
-    'bestehend' AS status,
+    'bestehend' AS astatus,
     ST_Multi(ST_Union(ST_SnapToGrid(reservate_teilgebiet.geometrie, 0.001))) AS geometrie,
     documents_json_naturreservate.dokumente AS dokumente,
     string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename) AS gemeindenamen
@@ -291,7 +291,7 @@ SELECT
     'Ausgangslage' AS abstimmungskategorie,
     NULL AS bedeutung,
     'rechtsgueltig' AS planungsstand,
-    'bestehend' AS status,
+    'bestehend' AS astatus,
     schutzzone.geometrie AS geometrie,
     NULL AS dokumente,
     string_agg(DISTINCT gemeindegrenze.gemeindename, ', ' ORDER BY gemeindegrenze.gemeindename) AS gemeindenamen
@@ -304,7 +304,7 @@ FROM
         FROM
             afu_gewaesserschutz.gwszonen_gwszone AS gwszone
             LEFT JOIN afu_gewaesserschutz.gwszonen_status AS status
-        ON gwszone.astatus = status.t_id
+            ON gwszone.astatus = status.t_id
         WHERE
             rechtsstatus = 'inKraft'
         
@@ -317,7 +317,7 @@ FROM
         FROM
             afu_gewaesserschutz.gwszonen_gwsareal AS gwsareal
             LEFT JOIN afu_gewaesserschutz.gwszonen_status AS status
-        ON gwsareal.astatus = status.t_id
+            ON gwsareal.astatus = status.t_id
         WHERE
             rechtsstatus = 'inKraft'
         AND
