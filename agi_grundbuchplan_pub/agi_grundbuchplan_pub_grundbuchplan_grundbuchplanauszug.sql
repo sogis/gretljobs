@@ -60,7 +60,14 @@ SELECT
     CASE
         WHEN grundbuchkreise_anzahl.anz = 1 
             THEN concat('Gemeinde ', btrim(gemeinde.gemeindename))
-        ELSE concat('Gemeinde ', btrim(gemeinde.gemeindename), ' (', btrim(grundbuchkreise.aname),  ')')
+        ELSE 
+            CASE
+                WHEN grundbuchkreise.aname = 'Welschenrohr'
+                    THEN concat('Gemeinde ', btrim(gemeinde.gemeindename), ' (Welschen.)')
+                WHEN grundbuchkreise.aname = 'Gänsbrunnen'
+                    THEN concat('Gemeinde ', btrim(gemeinde.gemeindename), ' (Gänsbr.)')
+                ELSE concat('Gemeinde ', btrim(gemeinde.gemeindename), ' (', btrim(grundbuchkreise.aname),  ')')
+            END
     END AS gemeinde, 
     gemeinde.lieferdatum, 
     firma.nfgeometer, 
