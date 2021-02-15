@@ -19,7 +19,14 @@ SELECT std.t_id,
                 WHERE flrrgl.bfsnr = std.bfsnr
             )
             SELECT json_agg(jsondok) FROM docs
-        )::jsonb AS flurreglemente
+        )::jsonb AS flurreglemente,
+        (
+          SELECT count(ztdok.*)
+            FROM
+              alw_strukturverbesserungen.raeumlicheelemnte_gemeinde_flurreglement_dokument ztdok
+              LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_gemeinde_flurreglement flrrgl ON ztdok.gemeinde_flurreglement = flrrgl.t_id
+                WHERE flrrgl.bfsnr = std.bfsnr
+        )::integer AS anzahl_flurreglemente
     FROM alw_strukturverbesserungen.stand_gutrrglrung_stand_gueterregulierung std
     LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze gem ON std.bfsnr = gem.bfs_gemeindenummer
     LEFT JOIN alw_strukturverbesserungen.stand stand ON std.stand = stand.ilicode
