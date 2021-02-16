@@ -11,6 +11,10 @@ task transfer_SVGIS_Suissemelio(type: Db2Db){
     transferSets = [
             new TransferSet('projekt.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_projektschwerpunkt', true),
             new TransferSet('beizugsgebiet.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_beizugsgebiet', true),
-            new TransferSet('wegebau_linie.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_wegebau_linie', true)
+            new TransferSet('bewaesserung_flaeche.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_bew_flaechen_bewaesserung', true),
+            new TransferSet('bewaesserung_linie.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_bewaesserung_linie', true),
+            new TransferSet('bewaesserung_punkt.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_bewaesserung_punkt', true),
+            new TransferSet('wegebau_linie.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_wegebau_linie', true),
+            new TransferSet('wege_bruecke_lehnenviadukt.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_wege_bruecke_lehnenviadukt', true)
     ];
 }
