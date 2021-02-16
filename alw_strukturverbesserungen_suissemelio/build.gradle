@@ -9,6 +9,8 @@ task transfer_SVGIS_Suissemelio(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
-            new TransferSet('projekt.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_projektschwerpunkt', true)
+            new TransferSet('projekt.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_projektschwerpunkt', true),
+            new TransferSet('beizugsgebiet.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_beizugsgebiet', true),
+            new TransferSet('wegebau_linie.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_wegebau_linie', true)
     ];
 }
