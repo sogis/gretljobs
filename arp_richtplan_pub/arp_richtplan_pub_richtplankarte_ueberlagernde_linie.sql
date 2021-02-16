@@ -11,7 +11,7 @@ WITH documents AS (
             WHEN position('opt/sogis_pic/daten_aktuell/arp/Zonenplaene/Zonenplaene_pdf/' IN richtplankarte_dokument.dateipfad) != 0
                 THEN 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/' || split_part(richtplankarte_dokument.dateipfad, '/Zonenplaene/', 2)
             WHEN position('G:\documents\' IN richtplankarte_dokument.dateipfad) != 0    
-                THEN '<a href="'||replace(richtplankarte_dokument.dateipfad, 'G:\documents\', 'https://geo.so.ch/docs/')||'" target="_blank">'||richtplankarte_dokument.titel||'</a>'
+                THEN replace(richtplankarte_dokument.dateipfad, 'G:\documents\', 'https://geo.so.ch/docs/')
         END AS dokument,
         richtplankarte_ueberlagernde_linie.t_id AS ueberlagernder_linie_id
     FROM 
