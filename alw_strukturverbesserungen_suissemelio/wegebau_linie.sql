@@ -3,7 +3,7 @@ SELECT
     wg.typ,
     wg.bautyp,
     wg.fahrbahnbreite,
-    wg.geometrie, 
+    ST_GeometryN(wg.geometrie,1) AS geometrie, --TODO: properly handle MultiLineStrings 
     wg.astatus, 
     wg.status_datum, 
     wg.bauabnahme_datum, 
