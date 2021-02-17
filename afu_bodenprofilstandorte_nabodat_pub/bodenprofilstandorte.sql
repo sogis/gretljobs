@@ -83,7 +83,9 @@ SELECT
 	wald.waldproduktionspunkte AS produktionsfaehigkeit_punkte,
 	ausgangsmaterial_eiszeit_unten.codeid AS eiszeit_unterboden,
 	ausgangsmaterial_eiszeit_unten.codetext_de AS eiszeit_unterboden_text,
-	standort.gemeindeaktuell AS gemeinde_aktuell
+	standort.gemeindeaktuell AS gemeinde_aktuell, 
+        wasserspeichervermoegen.codeid AS wasserspeichervermoegen, 
+        wasserspeichervermoegen.codetext_de AS wasserspeichervermoegen_text
 FROM 
     afu_bodendaten_nabodat.punktdaten_standort standort
 -- Standort
@@ -233,9 +235,9 @@ LEFT JOIN
 	ON profil.bodentyp = profil_bodentyp.t_id
 LEFT JOIN 
     (SELECT  untertyp.profil, 
-             json_build_object(
-                 'untertyp', string_agg(code.codeid,', '), 
-                 'untertyp_text', string_agg(code.codetext_de,', ')
+             json_build_object('@type', 'SO_AFU_Bodenprofilstandorte_Publikation_20210129.Bodenprofilstandorte.Untertyp',
+                 'Untertyp', string_agg(code.codeid,', '), 
+                 'Untertyp_Text', string_agg(code.codetext_de,', ')
              ) AS untertyp_string 
      FROM
      afu_bodendaten_nabodat.punktdaten_untertyp untertyp
@@ -252,6 +254,9 @@ LEFT JOIN
 LEFT JOIN 
     afu_bodendaten_nabodat.codelistnprfldten_pflanzennutzbaregruendigkeit pflanzengruendigkeit
 	ON pflanzengruendigkeit.t_id = profil.pflanzennutzbaregruendigkeit
+left join 
+    afu_bodendaten_nabodat.codelistnprfldten_wasserspeichervermoegen wasserspeichervermoegen 
+    on wasserspeichervermoegen.t_id = profil.wasserspeichervermoegen 
 	
 --Profilbeurteilung
 LEFT JOIN 
@@ -365,26 +370,27 @@ LEFT JOIN
     (SELECT 
         horizont.profil,
 	    json_agg( 
-			json_build_object(
-				'tiefe', horizont.tiefebis, 
-				'gefuege', gefuege.gefuege_json,
-				'zustand_organische_substanz', messung.zustand_org_substanz, 
-				'zustand_organische_substanz_labor', messung.zustand_org_substanz_messwert, 
-				'tongehalt', messung.tongehalt, 
-				'tongehalt_labor', messung.tongehalt_labor,
-				'schluffgehalt', messung.schluffgehalt, 
-				'schluffgehalt_labor', messung.schluffgehalt_labor, 
-				'sandgehalt', messung.sandgehalt, 
-				'sandgehalt_labor', messung.sandgehalt_labor, 
-				'kies', messung.kies, 
-				'steine', messung.steine,
-				'kalk', messung.kalk, 
-				'kalk_labor', messung.kalk_labor, 
-				'ph_wert', messung.ph_wert, 
-				'cacl2_wert', messung.cacl2_wert, 
-				'farbe', bodenfarbe.farbe, 
-                'kak_pot', kationenaustauschkapazitaet_potentiell, 
-                'kak_eff', kationenaustauschkapazitaet_effektiv
+			json_build_object('@type', 'SO_AFU_Bodenprofilstandorte_Publikation_20210129.Bodenprofilstandorte.Horizont',
+				'Tiefe', horizont.tiefebis, 
+				'Gefuege', gefuege.gefuege_json,
+				'Zustand_Organische_Substanz', messung.zustand_org_substanz, 
+				'Zustand_Organische_Substanz_Labor', messung.zustand_org_substanz_messwert, 
+				'Tongehalt', messung.tongehalt, 
+				'Tongehalt_Labor', messung.tongehalt_labor,
+				'Schluffgehalt', messung.schluffgehalt, 
+				'Schluffgehalt_Labor', messung.schluffgehalt_labor, 
+				'Sandgehalt', messung.sandgehalt, 
+				'Sandgehalt_Labor', messung.sandgehalt_labor, 
+				'Kies', messung.kies, 
+				'Steine', messung.steine,
+				'Kalk', messung.kalk, 
+				'Kalk_Labor', messung.kalk_labor, 
+				'Ph_Wert', messung.ph_wert, 
+				'CaCl2_Wert', messung.cacl2_wert, 
+				'Farbe', bodenfarbe.farbe, 
+                'Kak_Pot', kationenaustauschkapazitaet_potentiell, 
+                'Kak_Eff', kationenaustauschkapazitaet_effektiv, 
+                'HorizontbezeichungAusgangsinfo', horizontbezeichungausgangsinfo 
 			)
 		) AS horizontwert
     FROM 
@@ -394,11 +400,11 @@ LEFT JOIN
         (SELECT 
             gefuege.horizont, 
             json_agg(
-			    json_build_object(
-					'gefuegeform', gefuege_form.codeid, 
-					'gefuegeform_text', gefuege_form.codetext_de, 
-					'gefuegegroesse', gefuege_groesse.codeid, 
-					'gefuegegroesse_text', gefuege_groesse.codetext_de
+			    json_build_object('@type', 'SO_AFU_Bodenprofilstandorte_Publikation_20210129.Bodenprofilstandorte.Gefuege',
+					'Gefuegeform', gefuege_form.codeid, 
+					'Gefuegeform_Text', gefuege_form.codetext_de, 
+					'Gefuegegroesse', gefuege_groesse.codeid, 
+					'Gefuegegroesse_Text', gefuege_groesse.codetext_de
 				) 
 			)AS gefuege_json
         FROM
@@ -422,11 +428,11 @@ LEFT JOIN
 	   (SELECT 
 		    bodenfarbe.horizont, 
             json_agg(
-			    json_build_object(
-					'farbtonzahl',farbtonzahl_code.codeid, 
-					'farbton', farbtontext_code.codetext_de, 
-					'farbton_helligkeit', farbtonhelligkeit_code.codeid, 
-					'farbton_intensitaet', farbtonintensitaet_code.codeid
+			    json_build_object('@type', 'SO_AFU_Bodenprofilstandorte_Publikation_20210129.Bodenprofilstandorte.Farbe',
+					'Farbtonzahl',farbtonzahl_code.codeid, 
+					'Farbton', farbtontext_code.codetext_de, 
+					'Farbton_Helligkeit', farbtonhelligkeit_code.codeid, 
+					'Farbton_Intensitaet', farbtonintensitaet_code.codeid
 				)
 			) farbe
 	FROM 
