@@ -2,7 +2,7 @@
 SELECT
     detailkarten_ueberlagernder_punkt.t_ili_tid,
     detailkarten_ueberlagernder_punkt.objekttyp,
-    detailkarten_ueberlagernder_punkt.status,
+    detailkarten_ueberlagernder_punkt.astatus,
     detailkarten_ueberlagernder_punkt.geometrie,
     hoheitsgrenzen_gemeindegrenze.gemeindename AS gemeindename
 FROM
@@ -21,7 +21,7 @@ UNION ALL
 SELECT
     t_ili_tid,
     objekttyp,
-    status,
+    astatus,
     geometrie,
     NULL AS gemeindename
 FROM

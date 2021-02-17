@@ -237,7 +237,7 @@ SELECT
     richtplankarte_ueberlagernde_flaeche.abstimmungskategorie,
     richtplankarte_ueberlagernde_flaeche.bedeutung,
     richtplankarte_ueberlagernde_flaeche.planungsstand,
-    richtplankarte_ueberlagernde_flaeche.status,
+    richtplankarte_ueberlagernde_flaeche.astatus,
     richtplankarte_ueberlagernde_flaeche.geometrie,
     documents_json_richtplan.dokumente::text,
     betroffene_gemeinden.gemeindenamen
@@ -262,7 +262,7 @@ SELECT
     'Ausgangslage' AS abstimmungskategorie,
     NULL AS bedeutung,
     'rechtsgueltig' AS planungsstand,
-    'bestehend' AS status,
+    'bestehend' AS astatus,
     ST_Multi(ST_Union(ST_SnapToGrid(reservate_teilgebiet.geometrie, 0.001))) AS geometrie,
     documents_json_naturreservate.dokumente AS dokumente,
     string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename) AS gemeindenamen
@@ -278,4 +278,54 @@ WHERE
 GROUP BY 
     reservate_reservat.t_id,
     documents_json_naturreservate.dokumente
-;
+    
+UNION ALL
+
+/* Grundwasserschutzzone_areal*/
+SELECT
+    uuid_generate_v4() AS t_ili_tid,
+    NULL AS nummer,
+    'Grundwasserschutzzone_areal' AS objekttyp,
+    "typ" AS weitere_Informationen,
+    NULL AS objektname,
+    'Ausgangslage' AS abstimmungskategorie,
+    NULL AS bedeutung,
+    'rechtsgueltig' AS planungsstand,
+    'bestehend' AS astatus,
+    schutzzone.geometrie AS geometrie,
+    NULL AS dokumente,
+    string_agg(DISTINCT gemeindegrenze.gemeindename, ', ' ORDER BY gemeindegrenze.gemeindename) AS gemeindenamen
+FROM
+    (
+        -- Grundwasserschutzzonen
+        SELECT
+            'Zone' AS typ,
+            ST_Union(ST_SnapToGrid(gwszone.geometrie, 0.001)) AS geometrie
+        FROM
+            afu_gewaesserschutz.gwszonen_gwszone AS gwszone
+            LEFT JOIN afu_gewaesserschutz.gwszonen_status AS status
+            ON gwszone.astatus = status.t_id
+        WHERE
+            rechtsstatus = 'inKraft'
+        
+        UNION ALL
+         
+        -- Grundwasserschutzareale
+        SELECT
+            'Areal' AS typ,
+            ST_Union(ST_SnapToGrid(gwsareal.geometrie, 0.001)) AS geometrie
+        FROM
+            afu_gewaesserschutz.gwszonen_gwsareal AS gwsareal
+            LEFT JOIN afu_gewaesserschutz.gwszonen_status AS status
+            ON gwsareal.astatus = status.t_id
+        WHERE
+            rechtsstatus = 'inKraft'
+        AND
+            typ = 'Areal'
+    ) AS schutzzone,
+    agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS gemeindegrenze
+WHERE
+    ST_Intersects(schutzzone.geometrie, gemeindegrenze.geometrie) = TRUE
+GROUP BY 
+    schutzzone.geometrie,
+    schutzzone.typ

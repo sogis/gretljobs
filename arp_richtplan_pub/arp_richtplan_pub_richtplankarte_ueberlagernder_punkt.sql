@@ -54,7 +54,7 @@ WITH documents AS (
         richtplankarte_ueberlagernder_punkt.bedeutung,
         richtplankarte_ueberlagernder_punkt.planungsstand,
         documents_json.dokumente,
-        richtplankarte_ueberlagernder_punkt.status,
+        richtplankarte_ueberlagernder_punkt.astatus,
         richtplankarte_ueberlagernder_punkt.objekttyp,
         richtplankarte_ueberlagernder_punkt.spezifikation,
         richtplankarte_ueberlagernder_punkt.geometrie
@@ -71,7 +71,7 @@ SELECT
     ueberlagernde_punkte_mit_documents.bedeutung,
     ueberlagernde_punkte_mit_documents.planungsstand,
     ueberlagernde_punkte_mit_documents.dokumente,
-    ueberlagernde_punkte_mit_documents.status,
+    ueberlagernde_punkte_mit_documents.astatus,
     ueberlagernde_punkte_mit_documents.objekttyp,
     ueberlagernde_punkte_mit_documents.spezifikation,
     ueberlagernde_punkte_mit_documents.geometrie,

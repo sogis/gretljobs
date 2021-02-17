@@ -6,7 +6,7 @@ SELECT
     NULL AS bedeutung,
     'rechtsgueltig' AS planungsstand,
     NULL AS dokumente,
-    'bestehend' AS status,
+    'bestehend' AS astatus,
     NULL AS objektnummer,
     CASE 
         WHEN tunnel IS TRUE

@@ -1,30 +1,4 @@
-/* Grundwasserschutzzone_areal*/
-SELECT
-    uuid_generate_v4() AS t_ili_tid,
-    NULL AS objektnummer,
-    'Grundwasserschutzzone_areal' AS objekttyp,
-    "zone" AS weitere_Informationen,
-    NULL AS objektname,
-    'Ausgangslage' AS abstimmungskategorie,
-    NULL AS bedeutung,
-    'rechtsgueltig' AS planungsstand,
-    'bestehend' AS status,
-    ST_Union(ST_SnapToGrid(wkb_geometry, 0.001)) AS geometrie,
-    NULL AS dokumente,
-    string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename) AS gemeindenamen
-FROM
-    agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
-    public.aww_gszoar
-WHERE
-    "archive" = 0
-    AND
-    ST_Intersects(aww_gszoar.wkb_geometry, hoheitsgrenzen_gemeindegrenze.geometrie) = TRUE
-GROUP BY 
-    "zone"
-       
-UNION ALL   
-     
-  /*Fruchtfolgeflaeche*/
+/*Fruchtfolgeflaeche*/
 SELECT
     uuid_generate_v4() AS t_ili_tid,
     NULL AS objektnummer,
@@ -34,7 +8,7 @@ SELECT
     'Ausgangslage' AS abstimmungskategorie,
     NULL AS bedeutung,
     'rechtsgueltig' AS planungsstand,
-    'bestehend' AS status,
+    'bestehend' AS astatus,
     ST_Multi(ST_SnapToGrid(wkb_geometry, 0.001)) AS geometrie,
     NULL AS dokumente,
     string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename) AS gemeindenamen
@@ -76,7 +50,7 @@ SELECT
             THEN 'Erweiterung'
         WHEN rip_darstellung = 3
             THEN 'neu'
-        END AS status,
+        END AS astatus,
     ST_Multi(ST_SnapToGrid(wkb_geometry, 0.001)) AS geometrie,
     NULL AS dokumente,
     string_agg(hoheitsgrenzen_gemeindegrenze.gemeindename, ', ') AS gemeindenamen

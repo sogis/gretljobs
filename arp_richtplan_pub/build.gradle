@@ -12,6 +12,8 @@ task transferArpRichtplanPubEdit(type: Db2Db){
     transferSets = [
             new TransferSet('arp_richtplan_pub_detailkarten_ueberlagernder_Punkt.sql',
                     'arp_richtplan_pub.detailkarten_ueberlagernder_punkt', true),
+            new TransferSet('arp_richtplan_pub_detailkarten_ueberlagernde_Linie.sql',
+                    'arp_richtplan_pub.detailkarten_ueberlagernde_linie', true),
             new TransferSet('arp_richtplan_pub_detailkarten_ueberlagernde_Flaeche.sql',
                     'arp_richtplan_pub.detailkarten_ueberlagernde_flaeche', true),
             new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernder_punkt.sql',
