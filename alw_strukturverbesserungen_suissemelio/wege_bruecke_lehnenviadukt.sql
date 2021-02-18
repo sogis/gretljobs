@@ -16,4 +16,5 @@ SELECT
     prj.kantonsnummer
   FROM alw_strukturverbesserungen.raeumlicheelemnte_wege_bruecke_lehnenviadukt br
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt prj ON br.projekt = prj.t_id
+   WHERE prj.geschaeftsnummer IS NOT NULL
 ;

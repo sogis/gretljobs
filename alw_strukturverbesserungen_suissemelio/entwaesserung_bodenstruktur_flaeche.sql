@@ -1,7 +1,7 @@
 SELECT
     entwbs.typ, 
     entwbs.bautyp, 
-    ST_GeometryN(entwbs.geometrie,1) AS geometrie, --TODO: properly handle MultiPolygon 
+    (ST_Dump(entwbs.geometrie)).geom AS geometrie,
     entwbs.astatus, 
     entwbs.status_datum, 
     entwbs.bauabnahme_datum, 
@@ -11,4 +11,5 @@ SELECT
     prj.kantonsnummer    
   FROM alw_strukturverbesserungen.raeumlicheelemnte_entw_bodenstruktur_flaeche entwbs
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt prj ON entwbs.projekt = prj.t_id
+   WHERE prj.geschaeftsnummer IS NOT NULL
 ;
