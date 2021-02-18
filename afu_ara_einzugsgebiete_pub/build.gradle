@@ -3,12 +3,12 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferFila'
+defaultTasks 'transferData'
 
-task transferFila(type: Db2Db){
+task transferData(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('ksta_landwerte.sql', 'ksta_landwerte_pub.landwerte_landwert', true),
+            new TransferSet('afu_ara_einzugsgebiete.sql', 'afu_ara_einzugsgebiete_pub.einzugsgebiete_ara_einzugsgebiet', true),
     ];
 }
