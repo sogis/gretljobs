@@ -7,7 +7,7 @@ INSERT INTO
 	)
 
 SELECT 
-	ST_Multi(ST_Union(ST_RemoveRepeatedPoints(ST_SnapToGrid(geometrie, 0.001)))),
+	ST_Multi(ST_Union(ST_RemoveRepeatedPoints(ST_SnapToGrid(ST_Buffer(geometrie,0), 0.001)))),
 	bfs_nr AS bfsnr,
 	'Bauzone' AS zonentyp
 FROM 
@@ -24,7 +24,7 @@ GROUP BY
 UNION ALL
 
 SELECT 
-	ST_Multi(ST_Union(ST_RemoveRepeatedPoints(ST_SnapToGrid(geometrie, 0.001)))),
+	ST_Multi(ST_Union(ST_RemoveRepeatedPoints(ST_SnapToGrid(ST_Buffer(geometrie,0), 0.001)))),
 	bfs_nr AS bfsnr,
 	'Reservezone' AS zonentyp
 FROM 
