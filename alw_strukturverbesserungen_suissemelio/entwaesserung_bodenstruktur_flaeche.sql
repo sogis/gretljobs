@@ -2,7 +2,7 @@ SELECT
     entwbs.t_id, 
     entwbs.typ, 
     entwbs.bautyp, 
-    entwbs.geometrie, 
+    ST_GeometryN(entwbs.geometrie,1) AS geometrie, --TODO: properly handle MultiPolygon 
     entwbs.astatus, 
     entwbs.status_datum, 
     entwbs.bauabnahme_datum, 

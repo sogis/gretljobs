@@ -19,6 +19,11 @@ task transfer_SVGIS_Suissemelio(type: Db2Db){
             new TransferSet('entwaesserung_bodenstruktur_pumpwerk.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_entw_bodenstruktur_pumpwerk', true),
             new TransferSet('elektroversorgung_linie.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_ev_linie', true),
             new TransferSet('elektroversorgung_punkt.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_ev_punkt', true),
+            new TransferSet('oekologie_flaeche.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_oekologie_flaeche', true),
+            new TransferSet('oekologie_linie.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_oekologie_linie', true),
+            new TransferSet('oekologie_trockenmauer.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_oekologie_trockenmauer', true),
+            new TransferSet('wasserversorgung_leitung.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_wv_leitung_wasserversorgung', true),
+            new TransferSet('wasserversorgung_punkt.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_wasserversorgung_punkt', true),
             new TransferSet('wegebau_linie.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_wegebau_linie', true),
             new TransferSet('wege_bruecke_lehnenviadukt.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_wege_bruecke_lehnenviadukt', true)
     ];
