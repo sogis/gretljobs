@@ -1,0 +1,32 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'deleteData', 'createAllData'
+
+def todaysDate = new Date().format('yyyy-MM-dd')
+
+//def gemeinden = [2401,2403,2405,2407,2408,2421,2424,2455,2456,2457,2473,2474,2475,2476,2477,2479,2491,2492,2498,2501,2502,2514,2518,2541,2546,2548,2573,2574,2551,2580,2581,2582,2586,2613,2614,2615,2616,2617,2621,2622]
+def gemeinden = [2401,2403]
+
+task deleteData(type: SqlExecutor) {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['delete_data.sql']
+}
+
+gemeinden.each { gemeinde ->
+    task "createBauzonengrenzen_$gemeinde"(type: SqlExecutor) {
+        database = [dbUriPub, dbUserPub, dbPwdPub]
+        sqlFiles = ['create_bauzonengrenzen.sql']
+        sqlParameters = [bfsnr: gemeinde as String]
+
+    }
+}
+
+task createAllData() {
+    description = "Sql aggregation task."
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('createBauzonengrenzen_') }
+    }
+}
