@@ -1,6 +1,6 @@
 SELECT
     wv.t_id, 
-    ST_GeometryN(wv.geometrie,1) AS geometrie, --TODO: properly handle MultiPolygon 
+    (ST_Dump(wv.geometrie)).geom AS geometrie,
     wv.bautyp, 
     wv.astatus, 
     wv.status_datum, 

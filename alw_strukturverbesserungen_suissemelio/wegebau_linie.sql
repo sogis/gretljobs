@@ -3,7 +3,7 @@ SELECT
     wg.typ,
     wg.bautyp,
     wg.fahrbahnbreite,
-    ST_GeometryN(wg.geometrie,1) AS geometrie, --TODO: properly handle MultiLineStrings 
+    (ST_Dump(wg.geometrie)).geom AS geometrie,
     wg.astatus, 
     wg.status_datum, 
     wg.bauabnahme_datum, 
@@ -13,4 +13,5 @@ SELECT
     prj.kantonsnummer
   FROM alw_strukturverbesserungen.raeumlicheelemnte_wegebau_linie wg
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt prj ON wg.projekt = prj.t_id
+   WHERE prj.geschaeftsnummer IS NOT NULL
 ;

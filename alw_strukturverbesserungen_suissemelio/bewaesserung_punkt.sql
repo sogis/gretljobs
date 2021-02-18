@@ -12,4 +12,5 @@ SELECT
     prj.kantonsnummer
   FROM alw_strukturverbesserungen.raeumlicheelemnte_bewaesserung_punkt bew
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt prj ON bew.projekt = prj.t_id
+   WHERE prj.geschaeftsnummer IS NOT NULL
 ;

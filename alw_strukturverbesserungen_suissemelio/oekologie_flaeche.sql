@@ -2,7 +2,7 @@ SELECT
     oek.t_id, 
     oek.typ, 
     oek.bautyp, 
-    ST_GeometryN(oek.geometrie,1) AS geometrie, --TODO: properly handle MultiPolygon 
+    (ST_Dump(oek.geometrie)).geom AS geometrie,
     oek.astatus, 
     oek.status_datum, 
     oek.bauabnahme_datum, 
