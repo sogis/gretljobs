@@ -1,5 +1,4 @@
 SELECT
-    entwbs.t_id, 
     entwbs.typ, 
     entwbs.bautyp, 
     ST_GeometryN(entwbs.geometrie,1) AS geometrie, --TODO: properly handle MultiPolygon 
