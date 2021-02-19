@@ -120,7 +120,7 @@ datasets.add(new Dataset("SO_ARP_Fledermausfundorte_Publikation_20200806", "arp_
 datasets.add(new Dataset("SO_ARP_Naturreservate_Publikation_20200609", "arp_naturreservate_pub", dbPub, "ch.so.arp.naturreservate")) 
 datasets.add(new Dataset("SO_Nutzungsplanung_Publikation_20190909", "arp_npl_pub", dbPub, "ch.so.arp.nutzungsplanung")) 
 datasets.add(new Dataset("SO_ARP_Nutzungsvereinbarung_Publikation_20170223", "arp_nutzungsvereinbarung_pub", dbPub, "ch.so.arp.nutzungsvereinbarung", true)) 
-datasets.add(new Dataset("SO_ARP_Richtplan_Publikation_20210210", "arp_richtplan_pub", dbPub, "ch.so.arp.richtplan", true)) 
+datasets.add(new Dataset("SO_ARP_Richtplan_Publikation_20210210", "arp_richtplan_pub", dbPub, "ch.so.arp.richtplan")) 
 datasets.add(new Dataset("SO_AVT_Groblaermkataster_20190709", "avt_groblaermkataster_pub", dbPub, "ch.so.avt.groblaermkataster")) 
 datasets.add(new Dataset("SO_AVT_Kantonsstrassen_Publikation_20200707", "avt_kantonsstrassen_pub", dbPub, "ch.so.avt.kantonsstrassen")) 
 datasets.add(new Dataset("SO_AVT_Strassenlaerm_Publikation_20190802", "avt_strassenlaerm_pub", dbPub, "ch.so.avt.strassenlaerm")) 
