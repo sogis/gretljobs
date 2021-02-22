@@ -35,22 +35,11 @@ task exportAdressenZivilschutz(type: CsvExport, dependsOn: stageAdressenZivilsch
     attributes = ['lokalisationsname', 'hausnummer', 'plz', 'ortschaft', 'gemeinde', 'gwr_egid', 'gwr_edid', 'koord_ost', 'koord_nord', 'astatus', 'objektname', 'grundstuecknummer', 'grundbuchkreis']
 }
 
-task replaceStatus(dependsOn: exportAdressenZivilschutz) {
-    description = "Ersetzt astatus zu status."
-    doLast {
-        ant.replace(
-        file: csvFileName,
-        token: 'astatus',
-        value: 'status',
-        encoding: 'UTF-8')
-    }
-}
-
 task deleteCsvFile(type: Delete){
     delete "${csvFileName}"
 }
 
-task uploadCsvFile (dependsOn: replaceStatus){
+task uploadCsvFile (dependsOn: exportAdressenZivilschutz){
     description = "Upload file to FTP server"
     doLast {
         ssh.settings {
