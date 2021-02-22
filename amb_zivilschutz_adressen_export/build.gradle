@@ -32,7 +32,7 @@ task exportAdressenZivilschutz(type: CsvExport, dependsOn: stageAdressenZivilsch
     encoding = "UTF-8"
     valueSeparator = ';'
     valueDelimiter = null
-    attributes = ['lokalisationsname', 'hausnummer', 'plz', 'ortschaft', 'gemeinde', 'gwr_egid', 'gwr_edid', 'koord_ost', 'koord_nord', 'astatus', 'objektname', 'grundstuecknummer', 'grundbuchkreis']
+    attributes = ['lokalisationsname', 'hausnummer', 'plz', 'ortschaft', 'gemeinde', 'gwr_egid', 'gwr_edid', 'koord_ost', 'koord_nord', 'status', 'objektname', 'grundstuecknummer', 'grundbuchkreis']
 }
 
 task deleteCsvFile(type: Delete){
