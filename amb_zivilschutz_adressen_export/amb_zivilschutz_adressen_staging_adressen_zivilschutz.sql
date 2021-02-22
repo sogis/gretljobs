@@ -13,7 +13,7 @@ adressenZusammenfuehren AS (
         a.edid AS gwr_edid,
         ST_X(a.geometrie) AS koord_ost,
         st_y(a.geometrie) AS koord_nord,
-        a.astatus,
+        a.astatus AS status,
         b.geometrie AS gwr_egid_geom,
         a.geometrie AS gwr_edid_geom,
         a.bfsnr
@@ -43,7 +43,7 @@ UNION ALL
         a.edid AS gwr_edid,
         ST_X(a.geometrie) AS koord_ost,
         st_y(a.geometrie) AS koord_nord,
-        a.astatus,
+        a.astatus as status,
         b.geometrie AS gwr_egid_geom,
         a.geometrie AS gwr_edid_geom,
         a.bfsnr
@@ -73,7 +73,7 @@ UNION ALL
         a.edid AS gwr_edid,
         ST_X(a.geometrie) AS koord_ost,
         st_y(a.geometrie) AS koord_nord,
-        a.astatus,
+        a.astatus AS status,
         b.geometrie AS gwr_egid_geom,
         a.geometrie AS gwr_edid_geom,
         a.bfsnr
@@ -103,7 +103,7 @@ UNION ALL
         a.edid AS gwr_edid,
         ST_X(a.lage) AS koord_ost,
         st_y(a.lage) AS koord_nord,
-        a.astatus,
+        a.astatus AS status,
         b.geometrie AS gwr_egid_geom,
         a.lage AS gwr_edid_geom,
         CAST(a.bfs_nr AS varchar(20)) AS bfs_nr
@@ -133,7 +133,7 @@ UNION ALL
         a.edid AS gwr_edid,
         ST_X(a.lage) AS koord_ost,
         st_y(a.lage) AS koord_nord,
-        a.astatus,
+        a.astatus AS status,
         b.geometrie AS gwr_egid_geom,
         a.lage AS gwr_edid_geom,
         CAST(a.bfs_nr AS varchar(20)) AS bfs_nr
@@ -163,7 +163,7 @@ UNION ALL
         a.edid AS gwr_edid,
         ST_X(a.lage) AS koord_ost,
         st_y(a.lage) AS koord_nord,
-        a.astatus,
+        a.astatus AS status,
         b.geometrie AS gwr_egid_geom,
         a.lage AS gwr_edid_geom,
         CAST(a.bfs_nr AS varchar(20)) AS bfs_nr
@@ -194,7 +194,7 @@ adressen AS (
         gwr_edid,
         koord_ost,
         koord_nord,
-        astatus,
+        status,
         gwr_egid_geom,
         gwr_edid_geom,
         bfsnr
@@ -228,7 +228,7 @@ geb_objektnamen AS (
         a.t_id
 )
 
-INSERT INTO amb_zivilschutz_adressen_staging_pub.adressen_zivilschutz (lokalisationsname,hausnummer,plz,ortschaft,gemeinde,gwr_egid,gwr_edid,koord_ost,koord_nord,astatus,objektname,grundstuecknummer,grundbuchkreis)
+INSERT INTO amb_zivilschutz_adressen_staging_pub.adressen_zivilschutz (lokalisationsname,hausnummer,plz,ortschaft,gemeinde,gwr_egid,gwr_edid,koord_ost,koord_nord,status,objektname,grundstuecknummer,grundbuchkreis)
 (
     SELECT
         a.lokalisationsname,
@@ -240,7 +240,7 @@ INSERT INTO amb_zivilschutz_adressen_staging_pub.adressen_zivilschutz (lokalisat
         a.gwr_edid,
         a.koord_ost,
         a.koord_nord,
-        a.astatus,
+        a.status,
         o.objektname,
         g.grundstuecknummer,
         g.grundbuchkreis
