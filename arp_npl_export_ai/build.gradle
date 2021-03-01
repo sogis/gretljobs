@@ -3,8 +3,8 @@ import ch.so.agi.gretl.tasks.*
 import java.nio.file.Paths
 import de.undercouch.gradle.tasks.download.Download
 
-//defaultTasks 'uploadMgdmLandUsePlans', 'uploadMgdmNoiseSensitivityLevels'
-defaultTasks 'uploadMgdmNoiseSensitivityLevels'
+//defaultTasks 'uploadMgdmLandUsePlans', 'uploadMgdmNoiseSensitivityLevels', 'uploadMgdmWaldabstandslinien'
+defaultTasks 'uploadMgdmWaldabstandslinien'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 //File tmpFolder = new File("/tmp/gretl-share")
@@ -131,3 +131,47 @@ task uploadMgdmNoiseSensitivityLevels(dependsOn: 'zipMgdmNoiseSensitivityLevels'
         }
     }
 }
+
+// Waldabstandslinien
+
+task transferWaldabstandslinien(type: SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['truncate_all_arp_waldabstandslinien_mgdm_tables.sql', 'arp_waldabstandslinien_mgdm.sql']
+}
+
+task exportMgdmWaldabstandslinien(type: Ili2pgExport, dependsOn: 'transferWaldabstandslinien') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdmWaldabstand
+    dbschema = dbSchemaWaldabstand
+    dataFile = file(mgdmWaldabstandXtfFileName)
+    disableValidation = true
+}
+
+task validateMgdmWaldabstandslinien(type: IliValidator, dependsOn: 'exportMgdmWaldabstandslinien') {
+    dataFiles = [file(mgdmWaldabstandXtfFileName)]
+    logFile = "ilivalidator_waldabstandslinien.log"
+    configFile = "config.toml"
+    failOnError = false
+}
+
+task zipMgdmWaldabstandslinien(type: Zip, dependsOn: 'validateMgdmWaldabstandslinien'){
+    from pathToTempFolder
+    from "."
+    include mgdmWaldabstandXtfFileName
+    include "config.toml"
+    archiveName mgdmWaldabstandZipFileName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadMgdmWaldabstandslinien(dependsOn: 'zipMgdmWaldabstandslinien') {
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_waldabstandslinien", "-F",
+                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), mgdmWaldabstandZipFileName), "-F", "publish=true",
+                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        println(response)
+        if (response.contains("false")) {
+            throw new GradleException()
+        }        
+    }
+}
+
