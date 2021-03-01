@@ -4,7 +4,7 @@ import java.nio.file.Paths
 import de.undercouch.gradle.tasks.download.Download
 
 //defaultTasks 'uploadMgdmLandUsePlans', 'uploadMgdmNoiseSensitivityLevels', 'uploadMgdmWaldabstandslinien'
-defaultTasks 'uploadMgdmWaldabstandslinien'
+defaultTasks 'uploadMgdmNoiseSensitivityLevels'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 //File tmpFolder = new File("/tmp/gretl-share")
