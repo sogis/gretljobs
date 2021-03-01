@@ -3,7 +3,8 @@ import ch.so.agi.gretl.tasks.*
 import java.nio.file.Paths
 import de.undercouch.gradle.tasks.download.Download
 
-defaultTasks 'uploadMgdmLandUsePlans'
+//defaultTasks 'uploadMgdmLandUsePlans', 'uploadMgdmNoiseSensitivityLevels'
+defaultTasks 'uploadMgdmNoiseSensitivityLevels'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 //File tmpFolder = new File("/tmp/gretl-share")
@@ -28,8 +29,9 @@ def dbSchemaWaldabstand = "arp_waldabstandslinien_mgdm"
 def mgdmWaldabstandXtfFileName = "ch.so.arp.waldabstand.mgdm.xtf"
 def mgdmWaldabstandZipFileName = "ch.so.arp.waldabstand.mgdm.zip"
 
-
 def aiLogin = aiUser + ":" + aiPwd
+
+// Nutzungsplanung
 
 task deleteMgdmLandUsesPlansData(type: SqlExecutor) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -78,6 +80,50 @@ task uploadMgdmLandUsePlans(dependsOn: 'zipMgdmLandUsePlans') {
     doLast {
         def response = ["curl", "-u", aiLogin, "-F", "topic=npl_nutzungsplanung", "-F",
                         "lv95_file=@" + Paths.get(pathToTempFolder.toString(), mgdmLandUsePlansZipFileName), "-F", "publish=true",
+                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        println(response)
+        if (response.contains("false")) {
+            throw new GradleException()
+        }
+    }
+}
+
+
+// Lärm
+
+task transferNoiseSensitivityLevels(type: SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['truncate_all_arp_laermempfindlichkeit_mgdm_tables.sql', 'arp_laermempfindlichkeitsstufen_mgdm.sql']
+}
+
+task exportMgdmNoiseSensitivityLevels(type: Ili2pgExport, dependsOn: 'transferNoiseSensitivityLevels') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdmNoiseSensitivityLevels
+    dbschema = dbSchemaMgdmSensitivityLevels
+    dataFile = file(mgdmSensitivityLevelsXtfFileName)
+    disableValidation = true
+}
+
+task validateMgdmNoiseSensitivityLevels(type: IliValidator, dependsOn: 'exportMgdmNoiseSensitivityLevels') {
+    dataFiles = [file(mgdmSensitivityLevelsXtfFileName)]
+    logFile = "ilivalidator_noisesensitivitylevels.log"
+    configFile = "config.toml"
+    failOnError = false
+}
+
+task zipMgdmNoiseSensitivityLevels(type: Zip, dependsOn: 'validateMgdmNoiseSensitivityLevels'){
+    from pathToTempFolder
+    from "."
+    include mgdmSensitivityLevelsXtfFileName
+    include "config.toml"
+    archiveName mgdmSensitivityLevelsZipFileName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadMgdmNoiseSensitivityLevels(dependsOn: 'zipMgdmNoiseSensitivityLevels') {
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_laermempfindlichkeitsstufen", "-F",
+                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), mgdmSensitivityLevelsZipFileName), "-F", "publish=true",
                         "https://" + aiServer + "/data_agg/interlis/import"].execute().text
         println(response)
         if (response.contains("false")) {
