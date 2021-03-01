@@ -31,7 +31,12 @@ def mgdmWaldabstandZipFileName = "ch.so.arp.waldabstand.mgdm.zip"
 
 def aiLogin = aiUser + ":" + aiPwd
 
-task importMgdmHauptnutzung(type: Ili2pgImport) {
+task deleteMgdmLandUsesPlansData(type: SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['truncate_all_arp_npl_mgdm_tables.sql']
+}
+
+task importMgdmHauptnutzung(type: Ili2pgImport, dependsOn: 'deleteMgdmLandUsesPlansData') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelMgdmHauptnutzung
     dbschema = dbSchemaMgdmLandUsePlans
@@ -41,7 +46,7 @@ task importMgdmHauptnutzung(type: Ili2pgImport) {
 
 task transferLandUsePlansData(type: SqlExecutor, dependsOn: 'importMgdmHauptnutzung') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ['truncate_all_arp_npl_mgdm_tables.sql', 'arp_nutzungsplanung_mgdm.sql']
+    sqlFiles = ['arp_nutzungsplanung_mgdm.sql']
 }
 
 task exportMgdmLandUsePlans(type: Ili2pgExport, dependsOn: 'transferLandUsePlansData') {
