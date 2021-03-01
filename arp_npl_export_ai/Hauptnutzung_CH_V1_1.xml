@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- File Hauptnutzung_CH_V1_1.xml 2017-02-16 (http://models.geo.admin.ch/ARE) -->
+<TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<!-- xsi:schemaLocation="http://models.geo.admin.ch/ARE/Nutzungsplanung_LV03_V1_1.xsd" -->
+<!-- xsi:schemaLocation="http://models.geo.admin.ch/ARE/Nutzungsplanung_LV95_V1_1.xsd" -->
+
+<HEADERSECTION VERSION="2.3" SENDER="ARE">
+  <MODELS>
+    <MODEL NAME="LocalisationCH_V1" URI="http://www.geo.admin.ch" VERSION="2011-08-30"/>
+    <MODEL NAME="CHAdminCodes_V1" URI="http://www.geo.admin.ch" VERSION="2011-08-30"/>
+    <MODEL NAME="InternationalCodes_V1" URI="http://www.geo.admin.ch" VERSION="2011-08-30"/>
+    <MODEL NAME="CoordSys" URI="http://www.interlis.ch/models" VERSION="2015-11-24"/>
+    <MODEL NAME="Units" URI="http://www.interlis.ch/models" VERSION="2012-02-20"/>
+    <MODEL NAME="GeometryCHLV03_V1" URI="http://www.geo.admin.ch" VERSION="2015-11-12"/>
+    <MODEL NAME="GeometryCHLV95_V1" URI="http://www.geo.admin.ch" VERSION="2015-11-12"/>
+    <MODEL NAME="Nutzungsplanung_Hauptnutzung_V1_1" URI="http://models.geo.admin.ch/ARE" VERSION="2017-02-16"/>
+    <MODEL NAME="Nutzungsplanung_LV03_V1_1" URI="http://models.geo.admin.ch/ARE" VERSION="2017-02-16"/>
+    <MODEL NAME="Nutzungsplanung_LV95_V1_1" URI="http://models.geo.admin.ch/ARE" VERSION="2017-02-16"/>
+  </MODELS>
+</HEADERSECTION>
+
+<DATASECTION>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH BID="ch.admin.are.nutzungsplanung.hauptnutzung_ch">
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.11"><Code>11</Code><Bezeichnung>Wohnzonen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.12"><Code>12</Code><Bezeichnung>Arbeitszonen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.13"><Code>13</Code><Bezeichnung>Mischzonen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.14"><Code>14</Code><Bezeichnung>Zentrumszonen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.15"><Code>15</Code><Bezeichnung>Zonen für öffentliche Nutzungen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.16"><Code>16</Code><Bezeichnung>eingeschränkte Bauzonen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.17"><Code>17</Code><Bezeichnung>Tourismus- und Freizeitzonen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.18"><Code>18</Code><Bezeichnung>Verkehrszonen innerhalb der Bauzonen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.19"><Code>19</Code><Bezeichnung>weitere Bauzonen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.21"><Code>21</Code><Bezeichnung>allgemeine Landwirtschaftszonen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.22"><Code>22</Code><Bezeichnung>Speziallandwirtschaftszonen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.23"><Code>23</Code><Bezeichnung>Rebbauzonen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.29"><Code>29</Code><Bezeichnung>weitere Landwirtschaftszonen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.31"><Code>31</Code><Bezeichnung>Schutzzonen für Lebensräume und Landschaften</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.32"><Code>32</Code><Bezeichnung>Zonen für Gewässer und ihre Ufer</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.39"><Code>39</Code><Bezeichnung>weitere Schutzzonen ausserhalb der Bauzonen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.41"><Code>41</Code><Bezeichnung>Zonen für Kleinsiedlung</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.42"><Code>42</Code><Bezeichnung>Verkehrsflächen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.43"><Code>43</Code><Bezeichnung>Reservezonen nach Art. 18 Abs. 2 RPG</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.44"><Code>44</Code><Bezeichnung>Wald</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.49"><Code>49</Code><Bezeichnung>weitere Zonen nach Art. 18 Abs. 1 RPG ausserhalb der Bauzonen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.51"><Code>51</Code><Bezeichnung>überlagernde Ortsbildschutzzonen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.52"><Code>52</Code><Bezeichnung>überlagernde Schutzzonen für Lebensräume und Landschaften</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.53"><Code>53</Code><Bezeichnung>überlagernde Gefahrenzonen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.59"><Code>59</Code><Bezeichnung>weitere überlagernde Nutzungszonen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.61"><Code>61</Code><Bezeichnung>Bereiche rechtsgültiger Sondernutzungspläne</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.62"><Code>62</Code><Bezeichnung>Bereiche mit Sondernutzungsplanungspflicht</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.63"><Code>63</Code><Bezeichnung>Bereiche einer späteren Erschliessungsetappe</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.69"><Code>69</Code><Bezeichnung>weitere flächenbezogene Festlegungen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.71"><Code>71</Code><Bezeichnung>Baulinien</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.79"><Code>79</Code><Bezeichnung>weitere linienbezogene Festlegungen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.81"><Code>81</Code><Bezeichnung>Naturobjekte</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.82"><Code>82</Code><Bezeichnung>Kulturobjekte</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+<Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH TID="ch.admin.are.nutzungsplanung.hauptnutzung_ch.89"><Code>89</Code><Bezeichnung>weitere punktbezogene Festlegungen</Bezeichnung></Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH.Hauptnutzung_CH>
+</Nutzungsplanung_Hauptnutzung_V1_1.Hauptnutzung_CH>
+</DATASECTION>
+</TRANSFER>
