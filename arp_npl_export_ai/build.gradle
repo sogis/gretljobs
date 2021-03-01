@@ -1,128 +1,82 @@
+import ch.so.agi.gretl.api.TransferSet
 import ch.so.agi.gretl.tasks.*
 import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
 
-
-apply plugin: 'ch.so.agi.gretl'
+defaultTasks 'uploadMgdmLandUsePlans'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
+//File tmpFolder = new File("/tmp/gretl-share")
+//def pathToTempFolder = tmpFolder.getAbsolutePath()
 
-def logExportNplch = file(Paths.get(pathToTempFolder.toString(), "log_export_nplch.log"))
-def exportNplchFileName = 'export_nplch.xtf'
-def exportNplchFile = file(Paths.get(pathToTempFolder.toString(), exportNplchFileName))
+def iliModelLandUsePlans = "SO_Nutzungsplanung_20171118"
+def dbSchemaLandUsePlans = "arp_npl"
 
-def logExportLaermempfindlichkeit = file(Paths.get(pathToTempFolder.toString(), "log_export_laermempfindlichkeit.log"))
-def exportLaermempfindlichkeitFileName = 'export_laermempfindlichkeit.xtf'
-def exportLaermempfindlichkeitFile = file(Paths.get(pathToTempFolder.toString(), exportLaermempfindlichkeitFileName))
+def iliModelMgdmHauptnutzung = "Nutzungsplanung_Hauptnutzung_V1_1"
+def iliModelMgdmLandUsePlans = "Nutzungsplanung_LV95_V1_1"
+def dbSchemaMgdmLandUsePlans = "arp_npl_mgdm"
+def mgdmLandUsePlansXtfFileName = "ch.so.arp.npl.mgdm.xtf"
+def mgdmLandUsePlansZipFileName = "ch.so.arp.npl.mgdm.zip"
 
-def ZipName = 'LV95.zip'
+def iliModelMgdmNoiseSensitivityLevels = "Laermempfindlichkeitsstufen_LV95_V1_1"
+def dbSchemaMgdmSensitivityLevels = "arp_laermempfindlichkeitsstufen_mgdm"
+def mgdmSensitivityLevelsXtfFileName = "ch.so.arp.laerm.mgdm.xtf"
+def mgdmSensitivityLevelsZipFileName = "ch.so.arp.laerm.mgdm.zip"
+
+def iliModelMgdmWaldabstand = "Waldabstandslinien_LV95_V1_1"
+def dbSchemaWaldabstand = "arp_waldabstandslinien_mgdm"
+def mgdmWaldabstandXtfFileName = "ch.so.arp.waldabstand.mgdm.xtf"
+def mgdmWaldabstandZipFileName = "ch.so.arp.waldabstand.mgdm.zip"
+
 
 def aiLogin = aiUser + ":" + aiPwd
 
-defaultTasks 'uploadNplch', 'uploadLaermempfindlichkeit'
+task importMgdmHauptnutzung(type: Ili2pgImport) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdmHauptnutzung
+    dbschema = dbSchemaMgdmLandUsePlans
+    dataFile = file("Hauptnutzung_CH_V1_1.xml")
+    disableValidation = true
+}
 
-task uploadNplch(dependsOn: 'zipNplch') {
-    description = "Lädt die Nutzungsplanungsdaten (MGDM vom Bund) in die Aggregationsinfrastruktur hoch."
+task transferLandUsePlansData(type: SqlExecutor, dependsOn: 'importMgdmHauptnutzung') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['truncate_all_arp_npl_mgdm_tables.sql', 'arp_nutzungsplanung_mgdm.sql']
+}
+
+task exportMgdmLandUsePlans(type: Ili2pgExport, dependsOn: 'transferLandUsePlansData') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdmLandUsePlans
+    dbschema = dbSchemaMgdmLandUsePlans
+    dataFile = file(mgdmLandUsePlansXtfFileName)
+    disableValidation = true
+}
+
+task validateMgdmLandUsePlans(type: IliValidator, dependsOn: 'exportMgdmLandUsePlans') {
+    dataFiles = [file("Hauptnutzung_CH_V1_1.xml"), file(mgdmLandUsePlansXtfFileName)]
+    logFile = "ilivalidator_landuseplans.log"
+    allObjectsAccessible = true
+    configFile = "config.toml"
+    failOnError = false
+}
+
+task zipMgdmLandUsePlans(type: Zip, dependsOn: 'validateMgdmLandUsePlans'){
+    from pathToTempFolder
+    from "."
+    include mgdmLandUsePlansXtfFileName
+    include "config.toml"
+    archiveName mgdmLandUsePlansZipFileName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadMgdmLandUsePlans(dependsOn: 'zipMgdmLandUsePlans') {
     doLast {
         def response = ["curl", "-u", aiLogin, "-F", "topic=npl_nutzungsplanung", "-F",
-                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), ZipName), "-F", "publish=true",
+                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), mgdmLandUsePlansZipFileName), "-F", "publish=true",
                         "https://" + aiServer + "/data_agg/interlis/import"].execute().text
         println(response)
+        if (response.contains("false")) {
+            throw new GradleException()
+        }
     }
-    finalizedBy 'removeNplchFiles'
-}
-
-task zipNplch(type: Zip, dependsOn: 'exportNplch'){
-    description = "Zippt das xtf-File mit den Nutzungsplanungsdaten (MGDM vom Bund) für den Upload in die " +
-            "Aggregationsinfrastruktur."
-    from pathToTempFolder
-    from "."
-    include exportNplchFileName
-    include "config.toml"
-    archiveName ZipName
-    destinationDir(file(pathToTempFolder))
-}
-
-task exportNplch(type: Ili2pgExport, dependsOn:'transferNplso2Nplch') {
-    description = "Exportiert die ins Nutzungsplanungs-MGDM umgebauten Daten in ein xtf-File."
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    dbschema = "arp_npl_mgdm"
-    models = "Nutzungsplanung_LV95_V1_1"
-    logFile = logExportNplch
-    dataFile = exportNplchFile
-    disableValidation = true
-}
-
-task transferNplso2Nplch (type: SqlExecutor, dependsOn:'removeOldNplData') {
-    description = "Baut die Nutzungsplanungsdaten des Kanton Solothurn in das MGDM des Bundes um."
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    sqlFiles = [
-            'arp_nutzungsplanung_mgdm.sql'
-    ]
-}
-
-task removeOldNplData(type: SqlExecutor) {
-    description = "Leert sämtliche Tabellen."
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    sqlFiles = [
-            'truncate_all_arp_npl_mgdm_tables.sql'
-    ]
-}
-
-task removeNplchFiles(type: Delete){
-    description = "Entfernt während der Ausführung des Jobs erstellte Nutzungsplanungsdateien."
-    delete file(Paths.get(pathToTempFolder.toString(), ZipName)), exportNplchFile, logExportNplch
-}
-
-task uploadLaermempfindlichkeit(dependsOn: 'zipLaermempfindlichkeit') {
-    description = "Lädt die Lärmempfindlichkeitsdaten (MGDM vom Bund) in die Aggregationsinfrastruktur hoch."
-    doLast {
-        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_laermempfindlichkeitsstufen", "-F",
-                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), ZipName), "-F", "publish=true",
-                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
-        println(response)
-    }
-    finalizedBy 'removeFilesLaermempfindlichkeit'
-}
-
-task zipLaermempfindlichkeit(type: Zip, dependsOn: 'exportLaermempfindlichkeit') {
-    description = "Zippt das xtf-File mit den Lärmempfindlichkeitsdaten (MGDM vom Bund) für den Upload in die " +
-            "Aggregationsinfrastruktur."
-    from pathToTempFolder
-    from "."
-    include exportLaermempfindlichkeitFileName
-    include "config.toml"
-    archiveName ZipName
-    destinationDir(file(pathToTempFolder))
-}
-
-task exportLaermempfindlichkeit(type: Ili2pgExport, dependsOn: 'transferNplso2Laermempfindlichkeit') {
-    description = "Exportiert die ins Lärmempfindlichkeits-MGDM umgebauten Daten in ein xtf-File."
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    dbschema = "arp_laermempfindlichkeit_mgdm"
-    models = "Laermempfindlichkeitsstufen_LV95_V1_1"
-    logFile = logExportLaermempfindlichkeit
-    dataFile = exportLaermempfindlichkeitFile
-    disableValidation = true
-}
-
-task transferNplso2Laermempfindlichkeit(type: SqlExecutor, dependsOn: 'removeOldLaermempfindlichkeitData') {
-    description = "Baut die Lärmempfindlichkeitsdaten des Kanton Solothurn in das MGDM des Bundes um."
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    sqlFiles = [
-            'arp_laermempfindlichkeit_mgdm.sql'
-    ]
-}
-
-task removeOldLaermempfindlichkeitData(type: SqlExecutor) {
-    description = "Leert sämtliche Tabellen."
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    sqlFiles = [
-            'truncate_all_arp_laermempfindlichkeit_mgdm_tables.sql'
-    ]
-}
-
-task removeFilesLaermempfindlichkeit(type: Delete) {
-    description = "Entfernt während der Ausführung des Jobs erstellte Lärmempfindlichkeitsdateien."
-    delete file(Paths.get(pathToTempFolder.toString(), ZipName)), exportLaermempfindlichkeitFile,
-            logExportLaermempfindlichkeit
 }
