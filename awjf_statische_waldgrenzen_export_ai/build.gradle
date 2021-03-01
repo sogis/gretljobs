@@ -1,0 +1,54 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+
+defaultTasks 'uploadMgdmWaldgrenzen'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+def iliModelMgdmWaldgrenzen = "Waldgrenzen_LV95_V1_1"
+def dbSchemaMgdmWaldgrenzen = "awjf_statische_waldgrenzen_mgdm"
+def mgdmWaldgrenzenXtfFileName = "ch.so.awjf.waldgrenzen.mgdm.xtf"
+def mgdmWaldgrenzenZipFileName = "ch.so.awjf.waldgrenzen.mdgm.zip"
+
+task transferWaldgrenzen(type: SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['truncate_all_awjf_statische_waldgrenzen_mgdm_tables.sql', 'awjf_statische_waldgrenzen_mgdm.sql']
+}
+
+task exportMgdmWaldgrenzen(type: Ili2pgExport, dependsOn: 'transferWaldgrenzen') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdmWaldgrenzen
+    dbschema = dbSchemaMgdmWaldgrenzen
+    dataFile = file(mgdmWaldgrenzenXtfFileName)
+    disableValidation = true
+}
+
+task validateMgdmWaldgrenzen(type: IliValidator, dependsOn: 'exportMgdmWaldgrenzen') {
+    dataFiles = [file(mgdmWaldgrenzenXtfFileName)]
+    logFile = "ilivalidator_waldgrenzen.log"
+    //configFile = "config.toml"
+    failOnError = false
+}
+
+task zipMgdmWaldgrenzen(type: Zip, dependsOn: 'validateMgdmWaldgrenzen'){
+    from pathToTempFolder
+    from "."
+    include mgdmWaldgrenzenXtfFileName
+    //include "config.toml"
+    archiveName mgdmWaldgrenzenZipFileName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadMgdmWaldgrenzen(dependsOn: 'zipMgdmWaldgrenzen') {
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_waldgrenzen", "-F",
+                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), mgdmWaldgrenzenZipFileName), "-F", "publish=true",
+                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        println(response)
+        if (response.contains("false")) {
+            throw new GradleException()
+        }        
+    }
+}
+
