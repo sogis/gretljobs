@@ -11,6 +11,8 @@ def dbSchemaMgdmWaldgrenzen = "awjf_statische_waldgrenzen_mgdm"
 def mgdmWaldgrenzenXtfFileName = "ch.so.awjf.waldgrenzen.mgdm.xtf"
 def mgdmWaldgrenzenZipFileName = "ch.so.awjf.waldgrenzen.mdgm.zip"
 
+def aiLogin = aiUser + ":" + aiPwd
+
 task transferWaldgrenzen(type: SqlExecutor) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['truncate_all_awjf_statische_waldgrenzen_mgdm_tables.sql', 'awjf_statische_waldgrenzen_mgdm.sql']
