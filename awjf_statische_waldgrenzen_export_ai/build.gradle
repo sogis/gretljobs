@@ -44,8 +44,8 @@ task zipMgdmWaldgrenzen(type: Zip, dependsOn: 'validateMgdmWaldgrenzen'){
 
 task uploadMgdmWaldgrenzen(dependsOn: 'zipMgdmWaldgrenzen') {
     doLast {
-        def response = ["curlXX", "-u", aiLogin, "-F", "topic=npl_waldgrenzen", "-F",
-                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), mgdmWaldgrenzenZipFileName), "-F", "publish=true",
+        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_waldgrenzen", "-F",
+                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), mgdmWaldgrenzenZipFileName+"XXXX"), "-F", "publish=true",
                         "https://" + aiServer + "/data_agg/interlis/import"].execute().text
         println(response)
         if (response.contains("false")) {
