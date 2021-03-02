@@ -45,10 +45,10 @@ task zipMgdmWaldgrenzen(type: Zip, dependsOn: 'validateMgdmWaldgrenzen'){
 task uploadMgdmWaldgrenzen(dependsOn: 'zipMgdmWaldgrenzen') {
     doLast {
         def response = ["curl", "-u", aiLogin, "-F", "topic=npl_waldgrenzen", "-F",
-                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), mgdmWaldgrenzenZipFileName+"XXXX"), "-F", "publish=true",
+                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), mgdmWaldgrenzenZipFileName), "-F", "publish=true",
                         "https://" + aiServer + "/data_agg/interlis/import"].execute().text
         println(response)
-        if (response.contains("false")) {
+        if (response.contains("false") || response == null && response.trim().isEmpty()) {
             throw new GradleException()
         }        
     }
