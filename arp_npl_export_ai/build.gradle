@@ -82,7 +82,7 @@ task uploadMgdmLandUsePlans(dependsOn: 'zipMgdmLandUsePlans') {
                         "lv95_file=@" + Paths.get(pathToTempFolder.toString(), mgdmLandUsePlansZipFileName), "-F", "publish=true",
                         "https://" + aiServer + "/data_agg/interlis/import"].execute().text
         println(response)
-        if (response.contains("false")) {
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
             throw new GradleException()
         }
     }
@@ -126,7 +126,7 @@ task uploadMgdmNoiseSensitivityLevels(dependsOn: 'zipMgdmNoiseSensitivityLevels'
                         "lv95_file=@" + Paths.get(pathToTempFolder.toString(), mgdmSensitivityLevelsZipFileName), "-F", "publish=true",
                         "https://" + aiServer + "/data_agg/interlis/import"].execute().text
         println(response)
-        if (response.contains("false")) {
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
             throw new GradleException()
         }
     }
@@ -169,7 +169,7 @@ task uploadMgdmWaldabstandslinien(dependsOn: 'zipMgdmWaldabstandslinien') {
                         "lv95_file=@" + Paths.get(pathToTempFolder.toString(), mgdmWaldabstandZipFileName), "-F", "publish=true",
                         "https://" + aiServer + "/data_agg/interlis/import"].execute().text
         println(response)
-        if (response.contains("false")) {
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
             throw new GradleException()
         }        
     }

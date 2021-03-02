@@ -48,7 +48,7 @@ task uploadMgdmWaldgrenzen(dependsOn: 'zipMgdmWaldgrenzen') {
                         "lv95_file=@" + Paths.get(pathToTempFolder.toString(), mgdmWaldgrenzenZipFileName), "-F", "publish=true",
                         "https://" + aiServer + "/data_agg/interlis/import"].execute().text
         println(response)
-        if (response.contains("false") || response == null && response.trim().isEmpty()) {
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
             throw new GradleException()
         }        
     }
