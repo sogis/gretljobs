@@ -26,7 +26,7 @@ docs_json AS (
 	SELECT
 		dok_id,
 		sort,
-		json_build_object('@type', 'SO_AfU_Gewaesserschutz_Publikation_20200115.Gewaesserschutz.Dokument', 'Bezeichnung', titel, 'URL', url) AS json_rec
+		json_build_object('@type', 'SO_AfU_Gewaesserschutz_Publikation_20210303.Gewaesserschutz.Dokument', 'Bezeichnung', titel, 'URL', url) AS json_rec
 	FROM
 		docs_gesamttitel
 	WHERE 
