@@ -16,7 +16,7 @@ docs_gesamttitel AS (
 			WHEN 'Schutzzonenplan' THEN 3
 			ELSE 4
 		END AS sort,
-		textimweb AS url,
+		TRIM(textimweb) AS url,
 		rechtsstatus
 	FROM 
 		afu_gewaesserschutz.gwszonen_dokument
