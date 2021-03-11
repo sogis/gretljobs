@@ -73,6 +73,7 @@ INSERT INTO arp_laermempfindlichkeitsstufen_mgdm.geobasisdaten_laermempfindlichk
     es
 )
 SELECT 
+    --ST_SubDivide(geometrie) AS geometrie,
     geometrie,
     rechtsstatus,
     publiziertab,

@@ -64,7 +64,7 @@ task validateMgdmLandUsePlans(type: IliValidator, dependsOn: 'exportMgdmLandUseP
     logFile = "ilivalidator_landuseplans.log"
     allObjectsAccessible = true
     configFile = "config.toml"
-    failOnError = false
+    failOnError = true
 }
 
 task zipMgdmLandUsePlans(type: Zip, dependsOn: 'validateMgdmLandUsePlans'){
@@ -108,7 +108,7 @@ task validateMgdmNoiseSensitivityLevels(type: IliValidator, dependsOn: 'exportMg
     dataFiles = [file(mgdmSensitivityLevelsXtfFileName)]
     logFile = "ilivalidator_noisesensitivitylevels.log"
     configFile = "config.toml"
-    failOnError = false
+    failOnError = true
 }
 
 task zipMgdmNoiseSensitivityLevels(type: Zip, dependsOn: 'validateMgdmNoiseSensitivityLevels'){
@@ -151,7 +151,7 @@ task validateMgdmWaldabstandslinien(type: IliValidator, dependsOn: 'exportMgdmWa
     dataFiles = [file(mgdmWaldabstandXtfFileName)]
     logFile = "ilivalidator_waldabstandslinien.log"
     configFile = "config.toml"
-    failOnError = false
+    failOnError = true
 }
 
 task zipMgdmWaldabstandslinien(type: Zip, dependsOn: 'validateMgdmWaldabstandslinien'){
