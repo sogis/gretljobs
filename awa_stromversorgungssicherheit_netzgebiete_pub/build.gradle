@@ -1,0 +1,49 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+
+defaultTasks 'uploadMgdmNetzgebiete'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+def mgdmNetzgebieteXtfFileName = "ch.so.awa.stromversorgungssicherheit_netzgebiete.mgdm.xtf"
+def mgdmNetzgebieteZipFileName = "ch.so.awa.stromversorgungssicherheit_netzgebiete.mgdm.zip"
+
+
+def aiLogin = aiUser + ":" + aiPwd
+
+// TODO: Transfer to Pub-DB
+
+task exportMgdmNetzgebiete(type: Ili2pgExport) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = "SupplySecurity_RuledAreas_V1_2"
+    dbschema = "awa_stromversorgungssicherheit"
+    dataFile = file(mgdmNetzgebieteXtfFileName)
+    disableValidation = true
+}
+
+task validateMgdmNetzgebiete(type: IliValidator, dependsOn: 'exportMgdmNetzgebiete') {
+    dataFiles = [file(mgdmNetzgebieteXtfFileName)]
+    logFile = "ilivalidator.log"
+    failOnError = true
+}
+
+task zipMgdmNetzgebiete(type: Zip, dependsOn: 'validateMgdmNetzgebiete'){
+    from pathToTempFolder
+    from "."
+    include mgdmNetzgebieteXtfFileName
+    archiveName mgdmNetzgebieteZipFileName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadMgdmNetzgebiete(dependsOn: 'zipMgdmNetzgebiete') {
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=stromversorgungssicherheit_netzgebiete_v1_2", "-F",
+                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), mgdmNetzgebieteZipFileName), "-F", "publish=true",
+                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
+}
