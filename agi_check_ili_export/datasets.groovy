@@ -78,6 +78,7 @@ datasets.add(new Dataset("SO_AWJF_Waldpflege_Kontrolle_20200127", "awjf_waldpfle
 datasets.add(new Dataset("SO_AWJF_Waldwanderwege_202000804", "awjf_waldwanderwege", dbEdit, "ch.so.awjf.waldwanderwege_edit")) 
 datasets.add(new Dataset("SO_SGV_Erschliessung_ausserhalb_Bauzone_20190611", "sgv_erschliessungen", dbEdit, "ch.so.sgv.erschliessungen_edit", true)) 
 datasets.add(new Dataset("SO_KSTA_Landwert_20210202", "ksta_landwerte", dbEdit, "ch.so.ksta.landwerte_edit")) // Identisch mit Pub-Modell und -Inhalt.
+datasets.add(new Dataset("SupplySecurity_RuledAreas_V1_2", "awa_stromversorgungssicherheit", dbEdit, "ch.so.awa.stromversorgungssicherheit_netzgebiete_edit"))
 
 /*
 */
