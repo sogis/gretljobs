@@ -64,3 +64,4 @@ task uploadMgdm(dependsOn: 'downloadMgdm') {
             throw new GradleException()
         }
     }
+}
