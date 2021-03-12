@@ -22,6 +22,7 @@ apply plugin: "de.undercouch.download"
 defaultTasks 'uploadMgdm'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def aiLogin = aiUser + ":" + aiPwd
 
 task transferAfuAltlasten(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
