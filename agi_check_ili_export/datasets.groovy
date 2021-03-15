@@ -47,7 +47,7 @@ ext.datasets = []
 // - alw_hl_allgemein Kosten/Nutzen. Interessiert wohl wirklich niemand in INTERLIS.
 // - alw_zonengrenzen: Externe und greifbare Daten (?)
 // - arp_npl
-/*
+
 datasets.add(new Dataset("SO_ADA_Denkmal_20191128", "ada_denkmalschutz", dbEdit, "ch.so.ada.denkmalschutz_edit"))
 datasets.add(new Dataset("SO_AFU_ARA_Einzugsgebiete_20201016", "afu_ara_einzugsgebiete", dbEdit, "ch.so.afu.ara_einzugsgebiete_edit"))
 datasets.add(new Dataset("NABODAT_ErgebnisseBodenbelastung_Punktdaten_LV95_V1_1", "afu_bodendaten_nabodat", dbEdit, "ch.so.afu.bodendaten_nabodat_edit"))
@@ -108,8 +108,6 @@ datasets.add(new Dataset("SO_AWJF_Waldwanderwege_202000804", "awjf_waldwanderweg
 datasets.add(new Dataset("SO_KSTA_Landwert_20210202", "ksta_landwerte", dbEdit, "ch.so.ksta.landwerte_edit")) // Identisch mit Pub-Modell und -Inhalt.
 datasets.add(new Dataset("SO_SGV_Erschliessung_ausserhalb_Bauzone_20190611", "sgv_erschliessungen", dbEdit, "ch.so.sgv.erschliessungen_edit", true)) 
 
-
-*/
 
 // SOGIS-DB
 // Die paar Modelle scheinen nicht auf die Schnelle exportierbar zu sein. Macht uns zu einem späteren Zeitpunkt vielleicht noch Bauchweh.
