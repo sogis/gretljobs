@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'removeImportedData'
+defaultTasks 'moveConvertedDataToPubDb'
 
 task transferKasoData(type: Db2Db){
     sourceDb = [dbUriKaso, dbUserKaso, dbPwdKaso]
@@ -29,14 +29,17 @@ task moveConvertedDataToPubDb(type: Db2Db, dependsOn: convertData){
             new TransferSet('agi_av_kaso_abgleich_pub_uebersicht_des_vergleichs.sql',
                     'agi_av_kaso_abgleich_pub.uebersicht_des_vergleichs', true)
     ]
-
 }
+
+// for better debugging do not delete imported data
+/*
 task removeImportedData(type: SqlExecutor, dependsOn: moveConvertedDataToPubDb){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = [
             'delete_from_agi_av_kaso_abgleich_import.sql'
     ]
 }
+*/
 
 
 
