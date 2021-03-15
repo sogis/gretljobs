@@ -12,9 +12,15 @@ def mgdmNetzgebieteZipFileName = "ch.so.awa.stromversorgungssicherheit_netzgebie
 
 def aiLogin = aiUser + ":" + aiPwd
 
-// TODO: Transfer to Pub-DB
+task transferNetzgebiete(type: Db2Db){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('awa_stromversorgungssicherheit_netzgebiete_pub.sql', 'awa_netzbetreiber_strom_pub.netzbetreiber', true)
+    ];
+}
 
-task exportMgdmNetzgebiete(type: Ili2pgExport) {
+task exportMgdmNetzgebiete(type: Ili2pgExport, dependsOn: 'transferNetzgebiete') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = "SupplySecurity_RuledAreas_V1_2"
     dbschema = "awa_stromversorgungssicherheit"
