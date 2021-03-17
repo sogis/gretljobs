@@ -11,13 +11,18 @@ Die Filterspalte kann beispielsweise [protected] heissen,
 mit Wert 'true' für alle zugriffsgeschützten Objekte
 */
 
+import java.nio.file.Paths
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
+import de.undercouch.gradle.tasks.download.Download
 
 apply plugin: 'ch.so.agi.gretl'
+apply plugin: "de.undercouch.download"
 
+defaultTasks 'refreshSolrA', 'refreshSolrA4W', 'uploadMgdm'
 
-defaultTasks 'refreshSolrA', 'refreshSolrA4W'
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def aiLogin = aiUser + ":" + aiPwd
 
 task transferAfuAltlasten(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
@@ -43,3 +48,21 @@ task refreshSolrA4W(type:Exec, dependsOn:'transferAfuAltlast4Web') {
         commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte_geschuetzt'
 }
 
+task downloadMgdm(type: Download) {
+    src "https://altlast4web.verw.rootso.org/interlis_exports/mgdm/data.zip"
+    dest pathToTempFolder
+    overwrite true
+    acceptAnyCertificate true
+}
+
+task uploadMgdm(dependsOn: 'downloadMgdm') {
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=kataster_belasteter_standorte_v1_4", "-F",
+                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), 'data.zip'), "-F", "publish=true",
+                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
+}
