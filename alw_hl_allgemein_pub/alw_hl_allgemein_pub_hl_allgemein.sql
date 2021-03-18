@@ -1,2 +1,2 @@
-SELECT * FROM alw_hl_allgemein.hl_allgemein
+SELECT * FROM alw_bund_hanglagen_allgemein.hl_allgemein
 ;
