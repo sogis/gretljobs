@@ -44,7 +44,7 @@ ext.datasets = []
 // - agi_lro_auflage (temporär)
 // - agi_plz_ortschaften
 // - agi_swisstopo_gebaeudeadressen
-// - alw_hl_allgemein Kosten/Nutzen. Interessiert wohl wirklich niemand in INTERLIS.
+// - alw_bund_hanglagen_allgemein: Kosten/Nutzen. Interessiert wohl wirklich niemand in INTERLIS.
 // - alw_zonengrenzen: Externe und greifbare Daten (?)
 // - arp_npl
 
@@ -115,7 +115,7 @@ datasets.add(new Dataset("SO_SGV_Erschliessung_ausserhalb_Bauzone_20190611", "sg
 // Pub-DB
 // Nicht exportiert werden:
 // - agi_lidar_pub: Temporär
-// - alw_hl_allgemein_pub: Kosten/Nutzen. Interessiert wohl niemanden. Externe Ursprungsdaten.
+// - alw_bund_hanglagen_allgemein: Kosten/Nutzen. Interessiert wohl niemanden. Externe Ursprungsdaten.
 
 datasets.add(new Dataset("SO_ADA_Denkmal_Pub_20200527", "ada_denkmalschutz_pub", dbPub, "ch.so.ada.denkmalschutz")) 
 datasets.add(new Dataset("SO_AFU_ARA_Einzugsgebiete_20201016", "afu_ara_einzugsgebiete_pub", dbPub, "ch.so.afu.ara_einzugsgebiete")) 
