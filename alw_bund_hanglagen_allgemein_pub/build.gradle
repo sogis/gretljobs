@@ -9,6 +9,6 @@ task transferAlwHanglagen(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('alw_hl_allgemein_pub_hl_allgemein.sql', 'alw_hl_allgemein_pub.hl_allgemein', true)
+            new TransferSet('alw_bund_hanglagen_allgemein_pub_hl_allgemein.sql', 'alw_bund_hanglagen_allgemein_pub.hl_allgemein', true)
     ];
 }
