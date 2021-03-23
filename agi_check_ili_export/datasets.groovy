@@ -99,7 +99,7 @@ datasets.add(new Dataset("SO_AWJF_Foerderprogramm_Biodiversitaet_20200526", "awj
 datasets.add(new Dataset("SO_Forstreviere_20170512", "awjf_forstreviere", dbEdit, "ch.so.awjf.forstreviere_edit")) 
 datasets.add(new Dataset("SO_AWJF_Gesuchsteller_20201012", "awjf_gesuchsteller", dbEdit, "ch.so.awjf.gesuchsteller_edit")) 
 datasets.add(new Dataset("SO_AWJF_Jagdreviere_Jagdbanngebiete_202000804", "awjf_jagdreviere_jagdbanngebiete", dbEdit, "ch.so.awjf.jagdreviere_jagdbanngebiete_edit")) 
-datasets.add(new Dataset("SO_AWJF_Seltene_Baumarten_20190211", "awjf_seltene_baeume", dbEdit, "ch.so.awjf.seltene_baeume_edit", true)) 
+datasets.add(new Dataset("SO_AWJF_Seltene_Baumarten_20190211", "awjf_seltene_baeume", dbEdit, "ch.so.awjf.seltene_baeume_edit")) 
 datasets.add(new Dataset("SO_AWJF_Statische_Waldgrenzen_20191119", "awjf_statische_waldgrenze", dbEdit, "ch.so.awjf.statische_waldgrenze_edit")) 
 datasets.add(new Dataset("Waldgrenzen_LV03_V1_1", "awjf_statische_waldgrenzen_mgdm", dbEdit, "ch.so.awjf.statische_waldgrenzen_mgdm")) 
 datasets.add(new Dataset("SO_AWJF_Waldpflege_Erfassung_20200127", "awjf_waldpflege_erfassung", dbEdit, "ch.so.awjf.waldpflege_erfassung_edit")) 
