@@ -29,7 +29,7 @@ task copyXtfFile(type: Copy) {
     from "upload/"
     into "upload/"
     include("uploadFile")
-    rename("uploadFile", "uploadFile.xtf")
+    rename("uploadFile", "${Ili2pgDataset}.xtf")
 }
 
 task checkBsfNummer(dependsOn: 'copyXtfFile') {
