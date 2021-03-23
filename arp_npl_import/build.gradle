@@ -29,14 +29,14 @@ task copyXtfFile(type: Copy) {
     from "upload/"
     into "upload/"
     include("uploadFile")
-    rename("uploadFile", "${Ili2pgDataset}.xtf")
+    rename("uploadFile", "${ili2pgDataset}.xtf")
 }
 
 task checkBsfNummer(dependsOn: 'copyXtfFile') {
     description = "Prüft, ob die ersten vier Buchstaben der BFS-Nr. einer Nummer entsprechen, die im BfS-Range des Kt. SO liegt."    
     doFirst {
         def bfsRange = 2401..2622
-        def bfsNr = Ili2pgDataset as int 
+        def bfsNr = ili2pgDataset as int 
         assert true == bfsRange.contains(bfsNr)
     }
 }
@@ -47,8 +47,8 @@ task replaceDataset (type: Ili2pgReplace, dependsOn: 'checkBsfNummer') {
     dbschema = "arp_npl"
     models = "SO_Nutzungsplanung_20171118"
     disableValidation = true
-    dataset = Ili2pgDataset
-    dataFile = "upload/${Ili2pgDataset}.xtf"
+    dataset = ili2pgDataset
+    dataFile = "upload/${ili2pgDataset}.xtf"
 }
 
 def setNonExistingPropertyToUndefinedValue(propertyName) {
