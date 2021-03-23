@@ -12,7 +12,7 @@ node('master') {
             message: 'Datei hochladen',
             parameters: [
                 file(name: "$uploadDirName/$uploadFileName", description: 'Hochzuladende Datei auswählen'),
-                string(name: 'Ili2pgDataset', description: 'BFS-Nummer der Daten angeben')
+                string(name: 'ili2pgDataset', description: 'BFS-Nummer der Daten angeben')
             ]
         )
         dir(buildDir) {
@@ -31,7 +31,7 @@ pipeline {
                 git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
                 dir(env.JOB_BASE_NAME) {
                     unstash name: 'uploadDir'
-                    sh "gretl -Dorg.gradle.jvmargs=-Xmx2G -PIli2pgDataset=$inputFile.Ili2pgDataset"
+                    sh "gretl -Dorg.gradle.jvmargs=-Xmx2G -Pili2pgDataset=$inputFile.ili2pgDataset"
                 }
             }
         }
