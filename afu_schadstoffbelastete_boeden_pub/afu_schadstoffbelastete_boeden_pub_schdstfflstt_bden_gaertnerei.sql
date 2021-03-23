@@ -21,10 +21,9 @@ WITH dokumente AS (
                     FROM 
                         (
                             SELECT
-                                t_id,
-                                t_ili_tid,
-                                dokumentname,
-                                dateipfad
+                                'SO_AFU_Verzeichnis_schadstoffbelastete_Boeden_Publikation_20200701.Dokument' as "@type",
+                                dokumentname as "Name",
+                                dateipfad as "URL"
                         ) docs
                 ))
             )
@@ -57,10 +56,9 @@ WITH dokumente AS (
                     FROM 
                         (
                             SELECT
-                                t_id,
-                                t_ili_tid,
-                                schadstoffname,
-                                kuerzel
+                                'SO_AFU_Verzeichnis_schadstoffbelastete_Boeden_Publikation_20200701.Schadstoff' as "@type",
+                                schadstoffname AS "Schadstoffname",
+                                kuerzel AS "Kuerzel"
                         ) schadstoffe
                 ))
             )
