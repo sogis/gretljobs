@@ -55,7 +55,7 @@ FROM
     LEFT JOIN arp_agglomerationsprogramme.agglomrtnsprgrmme_umsetzungsstand umsetzungsstand 
 	ON umsetzungsstand.ilicode = massnahme.umsetzungsstand 	
   
-  -- nur Flaechen uebertragen die auch eine Massnahme dran haben
+  -- nur Linien uebertragen die auch eine Massnahme dran haben
   WHERE massnahme.t_id IS NOT NULL
 
 GROUP BY
