@@ -48,7 +48,7 @@ task replaceDataset (type: Ili2pgReplace, dependsOn: 'checkBsfNummer') {
     models = "SO_Nutzungsplanung_20171118"
     disableValidation = true
     dataset = Ili2pgDataset
-    dataFile = "upload/uploadFile.xtf"
+    dataFile = "upload/${Ili2pgDataset}.xtf"
 }
 
 def setNonExistingPropertyToUndefinedValue(propertyName) {
