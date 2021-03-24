@@ -1,10 +1,7 @@
 SELECT
-    ogc_fid AS t_id,
-    ST_Multi(wkb_geometry) AS geometrie,
-    typ,
-    herkunft
+    verkehrsmittel,
+    tunnel,
+    geometrie
 FROM
-    public.avt_oev_netz
-WHERE
-    archive = 0
+    avt_oeffentlicher_verkehr.oeffntlchr_vrkehr_netz
 ;
