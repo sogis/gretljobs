@@ -13,7 +13,7 @@ int_fels_bergsturz AS ( -- Besonderheit beim Prozess Bergsturz/Felssturz, es gib
     FROM
         afu_gefahrenkartierung.gefahrenkartirung_ik_sturz
     WHERE
-        prozessa IN ('Felssturz','Bergsturz')
+        prozessa IN ('Felssturz','Bergsturz','nicht_rekonstruierbar')
 ),
 
 
