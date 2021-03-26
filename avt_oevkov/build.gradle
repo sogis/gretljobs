@@ -8,7 +8,7 @@ description = "GRETL-Job für die Berechnung des OEVKOV in der Edit-DB"
 
 
 // OEVKOV Variablen
-def currentYear = '2020'
+def currentYear = '2021'
 
 
 defaultTasks 'do_Gesamtberechnung'
