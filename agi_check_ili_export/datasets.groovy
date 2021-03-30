@@ -81,7 +81,7 @@ datasets.add(new Dataset("SO_AMB_Notfalltreffpunkte_20180413", "amb_notfalltreff
 datasets.add(new Dataset("SO_Agglomerationsprogramme_20200618", "arp_agglomerationsprogramme", dbEdit, "ch.so.arp.agglomerationsprogramme_edit"))
 datasets.add(new Dataset("SO_ARP_Baugis_20190612", "arp_baugis", dbEdit, "ch.so.arp.baugis_edit", true))
 datasets.add(new Dataset("SO_ARP_Fledermausfundorte_20200728", "arp_fledermaus", dbEdit, "ch.so.arp.fledermausstandorte_edit"))
-datasets.add(new Dataset("Laermempfindlichkeitsstufen_LV95_V1_1", "arp_laermempfindlichkeitsstufen_mgdm", dbEdit, "ch.so.arp.laermempfindlichkeitsstufen_mgdm"))
+//datasets.add(new Dataset("Laermempfindlichkeitsstufen_LV95_V1_1", "arp_laermempfindlichkeitsstufen_mgdm", dbEdit, "ch.so.arp.laermempfindlichkeitsstufen_mgdm"))
 datasets.add(new Dataset("SO_ARP_Mehrjahresprogramm_20200228", "arp_mehrjahresprogramm", dbEdit, "ch.so.arp.mehrjahresprogramm_edit"))
 datasets.add(new Dataset("SO_ARP_Naturreservate_20200609", "arp_naturreservate", dbEdit, "ch.so.arp.naturreservate_edit"))
 datasets.add(new Dataset("Nutzungsplanung_LV95_V1_1", "arp_npl_mgdm", dbEdit, "ch.so.arp.npl_mgdm"))
