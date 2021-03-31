@@ -3,19 +3,13 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'refreshSolr'
+defaultTasks 'transferAvtOeffentlicherVerkehrPub'
 
-task transferAvtOeffentlicherVerkehr(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+task transferAvtOeffentlicherVerkehrPub(type: Db2Db) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('avt_oeffentlicher_verkehr_pub_haltestellen.sql',
-                    'avt_oeffentlicher_verkehr_pub.haltestellen', true),
-            new TransferSet('avt_oeffentlicher_verkehr_pub_netz.sql', 'avt_oeffentlicher_verkehr_pub.netz', true)
+            new TransferSet('avt_oeffentlicher_verkehr_pub_haltestellen.sql', 'avt_oeffentlicher_verkehr_pub.oeffntlchr_vrkehr_haltestelle', true),
+            new TransferSet('avt_oeffentlicher_verkehr_pub_netz.sql', 'avt_oeffentlicher_verkehr_pub.oeffntlchr_vrkehr_netz', true)
     ];
-}
-
-
-task refreshSolr(type:Exec, dependsOn:'transferAvtOeffentlicherVerkehr') {
-	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.avt.oev.haltestellen'
 }

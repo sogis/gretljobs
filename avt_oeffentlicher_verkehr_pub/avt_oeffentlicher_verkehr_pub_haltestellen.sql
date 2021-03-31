@@ -1,14 +1,9 @@
 SELECT
-    ogc_fid AS t_id,
-    wkb_geometry AS geometrie,
-    haltest_id,
-    haltestell,
-    nr_tu,
-    anzahl_hs,
+    haltestellenname,
     didok,
-    verkehrsmittel
+    verkehrsmittel,
+    kategorie,
+    geometrie
 FROM
-    public.avt_oev_haltestellen
-WHERE
-    archive = 0
+    avt_oeffentlicher_verkehr.oeffntlchr_vrkehr_haltestelle
 ;
