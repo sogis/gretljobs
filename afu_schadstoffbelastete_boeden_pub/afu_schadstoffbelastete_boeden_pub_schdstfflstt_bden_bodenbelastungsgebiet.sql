@@ -20,11 +20,10 @@ WITH dokumente AS (
                         docs
                     FROM 
                         (
-                            SELECT
-                                t_id,
-                                t_ili_tid,
-                                dokumentname,
-                                dateipfad
+                            select
+                                'SO_AFU_Verzeichnis_schadstoffbelastete_Boeden_Publikation_20200701.Dokument' as "@type",
+                                dokumentname as "Name",
+                                dateipfad as "URL"
                         ) docs
                 ))
             )
@@ -56,11 +55,10 @@ WITH dokumente AS (
                         schadstoffe
                     FROM 
                         (
-                            SELECT
-                                t_id,
-                                t_ili_tid,
-                                schadstoffname,
-                                kuerzel
+                            select
+                                'SO_AFU_Verzeichnis_schadstoffbelastete_Boeden_Publikation_20200701.Schadstoff' as "@type",
+                                schadstoffname AS "Schadstoffname",
+                                kuerzel AS "Kuerzel"
                         ) schadstoffe
                 ))
             )
@@ -185,4 +183,3 @@ FROM
         ON flaechentyp.ilicode = schdstfflstt_bden_bodenbelastungsgebiet.flaechentyp
     LEFT JOIN afu_schadstoffbelastete_boeden.schdstfstt_bden_bodenbelastungsgebiet_verursacher verursacher
         ON verursacher.ilicode = schdstfflstt_bden_bodenbelastungsgebiet.verursacher
-;
