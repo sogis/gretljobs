@@ -122,7 +122,7 @@ datasets.add(new Dataset("SO_AFU_ARA_Einzugsgebiete_20201016", "afu_ara_einzugsg
 datasets.add(new Dataset("SO_AfU_BauGK_CCCCache_20180507", "afu_baugk_ccccache", dbPub, "ch.so.afu.baugk_ccccache", true)) 
 datasets.add(new Dataset("SO_AFU_Bodenprofilstandorte_Publikation_20210129", "afu_bodendaten_nabodat_pub", dbPub, "ch.so.afu.bodendaten_nabodat"))
 datasets.add(new Dataset("SO_AFU_Bodendaten_schadstoffuntersuchung_Publikation_20200928", "afu_bodendaten_schadstoffuntersuchung_pub", dbPub, "ch.so.afu.bodendaten_schadstoffuntersuchung")) 
-datasets.add(new Dataset("SO_AFU_Ekat_Publikation_20190222", "afu_ekat2015_pub", dbPub, "ch.so.afu.ekat2015", true)) 
+datasets.add(new Dataset("SO_AFU_Ekat_Publikation_20190222", "afu_ekat2015_pub", dbPub, "ch.so.afu.ekat2015")) 
 datasets.add(new Dataset("SO_AFU_Nagra_Bohrtiefen_20190927", "afu_erdwaermesonden_nagra_pub", dbPub, "ch.so.afu.erdwaermesonden_nagra", true)) 
 datasets.add(new Dataset("SO_AfU_Erdwaermesonden_Publikation_20200113", "afu_erdwaermesonden_pub", dbPub, "ch.so.afu.erdwaermesonden")) 
 datasets.add(new Dataset("SO_AfU_Gefahrenkartierung_20181129", "afu_gefahrenkartierung_pub", dbPub, "ch.so.afu.gefahrenkartierung", true)) 
@@ -130,7 +130,7 @@ datasets.add(new Dataset("SO_AFU_Geotope_Publikation_20200623", "afu_geotope_pub
 //datasets.add(new Dataset("SO_AfU_Gewaesserschutz_Publikation_20200115", "afu_gewaesserschutz_pub", dbPub, "ch.so.afu.gewaesserschutz")) // Falsches Json -> Ticket gemacht
 datasets.add(new Dataset("SO_AFU_Igel_Publikation_20200429", "afu_igel_pub", dbPub, "ch.so.afu.igel")) 
 //datasets.add(new Dataset("SO_AFU_Verzeichnis_schadstoffbelastete_Boeden_Publikation_20200701", "afu_schadstoffbelastete_boeden_pub", dbPub, "ch.so.afu.schadstoffbelastete_boeden")) // Falsches Json -> Ticket gemacht
-datasets.add(new Dataset("SO_AfU_Wasserbewirtschaftung_Publikation_20190305", "afu_wasserbewirtschaftung_pub", dbPub, "ch.so.afu.wasserbewirtschaftung", true))
+datasets.add(new Dataset("SO_AfU_Wasserbewirtschaftung_Publikation_20190305", "afu_wasserbewirtschaftung_pub", dbPub, "ch.so.afu.wasserbewirtschaftung"))
 datasets.add(new Dataset("SO_AGEM_Fila_Publikation_20190318", "agem_fila_pub", dbPub, "ch.so.agem.fila"))
 datasets.add(new Dataset("SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822", "agi_av_gb_admin_einteilung_pub", dbPub, "ch.so.agi.av_gb_administrative_einteilungen"))
 datasets.add(new Dataset("IliVErrors", "agi_av_validierung_pub", dbPub, "ch.so.agi.av_validierung"))
