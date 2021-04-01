@@ -67,9 +67,9 @@ INSERT INTO
             CASE
                 WHEN route_desc = 'Bus'                                                               
                      THEN 1
-                WHEN route_desc IN ('RegioExpress', 'InterRegio', 'Intercity')
+                WHEN route_desc IN ('RegioExpress', 'InterRegio', 'InterCity')
                      THEN 2
-                WHEN route_desc IN ('Regionalzug', 'S-Bahn', 'Tram')
+                WHEN route_desc IN ('Regio', 'S-Bahn', 'Nacht-S-Bahn', 'Tram')
                     THEN 3
             END AS verkehrsmittel
         FROM
@@ -135,12 +135,13 @@ INSERT INTO
             pickup_type = 0
         AND
            route_desc IN (
-               'Intercity',
-               'ICE',
+               'InterCity',
+               'EuroCity',
                'InterRegio',
                'RegioExpress',
-               'Regionalzug',
+               'Regio',
                'S-Bahn',
+               'Nacht-S-Bahn',
                'Bus',
                'Tram'
            )
@@ -930,9 +931,9 @@ INSERT INTO
          CASE
                 WHEN route_desc = 'Bus'
                      THEN 1
-                WHEN route_desc IN ('RegioExpress', 'InterRegio', 'Intercity')
+                WHEN route_desc IN ('RegioExpress', 'InterRegio', 'InterCity')
                      THEN 2
-                WHEN route_desc IN ('Regionalzug', 'S-Bahn', 'Tram')
+                WHEN route_desc IN ('Regio', 'S-Bahn', 'Nacht-S-Bahn', 'Tram')
                     THEN 3
             END AS verkehrsmittel
      FROM
@@ -1014,33 +1015,104 @@ WHERE
 ;
 
 
--- Alle Einträge in Tabelle sachdaten_linie_route als "nicht verwendet" markieren,
--- welche nicht in der GTFS-Auswertung enthalten sind
 
--- zuerst Kommentare für bereits verwendeten Stichtag löschen
-UPDATE avt_oevkov_${currentYear}.sachdaten_linie_route
-SET
-    kommentar = NULL
-WHERE
-    kommentar LIKE 'nicht verwendet am Stichtag %'
-;
 
-WITH stichtag AS (
-SELECT
-    to_char(stichtag, 'dd.mm.YYYY') AS stichtag
-FROM
-    avt_oevkov_${currentYear}.sachdaten_oevkov_daten
-)
-UPDATE avt_oevkov_${currentYear}.sachdaten_linie_route
-SET
-    kommentar = 'nicht verwendet am Stichtag '||stichtag.stichtag
-FROM
-   stichtag
-WHERE
-    route_id NOT IN (
-        SELECT
-            route_id
-        FROM
-            avt_oevkov_${currentYear}.auswertung_auswertung_gtfs
-    )
-;
+
+
+
+
+-- fällt weg, da 2021 relativ viel an den route_ids geändert hat
+
+-- -- Alle Einträge in Tabelle sachdaten_linie_route als "nicht verwendet am Stichtag"
+-- -- markieren, welche nicht zum Stichtag gehören
+-- 
+-- -- zuerst Kommentare für bereits verwendeten Stichtag löschen
+-- UPDATE avt_oevkov_${currentYear}.sachdaten_linie_route
+-- SET
+--     kommentar = NULL
+-- WHERE
+--     kommentar LIKE 'nicht verwendet am Stichtag %'
+-- ;
+-- 
+-- WITH calendar AS (
+--     SELECT
+--         service_id,
+--     CASE
+--     WHEN (SELECT BTRIM(lower(to_char((
+--             SELECT
+--                 stichtag
+--             FROM
+--                 avt_oevkov_${currentYear}.sachdaten_oevkov_daten), 'Day')))) = 'thursday'
+--         THEN thursday
+--     WHEN (SELECT BTRIM(lower(to_char((
+--             SELECT
+--                 stichtag
+--             FROM
+--                 avt_oevkov_${currentYear}.sachdaten_oevkov_daten), 'Day')))) = 'tuesday'
+--            THEN tuesday
+--     END AS dayofweek
+--     FROM
+--         avt_oevkov_${currentYear}.gtfs_calendar
+-- ),
+-- exception AS (
+--     SELECT
+--         service_id,
+--         exception_type
+--     FROM
+--         avt_oevkov_${currentYear}.gtfs_calendar_dates
+--     WHERE
+--         datum = (
+--                 SELECT
+--                     stichtag
+--                 FROM
+--                     avt_oevkov_${currentYear}.sachdaten_oevkov_daten)
+-- ),
+-- trips AS (
+--     SELECT route_id
+--     FROM 
+--         avt_oevkov_${currentYear}.gtfs_trip
+--     WHERE
+--         (
+--             service_id IN (
+--                 SELECT
+--                     service_id
+--                 FROM
+--                     calendar
+--                 WHERE dayofweek = 1
+--             )
+--             OR
+--             service_id IN (
+--                 SELECT
+--                     service_id
+--                 FROM
+--                     exception
+--                 WHERE
+--                     exception_type = 1
+--             )
+--         )
+--         AND
+--             service_id NOT IN (
+--                 SELECT
+--                     service_id
+--                 FROM
+--                     exception
+--                 WHERE
+--                     exception_type = 2
+--         )
+-- )
+-- UPDATE avt_oevkov_${currentYear}.sachdaten_linie_route
+--     SET
+--         kommentar = 'nicht verwendet am Stichtag '
+--                     ||( SELECT
+--                              to_char(stichtag, 'dd.mm.YYYY') AS stichtag
+--                         FROM
+--                             avt_oevkov_${currentYear}.sachdaten_oevkov_daten
+--                       )
+-- WHERE
+--     route_id NOT IN (
+--         SELECT
+--             route_id
+--         FROM
+--             trips
+--     )
+-- ;
