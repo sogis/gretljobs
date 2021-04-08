@@ -1,0 +1,2 @@
+DELETE FROM awjf_gesuchsteller.gesuchsteller_gesuchsteller
+;

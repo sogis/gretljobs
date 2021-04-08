@@ -1,0 +1,39 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+
+defaultTasks 'importGesuchsteller'
+
+
+
+task copyCsvFile(type: Copy) {
+    from "upload/"
+    into "upload/"
+    include("uploadFile")
+    rename("uploadFile", "uploadFile.csv")
+}
+
+task validateCsvFile(type: CsvValidator, dependsOn: 'copyCsvFile') {
+    models = "SO_AWJF_Gesuchsteller_20210202"
+    firstLineIsHeader=true
+    valueSeparator = ';'
+    encoding = 'UTF-8'
+    dataFiles = [file("upload/uploadFile.csv")]
+}
+
+task deleteFromAwjfGesuchsteller(type: SqlExecutor, dependsOn: 'validateCsvFile') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['delete_from_awjf_gesuchsteller.sql']
+}
+
+task importGesuchsteller(type: CsvImport, dependsOn: 'deleteFromAwjfGesuchsteller') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = 'awjf_gesuchsteller'
+    tableName = 'gesuchsteller_gesuchsteller'
+    firstLineIsHeader = true
+    valueSeparator = ';'
+    encoding = 'UTF-8'
+    dataFile = "upload/uploadFile"
+}
