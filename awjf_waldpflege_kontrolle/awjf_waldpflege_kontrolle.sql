@@ -7,15 +7,6 @@ SELECT
     gesuchsteller.eigentuemerart,
     gesuchsteller.forstrevier,
     gesuchsteller.forstkreis,
-    gesuchsteller.anrede,
-    gesuchsteller.name1,
-    gesuchsteller.name2,
-    gesuchsteller.adresszusatz,
-    gesuchsteller.strasse_hausnummer,
-    gesuchsteller.plz,
-    gesuchsteller.ortschaft,
-    NULL AS bemerkung_stab,
-    gesuchsteller.kreditorennummer,
     gesuchsteller.abstufung_50_100,
     ST_Area(waldpflege.geometrie) / 100 AS flaeche,
     waldpflege.geometrie,
@@ -23,9 +14,15 @@ SELECT
     waldpflege.jahr,
     waldpflege.gesuchnummer,
     waldpflege.dauerwald,
-    waldpflege.erfasser
+    waldpflege.erfasser,
+    FALSE AS innerhalb_kontingent,
+    waldpflege.abgabe_forstkreis,
+    waldpflege.gepflegte_flaeche,
+    waldpflege.pflegeart
 FROM 
    awjf_waldpflege_erfassung.waldpflege_waldpflege AS waldpflege
    LEFT JOIN awjf_gesuchsteller.gesuchsteller_gesuchsteller As gesuchsteller
    ON waldpflege.gesuchnummer = gesuchsteller.gesuchsnummer
+WHERE
+    waldpflege.abgabe_forstkreis IS TRUE
 ;
