@@ -7,37 +7,8 @@ defaultTasks 'transferAwjfWaldpflegeErfassung'
 
 
 
-task copyCsvFile(type: Copy) {
-    from "upload/"
-    into "upload/"
-    include("uploadFile")
-    rename("uploadFile", "uploadFile.csv")
-}
-
-task validateCsvFile(type: CsvValidator, dependsOn: 'copyCsvFile') {
-    models = "SO_AWJF_Gesuchsteller_20201012"
-    firstLineIsHeader=true
-    valueSeparator = ';'
-    encoding = 'UTF-8'
-    dataFiles = [file("upload/uploadFile.csv")]
-}
-
-task deleteFromAwjfGesuchsteller(type: SqlExecutor, dependsOn: 'validateCsvFile') {
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ['delete_from_awjf_gesuchsteller.sql']
-}
-
-task importGesuchsteller(type: CsvImport, dependsOn: 'deleteFromAwjfGesuchsteller') {
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    schemaName = 'awjf_gesuchsteller'
-    tableName = 'gesuchsteller_gesuchsteller'
-    firstLineIsHeader = true
-    valueSeparator = ';'
-    encoding = 'UTF-8'
-    dataFile = "upload/uploadFile"
-}
-
-task transferAwjfWaldpflegeErfassung(type: Db2Db, dependsOn: 'importGesuchsteller') {
+//task transferAwjfWaldpflegeErfassung(type: Db2Db) {
+task transferAwjfWaldpflegeErfassung(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
