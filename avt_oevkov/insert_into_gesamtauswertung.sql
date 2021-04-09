@@ -1,6 +1,8 @@
 DELETE FROM avt_oevkov_${currentYear}.auswertung_gesamtauswertung
 ;
 
+
+
 INSERT INTO
     avt_oevkov_${currentYear}.auswertung_gesamtauswertung
         (
@@ -284,6 +286,7 @@ INSERT INTO
               )   
         )
 ;
+
 
 -- Haltestellen einfügen, welche in der Auswertung fehlen, für die aber eine Korrektur eingetragen wurde
 INSERT INTO
