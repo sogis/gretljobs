@@ -80,8 +80,8 @@ datasets.each { dataset ->
     task "validateData_$datasetId"(type: IliValidator, dependsOn: "exportDataset_$datasetId") {
         //dataFiles = [Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf")]
         dataFiles = [Paths.get(pathToTempFolder, datasetId + ".xtf")]
-        logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_validation.log"))
-        xtflogFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_validation.xtf"))
+        logFile = file(Paths.get(pathToTempFolder, datasetId + "_validation.log"))
+        xtflogFile = file(Paths.get(pathToTempFolder, datasetId + "_validation.xtf"))
         failOnError = false
         if (new File("config/"+datasetId + ".toml").isFile()) configFile = "config/"+datasetId + ".toml"
     }
@@ -91,6 +91,7 @@ datasets.each { dataset ->
         include "$datasetId*.xtf"
         include "$datasetId*_export.log"
         include "$datasetId*_validation.log"
+        include "$datasetId*_validation.xtf"
         archiveName datasetId + "_xtf.zip"
         destinationDir(file(pathToTempFolder))
     }
@@ -118,6 +119,7 @@ task zipLogFiles(type: Zip) {
     from pathToTempFolder
     include "*_export.log"
     include "*_validation.log"
+    include "*_validation.xtf"
     archiveName  "datenvalidierung_"+todaysDate+".zip"
     destinationDir(file(pathToTempFolder))
 }   
