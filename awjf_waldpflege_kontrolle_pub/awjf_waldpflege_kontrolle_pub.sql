@@ -4,18 +4,8 @@ SELECT
     mehrfachpflege,
     beitrag,
     gesuchsteller,
-    eigentuemerart,
     forstrevier,
     forstkreis,
-    anrede,
-    name1,
-    name2,
-    adresszusatz,
-    strasse_hausnummer,
-    plz,
-    ortschaft,
-    bemerkung_stab,
-    kreditorennummer,
     abstufung_50_100,
     flaeche,
     geometrie,
@@ -23,7 +13,11 @@ SELECT
     jahr,
     gesuchnummer,
     dauerwald,
-    erfasser
+    erfasser,
+    innerhalb_kontingent,
+    abgabe_forstkreis,
+    gepflegte_flaeche,
+    pflegeart
 FROM 
    awjf_waldpflege_kontrolle.waldpflege_waldpflege
 ;
