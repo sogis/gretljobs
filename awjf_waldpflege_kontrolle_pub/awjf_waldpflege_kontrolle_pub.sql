@@ -4,6 +4,7 @@ SELECT
     mehrfachpflege,
     beitrag,
     gesuchsteller,
+    eigentuemerart,
     forstrevier,
     forstkreis,
     abstufung_50_100,
