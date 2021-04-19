@@ -227,7 +227,7 @@ INSERT INTO
         stop_name = 'Solothurn'
     AND
         substring(linienname from 1 for 4) IN
-            ('L304', 'L308', 'L410', 'L411', 'L413')
+            ('L308', 'L344', 'L410', 'L411', 'L413')
     GROUP BY
         stop_name,
         route_id,
@@ -510,7 +510,7 @@ UNION ALL
     AND
         stop_name = 'Olten'
     AND
-        linienname = 'L510 Olten - Sursee (S29)'
+        linienname = 'L510 Olten - Zofingen/Sursee (S29)'
     AND
        trip_headsign = 'Sursee'
     GROUP BY
