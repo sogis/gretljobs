@@ -4,6 +4,7 @@ SELECT
     NULL AS mehrfachpflege,
     0 AS beitrag,
     gesuchsteller.gesuchsteller,
+    NULL AS eigentuemerart,
     gesuchsteller.forstrevier,
     gesuchsteller.forstkreis,
     gesuchsteller.abstufung_50_100,
