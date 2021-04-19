@@ -1106,8 +1106,6 @@ SELECT
         )
         SELECT json_agg(jsondok) FROM docs
     )::jsonb AS dokumente
-   WHERE
-    proj.kantonsnummer IS NOT NULL
   FROM alw_strukturverbesserungen.raeumlicheelemnte_wege_bruecke_lehnenviadukt el
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
     LEFT JOIN alw_strukturverbesserungen.astatus status ON el.astatus = status.ilicode
@@ -1118,6 +1116,8 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlichlmnt_wg_brck_lhnnvdukt
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
+   WHERE
+    proj.kantonsnummer IS NOT NULL
    GROUP BY
     el.t_id,
     el.t_ili_tid,
