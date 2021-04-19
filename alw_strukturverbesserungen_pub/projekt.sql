@@ -6,5 +6,7 @@ SELECT
      geschaeftsnummer,
      kantonsnummer,
      aname
-	FROM alw_strukturverbesserungen.raeumlicheelemnte_projekt
+  FROM alw_strukturverbesserungen.raeumlicheelemnte_projekt
+  WHERE
+   kantonsnummer IS NOT NULL
 ;

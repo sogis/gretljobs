@@ -52,6 +52,8 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlichlmnt_bw_flchn_bwssrung
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
+   WHERE
+    proj.kantonsnummer IS NOT NULL
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -121,6 +123,8 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_bewssrng_lnie
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
+   WHERE
+    proj.kantonsnummer IS NOT NULL
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -190,6 +194,8 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_bewssrng_pnkt
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
+   WHERE
+    proj.kantonsnummer IS NOT NULL
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -259,6 +265,8 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raemlchlmnt_ntw_bdnstrktr_flche
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
+   WHERE
+    proj.kantonsnummer IS NOT NULL
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -328,6 +336,8 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlchlmnt_ntw_bdnstrktr_lnie
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
+   WHERE
+    proj.kantonsnummer IS NOT NULL
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -396,6 +406,8 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raemlchlmnt_ntwdnstrktr_pmpwerk
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
+   WHERE
+    proj.kantonsnummer IS NOT NULL
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -464,6 +476,8 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_ev_linie
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
+   WHERE
+    proj.kantonsnummer IS NOT NULL
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -533,6 +547,8 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_ev_punkt
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
+   WHERE
+    proj.kantonsnummer IS NOT NULL
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -601,6 +617,8 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raemlchlmnt_wv_tng_wssrvrsrgung
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
+   WHERE
+    proj.kantonsnummer IS NOT NULL
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -670,6 +688,8 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlichelmnt_wssrvrsrgng_pnkt
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
+   WHERE
+    proj.kantonsnummer IS NOT NULL
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -739,6 +759,8 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_oekolog_flche
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
+   WHERE
+    proj.kantonsnummer IS NOT NULL
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -808,6 +830,8 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_oekologi_lnie
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
+   WHERE
+    proj.kantonsnummer IS NOT NULL
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -876,6 +900,8 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_oekologi_pnkt
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
+   WHERE
+    proj.kantonsnummer IS NOT NULL
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -944,6 +970,8 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_klg_trcknmuer
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
+   WHERE
+    proj.kantonsnummer IS NOT NULL
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -1014,6 +1042,8 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlicheelemnte_wegebau_linie
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
+   WHERE
+    proj.kantonsnummer IS NOT NULL
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -1076,6 +1106,8 @@ SELECT
         )
         SELECT json_agg(jsondok) FROM docs
     )::jsonb AS dokumente
+   WHERE
+    proj.kantonsnummer IS NOT NULL
   FROM alw_strukturverbesserungen.raeumlicheelemnte_wege_bruecke_lehnenviadukt el
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt proj ON el.projekt = proj.t_id
     LEFT JOIN alw_strukturverbesserungen.astatus status ON el.astatus = status.ilicode
@@ -1157,6 +1189,8 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft_element ztgenel ON el.t_id = ztgenel.element_genossenschaft_raeumlichelmnt_wdrhrstllng_pnkt
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
+   WHERE
+    proj.kantonsnummer IS NOT NULL
    GROUP BY
     el.t_id,
     el.t_ili_tid,
