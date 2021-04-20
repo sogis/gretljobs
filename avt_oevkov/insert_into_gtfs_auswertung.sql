@@ -483,7 +483,7 @@ UNION ALL
     AND
         stop_name = 'Olten'
     AND
-        linienname = 'L650 Turgi - Olten (S29)'
+        linienname = 'L650 Olten - Turgi (S29)'
     AND
        trip_headsign IN ('Brugg AG', 'Turgi')
     GROUP BY
@@ -512,7 +512,7 @@ UNION ALL
     AND
         linienname = 'L510 Olten - Zofingen/Sursee (S29)'
     AND
-       trip_headsign = 'Sursee'
+       trip_headsign IN ('Sursee', 'Zofingen')
     GROUP BY
         stop_name,
         route_id,
@@ -632,7 +632,7 @@ UNION ALL
     AND
         substring(linienname from 1 for 4) = 'L650'
     AND
-        linienname <> 'L650 Turgi - Olten (S29)'
+        linienname <> 'L650 Olten - Turgi (S29)'
     AND
         trip_id IN (
             SELECT
