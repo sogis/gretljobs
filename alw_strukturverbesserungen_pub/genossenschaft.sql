@@ -232,8 +232,15 @@ SELECT
     gen.aufloesungsdatum,
     gen.bemerkung,
     gen.geometrie,
-    string_agg(proj.kantonsnummer,', ') AS kantonsnummern,
-    string_agg(proj.geschaeftsnummer,', ') AS geschaeftsnummern,
+    string_agg(
+      substring(proj.geschaeftsnummer from 1 for 2) ||
+      '-' || substring(proj.geschaeftsnummer from 3 for 3) ||
+      '-' || substring(proj.geschaeftsnummer from 5 for 5),
+    ', ') AS geschaeftsnummern,
+    string_agg(
+      substring(proj.kantonsnummer from 1 for 4) ||
+      '-' || substring(proj.kantonsnummer from 5 for 3),
+    ', ') AS kantonsnummern,
     gen.dokumente
   FROM gen
     LEFT JOIN projekte proj ON gen.t_id = proj.t_id
