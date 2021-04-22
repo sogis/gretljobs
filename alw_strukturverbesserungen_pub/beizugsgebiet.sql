@@ -13,7 +13,7 @@ SELECT
         substring(prj.kantonsnummer from 1 for 4) ||
         '-' || substring(prj.kantonsnummer from 5 for 3),
       ', ') AS kantonsnummern,
-      string_agg(prj.projekttyp,', ') AS projekttyp
+      COALESCE(string_agg(prj.projekttyp,', '),'unbekannt') AS projekttyp
   FROM alw_strukturverbesserungen.raeumlicheelemnte_beizugsgebiet bzgb
     LEFT JOIN alw_strukturverbesserungen.beizugsgebiete bzgbtyp ON bzgb.typ = bzgbtyp.ilicode
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_beizugsgebiet_projekt zt ON bzgb.t_id = zt.beizugsgebiet
