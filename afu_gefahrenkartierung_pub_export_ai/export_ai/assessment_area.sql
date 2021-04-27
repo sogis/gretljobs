@@ -5,7 +5,7 @@
 WITH
 	not_assessed_area AS (
 		SELECT 
-			t_ili_tid::text AS t_ili_tid,
+                        concat('_',t_ili_tid,'.so.ch')::text AS t_ili_tid,
 			geometrie AS area,
 		   	'SO'::text AS data_responsibility,			
 			'not_assessed'::text AS fl_state_flooding,

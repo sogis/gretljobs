@@ -1,5 +1,5 @@
 SELECT
-	t_ili_tid::varchar AS t_ili_tid,	
+	concat('_',t_ili_tid,'.so.ch')::varchar AS t_ili_tid,
 	CASE
 		WHEN prozessa = 'Sturz'
 			THEN 'rockfall'
