@@ -6,11 +6,16 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferAwjfWaldpflegeKontrollePub'
 
 
-task transferAwjfWaldpflegeKontrollePub(type: Db2Db){
+task deleteFromWaldpflegeKontrolle(type: SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['delete_from_awjf_waldpflege_kontrolle.sql']
+}
+
+task transferAwjfWaldpflegeKontrollePub(type: Db2Db, dependsOn: 'deleteFromWaldpflegeKontrolle'){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('awjf_waldpflege_kontrolle_pub.sql',
-                    'awjf_waldpflege_kontrolle_pub.waldpflege_waldpflege', true)
+                    'awjf_waldpflege_kontrolle_pub.waldpflege_waldpflege', false)
     ];
 }
