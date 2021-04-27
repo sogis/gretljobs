@@ -29,7 +29,7 @@ WITH
 	),
 	assessed_area AS (
 		SELECT
-			t_ili_tid::text AS t_ili_tid,
+			concat('_',t_ili_tid,'.so.ch')::text AS t_ili_tid,
 			geometrie AS area,
 			'SO'::text AS data_responsibility,			
 			'assessed_and_complete'::text AS fl_state_flooding,
