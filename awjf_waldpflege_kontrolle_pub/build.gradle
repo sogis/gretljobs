@@ -8,7 +8,7 @@ defaultTasks 'transferAwjfWaldpflegeKontrollePub'
 
 task deleteFromWaldpflegeKontrolle(type: SqlExecutor) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ['delete_from_awjf_waldpflege_kontrolle.sql']
+    sqlFiles = ['delete_from_awjf_waldpflege_kontrolle_pub.sql']
 }
 
 task transferAwjfWaldpflegeKontrollePub(type: Db2Db, dependsOn: 'deleteFromWaldpflegeKontrolle'){
