@@ -51,7 +51,6 @@ ext.datasets = []
 datasets.add(new Dataset("SO_ADA_Denkmal_20191128", "ada_denkmalschutz", dbEdit, "ch.so.ada.denkmalschutz_edit"))
 datasets.add(new Dataset("SO_AFU_ARA_Einzugsgebiete_20201016", "afu_ara_einzugsgebiete", dbEdit, "ch.so.afu.ara_einzugsgebiete_edit"))
 datasets.add(new Dataset("NABODAT_ErgebnisseBodenbelastung_Punktdaten_LV95_V1_1", "afu_bodendaten_nabodat", dbEdit, "ch.so.afu.bodendaten_nabodat_edit"))
-datasets.add(new Dataset("SO_AfU_Erdwaermesonden_20190204", "afu_erdwaermesonden", dbEdit, "ch.so.afu.erdwaermesonden_edit", true))
 datasets.add(new Dataset("SO_AFU_Nagra_Bohrtiefen_20190927", "afu_erdwaermesonden_nagra", dbEdit, "ch.so.afu.erdwaermesonden_nagra_edit"))
 datasets.add(new Dataset("SO_AfU_Erdwaermesonden_20200421", "afu_erdwaermesonden_v2", dbEdit, "ch.so.afu.erdwaermesonden_v2_edit"))
 datasets.add(new Dataset("SO_AfU_Gefahrenkartierung_20181129", "afu_gefahrenkartierung", dbEdit, "ch.so.afu.gefahrenkartierung_edit", true))
@@ -95,13 +94,13 @@ datasets.add(new Dataset("SO_AVT_OevKov_20200420", "avt_oevkov_2020", dbEdit, "c
 datasets.add(new Dataset("SO_AVT_Strassenlaerm_20190806", "avt_strassenlaerm", dbEdit, "ch.so.avt.strassenlaerm_edit")) 
 datasets.add(new Dataset("SO_AVT_Verkehrszaehlstellen_20190206", "avt_verkehrszaehlstellen", dbEdit, "ch.so.avt.verkehrszaehlstellen_edit")) 
 datasets.add(new Dataset("SupplySecurity_RuledAreas_V1_2", "awa_stromversorgungssicherheit", dbEdit, "ch.so.awa.stromversorgungssicherheit_netzgebiete_edit")) 
-datasets.add(new Dataset("SO_AWJF_Foerderprogramm_Biodiversitaet_20200526", "awjf_foerderprogramm_biodiversitaet", dbEdit, "ch.so.awjf.foerderprogramm_biodiversitaet_edit")) 
+datasets.add(new Dataset("SO_AWJF_Foerderprogramm_Biodiversitaet_20201021", "awjf_foerderprogramm_biodiversitaet", dbEdit, "ch.so.awjf.foerderprogramm_biodiversitaet_edit")) 
 datasets.add(new Dataset("SO_Forstreviere_20170512", "awjf_forstreviere", dbEdit, "ch.so.awjf.forstreviere_edit")) 
 datasets.add(new Dataset("SO_AWJF_Gesuchsteller_20201012", "awjf_gesuchsteller", dbEdit, "ch.so.awjf.gesuchsteller_edit")) 
 datasets.add(new Dataset("SO_AWJF_Jagdreviere_Jagdbanngebiete_202000804", "awjf_jagdreviere_jagdbanngebiete", dbEdit, "ch.so.awjf.jagdreviere_jagdbanngebiete_edit")) 
 datasets.add(new Dataset("SO_AWJF_Seltene_Baumarten_20190211", "awjf_seltene_baeume", dbEdit, "ch.so.awjf.seltene_baeume_edit")) 
 datasets.add(new Dataset("SO_AWJF_Statische_Waldgrenzen_20191119", "awjf_statische_waldgrenze", dbEdit, "ch.so.awjf.statische_waldgrenze_edit")) 
-datasets.add(new Dataset("Waldgrenzen_LV03_V1_1", "awjf_statische_waldgrenzen_mgdm", dbEdit, "ch.so.awjf.statische_waldgrenzen_mgdm")) 
+datasets.add(new Dataset("Waldgrenzen_LV95_V1_1", "awjf_statische_waldgrenzen_mgdm", dbEdit, "ch.so.awjf.statische_waldgrenzen_mgdm")) 
 datasets.add(new Dataset("SO_AWJF_Waldpflege_Erfassung_20200127", "awjf_waldpflege_erfassung", dbEdit, "ch.so.awjf.waldpflege_erfassung_edit")) 
 datasets.add(new Dataset("SO_AWJF_Waldpflege_Kontrolle_20200127", "awjf_waldpflege_kontrolle", dbEdit, "ch.so.awjf.waldpflege_kontrolle_edit")) 
 datasets.add(new Dataset("SO_AWJF_Waldwanderwege_202000804", "awjf_waldwanderwege", dbEdit, "ch.so.awjf.waldwanderwege_edit")) 
@@ -166,7 +165,7 @@ datasets.add(new Dataset("SO_AWJF_Statische_Waldgrenzen_Publikation_20191119", "
 datasets.add(new Dataset("SO_AWJF_Waldpflege_Erfassung_20200127", "awjf_waldpflege_kontrolle_pub", dbPub, "ch.so.awjf.waldpflege_kontrolle")) 
 datasets.add(new Dataset("SO_AWJF_Waldwanderwege_202000804", "awjf_waldwanderwege_pub", dbPub, "ch.so.awjf.waldwanderwege")) 
 datasets.add(new Dataset("SO_AWJF_Wegsanierungen_Publikation_20170629", "awjf_wegsanierungen_pub", dbPub, "ch.so.awjf.wegsanierungen")) 
-datasets.add(new Dataset("SO_KSTA_Landwert_20210202", "ksta_landwerte_pub", dbEdit, "ch.so.ksta.landwerte"))
+datasets.add(new Dataset("SO_KSTA_Landwert_20210202", "ksta_landwerte_pub", dbPub, "ch.so.ksta.landwerte"))
 
 
 
