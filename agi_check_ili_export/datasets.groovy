@@ -127,7 +127,7 @@ datasets.add(new Dataset("SO_AFU_Nagra_Bohrtiefen_20190927", "afu_erdwaermesonde
 datasets.add(new Dataset("SO_AfU_Erdwaermesonden_Publikation_20200113", "afu_erdwaermesonden_pub", dbPub, "ch.so.afu.erdwaermesonden")) 
 datasets.add(new Dataset("SO_AfU_Gefahrenkartierung_20181129", "afu_gefahrenkartierung_pub", dbPub, "ch.so.afu.gefahrenkartierung", true)) 
 datasets.add(new Dataset("SO_AFU_Geotope_Publikation_20200623", "afu_geotope_pub", dbPub, "ch.so.afu.geotope")) 
-datasets.add(new Dataset("SO_AfU_Gewaesserschutz_Publikation_20200115", "afu_gewaesserschutz_pub", dbPub, "ch.so.afu.gewaesserschutz")) 
+datasets.add(new Dataset("SO_AfU_Gewaesserschutz_Publikation_20210303", "afu_gewaesserschutz_pub", dbPub, "ch.so.afu.gewaesserschutz")) 
 datasets.add(new Dataset("SO_AFU_Igel_Publikation_20200429", "afu_igel_pub", dbPub, "ch.so.afu.igel")) 
 datasets.add(new Dataset("SO_AFU_Verzeichnis_schadstoffbelastete_Boeden_Publikation_20200701", "afu_schadstoffbelastete_boeden_pub", dbPub, "ch.so.afu.schadstoffbelastete_boeden")) 
 datasets.add(new Dataset("SO_AfU_Wasserbewirtschaftung_Publikation_20190305", "afu_wasserbewirtschaftung_pub", dbPub, "ch.so.afu.wasserbewirtschaftung"))
