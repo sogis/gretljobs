@@ -12,5 +12,6 @@ SELECT
     prj.kantonsnummer    
   FROM alw_strukturverbesserungen.raeumlicheelemnte_oekologie_flaeche oek
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt prj ON oek.projekt = prj.t_id
-   WHERE prj.geschaeftsnummer IS NOT NULL
+     oek.typ NOT IN ('Hochstammobstanlagen')
+     AND prj.geschaeftsnummer IS NOT NULL
 ;

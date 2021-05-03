@@ -12,5 +12,7 @@ SELECT
     prj.kantonsnummer    
   FROM alw_strukturverbesserungen.raeumlicheelemnte_oekologie_linie oek
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_projekt prj ON oek.projekt = prj.t_id
-   WHERE prj.geschaeftsnummer IS NOT NULL
+   WHERE
+     oek.typ NOT IN ('Waldrandaufwertung','Bach_und_Ufervegetation')
+     AND prj.geschaeftsnummer IS NOT NULL
 ;
