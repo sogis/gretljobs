@@ -43,6 +43,5 @@ task validateSVGIS_Suissemelio(type: IliValidator, dependsOn: 'exportSVGIS_Suiss
     dataFiles = [file(SVGIS_SuissemelioXtfFileName)]
     logFile = "ilivalidator_SVGIS_Suissemelio.log"
     allObjectsAccessible = true
-    configFile = "config.toml"
     failOnError = true
 }
