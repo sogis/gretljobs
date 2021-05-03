@@ -33,7 +33,7 @@ task transfer_SVGIS_Suissemelio(type: Db2Db){
 
 task exportSVGIS_Suissemelio(type: Ili2pgExport, dependsOn: 'transfer_SVGIS_Suissemelio') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    models = 'Strukturverbesserungen_LV95_V2'
+    models = 'Strukturverbesserungen_LV95_V2'
     dbschema = 'alw_strukturverbesserungen_suissemelio'
     dataFile = file(SVGIS_SuissemelioXtfFileName)
     disableValidation = true
