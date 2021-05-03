@@ -2,7 +2,7 @@ SELECT
     oek.t_id, 
     oek.typ, 
     oek.bautyp, 
-    (ST_Dump(oek.geometrie)).geom AS geometrie,
+    (ST_Dump(oek.geometrie)).geom AS geometrie,
     oek.astatus, 
     oek.status_datum, 
     oek.bauabnahme_datum, 
