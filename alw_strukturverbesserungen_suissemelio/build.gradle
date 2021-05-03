@@ -3,7 +3,9 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transfer_SVGIS_Suissemelio'
+defaultTasks 'validateSVGIS_Suissemelio'
+
+def SVGIS_SuissemelioXtfFileName = 'ch.so.alw.strukturverbesserungen_suissemelio.xtf'
 
 task transfer_SVGIS_Suissemelio(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -27,4 +29,20 @@ task transfer_SVGIS_Suissemelio(type: Db2Db){
             new TransferSet('wegebau_linie.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_wegebau_linie', true),
             new TransferSet('wege_bruecke_lehnenviadukt.sql', 'alw_strukturverbesserungen_suissemelio.raeumlicheelemnte_wege_bruecke_lehnenviadukt', true)
     ];
+}
+
+task exportSVGIS_Suissemelio(type: Ili2pgExport, dependsOn: 'transfer_SVGIS_Suissemelio') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = 'Strukturverbesserungen_LV95_V2'
+    dbschema = 'alw_strukturverbesserungen_suissemelio'
+    dataFile = file(SVGIS_SuissemelioXtfFileName)
+    disableValidation = true
+}
+
+task validateSVGIS_Suissemelio(type: IliValidator, dependsOn: 'exportSVGIS_Suissemelio') {
+    dataFiles = [file(SVGIS_SuissemelioXtfFileName)]
+    logFile = "ilivalidator_SVGIS_Suissemelio.log"
+    allObjectsAccessible = true
+    configFile = "config.toml"
+    failOnError = true
 }
