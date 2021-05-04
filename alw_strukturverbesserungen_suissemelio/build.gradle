@@ -12,7 +12,6 @@ remotes {
         host = "${ftpServerInfogrips}"
         user = "${ftpUserEmapis}"
         password = "${ftpPwdEmapis}"
-        port = 22
     }
 }
 
