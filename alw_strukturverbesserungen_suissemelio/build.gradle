@@ -3,9 +3,18 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'validateSVGIS_Suissemelio'
+defaultTasks 'uploadXtfFile'
 
-def SVGIS_SuissemelioXtfFileName = 'ch.so.alw.strukturverbesserungen_suissemelio.xtf'
+remotes {
+    ftpServer {
+        host = "${ftpServerEmapis}"
+        user = "${ftpUserEmapis}"
+        password = "${ftpPwdEmapis}"
+        port = 22
+    }
+}
+
+def SVGIS_SuissemelioXtfFileName = 'emapis_so.xtf'
 
 task transfer_SVGIS_Suissemelio(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -44,4 +53,24 @@ task validateSVGIS_Suissemelio(type: IliValidator, dependsOn: 'exportSVGIS_Suiss
     logFile = "ilivalidator_SVGIS_Suissemelio.log"
     allObjectsAccessible = true
     failOnError = true
+}
+
+task uploadXtfFile (dependsOn: validateSVGIS_Suissemelio){
+    description = "Upload XtfFile to FTP server"
+    doLast {
+        ssh.settings {
+            knownHosts = allowAnyHosts
+        }
+        ssh.run {
+            session(remotes.ftpServer) {
+                put from: "${SVGIS_SuissemelioXtfFileName}", into: "."
+            }
+        }
+        println "File uploaded to FTP server"
+    }
+    finalizedBy deleteXtfFile
+}
+
+task deleteXtfFile(type: Delete){
+    delete "${SVGIS_SuissemelioXtfFileName}"
 }
