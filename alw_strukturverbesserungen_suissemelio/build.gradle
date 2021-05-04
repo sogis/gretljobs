@@ -57,6 +57,10 @@ task validateSVGIS_Suissemelio(type: IliValidator, dependsOn: 'exportSVGIS_Suiss
     failOnError = true
 }
 
+task deleteXtfFile(type: Delete){
+    delete "${SVGIS_SuissemelioXtfFileName}"
+}
+
 task uploadXtfFile (dependsOn: validateSVGIS_Suissemelio){
     description = "Upload XtfFile to FTP server"
     doLast {
@@ -73,6 +77,3 @@ task uploadXtfFile (dependsOn: validateSVGIS_Suissemelio){
     finalizedBy deleteXtfFile
 }
 
-task deleteXtfFile(type: Delete){
-    delete "${SVGIS_SuissemelioXtfFileName}"
-}
