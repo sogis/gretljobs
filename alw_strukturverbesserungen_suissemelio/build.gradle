@@ -2,6 +2,8 @@ import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
 
 defaultTasks 'uploadXtfFile'
 
