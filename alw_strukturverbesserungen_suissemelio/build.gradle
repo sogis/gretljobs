@@ -7,7 +7,7 @@ defaultTasks 'uploadXtfFile'
 
 remotes {
     ftpServer {
-        host = "${ftpServerEmapis}"
+        host = "${ftpServerInfogrips}"
         user = "${ftpUserEmapis}"
         password = "${ftpPwdEmapis}"
         port = 22
