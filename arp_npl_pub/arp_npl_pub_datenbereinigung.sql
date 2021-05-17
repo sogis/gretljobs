@@ -1,5 +1,6 @@
 -- Erschliessung Linienobjekt
 -- Remove nan coordinates
+/*
 UPDATE
  arp_npl_pub.nutzungsplanung_erschliessung_linienobjekt
  SET geometrie =
@@ -16,6 +17,7 @@ UPDATE
   WHERE
    ST_IsValid(geometrie) = False AND ST_IsValidReason(geometrie) ~* 'nan'
 ;
+*/
 
 -- remove LineString geometries with too few points
 DELETE
