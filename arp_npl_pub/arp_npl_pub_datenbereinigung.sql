@@ -1,5 +1,7 @@
 -- Erschliessung Linienobjekt
 -- Remove nan coordinates
+-- TODO: this needs an update after Postgis 3.1 and GEOS 3.9 was deployed
+-- ST_MakeValid() should then properly handle NaN stuff
 UPDATE
  arp_npl_pub.nutzungsplanung_erschliessung_linienobjekt
  SET geometrie =
