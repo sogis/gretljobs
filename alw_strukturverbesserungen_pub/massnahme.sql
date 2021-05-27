@@ -53,7 +53,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
    WHERE
-    proj.kantonsnummer IS NOT NULL
+    proj.kantonsnummer IS NOT NULL AND el.astatus != 'untergegangen'
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -124,7 +124,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
    WHERE
-    proj.kantonsnummer IS NOT NULL
+    proj.kantonsnummer IS NOT NULL AND el.astatus != 'untergegangen'
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -195,7 +195,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
    WHERE
-    proj.kantonsnummer IS NOT NULL
+    proj.kantonsnummer IS NOT NULL AND el.astatus != 'untergegangen'
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -266,7 +266,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
    WHERE
-    proj.kantonsnummer IS NOT NULL
+    proj.kantonsnummer IS NOT NULL AND el.astatus != 'untergegangen'
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -337,7 +337,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
    WHERE
-    proj.kantonsnummer IS NOT NULL
+    proj.kantonsnummer IS NOT NULL AND el.astatus != 'untergegangen'
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -407,7 +407,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
    WHERE
-    proj.kantonsnummer IS NOT NULL
+    proj.kantonsnummer IS NOT NULL AND el.astatus != 'untergegangen'
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -477,7 +477,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
    WHERE
-    proj.kantonsnummer IS NOT NULL
+    proj.kantonsnummer IS NOT NULL AND el.astatus != 'untergegangen'
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -548,7 +548,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
    WHERE
-    proj.kantonsnummer IS NOT NULL
+    proj.kantonsnummer IS NOT NULL AND el.astatus != 'untergegangen'
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -618,7 +618,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
    WHERE
-    proj.kantonsnummer IS NOT NULL
+    proj.kantonsnummer IS NOT NULL AND el.astatus != 'untergegangen'
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -689,7 +689,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
    WHERE
-    proj.kantonsnummer IS NOT NULL
+    proj.kantonsnummer IS NOT NULL AND el.astatus != 'untergegangen'
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -760,7 +760,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
    WHERE
-    proj.kantonsnummer IS NOT NULL
+    proj.kantonsnummer IS NOT NULL AND el.astatus != 'untergegangen'
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -831,7 +831,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
    WHERE
-    proj.kantonsnummer IS NOT NULL
+    proj.kantonsnummer IS NOT NULL AND el.astatus != 'untergegangen'
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -901,7 +901,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
    WHERE
-    proj.kantonsnummer IS NOT NULL
+    proj.kantonsnummer IS NOT NULL AND el.astatus != 'untergegangen'
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -971,7 +971,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
    WHERE
-    proj.kantonsnummer IS NOT NULL
+    proj.kantonsnummer IS NOT NULL AND el.astatus != 'untergegangen'
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -1043,7 +1043,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
    WHERE
-    proj.kantonsnummer IS NOT NULL
+    proj.kantonsnummer IS NOT NULL AND el.astatus != 'untergegangen'
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -1117,7 +1117,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
    WHERE
-    proj.kantonsnummer IS NOT NULL
+    proj.kantonsnummer IS NOT NULL AND el.astatus != 'untergegangen'
    GROUP BY
     el.t_id,
     el.t_ili_tid,
@@ -1190,7 +1190,7 @@ SELECT
     LEFT JOIN alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft genoss ON ztgenel.genossenschaft_element = genoss.t_id
     LEFT JOIN alw_strukturverbesserungen.genossenschaften gentyp ON genoss.typ = gentyp.ilicode
    WHERE
-    proj.kantonsnummer IS NOT NULL
+    proj.kantonsnummer IS NOT NULL AND el.astatus != 'untergegangen'
    GROUP BY
     el.t_id,
     el.t_ili_tid,

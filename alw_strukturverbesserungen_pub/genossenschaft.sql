@@ -29,6 +29,7 @@ WITH gen AS (
     )::jsonb AS dokumente
   FROM
     alw_strukturverbesserungen.raeumlicheelemnte_genossenschaft gen
+   WHERE gen.aufloesungsdatum IS NULL
 ),
 projekte AS (
     --Bewaesserung Flächen
