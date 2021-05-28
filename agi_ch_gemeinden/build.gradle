@@ -42,9 +42,9 @@ task unzipSwissBoundaries3D(type: Copy, dependsOn: 'download'){
 task dbImport(type: Ili2pgImport, dependsOn: 'unzipSwissBoundaries3D'){
     description = "Import swissBoundaries3D-Data into database"
     doLast {
-        println "Data imported into db: " + dbUriSogis
+        println "Data imported into db: " + dbUriEdit
     }
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "agi_swissboundaries3d"
     models = "swissBOUNDARIES3D_ili2_LV95_V1_3"
     disableValidation = false
@@ -62,16 +62,16 @@ task convertData(type: Db2Db, dependsOn: 'dbImport'){
         println "SwissBoundaries3D-Data are converted."
     }
 
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = sourceDb
     transferSets = [
-            new TransferSet('agi_swissboundaries3d_pub_sogis_swissboundaries3d_bezirk.sql',
+            new TransferSet('agi_swissboundaries3d_pub_edit_swissboundaries3d_bezirk.sql',
                     'agi_swissboundaries3d_pub.swissboundaries3d_bezirk', true),
-            new TransferSet('agi_swissboundaries3d_pub_sogis_swissboundaries3d_hoheitsgebiet.sql',
+            new TransferSet('agi_swissboundaries3d_pub_edit_swissboundaries3d_hoheitsgebiet.sql',
                     'agi_swissboundaries3d_pub.swissboundaries3d_hoheitsgebiet', true),
-            new TransferSet('agi_swissboundaries3d_pub_sogis_swissboundaries3d_kanton.sql',
+            new TransferSet('agi_swissboundaries3d_pub_edit_swissboundaries3d_kanton.sql',
                     'agi_swissboundaries3d_pub.swissboundaries3d_kanton', true),
-            new TransferSet('agi_swissboundaries3d_pub_sogis_swissboundaries3d_land.sql',
+            new TransferSet('agi_swissboundaries3d_pub_edit_swissboundaries3d_land.sql',
                     'agi_swissboundaries3d_pub.swissboundaries3d_land', true)
     ]
 }
@@ -91,7 +91,7 @@ task transferDataToPubDb(type: Db2Db, dependsOn: 'convertData'){
         println "SwissBoundaries3D-Data are transfered."
     }
 
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_bezirk.sql',
@@ -105,14 +105,14 @@ task transferDataToPubDb(type: Db2Db, dependsOn: 'convertData'){
     ]
 }
 
-task transferDataToEditDb(type: Db2Db, dependsOn: 'transferDataToPubDb'){
-    description = "Transfer swissBoundaries3D-Data to edit-DB"
+task transferDataToSogisDb(type: Db2Db, dependsOn: 'transferDataToPubDb'){
+    description = "Transfer swissBoundaries3D-Data to sogis-DB"
     doLast {
-        println "SwissBoundaries3D-Data are transfered to edit."
+        println "SwissBoundaries3D-Data are transfered to sogis."
     }
 
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sourceDB = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
             new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_bezirk.sql',
                     'agi_swissboundaries3d_pub.swissboundaries3d_bezirk', true),
@@ -121,7 +121,17 @@ task transferDataToEditDb(type: Db2Db, dependsOn: 'transferDataToPubDb'){
             new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_kanton.sql',
                     'agi_swissboundaries3d_pub.swissboundaries3d_kanton', true),
             new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_land.sql',
-                    'agi_swissboundaries3d_pub.swissboundaries3d_land', true)
+                    'agi_swissboundaries3d_pub.swissboundaries3d_land', true),
+            new TransferSet('agi_swissboundaries3d_sogis_agi_swissboundaries3d_bezirk.sql',
+                    'agi_swissboundaries3d.tlm_grenzen_tlm_bezirksgebiet', true),
+            new TransferSet('agi_swissboundaries3d_sogis_agi_swissboundaries3d_hoheitsgrenze.sql',
+                    'agi_swissboundaries3d.tlm_grenzen_tlm_hoheitsgrenze', true),
+            new TransferSet('agi_swissboundaries3d_sogis_agi_swissboundaries3d_hoheitsgebiet.sql',
+                    'agi_swissboundaries3d.tlm_grenzen_tlm_hoheitsgebiet', true),
+            new TransferSet('agi_swissboundaries3d_sogis_agi_swissboundaries3d_kanton.sql',
+                    'agi_swissboundaries3d.tlm_grenzen_tlm_kantonsgebiet', true),
+            new TransferSet('agi_swissboundaries3d_sogis_agi_swissboundaries3d_land.sql',
+                    'agi_swissboundaries3d.tlm_grenzen_tlm_landesgebiet', true)
     ]
 }
 
