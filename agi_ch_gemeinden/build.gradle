@@ -111,7 +111,7 @@ task transferDataToSogisDb(type: Db2Db, dependsOn: 'transferDataToPubDb'){
         println "SwissBoundaries3D-Data are transfered to sogis."
     }
 
-    sourceDB = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
             new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_bezirk.sql',
