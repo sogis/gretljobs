@@ -14,7 +14,7 @@ SELECT
     massnahme.kostenstand_aktuell,
     massnahme.kostenanteil_bund,
     massnahme.kostenanteil_lv_mp,
-    replace(massnahme.massnahmenblatt, 'G:\documents\ch.so.arp.agglo\', 'https://geo.so.ch/docs/ch.so.arp.agglo/') AS massnahmenblatt,
+    replace(replace(massnahme.massnahmenblatt, ' ', '%20'), 'G:\documents\ch.so.arp.agglo\', 'https://geo.so.ch/docs/ch.so.arp.agglo/') AS massnahmenblatt,
     massnahme.prioritaet,
     prioritaet.description AS prioritaet_text,
     regexp_replace(massnahme.ansprechperson, E'[\\n\\r]+', ' ', 'g' ) AS ansprechperson,
