@@ -4,7 +4,7 @@ WITH geometrie AS (
         tlm_kantonsgebiet.kantonsnummer,
         tlm_kantonsgebiet.aname AS kantonsname,
         land.aname AS land,
-        ST_Force_2D(ST_Collect(tlm_kantonsgebiet.shape)) AS geometrie
+        ST_Force2D(ST_Collect(tlm_kantonsgebiet.shape)) AS geometrie
     FROM
         agi_swissboundaries3d.tlm_kantonsgebiet
         LEFT JOIN
