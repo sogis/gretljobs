@@ -1,30 +1,30 @@
 --Hoheitsgebiet
 WITH geometrie AS (
     SELECT
-        tlm_grenzen_tlm_hoheitsgebiet.bfs_nummer,
-        tlm_grenzen_tlm_hoheitsgebiet.aname AS hoheitsgebietsname,
-        tlm_grenzen_tlm_hoheitsgebiet.objektart as hoheitsgebietsart,
+        tlm_hoheitsgebiet.bfs_nummer,
+        tlm_hoheitsgebiet.aname AS hoheitsgebietsname,
+        tlm_hoheitsgebiet.objektart as hoheitsgebietsart,
         bezirk.aname AS bezirksname,
         kanton.aname AS kanton,
         land.aname AS land,
-        ST_Force_2D(ST_Collect(tlm_grenzen_tlm_hoheitsgebiet.shape)) AS geometrie
+        ST_Force_2D(ST_Collect(tlm_hoheitsgebiet.shape)) AS geometrie
     FROM
-        agi_swissboundaries3d.tlm_grenzen_tlm_hoheitsgebiet
+        agi_swissboundaries3d.tlm_hoheitsgebiet
         LEFT JOIN 
-            agi_swissboundaries3d.tlm_grenzen_tlm_bezirksgebiet bezirk
+            agi_swissboundaries3d.tlm_bezirksgebiet bezirk
             ON 
-                bezirk.bezirksnummer = tlm_grenzen_tlm_hoheitsgebiet.bezirksnummer
+                bezirk.bezirksnummer = tlm_hoheitsgebiet.bezirksnummer
         LEFT JOIN
-            agi_swissboundaries3d.tlm_grenzen_tlm_kantonsgebiet kanton
+            agi_swissboundaries3d.tlm_kantonsgebiet kanton
             ON
-                kanton.kantonsnummer = tlm_grenzen_tlm_hoheitsgebiet.kantonsnummer
+                kanton.kantonsnummer = tlm_hoheitsgebiet.kantonsnummer
         LEFT JOIN
-            agi_swissboundaries3d.tlm_grenzen_tlm_landesgebiet land
+            agi_swissboundaries3d.tlm_landesgebiet land
             ON
-                land.icc = tlm_grenzen_tlm_hoheitsgebiet.icc
+                land.icc = tlm_hoheitsgebiet.icc
     WHERE
         (
-            tlm_grenzen_tlm_hoheitsgebiet.bezirksnummer IS NOT NULL 
+            tlm_hoheitsgebiet.bezirksnummer IS NOT NULL 
             AND 
             (
                 bezirk.bezirk_teil = 0
@@ -32,11 +32,11 @@ WITH geometrie AS (
                 bezirk.bezirk_teil= 1
             )
             OR 
-            tlm_grenzen_tlm_hoheitsgebiet.bezirksnummer IS NULL 
+            tlm_hoheitsgebiet.bezirksnummer IS NULL 
         )
         AND
         (
-            tlm_grenzen_tlm_hoheitsgebiet.kantonsnummer IS NOT NULL
+            tlm_hoheitsgebiet.kantonsnummer IS NOT NULL
             AND 
             (
                 kanton.kanton_teil = 0
@@ -44,7 +44,7 @@ WITH geometrie AS (
                 kanton.kanton_teil = 1
             )
             OR 
-            tlm_grenzen_tlm_hoheitsgebiet.kantonsnummer IS NULL 
+            tlm_hoheitsgebiet.kantonsnummer IS NULL 
         )
         AND
         (
@@ -74,7 +74,7 @@ SELECT
 FROM
     geometrie
     LEFT JOIN 
-        agi_swissboundaries3d.tlm_grenzen_tlm_hoheitsgebiet hoheitsgebiet
+        agi_swissboundaries3d.tlm_hoheitsgebiet hoheitsgebiet
         ON
             hoheitsgebiet.bfs_nummer = geometrie.bfs_nummer
 WHERE
