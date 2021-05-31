@@ -9,7 +9,7 @@ apply plugin: "de.undercouch.download"
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'transferDataToSogisDb'
+defaultTasks 'transferDataToPubDb'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
@@ -104,6 +104,7 @@ task transferDataToPubDb(type: Db2Db, dependsOn: 'convertData'){
                     'agi_swissboundaries3d_pub.swissboundaries3d_land', true)
     ]
 }
+/* 31.05.2021, bjsvwcur: Import gezügelt von sogis-DB auf edit-DB. Task "transferDataToSogisDb" deaktiviert da die Daten auf der sogis-DB nicht mehr nachgeführt werden.
 
 task transferDataToSogisDb(type: Db2Db, dependsOn: 'transferDataToPubDb'){
     description = "Transfer swissBoundaries3D-Data to sogis-DB"
@@ -134,5 +135,5 @@ task transferDataToSogisDb(type: Db2Db, dependsOn: 'transferDataToPubDb'){
                     'agi_swissboundaries3d.tlm_grenzen_tlm_landesgebiet', true)
     ]
 }
-
+*/
 
