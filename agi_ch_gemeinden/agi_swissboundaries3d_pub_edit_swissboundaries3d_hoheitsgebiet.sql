@@ -7,7 +7,7 @@ WITH geometrie AS (
         bezirk.aname AS bezirksname,
         kanton.aname AS kanton,
         land.aname AS land,
-        ST_Force_2D(ST_Collect(tlm_hoheitsgebiet.shape)) AS geometrie
+        ST_Force2D(ST_Collect(tlm_hoheitsgebiet.shape)) AS geometrie
     FROM
         agi_swissboundaries3d.tlm_hoheitsgebiet
         LEFT JOIN 
