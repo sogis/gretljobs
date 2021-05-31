@@ -1,11 +1,11 @@
 --Bezirke
 WITH geometrie AS (
     SELECT
-        tlm_grenzen_tlm_bezirksgebiet.bezirksnummer,
-        tlm_grenzen_tlm_bezirksgebiet.aname AS bezirksname,
+        tlm_bezirksgebiet.bezirksnummer,
+        tlm_bezirksgebiet.aname AS bezirksname,
         kanton.aname AS kanton,
         land.aname AS land,
-        ST_Force_2D(ST_Collect(tlm_grenzen_tlm_bezirksgebiet.shape)) AS geometrie
+        ST_Force_2D(ST_Collect(tlm_bezirksgebiet.shape)) AS geometrie
     FROM
         agi_swissboundaries3d.tlm_bezirksgebiet
         LEFT JOIN
