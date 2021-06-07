@@ -5,11 +5,7 @@ SELECT
     address.bdg_egid AS egid,
     address.adr_edid AS edid,
     CASE 
-        WHEN localisationname.stn_text_en IS NOT NULL THEN localisationname.stn_text_en
-        WHEN localisationname.stn_text_rm IS NOT NULL THEN localisationname.stn_text_rm
-        WHEN localisationname.stn_text_it IS NOT NULL THEN localisationname.stn_text_it
-        WHEN localisationname.stn_text_fr IS NOT NULL THEN localisationname.stn_text_fr
-        WHEN localisationname.stn_text_de IS NOT NULL THEN localisationname.stn_text_de
+        WHEN localisationname.stn_text IS NOT NULL THEN localisationname.stn_text
     END AS strassenname,
     address.adr_number AS nummer,
     address.bdg_name AS gebaeudename,
@@ -28,10 +24,10 @@ SELECT
     address.pnt_shape AS geometrie
 FROM
     agi_swisstopo_gebaeudeadressen.officlndxfddrsses_address AS address
-    LEFT JOIN agi_swisstopo_gebaeudeadressen.officlndxfddrsses_localisationname AS localisationname
+    LEFT JOIN agi_swisstopo_gebaeudeadressen.officlndxfddrsses_stn AS localisationname
     ON localisationname.offclndxfddrsss_ddress_stn_name = address.t_id 
-    LEFT JOIN agi_swisstopo_gebaeudeadressen.officlndxfddrsses_zip6 AS zip
-    ON zip.offclndxfddrsss_ddress_adr_zip = address.t_id 
+    LEFT JOIN agi_swisstopo_gebaeudeadressen.officlndxfddrsses_zip AS zip
+    ON zip.offclndxfddrsss_ddress_adr_zip_zip6 = address.t_id 
     LEFT JOIN agi_swisstopo_gebaeudeadressen.modinfo AS modinfo
     ON modinfo.offclndxfddrsss_ddress_adr_modified = address.t_id 
 --LIMIT 100000   
