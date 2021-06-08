@@ -20,16 +20,14 @@ SELECT
     END AS astatus,
     address.adr_official AS offiziell,
     address.adr_reliable AS zuverlaessig,
-    modinfo.latestmodification AS letzteaenderung,
+    address.adr_modified AS letzteaenderung,
     address.pnt_shape AS geometrie
 FROM
     agi_swisstopo_gebaeudeadressen.officlndxfddrsses_address AS address
     LEFT JOIN agi_swisstopo_gebaeudeadressen.officlndxfddrsses_stn AS localisationname
     ON localisationname.offclndxfddrsss_ddress_stn_name = address.t_id 
     LEFT JOIN agi_swisstopo_gebaeudeadressen.officlndxfddrsses_zip AS zip
-    ON zip.offclndxfddrsss_ddress_adr_zip_zip6 = address.t_id 
-    LEFT JOIN agi_swisstopo_gebaeudeadressen.modinfo AS modinfo
-    ON modinfo.offclndxfddrsss_ddress_adr_modified = address.t_id 
+    ON zip.offclndxfddrsss_ddress_zip_zip6= address.t_id 
 --LIMIT 100000   
 ;
 
