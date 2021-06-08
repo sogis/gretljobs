@@ -19,7 +19,6 @@ SELECT
         WHEN address.adr_status = 'outdated' THEN 'abgebrochen'
     END AS astatus,
     address.adr_official AS offiziell,
-    address.adr_reliable AS zuverlaessig,
     address.adr_modified AS letzteaenderung,
     address.pnt_shape AS geometrie
 FROM
