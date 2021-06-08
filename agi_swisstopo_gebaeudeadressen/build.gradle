@@ -8,7 +8,7 @@ apply plugin: "de.undercouch.download"
 apply plugin: "ch.so.agi.gretl"
 
 //defaultTasks 'dbImport'
-defaultTasks 'transferToPub'
+defaultTasks 'dbImport'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
@@ -48,7 +48,7 @@ task dbImport(type: Ili2pgImport, dependsOn: 'unzipData') {
     deleteData = true
     strokeArcs = true
 }
-
+/*
 task transferToPub(type: Db2Db, dependsOn: 'dbImport') {
 //task transferToPub(type: Db2Db) {
     description = "Transfer und Umbau der Daten von Edit nach Pub"
@@ -60,4 +60,4 @@ task transferToPub(type: Db2Db, dependsOn: 'dbImport') {
     fetchSize = 1000
     batchSize = 1000
 }
-
+*/
