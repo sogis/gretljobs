@@ -42,7 +42,7 @@ task dbImport(type: Ili2pgImport, dependsOn: 'unzipData') {
     }
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "agi_swisstopo_gebaeudeadressen"
-    models = "OfficialIndexOfAddresses_V1"
+    models = "OfficialIndexOfAddresses_V2"
     disableValidation = true
     dataFile = file(xtfFilePath)
     deleteData = true
@@ -60,3 +60,4 @@ task transferToPub(type: Db2Db, dependsOn: 'dbImport') {
     fetchSize = 1000
     batchSize = 1000
 }
+
