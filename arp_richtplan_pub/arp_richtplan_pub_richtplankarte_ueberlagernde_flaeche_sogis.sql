@@ -45,7 +45,7 @@ SELECT
     'rechtsgueltig' AS planungsstand,
     CASE 
         WHEN rip_darstellung = 1
-            THEN 'Ausgangslage'
+            THEN 'bestehend'
         WHEN rip_darstellung = 2
             THEN 'Erweiterung'
         WHEN rip_darstellung = 3
