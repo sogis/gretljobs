@@ -3,7 +3,7 @@ SELECT std.t_id,
        std.bfsnr,
        gem.gemeindename,
        ST_RemoveRepeatedPoints(gem.geometrie,0.001) AS gemeinde_geometrie,
-       stand.dispname AS stand_gueterregulierung,
+       substring(stand.dispname,1,40) AS stand_gueterregulierung,
        (
            WITH docs AS (
             SELECT json_build_object(
