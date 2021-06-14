@@ -105,11 +105,6 @@ for (jobFile in jobFiles) {
         cron(properties.getProperty('triggers.cron'))
       }
     }
-    if (properties.getProperty('nodeLabel') != null) {
-      parameters {
-        choiceParam('nodeLabel', [properties.getProperty('nodeLabel')], 'Label of the node that must run the job')
-      }
-    }
     definition {
       cps {
         script(pipelineScript)
