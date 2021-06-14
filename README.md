@@ -90,7 +90,6 @@ parameters.fileParam=filename.xtf
 parameters.stringParam=parameterName;default value;parameter description
 triggers.upstream=other_job_name
 authorization.permissions=gretl-users-barpa
-nodeLabel=gretl-ili2pg4
 ```
 
 Mit `logRotator.numToKeep` kann eingestellt werden, wieviele Ausführungen des Jobs aufbewahrt werden sollen, d.h. für wieviele Ausführungen beispielsweise das Logfile vorgehalten wird. Standardwert ist 15. Wenn man diese Einstellung weglässt, werden also die 15 letzten Ausführungen aufbewahrt.
@@ -115,15 +114,6 @@ Folgende GRETL-spezifischen Benutzergruppen stehen im Moment zur Verfügung:
 * gretl-users-vlwaa
 
 Allerdings können auch diejenigen Benutzer oder Gruppen, welche durch globale Berechtigungseinstellungen in Jenkins dazu bereichtigt sind, den Job starten. Wenn man diese Einstellung weglässt, ist es von den globalen Berechtigungseinstellungen abhängig, wer den Job manuell starten darf.
-
-Mit `nodeLabel` kann bestimmt werden,
-auf welchem Node der Job ausgeführt werden soll.
-Erlaubt ist hier einzig der Wert `gretl-ili2pg4`;
-so wird der Job auf einem Jenkins Agent
-mit dem Label `gretl-ili2pg4` ausgeführt.
-Lässt man diese Property weg,
-wird der Job auf einem Jenkins Agent
-mit dem Label `gretl` ausgeführt (der Standard).
 
 #### `Jenkinsfile`
 
