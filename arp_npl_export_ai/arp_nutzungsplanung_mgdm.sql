@@ -279,7 +279,7 @@ FROM
     (
         SELECT 
             linie.t_id,            
-            ST_GeometryFromText(regexp_replace(regexp_replace(ST_AsText(geometrie),'(-nan -nan)+,*','','g'),',\)$',')'), 2056) AS geometrie,
+            ST_GeometryFromText(regexp_replace(regexp_replace(ST_AsText(geometrie),'(NaN NaN)+,*','','g'),',\)$',')'), 2056) AS geometrie,
             linie.publiziertab,
             linie.rechtsstatus,
             linie.bemerkungen,
