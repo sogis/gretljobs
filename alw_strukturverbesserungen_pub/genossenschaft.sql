@@ -5,7 +5,7 @@ WITH gen AS (
     gen.typ,
     gen.aname,
     gen.adresse,
-    gen.unterhaltsobjekt AS unterhaltsobjekte,
+    gen.unterhaltsobjekt,
     gen.gruendungsdatum,
     gen.genehmigungsdatum,
     gen.reorganisationsdatum,
@@ -226,7 +226,7 @@ SELECT
     gen.typ,
     gen.aname,
     gen.adresse,
-    gen.unterhaltsobjekte,
+    gen.unterhaltsobjekt,
     gen.gruendungsdatum,
     gen.genehmigungsdatum,
     gen.reorganisationsdatum,
@@ -234,14 +234,14 @@ SELECT
     gen.bemerkung,
     gen.geometrie,
     string_agg(
+      substring(proj.kantonsnummer from 1 for 4) ||
+      '-' || substring(proj.kantonsnummer from 5 for 3),
+    ', ') AS kantonsnummern,
+    string_agg(
       substring(proj.geschaeftsnummer from 1 for 2) ||
       '-' || substring(proj.geschaeftsnummer from 3 for 3) ||
       '-' || substring(proj.geschaeftsnummer from 5 for 5),
     ', ') AS geschaeftsnummern,
-    string_agg(
-      substring(proj.kantonsnummer from 1 for 4) ||
-      '-' || substring(proj.kantonsnummer from 5 for 3),
-    ', ') AS kantonsnummern,
     gen.dokumente
   FROM gen
     LEFT JOIN projekte proj ON gen.t_id = proj.t_id
@@ -251,7 +251,7 @@ SELECT
     gen.typ,
     gen.aname,
     gen.adresse,
-    gen.unterhaltsobjekte,
+    gen.unterhaltsobjekt,
     gen.gruendungsdatum,
     gen.genehmigungsdatum,
     gen.reorganisationsdatum,
