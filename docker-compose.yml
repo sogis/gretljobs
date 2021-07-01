@@ -4,6 +4,7 @@ services:
     build: .
     image: sogis/postgis-db:localbuild
     environment:
+      MODE: postgres
       PG_DATABASE: edit
       PG_LOCALE: de_CH.UTF-8
       PG_PRIMARY_PORT: 5432
@@ -28,6 +29,7 @@ services:
     build: .
     image: sogis/postgis-db:localbuild
     environment:
+      MODE: postgres
       PG_DATABASE: pub
       PG_LOCALE: de_CH.UTF-8
       PG_PRIMARY_PORT: 5432
