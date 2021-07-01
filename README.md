@@ -158,8 +158,12 @@ und mit der Entwicklung von GRETL-Jobs beginnen.
 
 Zwei Docker-DB-Server starten; einer enthält die *edit*-DB, der andere die *pub*-DB:
 ```
-docker-compose up
+docker-compose up --build
 ```
+(Die Option `--build` kann man auch weglassen.
+Sie ist nur dann nötig,
+wenn am Dockerfile oder am Basis-Image etwas geändert hat.)
+
 Nun können in den DBs nach Belieben Schemas angelegt und Daten importiert werden.
 Dies kann z.B. mit *ili2pg* erfolgen
 oder durch Ausführen von SQL-Skripten
