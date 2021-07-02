@@ -1,0 +1,29 @@
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import java.nio.file.Files
+
+apply plugin: "ch.so.agi.gretl"
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def pathToPdfExportFolder = Files.createTempDirectory("oerebadaeinzelschutz-").toFile().getAbsolutePath()
+def matomoBaseUrl = "http://analytics.dev.so.ch/index.php?"
+def matomoAddLayerReport = "date=previous1&filter_limit=100&filter_pattern=ADD_LAYER&flat=1&format=CSV&filter_sort_column=nb_events&showColumns=nb_events&idSite=1&language=en&method=Events.getAction&module=API&period=month&token_auth=09e7c2406125bc25e4448a4a1d71fefc&translateColumnNames=1"
+def s3MatomoTargetBucket = "ch.so.agi.matomo-int"
+
+defaultTasks 'uploadReportsToS3Stage'
+
+
+task downloadMatomoAddLayerReport(type: Exec) {
+    commandLine 'curl', '-o', pathToPdfExportFolder + '/test.csv',  matomoBaseUrl + matomoAddLayerReport
+}
+
+task uploadReportsToS3Stage(type: S3Upload, dependsOn: 'downloadMatomoAddLayerReport') {
+    description = "Report aus Verzeichnis nach S3 hochladen."
+    accessKey = "AKIAWYSBER5CTPCI5VUR"
+    secretKey = "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"
+    sourceDir = file(pathToPdfExportFolder)
+    endPoint = "https://s3.eu-central-1.amazonaws.com"
+    region = "eu-central-1"
+    bucketName = s3MatomoTargetBucket
+    acl = "bucket-owner-full-control"
+}
