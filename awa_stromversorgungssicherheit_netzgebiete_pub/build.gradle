@@ -16,7 +16,9 @@ task transferNetzgebiete(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('awa_stromversorgungssicherheit_netzgebiete_pub.sql', 'awa_netzbetreiber_strom_pub.netzbetreiber', true)
+            new TransferSet('awa_stromversorgungssicherheit_pub_ebene_3.sql', 'awa_stromversorgungssicherheit_pub.netzbetreiber_ebene_3', true),
+            new TransferSet('awa_stromversorgungssicherheit_pub_ebene_5.sql', 'awa_stromversorgungssicherheit_pub.netzbetreiber_ebene_5', true),
+            new TransferSet('awa_stromversorgungssicherheit_pub_ebene_7.sql', 'awa_stromversorgungssicherheit_pub.netzbetreiber_ebene_7', true)
     ];
 }
 
