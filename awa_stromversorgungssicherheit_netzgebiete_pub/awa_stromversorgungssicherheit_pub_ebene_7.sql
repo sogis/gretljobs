@@ -1,10 +1,10 @@
 SELECT 
-    ruledarea_level_7.aname AS "name",
+    ruledarea_level7.aname AS "name",
     ageometry AS geometrie,
     canton AS kanton,
     organisation.aname AS "operator" 
 FROM
-    awa_stromversorgungssicherheit.supplyscy_rldreas_ruledarea_level_7 AS ruledarea_level_7
+    awa_stromversorgungssicherheit.supplyscy_rldreas_ruledarea_level7 AS ruledarea_level7
     LEFT JOIN awa_stromversorgungssicherheit.supplyscy_rldreas_organisation AS organisation
-    ON organisation.t_id = ruledarea_level_7."operator"
+    ON organisation.t_id = ruledarea_level7."operator"
 ;
