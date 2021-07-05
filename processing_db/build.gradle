@@ -1,0 +1,67 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: "de.undercouch.download"
+
+
+def dbUriProcessing = 'jdbc:postgresql://processing-db/processing'
+def dbUserProcessing = 'admin'
+def dbPwdProcessing = 'admin'
+
+
+defaultTasks 'processData'
+// Finally it will rather be:
+// defaultTasks 'publishData'
+
+
+task createEmptySchema(type: Ili2pgImportSchema) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    dbschema = 'av'
+    models = 'DM01AVSO24LV95'
+    defaultSrsCode = '2056'
+    createGeomIdx = true
+    createFk = true
+    createFkIdx = true
+    createUnique = true
+    createEnumTabs = true
+    beautifyEnumDispName = true
+    createMetaInfo = true
+    createNumChecks = true
+    nameByTopic = true
+    strokeArcs = true
+    createImportTabs = true
+    createBasketCol = true
+    createDatasetCol = true
+}
+
+task transferData(type: Db2Db) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    transferSets = [
+        new TransferSet('bodenbedeckung_boflaeche.sql', 'av.bodenbedeckung_boflaeche', true)
+    ]
+}
+
+task prepareProcessingDb() {
+    dependsOn = ['createEmptySchema', 'transferData']
+    doLast {
+        println "Processing DB is ready"
+    }
+}
+
+task processData(type: SqlExecutor) {
+    dependsOn prepareProcessingDb
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['processing.sql']
+}
+
+task publishData(type: Db2Db) {
+    dependsOn processData
+    sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+        new TransferSet('publish.sql', 'destination_table', true)
+    ]
+}
