@@ -19,8 +19,8 @@ task downloadMatomoAddLayerReport(type: Exec) {
 
 task uploadReportsToS3Stage(type: S3Upload, dependsOn: 'downloadMatomoAddLayerReport') {
     description = "Report aus Verzeichnis nach S3 hochladen."
-    accessKey = "AKIAWYSBER5CTPCI5VUR"
-    secretKey = "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"
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
     sourceDir = file(pathToPdfExportFolder)
     endPoint = "https://s3.eu-central-1.amazonaws.com"
     region = "eu-central-1"
