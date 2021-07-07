@@ -28,7 +28,7 @@ task downloadMatomoReports(type: Exec) {
     commandLine 'curl', '-o', pathToReportsExportFolder + '/plotInfoEvent.csv',  matomoBaseUrl + matomoPlotinfoReport
 }
 
-task uploadReportsToS3Stage(type: S3Upload, dependsOn: 'downloadMatomoAddLayerReport') {
+task uploadReportsToS3Stage(type: S3Upload, dependsOn: 'downloadMatomoReports') {
     description = "Report aus Verzeichnis nach S3 hochladen."
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
