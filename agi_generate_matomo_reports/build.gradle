@@ -23,9 +23,15 @@ def s3MatomoTargetBucket = "ch.so.agi.matomo$bucketSuffix"
 defaultTasks 'uploadReportsToS3Stage'
 
 
-task downloadMatomoReports(type: Exec) {
-    commandLine 'curl', '-o', pathToReportsExportFolder + '/addLayerEvent.csv',  matomoBaseUrl + matomoAddLayerReport
-    commandLine 'curl', '-o', pathToReportsExportFolder + '/plotInfoEvent.csv',  matomoBaseUrl + matomoPlotinfoReport
+task downloadMatomoReports {
+    doLast {
+        exec {
+            commandLine 'curl', '-o', pathToReportsExportFolder + '/addLayerEvent.csv',  matomoBaseUrl + matomoAddLayerReport
+        }
+        exec {
+            commandLine 'curl', '-o', pathToReportsExportFolder + '/plotInfoEvent.csv',  matomoBaseUrl + matomoPlotinfoReport
+        }
+    }
 }
 
 task uploadReportsToS3Stage(type: S3Upload, dependsOn: 'downloadMatomoReports') {
