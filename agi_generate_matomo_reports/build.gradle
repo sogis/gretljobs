@@ -1,8 +1,6 @@
 import ch.so.agi.gretl.tasks.*
 import java.nio.file.Paths
 import java.nio.file.Files
-import java.time.Instant
-import java.time.temporal.ChronoUnit
 
 apply plugin: "ch.so.agi.gretl"
 
@@ -14,8 +12,7 @@ def matomoRemoveLayerReport = "date=previous1&filter_limit=100&filter_pattern=RE
 def matomoSearchResultSelectedReport = "date=previous1&filter_limit=100&filter_pattern=SEARCH_RESULT_SELECTED&flat=1&format=CSV&filter_sort_column=nb_events&showColumns=nb_events&idSite=1&language=en&method=Events.getAction&module=API&period=month&token_auth=09e7c2406125bc25e4448a4a1d71fefc&translateColumnNames=1"
 def matomoSearchTextReport = "date=previous1&filter_limit=100&filter_pattern=SEARCH_TEXT&flat=1&format=CSV&filter_sort_column=nb_events&showColumns=nb_events&idSite=1&language=en&method=Events.getAction&module=API&period=month&token_auth=09e7c2406125bc25e4448a4a1d71fefc&translateColumnNames=1"
 def matomoPlotinfoPdfReport = "date=previous1&filter_limit=100&filter_pattern=PLOTINFO_PDF_QUERY&flat=1&format=CSV&filter_sort_column=nb_events&showColumns=nb_events&idSite=1&language=en&method=Events.getAction&module=API&period=month&token_auth=09e7c2406125bc25e4448a4a1d71fefc&translateColumnNames=1"
-Instant now = Instant.now()
-Instant yesterday = now.minus(1, ChronoUnit.DAYS).format('yyyy-MM')
+def yesterdaysDate = new Date(System.currentTimeMillis()-24*60*60*1000).format('yyyy-MM')
 
 def bucketSuffix = '-undefined'
     if ( gretlEnvironment == 'production' ) { 
@@ -34,7 +31,7 @@ defaultTasks 'uploadReportsToS3Stage'
 task downloadMatomoReports {
     doLast {
         exec {
-            commandLine 'curl', '-o', pathToReportsExportFolder + '/addLayerEvent' + yesterday + '.csv',  matomoBaseUrl + matomoAddLayerReport
+            commandLine 'curl', '-o', pathToReportsExportFolder + '/addLayerEvent' + yesterdaysDate + '.csv',  matomoBaseUrl + matomoAddLayerReport
         }
         exec {
             commandLine 'curl', '-o', pathToReportsExportFolder + '/plotInfoEvent.csv',  matomoBaseUrl + matomoPlotinfoReport
