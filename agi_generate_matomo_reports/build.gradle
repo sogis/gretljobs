@@ -31,22 +31,22 @@ defaultTasks 'uploadReportsToS3Stage'
 task downloadMatomoReports {
     doLast {
         exec {
-            commandLine 'curl', '-o', pathToReportsExportFolder + '/addLayerEvent' + yesterdaysDate + '.csv',  matomoBaseUrl + matomoAddLayerReport
+            commandLine 'curl', '-o', pathToReportsExportFolder + '/addLayerEvent-' + yesterdaysDate + '.csv',  matomoBaseUrl + matomoAddLayerReport
         }
         exec {
-            commandLine 'curl', '-o', pathToReportsExportFolder + '/plotInfoEvent.csv',  matomoBaseUrl + matomoPlotinfoReport
+            commandLine 'curl', '-o', pathToReportsExportFolder + '/plotInfoEvent-' + yesterdaysDate + '.csv',  matomoBaseUrl + matomoPlotinfoReport
         }
         exec {
-            commandLine 'curl', '-o', pathToReportsExportFolder + '/removeLayerEvent.csv',  matomoBaseUrl + matomoRemoveLayerReport
+            commandLine 'curl', '-o', pathToReportsExportFolder + '/removeLayerEvent-' + yesterdaysDate + '.csv',  matomoBaseUrl + matomoRemoveLayerReport
         }
         exec {
-            commandLine 'curl', '-o', pathToReportsExportFolder + '/searchResultSelectedEvent.csv',  matomoBaseUrl + matomoSearchResultSelectedReport
+            commandLine 'curl', '-o', pathToReportsExportFolder + '/searchResultSelectedEvent-' + yesterdaysDate + '.csv',  matomoBaseUrl + matomoSearchResultSelectedReport
         }
         exec {
-            commandLine 'curl', '-o', pathToReportsExportFolder + '/searchTextEvent.csv',  matomoBaseUrl + matomoSearchTextReport
+            commandLine 'curl', '-o', pathToReportsExportFolder + '/searchTextEvent-' + yesterdaysDate + '.csv',  matomoBaseUrl + matomoSearchTextReport
         }
         exec {
-            commandLine 'curl', '-o', pathToReportsExportFolder + '/plotinfoPdfEvent.csv',  matomoBaseUrl + matomoPlotinfoPdfReport
+            commandLine 'curl', '-o', pathToReportsExportFolder + '/plotinfoPdfEvent-' + yesterdaysDate + '.csv',  matomoBaseUrl + matomoPlotinfoPdfReport
         }
     }
 }
