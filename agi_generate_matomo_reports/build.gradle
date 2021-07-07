@@ -7,6 +7,12 @@ apply plugin: "ch.so.agi.gretl"
 def pathToReportsExportFolder = Files.createTempDirectory("reports-").toFile().getAbsolutePath()
 def matomoBaseUrl = "http://analytics.dev.so.ch/index.php?"
 def matomoAddLayerReport = "date=previous1&filter_limit=100&filter_pattern=ADD_LAYER&flat=1&format=CSV&filter_sort_column=nb_events&showColumns=nb_events&idSite=1&language=en&method=Events.getAction&module=API&period=month&token_auth=09e7c2406125bc25e4448a4a1d71fefc&translateColumnNames=1"
+def matomoPlotinfoReport = "date=previous1&filter_limit=100&filter_pattern=^(?!LOG_ACTION\$)(PLOTINFO_QUERY)&flat=1&format=CSV&filter_sort_column=nb_events&showColumns=nb_events&idSite=1&language=en&method=Events.getAction&module=API&period=month&token_auth=09e7c2406125bc25e4448a4a1d71fefc&translateColumnNames=1"
+def matomoRemoveLayerReport = "date=previous1&filter_limit=100&filter_pattern=REMOVE_LAYER&flat=1&format=CSV&filter_sort_column=nb_events&showColumns=nb_events&idSite=1&language=en&method=Events.getAction&module=API&period=month&token_auth=09e7c2406125bc25e4448a4a1d71fefc&translateColumnNames=1"
+def matomoSearchResultSelectedReport = "date=previous1&filter_limit=100&filter_pattern=SEARCH_RESULT_SELECTED&flat=1&format=CSV&filter_sort_column=nb_events&showColumns=nb_events&idSite=1&language=en&method=Events.getAction&module=API&period=month&token_auth=09e7c2406125bc25e4448a4a1d71fefc&translateColumnNames=1"
+def matomoSearchTextReport = "date=previous1&filter_limit=100&filter_pattern=SEARCH_TEXT&flat=1&format=CSV&filter_sort_column=nb_events&showColumns=nb_events&idSite=1&language=en&method=Events.getAction&module=API&period=month&token_auth=09e7c2406125bc25e4448a4a1d71fefc&translateColumnNames=1"
+def matomoPlotinfoPdfReport = "date=previous1&filter_limit=100&filter_pattern=PLOTINFO_PDF_QUERY&flat=1&format=CSV&filter_sort_column=nb_events&showColumns=nb_events&idSite=1&language=en&method=Events.getAction&module=API&period=month&token_auth=09e7c2406125bc25e4448a4a1d71fefc&translateColumnNames=1"
+def yesterdaysDate = new Date(System.currentTimeMillis()-24*60*60*1000).format('yyyy-MM')
 
 def bucketSuffix = '-undefined'
     if ( gretlEnvironment == 'production' ) { 
@@ -22,11 +28,30 @@ def s3MatomoTargetBucket = "ch.so.agi.matomo$bucketSuffix"
 defaultTasks 'uploadReportsToS3Stage'
 
 
-task downloadMatomoAddLayerReport(type: Exec) {
-    commandLine 'curl', '-o', pathToReportsExportFolder + '/test.csv',  matomoBaseUrl + matomoAddLayerReport
+task downloadMatomoReports {
+    doLast {
+        exec {
+            commandLine 'curl', '-o', pathToReportsExportFolder + '/addLayerEvent-' + yesterdaysDate + '.csv',  matomoBaseUrl + matomoAddLayerReport
+        }
+        exec {
+            commandLine 'curl', '-o', pathToReportsExportFolder + '/plotInfoEvent-' + yesterdaysDate + '.csv',  matomoBaseUrl + matomoPlotinfoReport
+        }
+        exec {
+            commandLine 'curl', '-o', pathToReportsExportFolder + '/removeLayerEvent-' + yesterdaysDate + '.csv',  matomoBaseUrl + matomoRemoveLayerReport
+        }
+        exec {
+            commandLine 'curl', '-o', pathToReportsExportFolder + '/searchResultSelectedEvent-' + yesterdaysDate + '.csv',  matomoBaseUrl + matomoSearchResultSelectedReport
+        }
+        exec {
+            commandLine 'curl', '-o', pathToReportsExportFolder + '/searchTextEvent-' + yesterdaysDate + '.csv',  matomoBaseUrl + matomoSearchTextReport
+        }
+        exec {
+            commandLine 'curl', '-o', pathToReportsExportFolder + '/plotinfoPdfEvent-' + yesterdaysDate + '.csv',  matomoBaseUrl + matomoPlotinfoPdfReport
+        }
+    }
 }
 
-task uploadReportsToS3Stage(type: S3Upload, dependsOn: 'downloadMatomoAddLayerReport') {
+task uploadReportsToS3Stage(type: S3Upload, dependsOn: 'downloadMatomoReports') {
     description = "Report aus Verzeichnis nach S3 hochladen."
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
