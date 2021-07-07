@@ -1,0 +1,38 @@
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import java.nio.file.Files
+
+apply plugin: "ch.so.agi.gretl"
+
+def pathToReportsExportFolder = Files.createTempDirectory("reports-").toFile().getAbsolutePath()
+def matomoBaseUrl = "http://analytics.dev.so.ch/index.php?"
+def matomoAddLayerReport = "date=previous1&filter_limit=100&filter_pattern=ADD_LAYER&flat=1&format=CSV&filter_sort_column=nb_events&showColumns=nb_events&idSite=1&language=en&method=Events.getAction&module=API&period=month&token_auth=09e7c2406125bc25e4448a4a1d71fefc&translateColumnNames=1"
+
+def bucketSuffix = '-undefined'
+    if ( gretlEnvironment == 'production' ) { 
+        bucketSuffix = ''
+    } else if ( gretlEnvironment == 'integration' || gretlEnvironment == 'development' ) { 
+        bucketSuffix = '-' + gretlEnvironment.substring(0, 3)
+    } else {
+        bucketSuffix = '-' + gretlEnvironment
+    }
+
+def s3MatomoTargetBucket = "ch.so.agi.matomo$bucketSuffix"
+
+defaultTasks 'uploadReportsToS3Stage'
+
+
+task downloadMatomoAddLayerReport(type: Exec) {
+    commandLine 'curl', '-o', pathToReportsExportFolder + '/test.csv',  matomoBaseUrl + matomoAddLayerReport
+}
+
+task uploadReportsToS3Stage(type: S3Upload, dependsOn: 'downloadMatomoAddLayerReport') {
+    description = "Report aus Verzeichnis nach S3 hochladen."
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    sourceDir = file(pathToReportsExportFolder)
+    endPoint = "https://s3.eu-central-1.amazonaws.com"
+    region = "eu-central-1"
+    bucketName = s3MatomoTargetBucket
+    acl = "public-read"
+}
