@@ -7,7 +7,7 @@ apply plugin: "ch.so.agi.gretl"
 def pathToReportsExportFolder = Files.createTempDirectory("reports-").toFile().getAbsolutePath()
 def matomoBaseUrl = "http://analytics.dev.so.ch/index.php?"
 def matomoAddLayerReport = "date=previous1&filter_limit=100&filter_pattern=ADD_LAYER&flat=1&format=CSV&filter_sort_column=nb_events&showColumns=nb_events&idSite=1&language=en&method=Events.getAction&module=API&period=month&token_auth=09e7c2406125bc25e4448a4a1d71fefc&translateColumnNames=1"
-def matomoPlotinfoReport = "date=previous1&filter_limit=100&filter_pattern=^(?!LOG_ACTION$)(PLOTINFO_QUERY)&flat=1&format=CSV&filter_sort_column=nb_events&showColumns=nb_events&idSite=1&language=en&method=Events.getAction&module=API&period=month&token_auth=09e7c2406125bc25e4448a4a1d71fefc&translateColumnNames=1"
+def matomoPlotinfoReport = "date=previous1&filter_limit=100&filter_pattern=^(?!LOG_ACTION\$)(PLOTINFO_QUERY)&flat=1&format=CSV&filter_sort_column=nb_events&showColumns=nb_events&idSite=1&language=en&method=Events.getAction&module=API&period=month&token_auth=09e7c2406125bc25e4448a4a1d71fefc&translateColumnNames=1"
 
 def bucketSuffix = '-undefined'
     if ( gretlEnvironment == 'production' ) { 
