@@ -6,7 +6,11 @@ apply plugin: 'ch.so.agi.gretl'
 apply plugin: "de.undercouch.download"
 
 
-def dbUriProcessing = 'jdbc:postgresql://processing-db/processing'
+def dbHostname = 'processing-db' // for use with Docker Compose
+if ( gretlEnvironment == 'production' || gretlEnvironment == 'integration' || gretlEnvironment == 'test') {
+    dbHostname = 'localhost' // for use with Kubernetes
+}
+def dbUriProcessing = "jdbc:postgresql://${dbHostname}/processing"
 def dbUserProcessing = 'admin'
 def dbPwdProcessing = 'admin'
 
