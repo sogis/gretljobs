@@ -15,6 +15,12 @@ pipeline {
         yaml '''
           spec:
             containers:
+            - name: jnlp
+              envFrom:
+              - configMapRef:
+                  name: gretl-resources
+              - secretRef:
+                  name: gretl-secrets
             - name: processing-db
               image: crunchydata/crunchy-postgres-gis:centos8-13.3-3.1-4.6.3
               env:
