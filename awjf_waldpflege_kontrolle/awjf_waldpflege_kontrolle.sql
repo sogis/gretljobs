@@ -2,7 +2,12 @@ SELECT
     FALSE AS kontrolle_forstkreis,
     NULL AS bemerkung_forstkreis,
     NULL AS mehrfachpflege,
-    0 AS beitrag,
+    CASE
+        WHEN dauerwald IS TRUE
+            THEN gepflegte_flaeche * 4.5 * Abstufung_50_100
+        WHEN dauerwald IS FALSE
+            THEN gepflegte_flaeche * 15 * Abstufung_50_100
+    END AS beitrag,
     gesuchsteller.gesuchsteller,
     NULL AS eigentuemerart,
     gesuchsteller.forstrevier,
