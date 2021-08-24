@@ -4,9 +4,9 @@ SELECT
     NULL AS mehrfachpflege,
     CASE
         WHEN dauerwald IS TRUE
-            THEN gepflegte_flaeche * 4.5 * Abstufung_50_100
+            THEN gepflegte_flaeche * 4.5 * abstufung_50_100
         WHEN dauerwald IS FALSE
-            THEN gepflegte_flaeche * 15 * Abstufung_50_100
+            THEN gepflegte_flaeche * 15 * abstufung_50_100
     END AS beitrag,
     gesuchsteller.gesuchsteller,
     NULL AS eigentuemerart,
@@ -30,4 +30,8 @@ FROM
    ON waldpflege.gesuchnummer = gesuchsteller.gesuchsnummer
 WHERE
     waldpflege.abgabe_forstkreis IS TRUE
+AND
+    gepflegte_flaeche IS NOT NULL
+AND
+    abstufung_50_100 IS NOT NULL
 ;
