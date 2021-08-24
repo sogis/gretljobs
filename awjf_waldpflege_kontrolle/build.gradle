@@ -6,7 +6,6 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'deleteFromAwjfWaldpflegeErfassung'
 
 
-
 task transferAwjfWaldpflegeErfassung(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
