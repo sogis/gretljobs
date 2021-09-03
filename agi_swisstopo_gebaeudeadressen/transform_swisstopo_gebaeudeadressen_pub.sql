@@ -1,5 +1,5 @@
 SELECT
-    address.t_ili_tid,
+    uuid_generate_v4() AS t_ili_tid,
     address.adr_egaid AS egaid,
     address.str_esid AS esid,
     address.bdg_egid AS egid,
