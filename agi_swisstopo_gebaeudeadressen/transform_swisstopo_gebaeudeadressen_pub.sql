@@ -20,7 +20,7 @@ SELECT
     END AS astatus,
     address.adr_official AS offiziell,
     address.adr_modified AS letzteaenderung,
-    address.adr_valid AS zueverlaessig,
+    address.adr_valid AS zuverlaessig,
     address.pnt_shape AS geometrie
 FROM
     agi_swisstopo_gebaeudeadressen.officlndxfddrsses_address AS address
