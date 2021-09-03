@@ -14,7 +14,7 @@ def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
 def pathToDataZip = Paths.get(pathToTempFolder, "ch.swisstopo.amtliches-gebaeudeadressverzeichnis.zip")
 def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), 'pure_adr.xtf')
-
+/*
 task download(type: Download){
     description = "Download official index of addresses from swisstopo"
     doLast {
@@ -48,7 +48,7 @@ task dbImport(type: Ili2pgImport, dependsOn: 'unzipData') {
     deleteData = true
     strokeArcs = true
 }
-
+*/
 task transferToPub(type: Db2Db, dependsOn: 'dbImport') {
     description = "Transfer und Umbau der Daten von Edit nach Pub"
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
