@@ -9,12 +9,12 @@ apply plugin: "ch.so.agi.gretl"
 
 defaultTasks 'transferToPub'
 //defaultTasks 'dbImport'
-
+/*
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
 def pathToDataZip = Paths.get(pathToTempFolder, "ch.swisstopo.amtliches-gebaeudeadressverzeichnis.zip")
 def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), 'pure_adr.xtf')
-*/
+
 task download(type: Download){
     description = "Download official index of addresses from swisstopo"
     doLast {
@@ -24,7 +24,8 @@ task download(type: Download){
     dest pathToTempFolder
     overwrite true
 }
-
+*/
+/*
 task unzipData(type: Copy, dependsOn: 'download') {
     description = "Unzip file."
     doLast {
@@ -34,7 +35,8 @@ task unzipData(type: Copy, dependsOn: 'download') {
     into file(pathToUnzipFolder)
     include "**/*.xtf"
 }
-
+*/
+/*
 task dbImport(type: Ili2pgImport, dependsOn: 'unzipData') {
     description = "Import addresses into Edit database"
     doLast {
@@ -48,7 +50,7 @@ task dbImport(type: Ili2pgImport, dependsOn: 'unzipData') {
     deleteData = true
     strokeArcs = true
 }
-/*
+*/
 task transferToPub(type: Db2Db, dependsOn: 'dbImport') {
     description = "Transfer und Umbau der Daten von Edit nach Pub"
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
