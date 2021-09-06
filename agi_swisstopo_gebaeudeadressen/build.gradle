@@ -10,46 +10,9 @@ apply plugin: "ch.so.agi.gretl"
 defaultTasks 'transferToPub'
 //defaultTasks 'dbImport'
 
-def pathToTempFolder = System.getProperty("java.io.tmpdir")
-def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
-def pathToDataZip = Paths.get(pathToTempFolder, "ch.swisstopo.amtliches-gebaeudeadressverzeichnis.zip")
-def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), 'pure_adr.xtf')
 
-task download(type: Download){
-    description = "Download official index of addresses from swisstopo"
-    doLast {
-        println "File downloaded to: " + pathToTempFolder
-    }
-    src 'https://data.geo.admin.ch/ch.swisstopo.amtliches-gebaeudeadressverzeichnis/xtf/2056/ch.swisstopo.amtliches-gebaeudeadressverzeichnis.zip'
-    dest pathToTempFolder
-    overwrite true
-}
-
-task unzipData(type: Copy, dependsOn: 'download') {
-    description = "Unzip file."
-    doLast {
-        println "File unzipped to directory: " + pathToUnzipFolder
-    }
-    from zipTree(pathToDataZip)
-    into file(pathToUnzipFolder)
-    include "**/*.xtf"
-}
-
-task dbImport(type: Ili2pgImport, dependsOn: 'unzipData') {
-    description = "Import addresses into Edit database"
-    doLast {
-        println "Data imported into db: " + dbUriEdit
-    }
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = "agi_swisstopo_gebaeudeadressen"
-    models = "OfficialIndexOfAddresses_V2"
-    disableValidation = true
-    dataFile = file(xtfFilePath)
-    deleteData = true
-    strokeArcs = true
-}
-
-task transferToPub(type: Db2Db, dependsOn: 'dbImport') {
+//task transferToPub(type: Db2Db, dependsOn: 'dbImport') {
+task transferToPub(type: Db2Db) {
     description = "Transfer und Umbau der Daten von Edit nach Pub"
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
