@@ -4,9 +4,7 @@ SELECT
     address.str_esid AS esid,
     address.bdg_egid AS egid,
     address.adr_edid AS edid,
-    CASE 
-        WHEN localisationname.stn_text IS NOT NULL THEN localisationname.stn_text
-    END AS strassenname,
+    localisationname.stn_text AS strassenname,
     address.adr_number AS nummer,
     address.bdg_name AS gebaeudename,
     zip.zip_zip4 AS plz4,
