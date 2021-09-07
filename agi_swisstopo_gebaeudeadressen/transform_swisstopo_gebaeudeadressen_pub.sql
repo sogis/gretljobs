@@ -26,7 +26,7 @@ FROM
     ON localisationname.offclndxfddrsss_ddress_stn_name = address.t_id 
     LEFT JOIN agi_swisstopo_gebaeudeadressen.officlndxfddrsses_zip AS zip
     ON zip.offclndxfddrsss_ddress_zip_zip6= address.t_id 
-WHERE t_seq = '0'
+WHERE localisationname.t_seq = '0'
 --LIMIT 100000   
 ;
 
