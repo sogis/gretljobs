@@ -123,10 +123,6 @@ FROM
     plz.astatus != 'vergangen'
     AND
     ortschaft.astatus != 'vergangen'
-    AND 
-    strassenname IS NOT NULL
-    AND
-    hausnummer IS NOT NULL
 )
 SELECT
 gebaeudeeingang_strassenname_plz_ortschaft.strassenname,
