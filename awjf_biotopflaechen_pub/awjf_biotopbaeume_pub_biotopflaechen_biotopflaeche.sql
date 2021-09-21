@@ -23,6 +23,7 @@ SELECT
     bemerkung,
     besonderheiten,
     vertragsart,
+    vertragsende,
     vertragsspeicherort,
     projektstatus,
     ST_Area(biotopflaeche.geometrie) / 100 AS flaeche
