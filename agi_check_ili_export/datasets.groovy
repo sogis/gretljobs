@@ -157,7 +157,7 @@ datasets.add(new Dataset("SO_AVT_Groblaermkataster_20190709", "avt_groblaermkata
 datasets.add(new Dataset("SO_AVT_Kantonsstrassen_Publikation_20200707", "avt_kantonsstrassen_pub", dbPub, "ch.so.avt.kantonsstrassen")) 
 datasets.add(new Dataset("SO_AVT_Strassenlaerm_Publikation_20190802", "avt_strassenlaerm_pub", dbPub, "ch.so.avt.strassenlaerm")) 
 datasets.add(new Dataset("SO_AVT_Verkehrszaehlstellen_Publikation_20190206", "avt_verkehrszaehlstellen_pub", dbPub, "ch.so.avt.verkehrszaehlstellen")) 
-datasets.add(new Dataset("SO_AWJF_Foerderprogramm_Biodiversitaet_Publikation_20200330", "awjf_foerderprogramm_biodiversitaet_pub", dbPub, "ch.so.awjf.foerderprogramm_biodiversitaet")) 
+datasets.add(new Dataset("SO_AWJF_Foerderprogramm_Biodiversitaet_Publikation_20200519", "awjf_foerderprogramm_biodiversitaet_pub", dbPub, "ch.so.awjf.foerderprogramm_biodiversitaet")) 
 datasets.add(new Dataset("SO_Forstreviere_Publikation_20170428", "awjf_forstreviere_pub", dbPub, "ch.so.awjf.forstreviere")) 
 datasets.add(new Dataset("SO_AWJF_Jagdreviere_Jagdbanngebiete_Publikation_202000804", "awjf_jagdreviere_jagdbanngebiete_pub", dbPub, "ch.so.awjf.jagdreviere_jagdbanngebiete")) 
 datasets.add(new Dataset("SO_AWJF_Seltene_Baumarten_Publikation_20191015", "awjf_seltene_baeume_pub", dbPub, "ch.so.awjf.seltene_baeume")) 
