@@ -58,6 +58,7 @@ datasets.add(new Dataset("Hazard_Mapping_LV95_V1_2", "afu_gefahrenkartierung_mgd
 datasets.add(new Dataset("SO_AFU_Geotope_20200312", "afu_geotope", dbEdit, "ch.so.afu.geotope_edit"))
 datasets.add(new Dataset("PlanerischerGewaesserschutz_LV95_V1_1", "afu_gewaesserschutz", dbEdit, "ch.so.afu.gewaesserschutz_edit"))
 datasets.add(new Dataset("SO_AFU_Igel_202000429", "afu_igel", dbEdit, "ch.so.afu.igel_edit"))
+datasets.add(new Dataset("SO_AFU_Infoflora_20211008", "afu_infoflora", dbEdit, "ch.so.afu.infoflora_edit"))
 datasets.add(new Dataset("SO_AFU_Verzeichnis_schadstoffbelastete_Boeden_20200622", "afu_schadstoffbelastete_boeden", dbEdit, "ch.so.afu.schadstoffbelastete_boeden_edit"))
 datasets.add(new Dataset("SO_AfU_Luftreinhaltung_20191105", "afu_uplus_luft", dbEdit, "ch.so.afu.uplus_luft_edit"))
 datasets.add(new Dataset("SO_AfU_Tankanlage_20191105", "afu_uplus_tank", dbEdit, "ch.so.afu.uplus_tank_edit"))
@@ -73,7 +74,6 @@ datasets.add(new Dataset("SO_AGI_Inventar_Hoheitsgrenzen_20191129", "agi_inventa
 //datasets.add(new Dataset("SIA405_Abwasser_WI", "agi_leitungskataster_abw", dbEdit, "ch.so.agi.leitungskataster_abwasser_edit")) // Geht glaub wegen ili1 nicht. Ich teile ili2pg mit, dass ich ili2 exportiere.
 //datasets.add(new Dataset("SIA405_mit_Erweiterungen", "agi_leitungskataster_ele", dbEdit, "ch.so.agi.leitungskataster_elektro_edit")) // Kann wegen NaN-Coords nicht exportiert werden. ili2pg ist gefixed. NaN werden beim Umbau entfernt.
 //datasets.add(new Dataset("SIA405_Wasser_WI", "agi_leitungskataster_was", dbEdit, "ch.so.agi.leitungskataster_wasser_edit")) // Geht glaub wegen ili1 nicht. Ich teile ili2pg mit, dass ich ili2 exportiere.
-datasets.add(new Dataset("SO_ALW_Infoflora_20190912", "alw_infoflora", dbEdit, "ch.so.alw.infoflora_edit"))
 datasets.add(new Dataset("SO_ALW_Strukturverbesserungen_20190912", "alw_strukturverbesserungen", dbEdit, "ch.so.alw.strukturverbesserungen_edit"))
 datasets.add(new Dataset("Strukturverbesserungen_LV95_V2", "alw_strukturverbesserungen_suissemelio", dbEdit, "ch.so.alw.strukturverbesserungen_suissemelio_edit"))
 datasets.add(new Dataset("SO_AMB_Notfalltreffpunkte_20180413", "amb_notfalltreffpunkte", dbEdit, "ch.so.amb.notfalltreffpunkte_edit"))
@@ -128,6 +128,7 @@ datasets.add(new Dataset("SO_AfU_Gefahrenkartierung_20181129", "afu_gefahrenkart
 datasets.add(new Dataset("SO_AFU_Geotope_Publikation_20200623", "afu_geotope_pub", dbPub, "ch.so.afu.geotope")) 
 datasets.add(new Dataset("SO_AfU_Gewaesserschutz_Publikation_20210303", "afu_gewaesserschutz_pub", dbPub, "ch.so.afu.gewaesserschutz")) 
 datasets.add(new Dataset("SO_AFU_Igel_Publikation_20200429", "afu_igel_pub", dbPub, "ch.so.afu.igel")) 
+datasets.add(new Dataset("SO_AFU_Infoflora_Publikation_20211013", "afu_infoflora_pub", dbPub, "ch.so.afu.infoflora"))
 datasets.add(new Dataset("SO_AFU_Verzeichnis_schadstoffbelastete_Boeden_Publikation_20200701", "afu_schadstoffbelastete_boeden_pub", dbPub, "ch.so.afu.schadstoffbelastete_boeden")) 
 datasets.add(new Dataset("SO_AfU_Wasserbewirtschaftung_Publikation_20190305", "afu_wasserbewirtschaftung_pub", dbPub, "ch.so.afu.wasserbewirtschaftung"))
 datasets.add(new Dataset("SO_AGEM_Fila_Publikation_20190318", "agem_fila_pub", dbPub, "ch.so.agem.fila"))
@@ -141,7 +142,6 @@ datasets.add(new Dataset("SO_AGI_Lidarprodukte_Publikation_20180202", "agi_lidar
 datasets.add(new Dataset("SO_AGI_MOpublic_20190424", "agi_mopublic_pub", dbPub, "ch.so.agi.mopublic")) 
 datasets.add(new Dataset("SO_AGI_PLZ_Ortschaften_Publikation_20180406", "agi_plz_ortschaften_pub", dbPub, "ch.so.agi.plz_ortschaften")) 
 datasets.add(new Dataset("SO_AGI_swissBOUNDARIES3D_Publikation_20171026", "agi_swissboundaries3d_pub", dbPub, "ch.so.agi.swissboundaries3d")) 
-datasets.add(new Dataset("SO_ALW_Infoflora_Publikation_20191028", "alw_infoflora_pub", dbPub, "ch.so.alw.infoflora"))
 datasets.add(new Dataset("SO_ALW_Strukturverbesserungen_Publikation_20190905", "alw_strukturverbesserungen_pub", dbPub, "ch.so.alw.strukturverbesserungen")) 
 datasets.add(new Dataset("SO_ALW_Landwirtschaftliche_Zonengrenzen_Publikation_20200630", "alw_zonengrenzen_pub", dbPub, "ch.so.alw.zonengrenzen")) 
 datasets.add(new Dataset("SO_AMB_Notfalltreffpunkte_Publikation_20180822", "amb_notfalltreffpunkte_pub", dbPub, "ch.so.amb.notfalltreffpunkte")) 
