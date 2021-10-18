@@ -192,6 +192,7 @@ erschliessung_punktobjekt_geometrie_typ AS
 (
   SELECT 
     f.t_datasetname::int4 AS bfs_nr,
+    f.t_datasetname,
     f.t_id,
     f.t_ili_tid,
     f.name_nummer,

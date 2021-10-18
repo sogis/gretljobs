@@ -183,6 +183,7 @@ ueberlagernd_linie_geometrie_typ AS
   SELECT
     l.t_id,
     l.t_datasetname::int4 AS bfs_nr,
+    l.t_datasetname,
     l.t_ili_tid,
     l.name_nummer,
     l.rechtsstatus,

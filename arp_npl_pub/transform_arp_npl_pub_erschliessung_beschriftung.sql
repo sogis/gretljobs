@@ -89,6 +89,7 @@ SELECT
     g.hali AS pos_hali,
     g.vali AS pos_vali,
     g.groesse AS pos_groesse,
+    g.t_datasetname,
     g.t_datasetname::int4 AS bfs_nr    
 FROM 
     beschriftung AS g;

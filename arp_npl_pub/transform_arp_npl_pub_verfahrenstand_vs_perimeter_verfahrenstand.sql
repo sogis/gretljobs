@@ -8,6 +8,7 @@ SELECT
     vsperim.bemerkungen,
     vsperim.erfasser,
     vsperim.datum,
+    vsperim.t_datasetname,
     vsperim.t_datasetname::int4 AS bfs_nr        
 FROM
     arp_npl.verfahrenstand_vs_perimeter_verfahrensstand vsperim
