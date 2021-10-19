@@ -50,31 +50,6 @@ services:
       - recover_pub:/recover
       - backrestrepo_pub:/backrestrepo
     hostname: primary-pub
-  processing-db:
-#    build: .
-    image: crunchydata/crunchy-postgres-gis:centos8-13.3-3.1-4.6.3
-    environment:
-      MODE: postgres
-      PG_DATABASE: processing
-      PG_LOCALE: en_US.UTF-8
-      PG_PRIMARY_PORT: 5432
-      PG_MODE: primary
-      PG_USER: admin
-      PG_PASSWORD: admin
-      PG_PRIMARY_USER: repl
-      PG_PRIMARY_PASSWORD: repl
-      PG_ROOT_PASSWORD: secret
-    ports:
-      - "54323:5432"
-    volumes:
-      - ./development_dbs/setup.sql:/pgconf/setup.sql
-      - sshd_processing:/sshd
-      - pgconf_processing:/pgconf
-      - pgdata_processing:/pgdata
-      - pgwal_processing:/pgwal
-      - recover_processing:/recover
-      - backrestrepo_processing:/backrestrepo
-    hostname: primary-processing
 volumes:
   sshd_edit:
   pgconf_edit:
@@ -88,9 +63,3 @@ volumes:
   pgwal_pub:
   recover_pub:
   backrestrepo_pub:
-  sshd_processing:
-  pgconf_processing:
-  pgdata_processing:
-  pgwal_processing:
-  recover_processing:
-  backrestrepo_processing:
