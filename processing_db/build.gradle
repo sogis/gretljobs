@@ -4,10 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 
 
-def dbHostname = 'processing-db' // for use with Docker Compose
-if ( gretlEnvironment == 'production' || gretlEnvironment == 'integration' || gretlEnvironment == 'test') {
-    dbHostname = 'localhost' // for use with Kubernetes
-}
+def dbHostname = project.hasProperty('processingDbHostname') ?: 'processing-db'
 def dbUriProcessing = "jdbc:postgresql://${dbHostname}/processing"
 def dbUserProcessing = 'admin'
 def dbPwdProcessing = 'admin'
