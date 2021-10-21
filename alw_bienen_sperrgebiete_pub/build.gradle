@@ -5,10 +5,11 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferAlwBienensperrgebiete'
 
-task transferAlwBienensperrgebiete(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+
+task transferAlwBienensperrgebiete(type: Db2Db) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('alw_gelan_pub_bienen_sperrgebiete.sql', 'alw_gelan_pub.bienen_sperrgebiete', true)
+            new TransferSet('alw_bienen_sperrgebiete.sql', 'alw_tiergesundheit_massnahmen_pub.massnhmnrgsndheit_bienensperrgebiet', true)
     ];
 }
