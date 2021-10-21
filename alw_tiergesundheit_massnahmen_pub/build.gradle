@@ -9,7 +9,6 @@ task transferTiergesundheitMassnahmen(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('alw_tiergesundheit_bienensperrgebiet.sql', 'alw_tiergesundheit_massnahmen_pub.massnhmnrgsndheit_bienensperrgebiet', true),
             new TransferSet('alw_tiergesundheit_massnahmengebiet.sql', 'alw_tiergesundheit_massnahmen_pub.massnhmnrgsndheit_tiergesundheit_massnahmengebiet', true)
     ];
 }
