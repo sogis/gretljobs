@@ -7,7 +7,8 @@ defaultTasks 'transferAlwGewaesserraumPub'
 
 task transferAlwGewaesserraumPub(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    targetDb = [dbUriPub, dbUriPub, dbUriPub]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    
     transferSets = [
             new TransferSet('alw_gewaesserraum_v1.sql', 'alw_gewaesserraum_v1.gewaesserraum', true)
     ];
