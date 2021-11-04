@@ -10,7 +10,7 @@ task transferAlwGewaesserraumPub(type: Db2Db) {
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     
     transferSets = [
-            new TransferSet('alw_gewaesserraum_v1.sql', 'alw_gewaesserraum_v1.gewaesserraum', true)
+            new TransferSet('alw_gewaesserraum.sql', 'alw_gewaesserraum_pub_v1.gewaesserraum', true)
     ];
     
 }
