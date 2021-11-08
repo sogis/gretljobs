@@ -40,9 +40,9 @@ pipeline {
               - name: PG_MODE
                 value: primary
               - name: PG_USER
-                value: admin
+                value: user
               - name: PG_PASSWORD
-                value: admin
+                value: pass
               - name: PG_PRIMARY_USER
                 value: repl
               - name: PG_PRIMARY_PASSWORD
