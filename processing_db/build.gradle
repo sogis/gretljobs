@@ -4,9 +4,9 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 
 
-// Set the dbHost valiable to the value of the processingDbHost property if it's set,
-// otherwise use the default value (which is 'processing-db')
-def dbHost = project.hasProperty('processingDbHost') ? processingDbHost : 'processing-db'
+// Set the dbHost variable to the value of the processingDbHost property if it's set,
+// otherwise use the default value (which is '127.0.0.1')
+def dbHost = project.hasProperty('processingDbHost') ? processingDbHost : '127.0.0.1'
 def dbUriProcessing = "jdbc:postgresql://${dbHost}/processing"
 def dbUserProcessing = 'admin'
 def dbPwdProcessing = 'admin'
