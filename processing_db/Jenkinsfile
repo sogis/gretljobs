@@ -7,6 +7,10 @@ node('master') {
 
 // Declarative pipeline starts here
 pipeline {
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 1, unit: 'DAYS')
+    }
     agent {
       kubernetes {
         cloud 'openshift'
@@ -54,7 +58,13 @@ pipeline {
             steps {
                 git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
                 dir(env.JOB_BASE_NAME) {
-                    sh 'gretl -Dorg.gradle.jvmargs=-Xmx2G'
+                    sh 'gretl -Dorg.gradle.jvmargs=-Xmx2G createEmptySchema'
+                    waitUntil {
+                        echo 'Second part of the job (import more data)'
+                        echo 'Third part of the job (do more calculations)'
+                        input message: 'Soll das Resultat jetzt publiziert werden? (Oder ist eine weitere Iteration nötig?)', parameters: [booleanParam(name: 'PUBLISH_RESULT', defaultValue: false, description: 'Resultat jetzt publizieren')]
+                    }
+                    echo 'Fourth part of the job (publish data)'
                 }
             }
         }
