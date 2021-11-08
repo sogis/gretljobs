@@ -4,8 +4,8 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 
 
-def dbHostname = project.hasProperty('processingDbHostname') ?: 'processing-db'
-def dbUriProcessing = "jdbc:postgresql://${dbHostname}/processing"
+def dbHost = project.hasProperty('processingDbHost') ?: 'processing-db'
+def dbUriProcessing = "jdbc:postgresql://${dbHost}/processing"
 def dbUserProcessing = 'admin'
 def dbPwdProcessing = 'admin'
 

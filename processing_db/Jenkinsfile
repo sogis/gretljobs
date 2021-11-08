@@ -19,8 +19,8 @@ pipeline {
             containers:
             - name: jnlp
               env:
-              - name: ORG_GRADLE_PROJECT_processingDbHostname
-                value: localhost
+              - name: ORG_GRADLE_PROJECT_processingDbHost
+                value: 127.0.0.1
               envFrom:
               - configMapRef:
                   name: gretl-resources
