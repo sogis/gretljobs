@@ -67,7 +67,7 @@ pipeline {
                     waitUntil {
                         echo 'Second part of the job (import more data)'
                         echo 'Third part of the job (do more calculations)'
-                        input message: 'Soll das Resultat jetzt publiziert werden? (Oder ist eine weitere Iteration nötig?)', parameters: [booleanParam(name: 'PUBLISH_RESULT', defaultValue: false, description: 'Resultat jetzt publizieren')]
+                        input message: 'Resultat publizieren oder Berechnung erneut durchführen?', parameters: [booleanParam(name: 'PUBLISH_RESULT', defaultValue: false, description: 'Häkchen setzen, um das Resultat zu publizieren und den Job abzuschliessen')]
                     }
                     echo 'Fourth part of the job (publish data)'
                 }
