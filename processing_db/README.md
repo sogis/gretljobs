@@ -12,12 +12,11 @@ COMPOSE_FILE=docker-compose.yml:processing_db/docker-compose.override.yml docker
 
 ## GRETL-Job lokal ausführen
 
-In diesem Fall muss dem GRETL-Wrapperskript `start-gretl.sh`
-zusätzlich die Property `-PprocessingDbHost=processing-db` übergeben werden.
-(Der übergebene Wert muss dem Service-Namen
-in `docker-compose.override.yaml` entsprechen.)
-Beispiel:
+In diesem Fall müssen vor dem Ausführen des GRETL-Wrapperskripts
+zusätzlich folgende Umgebungsvariablen gesetzt werden:
 
 ```
-./start-gretl.sh --docker-image sogis/gretl-runtime:latest [--docker-network NETWORK] --job-directory $PWD/jobname -PprocessingDbHost=processing-db [taskName...] [--option-name...]
+export ORG_GRADLE_PROJECT_dbUriProcessing=jdbc:postgresql://processing-db/processing
+export ORG_GRADLE_PROJECT_dbUserProcessing=user
+export ORG_GRADLE_PROJECT_dbPwdProcessing=pass
 ```

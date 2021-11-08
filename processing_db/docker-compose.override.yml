@@ -9,8 +9,8 @@ services:
       PG_LOCALE: en_US.UTF-8
       PG_PRIMARY_PORT: 5432
       PG_MODE: primary
-      PG_USER: admin
-      PG_PASSWORD: admin
+      PG_USER: user
+      PG_PASSWORD: pass
       PG_PRIMARY_USER: repl
       PG_PRIMARY_PASSWORD: repl
       PG_ROOT_PASSWORD: secret

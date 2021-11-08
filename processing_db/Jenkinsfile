@@ -55,6 +55,11 @@ pipeline {
     }
     stages {
         stage('Run GRETL-Job') {
+            environment {
+                ORG_GRADLE_PROJECT_dbUriProcessing = 'jdbc:postgresql://127.0.0.1/processing'
+                ORG_GRADLE_PROJECT_dbUserProcessing = 'user'
+                ORG_GRADLE_PROJECT_dbPwdProcessing = 'pass'
+            }
             steps {
                 git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
                 dir(env.JOB_BASE_NAME) {
