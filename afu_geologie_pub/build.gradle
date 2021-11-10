@@ -3,18 +3,18 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAfuGeologie'
+defaultTasks 'transferAfuGeologiePub'
 
-task transferAfuGeologie(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+task transferAfuGeologiePub(type: Db2Db) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('afu_geologie_pub_sfall.sql', 'afu_geologie_pub.sfall', true),
-            new TransferSet('afu_geologie_pub_abrkt.sql', 'afu_geologie_pub.abrkt', true),
-            new TransferSet('afu_geologie_pub_karst.sql', 'afu_geologie_pub.karst', true),
-            new TransferSet('afu_geologie_pub_tekton.sql', 'afu_geologie_pub.tekton', true),
-            new TransferSet('afu_geologie_pub_holoz.sql', 'afu_geologie_pub.holoz', true),
-            new TransferSet('afu_geologie_pub_pleist.sql', 'afu_geologie_pub.pleist', true),
-            new TransferSet('afu_geologie_pub_grunds.sql', 'afu_geologie_pub.grunds', true)
+            new TransferSet('abrisskanten_pub.sql', 'afu_geologie_pub_v1.geologie_abrisskanten', true),
+            new TransferSet('grundschicht_pub.sql', 'afu_geologie_pub_v1.geologie_grundschicht', true),
+            new TransferSet('holozaen_pub.sql', 'afu_geologie_pub_v1.geologie_holozaen', true),
+            new TransferSet('karstformen_pub.sql', 'afu_geologie_pub_v1.geologie_karstformen', true),
+            new TransferSet('pleistozaen_pub.sql', 'afu_geologie_pub_v1.geologie_pleistozaen', true),
+            new TransferSet('schichtfallen_pub.sql', 'afu_geologie_pub_v1.geologie_schichtfallen', true), 
+            new TransferSet('tektonische_strukturen_pub.sql', 'afu_geologie_pub_v1.geologie_tektonische_strukturen', true)
     ];
 }
