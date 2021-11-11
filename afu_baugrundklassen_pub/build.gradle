@@ -3,12 +3,12 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAfuBaugrundklassen'
+defaultTasks 'transferAfuBaugrundklassenPub'
 
-task transferAfuBaugrundklassen(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+task transferAfuBaugrundklassenPub(type: Db2Db) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('afu_baugrundklassen_pub_baugrundklasse.sql', 'afu_baugrundklassen_pub.baugrundklasse', true)
+            new TransferSet('afu_baugrundklassen_pub.sql','afu_baugrundklassen_pub_v1.baugrundklasse', true)
     ];
 }
