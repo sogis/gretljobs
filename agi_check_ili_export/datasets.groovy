@@ -116,7 +116,7 @@ datasets.add(new Dataset("SO_SGV_Erschliessung_ausserhalb_Bauzone_20190611", "sg
 // - agi_lidar_pub: Temporär
 // - alw_bund_hanglagen_allgemein: Kosten/Nutzen. Interessiert wohl niemanden. Externe Ursprungsdaten.
 
-datasets.add(new Dataset("SO_ADA_Denkmal_Pub_20200527", "ada_denkmalschutz_pub", dbPub, "ch.so.ada.denkmalschutz")) 
+datasets.add(new Dataset("SO_ADA_Denkmal_Pub_20211011", "ada_denkmalschutz_pub", dbPub, "ch.so.ada.denkmalschutz")) 
 datasets.add(new Dataset("SO_AFU_ARA_Einzugsgebiete_20201016", "afu_ara_einzugsgebiete_pub", dbPub, "ch.so.afu.ara_einzugsgebiete")) 
 datasets.add(new Dataset("SO_AfU_BauGK_CCCCache_20180507", "afu_baugk_ccccache", dbPub, "ch.so.afu.baugk_ccccache")) 
 datasets.add(new Dataset("SO_AFU_Bodenprofilstandorte_Publikation_20210129", "afu_bodendaten_nabodat_pub", dbPub, "ch.so.afu.bodendaten_nabodat"))
