@@ -1,7 +1,6 @@
 version: '3'
 services:
   processing-db:
-#    build: .
     image: crunchydata/crunchy-postgres-gis:centos8-13.3-3.1-4.6.3
     environment:
       MODE: postgres
