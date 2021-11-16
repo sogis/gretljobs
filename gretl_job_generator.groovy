@@ -119,3 +119,21 @@ for (jobFile in jobFiles) {
     }
   }
 }
+
+// add a view (tab) for these jobs
+listView('GRETL-Jobs') {
+  jobs {
+    regex(/^(?!(schema_|oereb_)).*/)
+    name('gretl-job-generator')
+  }
+  columns {
+    status()
+    weather()
+    name()
+    lastSuccess()
+    lastFailure()
+    lastDuration()
+    buildButton()
+    favoriteColumn()
+  }
+}
