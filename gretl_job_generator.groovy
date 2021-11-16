@@ -7,14 +7,15 @@ def jenkinsfileName = 'Jenkinsfile'
 def jobPropertiesFileName = 'job.properties'
 
 // override default values if environment variables are set
-if ("${GRETL_JOB_FILE_PATH}") {
-  gretlJobFilePath = "${GRETL_JOB_FILE_PATH}"
-  println 'gretlJobFilePath set to ' + gretlJobFilePath
-}
-if ("${GRETL_JOB_FILE_NAME}") {
-  gretlJobFileName = "${GRETL_JOB_FILE_NAME}"
-  println 'gretlJobFileName set to ' + gretlJobFileName
-}
+// (Disable overriding for now):
+// if ("${GRETL_JOB_FILE_PATH}") {
+//   gretlJobFilePath = "${GRETL_JOB_FILE_PATH}"
+//   println 'gretlJobFilePath set to ' + gretlJobFilePath
+// }
+// if ("${GRETL_JOB_FILE_NAME}") {
+//   gretlJobFileName = "${GRETL_JOB_FILE_NAME}"
+//   println 'gretlJobFileName set to ' + gretlJobFileName
+// }
 
 
 def baseDir = SEED_JOB.getWorkspace().toString()
