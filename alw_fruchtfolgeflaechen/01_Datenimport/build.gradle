@@ -176,7 +176,7 @@ task importKlimaeignung(type: Ili2pgReplace, dependsOn: ['importKlimaeignung_kat
 task makeSchemaAuen(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "Auen_fff_modell_20210811"
-    modeldir = "./Auen; http://models.geo.admin.ch"
+    modeldir = "01_Datenimport/Auen; http://models.geo.admin.ch"
     dbschema = "auen"
     importTid = true
     strokeArcs = true
