@@ -18,8 +18,12 @@ def pathToDataFile = Paths.get(pathToTempFolder)
 def pathToDataZip = Paths.get(pathToTempFolder, 'data.zip')
 
 ////////////////Bodenbedeckung ///////////////////////
+task prepare_db(type: SqlExecutor) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['prepare_db.sql']
+}
 
-task deleteAllSchemasIfExists(type: SqlExecutor) {
+task deleteAllSchemasIfExists(type: SqlExecutor, dependsOn: prepare_db) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['deleteallschemas.sql']
 }
