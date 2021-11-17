@@ -1,0 +1,27 @@
+SELECT
+    sirenen_nr,
+    id,
+    so_sirenen_id,
+    postleitzahl,
+    gemeinde,
+    politische_gemeinde,
+    anzahl_sirenen,
+    standortbezeichnung,
+    standort_strasse,
+    bedienungsstandort_schluesselschalter,
+    sirenengroesse,
+    dichte_faktor,
+    kennwert_radius_1,
+    kennwert_durchmesser_1,
+    kennwert_radius_2,
+    kennwert_durchmesser_2,
+    winkel,
+    sirenenbezeichnung,
+    lieferant_service,
+    baujahr,
+    kkw_zone,
+    informationen_bemerkungen,
+    geometrie
+FROM
+    amb_sirenenplanung_v1.sirene
+;
