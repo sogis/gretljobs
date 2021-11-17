@@ -1,0 +1,14 @@
+DROP SCHEMA if exists afu_altlasten_pub CASCADE;
+DROP SCHEMA if exists afu_gewaesserschutz_pub CASCADE;
+DROP SCHEMA if exists afu_schadstoffbelastete_boeden_pub CASCADE;
+DROP SCHEMA if exists agi_mopublic_pub CASCADE;
+DROP SCHEMA if exists arp_mjpnatur_pub CASCADE;
+DROP SCHEMA if exists arp_naturreservate_pub CASCADE;
+DROP SCHEMA if exists arp_naturschutz_pub CASCADE;
+DROP SCHEMA if exists arp_npl_pub CASCADE;
+DROP SCHEMA if exists auen CASCADE;
+DROP SCHEMA if exists flachmoore CASCADE;
+DROP SCHEMA if exists hochmoore CASCADE;
+DROP SCHEMA if exists klimaeignung CASCADE;
+DROP SCHEMA if exists trockenwiesenweiden CASCADE;
+DROP SCHEMA if exists vogelreservate CASCADE;

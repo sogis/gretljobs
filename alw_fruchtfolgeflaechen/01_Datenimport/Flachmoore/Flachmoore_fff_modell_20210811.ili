@@ -1,0 +1,38 @@
+INTERLIS 2.3;
+
+/** !!------------------------------------------------------------------------------
+ * !! Version | wer | Aenderung
+ * !!------------------------------------------------------------------------------
+ * !! 2021-07-16 | Martin Schweizer  | Erstfassung
+ * !!==============================================================================
+ */
+!!@ technicalContact=mailto:agi@bd.so.ch
+MODEL Flachmoore_fff_modell_20210811 (de)
+AT "http://geo.so.ch/models/AFU"
+VERSION "2021-07-16"  =
+  IMPORTS GeometryCHLV95_V1;
+
+  TOPIC Flachmoore =
+    OID AS INTERLIS.UUIDOID;
+
+    /** Flachmoore
+     */
+    CLASS Standorte =
+      ObjNummer : 0 .. 1000000;
+      Name : TEXT*200;
+      RefObjBlat : TEXT*2000;
+      DesignatTy : TEXT*20;
+      IUCNCatego : TEXT*20;
+      Inkraftset : TEXT*200;
+      Mutationsd : TEXT*200;
+      Mutationsg : TEXT*200;
+      Shape_Leng : TEXT*200;
+      Shape_Area : TEXT*2000;
+      /** Geometrie
+       */
+      Geometrie : MANDATORY GeometryCHLV95_V1.MultiSurface;
+    END Standorte;
+
+  END Flachmoore;
+
+END Flachmoore_fff_modell_20210811.

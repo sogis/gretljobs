@@ -1,0 +1,61 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+
+apply plugin: 'ch.so.agi.gretl'
+
+
+defaultTasks 'fff_to_edit_db'
+
+// Der Übersteuerungslayer muss neu importiert werden
+
+task makeSchemaUebersteuerung(type: Ili2pgImportSchema){
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    models = "SO_ALW_FFF_Uebersteuerung_20210528"
+    dbschema = "alw_fff_uebersteuerung"
+    strokeArcs = true
+    beautifyEnumDispName = true
+    createUnique = true
+    createMetaInfo = true 
+    createFk = true 
+    createFkIdx = true
+    createEnumTabs = true 
+    createGeomIdx = true
+    defaultSrsCode = 2056
+    createNumChecks = true
+    logFile = "ili2pg.log"
+    deleteData = true
+}
+
+task importAbbaustellen(type: Db2Db, dependsOn: makeSchemaUebersteuerung){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    transferSets = [
+            new TransferSet('afu_abbaustellen_fff.sql','alw_fff_uebersteuerung.uebersteuerung', true),
+    ];        
+}
+
+task importUebersteuerung(type: Db2Db, dependsOn: importAbbaustellen){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    transferSets = [
+            new TransferSet('alw_uebersteuerung_fff.sql','alw_fff_uebersteuerung.uebersteuerung', false),
+    ];        
+}
+
+//HIER WERDEN DIE Übersteuerungsflächen ausgeschnitten und eingefügt. 
+
+task fff_mit_uebersteuerung(type: SqlExecutor, dependsOn: importUebersteuerung) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['fff_mit_uebersteuerung.sql']
+}
+
+//HIER WERDEN DIE Berechneten Daten wieder in die Edit-DB geschrieben
+
+
+task fff_to_edit_db(type: Db2Db, dependsOn: fff_mit_uebersteuerung){
+    sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('fff_to_edit_db.sql','alw_fruchtfolgeflaechen_v1.fruchtfolgeflaeche', true)
+    ];        
+}

@@ -63,13 +63,13 @@ pipeline {
             steps {
                 git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
                 dir(env.JOB_BASE_NAME) {
-                    sh 'gretl -Dorg.gradle.jvmargs=-Xmx2G task1'
-                    sh 'gretl -Dorg.gradle.jvmargs=-Xmx2G task2'
+                    sh 'gretl -Dorg.gradle.jvmargs=-Xmx2G importBodenbedeckung, importGemeindegrenzen, importAltlasten, importGewaesserschutz, importKlimaeignung, importAuen2, importFlachmoore, importHochmoore, importTww2, importVogelreservate, importSchadstoffbelasteteBoeden, importNutzungsplanung, importNaturreservate, importNaturschutzobjekte, importMJPNatur, importIsBoden, importGewaesserraum, importUebersteuerung, makeSchemaFFF, importHoheitsgrenzen, importFFF_alt'
+                    sh 'gretl -Dorg.gradle.jvmargs=-Xmx2G fff_all_together'
                     waitUntil {
-                        sh 'gretl -Dorg.gradle.jvmargs=-Xmx2G task3'
+                        sh 'gretl -Dorg.gradle.jvmargs=-Xmx2G fff_to_edit_db'
                         input message: 'Resultat publizieren oder Berechnung nochmals durchführen?', parameters: [booleanParam(name: 'PUBLISH_RESULT', defaultValue: false, description: 'Häkchen setzen, um das Resultat zu publizieren und den Job abzuschliessen')]
                     }
-                    sh 'gretl -Dorg.gradle.jvmargs=-Xmx2G task4'
+                    sh 'gretl -Dorg.gradle.jvmargs=-Xmx2G fff_to_pub_db'
                 }
             }
         }

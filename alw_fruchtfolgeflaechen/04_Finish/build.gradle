@@ -1,0 +1,42 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'fff_to_pub_db'
+
+//HIER erfolgt das Finish (Kleinstflächenbeseitigung etc.)  
+
+task fff_komplett(type: SqlExecutor) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['fff_komplett.sql']
+}
+
+//HIER wird das ganze noch nach Gemeinden verschnitten
+
+task fff_komplett_gemeinden(type: SqlExecutor, dependsOn: fff_komplett) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['fff_komplett_gemeinden.sql']
+}
+
+//HIER WERDEN DIE Berechneten Daten in die Edit-DB geschrieben
+
+
+task fff_to_edit_db_finish(type: Db2Db, dependsOn: fff_komplett_gemeinden){
+    sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('fff_to_edit_db_finish.sql','alw_fruchtfolgeflaechen_v1.fruchtfolgeflaeche', true)
+    ];        
+}
+
+//HIER WERDEN DIE Berechneten Daten in die Pub-DB geschrieben
+
+
+task fff_to_pub_db(type: Db2Db, dependsOn: fff_to_edit_db_finish){
+    sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('fff_to_pub_db.sql','alw_fruchtfolgeflaechen_pub_v1.fruchtfolgeflaeche', true)
+    ];        
+}

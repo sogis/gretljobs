@@ -1,0 +1,44 @@
+INTERLIS 2.3;
+
+/** !!------------------------------------------------------------------------------
+ * !! Version | wer | Aenderung
+ * !!------------------------------------------------------------------------------
+ * !! 2021-08-11 | Martin Schweizer  | Erstfassung
+ * !!==============================================================================
+ */
+!!@ technicalContact=mailto:agi@bd.so.ch
+MODEL Vogelreservate_fff_modell_20210811 (de)
+AT "http://geo.so.ch/models/AFU"
+VERSION "2021-07-16"  =
+  IMPORTS GeometryCHLV95_V1;
+
+  TOPIC Vogelreservate =
+    OID AS INTERLIS.UUIDOID;
+
+    /** Vogelreservate
+     */
+    CLASS Standorte =
+      ObjNummer : 0 .. 1000000;
+      Name : TEXT*200;
+      WV_Version : TEXT*20;
+      Teilgebiet : TEXT*20;
+      RefObjBlat : TEXT*2000;
+      Inkraftset : TEXT*200;
+      Mutationsd : TEXT*200;
+      Mutationsg : TEXT*200;
+      DesignatTy : TEXT*20;
+      IUCNCatego : TEXT*20;
+      TeilObjNum : TEXT*200;
+      Schutzkarte : 0 .. 1000;
+      Obj_GISFla : TEXT*2000;
+      Schutzebene : TEXT*2;
+      Shape_Leng : TEXT*200;
+      Shape_Area : TEXT*2000;
+      /** Geometrie
+       */
+      Geometrie : MANDATORY GeometryCHLV95_V1.MultiSurface;
+    END Standorte;
+
+  END Vogelreservate;
+
+END Vogelreservate_fff_modell_20210811.
