@@ -8,7 +8,7 @@ defaultTasks 'fff_to_edit_db'
 
 // Der Übersteuerungslayer muss neu importiert werden
 
-task makeSchemaUebersteuerung(type: Ili2pgImportSchema){
+task makeSchemaUebersteuerung_uebersteuerung(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_ALW_FFF_Uebersteuerung_20210528"
     dbschema = "alw_fff_uebersteuerung"
@@ -26,7 +26,7 @@ task makeSchemaUebersteuerung(type: Ili2pgImportSchema){
     deleteData = true
 }
 
-task importAbbaustellen(type: Db2Db, dependsOn: makeSchemaUebersteuerung){
+task importAbbaustellen_uebersteuerung(type: Db2Db, dependsOn: makeSchemaUebersteuerung_uebersteuerung){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     transferSets = [
@@ -34,7 +34,7 @@ task importAbbaustellen(type: Db2Db, dependsOn: makeSchemaUebersteuerung){
     ];        
 }
 
-task importUebersteuerung(type: Db2Db, dependsOn: importAbbaustellen){
+task importUebersteuerung_uebersteuerung(type: Db2Db, dependsOn: importAbbaustellen_uebersteuerung){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     transferSets = [
@@ -44,7 +44,7 @@ task importUebersteuerung(type: Db2Db, dependsOn: importAbbaustellen){
 
 //HIER WERDEN DIE Übersteuerungsflächen ausgeschnitten und eingefügt. 
 
-task fff_mit_uebersteuerung(type: SqlExecutor, dependsOn: importUebersteuerung) {
+task fff_mit_uebersteuerung(type: SqlExecutor, dependsOn: importUebersteuerung_uebersteuerung) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['fff_mit_uebersteuerung.sql']
 }
