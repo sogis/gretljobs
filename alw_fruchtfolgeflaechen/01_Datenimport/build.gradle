@@ -230,7 +230,7 @@ task importAuen2(type: ShpImport, dependsOn: importAuen){
 task makeSchemaFlachmoore(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "Flachmoore_fff_modell_20210811"
-    modeldir = "./Flachmoore; http://models.geo.admin.ch"
+    modeldir = "01_Datenimport/Flachmoore; http://models.geo.admin.ch"
     dbschema = "flachmoore"
     importTid = true
     strokeArcs = true
@@ -276,7 +276,7 @@ task importFlachmoore(type: ShpImport, dependsOn: unpackFilesFlachmoore){
 task makeSchemaHochmoore(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "Hochmoore_fff_modell_20210811"
-    modeldir = "./Hochmoore; http://models.geo.admin.ch"
+    modeldir = "01_Datenimport/Hochmoore; http://models.geo.admin.ch"
     dbschema = "hochmoore"
     importTid = true
     strokeArcs = true
@@ -321,7 +321,7 @@ task importHochmoore(type: ShpImport, dependsOn: unpackFilesHochmoore){
 task makeSchemaTww(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "Trockenwiesenweiden_fff_modell_20210811"
-    modeldir = "./Trockenwiesen_und_Weiden; http://models.geo.admin.ch"
+    modeldir = "01_Datenimport/Trockenwiesen_und_Weiden; http://models.geo.admin.ch"
     dbschema = "trockenwiesenweiden"
     importTid = true
     strokeArcs = true
@@ -374,7 +374,7 @@ task importTww2(type: ShpImport, dependsOn: importTww){
 task makeSchemaVogelreservate(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "Vogelreservate_fff_modell_20210811"
-    modeldir = "./Vogelreservate; http://models.geo.admin.ch"
+    modeldir = "01_Datenimport/Vogelreservate; http://models.geo.admin.ch"
     dbschema = "vogelreservate"
     importTid = true
     strokeArcs = true
@@ -513,7 +513,7 @@ task importNaturreservate(type: Db2Db, dependsOn: makeSchemaNaturreservate){
 task makeSchemaNaturschutzobjekte(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_ARP_Naturschutzobjekte_Publikation_20210721"
-    modeldir = "./Naturschutzobjekte; http://models.geo.admin.ch"
+    modeldir = "01_Datenimport/Naturschutzobjekte; http://models.geo.admin.ch"
     dbschema = "arp_naturschutz_pub"
     logFile = "ili2pg.log"
     strokeArcs = true
@@ -542,7 +542,7 @@ task importNaturschutzobjekte(type: Db2Db, dependsOn: makeSchemaNaturschutzobjek
 task makeSchemaMJPNatur(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_ARP_Mehrjahresprogramm_Natur_Publikation_20210721"
-    modeldir = "./MJPNatur; http://models.geo.admin.ch"
+    modeldir = "01_Datenimport/MJPNatur; http://models.geo.admin.ch"
     dbschema = "arp_mjpnatur_pub"
     logFile = "ili2pg.log"
     strokeArcs = true
