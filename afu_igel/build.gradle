@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 import java.nio.file.Paths
 import de.undercouch.gradle.tasks.download.Download
 
-defaultTasks "transformAndPub"
+defaultTasks "refreshSolr"
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def igelTypes = ["standort", "stall"]
@@ -50,8 +50,6 @@ task transformAndPub(type: Db2Db, dependsOn: dbImport){
     ];
 }
 
-/*
 task refreshSolr(type:Exec, dependsOn:'transformAndPub') {
 	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.gewaesserschutz_lw.stall,ch.so.afu.gewaesserschutz_lw.standort_mit_erhebung,ch.so.afu.gewaesserschutz_lw.standort_ohne_erhebung'
 }
-*/
