@@ -16,7 +16,6 @@ services:
     ports:
       - "54323:5432"
     volumes:
-      - ./development_dbs/setup.sql:/pgconf/setup.sql
       - sshd_processing:/sshd
       - pgconf_processing:/pgconf
       - pgdata_processing:/pgdata

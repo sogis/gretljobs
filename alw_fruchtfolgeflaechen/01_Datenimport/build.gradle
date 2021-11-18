@@ -8,9 +8,7 @@ apply plugin: "de.undercouch.download"
 apply plugin: 'ch.so.agi.gretl'
 
 //defaultTasks 'importVogelreservate'
-defaultTasks 'importBodenbedeckung', 'importGemeindegrenzen', 'importAltlasten', 'importGewaesserschutz', 'importKlimaeignung', 'importAuen2', 'importFlachmoore', 'importHochmoore', 'importTww2', 
-             'importVogelreservate', 'importSchadstoffbelasteteBoeden', 'importNutzungsplanung', 'importNaturreservate', 'importNaturschutzobjekte', 'importMJPNatur', 'importIsBoden', 'importGewaesserraum', 
-             'importUebersteuerung', 'makeSchemaFFF', 'importHoheitsgrenzen', 'importFFF_alt'
+defaultTasks 'prepare_db', 'importAll'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, "unzip_data")
@@ -23,7 +21,7 @@ task prepare_db(type: SqlExecutor) {
     sqlFiles = ['prepare_db.sql']
 }
 
-task deleteAllSchemasIfExists(type: SqlExecutor, dependsOn: prepare_db) {
+task deleteAllSchemasIfExists(type: SqlExecutor) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['deleteallschemas.sql']
 }
@@ -720,3 +718,30 @@ task importFFF_alt(type: Db2Db, dependsOn: makeSchemaFFF_alt){
             new TransferSet('fruchtfolgeflaechen_alt.sql','alw_fruchtfolgeflaechen_alt.inventarflaechen_fruchtfolgeflaeche', true),
     ];        
 }
+
+//////////////// Alle Datensätze importieren///////////////////////
+
+task importAll() {
+    dependsOn 'importBodenbedeckung',
+        'importGemeindegrenzen',
+        'importAltlasten',
+        'importGewaesserschutz',
+        'importKlimaeignung',
+        'importAuen2',
+        'importFlachmoore',
+        'importHochmoore',
+        'importTww2',
+        'importVogelreservate',
+        'importSchadstoffbelasteteBoeden',
+        'importNutzungsplanung',
+        'importNaturreservate',
+        'importNaturschutzobjekte',
+        'importMJPNatur',
+        'importIsBoden',
+        'importGewaesserraum',
+        'importUebersteuerung',
+        'makeSchemaFFF',
+        'importHoheitsgrenzen',
+        'importFFF_alt'
+}
+
