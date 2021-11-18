@@ -52,6 +52,6 @@ task transformAndPub(type: Db2Db, dependsOn: dbImport){
 
 /*
 task refreshSolr(type:Exec, dependsOn:'transformAndPub') {
-	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.gewaesserschutz_lw.stall,ch.so.afu.gewaesserschutz_lw.standort'
+	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.gewaesserschutz_lw.stall,ch.so.afu.gewaesserschutz_lw.standort_mit_erhebung,ch.so.afu.gewaesserschutz_lw.standort_ohne_erhebung'
 }
 */
