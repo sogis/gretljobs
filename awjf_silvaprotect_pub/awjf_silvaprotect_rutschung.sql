@@ -1,0 +1,10 @@
+SELECT
+    sturz,
+    hangmure,
+    gerinne,
+    lawine,
+    andere_kt,
+    geometrie
+FROM
+    awjf_silvaprotect_v1.silvaprotect_rutschung
+;
