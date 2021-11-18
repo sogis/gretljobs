@@ -21,12 +21,12 @@ task prepare_db(type: SqlExecutor) {
     sqlFiles = ['prepare_db.sql']
 }
 
-task deleteAllSchemasIfExists(type: SqlExecutor) {
-    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['deleteallschemas.sql']
-}
+//task deleteAllSchemasIfExists(type: SqlExecutor) {
+//    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+//    sqlFiles = ['deleteallschemas.sql']
+//}
 
-task makeSchemaMopublic(type: Ili2pgImportSchema, dependsOn: deleteAllSchemasIfExists){
+task makeSchemaMopublic(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_AGI_MOpublic_20201009"
     dbschema = "agi_mopublic_pub"
