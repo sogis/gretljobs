@@ -50,6 +50,13 @@ pipeline {
                 value: repl
               - name: PG_ROOT_PASSWORD
                 value: secret
+              resources:
+                requests:
+                  cpu: "1"
+                  memory: "4Gi"
+                limits:
+                  cpu: "2"
+                  memory: "8Gi"
           '''
       }
     }
