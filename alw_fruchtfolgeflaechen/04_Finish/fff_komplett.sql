@@ -1,5 +1,6 @@
 drop table if exists alw_fruchtfolgeflaechen.fff_komplett;
 
+--Grenzbereinigung bei Flächen < 15m2
 with buffered_polygons as (
     select 
         st_buffer(geometrie,1) as geometrie, 
@@ -111,4 +112,31 @@ CREATE INDEX IF NOT EXISTS
     ON 
     alw_fruchtfolgeflaechen.fff_komplett
     using GIST(geometrie)
+;
+
+--Hier werden freistehende Flächen kleiner als 0,25ha entfernt
+
+with geom_union as (
+    select 
+        (st_dump(st_union(geometrie))).geom as geometrie
+    from 
+        alw_fruchtfolgeflaechen.fff_komplett
+), 
+
+micro_areas as (
+    select 
+        geometrie
+    from 
+        geom_union
+    where 
+        st_area(geometrie) < 2500
+)
+
+delete 
+from 
+    alw_fruchtfolgeflaechen.fff_komplett fff
+using 
+    micro_areas
+where
+    st_intersects(fff.geometrie,micro_areas.geometrie)
 ;

@@ -40,24 +40,24 @@ CREATE INDEX IF NOT EXISTS
 
 -- Neue Flächen in Gebieten ohne Bodenkartierung und ohne alte FFF darunter 
 
-drop table if exists alw_fruchtfolgeflaechen.fff_ohne_bodenkartierung_ohne_bewertung;
+--drop table if exists alw_fruchtfolgeflaechen.fff_ohne_bodenkartierung_ohne_bewertung;
 
-with alte_fff as (
-    select 
-        st_union(geometrie) as geometrie
-    from 
-        alw_fruchtfolgeflaechen_alt.inventarflaechen_fruchtfolgeflaeche
-)
+--with alte_fff as (
+--    select 
+--        st_union(geometrie) as geometrie
+--    from 
+--        alw_fruchtfolgeflaechen_alt.inventarflaechen_fruchtfolgeflaeche
+--)
 
-select 
-    (st_dump(st_difference(maske.geometrie,alte_fff.geometrie))).geom as geometrie
-into 
-    alw_fruchtfolgeflaechen.fff_ohne_bodenkartierung_ohne_bewertung
-from 
-    alw_fruchtfolgeflaechen.fff_maske_where_not_bodenkartierung maske, 
-    alte_fff
-;
+--select 
+--    (st_dump(st_difference(maske.geometrie,alte_fff.geometrie))).geom as geometrie
+--into 
+--    alw_fruchtfolgeflaechen.fff_ohne_bodenkartierung_ohne_bewertung
+--from 
+--    alw_fruchtfolgeflaechen.fff_maske_where_not_bodenkartierung maske, 
+--    alte_fff
+--;
 
-delete from alw_fruchtfolgeflaechen.fff_ohne_bodenkartierung_ohne_bewertung
-where st_area(geometrie)<1000
-;
+--delete from alw_fruchtfolgeflaechen.fff_ohne_bodenkartierung_ohne_bewertung
+--where st_area(geometrie)<1000
+--;
