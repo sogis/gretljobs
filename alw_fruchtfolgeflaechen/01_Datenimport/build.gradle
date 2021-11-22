@@ -35,7 +35,6 @@ task makeSchemaMopublic(type: Ili2pgImportSchema){
     createUnique = "True" 
     nameByTopic = "True" 
     createMetaInfo = "True" 
-    logFile = "ili2pg.log"
 }
 
 task importBodenbedeckung(type: Db2Db, dependsOn: makeSchemaMopublic){
@@ -86,7 +85,6 @@ task makeSchemaGewaesserschutz(type: Ili2pgImportSchema){
     createUnique = "True" 
     nameByTopic = "True" 
     createMetaInfo = "True" 
-    logFile = "ili2pg.log"
 }
 
 task importGewaesserschutz(type: Db2Db, dependsOn: makeSchemaGewaesserschutz){
@@ -118,7 +116,6 @@ task makeSchemaKlimaeignung(type: Ili2pgImportSchema){
     createGeomIdx = true
     defaultSrsCode = "2056"
     createNumChecks = true
-    logFile = "ili2pg.log"
 }
 
 task downloadKlimaeignung(type: Download, dependsOn: makeSchemaKlimaeignung) {
@@ -155,7 +152,6 @@ task importKlimaeignung_katalog(type: Ili2pgReplace, dependsOn: downloadKlimaeig
     dbschema = "klimaeignung"
     importTid = "true"
     dataset = "eignung"
-    logFile = "ili2pg.log"    
 }
 
 task importKlimaeignung(type: Ili2pgReplace, dependsOn: ['importKlimaeignung_katalog', 'unzipKlimaeignung']){
@@ -166,7 +162,6 @@ task importKlimaeignung(type: Ili2pgReplace, dependsOn: ['importKlimaeignung_kat
     importTid = true
     dataset = "klimaeignung"
     disableAreaValidation = true
-    logFile = "ili2pg.log"
 }
 
 ////////////////Auen ///////////////////////
@@ -189,7 +184,6 @@ task makeSchemaAuen(type: Ili2pgImportSchema){
     createGeomIdx = true
     defaultSrsCode = 2056
     createNumChecks = true
-    logFile = "ili2pg.log"
 }
 
 task downloadAuen(type: Download, dependsOn: makeSchemaAuen) {
@@ -243,7 +237,6 @@ task makeSchemaFlachmoore(type: Ili2pgImportSchema){
     createGeomIdx = true
     defaultSrsCode = 2056
     createNumChecks = true
-    logFile = "ili2pg.log"
 }
 
 task downloadFlachmoore(type: Download, dependsOn: makeSchemaFlachmoore) {
@@ -289,7 +282,6 @@ task makeSchemaHochmoore(type: Ili2pgImportSchema){
     createGeomIdx = true
     defaultSrsCode = 2056
     createNumChecks = true
-    logFile = "ili2pg.log"
 }
 
 task downloadHochmoore(type: Download, dependsOn: makeSchemaHochmoore) {
@@ -334,7 +326,6 @@ task makeSchemaTww(type: Ili2pgImportSchema){
     createGeomIdx = true
     defaultSrsCode = 2056
     createNumChecks = true
-    logFile = "ili2pg.log"
 }
 
 task downloadTww(type: Download, dependsOn: makeSchemaTww) {
@@ -387,7 +378,6 @@ task makeSchemaVogelreservate(type: Ili2pgImportSchema){
     createGeomIdx = true
     defaultSrsCode = 2056
     createNumChecks = true
-    logFile = "ili2pg.log"
 }
 
 task downloadVogelreservate(type: Download, dependsOn: makeSchemaVogelreservate) {
@@ -419,7 +409,6 @@ task makeSchemaSchadstoffbelasteteBoeden(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_AFU_Verzeichnis_schadstoffbelastete_Boeden_Publikation_20200701"
     dbschema = "afu_schadstoffbelastete_boeden_pub"
-    logFile = "ili2pg.log"
     strokeArcs = true
     beautifyEnumDispName = true
     createUnique = true
@@ -454,7 +443,6 @@ task makeSchemaNutzungsplanung(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_Nutzungsplanung_Publikation_20190909"
     dbschema = "arp_npl_pub"
-    logFile = "ili2pg.log"
     strokeArcs = true
     beautifyEnumDispName = true
     createUnique = true
@@ -484,7 +472,6 @@ task makeSchemaNaturreservate(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_ARP_Naturreservate_Publikation_20200609"
     dbschema = "arp_naturreservate_pub"
-    logFile = "ili2pg.log"
     strokeArcs = true
     beautifyEnumDispName = true
     createUnique = true
@@ -513,7 +500,6 @@ task makeSchemaNaturschutzobjekte(type: Ili2pgImportSchema){
     models = "SO_ARP_Naturschutzobjekte_Publikation_20210721"
     modeldir = "01_Datenimport/Naturschutzobjekte; http://models.geo.admin.ch"
     dbschema = "arp_naturschutz_pub"
-    logFile = "ili2pg.log"
     strokeArcs = true
     beautifyEnumDispName = true
     createUnique = true
@@ -542,7 +528,6 @@ task makeSchemaMJPNatur(type: Ili2pgImportSchema){
     models = "SO_ARP_Mehrjahresprogramm_Natur_Publikation_20210721"
     modeldir = "01_Datenimport/MJPNatur; http://models.geo.admin.ch"
     dbschema = "arp_mjpnatur_pub"
-    logFile = "ili2pg.log"
     strokeArcs = true
     beautifyEnumDispName = true
     createUnique = true
@@ -596,7 +581,6 @@ task makeSchemaUebersteuerung(type: Ili2pgImportSchema){
     createGeomIdx = true
     defaultSrsCode = 2056
     createNumChecks = true
-    logFile = "ili2pg.log"
     deleteData = true
 }
 
@@ -632,7 +616,6 @@ task makeSchemaGewaesserraum(type: Ili2pgImportSchema){
     createGeomIdx = true
     defaultSrsCode = 2056
     createNumChecks = true
-    logFile = "ili2pg.log"
 }
 
 task importGewaesserraum(type: Db2Db, dependsOn: makeSchemaGewaesserraum){
@@ -649,7 +632,6 @@ task makeSchemaFFF(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_ALW_Fruchtfolgeflaechen_Publikation_20201109"
     dbschema = "alw_fruchtfolgeflaechen"
-    logFile = "ili2pg.log"
     strokeArcs = true
     beautifyEnumDispName = true
     createUnique = true
@@ -680,7 +662,6 @@ task makeSchemaHoheitsgrenzen(type: Ili2pgImportSchema){
     createGeomIdx = true
     defaultSrsCode = 2056
     createNumChecks = true
-    logFile = "ili2pg.log"
 }
 
 task importHoheitsgrenzen(type: Db2Db, dependsOn: makeSchemaHoheitsgrenzen){
@@ -697,7 +678,6 @@ task makeSchemaFFF_alt(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_ALW_Fruchtfolgeflaechen_Publikation_20201109"
     dbschema = "alw_fruchtfolgeflaechen_alt"
-    logFile = "ili2pg.log"
     strokeArcs = true
     beautifyEnumDispName = true
     createUnique = true
