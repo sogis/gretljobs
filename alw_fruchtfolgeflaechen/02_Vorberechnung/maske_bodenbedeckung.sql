@@ -34,7 +34,7 @@ gebaeude as (
 
 gewaesser as (
     select 
-        st_union(st_buffer(geometrie,6)) as geometrie
+        st_union(st_buffer(geometrie,3)) as geometrie
     from 
         agi_mopublic_pub.mopublic_bodenbedeckung
     where 
