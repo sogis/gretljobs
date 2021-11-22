@@ -5,9 +5,16 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'fff_to_pub_db'
 
+//HIER werden den Flächen innerhalb des Gewässerraumes noch das Spezialattribut "Gewaesserraum" zugeordnet. 
+
+task fff_gewaesserraum(type: SqlExecutor) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['fff_mit_gewaesserraum.sql']
+}
+
 //HIER erfolgt das Finish (Kleinstflächenbeseitigung etc.)  
 
-task fff_komplett(type: SqlExecutor) {
+task fff_komplett(type: SqlExecutor, dependsOn: fff_gewaesserraum) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['fff_komplett.sql']
 }

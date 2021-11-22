@@ -731,7 +731,7 @@ task importAll() {
         'importFlachmoore',
         'importHochmoore',
         'importTww2',
-        'importVogelreservate',
+        //'importVogelreservate',
         'importSchadstoffbelasteteBoeden',
         'importNutzungsplanung',
         'importNaturreservate',

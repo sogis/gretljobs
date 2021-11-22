@@ -10,7 +10,7 @@ with buffered_polygons as (
         datenstand,
         anrechenbar
     from 
-        alw_fruchtfolgeflaechen.fff_mit_uebersteuerung
+        alw_fruchtfolgeflaechen.fff_mit_gewaesserraum
     where 
         st_Area(geometrie) > 15
 ), 
@@ -24,7 +24,7 @@ small_polygons as (
         datenstand,
         anrechenbar
     from 
-        alw_fruchtfolgeflaechen.fff_mit_uebersteuerung 
+        alw_fruchtfolgeflaechen.fff_mit_gewaesserraum 
     where 
         st_Area(geometrie) <= 15
 ),
@@ -53,7 +53,7 @@ small_and_big_union as (
         datenstand,
         anrechenbar
     from 
-        alw_fruchtfolgeflaechen.fff_mit_uebersteuerung 
+        alw_fruchtfolgeflaechen.fff_mit_gewaesserraum 
     where 
         st_Area(geometrie) > 15
     

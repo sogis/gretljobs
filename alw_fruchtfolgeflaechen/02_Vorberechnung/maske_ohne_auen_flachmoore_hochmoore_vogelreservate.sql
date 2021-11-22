@@ -23,13 +23,13 @@ with auen_flachmoore_hochmoore_vogelreservate as (
             hochmoore.hochmoore_standorte
         where 
             st_intersects(geometrie,(select geometrie from agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze)) )
-        union all 
-        (select 
-            geometrie 
-        from 
-            vogelreservate.vogelreservate_standorte
-        where 
-            st_intersects(geometrie,(select geometrie from agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze)) )
+        --union all 
+        --(select 
+        --    geometrie 
+        --from 
+        --    vogelreservate.vogelreservate_standorte
+        --where 
+        --    st_intersects(geometrie,(select geometrie from agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze)) )
     ) standorte
 )
 
