@@ -1,0 +1,15 @@
+SELECT 
+    nummer, 
+    nsi_nummer, 
+    aname, 
+    geometrie, 
+    beschreibung, 
+    flaeche, 
+    teilgebietsnamen, 
+    gemeinden, 
+    dokumente, 
+    zustaendiger, 
+    einzelschutz
+FROM 
+    arp_naturreservate_pub.naturreservate_reservat
+;

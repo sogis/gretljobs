@@ -1,0 +1,5 @@
+rootProject.name = 'alw_fruchtfolgeflaechen'
+include '01_Datenimport'
+include '02_Vorberechnung'
+include '03_Uebersteuerung'
+include '04_Finish'

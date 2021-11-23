@@ -1,0 +1,55 @@
+INTERLIS 2.3;
+
+/** !!------------------------------------------------------------------------------
+ * !! Version | wer | Aenderung
+ * !!------------------------------------------------------------------------------
+ * !! 2021-07-16 | Martin Schweizer  | Erstfassung
+ * !!==============================================================================
+ */
+!!@ technicalContact=mailto:agi@bd.so.ch
+MODEL SO_AFU_Bodenbelastung_Publikation_20210716 (de)
+AT "http://geo.so.ch/models/AFU"
+VERSION "2021-07-16"  =
+  IMPORTS GeometryCHLV95_V1;
+
+  TOPIC Bodenbelastung =
+    OID AS INTERLIS.UUIDOID;
+
+    /** Belastete Standorte des Kanton Solothurn. Temporäres Modell für die Fruchtfolgeflächenberechnungen
+     */
+    CLASS Standorte =
+      /** Geometrie
+       */
+      Geometrie : MANDATORY GeometryCHLV95_V1.Surface;
+      /** Kantonale ID
+       */
+      Kantonale_ID : TEXT*20;
+      /** Bearbeitungsstand
+       */
+      Bearbeitungsstand : TEXT*20;
+      /** Altlastenrechtliche Bewertung
+       */
+      Altlastenrechtliche_Bewertung : TEXT*20;
+      /** Belastung der Teilflächen
+       */
+      Belastung_Teilflaechen : TEXT*2000;
+      /** Stand der Untersuchungen
+       */
+      Untersuchungsstand : TEXT*200;
+      /** Typ bzw. Herkunft der Belastung
+       */
+      Belastungstyp : TEXT*200;
+      /** Maximale Belastung
+       */
+      Maximalbelastung : TEXT*2;
+      /** Maximale Belastung
+       */
+      Maximalbelastung_Text : TEXT*2000;
+      /** Untersuchungsstand 2
+       */
+      Untersuchungsstand_2 : TEXT*2000;
+    END Standorte;
+
+  END Bodenbelastung;
+
+END SO_AFU_Bodenbelastung_Publikation_20210716.

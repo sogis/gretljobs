@@ -1,0 +1,83 @@
+INTERLIS 2.3;
+
+/** !!------------------------------------------------------------------------------
+ *  !! Version    | wer | Änderung
+ *  !!------------------------------------------------------------------------------
+ *  !! 2021-07-21 | ps  | Ersterfassung
+ *  !!==============================================================================
+ */
+!!@ technicalContact="mailto:agi@bd.so.ch"
+MODEL SO_ARP_Mehrjahresprogramm_Natur_Publikation_20210721 (de)
+AT "http://www.geo.so.ch/models/ARP"
+VERSION "2021-07-21"  =
+  IMPORTS GeometryCHLV95_V1;
+
+  TOPIC Vereinbarungsflaechen =
+
+    CLASS Flaechen =
+      /** Vereinbarungsart
+       */
+      Vereinbarungsart : MANDATORY TEXT*100;
+      /** Vereinbarungs-ID
+       */
+      !!@ ili2db.dispName = "VereinbarungsID"
+      VereinbarungID : MANDATORY 1 .. 100000;
+      /** Vereinbarungsnummer
+       */
+      !!@ ili2db.dispName = "Vereinbarungsnummer"
+      vbnr : MANDATORY TEXT*20;
+      pid : 1 .. 10000000;
+      /** Personen-ID
+       */
+      !!@ ili2db.dispName = "PersonenID"
+      persid : MANDATORY 1 .. 10000000;
+      /** Bewirtschafter
+       */
+      Bewirtschafter : MANDATORY TEXT*100;
+      Flaechenart : TEXT*100;
+      Geometrie : MANDATORY GeometryCHLV95_V1.MultiSurface;
+      FallID : MANDATORY 1 .. 1000000;
+      !!@ ili2db.dispName = "Flächen ID"
+      FlaechenID : MANDATORY 1 .. 1000000;
+      !!@ ili2db.dispName = "Flächenart ID"
+      FlaechenartID : MANDATORY 1 .. 100;
+      !!@ ili2db.dispName = "Fläche"
+      Flaeche : MANDATORY -9999.999 .. 10000.000;
+      !!@ ili2db.dispName = "GIS-Fläche"
+      GIS_Flaeche : MANDATORY 0 .. 10000;
+      Legende : MANDATORY 0 .. 1000;
+      Notiz : MTEXT*512;
+      Laufmeter : 0 .. 100000;
+      Schnittzeitpunkt : TEXT*30;
+      Flurname : TEXT*200;
+      Oeqv_q_Attest : -9999.9999 .. 100.0000;
+      Oeqv_q_Attest_txt : TEXT*50;
+      !!@ ili2db.dispName = "Balkenmäher"
+      Balkenmaeher : BOOLEAN;
+      Herbstweide : BOOLEAN;
+      !!@ ili2db.dispName = "Rückzugstreifen"
+      Rkzugstreifen : BOOLEAN;
+      Emden : -9999.9999 .. 100.0000;
+      Emden_txt : TEXT*50;
+      Bffii_Flaeche : 0 .. 10000;
+      Bffii_Indikatoren : TEXT*100;
+      !!@ ili2db.dispName = "Letzter Unterhalt"
+      Letzter_Unterhalt : INTERLIS.XMLDate;
+      !!@ ili2db.dispName = "Datum Beurteilung"
+      Datum_Beurt : INTERLIS.XMLDate;
+      Datum_Oeqv : INTERLIS.XMLDate;
+      !!@ ili2db.dispName = "Gültig ab"
+      Gueltigab : INTERLIS.XMLDate;
+      !!@ ili2db.dispName = "Gültig bis"
+      Gueltigbis : INTERLIS.XMLDate;
+      Wiesenkategorie : MANDATORY -9999.9999 .. 1000.0000;
+      Wiesenkat_txt : TEXT*30;
+      !!@ ili2db.dispName = "Fläche Hecke"
+      Flaeche_Hecke : 0 .. 100;
+      Besch_Flaeche : MANDATORY MTEXT*50;
+      Besch_Akarte : MTEXT*50;
+    END Flaechen;
+
+  END Vereinbarungsflaechen;
+
+END SO_ARP_Mehrjahresprogramm_Natur_Publikation_20210721.

@@ -1,0 +1,62 @@
+INTERLIS 2.3;
+
+!! Version    | Who   | Modification
+!!------------------------------------------------------------------------------
+!! 2020-11-09 | RULO | V1
+!! 2021-01-14 | RULO | V1.1, Anpassung VSB: Statt "VSB: keine FFF" nur noch "VSB"
+
+
+!!@ technicalContact=mailto:agi@bd.so.ch
+!!@ furtherInformation=https://geo.so.ch/models/
+MODEL SO_ALW_Fruchtfolgeflaechen_Publikation_20201109 (de)
+AT "https://geo.so.ch/models/"
+VERSION "2020-11-09"  =
+  IMPORTS GeometryCHLV95_V1,Units,CHAdminCodes_V1;
+
+  DOMAIN
+
+    Gebietseinteilung = AREA WITH (ARCS,STRAIGHTS) VERTEX GeometryCHLV95_V1.Coord2 WITHOUT OVERLAPS>0.05;
+
+    Codes (FINAL) = (
+      !!@ ili2db.dispName = "geeignet"
+      geeignet,
+      !!@ ili2db.dispName = "bedingt geeignet"
+      bedingt_geeignet
+    );
+
+    Faelle (FINAL) = (
+      ersetzen,
+      ausschneiden
+    );
+
+    Spezialfaelle = (
+      Golfplatz,
+      !!@ ili2db.dispName = "Gewässerraum"
+      Gewaesserraum,
+      Reservezone,
+      GSZ2,
+      !!@ ili2db.dispName = "Kiesgrube/Abbaugebiet"
+      Kiesgrube_Abbaugebiet,
+      VSB,
+      !!@ ili2db.dispName = "übriger Spezialfall"
+      uebriger_Spezialfall
+    );
+
+    Stand = FORMAT INTERLIS.XMLDate "2020-1-1" .. "2099-12-31";
+
+  TOPIC Inventarflaechen =
+
+    CLASS Fruchtfolgeflaeche =
+      Geometrie : MANDATORY SO_ALW_Fruchtfolgeflaechen_Publikation_20201109.Gebietseinteilung;
+      Bezeichnung : MANDATORY SO_ALW_Fruchtfolgeflaechen_Publikation_20201109.Codes;
+      Spezialfall : SO_ALW_Fruchtfolgeflaechen_Publikation_20201109.Spezialfaelle;
+      BFS_Nr : MANDATORY CHAdminCodes_V1.CHMunicipalityCode;
+      Datenstand : MANDATORY TEXT*20;
+      Anrechenbar : MANDATORY 0.00 .. 1.00;
+      Area_aren : 0.00 .. 999999.99 [Units.a];
+      Area_anrech : 0.00 .. 999999.99 [Units.a];
+    END Fruchtfolgeflaeche;
+
+  END Inventarflaechen;
+
+END SO_ALW_Fruchtfolgeflaechen_Publikation_20201109.

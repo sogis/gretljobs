@@ -1,0 +1,20 @@
+SELECT 
+    typ_bezeichnung, 
+    typ_abkuerzung, 
+    typ_verbindlichkeit, 
+    typ_bemerkungen, 
+    typ_kt, 
+    typ_code_kommunal, 
+    geometrie, 
+    name_nummer, 
+    rechtsstatus, 
+    publiziert_ab, 
+    bemerkungen, 
+    erfasser, 
+    datum_erfassung, 
+    dokumente, 
+    bfs_nr
+FROM 
+    arp_npl_pub.nutzungsplanung_erschliessung_flaechenobjekt
+;
+

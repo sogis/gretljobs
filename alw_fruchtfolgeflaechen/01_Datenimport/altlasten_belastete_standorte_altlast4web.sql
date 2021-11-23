@@ -1,0 +1,12 @@
+SELECT 
+    t_id, 
+    geometrie, 
+    bezeichnung, 
+    vflz_combined_id_kt, 
+    c_vflz_bearbstand, 
+    c_bere_res_abwbewe, 
+    c_bere_res_abwbewe_txt, 
+    c_vflz_unterstand, 
+    c_vflz_vftyp
+FROM 
+    afu_altlasten_pub.belastete_standorte_altlast4web;

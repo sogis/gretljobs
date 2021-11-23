@@ -1,0 +1,36 @@
+INTERLIS 2.3;
+
+/** !!------------------------------------------------------------------------------
+ *  !! Version    | wer | Änderung
+ *  !!------------------------------------------------------------------------------
+ *  !! 2021-07-21 | ps  | Ersterfassung
+ *  !!==============================================================================
+ */
+!!@ technicalContact="mailto:agi@bd.so.ch"
+MODEL SO_ARP_Naturschutzobjekte_Publikation_20210721 (de)
+AT "http://www.geo.so.ch/models/ARP"
+VERSION "2021-07-21"  =
+  IMPORTS GeometryCHLV95_V1;
+
+  TOPIC Naturschutzobjekte =
+
+    /** Flachmoore von regionaler Bedeutung (Inventare Natur und Landschaft).
+     * Erhebungen der Arbeitsgemeinschaft Naturschutz und Landschaftspflege (ANL) AG, Aarau, für das Inventar der Flachmoore von nationaler Bedeutung. Im Kanton Solothurn sind keine Flachmoore von nationaler Bedeutung vorhanden.
+     */
+    CLASS Flachmoore =
+      Geometrie : MANDATORY GeometryCHLV95_V1.MultiSurface;
+      /** Eindeutiger Bezeichner
+       */
+      Flachmoor_ID : MANDATORY 1 .. 100;
+      Area : MANDATORY 0 .. 100;
+      /** Naturreservatsnummer für Gebiete, welche als kantonale Naturreservate geschützt sind. Lesebeispiel: 20301 = Naturreservat Nummer 2.03, Teilgebiet 1
+       */
+      Nummer : 0 .. 1000000;
+      /** Gebietsbezeichnung (in der Regel Flurnamenbezeichnung)
+       */
+      Bezeichnung : MANDATORY TEXT*200;
+    END Flachmoore;
+
+  END Naturschutzobjekte;
+
+END SO_ARP_Naturschutzobjekte_Publikation_20210721.

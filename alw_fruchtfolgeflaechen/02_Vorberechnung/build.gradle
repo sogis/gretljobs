@@ -1,0 +1,164 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+
+apply plugin: 'ch.so.agi.gretl'
+
+//defaultTasks 'deleteData', 'make_table_fff_maske_bodenbedeckung', 'createAllData', 'difference_altlasten', 'difference_klimaeignung', 'difference_auen_flachmoore_hochmoore_vogelreservate', 
+//               'difference_schadstoffbelastete_boeden', 'difference_bauzonen', 'difference_trockenwiesen', 'difference_naturreservate', 'difference_uebersteuerung', 'fff_mit_bodenkartierung_100', 
+//               'fff_mit_bodenkartierung_50', 'fff_mit_bodenkartierung_0', 'intersection_ohne_bodenkartierung', 'fff_all_together'
+
+defaultTasks 'fff_all_together'
+
+def todaysDate = new Date().format('yyyy-MM-dd')
+
+//HIER WIRD DIE BODENBEDECKUNG GEMEINDEWEISE VERSCHNITTEN, ABER IN DIE SELBE TABELLE EINGEFÜGT!
+def gemeinden =[2465,2543,2519,2554,2553,2586,2464,2479,2582,2551,2407,2427,2475,2550,2574,2424,2615,2545,2402,2456,2622,2548,2517,2583,2425,2526,2579,2576,2535,2500,2491,2614,2520,2525,2549,2573,2514,2518,2544,2556,2445,2619,2616,2527,2422,2471,2408,2618,2501,2511,2534,2617,2503,2546,2524,2499,2516,2493,2497,2502,2541,2463,2474,2401,2572,2571,2611,2405,2492,2532,2403,2542,2406,2476,2472,2621,2481,2585,2523,2529,2612,2620,2575,2613,2473,2495,2478,2528,2421,2581,2580,2601,2578,2480,2461,2426,2513,2404,2428,2530,2547,2457,2555,2477,2584,2455,2430]
+//def gemeinden = [2474,2475]
+
+//ZUERST MUSS EINE EVTL. VORHANDENE TABELLE fff_maske_bodenbedeckung GELÖSCHT WERDEN!
+task deleteData(type: SqlExecutor) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['delete_data.sql']
+}
+task make_table_fff_maske_bodenbedeckung(type: SqlExecutor, dependsOn: deleteData) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['make_table_fff_maske_bodenbedeckung.sql']
+}
+gemeinden.each { gemeinde ->
+    task "mask_bodenbedeckung_$gemeinde"(type: SqlExecutor) {
+        database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+        sqlFiles = ['maske_bodenbedeckung.sql']
+        sqlParameters = [bfsnr: gemeinde as String]
+
+    }
+}
+task createAllData(dependsOn: make_table_fff_maske_bodenbedeckung) {
+    description = "Sql aggregation task."
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('mask_bodenbedeckung_') }
+    }
+}
+
+//HIER WERDEN DIE ALTLASTEN AUSGESCHNITEN
+task difference_altlasten(type: SqlExecutor, dependsOn: createAllData) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['maske_ohne_altlasten.sql']
+}
+//HIER WERDEN DIE KLIMAEIGNUNGSGEBIETE ÜBER 41 AUSGESCHNITTEN
+task difference_klimaeignung(type: SqlExecutor, dependsOn: difference_altlasten) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['maske_ohne_klimaeignung.sql']
+}
+//HIER WERDEN DIE Auen, Flachmoore, Hochmoore und Vogelreservate AUSGESCHNITTEN
+task difference_auen_flachmoore_hochmoore_vogelreservate(type: SqlExecutor, dependsOn: difference_klimaeignung) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['maske_ohne_auen_flachmoore_hochmoore_vogelreservate.sql']
+}
+//HIER WERDEN DIE Schadstoffbelasteten Böden AUSGESCHNITTEN
+task difference_schadstoffbelastete_boeden(type: SqlExecutor, dependsOn: difference_auen_flachmoore_hochmoore_vogelreservate) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['maske_ohne_schadstoffbelastete_boeden.sql']
+}
+//HIER WERDEN DIE Bauzonen ausserhalb der Bauzonen AUSGESCHNITTEN
+task difference_bauzonen(type: SqlExecutor, dependsOn: difference_schadstoffbelastete_boeden) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['maske_ohne_bauzonen.sql']
+}
+//HIER WERDEN DIE TROCKENWIESEN AUSGESCHNITTEN 
+task difference_trockenwiesen(type: SqlExecutor, dependsOn: difference_bauzonen) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['maske_ohne_trockenwiesen.sql']
+}
+//HIER WERDEN DIE NATURRESERVATE AUSGESCHNITTEN 
+task difference_naturreservate(type: SqlExecutor, dependsOn: difference_trockenwiesen) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['maske_ohne_naturreservate.sql']
+}
+//HIER WERDEN DIE GRUNDWASSERSCHUTZZONEN(S1) AUSGESCHNITTEN 
+task difference_grundwasserschutz(type: SqlExecutor, dependsOn: difference_naturreservate) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['maske_ohne_grundwasserschutz.sql']
+}
+
+
+////////////////////////////////////////////////
+// Entscheiden ob mit oder ohne Bodenkartierung 
+////////////////////////////////////////////////
+
+//HIER WERDEN DIE Flächen herausgeschrieben, welche über eine Bodenkartierung verfügen. 
+task difference_mit_bodenkartierung(type: SqlExecutor, dependsOn: difference_grundwasserschutz) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['maske_where_bodenkartierung.sql']
+}
+
+//HIER WERDEN DIE Flächen herausgeschrieben, welche über keine Bodenkartierung verfügen. 
+task difference_ohne_bodenkartierung(type: SqlExecutor, dependsOn: difference_grundwasserschutz) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['maske_where_not_bodenkartierung.sql']
+}
+
+task bodeninhalt_index_setzen(type: SqlExecutor, dependsOn: difference_mit_bodenkartierung) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['bodeninhalt_index_setzen.sql']
+}
+
+////////////////////////////////////////////////
+// Kategorisierung ohne Bodenkartierung
+////////////////////////////////////////////////
+
+//HIER WERDEN DIE Kategorien und Beurteilungen der alten FFF übernommen 
+task intersection_ohne_bodenkartierung(type: SqlExecutor, dependsOn: difference_ohne_bodenkartierung) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['fff_ohne_bodenkartierung.sql']
+}
+////////////////////////////////////////////////
+// Entscheiden ob 100%
+////////////////////////////////////////////////
+
+//HIER WERDEN DIE Flächen rausgeschnitten, die nicht den Bodenqualitätsanforderungen genügen 
+task fff_100_ohne_schlechten_boden(type: SqlExecutor, dependsOn: bodeninhalt_index_setzen) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['fff_100_ohne_schlechten_boden.sql']
+}
+
+//HIER WERDEN DIE Flächen rausgeschnitten, die im MJPNatur verzeichnet sind
+task fff_100_ohne_vereinbarungsflaechen(type: SqlExecutor, dependsOn: fff_100_ohne_schlechten_boden) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['fff_100_ohne_vereinbarungsflaechen.sql']
+}
+
+//HIER WERDEN DIE Flächen rausgeschnitten, die als Reservezonen gelten
+task fff_mit_bodenkartierung_100(type: SqlExecutor, dependsOn: fff_100_ohne_vereinbarungsflaechen) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['fff_100_ohne_reservezonen.sql']
+}
+
+////////////////////////////////////////////////
+// Entscheiden ob 50%
+////////////////////////////////////////////////
+
+//HIER WERDEN DIE Flächen extrahiert, welche Bodenkartierung aufweisen aber nur 50% geeignet sind.
+task fff_mit_bodenkartierung_50(type: SqlExecutor, dependsOn: fff_100_ohne_schlechten_boden) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['fff_50.sql']
+}
+
+////////////////////////////////////////////////
+// Entscheiden ob 0% (Reservezone)
+////////////////////////////////////////////////
+
+//HIER WERDEN DIE Flächen extrahiert, welche Bodenkartierung aufweisen aber nur 0% geeignet sind.
+task fff_mit_bodenkartierung_0(type: SqlExecutor, dependsOn: bodeninhalt_index_setzen) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['fff_0.sql']
+}
+
+////////////////////////////////////////////////
+// Zusammenfügen und vereinfachen
+////////////////////////////////////////////////
+
+//HIER WERDEN DIE Flächen mit und ohne Bodenkartierung zusammengefügt und gemrgt
+task fff_all_together(type: SqlExecutor, dependsOn: [fff_mit_bodenkartierung_0, fff_mit_bodenkartierung_50, fff_mit_bodenkartierung_100, intersection_ohne_bodenkartierung]) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['fff_all_together.sql']
+}

@@ -1,0 +1,12 @@
+SELECT 
+    geometrie, 
+    spezialfall, 
+    bezeichnung, 
+    beschreibung, 
+    datenstand, 
+    anrechenbar, 
+    erfassung, 
+    fall
+FROM 
+    alw_uebersteuerung_fff_v1.uebersteuerung
+;
