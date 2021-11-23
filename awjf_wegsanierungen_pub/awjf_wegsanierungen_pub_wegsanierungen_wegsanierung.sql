@@ -1,18 +1,18 @@
 SELECT
-    wegsanierungen_wegsanierung.id_wegsanierung,
-    wegsanierungen_wegsanierung.projekt_nr,
-    wegsanierungen_wegsanierung.aname,
-    wegsanierungen_wegsanierung.projekt,
-    ST_Length(wegsanierungen_wegsanierung.geometrie) AS laenge_gemessen,
-    wegsanierungen_wegsanierung.laenge_beitrag,
-    wegsanierungen_wegsanierung.status AS astatus,
-    wegsanierungen_wegsanierung.fid_ges_nr,
-    wegsanierungen_wegsanierung.jahr,
-    wegsanierungen_wegsanierung.kosten,
-    wegsanierungen_wegsanierung.beitrag,
-    wegsanierungen_wegsanierung.bemerkung,
-    wegsanierungen_wegsanierung.id_reserve,
-    wegsanierungen_wegsanierung.geometrie
+    id_wegsanierung,
+    projekt,
+    projekt_nr,
+    aname,
+    ST_Length(geometrie) AS laenge_gemessen,
+    laenge_beitrag,
+    fid_ges_nr,
+    jahr,
+    kosten,
+    beitrag,
+    bemerkung,
+    id_reserve,
+    geometrie,
+    astatus
 FROM
-    awjf_wegsanierungen.wegsanierungen_wegsanierung
+    awjf_wegsanierungen_v1.wegsanierungen_wegsanierung
 ;
