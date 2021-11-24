@@ -1,0 +1,15 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferAwjfWaldstandortePub'
+
+task transferAwjfWaldstandortePub(type: Db2Db) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('awjf_waldstandorte_pub.sql', 'awjf_waldstandorte_pub_v1.waldstandort', true)
+    ];
+            
+}
