@@ -27,7 +27,8 @@ SELECT
     reibungswinkel_festgestein_code.dispname AS reibungswinkel_festgestein,
     kohaesion_festgestein_code.dispname AS kohaesion_festgestein,
     maechtigkeit_material_code.dispname AS maechtigkeit_material,
-    fehlendes_material_bis_naechster_layer_code.dispname AS fehlendes_material_bis_naechster_layer 
+    fehlendes_material_bis_naechster_layer_code.dispname AS fehlendes_material_bis_naechster_layer,
+    neuer_code
 FROM 
     afu_geologie_v1.geologie_grundschicht AS grundschicht
     LEFT JOIN afu_geologie_v1.geologisches_system AS system1_code
