@@ -71,7 +71,7 @@ pipeline {
                 git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
                 dir(env.JOB_BASE_NAME) {
                     sh 'gretl -Dorg.gradle.jvmargs=-Xmx2G prepare_db importAll'
-                    sh 'gretl -Dorg.gradle.jvmargs=-Xmx2G fff_all_together'
+                    sh 'gretl -Dorg.gradle.jvmargs=-Xmx2G fff_zusammensetzen'
                     waitUntil {
                         sh 'gretl -Dorg.gradle.jvmargs=-Xmx2G fff_to_edit_db'
                         input message: 'Resultat publizieren oder Berechnung nochmals durchführen?', parameters: [booleanParam(name: 'PUBLISH_RESULT', defaultValue: false, description: 'Häkchen setzen, um das Resultat zu publizieren und den Job abzuschliessen')]

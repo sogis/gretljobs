@@ -22,7 +22,6 @@ task makeSchemaUebersteuerung_uebersteuerung(type: Ili2pgImportSchema){
     createGeomIdx = true
     defaultSrsCode = 2056
     createNumChecks = true
-    logFile = "ili2pg.log"
     deleteData = true
 }
 

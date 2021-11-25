@@ -1,4 +1,6 @@
-drop table if exists alw_fruchtfolgeflaechen.fff_all_together;
+--Dieser Job vereinigt die verschieden bewerteten FFF. 
+
+drop table if exists alw_fruchtfolgeflaechen.fff_zusammengesetzt;
 
 with alle_zusammen as (
 select 
@@ -60,7 +62,7 @@ select
     bezeichnung, 
     spezialfall 
 into 
-    alw_fruchtfolgeflaechen.fff_all_together 
+    alw_fruchtfolgeflaechen.fff_zusammengesetzt 
 from 
     alle_zusammen 
 group by 
@@ -72,7 +74,7 @@ group by
 
 -- GeometryCollections werden aufgelöst. Nur die Polygons werden herausgenommen.
 update 
-    alw_fruchtfolgeflaechen.fff_all_together
+    alw_fruchtfolgeflaechen.fff_zusammengesetzt 
     set 
     geometrie = ST_CollectionExtract(geometrie, 3)
 WHERE 
@@ -80,14 +82,14 @@ WHERE
 ;
 
 delete from 
-    alw_fruchtfolgeflaechen.fff_all_together
+    alw_fruchtfolgeflaechen.fff_zusammengesetzt 
 where 
     ST_IsEmpty(geometrie)
 ;
 
 CREATE INDEX IF NOT EXISTS
-    fff_all_together_geometrie_idx 
+    fff_zusammengesetzt_geometrie_idx 
     ON 
-    alw_fruchtfolgeflaechen.fff_all_together
+    alw_fruchtfolgeflaechen.fff_zusammengesetzt 
     using GIST(geometrie)
 ;
