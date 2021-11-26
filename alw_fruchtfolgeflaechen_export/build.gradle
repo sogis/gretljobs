@@ -1,0 +1,21 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'create_view'
+
+task create_view(type: SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['fff_gemeinde_statistik_v.sql']
+}
+
+task csvexport(type: CsvExport, dependsOn: create_view){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = "alw_fruchtfolgeflaechen_v1"
+    tableName = "fff_gemeinde_statistik_v"
+    firstLineIsHeader=false
+    attributes = [ "bfs_nr","flaeche","flaeche_anrechenbar]
+    dataFile = "data.csv"
+}
+
