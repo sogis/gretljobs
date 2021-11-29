@@ -32,7 +32,7 @@ union_uebersteuerung as (
     from 
         alw_fff_uebersteuerung.uebersteuerung
     where 
-        bezeichnung = 'geeignete_FFF'
+        fall = 'ersetzen'
 )
 
 select 
