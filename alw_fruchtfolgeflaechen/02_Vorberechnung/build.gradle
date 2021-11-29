@@ -7,7 +7,7 @@ apply plugin: 'ch.so.agi.gretl'
 //               'difference_schadstoffbelastete_boeden', 'difference_bauzonen', 'difference_trockenwiesen', 'difference_naturreservate', 'difference_uebersteuerung', 'fff_mit_bodenkartierung_100', 
 //               'fff_mit_bodenkartierung_50', 'fff_mit_bodenkartierung_0', 'intersection_ohne_bodenkartierung', 'fff_all_together'
 
-defaultTasks 'fff_all_together'
+defaultTasks 'fff_zusammensetzen'
 
 def todaysDate = new Date().format('yyyy-MM-dd')
 
@@ -158,7 +158,7 @@ task fff_mit_bodenkartierung_0(type: SqlExecutor, dependsOn: bodeninhalt_index_s
 ////////////////////////////////////////////////
 
 //HIER WERDEN DIE Flächen mit und ohne Bodenkartierung zusammengefügt und gemrgt
-task fff_all_together(type: SqlExecutor, dependsOn: [fff_mit_bodenkartierung_0, fff_mit_bodenkartierung_50, fff_mit_bodenkartierung_100, intersection_ohne_bodenkartierung]) {
+task fff_zusammensetzen(type: SqlExecutor, dependsOn: [fff_mit_bodenkartierung_0, fff_mit_bodenkartierung_50, fff_mit_bodenkartierung_100, intersection_ohne_bodenkartierung]) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['fff_all_together.sql']
+    sqlFiles = ['fff_zusammensetzen.sql']
 }

@@ -10,14 +10,14 @@ with uebersteuerung as (
 
 union_uebersteuerung as (
     select 
-        st_difference(fff_all_together.geometrie,uebersteuerung.geometrie,0.01) as geometrie, 
-        fff_all_together.spezialfall, 
-        fff_all_together.bezeichnung, 
+        st_difference(fff_zusammengesetzt.geometrie,uebersteuerung.geometrie,0.01) as geometrie, 
+        fff_zusammengesetzt.spezialfall, 
+        fff_zusammengesetzt.bezeichnung, 
         null as beschreibung, 
         now() as datenstand, 
-        fff_all_together.anrechenbar
+        fff_zusammengesetzt.anrechenbar
     from 
-        alw_fruchtfolgeflaechen.fff_all_together fff_all_together, 
+        alw_fruchtfolgeflaechen.fff_zusammengesetzt  fff_zusammengesetzt, 
         uebersteuerung
 
         union all 
@@ -32,7 +32,7 @@ union_uebersteuerung as (
     from 
         alw_fff_uebersteuerung.uebersteuerung
     where 
-        bezeichnung = 'geeignete_FFF'
+        fall = 'ersetzen'
 )
 
 select 
