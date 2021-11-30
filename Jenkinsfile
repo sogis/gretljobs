@@ -8,6 +8,9 @@ node('master') {
 // Declarative pipeline starts here
 pipeline {
     agent { label params.nodeLabel ?: 'gretl' }
+    options {
+        timeout(time: 6, unit: 'HOURS')
+    }
     stages {
         stage('Run GRETL-Job') {
             steps {
