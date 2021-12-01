@@ -1,0 +1,18 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'refreshSolr'
+
+task transferAfuAbbaustellen(type: Db2Db){
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('afu_abbaustellen_pub_abbaustelle.sql', 'afu_abbaustellen_pub.abbaustelle', true),
+    ];
+}
+
+task refreshSolr(type:Exec, dependsOn:'transferAfuAbbaustellen') {
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.abbaustellen.abbaustellen'
+}
