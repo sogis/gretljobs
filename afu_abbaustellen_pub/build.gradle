@@ -18,7 +18,7 @@ task downloadAppXtf(type: Download){
     overwrite true
 }
 
-task exportGisXtf(type: Ili2pgExport){
+task exportGisXtf(type: Ili2pgExport, dependsOn: downloadAppXtf){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = schemaNameEdit
     disableValidation = true
