@@ -8,7 +8,7 @@ defaultTasks "writeToPub"
 
 def tmpDir = buildDir.toString()
 def appXtfPath = tmpDir + "/appdata.xtf"
-def gisXtfPath = tmpDir + "/gisdata.xtf"
+def gisXtfPath = tmpDir + "/geodata.xtf"
 def schemaNameEdit = "afu_abbaustellen_v1"
 
 task downloadAppXtf(type: Download){
@@ -18,7 +18,15 @@ task downloadAppXtf(type: Download){
     overwrite true
 }
 
-task exportGisXtf(type: Ili2pgExport, dependsOn: downloadAppXtf){
+task replaceAppData(type: Ili2pgReplace, dependsOn: downloadAppXtf){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = schemaNameEdit
+    disableValidation = true
+    dataFile = appXtfPath
+    dataset = "app"
+}
+
+task exportGisXtf(type: Ili2pgExport, dependsOn: replaceAppData){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = schemaNameEdit
     disableValidation = true
@@ -30,15 +38,7 @@ task validateJoined(type: IliValidator, dependsOn: exportGisXtf){
     dataFiles = [gisXtfPath, appXtfPath]
 }
 
-task replaceAppData(type: Ili2pgReplace, dependsOn: validateJoined){
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = schemaNameEdit
-    disableValidation = true
-    dataFile = appXtfPath
-    dataset = "app"
-}
-
-task writeToPub(type: Db2Db, dependsOn: replaceAppData){
+task writeToPub(type: Db2Db, dependsOn: validateJoined){ 
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
