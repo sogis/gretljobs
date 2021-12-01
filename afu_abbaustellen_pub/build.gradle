@@ -1,0 +1,54 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+defaultTasks "writeToPub"
+
+def tmpDir = buildDir.toString()
+def appXtfPath = tmpDir + "/appdata.xtf"
+def gisXtfPath = tmpDir + "/gisdata.xtf"
+def schemaNameEdit = "afu_abbaustellen_v1"
+
+task downloadAppXtf(type: Download){
+    description "Download transferfile from afu webapp 'abbaustellen'"
+    src "https://raw.githubusercontent.com/sogis/p-abbaustellen/main/appdat/app_sample_integration.xtf" //afuAbbaustellenAppXtfUrl
+    dest appXtfPath
+    overwrite true
+}
+
+task exportGisXtf(type: Ili2pgExport){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = schemaNameEdit
+    disableValidation = true
+    dataFile = gisXtfPath
+    dataset = "geo"
+}
+
+task validateJoined(type: IliValidator, dependsOn: exportGisXtf){
+    dataFiles = [gisXtfPath, appXtfPath]
+}
+
+task replaceAppData(type: Ili2pgReplace, dependsOn: validateJoined){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = schemaNameEdit
+    disableValidation = true
+    dataFile = appXtfPath
+    dataset = "app"
+}
+
+task writeToPub(type: Db2Db, dependsOn: replaceAppData){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+        new TransferSet('abbaustelle.sql', 'afu_abbaustellen_pub_v1.abbaustelle', true)
+    ];
+}
+
+
+
+
+
+
+
