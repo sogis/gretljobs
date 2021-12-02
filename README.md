@@ -68,6 +68,7 @@ git checkout -b branchname
   * `awsAccessKeyAfu`, `awsSecretAccessKeyAfu`
   * `awsAccessKeyAgi`, `awsSecretAccessKeyAgi`
   * `geoservicesHostName` (der Wert dieser Variable ist je nach Umgebung `geo-t.so.ch`, `geo-i.so.ch` oder `geo.so.ch`)
+  * `solrIndexupdaterBaseUrl` (die interne Basis-URL zum Indexupdater für Solr)
   * `gretlShare`
   * `gretlEnvironment` (der Wert dieser Variable ist je nach Umgebung `test`, `integration` oder `production`)
 
