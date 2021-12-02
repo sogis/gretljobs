@@ -67,6 +67,7 @@ git checkout -b branchname
   * `awsAccessKeyAda`, `awsSecretAccessKeyAda`
   * `awsAccessKeyAfu`, `awsSecretAccessKeyAfu`
   * `awsAccessKeyAgi`, `awsSecretAccessKeyAgi`
+  * `geoservicesHostName` (der Wert dieser Variable ist je nach Umgebung `geo-t.so.ch`, `geo-i.so.ch` oder `geo.so.ch`)
   * `gretlShare`
   * `gretlEnvironment` (der Wert dieser Variable ist je nach Umgebung `test`, `integration` oder `production`)
 
