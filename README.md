@@ -60,6 +60,7 @@ git checkout -b branchname
   * `ftpServerZivilschutz`, `ftpUserZivilschutz`, `ftpPwdZivilschutz`
   * `ftpServerFledermaus`, `ftpUserFledermaus`, `ftpPwdFledermaus`
   * `ftpServerInfogrips`, `ftpUserInfogrips`, `ftpPwdInfogrips`
+  * `ftpUserEmapis`, `ftpPwdEmapis`
   * `sftpServerGelan`, `sftpUserGelan`, `sftpPwdGelan`
   * `aiServer`, `aiUser`, `aiPwd`
   * `infofloraUser`, `infofloraPwd`
