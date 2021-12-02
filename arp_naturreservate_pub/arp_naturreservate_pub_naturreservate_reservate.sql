@@ -79,6 +79,7 @@ WITH documents AS (
 	einzelschutz
     FROM
         arp_naturreservate.reservate_reservat
+    ORDER BY reservat, typ DESC
     
 ), documents_json AS (
     SELECT 
