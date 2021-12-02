@@ -9,6 +9,6 @@ task transferStatischeWaldgrenzen(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('waldgrenze_waldgrenze.sql', 'awjf_statische_waldgrenze_pub.waldgrenze_waldgrenze', true)
+            new TransferSet('waldgrenze_waldgrenze.sql', 'awjf_statische_waldgrenze_pub_v1.waldgrenze_waldgrenze', true)
     ];
 }
