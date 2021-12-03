@@ -1,3 +1,8 @@
+/*
+Der Export vom Jahresstand der AV erfolgt immer per 1. Dezember.
+Die Kantone liefern bis spätestens am 1. Dezember (Deadline) den aktuellen AV-Datensatz (mit Datenstand November) an die AI. Dieser Datensatz wird als Jahresstand der AV-Daten ein Jahr Gültigkeit haben und die Basis bilden für die Erfassung der ausserkantonalen Flächen. Nebst diesem Jahresstand der AV-Daten bietet die AI auch noch die laufend aktualisierten AV-Daten an.
+*/
+
 import ch.so.agi.gretl.tasks.*
 import java.nio.file.Paths
 import java.nio.file.Files
