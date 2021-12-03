@@ -65,6 +65,7 @@ git checkout -b branchname
   * `aiServer`, `aiUser`, `aiPwd`
   * `infofloraUser`, `infofloraPwd`
   * `igelToken`
+  * `afuAbbaustellenAppXtfUrl` (die komplette URL zum XTF-Dokument, inkl. Token)
   * `awsAccessKeyAda`, `awsSecretAccessKeyAda`
   * `awsAccessKeyAfu`, `awsSecretAccessKeyAfu`
   * `awsAccessKeyAgi`, `awsSecretAccessKeyAgi`
