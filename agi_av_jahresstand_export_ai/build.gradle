@@ -1,0 +1,89 @@
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import java.nio.file.Files
+import de.undercouch.gradle.tasks.download.Download
+
+
+apply plugin: 'ch.so.agi.gretl'
+
+def BfsNrGemeinden = [2401
+]
+
+
+def ZipName = 'LV95.zip'
+def pathToTempFolder = Files.createTempDirectory("avexportai-").toFile().getAbsolutePath()
+def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
+
+def aiLogin = aiUser + ":" + aiPwd
+
+if (!new File(pathToTempFolder).exists()) {
+    new File(pathToTempFolder).mkdirs();
+}
+
+defaultTasks 'uploadAvCh'
+
+task downloadFiles(type: Download) {
+    description = "AV-Daten im DM01 in temp-Ordner herunterladen"
+    def UrlArray =[]
+
+    BfsNrGemeinden.each {
+        UrlArray << "https://s3.eu-central-1.amazonaws.com/ch.so.agi.av.dm01avch24lv95d/"+ it + "00.itf.zip"
+    }
+
+    src(UrlArray)
+    dest pathToTempFolder
+}
+
+task unzipAllData(dependsOn: downloadFiles) {
+    description = "Entzippt heruntergeladene AV-Daten. Übergeordneter Task."
+}
+
+unzipAllData.finalizedBy {
+    tasks.findAll { task -> task.name.startsWith('unzipData_') }
+}
+
+BfsNrGemeinden.each {
+    def bfsNr = it
+
+    task "unzipData_$bfsNr"(type: Copy, dependsOn: 'downloadFiles'){
+        description = "Entzippt AV-Daten der entsprechenden Gemeinde."
+        def pathToZippedData =  Paths.get(pathToTempFolder, bfsNr + "00.itf.zip")
+
+        doLast {
+            println "File unzipped to directory: " + pathToUnzipFolder
+        }
+
+        from zipTree(pathToZippedData)
+        into file(pathToUnzipFolder)
+        include "**/*.itf"
+    }
+}
+
+task zipAllDataToOneZipArchiv(type: Zip, dependsOn: unzipAllData){
+    description = "Zippt die xtf-Files mit dem Daten der amtlichen Vermessung (DM01 vom Bund) für den Upload in die " +
+            "Aggregationsinfrastruktur."
+    from pathToUnzipFolder
+    archiveName ZipName
+    destinationDir(file(pathToTempFolder))
+    include "**/2*00.itf"
+}
+
+task uploadAvCh(dependsOn: zipAllDataToOneZipArchiv) {
+    description = "Lädt die Daten der amtlichen Vermessung (DM01 vom Bund) in die Aggregationsinfrastruktur hoch."
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=av_jahresstand", "-F",
+                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), ZipName), "-F", "publish=true",
+                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        println(response)
+    }
+    finalizedBy 'removeAvFiles'
+}
+
+task removeAvFiles(type: Delete){
+    description = "Entfernt während der Ausführung des Jobs erstellte AV-Dateien."
+    delete file(Paths.get(pathToTempFolder.toString(), ZipName)),
+            pathToUnzipFolder,
+            fileTree(pathToTempFolder).matching {
+                include "**/2*00.itf*"
+    }  
+}
