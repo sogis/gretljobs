@@ -13,7 +13,7 @@ def schemaNameEdit = "afu_abbaustellen_v1"
 
 task downloadAppXtf(type: Download){
     description "Download transferfile from afu webapp 'abbaustellen'"
-    src "https://raw.githubusercontent.com/sogis/p-abbaustellen/main/appdat/app_sample_integration.xtf" //afuAbbaustellenAppXtfUrl
+    src afuAbbaustellenAppXtfUrl
     dest appXtfPath
     overwrite true
 }
