@@ -122,15 +122,9 @@ task fff_100_ohne_schlechten_boden(type: SqlExecutor, dependsOn: bodeninhalt_ind
 }
 
 //HIER WERDEN DIE Flächen rausgeschnitten, die im MJPNatur verzeichnet sind
-task fff_100_ohne_vereinbarungsflaechen(type: SqlExecutor, dependsOn: fff_100_ohne_schlechten_boden) {
+task fff_mit_bodenkartierung_100(type: SqlExecutor, dependsOn: fff_100_ohne_schlechten_boden) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['fff_100_ohne_vereinbarungsflaechen.sql']
-}
-
-//HIER WERDEN DIE Flächen rausgeschnitten, die als Reservezonen gelten
-task fff_mit_bodenkartierung_100(type: SqlExecutor, dependsOn: fff_100_ohne_vereinbarungsflaechen) {
-    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['fff_100_ohne_reservezonen.sql']
 }
 
 ////////////////////////////////////////////////
@@ -144,21 +138,21 @@ task fff_mit_bodenkartierung_50(type: SqlExecutor, dependsOn: fff_100_ohne_schle
 }
 
 ////////////////////////////////////////////////
-// Entscheiden ob 0% (Reservezone)
+// Entscheiden ob 0% (Reservezone) => WIRD NEU IN DER Übersteuerung gemacht! 
 ////////////////////////////////////////////////
 
 //HIER WERDEN DIE Flächen extrahiert, welche Bodenkartierung aufweisen aber nur 0% geeignet sind.
-task fff_mit_bodenkartierung_0(type: SqlExecutor, dependsOn: bodeninhalt_index_setzen) {
-    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['fff_0.sql']
-}
+//task fff_mit_bodenkartierung_0(type: SqlExecutor, dependsOn: bodeninhalt_index_setzen) {
+//    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+//    sqlFiles = ['fff_0.sql']
+//}
 
 ////////////////////////////////////////////////
 // Zusammenfügen und vereinfachen
 ////////////////////////////////////////////////
 
 //HIER WERDEN DIE Flächen mit und ohne Bodenkartierung zusammengefügt und gemrgt
-task fff_zusammensetzen(type: SqlExecutor, dependsOn: [fff_mit_bodenkartierung_0, fff_mit_bodenkartierung_50, fff_mit_bodenkartierung_100, intersection_ohne_bodenkartierung]) {
+task fff_zusammensetzen(type: SqlExecutor, dependsOn: [fff_mit_bodenkartierung_50, fff_mit_bodenkartierung_100, intersection_ohne_bodenkartierung]) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['fff_zusammensetzen.sql']
 }

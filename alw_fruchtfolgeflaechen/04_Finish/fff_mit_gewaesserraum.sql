@@ -13,6 +13,8 @@ with gewaesserraum as (
         alw_fruchtfolgeflaechen.fff_mit_uebersteuerung fff
     where 
         st_intersects(gewaesserraum.geometrie,fff.geometrie)
+        AND 
+        gewaesserraum.fff_massgebend is true
 ), 
 
 gewaesserraum_geometrie as (
@@ -20,6 +22,8 @@ gewaesserraum_geometrie as (
         st_union(geometrie) as geometrie
     from 
         alw_gewaesserraum.gewaesserraum
+    WHERE 
+        gewaesserraum.fff_massgebend is true
 ),
 
 union_gewaesserraum as (

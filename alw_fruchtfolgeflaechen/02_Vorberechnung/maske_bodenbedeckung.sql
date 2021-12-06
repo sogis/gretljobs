@@ -5,7 +5,7 @@ with humusiert as (
     from 
         agi_mopublic_pub.mopublic_bodenbedeckung
     where 
-        art_txt IN ('Acker_Wiese', 'Weide', 'Reben', 'Obstkultur', 'uebrige_humusierte')
+        art_txt IN ('Acker_Wiese', 'Weide', 'Reben', 'Obstkultur', 'uebrige_intensiv')
         and 
         bfs_nr = ${bfsnr}
 ), 

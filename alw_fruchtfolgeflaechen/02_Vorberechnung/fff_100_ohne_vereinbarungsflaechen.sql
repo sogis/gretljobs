@@ -1,4 +1,4 @@
-drop table if exists alw_fruchtfolgeflaechen.fff_maske_100_ohne_vereinbarungsflaechen;
+drop table if exists alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_100 ;
 
 with vereinbarungsflaechen as (
     select 
@@ -12,7 +12,7 @@ select
     maske.anrechenbar, 
     maske.bfs_nr
 into 
-    alw_fruchtfolgeflaechen.fff_maske_100_ohne_vereinbarungsflaechen
+    alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_100
 from 
     alw_fruchtfolgeflaechen.fff_maske_100_ohne_schlechten_boden maske, 
     vereinbarungsflaechen
@@ -20,7 +20,7 @@ from
 
 -- GeometryCollections werden aufgelöst. Nur die Polygons werden herausgenommen.
 update 
-    alw_fruchtfolgeflaechen.fff_maske_100_ohne_vereinbarungsflaechen
+    alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_100
     set 
     geometrie = ST_CollectionExtract(geometrie, 3)
 WHERE 
@@ -28,14 +28,14 @@ WHERE
 ;
 
 delete from 
-    alw_fruchtfolgeflaechen.fff_maske_100_ohne_vereinbarungsflaechen
+    alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_100
 where 
     ST_IsEmpty(geometrie)
 ;
 
 CREATE INDEX IF NOT EXISTS
-    fff_maske_100_ohne_vereinbarungsflaechen_geometrie_idx 
+    fff_mit_bodenkartierung_100_geometrie_idx 
     ON 
-    alw_fruchtfolgeflaechen.fff_maske_100_ohne_vereinbarungsflaechen
+    alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_100
     using GIST(geometrie)
 ;
