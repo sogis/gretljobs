@@ -1,7 +1,7 @@
 drop table if exists alw_fruchtfolgeflaechen.fff_komplett_gemeinden;
 
 select 
-    st_intersection(fff.geometrie,gemeinden.geometrie) as geometrie, 
+    (st_dump(st_intersection(fff.geometrie,gemeinden.geometrie))).geom as geometrie, 
     fff.spezialfall, 
     fff.bezeichnung, 
     fff.beschreibung, 
