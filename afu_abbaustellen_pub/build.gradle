@@ -36,6 +36,7 @@ task exportGisXtf(type: Ili2pgExport, dependsOn: replaceAppData){
 
 task validateJoined(type: IliValidator, dependsOn: exportGisXtf){
     dataFiles = [gisXtfPath, appXtfPath]
+    allObjectsAccessible = true
 }
 
 task writeToPub(type: Db2Db, dependsOn: validateJoined){ 
