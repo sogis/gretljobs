@@ -17,3 +17,33 @@ from
 where 
     st_intersects(fff.geometrie,gemeinden.geometrie)
 ;
+
+--ALLGEMEINE BEREINIGUNGS FUNKTIONEN
+
+update 
+    alw_fruchtfolgeflaechen.fff_komplett_gemeinden
+    set 
+    geometrie = ST_CollectionExtract(geometrie, 3)
+WHERE 
+    st_geometrytype(geometrie) = 'ST_GeometryCollection'
+;
+
+delete from 
+    alw_fruchtfolgeflaechen.fff_komplett_gemeinden
+where 
+    ST_IsEmpty(geometrie)
+;
+
+delete from 
+    alw_fruchtfolgeflaechen.fff_komplett_gemeinden
+where 
+    st_geometrytype(geometrie) = 'ST_LineString'
+    or 
+    st_geometrytype(geometrie) = 'ST_Point'
+;
+
+update 
+    alw_fruchtfolgeflaechen.fff_komplett_gemeinden
+    set 
+    geometrie = ST_RemoveRepeatedPoints(geometrie) 
+;

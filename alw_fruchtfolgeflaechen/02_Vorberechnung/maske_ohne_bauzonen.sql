@@ -6,7 +6,20 @@ WITH bauzonen as (
     from 
         arp_npl_pub.nutzungsplanung_grundnutzung
     where 
-        typ_kt = 'N499_weitere_Bauzonen_nach_Art18_RPG_ausserhalb_Bauzonen'
+        typ_kt not IN ('N160_Gruen_und_Freihaltezone_innerhalb_Bauzone',
+                       'N210_Landwirtschaftszone',
+                       'N220_Spezielle_Landwirtschaftszone',
+                       'N230_Rebbauzone',
+                       'N290_weitere_Landwirtschaftszonen',
+                       'N311_Waldrandschutzzone',
+                       'N430_Reservezone_Wohnzone_Mischzone_Kernzone_Zentrumszone',
+                       'N431_Reservezone_Arbeiten',
+                       'N432_Reservezone_OeBA',
+                       'N439_Reservezone',
+                       'N490_Golfzone',
+                       'N491_Abbauzone',
+                       'N492_Deponiezone'
+                      )
 )
 
 select 

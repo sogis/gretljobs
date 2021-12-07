@@ -3,18 +3,19 @@
 drop table if exists alw_fruchtfolgeflaechen.fff_zusammengesetzt;
 
 with alle_zusammen as (
-select 
-    geometrie, 
-    bfs_nr,
-    anrechenbar,
-    bezeichnung, 
-    spezialfall 
-from 
-    alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_0
-where 
-    st_geometrytype(geometrie) IN ('ST_Polygon', 'ST_MultiPolygon')
+-- DIE 0-Anrechenbaren Flächen werden nun in der Übersteuerung übersteuert! 
+--select 
+--    geometrie, 
+--    bfs_nr,
+--    anrechenbar,
+--    bezeichnung, 
+--    spezialfall 
+--from 
+--    alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_0
+--where 
+--    st_geometrytype(geometrie) IN ('ST_Polygon', 'ST_MultiPolygon')
     
-union all 
+--union all 
 
 select 
     geometrie, 
@@ -56,7 +57,7 @@ where
 
 --Das Union hier bezweckt das verbinden gleicher Flächen (gleiche wertigkeit und bfs_nr etc.)
 select 
-    st_makevalid(st_buffer(st_buffer(st_union(geometrie),1),-1)) as geometrie, 
+    st_makevalid(st_union(geometrie)) as geometrie, 
     bfs_nr,
     anrechenbar,
     bezeichnung, 

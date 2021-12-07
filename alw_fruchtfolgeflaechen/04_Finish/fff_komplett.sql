@@ -118,7 +118,7 @@ CREATE INDEX IF NOT EXISTS
 
 with geom_union as (
     select 
-        (st_dump(st_union(geometrie))).geom as geometrie
+        (st_dump(st_union(st_buffer(geometrie,0.5)))).geom as geometrie
     from 
         alw_fruchtfolgeflaechen.fff_komplett
 ), 
@@ -138,5 +138,35 @@ from
 using 
     micro_areas
 where
-    st_intersects(fff.geometrie,micro_areas.geometrie)
+    st_contains(micro_areas.geometrie,fff.geometrie)
+;
+
+--ALLGEMEINE BEREINIGUNGS FUNKTIONEN
+
+update 
+    alw_fruchtfolgeflaechen.fff_komplett
+    set 
+    geometrie = ST_CollectionExtract(geometrie, 3)
+WHERE 
+    st_geometrytype(geometrie) = 'ST_GeometryCollection'
+;
+
+delete from 
+    alw_fruchtfolgeflaechen.fff_komplett
+where 
+    ST_IsEmpty(geometrie)
+;
+
+delete from 
+    alw_fruchtfolgeflaechen.fff_komplett
+where 
+    st_geometrytype(geometrie) = 'ST_LineString'
+    or 
+    st_geometrytype(geometrie) = 'ST_Point'
+;
+
+update 
+    alw_fruchtfolgeflaechen.fff_komplett
+    set 
+    geometrie = ST_RemoveRepeatedPoints(geometrie) 
 ;

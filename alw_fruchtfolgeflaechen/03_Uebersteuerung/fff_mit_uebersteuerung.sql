@@ -1,12 +1,76 @@
 drop table if exists alw_fruchtfolgeflaechen.fff_mit_uebersteuerung;
 
 --Alle Übersteuerungsflächen werden ausgeschnitten 
-with uebersteuerung as (
+with reserveflaechen as (
+    select 
+        st_union(geometrie) as geometrie
+    from 
+        arp_npl_pub.nutzungsplanung_grundnutzung
+    where 
+        typ_kt = 'N439_Reservezone'
+), 
+
+grundwasserschutz_S2 as (
+    select 
+        st_union(apolygon) as geometrie
+    from 
+        afu_gewaesserschutz_pub.gewaesserschutz_zone_areal
+    where 
+        typ = 'S2'
+),
+
+zusammengesetzt_reserveflaechen_intersection AS (
+    select 
+        st_intersection(zusammen.geometrie,reserveflaechen.geometrie) as geometrie, 
+        zusammen.bfs_nr, 
+        0 as anrechenbar,
+        zusammen.bezeichnung as bezeichnung, 
+        'reservezone' as spezialfall,
+        NULL AS beschreibung, 
+        now() AS datenstand
+    from 
+        alw_fruchtfolgeflaechen.fff_zusammengesetzt zusammen,
+        reserveflaechen reserveflaechen
+    where 
+        st_intersects(zusammen.geometrie,reserveflaechen.geometrie)
+), 
+
+zusammengesetzt_grundwasserschutz_intersection AS (
+    select 
+        st_intersection(zusammen.geometrie,grundwasserschutz_s2.geometrie) as geometrie, 
+        zusammen.bfs_nr, 
+        0 as anrechenbar,
+        zusammen.bezeichnung as bezeichnung, 
+        'GSZ2' as spezialfall, 
+        NULL AS beschreibung, 
+        now() AS datenstand 
+    from 
+        alw_fruchtfolgeflaechen.fff_zusammengesetzt zusammen,
+        grundwasserschutz_s2 grundwasserschutz_s2
+    where 
+        st_intersects(zusammen.geometrie,grundwasserschutz_s2.geometrie)
+),
+
+uebersteuerung as (
     select 
         st_buffer(st_buffer(st_buffer(st_buffer(st_union(geometrie),0.01),-0.01),-0.01),0.01) as geometrie
     from 
-        alw_fff_uebersteuerung.uebersteuerung
-), 
+        (SELECT 
+             geometrie 
+         FROM 
+             alw_fff_uebersteuerung.uebersteuerung
+         UNION ALL 
+         SELECT 
+             geometrie 
+         FROM 
+             zusammengesetzt_reserveflaechen_intersection
+         UNION ALL 
+         SELECT 
+             geometrie 
+         FROM 
+             zusammengesetzt_grundwasserschutz_intersection
+        ) union_all_intersections
+),
 
 union_uebersteuerung as (
     select 
@@ -33,6 +97,30 @@ union_uebersteuerung as (
         alw_fff_uebersteuerung.uebersteuerung
     where 
         fall = 'ersetzen'
+        
+        union all 
+-- die reservezonen-Flächen, welche die fff_zusammen überlagerten werden wieder eingesetzt.
+    select 
+        geometrie,
+        spezialfall,
+        bezeichnung,
+        beschreibung,
+        datenstand, 
+        anrechenbar 
+    from 
+        zusammengesetzt_reserveflaechen_intersection
+
+        UNION ALL 
+-- die Grundwasserschutzzonen 2-Flächen, welche die fff_zusammen überlagerten werden wieder eingesetzt.
+    select 
+        geometrie,
+        spezialfall,
+        bezeichnung,
+        beschreibung,
+        datenstand, 
+        anrechenbar 
+    from 
+        zusammengesetzt_grundwasserschutz_intersection
 )
 
 select 
@@ -67,6 +155,8 @@ delete from
     alw_fruchtfolgeflaechen.fff_mit_uebersteuerung
 where 
     st_geometrytype(geometrie) = 'ST_LineString'
+    or 
+    st_geometrytype(geometrie) = 'ST_Point'
 ;
 
 CREATE INDEX IF NOT EXISTS

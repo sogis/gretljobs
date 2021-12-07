@@ -75,39 +75,10 @@ with bedingt_geeigneter_boden as (
         arp_mjpnatur_pub.vereinbrngsflchen_flaechen vereinbarungsflaechen
     where 
         st_intersects(schlechter_boden.geometrie,vereinbarungsflaechen.geometrie)
-),  
-
-reserveflaechen as (
-    select 
-        st_union(geometrie) as geometrie 
-    from (
-        select 
-            st_union(st_snaptogrid(geometrie,0.001)) as geometrie
-        from 
-            arp_npl_pub.nutzungsplanung_grundnutzung
-        where 
-            typ_kt = 'N439_Reservezone'
-        union all 
-        select 
-            st_union(apolygon) as geometrie
-        from 
-            afu_gewaesserschutz_pub.gewaesserschutz_zone_areal
-        where 
-            typ = 'S2'
-        ) unionsgeometrie
--- Grundwasserschutz S2 wird hier auf ausgeschnitten, denn diese Flächen werden mit 0 angerechnet. 
-),
-
-ohne_reserveflaechen as (
-    select 
-        st_difference(boden.geometrie,reserveflaechen.geometrie,0.001) as geometrie
-    from 
-        bedingt_geeigneter_boden boden, 
-        reserveflaechen
 )
 
 select 
-    st_intersection(st_makevalid(maske.geometrie),ohne_reserveflaechen.geometrie) as geometrie,
+    st_intersection(st_makevalid(maske.geometrie),bedingt_geeigneter_boden.geometrie) as geometrie,
     0.5 as anrechenbar, 
     bfs_nr, 
     'bedingt_geeignet'as bezeichnung
@@ -115,9 +86,9 @@ into
     alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_50
 from 
     alw_fruchtfolgeflaechen.fff_maske_where_bodenkartierung maske, 
-    ohne_reserveflaechen 
+    bedingt_geeigneter_boden 
 where 
-    st_intersects(maske.geometrie,ohne_reserveflaechen.geometrie)
+    st_intersects(maske.geometrie,bedingt_geeigneter_boden.geometrie)
 ;
 
 -- GeometryCollections werden aufgelöst. Nur die Polygons werden herausgenommen.
