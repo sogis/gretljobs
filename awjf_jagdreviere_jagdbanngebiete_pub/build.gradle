@@ -10,8 +10,8 @@ task transferAwjfJagd(type: Db2Db){
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('awjf_jagdreviere_jagdbanngebiete_pub_jagdbanngebiete_jagdbanngebiete.sql',
-                    'awjf_jagdreviere_jagdbanngebiete_pub.jagdbanngebiete_jagdbanngebiete', true),
+                    'awjf_jagdreviere_jagdbanngebiete_pub_v1.jagdbanngebiete_jagdbanngebiete', true),
             new TransferSet('awjf_jagdreviere_jagdbanngebiete_pub_jagdreviere_jagdreviere.sql',
-                    'awjf_jagdreviere_jagdbanngebiete_pub.jagdreviere_jagdreviere', true)
+                    'awjf_jagdreviere_jagdbanngebiete_pub_v1.jagdreviere_jagdreviere', true)
     ];
 }

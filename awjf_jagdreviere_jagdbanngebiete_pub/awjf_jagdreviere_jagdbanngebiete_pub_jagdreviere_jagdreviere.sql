@@ -4,7 +4,7 @@ SELECT
     string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename ASC) AS gemeinden
 FROM
     agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
-    awjf_jagdreviere_jagdbanngebiete.jagdreviere_jagdreviere
+    awjf_jagdreviere_jagdbanngebiete_v1.jagdreviere_jagdreviere
 WHERE
     ST_DWithin(jagdreviere_jagdreviere.geometrie, hoheitsgrenzen_gemeindegrenze.geometrie, 0)
 GROUP BY
@@ -22,8 +22,8 @@ SELECT
     gemeinden.gemeinden
 	
 FROM
-    awjf_jagdreviere_jagdbanngebiete.jagdreviere_jagdreviere jagdreviere
-    LEFT JOIN awjf_jagdreviere_jagdbanngebiete.jagdreviere_hegering hegering
+    awjf_jagdreviere_jagdbanngebiete_v1.jagdreviere_jagdreviere jagdreviere
+    LEFT JOIN awjf_jagdreviere_jagdbanngebiete_v1.jagdreviere_hegering hegering
         ON jagdreviere.hegering_jagdrevier = hegering.t_id
     LEFT JOIN gemeinden
         ON gemeinden.t_id = jagdreviere.t_id
