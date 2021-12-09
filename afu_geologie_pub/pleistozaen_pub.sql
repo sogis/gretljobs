@@ -1,30 +1,54 @@
 SELECT 
     ST_MakeValid(ST_RemoveRepeatedPoints(ST_SnapToGrid(geometrie, 0.001))) AS geometrie,
-    system1_code.dispname AS system1,
-    system2_code.dispname AS system2,
-    serie1_code.dispname AS serie1,
-    serie2_code.dispname AS serie2,
-    formation1_code.dispname AS formation1,
-    formation2_code.dispname AS formation2,
-    schichtgliederung_code.dispname AS schichtgliederung,
-    ausbildung_festgestein_code.dispname AS ausbildung_festgestein,
-    lithologie_festgestein_code.dispname AS lithologie_festgestein,
-    sackung_festgestein_code.dispname AS sackung_festgestein,
-    ausbildung_lockergestein_code.dispname AS ausbildung_lockergestein,
-    lithologie_lockergestein_code.dispname AS lithologie_lockergestein,
-    lithologie1_code.dispname AS lithologie1,
-    lithologie2_code.dispname AS lithologie2,
-    verkittungsgrad_lockergestein_code.dispname AS verkittungsgrad_lockergestein,
-    wasserdurchlaessigkeit_code.dispname AS wasserdurchlaessigkeit,
-    grundwasser_art_code.dispname AS grundwasser_art,
-    grundwasserfuehrung_maechtigkeit_code.dispname AS grundwasserfuehrung_maechtigkeit,
-    grundwassertyp_code.dispname AS grundwassertyp,
-    reibungswinkel_lockergestein_code.dispname AS reibungswinkel_lockergestein,
-    kohaesion_lockergestein_code.dispname AS kohaesion_lockergestein,
-    reibungswinkel_festgestein_code.dispname AS reibungswinkel_festgestein,
-    kohaesion_festgestein_code.dispname AS kohaesion_festgestein,
-    maechtigkeit_material_code.dispname AS maechtigkeit_material,
-    fehlendes_material_bis_naechster_layer_code.dispname AS fehlendes_material_bis_naechster_layer,
+    system1,
+    system2,
+    serie1,
+    serie2,
+    formation1,
+    formation2,
+    schichtgliederung,
+    ausbildung_festgestein,
+    lithologie_festgestein,
+    sackung_festgestein,
+    ausbildung_lockergestein,
+    lithologie_lockergestein,
+    lithologie1,
+    lithologie2,
+    verkittungsgrad_lockergestein,
+    wasserdurchlaessigkeit,
+    grundwasser_art,
+    grundwasserfuehrung_maechtigkeit,
+    grundwassertyp,
+    reibungswinkel_lockergestein,
+    kohaesion_lockergestein,
+    reibungswinkel_festgestein,
+    kohaesion_festgestein,
+    maechtigkeit_material,
+    fehlendes_material_bis_naechster_layer,
+    system1_code.dispname AS system1_txt,
+    system2_code.dispname AS system2_txt,
+    serie1_code.dispname AS serie1_txt,
+    serie2_code.dispname AS serie2_txt,
+    formation1_code.dispname AS formation1_txt,
+    formation2_code.dispname AS formation2_txt,
+    schichtgliederung_code.dispname AS schichtgliederung_txt,
+    ausbildung_festgestein_code.dispname AS ausbildung_festgestein_txt,
+    sackung_festgestein_code.dispname AS sackung_festgestein_txt,
+    ausbildung_lockergestein_code.dispname AS ausbildung_lockergestein_txt,
+    lithologie_code.dispname AS lithologie_lockergestein_txt,
+    lithologie1_code.dispname AS lithologie1_txt,
+    lithologie2_code.dispname AS lithologie2_txt,
+    verkittungsgrad_lockergestein_code.dispname AS verkittungsgrad_lockergestein_txt,
+    wasserdurchlaessigkeit_code.dispname AS wasserdurchlaessigkeit_txt,
+    grundwasser_art_code.dispname AS grundwasser_art_txt,
+    grundwasserfuehrung_maechtigkeit_code.dispname AS grundwasserfuehrung_maechtigkeit_txt,
+    grundwassertyp_code.dispname AS grundwassertyp_txt,
+    reibungswinkel_lockergestein_code.dispname AS reibungswinkel_lockergestein_txt,
+    kohaesion_lockergestein_code.dispname AS kohaesion_lockergestein_txt,
+    reibungswinkel_festgestein_code.dispname AS reibungswinkel_festgestein_txt,
+    kohaesion_festgestein_code.dispname AS kohaesion_festgestein_txt,
+    maechtigkeit_material_code.dispname AS maechtigkeit_material_txt,
+    fehlendes_material_bis_naechster_layer_code.dispname AS fehlendes_material_bis_naechster_layer_txt,
     neuer_code
 FROM 
     afu_geologie_v1.geologie_pleistozaen AS pleistozaen
@@ -44,12 +68,10 @@ FROM
     ON schichtgliederung = schichtgliederung_code.ilicode
     LEFT JOIN afu_geologie_v1.ausbildung_festgestein AS ausbildung_festgestein_code
     ON ausbildung_festgestein = ausbildung_festgestein_code.ilicode
-    LEFT JOIN afu_geologie_v1.lithologie AS lithologie_festgestein_code
-    ON lithologie_festgestein = lithologie_festgestein_code.ilicode
     LEFT JOIN afu_geologie_v1.ausbildung_lockergestein AS ausbildung_lockergestein_code
     ON ausbildung_lockergestein = ausbildung_lockergestein_code.ilicode
-    LEFT JOIN afu_geologie_v1.lithologie AS lithologie_lockergestein_code
-    ON lithologie_lockergestein = lithologie_lockergestein_code.ilicode
+    LEFT JOIN afu_geologie_v1.lithologie AS lithologie_code
+    ON lithologie_lockergestein = lithologie_code.ilicode
     LEFT JOIN afu_geologie_v1.geologie_geologische_schicht_sackung_festgestein AS sackung_festgestein_code
     ON sackung_festgestein = sackung_festgestein_code.ilicode
     LEFT JOIN afu_geologie_v1.lithologie AS lithologie1_code
