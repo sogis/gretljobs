@@ -36,7 +36,6 @@ SELECT
     formation2_code.dispname AS formation2_txt,
     schichtgliederung_code.dispname AS schichtgliederung_txt,
     ausbildung_festgestein_code.dispname AS ausbildung_festgestein_txt,
-    lithologie_festgestein_code.dispname AS lithologie_festgestein_txt,
     sackung_festgestein_code.dispname AS sackung_festgestein_txt,
     ausbildung_lockergestein_code.dispname AS ausbildung_lockergestein_txt,
     lithologie_code.dispname AS lithologie_lockergestein_txt,
@@ -72,8 +71,6 @@ FROM
     ON schichtgliederung = schichtgliederung_code.ilicode
     LEFT JOIN afu_geologie_v1.ausbildung_festgestein AS ausbildung_festgestein_code
     ON ausbildung_festgestein = ausbildung_festgestein_code.ilicode
-    LEFT JOIN afu_geologie_v1.lithologie AS lithologie_festgestein_code
-    ON lithologie_festgestein = lithologie_festgestein_code.ilicode
     LEFT JOIN afu_geologie_v1.ausbildung_lockergestein AS ausbildung_lockergestein_code
     ON ausbildung_lockergestein = ausbildung_lockergestein_code.ilicode
     LEFT JOIN afu_geologie_v1.lithologie AS lithologie_code
