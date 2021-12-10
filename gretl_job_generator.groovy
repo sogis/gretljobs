@@ -1,7 +1,7 @@
 println "BUILD_NUMBER = ${BUILD_NUMBER}"
 
 // set default values
-def gretlJobFilePath = '**'
+def gretlJobFilePath = '*'
 def gretlJobFileName = '*.gradle'
 def jenkinsfileName = 'Jenkinsfile'
 def jobPropertiesFileName = 'job.properties'
