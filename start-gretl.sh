@@ -69,9 +69,9 @@ mkdir -p /tmp/gretl-share
 #    c. run gradle with given task and parameter using init script from image
 
 docker run -i --rm --name gretl \
-    --entrypoint="/bin/sh" \
-    -v "$job_directory":/home/gradle/project \
-    -v /tmp/gretl-share:/tmp/gretl-share \
+    --entrypoint="//bin/sh" \
+    -v "/${job_directory}":/home/gradle/project \
+    -v //tmp/gretl-share:/tmp/gretl-share \
      ${envvars_string} \
     --user $UID \
     ${network_string} \
