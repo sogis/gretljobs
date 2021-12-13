@@ -1,0 +1,48 @@
+/*
+Import GELAN-Daten Bodenbedeckung in die Edit-DB
+*/
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import java.nio.file.Paths
+import java.nio.file.Files
+import ch.so.agi.gretl.util.TaskUtil
+import java.io.File
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
+defaultTasks "importGELAN"
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+remotes {
+    ftpServer {
+        host = "${sftpServerGelan}"
+        user = "${sftpUserGelan}"
+        password = "${sftpPwdGelan}"
+    }
+}
+
+task downloadData () {
+    description = "Download file from SFTP server"
+    doLast {
+        ssh.settings {
+            knownHosts = allowAnyHosts
+        }
+        ssh.run {
+            session(remotes.ftpServer) {
+                get from: "Prod/Export_ais_ln.xtf", into: pathToTempFolder
+            }
+        }
+        println "File downloaded from FTP server"
+    }
+}
+
+task importGELAN(type: Ili2pgReplace, dependsOn: downloadData) {
+    description = 'Import resp. ersetzt einmal in der Woche die GELAN-Daten (Topic: GELAN_Bodenbedeckung, Datentransfer) in der Erfassungsdatenbank'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "alw_landwirtschaft_tierhaltung_v1"
+    models = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426'
+    dataFile = Paths.get(pathToTempFolder, 'Export_ais_ln.xtf')
+    dataset = 'bodenbedeckung'
+}
