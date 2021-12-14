@@ -1,0 +1,29 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+import java.nio.file.Paths
+
+defaultTasks "writeToPub"
+
+def tmpDir = buildDir.toString()
+def xtfPath = tmpDir + "/data.xtf"
+
+task exportXtf(type: Ili2pgExport){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "avt_kunstbauten_staging_v1"
+    disableValidation = true
+    dataFile = xtfPath
+    models = "SO_AVT_Kunstbauten_Publikation_20211130"
+}
+
+task validate(type: IliValidator, dependsOn: exportXtf){
+    dataFiles = [xtfPath]
+}
+
+task writeToPub(type: Db2Db, dependsOn: validate){ 
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+        new TransferSet('kunstbaute.sql', 'avt_kunstbauten_pub_v1.kunstbaute', true)
+    ];
+}
