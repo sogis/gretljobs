@@ -157,6 +157,16 @@ stall_ids AS (
 		"koordinateN" IS NOT NULL 
 	GROUP BY 
 		"idStao"
+),
+
+pid_stao_count AS (
+	SELECT
+		gelan_pid,
+		count(*) AS gelan_pid_standort_count
+	FROM 
+		mapped_columns
+	GROUP BY
+		gelan_pid
 )
 
 SELECT 
@@ -167,7 +177,7 @@ SELECT
 	strasse_hausnr,
 	plz_ort,
 	hda_nr,
-	gelan_pid,
+	mapped_columns.gelan_pid,
 	igel_pid,
 	name_bewirtschafter,
 	aktuellsteerhebung,
@@ -182,7 +192,8 @@ SELECT
 	abwasser_values AS abwasserableitungen_texte,
 	typ_betrieb_code,
 	val AS typ_betrieb_text,
-	stall_ids
+	stall_ids,
+	gelan_pid_standort_count
 FROM 
 	mapped_columns
 LEFT JOIN
@@ -194,3 +205,7 @@ LEFT JOIN
 LEFT JOIN 
 	stall_ids
 		ON mapped_columns.id = stall_ids.id
+LEFT JOIN
+	pid_stao_count pid 
+	    ON mapped_columns.gelan_pid = pid.gelan_pid
+;		

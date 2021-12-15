@@ -45,12 +45,11 @@ task transformAndPub(type: Db2Db, dependsOn: dbImport){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('stall.sql', 'afu_igel_pub.igel_stall', true),
-            new TransferSet('standort.sql', 'afu_igel_pub.igel_standort', true)
+            new TransferSet('stall.sql', 'afu_igel_pub_v1.igel_stall', true),
+            new TransferSet('standort.sql', 'afu_igel_pub_v1.igel_standort', true)
     ];
 }
 
-
 task refreshSolr(type:Exec, dependsOn:'transformAndPub') {
-	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.gewaesserschutz_lw.stall,ch.so.afu.gewaesserschutz_lw.standort'
+	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.gewaesserschutz_lw.stall,ch.so.afu.gewaesserschutz_lw.standort_mit_erhebung,ch.so.afu.gewaesserschutz_lw.standort_ohne_erhebung'
 }
