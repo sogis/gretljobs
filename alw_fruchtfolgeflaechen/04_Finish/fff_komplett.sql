@@ -46,7 +46,7 @@ smallpolygons_attribute_big as (
 
 small_and_big_union as (
     select 
-        st_buffer(geometrie,0.5) as geometrie, 
+        geometrie as geometrie, 
         spezialfall,
         bezeichnung,
         beschreibung,
@@ -60,7 +60,7 @@ small_and_big_union as (
     union all 
     
     select 
-        st_buffer(geometrie,0.5) as geometrie, 
+        geometrie as geometrie, 
         spezialfall,
         bezeichnung,
         beschreibung,
@@ -68,11 +68,11 @@ small_and_big_union as (
         anrechenbar
     from 
         smallpolygons_attribute_big
-), 
+),
 
 st_union_all_polygons as (
     select 
-        st_buffer(st_union(geometrie),-0.5) as geometrie, 
+        st_union(geometrie) as geometrie, 
         spezialfall,
         bezeichnung,
         beschreibung,
@@ -89,7 +89,7 @@ st_union_all_polygons as (
 )
 
 select 
-    (st_dump(geometrie)).geom as geometrie, 
+    (st_dump(geometrie)).geom as geometrie,
     spezialfall,
     bezeichnung,
     beschreibung,

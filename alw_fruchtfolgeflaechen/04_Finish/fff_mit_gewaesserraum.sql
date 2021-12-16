@@ -28,7 +28,7 @@ gewaesserraum_geometrie as (
 
 union_gewaesserraum as (
     select 
-        st_difference(fff.geometrie,gewaesserraum_geometrie.geometrie,0.01) as geometrie, 
+        st_difference(fff.geometrie,gewaesserraum_geometrie.geometrie,0.001) as geometrie, 
         fff.spezialfall, 
         fff.bezeichnung, 
         fff.beschreibung, 
@@ -41,7 +41,7 @@ union_gewaesserraum as (
         union all 
 -- die "geeigneten Übersteuerungsflächen" werden wieder eingefügt.    
     select 
-        geometrie,
+        st_snaptogrid(geometrie,0.001) as geometrie,
         spezialfall,
         bezeichnung,
         beschreibung,

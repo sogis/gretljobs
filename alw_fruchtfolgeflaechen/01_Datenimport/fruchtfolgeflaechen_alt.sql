@@ -13,7 +13,7 @@ select
          when fffart = 6 
          then 'Golfplatz'
          when fffart = 3
-         then 'reservezone'
+         then 'Reservezone'
          else null 
      end as spezialfall, 
     gem_bfs as bfs_nr, 
