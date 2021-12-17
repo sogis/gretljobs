@@ -114,7 +114,7 @@ datasets.add(new Dataset("SO_AWJF_Statische_Waldgrenzen_20191119", "awjf_statisc
 datasets.add(new Dataset("Waldgrenzen_LV95_V1_1", "awjf_statische_waldgrenzen_mgdm", dbEdit, "ch.so.awjf.statische_waldgrenzen_mgdm")) 
 datasets.add(new Dataset("SO_AWJF_Wald_Basensaettigung_20211021", "awjf_wald_basensaettigung_v1", dbEdit, "ch.so.awjf.wald_basensaettigung_edit")) 
 datasets.add(new Dataset("SO_AWJF_Waldpflege_Erfassung_20210202", "awjf_waldpflege_erfassung", dbEdit, "ch.so.awjf.waldpflege_erfassung_edit")) 
-datasets.add(new Dataset("SO_AWJF_Waldpflege_Erfassung_20210202", "awjf_waldpflege_kontrolle", dbEdit, "ch.so.awjf.waldpflege_kontrolle_edit")) 
+datasets.add(new Dataset("SO_AWJF_Waldpflege_Kontrolle_20210202", "awjf_waldpflege_kontrolle", dbEdit, "ch.so.awjf.waldpflege_kontrolle_edit")) 
 datasets.add(new Dataset("SO_AWJF_Waldwanderwege_202000804", "awjf_waldwanderwege", dbEdit, "ch.so.awjf.waldwanderwege_edit")) 
 datasets.add(new Dataset("SO_AWJF_Wegsanierungen_20170629", "awjf_wegsanierungen_v1", dbEdit, "ch.so.awjf.wegsanierungen_edit")) 
 datasets.add(new Dataset("SO_AWJF_Wildstrukturen_20210831", "awjf_wildstrukturen_v1", dbEdit, "ch.so.awjf.wildstrukturen_edit")) 
