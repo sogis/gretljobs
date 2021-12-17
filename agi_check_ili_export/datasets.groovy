@@ -50,6 +50,7 @@ ext.datasets = []
 
 datasets.add(new Dataset("SO_ADA_Denkmal_20191128", "ada_denkmalschutz", dbEdit, "ch.so.ada.denkmalschutz_edit"))
 datasets.add(new Dataset("SO_ALW_FFF_Uebersteuerung_20210528", "afu_abbaustellen_fff_v1", dbEdit, "ch.so.afu.abbaustellen_fff_edit"))
+datasets.add(new Dataset("SO_AFU_ABBAUSTELLEN_20210630", "afu_abbaustellen_v1", dbEdit, "ch.so.afu.abbaustellen_edit"))
 datasets.add(new Dataset("SO_AFU_ARA_Einzugsgebiete_20201016", "afu_ara_einzugsgebiete", dbEdit, "ch.so.afu.ara_einzugsgebiete_edit"))
 datasets.add(new Dataset("SO_AFU_Baugrundklassen_20201023", "afu_baugrundklassen_v1", dbEdit, "ch.so.afu.baugrundklassen_edit"))
 datasets.add(new Dataset("NABODAT_ErgebnisseBodenbelastung_Punktdaten_LV95_V1_1", "afu_bodendaten_nabodat", dbEdit, "ch.so.afu.bodendaten_nabodat_edit"))
@@ -131,6 +132,7 @@ datasets.add(new Dataset("SO_SGV_Erschliessung_ausserhalb_Bauzone_20190611", "sg
 
 datasets.add(new Dataset("SO_ADA_Denkmal_Pub_20211011", "ada_denkmalschutz_pub", dbPub, "ch.so.ada.denkmalschutz")) 
 datasets.add(new Dataset("SO_AFU_ARA_Einzugsgebiete_20201016", "afu_ara_einzugsgebiete_pub", dbPub, "ch.so.afu.ara_einzugsgebiete")) 
+datasets.add(new Dataset("SO_AFU_ABBAUSTELLEN_Publikation_20210630", "afu_abbaustellen_pub_v1", dbPub, "ch.so.afu.abbaustellen")) 
 datasets.add(new Dataset("SO_AfU_BauGK_CCCCache_20180507", "afu_baugk_ccccache", dbPub, "ch.so.afu.baugk_ccccache")) 
 datasets.add(new Dataset("SO_AFU_Baugrundklassen_Publikation_20201023", "afu_baugrundklassen_pub_v1", dbPub, "ch.so.afu.baugrundklassen")) 
 datasets.add(new Dataset("SO_AFU_Bodenprofilstandorte_Publikation_20210129", "afu_bodendaten_nabodat_pub", dbPub, "ch.so.afu.bodendaten_nabodat"))
