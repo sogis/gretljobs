@@ -36,13 +36,20 @@ task downloadData () {
     }
 }
 
-task importGELAN(type: Ili2pgReplace, dependsOn: downloadData) {
+task validateXTF(type: IliValidator, dependsOn: downloadData) {
+    dataFiles = Paths.get(pathToTempFolder, 'Export_ais_agrardaten.xtf')
+    logFile = "ilivalidator.log"
+    failOnError = true
+}
+
+task importGELAN(type: Ili2pgReplace, dependsOn: validateXTF) {
     description = 'Import resp. ersetzt täglich die GELAN-Daten (Topic: BFF_Qualitaet, Betriebsdaten_Strukturdaten, Datentransfer) in der Erfassungsdatenbank'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "alw_landwirtschaft_tierhaltung_v1"
     models = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426'
     dataFile = Paths.get(pathToTempFolder, 'Export_ais_agrardaten.xtf')
     dataset = 'agrardaten'
+    disableValidation = true
 }
 
 task transferALWAgrardaten(type: Db2Db, dependsOn: importGELAN){
