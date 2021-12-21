@@ -62,7 +62,7 @@ damit der Job bereits in GRETL-Jenkins aufgelistet wird:
   git push origin master
   ```
 * In GRETL-Jenkins z.B. der Testumgebung
-  den Job _gretl_job_generator_ einmal laufenlassen
+  den Job _gretl-job-generator_ einmal laufenlassen
 
 Nun wird der Job in GRETL-Jenkins der Testumgebung aufgelistet,
 und man kann wie gewohnt nach dem Start den Branch auswählen,
