@@ -2,11 +2,8 @@
 Import GELAN-Daten Bodenbedeckung in die Edit-DB
 */
 import ch.so.agi.gretl.tasks.*
-import ch.so.agi.gretl.api.*
 import java.nio.file.Paths
-import java.nio.file.Files
-import ch.so.agi.gretl.util.TaskUtil
-import java.io.File
+
 
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
@@ -16,7 +13,7 @@ defaultTasks "importGELAN"
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
 remotes {
-    ftpServer {
+    sftpServer {
         host = "${sftpServerGelan}"
         user = "${sftpUserGelan}"
         password = "${sftpPwdGelan}"
@@ -30,11 +27,11 @@ task downloadData () {
             knownHosts = allowAnyHosts
         }
         ssh.run {
-            session(remotes.ftpServer) {
+            session(remotes.sftpServer) {
                 get from: "Prod/Export_ais_ln.xtf", into: pathToTempFolder
             }
         }
-        println "File downloaded from FTP server"
+        println "File downloaded from SFTP server"
     }
 }
 
