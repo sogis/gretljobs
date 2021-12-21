@@ -42,15 +42,25 @@ damit der Job bereits in GRETL-Jenkins aufgelistet wird:
 
 * Den Job wie gehabt lokal in einem Branch entwickeln und den Branch pushen
 * Lokal in den _master_-Branch wechseln und den aktuellen Stand pullen:
-  `git checkout master && git pull`
+  ```
+  git checkout master && git pull
+  ```
 * Auch in diesem Branch einen Ordner mit demselben Namen wie der neue Job anlegen:
-  `mkdir my_new_job`
+  ```
+  mkdir my_new_job
+  ```
 * In diesem Ordner eine leere Datei _build.gradle_ anlegen:
-  `touch my_new_job/build.gradle`
+  ```
+  touch my_new_job/build.gradle
+  ```
 * Die leere Datei stagen und committen:
-  `git add my_new_job/build.gradle && git commit -m "[my_new_job] Initialisierung Job-Verzeichnis"`
-* Diesen Commit pushen:
-  `git push origin master`
+  ```
+  git add my_new_job/build.gradle && git commit -m "[my_new_job] Initialisierung Job-Verzeichnis"
+  ```
+* Diesen "Job-Initialisierungs-Commit" pushen:
+  ```
+  git push origin master
+  ```
 * In GRETL-Jenkins z.B. der Testumgebung
   den Job _gretl_job_generator_ einmal laufenlassen
 
