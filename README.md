@@ -23,6 +23,40 @@ Wenn er ein solches findet, legt er einen Job an und definiert das Skript in der
 
 Wenn ein GRETL-Job gestartet wird, ermittelt das zugewiesene Skript alle benötigten Parameter und Benutzernamen für den Zugriff auf DBs und andere externe Ressourcen und führt mit Gradle das Skript `build.gradle`, das im entsprechenden Job-Verzeichnis liegt, aus.
 
+### Job starten, der in einem Branch vorliegt
+
+Wenn man einen bereits **bestehenden Job** bearbeiten möchte,
+erstellt man hierfür lokal einen separaten Branch
+und pusht diesen Branch auf GitHub, wenn die Änderungen umgesetzt sind.
+Im GRETL-Jenkins der Testumgebung und der Integrationsumgebung
+kann man direkt nach dem Start des Jobs den Namen dieses Branches angeben
+und so prüfen, ob die Änderungen wie gewünscht funktionieren.
+Allenfalls noch erforderliche Anpassungen
+kann man im gleichen Branch vornehmen und sie wieder pushen, usw.
+
+Bei einem **neuen Job**, der also noch nicht im _master_-Branch,
+sondern erst in einem anderen Branch vorliegt, ist das Vorgehen ähnlich;
+man muss aber zuerst gemäss folgender Anleitung auch im _master_-Branch
+den entsprechenden Job-Ordner und eine leere Datei _build.gradle_ anlegen,
+damit der Job bereits in GRETL-Jenkins aufgelistet wird:
+
+* Den Job wie gehabt lokal in einem Branch entwickeln und den Branch pushen
+* Lokal in den _master_-Branch wechseln und den aktuellen Stand pullen:
+  `git checkout master && git pull`
+* Auch in diesem Branch einen Ordner mit demselben Namen wie der neue Job anlegen:
+  `mkdir my_new_job`
+* In diesem Ordner eine leere Datei _build.gradle_ anlegen:
+  `touch my_new_job/build.gradle`
+* Die leere Datei stagen und committen:
+  `git add my_new_job/build.gradle && git commit -m "[my_new_job] Initialisierung Job-Verzeichnis"`
+* Diesen Commit pushen:
+  `git push origin master`
+* In GRETL-Jenkins z.B. der Testumgebung
+  den Job _gretl_job_generator_ einmal laufenlassen
+
+Nun wird der Job in GRETL-Jenkins der Testumgebung aufgelistet,
+und man kann wie gewohnt nach dem Start den Branch auswählen,
+in welchem man den neuen Job entwickelt hat.
 
 ## Best Practice für das Erstellen von Jobs
 
