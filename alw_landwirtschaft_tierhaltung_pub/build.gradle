@@ -2,11 +2,9 @@
 Import GELAN-Daten in die Edit-DB
 */
 import ch.so.agi.gretl.tasks.*
-import ch.so.agi.gretl.api.*
+import ch.so.agi.gretl.api.TransferSet
 import java.nio.file.Paths
-import java.nio.file.Files
-import ch.so.agi.gretl.util.TaskUtil
-import java.io.File
+
 
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
@@ -16,7 +14,7 @@ defaultTasks "transferALWAgrardaten"
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
 remotes {
-    ftpServer {
+    sftpServer {
         host = "${sftpServerGelan}"
         user = "${sftpUserGelan}"
         password = "${sftpPwdGelan}"
@@ -30,11 +28,11 @@ task downloadData () {
             knownHosts = allowAnyHosts
         }
         ssh.run {
-            session(remotes.ftpServer) {
+            session(remotes.sftpServer) {
                 get from: "Prod/Export_ais_agrardaten.xtf", into: pathToTempFolder
             }
         }
-        println "File downloaded from FTP server"
+        println "File downloaded from SFTP server"
     }
 }
 
@@ -53,12 +51,12 @@ task transferALWAgrardaten(type: Db2Db, dependsOn: importGELAN){
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     sqlParameters = [publikationsjahr_standort: '2022', publikationsjahr_flaechenerhebung: '2021']
     transferSets = [
-            new TransferSet("dataset.sql",'alw_landwirtschaft_tierhaltung_pub_v1.t_ili2db_dataset',true),
-            new TransferSet("basket.sql",'alw_landwirtschaft_tierhaltung_pub_v1.t_ili2db_basket',true),
-            new TransferSet("bff_qualitaet.sql",'alw_landwirtschaft_tierhaltung_pub_v1.bff_qualitaet_bff_qualitaet',true),
-            new TransferSet("bewirtschaftungseinheit.sql",'alw_landwirtschaft_tierhaltung_pub_v1.betrbsdttrktrdten_bewirtschaftungseinheit',true),
-            new TransferSet("kultur_flaeche.sql",'alw_landwirtschaft_tierhaltung_pub_v1.betrbsdttrktrdten_kultur_flaeche',true),
-            new TransferSet("kultur_punktelement.sql",'alw_landwirtschaft_tierhaltung_pub_v1.betrbsdttrktrdten_kultur_punktelement',true),
-            new TransferSet("tierstandorte.sql",'alw_landwirtschaft_tierhaltung_pub_v1.betrbsdttrktrdten_tierstandort',true)
+        new TransferSet("dataset.sql",'alw_landwirtschaft_tierhaltung_pub_v1.t_ili2db_dataset',true),
+        new TransferSet("basket.sql",'alw_landwirtschaft_tierhaltung_pub_v1.t_ili2db_basket',true),
+        new TransferSet("bff_qualitaet.sql",'alw_landwirtschaft_tierhaltung_pub_v1.bff_qualitaet_bff_qualitaet',true),
+        new TransferSet("bewirtschaftungseinheit.sql",'alw_landwirtschaft_tierhaltung_pub_v1.betrbsdttrktrdten_bewirtschaftungseinheit',true),
+        new TransferSet("kultur_flaeche.sql",'alw_landwirtschaft_tierhaltung_pub_v1.betrbsdttrktrdten_kultur_flaeche',true),
+        new TransferSet("kultur_punktelement.sql",'alw_landwirtschaft_tierhaltung_pub_v1.betrbsdttrktrdten_kultur_punktelement',true),
+        new TransferSet("tierstandorte.sql",'alw_landwirtschaft_tierhaltung_pub_v1.betrbsdttrktrdten_tierstandort',true)
     ];
 }
