@@ -1,5 +1,6 @@
 drop table if exists alw_fruchtfolgeflaechen.fff_komplett;
-
+drop sequence if exists fff_komplett_seq;
+CREATE SEQUENCE fff_komplett_seq;
 --Grenzbereinigung bei Flächen < 15m2
 with buffered_polygons as (
     select 
@@ -89,6 +90,7 @@ st_union_all_polygons as (
 )
 
 select 
+    NEXTVAL('fff_komplett_seq') as id,
     (st_dump(geometrie)).geom as geometrie,
     spezialfall,
     bezeichnung,
