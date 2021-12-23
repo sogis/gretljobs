@@ -1,5 +1,4 @@
 --Dieser Job vereinigt die verschieden bewerteten FFF. 
-
 drop table if exists alw_fruchtfolgeflaechen.fff_zusammengesetzt;
 
 with alle_zusammen as (
@@ -18,8 +17,8 @@ with alle_zusammen as (
 --union all 
 
 select 
-    geometrie, 
-    bfs_nr,
+    st_makevalid(st_snaptogrid(geometrie,0.001)) as geometrie, 
+    null as bfs_nr,
     anrechenbar,
     bezeichnung, 
     null as spezialfall 
@@ -31,10 +30,10 @@ where
 union all 
 
 select 
-    geometrie, 
-    bfs_nr,
+    st_makevalid(st_snaptogrid(geometrie,0.001)) as geometrie, 
+    null as bfs_nr,
     anrechenbar,
-    'geeignet' as bezeichnung, 
+    bezeichnung, 
     null as spezialfall 
 from 
     alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_100
@@ -44,8 +43,8 @@ where
 union all 
 
 select 
-    geometrie, 
-    bfs_nr,
+    st_makevalid(st_snaptogrid(geometrie,0.001)) as geometrie, 
+    null as bfs_nr,
     anrechenbar,
     bezeichnung, 
     spezialfall 
@@ -57,7 +56,7 @@ where
 
 --Das Union hier bezweckt das verbinden gleicher Flächen (gleiche wertigkeit und bfs_nr etc.)
 select 
-    st_makevalid(st_union(geometrie)) as geometrie, 
+    st_makevalid(st_union((geometrie))) as geometrie, 
     bfs_nr,
     anrechenbar,
     bezeichnung, 

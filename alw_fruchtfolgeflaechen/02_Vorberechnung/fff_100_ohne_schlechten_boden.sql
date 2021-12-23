@@ -17,7 +17,7 @@ with schlechter_boden as (
 )
 
 select 
-    st_difference(maske.geometrie,schlechter_boden.geometrie,0.01) as geometrie, 
+    st_difference(maske.geometrie,schlechter_boden.geometrie,0.001) as geometrie, 
     maske.anrechenbar, 
     maske.bfs_nr
 into 
@@ -40,6 +40,12 @@ delete from
     alw_fruchtfolgeflaechen.fff_maske_100_ohne_schlechten_boden
 where 
     ST_IsEmpty(geometrie)
+;
+
+delete from 
+    alw_fruchtfolgeflaechen.fff_maske_100_ohne_schlechten_boden
+where 
+    st_geometrytype(geometrie) in ('ST_MultiLineString', 'ST_LineString')
 ;
 
 CREATE INDEX IF NOT EXISTS

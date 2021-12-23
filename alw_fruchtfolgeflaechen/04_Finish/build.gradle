@@ -26,10 +26,17 @@ task fff_komplett_gemeinden(type: SqlExecutor, dependsOn: fff_komplett) {
     sqlFiles = ['fff_komplett_gemeinden.sql']
 }
 
+//HIER werden die Geometrien gesäubert
+
+task fff_clean(type: SqlExecutor, dependsOn: fff_komplett) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['fff_clean.sql']
+}
+
 //HIER WERDEN DIE Berechneten Daten in die Edit-DB geschrieben
 
 
-task fff_to_edit_db_finish(type: Db2Db, dependsOn: fff_komplett_gemeinden){
+task fff_to_edit_db_finish(type: Db2Db, dependsOn: fff_clean){
     sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [

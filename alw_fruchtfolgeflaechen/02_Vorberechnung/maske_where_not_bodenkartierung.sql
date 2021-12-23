@@ -2,13 +2,13 @@ drop table if exists alw_fruchtfolgeflaechen.fff_maske_where_not_bodenkartierung
 
 with bodenbedeckung as (
     select 
-        st_snaptogrid(st_buffer(st_buffer(st_buffer(st_buffer(st_union(geometrie),-0.2),0.2),0.2),-0.2),0.001) as geometrie
+        ST_CollectionExtract(st_makevalid(st_snaptogrid(st_union(geometrie),0.001)),3) as geometrie
     from 
         afu_isboden_pub.bodeneinheit
 )
 
 select 
-    st_difference(maske.geometrie, bodenbedeckung.geometrie) as geometrie, 
+    st_difference(maske.geometrie, bodenbedeckung.geometrie,0.001) as geometrie, 
     anrechenbar, 
     bfs_nr 
 into 

@@ -1,7 +1,7 @@
 drop table if exists alw_fruchtfolgeflaechen.fff_ohne_bodenkartierung;
 
 select 
-    st_intersection(maske.geometrie,alte_fff.geometrie) as geometrie, 
+    st_intersection(maske.geometrie,alte_fff.geometrie,0.001) as geometrie, 
     alte_fff.anrechenbar,
     alte_fff.spezialfall,
     maske.bfs_nr, 
@@ -29,6 +29,12 @@ delete from
     alw_fruchtfolgeflaechen.fff_ohne_bodenkartierung
 where 
     ST_IsEmpty(geometrie)
+;
+
+delete from 
+    alw_fruchtfolgeflaechen.fff_ohne_bodenkartierung
+where 
+    st_geometrytype(geometrie) in ('ST_MultiLineString','ST_LineString','ST_Point')
 ;
 
 CREATE INDEX IF NOT EXISTS

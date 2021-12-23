@@ -11,7 +11,7 @@ with grundwasserschutz as
 )
 
 select 
-    st_difference(ohne_naturreservate.geometrie,grundwasserschutz.geometrie) as geometrie, 
+    st_makevalid(st_snaptogrid(st_difference(ohne_naturreservate.geometrie,grundwasserschutz.geometrie),0.001)) as geometrie, 
     ohne_naturreservate.bfs_nr, 
     ohne_naturreservate.anrechenbar
 into 
@@ -26,4 +26,24 @@ CREATE INDEX IF NOT EXISTS
     ON 
     alw_fruchtfolgeflaechen.fff_maske_fertig
     using GIST(geometrie)
+;
+
+delete from 
+    alw_fruchtfolgeflaechen.fff_maske_fertig 
+where 
+    ST_IsEmpty(geometrie)
+;
+
+CREATE INDEX IF NOT EXISTS
+    fff_zusammengesetzt_geometrie_idx 
+    ON 
+    alw_fruchtfolgeflaechen.fff_maske_fertig 
+    using GIST(geometrie)
+;
+
+delete 
+from 
+    alw_fruchtfolgeflaechen.fff_maske_fertig
+where 
+    st_geometrytype(geometrie) not IN ('ST_Polygon', 'ST_MultiPolygon')
 ;

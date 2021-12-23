@@ -1,6 +1,16 @@
 drop table if exists alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_50;
 
-with bedingt_geeigneter_boden as (
+with vereinbarungsflaechen as (
+    select 
+        ST_CollectionExtract(ST_intersection(schlechter_boden.geometrie,vereinbarungsflaechen.geometrie,0.001),3) as geometrie
+    from 
+        alw_fruchtfolgeflaechen.fff_maske_100_ohne_schlechten_boden schlechter_boden,
+        arp_mjpnatur_pub.vereinbrngsflchen_flaechen vereinbarungsflaechen
+    where 
+        st_intersects(schlechter_boden.geometrie,vereinbarungsflaechen.geometrie)
+),
+
+bedingt_geeigneter_boden as (
     select 
         geometrie as geometrie
     from 
@@ -69,18 +79,14 @@ with bedingt_geeigneter_boden as (
     union all 
 
     select 
-        ST_intersection(schlechter_boden.geometrie,vereinbarungsflaechen.geometrie) as geometrie
+        geometrie as geometrie
     from 
-        alw_fruchtfolgeflaechen.fff_maske_100_ohne_schlechten_boden schlechter_boden,
-        arp_mjpnatur_pub.vereinbrngsflchen_flaechen vereinbarungsflaechen
-    where 
-        st_intersects(schlechter_boden.geometrie,vereinbarungsflaechen.geometrie)
+        vereinbarungsflaechen
 )
 
 select 
-    st_intersection(st_makevalid(maske.geometrie),bedingt_geeigneter_boden.geometrie) as geometrie,
+    (st_dump(st_union(st_intersection(maske.geometrie,bedingt_geeigneter_boden.geometrie,0.001)))).geom as geometrie,
     0.5 as anrechenbar, 
-    bfs_nr, 
     'bedingt_geeignet'as bezeichnung
 into 
     alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_50
@@ -104,6 +110,12 @@ delete from
     alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_50
 where 
     ST_IsEmpty(geometrie)
+;
+
+delete from 
+    alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_50
+where 
+    st_geometrytype(geometrie) in ('ST_LineString','ST_Point')
 ;
 
 CREATE INDEX IF NOT EXISTS
