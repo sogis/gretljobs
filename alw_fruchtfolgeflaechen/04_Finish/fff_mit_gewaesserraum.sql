@@ -64,6 +64,14 @@ from
     union_gewaesserraum
 ;
 
+
+-- Self-Intersections werden valide gemacht
+update 
+    alw_fruchtfolgeflaechen.fff_mit_gewaesserraum
+    set 
+    geometrie = ST_makevalid(geometrie)
+;
+
 -- GeometryCollections werden aufgelöst. Nur die Polygons werden herausgenommen.
 update 
     alw_fruchtfolgeflaechen.fff_mit_gewaesserraum
@@ -82,7 +90,7 @@ where
 delete from 
     alw_fruchtfolgeflaechen.fff_mit_gewaesserraum
 where 
-    st_geometrytype(geometrie) = 'ST_LineString'
+    ST_geometrytype(geometrie) not in ('ST_Polygon','ST_MultiPolygon')
 ;
 
 CREATE INDEX IF NOT EXISTS
