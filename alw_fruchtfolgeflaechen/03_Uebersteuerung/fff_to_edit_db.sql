@@ -1,5 +1,5 @@
 select 
-    geometrie, 
+    (st_dump(geometrie)).geom as geometrie, 
     bezeichnung, 
     spezialfall, 
     9999 as bfs_nr,
