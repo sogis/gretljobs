@@ -158,6 +158,12 @@ from
     union_uebersteuerung
 ;
 
+-- Geometrien werden valide gemacht
+update 
+    alw_fruchtfolgeflaechen.fff_mit_uebersteuerung
+    set 
+    geometrie = st_makevalid(geometrie)
+;
 -- GeometryCollections werden aufgelöst. Nur die Polygons werden herausgenommen.
 update 
     alw_fruchtfolgeflaechen.fff_mit_uebersteuerung

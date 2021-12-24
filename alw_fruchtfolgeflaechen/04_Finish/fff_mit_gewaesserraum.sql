@@ -2,7 +2,7 @@ drop table if exists alw_fruchtfolgeflaechen.fff_mit_gewaesserraum;
 
 with gewaesserraum as (
     SELECT 
-        (st_dump(st_intersection(gewaesserraum.geometrie,st_makevalid(fff.geometrie)))).geom as geometrie, 
+        (st_dump(st_intersection(gewaesserraum.geometrie,fff.geometrie))).geom as geometrie, 
         'Gewaesserraum' as spezialfall,
         fff.bezeichnung,
         fff.beschreibung,
@@ -28,7 +28,7 @@ gewaesserraum_geometrie as (
 
 union_gewaesserraum as (
     select 
-        st_difference(st_makevalid(fff.geometrie),gewaesserraum_geometrie.geometrie,0.001) as geometrie, 
+        st_difference(fff.geometrie,gewaesserraum_geometrie.geometrie,0.001) as geometrie, 
         fff.spezialfall, 
         fff.bezeichnung, 
         fff.beschreibung, 
