@@ -28,17 +28,19 @@ CREATE INDEX IF NOT EXISTS
     using GIST(geometrie)
 ;
 
+-- GeometryCollections werden aufgelöst. Nur die Polygons werden herausgenommen.
+update 
+    alw_fruchtfolgeflaechen.fff_maske_fertig
+    set 
+    geometrie = ST_CollectionExtract(geometrie, 3)
+WHERE 
+    st_geometrytype(geometrie) = 'ST_GeometryCollection'
+;
+
 delete from 
     alw_fruchtfolgeflaechen.fff_maske_fertig 
 where 
     ST_IsEmpty(geometrie)
-;
-
-CREATE INDEX IF NOT EXISTS
-    fff_zusammengesetzt_geometrie_idx 
-    ON 
-    alw_fruchtfolgeflaechen.fff_maske_fertig 
-    using GIST(geometrie)
 ;
 
 delete 

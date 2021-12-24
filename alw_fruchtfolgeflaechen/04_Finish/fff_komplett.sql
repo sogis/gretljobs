@@ -162,9 +162,7 @@ where
 delete from 
     alw_fruchtfolgeflaechen.fff_komplett
 where 
-    st_geometrytype(geometrie) = 'ST_LineString'
-    or 
-    st_geometrytype(geometrie) = 'ST_Point'
+    ST_geometrytype(geometrie) not in ('ST_Polygon','ST_MultiPolygon')
 ;
 
 update 
