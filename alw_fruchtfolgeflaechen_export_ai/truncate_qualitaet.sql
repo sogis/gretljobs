@@ -1,0 +1,1 @@
+TRUNCATE alw_fruchtfolgeflaechen_mgdm_v1.qualitaet_kantonal CASCADE;

@@ -1,0 +1,90 @@
+/*
+Publishes the alw_fruchtfolgeflaechen data to KKGEO AI.
+Process:
+
+1. Transform the data from model SO_ALW_Fruchtfolgeflaechen_Publikation_20201109 into are model Fruchtfolgeflaechen_LV95_V1 using GRETL sql
+2. Create the *.xtf with the ili2pg GRETL task
+3. Push the xtf to the KKGEO AI
+
+*/
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
+
+defaultTasks 'uploadFFFMgdm'
+
+/* 
+0. We have to truncate (inkl. cascade) the table qualitaet_kantonal. Otherwise delete is not possible because of dependencies
+*/
+
+task prepare_tables(type: SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['truncate_qualitaet.sql']
+}
+/*
+1. Transform the data from model SO_ALW_Fruchtfolgeflaechen_Publikation_20201109 into are model Fruchtfolgeflaechen_LV95_V1 using GRETL sql
+*/
+task mapQualitaet2Mgdm(type: Db2Db, dependsOn: prepare_tables){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+		new TransferSet('qualitaet.sql', 'alw_fruchtfolgeflaechen_mgdm_v1.qualitaet_kantonal', true)
+	];        
+}
+
+task mapFFF2Mgdm(type: Db2Db, dependsOn: mapQualitaet2Mgdm){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+		new TransferSet('fruchtfolgeflaechen.sql', 'alw_fruchtfolgeflaechen_mgdm_v1.fruchtfolgeflaeche', true),
+                new TransferSet('metadaten.sql', 'alw_fruchtfolgeflaechen_mgdm_v1.transfermetadaten', true)
+	];        
+}
+
+/*
+2. Create the *.xtf with the ili2pg GRETL task
+*/
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def exportFileName = 'fruchtfolgeflaechen.xtf'
+def exportFile = file(Paths.get(pathToTempFolder.toString(), exportFileName))
+
+task exportFFFMgdm(type: Ili2pgExport, dependsOn: 'mapFFF2Mgdm') {
+    description = "Exportiert die Fruchtfolgeflaechen ins FFF-MGDM umgebauten Daten in ein xtf-File."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "alw_fruchtfolgeflaechen_mgdm_v1"
+    models = "Fruchtfolgeflaechen_LV95_V1"
+    dataFile = exportFile
+}
+
+/*
+3. Package and upload to the KKGEO AI
+*/
+def zipName = 'iliexport.zip'
+
+task zipFFFMgdm(type: Zip, dependsOn: 'exportFFFMgdm'){
+    description = "Zipt das xtf-File mit den Fruchtfolgeflaechen (MGDM vom Bund) für den Upload in die " +
+            "Aggregationsinfrastruktur."
+    from pathToTempFolder
+    include exportFileName
+    archiveName zipName
+	destinationDir(file(pathToTempFolder))
+}
+
+task uploadFFFMgdm (dependsOn: zipFFFMgdm) {
+    description = "Lädt die Fruchtfolgeflaechen (MGDM vom Bund) in die Aggregationsinfrastruktur hoch."
+
+    def aiLogin = aiUser + ":" + aiPwd
+    def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
+    def zipFilePath = Paths.get(pathToTempFolder.toString(), zipName)
+
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=fruchtfolgeflaechen", "-F",
+                        "lv95_file=@" + zipFilePath, "-F", "publish=true", serverUrl
+                        ].execute().text
+        println(response)
+    }
+}
