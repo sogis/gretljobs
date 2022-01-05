@@ -107,10 +107,11 @@ union_uebersteuerung as (
         st_snaptogrid(geometrie,0.001),
         spezialfall,
         CASE 
-            WHEN bezeichnung = 'bedingt_geeignete_FFF'
+            WHEN (bezeichnung = 'bedingt_geeignete_FFF' OR bezeichnung = 'bedingt geeignet')
             THEN 'bedingt_geeignet' 
             WHEN bezeichnung = 'geeignete_FFF'
             THEN 'geeignet'
+            ELSE bezeichnung
         END AS bezeichnung,
         beschreibung,
         datenstand, 
