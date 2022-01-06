@@ -18,6 +18,23 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'uploadXtfToS3Geodata', 'uploadXtfLatestToS3Geodata', 'uploadGpkgLatestToS3Geodata'
 
+/*
+Je nach Umgebung wird der s3AgiTargetBucket definiert
+*/
+def bucketSuffix = '-undefined'
+if ( gretlEnvironment == 'production' ) {
+    bucketSuffix = ''
+} else if ( gretlEnvironment == 'integration' || gretlEnvironment == 'development' ) {
+    bucketSuffix = '-' + gretlEnvironment.substring(0, 3)
+} else {
+    bucketSuffix = '-' + gretlEnvironment
+}
+
+def s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
+
+/*
+Daten werden von der Edit in die Pub-DB geschrieben
+*/
 task fff_to_pub_db(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
@@ -26,6 +43,10 @@ task fff_to_pub_db(type: Db2Db){
     ];        
 
 }
+
+/*
+Einige Variablen müssen noch definiert werden. Dann wird ein Interlis XTF exportiert
+*/
 
 Date date = new Date()
 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd")
@@ -49,7 +70,7 @@ task exportFFF(type: Ili2pgExport, dependsOn: 'fff_to_pub_db') {
 }
 
 /*
-Zipps und ladet den aktuellen Stand mit Datum hoch
+Zippt das XTF und ladet den aktuellen Stand mit Datum hoch
 */
 task zipXtfFile(type: Zip, dependsOn: 'exportFFF') {
     description = "Zipt das xtf-File mit den Fruchtfolgeflaechen für den Upload nach S3"
@@ -71,7 +92,7 @@ task uploadXtfToS3Geodata(type: S3Upload, dependsOn: 'zipXtfFile') {
 }
 
 /*
-Zippt und lädt den aktuellen Stand als "Latest" hoch
+Zippt das XTF und lädt den aktuellen Stand als "Latest" hoch
 */
 task zipXtfFileLatest(type: Zip, dependsOn: 'exportFFF') {
     description = "Zipt das xtf-File mit den Fruchtfolgeflaechen für den Upload nach S3"
