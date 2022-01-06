@@ -1,14 +1,144 @@
+/* 
+Der nachfolgende GRETL-Task publiziert die Fruchtfolgeflaechen (FFF) auf vielfältige Art und Weise. 
+
+1. Die Daten werden von der Edit-DB in die Pub-DB geschrieben. 
+2. Die Daten aus der Pub-DB werden als xtf exportiert. 
+3. Das xtf wird einmal mit Datum und einmal als "Latest" gezippt und auf S3 geladen 
+4. Das xtf wird in ein Geopackage umgewandelt, gezippt und ebenfalls als "latest" auf S3 hochgeladen. 
+
+*/
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
+import java.text.SimpleDateFormat
+import java.util.Date; 
+import java.nio.file.Paths
+import java.nio.file.Files
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'fff_to_pub_db'
+defaultTasks 'uploadXtfToS3Geodata', 'uploadXtfLatestToS3Geodata', 'uploadGpkgLatestToS3Geodata'
 
+/*
+Je nach Umgebung wird der s3AgiTargetBucket definiert
+*/
+def bucketSuffix = '-undefined'
+if ( gretlEnvironment == 'production' ) {
+    bucketSuffix = ''
+} else if ( gretlEnvironment == 'integration' || gretlEnvironment == 'development' ) {
+    bucketSuffix = '-' + gretlEnvironment.substring(0, 3)
+} else {
+    bucketSuffix = '-' + gretlEnvironment
+}
+
+def s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
+
+/*
+Daten werden von der Edit in die Pub-DB geschrieben
+*/
 task fff_to_pub_db(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('fff_to_pub_db.sql','alw_fruchtfolgeflaechen_pub_v1.fruchtfolgeflaeche', true)
     ];        
+
+}
+
+/*
+Einige Variablen müssen noch definiert werden. Dann wird ein Interlis XTF exportiert
+*/
+
+Date date = new Date()
+SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd")
+String todayDate = formatter.format(date) 
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def exportFileName = 'fruchtfolgeflaechen.xtf'
+def exportFileNameGeopackage = 'fruchtfolgeflaechen.gpkg'
+def exportFile = file(Paths.get(pathToTempFolder.toString(), exportFileName))
+def exportFileGeopackage = file(Paths.get(pathToTempFolder.toString(), exportFileNameGeopackage))
+def zipFileName = "ch.so.alw.fruchtfolgeflaechen_"+todayDate+"_xtf.zip"
+def zipFileNameLatest = "ch.so.alw.fruchtfolgeflaechen_latest_xtf.zip"
+def zipFileNameLatestGeopackage = "ch.so.alw.fruchtfolgeflaechen_latest_gpkg.zip"
+
+task exportFFF(type: Ili2pgExport, dependsOn: 'fff_to_pub_db') {
+    description = "Exportiert die Fruchtfolgeflaechen in ein xtf-File."
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = "alw_fruchtfolgeflaechen_pub_v1"
+    models = "SO_ALW_Fruchtfolgeflaechen_Publikation_20201109"
+    dataFile = exportFile
+}
+
+/*
+Zippt das XTF und ladet den aktuellen Stand mit Datum hoch
+*/
+task zipXtfFile(type: Zip, dependsOn: 'exportFFF') {
+    description = "Zipt das xtf-File mit den Fruchtfolgeflaechen für den Upload nach S3"
+    from pathToTempFolder
+    include exportFileName
+    archiveName zipFileName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadXtfToS3Geodata(type: S3Upload, dependsOn: 'zipXtfFile') {
+    description = "Xtf-File nach S3 hochladen."
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    sourceFile = file(Paths.get(pathToTempFolder, zipFileName))
+    endPoint = "https://s3.eu-central-1.amazonaws.com"
+    region = "eu-central-1"
+    bucketName = s3AgiTargetBucket
+    acl = "public-read"
+}
+
+/*
+Zippt das XTF und lädt den aktuellen Stand als "Latest" hoch
+*/
+task zipXtfFileLatest(type: Zip, dependsOn: 'exportFFF') {
+    description = "Zipt das xtf-File mit den Fruchtfolgeflaechen für den Upload nach S3"
+    from pathToTempFolder
+    include exportFileName
+    archiveName zipFileNameLatest
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadXtfLatestToS3Geodata(type: S3Upload, dependsOn: 'zipXtfFileLatest') {
+    description = "Xtf-File nach S3 hochladen."
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    sourceFile = file(Paths.get(pathToTempFolder, zipFileNameLatest))
+    endPoint = "https://s3.eu-central-1.amazonaws.com"
+    region = "eu-central-1"
+    bucketName = s3AgiTargetBucket
+    acl = "public-read"
+}
+
+/*
+Wandelt den aktuellen Export zu einem Geopackage um und lädt ihn hoch
+*/
+task importDataToGeopackage(type: Ili2gpkgImport, dependsOn: 'exportFFF') {
+    models = "SO_ALW_Fruchtfolgeflaechen_Publikation_20201109"
+    dataFile = file(exportFile);
+    dbfile = file(exportFileGeopackage)  
+    disableValidation = true //Da schon der Export validiert wurde, muss der Import nicht auch noch mal validiert werden!
+    disableAreaValidation = true //Siehe oben
+}
+
+task zipGpkgFileLatest(type: Zip, dependsOn: 'importDataToGeopackage') {
+    description = "Zipt das gpkg-File mit den Fruchtfolgeflaechen für den Upload nach S3"
+    from pathToTempFolder
+    include exportFileNameGeopackage
+    archiveName zipFileNameLatestGeopackage
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadGpkgLatestToS3Geodata(type: S3Upload, dependsOn: 'zipGpkgFileLatest') {
+    description = "Gpkg-File nach S3 hochladen."
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    sourceFile = file(Paths.get(pathToTempFolder, zipFileNameLatestGeopackage))
+    endPoint = "https://s3.eu-central-1.amazonaws.com"
+    region = "eu-central-1"
+    bucketName = s3AgiTargetBucket
+    acl = "public-read"
 }
