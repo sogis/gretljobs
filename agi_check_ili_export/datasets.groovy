@@ -159,7 +159,8 @@ datasets.add(new Dataset("SO_AGI_Lidarprodukte_Publikation_20180202", "agi_lidar
 datasets.add(new Dataset("SO_AGI_MOpublic_20190424", "agi_mopublic_pub", dbPub, "ch.so.agi.mopublic")) 
 datasets.add(new Dataset("SO_AGI_PLZ_Ortschaften_Publikation_20180406", "agi_plz_ortschaften_pub", dbPub, "ch.so.agi.plz_ortschaften")) 
 datasets.add(new Dataset("SO_AGI_swissBOUNDARIES3D_Publikation_20171026", "agi_swissboundaries3d_pub", dbPub, "ch.so.agi.swissboundaries3d")) 
-datasets.add(new Dataset("SO_ALW_Fruchtfolgeflaechen_Publikation_20201109", "alw_fruchtfolgeflaechen_pub_v1", dbPub, "ch.so.alw.fruchtfolgeflaechen")) 
+// Fruchtfolgeflächen werden aus der Pub explizit im Pub-Gretljob exportiert und hochgeladen.
+//datasets.add(new Dataset("SO_ALW_Fruchtfolgeflaechen_Publikation_20201109", "alw_fruchtfolgeflaechen_pub_v1", dbPub, "ch.so.alw.fruchtfolgeflaechen")) 
 datasets.add(new Dataset("SO_ALW_Gewaesserraum_20210531", "alw_gewaesserraum_pub_v1", dbPub, "ch.so.alw.gewaesserraum")) 
 datasets.add(new Dataset("SO_ALW_Strukturverbesserungen_Publikation_20190905", "alw_strukturverbesserungen_pub", dbPub, "ch.so.alw.strukturverbesserungen")) 
 datasets.add(new Dataset("SO_ALW_Tiergesundheit_Massnahmen_20210426", "alw_tiergesundheit_massnahmen_pub", dbPub, "ch.so.alw.tiergesundheit_massnahmen")) 
