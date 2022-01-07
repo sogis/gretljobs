@@ -125,6 +125,9 @@ Die Anleitung, wie man solche Ressourcen (z.B. DB-Verbindungen) in Jenkins defin
 Jeder GRETL-Job braucht im Minimum das File `build.gradle`.
 Bei Bedarf platziert man zudem ein File `job.properties` im Job-Ordner,
 um den Job in Jenkins zu konfigurieren.
+Ebenfalls optional kann eine Datei `gradle.properties`
+im Job-Ordner platziert werden,
+um Properties für den Gradle-Prozess zu setzen.
 Falls der Job in Jenkins mit einem anderen `Jenkinsfile`
 als dem Standard-Jenkinsfile gestartet werden soll,
 muss sein spezifisches Jenkinsfile ebenfalls im Job-Ordner abgelegt werden.
@@ -174,6 +177,21 @@ mit einem grösseren `/tmp`-Verzeichnis ausgeführt.
 Lässt man diese Property weg,
 wird der Job auf einem normalen Jenkins Agent
 (mit dem Label `gretl`) ausgeführt.
+
+#### `gradle.properties`
+
+Die Datei `gradle.properties` kann z.B. dazu benutzt werden,
+dem Job mehr Heap Space (gewissermassen mehr RAM) zur Verfügung zu stellen.
+Um ihm z.B. bis zu 2GB zuzuweisen,
+muss `gradle.properties` die folgende Zeile enthalten:
+
+```
+org.gradle.jvmargs=-Xmx2048m
+```
+
+Weitere mögliche Optionen sind unter
+https://docs.gradle.org/current/userguide/build_environment.html
+dokumentiert.
 
 #### `Jenkinsfile`
 
