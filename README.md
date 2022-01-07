@@ -198,12 +198,12 @@ auf die hochgeladene Datei zugegriffen werden.
 
 ##### Nach dem Start des GRETL-Jobs in Jenkins eine Datei hochladen und zusätzlich den Dataset-Namen (z.B. BFS-Nummer) angeben
 
-Beispiel: https://github.com/sogis/gretljobs/blob/4e9739dbb44561c2a8f28fd9f9ca05276b36506e/arp_npl_pub/Jenkinsfile
+Beispiel: [arp_npl_import/Jenkinsfile](arp_npl_import/Jenkinsfile)
 
 In diesem Fall ist in `build.gradle` die hochgeladene Datei
 ebenfalls unter `upload/uploadFile` verfügbar.
 Zudem kann auf den angegebenen Dataset-Namen
-über die Variable `dataset` zugegriffen werden.
+über die Variable `ili2pgDataset` zugegriffen werden.
 
 
 
