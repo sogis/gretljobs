@@ -13,7 +13,6 @@ task transferAwjf(type: Db2Db){
             new TransferSet('awjf_wald_pub_wap_bst.sql', 'awjf_wald_pub.wap_bst', true),
             new TransferSet('awjf_wald_pub_sw_funktion_ar.sql', 'awjf_wald_pub.sw_funktion_ar', true),
             new TransferSet('awjf_wald_pub_waldge.sql', 'awjf_wald_pub.waldge', true),
-            new TransferSet('awjf_wald_pub_oberhoehenbonitaet.sql', 'awjf_wald_pub.oberhoehenbonitaet', true),
             new TransferSet('awjf_wald_pub_wald_25000.sql', 'awjf_wald_pub.wald_25000', true),
             new TransferSet('awjf_wald_pub_schutzwald_behandelte_flaeche.sql',
                     'awjf_wald_pub.schutzwald_behandelte_flaeche', true),
