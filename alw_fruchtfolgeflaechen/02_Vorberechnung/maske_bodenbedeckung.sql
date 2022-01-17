@@ -1,116 +1,116 @@
-with humusiert as (
+WITH humusiert AS (
 
-    select 
-        st_union(geometrie) as geometrie
-    from 
+    SELECT 
+        st_union(geometrie) AS geometrie
+    FROM 
         agi_mopublic_pub.mopublic_bodenbedeckung
-    where 
+    WHERE 
         art_txt IN ('Acker_Wiese', 'Weide', 'Reben', 'Obstkultur', 'uebrige_intensiv')
-        and 
+        AND 
         bfs_nr = ${bfsnr}
 ), 
 
-bestockt as (
-    select 
-        st_union(st_buffer(geometrie,6)) as geometrie
-    from 
+bestockt AS (
+    SELECT
+        st_union(st_buffer(geometrie,6)) AS geometrie
+    FROM 
         agi_mopublic_pub.mopublic_bodenbedeckung
-    where 
-        art_txt in ('geschlossener_Wald', 'Parkanlage_bestockt', 'Hecke', 'uebrige_bestockte') 
-        and 
+    WHERE 
+        art_txt IN ('geschlossener_Wald', 'Parkanlage_bestockt', 'Hecke', 'uebrige_bestockte') 
+        AND 
         bfs_nr = ${bfsnr}
 ),
 
-gebaeude as (
-    select 
-        st_union(st_buffer(geometrie,3)) as geometrie
-    from 
+gebaeude AS (
+    SELECT 
+        st_union(st_buffer(geometrie,3)) AS geometrie
+    FROM 
         agi_mopublic_pub.mopublic_bodenbedeckung
-    where 
-        art_txt in ('Gebaeude') 
-        and 
+    WHERE 
+        art_txt IN ('Gebaeude') 
+        AND 
         bfs_nr = ${bfsnr}
 ), 
 
-gewaesser as (
-    select 
-        st_union(st_buffer(geometrie,6)) as geometrie
-    from 
+gewaesser AS (
+    SELECT 
+        st_union(st_buffer(geometrie,6)) AS geometrie
+    FROM 
         agi_mopublic_pub.mopublic_bodenbedeckung
-    where 
-        art_txt in ('fliessendes Gewaesser') 
-        and 
+    WHERE 
+        art_txt IN ('fliessendes Gewaesser') 
+        AND 
         bfs_nr = ${bfsnr}
 ), 
 
-strassen as (
-    select 
-        st_union(st_buffer(geometrie,1)) as geometrie
-    from 
+strassen AS (
+    SELECT 
+        st_union(st_buffer(geometrie,1)) AS geometrie
+    FROM 
         agi_mopublic_pub.mopublic_bodenbedeckung
-    where 
-        art_txt in ('Strasse_Weg','Bahn','Trottoir','Verkehrsinsel','Flugplatz') 
-        and 
+    WHERE 
+        art_txt IN ('Strasse_Weg','Bahn','Trottoir','Verkehrsinsel','Flugplatz') 
+        AND 
         bfs_nr = ${bfsnr}
 ), 
 
-nicht_bestockt as (
+nicht_bestockt AS (
 
-    select distinct 
-        case 
-            when bestockt.geometrie is not null 
-            then st_difference(humusiert.geometrie,bestockt.geometrie) 
-            else humusiert.geometrie 
-            end as geometrie
-    from 
+    SELECT DISTINCT 
+        CASE 
+            WHEN bestockt.geometrie IS NOT NULL 
+            THEN st_difference(humusiert.geometrie,bestockt.geometrie) 
+            ELSE humusiert.geometrie 
+        END AS geometrie
+    FROM 
         humusiert, 
         bestockt
  ), 
  
- nicht_gebaeude as (
+ nicht_gebaeude AS (
 
-    select distinct 
-        case when gebaeude.geometrie is not null 
-        then st_difference(nicht_bestockt.geometrie,gebaeude.geometrie) 
-        else nicht_bestockt.geometrie 
-        end as geometrie
-    from 
+    SELECT DISTINCT 
+        CASE 
+            WHEN gebaeude.geometrie IS NOT NULL 
+            THEN st_difference(nicht_bestockt.geometrie,gebaeude.geometrie) 
+            ELSE nicht_bestockt.geometrie 
+        END AS geometrie
+    FROM 
         nicht_bestockt, 
         gebaeude 
  ), 
  
- nicht_gewaesser as (
+ nicht_gewaesser AS (
 
-    select distinct 
-        case 
-            when gewaesser.geometrie is not null 
-            then st_difference(nicht_gebaeude.geometrie,gewaesser.geometrie) 
-            else nicht_gebaeude.geometrie 
-            end as geometrie
-    from 
+    SELECT DISTINCT 
+        CASE 
+            WHEN gewaesser.geometrie IS NOT NULL 
+            THEN st_difference(nicht_gebaeude.geometrie,gewaesser.geometrie) 
+            ELSE nicht_gebaeude.geometrie 
+        END AS geometrie
+    FROM  
         nicht_gebaeude, 
         gewaesser 
   ),  
  
-  nicht_strassen as (
+  nicht_strassen AS (
 
-    select distinct 
-        case 
-            when strassen.geometrie is not null
-            then st_difference(nicht_gewaesser.geometrie,strassen.geometrie) 
-            else nicht_gewaesser.geometrie 
-            end as geometrie
-    from 
+    SELECT DISTINCT 
+        CASE 
+            WHEN strassen.geometrie IS NOT NULL
+            THEN st_difference(nicht_gewaesser.geometrie,strassen.geometrie) 
+            ELSE nicht_gewaesser.geometrie 
+        END AS geometrie
+    FROM 
         nicht_gewaesser,
         strassen
  )
  
-INSERT INTO alw_fruchtfolgeflaechen.fff_maske_bodenbedeckung (geometrie,bfs_nr,anrechenbar)
+INSERT INTO alw_fruchtfolgeflaechen.fff_maske_bodenbedeckung (geometrie)
     (
-     select 
-         (st_dump(nicht_strassen.geometrie)).geom as geometrie, 
-         ${bfsnr} as bfs_nr, 
-         1 as anrechenbar
-     from 
+     SELECT 
+         (st_dump(nicht_strassen.geometrie)).geom AS geometrie 
+     FROM 
          nicht_strassen
-    );
+    )
+;

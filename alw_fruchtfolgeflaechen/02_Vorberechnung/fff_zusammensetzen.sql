@@ -1,89 +1,72 @@
 --Dieser Job vereinigt die verschieden bewerteten FFF. 
-drop table if exists alw_fruchtfolgeflaechen.fff_zusammengesetzt;
+DROP TABLE IF EXISTS 
+    alw_fruchtfolgeflaechen.fff_zusammengesetzt
+;
 
-with alle_zusammen as (
--- DIE 0-Anrechenbaren Flächen werden nun in der Übersteuerung übersteuert! 
---select 
---    geometrie, 
---    bfs_nr,
---    anrechenbar,
---    bezeichnung, 
---    spezialfall 
---from 
---    alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_0
---where 
---    st_geometrytype(geometrie) IN ('ST_Polygon', 'ST_MultiPolygon')
-    
---union all 
-
-select 
-    st_makevalid(st_snaptogrid(geometrie,0.001)) as geometrie, 
-    null as bfs_nr,
+WITH alle_zusammen AS (
+SELECT 
+    st_makevalid(st_snaptogrid(geometrie,0.001)) AS geometrie, 
     anrechenbar,
     bezeichnung, 
-    null as spezialfall 
-from 
+    null AS spezialfall 
+FROM 
     alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_50
-where 
+WHERE 
     st_geometrytype(geometrie) IN ('ST_Polygon', 'ST_MultiPolygon')
     
-union all 
+UNION ALL 
 
-select 
-    st_makevalid(st_snaptogrid(geometrie,0.001)) as geometrie, 
-    null as bfs_nr,
+SELECT 
+    st_makevalid(st_snaptogrid(geometrie,0.001)) AS geometrie, 
     anrechenbar,
     bezeichnung, 
-    null as spezialfall 
-from 
+    null AS spezialfall 
+FROM
     alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_100
-where 
+WHERE 
     st_geometrytype(geometrie) IN ('ST_Polygon', 'ST_MultiPolygon')
 
-union all 
+UNION ALL
 
-select 
-    st_makevalid(st_snaptogrid(geometrie,0.001)) as geometrie, 
-    null as bfs_nr,
+SELECT 
+    st_makevalid(st_snaptogrid(geometrie,0.001)) AS geometrie, 
     anrechenbar,
     bezeichnung, 
     spezialfall 
-from 
+FROM
     alw_fruchtfolgeflaechen.fff_ohne_bodenkartierung
-where 
+WHERE 
     st_geometrytype(geometrie) IN ('ST_Polygon', 'ST_MultiPolygon')
 )
 
 --Das Union hier bezweckt das verbinden gleicher Flächen (gleiche wertigkeit und bfs_nr etc.)
 select 
-    st_makevalid(st_union((geometrie))) as geometrie, 
-    bfs_nr,
+    st_makevalid(st_union((geometrie))) AS geometrie, 
     anrechenbar,
     bezeichnung, 
     spezialfall 
-into 
+INTO
     alw_fruchtfolgeflaechen.fff_zusammengesetzt 
-from 
+FROM 
     alle_zusammen 
-group by 
-    bfs_nr,
+GROUP BY 
     anrechenbar,
     bezeichnung,
     spezialfall 
 ;
 
 -- GeometryCollections werden aufgelöst. Nur die Polygons werden herausgenommen.
-update 
+UPDATE
     alw_fruchtfolgeflaechen.fff_zusammengesetzt 
-    set 
+    SET 
     geometrie = ST_CollectionExtract(geometrie, 3)
 WHERE 
     st_geometrytype(geometrie) = 'ST_GeometryCollection'
 ;
 
-delete from 
+DELETE FROM 
     alw_fruchtfolgeflaechen.fff_zusammengesetzt 
-where 
+WHERE 
     ST_IsEmpty(geometrie)
 ;
 
@@ -91,5 +74,5 @@ CREATE INDEX IF NOT EXISTS
     fff_zusammengesetzt_geometrie_idx 
     ON 
     alw_fruchtfolgeflaechen.fff_zusammengesetzt 
-    using GIST(geometrie)
+USING GIST(geometrie)
 ;

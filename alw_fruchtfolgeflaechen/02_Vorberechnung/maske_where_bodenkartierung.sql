@@ -1,37 +1,37 @@
-drop table if exists alw_fruchtfolgeflaechen.fff_maske_where_bodenkartierung;
+DROP TABLE IF EXISTS 
+    alw_fruchtfolgeflaechen.fff_maske_where_bodenkartierung
+;
 
-with bodenbedeckung as (
-    select 
-        ST_CollectionExtract(st_makevalid(st_snaptogrid(st_union(geometrie),0.001)),3) as geometrie
-    from 
+WITH bodenbedeckung AS (
+    SELECT 
+        ST_CollectionExtract(st_makevalid(st_snaptogrid(st_union(geometrie),0.001)),3) AS geometrie
+    FROM 
         afu_isboden_pub.bodeneinheit
 )
 
-select 
-    st_intersection(maske.geometrie, bodenbedeckung.geometrie,0.001) as geometrie, 
-    anrechenbar, 
-    bfs_nr 
-into 
+SELECT 
+    st_intersection(maske.geometrie, bodenbedeckung.geometrie,0.001) AS geometrie
+INTO 
     alw_fruchtfolgeflaechen.fff_maske_where_bodenkartierung
-from 
+FROM 
     alw_fruchtfolgeflaechen.fff_maske_fertig maske, 
     bodenbedeckung 
-where 
+WHERE 
     st_intersects(maske.geometrie,bodenbedeckung.geometrie)
 ;
 
 -- GeometryCollections werden aufgelöst. Nur die Polygons werden herausgenommen.
-update 
+UPDATE 
     alw_fruchtfolgeflaechen.fff_maske_where_bodenkartierung
-    set 
+    SET 
     geometrie = ST_CollectionExtract(geometrie, 3)
 WHERE 
     st_geometrytype(geometrie) = 'ST_GeometryCollection'
 ;
 
-delete from 
+DELETE FROM 
     alw_fruchtfolgeflaechen.fff_maske_where_bodenkartierung
-where 
+WHERE 
     ST_IsEmpty(geometrie)
 ;
 
@@ -39,5 +39,5 @@ CREATE INDEX IF NOT EXISTS
     fff_maske_where_bodenkartierung_geometrie_idx 
     ON 
     alw_fruchtfolgeflaechen.fff_maske_where_bodenkartierung
-    using GIST(geometrie)
+USING GIST(geometrie)
 ;

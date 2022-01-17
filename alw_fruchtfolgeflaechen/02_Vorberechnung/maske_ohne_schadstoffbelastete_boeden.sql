@@ -1,95 +1,105 @@
-drop table if exists alw_fruchtfolgeflaechen.fff_maske_ohne_schadstoffbelastete_boeden;
+DROP TABLE IF EXISTS 
+    alw_fruchtfolgeflaechen.fff_maske_ohne_schadstoffbelastete_boeden
+;
 
-with schadstoffbelastete_boeden as (
-    select st_union(geometrie) as geometrie 
-    from (
-        (select 
-            geometrie 
-        from 
-            afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_schrebergarten
-        )
-        union all 
-        (select 
-            geometrie 
-        from 
-            afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_rebbau
-        )
-        union all 
-        (select 
-            geometrie 
-        from 
-            afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_gaertnerei
-        )
-        union all 
-        (select 
-            geometrie 
-        from 
-            afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_stahlmast
-        )
-        union all 
-        (select 
-            geometrie 
-        from 
-            afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_stahlbruecke
-        )
-        union all 
-        (select 
-            geometrie 
-        from 
-            afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_stahlkonstruktion
-        )
-        union all 
-        (select 
-            geometrie 
-        from 
-            afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_flugplatz
-        )
-        union all 
-        (select 
-            geometrie 
-        from 
-            afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_bodenbelastungsgebiet
-        )
-    ) standorte
+WITH schadstoffbelastete_boeden AS (
+    SELECT st_union(geometrie) AS geometrie 
+    FROM (
+             (
+                 SELECT 
+                     geometrie 
+                 FROM  
+                     afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_schrebergarten
+             )
+             UNION ALL 
+             (
+                 SELECT 
+                     geometrie 
+                 FROM 
+                     afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_rebbau
+             )
+             UNION ALL 
+             (
+                 SELECT 
+                     geometrie 
+                 FROM 
+                     afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_gaertnerei
+             )
+             UNION ALL 
+             (
+                 SELECT 
+                     geometrie 
+                 FROM 
+                     afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_stahlmast
+             )
+             UNION ALL 
+             (
+                 SELECT 
+                     geometrie 
+                 FROM 
+                     afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_stahlbruecke
+             )
+             UNION ALL 
+             (
+                 SELECT 
+                     geometrie 
+                 FROM 
+                     afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_stahlkonstruktion
+             )
+             UNION ALL 
+             (
+                 SELECT 
+                     geometrie 
+                 FROM 
+                     afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_flugplatz
+             )
+             UNION ALL 
+             (
+                 SELECT 
+                     geometrie 
+                 FROM 
+                     afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_bodenbelastungsgebiet
+                 WHERE 
+                     belastungsstufe NOT IN ('Richtwert_bis_Pruefwert')
+             )
+        ) standorte
 )
 
-select 
-    st_difference(ohne_afhv.geometrie,schadstoffbelastete_boeden.geometrie,0.001) as geometrie, 
-    ohne_afhv.bfs_nr, 
-    ohne_afhv.anrechenbar
-into 
+SELECT 
+    st_difference(ohne_afhv.geometrie,schadstoffbelastete_boeden.geometrie,0.001) AS geometrie
+INTO 
     alw_fruchtfolgeflaechen.fff_maske_ohne_schadstoffbelastete_boeden 
-from 
+FROM 
     alw_fruchtfolgeflaechen.fff_maske_ohne_auen_flachmoore_hochmoore_vogelreservate ohne_afhv,
     schadstoffbelastete_boeden
 ;
 
 -- GeometryCollections werden aufgelöst. Nur die Polygons werden herausgenommen.
-update 
+UPDATE 
     alw_fruchtfolgeflaechen.fff_maske_ohne_schadstoffbelastete_boeden
-    set 
+    SET 
     geometrie = ST_CollectionExtract(geometrie, 3)
 WHERE 
     st_geometrytype(geometrie) = 'ST_GeometryCollection'
 ;
 
-delete from 
+DELETE FROM 
     alw_fruchtfolgeflaechen.fff_maske_ohne_schadstoffbelastete_boeden
-where 
+WHERE 
     ST_IsEmpty(geometrie)
 ;
 
-delete from 
+DELETE FROM 
     alw_fruchtfolgeflaechen.fff_maske_ohne_schadstoffbelastete_boeden
-where 
-    ST_geometrytype(geometrie) not in ('ST_Polygon','ST_MultiPolygon')
+WHERE 
+    ST_geometrytype(geometrie) NOT IN ('ST_Polygon','ST_MultiPolygon')
 ;
 
 CREATE INDEX IF NOT EXISTS
     fff_maske_ohne_schadstoffbelastete_boeden_geometrie_idx 
     ON 
     alw_fruchtfolgeflaechen.fff_maske_ohne_schadstoffbelastete_boeden
-    using GIST(geometrie)
+USING GIST(geometrie)
 ;
 
 

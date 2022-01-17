@@ -1,8 +1,8 @@
-DROP SCHEMA if exists afu_altlasten_pub cascade;
+DROP SCHEMA IF EXISTS afu_altlasten_pub cascade;
 
 CREATE SCHEMA afu_altlasten_pub AUTHORIZATION "user";
 
-DROP TABLE if exists afu_altlasten_pub.belastete_standorte_altlast4web;
+DROP TABLE IF EXISTS afu_altlasten_pub.belastete_standorte_altlast4web;
 
 CREATE TABLE afu_altlasten_pub.belastete_standorte_altlast4web (
 	t_id int4 NOT NULL,

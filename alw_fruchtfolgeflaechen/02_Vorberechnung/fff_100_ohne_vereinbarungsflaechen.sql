@@ -1,48 +1,47 @@
-drop table if exists alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_100 ;
+DROP TABLE IF EXISTS alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_100 ;
 
-with vereinbarungsflaechen as (
-    select 
-        st_union(ST_CollectionExtract(st_makevalid(st_snaptogrid(geometrie,0.001)),3)) as geometrie
-    from 
+WITH vereinbarungsflaechen AS (
+    SELECT 
+        st_union(ST_CollectionExtract(st_makevalid(st_snaptogrid(geometrie,0.001)),3)) AS geometrie
+    FROM 
         arp_mjpnatur_pub.vereinbrngsflchen_flaechen
 )
 
-select
-
-    (st_dump(st_union(st_makevalid(st_difference(maske.geometrie,vereinbarungsflaechen.geometrie,0.001))))).geom as geometrie,
-    1 as anrechenbar, 
-    'geeignet'as bezeichnung
-into 
+SELECT
+    (st_dump(st_union(st_makevalid(st_difference(maske.geometrie,vereinbarungsflaechen.geometrie,0.001))))).geom AS geometrie,
+    1 AS anrechenbar, 
+    'geeignet'AS bezeichnung
+INTO 
     alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_100
-from 
+FROM 
     alw_fruchtfolgeflaechen.fff_maske_100_ohne_schlechten_boden maske, 
     vereinbarungsflaechen
 ;
 
 -- GeometryCollections werden aufgelöst. Nur die Polygons werden herausgenommen.
-update 
+UPDATE 
     alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_100
-    set 
+    SET 
     geometrie = ST_CollectionExtract(geometrie, 3)
 WHERE 
     st_geometrytype(geometrie) = 'ST_GeometryCollection'
 ;
 
-delete from 
+DELETE FROM 
     alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_100
-where 
+WHERE 
     ST_IsEmpty(geometrie)
 ;
 
-delete from 
+DELETE FROM 
     alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_100
-where 
-    st_geometrytype(geometrie) in ('ST_LineString')
+WHERE 
+    st_geometrytype(geometrie) IN ('ST_LineString')
 ;
 
 CREATE INDEX IF NOT EXISTS
     fff_mit_bodenkartierung_100_geometrie_idx 
     ON 
     alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_100
-    using GIST(geometrie)
+USING GIST(geometrie)
 ;

@@ -1,12 +1,11 @@
-select 
+SELECT 
     geometrie, 
     bezeichnung, 
     spezialfall, 
-    bfs_nr,
     datenstand, 
     anrechenbar, 
-    st_area(geometrie)/100 as area_aren,
-    (st_area(geometrie)/100)*anrechenbar as area_anrech
-from 
+    st_area(geometrie)/100 AS area_aren,
+    (st_area(geometrie)/100)*anrechenbar AS area_anrech
+FROM 
     alw_fruchtfolgeflaechen.fruchtfolgeflaeche_clean
 ;

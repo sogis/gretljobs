@@ -1,25 +1,25 @@
-select 
-    (st_dump(geometrie)).geom as geometrie, 
-    case 
-        when fffart IN (1,4) 
-        then 'geeignet'
-        when fffart in (2,6) 
-        then 'bedingt_geeignet'
-        when fffart = 3
-        then 'bedingt_geeignet'
-    end as bezeichnung, 
-    case when fffart = 4 
-         then 'Kiesgrube_Abbaugebiet'
-         when fffart = 6 
-         then 'Golfplatz'
-         when fffart = 3
-         then 'Reservezone'
-         else null 
-     end as spezialfall, 
-    gem_bfs as bfs_nr, 
-    datum_erst::date as datenstand, 
-    anrechenbar as anrechenbar, 
-    st_area(geometrie)/100 as area_aren, 
-    (st_area(geometrie)/100)*anrechenbar as area_anrech
+SELECT
+    (st_dump(geometrie)).geom AS geometrie, 
+    CASE 
+        WHEN fffart IN (1,4) 
+        THEN 'geeignet'
+        WHEN fffart IN (2,6) 
+        THEN 'bedingt_geeignet'
+        WHEN fffart = 3
+        THEN 'bedingt_geeignet'
+    END AS bezeichnung, 
+    CASE
+        WHEN fffart = 4 
+        THEN 'Kiesgrube_Abbaugebiet'
+        WHEN fffart = 6 
+        THEN 'Golfplatz'
+        WHEN fffart = 3
+        THEN 'Reservezone'
+        ELSE null 
+    END AS spezialfall, 
+    datum_erst::date AS datenstand, 
+    anrechenbar AS anrechenbar, 
+    st_area(geometrie)/100 AS area_aren, 
+    (st_area(geometrie)/100)*anrechenbar AS area_anrech
 from 
     alw_grundlagen_pub.fruchtfolgeflaechen

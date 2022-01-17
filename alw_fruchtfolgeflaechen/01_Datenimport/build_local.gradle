@@ -7,25 +7,25 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: "de.undercouch.download"
 apply plugin: 'ch.so.agi.gretl'
 
-//defaultTasks 'importVogelreservate'
-defaultTasks 'prepare_db', 'importAll'
+defaultTasks 'prepare_db', 'deleteAllSchemasIfExists', 'importAll'
+//defaultTasks 'importAltlasten'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, "unzip_data")
 def pathToDataFile = Paths.get(pathToTempFolder)
 def pathToDataZip = Paths.get(pathToTempFolder, 'data.zip')
 
-////////////////Bodenbedeckung ///////////////////////
 task prepare_db(type: SqlExecutor) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['prepare_db.sql']
 }
 
-//task deleteAllSchemasIfExists(type: SqlExecutor) {
-//    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-//    sqlFiles = ['deleteallschemas.sql']
-//}
+task deleteAllSchemasIfExists(type: SqlExecutor) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['deleteallschemas.sql']
+}
 
+////////////////Bodenbedeckung ///////////////////////
 task makeSchemaMopublic(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_AGI_MOpublic_20201009"
@@ -630,7 +630,7 @@ task importGewaesserraum(type: Db2Db, dependsOn: makeSchemaGewaesserraum){
 
 task makeSchemaFFF(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    models = "SO_ALW_Fruchtfolgeflaechen_Publikation_20201109"
+    models = "SO_ALW_Fruchtfolgeflaechen_Publikation_20220110"
     dbschema = "alw_fruchtfolgeflaechen"
     strokeArcs = true
     beautifyEnumDispName = true
@@ -676,7 +676,7 @@ task importHoheitsgrenzen(type: Db2Db, dependsOn: makeSchemaHoheitsgrenzen){
 
 task makeSchemaFFF_alt(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    models = "SO_ALW_Fruchtfolgeflaechen_Publikation_20201109"
+    models = "SO_ALW_Fruchtfolgeflaechen_Publikation_20220110"
     dbschema = "alw_fruchtfolgeflaechen_alt"
     strokeArcs = true
     beautifyEnumDispName = true
@@ -711,7 +711,6 @@ task importAll() {
         'importFlachmoore',
         'importHochmoore',
         'importTww2',
-        //'importVogelreservate',
         'importSchadstoffbelasteteBoeden',
         'importNutzungsplanung',
         'importNaturreservate',

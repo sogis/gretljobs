@@ -1,9 +1,10 @@
 -- Drop table
 CREATE SCHEMA IF NOT EXISTS afu_isboden_pub AUTHORIZATION "user";
 
-DROP TABLE if exists afu_isboden_pub.bodeneinheit;
+DROP TABLE IF EXISTS afu_isboden_pub.bodeneinheit;
 
-CREATE TABLE afu_isboden_pub.bodeneinheit (
+CREATE TABLE 
+    afu_isboden_pub.bodeneinheit (
 	t_id int8 NOT NULL,
 	gemnr int2 NULL,
 	objnr int4 NULL,
@@ -87,5 +88,12 @@ CREATE TABLE afu_isboden_pub.bodeneinheit (
 	untertyp text NULL,
 	gemnr_aktuell int4 NULL,
 	CONSTRAINT afu_isboden_pub_bodeneinheit_pkey PRIMARY KEY (t_id)
-);
-CREATE INDEX idx_afu_isboden_bodeneinheit_wkb_geometery ON afu_isboden_pub.bodeneinheit USING gist (geometrie);
+    )
+;
+
+CREATE INDEX 
+    idx_afu_isboden_bodeneinheit_wkb_geometery 
+    ON 
+    afu_isboden_pub.bodeneinheit 
+USING gist (geometrie)
+;
