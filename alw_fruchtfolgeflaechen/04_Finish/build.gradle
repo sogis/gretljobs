@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.*
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'fff_to_edit_db_finish', 'fff_statistik'
+defaultTasks 'fff_to_edit_db_finish'
 
 //HIER werden den Flächen innerhalb des Gewässerraumes noch das Spezialattribut "Gewaesserraum" zugeordnet. 
 
@@ -38,7 +38,7 @@ task fff_statistik(type: Db2Db, dependsOn: fff_clean){
 
 //HIER WERDEN DIE Berechneten Daten in die Edit-DB geschrieben
 
-task fff_to_edit_db_finish(type: Db2Db, dependsOn: fff_clean){
+task fff_to_edit_db_finish(type: Db2Db, dependsOn: fff_statistik){
     sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
