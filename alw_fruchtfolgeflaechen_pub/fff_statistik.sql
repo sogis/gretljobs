@@ -1,0 +1,10 @@
+SELECT 
+    gemeindename, 
+    bfs_nummer, 
+    anrechenbar, 
+    spezialfall, 
+    flaeche, 
+    flaeche_anrechenbar
+FROM 
+    alw_fruchtfolgeflaechen_v1.statistik
+;

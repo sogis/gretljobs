@@ -2,7 +2,6 @@ SELECT
     geometrie, 
     bezeichnung, 
     spezialfall, 
-    bfs_nr, 
     datenstand, 
     anrechenbar, 
     area_aren, 
