@@ -1,12 +1,11 @@
-select 
-    (st_dump(geometrie)).geom as geometrie, 
+SELECT
+    (st_dump(geometrie)).geom AS geometrie, 
     bezeichnung, 
     spezialfall, 
-    9999 as bfs_nr,
-    to_char(datenstand, 'DD.MM.YYYY') as datenstand, 
+    to_char(datenstand, 'DD.MM.YYYY') AS datenstand, 
     anrechenbar, 
-    st_area(geometrie)/100 as area_aren,
-    (st_area(geometrie)/100)*anrechenbar as area_anrech
-from 
+    st_area(geometrie)/100 AS area_aren,
+    (st_area(geometrie)/100)*anrechenbar AS area_anrech
+FROM 
     alw_fruchtfolgeflaechen.fff_mit_uebersteuerung 
 ;

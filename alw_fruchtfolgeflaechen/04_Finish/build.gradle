@@ -19,13 +19,6 @@ task fff_komplett(type: SqlExecutor, dependsOn: fff_gewaesserraum) {
     sqlFiles = ['fff_komplett.sql']
 }
 
-//HIER wird das ganze noch nach Gemeinden verschnitten
-
-task fff_komplett_gemeinden(type: SqlExecutor, dependsOn: fff_komplett) {
-    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['fff_komplett_gemeinden.sql']
-}
-
 //HIER werden die Geometrien gesäubert
 
 task fff_clean(type: SqlExecutor, dependsOn: fff_komplett) {
@@ -33,10 +26,19 @@ task fff_clean(type: SqlExecutor, dependsOn: fff_komplett) {
     sqlFiles = ['fff_clean.sql']
 }
 
+//HIER wird die Statistik erstellt und in die (Edit-)DB geschrieben
+
+task fff_statistik(type: Db2Db, dependsOn: fff_clean){
+    sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('fff_statistik.sql','alw_fruchtfolgeflaechen_v1.statistik', true)
+    ];        
+}
+
 //HIER WERDEN DIE Berechneten Daten in die Edit-DB geschrieben
 
-
-task fff_to_edit_db_finish(type: Db2Db, dependsOn: fff_clean){
+task fff_to_edit_db_finish(type: Db2Db, dependsOn: fff_statistik){
     sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [

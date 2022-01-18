@@ -1,21 +1,24 @@
-drop table if exists alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_50;
+DROP TABLE IF EXISTS 
+    alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_50
+;
 
-with vereinbarungsflaechen as (
-    select 
-        ST_CollectionExtract(ST_intersection(schlechter_boden.geometrie,vereinbarungsflaechen.geometrie,0.001),3) as geometrie
-    from 
+--Die Vereinbarungsflächen aus dem MJPNatur werden mit der Maske verschnitten. Sie können zu 50% als FFF angerechnet werden. 
+WITH vereinbarungsflaechen AS (
+    SELECT 
+        ST_CollectionExtract(ST_intersection(schlechter_boden.geometrie,vereinbarungsflaechen.geometrie,0.001),3) AS geometrie
+    FROM 
         alw_fruchtfolgeflaechen.fff_maske_100_ohne_schlechten_boden schlechter_boden,
         arp_mjpnatur_pub.vereinbrngsflchen_flaechen vereinbarungsflaechen
-    where 
+    WHERE 
         st_intersects(schlechter_boden.geometrie,vereinbarungsflaechen.geometrie)
 ),
 
-bedingt_geeigneter_boden as (
-    select 
-        geometrie as geometrie
-    from 
+bedingt_geeigneter_boden AS (
+    SELECT 
+        geometrie AS geometrie
+    FROM 
         afu_isboden_pub.bodeneinheit
-    where
+    WHERE
         (
             gelform IN ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n')
             AND
@@ -23,9 +26,13 @@ bedingt_geeigneter_boden as (
             AND
             wasserhhgr IN ('a', 'b', 'c', 'f', 'g', 'k', 'i', 'h', 'm', 'l', 'o', 'q')
             AND
-            (pflngr <50 or (pflngr is null and bodpktzahl <70))
+            (
+                pflngr <50 
+                OR 
+                (pflngr IS null AND bodpktzahl <70)
+            )
         )
-        or 
+        OR 
         (
             gelform IN ('k', 'l', 'm', 'n')
             AND
@@ -33,9 +40,13 @@ bedingt_geeigneter_boden as (
             AND
             wasserhhgr IN ('a', 'b', 'c', 'f', 'g', 'k', 'i', 'h', 'm', 'l', 'o', 'q')
             AND
-            (pflngr >=50 or (pflngr is null and bodpktzahl >=70))
+            (
+                pflngr >=50 
+                OR 
+                (pflngr IS null AND bodpktzahl >=70)
+            )
         )
-        or 
+        OR 
         (
             gelform IN ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n')
             AND
@@ -44,15 +55,9 @@ bedingt_geeigneter_boden as (
             wasserhhgr IN ('p', 'u', 'w')
             AND
             (
-                (pflngr >=30
-                 AND
-                 pflngr <50
-                )
-                or 
-                (pflngr is null
-                 and 
-                 bodpktzahl >=50
-                )
+                (pflngr >=30 AND pflngr <50)
+                OR 
+                (pflngr IS null AND bodpktzahl >=50)
             )           
         )
         or 
@@ -64,63 +69,57 @@ bedingt_geeigneter_boden as (
             wasserhhgr IN ('d')
             AND
             (
-                (pflngr >=40
-                 AND
-                 pflngr <50
-                )
-                or 
-                (pflngr is null 
-                 and 
-                 bodpktzahl >=60
-                )
+                (pflngr >=40 AND pflngr <50)
+                OR 
+                (pflngr is null AND bodpktzahl >=60)
             )
         )
     
-    union all 
+    UNION ALL 
 
-    select 
-        geometrie as geometrie
-    from 
+    SELECT 
+        geometrie AS geometrie
+    FROM  
         vereinbarungsflaechen
 )
 
-select 
-    (st_dump(st_union(st_intersection(maske.geometrie,bedingt_geeigneter_boden.geometrie,0.001)))).geom as geometrie,
-    0.5 as anrechenbar, 
-    'bedingt_geeignet'as bezeichnung
-into 
+SELECT 
+    (st_dump(st_union(st_intersection(maske.geometrie,bedingt_geeigneter_boden.geometrie,0.001)))).geom AS geometrie,
+    0.5 AS anrechenbar, 
+    'bedingt_geeignet'AS bezeichnung
+INTO 
     alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_50
-from 
+FROM 
     alw_fruchtfolgeflaechen.fff_maske_where_bodenkartierung maske, 
     bedingt_geeigneter_boden 
-where 
+WHERE 
     st_intersects(maske.geometrie,bedingt_geeigneter_boden.geometrie)
 ;
 
 -- GeometryCollections werden aufgelöst. Nur die Polygons werden herausgenommen.
-update 
+UPDATE 
     alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_50
-    set 
+    SET 
     geometrie = ST_CollectionExtract(geometrie, 3)
 WHERE 
     st_geometrytype(geometrie) = 'ST_GeometryCollection'
 ;
 
-delete from 
+DELETE FROM 
     alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_50
-where 
+WHERE 
     ST_IsEmpty(geometrie)
 ;
 
-delete from 
+DELETE FROM 
     alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_50
-where 
-    st_geometrytype(geometrie) in ('ST_LineString','ST_Point')
+WHERE 
+    st_geometrytype(geometrie) IN ('ST_LineString','ST_Point')
 ;
 
 CREATE INDEX IF NOT EXISTS
     fff_mit_bodenkartierung_50_geometrie_idx 
     ON 
     alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_50
-    using GIST(geometrie)
+ USING GIST(geometrie)
 ;

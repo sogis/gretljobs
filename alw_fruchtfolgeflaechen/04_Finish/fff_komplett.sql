@@ -1,87 +1,96 @@
-drop table if exists alw_fruchtfolgeflaechen.fff_komplett;
-drop sequence if exists fff_komplett_seq;
-CREATE SEQUENCE fff_komplett_seq;
+DROP TABLE IF EXISTS 
+    alw_fruchtfolgeflaechen.fff_komplett
+;
+
+DROP SEQUENCE IF EXISTS 
+    fff_komplett_seq
+;
+
+CREATE SEQUENCE 
+    fff_komplett_seq
+;
+
 --Grenzbereinigung bei Flächen < 15m2
-with buffered_polygons as (
-    select 
-        st_buffer(geometrie,1) as geometrie, 
+WITH buffered_polygons AS (
+    SELECT 
+        st_buffer(geometrie,1) AS geometrie, 
         spezialfall, 
         bezeichnung,
         beschreibung,
         datenstand,
         anrechenbar
-    from 
+    FROM 
         alw_fruchtfolgeflaechen.fff_mit_gewaesserraum
-    where 
+    WHERE 
         st_Area(geometrie) > 15
 ), 
  
-small_polygons as (
-    select 
+small_polygons AS (
+    SELECT 
         geometrie, 
         spezialfall,
         bezeichnung,
         beschreibung,
         datenstand,
         anrechenbar
-    from 
+    FROM 
         alw_fruchtfolgeflaechen.fff_mit_gewaesserraum 
-    where 
+    WHERE 
         st_Area(geometrie) <= 15
 ),
  
-smallpolygons_attribute_big as (
-    select distinct on (small.geometrie)
+smallpolygons_attribute_big AS (
+    SELECT DISTINCT ON (small.geometrie)
         small.geometrie, 
         big.spezialfall,
         big.bezeichnung,
         big.beschreibung,
         big.datenstand,
         big.anrechenbar
-    from 
+    FROM 
         small_polygons small, 
         buffered_polygons big 
-    where 
+    WHERE 
         st_dwithin(small.geometrie,big.geometrie,0)
 ), 
 
-small_and_big_union as (
-    select 
-        geometrie as geometrie, 
+small_and_big_union AS (
+    SELECT 
+        geometrie AS geometrie, 
         spezialfall,
         bezeichnung,
         beschreibung,
         datenstand,
         anrechenbar
-    from 
+    FROM 
         alw_fruchtfolgeflaechen.fff_mit_gewaesserraum 
-    where 
+    WHERE 
         st_Area(geometrie) > 15
     
-    union all 
+    UNION ALL 
     
-    select 
-        geometrie as geometrie, 
+    SELECT 
+        geometrie AS geometrie, 
         spezialfall,
         bezeichnung,
         beschreibung,
         datenstand,
         anrechenbar
-    from 
+    FROM 
         smallpolygons_attribute_big
 ),
 
-st_union_all_polygons as (
-    select 
-        st_union(geometrie) as geometrie, 
+st_union_all_polygons AS (
+    SELECT 
+        st_union(geometrie) AS geometrie, 
         spezialfall,
         bezeichnung,
         beschreibung,
         datenstand,
         anrechenbar
-    from 
+    FROM 
         small_and_big_union
-    group by 
+    GROUP BY 
         spezialfall,
         bezeichnung,
         beschreibung,
@@ -89,23 +98,23 @@ st_union_all_polygons as (
         anrechenbar
 )
 
-select 
-    NEXTVAL('fff_komplett_seq') as id,
-    (st_dump(geometrie)).geom as geometrie,
+SELECT 
+    NEXTVAL('fff_komplett_seq') AS id,
+    (st_dump(geometrie)).geom AS geometrie,
     spezialfall,
     bezeichnung,
     beschreibung,
     datenstand,
     anrechenbar
-into 
+INTO 
     alw_fruchtfolgeflaechen.fff_komplett
-from 
+FROM 
     st_union_all_polygons
 ;
 
-delete from 
+DELETE FROM 
     alw_fruchtfolgeflaechen.fff_komplett
-where 
+WHERE 
     st_area(geometrie) <= 15
 ;
 
@@ -113,60 +122,59 @@ CREATE INDEX IF NOT EXISTS
     fff_komplett_geometrie_idx 
     ON 
     alw_fruchtfolgeflaechen.fff_komplett
-    using GIST(geometrie)
+    USING GIST(geometrie)
 ;
 
 --Hier werden freistehende Flächen kleiner als 0,25ha entfernt
 
-with geom_union as (
-    select 
-        (st_dump(st_union(st_buffer(geometrie,0.5)))).geom as geometrie
-    from 
+WITH geom_union AS (
+    SELECT 
+        (st_dump(st_union(st_buffer(geometrie,0.5)))).geom AS geometrie
+    FROM 
         alw_fruchtfolgeflaechen.fff_komplett
 ), 
 
-micro_areas as (
-    select 
+micro_areas AS (
+    SELECT 
         geometrie
-    from 
+    FROM 
         geom_union
-    where 
+    WHERE 
         st_area(geometrie) < 2500
 )
 
-delete 
-from 
+DELETE FROM 
     alw_fruchtfolgeflaechen.fff_komplett fff
-using 
+USING 
     micro_areas
-where
+WHERE
     st_contains(micro_areas.geometrie,fff.geometrie)
 ;
 
 --ALLGEMEINE BEREINIGUNGS FUNKTIONEN
 
-update 
+UPDATE 
     alw_fruchtfolgeflaechen.fff_komplett
-    set 
+    SET 
     geometrie = ST_CollectionExtract(geometrie, 3)
 WHERE 
     st_geometrytype(geometrie) = 'ST_GeometryCollection'
 ;
 
-delete from 
+DELETE FROM 
     alw_fruchtfolgeflaechen.fff_komplett
-where 
+WHERE 
     ST_IsEmpty(geometrie)
 ;
 
-delete from 
+DELETE FROM 
     alw_fruchtfolgeflaechen.fff_komplett
-where 
-    ST_geometrytype(geometrie) not in ('ST_Polygon','ST_MultiPolygon')
+WHERE 
+    ST_geometrytype(geometrie) NOT IN ('ST_Polygon','ST_MultiPolygon')
 ;
 
-update 
+UPDATE 
     alw_fruchtfolgeflaechen.fff_komplett
-    set 
+    SET 
     geometrie = ST_RemoveRepeatedPoints(geometrie) 
 ;

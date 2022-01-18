@@ -1,20 +1,19 @@
-drop table if exists alw_fruchtfolgeflaechen.fff_maske_ohne_naturreservate;
+DROP TABLE IF EXISTS 
+    alw_fruchtfolgeflaechen.fff_maske_ohne_naturreservate
+;
 
-with naturreservate as 
-( 
-    select 
-        st_union(geometrie) as geometrie
-    from 
+WITH naturreservate AS ( 
+    SELECT 
+        st_union(geometrie) AS geometrie
+    FROM 
         arp_naturreservate_pub.naturreservate_reservat
 )
 
-select 
-    st_difference(ohne_trockenwiesen.geometrie,naturreservate.geometrie) as geometrie, 
-    ohne_trockenwiesen.bfs_nr, 
-    ohne_trockenwiesen.anrechenbar
-into 
+SELECT 
+    st_difference(ohne_trockenwiesen.geometrie,naturreservate.geometrie) AS geometrie 
+INTO
     alw_fruchtfolgeflaechen.fff_maske_ohne_naturreservate 
-from 
+FROM 
     alw_fruchtfolgeflaechen.fff_maske_ohne_trockenwiesen ohne_trockenwiesen,
     naturreservate
 ;
@@ -23,5 +22,5 @@ CREATE INDEX IF NOT EXISTS
     fff_maske_ohne_naturreservate_geometrie_idx 
     ON 
     alw_fruchtfolgeflaechen.fff_maske_ohne_naturreservate
-    using GIST(geometrie)
+USING GIST(geometrie)
 ;

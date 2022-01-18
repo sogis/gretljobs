@@ -1,66 +1,68 @@
-drop table if exists alw_fruchtfolgeflaechen.fff_mit_gewaesserraum;
+DROP TABLE IF EXISTS 
+    alw_fruchtfolgeflaechen.fff_mit_gewaesserraum
+;
 
-with gewaesserraum as (
+WITH gewaesserraum AS (
     SELECT 
-        (st_dump(st_intersection(gewaesserraum.geometrie,fff.geometrie))).geom as geometrie, 
-        'Gewaesserraum' as spezialfall,
+        (st_dump(st_intersection(gewaesserraum.geometrie,fff.geometrie))).geom AS geometrie, 
+        'Gewaesserraum' AS spezialfall,
         fff.bezeichnung,
         fff.beschreibung,
         fff.datenstand, 
         fff.anrechenbar
-    from 
+    FROM 
         alw_gewaesserraum.gewaesserraum, 
         alw_fruchtfolgeflaechen.fff_mit_uebersteuerung fff
-    where 
+    WHERE 
         st_intersects(gewaesserraum.geometrie,fff.geometrie)
         AND 
-        gewaesserraum.fff_massgebend is true
+        gewaesserraum.fff_massgebend IS true
 ), 
 
-gewaesserraum_geometrie as (
-    select 
-        st_union(geometrie) as geometrie
-    from 
+gewaesserraum_geometrie AS (
+    SELECT 
+        st_union(geometrie) AS geometrie
+    FROM 
         alw_gewaesserraum.gewaesserraum
     WHERE 
-        gewaesserraum.fff_massgebend is true
+        gewaesserraum.fff_massgebend IS true
 ),
 
-union_gewaesserraum as (
-    select 
-        st_difference(fff.geometrie,gewaesserraum_geometrie.geometrie,0.001) as geometrie, 
+union_gewaesserraum AS (
+    SELECT 
+        st_difference(fff.geometrie,gewaesserraum_geometrie.geometrie,0.001) AS geometrie, 
         fff.spezialfall, 
         fff.bezeichnung, 
         fff.beschreibung, 
         fff.datenstand, 
         fff.anrechenbar
-    from 
+    FROM 
         alw_fruchtfolgeflaechen.fff_mit_uebersteuerung fff, 
         gewaesserraum_geometrie
 
-        union all 
+        UNION ALL 
 -- die "geeigneten Übersteuerungsflächen" werden wieder eingefügt.    
-    select 
-        st_snaptogrid(geometrie,0.001) as geometrie,
+    SELECT 
+        st_snaptogrid(geometrie,0.001) AS geometrie,
         spezialfall,
         bezeichnung,
         beschreibung,
         datenstand, 
         anrechenbar 
-    from 
+    FROM 
         gewaesserraum
 )
 
-select 
-    (st_dump(geometrie)).geom as geometrie,
+SELECT 
+    (st_dump(geometrie)).geom AS geometrie,
     spezialfall,
     bezeichnung,
     beschreibung,
     datenstand, 
     anrechenbar 
-into 
+INTO 
     alw_fruchtfolgeflaechen.fff_mit_gewaesserraum
-from 
+FROM 
     union_gewaesserraum
 ;
 
@@ -68,34 +70,34 @@ from
 -- Self-Intersections werden valide gemacht
 update 
     alw_fruchtfolgeflaechen.fff_mit_gewaesserraum
-    set 
+    SET 
     geometrie = ST_makevalid(geometrie)
 ;
 
 -- GeometryCollections werden aufgelöst. Nur die Polygons werden herausgenommen.
-update 
+UPDATE 
     alw_fruchtfolgeflaechen.fff_mit_gewaesserraum
-    set 
+    SET 
     geometrie = ST_CollectionExtract(geometrie, 3)
 WHERE 
     st_geometrytype(geometrie) = 'ST_GeometryCollection'
 ;
 
-delete from 
+DELETE FROM 
     alw_fruchtfolgeflaechen.fff_mit_gewaesserraum
-where 
+WHERE 
     ST_IsEmpty(geometrie)
 ;
 
-delete from 
+DELETE FROM 
     alw_fruchtfolgeflaechen.fff_mit_gewaesserraum
-where 
-    ST_geometrytype(geometrie) not in ('ST_Polygon','ST_MultiPolygon')
+WHERE 
+    ST_geometrytype(geometrie) NOT IN ('ST_Polygon','ST_MultiPolygon')
 ;
 
 CREATE INDEX IF NOT EXISTS
     fff_mit_gewaesserraum_geometrie_idx 
     ON 
     alw_fruchtfolgeflaechen.fff_mit_gewaesserraum
-    using GIST(geometrie)
+    USING GIST(geometrie)
 ;

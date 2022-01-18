@@ -1,12 +1,14 @@
-drop table if exists alw_fruchtfolgeflaechen.fff_maske_ohne_bauzonen;
+DROP TABLE IF EXISTS 
+    alw_fruchtfolgeflaechen.fff_maske_ohne_bauzonen
+;
 
-WITH bauzonen as (
-    select 
-        st_union(geometrie) as geometrie
-    from 
+WITH bauzonen AS (
+    SELECT 
+        st_union(geometrie) AS geometrie
+    FROM 
         arp_npl_pub.nutzungsplanung_grundnutzung
-    where 
-        typ_kt not IN ('N160_Gruen_und_Freihaltezone_innerhalb_Bauzone',
+    WHERE 
+        typ_kt NOT IN ('N160_Gruen_und_Freihaltezone_innerhalb_Bauzone',
                        'N210_Landwirtschaftszone',
                        'N220_Spezielle_Landwirtschaftszone',
                        'N230_Rebbauzone',
@@ -22,13 +24,11 @@ WITH bauzonen as (
                       )
 )
 
-select 
-    st_difference(ohne_schafstoffbelastete_boeden.geometrie,bauzonen.geometrie) as geometrie, 
-    ohne_schafstoffbelastete_boeden .bfs_nr, 
-    ohne_schafstoffbelastete_boeden.anrechenbar
-into 
+SELECT 
+    st_difference(ohne_schafstoffbelastete_boeden.geometrie,bauzonen.geometrie) AS geometrie 
+INTO 
     alw_fruchtfolgeflaechen.fff_maske_ohne_bauzonen 
-from 
+FROM 
     alw_fruchtfolgeflaechen.fff_maske_ohne_schadstoffbelastete_boeden ohne_schafstoffbelastete_boeden,
     bauzonen
 ;
@@ -37,5 +37,5 @@ CREATE INDEX IF NOT EXISTS
     fff_maske_ohne_bauzonen_geometrie_idx 
     ON 
     alw_fruchtfolgeflaechen.fff_maske_ohne_bauzonen
-    using GIST(geometrie)
+USING GIST(geometrie)
 ;

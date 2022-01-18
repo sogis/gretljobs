@@ -7,7 +7,6 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: "de.undercouch.download"
 apply plugin: 'ch.so.agi.gretl'
 
-//defaultTasks 'importVogelreservate'
 defaultTasks 'prepare_db', 'importAll'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
@@ -20,11 +19,6 @@ task prepare_db(type: SqlExecutor) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['prepare_db.sql']
 }
-
-//task deleteAllSchemasIfExists(type: SqlExecutor) {
-//    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-//    sqlFiles = ['deleteallschemas.sql']
-//}
 
 task makeSchemaMopublic(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -630,7 +624,7 @@ task importGewaesserraum(type: Db2Db, dependsOn: makeSchemaGewaesserraum){
 
 task makeSchemaFFF(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    models = "SO_ALW_Fruchtfolgeflaechen_Publikation_20201109"
+    models = "SO_ALW_Fruchtfolgeflaechen_Publikation_20220110"
     dbschema = "alw_fruchtfolgeflaechen"
     strokeArcs = true
     beautifyEnumDispName = true
@@ -676,7 +670,7 @@ task importHoheitsgrenzen(type: Db2Db, dependsOn: makeSchemaHoheitsgrenzen){
 
 task makeSchemaFFF_alt(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    models = "SO_ALW_Fruchtfolgeflaechen_Publikation_20201109"
+    models = "SO_ALW_Fruchtfolgeflaechen_Publikation_20220110"
     dbschema = "alw_fruchtfolgeflaechen_alt"
     strokeArcs = true
     beautifyEnumDispName = true
@@ -711,7 +705,6 @@ task importAll() {
         'importFlachmoore',
         'importHochmoore',
         'importTww2',
-        //'importVogelreservate',
         'importSchadstoffbelasteteBoeden',
         'importNutzungsplanung',
         'importNaturreservate',

@@ -1,56 +1,63 @@
-drop table if exists alw_fruchtfolgeflaechen.fff_maske_100_ohne_schlechten_boden;
+DROP TABLE IF EXISTS 
+    alw_fruchtfolgeflaechen.fff_maske_100_ohne_schlechten_boden
+;
 
-with schlechter_boden as (
-    select 
-        st_union(geometrie) as geometrie
-    from 
+WITH schlechter_boden AS (
+    SELECT 
+        st_union(geometrie) AS geometrie
+    FROM 
         afu_isboden_pub.bodeneinheit 
-    where 
-       (objnr > 0
-        AND
-        (pflngr < 50
-         OR 
-         (pflngr IS NULL AND bodpktzahl < 70))
-        )
-        or 
-       (gelform IN ('k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'))
+    WHERE (
+              objnr > 0 
+              AND (
+                  pflngr < 50
+                  OR 
+                  (
+                       pflngr IS NULL 
+                       AND 
+                       bodpktzahl < 70
+                  )
+              )
+          )
+          OR 
+          (
+              gelform IN ('k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z')
+          )
 )
 
-select 
-    st_difference(maske.geometrie,schlechter_boden.geometrie,0.001) as geometrie, 
-    maske.anrechenbar, 
-    maske.bfs_nr
-into 
+SELECT 
+    st_difference(maske.geometrie,schlechter_boden.geometrie,0.001) AS geometrie
+INTO
     alw_fruchtfolgeflaechen.fff_maske_100_ohne_schlechten_boden
-from 
+FROM 
     alw_fruchtfolgeflaechen.fff_maske_where_bodenkartierung maske,
     schlechter_boden
 ;
 
 -- GeometryCollections werden aufgelöst. Nur die Polygons werden herausgenommen.
-update 
+UPDATE 
     alw_fruchtfolgeflaechen.fff_maske_100_ohne_schlechten_boden
-    set 
+    SET 
     geometrie = ST_CollectionExtract(geometrie, 3)
 WHERE 
     st_geometrytype(geometrie) = 'ST_GeometryCollection'
 ;
 
-delete from 
+DELETE FROM 
     alw_fruchtfolgeflaechen.fff_maske_100_ohne_schlechten_boden
-where 
+WHERE 
     ST_IsEmpty(geometrie)
 ;
 
-delete from 
+DELETE FROM 
     alw_fruchtfolgeflaechen.fff_maske_100_ohne_schlechten_boden
-where 
-    st_geometrytype(geometrie) in ('ST_MultiLineString', 'ST_LineString')
+WHERE 
+    st_geometrytype(geometrie) IN ('ST_MultiLineString', 'ST_LineString')
 ;
 
 CREATE INDEX IF NOT EXISTS
     fff_maske_100_ohne_schlechten_boden_geometrie_idx 
     ON 
     alw_fruchtfolgeflaechen.fff_maske_100_ohne_schlechten_boden
-    using GIST(geometrie)
+USING GIST(geometrie)
 ;
