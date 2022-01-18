@@ -1,0 +1,17 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferAwjfWildtierkorridorePub'
+
+task transferAwjfWildtierkorridorePub(type: Db2Db) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('awjf_wildbarriere_flaechen_pub.sql', 'awjf_wildtierkorridore_pub_v1.wildbarriere_flaeche', true),
+            new TransferSet('awjf_wildbarriere_linien_pub.sql', 'awjf_wildtierkorridore_pub_v1.wildbarriere_linie', true),
+            new TransferSet('awjf_wildstrukturen_pub.sql', 'awjf_wildtierkorridore_pub_v1.wildstruktur', true),
+            new TransferSet('awjf_wildtierkorridore_pub.sql', 'awjf_wildtierkorridore_pub_v1.wildtierkorridor', true)
+    ];
+}

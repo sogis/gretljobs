@@ -1,0 +1,11 @@
+SELECT
+    geometrie,
+    nummer,
+    zustand,
+    aname,
+    bedeutung,
+    zielart,
+    objektblatt
+FROM
+    awjf_wildtierkorridore_v1.wildtierkorridor
+;
