@@ -117,7 +117,8 @@ datasets.add(new Dataset("SO_AWJF_Waldpflege_Erfassung_20210202", "awjf_waldpfle
 datasets.add(new Dataset("SO_AWJF_Waldpflege_Kontrolle_20210202", "awjf_waldpflege_kontrolle", dbEdit, "ch.so.awjf.waldpflege_kontrolle_edit")) 
 datasets.add(new Dataset("SO_AWJF_Waldwanderwege_202000804", "awjf_waldwanderwege", dbEdit, "ch.so.awjf.waldwanderwege_edit")) 
 datasets.add(new Dataset("SO_AWJF_Wegsanierungen_20170629", "awjf_wegsanierungen_v1", dbEdit, "ch.so.awjf.wegsanierungen_edit")) 
-datasets.add(new Dataset("SO_AWJF_Wildstrukturen_20210831", "awjf_wildstrukturen_v1", dbEdit, "ch.so.awjf.wildstrukturen_edit")) 
+// noch nicht produktiv
+//datasets.add(new Dataset("SO_AWJF_Wildtierkorridore_20210831", "awjf_wildtierkorridore_v1", dbEdit, "ch.so.awjf.wildtierkorridore_edit")) 
 datasets.add(new Dataset("SO_KSTA_Landwert_20210202", "ksta_landwerte", dbEdit, "ch.so.ksta.landwerte_edit")) // Identisch mit Pub-Modell und -Inhalt.
 datasets.add(new Dataset("SO_SGV_Erschliessung_ausserhalb_Bauzone_20190611", "sgv_erschliessungen", dbEdit, "ch.so.sgv.erschliessungen_edit")) 
 
