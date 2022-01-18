@@ -16,7 +16,7 @@ import java.nio.file.Files
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'uploadXtfToS3Geodata', 'uploadXtfLatestToS3Geodata', 'uploadGpkgLatestToS3Geodata'
+defaultTasks 'uploadXtfToS3Geodata', 'uploadXtfLatestToS3Geodata', 'uploadGpkgLatestToS3Geodata', 'statistik_to_pub_db'
 
 /*
 Je nach Umgebung wird der s3AgiTargetBucket definiert
@@ -44,6 +44,15 @@ task fff_to_pub_db(type: Db2Db){
 
 }
 
+task statistik_to_pub_db(type: Db2Db){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('fff_statistik.sql','alw_fruchtfolgeflaechen_pub_v1.statistik', true)
+    ];        
+
+}
+
 /*
 Einige Variablen müssen noch definiert werden. Dann wird ein Interlis XTF exportiert
 */
@@ -65,7 +74,7 @@ task exportFFF(type: Ili2pgExport, dependsOn: 'fff_to_pub_db') {
     description = "Exportiert die Fruchtfolgeflaechen in ein xtf-File."
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = "alw_fruchtfolgeflaechen_pub_v1"
-    models = "SO_ALW_Fruchtfolgeflaechen_Publikation_20201109"
+    models = "SO_ALW_Fruchtfolgeflaechen_Publikation_20220110"
     dataFile = exportFile
 }
 
@@ -117,7 +126,7 @@ task uploadXtfLatestToS3Geodata(type: S3Upload, dependsOn: 'zipXtfFileLatest') {
 Wandelt den aktuellen Export zu einem Geopackage um und lädt ihn hoch
 */
 task importDataToGeopackage(type: Ili2gpkgImport, dependsOn: 'exportFFF') {
-    models = "SO_ALW_Fruchtfolgeflaechen_Publikation_20201109"
+    models = "SO_ALW_Fruchtfolgeflaechen_Publikation_20220110"
     dataFile = file(exportFile);
     dbfile = file(exportFileGeopackage)  
     disableValidation = true //Da schon der Export validiert wurde, muss der Import nicht auch noch mal validiert werden!
