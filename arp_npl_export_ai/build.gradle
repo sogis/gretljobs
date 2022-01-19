@@ -3,8 +3,8 @@ import ch.so.agi.gretl.tasks.*
 import java.nio.file.Paths
 import de.undercouch.gradle.tasks.download.Download
 
-defaultTasks 'uploadMgdmLandUsePlans', 'uploadMgdmNoiseSensitivityLevels', 'uploadMgdmWaldabstandslinien'
-//defaultTasks 'uploadMgdmNoiseSensitivityLevels'
+//defaultTasks 'uploadMgdmLandUsePlans', 'uploadMgdmNoiseSensitivityLevels', 'uploadMgdmWaldabstandslinien'
+defaultTasks 'uploadMgdmLandUsePlans', 'uploadMgdmWaldabstandslinien'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 //File tmpFolder = new File("/tmp/gretl-share")
@@ -91,6 +91,10 @@ task uploadMgdmLandUsePlans(dependsOn: 'zipMgdmLandUsePlans') {
 
 // Lärm
 
+// Validieren nicht mehr. Kann kaum mit PostGIS-Funktionen gut gelöst werden. Daten müssen
+// manuell korrigiert werden.
+// -> Nach Korrektur muss bei defaultTasks der Upload-Task wieder hinzugefügt werden.
+
 task transferNoiseSensitivityLevels(type: SqlExecutor) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['truncate_all_arp_laermempfindlichkeit_mgdm_tables.sql', 'arp_laermempfindlichkeitsstufen_mgdm.sql']
@@ -108,7 +112,7 @@ task validateMgdmNoiseSensitivityLevels(type: IliValidator, dependsOn: 'exportMg
     dataFiles = [file(mgdmSensitivityLevelsXtfFileName)]
     logFile = "ilivalidator_noisesensitivitylevels.log"
     configFile = "config.toml"
-    failOnError = false
+    failOnError = true
 }
 
 task zipMgdmNoiseSensitivityLevels(type: Zip, dependsOn: 'validateMgdmNoiseSensitivityLevels'){
