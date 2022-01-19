@@ -108,7 +108,7 @@ task validateMgdmNoiseSensitivityLevels(type: IliValidator, dependsOn: 'exportMg
     dataFiles = [file(mgdmSensitivityLevelsXtfFileName)]
     logFile = "ilivalidator_noisesensitivitylevels.log"
     configFile = "config.toml"
-    failOnError = true
+    failOnError = false
 }
 
 task zipMgdmNoiseSensitivityLevels(type: Zip, dependsOn: 'validateMgdmNoiseSensitivityLevels'){
