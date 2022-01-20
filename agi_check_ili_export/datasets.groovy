@@ -78,7 +78,7 @@ datasets.add(new Dataset("SO_AGI_Inventar_Hoheitsgrenzen_20191129", "agi_inventa
 //datasets.add(new Dataset("SIA405_Abwasser_WI", "agi_leitungskataster_abw", dbEdit, "ch.so.agi.leitungskataster_abwasser_edit")) // Geht glaub wegen ili1 nicht. Ich teile ili2pg mit, dass ich ili2 exportiere.
 //datasets.add(new Dataset("SIA405_mit_Erweiterungen", "agi_leitungskataster_ele", dbEdit, "ch.so.agi.leitungskataster_elektro_edit")) // Kann wegen NaN-Coords nicht exportiert werden. ili2pg ist gefixed. NaN werden beim Umbau entfernt.
 //datasets.add(new Dataset("SIA405_Wasser_WI", "agi_leitungskataster_was", dbEdit, "ch.so.agi.leitungskataster_wasser_edit")) // Geht glaub wegen ili1 nicht. Ich teile ili2pg mit, dass ich ili2 exportiere.
-datasets.add(new Dataset("SO_ALW_Fruchtfolgeflaechen_Publikation_20201109", "alw_fruchtfolgeflaechen_v1", dbEdit, "ch.so.alw.fruchtfolgeflaechen_edit"))
+datasets.add(new Dataset("SO_ALW_Fruchtfolgeflaechen_Publikation_20220110", "alw_fruchtfolgeflaechen_v1", dbEdit, "ch.so.alw.fruchtfolgeflaechen_edit"))
 datasets.add(new Dataset("SO_ALW_GELAN_Hilfsgeometrien_20210426", "alw_gelan_hilfsgeometrien", dbEdit, "ch.so.alw.gelan_hilfsgeometrien_edit"))
 datasets.add(new Dataset("SO_ALW_Gewaesserraum_20210531", "alw_gewaesserraum_v1", dbEdit, "ch.so.alw_gewaesserraum_edit"))
 datasets.add(new Dataset("SO_ALW_Strukturverbesserungen_20190912", "alw_strukturverbesserungen", dbEdit, "ch.so.alw.strukturverbesserungen_edit"))
@@ -161,7 +161,7 @@ datasets.add(new Dataset("SO_AGI_MOpublic_20190424", "agi_mopublic_pub", dbPub, 
 datasets.add(new Dataset("SO_AGI_PLZ_Ortschaften_Publikation_20180406", "agi_plz_ortschaften_pub", dbPub, "ch.so.agi.plz_ortschaften")) 
 datasets.add(new Dataset("SO_AGI_swissBOUNDARIES3D_Publikation_20171026", "agi_swissboundaries3d_pub", dbPub, "ch.so.agi.swissboundaries3d")) 
 // Fruchtfolgeflächen werden aus der Pub explizit im Pub-Gretljob exportiert und hochgeladen.
-//datasets.add(new Dataset("SO_ALW_Fruchtfolgeflaechen_Publikation_20201109", "alw_fruchtfolgeflaechen_pub_v1", dbPub, "ch.so.alw.fruchtfolgeflaechen")) 
+//datasets.add(new Dataset("SO_ALW_Fruchtfolgeflaechen_Publikation_20220110", "alw_fruchtfolgeflaechen_pub_v1", dbPub, "ch.so.alw.fruchtfolgeflaechen")) 
 datasets.add(new Dataset("SO_ALW_Gewaesserraum_20210531", "alw_gewaesserraum_pub_v1", dbPub, "ch.so.alw.gewaesserraum")) 
 datasets.add(new Dataset("SO_ALW_Strukturverbesserungen_Publikation_20190905", "alw_strukturverbesserungen_pub", dbPub, "ch.so.alw.strukturverbesserungen")) 
 datasets.add(new Dataset("SO_ALW_Tiergesundheit_Massnahmen_20210426", "alw_tiergesundheit_massnahmen_pub", dbPub, "ch.so.alw.tiergesundheit_massnahmen")) 
