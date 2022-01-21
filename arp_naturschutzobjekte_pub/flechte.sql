@@ -1,0 +1,14 @@
+SELECT
+    geometrie,
+    artcode,
+    artname,
+    rote_liste_status,
+    schutzstatus_nhv,
+    kanton,
+    schutzprioritaet,
+    funddatum,
+    substrat,
+    habitat
+FROM
+    arp_naturschutzobjekte_v1.flechte
+;
