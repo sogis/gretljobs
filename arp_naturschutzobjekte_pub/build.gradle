@@ -1,0 +1,19 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferArpNaturschutzObjektePub'
+
+task transferArpNaturschutzObjektePub(type: Db2Db){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('karch_objekt.sql', 'arp_naturschutzobjekte_pub_v1.karch_objekt', true),
+            new TransferSet('amphibienstandort.sql', 'arp_naturschutzobjekte_pub_v1.amphibienstandort', true),
+            new TransferSet('blaue_flaechen_grenchen.sql', 'arp_naturschutzobjekte_pub_v1.blaue_flaechen_grenchen', true),
+            new TransferSet('flachmoor.sql', 'arp_naturschutzobjekte_pub_v1.flachmoor', true),
+            new TransferSet('flechte.sql', 'arp_naturschutzobjekte_pub_v1.flechte', true),
+            new TransferSet('moos.sql', 'arp_naturschutzobjekte_pub_v1.moos', true)
+    ];
+}

@@ -1,0 +1,32 @@
+SELECT
+    geometrie,
+    genus,
+    species,
+    autor,
+    infra,
+    iautor,
+    cf_bestimmung,
+    taxon_nummer,
+    berner_konvention,
+    nhv_verordnung,
+    iucn_status_rote_liste,
+    iucn_kriterien_rote_liste,
+    status_rote_liste_europa,
+    status_rote_liste_welt,
+    belegnummer,
+    sammler_name_herbar,
+    sammler_nummer,
+    sammler_name,
+    sammeldatum,
+    herbarium,
+    standort,
+    substrat,
+    artenschutzprojekt_nummer,
+    kanton,
+    flaechennummer,
+    abweichung,
+    naturraum_nummer,
+    standard_beleg
+FROM
+    arp_naturschutzobjekte_v1.moos
+;
