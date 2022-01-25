@@ -24,7 +24,6 @@ task transferAwjfEdit(type: Db2Db, dependsOn:'transferAwjfSogis') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-    transferSets = [
             new TransferSet('awjf_waldstandorte_pub.sql', 'awjf_waldstandorte_pub_v1.waldstandort', true),
             new TransferSet('awjf_wald_oberhoehenbonitaet_pub.sql', 'awjf_wald_oberhoehenbonitaet_pub_v1.oberhoehenbonitaet', true)
     ];
