@@ -5,24 +5,31 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'refreshSolr'
 
-task transferAwjf(type: Db2Db){
+task transferAwjfSogis(type: Db2Db) {
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('awjf_wald_pub_wald_uebersicht.sql', 'awjf_wald_pub.wald_uebersicht', true),
             new TransferSet('awjf_wald_pub_wap_bst.sql', 'awjf_wald_pub.wap_bst', true),
             new TransferSet('awjf_wald_pub_sw_funktion_ar.sql', 'awjf_wald_pub.sw_funktion_ar', true),
-            new TransferSet('awjf_wald_pub_waldge.sql', 'awjf_wald_pub.waldge', true),
             new TransferSet('awjf_wald_pub_wald_25000.sql', 'awjf_wald_pub.wald_25000', true),
-            new TransferSet('awjf_wald_pub_schutzwald_behandelte_flaeche.sql',
-                    'awjf_wald_pub.schutzwald_behandelte_flaeche', true),
-            new TransferSet('awjf_wald_pub_schutzwald_massnahmenplanung.sql',
-                    'awjf_wald_pub.schutzwald_massnahmenplanung', true),
+            new TransferSet('awjf_wald_pub_schutzwald_behandelte_flaeche.sql', 'awjf_wald_pub.schutzwald_behandelte_flaeche', true),
+            new TransferSet('awjf_wald_pub_schutzwald_massnahmenplanung.sql', 'awjf_wald_pub.schutzwald_massnahmenplanung', true),
             new TransferSet('awjf_wald_pub_sw_pdf.sql', 'awjf_wald_pub.sw_pdf', true),
             new TransferSet('awjf_wald_pub_wap_bst_bkt.sql', 'awjf_wald_pub.wap_bst_bkt', true)
     ];        
 }
 
-task refreshSolr(type:Exec, dependsOn:'transferAwjf') {
+task transferAwjfEdit(type: Db2Db, dependsOn:'transferAwjfSogis) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+    transferSets = [
+            new TransferSet('awjf_waldstandorte_pub.sql', 'awjf_waldstandorte_pub_v1.waldstandort', true),
+            new TransferSet('awjf_wald_oberhoehenbonitaet_pub.sql', 'awjf_wald_oberhoehenbonitaet_pub_v1.oberhoehenbonitaet', true)
+    ];
+}
+
+task refreshSolr(type:Exec, dependsOn:'transferAwjfEdit') {
 	commandLine 'curl', '-i', '--max-time', '20', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.schutzwaldausscheidung,ch.so.awjf.schutzwald_hauptgefahrenpotentiale,ch.so.awjf.bestandeskarte_wald_flaechen,ch.so.awjf.waldplan.waldeigentum,ch.so.awjf.waldplan.waldfunktion,ch.so.awjf.waldplan.waldplantyp'
 }
