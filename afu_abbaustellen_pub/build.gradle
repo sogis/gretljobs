@@ -18,25 +18,30 @@ task downloadAppXtf(type: Download){
     overwrite true
 }
 
-task replaceAppData(type: Ili2pgReplace, dependsOn: downloadAppXtf){
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = schemaNameEdit
-    disableValidation = true
-    dataFile = appXtfPath
-    dataset = "app"
-}
-
-task exportGisXtf(type: Ili2pgExport, dependsOn: replaceAppData){
+task exportGisXtf(type: Ili2pgExport, dependsOn: downloadAppXtf){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = schemaNameEdit
     disableValidation = true
     dataFile = gisXtfPath
-    dataset = "geo"
+    topics = "GIS"
 }
 
 task validateJoined(type: IliValidator, dependsOn: exportGisXtf){
     dataFiles = [gisXtfPath, appXtfPath]
     allObjectsAccessible = true
+}
+
+task deleteAppData(type: SqlExecutor, dependsOn: validateJoined){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [dbSchema:schemaNameEdit]
+    sqlFiles = ['deleteAppData.sql']
+}
+
+task importAppData(type: Ili2pgImport, dependsOn: deleteAppData){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = schemaNameEdit
+    disableValidation = true
+    dataFile = appXtfPath
 }
 
 task writeToPub(type: Db2Db, dependsOn: validateJoined){ 
