@@ -18,12 +18,18 @@ task downloadAppXtf(type: Download){
     overwrite true
 }
 
-task exportGisXtf(type: Ili2pgExport, dependsOn: downloadAppXtf){
+task deleteAppData(type: SqlExecutor, dependsOn: downloadAppXtf){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [dbSchema:schemaNameEdit]
+    sqlFiles = ['deleteAppData.sql']
+}
+
+task exportGisXtf(type: Ili2pgExport, dependsOn: deleteAppData){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = schemaNameEdit
     disableValidation = true
     dataFile = gisXtfPath
-    topics = "GIS"
+    models = 'SO_AFU_ABBAUSTELLEN_20210630'
 }
 
 task validateJoined(type: IliValidator, dependsOn: exportGisXtf){
@@ -31,20 +37,14 @@ task validateJoined(type: IliValidator, dependsOn: exportGisXtf){
     allObjectsAccessible = true
 }
 
-task deleteAppData(type: SqlExecutor, dependsOn: validateJoined){
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlParameters = [dbSchema:schemaNameEdit]
-    sqlFiles = ['deleteAppData.sql']
-}
-
-task importAppData(type: Ili2pgImport, dependsOn: deleteAppData){
+task importAppData(type: Ili2pgImport, dependsOn: validateJoined){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = schemaNameEdit
     disableValidation = true
     dataFile = appXtfPath
 }
 
-task writeToPub(type: Db2Db, dependsOn: validateJoined){ 
+task writeToPub(type: Db2Db, dependsOn: importAppData){ 
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
