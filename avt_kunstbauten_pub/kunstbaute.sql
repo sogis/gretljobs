@@ -24,7 +24,7 @@ SELECT
   apoint, 
   aname, 
   kubaid, 
-  bezugspunkt, 
+  REPLACE(bezugspunkt,'-','/') AS bezugspunkt, 
   eigentuemer, 
   gemeinde, 
   typ, 
