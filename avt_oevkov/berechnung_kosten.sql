@@ -88,7 +88,7 @@ SET
     kosten_ueber_schwellenwert = 0
 ;
 
---  Gewichtete Haltestellenabfahrten rechnen
+--  Gewichtete Haltestellenabfahrten schreiben
 UPDATE
      avt_oevkov_${currentYear}.auswertung_gemeinde_einwohner_kosten AS kosten
 SET
@@ -96,60 +96,12 @@ SET
 FROM
     (
     SELECT
-         gemeindename,
-         sum(abfahrten_gewichtet) AS abfahrten_gewichtet
+        gemeindename,
+        sum(abfahrten_gewichtet) AS abfahrten_gewichtet
     FROM
-        (
-        SELECT
-             anrechnung.gemeindename, 
-            CASE
--- wenn Korrekturen gemacht wurden
-                 WHEN  korrektur.abfahrten_korrigiert IS NOT NULL
-                    THEN
-                         sum((auswertung.anzahl_abfahrten_linie  +  korrektur.abfahrten_korrigiert)  * korrektur.gewichtung  * anrechnung  /  100)::numeric(5,1)
-                     ELSE
-                         sum((auswertung.anzahl_abfahrten_linie)  * auswertung.gewichtung  * anrechnung  /  100)::numeric(5,1)
-              END AS abfahrten_gewichtet,
-              korrektur.abfahrten_korrigiert
-        FROM
-            avt_oevkov_${currentYear}.sachdaten_haltestelle_anrechnung AS anrechnung
-            LEFT JOIN avt_oevkov_${currentYear}.auswertung_auswertung_gtfs AS auswertung
-                ON auswertung.haltestellenname = anrechnung.haltestellenname
-            LEFT JOIN avt_oevkov_${currentYear}.auswertung_abfahrten_korrigiert AS korrektur
-                ON (korrektur.haltestellenname = anrechnung.haltestellenname
-                    OR korrektur.haltestellenname = '--- Alle')
-               AND
-                   korrektur.linie = auswertung.linie
-        GROUP BY
-            korrektur.haltestellenname,
-            anrechnung.gemeindename,
-            korrektur.abfahrten_korrigiert 
-
-        UNION ALL
-
-        SELECT
-            anrechnung.gemeindename, 
-            sum((abfahrten_korrigiert)  * gewichtung  * anrechnung  /  100)::numeric(5,1) AS  abfahrten_gewichtet,
-            korrektur.abfahrten_korrigiert
-        FROM
-            avt_oevkov_${currentYear}.auswertung_abfahrten_korrigiert AS korrektur
-            LEFT JOIN    avt_oevkov_${currentYear}.sachdaten_haltestelle_anrechnung AS anrechnung
-                ON  korrektur.haltestellenname = anrechnung.haltestellenname
-        WHERE
-            korrektur.haltestellenname||linie NOT IN (
-                SELECT
-                    haltestellenname||linie
-                FROM
-                    avt_oevkov_${currentYear}.auswertung_auswertung_gtfs
-            )
-        AND
-            abfahrten_korrigiert <> 0
-        GROUP BY
-            korrektur.abfahrten_korrigiert,
-            anrechnung.gemeindename 
-        ) AS abfahrten
-        GROUP BY
-            gemeindename
+         avt_oevkov_${currentYear}.auswertung_gesamtauswertung AS auswertung
+    GROUP BY
+        gemeindename
     ) AS gewichtete_abfahrten_gemeinde
    WHERE
         kosten.gemeindename = gewichtete_abfahrten_gemeinde.gemeindename
