@@ -39,7 +39,10 @@ mutationen AS
         mutation.nbident,
         mutation.beschrieb,
         mutation.dateinameplan,
-        TO_DATE(mutation.endetechnbereit, 'YYYY-MM-DD') AS endetechnbereit,
+        CASE 
+            WHEN char_length(mutation.endetechnbereit) < 10 THEN TO_DATE(mutation.endetechnbereit, 'YYYYMMDD')
+            ELSE TO_DATE(mutation.endetechnbereit, 'YYYY-MM-DD')
+        END AS endetechnbereit,
         mutation.istprojektmutation,
         ST_Collect(ST_MakeValid(ST_CurveToLine(projliegenschaft.geometrie, 6, 0, 1))) AS geometrie    
     FROM 
