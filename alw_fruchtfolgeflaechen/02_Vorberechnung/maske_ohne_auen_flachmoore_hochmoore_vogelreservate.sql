@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS
 
 WITH auen_flachmoore_hochmoore_vogelreservate AS (
     SELECT 
-        st_union(geometrie) AS geometrie 
+        ST_union(geometrie) AS geometrie 
     FROM (
              (
                   SELECT 
@@ -12,7 +12,7 @@ WITH auen_flachmoore_hochmoore_vogelreservate AS (
                   FROM 
                       auen.auen_standorte
                   WHERE 
-                      st_intersects(geometrie,(SELECT geometrie FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze)) --Es interessiren nur die Standorte innerhalb der kantonalen Grenzen
+                      ST_intersects(geometrie,(SELECT geometrie FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze)) --Es interessiren nur die Standorte innerhalb der kantonalen Grenzen
              )
              UNION ALL 
              (
@@ -21,7 +21,7 @@ WITH auen_flachmoore_hochmoore_vogelreservate AS (
                   FROM 
                       flachmoore.flachmoore_standorte
                   WHERE 
-                      st_intersects(geometrie,(SELECT geometrie FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze)) --Es interessiren nur die Standorte innerhalb der kantonalen Grenzen
+                      ST_intersects(geometrie,(SELECT geometrie FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze)) --Es interessiren nur die Standorte innerhalb der kantonalen Grenzen
              )
              UNION ALL 
              (
@@ -30,13 +30,13 @@ WITH auen_flachmoore_hochmoore_vogelreservate AS (
                   FROM 
                       hochmoore.hochmoore_standorte
                   WHERE 
-                      st_intersects(geometrie,(SELECT geometrie FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze)) --Es interessiren nur die Standorte innerhalb der kantonalen Grenzen
+                      ST_intersects(geometrie,(SELECT geometrie FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze)) --Es interessiren nur die Standorte innerhalb der kantonalen Grenzen
              )
          ) standorte
 )
 
 SELECT 
-    st_difference(ohne_klimaeignung.geometrie,auen_flachmoore_hochmoore_vogelreservate.geometrie) AS geometrie 
+    ST_difference(ohne_klimaeignung.geometrie,auen_flachmoore_hochmoore_vogelreservate.geometrie) AS geometrie 
 INTO 
     alw_fruchtfolgeflaechen.fff_maske_ohne_auen_flachmoore_hochmoore_vogelreservate 
 FROM 

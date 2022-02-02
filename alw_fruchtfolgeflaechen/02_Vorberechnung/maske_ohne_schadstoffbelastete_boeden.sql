@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS
 ;
 
 WITH schadstoffbelastete_boeden AS (
-    SELECT st_union(geometrie) AS geometrie 
+    SELECT ST_union(geometrie) AS geometrie 
     FROM (
              (
                  SELECT 
@@ -66,7 +66,7 @@ WITH schadstoffbelastete_boeden AS (
 )
 
 SELECT 
-    st_difference(ohne_afhv.geometrie,schadstoffbelastete_boeden.geometrie,0.001) AS geometrie
+    ST_difference(ohne_afhv.geometrie,schadstoffbelastete_boeden.geometrie,0.001) AS geometrie
 INTO 
     alw_fruchtfolgeflaechen.fff_maske_ohne_schadstoffbelastete_boeden 
 FROM 
@@ -80,7 +80,7 @@ UPDATE
     SET 
     geometrie = ST_CollectionExtract(geometrie, 3)
 WHERE 
-    st_geometrytype(geometrie) = 'ST_GeometryCollection'
+    ST_geometrytype(geometrie) = 'ST_GeometryCollection'
 ;
 
 DELETE FROM 

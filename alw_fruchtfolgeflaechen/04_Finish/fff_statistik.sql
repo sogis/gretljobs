@@ -3,13 +3,13 @@ SELECT
     gemeinden.bfs_nr AS bfs_nummer, 
     fff.anrechenbar,
     fff.spezialfall,
-	round(sum(st_area(st_intersection(fff.geometrie, gemeinden.geometrie)))::NUMERIC, 2)/ 100 AS flaeche,
-	round(sum(st_area(st_intersection(fff.geometrie, gemeinden.geometrie)))::NUMERIC, 2)/ 100 * anrechenbar AS flaeche_anrechenbar
+	round(sum(STarea(STintersection(fff.geometrie, gemeinden.geometrie)))::NUMERIC, 2)/ 100 AS flaeche,
+	round(sum(STarea(STintersection(fff.geometrie, gemeinden.geometrie)))::NUMERIC, 2)/ 100 * anrechenbar AS flaeche_anrechenbar
 FROM
 	alw_fruchtfolgeflaechen.fruchtfolgeflaeche_clean fff,
 	agi_mopublic_pub.mopublic_gemeindegrenze gemeinden
 WHERE
-	st_intersects(fff.geometrie,
+	STintersects(fff.geometrie,
 	gemeinden.geometrie)
 GROUP BY
 	fff.spezialfall,

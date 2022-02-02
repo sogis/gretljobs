@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS
 
 WITH grundwasserschutz AS ( 
     SELECT
-        st_union(apolygon) AS geometrie
+        ST_union(apolygon) AS geometrie
     FROM 
         afu_gewaesserschutz_pub.gewaesserschutz_zone_areal
     WHERE 
@@ -12,7 +12,7 @@ WITH grundwasserschutz AS (
 )
 
 SELECT 
-    st_makevalid(st_snaptogrid(st_difference(ohne_naturreservate.geometrie,grundwasserschutz.geometrie),0.001)) AS geometrie 
+    ST_makevalid(ST_snaptogrid(ST_difference(ohne_naturreservate.geometrie,grundwasserschutz.geometrie),0.001)) AS geometrie 
 INTO
     alw_fruchtfolgeflaechen.fff_maske_fertig 
 FROM 
@@ -33,7 +33,7 @@ UPDATE
     SET 
     geometrie = ST_CollectionExtract(geometrie, 3)
 WHERE 
-    st_geometrytype(geometrie) = 'ST_GeometryCollection'
+    ST_geometrytype(geometrie) = 'ST_GeometryCollection'
 ;
 
 DELETE FROM 
@@ -45,5 +45,5 @@ WHERE
 DELETE FROM 
     alw_fruchtfolgeflaechen.fff_maske_fertig
 WHERE
-    st_geometrytype(geometrie) NOT IN ('ST_Polygon', 'ST_MultiPolygon')
+    ST_geometrytype(geometrie) NOT IN ('ST_Polygon', 'ST_MultiPolygon')
 ;

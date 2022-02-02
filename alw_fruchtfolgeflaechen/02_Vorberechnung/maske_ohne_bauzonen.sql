@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS
 
 WITH bauzonen AS (
     SELECT 
-        st_union(geometrie) AS geometrie
+        ST_union(geometrie) AS geometrie
     FROM 
         arp_npl_pub.nutzungsplanung_grundnutzung
     WHERE 
@@ -25,7 +25,7 @@ WITH bauzonen AS (
 )
 
 SELECT 
-    st_difference(ohne_schafstoffbelastete_boeden.geometrie,bauzonen.geometrie) AS geometrie 
+    ST_difference(ohne_schafstoffbelastete_boeden.geometrie,bauzonen.geometrie) AS geometrie 
 INTO 
     alw_fruchtfolgeflaechen.fff_maske_ohne_bauzonen 
 FROM 

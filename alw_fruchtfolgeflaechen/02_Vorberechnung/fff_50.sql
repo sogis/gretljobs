@@ -10,7 +10,7 @@ WITH vereinbarungsflaechen AS (
         alw_fruchtfolgeflaechen.fff_maske_100_ohne_schlechten_boden schlechter_boden,
         arp_mjpnatur_pub.vereinbrngsflchen_flaechen vereinbarungsflaechen
     WHERE 
-        st_intersects(schlechter_boden.geometrie,vereinbarungsflaechen.geometrie)
+        ST_intersects(schlechter_boden.geometrie,vereinbarungsflaechen.geometrie)
 ),
 
 bedingt_geeigneter_boden AS (
@@ -84,7 +84,7 @@ bedingt_geeigneter_boden AS (
 )
 
 SELECT 
-    (st_dump(st_union(st_intersection(maske.geometrie,bedingt_geeigneter_boden.geometrie,0.001)))).geom AS geometrie,
+    (ST_dump(ST_union(ST_intersection(maske.geometrie,bedingt_geeigneter_boden.geometrie,0.001)))).geom AS geometrie,
     0.5 AS anrechenbar, 
     'bedingt_geeignet'AS bezeichnung
 INTO 
@@ -93,7 +93,7 @@ FROM
     alw_fruchtfolgeflaechen.fff_maske_where_bodenkartierung maske, 
     bedingt_geeigneter_boden 
 WHERE 
-    st_intersects(maske.geometrie,bedingt_geeigneter_boden.geometrie)
+    ST_intersects(maske.geometrie,bedingt_geeigneter_boden.geometrie)
 ;
 
 -- GeometryCollections werden aufgelöst. Nur die Polygons werden herausgenommen.
@@ -102,7 +102,7 @@ UPDATE
     SET 
     geometrie = ST_CollectionExtract(geometrie, 3)
 WHERE 
-    st_geometrytype(geometrie) = 'ST_GeometryCollection'
+    ST_geometrytype(geometrie) = 'ST_GeometryCollection'
 ;
 
 DELETE FROM 
@@ -114,7 +114,7 @@ WHERE
 DELETE FROM 
     alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_50
 WHERE 
-    st_geometrytype(geometrie) IN ('ST_LineString','ST_Point')
+    ST_geometrytype(geometrie) IN ('ST_LineString','ST_Point')
 ;
 
 CREATE INDEX IF NOT EXISTS

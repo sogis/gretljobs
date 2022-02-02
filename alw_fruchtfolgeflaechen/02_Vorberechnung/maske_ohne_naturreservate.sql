@@ -4,13 +4,13 @@ DROP TABLE IF EXISTS
 
 WITH naturreservate AS ( 
     SELECT 
-        st_union(geometrie) AS geometrie
+        ST_union(geometrie) AS geometrie
     FROM 
         arp_naturreservate_pub.naturreservate_reservat
 )
 
 SELECT 
-    st_difference(ohne_trockenwiesen.geometrie,naturreservate.geometrie) AS geometrie 
+    ST_difference(ohne_trockenwiesen.geometrie,naturreservate.geometrie) AS geometrie 
 INTO
     alw_fruchtfolgeflaechen.fff_maske_ohne_naturreservate 
 FROM 

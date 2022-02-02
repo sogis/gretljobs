@@ -1,7 +1,7 @@
 WITH humusiert AS (
 
     SELECT 
-        st_union(geometrie) AS geometrie
+        ST_union(geometrie) AS geometrie
     FROM 
         agi_mopublic_pub.mopublic_bodenbedeckung
     WHERE 
@@ -12,7 +12,7 @@ WITH humusiert AS (
 
 bestockt AS (
     SELECT
-        st_union(st_buffer(geometrie,6)) AS geometrie
+        ST_union(ST_buffer(geometrie,6)) AS geometrie
     FROM 
         agi_mopublic_pub.mopublic_bodenbedeckung
     WHERE 
@@ -23,7 +23,7 @@ bestockt AS (
 
 gebaeude AS (
     SELECT 
-        st_union(st_buffer(geometrie,3)) AS geometrie
+        ST_union(ST_buffer(geometrie,3)) AS geometrie
     FROM 
         agi_mopublic_pub.mopublic_bodenbedeckung
     WHERE 
@@ -34,7 +34,7 @@ gebaeude AS (
 
 gewaesser AS (
     SELECT 
-        st_union(st_buffer(geometrie,6)) AS geometrie
+        ST_union(ST_buffer(geometrie,6)) AS geometrie
     FROM 
         agi_mopublic_pub.mopublic_bodenbedeckung
     WHERE 
@@ -45,7 +45,7 @@ gewaesser AS (
 
 strassen AS (
     SELECT 
-        st_union(st_buffer(geometrie,1)) AS geometrie
+        ST_union(ST_buffer(geometrie,1)) AS geometrie
     FROM 
         agi_mopublic_pub.mopublic_bodenbedeckung
     WHERE 
@@ -59,7 +59,7 @@ nicht_bestockt AS (
     SELECT DISTINCT 
         CASE 
             WHEN bestockt.geometrie IS NOT NULL 
-            THEN st_difference(humusiert.geometrie,bestockt.geometrie) 
+            THEN ST_difference(humusiert.geometrie,bestockt.geometrie) 
             ELSE humusiert.geometrie 
         END AS geometrie
     FROM 
@@ -72,7 +72,7 @@ nicht_bestockt AS (
     SELECT DISTINCT 
         CASE 
             WHEN gebaeude.geometrie IS NOT NULL 
-            THEN st_difference(nicht_bestockt.geometrie,gebaeude.geometrie) 
+            THEN ST_difference(nicht_bestockt.geometrie,gebaeude.geometrie) 
             ELSE nicht_bestockt.geometrie 
         END AS geometrie
     FROM 
@@ -85,7 +85,7 @@ nicht_bestockt AS (
     SELECT DISTINCT 
         CASE 
             WHEN gewaesser.geometrie IS NOT NULL 
-            THEN st_difference(nicht_gebaeude.geometrie,gewaesser.geometrie) 
+            THEN ST_difference(nicht_gebaeude.geometrie,gewaesser.geometrie) 
             ELSE nicht_gebaeude.geometrie 
         END AS geometrie
     FROM  
@@ -98,7 +98,7 @@ nicht_bestockt AS (
     SELECT DISTINCT 
         CASE 
             WHEN strassen.geometrie IS NOT NULL
-            THEN st_difference(nicht_gewaesser.geometrie,strassen.geometrie) 
+            THEN ST_difference(nicht_gewaesser.geometrie,strassen.geometrie) 
             ELSE nicht_gewaesser.geometrie 
         END AS geometrie
     FROM 
@@ -109,7 +109,7 @@ nicht_bestockt AS (
 INSERT INTO alw_fruchtfolgeflaechen.fff_maske_bodenbedeckung (geometrie)
     (
      SELECT 
-         (st_dump(nicht_strassen.geometrie)).geom AS geometrie 
+         (ST_dump(nicht_strassen.geometrie)).geom AS geometrie 
      FROM 
          nicht_strassen
     )
