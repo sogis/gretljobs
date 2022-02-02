@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS
 
 WITH altlasten AS (
     SELECT 
-        st_union(geometrie) AS geometrie
+        ST_union(geometrie) AS geometrie
     FROM 
         afu_altlasten_pub.belastete_standorte_altlast4web 
     WHERE 
@@ -12,7 +12,7 @@ WITH altlasten AS (
 )
 
 SELECT 
-    st_difference(fff_bodenbedeckung.geometrie,altlasten.geometrie) AS geometrie
+    ST_difference(fff_bodenbedeckung.geometrie,altlasten.geometrie) AS geometrie
 INTO 
     alw_fruchtfolgeflaechen.fff_maske_ohne_altlasten 
 FROM 

@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS
 ;
 
 SELECT 
-    st_intersection(maske.geometrie,alte_fff.geometrie,0.001) AS geometrie, 
+    ST_intersection(maske.geometrie,alte_fff.geometrie,0.001) AS geometrie, 
     alte_fff.anrechenbar,
     alte_fff.spezialfall,
     alte_fff.bezeichnung, 
@@ -14,7 +14,7 @@ FROM
     alw_fruchtfolgeflaechen.fff_maske_where_not_bodenkartierung maske, 
     alw_fruchtfolgeflaechen_alt.inventarflaechen_fruchtfolgeflaeche alte_fff
 WHERE 
-    st_intersects(maske.geometrie,alte_fff.geometrie)
+    ST_intersects(maske.geometrie,alte_fff.geometrie)
 ;
 
 -- GeometryCollections werden aufgelöst. Nur die Polygons werden herausgenommen.
@@ -23,7 +23,7 @@ UPDATE
     SET 
     geometrie = ST_CollectionExtract(geometrie, 3)
 WHERE 
-    st_geometrytype(geometrie) = 'ST_GeometryCollection'
+    ST_geometrytype(geometrie) = 'ST_GeometryCollection'
 ;
 
 DELETE FROM 
@@ -35,7 +35,7 @@ WHERE
 DELETE FROM 
     alw_fruchtfolgeflaechen.fff_ohne_bodenkartierung
 WHERE 
-    st_geometrytype(geometrie) IN ('ST_MultiLineString','ST_LineString','ST_Point')
+    ST_geometrytype(geometrie) IN ('ST_MultiLineString','ST_LineString','ST_Point')
 ;
 
 CREATE INDEX IF NOT EXISTS

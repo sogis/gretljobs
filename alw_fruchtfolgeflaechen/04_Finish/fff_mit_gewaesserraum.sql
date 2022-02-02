@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS
 
 WITH gewaesserraum AS (
     SELECT 
-        (st_dump(st_intersection(gewaesserraum.geometrie,fff.geometrie))).geom AS geometrie, 
+        (ST_dump(ST_intersection(gewaesserraum.geometrie,fff.geometrie))).geom AS geometrie, 
         'Gewaesserraum' AS spezialfall,
         fff.bezeichnung,
         fff.beschreibung,
@@ -14,14 +14,14 @@ WITH gewaesserraum AS (
         alw_gewaesserraum.gewaesserraum, 
         alw_fruchtfolgeflaechen.fff_mit_uebersteuerung fff
     WHERE 
-        st_intersects(gewaesserraum.geometrie,fff.geometrie)
+        ST_intersects(gewaesserraum.geometrie,fff.geometrie)
         AND 
         gewaesserraum.fff_massgebend IS true
 ), 
 
 gewaesserraum_geometrie AS (
     SELECT 
-        st_union(geometrie) AS geometrie
+        ST_union(geometrie) AS geometrie
     FROM 
         alw_gewaesserraum.gewaesserraum
     WHERE 
@@ -30,7 +30,7 @@ gewaesserraum_geometrie AS (
 
 union_gewaesserraum AS (
     SELECT 
-        st_difference(fff.geometrie,gewaesserraum_geometrie.geometrie,0.001) AS geometrie, 
+        ST_difference(fff.geometrie,gewaesserraum_geometrie.geometrie,0.001) AS geometrie, 
         fff.spezialfall, 
         fff.bezeichnung, 
         fff.beschreibung, 
@@ -43,7 +43,7 @@ union_gewaesserraum AS (
         UNION ALL 
 -- die "geeigneten Übersteuerungsflächen" werden wieder eingefügt.    
     SELECT 
-        st_snaptogrid(geometrie,0.001) AS geometrie,
+        ST_snaptogrid(geometrie,0.001) AS geometrie,
         spezialfall,
         bezeichnung,
         beschreibung,
@@ -54,7 +54,7 @@ union_gewaesserraum AS (
 )
 
 SELECT 
-    (st_dump(geometrie)).geom AS geometrie,
+    (ST_dump(geometrie)).geom AS geometrie,
     spezialfall,
     bezeichnung,
     beschreibung,
@@ -80,7 +80,7 @@ UPDATE
     SET 
     geometrie = ST_CollectionExtract(geometrie, 3)
 WHERE 
-    st_geometrytype(geometrie) = 'ST_GeometryCollection'
+    ST_geometrytype(geometrie) = 'ST_GeometryCollection'
 ;
 
 DELETE FROM 

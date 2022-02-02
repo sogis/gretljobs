@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS
 
 WITH schlechter_boden AS (
     SELECT 
-        st_union(geometrie) AS geometrie
+        ST_union(geometrie) AS geometrie
     FROM 
         afu_isboden_pub.bodeneinheit 
     WHERE (
@@ -26,7 +26,7 @@ WITH schlechter_boden AS (
 )
 
 SELECT 
-    st_difference(maske.geometrie,schlechter_boden.geometrie,0.001) AS geometrie
+    ST_difference(maske.geometrie,schlechter_boden.geometrie,0.001) AS geometrie
 INTO
     alw_fruchtfolgeflaechen.fff_maske_100_ohne_schlechten_boden
 FROM 
@@ -40,7 +40,7 @@ UPDATE
     SET 
     geometrie = ST_CollectionExtract(geometrie, 3)
 WHERE 
-    st_geometrytype(geometrie) = 'ST_GeometryCollection'
+    ST_geometrytype(geometrie) = 'ST_GeometryCollection'
 ;
 
 DELETE FROM 
@@ -52,7 +52,7 @@ WHERE
 DELETE FROM 
     alw_fruchtfolgeflaechen.fff_maske_100_ohne_schlechten_boden
 WHERE 
-    st_geometrytype(geometrie) IN ('ST_MultiLineString', 'ST_LineString')
+    ST_geometrytype(geometrie) IN ('ST_MultiLineString', 'ST_LineString')
 ;
 
 CREATE INDEX IF NOT EXISTS

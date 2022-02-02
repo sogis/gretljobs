@@ -2,13 +2,13 @@ DROP TABLE IF EXISTS alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_100 ;
 
 WITH vereinbarungsflaechen AS (
     SELECT 
-        st_union(ST_CollectionExtract(st_makevalid(st_snaptogrid(geometrie,0.001)),3)) AS geometrie
+        ST_union(ST_CollectionExtract(ST_makevalid(ST_snaptogrid(geometrie,0.001)),3)) AS geometrie
     FROM 
         arp_mjpnatur_pub.vereinbrngsflchen_flaechen
 )
 
 SELECT
-    (st_dump(st_union(st_makevalid(st_difference(maske.geometrie,vereinbarungsflaechen.geometrie,0.001))))).geom AS geometrie,
+    (ST_dump(ST_union(ST_makevalid(ST_difference(maske.geometrie,vereinbarungsflaechen.geometrie,0.001))))).geom AS geometrie,
     1 AS anrechenbar, 
     'geeignet'AS bezeichnung
 INTO 
@@ -24,7 +24,7 @@ UPDATE
     SET 
     geometrie = ST_CollectionExtract(geometrie, 3)
 WHERE 
-    st_geometrytype(geometrie) = 'ST_GeometryCollection'
+    ST_geometrytype(geometrie) = 'ST_GeometryCollection'
 ;
 
 DELETE FROM 
@@ -36,7 +36,7 @@ WHERE
 DELETE FROM 
     alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_100
 WHERE 
-    st_geometrytype(geometrie) IN ('ST_LineString')
+    ST_geometrytype(geometrie) IN ('ST_LineString')
 ;
 
 CREATE INDEX IF NOT EXISTS

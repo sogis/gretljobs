@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS
 
 WITH klimaeignung AS (
     SELECT 
-        st_union(geometrie) AS geometrie
+        ST_union(geometrie) AS geometrie
     FROM 
         klimaeignung.klimaeignung_klima_area klima_area
     LEFT JOIN 
@@ -16,7 +16,7 @@ WITH klimaeignung AS (
 )
 
 SELECT 
-    st_difference(ohne_altlasten.geometrie,klimaeignung.geometrie) AS geometrie
+    ST_difference(ohne_altlasten.geometrie,klimaeignung.geometrie) AS geometrie
 INTO 
     alw_fruchtfolgeflaechen.fff_maske_ohne_klimaeignung 
 FROM 

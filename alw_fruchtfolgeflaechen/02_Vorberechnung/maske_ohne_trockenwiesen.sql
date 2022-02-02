@@ -4,15 +4,15 @@ DROP TABLE IF EXISTS
 
 WITH trockenwiese AS ( 
     SELECT 
-        st_union(geometrie) AS geometrie
+        ST_union(geometrie) AS geometrie
     FROM 
         trockenwiesenweiden.trockenwiesenwden_standorte
     WHERE 
-        st_intersects(geometrie,(SELECT geometrie FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze))
+        ST_intersects(geometrie,(SELECT geometrie FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze))
 )
 
 SELECT 
-    st_difference(ohne_bauzonen.geometrie,trockenwiese.geometrie) AS geometrie
+    ST_difference(ohne_bauzonen.geometrie,trockenwiese.geometrie) AS geometrie
 INTO 
     alw_fruchtfolgeflaechen.fff_maske_ohne_trockenwiesen 
 FROM 

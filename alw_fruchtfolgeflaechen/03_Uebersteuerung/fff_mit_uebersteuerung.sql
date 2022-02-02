@@ -6,9 +6,9 @@ DROP TABLE IF EXISTS
 WITH reserveflaechen AS (
     SELECT  
         ST_CollectionExtract(
-            st_makevalid(
-                st_snaptogrid(
-                    st_union(geometrie),
+            ST_makevalid(
+                ST_snaptogrid(
+                    ST_union(geometrie),
                 0.001)
             ),3
         ) AS geometrie
@@ -23,7 +23,7 @@ WITH reserveflaechen AS (
 
 grundwasserschutz_S2 AS (
     SELECT 
-        st_snaptogrid(st_union(apolygon),0.001) AS geometrie
+        ST_snaptogrid(ST_union(apolygon),0.001) AS geometrie
     FROM 
         afu_gewaesserschutz_pub.gewaesserschutz_zone_areal
     WHERE 
@@ -32,8 +32,8 @@ grundwasserschutz_S2 AS (
 
 zusammengesetzt_reserveflaechen_intersection AS (
     SELECT 
-        st_snaptogrid(
-                st_intersection(zusammen.geometrie,reserveflaechen.geometrie),
+        ST_snaptogrid(
+                ST_intersection(zusammen.geometrie,reserveflaechen.geometrie),
         0.001) AS geometrie, 
         0 AS anrechenbar,
         zusammen.bezeichnung AS bezeichnung, 
@@ -44,13 +44,13 @@ zusammengesetzt_reserveflaechen_intersection AS (
         alw_fruchtfolgeflaechen.fff_zusammengesetzt zusammen,
         reserveflaechen reserveflaechen
     WHERE 
-        st_intersects(zusammen.geometrie,reserveflaechen.geometrie)
+        ST_intersects(zusammen.geometrie,reserveflaechen.geometrie)
 ), 
 
 zusammengesetzt_grundwasserschutz_intersection AS (
     SELECT 
-        st_snaptogrid(
-                st_intersection(zusammen.geometrie,grundwasserschutz_s2.geometrie),
+        ST_snaptogrid(
+                ST_intersection(zusammen.geometrie,grundwasserschutz_s2.geometrie),
         0.001) AS geometrie, 
         0 AS anrechenbar,
         zusammen.bezeichnung AS bezeichnung, 
@@ -61,33 +61,33 @@ zusammengesetzt_grundwasserschutz_intersection AS (
         alw_fruchtfolgeflaechen.fff_zusammengesetzt zusammen,
         grundwasserschutz_s2 grundwasserschutz_s2
     WHERE 
-        st_intersects(zusammen.geometrie,grundwasserschutz_s2.geometrie)
+        ST_intersects(zusammen.geometrie,grundwasserschutz_s2.geometrie)
 ),
 
 uebersteuerung AS (
     SELECT 
-        st_snaptogrid(
+        ST_snaptogrid(
             ST_CollectionExtract(
-                st_union(geometrie),
+                ST_union(geometrie),
             3),
         0.001) AS geometrie
     FROM (
              SELECT 
-                 st_buffer(ST_CollectionExtract(geometrie,3),0) AS geometrie 
+                 ST_buffer(ST_CollectionExtract(geometrie,3),0) AS geometrie 
              FROM 
                  alw_fff_uebersteuerung.uebersteuerung
 
              UNION ALL 
 
              SELECT 
-                 st_buffer(ST_CollectionExtract(geometrie,3),0) AS geometrie
+                 ST_buffer(ST_CollectionExtract(geometrie,3),0) AS geometrie
              FROM 
                  zusammengesetzt_reserveflaechen_intersection
 
              UNION ALL 
 
              SELECT 
-                 st_buffer(ST_CollectionExtract(geometrie,3),0) AS geometrie 
+                 ST_buffer(ST_CollectionExtract(geometrie,3),0) AS geometrie 
              FROM 
                  zusammengesetzt_grundwasserschutz_intersection
          ) union_all_intersections
@@ -95,7 +95,7 @@ uebersteuerung AS (
 
 union_uebersteuerung AS (
     SELECT 
-        st_difference(fff_zusammengesetzt.geometrie,uebersteuerung.geometrie,0.001) AS geometrie, 
+        ST_difference(fff_zusammengesetzt.geometrie,uebersteuerung.geometrie,0.001) AS geometrie, 
         fff_zusammengesetzt.spezialfall, 
         fff_zusammengesetzt.bezeichnung, 
         null AS beschreibung, 
@@ -108,7 +108,7 @@ union_uebersteuerung AS (
     UNION ALL 
 -- die "geeigneten Übersteuerungsflächen" werden wieder eingefügt.    
     SELECT 
-        st_snaptogrid(geometrie,0.001),
+        ST_snaptogrid(geometrie,0.001),
         spezialfall,
         CASE 
             WHEN (bezeichnung = 'bedingt_geeignete_FFF' OR bezeichnung = 'bedingt geeignet')
@@ -128,7 +128,7 @@ union_uebersteuerung AS (
     UNION ALL 
 -- die reservezonen-Flächen, welche die fff_zusammen überlagerten werden wieder eingesetzt.
     SELECT 
-        st_snaptogrid(geometrie,0.001),
+        ST_snaptogrid(geometrie,0.001),
         spezialfall,
         bezeichnung,
         beschreibung,
@@ -140,7 +140,7 @@ union_uebersteuerung AS (
     UNION ALL 
 -- die Grundwasserschutzzonen 2-Flächen, welche die fff_zusammen überlagerten werden wieder eingesetzt.
     SELECT 
-        st_snaptogrid(geometrie,0.001),
+        ST_snaptogrid(geometrie,0.001),
         spezialfall,
         bezeichnung,
         beschreibung,
@@ -151,7 +151,7 @@ union_uebersteuerung AS (
 )
 
 SELECT 
-    (st_dump(geometrie)).geom as geometrie,
+    (ST_dump(geometrie)).geom as geometrie,
     spezialfall,
     bezeichnung,
     beschreibung,
@@ -167,7 +167,7 @@ FROM
 UPDATE 
     alw_fruchtfolgeflaechen.fff_mit_uebersteuerung
     SET 
-    geometrie = st_makevalid(geometrie)
+    geometrie = ST_makevalid(geometrie)
 ;
 -- GeometryCollections werden aufgelöst. Nur die Polygons werden herausgenommen.
 UPDATE 
@@ -175,7 +175,7 @@ UPDATE
     SET 
     geometrie = ST_CollectionExtract(geometrie, 3)
 WHERE 
-    st_geometrytype(geometrie) = 'ST_GeometryCollection'
+    ST_geometrytype(geometrie) = 'ST_GeometryCollection'
 ;
 
 DELETE FROM 
@@ -187,7 +187,7 @@ WHERE
 DELETE FROM  
     alw_fruchtfolgeflaechen.fff_mit_uebersteuerung
 WHERE  
-    st_geometrytype(geometrie) IN ('ST_LineString', 'ST_Point')
+    ST_geometrytype(geometrie) IN ('ST_LineString', 'ST_Point')
 ;
 
 CREATE INDEX IF NOT EXISTS

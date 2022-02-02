@@ -4,13 +4,13 @@ DROP TABLE IF EXISTS
 
 WITH bodenbedeckung AS (
     SELECT 
-        ST_CollectionExtract(st_makevalid(st_snaptogrid(st_union(geometrie),0.001)),3) AS geometrie
+        ST_CollectionExtract(ST_makevalid(ST_snaptogrid(ST_union(geometrie),0.001)),3) AS geometrie
     FROM  
         afu_isboden_pub.bodeneinheit
 )
 
 SELECT 
-    st_difference(maske.geometrie, bodenbedeckung.geometrie,0.001) AS geometrie 
+    ST_difference(maske.geometrie, bodenbedeckung.geometrie,0.001) AS geometrie 
 INTO 
     alw_fruchtfolgeflaechen.fff_maske_where_not_bodenkartierung
 FROM 
@@ -24,7 +24,7 @@ UPDATE
     SET 
     geometrie = ST_CollectionExtract(geometrie, 3)
 WHERE 
-    st_geometrytype(geometrie) = 'ST_GeometryCollection'
+    ST_geometrytype(geometrie) = 'ST_GeometryCollection'
 ;
 
 DELETE FROM 
