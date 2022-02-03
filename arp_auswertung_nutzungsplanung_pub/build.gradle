@@ -1,0 +1,41 @@
+description = """\n
+Bauzonenstatistik auf Basis von Daten der Nutzungsplanungs- und Amtlichen Vermessung
+
+Die Auswertung findet unbebaute Flächen innerhalb des Bauzonenperimeters.
+
+Fragen an: Andreas Neumann (AGI) und Valentin Burki (ARP)
+"""
+
+apply plugin: 'ch.so.agi.gretl'
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+defaultTasks 'BauzonenstatistikStart'
+
+def BfsNrGemeinden = [2614, 2618]
+
+
+task BauzonenstatistikStart() {
+    description = "Übergeordneter Task für Iteration über alle Gemeinden in der Bauzonenstatistik."
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('BauzonenstatistikProcessing_') }
+    }
+    finalizedBy "ZusammenfassungUndGINES"
+}
+
+BfsNrGemeinden.each { bfsNr ->
+    task "BauzonenstatistikProcessing_$bfsNr"(type: SqlExecutor) {
+        description = "Eigentliche Bauzonenstatitik"
+        database = [dbUriPub, dbUserPub, dbPwdPub]
+        sqlParameters = [BZ_SchemaName:'arp_auswertung_nutzungsplanung_pub_v1',bfsNr=$bfsNr]
+        sqlFiles = ['bauzonenstatistik_bebauungsstand_mit_zonen_ohne_lsgrenzen.sql','bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen.sql','bauzonenstatistik_liegenschaft_nach_bebauungsstand.sql']
+    }
+}
+
+task "ZusammenfassungUndGINES"(type: SqlExecutor) {
+    description = "Zusammenfassung Bebauungsstand pro Gemeinde und Zone, danach gefolgt von Update GINES-Tabelle für Export"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlParameters = [BZ_SchemaName:'arp_auswertung_nutzungsplanung_pub_v1']
+    sqlFiles = ['bauzonenstatistik_bebauungsstand_pro_gemeinde.sql','bauzonenstatistik_gines.sql']
+}
