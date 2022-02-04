@@ -21,6 +21,7 @@ task BauzonenstatistikStart() {
     dependsOn {
         tasks.findAll { task -> task.name.startsWith('BauzonenstatistikProcessing_') }
     }
+    finalizedBy "ZusammenfassungUndGINES"
 }
 
 BfsNrGemeinden.each { bfsNr ->
