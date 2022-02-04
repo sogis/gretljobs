@@ -20,25 +20,7 @@ bedingt_geeigneter_boden AS (
         afu_isboden_pub.bodeneinheit
     WHERE
         (
-            gelform IN ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n')
-            AND
-            skelett_ob IN (0, 1, 2, 3, 4, 5)
-            AND
-            wasserhhgr IN ('a', 'b', 'c', 'f', 'g', 'k', 'i', 'h', 'm', 'l', 'o', 'q')
-            AND
-            (
-                pflngr <50 
-                OR 
-                (pflngr IS null AND bodpktzahl <70)
-            )
-        )
-        OR 
-        (
             gelform IN ('k', 'l', 'm', 'n')
-            AND
-            skelett_ob IN (0, 1, 2, 3, 4, 5)
-            AND
-            wasserhhgr IN ('a', 'b', 'c', 'f', 'g', 'k', 'i', 'h', 'm', 'l', 'o', 'q')
             AND
             (
                 pflngr >=50 
@@ -52,7 +34,7 @@ bedingt_geeigneter_boden AS (
             AND
             skelett_ob IN (0, 1, 2, 3, 4, 5)
             AND
-            wasserhhgr IN ('p', 'u', 'w')
+            ((wasserhhgr IN ('p', 'u')) OR (wasserhhgr = 'w' AND untertyp LIKE '%DD%'))
             AND
             (
                 (pflngr >=30 AND pflngr <50)
@@ -66,7 +48,7 @@ bedingt_geeigneter_boden AS (
             AND
             skelett_ob IN (0, 1, 2, 3, 4, 5)
             AND
-            wasserhhgr IN ('d')
+            wasserhhgr IN ('d', 'w')
             AND
             (
                 (pflngr >=40 AND pflngr <50)
