@@ -28,7 +28,7 @@ BfsNrGemeinden.each { bfsNr ->
         description = "Eigentliche Bauzonenstatitik"
         database = [dbUriPub, dbUserPub, dbPwdPub]
         sqlParameters = [BZ_SchemaName:'arp_auswertung_nutzungsplanung_pub_v1',gem_bfs:bfsNr as String]
-        sqlFiles = ['bauzonenstatistik_bebauungsstand_mit_zonen_ohne_lsgrenzen.sql','bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen.sql']
+        sqlFiles = ['bauzonenstatistik_bebauungsstand_mit_zonen_ohne_lsgrenzen.sql','bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen.sql','bauzonenstatistik_liegenschaft_nach_bebauungsstand.sql']
     }
 }
 
