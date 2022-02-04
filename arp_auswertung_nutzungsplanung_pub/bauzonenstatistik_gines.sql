@@ -5,7 +5,7 @@ DELETE FROM ${BZ_SchemaName}.bauzonenstatistik_gines;
 
 INSERT INTO
   ${BZ_SchemaName}.bauzonenstatistik_gines 
-    (bfs_gemeindenummer, gemeindename, n110_wohnzone_1_g_bebaut, n110_wohnzone_1_g_unbebaut, n111_wohnzone_2_g_bebaut, n111_wohnzone_2_g_unbebaut,
+    (bfs_nr, gemeindename, n110_wohnzone_1_g_bebaut, n110_wohnzone_1_g_unbebaut, n111_wohnzone_2_g_bebaut, n111_wohnzone_2_g_unbebaut,
      n112_wohnzone_3_g_bebaut, n112_wohnzone_3_g_unbebaut, n113_wohnzone_4_g_bebaut, n113_wohnzone_4_g_unbebaut, n114_wohnzone_5_g_bebaut, n114_wohnzone_5_g_unbebaut, n115_wohnzone_6_g_bebaut,
      n115_wohnzone_6_g_unbebaut, n116_wohnzone_7_g_und_groesser_bebaut, n116_wohnzone_7_g_und_groesser_unbebaut, n117_zone_fuer_terrassenhaeuser_terrassensiedlung_bebaut,
      n117_zone_fuer_terrassenhaeuser_terrassensiedlung_unbebaut, n120_gewerbezone_ohne_wohnen_bebaut, n120_gewerbezone_ohne_wohnen_unbebaut, n121_industriezone_bebaut,
