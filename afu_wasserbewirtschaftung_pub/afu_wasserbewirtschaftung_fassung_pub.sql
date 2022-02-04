@@ -129,3 +129,4 @@ UNION ALL
           vegas.adm_objekt_dokument y 
       WHERE x.dokument_id = y.dokument_id
       GROUP BY y.vegas_id) dokumente ON vertikalfilterbrunnen.vegas_id = dokumente.vegas_id)
+;

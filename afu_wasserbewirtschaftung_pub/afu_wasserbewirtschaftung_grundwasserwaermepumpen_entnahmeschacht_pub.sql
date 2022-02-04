@@ -7,14 +7,14 @@ SELECT
         WHEN (grundwasserwaerme.schachttyp != 2 AND grundwasserwaerme.zustand != 4) 
             THEN 'bewilligt'
         ELSE 'unbekannter_Verfahrensstand'
-        END AS verfahrensstand, 
-        'Grundwasserwärmepumpen Entnahmeschacht' AS objekttyp_anzeige,
-        grundwasserwaerme.bezeichnung AS objektname, 
-        grundwasserwaerme.mobj_id AS objektnummer, 
-        grundwasserwaerme.beschreibung AS technische_angabe, 
-        grundwasserwaerme.bemerkung AS bemerkung, 
-        array_to_json(dokumente.dokumente) AS dokumente, 
-        grundwasserwaerme.wkb_geometry AS geometrie
+    END AS verfahrensstand, 
+    'Grundwasserwärmepumpen Entnahmeschacht' AS objekttyp_anzeige,
+    grundwasserwaerme.bezeichnung AS objektname, 
+    grundwasserwaerme.mobj_id AS objektnummer, 
+    grundwasserwaerme.beschreibung AS technische_angabe, 
+    grundwasserwaerme.bemerkung AS bemerkung, 
+    array_to_json(dokumente.dokumente) AS dokumente, 
+    grundwasserwaerme.wkb_geometry AS geometrie
 FROM 
     vegas.obj_grundwasserwaerme grundwasserwaerme,
     vegas.obj_objekt objekt

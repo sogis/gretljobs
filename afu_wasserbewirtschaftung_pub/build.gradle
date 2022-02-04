@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAfuWasserbewirtschaftung'
+defaultTasks 'clean'
 
 task transferAfuWasserbewirtschaftung(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
@@ -16,4 +16,13 @@ task transferAfuWasserbewirtschaftung(type: Db2Db){
             new TransferSet('afu_wasserbewirtschaftung_trinkwasserobjekte_pub.sql', 'afu_wasserbewirtschaftung_pub_v1.wassrbwrtschftung_trinkwasserversorgung', true), 
             new TransferSet('afu_wasserbewirtschaftung_oberflaechenhydrometrie.sql', 'afu_wasserbewirtschaftung_pub_v1.wassrbwrtschftung_oberflaechenhydrometrie', true)
     ];
+}
+
+task clean(type: SqlExecutor, dependsOn: transferAfuWasserbewirtschaftung) {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['clean.sql']
+}
+
+task refreshSolr(type:Exec, dependsOn:'clean') {
+	commandLine 'curl', '-i', '--max-time', '20', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.gewaesserschutz.quellen,ch.so.afu.wasserbewirtschaftung.quellen,ch.so.afu.gewaesserschutz.fassungen,ch.so.afu.wasserbewirtschaftung.fassung,ch.so.afu.wasserbewirtschaftung.sondierung,ch.so.afu.wasserbewirtschaftung.versickerungsschacht,ch.so.afu.wasserbewirtschaftung.grundwasserwaermenutzung,ch.so.afu.wasserbewirtschaftung.trinkwasserversorgung_geschuetzt,ch.so.afu.wasserbewirtschaftung.weitere_einbauten_geschuetzt,ch.so.afu.wasserbewirtschaftung.quellen_geschuetzt,ch.so.afu.wasserbewirtschaftung.sondierung_geschuetzt,ch.so.afu.wasserbewirtschaftung.fassung_geschuetzt,ch.so.afu.wasserbewirtschaftung.versickerungsschacht_geschuetzt,ch.so.afu.wasserbewirtschaftung.grundwasserwaermenutzung_geschuetzt'
 }
