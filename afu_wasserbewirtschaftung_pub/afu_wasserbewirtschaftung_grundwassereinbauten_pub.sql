@@ -1,5 +1,5 @@
 (SELECT 
-    'weitere_einbauten' AS objektart, 
+    'weitere_Einbauten' AS objektart, 
     'Weitere Einbauten' AS objekttyp_anzeige,
     weitere_einbauten.bezeichnung AS objektname, 
     weitere_einbauten.mobj_id AS objektnummer, 
@@ -23,7 +23,7 @@ LEFT JOIN
      ) dokumente ON weitere_einbauten.vegas_id = dokumente.vegas_id )
 UNION ALL 
 (SELECT 
-    'versickerungsschacht' AS objektart, 
+    'Versickerungsschacht' AS objektart, 
     'Versickerungsschacht' AS objekttyp_anzeige,
     versickerungsschacht.bezeichnung AS objektname, 
     versickerungsschacht.mobj_id AS objektnummer, 

@@ -1,11 +1,11 @@
 SELECT 
     CASE 
         WHEN (objekt.aufnahmedatum < (SELECT date('now') - interval '5 years') AND grundwasserwaerme.zustand = 4) 
-            THEN 'alte_voranfrage' 
+            THEN 'alte_Voranfrage' 
         WHEN (objekt.aufnahmedatum >= (SELECT date('now') - interval '5 years') AND grundwasserwaerme.zustand = 4) 
-            THEN 'neue_voranfrage' 
+            THEN 'neue_Voranfrage' 
         WHEN (grundwasserwaerme.schachttyp != 2 AND grundwasserwaerme.zustand != 4) 
-            THEN 'Grundwasserwärmepumpe bewilligt'
+            THEN 'bewilligt'
         ELSE 'unbekannter_Verfahrensstand'
         END AS verfahrensstand, 
         'Grundwasserwärmepumpen Entnahmeschacht' AS objekttyp_anzeige,
