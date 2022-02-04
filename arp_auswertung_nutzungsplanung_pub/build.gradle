@@ -24,7 +24,9 @@ task BauzonenstatistikStart() {
     finalizedBy "ZusammenfassungUndGINES"
 }
 
-BfsNrGemeinden.each { bfsNr ->
+BfsNrGemeinden.each {
+    def bfsNr = it
+
     task "BauzonenstatistikProcessing_$bfsNr"(type: SqlExecutor) {
         description = "Eigentliche Bauzonenstatitik"
         database = [dbUriPub, dbUserPub, dbPwdPub]
