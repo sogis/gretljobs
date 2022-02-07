@@ -11,9 +11,9 @@ apply plugin: 'ch.so.agi.gretl'
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'BauzonenstatistikStart'
+defaultTasks 'UebertragUebersteuerungBebauungsstand'
 
-def BfsNrGemeinden = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
+/*def BfsNrGemeinden = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
                       2421, 2422, 2424, 2425, 2426, 2427, 2428, 2430,
                       2445,
                       2455, 2456, 2457,
@@ -35,8 +35,21 @@ def BfsNrGemeinden = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
                       2611, 2612, 2613, 2614, 2615, 2616, 2617, 2618, 2619,
                       2620, 2621, 2622
 ]
+*/
 
-task BauzonenstatistikStart() {
+def BfsNrGemeinden = [2401, 2402]
+
+task UebertragUebersteuerungBebauungsstand(type: Db2Db) {
+  description = "Übertrag Punktlayer mit Übersteuerungen Bebauungsstand. Es werden hier v.a. auch nicht überbaubare Flächen (wie Parkanlagen, Friedhöfe und Sportanlagen) mit Punkten gekennzeichnet."
+    group = GROUP
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet("bauzonenstatistik_uebertrag_uebersteuerung_bebauungsstand_sogisdb.sql", 'arp_auswertung_nutzungsplanung_pub_v1.bauzonenstatistik_uebersteuerung_bebauungsstand', true),
+    ];
+}
+
+task BauzonenstatistikStart(dependsOn:UebertragUebersteuerungBebauungsstand) {
     description = "Übergeordneter Task für Iteration über alle Gemeinden in der Bauzonenstatistik."
     dependsOn {
         tasks.findAll { task -> task.name.startsWith('BauzonenstatistikProcessing_') }
