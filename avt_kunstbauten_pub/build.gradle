@@ -13,7 +13,7 @@ task exportXtf(type: Ili2pgExport){
     dbschema = "avt_kunstbauten_staging_v1"
     disableValidation = true
     dataFile = xtfPath
-    models = "SO_AVT_Kunstbauten_Publikation_20211130"
+    models = "SO_AVT_Kunstbauten_Publikation_20220207"
 }
 
 task validate(type: IliValidator, dependsOn: exportXtf){
