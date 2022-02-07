@@ -41,7 +41,6 @@ def BfsNrGemeinden = [2401, 2402]
 
 task UebertragUebersteuerungBebauungsstand(type: Db2Db) {
   description = "Übertrag Punktlayer mit Übersteuerungen Bebauungsstand. Es werden hier v.a. auch nicht überbaubare Flächen (wie Parkanlagen, Friedhöfe und Sportanlagen) mit Punkten gekennzeichnet."
-    group = GROUP
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -49,7 +48,7 @@ task UebertragUebersteuerungBebauungsstand(type: Db2Db) {
     ];
 }
 
-task BauzonenstatistikStart(dependsOn:UebertragUebersteuerungBebauungsstand) {
+task BauzonenstatistikStart(dependsOn: "UebertragUebersteuerungBebauungsstand") {
     description = "Übergeordneter Task für Iteration über alle Gemeinden in der Bauzonenstatistik."
     dependsOn {
         tasks.findAll { task -> task.name.startsWith('BauzonenstatistikProcessing_') }
