@@ -1,5 +1,5 @@
 (SELECT 
-    'weitere_einbauten' AS objektart, 
+    'weitere_Einbauten' AS objektart, 
     'Weitere Einbauten' AS objekttyp_anzeige,
     weitere_einbauten.bezeichnung AS objektname, 
     weitere_einbauten.mobj_id AS objektnummer, 
@@ -23,7 +23,7 @@ LEFT JOIN
      ) dokumente ON weitere_einbauten.vegas_id = dokumente.vegas_id )
 UNION ALL 
 (SELECT 
-    'versickerungsschacht' AS objektart, 
+    'Versickerungsschacht' AS objektart, 
     'Versickerungsschacht' AS objekttyp_anzeige,
     versickerungsschacht.bezeichnung AS objektname, 
     versickerungsschacht.mobj_id AS objektnummer, 
@@ -53,7 +53,7 @@ UNION ALL
         bohrung.bezeichnung AS objektname, 
         bohrung.mobj_id AS objektnummer,
         bohrung.beschreibung AS technische_angabe,
-        bohrung.bemerkung AS bemerkung,
+        bohrung.bemerkung AS bemerkung, 
         array_to_json(dokumente.dokumente) AS dokumente, 
         wkb_geometry AS geometrie
     FROM 
@@ -77,7 +77,7 @@ UNION ALL
         gerammt.bezeichnung AS objektname, 
         gerammt.mobj_id AS objektnummer,
         gerammt.beschreibung AS technische_angabe,
-        gerammt.bemerkung AS bemerkung,
+        gerammt.bemerkung AS bemerkung, 
         array_to_json(dokumente.dokumente) AS dokumente, 
         wkb_geometry AS geometrie
     FROM 
@@ -101,7 +101,7 @@ UNION ALL
         sondierung.bezeichnung AS objektname, 
         sondierung.mobj_id AS objektnummer,
         sondierung.beschreibung AS technische_angabe,
-        sondierung.bemerkung AS bemerkung,
+        sondierung.bemerkung AS bemerkung, 
         array_to_json(dokumente.dokumente) AS dokumente, 
         wkb_geometry AS geometrie
     FROM 
@@ -125,7 +125,7 @@ UNION ALL
         baggerschlitz.bezeichnung AS objektname, 
         baggerschlitz.mobj_id AS objektnummer,
         baggerschlitz.beschreibung AS technische_angabe,
-        baggerschlitz.bemerkung AS bemerkung,
+        baggerschlitz.bemerkung AS bemerkung, 
         array_to_json(dokumente.dokumente) AS dokumente, 
         wkb_geometry AS geometrie
     FROM 
@@ -149,7 +149,7 @@ UNION ALL
         limnigraf.bezeichnung AS objektname, 
         limnigraf.mobj_id AS objektnummer,
         limnigraf.beschreibung AS technische_angabe,
-        limnigraf.bemerkung AS bemerkung,
+        limnigraf.bemerkung AS bemerkung, 
         array_to_json(dokumente.dokumente) AS dokumente, 
         wkb_geometry AS geometrie
     FROM 

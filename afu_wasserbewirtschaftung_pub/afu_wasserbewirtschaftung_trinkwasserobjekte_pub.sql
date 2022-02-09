@@ -3,8 +3,8 @@
     'Kontrollschacht' AS objekttyp_anzeige,
     kontrollschacht.bezeichnung AS objektname, 
     kontrollschacht.mobj_id AS objektnummer,
-    kontrollschacht.beschreibung AS technische_angabe,  
-    kontrollschacht.bemerkung AS bemerkung,
+    kontrollschacht.beschreibung AS technische_angabe,
+    kontrollschacht.bemerkung AS bemerkung,   
     array_to_json(dokumente.dokumente) AS dokumente, 
     kontrollschacht.wkb_geometry AS geometrie
 FROM 

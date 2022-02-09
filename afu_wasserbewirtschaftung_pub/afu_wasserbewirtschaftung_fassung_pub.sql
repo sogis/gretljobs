@@ -1,5 +1,5 @@
 (SELECT 
-     'sodbrunnen' AS fassungstyp, 
+     'Sodbrunnen' AS fassungstyp, 
      sodbrunnen.menge AS konzessionsmenge, 
      sodbrunnen.schutzzone, 
      CASE 
@@ -37,7 +37,7 @@
       GROUP BY y.vegas_id) dokumente ON sodbrunnen.vegas_id = dokumente.vegas_id)
 UNION ALL 
 (SELECT 
-     'horizontalfilterbrunnen' AS fassungstyp, 
+     'Horizontalfilterbrunnen' AS fassungstyp, 
      horizontalfilterbrunnen.menge AS konzessionsmenge, 
      horizontalfilterbrunnen.schutzzone, 
      CASE 
@@ -84,7 +84,7 @@ UNION ALL
       GROUP BY y.vegas_id) dokumente ON horizontalfilterbrunnen.vegas_id = dokumente.vegas_id)
 UNION ALL 
 (SELECT 
-     'vertikalfilterbrunnen' AS fassungstyp, 
+     'Vertikalfilterbrunnen' AS fassungstyp, 
      vertikalfilterbrunnen.menge AS konzessionsmenge, 
      vertikalfilterbrunnen.schutzzone, 
      CASE 
@@ -129,3 +129,4 @@ UNION ALL
           vegas.adm_objekt_dokument y 
       WHERE x.dokument_id = y.dokument_id
       GROUP BY y.vegas_id) dokumente ON vertikalfilterbrunnen.vegas_id = dokumente.vegas_id)
+;

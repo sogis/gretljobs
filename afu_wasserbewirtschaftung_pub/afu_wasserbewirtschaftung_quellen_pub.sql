@@ -33,7 +33,7 @@
     a.bezeichnung AS objektname, 
     a.mobj_id AS objektnummer,
     a.beschreibung AS technische_angabe,
-    a.bemerkung AS bemerkung,
+    a.bemerkung AS bemerkung, 
     array_to_json(c.dokumente) AS dokumente, 
     a.wkb_geometry AS geometrie
 FROM 
