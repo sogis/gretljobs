@@ -18,9 +18,10 @@ def pathToDataZip = Paths.get(pathToTempFolder, '/upload/uploadFile.zip')
 
 
 task copyZipFile(type: Copy) {
-    from "upload/"
-    into "upload/"
-    include("uploadFile")
+    from zipTree(pathToDataZip)
+    into file(pathToUnzipFolder)
+    //from zipTree(/upload/uploadFile.zip)
+    //into file(upload)
     rename("uploadFile", "uploadFile.zip")
 }
 
@@ -34,7 +35,7 @@ task unzipData(type: Copy, dependsOn: 'copyZipFile'){
 
 
 task validateCsvFile(type: CsvValidator, dependsOn: 'unzipData') {
-    modeldir = '.;http://models.geo.admin.ch'                                                                      // spaeter loeschen, wenn Modell im Repo ist
+    modeldir = '.;http://models.geo.admin.ch'                                                 // spaeter loeschen, wenn Modell im Repo ist
     models = "SO_AFU_Fliessgewaesser_20220228"
     firstLineIsHeader=true
     valueSeparator = ','
