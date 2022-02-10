@@ -6,7 +6,7 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'unzipData'
+defaultTasks 'validateCsvFile'
 
 // Download-Verzeichnis
 
