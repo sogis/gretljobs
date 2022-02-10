@@ -20,11 +20,11 @@ def pathToDataZip = Paths.get(pathToTempFolder, '/upload/oekom.zip')
 task copyZipFile(type: Copy) {
     from "upload/"
     into "upload/"
-    include("uploadFile.zip")
+    include("uploadFile")
     
     
     println "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz " + pathToDataZip
-    //rename("uploadFile", "uploadFile.zip")
+    rename("uploadFile", "uploadFile.zip")
 }
 
 task unzipData(type: Copy, dependsOn: 'copyZipFile'){
