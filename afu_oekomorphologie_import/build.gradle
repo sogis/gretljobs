@@ -21,21 +21,19 @@ task copyZipFile(type: Copy) {
     from "upload/"
     into "upload/"
     include("uploadFile")
-    
-    
-    println "yyyyyyyyyyyyyyyyyyyyyyyyy " + pathToDataZip
     rename("uploadFile", "uploadFile.zip")
 }
 
 task unzipData(type: Copy, dependsOn: 'copyZipFile'){
-    from zipTree(pathToDataZip)
-    into file(pathToUnzipFolder)
+    //from zipTree(pathToDataZip)
+    from zipTree(/upload/uploadFile.zip)
+    //into file(pathToUnzipFolder)
+    into file(upload)
     include '**/*.csv'
 }
 
 
 task validateCsvFile(type: CsvValidator, dependsOn: 'unzipData') {
-    println "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz " + file("upload/absturz.csv")
     modeldir = '.;http://models.geo.admin.ch'                                                                      // spaeter loeschen, wenn Modell im Repo ist
     models = "SO_AFU_Fliessgewaesser_20220228"
     firstLineIsHeader=true
