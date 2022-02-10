@@ -34,7 +34,7 @@ task unzipData(type: Copy, dependsOn: 'copyZipFile'){
     include '**/*.csv'
 }
 
-/*
+
 task validateCsvFile(type: CsvValidator, dependsOn: 'unzipData') {
     modeldir = '.;http://models.geo.admin.ch'                                                                      // spaeter loeschen, wenn Modell im Repo ist
     models = "SO_AFU_Fliessgewaesser_20220228"
@@ -43,7 +43,7 @@ task validateCsvFile(type: CsvValidator, dependsOn: 'unzipData') {
     encoding = 'UTF-8'
     dataFiles = [file("upload/absturz.csv")]
 }
-*/
+
 /*
 task deleteFromAfuOekomorphologie(type: SqlExecutor, dependsOn: 'unzipData') {
 ///////////////////////////////////task deleteFromAfuOekomorphologie(type: SqlExecutor, dependsOn: 'validateCsvFile') {
