@@ -2,14 +2,13 @@ import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 import java.nio.file.Paths
 import de.undercouch.gradle.tasks.download.Download
-
 apply plugin: 'ch.so.agi.gretl'
 
 
 defaultTasks 'validateCsvFile'
 
-// Download-Verzeichnis
 
+// Download-Verzeichnis
 //////////////////////////////// so hats funktioniert
 //def pathToTempFolder = System.getProperty('java.io.tmpdir')
 def pathToTempFolder = System.getProperty("user.dir")
@@ -18,29 +17,27 @@ def pathToDataZip = Paths.get(pathToTempFolder, '/upload/uploadFile.zip')
 
 
 task copyZipFile(type: Copy) {
-    from zipTree(pathToDataZip)
-    into file(pathToUnzipFolder)
-    //from zipTree(/upload/uploadFile.zip)
-    //into file(upload)
+    from "upload/"
+    into "upload/"
+    include("uploadFile")
+    
+    
+    println "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz " + pathToDataZip
     rename("uploadFile", "uploadFile.zip")
 }
-
 task unzipData(type: Copy, dependsOn: 'copyZipFile'){
     from zipTree(pathToDataZip)
     into file(pathToUnzipFolder)
-    //from zipTree(/upload/uploadFile.zip)
-    //into file(upload)
-    
     include '**/*.csv'
 }
 
-
 task validateCsvFile(type: CsvValidator, dependsOn: 'unzipData') {
-    modeldir = '.;http://models.geo.admin.ch'                                                 // spaeter loeschen, wenn Modell im Repo ist
+    modeldir = '.;http://models.geo.admin.ch'                                                                      // spaeter loeschen, wenn Modell im Repo ist
     models = "SO_AFU_Fliessgewaesser_20220228"
     firstLineIsHeader=true
     valueSeparator = ','
     encoding = 'UTF-8'
+    println file("upload/absturz.csv")
     dataFiles = [file("upload/absturz.csv")]
 }
 
@@ -61,8 +58,6 @@ task importAfuFliessgewaesserStaging(type: CsvImport, dependsOn: 'deleteFromAfuO
     dataFile = "upload/absturz.csv"
 }
 
-
-
 task transferAfuFliessgewaesser(type: Db2Db, dependsOn: 'importAfuFliessgewaesserStaging') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
@@ -70,4 +65,3 @@ task transferAfuFliessgewaesser(type: Db2Db, dependsOn: 'importAfuFliessgewaesse
     ];
 }
 */
-
