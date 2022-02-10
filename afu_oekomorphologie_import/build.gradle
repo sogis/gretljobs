@@ -44,7 +44,7 @@ task validateCsvFile(type: CsvValidator, dependsOn: 'unzipData') {
     dataFiles = [file("upload/absturz.csv")]
 }
 */
-
+/*
 task deleteFromAfuOekomorphologie(type: SqlExecutor, dependsOn: 'unzipData') {
 ///////////////////////////////////task deleteFromAfuOekomorphologie(type: SqlExecutor, dependsOn: 'validateCsvFile') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -62,7 +62,7 @@ task importAfuFliessgewaesserStaging(type: CsvImport, dependsOn: 'deleteFromAfuO
 }
 
 
-/*
+
 task transferAfuFliessgewaesser(type: Db2Db, dependsOn: 'importAfuFliessgewaesserStaging') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
