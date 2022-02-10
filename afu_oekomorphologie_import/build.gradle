@@ -26,10 +26,11 @@ task copyZipFile(type: Copy) {
 }
 
 task unzipData(type: Copy, dependsOn: 'copyZipFile'){
-    //from zipTree(pathToDataZip)
-    from zipTree(/upload/uploadFile.zip)
-    //into file(pathToUnzipFolder)
-    into file(upload)
+    from zipTree(pathToDataZip)
+    into file(pathToUnzipFolder)
+    //from zipTree(/upload/uploadFile.zip)
+    //into file(upload)
+    
     include '**/*.csv'
 }
 
