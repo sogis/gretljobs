@@ -23,24 +23,24 @@ task copyZipFile(type: Copy) {
     include("uploadFile")
     
     
-    println "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz " + pathToDataZip
+    println "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy " + pathToDataZip
     rename("uploadFile", "uploadFile.zip")
 }
 
 task unzipData(type: Copy, dependsOn: 'copyZipFile'){
     from zipTree(pathToDataZip)
-    into file(pathToUnzipFolder)
+    //////////into file(pathToUnzipFolder)
     include '**/*.csv'
 }
 
 
 task validateCsvFile(type: CsvValidator, dependsOn: 'unzipData') {
+    println "zzzzzzzzzzzzzzzzzzzzzzzzzz" +file("upload/absturz.csv")
     modeldir = '.;http://models.geo.admin.ch'                                                                      // spaeter loeschen, wenn Modell im Repo ist
     models = "SO_AFU_Fliessgewaesser_20220228"
     firstLineIsHeader=true
     valueSeparator = ','
     encoding = 'UTF-8'
-    println file("upload/absturz.csv")
     dataFiles = [file("upload/absturz.csv")]
 }
 
