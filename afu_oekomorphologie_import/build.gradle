@@ -14,7 +14,7 @@ defaultTasks 'validateCsvFile'
 //def pathToTempFolder = System.getProperty('java.io.tmpdir')
 def pathToTempFolder = System.getProperty("user.dir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'upload')
-def pathToDataZip = Paths.get(pathToTempFolder, '/upload/oekom.zip')
+def pathToDataZip = Paths.get(pathToTempFolder, '/upload/uploadFile.zip')
 
 
 task copyZipFile(type: Copy) {
@@ -28,7 +28,6 @@ task copyZipFile(type: Copy) {
 }
 
 task unzipData(type: Copy, dependsOn: 'copyZipFile'){
-    description = 'Unzip Data.zip'
     from zipTree(pathToDataZip)
     into file(pathToUnzipFolder)
     include '**/*.csv'
