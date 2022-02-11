@@ -6,5 +6,5 @@ SELECT
     bezeichung AS bezeichnung, 
     geometrie
 FROM 
-    arp_naturschutz_pub_v1.flachmoor
+    arp_naturschutzobjekte_pub_v1.flachmoor
 ;
