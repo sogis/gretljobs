@@ -15,18 +15,12 @@ pipeline {
       kubernetes {
         cloud 'openshift'
         inheritFrom 'gretl'
-        defaultContainer 'jnlp'
+        yamlMergeStrategy merge()
         yaml '''
           spec:
             securityContext:
               supplementalGroups: [26]
             containers:
-            - name: jnlp
-              envFrom:
-              - configMapRef:
-                  name: gretl-resources
-              - secretRef:
-                  name: gretl-secrets
             - name: processing-db
               image: crunchydata/crunchy-postgres-gis:centos8-13.3-3.1-4.6.3
               env:
@@ -69,14 +63,16 @@ pipeline {
             }
             steps {
                 git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
-                dir(env.JOB_BASE_NAME) {
-                    sh 'gretl prepare_db importAll'
-                    sh 'gretl fff_zusammensetzen'
-                    waitUntil {
-                        sh 'gretl fff_to_edit_db'
-                        input message: 'Resultat publizieren oder Berechnung nochmals durchführen?', parameters: [booleanParam(name: 'PUBLISH_RESULT', defaultValue: false, description: 'Häkchen setzen, um das Resultat zu publizieren und den Job abzuschliessen')]
+                container('gretl') {
+                    dir(env.JOB_BASE_NAME) {
+                        sh 'gretl prepare_db importAll'
+                        sh 'gretl fff_zusammensetzen'
+                        waitUntil {
+                            sh 'gretl fff_to_edit_db'
+                            input message: 'Resultat publizieren oder Berechnung nochmals durchführen?', parameters: [booleanParam(name: 'PUBLISH_RESULT', defaultValue: false, description: 'Häkchen setzen, um das Resultat zu publizieren und den Job abzuschliessen')]
+                        }
+                        sh 'gretl fff_to_edit_db_finish'
                     }
-                    sh 'gretl fff_to_edit_db_finish'
                 }
             }
         }
