@@ -26,6 +26,8 @@ bedingt_geeigneter_boden AS (
                 pflngr >=50 
                 OR 
                 (pflngr IS null AND bodpktzahl >=70)
+                OR 
+                (pflngr IS null AND wasserhhgr IN ('a','b','c','f','g','k','l','o','s','t','v'))
             )
         )
         OR 
