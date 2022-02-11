@@ -4,7 +4,7 @@ SELECT
     flaeche as area, 
     nummer, 
     bezeichnung, 
-    st_multi(geometrie)
+    st_multi(geometrie) as geometrie
 FROM 
     arp_naturschutzobjekte_pub_v1.flachmoor
 ;
