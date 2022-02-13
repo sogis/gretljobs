@@ -148,7 +148,7 @@ datasets.add(new Dataset("SO_AfU_Gewaesserschutz_Publikation_20210303", "afu_gew
 datasets.add(new Dataset("SO_AFU_Igel_Publikation_20211116", "afu_igel_pub", dbPub, "ch.so.afu.igel")) 
 datasets.add(new Dataset("SO_AFU_Infoflora_Publikation_20211013", "afu_infoflora_pub", dbPub, "ch.so.afu.infoflora"))
 datasets.add(new Dataset("SO_AFU_Verzeichnis_schadstoffbelastete_Boeden_Publikation_20200701", "afu_schadstoffbelastete_boeden_pub", dbPub, "ch.so.afu.schadstoffbelastete_boeden")) 
-datasets.add(new Dataset("SO_AfU_Wasserbewirtschaftung_Publikation_20190305", "afu_wasserbewirtschaftung_pub", dbPub, "ch.so.afu.wasserbewirtschaftung"))
+datasets.add(new Dataset("SO_AfU_Wasserbewirtschaftung_Publikation_20220202", "afu_wasserbewirtschaftung_pub", dbPub, "ch.so.afu.wasserbewirtschaftung"))
 datasets.add(new Dataset("SO_AGEM_Fila_Publikation_20190318", "agem_fila_pub", dbPub, "ch.so.agem.fila"))
 datasets.add(new Dataset("SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822", "agi_av_gb_admin_einteilung_pub", dbPub, "ch.so.agi.av_gb_administrative_einteilungen"))
 datasets.add(new Dataset("IliVErrors", "agi_av_validierung_pub", dbPub, "ch.so.agi.av_validierung"))
