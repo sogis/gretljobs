@@ -15,17 +15,13 @@ WITH schlechter_boden AS (
                   (
                        pflngr IS NULL 
                        AND 
-                       bodpktzahl < 70
+                       (bodpktzahl < 70 AND wasserhhgr NOT IN ('a','b','c','f','g','k','l','o','s','t','v'))
                   )
               )
           )
           OR 
           (
               gelform IN ('k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z')
-          )
-          OR
-          (
-              wasserhhgr IN ('d','e','h','i','m','n','p','q','r','u','w','x','y','z')
           )
 )
 
