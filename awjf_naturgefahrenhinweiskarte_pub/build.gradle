@@ -1,0 +1,23 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferAwjfNaturgefahrenhinweiskarte'
+
+task transferAwjfNaturgefahrenhinweiskarte(type: Db2Db){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('einzelereignis.sql','awjf_naturgefahrenhinweiskarte_pub_v1.einzelereignis', true),
+            new TransferSet('blockschlag.sql','awjf_naturgefahrenhinweiskarte_pub_v1.blockschlag', true),
+            new TransferSet('murgang.sql','awjf_naturgefahrenhinweiskarte_pub_v1.murgang', true),
+            new TransferSet('rutschung_bekannt.sql','awjf_naturgefahrenhinweiskarte_pub_v1.rutschung_bekannt', true),
+            new TransferSet('rutschung_lockergestein.sql','awjf_naturgefahrenhinweiskarte_pub_v1.rutschung_lockergestein', true),
+            new TransferSet('rutschung_tief.sql','awjf_naturgefahrenhinweiskarte_pub_v1.rutschung_tief', true),
+            new TransferSet('steinschlag.sql','awjf_naturgefahrenhinweiskarte_pub_v1.steinschlag', true),
+            new TransferSet('talboeden_geringe_neigung.sql','awjf_naturgefahrenhinweiskarte_pub_v1.talboeden_geringe_neigung', true),
+            new TransferSet('ueberflutung.sql','awjf_naturgefahrenhinweiskarte_pub_v1.ueberflutung', true),
+            new TransferSet('uebersarung.sql','awjf_naturgefahrenhinweiskarte_pub_v1.uebersarung', true),
+    ];
+}
