@@ -62,5 +62,5 @@ task transferALWAgrardaten(type: Db2Db, dependsOn: importGELAN){
 }
 
 task refreshSolr(type:Exec, dependsOn:'transferALWAgrardaten') {
-	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.alw.bienenstandorte_und_sperrgebiete.bienenstandorte,ch.so.alw.bienenstandorte_und_sperrgebiete.bienenstandorte_geschuetzt'
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.alw.bienenstandorte_und_sperrgebiete.bienenstandorte'
 }
