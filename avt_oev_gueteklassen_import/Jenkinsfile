@@ -1,0 +1,51 @@
+// Start with a scripted pipeline part
+node('master') {
+    stage('Prepare') {
+        gretlJobRepoUrl = env.GRETL_JOB_REPO_URL
+        uploadDirName = 'upload'
+        uploadFileName = 'uploadFile'
+        // By default the uploaded file is stored in the following directory:
+        buildDir = "$JENKINS_HOME/jobs/$JOB_BASE_NAME/builds/$BUILD_NUMBER"
+        // Create a subdirectory for the uploaded file:
+        sh "mkdir $buildDir/$uploadDirName"
+        inputFile = input message: 'Datei hochladen', parameters: [file(name: "$uploadDirName/$uploadFileName", description: 'Hochzuladende Datei auswählen')]
+        dir(buildDir) {
+            stash name: 'uploadDir', includes: "upload/**"
+        }
+        sh "rm -r $buildDir/$uploadDirName"
+    }
+}
+
+// Declarative pipeline starts here
+pipeline {
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 1, unit: 'DAYS')
+    }
+    agent none
+
+    stages {
+        stage('Run GRETL-Job') {
+            steps {
+                git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
+                dir(env.JOB_BASE_NAME) {
+                    waitUntil {
+                        sh 'gretl import_to_stage'
+                        input message: 'Resultat publizieren oder Berechnung nochmals durchführen?', parameters: [booleanParam(name: 'PUBLISH_RESULT', defaultValue: false, description: 'Häkchen setzen, um das Resultat zu publizieren und den Job abzuschliessen')]
+                    }
+                    sh 'gretl import_to_pub'
+                }
+            }
+        }
+    }
+    post {
+        unsuccessful {
+            emailext (
+                to: '${DEFAULT_RECIPIENTS}',
+                recipientProviders: [requestor()],
+                subject: "GRETL-Job ${JOB_NAME} (${BUILD_DISPLAY_NAME}) ist fehlgeschlagen",
+                body: "Die Ausführung des GRETL-Jobs ${JOB_NAME} (${BUILD_DISPLAY_NAME}) war nicht erfolgreich. Details dazu finden Sie in den Log-Meldungen unter ${RUN_DISPLAY_URL}."
+            )
+        }
+    }
+}
