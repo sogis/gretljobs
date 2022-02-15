@@ -117,7 +117,8 @@ SELECT
     END AS rechtsstatus,
     'https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/' || textimweb AS textimweb,
     bemerkungen,
-    rechtsvorschrift
+    rechtsvorschrift,
+    NULL AS publiziertbis
 FROM
     arp_nutzungsplanung_import_v1.rechtsvorschrften_dokument
 ;

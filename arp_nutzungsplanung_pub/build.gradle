@@ -1,0 +1,59 @@
+
+// Macht ein Datenumbau in die Struktur des Publikationsmodells (Schema "arp_nutzungsplanung_transfer_pub"). 
+// Das resultierende XTF wird ins Schema "arp_nutzungsplanung_pub" importiert.
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks "importXTF_Dataset_BFSNr", "importXTF_Kanton"
+
+task deleteData_transfer_pub (type: SqlExecutor) {
+    description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_transfer_pub."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["delete_arp_nutzungsplanung_transfer_pub.sql"]
+}
+
+task transferData(type: SqlExecutor, dependsOn: 'deleteData_transfer_pub') {
+    description = "Führt den Datenumbau in das Schema arp_nutzungsplanung_transfer_pub durch. Das braucht es, damit ein XFT pro Dataser ins Schema arp_nutzungsplanung_pub importiert resp. ersetzt werden kann"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["insert_arp_nutzungsplanung_transfer_pub.sql"]
+}
+
+task exportData (type: Ili2pgExport, dependsOn: 'transferData') {
+    description = "Exportiert die umgebauten Daten mit DataSet= BFSNr aus dem Schema arp_nutzungsplanung_transfer_pub in ein INTERLIS-Datei."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'arp_nutzungsplanung_transfer_pub_v1'
+    models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
+    dataFile= file(ili2pgDataset + "_pub.xtf")
+    disableValidation = true
+}
+
+task validateData(type: IliValidator, dependsOn: 'exportData') {
+    description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
+    dataFiles = file(ili2pgDataset + ".xtf")
+    failOnError = true
+}
+
+task importXTF_stage(type: Ili2pgImport, dependsOn: 'validateData') {
+    description = 'Import der umgebaute INTERLIS-Datei einer Gemeinde (BFS-Nr.) in das Schema arp_nutzungsplanung_stage.'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = 'arp_nutzungsplanung_satge_v1'
+    models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
+    dataset = ili2pgDataset
+    dataFile = file(ili2pgDataset + "_pub.xtf")
+    disableValidation = true
+    finalizedBy deleteXtfFile_BFSNr
+}
+
+task importXTF_pub(type: Ili2pgImport, dependsOn: 'importXTF_stage') {
+    description = 'Import der umgebaute INTERLIS-Datei einer Gemeinde (BFS-Nr.) in das Schema arp_nutzungsplanung_pub.'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = 'arp_nutzungsplanung_pub_v1'
+    models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
+    dataset = ili2pgDataset
+    dataFile = file(ili2pgDataset + "_pub.xtf")
+    disableValidation = true
+}
