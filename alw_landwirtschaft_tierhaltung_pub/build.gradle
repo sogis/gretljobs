@@ -9,7 +9,7 @@ import java.nio.file.Paths
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks "transferALWAgrardaten"
+defaultTasks "refreshSolr"
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
@@ -59,4 +59,8 @@ task transferALWAgrardaten(type: Db2Db, dependsOn: importGELAN){
         new TransferSet("kultur_punktelement.sql",'alw_landwirtschaft_tierhaltung_pub_v1.betrbsdttrktrdten_kultur_punktelement',true),
         new TransferSet("tierstandorte.sql",'alw_landwirtschaft_tierhaltung_pub_v1.betrbsdttrktrdten_tierstandort',true)
     ];
+}
+
+task refreshSolr(type:Exec, dependsOn:'transferALWAgrardaten') {
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.alw.bienenstandorte_und_sperrgebiete.bienenstandorte'
 }
