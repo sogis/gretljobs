@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 def GROUP = "npl_edit_to_pub"
 
-defaultTasks 'transferArpNpl'
+defaultTasks 'transferAlteGrundnutzung'
 
 task transferArpNpl(type: Db2Db) {
     description = "Übertrag neue Nutzungsplanungsdaten"
@@ -24,3 +24,14 @@ task transferArpNpl(type: Db2Db) {
             new TransferSet("transform_arp_npl_pub_verfahrenstand_vs_perimeter_beschriftung.sql", 'arp_npl_pub.nutzungsplanung_vs_perimeter_beschriftung', true)
     ];
 }
+
+task transferAlteGrundnutzung(type: Db2Db, dependsOn: "transferArpNpl") {
+    description = "Übertrag alte Nutzungsplanungsdaten für Gemeinden die noch nicht aufgebarbeitet wurden."
+    group = GROUP
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet("uebertrag_alte_sogisdaten_zonenplan_grundnutzung.sql", 'arp_npl_pub.nutzungsplanung_grundnutzung', false)            
+    ];
+}
+
