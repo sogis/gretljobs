@@ -11,6 +11,9 @@ task transferArpNpl(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet("transform_arp_npl_pub_nutzungsplanung_grundnutzung_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_grundnutzung', true)
+            new TransferSet("transform_arp_npl_pub_nutzungsplanung_grundnutzung_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_grundnutzung', true),
+            new TransferSet("transform_arp_npl_pub_nutzungsplanung_ueberlagernd_flaeche_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_ueberlagernd_flaeche', true),
+            new TransferSet("transform_arp_npl_pub_nutzungsplanung_ueberlagernd_linie_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_ueberlagernd_linie', true),
+            new TransferSet("transform_arp_npl_pub_nutzungsplanung_ueberlagernd_punkt_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_ueberlagernd_punkt', true)
     ];
 }
