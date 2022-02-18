@@ -36,6 +36,11 @@ def BfsNrGemeinden = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
                       2620, 2621, 2622
 ]
 
+/* Gemeindefusionen 2021:
+2423 (Gänsbrunnen) + 2429 (Welschenrohr) --> 2430 (Welschenrohr-Gänsbrunngen)
+2498 (Rohr SO)) + 2499 (Stüsslingen) --> 2499 (Stüsslingen)
+*/
+
 
 /* def BfsNrGemeinden = [2401, 2402] */
 
