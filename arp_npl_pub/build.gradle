@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 def GROUP = "npl_edit_to_pub"
 
-defaultTasks 'transferAlteGrundnutzung'
+defaultTasks 'updateAggregationGrundnutzungsflaechen'
 
 task transferArpNpl(type: Db2Db) {
     description = "Übertrag neue Nutzungsplanungsdaten"
@@ -35,3 +35,15 @@ task transferAlteGrundnutzung(type: Db2Db, dependsOn: "transferArpNpl") {
     ];
 }
 
+task datenBereinigungPostProcessing(type: SqlExecutor, dependsOn:'transferAlteGrundnutzung'){
+    description = "Datenbereinigung wegen invaliden Geometrien, kann nach ili2pg-Upgrade entfernt werden"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['arp_npl_pub_datenbereinigung.sql']
+}
+
+task updateAggregationGrundnutzungsflaechen(type: SqlExecutor, dependsOn: "datenBereinigungPostProcessing") {
+    description = "Aktualisierung der aggregierten Zonenflächen pro Gemeinde"
+    group = GROUP
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ["auswertung_zonen_per_gemeinde.sql"]
+}
