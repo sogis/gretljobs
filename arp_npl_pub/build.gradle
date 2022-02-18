@@ -18,6 +18,9 @@ task transferArpNpl(type: Db2Db) {
             new TransferSet("transform_arp_npl_pub_nutzungsplanung_beschriftung.sql", 'arp_npl_pub.nutzungsplanung_nutzungsplanung_beschriftung', true),
             new TransferSet("transform_arp_npl_pub_erschliessung_flaechenobjekt_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_erschliessung_flaechenobjekt', true),
             new TransferSet("transform_arp_npl_pub_erschliessung_linienobjekt_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_erschliessung_linienobjekt', true),
-            new TransferSet("transform_arp_npl_pub_erschliessung_punktobjekt_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_erschliessung_punktobjekt', true)
+            new TransferSet("transform_arp_npl_pub_erschliessung_punktobjekt_json_dokumente.sql", 'arp_npl_pub.nutzungsplanung_erschliessung_punktobjekt', true),
+            new TransferSet("transform_arp_npl_pub_erschliessung_beschriftung.sql", 'arp_npl_pub.nutzungsplanung_erschliessung_beschriftung', true),
+            new TransferSet("transform_arp_npl_pub_verfahrenstand_vs_perimeter_verfahrenstand.sql", 'arp_npl_pub.nutzungsplanung_vs_perimeter_verfahrensstand', true),
+            new TransferSet("transform_arp_npl_pub_verfahrenstand_vs_perimeter_beschriftung.sql", 'arp_npl_pub.nutzungsplanung_vs_perimeter_beschriftung', true)
     ];
 }
