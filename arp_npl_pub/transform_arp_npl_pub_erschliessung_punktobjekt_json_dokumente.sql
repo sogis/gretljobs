@@ -191,6 +191,7 @@ typ_erschliessung_punktobjekt_json_dokument_agg AS
 erschliessung_punktobjekt_geometrie_typ AS
 (
   SELECT 
+    f.t_datasetname,
     f.t_datasetname::int4 AS bfs_nr,
     f.t_id,
     f.t_ili_tid,
@@ -215,6 +216,7 @@ erschliessung_punktobjekt_geometrie_typ AS
 )
 SELECT
   --g.t_id,
+  g.t_datasetname,
   g.t_ili_tid,
   g.typ_bezeichnung,
   g.typ_abkuerzung,

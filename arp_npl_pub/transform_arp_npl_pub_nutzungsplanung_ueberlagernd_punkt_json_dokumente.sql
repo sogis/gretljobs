@@ -184,6 +184,7 @@ ueberlagernd_punkt_geometrie_typ AS
     l.t_id,
     l.t_datasetname,
     l.t_datasetname::int4 AS bfs_nr,
+    l.t_ili_tid,
     l.name_nummer,
     l.rechtsstatus,
     l.publiziertab,

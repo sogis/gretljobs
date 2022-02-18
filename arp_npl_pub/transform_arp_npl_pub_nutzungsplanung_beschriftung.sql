@@ -104,6 +104,7 @@ WITH beschriftung AS (
         ON typ_ueberlagernd_punkt.t_id = ueberlagernd_punkt.typ_ueberlagernd_punkt 
 )		   
 SELECT  
+    g.t_datasetname,
     g.t_datasetname::int4 AS bfs_nr,
     --g.t_ili_tid,
     g.bezeichnung AS typ_bezeichnung,
