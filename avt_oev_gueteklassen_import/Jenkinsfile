@@ -22,17 +22,16 @@ pipeline {
         disableConcurrentBuilds()
         timeout(time: 1, unit: 'DAYS')
     }
-    agent none
+    agent { label params.nodeLabel ?: 'gretl' }
 
     stages {
         stage('Run GRETL-Job') {
             steps {
                 git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
                 dir(env.JOB_BASE_NAME) {
-                    waitUntil {
-                        sh 'gretl import_to_stage'
-                        input message: 'Resultat publizieren oder Berechnung nochmals durchführen?', parameters: [booleanParam(name: 'PUBLISH_RESULT', defaultValue: false, description: 'Häkchen setzen, um das Resultat zu publizieren und den Job abzuschliessen')]
-                    }
+                    unstash name: 'uploadDir'
+                    sh 'gretl import_to_stage'
+                    input message: "Fortfahren und die Daten publizieren?", ok: "OK"
                     sh 'gretl import_to_pub'
                 }
             }
