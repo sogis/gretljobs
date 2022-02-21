@@ -11,7 +11,7 @@ defaultTasks ''
 task rename(type: Copy) {
     from 'upload'
     into 'upload'
-    rename 'uploadFile','uploadfile.xtf'
+    rename 'uploadFile','uploadFile.xtf'
 }
 
 task import_to_stage(type: Ili2pgImport, dependsOn: rename){
