@@ -3,7 +3,7 @@
 Löschung von Dataset mit ili2pg Befehl (--delete --dataset) im Schema «arp_nutzungsplanung». Der Datasetname z.B. «2407» oder «2407_prov» kann angegeben werden. 
 
 ## Job Ablauf
-1. XTF-Datei mit Dataset, das gelöscht werden soll, wird als Datensicherung exportiert (Artefakte).
+1. Exportiert das angegebenen Dataset (BFS-Nr.), das gelöscht werden soll, als XTF-Datei. Als temporäre Datensicherung (Artefakte), falls Löschung falsch war.
 2. Löscht die Daten mit dem angegebenen Dataset (BFS-Nr.) aus dem Schema «arp_nutzungsplanung».
 
 ## GRETL
