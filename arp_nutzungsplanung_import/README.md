@@ -24,7 +24,7 @@ Für ein Dataset (BFS-Nr.) aus dem Schema "arp_nutzungsplanung" zu löschen gibt
 7. Validation der INTERLIS-Dateien «BFS-Nr.» und «Kanton» 
 8. Import ins Schema «arp_nutzungsplanung» und «arp_nutzungsplanung_kanton»
 9. Falls Import eine Fehlermeldung gibt, müssen die Daten im Schema «arp_nutzungsplanung_transfer» manuell korrigiert werden. Ab Schritt 6. wird dann der Job weitergeführt
-10. INTERLIS-Dateien «BFS-Nr.» und «Kanton» 
+10. INTERLIS-Dateien «BFS-Nr.» und «Kanton» löschen
 
 
 ## GRETL
