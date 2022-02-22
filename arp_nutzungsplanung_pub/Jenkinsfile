@@ -2,23 +2,6 @@
 node('master') {
     stage('Prepare') {
         gretlJobRepoUrl = env.GRETL_JOB_REPO_URL
-        uploadDirName = 'upload'
-        uploadFileName = 'uploadFile'
-        // By default the uploaded file is stored in the following directory:
-        buildDir = "$JENKINS_HOME/jobs/$JOB_BASE_NAME/builds/$BUILD_NUMBER"
-        // Create a subdirectory for the uploaded file:
-        sh "mkdir $buildDir/$uploadDirName"
-        inputFile = input (
-            message: 'Datei hochladen',
-            parameters: [
-                file(name: "$uploadDirName/$uploadFileName", description: 'Hochzuladende Datei auswählen'),
-                string(name: 'ili2pgDataset', description: 'BFS-Nummer (Dataset) der Daten angeben')
-            ]
-        )
-        dir(buildDir) {
-            stash name: 'uploadDir', includes: "upload/**"
-        }
-        sh "rm -r $buildDir/$uploadDirName"
     }
 }
 
@@ -29,17 +12,48 @@ pipeline {
         timeout(time: 6, unit: 'HOURS')
     }
     stages {
-        stage('Run GRETL-Job') {
+        stage('Import into staging schema') {
+            agent { label 'gretl-ili2pg4' }
             steps {
                 git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
                 dir(env.JOB_BASE_NAME) {
-                    unstash name: 'uploadDir'
-                    sh "gretl -Pili2pgDataset=$inputFile.ili2pgDataset"
+                    sh "gretl -Pbfsnr=${params.bfsnr}"
+                    sh 'gretl importXTF_stage'
+                    zip zipFile: 'xtfdata.zip', glob: '*.xtf', archive: true
+               }
+                stash name: "gretljob"
+                emailext (
+                    recipientProviders: [requestor()],
+                    subject: "Nutzungsplanung zum Review bereit (GRETL-Job ${JOB_NAME} ${BUILD_DISPLAY_NAME})",
+                    body: "Mit dem GRETL-Job ${JOB_NAME} (${BUILD_DISPLAY_NAME}) wurden Daten der Nutzungsplanung mit der BFS-Nr. ${params.bfsnr} nachgeführt, die ein Review erfordern. Nach dem Review unter https://${ORG_GRADLE_PROJECT_geoservicesHostName}/map?t=oereb_review können Sie unter folgendem Link die Publikation der Daten veranlassen oder abbrechen: ${RUN_DISPLAY_URL}."
+                )
+            }
+        }
+        stage('Validation') {
+            agent { label 'master' }
+            steps {
+                input message: "Fortfahren und die Daten publizieren?", ok: "OK"
+            }
+        }
+        stage('Import into pub schema') {
+            agent { label 'gretl-ili2pg4' }
+            steps {
+                unstash name: "gretljob"
+                dir(env.JOB_BASE_NAME) {
+                    sh 'gretl importXTF_pub'
                 }
             }
         }
+       
     }
     post {
+        success {
+            emailext (
+                recipientProviders: [requestor()],
+                subject: "Daten der Nutzungsplanung für BFS-Nr. ${params.bfsnr} sind publiziert (GRETL-Job ${JOB_NAME} ${BUILD_DISPLAY_NAME})",
+                body: "Die Daten der Nutzungsplanung für BFS-Nr. ${params.bfsnr} des GRETL-Jobs ${JOB_NAME} (${BUILD_DISPLAY_NAME}) wurden erfolgreich publiziert. Die Log-Meldungen dazu finden Sie unter ${RUN_DISPLAY_URL}."
+            )
+        }
         unsuccessful {
             emailext (
                 to: '${DEFAULT_RECIPIENTS}',
@@ -50,4 +64,3 @@ pipeline {
         }
     }
 }
-

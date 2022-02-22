@@ -6,8 +6,8 @@ SELECT
     datasetname
 FROM
     arp_nutzungsplanung_v1.t_ili2db_dataset
-WHERE 
-   datasetname::int4 = $bfsnr
+WHERE
+   datasetname::int4 = 2457
 ;
 
 -- basket
@@ -20,13 +20,13 @@ SELECT
     basket.attachmentkey,
     basket.domains
 FROM
-    arp_nutzungsplanung_v1.t_ili2db_basket AS basket 
+    arp_nutzungsplanung_v1.t_ili2db_basket AS basket
     LEFT JOIN arp_nutzungsplanung_v1.t_ili2db_dataset AS dataset
     ON basket.dataset=dataset.t_id
-WHERE 
+WHERE
     topic = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Nutzungsplanung'
 AND
-    dataset.datasetname::int4 = $bfsnr
+    dataset.datasetname::int4 = 2457
 ;
 
 --Grundnutzung
@@ -49,7 +49,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=$bfsnr
+        t_datasetname::int4=2457
 ),
 json_documents AS (
     SELECT
@@ -58,22 +58,23 @@ json_documents AS (
     ((
         SELECT
             docs
-        FROM 
+        FROM
         (
             SELECT
-                dokumentid AS "Dokument_ID", 
-                titel AS "Titel", 
-                offiziellertitel AS "Offizieller_Titel", 
+                dokumentid AS "DokumentID",
+                titel AS "Titel",
+                offiziellertitel AS "OffiziellerTitel",
                 abkuerzung AS "Abkuerzung",
-                offiziellenr AS "Offizielle_Nr", 
-                kanton AS "Kanton", 
-                gemeinde AS "Gemeinde", 
-                publiziertab AS "publiziert_ab", 
+                offiziellenr AS "OffizielleNr",
+                kanton AS "Kanton",
+                gemeinde AS "Gemeinde",
+                publiziertab AS "publiziertAb",
                 rechtsstatus AS "Rechtsstatus",
-                textimweb AS "Text_im_Web",
-                bemerkungen AS "Bemerkungen", 
-                rechtsvorschrift AS "Rechtsvorschrift", 
-                'SO_Nutzungsplanung_Publikation_20190909.Nutzungsplanung.Dokument' AS "@type"
+                textimweb AS "TextimWeb",
+                bemerkungen AS "Bemerkungen",
+                rechtsvorschrift AS "Rechtsvorschrift",
+                publiziertbis AS "publiziertBis",
+                'SO_ARP_Nutzungsplanung_Publikation_20201005.Nutzungsplanung.Dokument' AS "@type"
         ) docs
     ))
   )::text AS json_dok,
@@ -101,7 +102,7 @@ typ_grundnutzung_json_dokument_agg AS (
 ),
 
 grundnutzung AS (
-    SELECT 
+    SELECT
         grundnutzung.t_id,
         grundnutzung.t_ili_tid,
         typ.bezeichnung AS typ_bezeichnung,
@@ -128,7 +129,7 @@ grundnutzung AS (
         LEFT JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_grundnutzung AS typ
         ON grundnutzung.typ_grundnutzung = typ.t_id
     WHERE
-        grundnutzung.t_datasetname::int4=$bfsnr
+        grundnutzung.t_datasetname::int4=2457
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_grundnutzung
@@ -152,7 +153,7 @@ SELECT
     grundnutzung.erfasser,
     grundnutzung.datum_erfassung,
     typ_grundnutzung_json_dokument_agg.dokumente::jsonb AS dokumente,
-    $bfsnr AS bfs_nr,
+    2457 AS bfs_nr,
     grundnutzung.publiziertbis
 FROM
     grundnutzung
@@ -179,7 +180,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=$bfsnr    
+        t_datasetname::int4=2457
 ),
 json_documents AS (
     SELECT
@@ -188,22 +189,23 @@ json_documents AS (
     ((
         SELECT
             docs
-        FROM 
+        FROM
         (
             SELECT
-                dokumentid AS "Dokument_ID", 
-                titel AS "Titel", 
-                offiziellertitel AS "Offizieller_Titel", 
+                dokumentid AS "DokumentID",
+                titel AS "Titel",
+                offiziellertitel AS "OffiziellerTitel",
                 abkuerzung AS "Abkuerzung",
-                offiziellenr AS "Offizielle_Nr", 
-                kanton AS "Kanton", 
-                gemeinde AS "Gemeinde", 
-                publiziertab AS "publiziert_ab", 
+                offiziellenr AS "OffizielleNr",
+                kanton AS "Kanton",
+                gemeinde AS "Gemeinde",
+                publiziertab AS "publiziertAb",
                 rechtsstatus AS "Rechtsstatus",
-                textimweb AS "Text_im_Web",
-                bemerkungen AS "Bemerkungen", 
-                rechtsvorschrift AS "Rechtsvorschrift", 
-                'SO_Nutzungsplanung_Publikation_20190909.Nutzungsplanung.Dokument' AS "@type"
+                textimweb AS "TextimWeb",
+                bemerkungen AS "Bemerkungen",
+                rechtsvorschrift AS "Rechtsvorschrift",
+                publiziertbis AS "publiziertBis",
+                'SO_ARP_Nutzungsplanung_Publikation_20201005.Nutzungsplanung.Dokument' AS "@type"
         ) docs
     ))
   )::text AS json_dok,
@@ -231,7 +233,7 @@ typ_ueberlagernd_flaeche_json_dokument_agg AS (
 ),
 
 ueberlagernd_flaeche AS (
-    SELECT 
+    SELECT
         ueberlagernd_flaeche.t_id,
         ueberlagernd_flaeche.t_ili_tid,
         typ.bezeichnung AS typ_bezeichnung,
@@ -255,7 +257,7 @@ ueberlagernd_flaeche AS (
         LEFT JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_flaeche AS typ
         ON ueberlagernd_flaeche.typ_ueberlagernd_flaeche= typ.t_id
     WHERE
-        ueberlagernd_flaeche.t_datasetname::int4=$bfsnr
+        ueberlagernd_flaeche.t_datasetname::int4=2457
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_ueberlagernd_flaeche
@@ -276,7 +278,7 @@ SELECT
     ueberlagernd_flaeche.erfasser,
     ueberlagernd_flaeche.datum_erfassung,
     typ_ueberlagernd_flaeche_json_dokument_agg.dokumente::jsonb AS dokumente,
-    $bfsnr AS bfs_nr,
+    2457 AS bfs_nr,
     ueberlagernd_flaeche.publiziertbis
 FROM
     ueberlagernd_flaeche
@@ -304,7 +306,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=$bfsnr    
+        t_datasetname::int4=2457
 ),
 json_documents AS (
     SELECT
@@ -313,22 +315,23 @@ json_documents AS (
     ((
         SELECT
             docs
-        FROM 
+        FROM
         (
             SELECT
-                dokumentid AS "Dokument_ID", 
-                titel AS "Titel", 
-                offiziellertitel AS "Offizieller_Titel", 
+                dokumentid AS "DokumentID",
+                titel AS "Titel",
+                offiziellertitel AS "OffiziellerTitel",
                 abkuerzung AS "Abkuerzung",
-                offiziellenr AS "Offizielle_Nr", 
-                kanton AS "Kanton", 
-                gemeinde AS "Gemeinde", 
-                publiziertab AS "publiziert_ab", 
+                offiziellenr AS "OffizielleNr",
+                kanton AS "Kanton",
+                gemeinde AS "Gemeinde",
+                publiziertab AS "publiziertAb",
                 rechtsstatus AS "Rechtsstatus",
-                textimweb AS "Text_im_Web",
-                bemerkungen AS "Bemerkungen", 
-                rechtsvorschrift AS "Rechtsvorschrift", 
-                'SO_Nutzungsplanung_Publikation_20190909.Nutzungsplanung.Dokument' AS "@type"
+                textimweb AS "TextimWeb",
+                bemerkungen AS "Bemerkungen",
+                rechtsvorschrift AS "Rechtsvorschrift",
+                publiziertbis AS "publiziertBis",
+                'SO_ARP_Nutzungsplanung_Publikation_20201005.Nutzungsplanung.Dokument' AS "@type"
         ) docs
     ))
   )::text AS json_dok,
@@ -356,7 +359,7 @@ typ_ueberlagernd_linie_json_dokument_agg AS (
 ),
 
 ueberlagernd_linie AS (
-    SELECT 
+    SELECT
         ueberlagernd_linie.t_id,
         ueberlagernd_linie.t_ili_tid,
         typ.bezeichnung AS typ_bezeichnung,
@@ -380,7 +383,7 @@ ueberlagernd_linie AS (
         LEFT JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_linie AS typ
         ON ueberlagernd_linie.typ_ueberlagernd_linie= typ.t_id
     WHERE
-        ueberlagernd_linie.t_datasetname::int4=$bfsnr
+        ueberlagernd_linie.t_datasetname::int4=2457
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_ueberlagernd_linie
@@ -401,7 +404,7 @@ SELECT
     ueberlagernd_linie.erfasser,
     ueberlagernd_linie.datum_erfassung,
     typ_ueberlagernd_linie_json_dokument_agg.dokumente::jsonb AS dokumente,
-    $bfsnr AS bfs_nr,
+    2457 AS bfs_nr,
     ueberlagernd_linie.publiziertbis
 FROM
     ueberlagernd_linie
@@ -429,8 +432,9 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=$bfsnr    
+        t_datasetname::int4=2457
 ),
+
 json_documents AS (
     SELECT
   (
@@ -438,22 +442,23 @@ json_documents AS (
     ((
         SELECT
             docs
-        FROM 
+        FROM
         (
             SELECT
-                dokumentid AS "Dokument_ID", 
-                titel AS "Titel", 
-                offiziellertitel AS "Offizieller_Titel", 
+                dokumentid AS "DokumentID",
+                titel AS "Titel",
+                offiziellertitel AS "OffiziellerTitel",
                 abkuerzung AS "Abkuerzung",
-                offiziellenr AS "Offizielle_Nr", 
-                kanton AS "Kanton", 
-                gemeinde AS "Gemeinde", 
-                publiziertab AS "publiziert_ab", 
+                offiziellenr AS "OffizielleNr",
+                kanton AS "Kanton",
+                gemeinde AS "Gemeinde",
+                publiziertab AS "publiziertAb",
                 rechtsstatus AS "Rechtsstatus",
-                textimweb AS "Text_im_Web",
-                bemerkungen AS "Bemerkungen", 
-                rechtsvorschrift AS "Rechtsvorschrift", 
-                'SO_Nutzungsplanung_Publikation_20190909.Nutzungsplanung.Dokument' AS "@type"
+                textimweb AS "TextimWeb",
+                bemerkungen AS "Bemerkungen",
+                rechtsvorschrift AS "Rechtsvorschrift",
+                publiziertbis AS "publiziertBis",
+                'SO_ARP_Nutzungsplanung_Publikation_20201005.Nutzungsplanung.Dokument' AS "@type"
         ) docs
     ))
   )::text AS json_dok,
@@ -481,7 +486,7 @@ typ_ueberlagernd_punkt_json_dokument_agg AS (
 ),
 
 ueberlagernd_punkt AS (
-    SELECT 
+    SELECT
         ueberlagernd_punkt.t_id,
         ueberlagernd_punkt.t_ili_tid,
         typ.bezeichnung AS typ_bezeichnung,
@@ -505,7 +510,7 @@ ueberlagernd_punkt AS (
         LEFT JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_punkt AS typ
         ON ueberlagernd_punkt.typ_ueberlagernd_punkt= typ.t_id
     WHERE
-        ueberlagernd_punkt.t_datasetname::int4=$bfsnr
+        ueberlagernd_punkt.t_datasetname::int4=2457
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_ueberlagernd_punkt
@@ -526,7 +531,7 @@ SELECT
     ueberlagernd_punkt.erfasser,
     ueberlagernd_punkt.datum_erfassung,
     typ_ueberlagernd_punkt_json_dokument_agg.dokumente::jsonb AS dokumente,
-    $bfsnr AS bfs_nr,
+    2457 AS bfs_nr,
     ueberlagernd_punkt.publiziertbis
 FROM
     ueberlagernd_punkt
@@ -555,7 +560,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=$bfsnr    
+        t_datasetname::int4=2457
 ),
 json_documents AS (
     SELECT
@@ -564,22 +569,23 @@ json_documents AS (
     ((
         SELECT
             docs
-        FROM 
+        FROM
         (
             SELECT
-                dokumentid AS "Dokument_ID", 
-                titel AS "Titel", 
-                offiziellertitel AS "Offizieller_Titel", 
+                dokumentid AS "DokumentID",
+                titel AS "Titel",
+                offiziellertitel AS "OffiziellerTitel",
                 abkuerzung AS "Abkuerzung",
-                offiziellenr AS "Offizielle_Nr", 
-                kanton AS "Kanton", 
-                gemeinde AS "Gemeinde", 
-                publiziertab AS "publiziert_ab", 
+                offiziellenr AS "OffizielleNr",
+                kanton AS "Kanton",
+                gemeinde AS "Gemeinde",
+                publiziertab AS "publiziertAb",
                 rechtsstatus AS "Rechtsstatus",
-                textimweb AS "Text_im_Web",
-                bemerkungen AS "Bemerkungen", 
-                rechtsvorschrift AS "Rechtsvorschrift", 
-                'SO_Nutzungsplanung_Publikation_20190909.Nutzungsplanung.Dokument' AS "@type"
+                textimweb AS "TextimWeb",
+                bemerkungen AS "Bemerkungen",
+                rechtsvorschrift AS "Rechtsvorschrift",
+                publiziertbis AS "publiziertBis",
+                'SO_ARP_Nutzungsplanung_Publikation_20201005.Nutzungsplanung.Dokument' AS "@type"
         ) docs
     ))
   )::text AS json_dok,
@@ -607,7 +613,7 @@ typ_erschliessung_flaechenobjekt_json_dokument_agg AS (
 ),
 
 erschliessung_flaechenobjekt AS (
-    SELECT 
+    SELECT
         erschliessung_flaechenobjekt.t_id,
         erschliessung_flaechenobjekt.t_ili_tid,
         typ.bezeichnung AS typ_bezeichnung,
@@ -631,7 +637,7 @@ erschliessung_flaechenobjekt AS (
         LEFT JOIN arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_flaechenobjekt AS typ
         ON erschliessung_flaechenobjekt.typ_erschliessung_flaechenobjekt= typ.t_id
     WHERE
-        erschliessung_flaechenobjekt.t_datasetname::int4=$bfsnr
+        erschliessung_flaechenobjekt.t_datasetname::int4=2457
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_erschliessung_flaechenobjekt
@@ -652,7 +658,7 @@ SELECT
     erschliessung_flaechenobjekt.erfasser,
     erschliessung_flaechenobjekt.datum_erfassung,
     typ_erschliessung_flaechenobjekt_json_dokument_agg.dokumente::jsonb AS dokumente,
-    $bfsnr AS bfs_nr,
+    2457 AS bfs_nr,
     erschliessung_flaechenobjekt.publiziertbis
 FROM
     erschliessung_flaechenobjekt
@@ -680,7 +686,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=$bfsnr    
+        t_datasetname::int4=2457
 ),
 json_documents AS (
     SELECT
@@ -689,22 +695,23 @@ json_documents AS (
     ((
         SELECT
             docs
-        FROM 
+        FROM
         (
             SELECT
-                dokumentid AS "Dokument_ID", 
-                titel AS "Titel", 
-                offiziellertitel AS "Offizieller_Titel", 
+                dokumentid AS "DokumentID",
+                titel AS "Titel",
+                offiziellertitel AS "OffiziellerTitel",
                 abkuerzung AS "Abkuerzung",
-                offiziellenr AS "Offizielle_Nr", 
-                kanton AS "Kanton", 
-                gemeinde AS "Gemeinde", 
-                publiziertab AS "publiziert_ab", 
+                offiziellenr AS "OffizielleNr",
+                kanton AS "Kanton",
+                gemeinde AS "Gemeinde",
+                publiziertab AS "publiziertAb",
                 rechtsstatus AS "Rechtsstatus",
-                textimweb AS "Text_im_Web",
-                bemerkungen AS "Bemerkungen", 
-                rechtsvorschrift AS "Rechtsvorschrift", 
-                'SO_Nutzungsplanung_Publikation_20190909.Nutzungsplanung.Dokument' AS "@type"
+                textimweb AS "TextimWeb",
+                bemerkungen AS "Bemerkungen",
+                rechtsvorschrift AS "Rechtsvorschrift",
+                publiziertbis AS "publiziertBis",
+                'SO_ARP_Nutzungsplanung_Publikation_20201005.Nutzungsplanung.Dokument' AS "@type"
         ) docs
     ))
   )::text AS json_dok,
@@ -732,7 +739,7 @@ typ_erschliessung_linienobjekt_json_dokument_agg AS (
 ),
 
 erschliessung_linienobjekt AS (
-    SELECT 
+    SELECT
         erschliessung_linienobjekt.t_id,
         erschliessung_linienobjekt.t_ili_tid,
         typ.bezeichnung AS typ_bezeichnung,
@@ -756,7 +763,7 @@ erschliessung_linienobjekt AS (
         LEFT JOIN arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_linienobjekt AS typ
         ON erschliessung_linienobjekt.typ_erschliessung_linienobjekt= typ.t_id
     WHERE
-        erschliessung_linienobjekt.t_datasetname::int4=$bfsnr
+        erschliessung_linienobjekt.t_datasetname::int4=2457
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_erschliessung_linienobjekt
@@ -777,7 +784,7 @@ SELECT
     erschliessung_linienobjekt.erfasser,
     erschliessung_linienobjekt.datum_erfassung,
     typ_erschliessung_linienobjekt_json_dokument_agg.dokumente::jsonb AS dokumente,
-    $bfsnr AS bfs_nr,
+    2457 AS bfs_nr,
     erschliessung_linienobjekt.publiziertbis
 FROM
     erschliessung_linienobjekt
@@ -804,7 +811,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=$bfsnr    
+        t_datasetname::int4=2457
 ),
 json_documents AS (
     SELECT
@@ -813,22 +820,23 @@ json_documents AS (
     ((
         SELECT
             docs
-        FROM 
+        FROM
         (
             SELECT
-                dokumentid AS "Dokument_ID", 
-                titel AS "Titel", 
-                offiziellertitel AS "Offizieller_Titel", 
+                dokumentid AS "DokumentID",
+                titel AS "Titel",
+                offiziellertitel AS "OffiziellerTitel",
                 abkuerzung AS "Abkuerzung",
-                offiziellenr AS "Offizielle_Nr", 
-                kanton AS "Kanton", 
-                gemeinde AS "Gemeinde", 
-                publiziertab AS "publiziert_ab", 
+                offiziellenr AS "OffizielleNr",
+                kanton AS "Kanton",
+                gemeinde AS "Gemeinde",
+                publiziertab AS "publiziertAb",
                 rechtsstatus AS "Rechtsstatus",
-                textimweb AS "Text_im_Web",
-                bemerkungen AS "Bemerkungen", 
-                rechtsvorschrift AS "Rechtsvorschrift", 
-                'SO_Nutzungsplanung_Publikation_20190909.Nutzungsplanung.Dokument' AS "@type"
+                textimweb AS "TextimWeb",
+                bemerkungen AS "Bemerkungen",
+                rechtsvorschrift AS "Rechtsvorschrift",
+                publiziertbis AS "publiziertBis",
+                'SO_ARP_Nutzungsplanung_Publikation_20201005.Nutzungsplanung.Dokument' AS "@type"
         ) docs
     ))
   )::text AS json_dok,
@@ -856,7 +864,7 @@ typ_erschliessung_punktobjekt_json_dokument_agg AS (
 ),
 
 erschliessung_punktobjekt AS (
-    SELECT 
+    SELECT
         erschliessung_punktobjekt.t_id,
         erschliessung_punktobjekt.t_ili_tid,
         typ.bezeichnung AS typ_bezeichnung,
@@ -880,7 +888,7 @@ erschliessung_punktobjekt AS (
         LEFT JOIN arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_punktobjekt AS typ
         ON erschliessung_punktobjekt.typ_erschliessung_punktobjekt= typ.t_id
     WHERE
-        erschliessung_punktobjekt.t_datasetname::int4=$bfsnr
+        erschliessung_punktobjekt.t_datasetname::int4=2457
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_erschliessung_punktobjekt
@@ -901,7 +909,7 @@ SELECT
     erschliessung_punktobjekt.erfasser,
     erschliessung_punktobjekt.datum_erfassung,
     typ_erschliessung_punktobjekt_json_dokument_agg.dokumente::jsonb AS dokumente,
-    $bfsnr AS bfs_nr,
+    2457 AS bfs_nr,
     erschliessung_punktobjekt.publiziertbis
 FROM
     erschliessung_punktobjekt
@@ -928,7 +936,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=$bfsnr    
+        t_datasetname::int4=2457
 ),
 json_documents AS (
     SELECT
@@ -937,22 +945,23 @@ json_documents AS (
     ((
         SELECT
             docs
-        FROM 
+        FROM
         (
             SELECT
-                dokumentid AS "Dokument_ID", 
-                titel AS "Titel", 
-                offiziellertitel AS "Offizieller_Titel", 
+                dokumentid AS "DokumentID",
+                titel AS "Titel",
+                offiziellertitel AS "OffiziellerTitel",
                 abkuerzung AS "Abkuerzung",
-                offiziellenr AS "Offizielle_Nr", 
-                kanton AS "Kanton", 
-                gemeinde AS "Gemeinde", 
-                publiziertab AS "publiziert_ab", 
+                offiziellenr AS "OffizielleNr",
+                kanton AS "Kanton",
+                gemeinde AS "Gemeinde",
+                publiziertab AS "publiziertAb",
                 rechtsstatus AS "Rechtsstatus",
-                textimweb AS "Text_im_Web",
-                bemerkungen AS "Bemerkungen", 
-                rechtsvorschrift AS "Rechtsvorschrift", 
-                'SO_Nutzungsplanung_Publikation_20190909.Nutzungsplanung.Dokument' AS "@type"
+                textimweb AS "TextimWeb",
+                bemerkungen AS "Bemerkungen",
+                rechtsvorschrift AS "Rechtsvorschrift",
+                publiziertbis AS "publiziertBis",
+                'SO_ARP_Nutzungsplanung_Publikation_20201005.Nutzungsplanung.Dokument' AS "@type"
         ) docs
     ))
   )::text AS json_dok,
@@ -980,7 +989,7 @@ typ_empfindlichkeitsstufe_json_dokument_agg AS (
 ),
 
 empfindlichkeitsstufe AS (
-    SELECT 
+    SELECT
         empfindlichkeitsstufe.t_id,
         empfindlichkeitsstufe.t_ili_tid,
         typ.bezeichnung AS typ_bezeichnung,
@@ -1003,7 +1012,7 @@ empfindlichkeitsstufe AS (
         LEFT JOIN arp_nutzungsplanung_v1.laermmpfhktsstfen_typ_empfindlichkeitsstufe AS typ
         ON empfindlichkeitsstufe.typ_empfindlichkeitsstufen= typ.t_id
     WHERE
-        empfindlichkeitsstufe.t_datasetname::int4=$bfsnr
+        empfindlichkeitsstufe.t_datasetname::int4=2457
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_empfindlichkeitsstufe
@@ -1023,7 +1032,7 @@ SELECT
     empfindlichkeitsstufe.typ_verbindlichkeit,
     empfindlichkeitsstufe.typ_bemerkungen,
     empfindlichkeitsstufe.typ_kt,
-    $bfsnr AS bfs_nr,
+    2457 AS bfs_nr,
     typ_empfindlichkeitsstufe_json_dokument_agg.dokumente::jsonb AS dokumente
 FROM
     empfindlichkeitsstufe

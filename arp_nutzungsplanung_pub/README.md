@@ -8,8 +8,14 @@ Die Publikation wird pro Dataset (BFS-Nr.) ausgeführt. So kann definiert werden
 Hinweis für Publikation Kanton gibt es ein eignener GRETL-Job.
 
 ## Job Ablauf
-1. xxxx
-
+1. Schema «arp_nutzungsplanung_transfer_pub» 
+2. Datenumabu vom Schema «arp_nutzungsplanung» (Datenmodell «SO_ARP_Nutzungsplanung_Nachfuehrung_20201005») ins Schema «arp_nutzungsplanung_transfer_pub» (Datenmodell «SO_ARP_Nutzungsplanung_Publikation_20201005»)
+3. Export der XTF-Datei
+4. Validation der INTERLIS-Dateien mit dem Validierungsmodell
+5. Import XTF in Schema «arp_nutzungsplanung_staging»
+6. Bestätigung (manuell) Review ist i.O. 
+7. Import/Replace XTF in Schema «arp_nutzungsplanung_pub»
+8. Dataset aus Schema «arp_nutzungsplanung_staging» löschen
 
 ## GRETL
 Lokales arbeiten:
@@ -24,5 +30,5 @@ export ORG_GRADLE_PROJECT_dbPwdPub=gretl
 ```
 nur Lokal ein Ordner "upload" anlegen im Gretljob Verzeichnis. XTF-Datei in das Verzeichnis kopieren mit der Benennung "uploadFile" 
 ```
-./start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network schema-jobs_default --job-directory $PWD/arp_nutzungsplanung_pub -Pili2pgDataset='2457'
+./start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network schema-jobs_default --job-directory $PWD/arp_nutzungsplanung_pub -Pbfsnr='2457'
 ```

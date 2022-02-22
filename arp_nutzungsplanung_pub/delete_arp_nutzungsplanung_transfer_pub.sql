@@ -19,21 +19,21 @@ DELETE FROM
 ;
 --Erschliessung Fläche
 DELETE FROM
-    arp_nutzungsplanung_transfer_pub_v1.erschlssngsplnung_erschliessung_flaechenobjekt
+    arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_erschliessung_flaechenobjekt
 ;
 --Erschliessung Linie
 DELETE FROM
-    arp_nutzungsplanung_transfer_pub_v1.erschlssngsplnung_erschliessung_linienobjekt
+    arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_erschliessung_linienobjekt
 ;
 
 --Erschliessung Punkt
 DELETE FROM
-    arp_nutzungsplanung_transfer_pub_v1.erschlssngsplnung_erschliessung_punktobjekt
+    arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_erschliessung_punktobjekt
 ;
 
 -- Lärmempfindlichkeitsstufen
 DELETE FROM
-    arp_nutzungsplanung_transfer_pub_v1.laermmpfhktsstfen_empfindlichkeitsstufe
+    arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_empfindlichkeitsstufe
 ;
 
 -- Basket / Dataset 
