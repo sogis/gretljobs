@@ -47,7 +47,7 @@ task bfsZuordnung(type: SqlExecutor, dependsOn:'datenBereinigungPostProcessing')
     description = "Wegen noch nicht fusionierter Zonenplandaten müssen die BFS-Nr durch geografische Beziehung nochmals zu den AV Gemeinden zugewiesen werden."
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ['arp_npl_pub_bfs_zuordnung.sql']
-    sqlParameters = [[dbSchemaNPL:DB_Schema_NPL],[dbSchemaHoheitsgr:DB_Schema_Hoheitsgr]]
+    sqlParameters = [[dbSchemaNPL:'arp_npl_pub'],[dbSchemaHoheitsgr:'agi_hoheitsgrenzen_pub']]
 }
 
 task updateAggregationGrundnutzungsflaechen(type: SqlExecutor, dependsOn: "bfsZuordnung") {
