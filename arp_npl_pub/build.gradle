@@ -41,13 +41,13 @@ task datenBereinigungPostProcessing(type: SqlExecutor, dependsOn:'transferAlteGr
     sqlFiles = ['arp_npl_pub_datenbereinigung.sql']
 }
 
-/* task bfsZuordnung(type: SqlExecutor, dependsOn:'datenBereinigungPostProcessing'){
+task bfsZuordnung(type: SqlExecutor, dependsOn:'datenBereinigungPostProcessing'){
     description = "Wegen noch nicht fusionierter Zonenplandaten müssen die BFS-Nr durch geografische Beziehung nochmals zu den AV Gemeinden zugewiesen werden."
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ['arp_npl_pub_bfs_zuordnung.sql']
-} */
+}
 
-task updateAggregationGrundnutzungsflaechen(type: SqlExecutor, dependsOn: "datenBereinigungPostProcessing") {
+task updateAggregationGrundnutzungsflaechen(type: SqlExecutor, dependsOn: "bfsZuordnung") {
     description = "Aktualisierung der aggregierten Zonenflächen pro Gemeinde"
     group = GROUP
     database = [dbUriPub, dbUserPub, dbPwdPub]
