@@ -2,7 +2,7 @@
 
 -- Grundnutzung
 UPDATE
-    ${dbSchemaNPL}.nutzungsplanung_grundnutzung gr
+    arp_npl_pub.nutzungsplanung_grundnutzung gr
      SET bfs_nr = gg.bfs_gemeindenummer
-  FROM ${dbSchemaHoheitsgr}.hoheitsgrenzen_gemeindegrenze gg
+  FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze gg
     WHERE ST_Within(ST_Centroid(gr.geometrie),gg.geometrie);
