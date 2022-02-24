@@ -15,12 +15,17 @@ pipeline {
       kubernetes {
         cloud 'openshift'
         inheritFrom 'gretl'
-        yamlMergeStrategy merge()
         yaml '''
           spec:
             securityContext:
               supplementalGroups: [26]
             containers:
+            - name: gretl
+              envFrom:
+              - configMapRef:
+                  name: gretl-resources
+              - secretRef:
+                  name: gretl-secrets
             - name: processing-db
               image: crunchydata/crunchy-postgres-gis:centos8-13.3-3.1-4.6.3
               env:
