@@ -77,7 +77,7 @@ bebaut_fl AS (
 gr_tmp2 AS (
   SELECT
     gr.*,
-    Round(SUM(COALESCE(ST_Area(ST_Intersection(gr.geometrie,unbeb_fl.geometrie,0.001)),0)),1)::NUMERIC AS flaeche_unbebaut,
+    Round(SUM(COALESCE(ST_Area(ST_Intersection(gr.geometrie,unbeb_fl.geometrie,0.001))::NUMERIC,0)),1)::NUMERIC AS flaeche_unbebaut,
     CASE
       WHEN flaeche - Round(ST_Area(gr.geometrie)) > 1 THEN 'beschnitten'
       ELSE 'original'
@@ -90,7 +90,7 @@ gr_tmp2 AS (
 gr AS (
   SELECT
     gr.*,
-    Round(SUM(COALESCE(ST_Area(ST_Intersection(gr.geometrie,bebaut_fl.geometrie,0.001)),0)),1)::NUMERIC AS flaeche_bebaut
+    Round(SUM(COALESCE(ST_Area(ST_Intersection(gr.geometrie,bebaut_fl.geometrie,0.001))::NUMERIC,0)),1)::NUMERIC AS flaeche_bebaut
   FROM gr_tmp2 gr
     LEFT JOIN bebaut_fl ON ST_Intersects(gr.geometrie, bebaut_fl.geometrie)
    GROUP BY gr.t_id, gr.t_ili_tid, gr.egris_egrid, gr.nummer, gr.bfs_nr, gr.grundnutzung_typ_kt, gr.flaeche, gr.geometrie, gr.gemeindename, gr.ct_uebersteuert,
