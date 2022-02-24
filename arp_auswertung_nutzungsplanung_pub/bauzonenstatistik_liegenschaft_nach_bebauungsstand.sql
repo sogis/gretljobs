@@ -79,7 +79,7 @@ gr_tmp2 AS (
     gr.*,
     Round(SUM(COALESCE(ST_Area(ST_Intersection(gr.geometrie,unbeb_fl.geometrie,0.001)),0))::NUMERIC,1)::NUMERIC AS flaeche_unbebaut,
     CASE
-      WHEN flaeche - Round(ST_Area(gr.geometrie)::NUMERIC) > 1 THEN 'beschnitten'
+      WHEN flaeche - Round(ST_Area(gr.geometrie)) > 1 THEN 'beschnitten'
       ELSE 'original'
     END AS geometrieart_liegenschaft,
     Round(ST_Area(gr.geometrie)::NUMERIC,1) AS flaeche_beschnitten
