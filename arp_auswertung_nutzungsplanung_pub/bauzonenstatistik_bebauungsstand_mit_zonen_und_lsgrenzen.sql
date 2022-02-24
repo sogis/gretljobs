@@ -204,7 +204,7 @@ SELECT
   f.bebauungsstand,
   nz.bfs_nr,
   gem.gemeindename,
-  Round(ST_Area(f.geometrie)) AS flaeche,
+  Round(ST_Area(f.geometrie),1) AS flaeche,
   f.geometrie
 FROM gesamt_final f
   LEFT JOIN nutzzon nz ON ST_Intersects(ST_PointOnSurface(f.geometrie),nz.geometrie)
