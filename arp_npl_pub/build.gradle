@@ -41,6 +41,7 @@ task datenBereinigungPostProcessing(type: SqlExecutor, dependsOn:'transferAlteGr
     description = "Datenbereinigung wegen invaliden Geometrien, kann nach ili2pg-Upgrade entfernt werden"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ['arp_npl_pub_datenbereinigung.sql']
+    sqlParameters = [dbSchemaNPL:DB_Schema_NPL]
 }
 
 task bfsZuordnung(type: SqlExecutor, dependsOn:'datenBereinigungPostProcessing'){
