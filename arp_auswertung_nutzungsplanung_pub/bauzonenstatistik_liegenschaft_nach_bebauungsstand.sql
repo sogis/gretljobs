@@ -50,7 +50,7 @@ gr_tmp AS (
   FROM agi_mopublic_pub.mopublic_grundstueck gru
    LEFT JOIN nutzzon ON ST_Intersects(gru.geometrie, nutzzon.geometrie)
    LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze gem ON gru.bfs_nr = gem.bfs_gemeindenummer
-   LEFT JOIN ${BZ_SchemaName}.bauzonenstatistik_uebersteuerung_bebauungsstand ueb
+   LEFT JOIN ${DB_Schema_AuswNPL}.bauzonenstatistik_uebersteuerung_bebauungsstand ueb
       ON ST_Intersects(ueb.geometrie,gru.geometrie) AND ueb.bebaut IS TRUE
     WHERE
      gru.bfs_nr = (SELECT nr FROM bfsnr)
