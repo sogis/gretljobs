@@ -78,6 +78,6 @@ BfsNrGemeinden.each { bfsNr ->
 task "ZusammenfassungUndGINES"(type: SqlExecutor) {
     description = "Zusammenfassung Bebauungsstand pro Gemeinde und Zone, danach gefolgt von Update GINES-Tabelle für Export"
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlParameters = [DB_Schema_NPL:DBSchema_NPL, DB_Schema_Hoheitsgr:DBSchema_Hoheitsgr, DB_Schema_AuswNPL:DBSchema_AuswNPL]
+    sqlParameters = [DB_Schema_NPL:DBSchema_NPL,DB_Schema_Hoheitsgr:DBSchema_Hoheitsgr,DB_Schema_AuswNPL:DBSchema_AuswNPL]
     sqlFiles = ['bauzonenstatistik_bebauungsstand_pro_gemeinde.sql','bauzonenstatistik_gines.sql']
 }
