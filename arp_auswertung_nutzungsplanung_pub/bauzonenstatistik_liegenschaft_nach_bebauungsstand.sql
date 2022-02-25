@@ -1,11 +1,11 @@
 -- zuerst Tabelle leeren
 DELETE FROM
-  ${BZ_SchemaName}.bauzonenstatistik_liegenschaft_nach_bebauungsstand
+  ${DB_Schema_AuswNPL}.bauzonenstatistik_liegenschaft_nach_bebauungsstand
  WHERE bfs_nr = ${gem_bfs}
 ;
 -- wieder befüllen
 INSERT INTO
-  ${BZ_SchemaName}.bauzonenstatistik_liegenschaft_nach_bebauungsstand
+  ${DB_Schema_AuswNPL}.bauzonenstatistik_liegenschaft_nach_bebauungsstand
    (t_ili_tid, egris_egrid, nummer, bfs_nr, gemeindename, grundnutzung_typ_kt, bebauungsstand, flaeche, flaeche_beschnitten, flaeche_unbebaut, geometrieart_liegenschaft, geometrie)
 
 WITH
@@ -31,7 +31,7 @@ unbeb_fl AS (
   SELECT
     geometrie
   FROM
-    ${BZ_SchemaName}.bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen
+    ${DB_Schema_AuswNPL}.bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen
    WHERE
     bfs_nr = (SELECT nr FROM bfsnr) AND bebauungsstand = 'unbebaut'
 ),

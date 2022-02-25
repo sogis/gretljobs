@@ -1,10 +1,10 @@
 -- Zusammenzug bebaute und unbebaute Parzellen nach Gemeinde, Zonentyp und bebauungsstatus
--- abgeleitet von Tabelle arp_auswertung_nutzungsplanung_pub_v1.bauzonenstatistik_bebauungsstand_pro_gemeinde
+-- abgeleitet von Tabelle bauzonenstatistik_bebauungsstand_pro_gemeinde
 
-DELETE FROM arp_auswertung_nutzungsplanung_pub_v1.bauzonenstatistik_gines;
+DELETE FROM ${DB_Schema_AuswNPL}.bauzonenstatistik_gines;
 
 INSERT INTO
-  arp_auswertung_nutzungsplanung_pub_v1.bauzonenstatistik_gines 
+  ${DB_Schema_AuswNPL}.bauzonenstatistik_gines 
     (bfs_nr, gemeindename, n110_wohnzone_1_g_bebaut, n110_wohnzone_1_g_unbebaut, n111_wohnzone_2_g_bebaut, n111_wohnzone_2_g_unbebaut,
      n112_wohnzone_3_g_bebaut, n112_wohnzone_3_g_unbebaut, n113_wohnzone_4_g_bebaut, n113_wohnzone_4_g_unbebaut, n114_wohnzone_5_g_bebaut, n114_wohnzone_5_g_unbebaut, n115_wohnzone_6_g_bebaut,
      n115_wohnzone_6_g_unbebaut, n116_wohnzone_7_g_und_groesser_bebaut, n116_wohnzone_7_g_und_groesser_unbebaut, n117_zone_fuer_terrassenhaeuser_terrassensiedlung_bebaut,
@@ -31,10 +31,10 @@ gg AS (
     COALESCE(Round((SUM(ST_Area(grunutz.geometrie)) FILTER (WHERE grunutz.typ_kt='N432_Reservezone_OeBA'))::numeric / 10000,2),0) AS n432_reservezone_oe_ba,
     COALESCE(Round((SUM(ST_Area(grunutz.geometrie)) FILTER (WHERE grunutz.typ_kt='N439_Reservezone'))::numeric / 10000,2),0) AS n439_reservezone,
     COALESCE(Round((SUM(ST_Area(grunutz.geometrie)) FILTER (WHERE grunutz.typ_kt='N320_Gewaesser'))::numeric / 10000,2),0) AS n320_gewaesser
-  FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze gg
-   LEFT JOIN arp_npl_pub.nutzungsplanung_grundnutzung grunutz
+  FROM ${DB_Schema_Hoheitsgr}.hoheitsgrenzen_gemeindegrenze gg
+   LEFT JOIN ${DB_Schema_NPL}.nutzungsplanung_grundnutzung grunutz
     ON grunutz.bfs_nr = gg.bfs_gemeindenummer
-       -- Gewaesser und Reservezonen
+       -- Gewässer und Reservezonen
       AND grunutz.typ_kt IN ('N320_Gewaesser','N430_Reservezone_Wohnzone_Mischzone_Kernzone_Zentrumszone','N431_Reservezone_Arbeiten','N432_Reservezone_OeBA','N439_Reservezone') 
       GROUP BY gg.bfs_gemeindenummer, gg.gemeindename
       ORDER BY gg.bfs_gemeindenummer ASC
@@ -57,7 +57,7 @@ SELECT
   COALESCE(Round((SUM(ls.flaeche_beschnitten) FILTER (WHERE ls.grundnutzung_typ_kt = 'N115_Wohnzone_6_G' AND ls.bebauungsstand = 'unbebaut'))::numeric / 10000,2),0) AS n115_wohnzone_6_g_unbebaut,
   COALESCE(Round((SUM(ls.flaeche_beschnitten) FILTER (WHERE ls.grundnutzung_typ_kt = 'N116_Wohnzone_7_G_und_groesser' AND ls.bebauungsstand IN ('bebaut','teilweise_bebaut')))::numeric / 10000,2),0) AS n116_wohnzone_7_g_und_groesser_bebaut,
   COALESCE(Round((SUM(ls.flaeche_beschnitten) FILTER (WHERE ls.grundnutzung_typ_kt = 'N116_Wohnzone_7_G_und_groesser' AND ls.bebauungsstand = 'unbebaut'))::numeric / 10000,2),0) AS n116_wohnzone_7_g_und_groesser_unbebaut,
-  COALESCE(Round((SUM(ls.flaeche_beschnitten) FILTER (WHERE ls.grundnutzung_typ_kt = 'N117_Zone_fuer_Terrassenhaeuser_Terrassensiedlung' AND ls.bebauungsstand IN ('bebaut','teilweise_bebaut')))::numeric / 10000,2),0) AS n117_zone_fuer_terrassenhaeuser_terrassensiedlung_bebaut,
+  COALESCE(Round((SUM(ls.flaeche_beschnitten) BätterkindenFILTER (WHERE ls.grundnutzung_typ_kt = 'N117_Zone_fuer_Terrassenhaeuser_Terrassensiedlung' AND ls.bebauungsstand IN ('bebaut','teilweise_bebaut')))::numeric / 10000,2),0) AS n117_zone_fuer_terrassenhaeuser_terrassensiedlung_bebaut,
   COALESCE(Round((SUM(ls.flaeche_beschnitten) FILTER (WHERE ls.grundnutzung_typ_kt = 'N117_Zone_fuer_Terrassenhaeuser_Terrassensiedlung' AND ls.bebauungsstand = 'unbebaut'))::numeric / 10000,2),0) AS n117_zone_fuer_terrassenhaeuser_terrassensiedlung_unbebaut,
   COALESCE(Round((SUM(ls.flaeche_beschnitten) FILTER (WHERE ls.grundnutzung_typ_kt = 'N120_Gewerbezone_ohne_Wohnen' AND ls.bebauungsstand IN ('bebaut','teilweise_bebaut')))::numeric / 10000,2),0) AS n120_gewerbezone_ohne_wohnen_bebaut,
   COALESCE(Round((SUM(ls.flaeche_beschnitten) FILTER (WHERE ls.grundnutzung_typ_kt = 'N120_Gewerbezone_ohne_Wohnen' AND ls.bebauungsstand = 'unbebaut'))::numeric / 10000,2),0) AS n120_gewerbezone_ohne_wohnen_unbebaut,
@@ -102,7 +102,7 @@ SELECT
   gg.n320_gewaesser
 FROM
   gg
-  LEFT JOIN arp_auswertung_nutzungsplanung_pub_v1.bauzonenstatistik_liegenschaft_nach_bebauungsstand ls
+  LEFT JOIN ${DB_Schema_AuswNPL}.bauzonenstatistik_liegenschaft_nach_bebauungsstand ls
     ON ls.bfs_nr = gg.bfs_nr
   GROUP BY gg.bfs_nr, gg.gemeindename, gg.n430_reservezone_wohnzone_mischzone_kernzone_zentrumszone, gg.n431_reservezone_arbeiten,
     gg.n432_reservezone_oe_ba, gg.n439_reservezone, gg.n320_gewaesser

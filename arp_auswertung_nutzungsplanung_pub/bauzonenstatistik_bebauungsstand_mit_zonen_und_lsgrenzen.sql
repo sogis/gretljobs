@@ -1,8 +1,8 @@
-DELETE FROM ${BZ_SchemaName}.bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen
+DELETE FROM ${DB_Schema_AuswNPL}.bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen
   WHERE bfs_nr = ${gem_bfs}
 ;
 INSERT
-  INTO ${BZ_SchemaName}.bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen
+  INTO ${DB_Schema_AuswNPL}.bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen
    (grundnutzung_typ_kt,bebauungsstand,bfs_nr,gemeindename,flaeche,geometrie)
    
 -- hier wird Gemeinde selektiert
