@@ -19,7 +19,7 @@ nutzzon AS (
     geometrie,
     typ_kt,
     bfs_nr
-  FROM arp_npl_pub.nutzungsplanung_grundnutzung
+  FROM ${DB_Schema_NPL}.nutzungsplanung_grundnutzung
     WHERE
       bfs_nr = (SELECT nr FROM bfsnr)
       AND typ_code_kommunal < 2000
@@ -47,9 +47,9 @@ gr_tmp AS (
    gru.flaechenmass AS flaeche,
    ST_Multi(ST_CollectionExtract(ST_Intersection(gru.geometrie,ST_Union(nutzzon.geometrie,0.001),0.001),3)) AS geometrie,
    COUNT(ueb.bebaut) AS ct_uebersteuert
-  FROM agi_mopublic_pub.mopublic_grundstueck gru
+  FROM ${DB_Schema_AV}.mopublic_grundstueck gru
    LEFT JOIN nutzzon ON ST_Intersects(gru.geometrie, nutzzon.geometrie)
-   LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze gem ON gru.bfs_nr = gem.bfs_gemeindenummer
+   LEFT JOIN ${DB_Schema_Hoheitsgr}.hoheitsgrenzen_gemeindegrenze gem ON gru.bfs_nr = gem.bfs_gemeindenummer
    LEFT JOIN ${DB_Schema_AuswNPL}.bauzonenstatistik_uebersteuerung_bebauungsstand ueb
       ON ST_Intersects(ueb.geometrie,gru.geometrie) AND ueb.bebaut IS TRUE
     WHERE
@@ -61,15 +61,15 @@ gr_tmp AS (
 -- bebaute Flächen Input
 bebaut_fl AS (
   -- Gebäude aus Bodenbedeckung
-  SELECT geometrie, bfs_nr FROM agi_mopublic_pub.mopublic_bodenbedeckung
+  SELECT geometrie, bfs_nr FROM ${DB_Schema_AV}.mopublic_bodenbedeckung
     WHERE bfs_nr = (SELECT nr FROM bfsnr) AND art_txt = 'Gebaeude' AND ST_Area(geometrie) >= 25
   UNION ALL
   -- projektierte Gebäude aus Bodenbedeckung
-  SELECT geometrie, bfs_nr FROM agi_mopublic_pub.mopublic_bodenbedeckung_proj
+  SELECT geometrie, bfs_nr FROM ${DB_Schema_AV}.mopublic_bodenbedeckung_proj
     WHERE bfs_nr = (SELECT nr FROM bfsnr) AND art_txt = 'Gebaeude' AND ST_Area(geometrie) >= 25
   UNION ALL
   -- Einzelobjekte Flächen
-  SELECT geometrie, bfs_nr FROM agi_mopublic_pub.mopublic_einzelobjekt_flaeche
+  SELECT geometrie, bfs_nr FROM ${DB_Schema_AV}.mopublic_einzelobjekt_flaeche
     WHERE bfs_nr = (SELECT nr FROM bfsnr) AND art_txt IN ('Unterstand','unterirdisches_Gebaeude','uebriger_Gebaeudeteil','Reservoir','Aussichtsturm','Bahnsteig') AND ST_Area(geometrie) >= 25
 ),
 -- Verknüpfung mit unbebauten Flächen aus Methode unter Berücksichtigung Liegenschaften und Nutzungszonen

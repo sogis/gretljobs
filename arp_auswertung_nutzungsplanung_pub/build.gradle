@@ -13,7 +13,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 defaultTasks 'BauzonenstatistikStart'
 
-/* def BfsNrGemeinden = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
+def BfsNrGemeinden = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
                       2421, 2422, 2424, 2425, 2426, 2427, 2428, 2430,
                       2445,
                       2455, 2456, 2457,
@@ -34,13 +34,14 @@ defaultTasks 'BauzonenstatistikStart'
                       2601,
                       2611, 2612, 2613, 2614, 2615, 2616, 2617, 2618, 2619,
                       2620, 2621, 2622
-] */
+]
 
-def BfsNrGemeinden = [2401, 2402]
+/* def BfsNrGemeinden = [2401, 2402] */
 
 def DB_Schema_NPL = "arp_npl_pub"
 def DB_Schema_Hoheitsgr = "agi_hoheitsgrenzen_pub"
 def DB_Schema_AuswNPL = "arp_auswertung_nutzungsplanung_pub_v1"
+def DB_Schema_AV = "agi_mopublic_pub"
 
 task UebertragUebersteuerungBebauungsstand(type: Db2Db) {
   description = "Übertrag Punktlayer mit Übersteuerungen Bebauungsstand. Es werden hier v.a. auch nicht überbaubare Flächen (wie Parkanlagen, Friedhöfe und Sportanlagen) mit Punkten gekennzeichnet."
@@ -63,7 +64,7 @@ BfsNrGemeinden.each { bfsNr ->
     task "BauzonenstatistikProcessing_$bfsNr"(type: SqlExecutor) {
         description = "Eigentliche Bauzonenstatitik"
         database = [dbUriPub, dbUserPub, dbPwdPub]
-        sqlParameters = [DB_Schema_AuswNPL:DB_Schema_AuswNPL,gem_bfs:bfsNr as String]
+        sqlParameters = [DB_Schema_AV:DB_Schema_AV,DB_Schema_NPL:DB_Schema_NPL,DB_Schema_Hoheitsgr:DB_Schema_Hoheitsgr,DB_Schema_AuswNPL:DB_Schema_AuswNPL,gem_bfs:bfsNr as String]
         sqlFiles = ['bauzonenstatistik_bebauungsstand_mit_zonen_ohne_lsgrenzen.sql','bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen.sql','bauzonenstatistik_liegenschaft_nach_bebauungsstand.sql']
     }
 }
