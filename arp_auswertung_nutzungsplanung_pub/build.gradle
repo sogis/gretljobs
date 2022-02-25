@@ -14,7 +14,7 @@ import ch.so.agi.gretl.api.TransferSet
 defaultTasks 'BauzonenstatistikStart'
 
 def BfsNrGemeinden = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
-                      2421, 2422, 2424, 2425, 2426, 2427, 2428, 2arp_auswertung_nutzungsplanung_pub_v1430,
+                      2421, 2422, 2424, 2425, 2426, 2427, 2428, 2430,
                       2445,
                       2455, 2456, 2457,
                       2461,
