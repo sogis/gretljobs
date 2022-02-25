@@ -11,10 +11,11 @@ apply plugin: 'ch.so.agi.gretl'
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'BauzonenstatistikStart'
+defaultTasks 'ZusammenfassungUndGINES'
+/*defaultTasks 'BauzonenstatistikStart'*/
 
 /*def BfsNrGemeinden = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
-                      2421, 2422, 2424, 2425, 2426, 2427, 2428, 2430,
+                      2421, 2422, 2424, 2425, 2426, 2427, 2428, 2arp_auswertung_nutzungsplanung_pub_v1430,
                       2445,
                       2455, 2456, 2457,
                       2461,
@@ -43,6 +44,10 @@ defaultTasks 'BauzonenstatistikStart'
 
 
 def BfsNrGemeinden = [2401, 2402]
+
+def DB_Schema_NPL = "arp_npl_pub"
+def DB_Schema_Hoheitsgr = "agi_hoheitsgrenzen_pub"
+def DB_Schema_AuswNPL = "arp_auswertung_nutzungsplanung_pub_v1"
 
 task UebertragUebersteuerungBebauungsstand(type: Db2Db) {
   description = "Übertrag Punktlayer mit Übersteuerungen Bebauungsstand. Es werden hier v.a. auch nicht überbaubare Flächen (wie Parkanlagen, Friedhöfe und Sportanlagen) mit Punkten gekennzeichnet."
@@ -73,6 +78,6 @@ BfsNrGemeinden.each { bfsNr ->
 task "ZusammenfassungUndGINES"(type: SqlExecutor) {
     description = "Zusammenfassung Bebauungsstand pro Gemeinde und Zone, danach gefolgt von Update GINES-Tabelle für Export"
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlParameters = [BZ_SchemaName:'arp_auswertung_nutzungsplanung_pub_v1']
+    sqlParameters = [DB_Schema_NPL:DB_Schema_NPL, DB_Schema_Hoheitsgr:DB_Schema_Hoheitsgr, DB_Schema_AuswNPL:DB_Schema_AuswNPL]
     sqlFiles = ['bauzonenstatistik_bebauungsstand_pro_gemeinde.sql','bauzonenstatistik_gines.sql']
 }

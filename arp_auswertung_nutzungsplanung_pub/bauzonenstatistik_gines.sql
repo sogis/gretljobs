@@ -1,10 +1,10 @@
 -- Zusammenzug bebaute und unbebaute Parzellen nach Gemeinde, Zonentyp und bebauungsstatus
--- abgeleitet von Tabelle ${BZ_SchemaName}.bauzonenstatistik_bebauungsstand_pro_gemeinde
+-- abgeleitet von Tabelle ${DB_Schema_AuswNPL}.bauzonenstatistik_bebauungsstand_pro_gemeinde
 
-DELETE FROM ${BZ_SchemaName}.bauzonenstatistik_gines;
+DELETE FROM ${DB_Schema_AuswNPL}.bauzonenstatistik_gines;
 
 INSERT INTO
-  ${BZ_SchemaName}.bauzonenstatistik_gines 
+  ${DB_Schema_AuswNPL}.bauzonenstatistik_gines 
     (bfs_nr, gemeindename, n110_wohnzone_1_g_bebaut, n110_wohnzone_1_g_unbebaut, n111_wohnzone_2_g_bebaut, n111_wohnzone_2_g_unbebaut,
      n112_wohnzone_3_g_bebaut, n112_wohnzone_3_g_unbebaut, n113_wohnzone_4_g_bebaut, n113_wohnzone_4_g_unbebaut, n114_wohnzone_5_g_bebaut, n114_wohnzone_5_g_unbebaut, n115_wohnzone_6_g_bebaut,
      n115_wohnzone_6_g_unbebaut, n116_wohnzone_7_g_und_groesser_bebaut, n116_wohnzone_7_g_und_groesser_unbebaut, n117_zone_fuer_terrassenhaeuser_terrassensiedlung_bebaut,
@@ -24,19 +24,18 @@ INSERT INTO
 WITH 
 gg AS (
  SELECT
-    gg.bfs_gemeindenummer,
+    gg.bfs_gemeindenummer AS bfs_nr,
     gg.gemeindename,
     COALESCE(Round((SUM(ST_Area(grunutz.geometrie)) FILTER (WHERE grunutz.typ_kt='N430_Reservezone_Wohnzone_Mischzone_Kernzone_Zentrumszone'))::numeric / 10000,2),0) AS n430_reservezone_wohnzone_mischzone_kernzone_zentrumszone,
     COALESCE(Round((SUM(ST_Area(grunutz.geometrie)) FILTER (WHERE grunutz.typ_kt='N431_Reservezone_Arbeiten'))::numeric / 10000,2),0) AS n431_reservezone_arbeiten,
     COALESCE(Round((SUM(ST_Area(grunutz.geometrie)) FILTER (WHERE grunutz.typ_kt='N432_Reservezone_OeBA'))::numeric / 10000,2),0) AS n432_reservezone_oe_ba,
     COALESCE(Round((SUM(ST_Area(grunutz.geometrie)) FILTER (WHERE grunutz.typ_kt='N439_Reservezone'))::numeric / 10000,2),0) AS n439_reservezone,
     COALESCE(Round((SUM(ST_Area(grunutz.geometrie)) FILTER (WHERE grunutz.typ_kt='N320_Gewaesser'))::numeric / 10000,2),0) AS n320_gewaesser
-  FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze gg
-   LEFT JOIN arp_npl_pub.nutzungsplanung_grundnutzung grunutz
+  FROM ${DB_Schema_Hoheitsgr}.hoheitsgrenzen_gemeindegrenze gg
+   LEFT JOIN ${DB_Schema_NPL}.nutzungsplanung_grundnutzung grunutz
     ON grunutz.bfs_nr = gg.bfs_gemeindenummer
        -- Gewaesser und Reservezonen
       AND grunutz.typ_kt IN ('N320_Gewaesser','N430_Reservezone_Wohnzone_Mischzone_Kernzone_Zentrumszone','N431_Reservezone_Arbeiten','N432_Reservezone_OeBA','N439_Reservezone') 
-     --WHERE gg.bfs_gemeindenummer < 2410
       GROUP BY gg.bfs_gemeindenummer, gg.gemeindename
       ORDER BY gg.bfs_gemeindenummer ASC
 )
@@ -103,7 +102,7 @@ SELECT
   gg.n320_gewaesser
 FROM
   gg
-  LEFT JOIN ${BZ_SchemaName}.bauzonenstatistik_liegenschaft_nach_bebauungsstand ls
+  LEFT JOIN ${DB_Schema_AuswNPL}.bauzonenstatistik_liegenschaft_nach_bebauungsstand ls
     ON ls.bfs_nr = gg.bfs_gemeindenummer
   GROUP BY gg.bfs_gemeindenummer, gg.gemeindename, gg.n430_reservezone_wohnzone_mischzone_kernzone_zentrumszone, gg.n431_reservezone_arbeiten,
     gg.n432_reservezone_oe_ba, gg.n439_reservezone, gg.n320_gewaesser
