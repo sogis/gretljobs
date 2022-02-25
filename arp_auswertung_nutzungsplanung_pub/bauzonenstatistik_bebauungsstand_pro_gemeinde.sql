@@ -32,13 +32,14 @@ ORDER BY ol.bfs_nr, ol.grundnutzung_typ_kt
 ;
 
 -- separate Aktualisierung nur der Prozentwerte
---UPDATE
---  ${DB_Schema_AuswNPL}.bauzonenstatistik_bebauungsstand_pro_gemeinde
---  SET
---    bebaut_mit_zonen_ohne_lsgrenzen_proz = Round(bebaut_mit_zonen_ohne_lsgrenzen::numeric / (bebaut_mit_zonen_ohne_lsgrenzen::numeric + unbebaut_mit_zonen_ohne_lsgrenzen::numeric) * 100),
---    unbebaut_mit_zonen_ohne_lsgrenzen_proz = Round(unbebaut_mit_zonen_ohne_lsgrenzen::numeric / (bebaut_mit_zonen_ohne_lsgrenzen::numeric + unbebaut_mit_zonen_ohne_lsgrenzen::numeric) * 100),
---    bebaut_mit_zonen_und_lsgrenzen_proz = Round(bebaut_mit_zonen_und_lsgrenzen::numeric / (bebaut_mit_zonen_und_lsgrenzen::numeric + unbebaut_mit_zonen_und_lsgrenzen::numeric) * 100),
---    unbebaut_mit_zonen_und_lsgrenzen_proz = Round(unbebaut_mit_zonen_und_lsgrenzen::numeric / (bebaut_mit_zonen_und_lsgrenzen::numeric + unbebaut_mit_zonen_und_lsgrenzen::numeric) * 100),
---    bebaut_aus_liegenschaftszuteilung_proz = Round(bebaut_aus_liegenschaftszuteilung::numeric / (bebaut_aus_liegenschaftszuteilung::numeric + unbebaut_aus_liegenschaftszuteilung::numeric) * 100),
---    unbebaut_aus_liegenschaftszuteilung_proz = Round(unbebaut_aus_liegenschaftszuteilung::numeric / (bebaut_aus_liegenschaftszuteilung::numeric + unbebaut_aus_liegenschaftszuteilung::numeric) * 100)
---;
+-- CASE statement ist um Ausnahmen (Division durch NULL) zu vermeiden
+UPDATE
+  ${DB_Schema_AuswNPL}.bauzonenstatistik_bebauungsstand_pro_gemeinde
+  SET
+    bebaut_mit_zonen_ohne_lsgrenzen_proz = CASE WHEN (bebaut_mit_zonen_ohne_lsgrenzen::numeric + unbebaut_mit_zonen_ohne_lsgrenzen::numeric) > 0 THEN Round(bebaut_mit_zonen_ohne_lsgrenzen::numeric / (bebaut_mit_zonen_ohne_lsgrenzen::numeric + unbebaut_mit_zonen_ohne_lsgrenzen::numeric) * 100) ELSE 0 END,
+    unbebaut_mit_zonen_ohne_lsgrenzen_proz = CASE WHEN (bebaut_mit_zonen_ohne_lsgrenzen::numeric + unbebaut_mit_zonen_ohne_lsgrenzen::numeric) > 0 THEN Round(unbebaut_mit_zonen_ohne_lsgrenzen::numeric / (bebaut_mit_zonen_ohne_lsgrenzen::numeric + unbebaut_mit_zonen_ohne_lsgrenzen::numeric) * 100) ELSE 0 END,
+    bebaut_mit_zonen_und_lsgrenzen_proz = CASE WHEN (bebaut_mit_zonen_und_lsgrenzen::numeric + unbebaut_mit_zonen_und_lsgrenzen::numeric) > 0 THEN Round(bebaut_mit_zonen_und_lsgrenzen::numeric / (bebaut_mit_zonen_und_lsgrenzen::numeric + unbebaut_mit_zonen_und_lsgrenzen::numeric) * 100) ELSE 0 END,
+    unbebaut_mit_zonen_und_lsgrenzen_proz = CASE WHEN (bebaut_mit_zonen_und_lsgrenzen::numeric + unbebaut_mit_zonen_und_lsgrenzen::numeric) > 0 THEN Round(unbebaut_mit_zonen_und_lsgrenzen::numeric / (bebaut_mit_zonen_und_lsgrenzen::numeric + unbebaut_mit_zonen_und_lsgrenzen::numeric) * 100) ELSE 0 END,
+    bebaut_aus_liegenschaftszuteilung_proz = CASE WHEN (bebaut_aus_liegenschaftszuteilung::numeric + unbebaut_aus_liegenschaftszuteilung::numeric) > 0 THEN Round(bebaut_aus_liegenschaftszuteilung::numeric / (bebaut_aus_liegenschaftszuteilung::numeric + unbebaut_aus_liegenschaftszuteilung::numeric) * 100) ELSE 0 END,
+    unbebaut_aus_liegenschaftszuteilung_proz = CASE WHEN (bebaut_aus_liegenschaftszuteilung::numeric + unbebaut_aus_liegenschaftszuteilung::numeric) > 0 THEN Round(unbebaut_aus_liegenschaftszuteilung::numeric / (bebaut_aus_liegenschaftszuteilung::numeric + unbebaut_aus_liegenschaftszuteilung::numeric) * 100) ELSE 0 END
+;
