@@ -45,9 +45,9 @@ defaultTasks 'ZusammenfassungUndGINES'
 
 def BfsNrGemeinden = [2401, 2402]
 
-def DB_Schema_NPL = "arp_npl_pub"
-def DB_Schema_Hoheitsgr = "agi_hoheitsgrenzen_pub"
-def DB_Schema_AuswNPL = "arp_auswertung_nutzungsplanung_pub_v1"
+def DBSchema_NPL = "arp_npl_pub"
+def DBSchema_Hoheitsgr = "agi_hoheitsgrenzen_pub"
+def DBSchema_AuswNPL = "arp_auswertung_nutzungsplanung_pub_v1"
 
 task UebertragUebersteuerungBebauungsstand(type: Db2Db) {
   description = "Übertrag Punktlayer mit Übersteuerungen Bebauungsstand. Es werden hier v.a. auch nicht überbaubare Flächen (wie Parkanlagen, Friedhöfe und Sportanlagen) mit Punkten gekennzeichnet."
@@ -70,7 +70,7 @@ BfsNrGemeinden.each { bfsNr ->
     task "BauzonenstatistikProcessing_$bfsNr"(type: SqlExecutor) {
         description = "Eigentliche Bauzonenstatitik"
         database = [dbUriPub, dbUserPub, dbPwdPub]
-        sqlParameters = [BZ_SchemaName:'arp_auswertung_nutzungsplanung_pub_v1',gem_bfs:bfsNr as String]
+        sqlParameters = [DB_Schema_AuswNPL:DBSchema_AuswNPL,gem_bfs:bfsNr as String]
         sqlFiles = ['bauzonenstatistik_bebauungsstand_mit_zonen_ohne_lsgrenzen.sql','bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen.sql','bauzonenstatistik_liegenschaft_nach_bebauungsstand.sql']
     }
 }
@@ -78,6 +78,6 @@ BfsNrGemeinden.each { bfsNr ->
 task "ZusammenfassungUndGINES"(type: SqlExecutor) {
     description = "Zusammenfassung Bebauungsstand pro Gemeinde und Zone, danach gefolgt von Update GINES-Tabelle für Export"
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlParameters = [DB_Schema_NPL:DB_Schema_NPL, DB_Schema_Hoheitsgr:DB_Schema_Hoheitsgr, DB_Schema_AuswNPL:DB_Schema_AuswNPL]
+    sqlParameters = [DB_Schema_NPL:DBSchema_NPL, DB_Schema_Hoheitsgr:DBSchema_Hoheitsgr, DB_Schema_AuswNPL:DBSchema_AuswNPL]
     sqlFiles = ['bauzonenstatistik_bebauungsstand_pro_gemeinde.sql','bauzonenstatistik_gines.sql']
 }
