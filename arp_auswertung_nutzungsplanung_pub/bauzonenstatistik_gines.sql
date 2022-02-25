@@ -41,7 +41,7 @@ gg AS (
 )
 -- finales Resultat, einzelne Zonen in Spalten, Gemeinden in Zeilen
 SELECT 
-  gg.bfs_gemeindenummer,
+  gg.bfs_nr,
   gg.gemeindename,
   COALESCE(Round((SUM(ls.flaeche_beschnitten) FILTER (WHERE ls.grundnutzung_typ_kt = 'N110_Wohnzone_1_G' AND ls.bebauungsstand IN ('bebaut','teilweise_bebaut')))::numeric / 10000,2),0) AS n110_wohnzone_1_g_bebaut,
   COALESCE(Round((SUM(ls.flaeche_beschnitten) FILTER (WHERE ls.grundnutzung_typ_kt = 'N110_Wohnzone_1_G' AND ls.bebauungsstand = 'unbebaut'))::numeric / 10000,2),0) AS n110_wohnzone_1_g_unbebaut,
@@ -103,8 +103,8 @@ SELECT
 FROM
   gg
   LEFT JOIN ${DB_Schema_AuswNPL}.bauzonenstatistik_liegenschaft_nach_bebauungsstand ls
-    ON ls.bfs_nr = gg.bfs_gemeindenummer
-  GROUP BY gg.bfs_gemeindenummer, gg.gemeindename, gg.n430_reservezone_wohnzone_mischzone_kernzone_zentrumszone, gg.n431_reservezone_arbeiten,
+    ON ls.bfs_nr = gg.bfs_nr
+  GROUP BY gg.bfs_nr, gg.gemeindename, gg.n430_reservezone_wohnzone_mischzone_kernzone_zentrumszone, gg.n431_reservezone_arbeiten,
     gg.n432_reservezone_oe_ba, gg.n439_reservezone, gg.n320_gewaesser
-  ORDER BY gg.bfs_gemeindenummer 
+  ORDER BY gg.bfs_nr 
  ;
