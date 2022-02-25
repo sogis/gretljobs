@@ -79,6 +79,5 @@ task "ZusammenfassungUndGINES"(type: SqlExecutor) {
     description = "Zusammenfassung Bebauungsstand pro Gemeinde und Zone, danach gefolgt von Update GINES-Tabelle für Export"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlParameters = [DB_Schema_NPL:DB_Schema_NPL,DB_Schema_Hoheitsgr:DB_Schema_Hoheitsgr,DB_Schema_AuswNPL:DB_Schema_AuswNPL]
-    /*sqlFiles = ['bauzonenstatistik_bebauungsstand_pro_gemeinde.sql','bauzonenstatistik_gines.sql']*/
-    sqlFiles = ['bauzonenstatistik_gines.sql']
+    sqlFiles = ['bauzonenstatistik_bebauungsstand_pro_gemeinde.sql','bauzonenstatistik_gines.sql']
 }
