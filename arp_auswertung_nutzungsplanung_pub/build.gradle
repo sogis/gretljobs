@@ -13,7 +13,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 defaultTasks 'BauzonenstatistikStart'
 
-def BfsNrGemeinden = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
+/*def BfsNrGemeinden = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
                       2421, 2422, 2424, 2425, 2426, 2427, 2428, 2430,
                       2445,
                       2455, 2456, 2457,
@@ -34,7 +34,7 @@ def BfsNrGemeinden = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
                       2601,
                       2611, 2612, 2613, 2614, 2615, 2616, 2617, 2618, 2619,
                       2620, 2621, 2622
-]
+] */
 
 /* Gemeindefusionen 2021:
 2423 (Gänsbrunnen) + 2429 (Welschenrohr) --> 2430 (Welschenrohr-Gänsbrunngen)
@@ -42,7 +42,7 @@ def BfsNrGemeinden = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
 */
 
 
-/* def BfsNrGemeinden = [2401, 2402] */
+def BfsNrGemeinden = [2401, 2402]
 
 task UebertragUebersteuerungBebauungsstand(type: Db2Db) {
   description = "Übertrag Punktlayer mit Übersteuerungen Bebauungsstand. Es werden hier v.a. auch nicht überbaubare Flächen (wie Parkanlagen, Friedhöfe und Sportanlagen) mit Punkten gekennzeichnet."
