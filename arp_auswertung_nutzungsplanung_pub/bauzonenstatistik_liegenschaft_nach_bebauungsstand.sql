@@ -10,9 +10,8 @@ INSERT INTO
 
 WITH
 bfsnr AS (
-	SELECT
-	  ${gem_bfs} AS nr
-     --Himmelried: 2618, Büsserach: 2614, Oensingen: 2407
+    SELECT
+        ${gem_bfs} AS nr
 ),
 -- Nutzungszonen
 nutzzon AS (
