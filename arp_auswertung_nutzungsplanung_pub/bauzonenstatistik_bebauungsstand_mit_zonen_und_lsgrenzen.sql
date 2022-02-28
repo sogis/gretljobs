@@ -1,8 +1,8 @@
-DELETE FROM ${BZ_SchemaName}.bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen
+DELETE FROM ${DB_Schema_AuswNPL}.bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen
   WHERE bfs_nr = ${gem_bfs}
 ;
 INSERT
-  INTO ${BZ_SchemaName}.bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen
+  INTO ${DB_Schema_AuswNPL}.bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen
    (grundnutzung_typ_kt,bebauungsstand,bfs_nr,gemeindename,flaeche,geometrie)
    
 -- hier wird Gemeinde selektiert
@@ -80,7 +80,7 @@ nutzzon AS (
   FROM arp_npl_pub.nutzungsplanung_grundnutzung
     WHERE bfs_nr = (SELECT nr FROM bfsnr)
     AND typ_code_kommunal < 2000
-    AND typ_kt NOT IN ('N160_Gruen_und_Freihaltezone_innerhalb_Bauzone','N161_kommunale_Uferschutzzone_innerhalb_Bauzone','N169_weitere_eingeschraenkte_Bauzonen','N180_Verkehrszone_Stras-se','N181_Verkehrszone_Bahnareal','N182_Verkehrszone_Flugplatzareal','N189_weitere_Verkehrszonen')
+    AND typ_kt NOT IN ('N160_Gruen_und_Freihaltezone_innerhalb_Bauzone','N161_kommunale_Uferschutzzone_innerhalb_Bauzone','N169_weitere_eingeschraenkte_Bauzonen','N180_Verkehrszone_Strasse','N181_Verkehrszone_Bahnareal','N182_Verkehrszone_Flugplatzareal','N189_weitere_Verkehrszonen')
 ),
 -- Dissolve (GIS Union) aller Nutzungszonen in Siedlungsflächen
 nutzzon_dissolved_tmp AS (

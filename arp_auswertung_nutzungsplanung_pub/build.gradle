@@ -1,7 +1,9 @@
 description = """\n
-Bauzonenstatistik auf Basis von Daten der Nutzungsplanungs- und Amtlichen Vermessung
+Bauzonenstatistik auf Basis von Daten der Nutzungsplanungs- und Amtlichen Vermessung.
 
 Die Auswertung findet unbebaute Flächen innerhalb des Bauzonenperimeters.
+Ausscheidung von Flächen bebaut/unbebaut/teilweise bebaut innerhalb Bauzonen im Siedlungsgebiet.
+Status für jede Liegenschaft innerhalb Bauzonen im Siedlungsgebiet
 
 Fragen an: Andreas Neumann (AGI) und Valentin Burki (ARP)
 """
@@ -13,28 +15,65 @@ import ch.so.agi.gretl.api.TransferSet
 
 defaultTasks 'BauzonenstatistikStart'
 
-def BfsNrGemeinden = [2614, 2618]
+def BfsNrGemeinden = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
+                      2421, 2422, 2424, 2425, 2426, 2427, 2428, 2430,
+                      2445,
+                      2455, 2456, 2457,
+                      2461,
+                      2463, 2464, 2465,
+                      2471, 2472, 2473, 2474, 2475, 2476, 2477, 2478, 2479, 2480, 2481,
+                      2491, 2492, 2493, 2495,
+                      2497, 2499, 2500, 2501, 2502, 2503,
+                      2511,
+                      2513, 2514,
+                      2516, 2517, 2518, 2519, 2520,
+                      2523, 2524, 2525, 2526, 2527, 2528, 2529, 2530,
+                      2532, 2534, 2535,
+                      2541, 2542, 2543, 2544, 2545, 2546, 2547, 2548, 2549,
+                      2550, 2551, 2553, 2554, 2555, 2556,
+                      2571, 2572, 2573, 2574, 2575, 2576, 2578, 2579,
+                      2580, 2581, 2582, 2583, 2584, 2585, 2586,
+                      2601,
+                      2611, 2612, 2613, 2614, 2615, 2616, 2617, 2618, 2619,
+                      2620, 2621, 2622
+]
 
+/* def BfsNrGemeinden = [2401, 2402] */
+
+def DB_Schema_NPL = "arp_npl_pub"
+def DB_Schema_Hoheitsgr = "agi_hoheitsgrenzen_pub"
+def DB_Schema_AuswNPL = "arp_auswertung_nutzungsplanung_pub_v1"
+def DB_Schema_AV = "agi_mopublic_pub"
+
+task UebertragUebersteuerungBebauungsstand(type: Db2Db) {
+  description = "Übertrag Punktlayer mit Übersteuerungen Bebauungsstand. Es werden hier v.a. auch nicht überbaubare Flächen (wie Parkanlagen, Friedhöfe und Sportanlagen) mit Punkten gekennzeichnet."
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet("bauzonenstatistik_uebertrag_uebersteuerung_bebauungsstand_sogisdb.sql", 'arp_auswertung_nutzungsplanung_pub_v1.bauzonenstatistik_uebersteuerung_bebauungsstand', true),
+    ];
+}
 
 task BauzonenstatistikStart() {
     description = "Übergeordneter Task für Iteration über alle Gemeinden in der Bauzonenstatistik."
     dependsOn {
         tasks.findAll { task -> task.name.startsWith('BauzonenstatistikProcessing_') }
     }
+    finalizedBy "ZusammenfassungUndGINES"
 }
 
 BfsNrGemeinden.each { bfsNr ->
-    task "BauzonenstatistikProcessing_$bfsNr"(type: SqlExecutor) {
+    task "BauzonenstatistikProcessing_$bfsNr"(type: SqlExecutor,dependsOn: "UebertragUebersteuerungBebauungsstand") {
         description = "Eigentliche Bauzonenstatitik"
         database = [dbUriPub, dbUserPub, dbPwdPub]
-        sqlParameters = [BZ_SchemaName:'arp_auswertung_nutzungsplanung_pub_v1',gem_bfs:bfsNr as String]
-        sqlFiles = ['bauzonenstatistik_bebauungsstand_mit_zonen_ohne_lsgrenzen.sql']
+        sqlParameters = [DB_Schema_AV:DB_Schema_AV,DB_Schema_NPL:DB_Schema_NPL,DB_Schema_Hoheitsgr:DB_Schema_Hoheitsgr,DB_Schema_AuswNPL:DB_Schema_AuswNPL,gem_bfs:bfsNr as String]
+        sqlFiles = ['bauzonenstatistik_bebauungsstand_mit_zonen_ohne_lsgrenzen.sql','bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen.sql','bauzonenstatistik_liegenschaft_nach_bebauungsstand.sql']
     }
 }
 
 task "ZusammenfassungUndGINES"(type: SqlExecutor) {
     description = "Zusammenfassung Bebauungsstand pro Gemeinde und Zone, danach gefolgt von Update GINES-Tabelle für Export"
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlParameters = [BZ_SchemaName:'arp_auswertung_nutzungsplanung_pub_v1']
+    sqlParameters = [DB_Schema_NPL:DB_Schema_NPL,DB_Schema_Hoheitsgr:DB_Schema_Hoheitsgr,DB_Schema_AuswNPL:DB_Schema_AuswNPL]
     sqlFiles = ['bauzonenstatistik_bebauungsstand_pro_gemeinde.sql','bauzonenstatistik_gines.sql']
 }
