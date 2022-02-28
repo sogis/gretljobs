@@ -2,6 +2,8 @@ description = """\n
 Bauzonenstatistik auf Basis von Daten der Nutzungsplanungs- und Amtlichen Vermessung.
 
 Die Auswertung findet unbebaute Flächen innerhalb des Bauzonenperimeters.
+Ausscheidung von Flächen bebaut/unbebaut/teilweise bebaut innerhalb Bauzonen im Siedlungsgebiet.
+Status für jede Liegenschaft innerhalb Bauzonen im Siedlungsgebiet
 
 Fragen an: Andreas Neumann (AGI) und Valentin Burki (ARP)
 """
