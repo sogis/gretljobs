@@ -1,0 +1,33 @@
+/*
+Import der ÖV-Güteklassen in die Edit-DB
+*/
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
+
+defaultTasks ''
+
+task rename(type: Copy) {
+    from 'upload'
+    into 'upload'
+    rename 'uploadFile','uploadFile.xtf'
+}
+
+task import_to_stage(type: Ili2pgImport, dependsOn: rename){
+     description = 'Import der ÖV-Güteklassen-Daten in das Staging-Schema der Edit-DB'
+     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+     dbschema = 'avt_oev_gueteklassen_staging_v1'
+     models = 'SO_AVT_Oev_Gueteklassen_20220120'
+     dataFile = 'upload/uploadFile.xtf'
+     deleteData = true
+}
+
+task import_to_pub(type: Ili2pgImport){
+     description = 'Import der ÖV-Güteklassen-Daten in die Publikations DB'
+     database = [dbUriPub, dbUserPub, dbPwdPub]
+     dbschema = 'avt_oev_gueteklassen_pub_v1'
+     models = 'SO_AVT_Oev_Gueteklassen_20220120'
+     dataFile = 'upload/uploadFile.xtf'
+     deleteData = true
+}

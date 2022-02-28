@@ -28,9 +28,8 @@ task unpackFiles() {
 task importNabodat(type: Ili2pgReplace, dependsOn: unpackFiles){
      description = 'Import der Nabodat-Daten'
      database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-     dbschema = 'afu_bodendaten_nabodat'
-     models = 'NABODAT_ErgebnisseBodenbelastung_Punktdaten_LV95_V1_1'
-     modeldir = '.;http://models.geo.admin.ch'
+     dbschema = 'afu_bodendaten_nabodat_v1'
+     models = 'NABODAT_ErgebnisseBodenbelastung_Punktdaten_V1_1'
      dataFile = 'upload/data.xtf'
      dataset = 'punktdaten'
      importTid = 'true'

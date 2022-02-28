@@ -8,12 +8,14 @@ WITH bauzonen AS (
     FROM 
         arp_npl_pub.nutzungsplanung_grundnutzung
     WHERE 
-        typ_kt NOT IN ('N160_Gruen_und_Freihaltezone_innerhalb_Bauzone',
-                       'N210_Landwirtschaftszone',
+        typ_kt NOT IN ('N210_Landwirtschaftszone',
                        'N220_Spezielle_Landwirtschaftszone',
                        'N230_Rebbauzone',
                        'N290_weitere_Landwirtschaftszonen',
                        'N311_Waldrandschutzzone',
+                       'N319_weitere_Schutzzonen_fuer_Lebensraeume_und_Landschaften',
+                       'N329_weitere_Zonen_fuer_Gewaesser_und_ihre_Ufer',
+                       'N390_weitere_Schutzzonen_ausserhalb_Bauzonen',
                        'N430_Reservezone_Wohnzone_Mischzone_Kernzone_Zentrumszone',
                        'N431_Reservezone_Arbeiten',
                        'N432_Reservezone_OeBA',
