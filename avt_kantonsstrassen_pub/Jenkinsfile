@@ -26,9 +26,11 @@ pipeline {
         stage('Run GRETL-Job') {
             steps {
                 git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
-                dir(env.JOB_BASE_NAME) {
-                    unstash name: 'uploadDir'
-                    sh 'gretl'
+                container('gretl') {
+                    dir(env.JOB_BASE_NAME) {
+                        unstash name: 'uploadDir'
+                        sh 'gretl'
+                    }
                 }
             }
         }

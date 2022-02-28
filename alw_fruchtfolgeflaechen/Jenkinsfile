@@ -15,13 +15,12 @@ pipeline {
       kubernetes {
         cloud 'openshift'
         inheritFrom 'gretl'
-        defaultContainer 'jnlp'
         yaml '''
           spec:
             securityContext:
               supplementalGroups: [26]
             containers:
-            - name: jnlp
+            - name: gretl
               envFrom:
               - configMapRef:
                   name: gretl-resources
@@ -69,14 +68,16 @@ pipeline {
             }
             steps {
                 git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
-                dir(env.JOB_BASE_NAME) {
-                    sh 'gretl prepare_db importAll'
-                    sh 'gretl fff_zusammensetzen'
-                    waitUntil {
-                        sh 'gretl fff_to_edit_db'
-                        input message: 'Resultat publizieren oder Berechnung nochmals durchführen?', parameters: [booleanParam(name: 'PUBLISH_RESULT', defaultValue: false, description: 'Häkchen setzen, um das Resultat zu publizieren und den Job abzuschliessen')]
+                container('gretl') {
+                    dir(env.JOB_BASE_NAME) {
+                        sh 'gretl prepare_db importAll'
+                        sh 'gretl fff_zusammensetzen'
+                        waitUntil {
+                            sh 'gretl fff_to_edit_db'
+                            input message: 'Resultat publizieren oder Berechnung nochmals durchführen?', parameters: [booleanParam(name: 'PUBLISH_RESULT', defaultValue: false, description: 'Häkchen setzen, um das Resultat zu publizieren und den Job abzuschliessen')]
+                        }
+                        sh 'gretl fff_to_edit_db_finish'
                     }
-                    sh 'gretl fff_to_edit_db_finish'
                 }
             }
         }
