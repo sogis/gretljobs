@@ -46,5 +46,5 @@ export DB_PWD_PUB=sogis_admin
 ```
 
 ```
-./start-gretl.sh --docker_image sogis/gretl-runtime:production --job_directory /Users/stefan/Projekte/gretl-arp-import/arp_npl_import/ --task_name transferArpNpl
+./start-gretl.sh --docker_image sogis/gretl:latest --job_directory /Users/stefan/Projekte/gretl-arp-import/arp_npl_import/ --task_name transferArpNpl
 ```

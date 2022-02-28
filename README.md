@@ -306,7 +306,7 @@ docker exec -e PGHOST=/tmp -it gretljobs_edit-db_1 psql --single-transaction -d 
 
 
 
-## GRETL Runtime Docker Image verwenden
+## GRETL Docker Image verwenden
 
 Für die Entwicklung von GRETL-Jobs
 kann GRETL mit einem Wrapper-Skript als Docker-Container gestartet werden.
@@ -324,8 +324,8 @@ export ORG_GRADLE_PROJECT_dbPwdPub=gretl
 Danach kann der GRETL-Container gestartet werden. Beispiel-Aufruf:
 
 ```
-docker pull sogis/gretl-runtime:latest
-./start-gretl.sh --docker-image sogis/gretl-runtime:latest [--docker-network NETWORK] --job-directory $PWD/jobname [taskName...] [--option-name...]
+docker pull sogis/gretl:latest
+./start-gretl.sh --docker-image sogis/gretl:latest [--docker-network NETWORK] --job-directory $PWD/jobname [taskName...] [--option-name...]
 ```
 
 Mit `--docker-image IMAGE:TAG` wird angegeben,

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # use like this:
-# ./start-gretl.sh --docker-image sogis/gretl-runtime:latest [--docker-network NETWORK] --job-directory $PWD/jobname [taskName...] [--option-name...]
+# ./start-gretl.sh --docker-image sogis/gretl:latest [--docker-network NETWORK] --job-directory $PWD/jobname [taskName...] [--option-name...]
 # [--docker-network NETWORK] may be used for connecting the container to an already existing docker network
 # [--option-name...] takes any Gradle option, including project properties
 # (e.g. -Pmyprop=myvalue) and system properties (e.g. -Dmyprop=myvalue).
@@ -44,7 +44,7 @@ fi
 declare gretl_cmd="gretl ${gradle_options[@]} -PgretlShare=/tmp/gretl-share"
 
 echo "======================================================="
-echo "Starts the GRETL runtime to execute the given GRETL job"
+echo "Starts the GRETL image to execute the given GRETL job"
 echo "Docker Image: $docker_image"
 echo "Docker network: $docker_network"
 echo "job directory: $job_directory"
@@ -62,7 +62,7 @@ mkdir -p /tmp/gretl-share
 # 4. Pass all environment variables starting with ORG_GRADLE_PROJECT_ to the container
 # 5. run as current user to avoid permission problems on generated .gradle directory
 # 6. connect container to a specific docker network if specified by the user
-# 7. run gretl-runtime image passed by the user
+# 7. run gretl image passed by the user
 # 8. executed commands seperated by semicolon:
 #    a. jenkins jnlp client
 #    b. change to project directory
@@ -75,5 +75,4 @@ docker run -i --rm --name gretl \
      ${envvars_string} \
     --user $UID \
     ${network_string} \
-    "$docker_image" "-c" \
-        "/usr/local/bin/run-jnlp-client > /dev/null 2>&1;cd /home/gradle/project;$gretl_cmd"
+    "$docker_image" "-c" "$gretl_cmd"

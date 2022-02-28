@@ -34,7 +34,7 @@ export ORG_GRADLE_PROJECT_dbPwdEdit="gretl"
 ```
 
 ```
-scripts/start-gretl.sh --docker-image sogis/gretl-runtime:latest --job-directory agi_dm01avso24/ tasks --all
+scripts/start-gretl.sh --docker-image sogis/gretl:latest --job-directory agi_dm01avso24/ tasks --all
 ```
 
 
