@@ -194,6 +194,7 @@ grundnutzung_geometrie_typ AS
 (
   SELECT 
     g.t_id,
+    g.t_datasetname,
     g.t_datasetname::int4 AS bfs_nr,
     g.t_ili_tid,
     g.name_nummer,
@@ -220,6 +221,7 @@ grundnutzung_geometrie_typ AS
 )
 SELECT
   --g.t_id,
+  g.t_datasetname,
   g.t_ili_tid,
   g.typ_bezeichnung,
   g.typ_abkuerzung,

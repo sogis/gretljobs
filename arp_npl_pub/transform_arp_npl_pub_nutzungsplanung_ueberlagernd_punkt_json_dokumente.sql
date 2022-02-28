@@ -182,6 +182,7 @@ ueberlagernd_punkt_geometrie_typ AS
 (
   SELECT
     l.t_id,
+    l.t_datasetname,
     l.t_datasetname::int4 AS bfs_nr,
     l.t_ili_tid,
     l.name_nummer,
@@ -207,6 +208,7 @@ ueberlagernd_punkt_geometrie_typ AS
 -- hinzugefügt werden. Plural, da auch Kaskade wieder möglich.
 SELECT
   --g.t_id,
+  g.t_datasetname,
   g.t_ili_tid,
   g.typ_bezeichnung,
   g.typ_abkuerzung,

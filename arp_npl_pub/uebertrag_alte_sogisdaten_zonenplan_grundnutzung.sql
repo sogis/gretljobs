@@ -1,6 +1,7 @@
 WITH tmp_result AS (
 SELECT 
     --ogc_fid AS t_id, --TODO REPLACE WITH NEW generated_id
+    gem_bfs::varchar(200) AS t_datasetname,
     uuid_generate_v4() AS t_ili_tid,
     zcode_text AS typ_bezeichnung,
     NULL AS typ_abkuerzung, --ev. MAPPING?
