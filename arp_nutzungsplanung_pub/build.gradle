@@ -7,7 +7,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks "importXTF_pub"
+defaultTasks 'importXTF_stage', 'importXTF_pub'
 
 task deleteData_transfer_pub (type: SqlExecutor) {
     description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_transfer_pub."
@@ -54,7 +54,7 @@ task delete_Dataset_stage(type: Ili2pgDelete) {
     dataset = bfsnr
 }
 
-task importXTF_pub(type: Ili2pgReplace, dependsOn: 'importXTF_stage') {
+task importXTF_pub(type: Ili2pgReplace) {
     description = 'Import der umgebaute INTERLIS-Datei einer Gemeinde (BFS-Nr.) in das Schema arp_nutzungsplanung_pub.'
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'arp_nutzungsplanung_pub_v1'
