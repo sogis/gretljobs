@@ -16,16 +16,18 @@ pipeline {
             agent { label 'gretl-ili2pg4' }
             steps {
                 git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
-                dir(env.JOB_BASE_NAME) {
-                    sh "gretl -Pbfsnr=${params.bfsnr}"
-                    sh 'gretl importXTF_stage'
-                    zip zipFile: 'xtfdata.zip', glob: '*.xtf', archive: true
-               }
+                container('gretl') {
+                    dir(env.JOB_BASE_NAME) {
+                        sh "gretl -Pbfsnr=${params.bfsnr}"
+                        sh 'gretl importXTF_stage'
+                        zip zipFile: 'xtfdata.zip', glob: '*.xtf', archive: true
+                    }
+                }
                 stash name: "gretljob"
                 emailext (
                     recipientProviders: [requestor()],
                     subject: "Nutzungsplanung zum Review bereit (GRETL-Job ${JOB_NAME} ${BUILD_DISPLAY_NAME})",
-                    body: "Mit dem GRETL-Job ${JOB_NAME} (${BUILD_DISPLAY_NAME}) wurden Daten der Nutzungsplanung mit der BFS-Nr. ${params.bfsnr} nachgeführt, die ein Review erfordern. Nach dem Review unter https://${ORG_GRADLE_PROJECT_geoservicesHostName}/map?t=oereb_review können Sie unter folgendem Link die Publikation der Daten veranlassen oder abbrechen: ${RUN_DISPLAY_URL}."
+                    body: "Mit dem GRETL-Job ${JOB_NAME} (${BUILD_DISPLAY_NAME}) wurden Daten der Nutzungsplanung mit der BFS-Nr. ${params.bfsnr} nachgeführt, die ein Review erfordern. Nach dem Review unter https://${BUILD_URL.split('/')[2].replace('gretl', 'geo')}/map?t=oereb_review können Sie unter folgendem Link die Publikation der Daten veranlassen oder abbrechen: ${RUN_DISPLAY_URL}."
                 )
             }
         }
@@ -39,8 +41,10 @@ pipeline {
             agent { label 'gretl-ili2pg4' }
             steps {
                 unstash name: "gretljob"
-                dir(env.JOB_BASE_NAME) {
-                    sh 'gretl importXTF_pub'
+                container('gretl') {
+                    dir(env.JOB_BASE_NAME) {
+                        sh 'gretl importXTF_pub'
+                    }
                 }
             }
         }

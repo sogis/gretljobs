@@ -15,9 +15,11 @@ pipeline {
         stage('Run GRETL-Job') {
             steps {
                 git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
-                dir(env.JOB_BASE_NAME) {
-                    sh "gretl -Pbfsnr=${params.bfsnr}"
-                    zip zipFile: 'xtfdata.zip', glob: '*.xtf', archive: true
+                container('gretl') {
+                    dir(env.JOB_BASE_NAME) {
+                        sh "gretl -Pbfsnr=${params.bfsnr}"
+                        zip zipFile: 'xtfdata.zip', glob: '*.xtf', archive: true
+                    }
                 }
             }
         }
