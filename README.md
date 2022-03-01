@@ -197,33 +197,17 @@ dokumentiert.
 
 Das Jenkinsfile sorgt dafür,
 dass ein GRETL-Job aus Jenkins heraus gestartet werden kann.
-In der Regel braucht ein GRETL-Job kein eigenes Jenkinsfile;
-in diesem Fall kommt automatisch
-das zentrale [Jenkinsfile](Jenkinsfile) zum Einsatz.
+In der Regel braucht ein GRETL-Job kein eigenes Jenkinsfile,
+denn es kommt standardmässig
+das "zentrale" [Jenkinsfile](Jenkinsfile) zum Einsatz.
 
-In folgenden beiden Fällen kommen spezielle Jenkinsfiles zum Einsatz;
-diese dürfen in ähnlichen Fällen in den GRETL-Job-Ordner kopiert werden,
-sollen dabei aber wenn möglich nicht modifiziert werden,
-damit alle gleich bleiben.
+In speziellen Fällen benötigen GRETL-Jobs ein eigenes Jenkinsfile;
+hierzu kopiert man das Jenkinsfile eines bereits bestehenden, ähnlichen Jobs
+in den GRETL-Job-Ordner.
+Es soll dabei nicht verändert oder möglichst nur minimal angepasst werden,
+damit alle Jenkinsfiles soweit möglich identisch sind.
 
-##### Nach dem Start des GRETL-Jobs in Jenkins eine Datei hochladen
-
-Beispiel: [avt_ausnahmetransportrouten_export_ai/Jenkinsfile](avt_ausnahmetransportrouten_export_ai/Jenkinsfile)
-
-In `build.gradle` kann über den relativen Pfad `upload/uploadFile`
-(die Datei heisst nach dem Upload also immer `uploadFile`)
-auf die hochgeladene Datei zugegriffen werden.
-
-##### Nach dem Start des GRETL-Jobs in Jenkins eine Datei hochladen und zusätzlich den Dataset-Namen (z.B. BFS-Nummer) angeben
-
-Beispiel: [arp_npl_import/Jenkinsfile](arp_npl_import/Jenkinsfile)
-
-In diesem Fall ist in `build.gradle` die hochgeladene Datei
-ebenfalls unter `upload/uploadFile` verfügbar.
-Zudem kann auf den angegebenen Dataset-Namen
-über die Variable `ili2pgDataset` zugegriffen werden.
-
-
+Die speziellen Fälle und die jeweiligen Vorlagen sind in jenkinsfile_docs.md beschrieben.
 
 ## Entwicklungs-DBs starten
 
