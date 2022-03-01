@@ -30,7 +30,7 @@ task deleteXtfFile_upload(type: Delete, dependsOn: 'importXTF_import'){
     delete "upload/${ili2pgDataset}.xtf"
 }
 
-task deleteData_transfer (type: SqlExecutor, dependsOn: 'deleteXtfFile_upload') {
+task deleteData_transfer(type: SqlExecutor, dependsOn: 'deleteXtfFile_upload') {
     description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_transfer."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ["delete_arp_nutzungsplanung_transfer.sql"]
@@ -42,7 +42,7 @@ task transferData(type: SqlExecutor, dependsOn: 'deleteData_transfer') {
     sqlFiles = ["insert_arp_nutzungsplanung_transfer.sql"]
 }
 
-task deleteData_import (type: Ili2pgDelete, dependsOn: 'transferData') {
+task deleteData_import(type: Ili2pgDelete, dependsOn: 'transferData') {
     description = "Löscht/leert Daten mit dem angegebenen Datasetname (BFS-Nr.) aus dem Schema arp_nutzungsplanung_import_v1"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
@@ -91,7 +91,7 @@ task exportData_Dataset_Kanton(type: Ili2pgExport) {
     disableValidation = true
 }
 
-task validateData_Dataset_Kanton (type: IliValidator, dependsOn: 'exportData_Dataset_Kanton') {
+task validateData_Dataset_Kanton(type: IliValidator, dependsOn: 'exportData_Dataset_Kanton') {
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
     dataFiles = file(ili2pgDataset + "_Kanton.xtf")
     failOnError = true
