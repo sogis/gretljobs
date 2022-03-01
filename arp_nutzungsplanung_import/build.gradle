@@ -8,8 +8,6 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks "importXTF_Dataset_BFSNr", "importXTF_Kanton"
-
 task copyXtfFile(type: Copy) {
     from "upload/"
     into "upload/"
@@ -52,7 +50,7 @@ task deleteData_import (type: Ili2pgDelete, dependsOn: 'transferData') {
     dataset = ili2pgDataset
 }
 
-task exportData_Dataset_BFSNr(type: Ili2pgExport, dependsOn: 'deleteData_import') {
+task exportData_Dataset_BFSNr(type: Ili2pgExport) {
     description = "Exportiert die umgebauten Daten mit DataSet= BFSNr aus dem Schema arp_nutzungsplanung_transfer in ein INTERLIS-Datei."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_transfer_v1'
@@ -72,7 +70,7 @@ task deleteXtfFile_BFSNr(type: Delete){
     delete file(ili2pgDataset + ".xtf")
 }
 
-task importXTF_Dataset_BFSNr(type: Ili2pgImport, dependsOn: 'validateData_Dataset_BFSNr') {
+task importXTF_Dataset_BFSNr(type: Ili2pgImport) {
     description = 'Import der umgebaute INTERLIS-Datei in das Schema arp_nutzungsplanung mit Dataset=BFS-Nr. Im Schema arp_nutzungsplanung werden die Daten nachgeführt.'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_v1'
@@ -83,7 +81,7 @@ task importXTF_Dataset_BFSNr(type: Ili2pgImport, dependsOn: 'validateData_Datase
     finalizedBy deleteXtfFile_BFSNr
 }
 
-task exportData_Dataset_Kanton(type: Ili2pgExport, dependsOn: 'deleteData_import') {
+task exportData_Dataset_Kanton(type: Ili2pgExport) {
     description = "Exportiert die umgebauten Daten mit DataSet=Kanton aus dem Schema arp_nutzungsplanung_transfer in ein INTERLIS-Datei."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_transfer_v1'
@@ -103,7 +101,7 @@ task deleteXtfFile_Kanton(type: Delete){
     delete file(ili2pgDataset + "_Kanton.xtf")
 }
 
-task importXTF_Kanton(type: Ili2pgImport, dependsOn: 'validateData_Dataset_Kanton') {
+task importXTF_Kanton(type: Ili2pgImport) {
     description = 'Import der umgebaute INTERLIS-Datei in das Schema arp_nutzungsplanung mit Dataset=Kanton. Im Schema arp_nutzungsplanung werden die Daten nachgeführt.'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_kanton_v1'
