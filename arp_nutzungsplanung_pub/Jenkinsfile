@@ -18,8 +18,7 @@ pipeline {
                 git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
-                        sh "gretl -Pbfsnr=${params.bfsnr}"
-                        sh 'gretl importXTF_stage'
+                        sh "gretl -Pbfsnr=${params.bfsnr} importXTF_stage"
                         zip zipFile: 'xtfdata.zip', glob: '*.xtf', archive: true
                     }
                 }
@@ -43,7 +42,7 @@ pipeline {
                 unstash name: "gretljob"
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
-                        sh 'gretl importXTF_pub'
+                        sh "gretl -Pbfsnr=${params.bfsnr} importXTF_pub"
                     }
                 }
             }
