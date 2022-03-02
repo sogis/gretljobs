@@ -1,5 +1,5 @@
-DELETE FROM arp_npl_pub.auswertung_grundnutzungszonen_pro_gemeinde;
-INSERT INTO arp_npl_pub.auswertung_grundnutzungszonen_pro_gemeinde
+DELETE FROM arp_auswertung_nutzungsplanung_pub_v1.auswrtngtzngsznen_grundnutzungszone_aggregiert_pro_gemeinde;
+INSERT INTO arp_auswertung_nutzungsplanung_pub_v1.auswrtngtzngsznen_grundnutzungszone_aggregiert_pro_gemeinde
 WITH distinct_zones AS (
   SELECT
      DISTINCT typ_kt
