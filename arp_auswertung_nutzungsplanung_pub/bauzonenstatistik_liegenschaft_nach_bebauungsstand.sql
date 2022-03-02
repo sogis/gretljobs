@@ -6,7 +6,7 @@ DELETE FROM
 -- wieder befüllen
 INSERT INTO
   ${DB_Schema_AuswNPL}.bauzonenstatistik_liegenschaft_nach_bebauungsstand
-   (t_ili_tid, egris_egrid, nummer, bfs_nr, gemeindename, grundnutzung_typ_kt, bebauungsstand, flaeche, flaeche_beschnitten, flaeche_unbebaut, geometrieart_liegenschaft, geometrie)
+   (egris_egrid, nummer, bfs_nr, gemeindename, grundnutzung_typ_kt, bebauungsstand, flaeche, flaeche_beschnitten, flaeche_unbebaut, geometrieart_liegenschaft, geometrie)
 
 WITH
 bfsnr AS (
@@ -38,7 +38,6 @@ unbeb_fl AS (
 gr_tmp AS (
   SELECT
    gru.t_id,
-   gru.t_ili_tid,
    gru.egrid AS egris_egrid,
    gru.nummer,
    gru.bfs_nr,
@@ -56,7 +55,7 @@ gr_tmp AS (
      gru.bfs_nr = (SELECT nr FROM bfsnr)
      AND gru.art_txt = 'Liegenschaft'
      AND nutzzon.typ_kt IS NOT NULL
-    GROUP BY gru.t_id, gru.t_ili_tid, gru.egrid, gru.nummer, gru.bfs_nr, gru.flaechenmass, gru.geometrie, gem.gemeindename, nutzzon.typ_kt
+    GROUP BY gru.t_id, gru.egrid, gru.nummer, gru.bfs_nr, gru.flaechenmass, gru.geometrie, gem.gemeindename, nutzzon.typ_kt
 ),
 -- bebaute Flächen Input
 bebaut_fl AS (
@@ -84,7 +83,7 @@ gr_tmp2 AS (
     Round(ST_Area(gr.geometrie)) AS flaeche_beschnitten
    FROM gr_tmp gr
      LEFT JOIN unbeb_fl ON ST_Intersects(gr.geometrie, unbeb_fl.geometrie)
-    GROUP BY gr.t_id, gr.t_ili_tid, gr.egris_egrid, gr.nummer, gr.bfs_nr, gr.grundnutzung_typ_kt, gr.flaeche, gr.geometrie, gr.gemeindename, gr.ct_uebersteuert
+    GROUP BY gr.t_id, gr.egris_egrid, gr.nummer, gr.bfs_nr, gr.grundnutzung_typ_kt, gr.flaeche, gr.geometrie, gr.gemeindename, gr.ct_uebersteuert
 ),
 gr AS (
   SELECT
@@ -92,11 +91,10 @@ gr AS (
     Round(SUM(COALESCE(ST_Area(ST_Intersection(gr.geometrie,bebaut_fl.geometrie,0.001)),0)))::NUMERIC AS flaeche_bebaut
   FROM gr_tmp2 gr
     LEFT JOIN bebaut_fl ON ST_Intersects(gr.geometrie, bebaut_fl.geometrie)
-   GROUP BY gr.t_id, gr.t_ili_tid, gr.egris_egrid, gr.nummer, gr.bfs_nr, gr.grundnutzung_typ_kt, gr.flaeche, gr.geometrie, gr.gemeindename, gr.ct_uebersteuert,
+   GROUP BY gr.t_id, gr.egris_egrid, gr.nummer, gr.bfs_nr, gr.grundnutzung_typ_kt, gr.flaeche, gr.geometrie, gr.gemeindename, gr.ct_uebersteuert,
      flaeche_unbebaut, geometrieart_liegenschaft, flaeche_beschnitten
 )
 SELECT
-   gr.t_ili_tid,
    gr.egris_egrid,
    gr.nummer,
    gr.bfs_nr,
