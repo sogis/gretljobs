@@ -58,29 +58,29 @@
     belastung.codetext_de AS belastung,
     zugangsstufe_messung.codetext_de AS messung_zugangsstufe,
     standort.koordinaten AS geometrie
-   FROM afu_bodendaten_nabodat.punktdaten_messung messung
-     LEFT JOIN afu_bodendaten_nabodat.codelistnnlysdten_analyseparameter analyseparameter ON messung.analyseparameter = analyseparameter.t_id
-     LEFT JOIN afu_bodendaten_nabodat.codelistnnlysdten_methodeaufschluss methodeaufschluss ON messung.methodeaufschluss = methodeaufschluss.t_id
-     LEFT JOIN afu_bodendaten_nabodat.codelistnnlysdten_methodemessung methodemessung ON messung.methodemessung = methodemessung.t_id
-     LEFT JOIN afu_bodendaten_nabodat.codelistnnlysdten_methodeaufbereitung methodeaufbereitung ON messung.methodeaufbereitung = methodeaufbereitung.t_id
-     LEFT JOIN afu_bodendaten_nabodat.codlstnpktstndort_zugangsstufe zugangsstufe_messung ON zugangsstufe_messung.t_id = messung.zugangsstufe
-     LEFT JOIN afu_bodendaten_nabodat.codelistnnlysdten_belastung belastung ON messung.belastung = belastung.t_id
-     LEFT JOIN afu_bodendaten_nabodat.punktdaten_probe probe ON messung.probe = probe.t_id
-     LEFT JOIN afu_bodendaten_nabodat.codelistnnlysdten_analysematerial analysematerial ON probe.analysematerial = analysematerial.t_id
-     LEFT JOIN afu_bodendaten_nabodat.codelistnnlysdten_beprobungsart beprobungsart ON probe.beprobungsart = beprobungsart.t_id
-     LEFT JOIN afu_bodendaten_nabodat.codelistnnlysdten_probentyp probentyp ON probe.probentyp = probentyp.t_id
-     LEFT JOIN afu_bodendaten_nabodat.codelistnnlysdten_geraet geraet ON probe.geraet = geraet.t_id
-     LEFT JOIN afu_bodendaten_nabodat.punktdaten_probedbf probedbf ON probedbf.probe = probe.t_id
-     LEFT JOIN afu_bodendaten_nabodat.codlstnpktstndort_zugangsstufe zugangsstufe_probe ON zugangsstufe_probe.t_id = probe.zugangsstufe
-     LEFT JOIN afu_bodendaten_nabodat.erhebung_probe_profil zwischentab ON probe.erhebung = zwischentab.erhebung_probe
-     LEFT JOIN afu_bodendaten_nabodat.punktdaten_standort standort ON standort.t_id = zwischentab.standort
-     LEFT JOIN afu_bodendaten_nabodat.codlstnpktstndort_zugangsstufe zugangsstufe_standort ON zugangsstufe_standort.t_id = standort.zugangsstufe
-     LEFT JOIN afu_bodendaten_nabodat.punktdaten_projektstandort projektstandort ON standort.t_id = projektstandort.standort
-     LEFT JOIN afu_bodendaten_nabodat.punktdaten_projekt projekt ON projektstandort.projekt = projekt.t_id
-     LEFT JOIN afu_bodendaten_nabodat.codlstnpktstndort_status projektstatus ON projektstandort.status_projektstandort = projektstatus.t_id
-     LEFT JOIN afu_bodendaten_nabodat.punktdaten_erhebung erhebung ON erhebung.t_id = zwischentab.erhebung_probe
-     LEFT JOIN afu_bodendaten_nabodat.codlstnpktstndort_erhebungsart erhebungsart ON erhebung.erhebungsart = erhebungsart.t_id
-     LEFT JOIN afu_bodendaten_nabodat.codlstnpktstndort_zugangsstufe zugangsstufe_erhebung ON zugangsstufe_erhebung.t_id = erhebung.zugangsstufe
+   FROM afu_bodendaten_nabodat_v1.punktdaten_messung messung
+     LEFT JOIN afu_bodendaten_nabodat_v1.codelistnnlysdten_analyseparameter analyseparameter ON messung.analyseparameter = analyseparameter.t_id
+     LEFT JOIN afu_bodendaten_nabodat_v1.codelistnnlysdten_methodeaufschluss methodeaufschluss ON messung.methodeaufschluss = methodeaufschluss.t_id
+     LEFT JOIN afu_bodendaten_nabodat_v1.codelistnnlysdten_methodemessung methodemessung ON messung.methodemessung = methodemessung.t_id
+     LEFT JOIN afu_bodendaten_nabodat_v1.codelistnnlysdten_methodeaufbereitung methodeaufbereitung ON messung.methodeaufbereitung = methodeaufbereitung.t_id
+     LEFT JOIN afu_bodendaten_nabodat_v1.codlstnpktstndort_zugangsstufe zugangsstufe_messung ON zugangsstufe_messung.t_id = messung.zugangsstufe
+     LEFT JOIN afu_bodendaten_nabodat_v1.codelistnnlysdten_belastung belastung ON messung.belastung = belastung.t_id
+     LEFT JOIN afu_bodendaten_nabodat_v1.punktdaten_probe probe ON messung.probe = probe.t_id
+     LEFT JOIN afu_bodendaten_nabodat_v1.codelistnnlysdten_analysematerial analysematerial ON probe.analysematerial = analysematerial.t_id
+     LEFT JOIN afu_bodendaten_nabodat_v1.codelistnnlysdten_beprobungsart beprobungsart ON probe.beprobungsart = beprobungsart.t_id
+     LEFT JOIN afu_bodendaten_nabodat_v1.codelistnnlysdten_probentyp probentyp ON probe.probentyp = probentyp.t_id
+     LEFT JOIN afu_bodendaten_nabodat_v1.codelistnnlysdten_geraet geraet ON probe.geraet = geraet.t_id
+     LEFT JOIN afu_bodendaten_nabodat_v1.punktdaten_probedbf probedbf ON probedbf.probe = probe.t_id
+     LEFT JOIN afu_bodendaten_nabodat_v1.codlstnpktstndort_zugangsstufe zugangsstufe_probe ON zugangsstufe_probe.t_id = probe.zugangsstufe
+     LEFT JOIN afu_bodendaten_nabodat_v1.erhebung_probe_profil_v zwischentab ON probe.erhebung = zwischentab.erhebung_probe
+     LEFT JOIN afu_bodendaten_nabodat_v1.punktdaten_standort standort ON standort.t_id = zwischentab.standort
+     LEFT JOIN afu_bodendaten_nabodat_v1.codlstnpktstndort_zugangsstufe zugangsstufe_standort ON zugangsstufe_standort.t_id = standort.zugangsstufe
+     LEFT JOIN afu_bodendaten_nabodat_v1.punktdaten_projektstandort projektstandort ON standort.t_id = projektstandort.standort
+     LEFT JOIN afu_bodendaten_nabodat_v1.punktdaten_projekt projekt ON projektstandort.projekt = projekt.t_id
+     LEFT JOIN afu_bodendaten_nabodat_v1.codlstnpktstndort_status projektstatus ON projektstandort.status_projektstandort = projektstatus.t_id
+     LEFT JOIN afu_bodendaten_nabodat_v1.punktdaten_erhebung erhebung ON erhebung.t_id = zwischentab.erhebung_probe
+     LEFT JOIN afu_bodendaten_nabodat_v1.codlstnpktstndort_erhebungsart erhebungsart ON erhebung.erhebungsart = erhebungsart.t_id
+     LEFT JOIN afu_bodendaten_nabodat_v1.codlstnpktstndort_zugangsstufe zugangsstufe_erhebung ON zugangsstufe_erhebung.t_id = erhebung.zugangsstufe
 	 WHERE (
 		    (analyseparameter.parameterid::text = 'DIOX..133'::text)
 			OR  

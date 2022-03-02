@@ -87,7 +87,7 @@ SELECT
         wasserspeichervermoegen.codeid AS wasserspeichervermoegen, 
         wasserspeichervermoegen.codetext_de AS wasserspeichervermoegen_text
 FROM 
-    afu_bodendaten_nabodat.punktdaten_standort standort
+    afu_bodendaten_nabodat_v1.punktdaten_standort standort
 -- Standort
 
 -- Limitierung
@@ -96,9 +96,9 @@ LEFT JOIN
      punktdaten_standort_limitierendeeigenschaft, 
 	 string_agg(limitierende_eigenschaft.codeid,', ') AS codeid, 
 	 string_agg(limitierende_eigenschaft.codetext_de,', ') AS codetext_de
-     FROM afu_bodendaten_nabodat.codlstnpktstndort_limitierendeeigenschaft_ref standort_limitierung_ref
+     FROM afu_bodendaten_nabodat_v1.codlstnpktstndort_limitierendeeigenschaft_ref standort_limitierung_ref
 	 LEFT JOIN 
-	     afu_bodendaten_nabodat.codlstnpktstndort_limitierendeeigenschaft limitierende_eigenschaft
+	     afu_bodendaten_nabodat_v1.codlstnpktstndort_limitierendeeigenschaft limitierende_eigenschaft
 	     ON limitierende_eigenschaft.t_id = standort_limitierung_ref.areference
 	 GROUP BY 
 	     punktdaten_standort_limitierendeeigenschaft
@@ -111,9 +111,9 @@ LEFT JOIN
      punktdaten_standort_nutzungsbeschraenkung, 
 	 string_agg(nutzungsbeschraenkung_code.codeid,', ') AS codeid, 
 	 string_agg(nutzungsbeschraenkung_code.codetext_de,', ') AS codetext_de
-     FROM afu_bodendaten_nabodat.codlstnpktstndort_nutzungsbeschraenkung_ref standort_nutzungsbeschraenkung_ref
+     FROM afu_bodendaten_nabodat_v1.codlstnpktstndort_nutzungsbeschraenkung_ref standort_nutzungsbeschraenkung_ref
 	 LEFT JOIN 
-	     afu_bodendaten_nabodat.codlstnpktstndort_nutzungsbeschraenkung nutzungsbeschraenkung_code
+	     afu_bodendaten_nabodat_v1.codlstnpktstndort_nutzungsbeschraenkung nutzungsbeschraenkung_code
 	  	 ON nutzungsbeschraenkung_code.t_id = standort_nutzungsbeschraenkung_ref.areference
 	 GROUP BY 
 	     punktdaten_standort_nutzungsbeschraenkung
@@ -126,9 +126,9 @@ LEFT JOIN
      punktdaten_standort_empfohlenemelioration, 
 	 string_agg(melioration_code.codeid,', ') AS codeid, 
 	 string_agg(melioration_code.codetext_de,', ') AS codetext_de
-     FROM afu_bodendaten_nabodat.codlstnpktstndort_meliorationempf_ref standort_melioration_ref
+     FROM afu_bodendaten_nabodat_v1.codlstnpktstndort_meliorationempf_ref standort_melioration_ref
 	 LEFT JOIN 
-	     afu_bodendaten_nabodat.codlstnpktstndort_meliorationempf melioration_code
+	     afu_bodendaten_nabodat_v1.codlstnpktstndort_meliorationempf melioration_code
 	  	 ON melioration_code.t_id = standort_melioration_ref.areference
 	 GROUP BY 
 	     punktdaten_standort_empfohlenemelioration
@@ -141,9 +141,9 @@ LEFT JOIN
      punktdaten_standort_festgestelltemelioration, 
 	 string_agg(melioration_code.codeid,', ') AS codeid, 
 	 string_agg(melioration_code.codetext_de,', ') AS codetext_de
-     FROM afu_bodendaten_nabodat.codlstnpktstndort_meliorationfest_ref standort_melioration_ref
+     FROM afu_bodendaten_nabodat_v1.codlstnpktstndort_meliorationfest_ref standort_melioration_ref
 	 LEFT JOIN 
-	     afu_bodendaten_nabodat.codlstnpktstndort_meliorationfest melioration_code
+	     afu_bodendaten_nabodat_v1.codlstnpktstndort_meliorationfest melioration_code
 	  	 ON melioration_code.t_id = standort_melioration_ref.areference
 	 GROUP BY 
 	     punktdaten_standort_festgestelltemelioration
@@ -152,86 +152,86 @@ LEFT JOIN
 
 --PROJEKT
 LEFT JOIN 
-    afu_bodendaten_nabodat.punktdaten_projektstandort projektstandort 
+    afu_bodendaten_nabodat_v1.punktdaten_projektstandort projektstandort 
 	ON projektstandort.standort = standort.t_id 
 LEFT JOIN 
-    afu_bodendaten_nabodat.punktdaten_projekt projekt 
+    afu_bodendaten_nabodat_v1.punktdaten_projekt projekt 
 	ON projektstandort.projekt = projekt.t_id
 	
 --STANDORDEIGENSCHAFTEN
 LEFT JOIN 	
-    afu_bodendaten_nabodat.punktdaten_standorteigenschaften standorteigenschaften 
+    afu_bodendaten_nabodat_v1.punktdaten_standorteigenschaften standorteigenschaften 
 	ON standort.t_id = standorteigenschaften.standort
 LEFT JOIN 
-    afu_bodendaten_nabodat.codlstnpktstndort_exposition standort_exposition 
+    afu_bodendaten_nabodat_v1.codlstnpktstndort_exposition standort_exposition 
 	ON standort_exposition.t_id = standorteigenschaften.exposition
 LEFT JOIN 
-    afu_bodendaten_nabodat.codlstnpktstndort_klimaeignungszone standort_klimaeignung 
+    afu_bodendaten_nabodat_v1.codlstnpktstndort_klimaeignungszone standort_klimaeignung 
 	ON standort_klimaeignung.t_id = standorteigenschaften.klimaeignungzone 
 LEFT JOIN 
-    afu_bodendaten_nabodat.codlstnpktstndort_vegetation standort_vegetation 
+    afu_bodendaten_nabodat_v1.codlstnpktstndort_vegetation standort_vegetation 
 	ON standort_vegetation.t_id = standorteigenschaften.vegetation 
 LEFT JOIN 
-    afu_bodendaten_nabodat.codlstnpktstndort_landschaftselement standort_landschaftselement
+    afu_bodendaten_nabodat_v1.codlstnpktstndort_landschaftselement standort_landschaftselement
 	ON standort_landschaftselement.t_id = standorteigenschaften.landschaftselement
 LEFT JOIN 
-    afu_bodendaten_nabodat.codlstnpktstndort_kleinrelief standort_kleinrelief
+    afu_bodendaten_nabodat_v1.codlstnpktstndort_kleinrelief standort_kleinrelief
 	ON standort_kleinrelief.t_id = standorteigenschaften.kleinrelief
 LEFT JOIN 
-	afu_bodendaten_nabodat.codlstnpktstndort_gelaendeform standort_gelaendeform 
+	afu_bodendaten_nabodat_v1.codlstnpktstndort_gelaendeform standort_gelaendeform 
 	ON standort_gelaendeform.t_id = standorteigenschaften.gelaendeform
 
 -- Standortbeurteilung
 LEFT JOIN 
-    afu_bodendaten_nabodat.punktdaten_standortbeurteilung standortbeurteilung
+    afu_bodendaten_nabodat_v1.punktdaten_standortbeurteilung standortbeurteilung
 	ON standort.standortbeurteilung = standortbeurteilung.t_id
 LEFT JOIN 
-    afu_bodendaten_nabodat.codlstnpktstndort_krumenzustand standortbeurteilung_krumen
+    afu_bodendaten_nabodat_v1.codlstnpktstndort_krumenzustand standortbeurteilung_krumen
 	ON standortbeurteilung.krumenzustand = standortbeurteilung_krumen.t_id
 
 --Duenger
 LEFT JOIN 
-    afu_bodendaten_nabodat.codlstnpktstndort_einsatzduengerfest duengerfest 
+    afu_bodendaten_nabodat_v1.codlstnpktstndort_einsatzduengerfest duengerfest 
 	ON standortbeurteilung.einsatzduengerfest = duengerfest.t_id
 LEFT JOIN 
-    afu_bodendaten_nabodat.codlstnpktstndort_risikoduengerfluess duengerfluessig
+    afu_bodendaten_nabodat_v1.codlstnpktstndort_risikoduengerfluess duengerfluessig
 	ON standortbeurteilung.risikoduengerfluess = duengerfluessig.t_id
 
 
 --AUSGANGSMATERIAL
 LEFT JOIN 
-    afu_bodendaten_nabodat.punktdaten_ausgangsmaterial standort_ausgangsmaterial_oben 
+    afu_bodendaten_nabodat_v1.punktdaten_ausgangsmaterial standort_ausgangsmaterial_oben 
 	ON standorteigenschaften.t_id = standort_ausgangsmaterial_oben.punktdtn_strtgnschften_ausgangsmaterialoben 
 LEFT JOIN 
-    afu_bodendaten_nabodat.punktdaten_ausgangsmaterial standort_ausgangsmaterial_unten 
+    afu_bodendaten_nabodat_v1.punktdaten_ausgangsmaterial standort_ausgangsmaterial_unten 
 	ON standorteigenschaften.t_id = standort_ausgangsmaterial_unten.punktdtn_strtgnschften_ausgangsmaterialunten
 LEFT JOIN 
-     afu_bodendaten_nabodat.codlstnpktstndort_ausgangsmaterial ausgangsmaterial_oben
+     afu_bodendaten_nabodat_v1.codlstnpktstndort_ausgangsmaterial ausgangsmaterial_oben
 	 ON standort_ausgangsmaterial_oben.ausgangsmaterial = ausgangsmaterial_oben.t_id
 LEFT JOIN 
-     afu_bodendaten_nabodat.codlstnpktstndort_ausgangsmaterial ausgangsmaterial_unten
+     afu_bodendaten_nabodat_v1.codlstnpktstndort_ausgangsmaterial ausgangsmaterial_unten
 	 ON standort_ausgangsmaterial_unten.ausgangsmaterial = ausgangsmaterial_unten.t_id
 LEFT JOIN 
-     afu_bodendaten_nabodat.codlstnpktstndort_eiszeit ausgangsmaterial_eiszeit_oben
+     afu_bodendaten_nabodat_v1.codlstnpktstndort_eiszeit ausgangsmaterial_eiszeit_oben
 	 ON standort_ausgangsmaterial_oben.eiszeit = ausgangsmaterial_eiszeit_oben.t_id
 LEFT JOIN 
-     afu_bodendaten_nabodat.codlstnpktstndort_eiszeit ausgangsmaterial_eiszeit_unten
+     afu_bodendaten_nabodat_v1.codlstnpktstndort_eiszeit ausgangsmaterial_eiszeit_unten
 	 ON standort_ausgangsmaterial_unten.eiszeit = ausgangsmaterial_eiszeit_unten.t_id
 	 
 --ERHEBUNG
 LEFT JOIN 
-    afu_bodendaten_nabodat.punktdaten_erhebung erhebung
+    afu_bodendaten_nabodat_v1.punktdaten_erhebung erhebung
 	ON erhebung.standort = standort.t_id
 LEFT JOIN 
-    afu_bodendaten_nabodat.codlstnpktstndort_erhebungsart erhebung_erhebungsart
+    afu_bodendaten_nabodat_v1.codlstnpktstndort_erhebungsart erhebung_erhebungsart
 	ON erhebung.erhebungsart = erhebung_erhebungsart.t_id
 	
 --Profil
 LEFT JOIN 
-    afu_bodendaten_nabodat.punktdaten_profil profil
+    afu_bodendaten_nabodat_v1.punktdaten_profil profil
 	ON profil.erhebung = erhebung.t_id
 LEFT JOIN 
-    afu_bodendaten_nabodat.codelistnprfldten_bodentyp profil_bodentyp
+    afu_bodendaten_nabodat_v1.codelistnprfldten_bodentyp profil_bodentyp
 	ON profil.bodentyp = profil_bodentyp.t_id
 LEFT JOIN 
     (SELECT  untertyp.profil, 
@@ -240,93 +240,93 @@ LEFT JOIN
                  'Untertyp_Text', string_agg(code.codetext_de,', ')
              ) AS untertyp_string 
      FROM
-     afu_bodendaten_nabodat.punktdaten_untertyp untertyp
+     afu_bodendaten_nabodat_v1.punktdaten_untertyp untertyp
      LEFT JOIN 
-         afu_bodendaten_nabodat.codelistnprfldten_untertyp code
+         afu_bodendaten_nabodat_v1.codelistnprfldten_untertyp code
 	     ON untertyp.untertyp = code.t_id
      GROUP BY 
          untertyp.profil
 	 ) boden_untertypen
 	 On boden_untertypen.profil = profil.t_id
 LEFT JOIN
-    afu_bodendaten_nabodat.codelistnprfldten_bodenwasserhaushaltsgruppe bodenwasserhaushaltsgruppe
+    afu_bodendaten_nabodat_v1.codelistnprfldten_bodenwasserhaushaltsgruppe bodenwasserhaushaltsgruppe
 	ON bodenwasserhaushaltsgruppe.t_id = profil.bodenwasserhaushaltsgruppe
 LEFT JOIN 
-    afu_bodendaten_nabodat.codelistnprfldten_pflanzennutzbaregruendigkeit pflanzengruendigkeit
+    afu_bodendaten_nabodat_v1.codelistnprfldten_pflanzennutzbaregruendigkeit pflanzengruendigkeit
 	ON pflanzengruendigkeit.t_id = profil.pflanzennutzbaregruendigkeit
 left join 
-    afu_bodendaten_nabodat.codelistnprfldten_wasserspeichervermoegen wasserspeichervermoegen 
+    afu_bodendaten_nabodat_v1.codelistnprfldten_wasserspeichervermoegen wasserspeichervermoegen 
     on wasserspeichervermoegen.t_id = profil.wasserspeichervermoegen 
 	
 --Profilbeurteilung
 LEFT JOIN 
-    afu_bodendaten_nabodat.punktdaten_profilbeurteilung profilbeurteilung 
+    afu_bodendaten_nabodat_v1.punktdaten_profilbeurteilung profilbeurteilung 
 	ON profil.profilbeurteilung = profilbeurteilung.t_id
 LEFT JOIN 
-    afu_bodendaten_nabodat.codelistnprfldten_fruchtbarkeitsstufe fruchtbarkeitsstufe
+    afu_bodendaten_nabodat_v1.codelistnprfldten_fruchtbarkeitsstufe fruchtbarkeitsstufe
 	ON profilbeurteilung.fruchtbarkeitsstufe = fruchtbarkeitsstufe.t_id
 LEFT JOIN 
-    afu_bodendaten_nabodat.codelistnprfldten_nutzungseignung nutzungseignung
+    afu_bodendaten_nabodat_v1.codelistnprfldten_nutzungseignung nutzungseignung
 	ON profilbeurteilung.nutzungseignung = nutzungseignung.t_id
 LEFT JOIN 
-    afu_bodendaten_nabodat.codelistnprfldten_eignungsklasse eignungsklasse
+    afu_bodendaten_nabodat_v1.codelistnprfldten_eignungsklasse eignungsklasse
 	ON profilbeurteilung.eignungsklasse = eignungsklasse.t_id
 
 --Wald 
 LEFT JOIN 
-    afu_bodendaten_nabodat.punktdaten_wald wald
+    afu_bodendaten_nabodat_v1.punktdaten_wald wald
 	ON standort.wald = wald.t_id 
 LEFT JOIN 
-    afu_bodendaten_nabodat.codlstnpktstndort_humusform humusform
+    afu_bodendaten_nabodat_v1.codlstnpktstndort_humusform humusform
 	ON wald.humusform = humusform.t_id
 LEFT JOIN 
-    afu_bodendaten_nabodat.codlstnpktstndort_produktionsfaehigkstufewald produktionsfaehigkeitsstufe
+    afu_bodendaten_nabodat_v1.codlstnpktstndort_produktionsfaehigkstufewald produktionsfaehigkeitsstufe
 	ON wald.produktionsfaehigkstufewald = produktionsfaehigkeitsstufe.t_id
 
 --BICHQualitaet
 LEFT JOIN 
-    afu_bodendaten_nabodat.punktdaten_bichqualitaet bichqualitaet 
+    afu_bodendaten_nabodat_v1.punktdaten_bichqualitaet bichqualitaet 
 	ON bichqualitaet.t_id = profil.bichqualitaet
 LEFT JOIN 
-    afu_bodendaten_nabodat.codelistnprfldten_klassifikationssystem bich_klassifikation
+    afu_bodendaten_nabodat_v1.codelistnprfldten_klassifikationssystem bich_klassifikation
     ON bichqualitaet.klassifikationssystem = bich_klassifikation.t_id
 
 --BODENSKELETTFELDBEREICH
 LEFT JOIN 
-    afu_bodendaten_nabodat.punktdaten_bodenskelettfeldbereich profil_oberbodenskelettfeldbereich
+    afu_bodendaten_nabodat_v1.punktdaten_bodenskelettfeldbereich profil_oberbodenskelettfeldbereich
     ON profil_oberbodenskelettfeldbereich.punktdaten_profil_bodenskelettobfeldbereich = profil.t_id 
 LEFT JOIN 
-    afu_bodendaten_nabodat.codelistnprfldten_skelettgehalt oberbodenskelett
+    afu_bodendaten_nabodat_v1.codelistnprfldten_skelettgehalt oberbodenskelett
 	ON oberbodenskelett.t_id = profil_oberbodenskelettfeldbereich.skelettgehalt
 LEFT JOIN 
-    afu_bodendaten_nabodat.punktdaten_bodenskelettfeldbereich profil_unterbodenskelettfeldbereich
+    afu_bodendaten_nabodat_v1.punktdaten_bodenskelettfeldbereich profil_unterbodenskelettfeldbereich
     ON profil_unterbodenskelettfeldbereich.punktdaten_profil_bodenskelettubfeldbereich = profil.t_id 
 LEFT JOIN 
-    afu_bodendaten_nabodat.codelistnprfldten_skelettgehalt unterbodenskelett
+    afu_bodendaten_nabodat_v1.codelistnprfldten_skelettgehalt unterbodenskelett
 	ON unterbodenskelett.t_id = profil_unterbodenskelettfeldbereich.skelettgehalt
 
 --FEINERDEKOERNUNG
 LEFT JOIN 
-    afu_bodendaten_nabodat.punktdaten_koernungsbereich profil_oberbodenkoernungsbereich
+    afu_bodendaten_nabodat_v1.punktdaten_koernungsbereich profil_oberbodenkoernungsbereich
 	ON profil.t_id = profil_oberbodenkoernungsbereich.punktdaten_profil_koernungsbereichob
 LEFT JOIN 
-    afu_bodendaten_nabodat.codelistnprfldten_feinerdekoernung oberbodenkoernungsbereich
+    afu_bodendaten_nabodat_v1.codelistnprfldten_feinerdekoernung oberbodenkoernungsbereich
 	ON oberbodenkoernungsbereich.t_id = profil_oberbodenkoernungsbereich.feinerdekoernung
 LEFT JOIN 
-    afu_bodendaten_nabodat.punktdaten_koernungsbereich profil_unterbodenkoernungsbereich
+    afu_bodendaten_nabodat_v1.punktdaten_koernungsbereich profil_unterbodenkoernungsbereich
 	ON profil.t_id = profil_unterbodenkoernungsbereich.punktdaten_profil_koernungsbereichub
 LEFT JOIN 
-    afu_bodendaten_nabodat.codelistnprfldten_feinerdekoernung unterbodenkoernungsbereich
+    afu_bodendaten_nabodat_v1.codelistnprfldten_feinerdekoernung unterbodenkoernungsbereich
 	ON unterbodenkoernungsbereich.t_id = profil_unterbodenkoernungsbereich.feinerdekoernung
 
 --DOKUMENTE 
 --TOPOGRAFIEDOKUMENT
 LEFT JOIN 
-    (SELECT * FROM afu_bodendaten_nabodat.punktdaten_profildokument profildokument 
+    (SELECT * FROM afu_bodendaten_nabodat_v1.punktdaten_profildokument profildokument 
          LEFT JOIN
             (SELECT dokument.* 
-	         FROM afu_bodendaten_nabodat.punktdaten_dokument dokument
-	         LEFT JOIN afu_bodendaten_nabodat.codlstnpktstndort_dokumenttyp dokumenttyp 
+	         FROM afu_bodendaten_nabodat_v1.punktdaten_dokument dokument
+	         LEFT JOIN afu_bodendaten_nabodat_v1.codlstnpktstndort_dokumenttyp dokumenttyp 
 	             ON dokument.dokumenttyp = dokumenttyp.t_id 
 	         WHERE dokumenttyp.codetext_de = 'Scan Profil-Topografie'
 	        ) topografiedokument
@@ -337,11 +337,11 @@ LEFT JOIN
 
 --PROFILFOTO
 LEFT JOIN 
-    (SELECT * FROM afu_bodendaten_nabodat.punktdaten_profildokument profildokument 
+    (SELECT * FROM afu_bodendaten_nabodat_v1.punktdaten_profildokument profildokument 
          LEFT JOIN
             (SELECT dokument.* 
-	         FROM afu_bodendaten_nabodat.punktdaten_dokument dokument
-	         LEFT JOIN afu_bodendaten_nabodat.codlstnpktstndort_dokumenttyp dokumenttyp 
+	         FROM afu_bodendaten_nabodat_v1.punktdaten_dokument dokument
+	         LEFT JOIN afu_bodendaten_nabodat_v1.codlstnpktstndort_dokumenttyp dokumenttyp 
 	             ON dokument.dokumenttyp = dokumenttyp.t_id 
 	         WHERE dokumenttyp.codetext_de = 'Foto Profil'
 	        ) profilfoto
@@ -352,11 +352,11 @@ LEFT JOIN
 
 --Profilskizze
 LEFT JOIN 
-    (SELECT * FROM afu_bodendaten_nabodat.punktdaten_profildokument profildokument 
+    (SELECT * FROM afu_bodendaten_nabodat_v1.punktdaten_profildokument profildokument 
          LEFT JOIN
             (SELECT dokument.* 
-	         FROM afu_bodendaten_nabodat.punktdaten_dokument dokument
-	         LEFT JOIN afu_bodendaten_nabodat.codlstnpktstndort_dokumenttyp dokumenttyp 
+	         FROM afu_bodendaten_nabodat_v1.punktdaten_dokument dokument
+	         LEFT JOIN afu_bodendaten_nabodat_v1.codlstnpktstndort_dokumenttyp dokumenttyp 
 	             ON dokument.dokumenttyp = dokumenttyp.t_id 
 	         WHERE dokumenttyp.codetext_de = 'Scan Profil-Skizze'
 	        ) profilskizze
@@ -394,7 +394,7 @@ LEFT JOIN
 			)
 		) AS horizontwert
     FROM 
-        afu_bodendaten_nabodat.punktdaten_horizont horizont
+        afu_bodendaten_nabodat_v1.punktdaten_horizont horizont
     --Gefuege
     LEFT JOIN 
         (SELECT 
@@ -411,14 +411,14 @@ LEFT JOIN
             (SELECT 
                  * 
              FROM 
-                 afu_bodendaten_nabodat.punktdaten_gefuege
+                 afu_bodendaten_nabodat_v1.punktdaten_gefuege
              ORDER BY
                  t_ili_tid) gefuege 
         LEFT JOIN 
-            afu_bodendaten_nabodat.codelistnprfldten_form gefuege_form
+            afu_bodendaten_nabodat_v1.codelistnprfldten_form gefuege_form
 	        ON gefuege.form = gefuege_form.t_id
         LEFT JOIN 
-            afu_bodendaten_nabodat.codelistnprfldten_groesse gefuege_groesse
+            afu_bodendaten_nabodat_v1.codelistnprfldten_groesse gefuege_groesse
 	        ON gefuege.groesse = gefuege_groesse.t_id
 		GROUP BY gefuege.horizont
         ) gefuege 
@@ -439,16 +439,16 @@ LEFT JOIN
 	    (SELECT 
                  * 
              FROM 
-                 afu_bodendaten_nabodat.punktdaten_bodenfarbe 
+                 afu_bodendaten_nabodat_v1.punktdaten_bodenfarbe 
              ORDER BY 
                  t_ili_tid) bodenfarbe
-        LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_farbtonzahl farbtonzahl_code 
+        LEFT JOIN afu_bodendaten_nabodat_v1.codelistnprfldten_farbtonzahl farbtonzahl_code 
 				ON bodenfarbe.farbtonzahl = farbtonzahl_code.t_id
-        LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_farbtontext farbtontext_code 
+        LEFT JOIN afu_bodendaten_nabodat_v1.codelistnprfldten_farbtontext farbtontext_code 
 				ON bodenfarbe.farbtontext = farbtontext_code.t_id
-        LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_helligkeit farbtonhelligkeit_code 
+        LEFT JOIN afu_bodendaten_nabodat_v1.codelistnprfldten_helligkeit farbtonhelligkeit_code 
 				ON bodenfarbe.helligkeit = farbtonhelligkeit_code.t_id
-        LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_intensitaet farbtonintensitaet_code 
+        LEFT JOIN afu_bodendaten_nabodat_v1.codelistnprfldten_intensitaet farbtonintensitaet_code 
 				ON bodenfarbe.intensitaet = farbtonintensitaet_code.t_id
 		GROUP BY 
 		    bodenfarbe.horizont
@@ -478,17 +478,17 @@ LEFT JOIN
               (messung.messwerte) ->> 'Bodenkennwerte // pH-Wert'::text AS cacl2_wert,
               (messung.messwerte) ->> 'Bodenkennwerte // Potentielle Kationenaustauschkapazität'::text AS kationenaustauschkapazitaet_potentiell,
               (messung.messwerte) ->> 'Bodenkennwerte // Effektive Kationenaustauschkapazität'::text AS kationenaustauschkapazitaet_effektiv
-           FROM afu_bodendaten_nabodat.punktdaten_profil profil
-               LEFT JOIN afu_bodendaten_nabodat.punktdaten_horizont horizont ON horizont.profil = profil.t_id
-               LEFT JOIN afu_bodendaten_nabodat.punktdaten_horizontbezeichnung horizontbezeichnung ON horizont.horizontbezeichnung = horizontbezeichnung.t_id
-	       LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_zustandorgsubst zustand_organischesubstanz ON horizontbezeichnung.zustandorgsubst = zustand_organischesubstanz.t_id
-               LEFT JOIN afu_bodendaten_nabodat.codelistnprfldten_kalkreaktionhcl kalk_code ON horizont.kalkreaktionhcl = kalk_code.t_id
-               LEFT JOIN afu_bodendaten_nabodat.erhebung_probe_profil hilfsview ON hilfsview.erhebung_profil = profil.erhebung
-               LEFT JOIN afu_bodendaten_nabodat.punktdaten_probe probe ON hilfsview.erhebung_probe = probe.erhebung AND probe.tiefevon = horizont.tiefevon
+           FROM afu_bodendaten_nabodat_v1.punktdaten_profil profil
+               LEFT JOIN afu_bodendaten_nabodat_v1.punktdaten_horizont horizont ON horizont.profil = profil.t_id
+               LEFT JOIN afu_bodendaten_nabodat_v1.punktdaten_horizontbezeichnung horizontbezeichnung ON horizont.horizontbezeichnung = horizontbezeichnung.t_id
+	       LEFT JOIN afu_bodendaten_nabodat_v1.codelistnprfldten_zustandorgsubst zustand_organischesubstanz ON horizontbezeichnung.zustandorgsubst = zustand_organischesubstanz.t_id
+               LEFT JOIN afu_bodendaten_nabodat_v1.codelistnprfldten_kalkreaktionhcl kalk_code ON horizont.kalkreaktionhcl = kalk_code.t_id
+               LEFT JOIN afu_bodendaten_nabodat_v1.erhebung_probe_profil_v hilfsview ON hilfsview.erhebung_profil = profil.erhebung
+               LEFT JOIN afu_bodendaten_nabodat_v1.punktdaten_probe probe ON hilfsview.erhebung_probe = probe.erhebung AND probe.tiefevon = horizont.tiefevon
                LEFT JOIN ( SELECT json_object_agg(analyseparameter.parametertext_de, messung_1.messwert) AS messwerte,
                       messung_1.probe
-                     FROM afu_bodendaten_nabodat.punktdaten_messung messung_1
-                       LEFT JOIN afu_bodendaten_nabodat.codelistnnlysdten_analyseparameter analyseparameter ON messung_1.analyseparameter = analyseparameter.t_id
+                     FROM afu_bodendaten_nabodat_v1.punktdaten_messung messung_1
+                       LEFT JOIN afu_bodendaten_nabodat_v1.codelistnnlysdten_analyseparameter analyseparameter ON messung_1.analyseparameter = analyseparameter.t_id
                     GROUP BY messung_1.probe) messung ON messung.probe = probe.t_id
     ) messung 
 	    ON messung.horizont_id = horizont.t_id
