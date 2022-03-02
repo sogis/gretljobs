@@ -1,5 +1,7 @@
-DELETE FROM arp_npl_pub.auswertung_grundnutzungszonen_pro_gemeinde;
-INSERT INTO arp_npl_pub.auswertung_grundnutzungszonen_pro_gemeinde
+DELETE FROM arp_auswertung_nutzungsplanung_pub_v1.auswrtngtzngsznen_grundnutzungszone_aggregiert_pro_gemeinde;
+INSERT INTO arp_auswertung_nutzungsplanung_pub_v1.auswrtngtzngsznen_grundnutzungszone_aggregiert_pro_gemeinde ( 
+       gemeindename, bfs_nr, grundnutzung_typ_kt, flaeche_zone_aggregiert, anzahl_gebaeude, flaeche_gebaeude_durchschnitt,
+       flaeche_gebaeude_summe, flaeche_gebaeude_minimum, flaeche_gebaeude_maximum )
 WITH distinct_zones AS (
   SELECT
      DISTINCT typ_kt
@@ -13,7 +15,7 @@ distinct_bfs AS (
      ORDER BY bfs_nr ASC
 ),
 zonenflaechen AS (
-  SELECT uuid_generate_v4() AS t_ili_tid,
+  SELECT 
        gem.gemeindename AS gemeindename,
        bfs.bfs_nr,
        zones.typ_kt,
@@ -29,7 +31,7 @@ zonenflaechen AS (
     ORDER BY bfs_nr ASC, typ_kt ASC
 ),
 zfl_mit_gebaeudedaten AS (
-  SELECT zfl.t_ili_tid,
+  SELECT 
        zfl.gemeindename,
        zfl.bfs_nr,
        zfl.typ_kt,
@@ -42,7 +44,7 @@ zfl_mit_gebaeudedaten AS (
     FROM zonenflaechen zfl
     LEFT JOIN agi_mopublic_pub.mopublic_bodenbedeckung bobe
       ON bobe.art_txt = 'Gebaeude' AND ST_Intersects(zfl.geometrie,bobe.geometrie)
-    GROUP BY zfl.t_ili_tid, zfl.bfs_nr, zfl.typ_kt, zfl.gemeindename, zfl.flaeche_zone_aggregiert
+    GROUP BY zfl.bfs_nr, zfl.typ_kt, zfl.gemeindename, zfl.flaeche_zone_aggregiert
     ORDER BY bfs_nr ASC, typ_kt ASC
 )
 
