@@ -18,12 +18,11 @@ node('master') {
 
 // Declarative pipeline starts here
 pipeline {
+    agent { label params.nodeLabel ?: 'gretl' }
     options {
         disableConcurrentBuilds()
         timeout(time: 1, unit: 'DAYS')
     }
-    agent { label params.nodeLabel ?: 'gretl' }
-
     stages {
         stage('Run GRETL-Job') {
             steps {
