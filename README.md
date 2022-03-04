@@ -207,7 +207,7 @@ in den GRETL-Job-Ordner.
 Es soll dabei nicht verändert oder möglichst nur minimal angepasst werden,
 damit alle Jenkinsfiles soweit möglich identisch sind.
 
-Die speziellen Fälle und die jeweiligen Vorlagen sind in jenkinsfile_docs.md beschrieben.
+Die speziellen Fälle und die jeweiligen Vorlagen sind in [jenkinsfile_docs.md](jenkinsfile_docs.md) beschrieben.
 
 ## Entwicklungs-DBs starten
 
