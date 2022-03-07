@@ -36,19 +36,19 @@ task deleteData_transfer(type: SqlExecutor, dependsOn: 'deleteXtfFile_upload') {
     sqlFiles = ["delete_arp_nutzungsplanung_transfer.sql"]
 }
 
-task transferData(type: SqlExecutor, dependsOn: 'deleteData_transfer') {
-    description = "Führt den Datenumbau in das Schema arp_nutzungsplanung_transfer durch. Das braucht es, damit ein XFT ins Schema arp_nutzungsplanung importiert werden kann"
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ["insert_arp_nutzungsplanung_transfer.sql"]
-    finalizedBy deleteData_import
-}
-
 task deleteData_import(type: Ili2pgDelete) {
     description = "Löscht/leert Daten mit dem angegebenen Datasetname (BFS-Nr.) aus dem Schema arp_nutzungsplanung_import_v1"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
     dbschema = 'arp_nutzungsplanung_import_v1'
     dataset = ili2pgDataset
+}
+
+task transferData(type: SqlExecutor, dependsOn: 'deleteData_transfer') {
+    description = "Führt den Datenumbau in das Schema arp_nutzungsplanung_transfer durch. Das braucht es, damit ein XFT ins Schema arp_nutzungsplanung importiert werden kann"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["insert_arp_nutzungsplanung_transfer.sql"]
+    finalizedBy deleteData_import
 }
 
 task exportData_Dataset_BFSNr(type: Ili2pgExport) {
