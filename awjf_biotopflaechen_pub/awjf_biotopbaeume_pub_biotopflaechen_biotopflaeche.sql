@@ -1,16 +1,15 @@
-WITH 
+WITH
 zielgruppe AS (
 SELECT
     zielgruppe.t_id,
     zielgruppe.aname,
     biotop_zielgruppe.biotopflaeche_zielgruppe
-FROM awjf_foerderprogramm_biodiversitaet.biotopflaechen_biotop_zielgruppe AS biotop_zielgruppe
-LEFT JOIN awjf_foerderprogramm_biodiversitaet.biotopflaechen_biotopflaeche AS flaeche
+FROM awjf_programm_biodiversitaet_wald_v1.biodiversitt_wald_biotop_zielgruppe AS biotop_zielgruppe
+LEFT JOIN awjf_programm_biodiversitaet_wald_v1.biodiversitt_wald_waldbiodiversitaetsflaeche AS flaeche
     ON biotop_zielgruppe.biotopflaeche_zielgruppe = flaeche.t_id
-LEFT JOIN awjf_foerderprogramm_biodiversitaet.biotopflaechen_zielgruppe AS zielgruppe
+LEFT JOIN awjf_programm_biodiversitaet_wald_v1.biodiversitt_wald_zielgruppe AS zielgruppe
     ON biotop_zielgruppe.zielgruppe_biotopflaeche = zielgruppe.t_id
 )
-
 SELECT
     geometrie,
     biotop_id,
@@ -22,12 +21,13 @@ SELECT
     letzter_eingriff,
     bemerkung,
     besonderheiten,
-    vertragsart,
-    vertragsende,
+    vereinbarungsart,
+    vereinbarungsende,
     vertragsspeicherort,
     projektstatus,
     ST_Area(biotopflaeche.geometrie) / 100 AS flaeche
 FROM
-    awjf_foerderprogramm_biodiversitaet.biotopflaechen_biotopflaeche AS biotopflaeche
+    awjf_programm_biodiversitaet_wald_v1.biodiversitt_wald_waldbiodiversitaetsflaeche AS biotopflaeche
 LEFT JOIN zielgruppe AS zielgruppe
     ON zielgruppe.biotopflaeche_zielgruppe = biotopflaeche.t_id
+;
