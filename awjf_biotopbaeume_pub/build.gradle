@@ -10,6 +10,6 @@ task transferAwjfBiotopbaeume(type: Db2Db) {
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('awjf_biotopbaeume_pub_biotopbaeume_biotopbaum.sql',
-                            'awjf_foerderprogramm_biodiversitaet_pub.biotopbaeume_biotopbaum', true)
+                            'awjf_programm_biodiversitaet_wald_pub_v1.biodiversitt_wald_biotopbaum', true)
     ];
 }

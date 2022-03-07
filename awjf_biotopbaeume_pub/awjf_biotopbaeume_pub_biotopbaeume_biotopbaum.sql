@@ -152,7 +152,7 @@ SELECT
     NULL AS waldgesellschaft,
     ablage AS foto
 FROM
-    awjf_foerderprogramm_biodiversitaet.biotopbaeume_biotopbaum AS biotopbaum
+    awjf_programm_biodiversitaet_wald_v1.biodiversitt_wald_biotopbaum AS biotopbaum
     LEFT JOIN awjf_forstreviere.forstreviere_forstreviergeometrie AS forstgeometrie
         ON
             forstgeometrie.geometrie && biotopbaum.geometrie
