@@ -15,7 +15,7 @@ task copyXtfFile(type: Copy) {
     rename("uploadFile", "${ili2pgDataset}.xtf")
 }
 
-task importXTF_import(type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
+task importXtfFile(type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
     description = 'Import das XTF (Herkunft von Planungsbüros) einer Gemeinde in das Schema "arp_nutzungsplanung_import". Immer nur eine Gemeinde ist in diesem Schema "_import" vorhanden. Bei jedem Import wird das Schema wieder geleert '
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_import_v1'
@@ -26,7 +26,7 @@ task importXTF_import(type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
     disableValidation = true
 }
 
-task deleteXtfFile_upload(type: Delete, dependsOn: 'importXTF_import'){
+task deleteXtfFile_upload(type: Delete, dependsOn: 'importXtfFile'){
     delete "upload/${ili2pgDataset}.xtf"
 }
 
@@ -40,9 +40,10 @@ task transferData(type: SqlExecutor, dependsOn: 'deleteData_transfer') {
     description = "Führt den Datenumbau in das Schema arp_nutzungsplanung_transfer durch. Das braucht es, damit ein XFT ins Schema arp_nutzungsplanung importiert werden kann"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ["insert_arp_nutzungsplanung_transfer.sql"]
+    finalizedBy deleteData_import
 }
 
-task deleteData_import(type: Ili2pgDelete, dependsOn: 'transferData') {
+task deleteData_import(type: Ili2pgDelete) {
     description = "Löscht/leert Daten mit dem angegebenen Datasetname (BFS-Nr.) aus dem Schema arp_nutzungsplanung_import_v1"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
@@ -70,7 +71,7 @@ task deleteXtfFile_BFSNr(type: Delete){
     delete file(ili2pgDataset + ".xtf")
 }
 
-task importXTF_Dataset_BFSNr(type: Ili2pgImport) {
+task importData_Dataset_BFSNr(type: Ili2pgImport) {
     description = 'Import der umgebaute INTERLIS-Datei in das Schema arp_nutzungsplanung mit Dataset=BFS-Nr. Im Schema arp_nutzungsplanung werden die Daten nachgeführt.'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_v1'
@@ -101,7 +102,7 @@ task deleteXtfFile_Kanton(type: Delete){
     delete file(ili2pgDataset + "_Kanton.xtf")
 }
 
-task importXTF_Kanton(type: Ili2pgImport) {
+task importData_Dataset_Kanton(type: Ili2pgImport) {
     description = 'Import der umgebaute INTERLIS-Datei in das Schema arp_nutzungsplanung mit Dataset=Kanton. Im Schema arp_nutzungsplanung werden die Daten nachgeführt.'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_kanton_v1'
