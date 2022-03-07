@@ -64,7 +64,7 @@ task exportData_Dataset_BFSNr(type: Ili2pgExport) {
 task validateData_Dataset_BFSNr(type: IliValidator, dependsOn: 'exportData_Dataset_BFSNr') {
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
     dataFiles = file(ili2pgDataset + ".xtf")
-    failOnError = true
+    failOnError = false
 }
 
 task deleteXtfFile_BFSNr(type: Delete){
@@ -95,7 +95,7 @@ task exportData_Dataset_Kanton(type: Ili2pgExport) {
 task validateData_Dataset_Kanton(type: IliValidator, dependsOn: 'exportData_Dataset_Kanton') {
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
     dataFiles = file(ili2pgDataset + "_Kanton.xtf")
-    failOnError = true
+    failOnError = false
 }
 
 task deleteXtfFile_Kanton(type: Delete){
