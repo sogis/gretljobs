@@ -11,7 +11,7 @@ SELECT
     inventur_jahr,
     wirtschaftszone,
     gesuchsnummer,
-    waldeigentuemer_code AS waldeigentuemer,
+    waldeigentuemer_code,
     CASE
         WHEN baumart = 'Laerche'
             THEN 'Lärche'
