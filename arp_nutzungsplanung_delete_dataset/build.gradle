@@ -1,0 +1,27 @@
+// Löschen eines Dataset über die BFS-Nr. Wird benötig wenn neue Daten bei einer Ortsplanungsrevision von Büros geliefert werden.
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
+defaultTasks "delete_Dataset_BFSNr"
+
+task exportData_Dataset_BFSNr(type: Ili2pgExport) {
+    description = "Exportiert die zu löschenden Daten mit dem angegebenden Datasetname (BFS-Nr.)aus dem Schema arp_nutzungsplanung_v1 in ein INTERLIS-Datei. Dient zur Sicherung"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
+    dbschema = 'arp_nutzungsplanung_v1'
+    dataset = bfsnr
+    dataFile = "$rootDir/" + bfsnr + ".xtf"
+    disableValidation = true
+}
+
+task delete_Dataset_BFSNr(type: Ili2pgDelete, dependsOn: 'exportData_Dataset_BFSNr') {
+    description = "Löscht Daten mit dem angegebenen Datasetname (BFS-Nr.) aus dem Schema arp_nutzungsplanung_v1"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
+    dbschema = 'arp_nutzungsplanung_v1'
+    dataset = bfsnr
+}
