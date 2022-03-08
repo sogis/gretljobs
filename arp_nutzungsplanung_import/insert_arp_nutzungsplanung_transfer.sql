@@ -2052,7 +2052,7 @@ SELECT
         FROM
             arp_nutzungsplanung_transfer_v1.t_ili2db_basket
         WHERE 
-            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Rechtsvorschriften'
             AND
             attachmentkey = 'Nachfuehrung_Kanton'
     ) AS t_basket,
@@ -2102,7 +2102,7 @@ SELECT
         FROM
             arp_nutzungsplanung_transfer_v1.t_ili2db_basket
         WHERE 
-            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Rechtsvorschriften'
         AND
             attachmentkey = 'Nachfuehrung_Kanton'
     ) AS t_basket,
@@ -2152,7 +2152,7 @@ SELECT
         FROM
             arp_nutzungsplanung_transfer_v1.t_ili2db_basket
         WHERE 
-            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Rechtsvorschriften'
         AND
             attachmentkey = 'Nachfuehrung_Kanton'
     ) AS t_basket, 

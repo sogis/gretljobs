@@ -18,6 +18,7 @@ task deleteData_transfer_pub (type: SqlExecutor) {
 task transferData(type: SqlExecutor, dependsOn: 'deleteData_transfer_pub') {
     description = "Führt den Datenumbau in das Schema arp_nutzungsplanung_transfer_pub durch. Das braucht es, damit ein XFT pro Dataser ins Schema arp_nutzungsplanung_pub importiert resp. ersetzt werden kann"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = bfsnr
     sqlFiles = ["insert_arp_nutzungsplanung_transfer_pub.sql"]
 }
 
@@ -33,6 +34,7 @@ task exportData (type: Ili2pgExport, dependsOn: 'transferData') {
 task validateData(type: IliValidator, dependsOn: 'exportData') {
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
     dataFiles = file(bfsnr + "_pub.xtf")
+    configFile = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.ini'
     failOnError = true
 }
 
