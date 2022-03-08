@@ -14,11 +14,7 @@ task transferAlwGelan(type: Db2Db){
     // Die Umstellung dieser Werte wird jeweils auf Verlangen des ALW zum gewünschten Zeitpunkt umgesetzt.
     sqlParameters = [publikationsjahr_wechsel_fruehling:'2020', publikationsjahr_wechsel_herbst:'2021']
     transferSets = [
-            new TransferSet('alw_gelan_pub_bienenstandorte.sql', 'alw_gelan_pub.bienenstandorte', true),
-            new TransferSet('alw_gelan_pub_feuerbrand_schutzobjekte.sql', 'alw_gelan_pub.feuerbrand_schutzobjekte',
-                    true),
-            new TransferSet('alw_gelan_pub_feuerbrand_schutzperimeter.sql', 'alw_gelan_pub.feuerbrand_schutzperimeter',
-                    true)
+            new TransferSet('alw_gelan_pub_bienenstandorte.sql', 'alw_gelan_pub.bienenstandorte', true)
     ];
 }
 
