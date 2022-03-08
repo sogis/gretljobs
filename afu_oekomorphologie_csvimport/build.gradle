@@ -1,0 +1,128 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+def schemaNameEdit = "afu_fliessgewaesser_v1"
+def iliModelName = "SO_AFU_Fliessgewaesser_20220221"
+
+defaultTasks "importCsvFiles"
+
+task deleteCsvTableRows(type: SqlExecutor){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [dbSchema:schemaNameEdit]
+    sqlFiles = [
+        'absturz/del_csv.sql',
+        'bauwerk/del_csv.sql',
+        'oekomorph/del_csv.sql'
+    ]
+}
+
+task copyZipFile(type: Copy, dependsOn: deleteCsvTableRows) {
+    from "upload/"
+    into "upload/"
+    include("uploadFile")
+    rename("uploadFile", "uploadFile.zip")
+}
+
+task unzipData(type: Copy, dependsOn: copyZipFile){
+    from zipTree(file("upload/uploadFile.zip"))
+    into file("upload")
+    include '**/*.csv'
+}
+
+// Absturz
+
+task validateAbsturzCsvFile(type: CsvValidator, dependsOn: unzipData) {
+    models = "SO_AFU_Fliessgewaesser_20220221"
+    firstLineIsHeader=true
+    valueSeparator = ','
+    encoding = 'UTF-8'
+    dataFiles = [file("upload/absturz.csv")]
+}
+
+task importAbsturzCsv(type: CsvImport, dependsOn: validateAbsturzCsvFile) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = schemaNameEdit
+    tableName = 'absturzcsv'
+    firstLineIsHeader = true
+    valueSeparator = ','
+    encoding = 'UTF-8'
+    dataFile = file("upload/absturz.csv")
+}
+
+task absturzCalcAndCopy(type: SqlExecutor, dependsOn: importAbsturzCsv){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [dbSchema:schemaNameEdit, eventTable:'absturzcsv']
+    sqlFiles = [
+        'punkt_event/set_fk.sql',
+        'punkt_event/calc_geom.sql',
+        'absturz/copy.sql'
+    ]
+}
+
+// Bauwerk
+
+task validateBauwerkCsvFile(type: CsvValidator, dependsOn: unzipData) {
+    models = "SO_AFU_Fliessgewaesser_20220221"
+    firstLineIsHeader=true
+    valueSeparator = ','
+    encoding = 'UTF-8'
+    dataFiles = [file("upload/bauwerk.csv")]
+}
+
+task importBauwerkCsv(type: CsvImport, dependsOn: validateBauwerkCsvFile) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = schemaNameEdit
+    tableName = 'bauwerkcsv'
+    firstLineIsHeader = true
+    valueSeparator = ','
+    encoding = 'UTF-8'
+    dataFile = file("upload/bauwerk.csv")
+}
+
+task bauwerkCalcAndCopy(type: SqlExecutor, dependsOn: importBauwerkCsv){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [dbSchema:schemaNameEdit, eventTable:'bauwerkcsv']
+    sqlFiles = [
+        'punkt_event/set_fk.sql',
+        'punkt_event/calc_geom.sql',
+        'bauwerk/copy.sql'
+    ]
+}
+
+// Oekomorph
+
+task validateOekomorphCsvFile(type: CsvValidator, dependsOn: unzipData) {
+    models = "SO_AFU_Fliessgewaesser_20220221"
+    firstLineIsHeader=true
+    valueSeparator = ','
+    encoding = 'UTF-8'
+    dataFiles = [file("upload/oekomorph.csv")]
+}
+
+task importOekomorphCsv(type: CsvImport, dependsOn: validateOekomorphCsvFile) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = schemaNameEdit
+    tableName = 'oekomorphcsv'
+    firstLineIsHeader = true
+    valueSeparator = ','
+    encoding = 'UTF-8'
+    dataFile = file("upload/oekomorph.csv")
+}
+
+task oekomorphCalcAndCopy(type: SqlExecutor, dependsOn: importOekomorphCsv){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [dbSchema:schemaNameEdit, eventTable:'oekomorphcsv']
+    sqlFiles = [
+        'linien_event/set_fk.sql',
+        'linien_event/calc_geom.sql',
+        'oekomorph/copy.sql'
+    ]
+}
+
+// Vereinigender Task aller Imports
+
+task importCsvFiles(){
+    dependsOn bauwerkCalcAndCopy
+    dependsOn absturzCalcAndCopy
+    dependsOn oekomorphCalcAndCopy
+}
