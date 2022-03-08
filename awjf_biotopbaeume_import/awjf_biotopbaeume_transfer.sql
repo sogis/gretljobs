@@ -1,5 +1,5 @@
 INSERT INTO
-    awjf_foerderprogramm_biodiversitaet.biotopbaeume_biotopbaum
+    awjf_programm_biodiversitaet_wald_v1.biodiversitt_wald_biotopbaum
     (
         baum_id,
         baumkategorie,
@@ -50,5 +50,5 @@ INSERT INTO
         auszahlung_beitrag_jahr,
         (SELECT ST_SetSRID(ST_Point(x_koordinate, y_koordinate), 2056)) AS geometrie
     FROM
-        awjf_foerderprogramm_biodiversitaet.biotopbaeume_biotopbaum_import
+        awjf_programm_biodiversitaet_wald_v1.biodiversitt_wald_biotopbaum_import
 ;
