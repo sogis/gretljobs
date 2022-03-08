@@ -148,8 +148,7 @@ SELECT
     flurname.aname AS flurname,
     round(ST_X(biotopbaum.geometrie)::NUMERIC, 0) AS x_koordinate,
     round(ST_Y(biotopbaum.geometrie)::NUMERIC, 0) AS y_koordinate,
-    --waldgesellschaft.ges_neu AS waldgesellschaft,                  /* später ändern, wenn waldgesellschaften neu modelliert
-    NULL AS waldgesellschaft,
+    waldstandort.standorteinheit_korrigiert AS waldgesellschaft,
     ablage AS foto
 FROM
     awjf_programm_biodiversitaet_wald_v1.biodiversitt_wald_biotopbaum AS biotopbaum
@@ -194,14 +193,11 @@ FROM
             AND 
             waldplan.archive = 0
 */
-/*    LEFT JOIN awjf.waldge AS waldgesellschaft
+    LEFT JOIN awjf_waldstandorte_v1.waldstandort AS waldstandort
         ON
-            waldgesellschaft.wkb_geometry && biotopbaum.geometrie
+            waldstandort.geometrie  && biotopbaum.geometrie
             AND
-            ST_Contains(waldgesellschaft.wkb_geometry, biotopbaum.geometrie)
-            AND
-            waldgesellschaft.archive = 0
-*/
+            ST_Contains(waldstandort.geometrie , biotopbaum.geometrie)
     LEFT JOIN
         (
             SELECT 
