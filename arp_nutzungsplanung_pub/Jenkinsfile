@@ -7,13 +7,13 @@ node('master') {
 
 // Declarative pipeline starts here
 pipeline {
-    agent { label params.nodeLabel ?: 'gretl' }
+    agent none
     options {
         timeout(time: 6, unit: 'HOURS')
     }
     stages {
         stage('Import into staging schema') {
-            agent { label 'gretl-ili2pg4' }
+            agent { label 'gretl' }
             steps {
                 git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
                 container('gretl') {
@@ -37,7 +37,7 @@ pipeline {
             }
         }
         stage('Import into pub schema') {
-            agent { label 'gretl-ili2pg4' }
+            agent { label 'gretl' }
             steps {
                 unstash name: "gretljob"
                 container('gretl') {
