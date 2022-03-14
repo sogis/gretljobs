@@ -123,7 +123,9 @@ grundnutzung AS (
         grundnutzung.erfasser,
         grundnutzung.datum AS datum_erfassung,
         grundnutzung.t_datasetname AS bfs_nr,
-        grundnutzung.publiziertbis
+        grundnutzung.publiziertbis,
+        substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
+        substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
     FROM
         arp_nutzungsplanung_v1.nutzungsplanung_grundnutzung AS grundnutzung
         LEFT JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_grundnutzung AS typ
@@ -154,7 +156,9 @@ SELECT
     grundnutzung.datum_erfassung,
     typ_grundnutzung_json_dokument_agg.dokumente::jsonb AS dokumente,
     ${bfsnr_param}AS bfs_nr,
-    grundnutzung.publiziertbis
+    grundnutzung.publiziertbis,
+    substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
+    substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
 FROM
     grundnutzung
     LEFT JOIN typ_grundnutzung_json_dokument_agg
@@ -251,7 +255,9 @@ ueberlagernd_flaeche AS (
         ueberlagernd_flaeche.erfasser,
         ueberlagernd_flaeche.datum AS datum_erfassung,
         ueberlagernd_flaeche.t_datasetname AS bfs_nr,
-        ueberlagernd_flaeche.publiziertbis
+        ueberlagernd_flaeche.publiziertbis,
+        substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
+        substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
     FROM
         arp_nutzungsplanung_v1.nutzungsplanung_ueberlagernd_flaeche AS ueberlagernd_flaeche
         LEFT JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_flaeche AS typ
@@ -279,7 +285,9 @@ SELECT
     ueberlagernd_flaeche.datum_erfassung,
     typ_ueberlagernd_flaeche_json_dokument_agg.dokumente::jsonb AS dokumente,
     ${bfsnr_param}AS bfs_nr,
-    ueberlagernd_flaeche.publiziertbis
+    ueberlagernd_flaeche.publiziertbis,
+    substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
+    substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
 FROM
     ueberlagernd_flaeche
     LEFT JOIN typ_ueberlagernd_flaeche_json_dokument_agg
@@ -377,7 +385,9 @@ ueberlagernd_linie AS (
         ueberlagernd_linie.erfasser,
         ueberlagernd_linie.datum AS datum_erfassung,
         ueberlagernd_linie.t_datasetname AS bfs_nr,
-        ueberlagernd_linie.publiziertbis
+        ueberlagernd_linie.publiziertbis,
+        substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
+        substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
     FROM
         arp_nutzungsplanung_v1.nutzungsplanung_ueberlagernd_linie AS ueberlagernd_linie
         LEFT JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_linie AS typ
@@ -405,7 +415,9 @@ SELECT
     ueberlagernd_linie.datum_erfassung,
     typ_ueberlagernd_linie_json_dokument_agg.dokumente::jsonb AS dokumente,
     ${bfsnr_param}AS bfs_nr,
-    ueberlagernd_linie.publiziertbis
+    ueberlagernd_linie.publiziertbis,
+    substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
+    substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
 FROM
     ueberlagernd_linie
     LEFT JOIN typ_ueberlagernd_linie_json_dokument_agg
@@ -504,7 +516,9 @@ ueberlagernd_punkt AS (
         ueberlagernd_punkt.erfasser,
         ueberlagernd_punkt.datum AS datum_erfassung,
         ueberlagernd_punkt.t_datasetname AS bfs_nr,
-        ueberlagernd_punkt.publiziertbis
+        ueberlagernd_punkt.publiziertbis,
+        substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
+        substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
     FROM
         arp_nutzungsplanung_v1.nutzungsplanung_ueberlagernd_punkt AS ueberlagernd_punkt
         LEFT JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_punkt AS typ
@@ -532,7 +546,9 @@ SELECT
     ueberlagernd_punkt.datum_erfassung,
     typ_ueberlagernd_punkt_json_dokument_agg.dokumente::jsonb AS dokumente,
     ${bfsnr_param}AS bfs_nr,
-    ueberlagernd_punkt.publiziertbis
+    ueberlagernd_punkt.publiziertbis,
+    substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
+    substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
 FROM
     ueberlagernd_punkt
     LEFT JOIN typ_ueberlagernd_punkt_json_dokument_agg
@@ -631,7 +647,9 @@ erschliessung_flaechenobjekt AS (
         erschliessung_flaechenobjekt.erfasser,
         erschliessung_flaechenobjekt.datum AS datum_erfassung,
         erschliessung_flaechenobjekt.t_datasetname AS bfs_nr,
-        erschliessung_flaechenobjekt.publiziertbis
+        erschliessung_flaechenobjekt.publiziertbis,
+        substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
+        substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
     FROM
         arp_nutzungsplanung_v1.erschlssngsplnung_erschliessung_flaechenobjekt AS erschliessung_flaechenobjekt
         LEFT JOIN arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_flaechenobjekt AS typ
@@ -659,7 +677,9 @@ SELECT
     erschliessung_flaechenobjekt.datum_erfassung,
     typ_erschliessung_flaechenobjekt_json_dokument_agg.dokumente::jsonb AS dokumente,
     ${bfsnr_param}AS bfs_nr,
-    erschliessung_flaechenobjekt.publiziertbis
+    erschliessung_flaechenobjekt.publiziertbis,
+    substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
+    substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
 FROM
     erschliessung_flaechenobjekt
     LEFT JOIN typ_erschliessung_flaechenobjekt_json_dokument_agg
@@ -757,7 +777,9 @@ erschliessung_linienobjekt AS (
         erschliessung_linienobjekt.erfasser,
         erschliessung_linienobjekt.datum AS datum_erfassung,
         erschliessung_linienobjekt.t_datasetname AS bfs_nr,
-        erschliessung_linienobjekt.publiziertbis
+        erschliessung_linienobjekt.publiziertbis,
+        substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
+        substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
     FROM
         arp_nutzungsplanung_v1.erschlssngsplnung_erschliessung_linienobjekt AS erschliessung_linienobjekt
         LEFT JOIN arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_linienobjekt AS typ
@@ -785,7 +807,9 @@ SELECT
     erschliessung_linienobjekt.datum_erfassung,
     typ_erschliessung_linienobjekt_json_dokument_agg.dokumente::jsonb AS dokumente,
     ${bfsnr_param}AS bfs_nr,
-    erschliessung_linienobjekt.publiziertbis
+    erschliessung_linienobjekt.publiziertbis,
+    substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
+    substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
 FROM
     erschliessung_linienobjekt
     LEFT JOIN typ_erschliessung_linienobjekt_json_dokument_agg
@@ -882,7 +906,9 @@ erschliessung_punktobjekt AS (
         erschliessung_punktobjekt.erfasser,
         erschliessung_punktobjekt.datum AS datum_erfassung,
         erschliessung_punktobjekt.t_datasetname AS bfs_nr,
-        erschliessung_punktobjekt.publiziertbis
+        erschliessung_punktobjekt.publiziertbis,
+        substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
+        substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
     FROM
         arp_nutzungsplanung_v1.erschlssngsplnung_erschliessung_punktobjekt AS erschliessung_punktobjekt
         LEFT JOIN arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_punktobjekt AS typ
@@ -910,7 +936,9 @@ SELECT
     erschliessung_punktobjekt.datum_erfassung,
     typ_erschliessung_punktobjekt_json_dokument_agg.dokumente::jsonb AS dokumente,
     ${bfsnr_param}AS bfs_nr,
-    erschliessung_punktobjekt.publiziertbis
+    erschliessung_punktobjekt.publiziertbis,
+    substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
+    substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
 FROM
     erschliessung_punktobjekt
     LEFT JOIN typ_erschliessung_punktobjekt_json_dokument_agg
@@ -1006,7 +1034,9 @@ empfindlichkeitsstufe AS (
         empfindlichkeitsstufe.erfasser,
         empfindlichkeitsstufe.datum AS datum_erfassung,
         empfindlichkeitsstufe.t_datasetname AS bfs_nr,
-        empfindlichkeitsstufe.publiziertbis
+        empfindlichkeitsstufe.publiziertbis,
+        substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
+        substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
     FROM
         arp_nutzungsplanung_v1.laermmpfhktsstfen_empfindlichkeitsstufe AS empfindlichkeitsstufe
         LEFT JOIN arp_nutzungsplanung_v1.laermmpfhktsstfen_typ_empfindlichkeitsstufe AS typ
@@ -1033,7 +1063,9 @@ SELECT
     empfindlichkeitsstufe.typ_bemerkungen,
     empfindlichkeitsstufe.typ_kt,
     ${bfsnr_param}AS bfs_nr,
-    typ_empfindlichkeitsstufe_json_dokument_agg.dokumente::jsonb AS dokumente
+    typ_empfindlichkeitsstufe_json_dokument_agg.dokumente::jsonb AS dokumente,
+    substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
+    substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
 FROM
     empfindlichkeitsstufe
     LEFT JOIN typ_empfindlichkeitsstufe_json_dokument_agg
