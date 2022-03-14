@@ -157,8 +157,8 @@ SELECT
     typ_grundnutzung_json_dokument_agg.dokumente::jsonb AS dokumente,
     ${bfsnr_param}AS bfs_nr,
     grundnutzung.publiziertbis,
-    substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
-    substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
+    substring(grundnutzung.typ_kt,2,3)::int4 AS typ_code_kt,
+    substring(grundnutzung.typ_kt,2,2)::int4  AS typ_code_ch
 FROM
     grundnutzung
     LEFT JOIN typ_grundnutzung_json_dokument_agg
@@ -286,8 +286,8 @@ SELECT
     typ_ueberlagernd_flaeche_json_dokument_agg.dokumente::jsonb AS dokumente,
     ${bfsnr_param}AS bfs_nr,
     ueberlagernd_flaeche.publiziertbis,
-    substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
-    substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
+    substring(ueberlagernd_flaeche.typ_kt,2,3)::int4 AS typ_code_kt,
+    substring(ueberlagernd_flaeche.typ_kt,2,2)::int4  AS typ_code_ch
 FROM
     ueberlagernd_flaeche
     LEFT JOIN typ_ueberlagernd_flaeche_json_dokument_agg
@@ -416,8 +416,8 @@ SELECT
     typ_ueberlagernd_linie_json_dokument_agg.dokumente::jsonb AS dokumente,
     ${bfsnr_param}AS bfs_nr,
     ueberlagernd_linie.publiziertbis,
-    substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
-    substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
+    substring(ueberlagernd_linie.typ_kt,2,3)::int4 AS typ_code_kt,
+    substring(ueberlagernd_linie.typ_kt,2,2)::int4  AS typ_code_ch
 FROM
     ueberlagernd_linie
     LEFT JOIN typ_ueberlagernd_linie_json_dokument_agg
@@ -547,8 +547,8 @@ SELECT
     typ_ueberlagernd_punkt_json_dokument_agg.dokumente::jsonb AS dokumente,
     ${bfsnr_param}AS bfs_nr,
     ueberlagernd_punkt.publiziertbis,
-    substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
-    substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
+    substring(ueberlagernd_punkt.typ_kt,2,3)::int4 AS typ_code_kt,
+    substring(ueberlagernd_punkt.typ_kt,2,2)::int4  AS typ_code_ch
 FROM
     ueberlagernd_punkt
     LEFT JOIN typ_ueberlagernd_punkt_json_dokument_agg
@@ -678,8 +678,8 @@ SELECT
     typ_erschliessung_flaechenobjekt_json_dokument_agg.dokumente::jsonb AS dokumente,
     ${bfsnr_param}AS bfs_nr,
     erschliessung_flaechenobjekt.publiziertbis,
-    substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
-    substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
+    substring(erschliessung_flaechenobjekt.typ_kt,2,3)::int4 AS typ_code_kt,
+    substring(erschliessung_flaechenobjekt.typ_kt,2,2)::int4  AS typ_code_ch
 FROM
     erschliessung_flaechenobjekt
     LEFT JOIN typ_erschliessung_flaechenobjekt_json_dokument_agg
@@ -808,8 +808,8 @@ SELECT
     typ_erschliessung_linienobjekt_json_dokument_agg.dokumente::jsonb AS dokumente,
     ${bfsnr_param}AS bfs_nr,
     erschliessung_linienobjekt.publiziertbis,
-    substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
-    substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
+    substring(erschliessung_linienobjekt.typ_kt,2,3)::int4 AS typ_code_kt,
+    substring(erschliessung_linienobjekt.typ_kt,2,2)::int4  AS typ_code_ch
 FROM
     erschliessung_linienobjekt
     LEFT JOIN typ_erschliessung_linienobjekt_json_dokument_agg
@@ -937,8 +937,8 @@ SELECT
     typ_erschliessung_punktobjekt_json_dokument_agg.dokumente::jsonb AS dokumente,
     ${bfsnr_param}AS bfs_nr,
     erschliessung_punktobjekt.publiziertbis,
-    substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
-    substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
+    substring(erschliessung_punktobjekt.typ_kt,2,3)::int4 AS typ_code_kt,
+    substring(erschliessung_punktobjekt.typ_kt,2,2)::int4  AS typ_code_ch
 FROM
     erschliessung_punktobjekt
     LEFT JOIN typ_erschliessung_punktobjekt_json_dokument_agg
@@ -1064,8 +1064,8 @@ SELECT
     empfindlichkeitsstufe.typ_kt,
     ${bfsnr_param}AS bfs_nr,
     typ_empfindlichkeitsstufe_json_dokument_agg.dokumente::jsonb AS dokumente,
-    substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
-    substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
+    substring(empfindlichkeitsstufe.typ_kt,2,3)::int4 AS typ_code_kt,
+    substring(empfindlichkeitsstufe.typ_kt,2,2)::int4  AS typ_code_ch
 FROM
     empfindlichkeitsstufe
     LEFT JOIN typ_empfindlichkeitsstufe_json_dokument_agg
