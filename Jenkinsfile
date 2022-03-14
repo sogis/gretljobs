@@ -13,10 +13,11 @@ pipeline {
     }
     stages {
         stage('Run GRETL-Job') {
+            options {
+                retry(2)
+            }
             steps {
-                retry(2) {
-                    git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
-                }
+                git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
                         sh 'gretl'
