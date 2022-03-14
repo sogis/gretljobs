@@ -7,7 +7,7 @@ SELECT
 FROM
     arp_nutzungsplanung_v1.t_ili2db_dataset
 WHERE
-   datasetname::int4 = 2457
+   datasetname::int4 = ${bfsnr_param}
 ;
 
 -- basket
@@ -26,7 +26,7 @@ FROM
 WHERE
     topic = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Nutzungsplanung'
 AND
-    dataset.datasetname::int4 = 2457
+    dataset.datasetname::int4 = ${bfsnr_param}
 ;
 
 --Grundnutzung
@@ -49,7 +49,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=2457
+        t_datasetname::int4=${bfsnr_param}
 ),
 json_documents AS (
     SELECT
@@ -129,7 +129,7 @@ grundnutzung AS (
         LEFT JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_grundnutzung AS typ
         ON grundnutzung.typ_grundnutzung = typ.t_id
     WHERE
-        grundnutzung.t_datasetname::int4=2457
+        grundnutzung.t_datasetname::int4=${bfsnr_param}
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_grundnutzung
@@ -153,7 +153,7 @@ SELECT
     grundnutzung.erfasser,
     grundnutzung.datum_erfassung,
     typ_grundnutzung_json_dokument_agg.dokumente::jsonb AS dokumente,
-    2457 AS bfs_nr,
+    ${bfsnr_param}AS bfs_nr,
     grundnutzung.publiziertbis
 FROM
     grundnutzung
@@ -180,7 +180,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=2457
+        t_datasetname::int4=${bfsnr_param}
 ),
 json_documents AS (
     SELECT
@@ -257,7 +257,7 @@ ueberlagernd_flaeche AS (
         LEFT JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_flaeche AS typ
         ON ueberlagernd_flaeche.typ_ueberlagernd_flaeche= typ.t_id
     WHERE
-        ueberlagernd_flaeche.t_datasetname::int4=2457
+        ueberlagernd_flaeche.t_datasetname::int4=${bfsnr_param}
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_ueberlagernd_flaeche
@@ -278,7 +278,7 @@ SELECT
     ueberlagernd_flaeche.erfasser,
     ueberlagernd_flaeche.datum_erfassung,
     typ_ueberlagernd_flaeche_json_dokument_agg.dokumente::jsonb AS dokumente,
-    2457 AS bfs_nr,
+    ${bfsnr_param}AS bfs_nr,
     ueberlagernd_flaeche.publiziertbis
 FROM
     ueberlagernd_flaeche
@@ -306,7 +306,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=2457
+        t_datasetname::int4=${bfsnr_param}
 ),
 json_documents AS (
     SELECT
@@ -383,7 +383,7 @@ ueberlagernd_linie AS (
         LEFT JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_linie AS typ
         ON ueberlagernd_linie.typ_ueberlagernd_linie= typ.t_id
     WHERE
-        ueberlagernd_linie.t_datasetname::int4=2457
+        ueberlagernd_linie.t_datasetname::int4=${bfsnr_param}
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_ueberlagernd_linie
@@ -404,7 +404,7 @@ SELECT
     ueberlagernd_linie.erfasser,
     ueberlagernd_linie.datum_erfassung,
     typ_ueberlagernd_linie_json_dokument_agg.dokumente::jsonb AS dokumente,
-    2457 AS bfs_nr,
+    ${bfsnr_param}AS bfs_nr,
     ueberlagernd_linie.publiziertbis
 FROM
     ueberlagernd_linie
@@ -432,7 +432,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=2457
+        t_datasetname::int4=${bfsnr_param}
 ),
 
 json_documents AS (
@@ -510,7 +510,7 @@ ueberlagernd_punkt AS (
         LEFT JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_punkt AS typ
         ON ueberlagernd_punkt.typ_ueberlagernd_punkt= typ.t_id
     WHERE
-        ueberlagernd_punkt.t_datasetname::int4=2457
+        ueberlagernd_punkt.t_datasetname::int4=${bfsnr_param}
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_ueberlagernd_punkt
@@ -531,7 +531,7 @@ SELECT
     ueberlagernd_punkt.erfasser,
     ueberlagernd_punkt.datum_erfassung,
     typ_ueberlagernd_punkt_json_dokument_agg.dokumente::jsonb AS dokumente,
-    2457 AS bfs_nr,
+    ${bfsnr_param}AS bfs_nr,
     ueberlagernd_punkt.publiziertbis
 FROM
     ueberlagernd_punkt
@@ -560,7 +560,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=2457
+        t_datasetname::int4=${bfsnr_param}
 ),
 json_documents AS (
     SELECT
@@ -637,7 +637,7 @@ erschliessung_flaechenobjekt AS (
         LEFT JOIN arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_flaechenobjekt AS typ
         ON erschliessung_flaechenobjekt.typ_erschliessung_flaechenobjekt= typ.t_id
     WHERE
-        erschliessung_flaechenobjekt.t_datasetname::int4=2457
+        erschliessung_flaechenobjekt.t_datasetname::int4=${bfsnr_param}
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_erschliessung_flaechenobjekt
@@ -658,7 +658,7 @@ SELECT
     erschliessung_flaechenobjekt.erfasser,
     erschliessung_flaechenobjekt.datum_erfassung,
     typ_erschliessung_flaechenobjekt_json_dokument_agg.dokumente::jsonb AS dokumente,
-    2457 AS bfs_nr,
+    ${bfsnr_param}AS bfs_nr,
     erschliessung_flaechenobjekt.publiziertbis
 FROM
     erschliessung_flaechenobjekt
@@ -686,7 +686,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=2457
+        t_datasetname::int4=${bfsnr_param}
 ),
 json_documents AS (
     SELECT
@@ -763,7 +763,7 @@ erschliessung_linienobjekt AS (
         LEFT JOIN arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_linienobjekt AS typ
         ON erschliessung_linienobjekt.typ_erschliessung_linienobjekt= typ.t_id
     WHERE
-        erschliessung_linienobjekt.t_datasetname::int4=2457
+        erschliessung_linienobjekt.t_datasetname::int4=${bfsnr_param}
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_erschliessung_linienobjekt
@@ -784,7 +784,7 @@ SELECT
     erschliessung_linienobjekt.erfasser,
     erschliessung_linienobjekt.datum_erfassung,
     typ_erschliessung_linienobjekt_json_dokument_agg.dokumente::jsonb AS dokumente,
-    2457 AS bfs_nr,
+    ${bfsnr_param}AS bfs_nr,
     erschliessung_linienobjekt.publiziertbis
 FROM
     erschliessung_linienobjekt
@@ -811,7 +811,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=2457
+        t_datasetname::int4=${bfsnr_param}
 ),
 json_documents AS (
     SELECT
@@ -888,7 +888,7 @@ erschliessung_punktobjekt AS (
         LEFT JOIN arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_punktobjekt AS typ
         ON erschliessung_punktobjekt.typ_erschliessung_punktobjekt= typ.t_id
     WHERE
-        erschliessung_punktobjekt.t_datasetname::int4=2457
+        erschliessung_punktobjekt.t_datasetname::int4=${bfsnr_param}
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_erschliessung_punktobjekt
@@ -909,7 +909,7 @@ SELECT
     erschliessung_punktobjekt.erfasser,
     erschliessung_punktobjekt.datum_erfassung,
     typ_erschliessung_punktobjekt_json_dokument_agg.dokumente::jsonb AS dokumente,
-    2457 AS bfs_nr,
+    ${bfsnr_param}AS bfs_nr,
     erschliessung_punktobjekt.publiziertbis
 FROM
     erschliessung_punktobjekt
@@ -936,7 +936,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=2457
+        t_datasetname::int4=${bfsnr_param}
 ),
 json_documents AS (
     SELECT
@@ -1012,7 +1012,7 @@ empfindlichkeitsstufe AS (
         LEFT JOIN arp_nutzungsplanung_v1.laermmpfhktsstfen_typ_empfindlichkeitsstufe AS typ
         ON empfindlichkeitsstufe.typ_empfindlichkeitsstufen= typ.t_id
     WHERE
-        empfindlichkeitsstufe.t_datasetname::int4=2457
+        empfindlichkeitsstufe.t_datasetname::int4=${bfsnr_param}
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_empfindlichkeitsstufe
@@ -1032,7 +1032,7 @@ SELECT
     empfindlichkeitsstufe.typ_verbindlichkeit,
     empfindlichkeitsstufe.typ_bemerkungen,
     empfindlichkeitsstufe.typ_kt,
-    2457 AS bfs_nr,
+    ${bfsnr_param}AS bfs_nr,
     typ_empfindlichkeitsstufe_json_dokument_agg.dokumente::jsonb AS dokumente
 FROM
     empfindlichkeitsstufe
