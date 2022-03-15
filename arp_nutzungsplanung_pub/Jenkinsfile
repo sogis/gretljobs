@@ -15,6 +15,7 @@ pipeline {
         stage('Import into staging schema') {
             agent { label 'gretl' }
             steps {
+                script { currentBuild.description = "${params.buildDescription}" }
                 git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
