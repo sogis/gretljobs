@@ -40,16 +40,18 @@ WITH dokumente AS (
         offiziellenr,
         kanton,
         gemeinde,
-        publiziertAb,
+        publiziertab,
         rechtsstatus,
         textimweb,
         bemerkungen,
         rechtsvorschrift,
-        publiziertBis
+        publiziertbis
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
         t_datasetname::int4=${bfsnr_param}
+    AND
+        publiziertbis IS NULL
 ),
 json_documents AS (
     SELECT
@@ -132,6 +134,8 @@ grundnutzung AS (
         ON grundnutzung.typ_grundnutzung = typ.t_id
     WHERE
         grundnutzung.t_datasetname::int4=${bfsnr_param}
+    AND
+        grundnutzung.publiziertbis IS NULL
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_grundnutzung
@@ -175,16 +179,18 @@ WITH dokumente AS (
         offiziellenr,
         kanton,
         gemeinde,
-        publiziertAb,
+        publiziertab,
         rechtsstatus,
         textimweb,
         bemerkungen,
         rechtsvorschrift,
-        publiziertBis
+        publiziertbis
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
         t_datasetname::int4=${bfsnr_param}
+    AND
+        publiziertbis IS NULL
 ),
 json_documents AS (
     SELECT
@@ -264,6 +270,8 @@ ueberlagernd_flaeche AS (
         ON ueberlagernd_flaeche.typ_ueberlagernd_flaeche= typ.t_id
     WHERE
         ueberlagernd_flaeche.t_datasetname::int4=${bfsnr_param}
+    AND
+        ueberlagernd_flaeche.publiziertbis IS NULL
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_ueberlagernd_flaeche
@@ -305,16 +313,18 @@ WITH dokumente AS (
         offiziellenr,
         kanton,
         gemeinde,
-        publiziertAb,
+        publiziertab,
         rechtsstatus,
         textimweb,
         bemerkungen,
         rechtsvorschrift,
-        publiziertBis
+        publiziertbis
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
         t_datasetname::int4=${bfsnr_param}
+    AND
+        publiziertbis IS NULL
 ),
 json_documents AS (
     SELECT
@@ -394,6 +404,8 @@ ueberlagernd_linie AS (
         ON ueberlagernd_linie.typ_ueberlagernd_linie= typ.t_id
     WHERE
         ueberlagernd_linie.t_datasetname::int4=${bfsnr_param}
+    AND
+        ueberlagernd_linie.publiziertbis IS NULL
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_ueberlagernd_linie
@@ -435,16 +447,18 @@ WITH dokumente AS (
         offiziellenr,
         kanton,
         gemeinde,
-        publiziertAb,
+        publiziertab,
         rechtsstatus,
         textimweb,
         bemerkungen,
         rechtsvorschrift,
-        publiziertBis
+        publiziertbis
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
         t_datasetname::int4=${bfsnr_param}
+    AND
+        publiziertbis IS NULL
 ),
 
 json_documents AS (
@@ -525,6 +539,8 @@ ueberlagernd_punkt AS (
         ON ueberlagernd_punkt.typ_ueberlagernd_punkt= typ.t_id
     WHERE
         ueberlagernd_punkt.t_datasetname::int4=${bfsnr_param}
+    AND
+        ueberlagernd_punkt.publiziertbis IS NULL
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_ueberlagernd_punkt
@@ -567,16 +583,18 @@ WITH dokumente AS (
         offiziellenr,
         kanton,
         gemeinde,
-        publiziertAb,
+        publiziertab,
         rechtsstatus,
         textimweb,
         bemerkungen,
         rechtsvorschrift,
-        publiziertBis
+        publiziertbis
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
         t_datasetname::int4=${bfsnr_param}
+    AND
+        publiziertbis IS NULL
 ),
 json_documents AS (
     SELECT
@@ -656,6 +674,8 @@ erschliessung_flaechenobjekt AS (
         ON erschliessung_flaechenobjekt.typ_erschliessung_flaechenobjekt= typ.t_id
     WHERE
         erschliessung_flaechenobjekt.t_datasetname::int4=${bfsnr_param}
+    AND
+        erschliessung_flaechenobjekt.publiziertbis IS NULL
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_erschliessung_flaechenobjekt
@@ -697,16 +717,18 @@ WITH dokumente AS (
         offiziellenr,
         kanton,
         gemeinde,
-        publiziertAb,
+        publiziertab,
         rechtsstatus,
         textimweb,
         bemerkungen,
         rechtsvorschrift,
-        publiziertBis
+        publiziertbis
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
         t_datasetname::int4=${bfsnr_param}
+    AND
+        publiziertbis IS NULL
 ),
 json_documents AS (
     SELECT
@@ -786,6 +808,8 @@ erschliessung_linienobjekt AS (
         ON erschliessung_linienobjekt.typ_erschliessung_linienobjekt= typ.t_id
     WHERE
         erschliessung_linienobjekt.t_datasetname::int4=${bfsnr_param}
+    AND
+        erschliessung_linienobjekt.publiziertbis IS NULL
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_erschliessung_linienobjekt
@@ -826,16 +850,18 @@ WITH dokumente AS (
         offiziellenr,
         kanton,
         gemeinde,
-        publiziertAb,
+        publiziertab,
         rechtsstatus,
         textimweb,
         bemerkungen,
         rechtsvorschrift,
-        publiziertBis
+        publiziertbis
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
         t_datasetname::int4=${bfsnr_param}
+    AND
+        publiziertbis IS NULL
 ),
 json_documents AS (
     SELECT
@@ -915,6 +941,8 @@ erschliessung_punktobjekt AS (
         ON erschliessung_punktobjekt.typ_erschliessung_punktobjekt= typ.t_id
     WHERE
         erschliessung_punktobjekt.t_datasetname::int4=${bfsnr_param}
+    AND
+        erschliessung_punktobjekt.publiziertbis IS NULL
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_erschliessung_punktobjekt
@@ -955,16 +983,18 @@ WITH dokumente AS (
         offiziellenr,
         kanton,
         gemeinde,
-        publiziertAb,
+        publiziertab,
         rechtsstatus,
         textimweb,
         bemerkungen,
         rechtsvorschrift,
-        publiziertBis
+        publiziertbis
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
         t_datasetname::int4=${bfsnr_param}
+    AND
+        publiziertbis IS NULL
 ),
 json_documents AS (
     SELECT
@@ -1043,6 +1073,8 @@ empfindlichkeitsstufe AS (
         ON empfindlichkeitsstufe.typ_empfindlichkeitsstufen= typ.t_id
     WHERE
         empfindlichkeitsstufe.t_datasetname::int4=${bfsnr_param}
+    AND
+        empfindlichkeitsstufe.publiziertbis IS NULL
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_empfindlichkeitsstufe
