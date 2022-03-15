@@ -9,6 +9,7 @@ import java.util.Date
 import java.util.ArrayList
 import java.util.Iterator
 import java.util.List
+import java.util.zip.GZIPInputStream
 
 
 apply plugin: "de.undercouch.download"
@@ -26,6 +27,7 @@ def csvFilePath = Paths.get(pathToUnzipFolder.toString(), 'data', 'data.csv')
 ext.filepath = 'foo'
 ext.filename = 'bar'
 ext.fileid = new ArrayList<String>()
+
 
 task download_json(type: Download){
     description = "Download Json with filename"
@@ -92,13 +94,15 @@ task download_file(dependsOn: download_json){
     }
 }
 
-task unpackFiles(dependsOn: download_file) {
-    doLast{
-        file(pathToUnzipFolder.toString()+'/neophyten').withOutputStream { os ->
-        os << resources.gzip(pathToDataZip).read()
-        }
-     }
+task unpackFiles(dependsOn: download_file){ 
+    doLast {
+        GZIPInputStream gis = new GZIPInputStream(
+            new FileInputStream(pathToDataZip.toFile())
+        )
+        Files.copy(gis, Paths.get(pathToUnzipFolder.toString()+'/neophyten'))
+    }
 }
+
 
 task truncateTable(type: SqlExecutor, dependsOn:unpackFiles) {
     description = "Leert die Tabelle afu_infoflora.neophyten_neophytenstandorte"
