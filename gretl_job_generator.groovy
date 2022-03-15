@@ -41,6 +41,7 @@ for (jobFile in jobFiles) {
     'logRotator.numToKeep':'15',
     'parameters.fileParam':'none',
     'parameters.stringParam':'none',
+    'parameters.stringParams':'none',
     'triggers.upstream':'none',
     'triggers.cron':''
   ])
@@ -64,11 +65,16 @@ for (jobFile in jobFiles) {
         fileParam(properties.getProperty('parameters.fileParam'), 'Select file to upload')
       }
     }
-    if (properties.getProperty('parameters.stringParam') != 'none') {
-      def propertyValues = properties.getProperty('parameters.stringParam').split(';')
-      if (propertyValues.length == 3) {
-        parameters {
-          stringParam(propertyValues[0], propertyValues[1], propertyValues[2])
+    if (properties.getProperty('parameters.stringParams') != 'none') {
+      def stringParams = properties.getProperty('parameters.stringParams').split('|')
+      for ( sp in stringParams ) {
+        def spValues = sp.split(';')
+        if (spValues.length == 3) {
+          parameters {
+            stringParam(spValues[0], spValues[1], spValues[2])
+          }
+        } else {
+          println '    WARNING: Invalid stringParam definiton: ' + spValues
         }
       }
     }
