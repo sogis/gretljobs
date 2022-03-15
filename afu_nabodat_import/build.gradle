@@ -5,6 +5,7 @@ import ch.so.agi.gretl.tasks.*
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.io.File
+import java.util.zip.GZIPInputStream
 
 defaultTasks 'importNabodat'
 
@@ -15,7 +16,6 @@ def pathToUploadFolder = 'upload'
 /*
 SEHR UNSCHÖN: Das gezipte xtf wird hochgeladen und heisst dann data.xtf obwohl es eigentlich ein .gz-file ist. Dann wird es entzipt und heisst dann data_neu.xtf. 
 Das sollte noch schöner gemacht werden! 
-*/
 
 task unpackFiles() {
     doLast{
@@ -23,6 +23,16 @@ task unpackFiles() {
         os << resources.gzip('upload/uploadFile').read()
         }
      }
+}
+*/
+
+task unpackFiles(){ 
+    doLast {
+        GZIPInputStream gis = new GZIPInputStream(
+            new FileInputStream(Paths.get('upload/uploadFile').toFile())
+        )
+        Files.copy(gis, Paths.get('upload/data.xtf'))
+    }
 }
 
 task importNabodat(type: Ili2pgReplace, dependsOn: unpackFiles){
