@@ -1,0 +1,16 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+//Dieser Job wird nur noch im Jahr 2022 benötigt um die neuen GELAN-Personendaten ins alte Schema zu spielen, damit sie im alten MJPNatur-Plugin verwendet werden können. Ist das neue MJPNatur aktiv, kann dieser Job auch gelöscht werden. 
+
+defaultTasks 'transferAlwGelanPerson'
+
+task transferAlwGelanPerson(type: Db2Db){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    transferSets = [
+            new TransferSet('gelan_person.sql', 'gelan.gelan_person', true)
+    ];
+}
