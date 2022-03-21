@@ -48,9 +48,7 @@ SELECT
             THEN 'Ertragsklasse VI, Zuwachs jährlich (1-2-3) m3 pro ha'
     END AS ertragsklasse,
     zuwachs,
-    minimaler_laubholzanteil * 100 AS minimaler_laubholzanteil,
-    '[{"name": "Ökogramm Waldstandorte", "url": "https://geo.so.ch/docs/ch.so.awjf.waldstandorte.waldstandorte/Oekogramme_Waldstandorte.pdf"},{"name": "Legende Waldstandorte", "url": "https://geo.so.ch/docs/ch.so.awjf.waldstandorte.waldstandorte/Legende_Waldstandorte.pdf"}]' AS dokumente
+    minimaler_laubholzanteil * 100 AS minimaler_laubholzanteil
 FROM 
     awjf_waldstandorte_v1.waldstandort
-
 ;
