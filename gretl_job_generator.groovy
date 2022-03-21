@@ -66,7 +66,7 @@ for (jobFile in jobFiles) {
       }
     }
     if (properties.getProperty('parameters.stringParams') != 'none') {
-      def stringParams = properties.getProperty('parameters.stringParams').split('|')
+      def stringParams = properties.getProperty('parameters.stringParams').split('@')
       for ( sp in stringParams ) {
         def spValues = sp.split(';')
         if (spValues.length == 3) {
