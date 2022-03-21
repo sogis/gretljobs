@@ -163,17 +163,17 @@ und für den dem Benutzer neben dem Eingabefeld
 die Beschreibung `parameter description` angezeigt wird.
 Die drei Werte müssen mit Strichpunkt voneinander getrennt werden.
 Innerhalb der Werte dürfen deshalb keine Strichpunkte vorkommen
-(und auch nicht das Zeichen `|`).
+(und auch nicht das Zeichen `@`).
 Für den Standardwert und die Beschreibung sind Leerschläge zugelassen.
 Es ist auch möglich, mehrere String-Parameter zu definieren.
-Sie müssen mit dem Zeichen `|` voneinander getrennt werden.
+Sie müssen mit dem Zeichen `@` voneinander getrennt werden.
 Für die bessere Lesbarkeit ist es ratsam,
 jeden String-Parameter auf einer eigenen Zeile zu definieren;
 hierzu wird ein Backslash am Ende der vorangehenden Zeile benötigt.
 Beispiel:
 
 ```java
-parameters.stringParams=bfsnr;0000;BFS-Nr. der Gemeinde welche publiziert werden soll.|\
+parameters.stringParams=bfsnr;0000;BFS-Nr. der Gemeinde welche publiziert werden soll.@\
                         buildDescription;Keine Beschreibung angegeben;Beschreibung/Grund für die Publikation der Daten
 ```
 
