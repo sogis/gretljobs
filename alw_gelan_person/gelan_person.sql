@@ -29,7 +29,11 @@ select
     clearing as clearing,
     bankkonto as bkto,
     postkonto as pckto,
-    iban as iban,
+    CASE 
+        WHEN iban IS NULL 
+        THEN '' 
+        ELSE iban 
+    END as iban,
     prueftext_iban as text_iban,
     pid_beguenstigter as pid_beguenstigter,
     beguenstigter as beguenstigter
