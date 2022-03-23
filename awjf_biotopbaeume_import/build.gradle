@@ -13,7 +13,7 @@ task copyCsvFile(type: Copy) {
 
 task validateCsvFile(type: CsvValidator, dependsOn: 'copyCsvFile') {
     models = "SO_AWJF_Programm_Biodiversitaet_Wald_20220224"
-    firstLineIsHeader=true
+    firstLineIsHeader = true
     valueSeparator = ';'
     encoding = 'UTF-8'
     dataFiles = [file("upload/uploadFile.csv")]
@@ -24,7 +24,7 @@ task importBiotopbaeume(type: CsvImport, dependsOn: 'validateCsvFile') {
     schemaName = 'awjf_programm_biodiversitaet_wald_v1'
     tableName = 'biodiversitt_wald_biotopbaum_import'
     firstLineIsHeader = true
-    valueSeparator=';'
+    valueSeparator = ';'
     encoding = 'UTF-8'
     dataFile = "upload/uploadFile"
 }
