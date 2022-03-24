@@ -74,7 +74,12 @@ json_documents AS (
                 rechtsstatus AS "Rechtsstatus",
                 textimweb AS "TextimWeb",
                 bemerkungen AS "Bemerkungen",
-                rechtsvorschrift AS "Rechtsvorschrift",
+                CASE
+                    WHEN rechtsvorschrift = 'true'
+                        THEN 'ja'
+                    WHEN rechtsvorschrift = 'false'
+                        THEN 'nein'
+                END AS "Rechtsvorschrift",
                 publiziertbis AS "publiziertBis",
                 'SO_ARP_Nutzungsplanung_Publikation_20201005.Nutzungsplanung.Dokument' AS "@type"
         ) docs
@@ -213,7 +218,12 @@ json_documents AS (
                 rechtsstatus AS "Rechtsstatus",
                 textimweb AS "TextimWeb",
                 bemerkungen AS "Bemerkungen",
-                rechtsvorschrift AS "Rechtsvorschrift",
+                CASE
+                    WHEN rechtsvorschrift = 'true'
+                        THEN 'ja'
+                    WHEN rechtsvorschrift = 'false'
+                        THEN 'nein'
+                END AS "Rechtsvorschrift",
                 publiziertbis AS "publiziertBis",
                 'SO_ARP_Nutzungsplanung_Publikation_20201005.Nutzungsplanung.Dokument' AS "@type"
         ) docs
@@ -347,7 +357,12 @@ json_documents AS (
                 rechtsstatus AS "Rechtsstatus",
                 textimweb AS "TextimWeb",
                 bemerkungen AS "Bemerkungen",
-                rechtsvorschrift AS "Rechtsvorschrift",
+                CASE
+                    WHEN rechtsvorschrift = 'true'
+                        THEN 'ja'
+                    WHEN rechtsvorschrift = 'false'
+                        THEN 'nein'
+                END AS "Rechtsvorschrift",
                 publiziertbis AS "publiziertBis",
                 'SO_ARP_Nutzungsplanung_Publikation_20201005.Nutzungsplanung.Dokument' AS "@type"
         ) docs
@@ -482,7 +497,12 @@ json_documents AS (
                 rechtsstatus AS "Rechtsstatus",
                 textimweb AS "TextimWeb",
                 bemerkungen AS "Bemerkungen",
-                rechtsvorschrift AS "Rechtsvorschrift",
+                CASE
+                    WHEN rechtsvorschrift = 'true'
+                        THEN 'ja'
+                    WHEN rechtsvorschrift = 'false'
+                        THEN 'nein'
+                END AS "Rechtsvorschrift",
                 publiziertbis AS "publiziertBis",
                 'SO_ARP_Nutzungsplanung_Publikation_20201005.Nutzungsplanung.Dokument' AS "@type"
         ) docs
@@ -617,7 +637,12 @@ json_documents AS (
                 rechtsstatus AS "Rechtsstatus",
                 textimweb AS "TextimWeb",
                 bemerkungen AS "Bemerkungen",
-                rechtsvorschrift AS "Rechtsvorschrift",
+                CASE
+                    WHEN rechtsvorschrift = 'true'
+                        THEN 'ja'
+                    WHEN rechtsvorschrift = 'false'
+                        THEN 'nein'
+                END AS "Rechtsvorschrift",
                 publiziertbis AS "publiziertBis",
                 'SO_ARP_Nutzungsplanung_Publikation_20201005.Nutzungsplanung.Dokument' AS "@type"
         ) docs
@@ -751,7 +776,12 @@ json_documents AS (
                 rechtsstatus AS "Rechtsstatus",
                 textimweb AS "TextimWeb",
                 bemerkungen AS "Bemerkungen",
-                rechtsvorschrift AS "Rechtsvorschrift",
+                CASE
+                    WHEN rechtsvorschrift = 'true'
+                        THEN 'ja'
+                    WHEN rechtsvorschrift = 'false'
+                        THEN 'nein'
+                END AS "Rechtsvorschrift",
                 publiziertbis AS "publiziertBis",
                 'SO_ARP_Nutzungsplanung_Publikation_20201005.Nutzungsplanung.Dokument' AS "@type"
         ) docs
@@ -884,7 +914,12 @@ json_documents AS (
                 rechtsstatus AS "Rechtsstatus",
                 textimweb AS "TextimWeb",
                 bemerkungen AS "Bemerkungen",
-                rechtsvorschrift AS "Rechtsvorschrift",
+                CASE
+                    WHEN rechtsvorschrift = 'true'
+                        THEN 'ja'
+                    WHEN rechtsvorschrift = 'false'
+                        THEN 'nein'
+                END AS "Rechtsvorschrift",
                 publiziertbis AS "publiziertBis",
                 'SO_ARP_Nutzungsplanung_Publikation_20201005.Nutzungsplanung.Dokument' AS "@type"
         ) docs
@@ -1017,7 +1052,12 @@ json_documents AS (
                 rechtsstatus AS "Rechtsstatus",
                 textimweb AS "TextimWeb",
                 bemerkungen AS "Bemerkungen",
-                rechtsvorschrift AS "Rechtsvorschrift",
+                CASE
+                    WHEN rechtsvorschrift = 'true'
+                        THEN 'ja'
+                    WHEN rechtsvorschrift = 'false'
+                        THEN 'nein'
+                END AS "Rechtsvorschrift",
                 publiziertbis AS "publiziertBis",
                 'SO_ARP_Nutzungsplanung_Publikation_20201005.Nutzungsplanung.Dokument' AS "@type"
         ) docs
