@@ -44,7 +44,12 @@ WITH dokumente AS (
         rechtsstatus,
         textimweb,
         bemerkungen,
-        rechtsvorschrift,
+        CASE 
+            WHEN rechtsvorschrift = 'true'
+                THEN 'ja'
+            WHEN rechtsvorschrift = 'false'
+                THEN 'nein'
+        END AS rechtsvorschrift,
         publiziertbis
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
@@ -183,7 +188,12 @@ WITH dokumente AS (
         rechtsstatus,
         textimweb,
         bemerkungen,
-        rechtsvorschrift,
+        CASE 
+            WHEN rechtsvorschrift = 'true'
+                THEN 'ja'
+            WHEN rechtsvorschrift = 'false'
+                THEN 'nein'
+        END AS rechtsvorschrift,
         publiziertbis
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
@@ -317,7 +327,12 @@ WITH dokumente AS (
         rechtsstatus,
         textimweb,
         bemerkungen,
-        rechtsvorschrift,
+        CASE 
+            WHEN rechtsvorschrift = 'true'
+                THEN 'ja'
+            WHEN rechtsvorschrift = 'false'
+                THEN 'nein'
+        END AS rechtsvorschrift,
         publiziertbis
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
@@ -451,7 +466,12 @@ WITH dokumente AS (
         rechtsstatus,
         textimweb,
         bemerkungen,
-        rechtsvorschrift,
+        CASE 
+            WHEN rechtsvorschrift = 'true'
+                THEN 'ja'
+            WHEN rechtsvorschrift = 'false'
+                THEN 'nein'
+        END AS rechtsvorschrift,
         publiziertbis
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
@@ -587,7 +607,12 @@ WITH dokumente AS (
         rechtsstatus,
         textimweb,
         bemerkungen,
-        rechtsvorschrift,
+        CASE 
+            WHEN rechtsvorschrift = 'true'
+                THEN 'ja'
+            WHEN rechtsvorschrift = 'false'
+                THEN 'nein'
+        END AS rechtsvorschrift,
         publiziertbis
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
@@ -721,7 +746,12 @@ WITH dokumente AS (
         rechtsstatus,
         textimweb,
         bemerkungen,
-        rechtsvorschrift,
+        CASE 
+            WHEN rechtsvorschrift = 'true'
+                THEN 'ja'
+            WHEN rechtsvorschrift = 'false'
+                THEN 'nein'
+        END AS rechtsvorschrift,
         publiziertbis
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
@@ -854,7 +884,12 @@ WITH dokumente AS (
         rechtsstatus,
         textimweb,
         bemerkungen,
-        rechtsvorschrift,
+        CASE 
+            WHEN rechtsvorschrift = 'true'
+                THEN 'ja'
+            WHEN rechtsvorschrift = 'false'
+                THEN 'nein'
+        END AS rechtsvorschrift,
         publiziertbis
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
@@ -987,7 +1022,12 @@ WITH dokumente AS (
         rechtsstatus,
         textimweb,
         bemerkungen,
-        rechtsvorschrift,
+        CASE 
+            WHEN rechtsvorschrift = 'true'
+                THEN 'ja'
+            WHEN rechtsvorschrift = 'false'
+                THEN 'nein'
+        END AS rechtsvorschrift,
         publiziertbis
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
