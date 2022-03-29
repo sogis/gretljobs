@@ -158,8 +158,8 @@ SELECT
     grundnutzung.bemerkungen,
     grundnutzung.erfasser,
     grundnutzung.datum_erfassung,
-    typ_grundnutzung_json_dokument_agg.dokumente::jsonb AS dokumente,
-    ${bfsnr_param}AS bfs_nr,
+    typ_grundnutzung_json_dokument_agg.dokumente::json AS dokumente,
+    ${bfsnr_param} AS bfs_nr,
     grundnutzung.publiziertbis,
     substring(grundnutzung.typ_kt,2,3)::int4 AS typ_code_kt,
     substring(grundnutzung.typ_kt,2,2)::int4  AS typ_code_ch
@@ -291,8 +291,8 @@ SELECT
     ueberlagernd_flaeche.bemerkungen,
     ueberlagernd_flaeche.erfasser,
     ueberlagernd_flaeche.datum_erfassung,
-    typ_ueberlagernd_flaeche_json_dokument_agg.dokumente::jsonb AS dokumente,
-    ${bfsnr_param}AS bfs_nr,
+    typ_ueberlagernd_flaeche_json_dokument_agg.dokumente::json AS dokumente,
+    ${bfsnr_param} AS bfs_nr,
     ueberlagernd_flaeche.publiziertbis,
     substring(ueberlagernd_flaeche.typ_kt,2,3)::int4 AS typ_code_kt,
     substring(ueberlagernd_flaeche.typ_kt,2,2)::int4  AS typ_code_ch
@@ -425,8 +425,8 @@ SELECT
     ueberlagernd_linie.bemerkungen,
     ueberlagernd_linie.erfasser,
     ueberlagernd_linie.datum_erfassung,
-    typ_ueberlagernd_linie_json_dokument_agg.dokumente::jsonb AS dokumente,
-    ${bfsnr_param}AS bfs_nr,
+    typ_ueberlagernd_linie_json_dokument_agg.dokumente::json AS dokumente,
+    ${bfsnr_param} AS bfs_nr,
     ueberlagernd_linie.publiziertbis,
     substring(ueberlagernd_linie.typ_kt,2,3)::int4 AS typ_code_kt,
     substring(ueberlagernd_linie.typ_kt,2,2)::int4  AS typ_code_ch
@@ -560,8 +560,8 @@ SELECT
     ueberlagernd_punkt.bemerkungen,
     ueberlagernd_punkt.erfasser,
     ueberlagernd_punkt.datum_erfassung,
-    typ_ueberlagernd_punkt_json_dokument_agg.dokumente::jsonb AS dokumente,
-    ${bfsnr_param}AS bfs_nr,
+    typ_ueberlagernd_punkt_json_dokument_agg.dokumente::json AS dokumente,
+    ${bfsnr_param} AS bfs_nr,
     ueberlagernd_punkt.publiziertbis,
     substring(ueberlagernd_punkt.typ_kt,2,3)::int4 AS typ_code_kt,
     substring(ueberlagernd_punkt.typ_kt,2,2)::int4  AS typ_code_ch
@@ -695,8 +695,8 @@ SELECT
     erschliessung_flaechenobjekt.bemerkungen,
     erschliessung_flaechenobjekt.erfasser,
     erschliessung_flaechenobjekt.datum_erfassung,
-    typ_erschliessung_flaechenobjekt_json_dokument_agg.dokumente::jsonb AS dokumente,
-    ${bfsnr_param}AS bfs_nr,
+    typ_erschliessung_flaechenobjekt_json_dokument_agg.dokumente::json AS dokumente,
+    ${bfsnr_param} AS bfs_nr,
     erschliessung_flaechenobjekt.publiziertbis,
     substring(erschliessung_flaechenobjekt.typ_kt,2,3)::int4 AS typ_code_kt,
     substring(erschliessung_flaechenobjekt.typ_kt,2,2)::int4  AS typ_code_ch
@@ -829,8 +829,8 @@ SELECT
     erschliessung_linienobjekt.bemerkungen,
     erschliessung_linienobjekt.erfasser,
     erschliessung_linienobjekt.datum_erfassung,
-    typ_erschliessung_linienobjekt_json_dokument_agg.dokumente::jsonb AS dokumente,
-    ${bfsnr_param}AS bfs_nr,
+    typ_erschliessung_linienobjekt_json_dokument_agg.dokumente::json AS dokumente,
+    ${bfsnr_param} AS bfs_nr,
     erschliessung_linienobjekt.publiziertbis,
     substring(erschliessung_linienobjekt.typ_kt,2,3)::int4 AS typ_code_kt,
     substring(erschliessung_linienobjekt.typ_kt,2,2)::int4  AS typ_code_ch
@@ -962,8 +962,8 @@ SELECT
     erschliessung_punktobjekt.bemerkungen,
     erschliessung_punktobjekt.erfasser,
     erschliessung_punktobjekt.datum_erfassung,
-    typ_erschliessung_punktobjekt_json_dokument_agg.dokumente::jsonb AS dokumente,
-    ${bfsnr_param}AS bfs_nr,
+    typ_erschliessung_punktobjekt_json_dokument_agg.dokumente::json AS dokumente,
+    ${bfsnr_param} AS bfs_nr,
     erschliessung_punktobjekt.publiziertbis,
     substring(erschliessung_punktobjekt.typ_kt,2,3)::int4 AS typ_code_kt,
     substring(erschliessung_punktobjekt.typ_kt,2,2)::int4  AS typ_code_ch
@@ -1094,8 +1094,8 @@ SELECT
     empfindlichkeitsstufe.typ_verbindlichkeit,
     empfindlichkeitsstufe.typ_bemerkungen,
     empfindlichkeitsstufe.typ_kt,
-    ${bfsnr_param}AS bfs_nr,
-    typ_empfindlichkeitsstufe_json_dokument_agg.dokumente::jsonb AS dokumente,
+    ${bfsnr_param} AS bfs_nr,
+    typ_empfindlichkeitsstufe_json_dokument_agg.dokumente::json AS dokumente,
     substring(empfindlichkeitsstufe.typ_kt,2,3)::int4 AS typ_code_kt,
     substring(empfindlichkeitsstufe.typ_kt,2,2)::int4  AS typ_code_ch
 FROM
