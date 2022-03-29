@@ -208,9 +208,9 @@ FROM
                         ablage, 
                         biotopbaum
                     FROM
-                        awjf_foerderprogramm_biodiversitaet.biotopbaeume_foto
+                        awjf_programm_biodiversitaet_wald_v1.biodiversitt_wald_foto
                 ) AS foto,
-                awjf_foerderprogramm_biodiversitaet.biotopbaeume_biotopbaum AS biotopbaum
+                awjf_programm_biodiversitaet_wald_v1.biodiversitt_wald_biotopbaum AS biotopbaum
             WHERE
                 foto.biotopbaum = biotopbaum.t_id
             GROUP BY 
