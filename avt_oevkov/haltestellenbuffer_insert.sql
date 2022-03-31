@@ -1,6 +1,6 @@
-DELETE FROM ${currentYear}_v1.so_geodaten_haltestellenbuffer
+DELETE FROM avt_oevkov_${currentYear}_v1.so_geodaten_haltestellenbuffer
 ;
-INSERT INTO ${currentYear}_v1.so_geodaten_haltestellenbuffer
+INSERT INTO avt_oevkov_${currentYear}_v1.so_geodaten_haltestellenbuffer
     (
     haltestellenname,
     verkehrsmittel,
@@ -24,8 +24,8 @@ INSERT INTO ${currentYear}_v1.so_geodaten_haltestellenbuffer
            ELSE ST_Buffer(haltestelle.geometrie, 50, 'quad_segs=16')
         END AS geometrie
     FROM
-        ${currentYear}_v1.so_geodaten_haltestellen AS haltestelle
-        LEFT JOIN ${currentYear}_v1.auswertung_gesamtauswertung AS auswertung
+        avt_oevkov_${currentYear}_v1.so_geodaten_haltestellen AS haltestelle
+        LEFT JOIN avt_oevkov_${currentYear}_v1.auswertung_gesamtauswertung AS auswertung
             ON haltestelle.haltestellenname = auswertung.haltestellenname 
     WHERE auswertung.anrechnung > 0
     )

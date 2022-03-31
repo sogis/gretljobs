@@ -1,10 +1,10 @@
-DELETE FROM ${currentYear}_v1.auswertung_gesamtauswertung
+DELETE FROM avt_oevkov_${currentYear}_v1.auswertung_gesamtauswertung
 ;
 
 
 
 INSERT INTO
-    ${currentYear}_v1.auswertung_gesamtauswertung
+    avt_oevkov_${currentYear}_v1.auswertung_gesamtauswertung
         (
          gemeindename,
          haltestellenname,
@@ -41,8 +41,8 @@ INSERT INTO
             korrektur.abfahrten_korrigiert,
             bemerkungen
          FROM
-             ${currentYear}_v1.auswertung_auswertung_gtfs AS auswertung
-             LEFT JOIN ${currentYear}_v1.auswertung_abfahrten_korrigiert AS korrektur
+             avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs AS auswertung
+             LEFT JOIN avt_oevkov_${currentYear}_v1.auswertung_abfahrten_korrigiert AS korrektur
                  ON (auswertung.haltestellenname = korrektur.haltestellenname
                        AND
                           auswertung.linie = korrektur.linie)
@@ -69,7 +69,7 @@ INSERT INTO
             verkehrsmittel,
             verkehrsmittel_text
         FROM
-            ${currentYear}_v1.sachdaten_verkehrsmittel
+            avt_oevkov_${currentYear}_v1.sachdaten_verkehrsmittel
         )
         SELECT
             anrechnung.gemeindename,
@@ -261,10 +261,10 @@ INSERT INTO
                     gtfs_abfahrten.bemerkungen
             END AS bemerkungen     
         FROM
-            ${currentYear}_v1.sachdaten_haltestelle_anrechnung AS anrechnung
+            avt_oevkov_${currentYear}_v1.sachdaten_haltestelle_anrechnung AS anrechnung
             LEFT JOIN gtfs_abfahrten
                 ON anrechnung.haltestellenname = gtfs_abfahrten.haltestellenname
-           LEFT JOIN ${currentYear}_v1.auswertung_abfahrten_korrigiert AS korrektur
+           LEFT JOIN avt_oevkov_${currentYear}_v1.auswertung_abfahrten_korrigiert AS korrektur
                  ON ((anrechnung.haltestellenname = korrektur.haltestellenname
                        AND
                           gtfs_abfahrten.linie = korrektur.linie)
@@ -282,7 +282,7 @@ INSERT INTO
                 SELECT
                     haltestellenname
                 FROM
-                    ${currentYear}_v1.auswertung_auswertung_gtfs
+                    avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs
               )   
         )
 ;
@@ -290,7 +290,7 @@ INSERT INTO
 
 -- Haltestellen einfügen, welche in der Auswertung fehlen, für die aber eine Korrektur eingetragen wurde
 INSERT INTO
-    ${currentYear}_v1.auswertung_gesamtauswertung
+    avt_oevkov_${currentYear}_v1.auswertung_gesamtauswertung
         (
          gemeindename,
          haltestellenname,
@@ -318,8 +318,8 @@ INSERT INTO
             (abfahrten_korrigiert *  gewichtung  *  anrechnung  /  100)::numeric(5,1) AS abfahrten_gewichtet,
             bemerkungen
         FROM
-            ${currentYear}_v1.auswertung_abfahrten_korrigiert AS korrektur
-            LEFT JOIN ${currentYear}_v1.sachdaten_haltestelle_anrechnung AS anrechnung
+            avt_oevkov_${currentYear}_v1.auswertung_abfahrten_korrigiert AS korrektur
+            LEFT JOIN avt_oevkov_${currentYear}_v1.sachdaten_haltestelle_anrechnung AS anrechnung
             ON
                 korrektur.haltestellenname = anrechnung.haltestellenname
         WHERE
@@ -327,7 +327,7 @@ INSERT INTO
             SELECT
                 haltestellenname||linie
             FROM
-                ${currentYear}_v1.auswertung_auswertung_gtfs
+                avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs
         )
         AND
             korrektur.haltestellenname <> '--- Alle'
