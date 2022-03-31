@@ -1,9 +1,9 @@
 -- Summe ungewichtete Abfahrten pro Haltestelle und Linie 
-DELETE FROM ${currentYear}_v1.auswertung_auswertung_gtfs
+DELETE FROM avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs
 ;
 
 INSERT INTO
-    ${currentYear}_v1.auswertung_auswertung_gtfs
+    avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs
     (
     haltestellenname,
     route_id,
@@ -26,30 +26,30 @@ INSERT INTO
                   SELECT
                       stichtag
                   FROM
-                      ${currentYear}_v1.sachdaten_oevkov_daten), 'Day')))) = 'thursday'
+                      avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten), 'Day')))) = 'thursday'
              THEN thursday
         WHEN (SELECT BTRIM(lower(to_char((
                   SELECT
                       stichtag
                   FROM
-                      ${currentYear}_v1.sachdaten_oevkov_daten), 'Day')))) = 'tuesday'
+                      avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten), 'Day')))) = 'tuesday'
              THEN tuesday
         END AS dayofweek
         FROM
-            ${currentYear}_v1.gtfs_calendar
+            avt_oevkov_${currentYear}_v1.gtfs_calendar
     ),
     exception AS (
         SELECT
             service_id,
             exception_type
         FROM
-            ${currentYear}_v1.gtfs_calendar_dates
+            avt_oevkov_${currentYear}_v1.gtfs_calendar_dates
         WHERE
             datum = (
                      SELECT
                          stichtag
                      FROM
-                         ${currentYear}_v1.sachdaten_oevkov_daten)
+                         avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten)
     ),
     abfahrten AS (
         SELECT
@@ -73,12 +73,12 @@ INSERT INTO
                     THEN 3
             END AS verkehrsmittel
         FROM
-            ${currentYear}_v1.gtfs_agency AS agency, 
-            ${currentYear}_v1.gtfs_route AS route,
-            ${currentYear}_v1.gtfs_trip AS trip,
-            ${currentYear}_v1.gtfs_stoptime AS stoptime,
-            ${currentYear}_v1.gtfs_stop AS stop,
-            ${currentYear}_v1.sachdaten_linie_route AS linie 
+            avt_oevkov_${currentYear}_v1.gtfs_agency AS agency, 
+            avt_oevkov_${currentYear}_v1.gtfs_route AS route,
+            avt_oevkov_${currentYear}_v1.gtfs_trip AS trip,
+            avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime,
+            avt_oevkov_${currentYear}_v1.gtfs_stop AS stop,
+            avt_oevkov_${currentYear}_v1.sachdaten_linie_route AS linie 
         WHERE
             (
             trip.service_id IN (
@@ -295,10 +295,10 @@ UNION ALL
             SELECT
                 trip_einschraenkung.trip_id
             FROM
-                ${currentYear}_v1.gtfs_route AS route_einschraenkung,
-                ${currentYear}_v1.gtfs_trip AS trip_einschraenkung,
-                ${currentYear}_v1.gtfs_stop AS stop_einschraenkung,
-                ${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
+                avt_oevkov_${currentYear}_v1.gtfs_route AS route_einschraenkung,
+                avt_oevkov_${currentYear}_v1.gtfs_trip AS trip_einschraenkung,
+                avt_oevkov_${currentYear}_v1.gtfs_stop AS stop_einschraenkung,
+                avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
            WHERE
                (trip_einschraenkung.service_id IN (
                 SELECT
@@ -368,10 +368,10 @@ UNION ALL
             SELECT
                 trip_einschraenkung.trip_id
             FROM
-                ${currentYear}_v1.gtfs_route AS route_einschraenkung,
-                ${currentYear}_v1.gtfs_trip AS trip_einschraenkung,
-                ${currentYear}_v1.gtfs_stop AS stop_einschraenkung,
-                ${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
+                avt_oevkov_${currentYear}_v1.gtfs_route AS route_einschraenkung,
+                avt_oevkov_${currentYear}_v1.gtfs_trip AS trip_einschraenkung,
+                avt_oevkov_${currentYear}_v1.gtfs_stop AS stop_einschraenkung,
+                avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
            WHERE
                (
                trip_einschraenkung.service_id IN (
@@ -549,10 +549,10 @@ UNION ALL
             SELECT
                 trip_einschraenkung.trip_id 
             FROM 
-                ${currentYear}_v1.gtfs_route AS route_einschraenkung,
-                ${currentYear}_v1.gtfs_trip AS trip_einschraenkung,
-                ${currentYear}_v1.gtfs_stop AS stop_einschraenkung,
-                ${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
+                avt_oevkov_${currentYear}_v1.gtfs_route AS route_einschraenkung,
+                avt_oevkov_${currentYear}_v1.gtfs_trip AS trip_einschraenkung,
+                avt_oevkov_${currentYear}_v1.gtfs_stop AS stop_einschraenkung,
+                avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
             WHERE
                 (
                 trip_einschraenkung.service_id IN (
@@ -638,10 +638,10 @@ UNION ALL
             SELECT
                 trip_einschraenkung.trip_id 
             FROM 
-                ${currentYear}_v1.gtfs_route AS route_einschraenkung,
-                ${currentYear}_v1.gtfs_trip AS trip_einschraenkung,
-                ${currentYear}_v1.gtfs_stop AS stop_einschraenkung,
-                ${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
+                avt_oevkov_${currentYear}_v1.gtfs_route AS route_einschraenkung,
+                avt_oevkov_${currentYear}_v1.gtfs_trip AS trip_einschraenkung,
+                avt_oevkov_${currentYear}_v1.gtfs_stop AS stop_einschraenkung,
+                avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
               WHERE
                 (
                 trip_einschraenkung.service_id IN (
@@ -879,7 +879,7 @@ UNION ALL
 -- Alle  Haltestellen, die wegen pickup_type = 0 herausfallen
 -- oder am Stichtag 0 Abfahrten haben
 INSERT INTO
-     ${currentYear}_v1.auswertung_auswertung_gtfs
+     avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs
      (
           haltestellenname,
           route_id,
@@ -897,30 +897,30 @@ INSERT INTO
                          SELECT
                              stichtag
                          FROM
-                             ${currentYear}_v1.sachdaten_oevkov_daten), 'Day')))) = 'thursday'
+                             avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten), 'Day')))) = 'thursday'
              THEN thursday
         WHEN (SELECT BTRIM(lower(to_char((
                          SELECT
                              stichtag
                          FROM
-                             ${currentYear}_v1.sachdaten_oevkov_daten), 'Day')))) = 'tuesday'
+                             avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten), 'Day')))) = 'tuesday'
              THEN tuesday
         END AS dayofweek
         FROM
-            ${currentYear}_v1.gtfs_calendar
+            avt_oevkov_${currentYear}_v1.gtfs_calendar
     ),
     exception AS (
         SELECT
             service_id,
             exception_type
         FROM
-            ${currentYear}_v1.gtfs_calendar_dates
+            avt_oevkov_${currentYear}_v1.gtfs_calendar_dates
         WHERE
             datum = (
                      SELECT
                          stichtag
                      FROM
-                         ${currentYear}_v1.sachdaten_oevkov_daten)
+                         avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten)
     )
      SELECT
          stop_name,
@@ -937,12 +937,12 @@ INSERT INTO
                     THEN 3
             END AS verkehrsmittel
      FROM
-        ${currentYear}_v1.gtfs_agency AS agency,
-        ${currentYear}_v1.gtfs_route AS route,
-        ${currentYear}_v1.gtfs_trip AS trip,
-        ${currentYear}_v1.gtfs_stoptime AS stoptime,
-        ${currentYear}_v1.gtfs_stop AS stop,
-        ${currentYear}_v1.sachdaten_linie_route AS linie
+        avt_oevkov_${currentYear}_v1.gtfs_agency AS agency,
+        avt_oevkov_${currentYear}_v1.gtfs_route AS route,
+        avt_oevkov_${currentYear}_v1.gtfs_trip AS trip,
+        avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime,
+        avt_oevkov_${currentYear}_v1.gtfs_stop AS stop,
+        avt_oevkov_${currentYear}_v1.sachdaten_linie_route AS linie
      WHERE
          (
          trip.service_id IN (
@@ -977,7 +977,7 @@ INSERT INTO
         SELECT
             haltestellenname||linie
         FROM 
-            ${currentYear}_v1.auswertung_auswertung_gtfs
+            avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs
     )
     AND
         agency.agency_id::text = route.agency_id  
@@ -1005,11 +1005,11 @@ INSERT INTO
 
 -- Gewichtung schreiben
 UPDATE
-    ${currentYear}_v1.auswertung_auswertung_gtfs AS auswertung
+    avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs AS auswertung
 SET
     gewichtung = verkehrsmittel.gewichtung
 FROM
-    ${currentYear}_v1.sachdaten_verkehrsmittel AS verkehrsmittel
+    avt_oevkov_${currentYear}_v1.sachdaten_verkehrsmittel AS verkehrsmittel
 WHERE
     auswertung.verkehrsmittel = verkehrsmittel.verkehrsmittel
 ;
@@ -1020,7 +1020,7 @@ WHERE
 -- markieren, welche nicht zum Stichtag gehören
 
 -- zuerst Kommentare für bereits verwendeten Stichtag löschen
-UPDATE ${currentYear}_v1.sachdaten_linie_route
+UPDATE avt_oevkov_${currentYear}_v1.sachdaten_linie_route
 SET
     kommentar = NULL
 WHERE
@@ -1035,35 +1035,35 @@ WITH calendar AS (
             SELECT
                 stichtag
             FROM
-                ${currentYear}_v1.sachdaten_oevkov_daten), 'Day')))) = 'thursday'
+                avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten), 'Day')))) = 'thursday'
         THEN thursday
     WHEN (SELECT BTRIM(lower(to_char((
             SELECT
                 stichtag
             FROM
-                ${currentYear}_v1.sachdaten_oevkov_daten), 'Day')))) = 'tuesday'
+                avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten), 'Day')))) = 'tuesday'
            THEN tuesday
     END AS dayofweek
     FROM
-        ${currentYear}_v1.gtfs_calendar
+        avt_oevkov_${currentYear}_v1.gtfs_calendar
 ),
 exception AS (
     SELECT
         service_id,
         exception_type
     FROM
-        ${currentYear}_v1.gtfs_calendar_dates
+        avt_oevkov_${currentYear}_v1.gtfs_calendar_dates
     WHERE
         datum = (
                 SELECT
                     stichtag
                 FROM
-                    ${currentYear}_v1.sachdaten_oevkov_daten)
+                    avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten)
 ),
 trips AS (
     SELECT route_id
     FROM 
-        ${currentYear}_v1.gtfs_trip
+        avt_oevkov_${currentYear}_v1.gtfs_trip
     WHERE
         (
             service_id IN (
@@ -1093,13 +1093,13 @@ trips AS (
                     exception_type = 2
         )
 )
-UPDATE ${currentYear}_v1.sachdaten_linie_route
+UPDATE avt_oevkov_${currentYear}_v1.sachdaten_linie_route
     SET
         kommentar = 'nicht verwendet am Stichtag '
                     ||( SELECT
                              to_char(stichtag, 'dd.mm.YYYY') AS stichtag
                         FROM
-                            ${currentYear}_v1.sachdaten_oevkov_daten
+                            avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten
                       )
 WHERE
     route_id NOT IN (
