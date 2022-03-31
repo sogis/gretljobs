@@ -65,11 +65,11 @@ INSERT INTO
             stoptime.pickup_type,
             count(departure_time) AS gtfs_count,         
             CASE
-                WHEN route_desc = 'Bus'                                                               
+                WHEN route_desc = 'B'
                      THEN 1
-                WHEN route_desc IN ('RegioExpress', 'InterRegio', 'InterCity')
+                WHEN route_desc IN ('RE', 'IR', 'IC')
                      THEN 2
-                WHEN route_desc IN ('Regio', 'S-Bahn', 'Nacht-S-Bahn', 'Tram')
+                WHEN route_desc IN ('R', 'S', 'SN', 'T')
                     THEN 3
             END AS verkehrsmittel
         FROM
@@ -135,15 +135,15 @@ INSERT INTO
             pickup_type = 0
         AND
            route_desc IN (
-               'InterCity',
+               'IC',
                'EuroCity',
-               'InterRegio',
-               'RegioExpress',
-               'Regio',
-               'S-Bahn',
-               'Nacht-S-Bahn',
-               'Bus',
-               'Tram'
+               'IR',
+               'RE',
+               'R',
+               'S',
+               'SN',
+               'B',
+               'T'
            )
 /*
 -- ****************** zusätzliche Bedingung für OeV-Güteklassen auskommentieren ********************
@@ -543,7 +543,7 @@ UNION ALL
     AND
         substring(linienname from 1 for 4) = 'L510'
     AND
-        route_desc IN ('RegioExpress', 'InterRegio')
+        route_desc IN ('RE', 'IR')
     AND
         trip_id IN (
             SELECT
@@ -593,7 +593,7 @@ UNION ALL
              AND
                 stoptime_einschraenkung.trip_id = trip_einschraenkung.trip_id
              AND
-                route_desc IN ('RegioExpress', 'InterRegio')
+                route_desc IN ('RE', 'IR')
          )
     GROUP BY
         stop_name,
@@ -862,7 +862,7 @@ UNION ALL
     AND
         stop_name = 'Grenchen Nord'
     AND
-        route_desc = 'RegioExpress'              -- InterCity werden nicht gezählt
+        route_desc = 'RE'              -- InterCity werden nicht gezählt
     GROUP BY
         stop_name,
         route_id,
@@ -929,11 +929,11 @@ INSERT INTO
          agency.unternehmer,
          0 as gtfs_count,
          CASE
-                WHEN route_desc = 'Bus'
+                WHEN route_desc = 'B'
                      THEN 1
-                WHEN route_desc IN ('RegioExpress', 'InterRegio', 'InterCity')
+                WHEN route_desc IN ('RE', 'IR', 'IC')
                      THEN 2
-                WHEN route_desc IN ('Regio', 'S-Bahn', 'Nacht-S-Bahn', 'Tram')
+                WHEN route_desc IN ('R', 'S', 'SN', 'T')
                     THEN 3
             END AS verkehrsmittel
      FROM
@@ -992,7 +992,7 @@ INSERT INTO
     AND
         pickup_type > 0
     AND
-        route_desc = 'Bus'
+        route_desc = 'B'
      GROUP BY
     stop.stop_name,
     route.route_id,
