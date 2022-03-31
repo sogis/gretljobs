@@ -148,7 +148,7 @@ SET
 -- Total Kosten
 UPDATE
     avt_oevkov_${currentYear}_v1.auswertung_gemeinde_einwohner_kosten
--- SET
+SET
     kosten_total = round(kosten_angebot, 0)  +  round(kosten_anzahl_einwohner, 0)
 ;
 
