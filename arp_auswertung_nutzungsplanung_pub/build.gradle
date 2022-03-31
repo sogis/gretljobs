@@ -44,7 +44,7 @@ def DB_Schema_NPL = "arp_npl_pub"
 def DB_Schema_Hoheitsgr = "agi_hoheitsgrenzen_pub"
 def DB_Schema_AuswNPL = "arp_auswertung_nutzungsplanung_pub_v1"
 def DB_Schema_AV = "agi_mopublic_pub"
-def DB_Schema_Uebersteuerung = "arp_auswertung_nutzungsplanung_pub_v1"
+def DB_Schema_Uebersteuerung = "arp_auswertung_nutzungsplanung_v1"
 
 task UebertragUebersteuerungBebauungsstand(type: Db2Db) {
   description = "Übertrag Punktlayer mit Übersteuerungen Bebauungsstand. Es werden hier v.a. auch nicht überbaubare Flächen (wie Parkanlagen, Friedhöfe und Sportanlagen) mit Punkten gekennzeichnet."
