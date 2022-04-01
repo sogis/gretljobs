@@ -48,16 +48,20 @@ gr_tmp AS (
    -- Liegenschaftsgeometrie wird auf Nutzungszone innerhalb Siedlungsgebiet beschnitten. Cast in Multi-Polygon.
    ST_Multi(ST_CollectionExtract(ST_Intersection(gru.geometrie,ST_Union(nutzzon.geometrie,0.001),0.001),3)) AS geometrie,
    -- Auszählung wie viele Übersteuerungspunkte innerhalb der Liegenschaft sind
-   COUNT(ueb.bebaut) AS ct_uebersteuert
+   COUNT(ueberst_bebaut.bebaut) AS ct_uebersteuert_bebaut,
+   COUNT(ueberst_unbebaut.bebaut) AS ct_uebersteuert_unbebaut
   FROM ${DB_Schema_AV}.mopublic_grundstueck gru
    -- Nutzungszonen innerhalb Siedlungsgebiet an Liegenschaftsfläche anhängen
    LEFT JOIN nutzzon ON ST_Intersects(gru.geometrie, nutzzon.geometrie)
    -- Gemeinden anhängen via BFS-Nr
    LEFT JOIN ${DB_Schema_Hoheitsgr}.hoheitsgrenzen_gemeindegrenze gem ON gru.bfs_nr = gem.bfs_gemeindenummer
-   -- Punktlayer für Übersteuerung des Bebauungsstandes anhängen
-   LEFT JOIN ${DB_Schema_AuswNPL}.bauzonenstatistik_uebersteuerung_bebauungsstand ueb
-      ON ST_Intersects(ueb.geometrie,gru.geometrie) AND ueb.bebaut IS TRUE
-    WHERE
+   -- Punktlayer für Übersteuerung des Bebauungsstandes bebaut anhängen
+   LEFT JOIN ${DB_Schema_AuswNPL}.bauzonenstatistik_uebersteuerung_bebauungsstand ueberst_bebaut
+      ON ST_Intersects(ueberst_bebaut.geometrie,gru.geometrie) AND ueberst_bebaut.bebaut IS True
+   -- Punktlayer für Übersteuerung des Bebauungsstandes unbebaut anhängen
+   LEFT JOIN ${DB_Schema_AuswNPL}.bauzonenstatistik_uebersteuerung_bebauungsstand ueberst_unbebaut
+      ON ST_Intersects(ueberst_unbebaut.geometrie,gru.geometrie) AND ueberst_unbebaut.bebaut IS False
+  WHERE
      gru.bfs_nr = (SELECT nr FROM bfsnr)
      AND gru.art_txt = 'Liegenschaft'
      AND nutzzon.typ_kt IS NOT NULL
@@ -114,7 +118,8 @@ SELECT
    CASE
      WHEN gr.flaeche_unbebaut = 0 THEN 'bebaut'
      -- Filter Übersteuerung durch Punktlayer
-     WHEN gr.ct_uebersteuert > 0 THEN 'bebaut'
+     WHEN gr.ct_uebersteuert_bebaut > 0 THEN 'bebaut'
+     WHEN gr.ct_uebersteuert_unbebaut > 0 THEN 'unbebaut'
      ELSE
        CASE
          WHEN gr.flaeche_bebaut < 25 AND gr.flaeche_unbebaut >= 180 THEN 'unbebaut'
