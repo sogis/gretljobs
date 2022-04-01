@@ -95,7 +95,7 @@ gr_tmp2 AS (
    FROM gr_tmp gr
      -- unbebaute Flächen anhängen
      LEFT JOIN unbeb_fl ON ST_Intersects(gr.geometrie, unbeb_fl.geometrie)
-    GROUP BY gr.t_id, gr.egris_egrid, gr.nummer, gr.bfs_nr, gr.grundnutzung_typ_kt, gr.flaeche, gr.geometrie, gr.gemeindename, gr.ct_uebersteuert
+    GROUP BY gr.t_id, gr.egris_egrid, gr.nummer, gr.bfs_nr, gr.grundnutzung_typ_kt, gr.flaeche, gr.geometrie, gr.gemeindename, gr.ct_uebersteuert_bebaut, gr.ct_uebersteuert_unbebaut
 ),
 -- Liegenschaften mit bebauten Flächen (Gebäude und Einzelobjekte, inkl. projektiert) verknüpfen
 gr AS (
@@ -106,7 +106,7 @@ gr AS (
   FROM gr_tmp2 gr
     -- bebaute Flächen anhängen
     LEFT JOIN bebaut_fl ON ST_Intersects(gr.geometrie, bebaut_fl.geometrie)
-   GROUP BY gr.t_id, gr.egris_egrid, gr.nummer, gr.bfs_nr, gr.grundnutzung_typ_kt, gr.flaeche, gr.geometrie, gr.gemeindename, gr.ct_uebersteuert,
+   GROUP BY gr.t_id, gr.egris_egrid, gr.nummer, gr.bfs_nr, gr.grundnutzung_typ_kt, gr.flaeche, gr.geometrie, gr.gemeindename, gr.ct_uebersteuert_bebaut, gr.ct_uebersteuert_unbebaut
      flaeche_unbebaut, geometrieart_liegenschaft, flaeche_beschnitten
 )
 SELECT
