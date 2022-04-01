@@ -61,7 +61,7 @@ task BauzonenstatistikStart() {
     dependsOn {
         tasks.findAll { task -> task.name.startsWith('BauzonenstatistikProcessing_') }
     }
-    finalizedBy "ZusammenfassungUndGINES"
+    //finalizedBy "ZusammenfassungUndGINES"
 }
 
 BfsNrGemeinden.each { bfsNr ->
@@ -69,7 +69,8 @@ BfsNrGemeinden.each { bfsNr ->
         description = "Eigentliche Bauzonenstatitik"
         database = [dbUriPub, dbUserPub, dbPwdPub]
         sqlParameters = [DB_Schema_AV:DB_Schema_AV,DB_Schema_NPL:DB_Schema_NPL,DB_Schema_Hoheitsgr:DB_Schema_Hoheitsgr,DB_Schema_AuswNPL:DB_Schema_AuswNPL,gem_bfs:bfsNr as String]
-        sqlFiles = ['bauzonenstatistik_bebauungsstand_mit_zonen_ohne_lsgrenzen.sql','bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen.sql','bauzonenstatistik_liegenschaft_nach_bebauungsstand.sql']
+        // sqlFiles = ['bauzonenstatistik_bebauungsstand_mit_zonen_ohne_lsgrenzen.sql','bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen.sql','bauzonenstatistik_liegenschaft_nach_bebauungsstand.sql']
+        sqlFiles = ['bauzonenstatistik_liegenschaft_nach_bebauungsstand_ohne_uebersteuerung.sql']
     }
 }
 
