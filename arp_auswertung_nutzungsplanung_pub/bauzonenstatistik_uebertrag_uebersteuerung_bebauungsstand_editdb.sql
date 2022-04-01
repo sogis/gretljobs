@@ -1,5 +1,5 @@
 SELECT 
-  True AS bebaut, 
+  bebaut, 
   geometrie 
 FROM 
   ${DB_Schema_Uebersteuerung}.bauzonenstatistik_uebersteuerung_bebauungsstand_liegenschaft 
