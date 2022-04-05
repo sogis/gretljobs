@@ -56,7 +56,7 @@ datasets.add(new Dataset("SO_AFU_Baugrundklassen_20201023", "afu_baugrundklassen
 datasets.add(new Dataset("NABODAT_ErgebnisseBodenbelastung_Punktdaten_LV95_V1_1", "afu_bodendaten_nabodat", dbEdit, "ch.so.afu.bodendaten_nabodat_edit"))
 datasets.add(new Dataset("SO_AFU_Nagra_Bohrtiefen_20190927", "afu_erdwaermesonden_nagra", dbEdit, "ch.so.afu.erdwaermesonden_nagra_edit"))
 datasets.add(new Dataset("SO_AfU_Erdwaermesonden_20200421", "afu_erdwaermesonden_v2", dbEdit, "ch.so.afu.erdwaermesonden_edit"))
-datasets.add(new Dataset("SO_AFU_Fliessgewaesser_20220221", "afu_fliessgewaesser_v1", dbEdit, "ch.so.afu.fliessgewaesser_edit"))
+datasets.add(new Dataset("SO_AFU_Gewaesser_20220401", "afu_gewaesser_v1", dbEdit, "ch.so.afu.gewaesser_edit"))
 datasets.add(new Dataset("SO_AfU_Gefahrenkartierung_20181129", "afu_gefahrenkartierung", dbEdit, "ch.so.afu.gefahrenkartierung_edit"))
 datasets.add(new Dataset("Hazard_Mapping_LV95_V1_2", "afu_gefahrenkartierung_mgdm", dbEdit, "ch.so.afu.gefahrenkartierung_mgdm"))
 datasets.add(new Dataset("SO_AFU_Geologie_20200831", "afu_geologie_v1", dbEdit, "ch.so.afu.geologie_edit"))
