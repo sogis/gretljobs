@@ -81,6 +81,7 @@ nutzzon AS (
     WHERE bfs_nr = (SELECT nr FROM bfsnr)
     AND typ_code_kommunal < 2000
     AND typ_kt NOT IN ('N160_Gruen_und_Freihaltezone_innerhalb_Bauzone','N161_kommunale_Uferschutzzone_innerhalb_Bauzone','N169_weitere_eingeschraenkte_Bauzonen','N180_Verkehrszone_Strasse','N181_Verkehrszone_Bahnareal','N182_Verkehrszone_Flugplatzareal','N189_weitere_Verkehrszonen')
+    AND typ_bezeichnung NOT LIKE '%Golf%'
 ),
 -- Dissolve (GIS Union) aller Nutzungszonen in Siedlungsflächen
 nutzzon_dissolved_tmp AS (

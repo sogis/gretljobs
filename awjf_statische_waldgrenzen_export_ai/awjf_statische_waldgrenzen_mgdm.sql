@@ -44,8 +44,8 @@ geobasisdaten_typ AS
 		DISTINCT ON (typ.t_id)
 		typ.t_id,
 		CASE 
-			WHEN typ.art = 'Nutzungsplanung_in_Bauzonen' THEN 'in_Bauzonen'
-			ELSE 'ausserhalb_Bauzonen'
+			WHEN typ.art = 'Nutzungsplanung_in_Bauzonen' THEN 'in_BZ'
+			ELSE 'ausserh_BZ'
 		END AS acode,
 		typ.bezeichnung,
 		typ.abkuerzung,

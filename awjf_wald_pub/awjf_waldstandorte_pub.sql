@@ -15,18 +15,7 @@ SELECT
         WHEN massstab = 6
             THEN '1:50000'
     END AS massstab,
-    CASE
-        WHEN autor = 'A'
-            THEN 'BGU'
-        WHEN autor = 'B'
-            THEN 'Kaufmann'
-        WHEN autor = 'C'
-            THEN 'Froelicher'
-        WHEN autor = 'D'
-            THEN 'Borer'
-        WHEN autor = 'W'
-            THEN 'Waldmaske'
-    END AS autor,
+    autor,
     kartierung,
     standorteinheit_kartierung,
     standorteinheit_korrigiert,
@@ -36,7 +25,12 @@ SELECT
     wald,
     grundeinheit,
     legende,
-    concat_ws(' ', grundeinheit, legende) AS waldstandort,
+    CASE
+        WHEN (grundeinheit IS NULL OR legende IS NULL)
+            THEN NULL
+        ELSE
+            concat_ws(' ', grundeinheit, legende)
+    END AS waldstandort,
     farbcode,
     verband,
     CASE
@@ -54,9 +48,7 @@ SELECT
             THEN 'Ertragsklasse VI, Zuwachs jährlich (1-2-3) m3 pro ha'
     END AS ertragsklasse,
     zuwachs,
-    minimaler_laubholzanteil * 100 AS minimaler_laubholzanteil,
-    '[{"name": "Ökogramm Waldstandorte", "url": "https://geo.so.ch/docs/ch.so.awjf.waldstandorte.waldstandorte/Oekogramme_Waldstandorte.pdf"},{"name": "Legende Waldstandorte", "url": "https://geo.so.ch/docs/ch.so.awjf.waldstandorte.waldstandorte/Legende_Waldstandorte.pdf"}]' AS dokumente
+    minimaler_laubholzanteil * 100 AS minimaler_laubholzanteil
 FROM 
     awjf_waldstandorte_v1.waldstandort
-
 ;

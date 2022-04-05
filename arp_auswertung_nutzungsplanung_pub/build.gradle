@@ -44,13 +44,15 @@ def DB_Schema_NPL = "arp_npl_pub"
 def DB_Schema_Hoheitsgr = "agi_hoheitsgrenzen_pub"
 def DB_Schema_AuswNPL = "arp_auswertung_nutzungsplanung_pub_v1"
 def DB_Schema_AV = "agi_mopublic_pub"
+def DB_Schema_Uebersteuerung = "arp_auswertung_nutzungsplanung_v1"
 
 task UebertragUebersteuerungBebauungsstand(type: Db2Db) {
   description = "Übertrag Punktlayer mit Übersteuerungen Bebauungsstand. Es werden hier v.a. auch nicht überbaubare Flächen (wie Parkanlagen, Friedhöfe und Sportanlagen) mit Punkten gekennzeichnet."
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlParameters = [DB_Schema_Uebersteuerung:DB_Schema_Uebersteuerung]
     transferSets = [
-            new TransferSet("bauzonenstatistik_uebertrag_uebersteuerung_bebauungsstand_sogisdb.sql", 'arp_auswertung_nutzungsplanung_pub_v1.bauzonenstatistik_uebersteuerung_bebauungsstand', true),
+            new TransferSet("bauzonenstatistik_uebertrag_uebersteuerung_bebauungsstand_editdb.sql", 'arp_auswertung_nutzungsplanung_pub_v1.bauzonenstatistik_uebersteuerung_bebauungsstand', true),
     ];
 }
 
@@ -68,6 +70,7 @@ BfsNrGemeinden.each { bfsNr ->
         database = [dbUriPub, dbUserPub, dbPwdPub]
         sqlParameters = [DB_Schema_AV:DB_Schema_AV,DB_Schema_NPL:DB_Schema_NPL,DB_Schema_Hoheitsgr:DB_Schema_Hoheitsgr,DB_Schema_AuswNPL:DB_Schema_AuswNPL,gem_bfs:bfsNr as String]
         sqlFiles = ['bauzonenstatistik_bebauungsstand_mit_zonen_ohne_lsgrenzen.sql','bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen.sql','bauzonenstatistik_liegenschaft_nach_bebauungsstand.sql']
+        //sqlFiles = ['bauzonenstatistik_bebauungsstand_mit_zonen_ohne_lsgrenzen.sql','bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen.sql','bauzonenstatistik_liegenschaft_nach_bebauungsstand_ohne_uebersteuerung.sql']
     }
 }
 

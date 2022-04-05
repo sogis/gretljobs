@@ -45,23 +45,11 @@ gr_tmp AS (
    gem.gemeindename,
    nutzzon.typ_kt AS grundnutzung_typ_kt,
    gru.flaechenmass AS flaeche,
-   -- Liegenschaftsgeometrie wird auf Nutzungszone innerhalb Siedlungsgebiet beschnitten. Cast in Multi-Polygon.
-   ST_Multi(ST_CollectionExtract(ST_Intersection(gru.geometrie,ST_Union(nutzzon.geometrie,0.001),0.001),3)) AS geometrie,
-   -- Auszählung wie viele Übersteuerungspunkte innerhalb der Liegenschaft sind
-   COUNT(ueberst_bebaut.bebaut) AS ct_uebersteuert_bebaut,
-   COUNT(ueberst_unbebaut.bebaut) AS ct_uebersteuert_unbebaut
+   ST_Multi(ST_CollectionExtract(ST_Intersection(gru.geometrie,ST_Union(nutzzon.geometrie,0.001),0.001),3)) AS geometrie
   FROM ${DB_Schema_AV}.mopublic_grundstueck gru
-   -- Nutzungszonen innerhalb Siedlungsgebiet an Liegenschaftsfläche anhängen
    LEFT JOIN nutzzon ON ST_Intersects(gru.geometrie, nutzzon.geometrie)
-   -- Gemeinden anhängen via BFS-Nr
    LEFT JOIN ${DB_Schema_Hoheitsgr}.hoheitsgrenzen_gemeindegrenze gem ON gru.bfs_nr = gem.bfs_gemeindenummer
-   -- Punktlayer für Übersteuerung des Bebauungsstandes bebaut anhängen
-   LEFT JOIN ${DB_Schema_AuswNPL}.bauzonenstatistik_uebersteuerung_bebauungsstand ueberst_bebaut
-      ON ST_Intersects(ueberst_bebaut.geometrie,gru.geometrie) AND ueberst_bebaut.bebaut IS True
-   -- Punktlayer für Übersteuerung des Bebauungsstandes unbebaut anhängen
-   LEFT JOIN ${DB_Schema_AuswNPL}.bauzonenstatistik_uebersteuerung_bebauungsstand ueberst_unbebaut
-      ON ST_Intersects(ueberst_unbebaut.geometrie,gru.geometrie) AND ueberst_unbebaut.bebaut IS False
-  WHERE
+    WHERE
      gru.bfs_nr = (SELECT nr FROM bfsnr)
      AND gru.art_txt = 'Liegenschaft'
      AND nutzzon.typ_kt IS NOT NULL
@@ -85,7 +73,6 @@ bebaut_fl AS (
 gr_tmp2 AS (
   SELECT
     gr.*,
-    -- unbebaute Flächen innerhalb der Liegenschaft aufsummieren
     Round(SUM(COALESCE(ST_Area(ST_Intersection(gr.geometrie,unbeb_fl.geometrie,0.001)),0)))::NUMERIC AS flaeche_unbebaut,
     CASE
       WHEN flaeche - Round(ST_Area(gr.geometrie)) > 1 THEN 'beschnitten'
@@ -93,20 +80,16 @@ gr_tmp2 AS (
     END AS geometrieart_liegenschaft,
     Round(ST_Area(gr.geometrie)) AS flaeche_beschnitten
    FROM gr_tmp gr
-     -- unbebaute Flächen anhängen
      LEFT JOIN unbeb_fl ON ST_Intersects(gr.geometrie, unbeb_fl.geometrie)
-    GROUP BY gr.t_id, gr.egris_egrid, gr.nummer, gr.bfs_nr, gr.grundnutzung_typ_kt, gr.flaeche, gr.geometrie, gr.gemeindename, gr.ct_uebersteuert_bebaut, gr.ct_uebersteuert_unbebaut
+    GROUP BY gr.t_id, gr.egris_egrid, gr.nummer, gr.bfs_nr, gr.grundnutzung_typ_kt, gr.flaeche, gr.geometrie, gr.gemeindename
 ),
--- Liegenschaften mit bebauten Flächen (Gebäude und Einzelobjekte, inkl. projektiert) verknüpfen
 gr AS (
   SELECT
     gr.*,
-    -- bebaute Flächen innerhalb der Liegenschaft aufsummieren
     Round(SUM(COALESCE(ST_Area(ST_Intersection(gr.geometrie,bebaut_fl.geometrie,0.001)),0)))::NUMERIC AS flaeche_bebaut
   FROM gr_tmp2 gr
-    -- bebaute Flächen anhängen
     LEFT JOIN bebaut_fl ON ST_Intersects(gr.geometrie, bebaut_fl.geometrie)
-   GROUP BY gr.t_id, gr.egris_egrid, gr.nummer, gr.bfs_nr, gr.grundnutzung_typ_kt, gr.flaeche, gr.geometrie, gr.gemeindename, gr.ct_uebersteuert_bebaut, gr.ct_uebersteuert_unbebaut,
+   GROUP BY gr.t_id, gr.egris_egrid, gr.nummer, gr.bfs_nr, gr.grundnutzung_typ_kt, gr.flaeche, gr.geometrie, gr.gemeindename, 
      flaeche_unbebaut, geometrieart_liegenschaft, flaeche_beschnitten
 )
 SELECT
@@ -117,9 +100,6 @@ SELECT
    gr.grundnutzung_typ_kt,
    CASE
      WHEN gr.flaeche_unbebaut = 0 THEN 'bebaut'
-     -- Filter Übersteuerung durch Punktlayer
-     WHEN gr.ct_uebersteuert_bebaut > 0 THEN 'bebaut'
-     WHEN gr.ct_uebersteuert_unbebaut > 0 THEN 'unbebaut'
      ELSE
        CASE
          WHEN gr.flaeche_bebaut < 25 AND gr.flaeche_unbebaut >= 180 THEN 'unbebaut'

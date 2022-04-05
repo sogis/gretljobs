@@ -1,0 +1,24 @@
+description = """\n
+Übertrag der Tabelle digizone.bebauung in sogis-DB
+zu arp_auswertung_nutzungsplanung_v1.bauzonenstatistik_uebersteuerung_bebauungsstand_liegenschaft
+
+Skript ist für einmalige Migration (und danach manuelles cleanup)
+
+Fragen an: Andreas Neumann (AGI) und Valentin Burki (ARP)
+"""
+
+apply plugin: 'ch.so.agi.gretl'
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+defaultTasks 'UebertragUebersteuerungBebauungsstand'
+
+task UebertragUebersteuerungBebauungsstand(type: Db2Db) {
+  description = "Übertrag Punktlayer mit Übersteuerungen Bebauungsstand. Es werden hier v.a. auch nicht überbaubare Flächen (wie Parkanlagen, Friedhöfe und Sportanlagen) mit Punkten gekennzeichnet."
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet("uebersteuerung_bebauungsstand_liegenschaft.sql", 'arp_auswertung_nutzungsplanung_v1.bauzonenstatistik_uebersteuerung_bebauungsstand_liegenschaft', true),
+    ];
+}

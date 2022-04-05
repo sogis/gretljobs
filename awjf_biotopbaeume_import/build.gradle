@@ -12,8 +12,8 @@ task copyCsvFile(type: Copy) {
 }
 
 task validateCsvFile(type: CsvValidator, dependsOn: 'copyCsvFile') {
-    models = "SO_AWJF_Foerderprogramm_Biodiversitaet_20201021"
-    firstLineIsHeader=true
+    models = "SO_AWJF_Programm_Biodiversitaet_Wald_20220224"
+    firstLineIsHeader = true
     valueSeparator = ';'
     encoding = 'UTF-8'
     dataFiles = [file("upload/uploadFile.csv")]
@@ -21,10 +21,10 @@ task validateCsvFile(type: CsvValidator, dependsOn: 'copyCsvFile') {
 
 task importBiotopbaeume(type: CsvImport, dependsOn: 'validateCsvFile') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    schemaName = 'awjf_foerderprogramm_biodiversitaet'
-    tableName = 'biotopbaeume_biotopbaum_import'
+    schemaName = 'awjf_programm_biodiversitaet_wald_v1'
+    tableName = 'biodiversitt_wald_biotopbaum_import'
     firstLineIsHeader = true
-    valueSeparator=';'
+    valueSeparator = ';'
     encoding = 'UTF-8'
     dataFile = "upload/uploadFile"
 }

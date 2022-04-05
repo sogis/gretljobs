@@ -140,7 +140,7 @@ Die Datei `job.properties` kann folgende Eigenschaften des GRETL-Jobs enthalten:
 logRotator.numToKeep=30
 triggers.cron=H H(1-3) * * *
 parameters.fileParam=filename.xtf
-parameters.stringParam=parameterName;default value;parameter description
+parameters.stringParams=parameterName;default value;parameter description
 triggers.upstream=other_job_name
 authorization.permissions=gretl-users-barpa
 nodeLabel=gretl-bigtmp
@@ -153,7 +153,29 @@ Mit `triggers.cron` kann eingestellt werden, zu welchem Zeitpunkt der Job automa
 
 Mit `parameters.fileParam` kann erreicht werden, dass ein  Benutzer beim Starten des Jobs eine Datei hochladen muss, die dann vom GRETL-Job verarbeitet wird. Es wird ein Dateiname (z.B. `filename.xtf`) oder Pfad (z.B. `data/filename.xtf`) verlangt, mit welchem im GRETL-Job auf die Datei zugegriffen werden kann.
 
-Mit `parameters.stringParam` kann ein Parameter definiert werden, mit dem der Job gestartet wird und für welchen beim manuellen Start des Jobs vom Benutzer ein Wert eingegeben werden kann. Im obigen Beispiel wird ein String-Parameter mit Name `parameterName` definiert, dessen Standarwert `default value` ist und für den dem Benutzer neben dem Eingabefeld die Beschreibung `parameter description` angezeigt wird. Die drei Werte müssen mit Strichpunkt voneinander getrennt werden. Für den Standardwert und die Beschreibung sind Leerschläge zugelassen. Über den Parameternamen kann im Jenkinsfile auf den Wert des Parameters zugegriffen werden.
+Mit `parameters.stringParams` können Parameter definiert werden,
+für welche der Benutzer beim manuellen Start des Jobs Werte übergeben kann.
+Im Jenkinsfile kann Über den gesetzten Parameternamen (`parameterName`)
+auf den Wert des Parameters zugegriffen werden.
+Im obigen Beispiel wird ein String-Parameter mit Name `parameterName` definiert,
+dessen Standarwert `default value` ist
+und für den dem Benutzer neben dem Eingabefeld
+die Beschreibung `parameter description` angezeigt wird.
+Die drei Werte müssen mit Strichpunkt voneinander getrennt werden.
+Innerhalb der Werte dürfen deshalb keine Strichpunkte vorkommen
+(und auch nicht das Zeichen `@`).
+Für den Standardwert und die Beschreibung sind Leerschläge zugelassen.
+Es ist auch möglich, mehrere String-Parameter zu definieren.
+Sie müssen mit dem Zeichen `@` voneinander getrennt werden.
+Für die bessere Lesbarkeit ist es ratsam,
+jeden String-Parameter auf einer eigenen Zeile zu definieren;
+hierzu wird ein Backslash am Ende der vorangehenden Zeile benötigt.
+Beispiel:
+
+```java
+parameters.stringParams=bfsnr;0000;BFS-Nr. der Gemeinde welche publiziert werden soll.@\
+                        buildDescription;Keine Beschreibung angegeben;Beschreibung/Grund für die Publikation der Daten
+```
 
 Mit `triggers.upstream` kann eingestellt werden, dass der Job immer dann ausgeführt werden soll, wenn ein bestimmter anderer Job erfolgreich ausgeführt worden ist. Es können hier auch mehrere Jobs angegeben werden, jeweils durch Komma und Leerschlag voneinander getrennt (z.B. `other_job_name_1, other_job_name_2`).
 
