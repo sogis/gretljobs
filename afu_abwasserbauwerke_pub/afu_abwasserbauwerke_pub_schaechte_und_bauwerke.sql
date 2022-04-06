@@ -45,7 +45,7 @@ SELECT
             THEN 'Abwasserzweckverband'
     END AS eigentum,
     schaechte_und_bauwerke.bemerkungen,
-    gemeindegrenze.gemeindename
+    gemeindegrenze.gemeindename AS gemeinde
     
 FROM
     afu_abwasserbauwerke_v1.schaechte_und_bauwerke AS schaechte_und_bauwerke,
