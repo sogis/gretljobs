@@ -30,8 +30,7 @@ SELECT
             THEN 'Abwasserzweckverband'
     END AS eigentum,
     leitungen.bemerkungen,
-    gemeindegrenze.gemeindename,
-    leitungen.gemeinde,
+    gemeindegrenze.gemeindename AS gemeinde,
     abwasserreinigungsanlage.eigentum AS ara_eigentum,
     abwasserreinigungsanlage.gemeinde AS ara_name
 FROM
