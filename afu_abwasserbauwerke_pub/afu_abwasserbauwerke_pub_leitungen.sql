@@ -31,7 +31,6 @@ SELECT
     END AS eigentum,
     leitungen.bemerkungen,
     gemeindegrenze.gemeindename AS gemeinde,
-    abwasserreinigungsanlage.eigentum AS ara_eigentum,
     abwasserreinigungsanlage.gemeinde AS ara_name
 FROM
     afu_abwasserbauwerke_v1.leitungen AS leitungen
