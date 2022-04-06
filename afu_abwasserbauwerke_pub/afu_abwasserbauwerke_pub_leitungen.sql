@@ -30,17 +30,15 @@ SELECT
             THEN 'Abwasserzweckverband'
     END AS eigentum,
     leitungen.bemerkungen,
-    
-    --gemeindegrenze.gemeindename,
-    leitungen.gemeinde::text,
-    
+    gemeindegrenze.gemeindename,
+    leitungen.gemeinde,
+    abwasserreinigungsanlage.eigentum AS ara_eigentum,
     abwasserreinigungsanlage.gemeinde AS ara_name
-    
 FROM
     afu_abwasserbauwerke_v1.leitungen AS leitungen
     LEFT JOIN afu_abwasserbauwerke_v1.abwasserreinigungsanlage AS abwasserreinigungsanlage
-        ON leitungen.ara_join = abwasserreinigungsanlage.seso_join
---     LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS gemeindegrenze
---         ON leitungen.gemeinde = gemeindegrenze.bfs_gemeindenummer
+        ON leitungen.ara_join = abwasserreinigungsanlage.seso_join,
+    agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS gemeindegrenze
+WHERE
+    leitungen.gemeinde = gemeindegrenze.bfs_gemeindenummer
 ;
-
