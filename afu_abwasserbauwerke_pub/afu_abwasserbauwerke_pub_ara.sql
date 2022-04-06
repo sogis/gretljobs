@@ -1,0 +1,10 @@
+SELECT
+    geometrie,
+    seso_join,
+    node_fid,
+    kategorie,
+    eigentum,
+    gemeinde
+FROM
+    afu_abwasserbauwerke_v1.abwasserreinigungsanlage
+;
