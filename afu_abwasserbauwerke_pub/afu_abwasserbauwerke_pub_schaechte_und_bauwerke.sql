@@ -1,7 +1,7 @@
 SELECT
-    geometrie,
-    schacht_id,
-    kategorie AS kategorie_kurz,
+    schaechte_und_bauwerke.geometrie,
+    schaechte_und_bauwerke.schacht_id,
+    schaechte_und_bauwerke.kategorie AS kategorie_kurz,
     CASE
         WHEN kategorie = 'KS'
             THEN 'Kontrollschacht'
@@ -27,32 +27,33 @@ SELECT
             THEN 'Abwasserreinigungsanlage'
         WHEN kategorie = 'A'
             THEN 'Auslauf'
-        ELSE kategorie
+        ELSE schaechte_und_bauwerke.kategorie
     END AS kategorie,
-    astatus,
-    teilgebiet,
-    qualitaet,
-    deckelhoehe,
-    ueberdeckung,
-    erfassung,
-    erfasser,
-    bearbeitung,
-    bearbeiter,
+    schaechte_und_bauwerke.astatus,
+    schaechte_und_bauwerke.teilgebiet,
+    schaechte_und_bauwerke.qualitaet,
+    schaechte_und_bauwerke.deckelhoehe,
+    schaechte_und_bauwerke.ueberdeckung,
+    schaechte_und_bauwerke.erfassung,
+    schaechte_und_bauwerke.erfasser,
+    schaechte_und_bauwerke.bearbeitung,
+    schaechte_und_bauwerke.bearbeiter,
     CASE
-        WHEN eigentum = 1
+        WHEN schaechte_und_bauwerke.eigentum = 1
             THEN 'Gemeinde'
-        WHEN eigentum = 2
+        WHEN schaechte_und_bauwerke.eigentum = 2
             THEN 'Abwasserzweckverband'
     END AS eigentum,
-    bemerkungen,
-
-    
-    --gemeindename,
-    
-    gemeinde
+    schaechte_und_bauwerke.bemerkungen,
+    gemeindegrenze.gemeindename
     
 FROM
-    afu_abwasserbauwerke_v1.schaechte_und_bauwerke AS schaechte_und_bauwerke
---     LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS gemeindegrenze
---         ON schaechte_und_bauwerke.gemeinde = gemeindegrenze.bfs_gemeindenummer
+    afu_abwasserbauwerke_v1.schaechte_und_bauwerke AS schaechte_und_bauwerke,
+    agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS gemeindegrenze
+WHERE
+     schaechte_und_bauwerke.gemeinde = gemeindegrenze.bfs_gemeindenummer
+AND 
+    schaechte_und_bauwerke.kategorie IS NOT NULL
+AND 
+    schaechte_und_bauwerke.eigentum IS NOT NULL
 ;
