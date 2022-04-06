@@ -104,7 +104,6 @@ nutzzon_rings_tmp2 AS (
   FROM nutzzon_rings_tmp
 ),
 -- third and final step for cleaning: filter away small rings and rebuild polygons
--- also rejoin original attributes
 nutzzon_dissolved AS (
   SELECT
    ST_BuildArea(ST_Collect(geometrie)) AS geometrie
