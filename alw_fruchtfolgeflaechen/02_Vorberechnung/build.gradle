@@ -111,15 +111,9 @@ task intersection_ohne_bodenkartierung(type: SqlExecutor, dependsOn: difference_
 ////////////////////////////////////////////////
 
 //HIER WERDEN DIE Flächen rausgeschnitten, die nicht den Bodenqualitätsanforderungen genügen 
-task fff_100_ohne_schlechten_boden(type: SqlExecutor, dependsOn: bodeninhalt_index_setzen) {
+task fff_mit_Bodenkartierung_100(type: SqlExecutor, dependsOn: bodeninhalt_index_setzen) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['fff_100_ohne_schlechten_boden.sql']
-}
-
-//HIER WERDEN DIE Flächen rausgeschnitten, die im MJPNatur verzeichnet sind
-task fff_mit_bodenkartierung_100(type: SqlExecutor, dependsOn: fff_100_ohne_schlechten_boden) {
-    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['fff_100_ohne_vereinbarungsflaechen.sql']
+    sqlFiles = ['fff_100.sql']
 }
 
 ////////////////////////////////////////////////
@@ -127,7 +121,7 @@ task fff_mit_bodenkartierung_100(type: SqlExecutor, dependsOn: fff_100_ohne_schl
 ////////////////////////////////////////////////
 
 //HIER WERDEN DIE Flächen extrahiert, welche Bodenkartierung aufweisen aber nur 50% geeignet sind.
-task fff_mit_bodenkartierung_50(type: SqlExecutor, dependsOn: fff_100_ohne_schlechten_boden) {
+task fff_mit_bodenkartierung_50(type: SqlExecutor, dependsOn: fff_mit_Bodenkartierung_100) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['fff_50.sql']
 }
@@ -137,7 +131,7 @@ task fff_mit_bodenkartierung_50(type: SqlExecutor, dependsOn: fff_100_ohne_schle
 ////////////////////////////////////////////////
 
 //HIER WERDEN DIE Flächen mit und ohne Bodenkartierung zusammengefügt und gemrgt
-task fff_zusammensetzen(type: SqlExecutor, dependsOn: [fff_mit_bodenkartierung_50, fff_mit_bodenkartierung_100, intersection_ohne_bodenkartierung]) {
+task fff_zusammensetzen(type: SqlExecutor, dependsOn: [fff_mit_bodenkartierung_50, fff_mit_Bodenkartierung_100, intersection_ohne_bodenkartierung]) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['fff_zusammensetzen.sql']
 }

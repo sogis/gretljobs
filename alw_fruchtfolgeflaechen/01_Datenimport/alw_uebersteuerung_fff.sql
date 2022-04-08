@@ -8,5 +8,5 @@ SELECT
     erfassung, 
     fall
 FROM 
-    alw_uebersteuerung_fff_v1.uebersteuerung
+    alw_uebersteuerung_fff_v2.uebersteuerung
 ;

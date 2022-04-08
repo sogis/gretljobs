@@ -1,0 +1,29 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+
+apply plugin: 'ch.so.agi.gretl'
+
+
+defaultTasks 'fff_to_edit_db'
+
+// Der Übersteuerungslayer muss NICHT neu importiert werden
+
+
+//HIER WERDEN DIE Übersteuerungsflächen ausgeschnitten und eingefügt. 
+
+//, dependsOn: importUebersteuerung_uebersteuerung
+task fff_mit_uebersteuerung(type: SqlExecutor) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['fff_mit_uebersteuerung.sql']
+}
+
+//HIER WERDEN DIE Berechneten Daten wieder in die Edit-DB geschrieben
+
+
+task fff_to_edit_db(type: Db2Db, dependsOn: fff_mit_uebersteuerung){
+    sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('fff_to_edit_db.sql','alw_fruchtfolgeflaechen_v1.fruchtfolgeflaeche', true)
+    ];        
+}

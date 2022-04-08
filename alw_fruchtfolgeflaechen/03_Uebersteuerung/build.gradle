@@ -10,7 +10,7 @@ defaultTasks 'fff_to_edit_db'
 
 task makeSchemaUebersteuerung_uebersteuerung(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    models = "SO_ALW_FFF_Uebersteuerung_20210528"
+    models = "SO_ALW_FFF_Uebersteuerung_20220404"
     dbschema = "alw_fff_uebersteuerung"
     strokeArcs = true
     beautifyEnumDispName = true
