@@ -2,18 +2,8 @@ DROP TABLE IF EXISTS
     alw_fruchtfolgeflaechen.fff_mit_bodenkartierung_50
 ;
 
---Die Vereinbarungsflächen aus dem MJPNatur werden mit der Maske verschnitten. Sie können zu 50% als FFF angerechnet werden. 
-WITH vereinbarungsflaechen AS (
-    SELECT 
-        ST_CollectionExtract(ST_intersection(schlechter_boden.geometrie,vereinbarungsflaechen.geometrie,0.001),3) AS geometrie
-    FROM 
-        alw_fruchtfolgeflaechen.fff_maske_100_ohne_schlechten_boden schlechter_boden,
-        arp_mjpnatur_pub.vereinbrngsflchen_flaechen vereinbarungsflaechen
-    WHERE 
-        ST_intersects(schlechter_boden.geometrie,vereinbarungsflaechen.geometrie)
-),
-
-bedingt_geeigneter_boden AS (
+WITH 
+    bedingt_geeigneter_boden AS (
     SELECT 
         geometrie AS geometrie
     FROM 
@@ -58,13 +48,6 @@ bedingt_geeigneter_boden AS (
                 (pflngr is null AND bodpktzahl >=60)
             )
         )
-    
-    UNION ALL 
-
-    SELECT 
-        geometrie AS geometrie
-    FROM  
-        vereinbarungsflaechen
 )
 
 SELECT 

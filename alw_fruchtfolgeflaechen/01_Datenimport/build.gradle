@@ -352,51 +352,6 @@ task importTww2(type: ShpImport, dependsOn: importTww){
     dataFile = file(pathToUnzipFolder.toString()+'/TWW_LV95/trockenwiesenweiden_A2.shp')
 }
 
-////////////////Vogelreservate ///////////////////////
-
-task makeSchemaVogelreservate(type: Ili2pgImportSchema){
-    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    models = "Vogelreservate_fff_modell_20210811"
-    modeldir = "01_Datenimport/Vogelreservate; http://models.geo.admin.ch"
-    dbschema = "vogelreservate"
-    importTid = true
-    strokeArcs = true
-    beautifyEnumDispName = true
-    createUnique = true
-    nameByTopic = true 
-    createMetaInfo = true 
-    createTidCol = true 
-    createFk = true 
-    createFkIdx = true
-    createEnumTabs = true 
-    createGeomIdx = true
-    defaultSrsCode = 2056
-    createNumChecks = true
-}
-
-task downloadVogelreservate(type: Download, dependsOn: makeSchemaVogelreservate) {
-    description = "Download Vogelreservate" 
-    src 'https://data.geo.admin.ch/ch.bafu.bundesinventare-vogelreservate/data.zip'
-    dest file(pathToDataZip)
-    overwrite true 
-    doLast {
-        println "FileSize = " + file(pathToDataZip).size()
-    }
-}
-
-task unpackFilesVogelreservate(type: Copy, dependsOn: downloadVogelreservate) {
-    description = "Unzip Data.zip"
-    from zipTree(pathToDataZip)
-    into pathToUnzipFolder
-}
-
-task importVogelreservate(type: ShpImport, dependsOn: unpackFilesVogelreservate){
-    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    schemaName = "vogelreservate"
-    tableName = "vogelreservate_standorte"
-    dataFile = file(pathToUnzipFolder.toString()+'/WasserZugvoegel_LV95/wasserzugvogel.shp')
-}
-
 ////////////////Schadstoffbelastete Böden ///////////////////////
 
 task makeSchemaSchadstoffbelasteteBoeden(type: Ili2pgImportSchema){
@@ -515,34 +470,6 @@ task importNaturschutzobjekte(type: Db2Db, dependsOn: makeSchemaNaturschutzobjek
     ];        
 }
 
-////////////////Flächen aus dem MJPNatur ///////////////////////
-
-task makeSchemaMJPNatur(type: Ili2pgImportSchema){
-    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    models = "SO_ARP_Mehrjahresprogramm_Natur_Publikation_20210721"
-    modeldir = "01_Datenimport/MJPNatur; http://models.geo.admin.ch"
-    dbschema = "arp_mjpnatur_pub"
-    strokeArcs = true
-    beautifyEnumDispName = true
-    createUnique = true
-    nameByTopic = true 
-    createMetaInfo = true 
-    createFk = true 
-    createFkIdx = true
-    createEnumTabs = true 
-    createGeomIdx = true
-    defaultSrsCode = 2056
-    createNumChecks = true
-}
-
-task importMJPNatur(type: Db2Db, dependsOn: makeSchemaMJPNatur){
-    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
-    targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    transferSets = [
-            new TransferSet('mjpnatur_flaechen.sql','arp_mjpnatur_pub.vereinbrngsflchen_flaechen', true),
-    ];        
-}
-
 ////////////////IS-Boden ///////////////////////
 
 //Modell erscheint erst Ende 2021 daher hier noch mit sql-Executor
@@ -563,7 +490,7 @@ task importIsBoden(type: Db2Db, dependsOn: makeSchemaIsBoden){
 
 task makeSchemaUebersteuerung(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    models = "SO_ALW_FFF_Uebersteuerung_20210528"
+    models = "SO_ALW_FFF_Uebersteuerung_20220404"
     dbschema = "alw_fff_uebersteuerung"
     strokeArcs = true
     beautifyEnumDispName = true
@@ -709,7 +636,6 @@ task importAll() {
         'importNutzungsplanung',
         'importNaturreservate',
         'importNaturschutzobjekte',
-        'importMJPNatur',
         'importIsBoden',
         'importGewaesserraum',
         'importUebersteuerung',
