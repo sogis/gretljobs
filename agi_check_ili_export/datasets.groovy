@@ -101,7 +101,7 @@ datasets.add(new Dataset("SO_ARP_Nutzungsvereinbarung_20170512", "arp_nutzungsve
 datasets.add(new Dataset("SO_ARP_Richtplan_20210210", "arp_richtplan", dbEdit, "ch.so.arp.richtplan_edit"))
 datasets.add(new Dataset("Waldabstandslinien_LV95_V1_1", "arp_waldabstandslinien_mgdm", dbEdit, "ch.so.arp.waldabstandslinien_mgdm"))
 datasets.add(new Dataset("Wildruhezonen_LV95_V2_1", "arp_wildruhezonen_mgdm_v1", dbEdit, "ch.so.arp.wildruhezonen_mgdm"))
-datasets.add(new Dataset("SO_AVT_Kunstbauten_Publikation_20211130", "avt_kunstbauten_staging_v1", dbEdit, "ch.so.arp.kunstbauten_staging_edit"))
+datasets.add(new Dataset("SO_AVT_Kunstbauten_Publikation_20220207", "avt_kunstbauten_staging_v1", dbEdit, "ch.so.arp.kunstbauten_staging_edit"))
 datasets.add(new Dataset("SO_AVT_Oeffentlicher_Verkehr_20210205", "avt_oeffentlicher_verkehr", dbEdit, "ch.so.avt.oeffentlicher_verkehr_edit"))
 datasets.add(new Dataset("SO_AVT_Oev_Gueteklassen_20220120", "avt_oev_gueteklassen_staging_v1", dbEdit, "ch.so.avt.oev_gueteklassen_staging_edit"))
 datasets.add(new Dataset("SO_AVT_OevKov_20181107", "avt_oevkov_2018", dbEdit, "ch.so.avt.oevkov2018_edit")) 
