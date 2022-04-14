@@ -101,6 +101,12 @@ for (jobFile in jobFiles) {
         choiceParam('nodeLabel', [properties.getProperty('nodeLabel')], 'Label of the node that must run the job')
       }
     }
+
+    environmentVariables {
+      // make the Git repository URL available on the Jenkins agent
+      env('GIT_REPO_URL', GRETL_JOB_REPO_URL)
+    }
+
     definition {
       cps {
         script(pipelineScript)

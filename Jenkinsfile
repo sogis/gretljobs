@@ -1,11 +1,3 @@
-// Start with a scripted pipeline part
-node('master') {
-    stage('Prepare') {
-        gretlJobRepoUrl = env.GRETL_JOB_REPO_URL
-    }
-}
-
-// Declarative pipeline starts here
 pipeline {
     agent { label params.nodeLabel ?: 'gretl' }
     options {
@@ -17,7 +9,7 @@ pipeline {
                 retry(2)
             }
             steps {
-                git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
+                git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'master'}", changelog: false
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
                         sh 'gretl'

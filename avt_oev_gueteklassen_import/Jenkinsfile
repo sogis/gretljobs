@@ -1,7 +1,6 @@
 // Start with a scripted pipeline part
 node('master') {
     stage('Prepare') {
-        gretlJobRepoUrl = env.GRETL_JOB_REPO_URL
         uploadDirName = 'upload'
         uploadFileName = 'uploadFile'
         // By default the uploaded file is stored in the following directory:
@@ -26,7 +25,7 @@ pipeline {
     stages {
         stage('Run GRETL-Job') {
             steps {
-                git url: gretlJobRepoUrl, branch: "${params.BRANCH ?: 'master'}", changelog: false
+                git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'master'}", changelog: false
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
                         unstash name: 'uploadDir'
