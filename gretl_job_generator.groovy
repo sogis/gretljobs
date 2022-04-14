@@ -78,8 +78,10 @@ for (jobFile in jobFiles) {
         }
       }
     }
-    authorization {
-      permissions(properties.getProperty('authorization.permissions'), ['hudson.model.Item.Build', 'hudson.model.Item.Read'])
+    if (properties.getProperty('authorization.permissions') != 'nobody') {
+      authorization {
+        permissions(properties.getProperty('authorization.permissions'), ['hudson.model.Item.Build', 'hudson.model.Item.Read'])
+      }
     }
     if (properties.getProperty('logRotator.numToKeep') != 'unlimited') {
       logRotator {
@@ -91,7 +93,7 @@ for (jobFile in jobFiles) {
         upstream(properties.getProperty('triggers.upstream'), 'SUCCESS')
       }
     }
-    if (productionEnv) { // we want triggers only in production environment
+    if (properties.getProperty('triggers.cron') != '' && productionEnv) { // we want triggers only in production environment
       triggers {
         cron(properties.getProperty('triggers.cron'))
       }
