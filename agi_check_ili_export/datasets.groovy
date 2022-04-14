@@ -86,7 +86,7 @@ datasets.add(new Dataset("SO_ALW_Landwirtschaft_Tierhaltung_20210426", "alw_land
 datasets.add(new Dataset("SO_ALW_Strukturverbesserungen_20190912", "alw_strukturverbesserungen", dbEdit, "ch.so.alw.strukturverbesserungen_edit"))
 datasets.add(new Dataset("Strukturverbesserungen_LV95_V2", "alw_strukturverbesserungen_suissemelio", dbEdit, "ch.so.alw.strukturverbesserungen_suissemelio_edit"))
 datasets.add(new Dataset("SO_ALW_Tiergesundheit_Massnahmen_20210426", "alw_tiergesundheit_massnahmen", dbEdit, "ch.so.alw.tiergesundheit_massnahmen_edit"))
-datasets.add(new Dataset("SO_ALW_FFF_Uebersteuerung_20210528", "alw_uebersteuerung_fff_v1", dbEdit, "ch.so.alw.uebersteuerung_fff_edit"))
+datasets.add(new Dataset("SO_ALW_FFF_Uebersteuerung_20220404", "alw_uebersteuerung_fff_v2", dbEdit, "ch.so.alw.uebersteuerung_fff_edit"))
 datasets.add(new Dataset("SO_AMB_Notfalltreffpunkte_20180413", "amb_notfalltreffpunkte", dbEdit, "ch.so.amb.notfalltreffpunkte_edit"))
 datasets.add(new Dataset("SO_AMB_Sirenenplanung_20200831", "amb_sirenenplanung_v1", dbEdit, "ch.so.amb.sirenenplanung_edit"))
 datasets.add(new Dataset("SO_Agglomerationsprogramme_20200618", "arp_agglomerationsprogramme", dbEdit, "ch.so.arp.agglomerationsprogramme_edit"))
