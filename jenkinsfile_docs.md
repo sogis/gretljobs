@@ -45,7 +45,7 @@ Damit dieser Job funktioniert, muss zusätzlich in der Datei `job.properties`
 die folgende Zeile stehen:
 
 ```
-parameters.stringParam=afuAbbaustellenAppXtfUrl;;Komplette URL zum Download des XTF
+parameters.stringParams=afuAbbaustellenAppXtfUrl;;Komplette URL zum Download des XTF
 ```
 
 Der Name des Parameters kann frei gewählt werden
@@ -58,6 +58,11 @@ beim Start des GRETL-Jobs angezeigt werden soll.
 
 Im Jenkinsfile muss der Name des Parameters an den
 in `job.properties` definierten Namen angepasst werden.
+
+Es können auch mehrere String-Parameter übergeben werden.
+Hierzu trennt man die einzelnen String-Parameter
+mit dem Zeichen `@` voneinander ab.
+Vorlage: [arp_nutzungsplanung_kanton_pub/job.properties](arp_nutzungsplanung_kanton_pub/job.properties)
 
 ## Im Pod eine temporäre Datenbank für die Verarbeitung von Daten starten
 
