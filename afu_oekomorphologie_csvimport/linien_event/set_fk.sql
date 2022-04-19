@@ -1,4 +1,4 @@
-SET search_path TO  'afu_fliessgewaesser_v1';
+SET search_path TO ${dbSchema};
 
 WITH 
 

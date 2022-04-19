@@ -1,8 +1,8 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-def schemaNameEdit = "afu_fliessgewaesser_v1"
-def iliModelName = "SO_AFU_Fliessgewaesser_20220221"
+def schemaNameEdit = "afu_gewaesser_v1"
+def iliModelName = "SO_AFU_Gewaesser_20220401"
 
 defaultTasks "importCsvFiles"
 
@@ -32,9 +32,9 @@ task unzipData(type: Copy, dependsOn: copyZipFile){
 // Absturz
 
 task validateAbsturzCsvFile(type: CsvValidator, dependsOn: unzipData) {
-    models = "SO_AFU_Fliessgewaesser_20220221"
+    models = iliModelName
     firstLineIsHeader=true
-    valueSeparator = ','
+    valueSeparator = ';'
     encoding = 'UTF-8'
     dataFiles = [file("upload/absturz.csv")]
 }
@@ -44,7 +44,7 @@ task importAbsturzCsv(type: CsvImport, dependsOn: validateAbsturzCsvFile) {
     schemaName = schemaNameEdit
     tableName = 'absturzcsv'
     firstLineIsHeader = true
-    valueSeparator = ','
+    valueSeparator = ';'
     encoding = 'UTF-8'
     dataFile = file("upload/absturz.csv")
 }
@@ -62,9 +62,9 @@ task absturzCalcAndCopy(type: SqlExecutor, dependsOn: importAbsturzCsv){
 // Bauwerk
 
 task validateBauwerkCsvFile(type: CsvValidator, dependsOn: unzipData) {
-    models = "SO_AFU_Fliessgewaesser_20220221"
+    models = iliModelName
     firstLineIsHeader=true
-    valueSeparator = ','
+    valueSeparator = ';'
     encoding = 'UTF-8'
     dataFiles = [file("upload/bauwerk.csv")]
 }
@@ -74,7 +74,7 @@ task importBauwerkCsv(type: CsvImport, dependsOn: validateBauwerkCsvFile) {
     schemaName = schemaNameEdit
     tableName = 'bauwerkcsv'
     firstLineIsHeader = true
-    valueSeparator = ','
+    valueSeparator = ';'
     encoding = 'UTF-8'
     dataFile = file("upload/bauwerk.csv")
 }
@@ -92,9 +92,9 @@ task bauwerkCalcAndCopy(type: SqlExecutor, dependsOn: importBauwerkCsv){
 // Oekomorph
 
 task validateOekomorphCsvFile(type: CsvValidator, dependsOn: unzipData) {
-    models = "SO_AFU_Fliessgewaesser_20220221"
-    firstLineIsHeader=true
-    valueSeparator = ','
+    models = iliModelName
+    firstLineIsHeader = true
+    valueSeparator = ';'
     encoding = 'UTF-8'
     dataFiles = [file("upload/oekomorph.csv")]
 }
@@ -104,7 +104,7 @@ task importOekomorphCsv(type: CsvImport, dependsOn: validateOekomorphCsvFile) {
     schemaName = schemaNameEdit
     tableName = 'oekomorphcsv'
     firstLineIsHeader = true
-    valueSeparator = ','
+    valueSeparator = ';'
     encoding = 'UTF-8'
     dataFile = file("upload/oekomorph.csv")
 }

@@ -1,4 +1,4 @@
-SET search_path TO  ${dbSchema};
+SET search_path TO ${dbSchema};
 
 DELETE 
 FROM
