@@ -175,7 +175,7 @@ documents_richtplan AS (
         RIGHT JOIN arp_richtplan.richtplankarte_ueberlagernde_flaeche
             ON richtplankarte_ueberlagernde_flaeche_dokument.ueberlagernde_flaeche = richtplankarte_ueberlagernde_flaeche.t_id
     WHERE
-        (titel, publiziertab, bemerkung, dateipfad) IS NOT NULL
+        (titel, dateipfad) IS NOT NULL
 ),
 documents_json_richtplan AS (
     SELECT 
