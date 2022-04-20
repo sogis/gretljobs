@@ -329,3 +329,4 @@ WHERE
 GROUP BY 
     schutzzone.geometrie,
     schutzzone.typ
+;
