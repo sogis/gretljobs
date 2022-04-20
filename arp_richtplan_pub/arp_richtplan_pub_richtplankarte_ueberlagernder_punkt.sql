@@ -19,7 +19,7 @@ WITH documents AS (
         RIGHT JOIN arp_richtplan.richtplankarte_ueberlagernder_punkt
             ON richtplankarte_ueberlagernder_punkt_dokument.ueberlagernder_punkt = richtplankarte_ueberlagernder_punkt.t_id
     WHERE
-        (titel, publiziertab, bemerkung, dateipfad) IS NOT NULL
+        (titel, dateipfad) IS NOT NULL
     
 ), documents_json AS (
     SELECT 

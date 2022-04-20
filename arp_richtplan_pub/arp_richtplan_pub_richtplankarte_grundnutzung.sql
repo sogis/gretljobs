@@ -683,7 +683,7 @@ documents AS (
         RIGHT JOIN arp_richtplan.richtplankarte_grundnutzung
             ON richtplankarte_grundnutzung_dokument.grundnutzung = richtplankarte_grundnutzung.t_id
     WHERE
-        (titel, publiziertab, bemerkung, dateipfad) IS NOT NULL
+        (titel, dateipfad) IS NOT NULL
 ),
 documents_json AS (
     SELECT 
