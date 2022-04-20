@@ -21,7 +21,6 @@ WITH documents AS (
         RIGHT JOIN arp_richtplan.richtplankarte_ueberlagernde_linie
             ON richtplankarte_ueberlagernde_linie_dokument.ueberlagernde_linie = richtplankarte_ueberlagernde_linie.t_id
     WHERE
---        (titel, publiziertab, bemerkung, dateipfad) IS NOT NULL
         (titel, dateipfad) IS NOT NULL
 ), documents_json AS (
     SELECT 
