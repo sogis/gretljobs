@@ -12,6 +12,9 @@ task transferAwjfBiodiversitaetWald(type: Db2Db) {
             new TransferSet('awjf_programm_biodiversitaet_wald_pub_biotopbaum.sql',
                             'awjf_programm_biodiversitaet_wald_pub_v1.biodiversitt_wald_biotopbaum', true),
             new TransferSet('awjf_programm_biodiversitaet_wald_pub_biotopflaeche.sql',
-                            'awjf_programm_biodiversitaet_wald_pub_v1.biodiversitt_wald_waldbiodiversitaetsflaeche', true)
+                            'awjf_programm_biodiversitaet_wald_pub_v1.biodiversitt_wald_waldbiodiversitaetsflaeche', true),
+            new TransferSet('awjf_programm_biodiversitaet_wald_pub_baumartenvielfalt.sql',
+                            'awjf_programm_biodiversitaet_wald_pub_v1.biodiversitt_wald_baumartenvielfalt', true)
+                    
     ];
 }

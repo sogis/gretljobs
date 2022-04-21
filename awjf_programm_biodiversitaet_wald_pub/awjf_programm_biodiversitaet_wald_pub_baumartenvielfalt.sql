@@ -1,0 +1,20 @@
+SELECT
+    geometrie,
+    biotop_id,
+    massnahme,
+    waldeigentuemer,
+    bemerkung,
+    besonderheiten,
+    vereinbarungsart,
+    vereinbarungsende,
+    vertragsspeicherort,
+    projektstatus,
+    jahr_projektumsetzung,
+    gesuchsnummer,
+    jahr_auszahlung,
+    anzahl_pflanzung,
+    anzahl_freistellung,
+    geltungsgebiet
+FROM
+    awjf_programm_biodiversitaet_wald_v1.biodiversitt_wald_baumartenvielfalt
+;
