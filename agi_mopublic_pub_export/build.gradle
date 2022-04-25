@@ -50,12 +50,12 @@ datasets.each { dataset ->
         disableValidation = true
 
         finalizedBy "emptyTables_$dataset"
-    } 
+    }
 
     task "emptyTables_$dataset"(type: SqlExecutor) {
         database = [dbUriPub, dbUserPub, dbPwdPub]
         sqlFiles = ['empty_tables.sql']
-    }      
+    }
 
     task "validateDataset_$dataset"(type: IliValidator, dependsOn: "exportDataset_$dataset") {
         dataFiles = [Paths.get(pathToTempFolder, dataset.toString() + ".xtf")]
@@ -92,12 +92,12 @@ datasets.each { dataset ->
         include "$dataset*_validation.log"
         archiveName dataset.toString() + "_gpkg.zip"
         destinationDir(file(pathToTempFolder))
-    }   
+    }
 
     task "gpkg2Shp_$dataset"(type: Gpkg2Shp, dependsOn: "zipDatasetGpkg_$dataset") {
         dataFile = file(Paths.get(pathToTempFolder, dataset.toString() + ".gpkg")) 
         outputDir = file(pathToTempFolder)
-    }  
+    }
 
     task "zipDatasetShp_$dataset"(type: Zip, dependsOn: "gpkg2Shp_$dataset") {
         from pathToTempFolder
@@ -110,7 +110,7 @@ datasets.each { dataset ->
         destinationDir(file(pathToTempFolder))
 
         finalizedBy "removeShpFiles_$dataset"
-    }     
+    }
 
     task "removeShpFiles_$dataset"(type: Delete) {
         delete fileTree(pathToTempFolder) {
@@ -120,7 +120,7 @@ datasets.each { dataset ->
             include '**/*.prj'
             include '**/*.fix'
         }
-    }     
+    }
 
     task "uploadXtf_$dataset"(type: S3Upload, dependsOn: "zipDatasetShp_$dataset") {
         accessKey = awsAccessKeyAgi
@@ -130,7 +130,7 @@ datasets.each { dataset ->
         region = "eu-central-1"
         bucketName = s3Bucket
         acl = "public-read"
-    }     
+    }
 
     task "uploadGpkg_$dataset"(type: S3Upload, dependsOn: "uploadXtf_$dataset") {
         accessKey = awsAccessKeyAgi
@@ -140,7 +140,7 @@ datasets.each { dataset ->
         region = "eu-central-1"
         bucketName = s3Bucket
         acl = "public-read"
-    }  
+    }
 
     task "uploadShp_$dataset"(type: S3Upload, dependsOn: "uploadGpkg_$dataset") {
         accessKey = awsAccessKeyAgi
@@ -152,7 +152,7 @@ datasets.each { dataset ->
         acl = "public-read"
 
         finalizedBy "removeFiles_$dataset"
-    }  
+    }
 
     task "removeFiles_$dataset"(type: Delete) {
         delete fileTree(pathToTempFolder) {
@@ -171,4 +171,3 @@ task exportAllDatasets() {
         tasks.findAll { task -> task.name.startsWith('uploadShp_') }
     }
 }
-
