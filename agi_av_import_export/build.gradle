@@ -143,6 +143,7 @@ task uploadDxfGeobauFiles(type: S3Upload, dependsOn: 'createDxfGeobauFiles') {
 task importData(type: Ili2pgReplace, dependsOn: 'uploadDxfGeobauFiles') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = 'DM01AVSO24LV95'
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dbschema = 'agi_dm01avso24'
     dataFile = fileTree(dir: pathToUnzipFolder, include: '*.itf')
     dataset = dataFile
