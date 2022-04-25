@@ -60,20 +60,20 @@ if (gretlEnvironment == "test") {
     bucketNameGeobau += "-dev"
 }
 
-task downloadFiles(type: FtpDownload) { 
+task downloadFiles(type: FtpDownload) {
     server = ftpServerInfogrips
     user = ftpUserInfogrips
     password = ftpPwdInfogrips
     systemType = "WINDOWS"
     fileType = "BINARY"
     localDir = pathToTempFolder
-    remoteDir = "\\dm01avso24lv95\\itf" 
-    remoteFile = "*.zip" 
+    remoteDir = "\\dm01avso24lv95\\itf"
+    remoteFile = "*.zip"
 
     doLast {
         println "Files downloaded: " + pathToTempFolder
-    }       
-} 
+    }
+}
 
 task uploadFiles(type: S3Upload, dependsOn: 'downloadFiles') {
     accessKey = awsAccessKeyAgi
@@ -85,7 +85,7 @@ task uploadFiles(type: S3Upload, dependsOn: 'downloadFiles') {
 
 task unzipFiles(dependsOn: 'uploadFiles') {
     doLast {
-        fileTree(pathToTempFolder).files.each { 
+        fileTree(pathToTempFolder).files.each {
             String fileName = it
             copy {
                 from zipTree(fileName)
@@ -146,7 +146,7 @@ task importData(type: Ili2pgReplace, dependsOn: 'uploadDxfGeobauFiles') {
     dbschema = 'agi_dm01avso24'
     dataFile = fileTree(dir: pathToUnzipFolder, include: '*.itf')
     dataset = dataFile
-    datasetSubstring = 0..4     
+    datasetSubstring = 0..4
 
     disableValidation = true
 
@@ -164,5 +164,5 @@ task deleteFtpFiles(type: FtpDelete, dependsOn: 'importData') {
     password = ftpPwdInfogrips
     systemType = "WINDOWS"
     remoteDir = "\\dm01avso24lv95\\itf"
-    remoteFile = fileTree(pathToTempFolder) { include '*.zip' } 
+    remoteFile = fileTree(pathToTempFolder) { include '*.zip' }
 }

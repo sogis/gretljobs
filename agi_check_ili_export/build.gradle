@@ -57,7 +57,7 @@ if (gretlEnvironment == "test") {
     bucket = "ch.so.agi.geodata-int"
 } else if (gretlEnvironment == "production") {
     bucket = "ch.so.agi.geodata"
-} 
+}
 
 datasets.each { dataset ->
     def modelNames = dataset.models
@@ -101,9 +101,9 @@ datasets.each { dataset ->
         secretKey = awsSecretAccessKeyAgi
         sourceDir = file(Paths.get(pathToTempFolder, datasetId + "_xtf.zip"))
         bucketName = bucket
-        endPoint = "https://s3.eu-central-1.amazonaws.com" 
+        endPoint = "https://s3.eu-central-1.amazonaws.com"
         region = "eu-central-1"
-        acl = "private" 
+        acl = "private"
         metaData = ["lastEditingDate":todaysDate]
     }
 }
@@ -122,7 +122,7 @@ task zipLogFiles(type: Zip) {
     include "*_validation.xtf"
     archiveName  "datenvalidierung_"+todaysDate+".zip"
     destinationDir(file(pathToTempFolder))
-}   
+}
 zipLogFiles.mustRunAfter exportAllData
 
 task copyLogZipFile(type: Copy, dependsOn: "zipLogFiles") {
@@ -131,7 +131,7 @@ task copyLogZipFile(type: Copy, dependsOn: "zipLogFiles") {
     include "datenvalidierung_"+todaysDate+".zip"
     rename { String fileName ->
         fileName.replace("datenvalidierung_"+todaysDate+".zip", "datenvalidierung_latest.zip")
-    } 
+    }
 }
 
 task uploadLogZipFileDate(type: S3Upload, dependsOn: "copyLogZipFile") {
