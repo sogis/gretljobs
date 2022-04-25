@@ -120,7 +120,7 @@ for (jobFile in jobFiles) {
 // add a view (tab) for these jobs
 listView('GRETL-Jobs') {
   jobs {
-    regex(/^(?!(schema_|oereb_|gretl-job-generator-schema|gretl-job-generator-oereb)).*/)
+    regex(/^(?!(schema_|oereb_|oerebv2_|gretl-job-generator-schema|gretl-job-generator-oereb|gretl-job-generator-oerebv2)).*/)
   }
   columns {
     status()
