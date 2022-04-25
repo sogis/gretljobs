@@ -45,6 +45,7 @@ datasets.each { dataset ->
         database = [dbUriPub, dbUserPub, dbPwdPub]
         dbschema = "agi_mopublic_pub_export"
         models = "SO_AGI_MOpublic_20201009"
+        if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
         logFile = file(Paths.get(pathToTempFolder, dataset.toString() + "_" + todaysDate  + "_export.log"))
         dataFile = file(Paths.get(pathToTempFolder, dataset.toString() + ".xtf"))
         disableValidation = true
@@ -59,6 +60,7 @@ datasets.each { dataset ->
 
     task "validateDataset_$dataset"(type: IliValidator, dependsOn: "exportDataset_$dataset") {
         dataFiles = [Paths.get(pathToTempFolder, dataset.toString() + ".xtf")]
+        if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
         logFile = file(Paths.get(pathToTempFolder, dataset.toString() + "_" + todaysDate  + "_validation.log"))
         failOnError = false
         //if (new File("config/"+datasetId + ".toml").isFile()) configFile = "config/"+datasetId + ".toml"
@@ -75,6 +77,7 @@ datasets.each { dataset ->
 
     task "importDatasetGpkg_$dataset"(type: Ili2gpkgImport, dependsOn: "zipDatasetXtf_$dataset") {
         models = "SO_AGI_MOpublic_20201009"
+        if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
         dataFile = file(Paths.get(pathToTempFolder, dataset.toString() + ".xtf"))
         dbfile = file(Paths.get(pathToTempFolder, dataset.toString() + ".gpkg"))
         disableValidation = true
