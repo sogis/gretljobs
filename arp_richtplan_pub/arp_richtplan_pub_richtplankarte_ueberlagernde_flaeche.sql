@@ -167,6 +167,8 @@ documents_richtplan AS (
                 THEN 'https://geo.so.ch/docs/' || split_part(richtplankarte_dokument.dateipfad, '/documents/', 2)
             WHEN position('opt/sogis_pic/daten_aktuell/arp/Zonenplaene/Zonenplaene_pdf/' IN richtplankarte_dokument.dateipfad) != 0
                 THEN 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/' || split_part(richtplankarte_dokument.dateipfad, '/Zonenplaene/', 2)
+            WHEN position('G:\documents\' IN richtplankarte_dokument.dateipfad) != 0    
+                THEN replace(richtplankarte_dokument.dateipfad, 'G:\documents\', 'https://geo.so.ch/docs/')
         END AS dokument
     FROM 
         arp_richtplan.richtplankarte_ueberlagernde_flaeche_dokument
