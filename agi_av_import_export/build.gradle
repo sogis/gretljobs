@@ -106,7 +106,7 @@ task unzipFiles(dependsOn: 'uploadFiles') {
 task createFederalFiles(type: Av2ch, dependsOn: 'unzipFiles') {
     inputFile = fileTree(pathToUnzipFolder) { include '*.itf' }
     outputDirectory = file(pathToFederalFolder)
-    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    modeldir = "https://geo.so.ch/models/"
     zip = true
 
     doLast {
