@@ -21,6 +21,7 @@ task transferWaldgrenzen(type: SqlExecutor) {
 task exportMgdmWaldgrenzen(type: Ili2pgExport, dependsOn: 'transferWaldgrenzen') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelMgdmWaldgrenzen
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dbschema = dbSchemaMgdmWaldgrenzen
     dataFile = file(mgdmWaldgrenzenXtfFileName)
     disableValidation = true
@@ -28,6 +29,7 @@ task exportMgdmWaldgrenzen(type: Ili2pgExport, dependsOn: 'transferWaldgrenzen')
 
 task validateMgdmWaldgrenzen(type: IliValidator, dependsOn: 'exportMgdmWaldgrenzen') {
     dataFiles = [file(mgdmWaldgrenzenXtfFileName)]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     logFile = "ilivalidator_waldgrenzen.log"
     //configFile = "config.toml"
     failOnError = false

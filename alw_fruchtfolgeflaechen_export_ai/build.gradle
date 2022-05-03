@@ -57,6 +57,7 @@ task exportFFFMgdm(type: Ili2pgExport, dependsOn: 'mapFFF2Mgdm') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "alw_fruchtfolgeflaechen_mgdm_v1"
     models = "Fruchtfolgeflaechen_LV95_V1"
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataFile = exportFile
 }
 

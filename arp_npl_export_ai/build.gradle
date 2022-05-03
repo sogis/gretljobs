@@ -41,6 +41,7 @@ task deleteMgdmLandUsesPlansData(type: SqlExecutor) {
 task importMgdmHauptnutzung(type: Ili2pgImport, dependsOn: 'deleteMgdmLandUsesPlansData') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelMgdmHauptnutzung
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dbschema = dbSchemaMgdmLandUsePlans
     dataFile = file("Hauptnutzung_CH_V1_1.xml")
     disableValidation = true
@@ -54,6 +55,7 @@ task transferLandUsePlansData(type: SqlExecutor, dependsOn: 'importMgdmHauptnutz
 task exportMgdmLandUsePlans(type: Ili2pgExport, dependsOn: 'transferLandUsePlansData') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelMgdmLandUsePlans
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dbschema = dbSchemaMgdmLandUsePlans
     dataFile = file(mgdmLandUsePlansXtfFileName)
     disableValidation = true
@@ -61,6 +63,7 @@ task exportMgdmLandUsePlans(type: Ili2pgExport, dependsOn: 'transferLandUsePlans
 
 task validateMgdmLandUsePlans(type: IliValidator, dependsOn: 'exportMgdmLandUsePlans') {
     dataFiles = [file("Hauptnutzung_CH_V1_1.xml"), file(mgdmLandUsePlansXtfFileName)]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     logFile = "ilivalidator_landuseplans.log"
     allObjectsAccessible = true
     configFile = "config.toml"
@@ -103,6 +106,7 @@ task transferNoiseSensitivityLevels(type: SqlExecutor) {
 task exportMgdmNoiseSensitivityLevels(type: Ili2pgExport, dependsOn: 'transferNoiseSensitivityLevels') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelMgdmNoiseSensitivityLevels
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dbschema = dbSchemaMgdmSensitivityLevels
     dataFile = file(mgdmSensitivityLevelsXtfFileName)
     disableValidation = true
@@ -110,6 +114,7 @@ task exportMgdmNoiseSensitivityLevels(type: Ili2pgExport, dependsOn: 'transferNo
 
 task validateMgdmNoiseSensitivityLevels(type: IliValidator, dependsOn: 'exportMgdmNoiseSensitivityLevels') {
     dataFiles = [file(mgdmSensitivityLevelsXtfFileName)]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     logFile = "ilivalidator_noisesensitivitylevels.log"
     configFile = "config.toml"
     failOnError = true
@@ -146,6 +151,7 @@ task transferWaldabstandslinien(type: SqlExecutor) {
 task exportMgdmWaldabstandslinien(type: Ili2pgExport, dependsOn: 'transferWaldabstandslinien') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelMgdmWaldabstand
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dbschema = dbSchemaWaldabstand
     dataFile = file(mgdmWaldabstandXtfFileName)
     disableValidation = true
@@ -153,6 +159,7 @@ task exportMgdmWaldabstandslinien(type: Ili2pgExport, dependsOn: 'transferWaldab
 
 task validateMgdmWaldabstandslinien(type: IliValidator, dependsOn: 'exportMgdmWaldabstandslinien') {
     dataFiles = [file(mgdmWaldabstandXtfFileName)]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     logFile = "ilivalidator_waldabstandslinien.log"
     configFile = "config.toml"
     failOnError = true

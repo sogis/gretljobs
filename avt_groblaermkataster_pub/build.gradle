@@ -16,6 +16,7 @@ task replaceDataset (type: Ili2pgImport, dependsOn: 'copyCsvFile') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = "avt_groblaermkataster_pub"
     models = "SO_AVT_Groblaermkataster_20190709"
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     disableValidation = true
     deleteData = true
     dataFile = "upload/uploadFile.xtf"  // name is injected by jenkins

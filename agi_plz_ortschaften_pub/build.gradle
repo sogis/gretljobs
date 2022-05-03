@@ -46,6 +46,7 @@ task dbImport(type: Ili2pgImport, dependsOn: 'unzipData'){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "agi_plz_ortschaften"
     models = "PLZOCH1LV95D"
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     disableValidation = false
     dataFile = file(xtfFilePath)
     deleteData = true

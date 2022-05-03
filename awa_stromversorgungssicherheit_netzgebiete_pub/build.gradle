@@ -25,6 +25,7 @@ task transferNetzgebiete(type: Db2Db){
 task exportMgdmNetzgebiete(type: Ili2pgExport, dependsOn: 'transferNetzgebiete') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = "SupplySecurity_RuledAreas_V1_2"
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dbschema = "awa_stromversorgungssicherheit"
     dataFile = file(mgdmNetzgebieteXtfFileName)
     disableValidation = true
@@ -32,6 +33,7 @@ task exportMgdmNetzgebiete(type: Ili2pgExport, dependsOn: 'transferNetzgebiete')
 
 task validateMgdmNetzgebiete(type: IliValidator, dependsOn: 'exportMgdmNetzgebiete') {
     dataFiles = [file(mgdmNetzgebieteXtfFileName)]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     logFile = "ilivalidator.log"
     failOnError = true
 }

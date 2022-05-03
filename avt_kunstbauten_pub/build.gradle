@@ -14,10 +14,12 @@ task exportXtf(type: Ili2pgExport){
     disableValidation = true
     dataFile = xtfPath
     models = "SO_AVT_Kunstbauten_Publikation_20220207"
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
 }
 
 task validate(type: IliValidator, dependsOn: exportXtf){
     dataFiles = [xtfPath]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
 task writeToPub(type: Db2Db, dependsOn: validate){ 

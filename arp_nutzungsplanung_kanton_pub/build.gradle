@@ -20,6 +20,7 @@ task exportDataEdit (type: Ili2pgExport, dependsOn: 'deleteData_transfer_pub') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_kanton_v1'
     models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataFile= file("kanton.xtf")
     disableValidation = true
 }
@@ -27,6 +28,7 @@ task exportDataEdit (type: Ili2pgExport, dependsOn: 'deleteData_transfer_pub') {
 task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
     dataFiles = file("kanton.xtf")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     configFile = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.ini'
     allObjectsAccessible = true
     failOnError = true
@@ -43,6 +45,7 @@ task exportData (type: Ili2pgExport, dependsOn: 'transferData') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_transfer_pub_v1'
     models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataFile= file("kanton_pub.xtf")
     disableValidation = true
 }
@@ -50,6 +53,7 @@ task exportData (type: Ili2pgExport, dependsOn: 'transferData') {
 task validateData(type: IliValidator, dependsOn: 'exportData') {
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
     dataFiles = file("kanton_pub.xtf")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     failOnError = true
 }
 
@@ -58,6 +62,7 @@ task importXTF_stage(type: Ili2pgReplace, dependsOn: 'validateData') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'arp_nutzungsplanung_staging_v1'
     models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataset = 'Kanton'
     dataFile = file("kanton_pub.xtf")
     disableValidation = true
@@ -67,6 +72,7 @@ task delete_Dataset_stage(type: Ili2pgDelete) {
     description = "Löscht Daten mit Dataset= Kanton aus dem Schema arp_nutzungsplanung_staging"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dbschema = 'arp_nutzungsplanung_staging_v1'
     dataset = 'Kanton'
 }
@@ -76,6 +82,7 @@ task importXTF_pub(type: Ili2pgReplace) {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'arp_nutzungsplanung_pub_v1'
     models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataset = 'Kanton'
     dataFile = file("kanton_pub.xtf")
     disableValidation = true

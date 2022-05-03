@@ -30,10 +30,12 @@ task exportGisXtf(type: Ili2pgExport, dependsOn: deleteAppData){
     disableValidation = true
     dataFile = gisXtfPath
     models = 'SO_AFU_ABBAUSTELLEN_20210630'
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
 }
 
 task validateJoined(type: IliValidator, dependsOn: exportGisXtf){
     dataFiles = [gisXtfPath, appXtfPath]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     allObjectsAccessible = true
 }
 
@@ -42,6 +44,7 @@ task importAppData(type: Ili2pgImport, dependsOn: validateJoined){
     dbschema = schemaNameEdit
     disableValidation = true
     dataFile = appXtfPath
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
 }
 
 task writeToPub(type: Db2Db, dependsOn: importAppData){ 

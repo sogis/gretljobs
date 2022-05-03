@@ -46,6 +46,7 @@ task replaceDataset (type: Ili2pgReplace, dependsOn: 'checkBsfNummer') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_npl"
     models = "SO_Nutzungsplanung_20171118"
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     disableValidation = true
     dataset = ili2pgDataset
     dataFile = "upload/${ili2pgDataset}.xtf"
