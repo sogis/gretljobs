@@ -76,4 +76,3 @@ task uploadXtfFile (dependsOn: validateSVGIS_Suissemelio){
     }
     finalizedBy deleteXtfFile
 }
-
