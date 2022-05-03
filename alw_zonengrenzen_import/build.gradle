@@ -34,6 +34,7 @@ task importKataloge(type: Ili2pgReplace, dependsOn: 'downloadKataloge'){
      database = [dbUriEdit, dbUserEdit, dbPwdEdit]
      dbschema = 'alw_zonengrenzen'
      models = 'Landwirtschaftliche_Zonengrenzen_LV95_V1_2'
+     if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
      dataFile = file(Paths.get(pathToTempFolder.toString(), 'landwirtschaftliche_zonengrenzen_kataloge_20140701.xml'))
      dataset = 'landwirtschaftliche_zonengrenzen_kataloge_20140701.xml-2938'
 }
@@ -57,6 +58,7 @@ task importData(type: Ili2pgReplace, dependsOn: 'unzipData'){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'alw_zonengrenzen'
     models = 'Landwirtschaftliche_Zonengrenzen_LV95_V1_2'
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataFile = file(Paths.get(pathToUnzipFolder.toString(), 'NachF_LWZ_INTERLIS2.xtf'))
     dataset = 'NachF_LWZ_INTERLIS2.xtf'
     strokeArcs = true

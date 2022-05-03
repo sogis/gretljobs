@@ -40,6 +40,7 @@ task importGELAN(type: Ili2pgReplace, dependsOn: downloadData) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "alw_landwirtschaft_tierhaltung_v1"
     models = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426'
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataFile = Paths.get(pathToTempFolder, 'Export_ais_pp-mg.xtf')
     dataset = 'massnahmen'
 }

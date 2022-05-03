@@ -75,6 +75,7 @@ task exportGefkartMgdm(type: Ili2pgExport, dependsOn: 'mapGefkart2Mgdm') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "afu_gefahrenkartierung_mgdm"
     models = "Hazard_Mapping_LV95_V1_2"
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataFile = exportFile
 }
 

@@ -31,6 +31,7 @@ task replaceDataset (type: Ili2pgReplace, dependsOn: downloadData) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "avt_strassenlaerm"
     models = "SO_AVT_Strassenlaerm_20190806"
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     disableValidation = true
     importTid = true
     dataset = "data"

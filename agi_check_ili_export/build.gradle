@@ -171,6 +171,7 @@ task uploadLogZipFileLatest(type: S3Upload, dependsOn: "uploadLogZipFileDate") {
 
 //     task "importDatasetGpkg_$datasetId"(type: Ili2gpkgImport, dependsOn: "zipDatasetXtf_$datasetId") {
 //         models = modelNames
+//         if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
 //         dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf"))
 //         dbfile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".gpkg"))
 //         disableValidation = true

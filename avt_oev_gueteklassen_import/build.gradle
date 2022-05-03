@@ -19,6 +19,7 @@ task import_to_stage(type: Ili2pgImport, dependsOn: rename){
      database = [dbUriEdit, dbUserEdit, dbPwdEdit]
      dbschema = 'avt_oev_gueteklassen_staging_v1'
      models = 'SO_AVT_Oev_Gueteklassen_20220120'
+     if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
      dataFile = 'upload/uploadFile.xtf'
      deleteData = true
 }
@@ -28,6 +29,7 @@ task import_to_pub(type: Ili2pgImport){
      database = [dbUriPub, dbUserPub, dbPwdPub]
      dbschema = 'avt_oev_gueteklassen_pub_v1'
      models = 'SO_AVT_Oev_Gueteklassen_20220120'
+     if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
      dataFile = 'upload/uploadFile.xtf'
      deleteData = true
 }

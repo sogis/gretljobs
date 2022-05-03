@@ -15,6 +15,7 @@ task exportDataEdit (type: Ili2pgExport) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_digizone_v1'
     models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataFile= file("digizone.xtf")
     disableValidation = true
 }
@@ -22,6 +23,7 @@ task exportDataEdit (type: Ili2pgExport) {
 task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
     dataFiles = file("digizone.xtf")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     failOnError = true
 }
 
@@ -30,6 +32,7 @@ task importXTF_pub(type: Ili2pgReplace, dependsOn: 'validateDataEdit') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'arp_nutzungsplanung_pub_v1'
     models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataset = 'digizone'
     dataFile = file("digizone.xtf")
     disableValidation = true

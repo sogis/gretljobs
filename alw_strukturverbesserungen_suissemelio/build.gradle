@@ -45,6 +45,7 @@ task transfer_SVGIS_Suissemelio(type: Db2Db){
 task exportSVGIS_Suissemelio(type: Ili2pgExport, dependsOn: 'transfer_SVGIS_Suissemelio') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = 'Strukturverbesserungen_LV95_V2'
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dbschema = 'alw_strukturverbesserungen_suissemelio'
     dataFile = file(SVGIS_SuissemelioXtfFileName)
     disableValidation = true
@@ -52,6 +53,7 @@ task exportSVGIS_Suissemelio(type: Ili2pgExport, dependsOn: 'transfer_SVGIS_Suis
 
 task validateSVGIS_Suissemelio(type: IliValidator, dependsOn: 'exportSVGIS_Suissemelio') {
     dataFiles = [file(SVGIS_SuissemelioXtfFileName)]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     logFile = "ilivalidator_SVGIS_Suissemelio.log"
     allObjectsAccessible = true
     failOnError = true
