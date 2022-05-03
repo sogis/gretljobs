@@ -117,8 +117,13 @@ git checkout -b branchname
   * `solrIndexupdaterBaseUrl` (die interne Basis-URL zum Indexupdater für Solr)
   * `gretlShare`
   * `gretlEnvironment` (der Wert dieser Variable ist je nach Umgebung `test`, `integration` oder `production`)
-
-Die Anleitung, wie man solche Ressourcen (z.B. DB-Verbindungen) in Jenkins definiert oder bestehende Ressourcen bearbeitet, ist unter https://github.com/sogis/gretl/tree/master/openshift#create-or-update-resources-to-be-used-by-gretl. Die Anleitung, wie man neue Credentials anlegt oder bestehende bearbeitet, ist unter https://github.com/sogis/gretl/tree/master/openshift#create-or-update-secrets-to-be-used-by-gretl.
+  Die Anleitung, wie man solche Ressourcen (z.B. DB-Verbindungen) in Jenkins definiert oder bestehende Ressourcen bearbeitet, ist unter https://github.com/sogis/gretl/tree/master/openshift#create-or-update-resources-to-be-used-by-gretl. Die Anleitung, wie man neue Credentials anlegt oder bestehende bearbeitet, ist unter https://github.com/sogis/gretl/tree/master/openshift#create-or-update-secrets-to-be-used-by-gretl.
+* Bei _Ili2pg_-Tasks und _IliValidator_-Tasks die folgende Option setzen,
+  damit in den Betriebs-Umgebungen für den Download der benötigten Modelle
+  die Anzahl abzufragender INTERLIS-Repositories reduziert wird:
+  Bei _Ili2pg_-Tasks: `if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir`
+  Bei _IliValidator_-Tasks: `if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir`
+  (Beispiele siehe https://github.com/sogis/gretljobs/commit/de8cc2f550d05442f558f077b85528bc2542c452)
 
 ### Files
 
