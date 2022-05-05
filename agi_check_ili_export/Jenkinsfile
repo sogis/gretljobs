@@ -9,9 +9,9 @@ pipeline {
               - name: gretl
                 resources:
                   requests:
-                    memory: 4.5Gi
+                    memory: 5.5Gi
                   limits:
-                    memory: 4.5Gi
+                    memory: 5.5Gi
 '''
         }
     }
