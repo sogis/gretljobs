@@ -1,19 +1,4 @@
-WITH oekomorph_measure AS (
-    SELECT 
-        st_linelocatepoint(netz.geometrie, st_startpoint(seg.geometrie)) AS m1,
-        st_linelocatepoint(netz.geometrie, st_endpoint(seg.geometrie)) AS m2,
-        seg.t_id,
-        netz.gnrso,
-        netz.geometrie AS base_geom
-    FROM 
-        afu_gewaesser_v1.oekomorph seg
-    JOIN 
-        afu_gewaesser_v1.gewaesserbasisgeometrie netz 
-        ON 
-        seg.rgewaesser = netz.t_id
-), 
-
-breitenvariabilitaetspunkte AS (
+WITH breitenvariabilitaetspunkte AS (
     SELECT 
         t_id,
         CASE 
@@ -27,7 +12,7 @@ breitenvariabilitaetspunkte AS (
             THEN 3 
         END AS punkte
     FROM 
-        afu_gewaesser_v1.oekomorph
+        afu_gewaesser_v1.oekomorph_v
 ),
 
 sohle_breitenvariabilitaet AS (
@@ -38,19 +23,16 @@ sohle_breitenvariabilitaet AS (
             THEN NULL 
             ELSE 
                 CASE 
-                    WHEN breitenvariabilitaetspunkte.punkte = 0 
+                    WHEN breitenvariabilitaet = 'ausgepraegt'
                     THEN sohlenbreite 
-                    WHEN breitenvariabilitaetspunkte.punkte = 2
+                    WHEN breitenvariabilitaet = 'eingeschraenkt'
                     THEN sohlenbreite*1.5 
-                    WHEN breitenvariabilitaetspunkte.punkte = 3
+                    WHEN breitenvariabilitaet = 'keine' 
                     THEN sohlenbreite*2 
                 END 
             END AS punkte
     FROM 
-        afu_gewaesser_v1.oekomorph oekomorph, 
-        breitenvariabilitaetspunkte
-    WHERE 
-        oekomorph.t_id = breitenvariabilitaetspunkte.t_id
+        afu_gewaesser_v1.oekomorph_v oekomorph
 ),
 
 sohlenverbauungspunkte AS (
@@ -73,7 +55,7 @@ sohlenverbauungspunkte AS (
             END 
         END AS punkte 
     FROM 
-        afu_gewaesser_v1.oekomorph oekomorph
+        afu_gewaesser_v1.oekomorph_v oekomorph
 ), 
 
 eindolungspunkte AS (
@@ -85,7 +67,7 @@ eindolungspunkte AS (
             ELSE 0 
         END AS punkte
     FROM 
-        afu_gewaesser_v1.oekomorph oekomorph
+        afu_gewaesser_v1.oekomorph_v oekomorph
 ),
 
 boeschungsverbauung_rechts AS (
@@ -108,7 +90,7 @@ boeschungsverbauung_rechts AS (
             THEN 3
         END AS buk_rechts
     FROM 
-        afu_gewaesser_v1.oekomorph oekomorph
+        afu_gewaesser_v1.oekomorph_v oekomorph
 ),
 
 boeschungsverbauung_links AS (
@@ -131,7 +113,7 @@ boeschungsverbauung_links AS (
             THEN 3
         END AS buk_links
     FROM 
-        afu_gewaesser_v1.oekomorph oekomorph
+        afu_gewaesser_v1.oekomorph_v oekomorph
 ),
 
 boeschungsverbauungspunkte AS (
@@ -152,7 +134,7 @@ boeschungsverbauungspunkte AS (
              ELSE -10 
          END AS punkte
     FROM 
-        afu_gewaesser_v1.oekomorph oekomorph, 
+        afu_gewaesser_v1.oekomorph_v oekomorph, 
         boeschungsverbauung_rechts,
         boeschungsverbauung_links
     WHERE 
@@ -208,7 +190,7 @@ beurteilungsuferbreiterechts AS (
                 END 
         END AS beurteilung
     FROM 
-        afu_gewaesser_v1.oekomorph oekomorph
+        afu_gewaesser_v1.oekomorph_v oekomorph
 ),
 
 beurteilungsuferbreitelinks AS (
@@ -258,7 +240,7 @@ beurteilungsuferbreitelinks AS (
                 END 
         END AS beurteilung
     FROM 
-        afu_gewaesser_v1.oekomorph oekomorph
+        afu_gewaesser_v1.oekomorph_v oekomorph
 ),
 
 uferbewertung_rechts AS (
@@ -280,7 +262,7 @@ uferbewertung_rechts AS (
                 END 
         END AS bewertung
     FROM 
-        afu_gewaesser_v1.oekomorph oekomorph,
+        afu_gewaesser_v1.oekomorph_v oekomorph,
         beurteilungsuferbreiterechts
     WHERE 
         oekomorph.t_id = beurteilungsuferbreiterechts.t_id 
@@ -305,7 +287,7 @@ uferbewertung_links AS (
                 END 
         END AS bewertung
     FROM 
-        afu_gewaesser_v1.oekomorph oekomorph,
+        afu_gewaesser_v1.oekomorph_v oekomorph,
         beurteilungsuferbreitelinks
     WHERE 
         oekomorph.t_id = beurteilungsuferbreitelinks.t_id 
@@ -320,7 +302,7 @@ SELECT
         ELSE round((uferbewertung_links.bewertung + uferbewertung_rechts.bewertung)/2,0)
     END AS punkte
 FROM 
-    afu_gewaesser_v1.oekomorph oekomorph, 
+    afu_gewaesser_v1.oekomorph_v oekomorph, 
     uferbewertung_links,
     uferbewertung_rechts, 
     beurteilungsuferbreitelinks, 
@@ -348,7 +330,7 @@ raumbedarf AS (
             THEN 45
         END AS raumbedarf
     FROM 
-        afu_gewaesser_v1.oekomorph oekomorph, 
+        afu_gewaesser_v1.oekomorph_v oekomorph, 
         sohle_breitenvariabilitaet
     WHERE 
         oekomorph.t_id = sohle_breitenvariabilitaet.t_id
@@ -366,7 +348,7 @@ minimaler_uferbereich AS (
             THEN 15
         END AS breite
     FROM 
-        afu_gewaesser_v1.oekomorph oekomorph, 
+        afu_gewaesser_v1.oekomorph_v oekomorph, 
         sohle_breitenvariabilitaet
     WHERE 
         oekomorph.t_id = sohle_breitenvariabilitaet.t_id
@@ -377,7 +359,7 @@ oekomorphpunkte AS (
         oekomorph.t_id, 
         (eindolungspunkte.punkte + breitenvariabilitaetspunkte.punkte + sohlenverbauungspunkte.punkte + boeschungsverbauungspunkte.punkte + uferpunkte.punkte) AS punkte
     FROM 
-        afu_gewaesser_v1.oekomorph oekomorph, 
+        afu_gewaesser_v1.oekomorph_v oekomorph, 
         eindolungspunkte, 
         breitenvariabilitaetspunkte, 
         sohlenverbauungspunkte, 
@@ -417,7 +399,7 @@ oekomorphologie AS (
 )
 
 SELECT 
-    m.t_id,
+    attr.t_id,
     attr.sohlenbreite,
     attr.eindolung,
     attr.breitenvariabilitaet,
@@ -446,35 +428,27 @@ SELECT
     minimaler_uferbereich.breite AS minimaleruferbereich, 
     raumbedarf.raumbedarf, 
     attr.erhebungsdatum, 
-    st_linesubstring(m.base_geom, LEAST(m.m1, m.m2), GREATEST(m.m1, m.m2))::geometry(LineString,2056) AS geometrie
+    attr.geometrie AS geometrie
 FROM 
-    oekomorph_measure m
-JOIN 
-    afu_gewaesser_v1.oekomorph attr 
-    ON 
-    m.t_id = attr.t_id
+    afu_gewaesser_v1.oekomorph_v attr 
 JOIN 
     raumbedarf raumbedarf  
     ON 
-    raumbedarf.t_id = m.t_id
+    raumbedarf.t_id = attr.t_id
 JOIN 
     beurteilungsuferbreiterechts
     ON 
-    beurteilungsuferbreiterechts.t_id = m.t_id 
+    beurteilungsuferbreiterechts.t_id = attr.t_id 
 JOIN 
     beurteilungsuferbreitelinks 
     ON 
-    beurteilungsuferbreitelinks.t_id = m.t_id
+    beurteilungsuferbreitelinks.t_id = attr.t_id
 JOIN 
     minimaler_uferbereich
     ON 
-    minimaler_uferbereich.t_id = m.t_id
+    minimaler_uferbereich.t_id = attr.t_id
 JOIN 
     oekomorphologie
     ON 
-    oekomorphologie.t_id = m.t_id
-WHERE 
-    m.m1 <> m.m2 
-    AND 
-    (m.m1 <> 'NaN'::numeric::double precision OR m.m2 <> 'NaN'::numeric::double precision)
+    oekomorphologie.t_id = attr.t_id
 ;
