@@ -1,0 +1,9 @@
+SELECT 
+    typ, 
+    material, 
+    hoehe, 
+    erhebungsdatum, 
+    geometrie
+FROM 
+    afu_gewaesser_v1.absturz_v
+;
