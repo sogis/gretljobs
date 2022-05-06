@@ -386,7 +386,7 @@ oekomorphologie AS (
             WHEN (punkte > -100 AND punkte < 0) 
             THEN 'nicht_bestimmt' 
             WHEN (punkte >= 0 AND punkte <= 1)
-            THEN 'naturlich_naturnah' 
+            THEN 'natuerlich_naturnah' 
             WHEN (punkte > 1 AND punkte <= 5)
             THEN 'wenig_beeintraechtigt'
             WHEN (punkte > 5 AND punkte <= 9)
@@ -399,7 +399,6 @@ oekomorphologie AS (
 )
 
 SELECT 
-    attr.t_id,
     attr.sohlenbreite,
     attr.eindolung,
     attr.breitenvariabilitaet,
