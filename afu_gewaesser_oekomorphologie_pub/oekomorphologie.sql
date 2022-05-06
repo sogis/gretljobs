@@ -399,7 +399,6 @@ oekomorphologie AS (
 )
 
 SELECT 
-    attr.t_id,
     attr.sohlenbreite,
     attr.eindolung,
     attr.breitenvariabilitaet,
