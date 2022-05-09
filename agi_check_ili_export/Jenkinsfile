@@ -12,6 +12,7 @@ pipeline {
                     memory: 5.5Gi
                   limits:
                     memory: 5.5Gi
+                    cpu: "2"
 '''
         }
     }
