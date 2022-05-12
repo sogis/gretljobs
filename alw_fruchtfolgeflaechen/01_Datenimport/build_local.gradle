@@ -120,8 +120,8 @@ task makeSchemaKlimaeignung(type: Ili2pgImportSchema){
 
 task downloadKlimaeignung(type: Download, dependsOn: makeSchemaKlimaeignung) {
     description = "Download Klimaeignung" 
-
-    src 'https://data.geo.admin.ch/ch.blw.klimaeignung-typ/xtf/2056/ch.blw.klimaeignung-typ.zip'
+    src 'https://data.geo.admin.ch/ch.blw.klimaeignung-typ/klimaeignung-typ/klimaeignung-typ_2056.xtf.zip'
+    //src 'https://data.geo.admin.ch/ch.blw.klimaeignung-typ/xtf/2056/ch.blw.klimaeignung-typ.zip'
     dest file(pathToDataZip)
     overwrite true 
     doLast {
@@ -131,7 +131,6 @@ task downloadKlimaeignung(type: Download, dependsOn: makeSchemaKlimaeignung) {
 
 task downloadKlimaeignung_katalog(type: Download, dependsOn: downloadKlimaeignung) {
     description = "Download Klimaeignung" 
-
     src 'https://models.geo.admin.ch/BLW/Klimaeignung_V1_2_Kataloge_20171120.xml'
     dest file(pathToDataFile)
     overwrite true 

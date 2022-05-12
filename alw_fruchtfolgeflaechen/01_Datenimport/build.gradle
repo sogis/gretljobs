@@ -114,8 +114,8 @@ task makeSchemaKlimaeignung(type: Ili2pgImportSchema){
 
 task downloadKlimaeignung(type: Download, dependsOn: makeSchemaKlimaeignung) {
     description = "Download Klimaeignung" 
-
-    src 'https://data.geo.admin.ch/ch.blw.klimaeignung-typ/xtf/2056/ch.blw.klimaeignung-typ.zip'
+    src 'https://data.geo.admin.ch/ch.blw.klimaeignung-typ/klimaeignung-typ/klimaeignung-typ_2056.xtf.zip'
+    //src 'https://data.geo.admin.ch/ch.blw.klimaeignung-typ/xtf/2056/ch.blw.klimaeignung-typ.zip'
     dest file(pathToDataZip)
     overwrite true 
     doLast {
