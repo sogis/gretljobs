@@ -1,5 +1,6 @@
 SELECT 
     typ, 
+    '' AS typ_txt,
     hoehe, 
     erhebungsdatum, 
     geometrie
