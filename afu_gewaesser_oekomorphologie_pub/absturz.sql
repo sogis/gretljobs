@@ -1,6 +1,8 @@
 SELECT 
     typ, 
-    material, 
+    '' AS typ_txt,
+    material,
+    '' AS material_txt, 
     hoehe, 
     erhebungsdatum, 
     geometrie

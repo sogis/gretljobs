@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAfuOekomorphologie'
+defaultTasks 'updateTxtColsAbsturz'
 
 task transferAfuOekomorphologie(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -13,4 +13,22 @@ task transferAfuOekomorphologie(type: Db2Db){
             new TransferSet('absturz.sql', 'afu_gewaesser_oekomorphologie_pub_v1.absturz', true),
             new TransferSet('bauwerk.sql', 'afu_gewaesser_oekomorphologie_pub_v1.bauwerk', true)
     ];
+}
+
+task updateTxtColsOekomorph(type: SqlExecutor, dependsOn:transferAfuOekomorphologie){
+    description = "Füllt die _txt-Spalten ab"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['updateTxtColsOekomorph.sql']
+}
+
+task updateTxtColsBauwerk(type: SqlExecutor, dependsOn:updateTxtColsOekomorph){
+    description = "Füllt die _txt-Spalten ab"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['updateTxtColsBauwerk.sql']
+}
+
+task updateTxtColsAbsturz(type: SqlExecutor, dependsOn:updateTxtColsBauwerk){
+    description = "Füllt die _txt-Spalten ab"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['updateTxtColsAbsturz.sql']
 }
