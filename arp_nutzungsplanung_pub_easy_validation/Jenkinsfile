@@ -1,0 +1,62 @@
+pipeline {
+    agent none
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 7, unit: 'DAYS')
+    }
+    stages {
+        stage('Import into staging schema') {
+            agent { label 'gretl' }
+            steps {
+                script { currentBuild.description = "${params.buildDescription}" }
+                git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'master'}", changelog: false
+                container('gretl') {
+                    dir(env.JOB_BASE_NAME) {
+                        sh "gretl -Pbfsnr=${params.bfsnr} importXTF_stage"
+                        zip zipFile: 'xtfdata.zip', glob: '*.xtf', archive: true
+                    }
+                }
+                stash name: "gretljob"
+                emailext (
+                    recipientProviders: [requestor()],
+                    subject: "Nutzungsplanung zum Review bereit (GRETL-Job ${JOB_NAME} ${BUILD_DISPLAY_NAME})",
+                    body: "Mit dem GRETL-Job ${JOB_NAME} (${BUILD_DISPLAY_NAME}) wurden Daten der Nutzungsplanung mit der BFS-Nr. ${params.bfsnr} nachgeführt, die ein Review erfordern. Nach dem Review unter https://${BUILD_URL.split('/')[2].replace('gretl', 'geo')}/map?t=nutzungsplanung_review können Sie unter folgendem Link die Publikation der Daten veranlassen oder abbrechen: ${RUN_DISPLAY_URL}."
+                )
+            }
+        }
+        stage('Validation') {
+            agent { label 'master' }
+            steps {
+                input message: "Fortfahren und die Daten publizieren?", ok: "OK"
+            }
+        }
+        stage('Import into pub schema') {
+            agent { label 'gretl' }
+            steps {
+                unstash name: "gretljob"
+                container('gretl') {
+                    dir(env.JOB_BASE_NAME) {
+                        sh "gretl -Pbfsnr=${params.bfsnr} importXTF_pub"
+                    }
+                }
+            }
+        }
+    }
+    post {
+        success {
+            emailext (
+                recipientProviders: [requestor()],
+                subject: "Daten der Nutzungsplanung für BFS-Nr. ${params.bfsnr} sind publiziert (GRETL-Job ${JOB_NAME} ${BUILD_DISPLAY_NAME})",
+                body: "Die Daten der Nutzungsplanung für BFS-Nr. ${params.bfsnr} des GRETL-Jobs ${JOB_NAME} (${BUILD_DISPLAY_NAME}) wurden erfolgreich publiziert. Die Log-Meldungen dazu finden Sie unter ${RUN_DISPLAY_URL}."
+            )
+        }
+        unsuccessful {
+            emailext (
+                to: '${DEFAULT_RECIPIENTS}',
+                recipientProviders: [requestor()],
+                subject: "GRETL-Job ${JOB_NAME} (${BUILD_DISPLAY_NAME}) ist fehlgeschlagen",
+                body: "Die Ausführung des GRETL-Jobs ${JOB_NAME} (${BUILD_DISPLAY_NAME}) war nicht erfolgreich. Details dazu finden Sie in den Log-Meldungen unter ${RUN_DISPLAY_URL}."
+            )
+        }
+    }
+}
