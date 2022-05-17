@@ -28,9 +28,3 @@ UPDATE arp_richtplan_pub.richtplankarte_ueberlagernde_flaeche
 WHERE     
     objekttyp = 'Fruchtfolgeflaeche'
 ;
-
-UPDATE arp_richtplan_pub.richtplankarte_ueberlagernde_flaeche
-    SET dokumente = '[{"t_id":null,"t_ili_tid":null,"titel":"Richtplankapitel L-1.2 Fruchtfolgeflächen","publiziertab":null,"bemerkung":null,"dokument":"https://geo.so.ch/docs/ch.so.arp.richtplan/L-1_2.pdf"}]'
-WHERE     
-    objekttyp = 'Fruchtfolgeflaeche'
-;

@@ -40,7 +40,7 @@ task transferArpRichtplanPubSogis(type: Db2Db){
 }
 
 task updateArpRichtplanPubDocuments(type: SqlExecutor, dependsOn: 'transferArpRichtplanPubSogis') {
-    database = [dbLocalUriEdit, dbLocalUserEdit, dbLocalPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ['arp_richplan_update_documents.sql']
 }
 
