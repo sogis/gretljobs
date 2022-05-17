@@ -46,8 +46,8 @@ task updateArpRichtplanPubDocuments(type: SqlExecutor, dependsOn: 'transferArpRi
 
 task transferArpRichtplanPub {
     dependsOn 'transferArpRichtplanPubSogis'
-    dependsOn 'updateArpRichtplanPubSogisDocuments'
+    dependsOn 'updateArpRichtplanPubDocuments'
     dependsOn 'transferArpRichtplanPubEdit'
 
-    tasks.findByName('transferArpRichtplanPubEdit').mustRunAfter 'updateArpRichtplanPubSogisDocuments'
+    tasks.findByName('transferArpRichtplanPubEdit').mustRunAfter 'updateArpRichtplanPubDocuments'
 }
