@@ -39,9 +39,15 @@ task transferArpRichtplanPubSogis(type: Db2Db){
     ]
 }
 
+task updateArpRichtplanPubDocuments(type: SqlExecutor, dependsOn: 'transferArpRichtplanPubSogis') {
+    database = [dbLocalUriEdit, dbLocalUserEdit, dbLocalPwdEdit]
+    sqlFiles = ['arp_richplan_update_documents.sql']
+}
+
 task transferArpRichtplanPub {
     dependsOn 'transferArpRichtplanPubSogis'
+    dependsOn 'updateArpRichtplanPubSogisDocuments'
     dependsOn 'transferArpRichtplanPubEdit'
 
-    tasks.findByName('transferArpRichtplanPubEdit').mustRunAfter 'transferArpRichtplanPubSogis'
+    tasks.findByName('transferArpRichtplanPubEdit').mustRunAfter 'updateArpRichtplanPubSogisDocuments'
 }
