@@ -3,10 +3,22 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferArpRichtplanPub'
+defaultTasks 'addArpRichtplanPubDocuments'
 
 
-task transferArpRichtplanPubEdit(type: Db2Db){
+task transferArpRichtplanPubSogis(type: Db2Db) {
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('arp_richtplan_pub_richtplankarte_grundnutzung_sogis.sql',
+                    'arp_richtplan_pub.richtplankarte_grundnutzung', true),
+            new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernde_flaeche_sogis.sql',
+                    'arp_richtplan_pub.richtplankarte_ueberlagernde_flaeche', true)
+    ]
+}
+
+
+task transferArpRichtplanPubEdit(type: Db2Db, dependsOn: 'transferArpRichtplanPubSogis') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -28,26 +40,7 @@ task transferArpRichtplanPubEdit(type: Db2Db){
 }
 
 
-task transferArpRichtplanPubSogis(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
-    transferSets = [
-            new TransferSet('arp_richtplan_pub_richtplankarte_grundnutzung_sogis.sql',
-                    'arp_richtplan_pub.richtplankarte_grundnutzung', true),
-            new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernde_flaeche_sogis.sql',
-                    'arp_richtplan_pub.richtplankarte_ueberlagernde_flaeche', true)
-    ]
-}
-
-task updateArpRichtplanPubDocuments(type: SqlExecutor, dependsOn: 'transferArpRichtplanPubSogis') {
+task addArpRichtplanPubDocuments(type: SqlExecutor, dependsOn: 'transferArpRichtplanPubEdit') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlFiles = ['arp_richplan_update_documents.sql']
-}
-
-task transferArpRichtplanPub {
-    dependsOn 'transferArpRichtplanPubSogis'
-    dependsOn 'updateArpRichtplanPubDocuments'
-    dependsOn 'transferArpRichtplanPubEdit'
-
-    tasks.findByName('transferArpRichtplanPubEdit').mustRunAfter 'updateArpRichtplanPubDocuments'
+    sqlFiles = ['arp_richtplan_pub_add_documents.sql']
 }
