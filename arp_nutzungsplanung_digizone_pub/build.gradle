@@ -10,8 +10,8 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'importXTF_pub'
 
 
-task exportDataEdit (type: Ili2pgExport, dependsOn: 'deleteData_transfer_pub') {
-    description = "Exportiert die Daten aus dem Schema arp_nutzungsplanung_digizone in ein INTERLIS-Datei."
+task exportDataEdit (type: Ili2pgExport) {
+    description = "Exportiert die Daten aus dem Schema arp_nutzungsplanung_digizone in eine INTERLIS-Datei."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_digizone_v1'
     models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
