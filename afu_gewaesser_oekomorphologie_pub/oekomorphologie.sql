@@ -252,7 +252,7 @@ uferbewertung_rechts AS (
             ELSE 
                 CASE 
                     WHEN (beurteilungsuferbreiterechts.beurteilung = 'genuegend' AND uferbeschaffenheitrechts = 'gewaessergerecht') 
-                    THEN 1 
+                    THEN 0
                     WHEN (beurteilungsuferbreiterechts.beurteilung = 'genuegend' AND uferbeschaffenheitrechts != 'gewaessergerecht')
                     THEN 1.5 
                     WHEN (beurteilungsuferbreiterechts.beurteilung != 'genuegend' AND uferbeschaffenheitrechts = 'gewaessergerecht')
@@ -277,7 +277,7 @@ uferbewertung_links AS (
             ELSE 
                 CASE 
                     WHEN (beurteilungsuferbreitelinks.beurteilung = 'genuegend' AND uferbeschaffenheitlinks = 'gewaessergerecht') 
-                    THEN 1 
+                    THEN 0
                     WHEN (beurteilungsuferbreitelinks.beurteilung = 'genuegend' AND uferbeschaffenheitlinks != 'gewaessergerecht')
                     THEN 1.5 
                     WHEN (beurteilungsuferbreitelinks.beurteilung != 'genuegend' AND uferbeschaffenheitlinks = 'gewaessergerecht')
