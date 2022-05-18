@@ -158,7 +158,7 @@ beurteilungsuferbreiterechts AS (
                           (
                               (sohlenbreite < 2 AND uferbreiterechts >= 5) 
                                OR
-                              (2 <= sohlenbreite AND sohlenbreite >= 15 AND uferbreiterechts >= (3/4*sohlenbreite+3.5))
+                              (2 <= sohlenbreite AND sohlenbreite <= 15 AND uferbreiterechts >= (3.0/4.0*sohlenbreite+3.5))
                                OR 
                               (sohlenbreite > 15 AND uferbreiterechts >= 15)
                           )
@@ -167,9 +167,9 @@ beurteilungsuferbreiterechts AS (
                     WHEN (breitenvariabilitaet = 'eingeschraenkt' 
                           AND 
                           (
-                              (sohlenbreite < 4/3 AND uferbreiterechts >= 5) 
+                              (sohlenbreite < 4.0/3.0 AND uferbreiterechts >= 5) 
                                OR
-                              (4/3 <= sohlenbreite AND sohlenbreite >= 10 AND uferbreiterechts >= (5.5/4*sohlenbreite+3.5))
+                              (4.0/3.0 <= sohlenbreite AND sohlenbreite <= 10 AND uferbreiterechts >= (5.5/4.0*sohlenbreite+3.5))
                                OR 
                               (sohlenbreite > 10 AND uferbreiterechts >= 15)
                           )
@@ -180,9 +180,9 @@ beurteilungsuferbreiterechts AS (
                           (
                               (sohlenbreite < 1 AND uferbreiterechts >= 5) 
                                OR
-                              (1 <= sohlenbreite AND sohlenbreite >= 15/2 AND uferbreiterechts >= (2*sohlenbreite+3.5))
+                              (1 <= sohlenbreite AND sohlenbreite <= 15.0/2.0 AND uferbreiterechts >= (2*sohlenbreite+3.5))
                                OR 
-                              (sohlenbreite > 15/2 AND uferbreiterechts >= 15)
+                              (sohlenbreite > 15.0/2.0 AND uferbreiterechts >= 15)
                           )
                          )
                     THEN 'genuegend'
@@ -208,7 +208,7 @@ beurteilungsuferbreitelinks AS (
                           (
                               (sohlenbreite < 2 AND uferbreitelinks >= 5) 
                                OR
-                              (2 <= sohlenbreite AND sohlenbreite >= 15 AND uferbreitelinks >= (3/4*sohlenbreite+3.5))
+                              (2 <= sohlenbreite AND sohlenbreite <= 15 AND uferbreitelinks >= (3.0/4.0*sohlenbreite+3.5))
                                OR 
                               (sohlenbreite > 15 AND uferbreitelinks >= 15)
                           )
@@ -217,9 +217,9 @@ beurteilungsuferbreitelinks AS (
                     WHEN (breitenvariabilitaet = 'eingeschraenkt' 
                           AND 
                           (
-                              (sohlenbreite < 4/3 AND uferbreitelinks >= 5) 
+                              (sohlenbreite < 4.0/3.0 AND uferbreitelinks >= 5) 
                                OR
-                              (4/3 <= sohlenbreite AND sohlenbreite >= 10 AND uferbreitelinks >= (5.5/4*sohlenbreite+3.5))
+                              (4.0/3.0 <= sohlenbreite AND sohlenbreite <= 10 AND uferbreitelinks >= (5.5/4.0*sohlenbreite+3.5))
                                OR 
                               (sohlenbreite > 10 AND uferbreitelinks >= 15)
                           )
@@ -230,9 +230,9 @@ beurteilungsuferbreitelinks AS (
                           (
                               (sohlenbreite < 1 AND uferbreitelinks >= 5) 
                                OR
-                              (1 <= sohlenbreite AND sohlenbreite >= 15/2 AND uferbreitelinks >= (2*sohlenbreite+3.5))
+                              (1 <= sohlenbreite AND sohlenbreite <= 15.0/2.0 AND uferbreitelinks >= (2*sohlenbreite+3.5))
                                OR 
-                              (sohlenbreite > 15/2 AND uferbreitelinks >= 15)
+                              (sohlenbreite > 15.0/2.0 AND uferbreitelinks >= 15)
                           )
                          )
                     THEN 'genuegend'
@@ -252,7 +252,7 @@ uferbewertung_rechts AS (
             ELSE 
                 CASE 
                     WHEN (beurteilungsuferbreiterechts.beurteilung = 'genuegend' AND uferbeschaffenheitrechts = 'gewaessergerecht') 
-                    THEN 1 
+                    THEN 0
                     WHEN (beurteilungsuferbreiterechts.beurteilung = 'genuegend' AND uferbeschaffenheitrechts != 'gewaessergerecht')
                     THEN 1.5 
                     WHEN (beurteilungsuferbreiterechts.beurteilung != 'genuegend' AND uferbeschaffenheitrechts = 'gewaessergerecht')
@@ -277,7 +277,7 @@ uferbewertung_links AS (
             ELSE 
                 CASE 
                     WHEN (beurteilungsuferbreitelinks.beurteilung = 'genuegend' AND uferbeschaffenheitlinks = 'gewaessergerecht') 
-                    THEN 1 
+                    THEN 0
                     WHEN (beurteilungsuferbreitelinks.beurteilung = 'genuegend' AND uferbeschaffenheitlinks != 'gewaessergerecht')
                     THEN 1.5 
                     WHEN (beurteilungsuferbreitelinks.beurteilung != 'genuegend' AND uferbeschaffenheitlinks = 'gewaessergerecht')
