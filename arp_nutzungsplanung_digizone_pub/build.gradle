@@ -25,7 +25,7 @@ task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
     failOnError = true
 }
 
-task importXTF_pub(type: Ili2pgReplace) {
+task importXTF_pub(type: Ili2pgReplace, dependsOn: 'validateDataEdit') {
     description = 'Import der INTERLIS-Datei "Digizone" in das Schema arp_nutzungsplanung_pub.'
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'arp_nutzungsplanung_pub_v1'
