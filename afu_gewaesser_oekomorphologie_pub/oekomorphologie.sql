@@ -158,7 +158,7 @@ beurteilungsuferbreiterechts AS (
                           (
                               (sohlenbreite < 2 AND uferbreiterechts >= 5) 
                                OR
-                              (2 <= sohlenbreite AND sohlenbreite >= 15 AND uferbreiterechts >= (3/4*sohlenbreite+3.5))
+                              (2 <= sohlenbreite AND sohlenbreite <= 15 AND uferbreiterechts >= (3/4*sohlenbreite+3.5))
                                OR 
                               (sohlenbreite > 15 AND uferbreiterechts >= 15)
                           )
@@ -169,7 +169,7 @@ beurteilungsuferbreiterechts AS (
                           (
                               (sohlenbreite < 4/3 AND uferbreiterechts >= 5) 
                                OR
-                              (4/3 <= sohlenbreite AND sohlenbreite >= 10 AND uferbreiterechts >= (5.5/4*sohlenbreite+3.5))
+                              (4/3 <= sohlenbreite AND sohlenbreite <= 10 AND uferbreiterechts >= (5.5/4*sohlenbreite+3.5))
                                OR 
                               (sohlenbreite > 10 AND uferbreiterechts >= 15)
                           )
@@ -180,7 +180,7 @@ beurteilungsuferbreiterechts AS (
                           (
                               (sohlenbreite < 1 AND uferbreiterechts >= 5) 
                                OR
-                              (1 <= sohlenbreite AND sohlenbreite >= 15/2 AND uferbreiterechts >= (2*sohlenbreite+3.5))
+                              (1 <= sohlenbreite AND sohlenbreite <= 15/2 AND uferbreiterechts >= (2*sohlenbreite+3.5))
                                OR 
                               (sohlenbreite > 15/2 AND uferbreiterechts >= 15)
                           )
@@ -208,7 +208,7 @@ beurteilungsuferbreitelinks AS (
                           (
                               (sohlenbreite < 2 AND uferbreitelinks >= 5) 
                                OR
-                              (2 <= sohlenbreite AND sohlenbreite >= 15 AND uferbreitelinks >= (3/4*sohlenbreite+3.5))
+                              (2 <= sohlenbreite AND sohlenbreite <= 15 AND uferbreitelinks >= (3/4*sohlenbreite+3.5))
                                OR 
                               (sohlenbreite > 15 AND uferbreitelinks >= 15)
                           )
@@ -219,7 +219,7 @@ beurteilungsuferbreitelinks AS (
                           (
                               (sohlenbreite < 4/3 AND uferbreitelinks >= 5) 
                                OR
-                              (4/3 <= sohlenbreite AND sohlenbreite >= 10 AND uferbreitelinks >= (5.5/4*sohlenbreite+3.5))
+                              (4/3 <= sohlenbreite AND sohlenbreite <= 10 AND uferbreitelinks >= (5.5/4*sohlenbreite+3.5))
                                OR 
                               (sohlenbreite > 10 AND uferbreitelinks >= 15)
                           )
@@ -230,7 +230,7 @@ beurteilungsuferbreitelinks AS (
                           (
                               (sohlenbreite < 1 AND uferbreitelinks >= 5) 
                                OR
-                              (1 <= sohlenbreite AND sohlenbreite >= 15/2 AND uferbreitelinks >= (2*sohlenbreite+3.5))
+                              (1 <= sohlenbreite AND sohlenbreite <= 15/2 AND uferbreitelinks >= (2*sohlenbreite+3.5))
                                OR 
                               (sohlenbreite > 15/2 AND uferbreitelinks >= 15)
                           )
