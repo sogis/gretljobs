@@ -414,8 +414,8 @@ task importNutzungsplanung(type: Db2Db, dependsOn: makeSchemaNutzungsplanung){
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     transferSets = [
-            new TransferSet('nutzungsplanung_grundnutzung.sql','arp_npl_pub.nutzungsplanung_grundnutzung', true),
-            new TransferSet('nutzungsplanung_erschliessung.sql','arp_npl_pub.nutzungsplanung_erschliessung_flaechenobjekt', true)
+            new TransferSet('nutzungsplanung_grundnutzung.sql','arp_nutzungsplanung_pub_v1.nutzungsplanung_grundnutzung', true),
+            new TransferSet('nutzungsplanung_erschliessung.sql','arp_nutzungsplanung_pub_v1.nutzungsplanung_erschliessung_flaechenobjekt', true)
     ];        
 }
 
