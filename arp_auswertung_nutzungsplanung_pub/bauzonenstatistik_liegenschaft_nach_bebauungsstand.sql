@@ -115,18 +115,21 @@ SELECT
    gr.bfs_nr,
    gr.gemeindename,
    gr.grundnutzung_typ_kt,
-   CASE
-     WHEN gr.flaeche_unbebaut = 0 THEN 'bebaut'
+   CASE    
      -- Filter Übersteuerung durch Punktlayer
      WHEN gr.ct_uebersteuert_bebaut > 0 THEN 'bebaut'
      WHEN gr.ct_uebersteuert_unbebaut > 0 THEN 'unbebaut'
+     -- falls keine Übersteuerung, dann hier weiterfahren
      ELSE
-       CASE
-         WHEN gr.flaeche_bebaut < 25 AND gr.flaeche_unbebaut >= 180 THEN 'unbebaut'
-         ELSE
+       CASE WHEN gr.flaeche_unbebaut = 0 THEN 'bebaut'
+       ELSE
            CASE
-             WHEN gr.flaeche_bebaut >= 25 AND gr.flaeche_unbebaut >= 180 THEN 'teilweise_bebaut'
-             ELSE 'bebaut'
+             WHEN gr.flaeche_bebaut < 25 AND gr.flaeche_unbebaut >= 180 THEN 'unbebaut'
+             ELSE
+               CASE
+                 WHEN gr.flaeche_bebaut >= 25 AND gr.flaeche_unbebaut >= 180 THEN 'teilweise_bebaut'
+                 ELSE 'bebaut'
+               END
            END
        END
    END AS bebauungsstand,
