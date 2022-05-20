@@ -13,7 +13,7 @@ WITH reserveflaechen AS (
             ),3
         ) AS geometrie
     FROM 
-        arp_npl_pub.nutzungsplanung_grundnutzung
+        arp_nutzungsplanung_pub_v1.nutzungsplanung_grundnutzung
     WHERE 
         typ_kt IN ('N430_Reservezone_Wohnzone_Mischzone_Kernzone_Zentrumszone',
                    'N431_Reservezone_Arbeiten',

@@ -6,7 +6,7 @@ WITH bauzonen AS (
     SELECT 
         ST_union(geometrie) AS geometrie
     FROM 
-        arp_npl_pub.nutzungsplanung_grundnutzung
+        arp_nutzungsplanung_pub_v1.nutzungsplanung_grundnutzung
     WHERE 
         typ_kt NOT IN ('N210_Landwirtschaftszone',
                        'N220_Spezielle_Landwirtschaftszone',
