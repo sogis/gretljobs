@@ -6,15 +6,15 @@ SELECT
     typ_kt, 
     typ_code_kommunal, 
     geometrie, 
-    name_nummer, 
+    geschaefts_nummer AS name_nummer, 
     rechtsstatus, 
-    publiziert_ab, 
+    publiziertab AS publiziert_ab, 
     bemerkungen, 
     erfasser, 
     datum_erfassung, 
     dokumente, 
     bfs_nr
 FROM 
-    arp_npl_pub.nutzungsplanung_erschliessung_flaechenobjekt
+    arp_nutzungsplanung_pub_v1.nutzungsplanung_erschliessung_flaechenobjekt
 ;
 
