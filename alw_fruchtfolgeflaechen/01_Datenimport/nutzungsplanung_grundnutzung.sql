@@ -18,5 +18,5 @@ SELECT
     dokumente, 
     bfs_nr
 FROM 
-    arp_npl_pub.nutzungsplanung_grundnutzung
+    arp_nutzungsplanung_pub_v1.nutzungsplanung_grundnutzung
 ;

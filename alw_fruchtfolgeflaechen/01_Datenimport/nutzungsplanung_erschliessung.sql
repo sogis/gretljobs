@@ -15,6 +15,6 @@ SELECT
     dokumente, 
     bfs_nr
 FROM 
-    arp_npl_pub.nutzungsplanung_erschliessung_flaechenobjekt
+    arp_nutzungsplanung_pub_v1.nutzungsplanung_erschliessung_flaechenobjekt
 ;
 
