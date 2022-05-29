@@ -40,7 +40,7 @@ def BfsNrGemeinden = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
 
 /* def BfsNrGemeinden = [2401, 2402] */
 
-def DB_Schema_NPL = "arp_npl_pub"
+def DB_Schema_NPL = "arp_nutzungsplanung_pub_v1"
 def DB_Schema_Hoheitsgr = "agi_hoheitsgrenzen_pub"
 def DB_Schema_AuswNPL = "arp_auswertung_nutzungsplanung_pub_v1"
 def DB_Schema_AV = "agi_mopublic_pub"
