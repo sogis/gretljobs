@@ -1,0 +1,60 @@
+description = """\n
+Initialisierung des MJPNL Schemas mit diversen relativ statischen Tabellen (ähnlich Katalogen / Wertelisten)
+und Geometrien die kaum ändern.
+
+Fragen an: Andreas Neumann (AGI) und Odile Bruggisser (ARP)
+"""
+
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
+defaultTasks 'initialisierung'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+remotes {
+    sftpServer {
+        host = "${sftpServerGelan}"
+        user = "${sftpUserGelan}"
+        password = "${sftpPwdGelan}"
+    }
+}
+
+task initialisierung(type: Ili2pgReplace) {
+  description = "Liest die Faunaliste, Floraliste und UZL-Subregionen ein."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "arp_mjpnl_v1"
+    models = 'SO_ARP_MJPNL_20201026'
+    topics = "MJPNL"
+    datafile = Paths.get(pathToTempFolder,'mjpnl_init.xtf')
+    dataset = "MJPNL"
+    logfile = "ili2pgimport.log"
+}
+
+task downloadData() {
+    description = "Download file from SFTP server"
+    doLast {
+        ssh.settings {
+            knownHosts = allowAnyHosts
+        }
+        ssh.run {
+            session(remotes.sftpServer) {
+                get from: "Prod/Export_ais_ln.xtf", into: pathToTempFolder
+            }
+        }
+        println "File downloaded from SFTP server"
+    }
+}
+
+task importGELAN(type: Ili2pgReplace, dependsOn: downloadData) {
+    description = 'Import resp. ersetzt einmal in der Woche die GELAN-Daten (Topic: GELAN_Bodenbedeckung, Datentransfer) in der Erfassungsdatenbank'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "arp_mjpnl_v1"
+    models = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426'
+    topics = ''
+    dataFile = Paths.get(pathToTempFolder, 'Export_ais_ln.xtf')
+    dataset = 'GELAN'
+}
