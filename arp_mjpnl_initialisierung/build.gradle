@@ -1,6 +1,6 @@
 description = """\n
 Initialisierung des MJPNL Schemas mit diversen relativ statischen Tabellen (ähnlich Katalogen / Wertelisten)
-und Geometrien die kaum ändern.
+und Geometrien die kaum ändern. Ausserdem Import der GELAN-Daten TOPIC Betriebsdaten_Strukturdaten
 
 Fragen an: Andreas Neumann (AGI) und Odile Bruggisser (ARP)
 """
@@ -13,7 +13,7 @@ import java.io.File
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'initialisierung'
+defaultTasks 'importGELAN'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
@@ -31,7 +31,7 @@ task copyXtfFile(type: Copy) {
     rename("uploadFile", "mjpnl_init.xtf")
 }
 
-task initialisierung(type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
+task importMJPNL(type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
   description = "Liest die Faunaliste, Floraliste und UZL-Subregionen ein."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_mjpnl_v1"
@@ -42,7 +42,7 @@ task initialisierung(type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
     logFile = "ili2pgimport.log"
 }
 
-task downloadData() {
+task downloadData(dependsOn: 'importMJPNL') {
     description = "Download file from SFTP server"
     doLast {
         ssh.settings {
@@ -50,7 +50,7 @@ task downloadData() {
         }
         ssh.run {
             session(remotes.sftpServer) {
-                get from: "Prod/Export_ais_ln.xtf", into: pathToTempFolder
+                get from: "Prod/Export_ais_agrardaten.xtf", into: pathToTempFolder
             }
         }
         println "File downloaded from SFTP server"
@@ -58,11 +58,11 @@ task downloadData() {
 }
 
 task importGELAN(type: Ili2pgReplace, dependsOn: downloadData) {
-    description = 'Import resp. ersetzt einmal in der Woche die GELAN-Daten (Topic: GELAN_Bodenbedeckung, Datentransfer) in der Erfassungsdatenbank'
+    description = 'Import resp. ersetzt täglich die GELAN-Daten (nur Topic: Betriebsdaten_Strukturdaten) in der Erfassungsdatenbank, Schema arp_mjpnl_v1'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_mjpnl_v1"
     models = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426'
-    topics = ''
-    dataFile = Paths.get(pathToTempFolder, 'Export_ais_ln.xtf')
+    topics = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426.Betriebsdaten_Strukturdaten'
+    dataFile = Paths.get(pathToTempFolder, 'Export_ais_agrardaten.xtf')
     dataset = 'GELAN'
 }
