@@ -15,9 +15,6 @@ apply plugin: 'org.hidetake.ssh'
 
 defaultTasks 'initialisierung'
 
-def uploadFileName = 'uploadFile' // Parameter von Jenkins übergeben
-def mjpnlImportFileName = 'mjpnl_init.xtf'
-def pathToUploadFolder = 'upload'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
 remotes {
@@ -31,7 +28,6 @@ remotes {
 task copyXtfFile(type: Copy) {
     from "upload/"
     into "upload/"
-    include("uploadFile")
     rename("uploadFile", "mjpnl_init.xtf")
 }
 
@@ -41,9 +37,9 @@ task initialisierung(type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
     dbschema = "arp_mjpnl_v1"
     models = "SO_ARP_MJPNL_20201026"
     topics = "MJPNL"
-    datafile = "upload/mjpnl_init.xtf"
+    dataFile = "upload/mjpnl_init.xtf"
     dataset = "MJPNL"
-    logfile = "ili2pgimport.log"
+    logFile = "ili2pgimport.log"
 }
 
 task downloadData() {
