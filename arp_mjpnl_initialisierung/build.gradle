@@ -38,6 +38,7 @@ task initialisierung(type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
     models = "SO_ARP_MJPNL_20201026"
     topics = "MJPNL"
     dataFile = "upload/mjpnl_init.xtf"
+    dataset = "MJPNL"
     logFile = "ili2pgimport.log"
 }
 
