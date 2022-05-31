@@ -6,13 +6,18 @@ Fragen an: Andreas Neumann (AGI) und Odile Bruggisser (ARP)
 """
 
 import ch.so.agi.gretl.tasks.*
+import java.nio.file.Files
 import java.nio.file.Paths
+import java.io.File
 
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
 defaultTasks 'initialisierung'
 
+def uploadFileName = 'uploadFile' // Parameter von Jenkins übergeben
+def mjpnlImportFileName = 'mjpnl_init.xtf'
+def pathToUploadFolder = 'upload'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
 remotes {
@@ -23,13 +28,20 @@ remotes {
     }
 }
 
-task initialisierung(type: Ili2pgReplace) {
+task copyXtfFile(type: Copy) {
+    from "upload/"
+    into "upload/"
+    include("uploadFile")
+    rename("uploadFile", "mjpnl_init.xtf")
+}
+
+task initialisierung(type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
   description = "Liest die Faunaliste, Floraliste und UZL-Subregionen ein."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_mjpnl_v1"
-    models = 'SO_ARP_MJPNL_20201026'
+    models = "SO_ARP_MJPNL_20201026"
     topics = "MJPNL"
-    datafile = "mjpnl_init.xtf" // Parameter von Jenkins übergeben
+    datafile = "upload/mjpnl_init.xtf"
     dataset = "MJPNL"
     logfile = "ili2pgimport.log"
 }
