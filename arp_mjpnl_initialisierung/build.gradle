@@ -36,6 +36,7 @@ task initialisierung(type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_mjpnl_v1"
     models = "SO_ARP_MJPNL_20201026"
+    topics = "SO_ARP_MJPNL_20201026.MJPNL"
     dataFile = "upload/mjpnl_init.xtf"
     dataset = "MJPNL"
     logFile = "ili2pgimport.log"
