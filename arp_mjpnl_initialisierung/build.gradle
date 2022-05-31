@@ -28,6 +28,7 @@ remotes {
 task copyXtfFile(type: Copy) {
     from "upload/"
     into "upload/"
+    include("uploadFile")
     rename("uploadFile", "mjpnl_init.xtf")
 }
 
