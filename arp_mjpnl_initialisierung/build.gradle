@@ -65,5 +65,4 @@ task importGELAN(type: Ili2pgReplace, dependsOn: downloadData) {
     topics = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426.Betriebsdaten_Strukturdaten'
     dataFile = Paths.get(pathToTempFolder, 'Export_ais_agrardaten.xtf')
     dataset = 'GELAN'
-    disableValidation = true
 }
