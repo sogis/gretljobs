@@ -49,7 +49,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=${bfsnr_param}
+        t_datasetname=${bfsnr_param}
     AND
         publiziertbis IS NULL
 ),
@@ -133,7 +133,7 @@ grundnutzung AS (
         LEFT JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_grundnutzung AS typ
         ON grundnutzung.typ_grundnutzung = typ.t_id
     WHERE
-        grundnutzung.t_datasetname::int4=${bfsnr_param}
+        grundnutzung.t_datasetname=${bfsnr_param}
     AND
         grundnutzung.publiziertbis IS NULL
 )
@@ -188,7 +188,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=${bfsnr_param}
+        t_datasetname=${bfsnr_param}
     AND
         publiziertbis IS NULL
 ),
@@ -269,7 +269,7 @@ ueberlagernd_flaeche AS (
         LEFT JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_flaeche AS typ
         ON ueberlagernd_flaeche.typ_ueberlagernd_flaeche= typ.t_id
     WHERE
-        ueberlagernd_flaeche.t_datasetname::int4=${bfsnr_param}
+        ueberlagernd_flaeche.t_datasetname=${bfsnr_param}
     AND
         ueberlagernd_flaeche.publiziertbis IS NULL
 )
@@ -322,7 +322,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=${bfsnr_param}
+        t_datasetname=${bfsnr_param}
     AND
         publiziertbis IS NULL
 ),
@@ -403,7 +403,7 @@ ueberlagernd_linie AS (
         LEFT JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_linie AS typ
         ON ueberlagernd_linie.typ_ueberlagernd_linie= typ.t_id
     WHERE
-        ueberlagernd_linie.t_datasetname::int4=${bfsnr_param}
+        ueberlagernd_linie.t_datasetname=${bfsnr_param}
     AND
         ueberlagernd_linie.publiziertbis IS NULL
 )
@@ -456,7 +456,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=${bfsnr_param}
+        t_datasetname=${bfsnr_param}
     AND
         publiziertbis IS NULL
 ),
@@ -538,7 +538,7 @@ ueberlagernd_punkt AS (
         LEFT JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_punkt AS typ
         ON ueberlagernd_punkt.typ_ueberlagernd_punkt= typ.t_id
     WHERE
-        ueberlagernd_punkt.t_datasetname::int4=${bfsnr_param}
+        ueberlagernd_punkt.t_datasetname=${bfsnr_param}
     AND
         ueberlagernd_punkt.publiziertbis IS NULL
 )
@@ -592,7 +592,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=${bfsnr_param}
+        t_datasetname=${bfsnr_param}
     AND
         publiziertbis IS NULL
 ),
@@ -673,7 +673,7 @@ erschliessung_flaechenobjekt AS (
         LEFT JOIN arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_flaechenobjekt AS typ
         ON erschliessung_flaechenobjekt.typ_erschliessung_flaechenobjekt= typ.t_id
     WHERE
-        erschliessung_flaechenobjekt.t_datasetname::int4=${bfsnr_param}
+        erschliessung_flaechenobjekt.t_datasetname=${bfsnr_param}
     AND
         erschliessung_flaechenobjekt.publiziertbis IS NULL
 )
@@ -726,7 +726,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=${bfsnr_param}
+        t_datasetname=${bfsnr_param}
     AND
         publiziertbis IS NULL
 ),
@@ -807,7 +807,7 @@ erschliessung_linienobjekt AS (
         LEFT JOIN arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_linienobjekt AS typ
         ON erschliessung_linienobjekt.typ_erschliessung_linienobjekt= typ.t_id
     WHERE
-        erschliessung_linienobjekt.t_datasetname::int4=${bfsnr_param}
+        erschliessung_linienobjekt.t_datasetname=${bfsnr_param}
     AND
         erschliessung_linienobjekt.publiziertbis IS NULL
 )
@@ -859,7 +859,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=${bfsnr_param}
+        t_datasetname=${bfsnr_param}
     AND
         publiziertbis IS NULL
 ),
@@ -940,7 +940,7 @@ erschliessung_punktobjekt AS (
         LEFT JOIN arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_punktobjekt AS typ
         ON erschliessung_punktobjekt.typ_erschliessung_punktobjekt= typ.t_id
     WHERE
-        erschliessung_punktobjekt.t_datasetname::int4=${bfsnr_param}
+        erschliessung_punktobjekt.t_datasetname=${bfsnr_param}
     AND
         erschliessung_punktobjekt.publiziertbis IS NULL
 )
@@ -992,7 +992,7 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_v1.rechtsvorschrften_dokument
     WHERE
-        t_datasetname::int4=${bfsnr_param}
+        t_datasetname=${bfsnr_param}
     AND
         publiziertbis IS NULL
 ),
@@ -1072,7 +1072,7 @@ empfindlichkeitsstufe AS (
         LEFT JOIN arp_nutzungsplanung_v1.laermmpfhktsstfen_typ_empfindlichkeitsstufe AS typ
         ON empfindlichkeitsstufe.typ_empfindlichkeitsstufen= typ.t_id
     WHERE
-        empfindlichkeitsstufe.t_datasetname::int4=${bfsnr_param}
+        empfindlichkeitsstufe.t_datasetname=${bfsnr_param}
     AND
         empfindlichkeitsstufe.publiziertbis IS NULL
 )
