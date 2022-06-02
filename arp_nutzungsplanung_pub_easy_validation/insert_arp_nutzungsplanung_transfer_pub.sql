@@ -124,7 +124,7 @@ grundnutzung AS (
         grundnutzung.bemerkungen,
         grundnutzung.erfasser,
         grundnutzung.datum AS datum_erfassung,
-        grundnutzung.t_datasetname AS bfs_nr,
+        replace (grundnutzung.t_datasetname,'_prov','') AS bfs_nr,
         grundnutzung.publiziertbis,
         substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
         substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
@@ -159,7 +159,7 @@ SELECT
     grundnutzung.erfasser,
     grundnutzung.datum_erfassung,
     typ_grundnutzung_json_dokument_agg.dokumente::json AS dokumente,
-    ${bfsnr_param} AS bfs_nr,
+    replace (grundnutzung.t_datasetname,'_prov','') AS bfs_nr,
     grundnutzung.publiziertbis,
     substring(grundnutzung.typ_kt,2,3)::int4 AS typ_code_kt,
     substring(grundnutzung.typ_kt,2,2)::int4  AS typ_code_ch
@@ -260,7 +260,7 @@ ueberlagernd_flaeche AS (
         ueberlagernd_flaeche.bemerkungen,
         ueberlagernd_flaeche.erfasser,
         ueberlagernd_flaeche.datum AS datum_erfassung,
-        ueberlagernd_flaeche.t_datasetname AS bfs_nr,
+        replace (ueberlagernd_flaeche.t_datasetname,'_prov',''),
         ueberlagernd_flaeche.publiziertbis,
         substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
         substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
@@ -292,7 +292,7 @@ SELECT
     ueberlagernd_flaeche.erfasser,
     ueberlagernd_flaeche.datum_erfassung,
     typ_ueberlagernd_flaeche_json_dokument_agg.dokumente::json AS dokumente,
-    ${bfsnr_param} AS bfs_nr,
+    replace (ueberlagernd_flaeche.t_datasetname,'_prov',''),
     ueberlagernd_flaeche.publiziertbis,
     substring(ueberlagernd_flaeche.typ_kt,2,3)::int4 AS typ_code_kt,
     substring(ueberlagernd_flaeche.typ_kt,2,2)::int4  AS typ_code_ch
@@ -394,7 +394,7 @@ ueberlagernd_linie AS (
         ueberlagernd_linie.bemerkungen,
         ueberlagernd_linie.erfasser,
         ueberlagernd_linie.datum AS datum_erfassung,
-        ueberlagernd_linie.t_datasetname AS bfs_nr,
+        replace (ueberlagernd_linie.t_datasetname,'_prov',''),
         ueberlagernd_linie.publiziertbis,
         substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
         substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
@@ -426,7 +426,7 @@ SELECT
     ueberlagernd_linie.erfasser,
     ueberlagernd_linie.datum_erfassung,
     typ_ueberlagernd_linie_json_dokument_agg.dokumente::json AS dokumente,
-    ${bfsnr_param} AS bfs_nr,
+    replace (ueberlagernd_linie.t_datasetname,'_prov','') AS bfs_nr,
     ueberlagernd_linie.publiziertbis,
     substring(ueberlagernd_linie.typ_kt,2,3)::int4 AS typ_code_kt,
     substring(ueberlagernd_linie.typ_kt,2,2)::int4  AS typ_code_ch
@@ -529,7 +529,7 @@ ueberlagernd_punkt AS (
         ueberlagernd_punkt.bemerkungen,
         ueberlagernd_punkt.erfasser,
         ueberlagernd_punkt.datum AS datum_erfassung,
-        ueberlagernd_punkt.t_datasetname AS bfs_nr,
+        replace (ueberlagernd_punkt.t_datasetname,'_prov','') AS bfs_nr,
         ueberlagernd_punkt.publiziertbis,
         substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
         substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
@@ -561,7 +561,7 @@ SELECT
     ueberlagernd_punkt.erfasser,
     ueberlagernd_punkt.datum_erfassung,
     typ_ueberlagernd_punkt_json_dokument_agg.dokumente::json AS dokumente,
-    ${bfsnr_param} AS bfs_nr,
+    replace (ueberlagernd_punkt.t_datasetname,'_prov','') AS bfs_nr,
     ueberlagernd_punkt.publiziertbis,
     substring(ueberlagernd_punkt.typ_kt,2,3)::int4 AS typ_code_kt,
     substring(ueberlagernd_punkt.typ_kt,2,2)::int4  AS typ_code_ch
@@ -664,7 +664,7 @@ erschliessung_flaechenobjekt AS (
         erschliessung_flaechenobjekt.bemerkungen,
         erschliessung_flaechenobjekt.erfasser,
         erschliessung_flaechenobjekt.datum AS datum_erfassung,
-        erschliessung_flaechenobjekt.t_datasetname AS bfs_nr,
+        replace (erschliessung_flaechenobjekt.t_datasetname,'_prov','') AS bfs_nr,
         erschliessung_flaechenobjekt.publiziertbis,
         substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
         substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
@@ -696,7 +696,7 @@ SELECT
     erschliessung_flaechenobjekt.erfasser,
     erschliessung_flaechenobjekt.datum_erfassung,
     typ_erschliessung_flaechenobjekt_json_dokument_agg.dokumente::json AS dokumente,
-    ${bfsnr_param} AS bfs_nr,
+    replace (erschliessung_flaechenobjekt.t_datasetname,'_prov','') AS bfs_nr,
     erschliessung_flaechenobjekt.publiziertbis,
     substring(erschliessung_flaechenobjekt.typ_kt,2,3)::int4 AS typ_code_kt,
     substring(erschliessung_flaechenobjekt.typ_kt,2,2)::int4  AS typ_code_ch
@@ -798,7 +798,7 @@ erschliessung_linienobjekt AS (
         erschliessung_linienobjekt.bemerkungen,
         erschliessung_linienobjekt.erfasser,
         erschliessung_linienobjekt.datum AS datum_erfassung,
-        erschliessung_linienobjekt.t_datasetname AS bfs_nr,
+        replace (erschliessung_linienobjekt.t_datasetname,'_prov','') AS bfs_nr,
         erschliessung_linienobjekt.publiziertbis,
         substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
         substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
@@ -830,7 +830,7 @@ SELECT
     erschliessung_linienobjekt.erfasser,
     erschliessung_linienobjekt.datum_erfassung,
     typ_erschliessung_linienobjekt_json_dokument_agg.dokumente::json AS dokumente,
-    ${bfsnr_param} AS bfs_nr,
+    replace (erschliessung_linienobjekt.t_datasetname,'_prov','') AS bfs_nr,
     erschliessung_linienobjekt.publiziertbis,
     substring(erschliessung_linienobjekt.typ_kt,2,3)::int4 AS typ_code_kt,
     substring(erschliessung_linienobjekt.typ_kt,2,2)::int4  AS typ_code_ch
@@ -931,7 +931,7 @@ erschliessung_punktobjekt AS (
         erschliessung_punktobjekt.bemerkungen,
         erschliessung_punktobjekt.erfasser,
         erschliessung_punktobjekt.datum AS datum_erfassung,
-        erschliessung_punktobjekt.t_datasetname AS bfs_nr,
+        replace (erschliessung_punktobjekt.t_datasetname,'_prov','') AS bfs_nr,
         erschliessung_punktobjekt.publiziertbis,
         substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
         substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
@@ -963,7 +963,7 @@ SELECT
     erschliessung_punktobjekt.erfasser,
     erschliessung_punktobjekt.datum_erfassung,
     typ_erschliessung_punktobjekt_json_dokument_agg.dokumente::json AS dokumente,
-    ${bfsnr_param} AS bfs_nr,
+    replace (erschliessung_punktobjekt.t_datasetname,'_prov','') AS bfs_nr,
     erschliessung_punktobjekt.publiziertbis,
     substring(erschliessung_punktobjekt.typ_kt,2,3)::int4 AS typ_code_kt,
     substring(erschliessung_punktobjekt.typ_kt,2,2)::int4  AS typ_code_ch
@@ -1063,7 +1063,7 @@ empfindlichkeitsstufe AS (
         empfindlichkeitsstufe.bemerkungen,
         empfindlichkeitsstufe.erfasser,
         empfindlichkeitsstufe.datum AS datum_erfassung,
-        empfindlichkeitsstufe.t_datasetname AS bfs_nr,
+        replace (empfindlichkeitsstufe.t_datasetname,'_prov','') AS bfs_nr,
         empfindlichkeitsstufe.publiziertbis,
         substring(typ.typ_kt,2,3)::int4 AS typ_code_kt,
         substring(typ.typ_kt,2,2)::int4  AS typ_code_ch
@@ -1094,7 +1094,7 @@ SELECT
     empfindlichkeitsstufe.typ_verbindlichkeit,
     empfindlichkeitsstufe.typ_bemerkungen,
     empfindlichkeitsstufe.typ_kt,
-    ${bfsnr_param} AS bfs_nr,
+    replace (empfindlichkeitsstufe.t_datasetname,'_prov','') AS bfs_nr,
     typ_empfindlichkeitsstufe_json_dokument_agg.dokumente::json AS dokumente,
     substring(empfindlichkeitsstufe.typ_kt,2,3)::int4 AS typ_code_kt,
     substring(empfindlichkeitsstufe.typ_kt,2,2)::int4  AS typ_code_ch
