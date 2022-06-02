@@ -1,0 +1,107 @@
+
+// Import Daten der Nutzungsplanung pro Gemeinde (dataset=BFS-Nr.) in das Schema "arp_nutzungsplanung_import" und macht ein Datenumbau in die Struktur des Nachführungsmodells (Schema "arp_nutzungsplanung_transfer"). 
+// Das resultierende XTF wird ins Schema "arp_nutzungsplanung" importiert. 
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+
+apply plugin: 'ch.so.agi.gretl'
+
+task copyXtfFile(type: Copy) {
+    from "upload/"
+    into "upload/"
+    include("uploadFile")
+    rename("uploadFile", "${ili2pgDataset}.xtf")
+}
+
+task importXtfFile(type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
+    description = 'Import das XTF (Herkunft von Planungsbüros) einer Gemeinde in das Schema "arp_nutzungsplanung_import". Immer nur eine Gemeinde ist in diesem Schema "_import" vorhanden. Bei jedem Import wird das Schema wieder geleert '
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'arp_nutzungsplanung_import_v1'
+    models = 'SO_Nutzungsplanung_20171118'
+    deleteData= true
+    dataset = ili2pgDataset
+    dataFile = "upload/${ili2pgDataset}.xtf"
+    disableValidation = true
+}
+
+task deleteXtfFile_upload(type: Delete, dependsOn: 'importXtfFile'){
+    delete "upload/${ili2pgDataset}.xtf"
+}
+
+task deleteData_transfer(type: SqlExecutor, dependsOn: 'deleteXtfFile_upload') {
+    description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_transfer."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["delete_arp_nutzungsplanung_transfer.sql"]
+}
+
+task deleteData_import(type: Ili2pgDelete) {
+    description = "Löscht/leert Daten mit dem angegebenen Datasetname (BFS-Nr.) aus dem Schema arp_nutzungsplanung_import_v1"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
+    dbschema = 'arp_nutzungsplanung_import_v1'
+    dataset = ili2pgDataset
+}
+
+task transferData(type: SqlExecutor, dependsOn: 'deleteData_transfer') {
+    description = "Führt den Datenumbau in das Schema arp_nutzungsplanung_transfer (Modell NAchführung) durch. 
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["insert_arp_nutzungsplanung_transfer.sql"]
+    finalizedBy deleteData_import
+}
+
+task deleteData_transfer_pub (type: SqlExecutor, dependsOn: 'transferData') {
+    description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_transfer_pub."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["delete_arp_nutzungsplanung_transfer_pub.sql"]
+}
+
+task exportDataEdit (type: Ili2pgExport, dependsOn: 'deleteData_transfer_pub') {
+    description = "Exportiert die Daten mit DataSet= BFSNr aus dem Schema arp_nutzungsplanung_transfer in ein INTERLIS-Datei."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'arp_nutzungsplanung_transfer_v1'
+    models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
+    dataset = ili2pgDataset
+    dataFile= file(ili2pgDataset + "for_stage.xtf")
+    disableValidation = true
+}
+
+task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
+    description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
+    dataFiles = file(ili2pgDataset + "for_stage.xtf"")
+    allObjectsAccessible = true
+    failOnError = true
+}
+
+task transferData(type: SqlExecutor, dependsOn: 'validateDataEdit') {
+    description = "Führt den Datenumbau in das Schema arp_nutzungsplanung_transfer_pub durch. Das braucht es, damit ein XFT pro Dataset ins Schema arp_nutzungsplanung_stage importiert resp. ersetzt werden kann"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [bfsnr_param:ili2pgDataset]
+    sqlFiles = ["insert_arp_nutzungsplanung_transfer_pub.sql"]
+}
+
+task exportData (type: Ili2pgExport, dependsOn: 'transferData') {
+    description = "Exportiert die umgebauten Daten mit DataSet= BFSNr aus dem Schema arp_nutzungsplanung_transfer_pub in ein INTERLIS-Datei."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'arp_nutzungsplanung_transfer_pub_v1'
+    models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
+    dataFile= file(ili2pgDataset + "_pub.xtf")
+    disableValidation = true
+}
+
+task validateData(type: IliValidator, dependsOn: 'exportData') {
+    description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
+    dataFiles = file(ili2pgDataset + "_pub.xtf")
+    failOnError = true
+}
+
+task importXTF_stage(type: Ili2pgReplace, dependsOn: 'validateData') {
+    description = 'Import der umgebaute INTERLIS-Datei einer Gemeinde (BFS-Nr.) in das Schema arp_nutzungsplanung_staging.'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = 'arp_nutzungsplanung_staging_v1'
+    models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
+    dataset = ili2pgDataset
+    dataFile = file(ili2pgDatasetr + "_pub.xtf")
+    disableValidation = true
+}
