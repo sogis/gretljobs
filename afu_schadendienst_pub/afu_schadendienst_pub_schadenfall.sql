@@ -1,30 +1,24 @@
 SELECT
-    "schaden-nr" AS schaden_nr,
+    schaden_nr,
     jahr,
-    "Sachbearbeiter" AS sachbearbeiter,
+    sachbearbeiter,
     datum,
     ort,
-    "strasse/nr" AS strasse_nr,
+    strasse_nr,
     gewaesserschutzzone,
-    code,
+    acode,
     ursache,
-    "name",
+    aname,
     adresse,
     ort2,
     telefon,
-    x,
-    y,
     art,
     menge,
     hergang,
     massnahmen,
     bemerkungen,
     schaden_id,
-    wkb_geometry AS geometrie,
-    "oid",
-    ogc_fid AS t_id 
+    geometrie
 FROM
-    schadendienst.schadenfaelle_n
-WHERE
-    archive = 0
+    afu_schadendienst_v1.schadenfall
 ;

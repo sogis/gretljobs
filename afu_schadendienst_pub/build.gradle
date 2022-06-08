@@ -6,11 +6,10 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferAfuSchadendienst'
 
 task transferAfuSchadendienst(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('afu_schadendienst_pub_schadenfall.sql', 'afu_schadendienst_pub.schadenfall', true),
-            new TransferSet('afu_schadendienst_pub_nichtschadenfall.sql', 'afu_schadendienst_pub.nichtschadenfall',
-                    true)
+            new TransferSet('afu_schadendienst_pub_schadenfall.sql', 'afu_schadendienst_pub_v1.schadenfall', true),
+            new TransferSet('afu_schadendienst_pub_nichtschadenfall.sql', 'afu_schadendienst_pub_v1.nichtschadenfall', true)
     ];
 }
