@@ -34,12 +34,7 @@ pipeline {
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
                         unstash name: 'uploadDir'
-                        sh "gretl -Pili2pgDataset=$inputFile.ili2pgDataset transferData"
-                        waitUntil {
-                            sh "gretl -Pili2pgDataset=$inputFile.ili2pgDataset validateData_Dataset_BFSNr validateData_Dataset_Kanton"
-                            input message: 'Den Datenimport abschliessen oder die Transferdaten nochmals aus dem Schema arp_nutzungsplanung_transfer exportieren?', parameters: [booleanParam(name: 'FINISH', defaultValue: false, description: 'Häkchen setzen, um den Datenimport abzuschliessen')]
-                        }
-                        sh "gretl -Pili2pgDataset=$inputFile.ili2pgDataset importData_Dataset_BFSNr importData_Dataset_Kanton"
+                        sh "gretl -Pili2pgDataset=$inputFile.ili2pgDataset importXTF_stage"
                     }
                 }
             }
