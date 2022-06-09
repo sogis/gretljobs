@@ -235,7 +235,6 @@ INSERT INTO arp_nutzungsplanung_transfer_v1.nutzungsplanung_typ_ueberlagernd_fla
 SELECT
     t_id,
     t_basket,
--- Für Nachführungseinheit "Kanton" gibt es einen eigenes Dataset
     t_datasetname,
     t_ili_tid,
     typ_kt,
@@ -300,8 +299,8 @@ INSERT INTO arp_nutzungsplanung_transfer_v1.nutzungsplanung_ueberlagernd_flaeche
 
 SELECT
     ueberlagernd_flaeche.t_id,
-    t_basket,
-    t_datasetname,
+    ueberlagernd_flaeche.t_basket,
+    ueberlagernd_flaeche.t_datasetname,
     ueberlagernd_flaeche.t_ili_tid,
     ueberlagernd_flaeche.geometrie,
     ueberlagernd_flaeche.name_nummer AS geschaefts_nummer,
@@ -392,8 +391,8 @@ INSERT INTO
 )
 SELECT
     typ_ueberlagernd_flaeche_dokument.t_id,
-    t_basket,
-    t_datasetname,
+    typ_ueberlagernd_flaeche_dokument.t_basket,
+    typ_ueberlagernd_flaeche_dokument.t_datasetname,
     typ_ueberlagernd_flaeche_dokument.typ_ueberlagernd_flaeche,
     typ_ueberlagernd_flaeche_dokument.dokument
 FROM
@@ -840,8 +839,8 @@ FROM
 INSERT INTO arp_nutzungsplanung_transfer_v1.erschlssngsplnung_erschliessung_flaechenobjekt
 SELECT
     erschliessung_flaechenobjekt.t_id,
-    basket,
-    t_datasetname,
+    erschliessung_flaechenobjekt.t_basket,
+    erschliessung_flaechenobjekt.t_datasetname,
     erschliessung_flaechenobjekt.t_ili_tid,
     erschliessung_flaechenobjekt.geometrie,
     erschliessung_flaechenobjekt.name_nummer AS geschaefts_nummer,
@@ -884,8 +883,8 @@ INSERT INTO
 )
 SELECT
     erschliessung_flaechenobjekt_dokument.t_id,
-    t_basket,
-    t_datasetname,
+    erschliessung_flaechenobjekt_dokument.t_basket,
+    erschliessung_flaechenobjekt_dokument.t_datasetname,
     erschliessung_flaechenobjekt_dokument.typ_erschliessung_flaechenobjekt,
     erschliessung_flaechenobjekt_dokument.dokument
 FROM
@@ -983,7 +982,7 @@ INSERT INTO
 INSERT INTO arp_nutzungsplanung_transfer_v1.erschlssngsplnung_typ_erschliessung_linienobjekt
 SELECT
     t_id,
-    t_basket
+    t_basket,
     t_datasetname,
     t_ili_tid,
     typ_kt,
@@ -1001,8 +1000,8 @@ WHERE
 INSERT INTO arp_nutzungsplanung_transfer_v1.erschlssngsplnung_erschliessung_linienobjekt
 SELECT
     erschliessung_linienobjekt.t_id,
-    t_basket,
-    t_datasetname,
+    erschliessung_linienobjekt.t_basket,
+    erschliessung_linienobjekt.t_datasetname,
     erschliessung_linienobjekt.t_ili_tid,
     erschliessung_linienobjekt.geometrie,
     erschliessung_linienobjekt.name_nummer AS geschaefts_nummer,
@@ -1048,8 +1047,8 @@ INSERT INTO
 
 SELECT
     erschliessung_linienobjekt_dokument.t_id,
-    t_basket,
-    t_datasetname,
+    erschliessung_linienobjekt_dokument.t_basket,
+    erschliessung_linienobjekt_dokument.t_datasetname,
     erschliessung_linienobjekt_dokument.typ_erschliessung_linienobjekt,
     erschliessung_linienobjekt_dokument.dokument
 FROM
@@ -1517,4 +1516,53 @@ INSERT INTO
         )
         AND
         typ_empfindlichkeitsstufe_dokument.typ_empfindlichkeitsstufen IS NOT NULL
+;
+
+-- Update Geometrie MakeValid
+UPDATE
+    arp_nutzungsplanung_transfer_v1.nutzungsplanung_grundnutzung
+SET
+    geometrie = ST_MakeValid(geometrie)
+WHERE
+    ST_IsValid(geometrie) = False
+;
+
+UPDATE
+    arp_nutzungsplanung_transfer_v1.nutzungsplanung_ueberlagernd_linie
+SET
+    geometrie = ST_MakeValid(geometrie)
+WHERE
+    ST_IsValid(geometrie) = False
+;
+
+UPDATE
+    arp_nutzungsplanung_transfer_v1.nutzungsplanung_ueberlagernd_flaeche
+SET
+    geometrie = ST_MakeValid(geometrie)
+WHERE
+    ST_IsValid(geometrie) = False
+;
+
+UPDATE
+    arp_nutzungsplanung_transfer_v1.erschlssngsplnung_erschliessung_flaechenobjekt
+SET
+    geometrie = ST_MakeValid(geometrie)
+WHERE
+    ST_IsValid(geometrie) = False
+;
+
+UPDATE
+    arp_nutzungsplanung_transfer_v1.erschlssngsplnung_erschliessung_linienobjekt
+SET
+    geometrie = ST_MakeValid(geometrie)
+WHERE
+    ST_IsValid(geometrie) = False
+;
+
+UPDATE
+    arp_nutzungsplanung_transfer_v1.erschlssngsplnung_erschliessung_linienobjekt
+SET
+    geometrie = ST_MakeValid(geometrie)
+WHERE
+    ST_IsValid(geometrie) = False
 ;
