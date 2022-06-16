@@ -56,7 +56,7 @@ for (jobFile in jobFiles) {
   pipelineJob(jobName) {
     if (!productionEnv) { // we don't want the BRANCH parameter in production environment
       parameters {
-        stringParam('BRANCH', 'master', 'Name of branch to check out')
+        stringParam('BRANCH', 'main', 'Name of branch to check out')
       }
     }
     if (properties.getProperty('parameters.fileParam') != 'none') {

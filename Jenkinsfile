@@ -9,7 +9,7 @@ pipeline {
                 retry(2)
             }
             steps {
-                git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'master'}", changelog: false
+                git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
                         sh 'gretl'

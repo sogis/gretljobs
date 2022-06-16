@@ -34,16 +34,16 @@ und so prüfen, ob die Änderungen wie gewünscht funktionieren.
 Allenfalls noch erforderliche Anpassungen
 kann man im gleichen Branch vornehmen und sie wieder pushen, usw.
 
-Bei einem **neuen Job**, der also noch nicht im _master_-Branch,
+Bei einem **neuen Job**, der also noch nicht im _main_-Branch,
 sondern erst in einem anderen Branch vorliegt, ist das Vorgehen ähnlich;
-man muss aber zuerst gemäss folgender Anleitung auch im _master_-Branch
+man muss aber zuerst gemäss folgender Anleitung auch im _main_-Branch
 den entsprechenden Job-Ordner und eine leere Datei _build.gradle_ anlegen,
 damit der Job bereits in GRETL-Jenkins aufgelistet wird:
 
 * Den Job wie gehabt lokal in einem Branch entwickeln und den Branch pushen
-* Lokal in den _master_-Branch wechseln und den aktuellen Stand pullen:
+* Lokal in den _main_-Branch wechseln und den aktuellen Stand pullen:
   ```
-  git checkout master && git pull
+  git checkout main && git pull
   ```
 * Auch in diesem Branch einen Ordner mit demselben Namen wie der neue Job anlegen:
   ```
@@ -59,7 +59,7 @@ damit der Job bereits in GRETL-Jenkins aufgelistet wird:
   ```
 * Diesen "Job-Initialisierungs-Commit" pushen:
   ```
-  git push origin master
+  git push origin main
   ```
 * In GRETL-Jenkins z.B. der Testumgebung
   den Job _gretl-job-generator_ einmal laufenlassen
@@ -76,7 +76,7 @@ in welchem man den neuen Job entwickelt hat.
 git checkout -b branchname
 ```
 
-* Änderungen müssen immer per Pull Request in den master-Branch eingepflegt werden
+* Änderungen müssen immer per Pull Request in den main-Branch eingepflegt werden
 
 ### build.gradle
 
