@@ -30,10 +30,13 @@ CREATE USER gretl WITH PASSWORD 'gretl';
 create database "PG_DATABASE";
 
 grant all privileges on database "PG_DATABASE" to "PG_USER";
--- Additional privilege setting:
-REVOKE TEMPORARY ON DATABASE "PG_DATABASE" FROM PUBLIC;
 
 \c "PG_DATABASE"
+
+-- Additional privilege setting:
+REVOKE TEMPORARY ON DATABASE "PG_DATABASE" FROM PUBLIC;
+-- Additional privilege setting:
+REVOKE CREATE ON SCHEMA public FROM PUBLIC;
 
 create extension postgis;
 -- create extension postgis_topology;
@@ -44,9 +47,6 @@ create extension pg_stat_statements;
 -- create extension plr;
 -- Additional extension needed for working with ili2pg:
 CREATE EXTENSION "uuid-ossp";
-
--- Additional privilege setting:
-REVOKE CREATE ON SCHEMA public FROM PUBLIC;
 
 -- \c "PG_DATABASE" "PG_USER";
 
