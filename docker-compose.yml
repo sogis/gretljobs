@@ -9,8 +9,8 @@ services:
       PG_LOCALE: de_CH.UTF-8
       PG_PRIMARY_PORT: 5432
       PG_MODE: primary
-      PG_USER: admin
-      PG_PASSWORD: admin
+      PG_USER: ddluser
+      PG_PASSWORD: ddluser
       PG_PRIMARY_USER: repl
       PG_PRIMARY_PASSWORD: repl
       PG_ROOT_PASSWORD: secret
@@ -34,8 +34,8 @@ services:
       PG_LOCALE: de_CH.UTF-8
       PG_PRIMARY_PORT: 5432
       PG_MODE: primary
-      PG_USER: admin
-      PG_PASSWORD: admin
+      PG_USER: ddluser
+      PG_PASSWORD: ddluser
       PG_PRIMARY_USER: repl
       PG_PRIMARY_PASSWORD: repl
       PG_ROOT_PASSWORD: secret
