@@ -24,8 +24,8 @@ CREATE USER dmluser WITH PASSWORD 'dmluser';
 -- Additional user:
 CREATE USER gretl WITH PASSWORD 'gretl';
 
-create table primarytable (key varchar(20), value varchar(20));
-grant all on primarytable to "PG_PRIMARY_USER";
+-- create table primarytable (key varchar(20), value varchar(20));
+-- grant all on primarytable to "PG_PRIMARY_USER";
 
 create database "PG_DATABASE";
 
