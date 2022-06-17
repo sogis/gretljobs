@@ -48,6 +48,6 @@ CREATE EXTENSION "uuid-ossp";
 -- Additional privilege setting:
 REVOKE CREATE ON SCHEMA public FROM PUBLIC;
 
-\c "PG_DATABASE" "PG_USER";
+-- \c "PG_DATABASE" "PG_USER";
 
-create schema "PG_USER";
+-- create schema "PG_USER";
