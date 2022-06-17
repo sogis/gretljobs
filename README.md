@@ -285,14 +285,14 @@ Die DBs sind mit folgenden Verbindungsparametern erreichbar:
 * Hostname: `localhost`
 * Port: `54321`
 * DB-Name: `edit`
-* Benutzer: `gretl` (für Lese- und Schreibzugriff) oder `admin` (zum Anlegen von Schemen, Tabellen usw.); das Passwort lautet jeweils gleich wie der Benutzername
+* Benutzer: `ddluser` (zum Anlegen von Schemen, Tabellen usw.) bzw. `dmluser` oder `gretl` (für Lese- und Schreibzugriff); das Passwort lautet jeweils gleich wie der Benutzername
 
 #### Publikations-DB
 
 * Hostname: `localhost`
 * Port: `54322`
 * DB-Name: `pub`
-* Benutzer: `gretl` (für Lese- und Schreibzugriff) oder `admin` (zum Anlegen von Schemen, Tabellen usw.); das Passwort lautet jeweils gleich wie der Benutzername
+* Benutzer: `ddluser` (zum Anlegen von Schemen, Tabellen usw.) bzw. `dmluser` oder `gretl` (für Lese- und Schreibzugriff); das Passwort lautet jeweils gleich wie der Benutzername
 
 ### Die Rollen (Benutzer und Gruppen) der produktiven DBs importieren
 
