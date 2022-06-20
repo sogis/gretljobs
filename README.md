@@ -349,7 +349,9 @@ welches Image man starten möchte.
 Mit `--docker-network NETWORK` (optional) kann angegeben werden,
 dass der GRETL-Container an ein bestimmtes Docker-Netzwerk
 angebunden werden soll.
-(Die Namen der verfügbaren Docker-Netzwerke
+(Das Docker-Netzwerk, das mit `docker compose up` erstellt wird,
+heisst in der Regel `gretljobs_default`;
+die Namen der vorhandenen Docker-Netzwerke
 können mit dem Befehl `docker network ls` ermittelt werden.)
 
 Mit `--job-directory $PWD/jobname` wird
