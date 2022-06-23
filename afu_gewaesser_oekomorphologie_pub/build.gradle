@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'updateTxtColsAbsturz'
+defaultTasks 'updateEnumTxtCols'
 
 task transferAfuOekomorphologie(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -15,20 +15,43 @@ task transferAfuOekomorphologie(type: Db2Db){
     ];
 }
 
-task updateTxtColsOekomorph(type: SqlExecutor, dependsOn:transferAfuOekomorphologie){
-    description = "Füllt die _txt-Spalten ab"
+task updateBooleanEnumTxtCols(type: SqlExecutor, dependsOn:transferAfuOekomorphologie){
+    description = "Befüllt die _txt-Spalten zu Boolean-Attributen"
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlFiles = ['updateTxtColsOekomorph.sql']
+    sqlFiles = ['update_boolean_enum_txt_col.sql']
+    sqlParameters = [
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'eindolung'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'vielenatabstuerze']
+    ]
 }
 
-task updateTxtColsBauwerk(type: SqlExecutor, dependsOn:updateTxtColsOekomorph){
-    description = "Füllt die _txt-Spalten ab"
+task updateEnumTxtCols(type: SqlExecutor, dependsOn:updateBooleanEnumTxtCols){
+    description = "Befüllt die _txt-Spalten zu Enum-Attributen"
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlFiles = ['updateTxtColsBauwerk.sql']
-}
-
-task updateTxtColsAbsturz(type: SqlExecutor, dependsOn:updateTxtColsBauwerk){
-    description = "Füllt die _txt-Spalten ab"
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlFiles = ['updateTxtColsAbsturz.sql']
+    sqlFiles = ['update_enum_txt_col.sql']
+    sqlParameters = [
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'absturz', attribute: 'typ', enumTable: 'absturztyp'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'absturz', attribute: 'material', enumTable: 'absturzmaterial'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'bauwerk', attribute: 'typ', enumTable: 'bauwerktyp'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'breitenvariabilitaet', enumTable: 'varbreite'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'tiefenvariabilitaet', enumTable: 'vartiefe'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'sohlenverbauung', enumTable: 'sohlverbau'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'sohlmaterial', enumTable: 'sohlmaterial'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'boeschungsfussverbaulinks', enumTable: 'boeschverbau'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'boeschungsfussverbaurechts', enumTable: 'boeschverbau'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'materiallinks', enumTable: 'boeschmaterial'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'materialrechts', enumTable: 'boeschmaterial'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'uferbeschaffenheitlinks', enumTable: 'ufer'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'uferbeschaffenheitrechts', enumTable: 'ufer'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'algenbewuchs', enumTable: 'bewalgen'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'makrophytenbewuchs', enumTable: 'bewmakro'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'totholz', enumTable: 'totholz'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'ueberhvegetation', enumTable: 'oekomorphologie_ueberhvegetation'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'domkorngroesse', enumTable: 'oekomorphologie_domkorngroesse'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'nutzungumlandlinks', enumTable: 'umfeldtyp'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'nutzungumlandrechts', enumTable: 'umfeldtyp'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'klasse', enumTable: 'klasse'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'beurteilungsuferbreitelinks', enumTable: 'beurteilungsuferbreite'],
+        [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'beurteilungsuferbreiterechts', enumTable: 'beurteilungsuferbreite']
+    ]
 }
