@@ -1,0 +1,23 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'updateTxtColsSchutzwald'
+
+task transferAwjfSchutzwaldPub(type: Db2Db) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('awjf_schutzwald_pub_beh_flaeche.sql', 'awjf_schutzwald_pub_v1.behandelte_flaeche', true),
+            new TransferSet('awjf_schutzwald_pub_dokument.sql', 'awjf_schutzwald_pub_v1.dokument', true),
+            new TransferSet('awjf_schutzwald_pub_info.sql', 'awjf_schutzwald_pub_v1.schutzwald_info', true),
+            new TransferSet('awjf_schutzwald_pub_schutzwald.sql', 'awjf_schutzwald_pub_v1.schutzwald', true) 
+    ];        
+}
+
+task updateTxtColsSchutzwald(type: SqlExecutor, dependsOn:transferAwjfSchutzwaldPub){
+    description = "Füllt die _txt-Spalten ab"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['updateTxtColsSchutzwald.sql']
+}
