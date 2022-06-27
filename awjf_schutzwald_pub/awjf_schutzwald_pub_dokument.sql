@@ -1,0 +1,9 @@
+SELECT
+    geometrie,
+    dokument,
+    jahr,
+    nais_code,
+    beschreibung
+FROM
+    awjf_schutzwald_v1.dokument
+;

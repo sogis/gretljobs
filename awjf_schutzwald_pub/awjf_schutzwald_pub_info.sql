@@ -1,0 +1,22 @@
+SELECT
+    geometrie,
+    waldplan_id,
+    gemeindenummer,
+    eigentuemer_id,
+    eigentuemer_text,
+    eigentuemer_nr,
+    waldplannummer,
+    waldplantyp,
+    betriebsteil,
+    waldplan_info,
+    bemerkung,
+    id_schutzwaldinfo,
+    schutzwald_nr,
+    zieltyp,
+    nais_code,
+    flaeche,
+    zeitstand,
+    behandlungseinheit
+FROM
+    awjf_schutzwald_v1.schutzwald_info
+;

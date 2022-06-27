@@ -1,0 +1,22 @@
+SELECT
+    geometrie,
+    forstkreis,
+    forstrevier,
+    schutzwald_nr1,
+    schutzwald_nr2,
+    sturz,
+    rutsch,
+    gerinnerelevante_prozesse,
+    lawine,
+    andere_kt,
+    objektkategorie,
+    schadenpotential,
+    hauptgefahrenpotential,
+    intensitaet_geschaetzt,
+    bemerkungen,
+    gemeinde,
+    flaeche
+FROM
+    awjf_schutzwald_v1.schutzwald
+
+;
