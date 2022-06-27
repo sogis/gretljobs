@@ -14,10 +14,10 @@ UPDATE
 SET 
     astatus_txt = (SELECT 
                          dispname 
-                     FROM 
-                        awjf_schutzwald_pub_v1.behandelte_flaeche_status
-                     WHERE 
-                         behandelte_flaeche.astatus = behandelte_flaeche_status.ilicode)
+                   FROM 
+                       awjf_schutzwald_pub_v1.behandelte_flaeche_status
+                   WHERE 
+                       behandelte_flaeche.astatus = behandelte_flaeche_status.ilicode)
 ;
 
 UPDATE 

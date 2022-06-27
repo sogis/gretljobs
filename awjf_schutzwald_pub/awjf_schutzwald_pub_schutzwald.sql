@@ -18,5 +18,4 @@ SELECT
     flaeche
 FROM
     awjf_schutzwald_v1.schutzwald
-
 ;
