@@ -1,6 +1,6 @@
 SELECT
     geometrie,
-    dokument,
+    'https://geo.so.ch/docs/ch.so.awjf.schutzwald/'||dokument dokument,
     jahr,
     nais_code,
     beschreibung
