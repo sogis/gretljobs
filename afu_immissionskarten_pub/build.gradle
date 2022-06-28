@@ -3,13 +3,13 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAfuImmissionskarten'
+defaultTasks 'transferAfuImmissionskartenPub'
 
-task transferAfuImmissionskarten(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+task transferAfuImmissionskartenPub(type: Db2Db){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('afu_immissionskarten_pub_luftbelastung_2010_2020.sql',
-                    'afu_immissionskarten_pub.luftbelastung_2010_2020', true)
+                    'afu_immissionskarten_pub_v1.luftbelastung_2010_2020', true)
     ];
 }
