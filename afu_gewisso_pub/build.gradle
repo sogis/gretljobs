@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'refreshSolr'
+defaultTasks 'transferAfuGewisso'
 
 task transferAfuGewisso(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
@@ -23,8 +23,4 @@ task transferAfuGewisso(type: Db2Db){
             new TransferSet('afu_gewisso_pub_ezg_kt_so_150.sql', 'afu_gewisso_pub.ezg_kt_so_150', true),
             new TransferSet('afu_gewisso_pub_ezg_kt_so_40.sql', 'afu_gewisso_pub.ezg_kt_so_40', true)
     ];        
-}
-
-task refreshSolr(type:Exec, dependsOn:'transferAfuGewisso') {
-	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.fischereiliche_nutzung,ch.so.awjf.fischereireviere,ch.so.afu.fliessgewaesser.netz'
 }
