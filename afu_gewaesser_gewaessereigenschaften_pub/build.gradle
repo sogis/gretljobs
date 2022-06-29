@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'updateTxtCols'
+defaultTasks 'refreshSolr'
 
 task transferAfugewaessereigenschaften(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -17,4 +17,8 @@ task updateTxtCols(type: SqlExecutor, dependsOn:transferAfugewaessereigenschafte
     description = "Füllt die _txt-Spalten ab"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ['updateTxtCols.sql']
+}
+
+task refreshSolr(type:Exec, dependsOn:'updateTxtCols') {
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.fischereireviere,ch.so.afu.fliessgewaesser.netz'
 }
