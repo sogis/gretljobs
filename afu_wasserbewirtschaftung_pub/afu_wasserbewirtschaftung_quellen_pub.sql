@@ -73,7 +73,7 @@ LEFT JOIN
          y.vegas_id
      FROM 
          vegas.adm_dokument x, 
---          vegas.adm_objekt_dokument y 
+         vegas.adm_objekt_dokument y 
      WHERE x.dokument_id = y.dokument_id
      GROUP BY y.vegas_id) c ON a.vegas_id = c.vegas_id
 WHERE a.archive = 0
