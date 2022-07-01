@@ -1,6 +1,6 @@
 (SELECT 
     TRUE AS gefasst,
-    b.besitzer AS eigentuemer, 
+    NULL AS eigentuemer, 
     a.min_schuettung, 
     a.max_schuettung,
     coalesce(a.schutzzone,FALSE) AS schutzzone, 
@@ -39,8 +39,6 @@
 FROM 
     vegas.obj_quelle_gefasst a 
 LEFT JOIN 
-    gaso.gso_mobj b ON a.mobj_id = b.mobj_id
-LEFT JOIN 
     (SELECT 
          array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
          y.vegas_id
@@ -54,7 +52,7 @@ WHERE a.archive = 0
 UNION ALL 
 (SELECT 
     FALSE AS gefasst, 
-    b.besitzer AS eigentuemer, 
+    NULL AS eigentuemer, 
     a.min_schuettung, 
     a.max_schuettung, 
     coalesce(a.schutzzone, FALSE) AS schutzzone,
@@ -69,8 +67,6 @@ UNION ALL
     a.wkb_geometry AS geometrie
  FROM 
     vegas.obj_quelle a
- LEFT JOIN 
-    gaso.gso_mobj b ON a.mobj_id = b.mobj_id
 LEFT JOIN 
     (SELECT 
          array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
