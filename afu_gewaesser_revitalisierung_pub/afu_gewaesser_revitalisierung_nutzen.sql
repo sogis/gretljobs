@@ -1,0 +1,9 @@
+SELECT 
+    geometrie, 
+    aobjectid, 
+    laenge, 
+    nutzen, 
+    bemerkung
+FROM 
+    afu_gewaesser_revitalisierung_v1.gewaesser_revitalisierung_nutzen
+;

@@ -1,0 +1,12 @@
+SELECT 
+    geometrie, 
+    aobjectid, 
+    massnr, 
+    laenge, 
+    prioritaet, 
+    frist, 
+    bemerkung, 
+    darstellung
+FROM 
+    afu_gewaesser_revitalisierung_v1.gewaesser_revitalisierung_priorisierung
+;
