@@ -5,5 +5,5 @@ SELECT
     teileinzugsgebietsnummer, 
     flaeche
 FROM 
-    afu_hydrologische_einzugsgebiete_v1.einzugsgebiet_gross
+    afu_hydrologische_einzugsgebiete_v1.einzugsgebiet_klein
 ;
