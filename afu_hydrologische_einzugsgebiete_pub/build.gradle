@@ -1,0 +1,16 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferData'
+
+task transferData(type: Db2Db){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('einzugsgebiet_gross.sql', 'afu_hydrologische_einzugsgebiete_pub_v1.einzugsgebiet_gross', true),
+            new TransferSet('einzugsgebiet_mittel.sql', 'afu_hydrologische_einzugsgebiete_pub_v1.einzugsgebiet_mittel', true),
+            new TransferSet('einzugsgebiet_klein.sql', 'afu_hydrologische_einzugsgebiete_pub_v1.einzugsgebiet_klein', true)
+    ];
+}
