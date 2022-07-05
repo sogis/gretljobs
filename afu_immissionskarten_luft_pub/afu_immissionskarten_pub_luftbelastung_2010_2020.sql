@@ -1,0 +1,17 @@
+SELECT
+    geometrie,
+    x_koordinate,
+    y_koordinate,
+    ino2_2010,
+    ino2_2010_range,
+    ino2_2020,
+    ino2_2020_range,
+    ipm10_2010,
+    ipm10_2010_range,
+    ipm10_2020,
+    ipm10_2020_range,
+    ipm25_2010,
+    ipm25_2020
+FROM
+    afu_immissionskarten_luft_v1.luftbelastung_2010_2020
+;
