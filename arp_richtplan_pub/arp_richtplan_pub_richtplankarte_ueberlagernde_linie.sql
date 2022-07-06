@@ -1,7 +1,6 @@
 WITH documents AS (
     SELECT DISTINCT 
         richtplankarte_dokument.t_id,
-        richtplankarte_dokument.t_ili_tid,
         richtplankarte_dokument.titel,
         richtplankarte_dokument.publiziertAb,
         richtplankarte_dokument.bemerkung,
@@ -33,7 +32,6 @@ WITH documents AS (
                         (
                             SELECT
                                 t_id,
-                                t_ili_tid,
                                 titel,
                                 publiziertAb,
                                 bemerkung,
@@ -50,7 +48,6 @@ WITH documents AS (
 )
 
 SELECT
-    richtplankarte_ueberlagernde_linie.t_ili_tid,
     richtplankarte_ueberlagernde_linie.objektname,
     richtplankarte_ueberlagernde_linie.abstimmungskategorie,
     richtplankarte_ueberlagernde_linie.bedeutung,
@@ -71,7 +68,6 @@ UNION ALL
 
 /*Bahnlinien bestehend - Richtplankarte*/
 SELECT
-    uuid_generate_v4() AS t_ili_tid,
     NULL AS objektname,
     'Ausgangslage' AS abstimmungskategorie,
     NULL AS bedeutung,

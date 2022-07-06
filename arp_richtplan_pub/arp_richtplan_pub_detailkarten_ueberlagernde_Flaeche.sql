@@ -1,7 +1,6 @@
 /* Gebiete und Vorhaben Freizeit,Sport und Erholung - Detailkarten
  */
 SELECT
-    detailkarten_ueberlagernde_flaeche.t_ili_tid,
     detailkarten_ueberlagernde_flaeche.objektname,
     detailkarten_ueberlagernde_flaeche.objekttyp,
     detailkarten_ueberlagernde_flaeche.abstimmungskategorie,
@@ -26,7 +25,6 @@ UNION ALL
  * Vorranggebiet Landwirtschaft erhalten (landwirtschaftliches_Vorranggebiet) - Raumkonzept
  */
 SELECT
-    t_ili_tid,
     objektname,
     objekttyp,
     abstimmungskategorie,

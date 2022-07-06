@@ -157,7 +157,6 @@ documents_json_naturreservate AS (
 documents_richtplan AS (
     SELECT DISTINCT
         richtplankarte_dokument.t_id,
-        richtplankarte_dokument.t_ili_tid,
         richtplankarte_dokument.titel,
         richtplankarte_dokument.publiziertAb,
         richtplankarte_dokument.bemerkung,
@@ -190,7 +189,6 @@ documents_json_richtplan AS (
                         (
                             SELECT
                                 t_id,
-                                t_ili_tid,
                                 titel,
                                 publiziertAb,
                                 bemerkung,
@@ -231,7 +229,6 @@ betroffene_gemeinden AS (
  * BLN-Gebiet
  */
 SELECT
-    richtplankarte_ueberlagernde_flaeche.t_ili_tid,
     richtplankarte_ueberlagernde_flaeche.objektnummer,
     richtplankarte_ueberlagernde_flaeche.objekttyp,
     richtplankarte_ueberlagernde_flaeche.weitere_Informationen,
@@ -256,7 +253,6 @@ UNION ALL
     
 /*kantonales_Naturreservat*/
 SELECT
-    uuid_generate_v4() AS t_ili_tid,
     CAST(reservate_reservat.nummer AS varchar) AS nummer,
     'kantonales_Naturreservat' AS objekttyp,
     NULL AS weitere_Informationen,
@@ -285,7 +281,6 @@ UNION ALL
 
 /* Grundwasserschutzzone_areal*/
 SELECT
-    uuid_generate_v4() AS t_ili_tid,
     NULL AS nummer,
     'Grundwasserschutzzone_areal' AS objekttyp,
     "typ" AS weitere_Informationen,

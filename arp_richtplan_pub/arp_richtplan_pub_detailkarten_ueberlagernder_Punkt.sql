@@ -1,6 +1,5 @@
 /*Zentrumsstruktur - Raumkonzept */
 SELECT
-    detailkarten_ueberlagernder_punkt.t_ili_tid,
     detailkarten_ueberlagernder_punkt.objekttyp,
     detailkarten_ueberlagernder_punkt.astatus,
     detailkarten_ueberlagernder_punkt.geometrie,
@@ -19,7 +18,6 @@ UNION ALL
 
 /*Freizeitnutzungen konzentrieren - Raumkonzept*/
 SELECT
-    t_ili_tid,
     objekttyp,
     astatus,
     geometrie,
