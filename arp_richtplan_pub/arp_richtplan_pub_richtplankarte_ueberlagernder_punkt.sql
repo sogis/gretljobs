@@ -1,7 +1,6 @@
 WITH documents AS (
     SELECT DISTINCT 
         richtplankarte_dokument.t_id,
-        richtplankarte_dokument.t_ili_tid,
         richtplankarte_dokument.titel,
         richtplankarte_dokument.publiziertAb,
         richtplankarte_dokument.bemerkung,
@@ -34,7 +33,6 @@ WITH documents AS (
                         (
                             SELECT
                                 t_id,
-                                t_ili_tid,
                                 titel,
                                 publiziertAb,
                                 bemerkung,
@@ -50,7 +48,6 @@ WITH documents AS (
         ueberlagernder_punkt_id
 ), ueberlagernde_punkte_mit_documents AS (
     SELECT
-        richtplankarte_ueberlagernder_punkt.t_ili_tid,
         richtplankarte_ueberlagernder_punkt.objektname,
         richtplankarte_ueberlagernder_punkt.abstimmungskategorie,
         richtplankarte_ueberlagernder_punkt.bedeutung,
@@ -67,7 +64,6 @@ WITH documents AS (
 )
 
 SELECT
-    ueberlagernde_punkte_mit_documents.t_ili_tid,
     ueberlagernde_punkte_mit_documents.objektname,
     ueberlagernde_punkte_mit_documents.abstimmungskategorie,
     ueberlagernde_punkte_mit_documents.bedeutung,

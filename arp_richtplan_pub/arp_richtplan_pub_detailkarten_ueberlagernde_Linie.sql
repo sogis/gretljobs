@@ -1,7 +1,6 @@
 /* Detailkarte ueberlagernde Linie
  */
 SELECT
-    detailkarten_ueberlagernde_linie.t_ili_tid,
     detailkarten_ueberlagernde_linie.objektname,
     detailkarten_ueberlagernde_linie.objekttyp,
     detailkarten_ueberlagernde_linie.abstimmungskategorie,

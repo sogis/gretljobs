@@ -1,6 +1,5 @@
 /*Fruchtfolgeflaeche*/
 SELECT
-    uuid_generate_v4() AS t_ili_tid,
     NULL AS objektnummer,
     'Fruchtfolgeflaeche' AS objekttyp,
     NULL AS weitere_Informationen,
@@ -28,7 +27,6 @@ UNION ALL
     
  /*Abbaustelle*/
 SELECT
-    uuid_generate_v4() AS t_ili_tid,
     akten_nr_t AS objektnummer,
     CASE 
         WHEN mat = 1

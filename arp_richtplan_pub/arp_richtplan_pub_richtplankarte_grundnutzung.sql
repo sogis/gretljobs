@@ -67,7 +67,6 @@ json_documents_all AS (
         (
             SELECT
                 t_id,
-                t_ili_tid,
                 CASE
                     WHEN offiziellertitel IS NULL
                         THEN titel
@@ -158,7 +157,6 @@ grundnutzung_geometrie_typ AS(
     SELECT
         grundnutzung.t_id,
         grundnutzung.t_datasetname::int4 AS bfs_nr,
-        grundnutzung.t_ili_tid,
         grundnutzung.name_nummer,
         grundnutzung.rechtsstatus,
         grundnutzung.publiziertab,
@@ -665,7 +663,6 @@ WHERE
 documents AS (
     SELECT DISTINCT
         richtplankarte_dokument.t_id,
-        richtplankarte_dokument.t_ili_tid,
         richtplankarte_dokument.titel,
         richtplankarte_dokument.publiziertAb,
         richtplankarte_dokument.bemerkung,
@@ -698,7 +695,6 @@ documents_json AS (
                         (
                             SELECT
                                 t_id,
-                                t_ili_tid,
                                 titel,
                                 publiziertAb,
                                 bemerkung,
@@ -715,7 +711,6 @@ documents_json AS (
 )
 
 SELECT
-    richtplankarte_grundnutzung.t_ili_tid,
     richtplankarte_grundnutzung.abstimmungskategorie,
     richtplankarte_grundnutzung.grundnutzungsart,
     richtplankarte_grundnutzung.planungsstand,
