@@ -8,7 +8,7 @@ SELECT
     detailkarten_ueberlagernde_flaeche.geometrie,
     string_agg(hoheitsgrenzen_gemeindegrenze.gemeindename, ', ') AS gemeindenamen
 FROM
-    arp_richtplan.detailkarten_ueberlagernde_flaeche,
+    arp_richtplan_v1.detailkarten_ueberlagernde_flaeche,
     agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze
 WHERE
     ST_DWithin(detailkarten_ueberlagernde_flaeche.geometrie, hoheitsgrenzen_gemeindegrenze.geometrie, 0)
@@ -33,7 +33,7 @@ SELECT
     ST_SnapToGrid(geometrie, 0.001) AS geometrie,
     NULL AS gemeinden
 FROM
-    arp_richtplan.detailkarten_ueberlagernde_flaeche
+    arp_richtplan_v1.detailkarten_ueberlagernde_flaeche
 WHERE
     objekttyp != 'Freizeit_Sport_Erholung'
 ;

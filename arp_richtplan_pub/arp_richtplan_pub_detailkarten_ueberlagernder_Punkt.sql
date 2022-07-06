@@ -6,7 +6,7 @@ SELECT
     detailkarten_ueberlagernder_punkt.geometrie,
     hoheitsgrenzen_gemeindegrenze.gemeindename AS gemeindename
 FROM
-    arp_richtplan.detailkarten_ueberlagernder_punkt,
+    arp_richtplan_v1.detailkarten_ueberlagernder_punkt,
     agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze
 WHERE
     ST_DWithin(detailkarten_ueberlagernder_punkt.geometrie, hoheitsgrenzen_gemeindegrenze.geometrie, 0)
@@ -25,7 +25,7 @@ SELECT
     geometrie,
     NULL AS gemeindename
 FROM
-    arp_richtplan.detailkarten_ueberlagernder_punkt
+    arp_richtplan_v1.detailkarten_ueberlagernder_punkt
 WHERE
     objekttyp = 'Freizeitnutzung'
 ;

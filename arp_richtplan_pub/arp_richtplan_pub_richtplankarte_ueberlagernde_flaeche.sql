@@ -171,10 +171,10 @@ documents_richtplan AS (
                 THEN replace(richtplankarte_dokument.dateipfad, 'G:\documents\', 'https://geo.so.ch/docs/')
         END AS dokument
     FROM 
-        arp_richtplan.richtplankarte_ueberlagernde_flaeche_dokument
-        LEFT JOIN arp_richtplan.richtplankarte_dokument
+        arp_richtplan_v1.richtplankarte_ueberlagernde_flaeche_dokument
+        LEFT JOIN arp_richtplan_v1.richtplankarte_dokument
             ON richtplankarte_dokument.t_id = richtplankarte_ueberlagernde_flaeche_dokument.dokument
-        RIGHT JOIN arp_richtplan.richtplankarte_ueberlagernde_flaeche
+        RIGHT JOIN arp_richtplan_v1.richtplankarte_ueberlagernde_flaeche
             ON richtplankarte_ueberlagernde_flaeche_dokument.ueberlagernde_flaeche = richtplankarte_ueberlagernde_flaeche.t_id
     WHERE
         (titel, dateipfad) IS NOT NULL
@@ -211,7 +211,7 @@ betroffene_gemeinden AS (
        string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename) AS gemeindenamen
     FROM
         agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
-        arp_richtplan.richtplankarte_ueberlagernde_flaeche
+        arp_richtplan_v1.richtplankarte_ueberlagernde_flaeche
     WHERE
         ST_Intersects(richtplankarte_ueberlagernde_flaeche.geometrie, hoheitsgrenzen_gemeindegrenze.geometrie) = TRUE
     GROUP BY
@@ -244,7 +244,7 @@ SELECT
     documents_json_richtplan.dokumente::text,
     betroffene_gemeinden.gemeindenamen
 FROM
-    arp_richtplan.richtplankarte_ueberlagernde_flaeche
+    arp_richtplan_v1.richtplankarte_ueberlagernde_flaeche
     LEFT JOIN documents_json_richtplan
         ON documents_json_richtplan.ueberlagernde_flaeche_id = richtplankarte_ueberlagernde_flaeche.t_id
     LEFT JOIN betroffene_gemeinden

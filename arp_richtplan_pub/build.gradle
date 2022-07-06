@@ -11,9 +11,9 @@ task transferArpRichtplanPubSogis(type: Db2Db) {
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('arp_richtplan_pub_richtplankarte_grundnutzung_sogis.sql',
-                    'arp_richtplan_pub.richtplankarte_grundnutzung', true),
+                    'arp_richtplan_pub_v1.richtplankarte_grundnutzung', true),
             new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernde_flaeche_sogis.sql',
-                    'arp_richtplan_pub.richtplankarte_ueberlagernde_flaeche', true)
+                    'arp_richtplan_pub_v1.richtplankarte_ueberlagernde_flaeche', true)
     ]
 }
 
@@ -23,19 +23,19 @@ task transferArpRichtplanPubEdit(type: Db2Db, dependsOn: 'transferArpRichtplanPu
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('arp_richtplan_pub_detailkarten_ueberlagernder_Punkt.sql',
-                    'arp_richtplan_pub.detailkarten_ueberlagernder_punkt', true),
+                    'arp_richtplan_pub_v1.detailkarten_ueberlagernder_punkt', true),
             new TransferSet('arp_richtplan_pub_detailkarten_ueberlagernde_Linie.sql',
-                    'arp_richtplan_pub.detailkarten_ueberlagernde_linie', true),
+                    'arp_richtplan_pub_v1.detailkarten_ueberlagernde_linie', true),
             new TransferSet('arp_richtplan_pub_detailkarten_ueberlagernde_Flaeche.sql',
-                    'arp_richtplan_pub.detailkarten_ueberlagernde_flaeche', true),
+                    'arp_richtplan_pub_v1.detailkarten_ueberlagernde_flaeche', true),
             new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernder_punkt.sql',
-                    'arp_richtplan_pub.richtplankarte_ueberlagernder_punkt', true),
+                    'arp_richtplan_pub_v1.richtplankarte_ueberlagernder_punkt', true),
             new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernde_linie.sql',
-                    'arp_richtplan_pub.richtplankarte_ueberlagernde_linie', true),
+                    'arp_richtplan_pub_v1.richtplankarte_ueberlagernde_linie', true),
             new TransferSet('arp_richtplan_pub_richtplankarte_grundnutzung.sql',
-                    'arp_richtplan_pub.richtplankarte_grundnutzung', false),
+                    'arp_richtplan_pub_v1.richtplankarte_grundnutzung', false),
             new TransferSet('arp_richtplan_pub_richtplankarte_ueberlagernde_flaeche.sql',
-                    'arp_richtplan_pub.richtplankarte_ueberlagernde_flaeche', false)
+                    'arp_richtplan_pub_v1.richtplankarte_ueberlagernde_flaeche', false)
     ]
 }
 
