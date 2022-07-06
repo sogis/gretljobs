@@ -34,7 +34,7 @@ WHERE
     objekttyp = 'Fruchtfolgeflaeche'
 ;
 
-UPDATE arp_richtplan_pub_v1.richtplankarte_ueberlagernde_flaeche
+UPDATE arp_richtplan_pub_v1.richtplankarte_ueberlagernde_linie
     SET dokumente = '[{"t_id":null,"titel":"Richtplankapitel S-2.3 Historische Verkehrswege","publiziertab":null,"bemerkung":null,"dokument":"https://geo.so.ch/docs/ch.so.arp.richtplan/S-2_3.pdf"}]'
 WHERE     
     objekttyp = 'Historischer_Verkehrsweg'
