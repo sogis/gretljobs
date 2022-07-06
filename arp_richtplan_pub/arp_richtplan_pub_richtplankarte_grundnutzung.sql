@@ -679,10 +679,10 @@ documents AS (
         END AS dokument,
         richtplankarte_grundnutzung.t_id AS grundnutzung_id
     FROM 
-        arp_richtplan.richtplankarte_grundnutzung_dokument
-        LEFT JOIN arp_richtplan.richtplankarte_dokument
+        arp_richtplan_v1.richtplankarte_grundnutzung_dokument
+        LEFT JOIN arp_richtplan_v1.richtplankarte_dokument
             ON richtplankarte_dokument.t_id = richtplankarte_grundnutzung_dokument.dokument
-        RIGHT JOIN arp_richtplan.richtplankarte_grundnutzung
+        RIGHT JOIN arp_richtplan_v1.richtplankarte_grundnutzung
             ON richtplankarte_grundnutzung_dokument.grundnutzung = richtplankarte_grundnutzung.t_id
     WHERE
         (titel, dateipfad) IS NOT NULL
@@ -722,7 +722,7 @@ SELECT
     richtplankarte_grundnutzung.geometrie,
     documents_json.dokumente AS dokumente
 FROM
-    arp_richtplan.richtplankarte_grundnutzung
+    arp_richtplan_v1.richtplankarte_grundnutzung
     LEFT JOIN documents_json
         ON documents_json.grundnutzung_id = richtplankarte_grundnutzung.t_id
 WHERE

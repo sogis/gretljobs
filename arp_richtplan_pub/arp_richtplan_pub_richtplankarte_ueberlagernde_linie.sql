@@ -15,10 +15,10 @@ WITH documents AS (
         END AS dokument,
         richtplankarte_ueberlagernde_linie.t_id AS ueberlagernder_linie_id
     FROM 
-        arp_richtplan.richtplankarte_ueberlagernde_linie_dokument
-        LEFT JOIN arp_richtplan.richtplankarte_dokument
+        arp_richtplan_v1.richtplankarte_ueberlagernde_linie_dokument
+        LEFT JOIN arp_richtplan_v1.richtplankarte_dokument
             ON richtplankarte_dokument.t_id = richtplankarte_ueberlagernde_linie_dokument.dokument
-        RIGHT JOIN arp_richtplan.richtplankarte_ueberlagernde_linie
+        RIGHT JOIN arp_richtplan_v1.richtplankarte_ueberlagernde_linie
             ON richtplankarte_ueberlagernde_linie_dokument.ueberlagernde_linie = richtplankarte_ueberlagernde_linie.t_id
     WHERE
         (titel, dateipfad) IS NOT NULL
@@ -61,7 +61,7 @@ SELECT
     richtplankarte_ueberlagernde_linie.objekttyp,
     richtplankarte_ueberlagernde_linie.geometrie
 FROM
-    arp_richtplan.richtplankarte_ueberlagernde_linie
+    arp_richtplan_v1.richtplankarte_ueberlagernde_linie
     LEFT JOIN documents_json
             ON richtplankarte_ueberlagernde_linie.t_id = documents_json.ueberlagernder_linie_id
 WHERE

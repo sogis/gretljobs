@@ -15,10 +15,10 @@ WITH documents AS (
         END AS dokument,
         richtplankarte_ueberlagernder_punkt.t_id AS ueberlagernder_punkt_id
     FROM 
-        arp_richtplan.richtplankarte_ueberlagernder_punkt_dokument
-        LEFT JOIN arp_richtplan.richtplankarte_dokument
+        arp_richtplan_v1.richtplankarte_ueberlagernder_punkt_dokument
+        LEFT JOIN arp_richtplan_v1.richtplankarte_dokument
             ON richtplankarte_dokument.t_id = richtplankarte_ueberlagernder_punkt_dokument.dokument
-        RIGHT JOIN arp_richtplan.richtplankarte_ueberlagernder_punkt
+        RIGHT JOIN arp_richtplan_v1.richtplankarte_ueberlagernder_punkt
             ON richtplankarte_ueberlagernder_punkt_dokument.ueberlagernder_punkt = richtplankarte_ueberlagernder_punkt.t_id
     WHERE
         (titel, dateipfad) IS NOT NULL
@@ -61,7 +61,7 @@ WITH documents AS (
         richtplankarte_ueberlagernder_punkt.spezifikation,
         richtplankarte_ueberlagernder_punkt.geometrie
     FROM
-        arp_richtplan.richtplankarte_ueberlagernder_punkt
+        arp_richtplan_v1.richtplankarte_ueberlagernder_punkt
         LEFT JOIN documents_json
             ON richtplankarte_ueberlagernder_punkt.t_id = documents_json.ueberlagernder_punkt_id
 )

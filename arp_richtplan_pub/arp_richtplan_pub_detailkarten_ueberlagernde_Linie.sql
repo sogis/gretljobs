@@ -7,5 +7,5 @@ SELECT
     detailkarten_ueberlagernde_linie.abstimmungskategorie,
     detailkarten_ueberlagernde_linie.geometrie
 FROM
-    arp_richtplan.detailkarten_ueberlagernde_linie
+    arp_richtplan_v1.detailkarten_ueberlagernde_linie
 ;
