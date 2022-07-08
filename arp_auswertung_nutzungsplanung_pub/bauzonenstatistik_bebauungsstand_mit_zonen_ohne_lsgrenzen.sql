@@ -6,7 +6,6 @@ INSERT
    (grundnutzung_typ_kt,bebauungsstand,bfs_nr,gemeindename,flaeche,geometrie)
    
 -- hier wird Gemeinde selektiert
--- TODO: muss in Gradle als Variable übernommen werden
 WITH bfsnr AS (
 	SELECT
 	  ${gem_bfs} AS nr
@@ -64,7 +63,7 @@ nutzzon AS (
     ST_Buffer(ST_Exteriorring(geometrie),4,'endcap=flat join=miter') AS geom_buff,
     typ_kt,
     bfs_nr
-  FROM arp_npl_pub.nutzungsplanung_grundnutzung
+  FROM ${DB_Schema_NPL}.nutzungsplanung_grundnutzung
     WHERE bfs_nr = (SELECT nr FROM bfsnr)
     AND typ_code_kommunal < 2000
     AND typ_kt NOT IN ('N160_Gruen_und_Freihaltezone_innerhalb_Bauzone','N161_kommunale_Uferschutzzone_innerhalb_Bauzone','N169_weitere_eingeschraenkte_Bauzonen','N180_Verkehrszone_Strasse','N181_Verkehrszone_Bahnareal','N182_Verkehrszone_Flugplatzareal','N189_weitere_Verkehrszonen')

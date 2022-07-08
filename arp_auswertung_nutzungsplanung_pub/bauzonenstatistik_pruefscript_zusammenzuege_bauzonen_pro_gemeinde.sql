@@ -1,5 +1,5 @@
 -- Vergleich der Zusammenzüge verschiedener Tabellen:
--- * arp_npl_pub.auswertung_grundnutzungszonen_pro_gemeinde
+-- * arp_auswertung_nutzungsplanung_pub_v1.auswrtngtzngsznen_grundnutzungszone_aggregiert_pro_gemeinde
 -- * arp_auswertung_nutzungsplanung_pub_v1.bauzonenstatistik_bebauungsstand_mit_zonen_ohne_lsgrenzen
 -- * arp_auswertung_nutzungsplanung_pub_v1.bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen
 -- * arp_auswertung_nutzungsplanung_pub_v1.bauzonenstatistik_liegenschaft_nach_bebauungsstand
@@ -12,10 +12,10 @@ SELECT
         bfs_nr,
         gemeindename,
         Round(SUM(flaeche_zone_aggregiert) / 10000,2) AS summe_bauzonenflaeche
-	FROM arp_npl_pub.auswertung_grundnutzungszonen_pro_gemeinde
+	FROM arp_auswertung_nutzungsplanung_pub_v1.auswrtngtzngsznen_grundnutzungszone_aggregiert_pro_gemeinde
 	  WHERE
-	    typ_kt NOT IN ('N160_Gruen_und_Freihaltezone_innerhalb_Bauzone','N161_kommunale_Uferschutzzone_innerhalb_Bauzone','N169_weitere_eingeschraenkte_Bauzonen','N180_Verkehrszone_Strasse','N181_Verkehrszone_Bahnareal','N182_Verkehrszone_Flugplatzareal','N189_weitere_Verkehrszonen')
-		AND substring(typ_kt FROM 2 for 3)::integer < 200
+	    grundnutzung_typ_kt NOT IN ('N160_Gruen_und_Freihaltezone_innerhalb_Bauzone','N161_kommunale_Uferschutzzone_innerhalb_Bauzone','N169_weitere_eingeschraenkte_Bauzonen','N180_Verkehrszone_Strasse','N181_Verkehrszone_Bahnareal','N182_Verkehrszone_Flugplatzareal','N189_weitere_Verkehrszonen')
+		AND substring(grundnutzung_typ_kt FROM 2 for 3)::integer < 200
 	GROUP BY bfs_nr, gemeindename
 	ORDER BY bfs_nr ASC
 ),
