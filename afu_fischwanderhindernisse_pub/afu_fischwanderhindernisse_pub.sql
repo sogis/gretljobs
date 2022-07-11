@@ -19,5 +19,5 @@ SELECT
     ST_X(geometrie) AS ort_x,
     ST_Y(geometrie) AS ort_y
 FROM
-    afu_fischwanderungshindernisse_v1.fischwanderungshindernis
+    afu_fischwanderhindernisse_v1.fischwanderhindernis
 ;
