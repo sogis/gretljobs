@@ -1,0 +1,20 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'updateTypTxt'
+
+task transferData(type: Db2Db){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('messstationen.sql', 'afu_hydro_messstationen_pub_v1.messstationen', true),
+    ];
+}
+
+task updateTypTxt(type: SqlExecutor, dependsOn:transferData){
+    description = "Befüllt die _txt-Spalten zum Typ"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['update_typ.sql']
+}
