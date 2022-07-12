@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAwjfFischerei'
+defaultTasks 'refreshSolr'
 
 task transferAwjfFischerei(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -11,4 +11,8 @@ task transferAwjfFischerei(type: Db2Db){
     transferSets = [
             new TransferSet('fischerei.sql', 'awjf_gewaesser_fischerei_pub_v1.fischrevier', true)
     ];
+}
+
+task refreshSolr(type:Exec, dependsOn:'transferAwjfFischerei') {
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.gewaesser.fischereireviere'
 }
