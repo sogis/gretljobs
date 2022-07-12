@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferData'
+defaultTasks 'updateTypTxt'
 
 task transferData(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -13,4 +13,8 @@ task transferData(type: Db2Db){
     ];
 }
 
-
+task updateTypTxt(type: SqlExecutor, dependsOn:transferData){
+    description = "Befüllt die _txt-Spalten zum Typ"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['update_typ.sql']
+}
