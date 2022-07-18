@@ -21,7 +21,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.io.File
 
-defaultTasks 'createLayer'
+defaultTasks 'removeTmpFiles'
 
 /*
 1. Create layers gk_synoptisch, gk_mgdm and ik_synoptisch_mgdm
@@ -78,7 +78,7 @@ task pubGefkart(type: Db2Db){
 
 /*
 3. Transform the data from model SO_AfU_Gefahrenkartierung into bafu model Hazard_Mapping using GRETL sql
-*/
+
 task mapGefkart2Mgdm(type: Db2Db, dependsOn: 'pubGefkart'){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -88,10 +88,10 @@ task mapGefkart2Mgdm(type: Db2Db, dependsOn: 'pubGefkart'){
         new TransferSet('export_ai/synoptic_intensity.sql', 'afu_gefahrenkartierung_mgdm.hazard_mapping_synoptic_intensity', true)
     ];        
 }
-
+*/
 /*
 4. Create the *.xtf with the ili2pg GRETL task
-*/
+
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def exportFileName = 'gefkart.xtf'
@@ -104,10 +104,10 @@ task exportGefkartMgdm(type: Ili2pgExport, dependsOn: 'mapGefkart2Mgdm') {
     models = "Hazard_Mapping_LV95_V1_2"
     dataFile = exportFile
 }
-
+*/
 /*
 5. Package and upload to the KKGEO AI
-*/
+
 
 def zipName = 'iliexport.zip'
 
@@ -135,7 +135,7 @@ task uploadGefkartMgdm (dependsOn: zipGefkartMgdm) {
         println(response)
     }
 }
-
+*/
 task removeTmpFiles(type: Delete, dependsOn: uploadGefkartMgdm){
     description = "Entfernt während der Ausführung des Jobs erstellte Nutzungsplanungsdateien."
 	delete file(Paths.get(pathToTempFolder.toString(), zipName)), exportFile
