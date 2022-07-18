@@ -21,7 +21,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.io.File
 
-defaultTasks 'removeTmpFiles'
+defaultTasks 'pubGefkart'
 
 /*
 1. Create layers gk_synoptisch, gk_mgdm and ik_synoptisch_mgdm
