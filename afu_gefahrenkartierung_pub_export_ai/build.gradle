@@ -135,11 +135,11 @@ task uploadGefkartMgdm (dependsOn: zipGefkartMgdm) {
         println(response)
     }
 }
-*/
+
 task removeTmpFiles(type: Delete, dependsOn: uploadGefkartMgdm){
     description = "Entfernt während der Ausführung des Jobs erstellte Nutzungsplanungsdateien."
 	delete file(Paths.get(pathToTempFolder.toString(), zipName)), exportFile
 }
 
-
+*/
 
