@@ -3,12 +3,12 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferErdwaermeAdditionals'
+defaultTasks 'transferErdwaermePrivateQuellen'
 
-task transferErdwaermeAdditionals(type: Db2Db){
+task transferErdwaermePrivateQuellen(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('afu_erdwaermesonden_private_quelle.sql', 'afu_erdwaermesonden_weitere_pub_v1.private_quelle', true)
+            new TransferSet('afu_erdwaermesonden_private_quelle.sql', 'afu_erdwaermesonden_private_quellen_pub_v1.private_quelle', true)
     ];
 }
