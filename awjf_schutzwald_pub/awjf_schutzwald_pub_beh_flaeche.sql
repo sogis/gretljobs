@@ -8,7 +8,7 @@ SELECT
     massnahme,
     astatus,
     jahr,
-    flaeche_gemessen,
+    ST_Area(geometrie)/ 10000 AS flaeche_gemessen,
     flaeche_beitragsberechtigt,
     bemerkung,
     beschriftung
