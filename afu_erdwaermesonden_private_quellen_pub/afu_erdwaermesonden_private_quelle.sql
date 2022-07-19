@@ -4,5 +4,5 @@ SELECT
     ST_Area(geometrie) AS area,
     quelle_id
 FROM
-    afu_erdwaermesonden_weitere_v1.private_quelle
+    afu_erdwaermesonden_private_quellen_v1.private_quelle
 ;
