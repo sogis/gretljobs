@@ -15,7 +15,7 @@ SELECT
     intensitaet_geschaetzt,
     bemerkungen,
     gemeinde,
-    flaeche
+    flaeche::float / 10000::float AS flaeche
 FROM
     awjf_schutzwald_v1.schutzwald
 ;
