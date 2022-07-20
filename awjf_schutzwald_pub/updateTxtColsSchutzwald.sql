@@ -37,8 +37,8 @@ SET
     sturz_txt = (SELECT
                      CASE 
                          WHEN sturz IS TRUE 
-                             THEN 'ja'
-                         ELSE 'nein'
+                             THEN 'Ja'
+                         ELSE 'Nein'
                      END)
 ;
 
@@ -48,8 +48,8 @@ SET
     rutsch_txt = (SELECT
                      CASE 
                          WHEN rutsch IS TRUE 
-                             THEN 'ja'
-                         ELSE 'nein'
+                             THEN 'Ja'
+                         ELSE 'Nein'
                      END)
 ;
 
@@ -59,8 +59,8 @@ SET
     gerinnerelevante_prozesse_txt = (SELECT
                                          CASE 
                                              WHEN gerinnerelevante_prozesse IS TRUE 
-                                                 THEN 'ja'
-                                             ELSE 'nein'
+                                                 THEN 'Ja'
+                                             ELSE 'Nein'
                                          END)
 ;
 
@@ -70,8 +70,8 @@ SET
     lawine_txt = (SELECT
                      CASE 
                          WHEN lawine IS TRUE 
-                             THEN 'ja'
-                         ELSE 'nein'
+                             THEN 'Ja'
+                         ELSE 'Nein'
                      END)
 ;
 
@@ -81,8 +81,8 @@ SET
     andere_kt_txt = (SELECT
                          CASE 
                              WHEN andere_kt IS TRUE 
-                                 THEN 'ja'
-                             ELSE 'nein'
+                                 THEN 'Ja'
+                             ELSE 'Nein'
                          END)
 ;
 
