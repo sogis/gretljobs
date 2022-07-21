@@ -1,0 +1,20 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferAfuStoerfallverordnungPub'
+
+task transferAfuStoerfallverordnungPub(type: Db2Db){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('afu_stoerfallverordnung_pub_betriebe.sql', 'afu_stoerfallverordnung_pub_v1.betrieb', true),
+            new TransferSet('afu_stoerfallverordnung_pub_betriebe_kb.sql', 'afu_stoerfallverordnung_pub_v1.betrieb_kb', true),
+            new TransferSet('afu_stoerfallverordnung_pub_betriebsareal.sql', 'afu_stoerfallverordnung_pub_v1.betriebsareal', true),
+            new TransferSet('afu_stoerfallverordnung_pub_durchgangsstrassen.sql', 'afu_stoerfallverordnung_pub_v1.durchgangsstrasse', true),
+            new TransferSet('afu_stoerfallverordnung_pub_durchgangsstrassen_kb.sql', 'afu_stoerfallverordnung_pub_v1.durchgangsstrasse_kb', true),
+            new TransferSet('afu_stoerfallverordnung_pub_nationalstrassen.sql', 'afu_stoerfallverordnung_pub_v1.nationalstrasse', true),
+            new TransferSet('afu_stoerfallverordnung_pub_nationalstrassen_kb.sql', 'afu_stoerfallverordnung_pub_v1.nationalstrasse_kb', true)
+    ];
+}
