@@ -6,8 +6,8 @@ SELECT
     tunnel,
     CASE
         WHEN tunnel IS TRUE
-           THEN 'ja'
-        ELSE 'nein'
+           THEN 'Ja'
+        ELSE 'Nein'
     END as tunnel_txt,
     konsultationsbereich,
     code_konsultationsbereich.dispname AS konsultationsbereich_txt

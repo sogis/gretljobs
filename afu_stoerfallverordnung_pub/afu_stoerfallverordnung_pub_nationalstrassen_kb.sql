@@ -1,8 +1,8 @@
 SELECT
     CASE
-        WHEN konsultationsbereich = 'hundert_m'
+        WHEN konsultationsbereich = 'm_100'
             THEN ST_Multi(ST_intersection(ST_Buffer(nationalstrasse.geometrie, 100), kantonsgrenze.geometrie))
-        WHEN konsultationsbereich = 'dreihundert_m'
+        WHEN konsultationsbereich = 'm_300'
             THEN ST_Multi(ST_intersection(ST_Buffer(nationalstrasse.geometrie, 300), kantonsgrenze.geometrie))
     END AS geometrie,
     'Nationalstrasse' AS typ         
@@ -16,5 +16,5 @@ AND
 AND
     NOT ST_Disjoint(ST_intersection(nationalstrasse.geometrie, kantonsgrenze.geometrie), kantonsgrenze.geometrie)
 AND
-    nationalstrasse.konsultationsbereich <> 'null_m'
+    nationalstrasse.konsultationsbereich <> 'm_0'
 ;

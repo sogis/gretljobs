@@ -1,10 +1,10 @@
 SELECT
     CASE
-        WHEN konsultationsbereich = 'null_m'
+        WHEN konsultationsbereich = 'm_0'
             THEN geometrie
-        WHEN konsultationsbereich = 'hundert_m'
+        WHEN konsultationsbereich = 'm_100'
             THEN ST_Buffer(geometrie, 100)
-        WHEN konsultationsbereich = 'dreihundert_m'
+        WHEN konsultationsbereich = 'm_300'
             THEN ST_Buffer(geometrie, 300)
     END AS geometrie,
     'Betriebsareal' AS typ
