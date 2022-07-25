@@ -18,5 +18,5 @@ AND
 AND
     betriebsareal.konsultationsbereich <> 'm_0'
 GROUP BY
-    konsultationsbereich, betriebsname
+    konsultationsbereich
 ;
