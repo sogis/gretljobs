@@ -41,7 +41,7 @@ task transferArpNaturreservate(type: Db2Db, dependsOn: 'validateDataEdit'){
 task exportData (type: Ili2pgExport, dependsOn: 'transferArpNaturreservate') {
     description = "Exportiert die umgebauten Daten aus dem Schema arp_naturreservate_staging in ein INTERLIS-Datei."
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    dbschema = 'arp_naturrservate_staging_v1'
+    dbschema = 'arp_naturreservate_staging_v1'
     models = 'SO_ARP_Naturreservate_Publikation_20200609'
     if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataFile= file(FileNamePub)
