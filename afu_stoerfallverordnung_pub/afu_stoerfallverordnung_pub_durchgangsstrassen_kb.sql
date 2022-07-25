@@ -11,5 +11,5 @@ FROM
 WHERE
     konsultationsbereich <> 'm_0'
 GROUP BY
-    achsennummer, konsultationsbereich
+    achsentyp, konsultationsbereich
 ;
