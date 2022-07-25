@@ -44,4 +44,8 @@ bfs_gepgwp_json_dokument_agg AS (
     ) AS a
 )
 
-SELECT * FROM bfs_gepgwp_json_dokument_agg ;
+SELECT 
+    bfs_gemeindenummer, 
+    geometrie, 
+    dokumente::json AS dokumente 
+FROM bfs_gepgwp_json_dokument_agg
