@@ -43,3 +43,5 @@ bfs_gepgwp_json_dokument_agg AS (
         gemgrenze.bfs_gemeindenummer, gemgrenze.geometrie
     ) AS a
 )
+
+SELECT * FROM bfs_gepgwp_json_dokument_agg ;
