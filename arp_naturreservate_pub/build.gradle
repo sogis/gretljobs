@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'importXTF_stage', 'importXTF_pub'
+defaultTasks 'validateData', 'importXTF_pub'
 
 def FileName = "arp_naturreservate.xtf"
 def FileNamePub = "arp_naturreservate_pub.xtf"
@@ -30,11 +30,11 @@ task transferArpNaturreservate(type: Db2Db, dependsOn: 'validateDataEdit'){
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('arp_naturreservate_pub_naturreservate_pflanzenliste.sql',
-                    'arp_naturreservate_staging.naturreservate_pflanzenliste', true),
+                    'arp_naturreservate_staging_v1.naturreservate_pflanzenliste', true),
             new TransferSet('arp_naturreservate_pub_naturreservate_reservate.sql',
-                    'arp_naturreservate_staging.naturreservate_reservat', true),
+                    'arp_naturreservate_staging_v1.naturreservate_reservat', true),
             new TransferSet('arp_naturreservate_pub_naturreservate_teilgebiete.sql',
-                    'arp_naturreservate_staging.naturreservate_teilgebiet', true)
+                    'arp_naturreservate_staging_v1.naturreservate_teilgebiet', true)
     ];
 }
 
@@ -55,35 +55,24 @@ task validateData(type: IliValidator, dependsOn: 'exportData') {
     failOnError = true
 }
 
-task importXTF_stage(type: Ili2pgReplace, dependsOn: 'validateData') {
-    description = 'Import der umgebaute INTERLIS-Datei  in das Schema arp_naturreservate_staging.'
+task deleteData_staging_pub (type: SqlExecutor) {
+    description = "Löscht/leert die Daten aus dem Schema arp_naturreservate_staging"
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    dbschema = 'arp_natureservate_staging_v1'
-    models = 'SO_ARP_Naturreservate_Publikation_20200609'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
-    dataFile = file(FileNamePub)
-    disableValidation = true
-}
-
-task delete_Dataset_stage(type: Ili2pgDelete) {
-    description = "Löscht Daten aus dem Schema arp_naturreservate_staging"
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    models = 'SO_ARP_Naturreservate_Publikation_20200609'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
-    dbschema = 'arp_naturreservate_staging_v1'
+    sqlFiles = ["delete_arp_naturreservate_staging.sql"]
 }
 
 task refreshSolr(type:Exec, dependsOn:'transferArpNaturreservate') {
-	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.arp.naturreservate.reservate'
+    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.arp.naturreservate.reservate'
 }
 
-task importXTF_pub(type: Ili2pgReplace) {
+task importXTF_pub(type: Ili2pgImport) {
     description = 'Import der umgebaute INTERLIS-Datei in das Schema arp_naturreservate_pub.'
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'arp_naturreservate_pub'
     models = 'SO_ARP_Naturreservate_Publikation_20200609'
     if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataFile = file(FileNamePub)
+    deleteData = true
     disableValidation = true
-    finalizedBy delete_Dataset_stage, refreshSolr
+    finalizedBy deleteData_staging_pub, refreshSolr
 }
