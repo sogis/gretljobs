@@ -14,6 +14,6 @@ task importDataAfuGEPGWPPub(type: Db2Db, dependsOn: 'deleteDataAfuGEPGWPPub') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('insert_gepgwp_pub.sql', 'afu_gepgwp_pub_v1.gepgwp_gepgwp', true)
+            new TransferSet('import_gepgwp_pub.sql', 'afu_gepgwp_pub_v1.gepgwp_gepgwp', true)
     ];
 }
