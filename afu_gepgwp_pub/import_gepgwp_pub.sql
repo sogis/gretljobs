@@ -43,10 +43,3 @@ bfs_gepgwp_json_dokument_agg AS (
         gemgrenze.bfs_gemeindenummer, gemgrenze.geometrie
     ) AS a
 )
-
-INSERT INTO afu_gepgwp_pub_v1.gepgwp_gepgwp
-SELECT 
-    bfs_gemeindenummer, 
-    geometrie, 
-    dokumente::json AS dokumente 
-FROM bfs_gepgwp_json_dokument_agg
