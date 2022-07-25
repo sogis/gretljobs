@@ -1,9 +1,9 @@
 SELECT
     CASE
         WHEN konsultationsbereich = 'm_100'
-            THEN ST_Multi(ST_Union(ST_intersection(ST_Buffer(betriebsareal.geometrie, 100), kantonsgrenze.geometrie)))
+            THEN ST_Union(ST_intersection(ST_Buffer(betriebsareal.geometrie, 100), kantonsgrenze.geometrie))
         WHEN konsultationsbereich = 'm_300'
-            THEN ST_Multi(ST_Union(ST_intersection(ST_Buffer(betriebsareal.geometrie, 300), kantonsgrenze.geometrie)))
+            THEN ST_Union(ST_intersection(ST_Buffer(betriebsareal.geometrie, 300), kantonsgrenze.geometrie))
     END AS geometrie,
     'Betriebsareal' AS typ
 FROM
@@ -18,5 +18,5 @@ AND
 AND
     betriebsareal.konsultationsbereich <> 'm_0'
 GROUP BY
-    konsultationsbereich
+    konsultationsbereich, betriebsname
 ;
