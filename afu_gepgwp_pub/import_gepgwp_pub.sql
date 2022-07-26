@@ -45,7 +45,10 @@ bfs_gepgwp_json_dokument_agg AS (
 )
 
 SELECT 
-    bfs_gemeindenummer, 
+    dokument.bfs_gemeindenummer, 
+    gepgwp.gemeindename,
     geometrie, 
     dokumente::json AS dokumente 
-FROM bfs_gepgwp_json_dokument_agg
+FROM bfs_gepgwp_json_dokument_agg AS dokument
+LEFT JOIN afu_gepgwp_v1.gepgwp_gepgwp AS gepgwp
+ON gepgwp.bfs_gemeindenummer = dokument.bfs_gemeindenummer
