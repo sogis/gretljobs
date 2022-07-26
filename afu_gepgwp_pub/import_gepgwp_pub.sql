@@ -14,7 +14,9 @@ WITH json_documents AS (
                 rrbdatum AS "RRBDatum",
                 plandatum AS "PlanDatum",
                 plannr AS "PlanNr",
-                link AS "Link"
+                link AS "Link",
+               'SO_AFU_GEPGWP_Publikation_20220707.GEPGWP.Dokument' AS "@type"
+
         ) docs
     ))
     )::text AS json_dok,
