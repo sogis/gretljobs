@@ -54,4 +54,4 @@ SELECT
 FROM bfs_gepgwp_json_dokument_agg AS dokument
     LEFT JOIN afu_gepgwp_v1.gepgwp_gepgwp AS gepgwp
     ON gepgwp.bfs_gemeindenummer = dokument.bfs_gemeindenummer
-WHERE gepgwp.archiviert = 'nein'
+WHERE gepgwp.archiviert = 'false'
