@@ -92,7 +92,8 @@ datasets.add(new Dataset("SO_AGI_Inventar_Hoheitsgrenzen_20191129", "agi_inventa
 datasets.add(new Dataset("SO_ALW_Fruchtfolgeflaechen_Publikation_20220110", "alw_fruchtfolgeflaechen_v1", dbEdit, "ch.so.alw.fruchtfolgeflaechen_edit"))
 datasets.add(new Dataset("SO_ALW_GELAN_Hilfsgeometrien_20210426", "alw_gelan_hilfsgeometrien", dbEdit, "ch.so.alw.gelan_hilfsgeometrien_edit"))
 datasets.add(new Dataset("SO_ALW_Gewaesserraum_20210531", "alw_gewaesserraum_v1", dbEdit, "ch.so.alw_gewaesserraum_edit"))
-datasets.add(new Dataset("SO_ALW_Landwirtschaft_Tierhaltung_20210426", "alw_landwirtschaft_tierhaltung_v1", dbEdit, "ch.so.alw_landwirtschaft_tierhaltung_edit"))
+// Problemdatensatz. Weiss momentan gar nicht, ob wir den nicht eh geliefert bekommen.
+//datasets.add(new Dataset("SO_ALW_Landwirtschaft_Tierhaltung_20210426", "alw_landwirtschaft_tierhaltung_v1", dbEdit, "ch.so.alw_landwirtschaft_tierhaltung_edit"))
 datasets.add(new Dataset("SO_ALW_Strukturverbesserungen_20190912", "alw_strukturverbesserungen", dbEdit, "ch.so.alw.strukturverbesserungen_edit"))
 datasets.add(new Dataset("Strukturverbesserungen_LV95_V2", "alw_strukturverbesserungen_suissemelio", dbEdit, "ch.so.alw.strukturverbesserungen_suissemelio_edit"))
 datasets.add(new Dataset("SO_ALW_Tiergesundheit_Massnahmen_20210426", "alw_tiergesundheit_massnahmen", dbEdit, "ch.so.alw.tiergesundheit_massnahmen_edit"))
@@ -103,6 +104,7 @@ datasets.add(new Dataset("SO_Agglomerationsprogramme_20200618", "arp_agglomerati
 datasets.add(new Dataset("SO_ARP_Auswertungen_Nutzungsplanung_20210126", "arp_auswertung_nutzungsplanung_v1", dbEdit, "ch.so.arp.auswertung_nutzungsplanung_edit"))
 datasets.add(new Dataset("SO_ARP_Baugis_20190612", "arp_baugis", dbEdit, "ch.so.arp.baugis_edit"))
 datasets.add(new Dataset("SO_ARP_Fledermausfundorte_20200728", "arp_fledermaus", dbEdit, "ch.so.arp.fledermausstandorte_edit"))
+// Problemdatensatz:
 //datasets.add(new Dataset("Laermempfindlichkeitsstufen_LV95_V1_1", "arp_laermempfindlichkeitsstufen_mgdm", dbEdit, "ch.so.arp.laermempfindlichkeitsstufen_mgdm"))
 datasets.add(new Dataset("SO_ARP_Mehrjahresprogramm_20200228", "arp_mehrjahresprogramm", dbEdit, "ch.so.arp.mehrjahresprogramm_edit"))
 datasets.add(new Dataset("SO_ARP_Naturreservate_20200609", "arp_naturreservate", dbEdit, "ch.so.arp.naturreservate_edit"))
