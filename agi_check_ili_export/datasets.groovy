@@ -91,7 +91,7 @@ datasets.add(new Dataset("SO_AGI_Inventar_Hoheitsgrenzen_20191129", "agi_inventa
 //datasets.add(new Dataset("SIA405_Wasser_WI", "agi_leitungskataster_was", dbEdit, "ch.so.agi.leitungskataster_wasser_edit")) // Geht glaub wegen ili1 nicht. Ich teile ili2pg mit, dass ich ili2 exportiere.
 datasets.add(new Dataset("SO_ALW_Fruchtfolgeflaechen_Publikation_20220110", "alw_fruchtfolgeflaechen_v1", dbEdit, "ch.so.alw.fruchtfolgeflaechen_edit"))
 datasets.add(new Dataset("SO_ALW_GELAN_Hilfsgeometrien_20210426", "alw_gelan_hilfsgeometrien", dbEdit, "ch.so.alw.gelan_hilfsgeometrien_edit"))
-datasets.add(new Dataset("SO_ALW_Gewaesserraum_20210531", "alw_gewaesserraum_v1", dbEdit, "ch.so.alw_gewaesserraum_edit"))
+datasets.add(new Dataset("SO_ALW_Gewaesserraum_20210531", "alw_gewaesserraum_v1", dbEdit, "ch.so.alw.gewaesserraum_edit"))
 // Problemdatensatz. Weiss momentan gar nicht, ob wir den nicht eh geliefert bekommen.
 //datasets.add(new Dataset("SO_ALW_Landwirtschaft_Tierhaltung_20210426", "alw_landwirtschaft_tierhaltung_v1", dbEdit, "ch.so.alw_landwirtschaft_tierhaltung_edit"))
 datasets.add(new Dataset("SO_ALW_Strukturverbesserungen_20190912", "alw_strukturverbesserungen", dbEdit, "ch.so.alw.strukturverbesserungen_edit"))
