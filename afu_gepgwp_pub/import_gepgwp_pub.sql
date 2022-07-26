@@ -15,7 +15,7 @@ WITH json_documents AS (
                 plandatum AS "PlanDatum",
                 plannr AS "PlanNr",
                 link AS "Link",
-               'SO_AFU_GEPGWP_Publikation_20220725.GEPGWP.Dokument' AS "@type"
+               'SO_AFU_GEPGWP_Publikation_20220725.GEPGWP' AS "@type"
 
         ) docs
     ))
