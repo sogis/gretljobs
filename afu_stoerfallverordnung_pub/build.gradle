@@ -14,6 +14,8 @@ task transferAfuStoerfallverordnungPub(type: Db2Db){
             new TransferSet('afu_stoerfallverordnung_pub_betriebsareal.sql', 'afu_stoerfallverordnung_pub_v1.betriebsareal', true),
             new TransferSet('afu_stoerfallverordnung_pub_durchgangsstrassen.sql', 'afu_stoerfallverordnung_pub_v1.durchgangsstrasse', true),
             new TransferSet('afu_stoerfallverordnung_pub_durchgangsstrassen_kb.sql', 'afu_stoerfallverordnung_pub_v1.durchgangsstrasse_kb', true),
+            new TransferSet('afu_stoerfallverordnung_pub_erdgasroehrenspeicher.sql', 'afu_stoerfallverordnung_pub_v1.erdgasroehrenspeicher', true),
+            new TransferSet('afu_stoerfallverordnung_pub_erdgasroehrenspeicher_kb.sql', 'afu_stoerfallverordnung_pub_v1.erdgasroehrenspeicher_kb', true),
             new TransferSet('afu_stoerfallverordnung_pub_nationalstrassen.sql', 'afu_stoerfallverordnung_pub_v1.nationalstrasse', true),
             new TransferSet('afu_stoerfallverordnung_pub_nationalstrassen_kb.sql', 'afu_stoerfallverordnung_pub_v1.nationalstrasse_kb', true)
     ];

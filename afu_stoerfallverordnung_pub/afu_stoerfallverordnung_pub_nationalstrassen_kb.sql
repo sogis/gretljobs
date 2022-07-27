@@ -1,9 +1,9 @@
 SELECT
     CASE
         WHEN konsultationsbereich = 'm_100'
-            THEN ST_Multi(ST_Union(ST_intersection(ST_Buffer(nationalstrasse.geometrie, 100), kantonsgrenze.geometrie)))
+            THEN ST_RemoveRepeatedPoints(ST_Multi(ST_Union(ST_intersection(ST_Buffer(nationalstrasse.geometrie, 100), kantonsgrenze.geometrie))), 0.01)
         WHEN konsultationsbereich = 'm_300'
-            THEN ST_Multi(ST_Union(ST_intersection(ST_Buffer(nationalstrasse.geometrie, 300), kantonsgrenze.geometrie)))
+            THEN ST_RemoveRepeatedPoints(ST_Multi(ST_Union(ST_intersection(ST_Buffer(nationalstrasse.geometrie, 300), kantonsgrenze.geometrie))), 0.01)
     END AS geometrie,
     'Nationalstrasse' AS typ         
 FROM
