@@ -9,6 +9,7 @@ task transferErdwaermeAdditionals(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
+            new TransferSet('private_quelle.sql', 'afu_erdwaermesonden_weitere_pub.private_quelle', true),
             new TransferSet('abfrageperimeter_kanton.sql','afu_erdwaermesonden_weitere_pub.abfrageperimeter_kanton', true)
     ];
 }
