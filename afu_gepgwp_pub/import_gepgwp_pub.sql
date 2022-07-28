@@ -28,30 +28,32 @@ WITH json_documents AS (
 
 bfs_gepgwp_json_dokument_agg AS (
     SELECT
-        bfs_gemeindenummer,
+        DISTINCT bfs_gemeindenummer,
+        gemeindename,
         geometrie,
         '[' || dokumente::varchar || ']' AS dokumente
     FROM
     (
         SELECT
-            gemgrenze.bfs_gemeindenummer,
+            DISTINCT gemgrenze.bfs_gemeindenummer,
+            gepgwp.gemeindename,
             gemgrenze.geometrie,
             string_agg(json_dok, ',') AS dokumente
         FROM
             json_documents
             LEFT JOIN afu_gepgwp_v1.gepgwp_gemgrenze AS gemgrenze
             ON gemgrenze.bfs_gemeindenummer = json_documents.bfs_gemeindenummer
+            LEFT JOIN afu_gepgwp_v1.gepgwp_gepgwp AS gepgwp
+            ON gepgwp.bfs_gemeindenummer = json_documents.bfs_gemeindenummer
+        WHERE gepgwp.archiviert = 'false'
         GROUP BY
-        gemgrenze.bfs_gemeindenummer, gemgrenze.geometrie
+        gemgrenze.bfs_gemeindenummer, gepgwp.gemeindename, gemgrenze.geometrie
     ) AS a
 )
 
 SELECT 
     dokument.bfs_gemeindenummer, 
-    gepgwp.gemeindename,
+    gemeindename,
     geometrie, 
     dokumente::json AS dokumente 
 FROM bfs_gepgwp_json_dokument_agg AS dokument
-    LEFT JOIN afu_gepgwp_v1.gepgwp_gepgwp AS gepgwp
-    ON gepgwp.bfs_gemeindenummer = dokument.bfs_gemeindenummer
-WHERE gepgwp.archiviert = 'false'
