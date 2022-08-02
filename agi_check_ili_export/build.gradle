@@ -64,7 +64,8 @@ datasets.each { dataset ->
     def schema = dataset.dbschema
     def dbdatabase = dataset.database
     def datasetId = dataset.datasetId
-    def isVersion3 = dataset.version3
+    def isPublic = dataset.isPublic
+    //def isVersion3 = dataset.version3
 
     task "exportDataset_$datasetId"(type: Ili2pgExport) {
         database = dbdatabase
@@ -75,7 +76,7 @@ datasets.each { dataset ->
         logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_export.log"))
         //dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf"))
         dataFile = file(Paths.get(pathToTempFolder, datasetId + ".xtf"))
-        export3 = isVersion3 ? true : false
+        //export3 = isVersion3 ? true : false
     }
 
     task "validateData_$datasetId"(type: IliValidator, dependsOn: "exportDataset_$datasetId") {
@@ -105,7 +106,7 @@ datasets.each { dataset ->
         bucketName = bucket
         endPoint = "https://s3.eu-central-1.amazonaws.com"
         region = "eu-central-1"
-        acl = "private"
+        acl = isPublic ? "public-read" : "private"
         metaData = ["lastEditingDate":todaysDate]
     }
 }
@@ -122,7 +123,7 @@ task zipLogFiles(type: Zip) {
     include "*_export.log"
     include "*_validation.log"
     include "*_validation.xtf"
-    archiveName  "datenvalidierung_"+todaysDate+".zip"
+    archiveName "datenvalidierung_"+todaysDate+".zip"
     destinationDir(file(pathToTempFolder))
 }
 zipLogFiles.mustRunAfter exportAllData
