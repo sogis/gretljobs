@@ -1,5 +1,5 @@
 SELECT
-    ST_Multi(ST_Buffer(ST_Buffer(ST_Union(geometrie),1),-1)) AS geometrie,
+    ST_ReducePrecision(ST_Multi(ST_Buffer(ST_Buffer(ST_Union(geometrie),1),-1)), 0.001) AS geometrie,
     forstreviere_forstrevier.aname AS forstrevier,
     forstreviere_forstkreis.aname AS forstkreis
 FROM
