@@ -714,7 +714,7 @@ SELECT
     richtplankarte_grundnutzung.abstimmungskategorie,
     richtplankarte_grundnutzung.grundnutzungsart,
     richtplankarte_grundnutzung.planungsstand,
-    richtplankarte_grundnutzung.geometrie,
+    ST_ReducePrecision(richtplankarte_grundnutzung.geometrie, 0.001),
     documents_json.dokumente AS dokumente
 FROM
     arp_richtplan_v1.richtplankarte_grundnutzung
