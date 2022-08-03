@@ -6,7 +6,7 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS (
         ursprung AS last_ursprung,
         0 AS "depth"
     FROM
-        arp_nutzungsplanung_v1.rechtsvorschrften_hinweisweiteredokumente
+        arp_npl.rechtsvorschrften_hinweisweiteredokumente
 
     UNION ALL
 
@@ -18,7 +18,7 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS (
         x."depth" + 1
     FROM
         x
-        INNER JOIN arp_nutzungsplanung_v1.rechtsvorschrften_hinweisweiteredokumente  AS rechtsvorschrften_hinweisweiteredokumente_1
+        INNER JOIN arp_npl.rechtsvorschrften_hinweisweiteredokumente  AS rechtsvorschrften_hinweisweiteredokumente_1
             ON last_ursprung = rechtsvorschrften_hinweisweiteredokumente_1.ursprung
     WHERE 
         rechtsvorschrften_hinweisweiteredokumente_1.hinweis IS NOT NULL
@@ -76,7 +76,7 @@ json_documents_all AS (
                 ('https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/'||"textimweb")::text AS dateipfad,
                 bemerkungen AS bemerkung
             FROM
-                arp_nutzungsplanung_v1.rechtsvorschrften_dokument
+                arp_npl.rechtsvorschrften_dokument
         ) AS dokumente
 ),
 json_documents_doc_doc_reference AS (
@@ -88,14 +88,14 @@ json_documents_doc_doc_reference AS (
             SELECT
                 ursprung AS dokument_t_id
             FROM 
-                arp_nutzungsplanung_v1.rechtsvorschrften_hinweisweiteredokumente
+                arp_npl.rechtsvorschrften_hinweisweiteredokumente
 
             UNION
 
             SELECT
                 hinweis AS dokument_t_id
             FROM 
-                arp_nutzungsplanung_v1.rechtsvorschrften_hinweisweiteredokumente
+                arp_npl.rechtsvorschrften_hinweisweiteredokumente
         ) AS dokumente_1
         LEFT JOIN json_documents_all AS dokumente_2
             ON dokumente_1.dokument_t_id = dokumente_2.t_id
@@ -112,7 +112,7 @@ typ_grundnutzung_dokument_ref AS (
                 dokument,
                 unnest(dok_dok_referenzen) AS dok_referenz
             FROM
-                arp_nutzungsplanung_v1.nutzungsplanung_typ_grundnutzung_dokument AS typ_grundnutzung_dokument
+                arp_npl.nutzungsplanung_typ_grundnutzung_dokument AS typ_grundnutzung_dokument
                 LEFT JOIN doc_doc_references
                     ON typ_grundnutzung_dokument.dokument = doc_doc_references.ursprung
 
@@ -123,7 +123,7 @@ typ_grundnutzung_dokument_ref AS (
                 dokument,
                 dokument AS dok_referenz
             FROM
-                arp_nutzungsplanung_v1.nutzungsplanung_typ_grundnutzung_dokument
+                arp_npl.nutzungsplanung_typ_grundnutzung_dokument
         ) AS subquery
 ),
 typ_grundnutzung_json_dokument AS (
@@ -175,8 +175,8 @@ grundnutzung_geometrie_typ AS(
         typ.verbindlichkeit AS typ_verbindlichkeit,
         typ.bemerkungen AS typ_bemerkungen 
     FROM
-        arp_nutzungsplanung_v1.nutzungsplanung_grundnutzung AS grundnutzung
-        LEFT JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_grundnutzung AS typ
+        arp_npl.nutzungsplanung_grundnutzung AS grundnutzung
+        LEFT JOIN arp_npl.nutzungsplanung_typ_grundnutzung AS typ
             ON grundnutzung.typ_grundnutzung = typ.t_id
 ),
 wohnen_arbeit AS (
@@ -506,8 +506,8 @@ grundnutzung_einzelflaechen AS (
         (ST_Dump(geometrie)).geom AS geometrie,
         NULL AS dokumente
     FROM
-        arp_nutzungsplanung_v1.nutzungsplanung_grundnutzung AS grundnutzung
-        LEFT JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_grundnutzung AS grundnutzungtyp
+        arp_npl.nutzungsplanung_grundnutzung AS grundnutzung
+        LEFT JOIN arp_npl.nutzungsplanung_typ_grundnutzung AS grundnutzungtyp
             ON grundnutzung.typ_grundnutzung = grundnutzungtyp.t_id
     WHERE
         code_kommunal::int >= 4300 AND code_kommunal::int < 4400
