@@ -25,7 +25,7 @@ DELETE FROM
 
 --waldgrenze_waldgrenze
 DELETE FROM
-    awjf_statische_waldgrenze_staging_v11.waldgrenze_waldgrenze
+    awjf_statische_waldgrenze_staging_v1.waldgrenze_waldgrenze
 ;
 
 -- Basket / Dataset 
@@ -34,5 +34,5 @@ DELETE FROM
 ;
 
 DELETE FROM
-    awjf_statische_waldgrenze_staging_v11.t_ili2db_dataset
+    awjf_statische_waldgrenze_staging_v1.t_ili2db_dataset
 ;
