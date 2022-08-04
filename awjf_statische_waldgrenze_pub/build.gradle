@@ -66,5 +66,5 @@ task importXTF_pub(type: Ili2pgImport) {
     dataFile = file(FileNamePub)
     deleteData = true
     disableValidation = true
-    finalizedBy deleteData_staging_pub, refreshSolr
+    finalizedBy deleteData_staging_pub
 }
