@@ -176,7 +176,7 @@ datasets.each { dataset ->
         include "*.shp"
         include "*.dbf"
         include "*.shx"
-        //include "*.prj" Does not work in QGIS with this prj files.
+        include "*.prj" 
         include "$datasetId*_validation.log"
         archiveName datasetId + "_shp.zip"
         destinationDir(file(pathToTempFolder))
