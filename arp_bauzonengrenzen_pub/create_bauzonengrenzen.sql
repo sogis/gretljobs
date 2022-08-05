@@ -1,3 +1,9 @@
+DELETE FROM 
+	arp_bauzonengrenzen_pub.bauzonengrenzen_bauzonengrenze
+WHERE 
+	bfsnr = ${bfsnr}
+;
+
 INSERT INTO 
     arp_bauzonengrenzen_pub.bauzonengrenzen_bauzonengrenze 
     (
