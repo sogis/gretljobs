@@ -229,7 +229,7 @@ datasets.add(new Dataset("SO_AMB_Sirenenplanung_20200831", "amb_sirenenplanung_p
 datasets.add(new Dataset("SO_AMB_Zivilschutz_Adressen_Export_20201013", "amb_zivilschutz_adressen_staging_pub", dbPub, "ch.so.amb.zivilschutz_adressen")) 
 datasets.add(new Dataset("SO_Agglomerationsprogramme_Publikation_20200813", "arp_agglomerationsprogramme_pub", dbPub, "ch.so.arp.agglomerationsprogramme", true)) 
 datasets.add(new Dataset("SO_ARP_Auswertungen_Nutzungsplanung_Publikation_20210126", "arp_auswertung_nutzungsplanung_pub_v1", dbPub, "ch.so.arp.auswertung_nutzungplanung")) 
-datasets.add(new Dataset("SO_ARP_Bauzonengrenzen_20210120", "arp_bauzonengrenzen_pub", dbPub, "ch.so.arp.bauzonengrenzen")) 
+datasets.add(new Dataset("SO_ARP_Bauzonengrenzen_20210120", "arp_bauzonengrenzen_pub", dbPub, "ch.so.arp.bauzonengrenzen", true)) 
 // Kann mit aktuellem Compiler nicht exportiert werden, weil in der DB alte, falsche Fremdmodelle (CHBase Administration) vorhanden sind.
 // datasets.add(new Dataset("SO_ARP_Fledermausfundorte_Publikation_20200806", "arp_fledermaus_pub", dbPub, "ch.so.arp.fledermausfundorte")) 
 datasets.add(new Dataset("SO_ARP_Naturreservate_Publikation_20200609", "arp_naturreservate_pub", dbPub, "ch.so.arp.naturreservate", true)) 
@@ -256,7 +256,7 @@ datasets.add(new Dataset("SO_AWJF_Programm_Biodiversitaet_Wald_Publikation_20220
 datasets.add(new Dataset("SO_AWJF_Schutzwald_Publikation_20220617", "awjf_schutzwald_pub_v1", dbPub, "ch.so.awjf.schutzwald", true)) 
 datasets.add(new Dataset("SO_AWJF_Seltene_Baumarten_Publikation_20191015", "awjf_seltene_baeume_pub", dbPub, "ch.so.awjf.seltene_baeume", true)) 
 datasets.add(new Dataset("SO_AWJF_Statische_Waldgrenzen_Publikation_20191119", "awjf_statische_waldgrenze_pub_v1", dbPub, "ch.so.awjf.statische_waldgrenzen", true)) 
-datasets.add(new Dataset("SO_AWJF_Wald_Oberhoehenbonitaet_20211027", "awjf_wald_oberhoehenbonitaet_pub_v1", dbPub, "ch.so.awjf.wald_oberhoehenbonitaet")) 
+datasets.add(new Dataset("SO_AWJF_Wald_Oberhoehenbonitaet_20211027", "awjf_wald_oberhoehenbonitaet_pub_v1", dbPub, "ch.so.awjf.wald_oberhoehenbonitaet", true)) 
 datasets.add(new Dataset("SO_AWJF_Waldpflege_Erfassung_20210202", "awjf_waldpflege_kontrolle_pub", dbPub, "ch.so.awjf.waldpflege_kontrolle")) 
 datasets.add(new Dataset("SO_AWJF_Waldstandorte_Publikation_20211027", "awjf_waldstandorte_pub_v1", dbPub, "ch.so.awjf.waldstandorte", true)) 
 // Falsches, unsichtbares Zeichen in den Daten. XML ist nicht valide.
