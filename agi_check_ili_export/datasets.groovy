@@ -172,7 +172,7 @@ datasets.add(new Dataset("SO_AFU_ABBAUSTELLEN_Publikation_20210630", "afu_abbaus
 datasets.add(new Dataset("SO_AFU_Abwasserbauwerke_Publikation_20220323", "afu_abwasserbauwerke_pub_v1", dbPub, "ch.so.afu.abwasserbauwerke", true)) 
 datasets.add(new Dataset("SO_AFU_ARA_Einzugsgebiete_20201016", "afu_ara_einzugsgebiete_pub", dbPub, "ch.so.afu.ara_einzugsgebiete", true)) 
 datasets.add(new Dataset("SO_AfU_BauGK_CCCCache_20180507", "afu_baugk_ccccache", dbPub, "ch.so.afu.baugk_ccccache")) 
-datasets.add(new Dataset("SO_AFU_Baugrundklassen_Publikation_20201023", "afu_baugrundklassen_pub_v1", dbPub, "ch.so.afu.baugrundklassen, true")) 
+datasets.add(new Dataset("SO_AFU_Baugrundklassen_Publikation_20201023", "afu_baugrundklassen_pub_v1", dbPub, "ch.so.afu.baugrundklassen", true)) 
 
 datasets.add(new Dataset("SO_AFU_Bodenprofilstandorte_Publikation_20210129", "afu_bodendaten_nabodat_pub", dbPub, "ch.so.afu.bodendaten_nabodat", true))
 datasets.add(new Dataset("SO_AFU_Bodendaten_schadstoffuntersuchung_Publikation_20200928", "afu_bodendaten_schadstoffuntersuchung_pub", dbPub, "ch.so.afu.bodendaten_schadstoffuntersuchung", true)) 
