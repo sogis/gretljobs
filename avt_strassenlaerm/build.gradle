@@ -29,7 +29,7 @@ task downloadData(type: Download) {
 task replaceDataset (type: Ili2pgReplace, dependsOn: downloadData) {
     description = "Ersetzt die Daten in der Edit-DB."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = "avt_strassenlaerm"
+    dbschema = "avt_strassenlaerm_v1"
     models = "SO_AVT_Strassenlaerm_20190806"
     if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     disableValidation = true
