@@ -202,9 +202,12 @@ Allerdings können auch diejenigen Benutzer oder Gruppen, welche durch globale B
 
 Mit `nodeLabel` kann bestimmt werden,
 auf welchem Node der Job ausgeführt werden soll.
-Erlaubt ist hier einzig der Wert `gretl-bigtmp`;
-so wird der Job auf einem Jenkins Agent
-mit einem grösseren `/tmp`-Verzeichnis ausgeführt.
+Erlaubt ist hier der Wert `gretl-bigtmp`
+damit der Job auf einem Jenkins Agent
+mit einem grösseren `/tmp`-Verzeichnis ausgeführt wird.
+Und der Wert `gretl-2.2`,
+damit der Job auf einem Jenkins Agent
+mit GRETL Version 2.2 ausgeführt wird.
 Lässt man diese Property weg,
 wird der Job auf einem normalen Jenkins Agent
 (mit dem Label `gretl`) ausgeführt.
