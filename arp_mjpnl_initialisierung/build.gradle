@@ -39,7 +39,7 @@ task importMJPNL(type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
     if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     topics = "SO_ARP_MJPNL_20201026.MJPNL"
     dataFile = "upload/mjpnl_init.xtf"
-    dataset = "MJPNL"
+    dataset = "MJPNL Basisdaten"
     logFile = "ili2pgimport.log"
 }
 
