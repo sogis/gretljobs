@@ -1,0 +1,72 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'validateData', 'importXTF_pub'
+
+def FileName = "afu_gewaesserschutz.xtf"
+def FileNamePub = "afu_gewaesserschutz_pub.xtf"
+
+task exportDataEdit (type: Ili2pgExport) {
+    description = "Exportiert die Daten aus dem Schema afu_grundwasserschutz in eine INTERLIS-Datei."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'afu_gewaesserschutz'
+    models = 'PlanerischerGewaesserschutz_LV95_V1_1'
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
+    dataFile= file(FileName)
+    disableValidation = true
+}
+
+task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
+    description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
+    dataFiles = file(FileName)
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    failOnError = true
+}
+
+task transferGewaesserschutz(type: Db2Db, dependsOn: 'validateDataEdit') {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('gewaesserschutz_schutzzone.sql', 'afu_gewaesserschutz_staging_v1.gewaesserschutz_schutzzone', true),
+            new TransferSet('gewaesserschutz_schutzareal.sql', 'afu_gewaesserschutz_staging_v1.gewaesserschutz_schutzareal', true),
+            new TransferSet('gewaesserschutz_gewaesserschutzbereich.sql', 'afu_gewaesserschutz_staging_v1.gewaesserschutz_gewaesserschutzbereich', true),
+            new TransferSet('gewaesserschutz_zustroembereich.sql', 'afu_gewaesserschutz_staging_v1.gewaesserschutz_zustroembereich', true),
+    ];
+}
+
+task exportData (type: Ili2pgExport, dependsOn: 'transferGewaesserschutz') {
+    description = "Exportiert die umgebauten Daten aus dem Schema afu_gewaesserschutz_staging in ein INTERLIS-Datei."
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = 'afu_gewaesserschutz_staging_v1'
+    models = 'SO_AfU_Gewaesserschutz_Publikation_20220817'
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
+    dataFile= file(FileNamePub)
+    disableValidation = true
+}
+
+task validateData(type: IliValidator, dependsOn: 'exportData') {
+    description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
+    dataFiles = file(FileNamePub)
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    failOnError = true
+}
+
+task deleteData_staging_pub (type: SqlExecutor) {
+    description = "Löscht/leert die Daten aus dem Schema afu_gewaesserschutz_staging"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ["delete_afu_gewaesserschutz_staging.sql"]
+}
+
+task importXTF_pub(type: Ili2pgImport) {
+    description = 'Import der umgebaute INTERLIS-Datei in das Schema afu_gewaesserschutz_pub.'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = 'afu_gewaesserschutz_pub_v1'
+    models = 'SO_AfU_Gewaesserschutz_Publikation_20220817'
+    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
+    dataFile = file(FileNamePub)
+    deleteData = true
+    disableValidation = true
+    finalizedBy deleteData_staging_pub
+}
