@@ -1,0 +1,22 @@
+SELECT
+    aname,
+    so_str_id,
+    eid,
+    von_knoten,
+    nach_knoten,
+    dtv_gesamt,
+    dtv_personenwagen,
+    dtv_motorraeder,
+    dtv_lieferwagen,
+    dtv_lastwagen,
+    dtv_lastzuege,
+    neigung_be,
+    geschwindigkeit,
+    laenge,
+    kapazitaet,
+    auslastung,
+    typeno,
+    geometrie
+FROM
+    avt_gesamtverkehrsmodell_2015_v1.gesamtverkehrsmodell_prognose_2025
+;
