@@ -106,7 +106,7 @@ WITH fachbereich AS (
         'BLN-Gebiet' AS schutz,
         geotope_landschaftsform.t_id
     FROM
-        arp_richtplan.richtplankarte_ueberlagernde_flaeche,
+        arp_richtplan_v1.richtplankarte_ueberlagernde_flaeche,
         afu_geotope.geotope_landschaftsform
     WHERE
         ST_Intersects(geotope_landschaftsform.geometrie, richtplankarte_ueberlagernde_flaeche.geometrie) = TRUE
@@ -117,7 +117,7 @@ WITH fachbereich AS (
         'Uferschutzzone' AS schutz,
         geotope_landschaftsform.t_id
     FROM
-        arp_richtplan.richtplankarte_ueberlagernde_flaeche,
+        arp_richtplan_v1.richtplankarte_ueberlagernde_flaeche,
         afu_geotope.geotope_landschaftsform
     WHERE
         ST_Intersects(geotope_landschaftsform.geometrie, richtplankarte_ueberlagernde_flaeche.geometrie) = TRUE
@@ -128,7 +128,7 @@ WITH fachbereich AS (
         'Juraschutzzone' AS schutz,
         geotope_landschaftsform.t_id
     FROM
-        arp_richtplan.richtplankarte_ueberlagernde_flaeche,
+        arp_richtplan_v1.richtplankarte_ueberlagernde_flaeche,
         afu_geotope.geotope_landschaftsform
     WHERE
         ST_Intersects(geotope_landschaftsform.geometrie, richtplankarte_ueberlagernde_flaeche.geometrie) = TRUE
