@@ -3,19 +3,15 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAvtGesamtverkehrsmodell2015'
+defaultTasks 'transferAvtGesamtverkehrsmodellPub'
 
-task transferAvtGesamtverkehrsmodell2015(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+task transferAvtGesamtverkehrsmodellPub(type: Db2Db) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('avt_gesamtverkehrsmodell2015_pub_gvm_so_2015.sql',
-                    'avt_gesamtverkehrsmodell2015_pub.gvm_so_2015', true),
-            new TransferSet('avt_gesamtverkehrsmodell2015_pub_gvm_so_2015_prognose_2025.sql',
-                    'avt_gesamtverkehrsmodell2015_pub.gvm_so_2015_prognose_2025', true),
-            new TransferSet('avt_gesamtverkehrsmodell2015_pub_gvm_so_2015_prognose_2040.sql',
-                    'avt_gesamtverkehrsmodell2015_pub.gvm_so_2015_prognose_2040', true),
-            new TransferSet('avt_gesamtverkehrsmodell2015_pub_gvm_so_2015_oev.sql',
-                    'avt_gesamtverkehrsmodell2015_pub.gvm_so_2015_oev_passagiere', true)
+            new TransferSet('gvm_so_2015_pub.sql', 'avt_gesamtverkehrsmodell_2015_pub_v1.gesamtverkehrsmodell', true),
+            new TransferSet('gvm_so_2015_prognose_2025_pub.sql', 'avt_gesamtverkehrsmodell_2015_pub_v1.gesamtverkehrsmodell_prognose_2025', true),
+            new TransferSet('gvm_so_2015_prognose_2040_pub.sql', 'avt_gesamtverkehrsmodell_2015_pub_v1.gesamtverkehrsmodell_prognose_2040', true),
+            new TransferSet('gvm_so_2015_oev_passagiere_pub.sql', 'avt_gesamtverkehrsmodell_2015_pub_v1.oev_passagiere', true)
     ];
 }
