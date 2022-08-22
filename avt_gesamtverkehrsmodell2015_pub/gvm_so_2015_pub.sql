@@ -5,6 +5,7 @@ SELECT
     von_knoten,
     nach_knoten,
     dtv_gesamt,
+    dtv_kategorie,
     dtv_personenwagen,
     dtv_motorraeder,
     dtv_lieferwagen,
