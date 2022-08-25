@@ -1,0 +1,13 @@
+SELECT 
+    code_id, 
+    codetyp_id, 
+    kurztext, 
+    "text", 
+    new_date, 
+    mut_date, 
+    new_usr, 
+    mut_usr, 
+    sort
+FROM 
+    bohrung."GIS_code"
+;
