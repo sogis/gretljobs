@@ -1,0 +1,16 @@
+SELECT 
+    schicht_id, 
+    bohrprofil_id, 
+    schichten_id, 
+    tiefe, 
+    quali, 
+    qualibem, 
+    bemerkung, 
+    new_date, 
+    mut_date, 
+    new_usr, 
+    mut_usr, 
+    h_quali
+FROM 
+    bohrung."GIS_schicht"
+;

@@ -1,0 +1,17 @@
+SELECT 
+    vorkommnis_id, 
+    bohrprofil_id, 
+    typ, 
+    tiefe, 
+    bemerkung, 
+    new_date, 
+    mut_date, 
+    new_usr, 
+    mut_usr, 
+    quali, 
+    qualibem, 
+    h_quali, 
+    h_typ
+FROM 
+    bohrung."GIS_vorkommnis"
+;
