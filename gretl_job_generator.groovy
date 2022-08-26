@@ -36,7 +36,7 @@ for (jobFile in jobFiles) {
 
 
   // set defaults for job properties
-  def properties = new Properties([
+  def jobProperties = new Properties([
     'authorization.permissions':'nobody',
     'logRotator.numToKeep':'15',
     'parameters.fileParam':'none',
@@ -44,11 +44,11 @@ for (jobFile in jobFiles) {
     'triggers.upstream':'none',
     'triggers.cron':''
   ])
-  def propertiesFilePath = "${folderName}/${jobPropertiesFileName}"
-  def propertiesFile = new File(WORKSPACE, propertiesFilePath)
-  if (propertiesFile.exists()) {
-    println '    properties file found: ' + propertiesFilePath
-    properties.load(new FileReader(propertiesFile))
+  def jobPropertiesFilePath = "${folderName}/${jobPropertiesFileName}"
+  def jobPropertiesFile = new File(WORKSPACE, jobPropertiesFilePath)
+  if (jobPropertiesFile.exists()) {
+    println '    job properties file found: ' + jobPropertiesFilePath
+    jobProperties.load(new FileReader(jobPropertiesFile))
   }
 
   def productionEnv = ("${PROJECT_NAME}" == 'agi-gretl-production')
@@ -59,13 +59,13 @@ for (jobFile in jobFiles) {
         stringParam('BRANCH', 'main', 'Name of branch to check out')
       }
     }
-    if (properties.getProperty('parameters.fileParam') != 'none') {
+    if (jobProperties.getProperty('parameters.fileParam') != 'none') {
       parameters {
-        fileParam(properties.getProperty('parameters.fileParam'), 'Select file to upload')
+        fileParam(jobProperties.getProperty('parameters.fileParam'), 'Select file to upload')
       }
     }
-    if (properties.getProperty('parameters.stringParams') != 'none') {
-      def stringParams = properties.getProperty('parameters.stringParams').split('@')
+    if (jobProperties.getProperty('parameters.stringParams') != 'none') {
+      def stringParams = jobProperties.getProperty('parameters.stringParams').split('@')
       for ( sp in stringParams ) {
         def spValues = sp.split(';')
         if (spValues.length == 3) {
@@ -77,29 +77,29 @@ for (jobFile in jobFiles) {
         }
       }
     }
-    if (properties.getProperty('authorization.permissions') != 'nobody') {
+    if (jobProperties.getProperty('authorization.permissions') != 'nobody') {
       authorization {
-        permissions(properties.getProperty('authorization.permissions'), ['hudson.model.Item.Build', 'hudson.model.Item.Read'])
+        permissions(jobProperties.getProperty('authorization.permissions'), ['hudson.model.Item.Build', 'hudson.model.Item.Read'])
       }
     }
-    if (properties.getProperty('logRotator.numToKeep') != 'unlimited') {
+    if (jobProperties.getProperty('logRotator.numToKeep') != 'unlimited') {
       logRotator {
-        numToKeep(properties.getProperty('logRotator.numToKeep') as Integer)
+        numToKeep(jobProperties.getProperty('logRotator.numToKeep') as Integer)
       }
     }
-    if (properties.getProperty('triggers.upstream') != 'none') {
+    if (jobProperties.getProperty('triggers.upstream') != 'none') {
       triggers {
-        upstream(properties.getProperty('triggers.upstream'), 'SUCCESS')
+        upstream(jobProperties.getProperty('triggers.upstream'), 'SUCCESS')
       }
     }
-    if (properties.getProperty('triggers.cron') != '' && productionEnv) { // we want triggers only in production environment
+    if (jobProperties.getProperty('triggers.cron') != '' && productionEnv) { // we want triggers only in production environment
       triggers {
-        cron(properties.getProperty('triggers.cron'))
+        cron(jobProperties.getProperty('triggers.cron'))
       }
     }
-    if (properties.getProperty('nodeLabel') != null) {
+    if (jobProperties.getProperty('nodeLabel') != null) {
       parameters {
-        choiceParam('nodeLabel', [properties.getProperty('nodeLabel')], 'Label of the node that must run the job')
+        choiceParam('nodeLabel', [jobProperties.getProperty('nodeLabel')], 'Label of the node that must run the job')
       }
     }
 
