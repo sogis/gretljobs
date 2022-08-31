@@ -232,7 +232,7 @@ datasets.add(new Dataset("SO_ARP_Auswertungen_Nutzungsplanung_Publikation_202101
 datasets.add(new Dataset("SO_ARP_Bauzonengrenzen_20210120", "arp_bauzonengrenzen_pub", dbPub, "ch.so.arp.bauzonengrenzen", true)) 
 // Kann mit aktuellem Compiler nicht exportiert werden, weil in der DB alte, falsche Fremdmodelle (CHBase Administration) vorhanden sind.
 // datasets.add(new Dataset("SO_ARP_Fledermausfundorte_Publikation_20200806", "arp_fledermaus_pub", dbPub, "ch.so.arp.fledermausfundorte")) 
-datasets.add(new Dataset("SO_ARP_Naturreservate_Publikation_20200609", "arp_naturreservate_pub", dbPub, "ch.so.arp.naturreservate", true)) 
+datasets.add(new Dataset("SO_ARP_Naturreservate_Publikation_20200609", "arp_naturreservate_pub", dbPub, "ch.so.arp.naturreservate")) 
 datasets.add(new Dataset("SO_ARP_Naturschutzobjekte_Publikation_20210727", "arp_naturschutzobjekte_pub_v1", dbPub, "ch.so.arp.naturschutzobjekte", true)) 
 datasets.add(new Dataset("SO_ARP_Nutzungsplanung_Publikation_20201005", "arp_nutzungsplanung_pub_v1", dbPub, "ch.so.arp.nutzungsplanung", true)) 
 datasets.add(new Dataset("SO_ARP_Nutzungsvereinbarung_Publikation_20170223", "arp_nutzungsvereinbarung_pub", dbPub, "ch.so.arp.nutzungsvereinbarung")) 
