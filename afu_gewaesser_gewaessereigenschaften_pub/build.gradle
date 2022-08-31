@@ -20,5 +20,5 @@ task updateTxtCols(type: SqlExecutor, dependsOn:transferAfugewaessereigenschafte
 }
 
 task refreshSolr(type:Exec, dependsOn:'updateTxtCols') {
-	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.fischereireviere,ch.so.afu.fliessgewaesser.netz'
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.gewaesser.fischereireviere,ch.so.afu.fliessgewaesser.netz'
 }
