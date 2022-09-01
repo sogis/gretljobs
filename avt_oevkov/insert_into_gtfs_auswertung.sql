@@ -280,15 +280,12 @@ UNION ALL
     AND
          trip_headsign IN (
              'Biel/Bienne',
-             'Chur',
              'Genève-Aéroport',
              'Langendorf',
              'Lausanne',
              'Lommiswil',
              'Morges',
              'Oensingen',
-             'Rorschach',
-             'Romanshorn',
              'Solothurn'
          )
     AND
