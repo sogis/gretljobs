@@ -280,12 +280,15 @@ UNION ALL
     AND
          trip_headsign IN (
              'Biel/Bienne',
+             'Chur',
              'Genève-Aéroport',
              'Langendorf',
              'Lausanne',
              'Lommiswil',
              'Morges',
              'Oensingen',
+             'Rorschach',
+             'Romanshorn',
              'Solothurn'
          )
     AND
@@ -621,7 +624,9 @@ UNION ALL
     AND
         trip_headsign IN (
             'Baden',
+            'Chur',
             'Romanshorn',
+            'Rorschach',
             'Rotkreuz',
             'St. Gallen',
             'Turgi',
