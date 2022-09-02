@@ -1,24 +1,24 @@
 WITH
     overlaps_to_gaps AS (
         SELECT
-            gem_bfs,
+            t_datasetname::int AS bfsnr,
             COALESCE(
                 ST_Difference(geometrie,
                     (
                         SELECT 
                             ST_Union(gemeindegrenzen_1.geometrie)
                         FROM 
-                            av_avdpool_ng.gemeindegrenzen_gemeindegrenze AS gemeindegrenzen_1
+                            agi_dm01avso24.gemeindegrenzen_gemeindegrenze AS gemeindegrenzen_1
                         WHERE 
                             ST_Intersects(gemeindegrenzen_2.geometrie, gemeindegrenzen_1.geometrie)
                             AND 
-                            gemeindegrenzen_2.gem_bfs != gemeindegrenzen_1.gem_bfs
+                            gemeindegrenzen_2.t_datasetname != gemeindegrenzen_1.t_datasetname
                     )
                 ),
                 gemeindegrenzen_2.geometrie
             ) AS geometrie
         FROM 
-            av_avdpool_ng.gemeindegrenzen_gemeindegrenze AS gemeindegrenzen_2
+            agi_dm01avso24.gemeindegrenzen_gemeindegrenze AS gemeindegrenzen_2
     ),
 
     gemeinde_multipolygon_gaps AS (
@@ -45,7 +45,7 @@ WITH
                         SELECT
                             (ST_Dump(ST_Union(geometrie))).geom AS geometrie
                         FROM 
-                            av_avdpool_ng.gemeindegrenzen_gemeindegrenze
+                            agi_dm01avso24.gemeindegrenzen_gemeindegrenze
                     ) AS subquery
                 GROUP BY
                     id,
@@ -73,7 +73,7 @@ WITH
 
     flaechenmass_gemeinden AS (
         SELECT
-            gem_bfs,
+            bfsnr,
             geometrie,
             ST_Area(geometrie) AS flaechemass
         FROM
@@ -83,7 +83,7 @@ WITH
     area AS (
         SELECT DISTINCT
             ST_Intersects(gaps.geometrie, flaechenmass_gemeinden.geometrie),
-            gem_bfs,
+            bfsnr,
             flaechemass,
             gaps.geometrie,
             gaps.id
@@ -98,11 +98,11 @@ WITH
         SELECT DISTINCT
             CASE
                 WHEN area_a.flaechemass > area_b.flaechemass
-                    THEN area_a.gem_bfs
+                    THEN area_a.bfsnr
                 WHEN area_a.flaechemass < area_b.flaechemass
-                    THEN area_b.gem_bfs
+                    THEN area_b.bfsnr
                 WHEN area_a.flaechemass = area_b.flaechemass
-                    THEN area_a.gem_bfs
+                    THEN area_a.bfsnr
             END AS groesser,
             area_a.geometrie
         FROM
@@ -111,13 +111,13 @@ WITH
         WHERE 
             area_a.id = area_b.id
             AND 
-            area_a.gem_bfs <> area_b.gem_bfs
+            area_a.bfsnr <> area_b.bfsnr
     ),
 
     gaps_multipolygon AS (
         SELECT DISTINCT
             ST_Collect(geometrie) AS geometrie,
-            groesser AS gem_bfs
+            groesser AS bfsnr
         FROM 
             zugehoerigkeit
         GROUP BY
@@ -126,54 +126,53 @@ WITH
 
     corrected_polygons AS (
         SELECT
-            overlaps_to_gaps.gem_bfs,
+            overlaps_to_gaps.bfsnr,
             ST_Union(gaps_multipolygon.geometrie, overlaps_to_gaps.geometrie) as geometrie
         FROM 
             gaps_multipolygon,
             overlaps_to_gaps
         WHERE 
-            gaps_multipolygon.gem_bfs = overlaps_to_gaps.gem_bfs
+            gaps_multipolygon.bfsnr = overlaps_to_gaps.bfsnr
     )
 
-
 SELECT
-    gemeindegrenzen_gemeinde.name AS gemeindename,
-    geometry.gem_bfs AS bfs_gemeindenummer,
+    gemeindegrenzen_gemeinde.aname AS gemeindename,
+    geometry.bfsnr AS bfs_gemeindenummer,
     hoheitsgrenzen_bezirk.bezirksname,
     hoheitsgrenzen_kanton.kantonsname,
     geometry.geometrie
 FROM
     (
         SELECT
-            gem_bfs,
+            bfsnr,
             ST_Multi(ST_Union(geometrie)) AS geometrie
         FROM
             overlaps_to_gaps
         WHERE
-            gem_bfs NOT IN (
+            bfsnr NOT IN (
                 SELECT
-                    gem_bfs
+                    bfsnr
                 FROM
                     corrected_polygons)
         GROUP BY
-            gem_bfs
+            bfsnr
 
         UNION
 
         SELECT
-            gem_bfs AS gemeindename,
+            bfsnr AS gemeindename,
             ST_Multi(ST_Union(geometrie)) AS geometrie
         FROM
             corrected_polygons
         GROUP BY
-            gem_bfs
+            bfsnr
     ) AS geometry
-    LEFT JOIN av_avdpool_ng.gemeindegrenzen_gemeinde
-        ON gemeindegrenzen_gemeinde.gem_bfs = geometry.gem_bfs
-    LEFT JOIN agi_hoheitsgrenzen.hoheitsgrenzen_gemeinde
-        ON hoheitsgrenzen_gemeinde.bfs_gemeindenummer = geometry.gem_bfs
-    LEFT JOIN agi_hoheitsgrenzen.hoheitsgrenzen_bezirk
+    LEFT JOIN agi_dm01avso24.gemeindegrenzen_gemeinde
+        ON gemeindegrenzen_gemeinde.bfsnr = geometry.bfsnr
+    LEFT JOIN agi_hoheitsgrenzen_v1.hoheitsgrenzen_gemeinde
+        ON hoheitsgrenzen_gemeinde.bfs_gemeindenummer = geometry.bfsnr
+    LEFT JOIN agi_hoheitsgrenzen_v1.hoheitsgrenzen_bezirk
         ON hoheitsgrenzen_bezirk.t_id = hoheitsgrenzen_gemeinde.bezirk
-    LEFT JOIN agi_hoheitsgrenzen.hoheitsgrenzen_kanton
+    LEFT JOIN agi_hoheitsgrenzen_v1.hoheitsgrenzen_kanton
         ON hoheitsgrenzen_kanton.t_id = hoheitsgrenzen_bezirk.kanton
 ;

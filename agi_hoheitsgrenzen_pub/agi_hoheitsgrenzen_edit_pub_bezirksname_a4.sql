@@ -7,9 +7,9 @@ SELECT
     hoheitsgrenzen_bezirksname_pos.beschriftungstext,
     hoheitsgrenzen_bezirksname_pos.pos
 FROM
-    agi_hoheitsgrenzen.hoheitsgrenzen_bezirksname_pos
-    LEFT JOIN agi_hoheitsgrenzen.hoheitsgrenzen_bezirk
+    agi_hoheitsgrenzen_v1.hoheitsgrenzen_bezirksname_pos
+    LEFT JOIN agi_hoheitsgrenzen_v1.hoheitsgrenzen_bezirk
         ON hoheitsgrenzen_bezirk.t_id = hoheitsgrenzen_bezirksname_pos.bezirk
 WHERE
-    hoheitsgrenzen_bezirksname_pos.format = 'A4'
+    hoheitsgrenzen_bezirksname_pos.aformat = 'A4'
 ;
