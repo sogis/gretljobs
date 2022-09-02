@@ -39,7 +39,7 @@ task truncateTable(type: SqlExecutor, dependsOn: 'validateCsv') {
 
 task importCsv(type: CsvImport, dependsOn: 'truncateTable') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    schemaName = "arp_fledermaus"
+    schemaName = "arp_fledermaus_v1"
     tableName = "fledermausfundrte_fledermausfundort"
     firstLineIsHeader = true
     valueSeparator = ","
@@ -51,6 +51,6 @@ task transferFledermausPub(type: Db2Db, dependsOn: 'importCsv') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('arp_fledermaus_pub.sql', 'arp_fledermaus_pub.fledermausfundrte_fledermausfundort', true)
+            new TransferSet('arp_fledermaus_pub.sql', 'arp_fledermaus_v1_pub.fledermausfundrte_fledermausfundort', true)
     ];
 }
