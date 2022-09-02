@@ -46,7 +46,8 @@ WITH
         WHERE
             ST_Intersects(hoheitsgrenzen_gemeindegrenze.geometrie, simplepolys.geom)
             AND
-            ST_Area(ST_Intersection(simplepolys.geom, hoheitsgrenzen_gemeindegrenze.geometrie))/ST_Area(simplepolys.geom) > 0.5)
+            ST_Area(ST_Intersection(simplepolys.geom, hoheitsgrenzen_gemeindegrenze.geometrie))/ST_Area(simplepolys.geom) > 0.5
+    )
 
 INSERT INTO agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze_generalisiert(
     gemeindename,

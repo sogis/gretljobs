@@ -15,7 +15,7 @@ SELECT
     ST_Multi(ST_Union(hoheitsgrenzen_gemeindegrenze_generalisiert.geometrie)) AS geometrie
 FROM
     agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze_generalisiert
-    LEFT JOIN agi_hoheitsgrenzen.hoheitsgrenzen_kanton
+    LEFT JOIN agi_hoheitsgrenzen_v1.hoheitsgrenzen_kanton
         ON hoheitsgrenzen_kanton.kantonsname = hoheitsgrenzen_gemeindegrenze_generalisiert.kantonsname 
 GROUP BY
     hoheitsgrenzen_gemeindegrenze_generalisiert.kantonsname,
