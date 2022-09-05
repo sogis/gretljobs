@@ -6,7 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 description = "GRETL-Job für Datenumbau der Hoheitsgrenzen innerhalb der edit-DB, in die pub-DB und in die edit-DB, am Ende in die sogis-DB"
 
 
-'transferAgiHoheitsgrenzen'
+defaultTasks 'transferAgiHoheitsgrenzenToSogisDb'
 
 
 task transferAgiHoheitsgrenzen(type: Db2Db) {
@@ -31,7 +31,6 @@ task transferAgiHoheitsgrenzen(type: Db2Db) {
 }
 
 task createGeometriesAgiHoheitsgrenzen(type: SqlExecutor, dependsOn:'transferAgiHoheitsgrenzen') {
-    /////////////////////////////////////////////////////////////////description = "Baut die Nutzungsplanungsdaten des Kanton Solothurn in das MGDM des Bundes um."  // stimmt dieser Kommentar?
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = [
             'agi_hoheitsgrenzen_edit_pub_bezirksgrenze.sql',
