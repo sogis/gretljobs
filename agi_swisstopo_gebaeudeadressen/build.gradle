@@ -43,7 +43,6 @@ task dbImport(type: Ili2pgImport, dependsOn: 'unzipData') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "agi_swisstopo_gebaeudeadressen"
     models = "OfficialIndexOfAddresses_V2"
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     disableValidation = true
     dataFile = file(xtfFilePath)
     deleteData = true

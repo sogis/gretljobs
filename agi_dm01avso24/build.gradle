@@ -51,7 +51,6 @@ cadastralSurveyingDataSets.each { cadastralSurveyingDataSet ->
         database = [dbUriEdit, dbUserEdit, dbPwdEdit]
         //database = ["jdbc:postgresql://localhost:54321/edit", "admin", "admin"]
         models = 'DM01AVSO24LV95'
-        if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
         dbschema = 'agi_dm01avso24_strokearcs'
         dataFile = file(Paths.get(pathToTempFolder.toString(), dataSet + "00.itf"))
         //topics = "DM01AVCH24LV95D.Liegenschaften;DM01AVCH24LV95D.Gemeindegrenzen;DM01AVCH24LV95D.Gebaeudeadressen"

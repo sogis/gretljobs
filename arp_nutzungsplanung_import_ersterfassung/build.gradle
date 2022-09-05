@@ -20,7 +20,6 @@ task importXtfFile(type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_import_v1'
     models = 'SO_Nutzungsplanung_20171118'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     deleteData= true
     dataset = ili2pgDataset
     dataFile = "upload/${ili2pgDataset}.xtf"
@@ -47,7 +46,6 @@ task deleteData_import(type: Ili2pgDelete, dependsOn: 'transferData') {
     description = "Löscht/leert Daten mit dem angegebenen Datasetname (BFS-Nr.) aus dem Schema arp_nutzungsplanung_import_v1"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dbschema = 'arp_nutzungsplanung_import_v1'
     dataset = ili2pgDataset
 }
@@ -63,7 +61,6 @@ task exportDataEdit (type: Ili2pgExport, dependsOn: 'deleteData_transfer_pub') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_transfer_v1'
     models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataset = ili2pgDataset
     dataFile= file(ili2pgDataset + "for_stage.xtf")
     disableValidation = true
@@ -89,7 +86,6 @@ task exportData (type: Ili2pgExport, dependsOn: 'transferData_pub') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_transfer_pub_v1'
     models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataFile= file(ili2pgDataset + "_pub.xtf")
     disableValidation = true
 }
@@ -106,7 +102,6 @@ task importXTF_stage(type: Ili2pgReplace, dependsOn: 'validateData') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'arp_nutzungsplanung_staging_v1'
     models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataset = ili2pgDataset
     dataFile = file(ili2pgDataset + "_pub.xtf")
     disableValidation = true

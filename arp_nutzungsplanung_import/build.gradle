@@ -20,7 +20,6 @@ task importXtfFile(type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_import_v1'
     models = 'SO_Nutzungsplanung_20171118'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     deleteData= true
     dataset = ili2pgDataset
     dataFile = "upload/${ili2pgDataset}.xtf"
@@ -41,7 +40,6 @@ task deleteData_import(type: Ili2pgDelete) {
     description = "Löscht/leert Daten mit dem angegebenen Datasetname (BFS-Nr.) aus dem Schema arp_nutzungsplanung_import_v1"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dbschema = 'arp_nutzungsplanung_import_v1'
     dataset = ili2pgDataset
 }
@@ -58,7 +56,6 @@ task exportData_Dataset_BFSNr(type: Ili2pgExport) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_transfer_v1'
     models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataset = ili2pgDataset
     dataFile= file(ili2pgDataset + ".xtf")
     disableValidation = true
@@ -81,7 +78,6 @@ task importData_Dataset_BFSNr(type: Ili2pgImport) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_v1'
     models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataset = ili2pgDataset
     dataFile = file(ili2pgDataset + ".xtf")
     disableValidation = true
@@ -93,7 +89,6 @@ task exportData_Dataset_Kanton(type: Ili2pgExport) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_transfer_v1'
     models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataset = 'Kanton'
     dataFile = file(ili2pgDataset + "_Kanton.xtf")
     disableValidation = true
@@ -116,7 +111,6 @@ task importData_Dataset_Kanton(type: Ili2pgImport) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_kanton_v1'
     models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataFile = file(ili2pgDataset + "_Kanton.xtf")
     disableValidation = true
     finalizedBy deleteXtfFile_Kanton

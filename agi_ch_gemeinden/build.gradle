@@ -47,7 +47,6 @@ task dbImport(type: Ili2pgImport, dependsOn: 'unzipSwissBoundaries3D'){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "agi_swissboundaries3d"
     models = "swissBOUNDARIES3D_ili2_LV95_V1_3"
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     disableValidation = false
     dataFile = file(xtfFilePath)
     deleteData = true

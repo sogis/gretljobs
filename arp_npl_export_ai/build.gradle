@@ -41,7 +41,6 @@ task deleteMgdmLandUsesPlansData(type: SqlExecutor) {
 task importMgdmHauptnutzung(type: Ili2pgImport, dependsOn: 'deleteMgdmLandUsesPlansData') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelMgdmHauptnutzung
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dbschema = dbSchemaMgdmLandUsePlans
     dataFile = file("Hauptnutzung_CH_V1_1.xml")
     disableValidation = true
@@ -55,7 +54,6 @@ task transferLandUsePlansData(type: SqlExecutor, dependsOn: 'importMgdmHauptnutz
 task exportMgdmLandUsePlans(type: Ili2pgExport, dependsOn: 'transferLandUsePlansData') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelMgdmLandUsePlans
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dbschema = dbSchemaMgdmLandUsePlans
     dataFile = file(mgdmLandUsePlansXtfFileName)
     disableValidation = true
@@ -106,7 +104,6 @@ task transferNoiseSensitivityLevels(type: SqlExecutor) {
 task exportMgdmNoiseSensitivityLevels(type: Ili2pgExport, dependsOn: 'transferNoiseSensitivityLevels') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelMgdmNoiseSensitivityLevels
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dbschema = dbSchemaMgdmSensitivityLevels
     dataFile = file(mgdmSensitivityLevelsXtfFileName)
     disableValidation = true
@@ -151,7 +148,6 @@ task transferWaldabstandslinien(type: SqlExecutor) {
 task exportMgdmWaldabstandslinien(type: Ili2pgExport, dependsOn: 'transferWaldabstandslinien') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelMgdmWaldabstand
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dbschema = dbSchemaWaldabstand
     dataFile = file(mgdmWaldabstandXtfFileName)
     disableValidation = true
