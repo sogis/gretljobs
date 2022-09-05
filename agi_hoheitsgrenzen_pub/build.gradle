@@ -9,7 +9,7 @@ description = "GRETL-Job für Datenumbau der Hoheitsgrenzen innerhalb der edit-D
 defaultTasks 'createGeometriesAgiHoheitsgrenzen'
 
 
-task createGeometriesAgiHoheitsgrenzen(type: Db2Db) {
+task transferAgiHoheitsgrenzen(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = sourceDb
     transferSets = [
