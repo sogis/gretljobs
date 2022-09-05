@@ -13,7 +13,7 @@ task transferAgiHoheitsgrenzen(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = sourceDb
     transferSets = [
-            new TransferSet('agi_hoheitsgrenzen_edit_gemeindegrenze.sql',
+            new TransferSet('agi_hoheitsgrenzen_edit_pub_gemeindegrenze.sql',
                     'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze', true),
             new TransferSet('agi_hoheitsgrenzen_edit_pub_gemeindename_a4.sql',
                     'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindename_a4', true),
