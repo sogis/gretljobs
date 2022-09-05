@@ -13,7 +13,6 @@ task exportDataEdit (type: Ili2pgExport) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'awjf_statische_waldgrenze'
     models = 'SO_AWJF_Statische_Waldgrenzen_20191119'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataFile= file(FileName)
     disableValidation = true
 }
@@ -38,7 +37,6 @@ task exportData (type: Ili2pgExport, dependsOn: 'transferStatischeWaldgrenzen') 
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'awjf_statische_waldgrenze_staging_v1'
     models = 'SO_AWJF_Statische_Waldgrenzen_Publikation_20191119'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataFile= file(FileNamePub)
     disableValidation = true
 }
@@ -62,7 +60,6 @@ task importXTF_pub(type: Ili2pgImport) {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'awjf_statische_waldgrenze_pub_v1'
     models = 'SO_AWJF_Statische_Waldgrenzen_Publikation_20191119'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataFile = file(FileNamePub)
     deleteData = true
     disableValidation = true

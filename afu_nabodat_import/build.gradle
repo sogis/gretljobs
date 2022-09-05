@@ -27,7 +27,6 @@ task importNabodat(type: Ili2pgReplace, dependsOn: unpackFiles){
      database = [dbUriEdit, dbUserEdit, dbPwdEdit]
      dbschema = 'afu_bodendaten_nabodat_v1'
      models = 'NABODAT_ErgebnisseBodenbelastung_Punktdaten_V1_1'
-     if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
      dataFile = 'upload/data.xtf'
      dataset = 'punktdaten'
      importTid = 'true'

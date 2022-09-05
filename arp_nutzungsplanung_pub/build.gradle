@@ -20,7 +20,6 @@ task exportDataEdit (type: Ili2pgExport, dependsOn: 'deleteData_transfer_pub') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_v1'
     models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataset = bfsnr
     dataFile= file(bfsnr + ".xtf")
     disableValidation = true
@@ -47,7 +46,6 @@ task exportData (type: Ili2pgExport, dependsOn: 'transferData') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_transfer_pub_v1'
     models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataFile= file(bfsnr + "_pub.xtf")
     disableValidation = true
 }
@@ -64,7 +62,6 @@ task importXTF_stage(type: Ili2pgReplace, dependsOn: 'validateData') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'arp_nutzungsplanung_staging_v1'
     models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataset = bfsnr
     dataFile = file(bfsnr + "_pub.xtf")
     disableValidation = true
@@ -74,7 +71,6 @@ task delete_Dataset_stage(type: Ili2pgDelete) {
     description = "Löscht Daten mit dem angegebenen Datasetname (BFS-Nr.) aus dem Schema arp_nutzungsplanung_staging"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dbschema = 'arp_nutzungsplanung_staging_v1'
     dataset = bfsnr
 }
@@ -84,7 +80,6 @@ task importXTF_pub(type: Ili2pgReplace) {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'arp_nutzungsplanung_pub_v1'
     models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataset = bfsnr
     dataFile = file(bfsnr + "_pub.xtf")
     disableValidation = true

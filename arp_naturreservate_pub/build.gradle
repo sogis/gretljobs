@@ -13,7 +13,6 @@ task exportDataEdit (type: Ili2pgExport) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_naturreservate'
     models = 'SO_ARP_Naturreservate_20200609'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataFile= file(FileName)
     disableValidation = true
 }
@@ -43,7 +42,6 @@ task exportData (type: Ili2pgExport, dependsOn: 'transferArpNaturreservate') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'arp_naturreservate_staging_v1'
     models = 'SO_ARP_Naturreservate_Publikation_20200609'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataFile= file(FileNamePub)
     disableValidation = true
 }
@@ -70,7 +68,6 @@ task importXTF_pub(type: Ili2pgImport) {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'arp_naturreservate_pub'
     models = 'SO_ARP_Naturreservate_Publikation_20200609'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataFile = file(FileNamePub)
     deleteData = true
     disableValidation = true

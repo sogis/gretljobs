@@ -51,7 +51,6 @@ task exportAfuGewaesserschutz(type: Ili2pgExport, dependsOn: transferZonen) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'afu_gewaesserschutz' 
     models = 'PlanerischerGewaesserschutz_LV95_V1_1'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataFile = exportFile
     disableValidation = true
   

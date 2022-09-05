@@ -36,7 +36,6 @@ task importMJPNL(type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_mjpnl_v1"
     models = "SO_ARP_MJPNL_20201026"
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     topics = "SO_ARP_MJPNL_20201026.MJPNL"
     dataFile = "upload/mjpnl_init.xtf"
     dataset = "MJPNL Basisdaten"
@@ -63,7 +62,6 @@ task importGELAN(type: Ili2pgReplace, dependsOn: downloadData) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_mjpnl_v1"
     models = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     topics = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426.Betriebsdaten_Strukturdaten'
     dataFile = Paths.get(pathToTempFolder, 'Export_ais_agrardaten.xtf')
     dataset = 'GELAN'

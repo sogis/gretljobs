@@ -75,7 +75,6 @@ task exportFFF(type: Ili2pgExport, dependsOn: 'fff_to_pub_db') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = "alw_fruchtfolgeflaechen_pub_v1"
     models = "SO_ALW_Fruchtfolgeflaechen_Publikation_20220110"
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dataFile = exportFile
 }
 

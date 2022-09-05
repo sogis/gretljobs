@@ -12,7 +12,6 @@ task exportData_Dataset_BFSNr(type: Ili2pgExport) {
     description = "Exportiert die zu löschenden Daten mit dem angegebenden Datasetname (BFS-Nr.)aus dem Schema arp_nutzungsplanung_v1 in ein INTERLIS-Datei. Dient zur Sicherung"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dbschema = 'arp_nutzungsplanung_v1'
     dataset = bfsnr
     dataFile = "$rootDir/" + bfsnr + ".xtf"
@@ -23,7 +22,6 @@ task delete_Dataset_BFSNr(type: Ili2pgDelete, dependsOn: 'exportData_Dataset_BFS
     description = "Löscht Daten mit dem angegebenen Datasetname (BFS-Nr.) aus dem Schema arp_nutzungsplanung_v1"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dbschema = 'arp_nutzungsplanung_v1'
     dataset = bfsnr
 }

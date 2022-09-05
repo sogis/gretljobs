@@ -20,7 +20,6 @@ Package and upload to the KKGEO AI
 task exportMgdmWildruhezonen(type: Ili2pgExport) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = "Wildruhezonen_LV95_V2_1"
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
     dbschema = "arp_wildruhezonen_mgdm_v1"
     dataFile = file(xtfFileName)
     disableValidation = true
