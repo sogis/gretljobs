@@ -45,7 +45,6 @@ datasets.each { dataset ->
         database = [dbUriPub, dbUserPub, dbPwdPub]
         dbschema = "agi_mopublic_pub_export"
         models = "SO_AGI_MOpublic_20201009"
-        if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
         logFile = file(Paths.get(pathToTempFolder, dataset.toString() + "_" + todaysDate  + "_export.log"))
         dataFile = file(Paths.get(pathToTempFolder, dataset.toString() + ".xtf"))
         disableValidation = true
