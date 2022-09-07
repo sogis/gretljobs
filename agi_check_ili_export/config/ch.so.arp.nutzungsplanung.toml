@@ -1,2 +1,3 @@
 ["PARAMETER"]
-validation="off"
+defaultGeometryTypeValidation="off"
+areaOverlapValidation="off"

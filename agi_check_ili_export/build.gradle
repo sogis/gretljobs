@@ -59,22 +59,31 @@ if (gretlEnvironment == "test") {
     bucket = "ch.so.agi.geodata"
 }
 
+def editIdentifier = "_edit"
+
 datasets.each { dataset ->
     def modelNames = dataset.models
     def schema = dataset.dbschema
     def dbdatabase = dataset.database
     def datasetId = dataset.datasetId
-    def isVersion3 = dataset.version3
+    def isPublic = dataset.isPublic
+    def exportModel = dataset.exportModel
+    def readConfigFromDb = dataset.configReadFromDb
+    //def isVersion3 = dataset.version3
 
     task "exportDataset_$datasetId"(type: Ili2pgExport) {
         database = dbdatabase
         dbschema = schema
         models = modelNames
+        if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
         disableValidation = true
         logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_export.log"))
         //dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf"))
         dataFile = file(Paths.get(pathToTempFolder, datasetId + ".xtf"))
-        export3 = isVersion3 ? true : false
+        if (exportModel != null) exportModels = exportModel
+        // macht anscheinend nicht das, was ich mir erhofft habe (Modelle in DB ignorieren)
+        //if (readConfigFromDb == false) configReadFromDb = false
+        //export3 = isVersion3 ? true : false
     }
 
     task "validateData_$datasetId"(type: IliValidator, dependsOn: "exportDataset_$datasetId") {
@@ -104,15 +113,153 @@ datasets.each { dataset ->
         bucketName = bucket
         endPoint = "https://s3.eu-central-1.amazonaws.com"
         region = "eu-central-1"
-        acl = "private"
-        metaData = ["lastEditingDate":todaysDate]
+        acl = isPublic ? "public-read" : "private"
+        metaData = ["exportDate":todaysDate]
     }
+
+    task "importDatasetGpkg_$datasetId"(type: Ili2gpkgImport, dependsOn: "uploadDatasetXtf_$datasetId") {
+        onlyIf {
+            !datasetId.contains(editIdentifier) && isPublic
+        }
+        models = (exportModel != null) ? exportModel : modelNames
+        if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
+        dataFile = file(Paths.get(pathToTempFolder, datasetId + ".xtf"))
+        dbfile = file(Paths.get(pathToTempFolder, datasetId + ".gpkg"))
+        disableValidation = true
+        defaultSrsCode = 2056
+        nameByTopic = true
+        createEnumTabs = true
+        createMetaInfo = true
+        strokeArcs = true
+        coalesceJson = true
+        createGeomIdx = true
+    }
+
+    task "zipDatasetGpkg_$datasetId"(type: Zip, dependsOn: "importDatasetGpkg_$datasetId") {
+        onlyIf {
+            !datasetId.contains(editIdentifier) && isPublic
+        }
+        from pathToTempFolder
+        include "$datasetId*.gpkg"
+        include "$datasetId*_validation.log"
+        archiveName datasetId + "_gpkg.zip"
+        destinationDir(file(pathToTempFolder))
+    }    
+
+    task "uploadDatasetGpkg_$datasetId"(type: S3Upload, dependsOn: "zipDatasetGpkg_$datasetId") {
+        onlyIf {
+            !datasetId.contains(editIdentifier) && isPublic
+        }
+        accessKey = awsAccessKeyAgi
+        secretKey = awsSecretAccessKeyAgi
+        sourceDir = file(Paths.get(pathToTempFolder, datasetId + "_gpkg.zip"))
+        bucketName = bucket
+        endPoint = "https://s3.eu-central-1.amazonaws.com"
+        region = "eu-central-1"
+        acl = isPublic ? "public-read" : "private"
+        metaData = ["exportDate":todaysDate]
+    }    
+
+    task "gpkg2Shp_$datasetId"(type: Gpkg2Shp, dependsOn: "uploadDatasetGpkg_$datasetId") {
+        onlyIf {
+            !datasetId.contains(editIdentifier) && isPublic
+        }
+        dataFile = file(Paths.get(pathToTempFolder, datasetId + ".gpkg")) 
+        outputDir = file(pathToTempFolder)
+    }
+
+    task "zipDatasetShp_$datasetId"(type: Zip, dependsOn: "gpkg2Shp_$datasetId") {
+        onlyIf {
+            !datasetId.contains(editIdentifier) && isPublic
+        }
+        from pathToTempFolder
+        include "*.shp"
+        include "*.dbf"
+        include "*.shx"
+        include "*.prj" 
+        include "$datasetId*_validation.log"
+        archiveName datasetId + "_shp.zip"
+        destinationDir(file(pathToTempFolder))
+
+        finalizedBy "removeShpFiles_$datasetId"
+    }      
+
+    task "removeShpFiles_$datasetId"(type: Delete) {
+        onlyIf {
+            !datasetId.contains(editIdentifier) && isPublic
+        }
+        delete fileTree(pathToTempFolder) {
+            include '**/*.shp'
+            include '**/*.dbf'
+            include '**/*.shx'
+            include '**/*.prj'
+            include '**/*.fix'
+        }
+    }
+
+    task "uploadDatasetShp_$datasetId"(type: S3Upload, dependsOn: "zipDatasetShp_$datasetId") {
+        onlyIf {
+            !datasetId.contains(editIdentifier) && isPublic
+        }
+        accessKey = awsAccessKeyAgi
+        secretKey = awsSecretAccessKeyAgi
+        sourceDir = file(Paths.get(pathToTempFolder, datasetId + "_shp.zip"))
+        bucketName = bucket
+        endPoint = "https://s3.eu-central-1.amazonaws.com"
+        region = "eu-central-1"
+        acl = isPublic ? "public-read" : "private"
+        metaData = ["exportDate":todaysDate]
+    }
+
+    task "gpkg2Dxf_$datasetId"(type: Gpkg2Dxf, dependsOn: "uploadDatasetShp_$datasetId") {
+        onlyIf {
+            !datasetId.contains(editIdentifier) && isPublic
+        }
+        dataFile = file(Paths.get(pathToTempFolder, datasetId + ".gpkg")) 
+        outputDir = file(pathToTempFolder)
+    }
+
+    task "zipDatasetDxf_$datasetId"(type: Zip, dependsOn: "gpkg2Dxf_$datasetId") {
+        onlyIf {
+            !datasetId.contains(editIdentifier) && isPublic
+        }
+        from pathToTempFolder
+        include "*.dxf"
+        include "$datasetId*_validation.log"
+        archiveName datasetId + "_dxf.zip"
+        destinationDir(file(pathToTempFolder))
+
+        finalizedBy "removeDxfFiles_$datasetId"
+    }      
+
+    task "removeDxfFiles_$datasetId"(type: Delete) {
+        onlyIf {
+            !datasetId.contains(editIdentifier) && isPublic
+        }
+        delete fileTree(pathToTempFolder) {
+            include '**/*.dxf'
+        }
+    }    
+
+    task "uploadDatasetDxf_$datasetId"(type: S3Upload, dependsOn: "zipDatasetDxf_$datasetId") {
+        onlyIf {
+            !datasetId.contains(editIdentifier) && isPublic
+        }
+        accessKey = awsAccessKeyAgi
+        secretKey = awsSecretAccessKeyAgi
+        sourceDir = file(Paths.get(pathToTempFolder, datasetId + "_dxf.zip"))
+        bucketName = bucket
+        endPoint = "https://s3.eu-central-1.amazonaws.com"
+        region = "eu-central-1"
+        acl = isPublic ? "public-read" : "private"
+        metaData = ["lastEditingDate":todaysDate]
+    }       
 }
 
 task exportAllData() {
     description = "Export aggregation task."
     dependsOn {
-        tasks.findAll { task -> task.name.startsWith('uploadDatasetXtf_') }
+        tasks.findAll { task -> task.name.startsWith('uploadDatasetDxf_') }
     }
 }
 
@@ -121,7 +268,7 @@ task zipLogFiles(type: Zip) {
     include "*_export.log"
     include "*_validation.log"
     include "*_validation.xtf"
-    archiveName  "datenvalidierung_"+todaysDate+".zip"
+    archiveName "datenvalidierung_"+todaysDate+".zip"
     destinationDir(file(pathToTempFolder))
 }
 zipLogFiles.mustRunAfter exportAllData
