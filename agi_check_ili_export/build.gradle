@@ -75,7 +75,6 @@ datasets.each { dataset ->
         database = dbdatabase
         dbschema = schema
         models = modelNames
-        if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
         disableValidation = true
         logFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate  + "_export.log"))
         //dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf"))
