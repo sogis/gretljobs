@@ -93,12 +93,12 @@ git checkout -b branchname
 * Bitte an den AGI SQL-Richtlinien orientieren.
 * Variablen mit `def` definieren und nicht mit `ext{}`
 * Für den Zugriff auf Datenbanken, auf andere Server und auf den GRETL-Speicherplatz folgende Variablen verwenden:
-  * `dbUriSogis`, `dbUserSogis`, `dbPwdSogis`
-  * `dbUriVerisoNplso`, `dbUserVerisoNplso`, `dbPwdVerisoNplso`
   * `dbUriEdit`, `dbUserEdit`, `dbPwdEdit`
   * `dbUriPub`, `dbUserPub`, `dbPwdPub`
   * `dbUriOereb`, `dbUserOereb`, `dbPwdOereb`
   * `dbUriOerebV2`, `dbUserOerebV2`, `dbPwdOerebV2`
+  * `dbUriSogis`, `dbUserSogis`, `dbPwdSogis`
+  * `dbUriVerisoNplso`, `dbUserVerisoNplso`, `dbPwdVerisoNplso`
   * `dbUriAltlast4web`, `dbUserAltlast4web`, `PdbPwdAltlast4web`
   * `dbUriKaso`, `dbUserKaso`, `dbPwdKaso`
   * `dbUriCapitastra`, `dbUserCapitastra`, `dbPwdCapitastra`
