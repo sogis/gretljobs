@@ -127,7 +127,7 @@ Wandelt den aktuellen Export zu einem Geopackage um und lädt ihn hoch
 */
 task importDataToGeopackage(type: Ili2gpkgImport, dependsOn: 'exportFFF') {
     models = "SO_ALW_Fruchtfolgeflaechen_Publikation_20220110"
-    if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     dataFile = file(exportFile);
     dbfile = file(exportFileGeopackage)  
     disableValidation = true //Da schon der Export validiert wurde, muss der Import nicht auch noch mal validiert werden!

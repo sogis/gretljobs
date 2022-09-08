@@ -76,7 +76,7 @@ datasets.each { dataset ->
 
     task "importDatasetGpkg_$dataset"(type: Ili2gpkgImport, dependsOn: "zipDatasetXtf_$dataset") {
         models = "SO_AGI_MOpublic_20201009"
-        if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
+        if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
         dataFile = file(Paths.get(pathToTempFolder, dataset.toString() + ".xtf"))
         dbfile = file(Paths.get(pathToTempFolder, dataset.toString() + ".gpkg"))
         disableValidation = true

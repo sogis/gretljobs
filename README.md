@@ -117,13 +117,17 @@ git checkout -b branchname
   * `solrIndexupdaterBaseUrl` (die interne Basis-URL zum Indexupdater für Solr)
   * `gretlShare`
   * `gretlEnvironment` (der Wert dieser Variable ist je nach Umgebung `test`, `integration` oder `production`)
-* Bei _Ili2gpkg_-Tasks und _IliValidator_-Tasks die folgende Option setzen,
+* Bei _IliValidator_-Tasks und _Ili2gpkgImport_-Tasks die folgende Option setzen,
   damit in den Betriebs-Umgebungen für den Download der benötigten Modelle
   die Anzahl abzufragender INTERLIS-Repositories reduziert wird:
 
-  Bei _Ili2gpkg_-Tasks: `if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir`
+  `if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir`
 
-  Bei _IliValidator_-Tasks: `if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir`
+  (Falls das Modell durch einen vorgängigen Schema-Import (`--schemaimport`)
+  allerdings bereits in der GeoPackage-Datei enthalten sein sollte,
+  muss die `modeldir`-Option nicht gesetzt werden,
+  weil _ili2gpkgImport_ dann das Modell im GeoPackage findet
+  und also nicht online danach suchen muss.)
 
   (Beispiele siehe https://github.com/sogis/gretljobs/commit/de8cc2f550d05442f558f077b85528bc2542c452)
 
