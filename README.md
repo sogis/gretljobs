@@ -97,6 +97,7 @@ git checkout -b branchname
   * `dbUriPub`, `dbUserPub`, `dbPwdPub`
   * `dbUriOereb`, `dbUserOereb`, `dbPwdOereb`
   * `dbUriOerebV2`, `dbUserOerebV2`, `dbPwdOerebV2`
+  * `dbUriSimi`, `dbUserSimi`, `dbPwdSimi`
   * `dbUriSogis`, `dbUserSogis`, `dbPwdSogis`
   * `dbUriVerisoNplso`, `dbUserVerisoNplso`, `dbPwdVerisoNplso`
   * `dbUriAltlast4web`, `dbUserAltlast4web`, `PdbPwdAltlast4web`
@@ -107,6 +108,7 @@ git checkout -b branchname
   * `ftpServerInfogrips`, `ftpUserInfogrips`, `ftpPwdInfogrips`
   * `ftpUserEmapis`, `ftpPwdEmapis`
   * `sftpServerGelan`, `sftpUserGelan`, `sftpPwdGelan`
+  * `sftpServerSogis`, `sftpUserSogis`, `sftpPwdSogis`
   * `aiServer`, `aiUser`, `aiPwd`
   * `infofloraUser`, `infofloraPwd`
   * `igelToken`
@@ -115,6 +117,7 @@ git checkout -b branchname
   * `awsAccessKeyAfu`, `awsSecretAccessKeyAfu`
   * `awsAccessKeyAgi`, `awsSecretAccessKeyAgi`
   * `geoservicesHostName` (der Wert dieser Variable ist je nach Umgebung `geo-t.so.ch`, `geo-i.so.ch` oder `geo.so.ch`)
+  * `simiMetadataServiceUrl`, `simiMetadataServiceUser`, `simiMetadataServicePwd`
   * `solrIndexupdaterBaseUrl` (die interne Basis-URL zum Indexupdater für Solr)
   * `gretlEnvironment` (der Wert dieser Variable ist je nach Umgebung `test`, `integration` oder `production`)
 
