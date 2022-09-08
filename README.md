@@ -98,6 +98,7 @@ git checkout -b branchname
   * `dbUriEdit`, `dbUserEdit`, `dbPwdEdit`
   * `dbUriPub`, `dbUserPub`, `dbPwdPub`
   * `dbUriOereb`, `dbUserOereb`, `dbPwdOereb`
+  * `dbUriOerebV2`, `dbUserOerebV2`, `dbPwdOerebV2`
   * `dbUriAltlast4web`, `dbUserAltlast4web`, `PdbPwdAltlast4web`
   * `dbUriKaso`, `dbUserKaso`, `dbPwdKaso`
   * `dbUriCapitastra`, `dbUserCapitastra`, `dbPwdCapitastra`
