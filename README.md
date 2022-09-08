@@ -117,13 +117,10 @@ git checkout -b branchname
   * `solrIndexupdaterBaseUrl` (die interne Basis-URL zum Indexupdater für Solr)
   * `gretlShare`
   * `gretlEnvironment` (der Wert dieser Variable ist je nach Umgebung `test`, `integration` oder `production`)
-* Bei _Ili2gpkg_-Tasks und _IliValidator_-Tasks die folgende Option setzen,
+* Bei _IliValidator_-Tasks und _Ili2gpkg_-Tasks die folgende Option setzen,
   damit in den Betriebs-Umgebungen für den Download der benötigten Modelle
   die Anzahl abzufragender INTERLIS-Repositories reduziert wird:
-
-  Bei _Ili2gpkg_-Tasks: `if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir`
-
-  Bei _IliValidator_-Tasks: `if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir`
+  `if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir`
 
   (Beispiele siehe https://github.com/sogis/gretljobs/commit/de8cc2f550d05442f558f077b85528bc2542c452)
 

@@ -121,7 +121,7 @@ datasets.each { dataset ->
             !datasetId.contains(editIdentifier) && isPublic
         }
         models = (exportModel != null) ? exportModel : modelNames
-        if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
+        if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
         dataFile = file(Paths.get(pathToTempFolder, datasetId + ".xtf"))
         dbfile = file(Paths.get(pathToTempFolder, datasetId + ".gpkg"))
         disableValidation = true
@@ -316,7 +316,7 @@ task uploadLogZipFileLatest(type: S3Upload, dependsOn: "uploadLogZipFileDate") {
 
 //     task "importDatasetGpkg_$datasetId"(type: Ili2gpkgImport, dependsOn: "zipDatasetXtf_$datasetId") {
 //         models = modelNames
-//         if (findProperty('ili2dbModeldir')) modeldir = ili2dbModeldir
+//         if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 //         dataFile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf"))
 //         dbfile = file(Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".gpkg"))
 //         disableValidation = true
