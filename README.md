@@ -92,7 +92,7 @@ git checkout -b branchname
 * Pro Tabelle sollte eine SQL-Datei verwendet werden.
 * Bitte an den AGI SQL-Richtlinien orientieren.
 * Variablen mit `def` definieren und nicht mit `ext{}`
-* Für den Zugriff auf Datenbanken, auf andere Server und auf den GRETL-Speicherplatz folgende Variablen verwenden:
+* Für den Zugriff auf Datenbanken und andere Ressourcen folgende Variablen verwenden:
   * `dbUriEdit`, `dbUserEdit`, `dbPwdEdit`
   * `dbUriPub`, `dbUserPub`, `dbPwdPub`
   * `dbUriOereb`, `dbUserOereb`, `dbPwdOereb`
@@ -116,7 +116,6 @@ git checkout -b branchname
   * `awsAccessKeyAgi`, `awsSecretAccessKeyAgi`
   * `geoservicesHostName` (der Wert dieser Variable ist je nach Umgebung `geo-t.so.ch`, `geo-i.so.ch` oder `geo.so.ch`)
   * `solrIndexupdaterBaseUrl` (die interne Basis-URL zum Indexupdater für Solr)
-  * `gretlShare`
   * `gretlEnvironment` (der Wert dieser Variable ist je nach Umgebung `test`, `integration` oder `production`)
 
   Die Anleitung, wie man solche Ressourcen (z.B. DB-Verbindungen)
