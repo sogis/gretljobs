@@ -117,6 +117,14 @@ git checkout -b branchname
   * `solrIndexupdaterBaseUrl` (die interne Basis-URL zum Indexupdater für Solr)
   * `gretlShare`
   * `gretlEnvironment` (der Wert dieser Variable ist je nach Umgebung `test`, `integration` oder `production`)
+
+  Die Anleitung, wie man solche Ressourcen (z.B. DB-Verbindungen)
+  in Jenkins definiert oder bestehende Ressourcen bearbeitet,
+  ist unter
+  https://github.com/sogis/gretl/tree/master/openshift#create-or-update-resources-to-be-used-by-gretl.
+  Die Anleitung, wie man neue Credentials anlegt oder bestehende bearbeitet,
+  ist unter
+  https://github.com/sogis/gretl/tree/master/openshift#create-or-update-secrets-to-be-used-by-gretl.
 * Bei _IliValidator_-Tasks und _Ili2gpkgImport_-Tasks die folgende Option setzen,
   damit in den Betriebs-Umgebungen für den Download der benötigten Modelle
   die Anzahl abzufragender INTERLIS-Repositories reduziert wird:
@@ -132,8 +140,6 @@ git checkout -b branchname
   Beispiele:
   https://github.com/sogis/gretljobs/blob/eb6f40ffb9c9ec3e41c2d46220780636a65db7e0/agi_mopublic_pub_export/build.gradle#L62,
   https://github.com/sogis/gretljobs/blob/eb6f40ffb9c9ec3e41c2d46220780636a65db7e0/agi_mopublic_pub_export/build.gradle#L79
-
- Die Anleitung, wie man solche Ressourcen (z.B. DB-Verbindungen) in Jenkins definiert oder bestehende Ressourcen bearbeitet, ist unter https://github.com/sogis/gretl/tree/master/openshift#create-or-update-resources-to-be-used-by-gretl. Die Anleitung, wie man neue Credentials anlegt oder bestehende bearbeitet, ist unter https://github.com/sogis/gretl/tree/master/openshift#create-or-update-secrets-to-be-used-by-gretl.
 
 ### Files
 
