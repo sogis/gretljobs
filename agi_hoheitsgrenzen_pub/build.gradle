@@ -39,13 +39,6 @@ task createGeometriesAgiHoheitsgrenzen(type: SqlExecutor, dependsOn:'transferAgi
             'agi_hoheitsgrenzen_edit_pub_bezirksgrenze_generalisiert.sql',
             'agi_hoheitsgrenzen_edit_pub_kantonsgrenze_generalisiert.sql'
     ]
-    
-    finalizedBy 'fixGeometries'
-}
-
-task fixGeometries(type: SqlExecutor) {
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlFiles = ['fix_geometries.sql']
 }
 
 task transferAgiHoheitsgrenzenToPubDb(type: Db2Db, dependsOn:'createGeometriesAgiHoheitsgrenzen') {
@@ -77,6 +70,13 @@ task transferAgiHoheitsgrenzenToPubDb(type: Db2Db, dependsOn:'createGeometriesAg
             new TransferSet('agi_hoheitsgrenzen_edit_pub_to_pub_kantonsname_a4.sql',
                     'agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsname_a4', true)
     ]
+    
+    finalizedBy 'fixGeometries'
+}
+
+task fixGeometries(type: SqlExecutor) {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['fix_geometries.sql']
 }
 
 task refreshSolr(type:Exec, dependsOn:'transferAgiHoheitsgrenzenToPubDb') {
