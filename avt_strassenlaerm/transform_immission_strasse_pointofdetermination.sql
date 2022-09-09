@@ -20,10 +20,10 @@ WITH evaluation_exposure_limit_value AS
                 CAST(SUBSTRING(exposure_limit_value_catalogue_n.acode, 4, 1) AS INTEGER)
             ) AS min_exposure_limit
         FROM
-            avt_strassenlaerm.immission_strasse_pointofdetermination AS pointofdetermination
-            LEFT JOIN avt_strassenlaerm.codelisten_exposure_limit_value_catalogue AS exposure_limit_value_catalogue_d
+            avt_strassenlaerm_v1.immission_strasse_pointofdetermination AS pointofdetermination
+            LEFT JOIN avt_strassenlaerm_v1.codelisten_exposure_limit_value_catalogue AS exposure_limit_value_catalogue_d
             ON pointofdetermination.exposure_limit_value_d = exposure_limit_value_catalogue_d.t_id
-            LEFT JOIN avt_strassenlaerm.codelisten_exposure_limit_value_catalogue AS exposure_limit_value_catalogue_n
+            LEFT JOIN avt_strassenlaerm_v1.codelisten_exposure_limit_value_catalogue AS exposure_limit_value_catalogue_n
             ON pointofdetermination.exposure_limit_value_n = exposure_limit_value_catalogue_n.t_id    
     ) AS foo
 )
@@ -43,12 +43,12 @@ SELECT
     pointofdetermination.inklusive_nationalstrasse AS nationalstrasse_beruecksichtigt,
     pointofdetermination.geometry_pod AS geometrie
 FROM
-    avt_strassenlaerm.immission_strasse_pointofdetermination AS pointofdetermination
-    LEFT JOIN avt_strassenlaerm.immission_strasse_dispersion_calculation AS dispersion_calculation
+    avt_strassenlaerm_v1.immission_strasse_pointofdetermination AS pointofdetermination
+    LEFT JOIN avt_strassenlaerm_v1.immission_strasse_dispersion_calculation AS dispersion_calculation
     ON pointofdetermination.dispersion_calculation = dispersion_calculation.t_id
-    LEFT JOIN avt_strassenlaerm.codelisten_pointofdetermination_catalogue AS pointofdetermination_catalogue
+    LEFT JOIN avt_strassenlaerm_v1.codelisten_pointofdetermination_catalogue AS pointofdetermination_catalogue
     ON pointofdetermination.pointofdetermination_t = pointofdetermination_catalogue.t_id
-    LEFT JOIN avt_strassenlaerm.codelisten_operation_status_catalogue AS operation_status_catalogue
+    LEFT JOIN avt_strassenlaerm_v1.codelisten_operation_status_catalogue AS operation_status_catalogue
     ON pointofdetermination.operation_status = operation_status_catalogue.t_id 
     LEFT JOIN evaluation_exposure_limit_value
     ON pointofdetermination.t_id = evaluation_exposure_limit_value.t_id

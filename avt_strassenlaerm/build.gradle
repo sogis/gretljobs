@@ -29,7 +29,7 @@ task downloadData(type: Download) {
 task replaceDataset (type: Ili2pgReplace, dependsOn: downloadData) {
     description = "Ersetzt die Daten in der Edit-DB."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = "avt_strassenlaerm"
+    dbschema = "avt_strassenlaerm_v1"
     models = "SO_AVT_Strassenlaerm_20190806"
     disableValidation = true
     importTid = true
@@ -43,6 +43,6 @@ task transferData(type: Db2Db, dependsOn: replaceDataset) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet("transform_immission_strasse_pointofdetermination.sql", 'avt_strassenlaerm_pub.strassenlaerm_belastung', true)
+            new TransferSet("transform_immission_strasse_pointofdetermination.sql", 'avt_strassenlaerm_pub_v1.strassenlaerm_belastung', true)
     ];
 }
