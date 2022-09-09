@@ -54,8 +54,8 @@ task transferGewaesserschutz_pub(type: Db2Db, dependsOn: 'validateData') {
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('gewaesserschutz_schutzzone.sql', 'afu_gewaesserschutz_v1.gewaesserschutz_schutzzone', true),
-            new TransferSet('gewaesserschutz_schutzareal.sql', 'afu_gewaesserschutz_v1.gewaesserschutz_schutzareal', true),
+            new TransferSet('gewaesserschutz_schutzzone.sql', 'afu_gewaesserschutz_pub_v1.gewaesserschutz_schutzzone', true),
+            new TransferSet('gewaesserschutz_schutzareal.sql', 'afu_gewaesserschutz_pub_v1.gewaesserschutz_schutzareal', true),
     ];
 }
 
