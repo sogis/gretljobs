@@ -6,6 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'validateData', 'deleteData_staging_pub'
 
 def fileName = "afu_gewaesserschutz_zonen_areale.xtf"
+def fileNameZip = "afu_gewaesserschutz_zonen_areale.zip"
 def fileNamePub = "afu_gewaesserschutz_zonen_areale_pub.xtf"
 
 task exportDataEdit (type: Ili2pgExport) {
@@ -56,6 +57,33 @@ task transferGewaesserschutz_pub(type: Db2Db, dependsOn: 'validateData') {
             new TransferSet('gewaesserschutz_schutzzone.sql', 'afu_gewaesserschutz_pub_v1.gewaesserschutz_schutzzone', true),
             new TransferSet('gewaesserschutz_schutzareal.sql', 'afu_gewaesserschutz_pub_v1.gewaesserschutz_schutzareal', true),
     ];
+}
+
+task zipXtf(type: Zip, dependsOn: 'transferGewaesserschutz_pub'){
+    from "."
+    include fileName
+    archiveName fileNameZip
+    destinationDir(file("."))
+}
+
+/* Falls man auf geodienste.ch einmalig alles löschen will/muss, muss man
+* einmalig replace_all=true setzen. Curl-Befehl kann natürlich auch lokal
+* ausgeführt werden.
+*
+* Achtung: Die Dateinamen müssen immer gleich sein. Diese werden als 
+* dataset-Name verwendet. Will man die Namen ändern, siehe erster Abschnitt
+* des Kommentars.
+*/
+task uploadXtf(dependsOn: 'zipXtf') {
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=planerischer_gewaesserschutz", "-F",
+                        "lv95_file=@" + Paths.get(".", fileNameZip), "-F", "publish=true", "-F", "replace_all=false",
+                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
 }
 
 task deleteData_staging_pub (type: SqlExecutor, dependsOn: 'transferGewaesserschutz_pub') {
