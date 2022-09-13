@@ -5,21 +5,21 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'validateData', 'deleteData_staging_pub'
 
-def FileName = "afu_gewaesserschutz_zonen_areale.xtf"
-def FileNamePub = "afu_gewaesserschutz_zonen_areale_pub.xtf"
+def fileName = "afu_gewaesserschutz_zonen_areale.xtf"
+def fileNamePub = "afu_gewaesserschutz_zonen_areale_pub.xtf"
 
 task exportDataEdit (type: Ili2pgExport) {
     description = "Exportiert die Daten aus dem Schema afu_grundwasserschutz_zonen_areale in eine INTERLIS-Datei."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'afu_gewaesserschutz_zonen_areale_v1'
     models = 'PlanerischerGewaesserschutz_LV95_V1_1'
-    dataFile= file(FileName)
+    dataFile= file(fileName)
     disableValidation = true
 }
 
 task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
-    dataFiles = file(FileName)
+    dataFiles = file(fileName)
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     failOnError = true
 }
@@ -38,17 +38,16 @@ task exportData (type: Ili2pgExport, dependsOn: 'transferGewaesserschutz_staging
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'afu_gewaesserschutz_staging_v1'
     models = 'SO_AfU_Gewaesserschutz_Publikation_20220817'
-    dataFile= file(FileNamePub)
+    dataFile= file(fileNamePub)
     disableValidation = true
 }
 
 task validateData(type: IliValidator, dependsOn: 'exportData') {
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
-    dataFiles = file(FileNamePub)
+    dataFiles = file(fileNamePub)
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     failOnError = true
 }
-
 
 task transferGewaesserschutz_pub(type: Db2Db, dependsOn: 'validateData') {
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
