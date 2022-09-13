@@ -9,6 +9,8 @@ def fileName = "afu_gewaesserschutz_zonen_areale.xtf"
 def fileNameZip = "afu_gewaesserschutz_zonen_areale.zip"
 def fileNamePub = "afu_gewaesserschutz_zonen_areale_pub.xtf"
 
+def aiLogin = aiUser + ":" + aiPwd
+
 task exportDataEdit (type: Ili2pgExport) {
     description = "Exportiert die Daten aus dem Schema afu_grundwasserschutz_zonen_areale in eine INTERLIS-Datei."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
