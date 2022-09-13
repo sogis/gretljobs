@@ -3,23 +3,24 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'validateData', 'deleteData_staging_pub'
+defaultTasks 'validateData', 'deleteData_staging_pub', 'uploadXtf'
 
-def FileName = "afu_gewaesserschutz_zonen_areale.xtf"
-def FileNamePub = "afu_gewaesserschutz_zonen_areale_pub.xtf"
+def fileName = "afu_gewaesserschutz_zonen_areale.xtf"
+def fileNameZip = "afu_gewaesserschutz_zonen_areale.zip"
+def fileNamePub = "afu_gewaesserschutz_zonen_areale_pub.xtf"
 
 task exportDataEdit (type: Ili2pgExport) {
     description = "Exportiert die Daten aus dem Schema afu_grundwasserschutz_zonen_areale in eine INTERLIS-Datei."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'afu_gewaesserschutz_zonen_areale_v1'
     models = 'PlanerischerGewaesserschutz_LV95_V1_1'
-    dataFile= file(FileName)
+    dataFile= file(fileName)
     disableValidation = true
 }
 
 task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
-    dataFiles = file(FileName)
+    dataFiles = file(fileName)
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     failOnError = true
 }
@@ -38,17 +39,16 @@ task exportData (type: Ili2pgExport, dependsOn: 'transferGewaesserschutz_staging
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'afu_gewaesserschutz_staging_v1'
     models = 'SO_AfU_Gewaesserschutz_Publikation_20220817'
-    dataFile= file(FileNamePub)
+    dataFile= file(fileNamePub)
     disableValidation = true
 }
 
 task validateData(type: IliValidator, dependsOn: 'exportData') {
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
-    dataFiles = file(FileNamePub)
+    dataFiles = file(fileNamePub)
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     failOnError = true
 }
-
 
 task transferGewaesserschutz_pub(type: Db2Db, dependsOn: 'validateData') {
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
@@ -57,6 +57,33 @@ task transferGewaesserschutz_pub(type: Db2Db, dependsOn: 'validateData') {
             new TransferSet('gewaesserschutz_schutzzone.sql', 'afu_gewaesserschutz_pub_v1.gewaesserschutz_schutzzone', true),
             new TransferSet('gewaesserschutz_schutzareal.sql', 'afu_gewaesserschutz_pub_v1.gewaesserschutz_schutzareal', true),
     ];
+}
+
+task zipXtf(type: Zip, dependsOn: 'transferGewaesserschutz_pub'){
+    from "."
+    include fileName
+    archiveName fileNameZip
+    destinationDir(file("."))
+}
+
+/* Falls man auf geodienste.ch alles löschen will/muss (siehe zweiter Abschnitt), muss man
+* einmalig replace_all=true setzen. Curl-Befehl kann natürlich auch lokal
+* ausgeführt werden.
+*
+* Achtung: Die Dateinamen müssen immer gleich sein. Diese werden als 
+* dataset-Name verwendet. Will man die Namen ändern, siehe erster Abschnitt
+* des Kommentars.
+*/
+task uploadXtf(dependsOn: 'zipXtf') {
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=planerischer_gewaesserschutz", "-F",
+                        "lv95_file=@" + Paths.get(".", fileNameZip), "-F", "publish=true", "-F", "replace_all=false",
+                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
 }
 
 task deleteData_staging_pub (type: SqlExecutor, dependsOn: 'transferGewaesserschutz_pub') {
