@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'validateData', 'deleteData_staging_pub'
+defaultTasks 'validateData', 'deleteData_staging_pub', 'uploadXtf'
 
 def fileName = "afu_gewaesserschutz_zonen_areale.xtf"
 def fileNameZip = "afu_gewaesserschutz_zonen_areale.zip"
@@ -66,7 +66,7 @@ task zipXtf(type: Zip, dependsOn: 'transferGewaesserschutz_pub'){
     destinationDir(file("."))
 }
 
-/* Falls man auf geodienste.ch einmalig alles löschen will/muss, muss man
+/* Falls man auf geodienste.ch alles löschen will/muss (siehe zweiter Abschnitt), muss man
 * einmalig replace_all=true setzen. Curl-Befehl kann natürlich auch lokal
 * ausgeführt werden.
 *
