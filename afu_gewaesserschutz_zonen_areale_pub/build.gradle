@@ -1,5 +1,6 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
 
 apply plugin: 'ch.so.agi.gretl'
 
@@ -8,6 +9,8 @@ defaultTasks 'validateData', 'deleteData_staging_pub', 'uploadXtf'
 def fileName = "afu_gewaesserschutz_zonen_areale.xtf"
 def fileNameZip = "afu_gewaesserschutz_zonen_areale.zip"
 def fileNamePub = "afu_gewaesserschutz_zonen_areale_pub.xtf"
+
+def aiLogin = aiUser + ":" + aiPwd
 
 task exportDataEdit (type: Ili2pgExport) {
     description = "Exportiert die Daten aus dem Schema afu_grundwasserschutz_zonen_areale in eine INTERLIS-Datei."
