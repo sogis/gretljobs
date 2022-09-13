@@ -3,23 +3,26 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'validateData'
+defaultTasks 'uploadXtf'
 
-def FileName = "afu_gewaesserschutz_bereiche.xtf"
-def FileNamePub = "afu_gewaesserschutz_bereiche_pub.xtf"
+def fileName = "afu_gewaesserschutz_bereiche.xtf"
+def fileNameZip = "afu_gewaesserschutz_bereiche.zip"
+def fileNamePub = "afu_gewaesserschutz_bereiche_pub.xtf"
+
+def aiLogin = aiUser + ":" + aiPwd
 
 task exportDataEdit (type: Ili2pgExport) {
     description = "Exportiert die Daten aus dem Schema afu_grundwasserschutz_bereiche in eine INTERLIS-Datei."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'afu_gewaesserschutz_bereiche_v1'
     models = 'PlanerischerGewaesserschutz_LV95_V1_1'
-    dataFile= file(FileName)
+    dataFile= file(fileName)
     disableValidation = true
 }
 
 task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
-    dataFiles = file(FileName)
+    dataFiles = file(fileName)
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     failOnError = true
 }
@@ -34,17 +37,45 @@ task transferGewaesserschutz(type: Db2Db, dependsOn: 'validateDataEdit') {
 }
 
 task exportData (type: Ili2pgExport, dependsOn: 'transferGewaesserschutz') {
-    description = "Exportiert die umgebauten Daten aus dem Schema afu_gewaesserschutz_pub in ein INTERLIS-Datei."
+    description = "Exportiert die umgebauten Daten aus dem Schema afu_gewaesserschutz_pub in eine INTERLIS-Datei."
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'afu_gewaesserschutz_pub_v1'
     models = 'SO_AfU_Gewaesserschutz_Publikation_20220817'
-    dataFile= file(FileNamePub)
+    dataFile= file(fileNamePub)
     disableValidation = true
 }
 
 task validateData(type: IliValidator, dependsOn: 'exportData') {
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
-    dataFiles = file(FileNamePub)
+    dataFiles = file(fileNamePub)
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     failOnError = true
 }
+
+task zipXtf(type: Zip, dependsOn: 'validateData'){
+    from "."
+    include fileName
+    archiveName fileNameZip
+    destinationDir(file("."))
+}
+
+/* Falls man auf geodienste.ch alles löschen will/muss (siehe zweiter Abschnitt), muss man
+* einmalig replace_all=true setzen. Curl-Befehl kann natürlich auch lokal
+* ausgeführt werden.
+*
+* Achtung: Die Dateinamen müssen immer gleich sein. Diese werden als 
+* dataset-Name verwendet. Will man die Namen ändern, siehe erster Abschnitt
+* des Kommentars.
+*/
+task uploadXtf(dependsOn: 'zipXtf') {
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=planerischer_gewaesserschutz", "-F",
+                        "lv95_file=@" + Paths.get(".", fileNameZip), "-F", "publish=true", "-F", "replace_all=false",
+                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
+}
+
