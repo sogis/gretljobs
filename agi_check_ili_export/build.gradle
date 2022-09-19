@@ -252,6 +252,14 @@ datasets.each { dataset ->
         region = "eu-central-1"
         acl = isPublic ? "public-read" : "private"
         metaData = ["lastEditingDate":todaysDate]
+        doLast {
+            exec {
+                commandLine 'du', '-hs', pathToTempFolder
+            }
+            exec {
+                commandLine 'df', '-h', '/tmp'
+            }
+        }
     }       
 }
 
