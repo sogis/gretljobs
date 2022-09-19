@@ -52,7 +52,7 @@ pipeline {
       }
     }
     stages {
-        stage('Run GRETL-Job') {
+        stage('Run GRETL job') {
             environment {
                 ORG_GRADLE_PROJECT_dbUriProcessing = 'jdbc:postgresql://127.0.0.1/processing'
                 ORG_GRADLE_PROJECT_dbUserProcessing = 'user'
