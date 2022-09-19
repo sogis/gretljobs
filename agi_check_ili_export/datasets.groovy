@@ -234,8 +234,7 @@ datasets.add(new Dataset("SO_ARP_Bauzonengrenzen_20210120", "arp_bauzonengrenzen
 // datasets.add(new Dataset("SO_ARP_Fledermausfundorte_Publikation_20200806", "arp_fledermaus_pub", dbPub, "ch.so.arp.fledermausfundorte")) 
 datasets.add(new Dataset("SO_ARP_Naturreservate_Publikation_20200609", "arp_naturreservate_pub", dbPub, "ch.so.arp.naturreservate")) 
 datasets.add(new Dataset("SO_ARP_Naturschutzobjekte_Publikation_20210727", "arp_naturschutzobjekte_pub_v1", dbPub, "ch.so.arp.naturschutzobjekte", true)) 
-// Testweise ausgeschaltet, weil GRETL bei der Produktion des GeoPackage jeweils abstürzt:
-// datasets.add(new Dataset("SO_ARP_Nutzungsplanung_Publikation_20201005", "arp_nutzungsplanung_pub_v1", dbPub, "ch.so.arp.nutzungsplanung", true))
+datasets.add(new Dataset("SO_ARP_Nutzungsplanung_Publikation_20201005", "arp_nutzungsplanung_pub_v1", dbPub, "ch.so.arp.nutzungsplanung", true)) 
 datasets.add(new Dataset("SO_ARP_Nutzungsvereinbarung_Publikation_20170223", "arp_nutzungsvereinbarung_pub", dbPub, "ch.so.arp.nutzungsvereinbarung")) 
 // Datensatz muss zuerst neu publiziert werden mit ST_ReducePrecision. Das geht aber momentan nicht, weil der Umbau noch ein altes Schema referenziert.
 // datasets.add(new Dataset("SO_ARP_Richtplan_Publikation_20220630", "arp_richtplan_pub_v1", dbPub, "ch.so.arp.richtplan", true)) 
