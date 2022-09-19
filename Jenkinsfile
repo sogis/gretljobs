@@ -4,7 +4,7 @@ pipeline {
         timeout(time: 6, unit: 'HOURS')
     }
     stages {
-        stage('Run GRETL-Job') {
+        stage('Run GRETL job') {
             steps {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
