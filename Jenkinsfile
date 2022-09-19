@@ -5,9 +5,6 @@ pipeline {
     }
     stages {
         stage('Run GRETL-Job') {
-            options {
-                retry(2)
-            }
             steps {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
