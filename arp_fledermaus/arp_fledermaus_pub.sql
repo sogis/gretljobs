@@ -6,7 +6,7 @@ SELECT
     CAST(NULL AS text) AS quartierstatus,
     ST_SetSRID(ST_MakePoint(x_lv95, y_lv95), 2056) AS geometrie
 FROM 
-    arp_fledermaus.fledermausfundrte_fledermausfundort   
+    arp_fledermaus_v1.fledermausfundrte_fledermausfundort   
 WHERE 
     beobachtungid IS NOT NULL
     
@@ -25,7 +25,7 @@ SELECT
     END AS quartierstatus,
     ST_SetSRID(ST_MakePoint(x_lv95, y_lv95), 2056) AS geometrie
 FROM 
-    arp_fledermaus.fledermausfundrte_fledermausfundort   
+    arp_fledermaus_v1.fledermausfundrte_fledermausfundort   
 WHERE 
     quartierid IS NOT NULL
 ;
