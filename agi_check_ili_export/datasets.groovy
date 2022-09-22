@@ -188,7 +188,8 @@ datasets.add(new Dataset("SO_AFU_Geotope_Publikation_20200623", "afu_geotope_pub
 datasets.add(new Dataset("SO_AFU_Gewaesser_Gewaessereigenschaften_Publikation_20220427", "afu_gewaesser_gewaessereigenschaften_pub_v1", dbPub, "ch.so.afu.gewaesser_gewaessereigenschaften", true)) 
 datasets.add(new Dataset("SO_AFU_Gewaesser_Oekomorphologie_Publikation_20220426", "afu_gewaesser_oekomorphologie_pub_v1", dbPub, "ch.so.afu.gewaesser_oekmorphologie", true)) 
 datasets.add(new Dataset("SO_AFU_Gewaesser_Revitalisierung_20220629", "afu_gewaesser_revitalisierung_pub_v1", dbPub, "ch.so.afu.gewaesser_revitalisierung", true)) 
-datasets.add(new Dataset("SO_AfU_Gewaesserschutz_Publikation_20210303", "afu_gewaesserschutz_pub", dbPub, "ch.so.afu.gewaesserschutz", true)) 
+// Kann nicht in GeoPackage importiert werden, weil das Modell nicht gefunden wird:
+// datasets.add(new Dataset("SO_AfU_Gewaesserschutz_Publikation_20210303", "afu_gewaesserschutz_pub", dbPub, "ch.so.afu.gewaesserschutz", true))
 datasets.add(new Dataset("SO_AFU_Hydro_Messstationen_Publikation_20220707", "afu_hydro_messstationen_pub_v1", dbPub, "ch.so.afu.hydro_messstationen")) 
 datasets.add(new Dataset("SO_AFU_Hydrologische_Einzugsgebiete_20220628", "afu_hydrologische_einzugsgebiete_pub_v1", dbPub, "ch.so.afu.hydrologische_einzugsgebiete")) 
 datasets.add(new Dataset("SO_AFU_Igel_Publikation_20211116", "afu_igel_pub_v1", dbPub, "ch.so.afu.igel")) 
