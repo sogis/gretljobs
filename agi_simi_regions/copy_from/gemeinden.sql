@@ -6,4 +6,4 @@ SELECT
   localtimestamp AS updated,
   'av_gem' AS coverage_ident
 FROM 
-  public.hoheitsgrenzen_gemeindegrenze_generalisiert;
+  public.hoheitsgrenzen_gemeindegrenze;
