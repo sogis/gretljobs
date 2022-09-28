@@ -6,4 +6,4 @@ SELECT
   localtimestamp AS updated,
   'av_kt' AS coverage_ident
 FROM 
-  public.hoheitsgrenzen_kantonsgrenze;
+  agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze;
