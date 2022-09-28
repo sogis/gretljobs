@@ -1,26 +1,9 @@
-/*
-./start-gretl.sh --docker-image sogis/gretl:latest --docker-network host --job-directory $PWD/agi_simi_regions
-
-Weitere Schritte für XML:
-- Dump aus Int integrieren
-- DB-Upgrade
-- GRETL-Job lokal ausführen
-- Beans ergänzen (preview-layer, ältere Erweiterungen)
-- Beans-Query ergänzen und in View giessen
-- fat_json als neuen Testfall aufnehmen
-- xml erzeugen
-
-Anschliessend:
-- Wippe für die Publikation in GRETL implementieren, damit V 2.1 finalisiert werden kann
-*/
-
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'postCopy'
-
+/*
 def dbUriPub = 'jdbc:postgresql://localhost:5432/postgres'
 def dbUserPub = 'postgres'
 def dbPwdPub = 'postgres'
@@ -28,6 +11,9 @@ def dbPwdPub = 'postgres'
 def dbUriSimi = 'jdbc:postgresql://localhost:5432/simi'
 def dbUserSimi = dbUserPub
 def dbPwdSimi = dbPwdPub
+*/
+
+defaultTasks 'postCopy'
 
 task preCopy(type: SqlExecutor){
     database = [dbUriSimi, dbUserSimi, dbPwdSimi]
