@@ -10,8 +10,8 @@ SELECT
     profil.fmeto, 
     profil.quali, 
     profil.qualibem, 
-    bohrung.wkb_geometry as wkb_geometry, 
-    bohrung.wkb_geometry as wkb_geometry95,
+    st_setsrid(bohrung.wkb_geometry,2056) as wkb_geometry, 
+    st_setsrid(bohrung.wkb_geometry,2056) as wkb_geometry95,
     profil.new_date, 
     profil.mut_date, 
     profil.new_usr, 
@@ -26,4 +26,6 @@ left join
     bohrung."GIS_bohrung" bohrung 
     on 
     profil.bohrung_id = bohrung.bohrung_id 
+where 
+    bohrung.wkb_geometry is not NULL
 ;

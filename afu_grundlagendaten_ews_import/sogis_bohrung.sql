@@ -17,4 +17,6 @@ SELECT
     h_ablenkung
 FROM 
     bohrung."GIS_bohrung"
+where 
+    wkb_geometry is not NULL
 ;

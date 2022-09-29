@@ -1,18 +1,15 @@
 SELECT 
-    schicht.schicht_id, 
-    schicht.bohrprofil_id, 
-    schicht.schichten_id, 
+    schicht.schicht_id AS t_id,
     code_schicht.kurztext as schicht_kurztext,
     code_schicht."text" as schicht_text,
     schicht.tiefe, 
-    schicht.quali as qualitaet, 
+    schicht.quali as qualitaet_code, 
     code_qualitaet.kurztext as qualitaet_text,
     schicht.qualibem as qualitaet_bemerkung, 
     schicht.bemerkung, 
     schicht.new_date, 
     schicht.mut_date, 
-    schicht.new_usr as new_user, 
-    schicht.mut_usr as mut_user
+    schicht.bohrprofil_id AS bohrprofil_schicht
 FROM 
     bohrung."GIS_schicht" schicht
 left join 

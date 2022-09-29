@@ -1,17 +1,19 @@
 SELECT 
-    vorkommnis.vorkommnis_id, 
-    vorkommnis.bohrprofil_id, 
-    vorkommnis.typ, 
-    code_typ.kurztext as typ_text,
-    vorkommnis.tiefe, 
+    vorkommnis.vorkommnis_id AS t_id,
+    vorkommnis.typ AS vorkommnis_code, 
+    code_typ.kurztext as vorkommnis_text,
+    CASE 
+        WHEN vorkommnis.tiefe = '-9999'
+        THEN NULL 
+        ELSE vorkommnis.tiefe 
+    END AS tiefe, 
     vorkommnis.bemerkung, 
-    vorkommnis.quali as qualitaet,
+    vorkommnis.quali as qualitaet_code,
     code_qualitaet.kurztext as qualitaet_text,
     vorkommnis.qualibem as qualitaet_bemerkung, 
     vorkommnis.new_date, 
     vorkommnis.mut_date, 
-    vorkommnis.new_usr as new_user, 
-    vorkommnis.mut_usr as mut_user
+    vorkommnis.bohrprofil_id AS profil
 FROM 
     bohrung.vorkommnis vorkommnis
 left join 

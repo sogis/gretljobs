@@ -4,8 +4,8 @@ SELECT
     bemerkung, 
     --gemeinde, 
     gbnummer, 
-    standort.wkb_geometry, 
-    standort.wkb_geometry95,
+    st_setsrid(standort.wkb_geometry,2056) AS wkb_geometry, 
+    st_setsrid(standort.wkb_geometry95,2056) AS wkb_geometry95,
     new_date, 
     mut_date, 
     new_usr, 
@@ -19,7 +19,11 @@ left join
          wkb_geometry as wkb_geometry95 
      from 
          bohrung.bohrung
+     where 
+         wkb_geometry is not null 
      ) standort 
      on 
      standort.standort_id = gis_standort.standort_id 
+where 
+    standort.wkb_geometry is not NULL
 ;
