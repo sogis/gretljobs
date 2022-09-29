@@ -1,23 +1,25 @@
 SELECT 
-    bohrprofil.bohrprofil_id, 
-    bohrprofil.bohrung_id, 
+    bohrprofil.bohrprofil_id AS t_id, 
     bohrprofil.datum, 
     bohrprofil.bemerkung, 
-    bohrprofil.kote, 
+    CASE WHEN 
+        bohrprofil.kote = '-9999'
+        THEN NULL 
+        ELSE bohrprofil.kote
+    END AS kote, 
     bohrprofil.endteufe, 
-    bohrprofil.tektonik, 
+    bohrprofil.tektonik AS tektonik_code, 
     code_tektonik.kurztext as tektonik_text,
-    bohrprofil.fmfelso as felsoberflaechenformation, 
+    bohrprofil.fmfelso as felsoberflaechenformation_code, 
     code_fmfelso.kurztext as felsoberflaechenformation_text,
-    bohrprofil.fmeto as endtiefenformation, 
+    bohrprofil.fmeto as endtiefenformation_code, 
     code_fmeto.kurztext as endtiefenformation_text,
-    bohrprofil.quali as qualitaet,
+    bohrprofil.quali as qualitaet_code,
     code_qualitaet.kurztext as qualitaet_text,
     bohrprofil.qualibem AS qualitaet_bemerkungen, 
     bohrprofil.new_date, 
     bohrprofil.mut_date, 
-    bohrprofil.new_usr AS new_user, 
-    bohrprofil.mut_usr AS mut_user
+    bohrprofil.bohrung_id AS bohrung_bohrprofil
 FROM 
     bohrung."GIS_bohrprofil" bohrprofil
 left join 
