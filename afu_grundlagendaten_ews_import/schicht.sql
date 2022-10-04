@@ -21,5 +21,5 @@ left join
 left join 
     bohrung."GIS_codeschicht" code_schicht 
     on 
-    code_schicht.codeschicht_id = schicht.schicht_id 
+    code_schicht.codeschicht_id = schicht.schichten_id 
 ;
