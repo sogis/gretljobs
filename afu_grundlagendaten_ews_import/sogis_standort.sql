@@ -18,7 +18,7 @@ left join
          wkb_geometry,
          wkb_geometry as wkb_geometry95 
      from 
-         bohrung.bohrung
+         bohrung."GIS_bohrung" 
      where 
          wkb_geometry is not null 
      ) standort 

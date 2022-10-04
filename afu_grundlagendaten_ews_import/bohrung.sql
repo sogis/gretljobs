@@ -17,13 +17,13 @@ SELECT
 FROM 
     bohrung."GIS_bohrung" bohrung
 left join 
-    bohrung.code code_ablenkung 
+    bohrung."GIS_code" code_ablenkung 
     on 
     code_ablenkung.code_id = bohrung.ablenkung 
     and 
     code_ablenkung.codetyp_id = bohrung.h_ablenkung 
 left join 
-    bohrung.code code_qualitaet 
+    bohrung."GIS_code" code_qualitaet 
     on 
     code_qualitaet.code_id = bohrung.quali 
     and 

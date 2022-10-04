@@ -15,15 +15,15 @@ SELECT
     vorkommnis.mut_date, 
     vorkommnis.bohrprofil_id AS profil
 FROM 
-    bohrung.vorkommnis vorkommnis
+    bohrung."GIS_vorkommnis" vorkommnis
 left join 
-    bohrung.code code_typ 
+    bohrung."GIS_code" code_typ 
     on 
     code_typ.code_id = vorkommnis.typ 
     and 
     code_typ.codetyp_id = vorkommnis.h_typ 
 left join 
-    bohrung.code code_qualitaet 
+    bohrung."GIS_code" code_qualitaet 
     on 
     code_qualitaet.code_id = vorkommnis.quali 
     and 
