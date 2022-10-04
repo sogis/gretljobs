@@ -9,5 +9,5 @@ SELECT
     freigabe_afu, 
     afu_date
 FROM 
-    bohrung.standort standort
+    bohrung."GIS_standort" standort
 ;

@@ -13,7 +13,7 @@ SELECT
 FROM 
     bohrung."GIS_schicht" schicht
 left join 
-    bohrung.code code_qualitaet 
+    bohrung."GIS_code" code_qualitaet 
     on 
     code_qualitaet.code_id = schicht.quali 
     and 
