@@ -6,7 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 description = "GRETL-Job für Datenumbau der Hoheitsgrenzen innerhalb der edit-DB, ins pub-Schema (pub-DB, edit-DB), am Ende ins pub-Schema der sogis-DB"
 
 
-defaultTasks 'transferAgiHoheitsgrenzenToSogisDb'
+defaultTasks 'refreshSolr'
 
 
 task transferAgiHoheitsgrenzen(type: Db2Db) {
