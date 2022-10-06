@@ -1,0 +1,16 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transfer_onlinerisk'
+
+task transfer_onlinerisk(type: Db2Db){
+    sourceDb = [dbUriOnlinerisk, dbUserOnlinerisk, dbPwdOnlinerisk]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('betrieb.sql', 'afu_qrcat_v1.onlinerisk_betrieb', true),
+            new TransferSet('untersuchungseinheit.sql', 'afu_qrcat_v1.onlinerisk_untersuchungseinheit', true),
+            new TransferSet('gebaeude.sql', 'afu_qrcat_v1.onlinerisk_gebaeude', true)
+    ];
+}
