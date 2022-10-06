@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'updateTxtColsSchutzwald'
+defaultTasks 'refreshSolr'
 
 task transferAwjfSchutzwaldPub(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -20,4 +20,8 @@ task updateTxtColsSchutzwald(type: SqlExecutor, dependsOn:transferAwjfSchutzwald
     description = "Füllt die _txt-Spalten ab"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ['updateTxtColsSchutzwald.sql']
+}
+
+task refreshSolr(type:Exec, dependsOn:'updateTxtColsSchutzwald') {
+	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.schutzwaldausscheidung,ch.so.awjf.schutzwald_hauptgefahrenpotentiale'
 }
