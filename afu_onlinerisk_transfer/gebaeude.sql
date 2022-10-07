@@ -1,6 +1,6 @@
 SELECT
     g.id_gebaeude AS t_id,
-    g.egid::integer AS egid,
+    CASE WHEN g.egid = '0' THEN NULL ELSE g.egid END::integer AS egid,
     k.text AS name_gebaeude,
     'Point(' || g.koordinate_x::text || ' ' || g.koordinate_y::text || ')' AS geometrie,
     g.zusatz,
