@@ -2,7 +2,7 @@ SELECT
      ue.id_untersuchungseinheit AS t_id,
      'Point(' || ue.koordinate_x::text || ' ' || ue.koordinate_y::text || ')' AS geometrie,
      k.text AS name_untersuchungseinheit,
-     ue.konsultations_abstand,
+     COALESCE(replace(ue.konsultations_abstand,'m','')::integer,-99) AS konsultations_abstand,
      ue.parzellen_nummer,
      k.aktiv::boolean,
      ue.id_betrieb
