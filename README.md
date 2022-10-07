@@ -204,6 +204,8 @@ parameters.stringParams=bfsnr;0000;BFS-Nr. der Gemeinde welche publiziert werden
 Mit `triggers.upstream` kann eingestellt werden, dass der Job immer dann ausgeführt werden soll, wenn ein bestimmter anderer Job erfolgreich ausgeführt worden ist. Es können hier auch mehrere Jobs angegeben werden, jeweils durch Komma und Leerschlag voneinander getrennt (z.B. `other_job_name_1, other_job_name_2`).
 
 Mit `authorization.permissions` kann angegeben werden, welcher Benutzer oder welche Benutzergruppe den Job manuell starten darf.
+Mehrere Benutzer oder Gruppen
+können mit Komma getrennt aneinandergereiht werden.
 Folgende GRETL-spezifischen Benutzergruppen stehen im Moment zur Verfügung:
 
 * gretl-users-barpa
