@@ -122,6 +122,8 @@ for (jobFile in jobFiles) {
     environmentVariables {
       // make the Git repository URL available on the Jenkins agent
       env('GIT_REPO_URL', GRETL_JOB_REPO_URL)
+      // make the OpenShift project name available on the Jenkins agent
+      env('OPENSHIFT_PROJECT_NAME', PROJECT_NAME)
     }
 
     definition {
