@@ -10,7 +10,7 @@ task transfer_onlinerisk(type: Db2Db){
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
             new TransferSet('betrieb.sql', 'afu_qrcat_v1.onlinerisk_betrieb', true),
-            new TransferSet('untersuchungseinheit.sql', 'afu_qrcat_v1.onlinerisk_untersuchungseinheit', true, ["geometrie:wkt:2056"].toArray()),
+            new TransferSet('untersuchungseinheit.sql', 'afu_qrcat_v1.onlinerisk_untersuchungseinheit', true, (String[])["geometrie:wkt:2056"]),
             new TransferSet('gebaeude.sql', 'afu_qrcat_v1.onlinerisk_gebaeude', true)
     ];
 }
