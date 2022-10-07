@@ -10,7 +10,7 @@ def DB_Schema_QRcat = "afu_qrcat_v1"
 task "clean_onlinerisk_before_import"(type: SqlExecutor) {
     description = "OnlineRisk Daten in der richtigen Reihenfolge (dependencies) löschen vor dem Neuimport"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlParameters = [DB_Schema_QRcat]
+    sqlParameters = [DB_Schema_QRcat:DB_Schema_QRcat]
     sqlFiles = ['delete_online_risk.sql']
 }
 
