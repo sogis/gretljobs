@@ -78,8 +78,11 @@ for (jobFile in jobFiles) {
       }
     }
     if (jobProperties.getProperty('authorization.permissions') != 'nobody') {
-      authorization {
-        permissions(jobProperties.getProperty('authorization.permissions'), ['hudson.model.Item.Build', 'hudson.model.Item.Read'])
+      def roles = jobProperties.getProperty('authorization.permissions').split(',')
+      for ( r in roles ) {
+        authorization {
+          permissions(r.trim(), ['hudson.model.Item.Build', 'hudson.model.Item.Read'])
+        }
       }
     }
     if (jobProperties.getProperty('logRotator.numToKeep') != 'unlimited') {
