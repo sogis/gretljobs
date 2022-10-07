@@ -1,6 +1,6 @@
 SELECT
      ue.id_untersuchungseinheit AS t_id,
-     E'ST_GeometryFromText(\'Point(' || ue.koordinate_x::text || ' ' || ue.koordinate_y::text || E')\')' AS geometrie,
+     'Point(' || ue.koordinate_x::text || ' ' || ue.koordinate_y::text || ')' AS geometrie,
      k.text AS name_untersuchungseinheit,
      ue.konsultations_abstand,
      ue.parzellen_nummer,
