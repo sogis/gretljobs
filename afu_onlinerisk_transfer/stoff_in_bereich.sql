@@ -1,6 +1,6 @@
 SELECT
     bstof.id_assoziation AS t_id,
-    bstof.text AS name_stoff,
+    CASE WHEN bstof.text IS NOT NULL THEN bstof.text ELSE sta.text END AS name_stoff,
     sta.text AS name_stoff_alternativ,
     round(sto.ms_stfv::numeric,1) AS ms_stfv,
     round(bstof.menge::numeric,1) AS max_menge,
