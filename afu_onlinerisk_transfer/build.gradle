@@ -5,11 +5,22 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transfer_onlinerisk'
 
-task transfer_onlinerisk(type: Db2Db){
+def DB_Schema_QRcat = "afu_qrcat_v1"
+
+task "clean_onlinerisk_before_import"(type: SqlExecutor) {
+    description = "OnlineRisk Daten in der richtigen Reihenfolge (dependencies) löschen vor dem Neuimport"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_QRcat]
+    sqlFiles = ['delete_online_risk.sql']
+}
+
+task transfer_onlinerisk(type: Db2Db,dependsOn: "clean_onlinerisk_before_import"){
+    description = "Übertrag benötigte OnlineRisk-Daten aus AIO PostgreSQL-Datenbank"
     sourceDb = [dbUriOnlinerisk, dbUserOnlinerisk, dbPwdOnlinerisk]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
             new TransferSet('betrieb.sql', 'afu_qrcat_v1.onlinerisk_betrieb', true),
-            new TransferSet('untersuchungseinheit.sql', 'afu_qrcat_v1.onlinerisk_untersuchungseinheit', true, (String[])["geometrie:wkt:2056"])
+            new TransferSet('untersuchungseinheit.sql', 'afu_qrcat_v1.onlinerisk_untersuchungseinheit', true, (String[])["geometrie:wkt:2056"]),
+            new TransferSet('gebaeude.sql', 'afu_qrcat_v1.onlinerisk_gebaeude', true, (String[])["geometrie:wkt:2056"])
     ];
 }
