@@ -19,7 +19,8 @@ task migration_qrcat(type: Db2Db,dependsOn: "clean_qrcat_before_import"){
     sourceDb = [dbUriOnlinerisk, dbUserOnlinerisk, dbPwdOnlinerisk]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
-            new TransferSet('qrcat_detailszenario_grundhaeufigkeit.sql', 'afu_qrcat_v1.qrcat_detailszenario_grundhaeufigkeit', true)//,
+            new TransferSet('qrcat_detailszenario_grundhaeufigkeit.sql', 'afu_qrcat_v1.qrcat_detailszenario_grundhaeufigkeit', true),
+            new TransferSet('qrcat_toxreferenzszenario.sql', 'afu_qrcat_v1.qrcat_toxreferenzszenario', true)//,
             //new TransferSet('qrcat_szenario.sql', 'afu_qrcat_v1.qrcat_szenario', true)
     ];
 }
