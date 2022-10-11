@@ -9,18 +9,18 @@ def DB_Schema_QRcat = "afu_qrcat_v1"
 
 task "clean_qrcat_before_import"(type: SqlExecutor) {
     description = "QRcat Daten in der richtigen Reihenfolge (dependencies) löschen vor dem Neuimport"
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_QRcat:DB_Schema_QRcat]
     sqlFiles = ['delete_qrcat.sql']
 }
 
 task migration_qrcat(type: Db2Db,dependsOn: "clean_qrcat_before_import"){
     description = "Migration QRcat-Daten aus alter 'sogis' PostgreSQL-Datenbank"
-    sourceDb = [dbUriOnlinerisk, dbUserOnlinerisk, dbPwdOnlinerisk]
+    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
             new TransferSet('qrcat_detailszenario_grundhaeufigkeit.sql', 'afu_qrcat_v1.qrcat_detailszenario_grundhaeufigkeit', true),
-            new TransferSet('qrcat_toxreferenzszenario.sql', 'afu_qrcat_v1.qrcat_toxreferenzszenario', true)//,
+            new TransferSet('qrcat_toxreferenzszenario.sql', 'afu_qrcat_v1.qrcat_detailszenario_grundhaeufigkeit', true)//,
             //new TransferSet('qrcat_szenario.sql', 'afu_qrcat_v1.qrcat_szenario', true)
     ];
 }
