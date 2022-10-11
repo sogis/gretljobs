@@ -11,5 +11,5 @@ SELECT
   'pro_Jahr' AS wahrscheinlichkeit_grundhaeufigkeit_art,
   asz AS relevant_asz,
   msz AS relevant_msz,
-  qstoff AS relevant_qstoff
+  qstoff AS relevant_q_stoff
 FROM qrcat."stbl_GHK" dszen;
