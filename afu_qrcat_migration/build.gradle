@@ -1,0 +1,25 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'migration_qrcat'
+
+def DB_Schema_QRcat = "afu_qrcat_v1"
+
+task "clean_qrcat_before_import"(type: SqlExecutor) {
+    description = "QRcat Daten in der richtigen Reihenfolge (dependencies) löschen vor dem Neuimport"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_QRcat:DB_Schema_QRcat]
+    sqlFiles = ['delete_qrcat.sql']
+}
+
+task migration_qrcat(type: Db2Db,dependsOn: "clean_qrcat_before_import"){
+    description = "Migration QRcat-Daten aus alter 'sogis' PostgreSQL-Datenbank"
+    sourceDb = [dbUriOnlinerisk, dbUserOnlinerisk, dbPwdOnlinerisk]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('qrcat_detailszenario_grundhaeufigkeit.sql', 'afu_qrcat_v1.qrcat_detailszenario_grundhaeufigkeit', true)//,
+            //new TransferSet('qrcat_szenario.sql', 'afu_qrcat_v1.qrcat_szenario', true)
+    ];
+}
