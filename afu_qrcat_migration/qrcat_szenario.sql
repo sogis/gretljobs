@@ -9,7 +9,7 @@ SELECT
      szen.w_szenario AS wahrscheinlichkeit_szenario,
      szen."ASZ" AS asz_relevante_freisetzungsflaeche,
      szen."MSZ" AS msz_relevante_freigesetzte_stoffmenge,
-     szen."Q_STOFF" AS q_toff_stoffspezverbrennungswaerme,
+     szen."Q_STOFF" AS q_stoff_stoffspezverbrennungswaerme,
      round(szen.r_lr90::numeric,1) AS lsz_90,
      round(szen.r_lr1::numeric,1) AS lsz_1,
      szen."F_ANZ" AS betriebsfaktor_f_anz,
