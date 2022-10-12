@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'migration_qrcat'
+defaultTasks 'transfer_qrcat'
 
 def DB_Schema_QRcat = "afu_qrcat_v1"
 
@@ -14,13 +14,14 @@ task "clean_qrcat_before_import"(type: SqlExecutor) {
     sqlFiles = ['delete_qrcat.sql']
 }
 
-task migration_qrcat(type: Db2Db,dependsOn: "clean_qrcat_before_import"){
+task transfer_qrcat(type: Db2Db,dependsOn: "clean_qrcat_before_import"){
     description = "Migration QRcat-Daten aus alter 'sogis' PostgreSQL-Datenbank"
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
-            new TransferSet('qrcat_detailszenario_grundhaeufigkeit.sql', 'afu_qrcat_v1.qrcat_detailszenario_grundhaeufigkeit', true),
-            new TransferSet('qrcat_toxreferenzszenario.sql', 'afu_qrcat_v1.qrcat_toxreferenzszenario', true)//,
+            new TransferSet('qrcat_detailszenario_grundhaeufigkeit.sql', 'afu_qrcat_v1.qrcat_detailszenario_grundhaeufigkeit', false),
+            new TransferSet('qrcat_toxreferenzszenario.sql', 'afu_qrcat_v1.qrcat_toxreferenzszenario', false),
+            new TransferSet('qrcat_fwert.sql', 'afu_qrcat_v1.qrcat_fwert', false)//,
             //new TransferSet('qrcat_szenario.sql', 'afu_qrcat_v1.qrcat_szenario', true)
     ];
 }

@@ -12,5 +12,9 @@ SELECT
      szen."Q_STOFF" AS q_toff_stoffspezverbrennungswaerme,
      round(szen.r_lr90::numeric,1) AS lsz_90,
      round(szen.r_lr1::numeric,1) AS lsz_1,
-     szen."F_ANZ" AS betriebsfaktor_f_anz
+     szen."F_ANZ" AS betriebsfaktor_f_anz,
+     --
+     1 AS id_detailszenarioghk,
+     1 AS id_detailszenarioghk,
+     1 AS id_stoff
    FROM qrcat."tbl_RCAT_SZENARIO" szen;
