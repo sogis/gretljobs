@@ -21,7 +21,7 @@ task transfer_qrcat(type: Db2Db,dependsOn: "clean_qrcat_before_import"){
     transferSets = [
             new TransferSet('qrcat_detailszenario_grundhaeufigkeit.sql', 'afu_qrcat_v1.qrcat_detailszenario_grundhaeufigkeit', false),
             new TransferSet('qrcat_toxreferenzszenario.sql', 'afu_qrcat_v1.qrcat_toxreferenzszenario', false),
-            new TransferSet('qrcat_fwert.sql', 'afu_qrcat_v1.qrcat_fwert', false)//,
-            //new TransferSet('qrcat_szenario.sql', 'afu_qrcat_v1.qrcat_szenario', true)
+            new TransferSet('qrcat_fwert.sql', 'afu_qrcat_v1.qrcat_fwert', false),
+            new TransferSet('qrcat_szenario.sql', 'afu_qrcat_v1.qrcat_szenario', true)
     ];
 }

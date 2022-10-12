@@ -13,8 +13,16 @@ SELECT
      round(szen.r_lr90::numeric,1) AS lsz_90,
      round(szen.r_lr1::numeric,1) AS lsz_1,
      szen."F_ANZ" AS betriebsfaktor_f_anz,
-     --
-     1 AS id_detailszenarioghk,
-     1 AS id_detailszenarioghk,
-     1 AS id_stoff
+     -- FWerte (Referenzen)
+     -- die eigentlich Werte (IDs) werden in Post-Processing-Schritt abgefüllt
+     99 AS f_bdo,
+     99 AS f_car,
+     99 AS f_sik,
+     99 AS f_smn,
+     -- Referenzen auf andere Tabellen
+     -- die eigentlich Werte werden in Post-Processing-Schritt abgefüllt
+     99 AS id_detailszenarioghk,
+     99 AS id_toxreferenzszenario,
+     szen.id_betrieb AS id_betrieb,
+     szen."BSID" AS id_stoff
    FROM qrcat."tbl_RCAT_SZENARIO" szen;
