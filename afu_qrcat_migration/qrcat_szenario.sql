@@ -15,14 +15,14 @@ SELECT
      szen."F_ANZ" AS betriebsfaktor_f_anz,
      -- FWerte (Referenzen)
      -- die eigentlich Werte (IDs) werden in Post-Processing-Schritt abgefüllt
-     99 AS f_bdo,
-     99 AS f_car,
-     99 AS f_sik,
-     99 AS f_smn,
+     99999 AS f_bdo,
+     99999 AS f_car,
+     99999 AS f_sik,
+     99999 AS f_smn,
      -- Referenzen auf andere Tabellen
      -- die eigentlich Werte werden in Post-Processing-Schritt abgefüllt
-     99 AS id_detailszenarioghk,
-     99 AS id_toxreferenzszenario,
+     99999 AS id_detailszenarioghk,
+     99999 AS id_toxreferenzszenario,
      szen.id_betrieb AS id_betrieb,
      szen."BSID" AS id_stoff
    FROM qrcat."tbl_RCAT_SZENARIO" szen;
