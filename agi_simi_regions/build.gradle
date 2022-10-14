@@ -29,7 +29,15 @@ task copyGemeindenKanton(type: Db2Db, dependsOn: preCopy){
     ];
 }
 
-task postCopy(type: SqlExecutor, dependsOn: copyGemeindenKanton){
+task copyEditDb(type: Db2Db, dependsOn: preCopy){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriSimi, dbUserSimi, dbPwdSimi]
+    transferSets = [
+            new TransferSet('copy_from/edit_db.sql', 'simi.simitheme_sub_area', false)
+    ];
+}
+
+task postCopy(type: SqlExecutor, dependsOn: [copyGemeindenKanton, copyEditDb]){
     database = [dbUriSimi, dbUserSimi, dbPwdSimi]
     sqlFiles = ['post_copy/refs_reset.sql']
 }
