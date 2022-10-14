@@ -11,7 +11,7 @@ defaultTasks 'transferAgiPolizeiregionen'
 
 task transferAgiPolizeiregionen(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    targetDb = sourceDb
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('agi_polizeiregionen_pub.sql',
                     'agi_polizeiregionen_pub_v1.polizeiregionen_polizeiregion', true)
