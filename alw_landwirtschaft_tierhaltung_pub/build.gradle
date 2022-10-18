@@ -49,7 +49,7 @@ task transferALWAgrardaten(type: Db2Db, dependsOn: importGELAN){
     description = "Datenumbau in das Publikationsmodell"
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlParameters = [publikationsjahr_standort: '2022', publikationsjahr_flaechenerhebung: '2022']
+    sqlParameters = [publikationsjahr_standort: '2023', publikationsjahr_flaechenerhebung: '2022']
     transferSets = [
         new TransferSet("dataset.sql",'alw_landwirtschaft_tierhaltung_pub_v1.t_ili2db_dataset',true),
         new TransferSet("basket.sql",'alw_landwirtschaft_tierhaltung_pub_v1.t_ili2db_basket',true),
