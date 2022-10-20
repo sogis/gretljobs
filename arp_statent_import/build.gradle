@@ -1,0 +1,43 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+defaultTasks 'importStatent'
+
+
+task copyCsvFile(type: Copy) {
+    from "upload/"
+    into "upload/"
+    include("uploadFile")
+    rename("uploadFile", "uploadFile.csv")
+}
+
+task validateCsvFile(type: CsvValidator, dependsOn: 'copyCsvFile') {
+    models = "SO_ARP_STATPOP_STATENT_STAGING_20221019"
+    firstLineIsHeader = true
+    valueSeparator = ';'
+    encoding = 'UTF-8'
+    dataFiles = [file("upload/uploadFile.csv")]
+}
+
+task importStatent(type: CsvImport, dependsOn: 'validateCsvFile') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = 'arp_statpop_statent_staging_v1'
+    tableName = 'statent'
+    firstLineIsHeader = true
+    valueSeparator = ';'
+    encoding = 'UTF-8'
+    dataFile = "upload/uploadFile"
+}
+
+/*
+task transferBiotopbaeume(type: SqlExecutor, dependsOn: 'importBiotopbaeume') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['awjf_biotopbaeume_transfer.sql']
+    finalizedBy "deleteImportData"
+}
+
+task deleteImportData(type: SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['awjf_biotopbaeume_import_delete.sql']
+}
+*/
