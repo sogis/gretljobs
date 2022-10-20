@@ -1,7 +1,7 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'importStatent'
+defaultTasks 'transferStatent'
 
 
 task copyCsvFile(type: Copy) {
@@ -29,15 +29,12 @@ task importStatent(type: CsvImport, dependsOn: 'validateCsvFile') {
     dataFile = "upload/uploadFile"
 }
 
-/*
-task transferBiotopbaeume(type: SqlExecutor, dependsOn: 'importBiotopbaeume') {
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ['awjf_biotopbaeume_transfer.sql']
-    finalizedBy "deleteImportData"
-}
+//ACHTUNG: HIER MUSS DAS JAHR JEWEILS ANGEPASST WERDEN!!!!! 
 
-task deleteImportData(type: SqlExecutor) {
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ['awjf_biotopbaeume_import_delete.sql']
+task transferStatent(type: Db2Db, dependsOn: importStatent){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('transfer_staging_edit.sql', 'arp_statpop_statent_2020_v1.statent', true)
+    ];
 }
-*/
