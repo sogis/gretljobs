@@ -1,7 +1,7 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'transferStatent'
+defaultTasks 'importStatent'
 
 
 task copyCsvFile(type: Copy) {
