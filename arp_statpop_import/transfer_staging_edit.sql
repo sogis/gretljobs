@@ -16,7 +16,7 @@ WITH grundnutzung AS (
 
 SELECT 
 	st_setsrid(st_point(geocoorde, geocoordn),2056) AS geometrie,
-	statdate, 
+	statdate::date, 
 	record,
 	statyear,
 	populationtype,
