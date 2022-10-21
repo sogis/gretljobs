@@ -80,7 +80,7 @@ task zipXtf(type: Zip, dependsOn: 'transferGewaesserschutz_pub'){
 task uploadXtf(dependsOn: 'zipXtf') {
     doLast {
         def response = ["curl", "-u", aiLogin, "-F", "topic=planerischer_gewaesserschutz", "-F",
-                        "lv95_file=@" + Paths.get(".", fileNameZip), "-F", "publish=true", "-F", "replace_all=false",
+                        "lv95_file=@" + Paths.get(".", fileNameZip), "-F", "publish=true", "-F", "replace_all=true",
                         "https://" + aiServer + "/data_agg/interlis/import"].execute().text
         println(response)
         if (response.contains("false") || response == null || response.trim().isEmpty()) {
