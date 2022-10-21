@@ -19,10 +19,10 @@ task validateCsvFile(type: CsvValidator, dependsOn: 'copyCsvFile') {
     dataFiles = [file("upload/uploadFile.csv")]
 }
 
-task importStatent(type: CsvImport, dependsOn: 'validateCsvFile') {
+task importStatpop(type: CsvImport, dependsOn: 'validateCsvFile') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = 'arp_statpop_statent_staging_v1'
-    tableName = 'statent'
+    tableName = 'statpop'
     firstLineIsHeader = true
     valueSeparator = ';'
     encoding = 'UTF-8'
@@ -31,11 +31,11 @@ task importStatent(type: CsvImport, dependsOn: 'validateCsvFile') {
 
 //ACHTUNG: HIER MUSS DAS JAHR JEWEILS ANGEPASST WERDEN!!!!! 
 
-task transferStatent(type: Db2Db, dependsOn: importStatent){
+task transferStatent(type: Db2Db, dependsOn: importStatpop){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
-            new TransferSet('transfer_staging_edit.sql', 'arp_statpop_statent_2020_v1.statent', true), 
-            new TransferSet('transfer_staging_edit.sql', 'arp_statpop_statent_v1.statent', true)
+            new TransferSet('transfer_staging_edit.sql', 'arp_statpop_statent_2021_v1.statpop', true), 
+            new TransferSet('transfer_staging_edit.sql', 'arp_statpop_statent_v1.statpop', true)
     ];
 }
