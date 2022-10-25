@@ -1,7 +1,7 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'transferAgiGrundbuchplan', 'transferAgiGrundbuchplanauszug'
+defaultTasks 'transferAgiGrundbuchplanauszug'
 
 task transferAgiGrundbuchplan(type: Db2Db){
     description = "Datenumbau in das Grundbuchplan-Darstellungsmodell."    
@@ -19,13 +19,13 @@ task transferAgiGrundbuchplan(type: Db2Db){
     }        
 }
 
-task updateGrundstueckPos(type: SqlExecutor) {
+task updateGrundstueckPos(type: SqlExecutor, dependsOn: transferAgiGrundbuchplan) {
     description = "Aus Performancegründen kann dieser Umbau nicht beim Transfer gemacht werden."    
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ["update_grundbuchplan_grundstueckpos.sql"]
 }
 
-task transferAgiGrundbuchplanauszug(type: Db2Db) {
+task transferAgiGrundbuchplanauszug(type: Db2Db, dependsOn: updateGrundstueckPos) {
     description = "Datenumbau der Informationen, die für den Grundbuchplanauszug benötigt werden."    
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
