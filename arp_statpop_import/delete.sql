@@ -1,0 +1,1 @@
+DELETE FROM arp_statpop_statent_staging_v1.statpop;

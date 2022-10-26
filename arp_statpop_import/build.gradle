@@ -19,7 +19,12 @@ task validateCsvFile(type: CsvValidator, dependsOn: 'copyCsvFile') {
     dataFiles = [file("upload/uploadFile.csv")]
 }
 
-task importStatpop(type: CsvImport, dependsOn: 'validateCsvFile') {
+task deleteOldStagingData(type: SqlExecutor){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['delete.sql']
+}
+
+task importStatpop(type: CsvImport, dependsOn: deleteOldStagingData) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = 'arp_statpop_statent_staging_v1'
     tableName = 'statpop'
