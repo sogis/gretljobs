@@ -12,6 +12,8 @@ WITH grundnutzung AS (
         ON grundnutzung.typ_grundnutzung = typ.t_id
     WHERE
         grundnutzung.publiziertbis IS NULL
+        and 
+        substring(typ.typ_kt,2,3)::int4 < 200
 )
 
 SELECT 
