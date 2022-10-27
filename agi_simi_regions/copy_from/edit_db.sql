@@ -10,4 +10,4 @@ from
 left join 
     agi_metadaten_datenabdeckung_v1.abdeckung_datenabdeckung abdeckung
     on 
-    abdeckung.t_id = teilgebiet.datenabdeckung 
+    abdeckung.t_id = teilgebiet.rdatenabdeckung 
