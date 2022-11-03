@@ -225,8 +225,10 @@ mit einem grösseren `/tmp`-Verzeichnis ausgeführt wird.
 Und der Wert `gretl-2.2`,
 damit der Job auf einem Jenkins Agent
 mit GRETL Version 2.2 ausgeführt wird.
+(Im Moment zeigt allerdings auch der normale Jenkins Agent
+auf Version 2.2; es gibt also keinen Unterschied.)
 Lässt man diese Property weg,
-wird der Job auf einem normalen Jenkins Agent
+wird der Job auf dem normalen Jenkins Agent
 (mit dem Label `gretl`) ausgeführt.
 
 #### `gradle.properties`
