@@ -6,7 +6,7 @@ WITH gemeinden_ref AS (
     FROM
         agi_swissboundaries3d_pub.swissboundaries3d_hoheitsgebiet
     WHERE
-        kanton = 'Bern' OR kanton = 'Basel-Landschaft' OR kanton = 'Aargau' OR kanton = 'Jura'
+        kanton = 'Bern' OR kanton = 'Basel-Landschaft' OR kanton = 'Aargau' OR kanton = 'Jura' OR kanton = 'Luzern' 
  
     UNION ALL
  
