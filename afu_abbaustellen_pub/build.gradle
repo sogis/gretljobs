@@ -49,7 +49,7 @@ task writeToPub(type: Db2Db, dependsOn: importAppData){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-        new TransferSet('abbaustelle.sql', 'afu_abbaustellen_pub_v1.abbaustelle', true)
+        new TransferSet('abbaustelle.sql', 'afu_abbaustellen_pub_v2.abbaustelle', true)
     ];
 }
 

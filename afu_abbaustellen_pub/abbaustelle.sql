@@ -4,7 +4,32 @@ SELECT
   aktennummer, 
   gemeinde_name, 
   gemeinde_bfs, 
-  art, stand, 
+  CASE 
+      WHEN art = 'AusgangslageKiesgrube' 
+          THEN 'Ausgangslage Kiesgrube'
+      WHEN art = 'AusgangslageSteinbruch' 
+          THEN 'Ausgangslage Steinbruch'
+      WHEN art = 'AusgangslageTongrube' 
+          THEN 'Ausgangslage Tongrube'
+      WHEN art = 'FestsetzungKiesgrube' 
+          THEN 'Festsetzung Kiesgrube'
+      WHEN art = 'VororientierungKiesgrube' 
+          THEN 'Vororientierung Kiesgrube'
+      WHEN art = 'VororientierungSteinbruch' 
+          THEN 'Vororientierung Steinbruch'
+      WHEN art = 'ZwischenergebnisKiesgrube' 
+          THEN 'Zwischenergebnis Kiesgrube'
+      WHEN art = 'ZwischenergebnisSteinbruch' 
+          THEN 'Zwischenergebnis Steinbruch'
+      ELSE art
+  END AS art,
+  CASE
+      WHEN stand = 'NurAuffuellung'
+          THEN 'Nur Auffuellung'
+      WHEN stand = 'InAbbau'
+          THEN 'In Abbau'
+      ELSE stand
+  END AS stand, 
   rohstoffart, 
   gestaltungsplanvorhanden, 
   richtplannummer, 
