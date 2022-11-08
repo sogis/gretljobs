@@ -78,7 +78,7 @@ ext.datasets = []
 // datasets.add(new Dataset("SO_AFU_Gewaesser_Revitalisierung_20220629", "afu_gewaesser_revitalisierung_v1", dbEdit, "ch.so.afu.gewaesser_revitalisierung_edit"))
 // datasets.add(new Dataset("SO_AFU_Gewaesser_20220401", "afu_gewaesser_v1", dbEdit, "ch.so.afu.gewaesser_edit"))
 // datasets.add(new Dataset("PlanerischerGewaesserschutz_LV95_V1_1", "afu_gewaesserschutz", dbEdit, "ch.so.afu.gewaesserschutz_edit"))
-// datasets.add(new Dataset("SO_AFU_Hydro_Messstationen_20220706", "afu_hydro_messstationen_v1", dbEdit, "ch.so.afu.hydrologie.messstationen_edit"))
+// datasets.add(new Dataset("SO_AFU_Hydro_Messstationen_20220706", "afu_hydro_messstationen_v1", dbEdit, "ch.so.afu.hydrometrie.messstationen_edit"))
 // datasets.add(new Dataset("SO_AFU_Hydrologische_Einzugsgebiete_20220628", "afu_hydrologische_einzugsgebiete_v1", dbEdit, "ch.so.afu.hydrologische_einzugsgebiete_edit"))
 // datasets.add(new Dataset("SO_AFU_Igel_202000429", "afu_igel", dbEdit, "ch.so.afu.igel_edit"))
 // datasets.add(new Dataset("SO_AFU_Immissionskarten_20220522", "afu_immissionskarten_luft_v1", dbEdit, "ch.so.afu.immissionskarten_luft_edit"))
@@ -190,7 +190,7 @@ datasets.add(new Dataset("SO_AFU_Gewaesser_Oekomorphologie_Publikation_20220426"
 datasets.add(new Dataset("SO_AFU_Gewaesser_Revitalisierung_20220629", "afu_gewaesser_revitalisierung_pub_v1", dbPub, "ch.so.afu.gewaesser_revitalisierung", true)) 
 // Kann nicht in GeoPackage importiert werden, weil das Modell nicht gefunden wird:
 // datasets.add(new Dataset("SO_AfU_Gewaesserschutz_Publikation_20210303", "afu_gewaesserschutz_pub", dbPub, "ch.so.afu.gewaesserschutz", true))
-datasets.add(new Dataset("SO_AFU_Hydro_Messstationen_Publikation_20220707", "afu_hydro_messstationen_pub_v1", dbPub, "ch.so.afu.hydrologie.messstationen")) 
+datasets.add(new Dataset("SO_AFU_Hydro_Messstationen_Publikation_20220707", "afu_hydro_messstationen_pub_v1", dbPub, "ch.so.afu.hydrometrie.messstationen")) 
 datasets.add(new Dataset("SO_AFU_Hydrologische_Einzugsgebiete_20220628", "afu_hydrologische_einzugsgebiete_pub_v1", dbPub, "ch.so.afu.hydrologische_einzugsgebiete")) 
 datasets.add(new Dataset("SO_AFU_Igel_Publikation_20211116", "afu_igel_pub_v1", dbPub, "ch.so.afu.igel")) 
 datasets.add(new Dataset("SO_AFU_Immissionskarten_20220522", "afu_immissionskarten_luft_pub_v1", dbPub, "ch.so.afu.immissionskarten_luft")) 
