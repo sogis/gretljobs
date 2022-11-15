@@ -13,13 +13,14 @@ defaultTasks 'updateHektarraster'
 
 def DB_Schema_StatPopEnt = "arp_statpop_statent_v1"
 def DB_Schema_Hoheitsgr = "agi_hoheitsgrenzen_pub"
-def statyear = "2021"
+def statpopyear = "2021"
+def statentyear = "2020"
 
 
 task "updateHektarraster"(type: SqlExecutor) {
     description = "Update des Hektarrasters"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlParameters = [DB_Schema_StatPopEnt:DB_Schema_StatPopEnt,DB_Schema_Hoheitsgr:DB_Schema_Hoheitsgr,statyear:statyear]
+    sqlParameters = [DB_Schema_StatPopEnt:DB_Schema_StatPopEnt,DB_Schema_Hoheitsgr:DB_Schema_Hoheitsgr,statpopyear:statpopyear,statentyear:statentyear]
     sqlFiles = ['hektarraster.sql']
 }
 

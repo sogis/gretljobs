@@ -3,7 +3,7 @@ DELETE FROM ${DB_Schema_StatPopEnt}.hektarraster_statpopent;
 
 INSERT INTO 
   ${DB_Schema_StatPopEnt}.hektarraster_statpopent
-     (geometrie,statyear,population_onlypermantresidents,population_total,employees_fulltimeequivalents,employees_total)
+     (geometrie,statpopyear,statentyear,population_onlypermantresidents,population_total,employees_fulltimeequivalents,employees_total)
      
 WITH grid_temp AS (
   --Grid über Kanton generieren
@@ -71,7 +71,8 @@ empft AS (
 --finally also join employees_total
 SELECT 
   g.geometrie AS geometrie,
-  ${statyear} AS statyear,
+  ${statpopyear} AS statpopyear,
+  ${statentyear} AS statentyear,
   g.population_onlypermantresidents,
   g.population_total, 
   g.employees_fulltimeequivalents, 
