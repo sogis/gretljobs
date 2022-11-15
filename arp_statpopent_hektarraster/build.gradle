@@ -1,0 +1,25 @@
+description = """\n
+Update des StatPop/StatEnt Hektarrasters. Dabei werden die Daten von statpop mit count()
+auf die Hektarrasterzelle aggregiert und die Daten von StatEnt mit Sum()
+
+Fragen an: Andreas Neumann (AGI), Martin Schweizer (AGI) und Valentin Burki (ARP)
+"""
+
+apply plugin: 'ch.so.agi.gretl'
+
+import ch.so.agi.gretl.tasks.*
+
+defaultTasks 'updateHektarraster'
+
+def DB_Schema_StatPopEnt = "arp_statpop_statent_v1"
+def DB_Schema_Hoheitsgr = "agi_hoheitsgrenzen_pub"
+def statyear = "2021"
+
+
+task "updateHektarraster"(type: SqlExecutor) {
+    description = "Update des Hektarrasters"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_StatPopEnt:DB_Schema_StatPopEnt,DB_Schema_Hoheitsgr_DB_Schema_Hoheitsgr,statyear:statyear]
+    sqlFiles = ['hektarraster.sql']
+}
+
