@@ -1,9 +1,7 @@
 --Tabelle zuerst leeren
 DELETE FROM ${DB_Schema_StatPopEnt}.hektarraster_statpopstatent;
 
---neuen Kommentar mit Jahresständen setzen
---COMMENT ON TABLE ${DB_Schema_StatPopEnt}.hektarraster_statpopstatent IS 'Hektarraster mit StatPop und StatEnt Aggregationen. Datenstand StatPop: ${statpopyear}, StatEnt: ${statentyear}.';
-
+-- neuer Insert mit neuem Hektarraster (on-the-fly generiert)
 INSERT INTO 
   ${DB_Schema_StatPopEnt}.hektarraster_statpopstatent
      (geometrie,population_onlypermantresidents,population_total,employees_fulltimeequivalents,employees_total)

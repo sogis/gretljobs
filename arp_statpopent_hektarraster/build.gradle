@@ -20,7 +20,7 @@ def statentyear = "2020"
 task "updateHektarraster"(type: SqlExecutor) {
     description = "Update des Hektarrasters"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlParameters = [DB_Schema_StatPopEnt:DB_Schema_StatPopEnt,DB_Schema_Hoheitsgr:DB_Schema_Hoheitsgr,statpopyear:statpopyear,statentyear:statentyear]
+    sqlParameters = [DB_Schema_StatPopEnt:DB_Schema_StatPopEnt,DB_Schema_Hoheitsgr:DB_Schema_Hoheitsgr]
     sqlFiles = ['hektarraster.sql']
 }
 
