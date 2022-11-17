@@ -16,7 +16,7 @@ task "clean_qrcat_before_import"(type: SqlExecutor) {
 
 task transfer_qrcat(type: Db2Db,dependsOn: "clean_qrcat_before_import"){
     description = "Migration QRcat-Daten aus alter 'sogis' PostgreSQL-Datenbank"
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sourceDb = ['jdbc:postgresql://geodb.verw.rootso.org/sogis', dbUserSogis, dbPwdSogis]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
             new TransferSet('qrcat_detailszenario_grundhaeufigkeit.sql', 'afu_qrcat_v1.qrcat_detailszenario_grundhaeufigkeit', false),
