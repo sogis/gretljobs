@@ -2,7 +2,7 @@
 DELETE FROM ${DB_Schema_StatPopEnt}.hektarraster_statpopstatent;
 
 --neuen Kommentar mit Jahresständen setzen
-COMMENT ON TABLE ${DB_Schema_StatPopEnt}.hektarraster_statpopstatent IS 'Hektarraster mit StatPop und StatEnt Aggregationen. Datenstand StatPop: ${statpopyear}, StatEnt: ${statentyear}.';
+--COMMENT ON TABLE ${DB_Schema_StatPopEnt}.hektarraster_statpopstatent IS 'Hektarraster mit StatPop und StatEnt Aggregationen. Datenstand StatPop: ${statpopyear}, StatEnt: ${statentyear}.';
 
 INSERT INTO 
   ${DB_Schema_StatPopEnt}.hektarraster_statpopstatent
