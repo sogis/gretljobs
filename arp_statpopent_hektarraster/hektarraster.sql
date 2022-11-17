@@ -1,9 +1,12 @@
 --Tabelle zuerst leeren
-DELETE FROM ${DB_Schema_StatPopEnt}.hektarraster_statpopent;
+DELETE FROM ${DB_Schema_StatPopEnt}.hektarraster_statpopstatent;
+
+--neuen Kommentar mit Jahresständen setzen
+COMMENT ON TABLE ${DB_Schema_StatPopEnt}.hektarraster_statpopstatent IS 'Hektarraster mit StatPop und StatEnt Aggregationen. Datenstand StatPop: ${statpopyear}, StatEnt: ${statentyear}.';
 
 INSERT INTO 
-  ${DB_Schema_StatPopEnt}.hektarraster_statpopent
-     (geometrie,statpopyear,statentyear,population_onlypermantresidents,population_total,employees_fulltimeequivalents,employees_total)
+  ${DB_Schema_StatPopEnt}.hektarraster_statpopstatent
+     (geometrie,population_onlypermantresidents,population_total,employees_fulltimeequivalents,employees_total)
      
 WITH grid_temp AS (
   --Grid über Kanton generieren
@@ -71,8 +74,6 @@ empft AS (
 --finally also join employees_total
 SELECT 
   g.geometrie AS geometrie,
-  ${statpopyear} AS statpopyear,
-  ${statentyear} AS statentyear,
   g.population_onlypermantresidents,
   g.population_total, 
   g.employees_fulltimeequivalents, 
