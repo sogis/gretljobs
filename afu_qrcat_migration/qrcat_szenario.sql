@@ -23,6 +23,7 @@ SELECT
      -- die eigentlich Werte werden in Post-Processing-Schritt abgefüllt
      99999 AS id_detailszenarioghk,
      99999 AS id_toxreferenzszenario,
-     szen.id_betrieb AS id_betrieb,
-     szen."BSID" AS id_stoff
-   FROM qrcat."tbl_RCAT_SZENARIO" szen;
+     szen."BSID" AS id_betrieb,
+     szen."LSID" AS id_stoff
+   FROM qrcat."tbl_RCAT_SZENARIO" szen
+   ;
