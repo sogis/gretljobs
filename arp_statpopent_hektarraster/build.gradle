@@ -13,8 +13,6 @@ defaultTasks 'updateHektarraster'
 
 def DB_Schema_StatPopEnt = "arp_statpop_statent_v1"
 def DB_Schema_Hoheitsgr = "agi_hoheitsgrenzen_pub"
-def statpopyear = "2021"
-def statentyear = "2020"
 
 
 task "updateHektarraster"(type: SqlExecutor) {
