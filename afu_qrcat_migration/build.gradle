@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transfer_qrcat'
+defaultTasks 'postprocessing_import'
 
 def DB_Schema_QRcat = "afu_qrcat_v1"
 
@@ -14,7 +14,7 @@ task "clean_qrcat_before_import"(type: SqlExecutor) {
     sqlFiles = ['delete_qrcat.sql']
 }
 
-task transfer_qrcat(type: Db2Db,dependsOn: "clean_qrcat_before_import"){
+task "transfer_qrcat"(type: Db2Db,dependsOn: "clean_qrcat_before_import"){
     description = "Migration QRcat-Daten aus alter 'sogis' PostgreSQL-Datenbank"
     sourceDb = ['jdbc:postgresql://geodb.verw.rootso.org/sogis', dbUserSogis, dbPwdSogis]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -24,4 +24,11 @@ task transfer_qrcat(type: Db2Db,dependsOn: "clean_qrcat_before_import"){
             new TransferSet('qrcat_fwert.sql', 'afu_qrcat_v1.qrcat_fwert', false),
             new TransferSet('qrcat_szenario.sql', 'afu_qrcat_v1.qrcat_szenario', true)
     ];
+}
+
+task "postprocessing_import"(type: SqlExecutor,dependsOn: "transfer_qrcat") {
+    description = "Referenzen richtig setzen und Dummy-Records aufräumen"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_QRcat:DB_Schema_QRcat]
+    sqlFiles = ['qrcat_postprocessing_referenzen.sql','qrcat_postprocessing_remove_bemerkungen.sql']
 }
