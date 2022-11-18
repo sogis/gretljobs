@@ -46,5 +46,5 @@ FROM
      
 -- id_toxreferenzszenario, NULL-Werte behandeln
 UPDATE ${DB_Schema_QRcat}.qrcat_szenario s
-	SET id_detailszenarioghk = NULL
-     WHERE id_detailszenarioghk = 99999;
+	SET id_toxreferenzszenario = NULL
+     WHERE id_toxreferenzszenario = 99999;
