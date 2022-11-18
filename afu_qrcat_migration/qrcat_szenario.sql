@@ -13,7 +13,7 @@ SELECT
      round(szen.r_lr90::numeric,1) AS lsz_90,
      round(szen.r_lr1::numeric,1) AS lsz_1,
      szen."F_ANZ" AS betriebsfaktor_f_anz,
-     '' AS bemerkung,
+     NULL AS bemerkung,
      -- FWerte (Referenzen)
      -- die eigentlichen Werte (IDs) werden in Post-Processing-Schritt abgefüllt
      99999 AS f_bdo,
