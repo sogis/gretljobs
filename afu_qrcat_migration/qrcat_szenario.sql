@@ -35,5 +35,5 @@ SELECT
      szen."LSID" AS id_stoff,
      szen.id_assoziation AS id_stoff_in_bereich
    FROM qrcat."tbl_RCAT_SZENARIO" szen
-  WHERE id_assoziation IS NOT NULL
+  WHERE szen.id_assoziation IS NOT NULL AND szen.id_assoziation NOT IN (325329)
 ;
