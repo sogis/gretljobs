@@ -13,7 +13,13 @@ SELECT
      round(szen.r_lr90::numeric,1) AS lsz_90,
      round(szen.r_lr1::numeric,1) AS lsz_1,
      szen."F_ANZ" AS betriebsfaktor_f_anz,
-     '' AS bemerkung,
+     '{"f_bdo":' || szen."F_BDO" || ',' ||
+     '"f_car":' || szen."F_CAR" || ',' ||
+     '"f_sik":' || szen."F_SIK" || ',' ||
+     '"f_smn":' || szen."F_SMN" || ',' ||
+     '"id_detailszenarioghk":' || szen."W_GHK" || ',' ||
+     '"id_toxreferenzszenario":' || szen.tox_referenz_id ||
+     '}' AS bemerkung,
      -- FWerte (Referenzen)
      -- die eigentlich Werte (IDs) werden in Post-Processing-Schritt abgefüllt
      99999 AS f_bdo,
