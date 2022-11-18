@@ -7,7 +7,7 @@ UPDATE
          -- remove extra comma at the end of wkt, if nan coordinate is at the end
          regexp_replace(
           -- match and replace nan coordinates
-          regexp_replace(ST_AsText(geometrie),'(-nan -nan)+,*','','g'),
+          regexp_replace(ST_AsText(geometrie),'(-NaN -NaN)+,*','','g'),
           ',\)$',
           ')'
          ),
