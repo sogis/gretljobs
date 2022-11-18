@@ -3,7 +3,7 @@ SELECT
    stasto.text AS stoff_name,
    sto.display AS stoff_anzeigetext,
    staagg.text AS aggregatzustand,
-   sto.ms_stfv AS mengenschwelle_stfv,
+   sto.ms_stfv::numeric AS mengenschwelle_stfv,
    sto.cas AS cas_nummer,
    sto.cea_nummer AS cea_nummer,
    sto.gf_symbol1 AS gf_symbol
