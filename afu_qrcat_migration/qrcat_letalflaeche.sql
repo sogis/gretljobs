@@ -9,4 +9,7 @@ SELECT
    szenario_id::text AS bemerkung,
    99999 AS id_szenario
 FROM
- qrcat.betbev_ot_letalflaechen_pt;
+ qrcat.betbev_ot_letalflaechen_pt
+  -- only select records where find a correspondence to a Szenario
+  WHERE szenario_id IN (SELECT szenario_id FROM qrcat."tbl_RCAT_SZENARIO")
+;
