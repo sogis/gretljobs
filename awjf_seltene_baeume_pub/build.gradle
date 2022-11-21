@@ -12,6 +12,7 @@ task publiedit(type: Publisher){
   database = [dbUriEdit,dbUserEdit,dbPwdEdit]
   dbSchema = "awjf_seltene_baeume"
   modelsToPublish = "SO_AWJF_Seltene_Baumarten_20190211"
+  validationConfig = "awjf_seltene_baeume.toml"
 
   target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
