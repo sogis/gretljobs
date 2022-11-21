@@ -3,9 +3,22 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAwjfSelteneBaeume'
+defaultTasks 'publipub'
 
-task transferAwjfSelteneBaeume(type: Db2Db){
+task publiedit(type: Publisher){
+  dataIdent = "ch.so.awjf.seltene_baumarten.relational"
+  userFormats = true
+
+  database = [dbUriEdit,dbUserEdit,dbPwdEdit]
+  dbSchema = "awjf_seltene_baeume"
+  modelsToPublish = "SO_AWJF_Seltene_Baumarten_20190211"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+}
+
+
+task transferAwjfSelteneBaeume(type: Db2Db, dependsOn: 'publiedit'){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -13,3 +26,16 @@ task transferAwjfSelteneBaeume(type: Db2Db){
             new TransferSet('awjf_seltene_baeume_pflanzung.sql', 'awjf_seltene_baeume_pub.seltene_baumarten_pflanzung', true)
     ];
 }
+
+task publipub(type: Publisher, dependsOn: 'transferAwjfSelteneBaeume'){
+  dataIdent = "ch.so.awjf.seltene_baumarten"
+  userFormats = true
+
+  database = [dbUriPub,dbUserPub,dbPwdPub]
+  dbSchema = "awjf_seltene_baeume_pub"
+  modelsToPublish = "SO_AWJF_Seltene_Baumarten_Publikation_20191015"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+}
+
