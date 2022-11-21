@@ -23,5 +23,10 @@ INSERT INTO
     (t_id, t_ili_tid, beschreibung, szenario_art, abkuerzung_detailszenario, acode, grundhaeufigkeit_szenario, wahrscheinlichkeit_grundhaeufigkeit_art, relevant_asz, relevant_msz, relevant_q_stoff)
     VALUES(99999, uuid_generate_v4(), 'dummy', 'Brand', 'lb', 'lb_ft4', 0.000001, 'pro_Jahr', false, false, false);
 
+-- insert dummy in qrcat_szenario
+INSERT INTO
+  ${DB_Schema_QRcat}.qrcat_szenario
+   (t_id,t_ili_tid, szenario_titel, geometrie, szenario_art, wahrscheinlichkeit_szenario, asz_relevante_freisetzungsflaeche, msz_relevante_freigesetzte_stoffmenge, q_stoff_stoffspezverbrennungswaerme, lsz_90, lsz_1, betriebsfaktor_f_anz, bemerkung, f_bdo, f_car, f_sik, f_smn, id_detailszenarioghk, id_toxreferenzszenario, id_bereich, id_betrieb, id_stoff, id_stoff_in_bereich)
+   VALUES(99999, uuid_generate_v4(), 'dummy', ST_GeometryFromText('POLYGON(0 0,1 0,1 1,0 0)'), 'Brand', 0.9, 0, 0, 50, 10, 20, 1, '-', 99999, 99999, 99999, 99999, 99999, 99999, 324646, 324091, 302375, 325290);
 
 
