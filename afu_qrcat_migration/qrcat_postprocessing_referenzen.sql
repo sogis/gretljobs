@@ -53,5 +53,5 @@ UPDATE ${DB_Schema_QRcat}.qrcat_szenario s
 UPDATE ${DB_Schema_QRcat}.qrcat_letalflaeche l
     SET id_szenario = s.t_id
  FROM ${DB_Schema_QRcat}.qrcat_szenario s
-      WHERE l.bemerkung::integer = (s.bemerkung::jsonb -> 'szenario_id')
+      WHERE s.t_id != 99999 AND l.bemerkung::integer = (s.bemerkung::jsonb -> 'szenario_id')::integer;
 
