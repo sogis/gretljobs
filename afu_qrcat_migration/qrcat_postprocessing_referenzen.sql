@@ -49,7 +49,7 @@ UPDATE ${DB_Schema_QRcat}.qrcat_szenario s
 	SET id_toxreferenzszenario = NULL
      WHERE id_toxreferenzszenario = 99999;
      
--- Referenzen Letalfläche
+-- Referenzen Letalfläche korrigieren
 UPDATE ${DB_Schema_QRcat}.qrcat_letalflaeche l
     SET id_szenario = s.t_id
  FROM ${DB_Schema_QRcat}.qrcat_szenario s
