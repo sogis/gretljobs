@@ -4,6 +4,6 @@ SELECT
   kantonsname AS title,
   st_asbinary(geometrie) AS geom_wkb,
   localtimestamp AS updated,
-  'av_kt' AS coverage_ident
+  'kanton' AS coverage_ident
 FROM 
   agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze;

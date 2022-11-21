@@ -4,6 +4,6 @@ SELECT
   gemeindename AS title,
   st_asbinary(geometrie) AS geom_wkb,
   localtimestamp AS updated,
-  'av_gem' AS coverage_ident
+  'gemeinden' AS coverage_ident
 FROM 
   agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze;
