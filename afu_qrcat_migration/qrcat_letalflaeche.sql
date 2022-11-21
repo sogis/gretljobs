@@ -11,5 +11,5 @@ SELECT
 FROM
  qrcat.betbev_ot_letalflaechen_pt
   -- only select records where find a correspondence to a Szenario
-  WHERE szenario_id IN (SELECT szenario_id FROM qrcat."tbl_RCAT_SZENARIO")
+  WHERE szenario_id IN (SELECT szenario_id FROM qrcat."tbl_RCAT_SZENARIO" WHERE id_assoziation IS NOT NULL AND id_assoziation NOT IN (325329,325132,423613))
 ;
