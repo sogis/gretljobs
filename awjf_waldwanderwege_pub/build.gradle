@@ -5,7 +5,17 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'refreshSolr'
 
-task transferWaldwanderwege(type: Db2Db){
+task publishEdit (type: Publisher){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dataIdent = "ch.so.awjf.waldwanderung"
+    dbSchema = "awjf_waldwanderwege"
+    modelsToPublish = "SO_AWJF_Waldwanderwege_202000804"
+	userFormats = true
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+}
+
+task transferWaldwanderwege(type: Db2Db, dependsOn: 'publishEdit'){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -14,16 +24,6 @@ task transferWaldwanderwege(type: Db2Db){
     ];        
 }
 
-task publishPub(type: Publisher, dependsOn: 'transferWaldwanderwege'){
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    dataIdent = "ch.so.awjf.waldwanderung"
-    dbSchema = "awjf_waldwanderwege_pub"
-    modelsToPublish = "SO_AWJF_Waldwanderwege_202000804"
-	userFormats = true
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
-    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-}
-
-task refreshSolr(type:Exec, dependsOn:'publishPub') {
+task refreshSolr(type:Exec, dependsOn:'transferWaldwanderwege') {
 	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.waldwanderwege_posten'
 }
