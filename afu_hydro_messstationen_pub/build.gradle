@@ -5,7 +5,16 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'updateTypTxt'
 
-task transferData(type: Db2Db){
+task publishEdit(type: Publisher){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dataIdent = "ch.so.afu.hydrometrie.messstationen.relational"
+    dbSchema = "afu_hydro_messstationen_v1"
+    modelsToPublish = "SO_AFU_Hydro_Messstationen_20220706"
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+}
+
+task transferData(type: Db2Db, dependsOn:publishEdit){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -17,4 +26,14 @@ task updateTypTxt(type: SqlExecutor, dependsOn:transferData){
     description = "Befüllt die _txt-Spalten zum Typ"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ['update_typ.sql']
+}
+
+task publishPub(type: Publisher, dependsOn:updateTypTxt){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dataIdent = "ch.so.afu.hydrometrie.messstationen"
+    dbSchema = "afu_hydro_messstationen_pub_v1"
+    modelsToPublish = "SO_AFU_Hydro_Messstationen_Publikation_20220707"
+	userFormats = true
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
 }
