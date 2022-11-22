@@ -29,7 +29,7 @@ task updateTypTxt(type: SqlExecutor, dependsOn:transferData){
 }
 
 task publishPub(type: Publisher, dependsOn:updateTypTxt){
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.afu.hydrometrie.messstationen"
     dbSchema = "afu_hydro_messstationen_pub_v1"
     modelsToPublish = "SO_AFU_Hydro_Messstationen_Publikation_20220707"
