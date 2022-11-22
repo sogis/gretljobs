@@ -1,6 +1,7 @@
 SELECT 
   uuid_generate_v4 () AS id,
-  kantonskuerzel AS identifier, 
+  --kantonskuerzel AS identifier, 
+  'so' AS identifier, 
   kantonsname AS title,
   st_asbinary(geometrie) AS geom_wkb,
   localtimestamp AS updated,
