@@ -5,7 +5,19 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'refreshSolr'
 
-task transferAvtVerkehrszaehlstellen(type: Db2Db){
+task publiedit(type: Publisher){
+  dataIdent = "ch.so.avt.verkehrszaehlstellen.relational"
+  userFormats = true
+
+  database = [dbUriEdit,dbUserEdit,dbPwdEdit]
+  dbSchema = "avt_verkehrszaehlstellen"
+  modelsToPublish = "SO_AVT_Verkehrszaehlstellen_20190206"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+}
+
+task transferAvtVerkehrszaehlstellen(type: Db2Db, dependsOn: 'publiedit'){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -14,6 +26,19 @@ task transferAvtVerkehrszaehlstellen(type: Db2Db){
     ]
 }
 
-task refreshSolr(type:Exec, dependsOn:'transferAvtVerkehrszaehlstellen') {
+task publipub(type: Publisher, dependsOn: 'transferAvtVerkehrszaehlstellen'){
+  dataIdent = "ch.so.avt.verkehrszaehlstellen"
+  userFormats = true
+
+  database = [dbUriPub,dbUserPub,dbPwdPub]
+  dbSchema = "avt_verkehrszaehlstellen_pub"
+  modelsToPublish = "SO_AVT_Verkehrszaehlstellen_Publikation_20190206"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+}
+
+task refreshSolr(type:Exec, dependsOn:'publipub') {
 	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.avt.verkehrszaehlstellen'
 }
+
