@@ -32,8 +32,8 @@ FROM
 -- ---------------------------------
 -- id_detailszenarioghk
 UPDATE ${DB_Schema_QRcat}.qrcat_szenario s
-	SET id_detailszenarioghk = ghk.t_id
-FROM
+  SET id_detailszenarioghk = ghk.t_id
+ FROM
    ${DB_Schema_QRcat}.qrcat_detailszenario_grundhaeufigkeit ghk
      WHERE ghk.bemerkung = (s.bemerkung::jsonb -> 'id_detailszenarioghk')::varchar;
 
@@ -48,3 +48,10 @@ FROM
 UPDATE ${DB_Schema_QRcat}.qrcat_szenario s
 	SET id_toxreferenzszenario = NULL
      WHERE id_toxreferenzszenario = 99999;
+     
+-- Referenzen Letalfläche korrigieren
+UPDATE ${DB_Schema_QRcat}.qrcat_letalflaeche l
+    SET id_szenario = s.t_id
+ FROM ${DB_Schema_QRcat}.qrcat_szenario s
+      WHERE s.t_id != 99999 AND l.bemerkung::integer = (s.bemerkung::jsonb -> 'szenario_id')::integer;
+

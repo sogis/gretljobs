@@ -12,8 +12,10 @@ SELECT
      szen."Q_STOFF" AS q_stoff_stoffspezverbrennungswaerme,
      round(szen.r_lr90::numeric,1) AS lsz_90,
      round(szen.r_lr1::numeric,1) AS lsz_1,
+     --here we keep a few values that we need for postprocessing of references in a key-value structure
      szen."F_ANZ" AS betriebsfaktor_f_anz,
-     '{"f_bdo":' || szen."F_BDO" || ',' ||
+     '{"szenario_id":' || szen.szenario_id || ',' ||
+     '"f_bdo":' || szen."F_BDO" || ',' ||
      '"f_car":' || szen."F_CAR" || ',' ||
      '"f_sik":' || szen."F_SIK" || ',' ||
      '"f_smn":' || szen."F_SMN" || ',' ||

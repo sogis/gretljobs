@@ -21,5 +21,9 @@ UPDATE ${DB_Schema_QRcat}.qrcat_toxreferenzszenario
 DELETE FROM ${DB_Schema_QRcat}.qrcat_toxreferenzszenario WHERE t_id = 99999;
 
 -- Szenario
+-- remove dummy record
+DELETE FROM ${DB_Schema_QRcat}.qrcat_szenario WHERE t_id = 99999;
+
+-- remove Bemerkung holding old ids from old system
 UPDATE ${DB_Schema_QRcat}.qrcat_szenario
 	SET bemerkung = NULL;
