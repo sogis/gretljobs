@@ -19,7 +19,7 @@ task refreshSolr(type:Exec, dependsOn: 'transferAwjfFischerei') {
 
 task publishPub(type: Publisher, dependsOn: 'refreshSolr'){
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    dataIdent = "ch.so.afu.gewaesser.fischerei"
+    dataIdent = "ch.so.awjf.gewaesser.fischereireviere"
     dbSchema = "awjf_gewaesser_fischerei_pub_v1"
     modelsToPublish = "SO_AWJF_Gewaesser_Fischerei_Publikation_20220429"
 	userFormats = true
