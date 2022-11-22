@@ -14,7 +14,7 @@ task transferWaldwanderwege(type: Db2Db){
     ];        
 }
 
-task publishPub(type: Publisher, dependsOn: 'refreshSolr'){
+task publishPub(type: Publisher, dependsOn: 'transferWaldwanderwege'){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.awjf.waldwanderung"
     dbSchema = "awjf_waldwanderwege_pub"
