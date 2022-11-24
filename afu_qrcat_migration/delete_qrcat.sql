@@ -1,4 +1,5 @@
 -- delete previous data that should be replaced
+DELETE FROM ${DB_Schema_QRcat}.qrcat_toxischunguenstigster_sektor;
 DELETE FROM ${DB_Schema_QRcat}.qrcat_letalflaeche;
 DELETE FROM ${DB_Schema_QRcat}.qrcat_szenario;
 DELETE FROM ${DB_Schema_QRcat}.qrcat_detailszenario_grundhaeufigkeit;
