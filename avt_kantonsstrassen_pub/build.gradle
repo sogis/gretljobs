@@ -5,7 +5,7 @@ import ch.so.agi.gretl.tasks.*
 
 defaultTasks 'refreshSolr'
  
-task publipub(type: Publisher, dependsOn: 'importPunkte'){
+task publipub(type: Publisher){
   dataIdent = "ch.so.avt.kantonsstrassen"
   userFormats = true
 
