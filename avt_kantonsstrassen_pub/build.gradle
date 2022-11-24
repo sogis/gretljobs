@@ -9,7 +9,7 @@ def shpNameAchsen = 'achsen.shp'
 def shpNamePunkte = 'bezugspunkte.shp'
 def pathToShpFolder = Paths.get(System.getProperty("java.io.tmpdir"), "avt_achsen").toString() 
 def uploadFile = 'upload/uploadFile'
-
+/*
 task unpackShapes(type: Copy) {
     from zipTree(uploadFile)
     into pathToShpFolder
@@ -35,8 +35,9 @@ task importPunkte(type: ShpImport, dependsOn: importAchsen){
     dataFile = Paths.get(pathToShpFolder, shpNamePunkte) 
     encoding = "UTF-8"
 }
-
 task publipub(type: Publisher, dependsOn: 'importPunkte'){
+*/
+task publipub(type: Publisher){
   dataIdent = "ch.so.avt.kantonsstrassen"
   userFormats = true
 
