@@ -35,10 +35,22 @@ task importPunkte(type: ShpImport, dependsOn: importAchsen){
     dataFile = Paths.get(pathToShpFolder, shpNamePunkte) 
     encoding = "UTF-8"
 }
-task refreshSolr(type:Exec, dependsOn:'importPunkte') {
-        commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.avt.kantonsstrassen_achsen,ch.so.avt.kantonsstrassen_bezugspunkte'
+
+task publipub(type: Publisher, dependsOn: 'importPunkte'){
+  dataIdent = "ch.so.avt.kantonsstrassen"
+  userFormats = true
+
+  database = [dbUriPub,dbUserPub,dbPwdPub]
+  dbSchema = "avt_kantonsstrassen_pub"
+  modelsToPublish = "SO_AVT_Kantonsstrassen_Publikation_20200707"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
 }
 
+task refreshSolr(type:Exec, dependsOn:'publipub') {
+        commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.avt.kantonsstrassen_achsen,ch.so.avt.kantonsstrassen_bezugspunkte'
+}
 
 /*
 task validate(type: ShpValidator){
