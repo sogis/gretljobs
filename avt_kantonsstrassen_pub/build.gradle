@@ -4,12 +4,12 @@ import java.io.File
 import ch.so.agi.gretl.tasks.*
 
 defaultTasks 'refreshSolr'
-
+/*
 def shpNameAchsen = 'achsen.shp'
 def shpNamePunkte = 'bezugspunkte.shp'
 def pathToShpFolder = Paths.get(System.getProperty("java.io.tmpdir"), "avt_achsen").toString() 
 def uploadFile = 'upload/uploadFile'
-/*
+
 task unpackShapes(type: Copy) {
     from zipTree(uploadFile)
     into pathToShpFolder
