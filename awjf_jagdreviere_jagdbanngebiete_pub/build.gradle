@@ -5,7 +5,16 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferAwjfJagd'
 
-task transferAwjfJagd(type: Db2Db){
+task publishEdit(type: Publisher){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dataIdent = "ch.so.awjf.jagdreviere.relational"
+    dbSchema = "awjf_jagdreviere_jagdbanngebiete_v1"
+    modelsToPublish = "SO_AWJF_Jagdreviere_Jagdbanngebiete_202000804"
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+}
+
+task transferAwjfJagd(type: Db2Db, dependsOn: publishEdit){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -14,4 +23,15 @@ task transferAwjfJagd(type: Db2Db){
             new TransferSet('awjf_jagdreviere_jagdbanngebiete_pub_jagdreviere_jagdreviere.sql',
                     'awjf_jagdreviere_jagdbanngebiete_pub_v1.jagdreviere_jagdreviere', true)
     ];
+}
+
+
+task publishPub(type: Publisher, dependsOn:transferAwjfJagd){
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dataIdent = "ch.so.awjf.jagdreviere"
+    dbSchema = "awjf_jagdreviere_jagdbanngebiete_pub_v1"
+    modelsToPublish = "SO_AWJF_Jagdreviere_Jagdbanngebiete_Publikation_202000804"
+	userFormats = true
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
 }
