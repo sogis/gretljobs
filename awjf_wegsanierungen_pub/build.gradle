@@ -5,7 +5,19 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferAwjfWegsanierungen'
 
-task transferAwjfWegsanierungen(type: Db2Db){
+task publiedit(type: Publisher){
+  dataIdent = "ch.so.awjf.wegsanierung.relational"
+  userFormats = true
+
+  database = [dbUriEdit,dbUserEdit,dbPwdEdit]
+  dbSchema = "awjf_wegsanierungen_v1"
+  modelsToPublish = "SO_AWJF_Wegsanierungen_20170629"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+}
+
+task transferAwjfWegsanierungen(type: Db2Db, dependsOn: 'publiedit'){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -13,3 +25,16 @@ task transferAwjfWegsanierungen(type: Db2Db){
                     'awjf_wegsanierungen_pub.wegsanierungen_wegsanierung', true)
     ];
 }
+
+task publipub(type: Publisher, dependsOn: 'transferAwjfWegsanierungen'){
+  dataIdent = "ch.so.awjf.wegsanierung"
+  userFormats = true
+
+  database = [dbUriPub,dbUserPub,dbPwdPub]
+  dbSchema = "awjf_wegsanierungen_pub"
+  modelsToPublish = "SO_AWJF_Wegsanierungen_Publikation_20170629"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+}
+
