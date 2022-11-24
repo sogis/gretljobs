@@ -36,8 +36,6 @@ task importPunkte(type: ShpImport, dependsOn: importAchsen){
     encoding = "UTF-8"
 }
 task publipub(type: Publisher, dependsOn: 'importPunkte'){
-*/
-task publipub(type: Publisher){
   dataIdent = "ch.so.avt.kantonsstrassen"
   userFormats = true
 
@@ -53,7 +51,7 @@ task refreshSolr(type:Exec, dependsOn:'publipub') {
         commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.avt.kantonsstrassen_achsen,ch.so.avt.kantonsstrassen_bezugspunkte'
 }
 
- 
+/* 
 task validate(type: ShpValidator){
     models = "SO_AVT_Achsen_Publikation_20200707"
     dataFiles = ["_shp/Bezugspunkte_ohneK2_point_point.shp","_shp/Achsen_line_line.shp"]
