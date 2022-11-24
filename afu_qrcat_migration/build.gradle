@@ -23,7 +23,8 @@ task "transfer_qrcat"(type: Db2Db,dependsOn: "clean_qrcat_before_import"){
             new TransferSet('qrcat_toxreferenzszenario.sql', 'afu_qrcat_v1.qrcat_toxreferenzszenario', false),
             new TransferSet('qrcat_fwert.sql', 'afu_qrcat_v1.qrcat_fwert', false),
             new TransferSet('qrcat_szenario.sql', 'afu_qrcat_v1.qrcat_szenario', false),
-            new TransferSet('qrcat_letalflaeche.sql', 'afu_qrcat_v1.qrcat_letalflaeche', false)
+            new TransferSet('qrcat_letalflaeche.sql', 'afu_qrcat_v1.qrcat_letalflaeche', false),
+            new TransferSet('qrcat_toxischunguenstigster_sektor.sql', 'afu_qrcat_v1.qrcat_toxischunguenstigster_sektor', false)
     ];
 }
 
