@@ -15,3 +15,15 @@ task transferAwjfWildtierkorridorePub(type: Db2Db) {
             new TransferSet('awjf_wildtierkorridore_pub.sql', 'awjf_wildtierkorridore_pub_v1.wildtierkorridor', true)
     ];
 }
+
+task publipub(type: Publisher, dependsOn:'transferAwjfWildtierkorridorePub'){
+  dataIdent = "ch.so.awjf.wildtierkorridore"
+  userFormats = true
+
+  database = [dbUriPub,dbUserPub,dbPwdPub]
+  dbSchema = "awjf_wildtierkorridore_pub_v1"
+  modelsToPublish = "SO_AWJF_Wildtierkorridore_20210831"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+}
