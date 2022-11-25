@@ -31,3 +31,15 @@ task import_to_pub(type: Ili2pgImport){
      dataFile = 'upload/uploadFile.xtf'
      deleteData = true
 }
+
+task publipub(type: Publisher', dependsOn: 'import_to_pub'){
+  dataIdent = "ch.so.avt.oev_gueteklasse"
+  userFormats = true
+
+  database = [dbUriPub,dbUserPub,dbPwdPub]
+  dbSchema = "avt_oev_gueteklassen_pub_v1"
+  modelsToPublish = "SO_AVT_Oev_Gueteklassen_20220120"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+}
