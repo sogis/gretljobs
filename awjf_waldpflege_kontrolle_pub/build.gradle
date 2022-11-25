@@ -3,10 +3,21 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'deleteFromWaldpflegeKontrolle'
+defaultTasks 'publipub'
 
+task publiedit(type: Publisher){
+  dataIdent = "ch.so.awjf.waldpflege.relational.kontrolle"
+  userFormats = true
 
-task transferAwjfWaldpflegeKontrollePub(type: Db2Db) {
+  database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+  dbSchema = "awjf_waldpflege_kontrolle"
+  modelsToPublish = "SO_AWJF_Waldpflege_Kontrolle_20210202"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+}
+
+task transferAwjfWaldpflegeKontrollePub(type: Db2Db, dependsOn: 'publiedit') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -18,4 +29,16 @@ task transferAwjfWaldpflegeKontrollePub(type: Db2Db) {
 task deleteFromWaldpflegeKontrolle(type: SqlExecutor, dependsOn: 'transferAwjfWaldpflegeKontrollePub') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['delete_from_awjf_waldpflege_kontrolle_pub.sql']
+}
+
+task publipub(type: Publisher, dependsOn:'deleteFromWaldpflegeKontrolle'){
+  dataIdent = "ch.so.awjf.waldpflege"
+  userFormats = true
+
+  database = [dbUriPub,dbUserPub,dbPwdPub]
+  dbSchema = "awjf_waldpflege_kontrolle_pub"
+  modelsToPublish = "SO_AWJF_Waldpflege_Kontrolle_20210202"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
 }
