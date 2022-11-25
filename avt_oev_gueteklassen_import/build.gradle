@@ -32,7 +32,7 @@ task import_to_pub(type: Ili2pgImport){
      deleteData = true
 }
 
-task publipub(type: Publisher'){
+task publipub(type: Publisher, , dependsOn: 'import_to_pub'){
   dataIdent = "ch.so.avt.oev_gueteklasse"
   userFormats = true
 
