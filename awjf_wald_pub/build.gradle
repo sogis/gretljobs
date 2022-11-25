@@ -5,7 +5,19 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'refreshSolr'
 
-task transferAwjfSogis(type: Db2Db) {
+task publieditOberhoehenbonitaet(type: Publisher){
+  dataIdent = "ch.so.awjf.oberhoehenbonitaet"
+  userFormats = true
+
+  database = [dbUriEdit,dbUserEdit,dbPwdEdit]
+  dbSchema = "awjf_wald_oberhoehenbonitaet_v1"
+  modelsToPublish = "SO_AWJF_Wald_Oberhoehenbonitaet_20211027"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+}
+
+task transferAwjfSogis(type: Db2Db, dependsOn:'publieditOberhoehenbonitaet') {
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
