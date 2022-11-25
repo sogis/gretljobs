@@ -31,7 +31,7 @@ pipeline {
                         unstash name: 'uploadDir'
                         sh 'gretl import_to_stage'
                         input message: "Fortfahren und die Daten publizieren?", ok: "OK"
-                        sh 'gretl import_to_pub'
+                        sh 'gretl publipub'
                     }
                 }
             }
