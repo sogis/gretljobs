@@ -1,0 +1,32 @@
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
+
+
+defaultTasks 'importWanderwegeEdit'
+
+
+
+task importKataloge(type: Ili2pgReplace){
+     description = 'Import der Kataloge'
+     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+     dbschema = 'arp_wanderwege_v1'
+     models = 'hpm_network_V1'
+     dataFile = 'Hpm_Catalogues_V1.xml'
+     dataset = 'Hpm_Catalogues_V1.xml'
+     importTid = true
+     importBid = true
+}
+
+task importWanderwegeEdit(type: Ili2pgReplace, dependsOn: 'importKataloge'){
+     description = 'Import der Wanderwege aus MISTRA in die Edit-DB'
+     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+     dbschema = 'arp_wanderwege_v1'
+     models = 'hpm_network_V1'
+     dataFile = 'LV_Hpm_Network_V1.xtf'
+     dataset = 'LV_Hpm_Network_V1.xtf'
+     importTid = true
+     importBid = true
+     disableValidation = true
+}
