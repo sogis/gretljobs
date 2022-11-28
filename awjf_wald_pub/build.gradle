@@ -6,7 +6,16 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'refreshSolr'
 
 
-task transferAwjfSogis(type: Db2Db) {
+task publishEdit(type: Publisher){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dataIdent = "ch.so.awjf.waldstandorte.relational"
+    dbSchema = "awjf_waldstandorte_v1"
+    modelsToPublish = "SO_AWJF_Waldstandorte_20211027"
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+}
+
+task transferAwjfSogis(type: Db2Db, dependsOn: 'publishEdit') {
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -16,7 +25,7 @@ task transferAwjfSogis(type: Db2Db) {
     ];        
 }
 
-task transferAwjfEdit(type: Db2Db, dependsOn:'transferAwjfSogis') {
+task transferAwjfEdit(type: Db2Db, dependsOn: 'transferAwjfSogis') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -25,19 +34,26 @@ task transferAwjfEdit(type: Db2Db, dependsOn:'transferAwjfSogis') {
     ];
 }
 
-task publipubOberhoehenbonitaet(type: Publisher, dependsOn:'transferAwjfEdit'){
+task refreshSolr(type:Exec, dependsOn: 'transferAwjfEdit') {
+    commandLine 'curl', '-i', '--max-time', '20', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.schutzwaldausscheidung,ch.so.awjf.schutzwald_hauptgefahrenpotentiale,ch.so.awjf.bestandeskarte_wald_flaechen,ch.so.awjf.waldplan.waldeigentum,ch.so.awjf.waldplan.waldfunktion,ch.so.awjf.waldplan.waldplantyp'
+}
+
+task publipubOberhoehenbonitaet(type: Publisher, dependsOn: 'refreshSolr'){
   dataIdent = "ch.so.awjf.oberhoehenbonitaet"
   userFormats = true
-
   database = [dbUriPub,dbUserPub,dbPwdPub]
   dbSchema = "awjf_wald_oberhoehenbonitaet_pub_v1"
   modelsToPublish = "SO_AWJF_Wald_Oberhoehenbonitaet_20211027"
-
   target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
 }
 
-
-task refreshSolr(type:Exec, dependsOn:'publipubOberhoehenbonitaet') {
-    commandLine 'curl', '-i', '--max-time', '20', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.schutzwaldausscheidung,ch.so.awjf.schutzwald_hauptgefahrenpotentiale,ch.so.awjf.bestandeskarte_wald_flaechen,ch.so.awjf.waldplan.waldeigentum,ch.so.awjf.waldplan.waldfunktion,ch.so.awjf.waldplan.waldplantyp'
+task publishPub(type: Publisher, dependsOn: 'publipubOberhoehenbonitaet){
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dataIdent = "ch.so.awjf.waldstandorte"
+    dbSchema = awjf_waldstandorte_pub_v1"
+    modelsToPublish = "SO_AWJF_Waldstandorte_Publikation_20211027"
+	userFormats = true
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
 }
