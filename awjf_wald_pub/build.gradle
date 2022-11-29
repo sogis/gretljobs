@@ -6,7 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'refreshSolr'
 
 
-task publishEdit(type: Publisher){
+task publishEdit(type: Publisher) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dataIdent = "ch.so.awjf.waldstandorte.relational"
     dbSchema = "awjf_waldstandorte_v1"
@@ -38,7 +38,7 @@ task refreshSolr(type:Exec, dependsOn: 'transferAwjfEdit') {
     commandLine 'curl', '-i', '--max-time', '20', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.schutzwaldausscheidung,ch.so.awjf.schutzwald_hauptgefahrenpotentiale,ch.so.awjf.bestandeskarte_wald_flaechen,ch.so.awjf.waldplan.waldeigentum,ch.so.awjf.waldplan.waldfunktion,ch.so.awjf.waldplan.waldplantyp'
 }
 
-task publipubOberhoehenbonitaet(type: Publisher, dependsOn: 'refreshSolr'){
+task publipubOberhoehenbonitaet(type: Publisher, dependsOn: 'refreshSolr') {
   dataIdent = "ch.so.awjf.oberhoehenbonitaet"
   userFormats = true
   database = [dbUriPub,dbUserPub,dbPwdPub]
@@ -48,7 +48,7 @@ task publipubOberhoehenbonitaet(type: Publisher, dependsOn: 'refreshSolr'){
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
 }
 
-task publishPub(type: Publisher, dependsOn: 'publipubOberhoehenbonitaet){
+task publishPub(type: Publisher, dependsOn: 'publipubOberhoehenbonitaet') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.awjf.waldstandorte"
     dbSchema = awjf_waldstandorte_pub_v1"
