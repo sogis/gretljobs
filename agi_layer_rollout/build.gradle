@@ -72,7 +72,7 @@ task copyIntToProd(type: Db2Db, dependsOn: deleteProdData){
         // product
         new TransferSet('copy/product/data_product_pub_scope.sql', 'simi.simiproduct_data_product_pub_scope', false),
         new TransferSet('copy/product/data_product.sql', 'simi.simiproduct_data_product', false),
-        new TransferSet('copy/product/data_product_sealed.sql', 'simi.simiproduct_data_product_sealed', false),
+        //new TransferSet('copy/product/data_product_sealed.sql', 'simi.simiproduct_data_product_sealed', false),
         new TransferSet('copy/product/product_list.sql', 'simi.simiproduct_product_list', false),
         new TransferSet('copy/product/map.sql', 'simi.simiproduct_map', false),
         new TransferSet('copy/product/layer_group.sql', 'simi.simiproduct_layer_group', false),

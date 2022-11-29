@@ -7,6 +7,6 @@ DELETE FROM simi.simiproduct_facade_layer;
 DELETE FROM simi.simiproduct_layer_group;
 DELETE FROM simi.simiproduct_map;
 DELETE FROM simi.simiproduct_product_list;
-DELETE FROM simi.simiproduct_data_product_sealed;
+--DELETE FROM simi.simiproduct_data_product_sealed;
 DELETE FROM simi.simiproduct_data_product;
 DELETE FROM simi.simiproduct_data_product_pub_scope;
