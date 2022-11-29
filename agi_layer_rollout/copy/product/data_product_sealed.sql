@@ -1,1 +1,0 @@
-SELECT * FROM simi.simiproduct_data_product_sealed;
