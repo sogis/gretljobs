@@ -1,0 +1,1 @@
+SELECT * FROM simi.simiproduct_single_actor;

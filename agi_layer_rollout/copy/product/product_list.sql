@@ -1,0 +1,1 @@
+SELECT * FROM simi.simiproduct_product_list;

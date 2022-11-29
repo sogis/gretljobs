@@ -1,0 +1,1 @@
+SELECT * FROM simi.simiiam_group;

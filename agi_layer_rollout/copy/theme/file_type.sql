@@ -1,0 +1,1 @@
+SELECT * FROM simi.simitheme_file_type;

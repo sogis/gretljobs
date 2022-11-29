@@ -1,0 +1,1 @@
+SELECT * FROM simi.simidata_view_field;

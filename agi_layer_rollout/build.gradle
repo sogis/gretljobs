@@ -1,0 +1,125 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+//defaultTasks "restorePubDates"
+defaultTasks "assertValidConf"
+
+def writeUri = dbUriSimi
+def writeUser = dbUserSimi
+def writePass = dbPwdSimi
+
+//def readUri = "jdbc:postgresql://localhost:5432/simi"
+def readUri = deferReadUri(dbUriSimi)
+def readUser = dbUserSimi
+def readPass = dbPwdSimi
+
+def deferReadUri(dbUri) {
+  String readUri = dbUri.replaceFirst("-t.", "-i.")
+
+  if(readUri.equals(dbUri))
+    readUri = dbUri.replaceFirst("\\.", "-i.")
+
+  return readUri
+}
+
+task assertValidConf(){
+  doLast{
+      if(readUri.equals(writeUri))
+        throw new RuntimeException("Read and write Db must be different.")
+
+      def validEnv = gretlEnvironment.equals("test") || gretlEnvironment.equals("production")
+      if(!validEnv)
+        throw new RuntimeException("Must only be started from test or prod environment")
+
+    	println 'Reading from ' + readUri + '. Writing to ' + writeUri + '.';
+      println 'Environment: ' + simiEnv
+  }
+}
+
+task backupPubDates(type: SqlExecutor, dependsOn: assertValidConf){
+    database = [writeUri, writeUser, writePass]
+    sqlFiles = [
+        'pre_copy/clear_helper.sql',
+        'pre_copy/backup_to_helper.sql',
+        'pre_copy/clear_pub_dates.sql'
+    ]
+}
+
+task deleteProdData(type: SqlExecutor, dependsOn: backupPubDates){
+    database = [writeUri, writeUser, writePass]
+    sqlFiles = [
+      'copy/iam/_delete_rows.sql',
+      'copy/extended/_delete_rows.sql',
+      'copy/data/_delete_rows.sql',
+      'copy/product/_delete_rows.sql',
+      'copy/theme/_delete_rows.sql'
+    ]
+}
+
+task copyIntToProd(type: Db2Db, dependsOn: deleteProdData){ 
+    sourceDb = [readUri, readUser, readPass]
+    targetDb = [writeUri, writeUser, writePass]
+    transferSets = [
+        //theme
+        new TransferSet('copy/theme/org_unit.sql', 'simi.simitheme_org_unit', false),
+        new TransferSet('copy/theme/agency.sql', 'simi.simitheme_agency', false),
+        new TransferSet('copy/theme/sub_org.sql', 'simi.simitheme_sub_org', false),
+        new TransferSet('copy/theme/theme.sql', 'simi.simitheme_theme', false),
+        new TransferSet('copy/theme/theme_publication.sql', 'simi.simitheme_theme_publication', false),
+        new TransferSet('copy/theme/file_type.sql', 'simi.simitheme_file_type', false),
+        new TransferSet('copy/theme/theme_publication_custom_file_type_link.sql', 'simi.simitheme_theme_publication_custom_file_type_link', false),
+        // product
+        new TransferSet('copy/product/data_product_pub_scope.sql', 'simi.simiproduct_data_product_pub_scope', false),
+        new TransferSet('copy/product/data_product.sql', 'simi.simiproduct_data_product', false),
+        new TransferSet('copy/product/data_product_sealed.sql', 'simi.simiproduct_data_product_sealed', false),
+        new TransferSet('copy/product/product_list.sql', 'simi.simiproduct_product_list', false),
+        new TransferSet('copy/product/map.sql', 'simi.simiproduct_map', false),
+        new TransferSet('copy/product/layer_group.sql', 'simi.simiproduct_layer_group', false),
+        new TransferSet('copy/product/facade_layer.sql', 'simi.simiproduct_facade_layer', false),
+        new TransferSet('copy/product/single_actor.sql', 'simi.simiproduct_single_actor', false),
+        new TransferSet('copy/product/external_wms_service.sql', 'simi.simiproduct_external_wms_service', false),
+        new TransferSet('copy/product/external_wms_layers.sql', 'simi.simiproduct_external_wms_layers', false),
+        new TransferSet('copy/product/properties_in_list.sql', 'simi.simiproduct_properties_in_list', false),
+        // data
+        new TransferSet('copy/data/data_set_view.sql', 'simi.simidata_data_set_view', false),
+        new TransferSet('copy/data/styleasset.sql', 'simi.simidata_styleasset', false),
+        new TransferSet('copy/data/raster_ds.sql', 'simi.simidata_raster_ds', false),
+        new TransferSet('copy/data/raster_view.sql', 'simi.simidata_raster_view', false),
+        new TransferSet('copy/data/postgres_db.sql', 'simi.simidata_postgres_db', false),
+        new TransferSet('copy/data/db_schema.sql', 'simi.simidata_db_schema', false),
+        new TransferSet('copy/data/postgres_table.sql', 'simi.simidata_postgres_table', false),
+        new TransferSet('copy/data/table_field.sql', 'simi.simidata_table_field', false),
+        new TransferSet('copy/data/table_view.sql', 'simi.simidata_table_view', false),
+        new TransferSet('copy/data/view_field.sql', 'simi.simidata_view_field', false),
+        // link data - product (Lösch-Reihenfolge aufgrund CASCADE flexibel)
+        new TransferSet('copy/product/properties_in_facade.sql', 'simi.simiproduct_properties_in_facade', false),
+        // extended
+        new TransferSet('copy/extended/dependency.sql', 'simi.simiextended_dependency', false),
+        new TransferSet('copy/extended/relation.sql', 'simi.simiextended_relation', false),
+        // iam
+        new TransferSet('copy/iam/identity.sql', 'simi.simiiam_identity', false),
+        new TransferSet('copy/iam/user.sql', 'simi.simiiam_user', false),
+        new TransferSet('copy/iam/group.sql', 'simi.simiiam_group', false),
+        new TransferSet('copy/iam/role.sql', 'simi.simiiam_role', false),
+        new TransferSet('copy/iam/role_user_link.sql', 'simi.simiiam_role_user_link', false),
+        new TransferSet('copy/iam/role_group_link.sql', 'simi.simiiam_role_group_link', false),
+        new TransferSet('copy/iam/group_user_link.sql', 'simi.simiiam_group_user_link', false),
+        new TransferSet('copy/iam/permission.sql', 'simi.simiiam_permission', false),
+    ];
+}
+
+task restorePubDates(type: SqlExecutor, dependsOn: copyIntToProd){
+    database = [writeUri, writeUser, writePass]
+    sqlFiles = [
+      'post_copy/restore_pub_dates.sql'
+    ]
+}
+
+/*
+// shell script to run local
+export ORG_GRADLE_PROJECT_dbUriSimi=jdbc:postgresql://localhost:5433/simi
+export ORG_GRADLE_PROJECT_dbUserSimi=postgres
+export ORG_GRADLE_PROJECT_dbPwdSimi=postgres
+export ORG_GRADLE_PROJECT_gretlEnvironment=test
+./start-gretl.sh --docker-image sogis/gretl:latest --docker-network host --job-directory $PWD/agi_layer_rollout
+*/

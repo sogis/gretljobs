@@ -1,0 +1,1 @@
+SELECT * FROM simi.simiproduct_external_wms_service;

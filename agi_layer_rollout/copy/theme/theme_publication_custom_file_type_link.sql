@@ -1,0 +1,1 @@
+SELECT * FROM simi.simitheme_theme_publication_custom_file_type_link;

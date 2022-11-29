@@ -1,0 +1,1 @@
+SELECT * FROM simi.simiiam_role_user_link;

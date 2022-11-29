@@ -1,0 +1,12 @@
+DELETE FROM simi.simiproduct_properties_in_facade;
+DELETE FROM simi.simiproduct_properties_in_list;
+DELETE FROM simi.simiproduct_external_wms_layers;
+DELETE FROM simi.simiproduct_external_wms_service;
+DELETE FROM simi.simiproduct_single_actor;
+DELETE FROM simi.simiproduct_facade_layer;
+DELETE FROM simi.simiproduct_layer_group;
+DELETE FROM simi.simiproduct_map;
+DELETE FROM simi.simiproduct_product_list;
+DELETE FROM simi.simiproduct_data_product_sealed;
+DELETE FROM simi.simiproduct_data_product;
+DELETE FROM simi.simiproduct_data_product_pub_scope;

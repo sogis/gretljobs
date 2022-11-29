@@ -1,0 +1,10 @@
+DELETE FROM simi.simidata_view_field;
+DELETE FROM simi.simidata_table_view;
+DELETE FROM simi.simidata_table_field;
+DELETE FROM simi.simidata_postgres_table;
+DELETE FROM simi.simidata_db_schema;
+DELETE FROM simi.simidata_postgres_db;
+DELETE FROM simi.simidata_raster_view;
+DELETE FROM simi.simidata_raster_ds;
+DELETE FROM simi.simidata_styleasset;
+DELETE FROM simi.simidata_data_set_view;

@@ -1,0 +1,1 @@
+DELETE FROM simi.simitheme_published_sub_area;
