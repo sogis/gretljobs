@@ -24,6 +24,10 @@ def deferReadUri(dbUri) {
 
 task assertValidConf(){
   doLast{
+      println 'Environment: ' + simiEnv
+      if(!gretlEnvironment.equals(simiEnv))
+        throw new RuntimeException("The entered environment '" + simiEnv + "' is invalid.")
+
       if(readUri.equals(writeUri))
         throw new RuntimeException("Read and write Db must be different.")
 
@@ -31,8 +35,7 @@ task assertValidConf(){
       if(!validEnv)
         throw new RuntimeException("Must only be started from test or prod environment")
 
-    	println 'Reading from ' + readUri + '. Writing to ' + writeUri + '.';
-      println 'Environment: ' + simiEnv
+      println 'Reading from ' + readUri + '. Writing to ' + writeUri + '.';
   }
 }
 
