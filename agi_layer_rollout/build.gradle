@@ -1,14 +1,12 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-//defaultTasks "restorePubDates"
-defaultTasks "assertValidConf"
+defaultTasks "restorePubDates"
 
 def writeUri = dbUriSimi
 def writeUser = dbUserSimi
 def writePass = dbPwdSimi
 
-//def readUri = "jdbc:postgresql://localhost:5432/simi"
 def readUri = deferReadUri(dbUriSimi)
 def readUser = dbUserSimi
 def readPass = dbPwdSimi
@@ -117,12 +115,3 @@ task restorePubDates(type: SqlExecutor, dependsOn: copyIntToProd){
       'post_copy/restore_pub_dates.sql'
     ]
 }
-
-/*
-// shell script to run local
-export ORG_GRADLE_PROJECT_dbUriSimi=jdbc:postgresql://localhost:5433/simi
-export ORG_GRADLE_PROJECT_dbUserSimi=postgres
-export ORG_GRADLE_PROJECT_dbPwdSimi=postgres
-export ORG_GRADLE_PROJECT_gretlEnvironment=test
-./start-gretl.sh --docker-image sogis/gretl:latest --docker-network host --job-directory $PWD/agi_layer_rollout
-*/

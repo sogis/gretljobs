@@ -50,3 +50,12 @@ Ursache wird typischerweise die Umbenennung des Identifikators der Themenbereits
 1. Diesen Job nachführen (Sofern die Anzahl der zu kopierenden Tabellen verändert wurde).
 1. Schemaänderung auf der Produktion anwenden (typischerweise als erster Schritt des aktuellen Rollout)
 1. Rollout mittels diesem Job
+
+## Shell-Skript für das lokale Ausführen
+
+    export ORG_GRADLE_PROJECT_dbUriSimi=jdbc:postgresql://localhost:5433/simi
+    export ORG_GRADLE_PROJECT_dbUserSimi=postgres
+    export ORG_GRADLE_PROJECT_dbPwdSimi=postgres
+    export ORG_GRADLE_PROJECT_gretlEnvironment=test
+    ./start-gretl.sh --docker-image sogis/gretl:latest --docker-network host --job-directory $PWD/agi_layer_rollout
+

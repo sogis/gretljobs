@@ -1,0 +1,21 @@
+version: "3"
+services:
+  db_simi_int:
+    image: postgis/postgis:11-2.5-alpine
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - "./.gitignored/db_simi_int:/var/lib/postgresql/data/pgdata"
+  db_simi_prod:
+    image: postgis/postgis:11-2.5-alpine
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "5433:5433"
+    volumes:
+      - "./.gitignored/db_simi_prod:/var/lib/postgresql/data/pgdata"
+    command: -p 5433
