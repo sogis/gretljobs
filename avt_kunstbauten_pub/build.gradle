@@ -29,7 +29,7 @@ task writeToPub(type: Db2Db, dependsOn: validate){
     ];
 }
 */
-task publishPub(type: Publisher, dependsOn:writeToPub){
+task publishPub(type: Publisher){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.avt.kunstbauten"
     dbSchema = "avt_kunstbauten_pub_v1"
