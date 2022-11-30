@@ -57,9 +57,9 @@ task mapGefkart2Mgdm(type: Db2Db, dependsOn: 'pubGefkart'){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
-		new TransferSet('export_ai/assessment_area.sql', 'afu_gefahrenkartierung_mgdm.hazard_mapping_assessment_area', true),
-		new TransferSet('export_ai/hazard_area.sql', 'afu_gefahrenkartierung_mgdm.hazard_mapping_hazard_area', true),
-		new TransferSet('export_ai/synoptic_intensity.sql', 'afu_gefahrenkartierung_mgdm.hazard_mapping_synoptic_intensity', true)
+		new TransferSet('export_ai/assessment_area.sql', 'afu_gefahrenkartierung_mgdm_v1.hazard_mapping_assessment_area', true),
+		new TransferSet('export_ai/hazard_area.sql', 'afu_gefahrenkartierung_mgdm_v1.hazard_mapping_hazard_area', true),
+		new TransferSet('export_ai/synoptic_intensity.sql', 'afu_gefahrenkartierung_mgdm_v1.hazard_mapping_synoptic_intensity', true)
 	];        
 }
 
@@ -73,8 +73,8 @@ def exportFile = file(Paths.get(pathToTempFolder.toString(), exportFileName))
 task exportGefkartMgdm(type: Ili2pgExport, dependsOn: 'mapGefkart2Mgdm') {
     description = "Exportiert die ins Gefahrenkartierungs-MGDM umgebauten Daten in ein xtf-File."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = "afu_gefahrenkartierung_mgdm"
-    models = "Hazard_Mapping_LV95_V1_2"
+    dbschema = "afu_gefahrenkartierung_mgdm_v1"
+    models = "Hazard_Mapping_LV95_V1_3"
     dataFile = exportFile
 }
 
