@@ -7,7 +7,7 @@ defaultTasks "publishPub"
 
 def tmpDir = buildDir.toString()
 def xtfPath = tmpDir + "/data.xtf"
-/*
+
 task exportXtf(type: Ili2pgExport){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "avt_kunstbauten_staging_v1"
@@ -28,7 +28,7 @@ task writeToPub(type: Db2Db, dependsOn: validate){
         new TransferSet('kunstbaute.sql', 'avt_kunstbauten_pub_v1.kunstbaute', true)
     ];
 }
-*/
+
 task publishPub(type: Publisher){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.avt.kunstbauten"
