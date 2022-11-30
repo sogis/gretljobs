@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAvtOeffentlicherVerkehrPub'
+defaultTasks 'publishPub'
 
 task transferAvtOeffentlicherVerkehrPub(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -12,4 +12,13 @@ task transferAvtOeffentlicherVerkehrPub(type: Db2Db) {
             new TransferSet('avt_oeffentlicher_verkehr_pub_haltestellen.sql', 'avt_oeffentlicher_verkehr_pub.oeffntlchr_vrkehr_haltestelle', true),
             new TransferSet('avt_oeffentlicher_verkehr_pub_netz.sql', 'avt_oeffentlicher_verkehr_pub.oeffntlchr_vrkehr_netz', true)
     ];
+}
+task publishPub(type: Publisher, dependsOn: 'transferAvtOeffentlicherVerkehrPub'){
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dataIdent = "ch.so.avt.oev"
+    dbSchema = "avt_oeffentlicher_verkehr_pub"
+    modelsToPublish = "SO_AVT_Kunstbauten_Publikation_20220207"
+	userFormats = true
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
 }
