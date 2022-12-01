@@ -7,7 +7,7 @@ task importZonen(type: Db2Db) {
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
-            new TransferSet('transfer_nutzungszonen.sql', 'arp_statpop_statent_2020_v1.nutzungszonen', true)
+            new TransferSet('transfer_nutzungszonen.sql', 'arp_statpop_statent_staging_v1.nutzungszonen', true)
     ];
 }  
 
