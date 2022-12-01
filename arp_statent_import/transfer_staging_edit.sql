@@ -4,7 +4,7 @@ SELECT
 	emptot,
 	meter_x,
 	meter_y,
-	COALESCE(typ_code_kt::text,'aBz') AS azone, --Wenn auserhalb Bauzonen, dann aBz
+	COALESCE(azone::text,'aBz') AS azone, --Wenn auserhalb Bauzonen, dann aBz
 	bfs_gemeindenummer AS gem_bfs,
 	noga08_cd AS noga08
 FROM 

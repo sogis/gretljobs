@@ -11,14 +11,14 @@ task importZonen(type: Db2Db) {
     ];
 }  
 
-task copyCsvFile(type: Copy, dependsOn: 'importZonen') {
+task copyCsvFile(type: Copy, dependsOn: importZonen) {
     from "upload/"
     into "upload/"
     include("uploadFile")
     rename("uploadFile", "uploadFile.csv")
 }
 
-task validateCsvFile(type: CsvValidator, dependsOn: 'copyCsvFile') {
+task validateCsvFile(type: CsvValidator, dependsOn: copyCsvFile) {
     models = "SO_ARP_STATPOP_STATENT_STAGING_20221019"
     firstLineIsHeader = true
     valueSeparator = ';'
@@ -26,7 +26,7 @@ task validateCsvFile(type: CsvValidator, dependsOn: 'copyCsvFile') {
     dataFiles = [file("upload/uploadFile.csv")]
 }
 
-task deleteOldStagingData(type: SqlExecutor, dependsOn: 'validateCsvFile'){
+task deleteOldStagingData(type: SqlExecutor, dependsOn: validateCsvFile){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['delete.sql']
 }
