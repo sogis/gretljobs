@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 defaultTasks 'updateZonen'
 
 task importZonen(type: Db2Db) {
-    sourceDb = [dbUripub, dbUserPub, dbPwdPub]
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
             new TransferSet('transfer_nutzungszonen.sql', 'arp_statpop_statent_2020_v1.nutzungszonen', true)
