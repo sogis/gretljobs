@@ -1,7 +1,7 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'updateZonen'
+defaultTasks 'transferStatent'
 
 task importZonen(type: Db2Db) {
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
@@ -26,7 +26,7 @@ task validateCsvFile(type: CsvValidator, dependsOn: 'copyCsvFile') {
     dataFiles = [file("upload/uploadFile.csv")]
 }
 
-task deleteOldStagingData(type: SqlExecutor){
+task deleteOldStagingData(type: SqlExecutor, dependsOn: 'validateCsvFile'){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['delete.sql']
 }
@@ -50,9 +50,4 @@ task transferStatent(type: Db2Db, dependsOn: importStatent){
             new TransferSet('transfer_staging_edit.sql', 'arp_statpop_statent_2020_v1.statent', true), 
             new TransferSet('transfer_staging_edit.sql', 'arp_statpop_statent_v1.statent', true)
     ];
-}
-
-task updateZonen(type: SqlExecutor, dependsOn: transferStatent){
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlFiles = ['update_zonen.sql']
 }
