@@ -1,10 +1,17 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'transferStatent'
+defaultTasks 'transferStatpop'
 
+task importZonen(type: Db2Db) {
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('transfer_nutzungszonen.sql', 'arp_statpop_statent_staging_v1.nutzungszonen', true)
+    ];
+}  
 
-task copyCsvFile(type: Copy) {
+task copyCsvFile(type: Copy, dependsOn: importZonen) {
     from "upload/"
     into "upload/"
     include("uploadFile")
@@ -36,7 +43,7 @@ task importStatpop(type: CsvImport, dependsOn: deleteOldStagingData) {
 
 //ACHTUNG: HIER MUSS DAS JAHR JEWEILS ANGEPASST WERDEN!!!!! 
 
-task transferStatent(type: Db2Db, dependsOn: importStatpop){
+task transferStatpop(type: Db2Db, dependsOn: importStatpop){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
