@@ -3,12 +3,34 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'importDataAfuGEPGWPPub'
+defaultTasks 'publipub'
 
-task importDataAfuGEPGWPPub(type: Db2Db) {
+ask publiedit(type: Publisher){
+  dataIdent = "ch.so.afu.gepgwp.relational"
+  userFormats = true
+  database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+  dbSchema = "afu_gepgwp_v1"
+  modelsToPublish = "SO_AFU_GEPGWP_20220707"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+}
+
+task importDataAfuGEPGWPPub(type: Db2Db, dependsOn: 'publiedit') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('import_gepgwp_pub.sql', 'afu_gepgwp_pub_v1.gepgwp_gepgwp', true)
     ];
+}
+
+task publipub(type: Publisher, dependsOn:'importDataAfuGEPGWPPub'){
+  dataIdent = "ch.so.afu.gepgwp"
+  userFormats = true
+  database = [dbUriPub,dbUserPub,dbPwdPub]
+  dbSchema = "afu_gepgwp_pub_v1"
+  modelsToPublish = "SO_AFU_GEPGWP_Publikation_20220725"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
 }
