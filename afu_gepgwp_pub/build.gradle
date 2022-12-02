@@ -5,7 +5,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'publipub'
 
-ask publiedit(type: Publisher){
+task publiedit(type: Publisher){
   dataIdent = "ch.so.afu.gepgwp.relational"
   userFormats = true
   database = [dbUriEdit, dbUserEdit, dbPwdEdit]
