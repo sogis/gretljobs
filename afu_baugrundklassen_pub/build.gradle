@@ -16,7 +16,7 @@ task publishEdit(type: Publisher){
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
 }
 
-task transferAfuBaugrundklassenPub(type: Db2Db: 'publishEdit') {
+task transferAfuBaugrundklassenPub(type: Db2Db, dependsOn: 'publishEdit') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
