@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAfuGeologiePub'
+defaultTasks 'publishPub'
 
 task transferAfuGeologiePub(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -17,4 +17,14 @@ task transferAfuGeologiePub(type: Db2Db) {
             new TransferSet('schichtfallen_pub.sql', 'afu_geologie_pub_v1.geologie_schichtfallen', true), 
             new TransferSet('tektonische_strukturen_pub.sql', 'afu_geologie_pub_v1.geologie_tektonische_strukturen', true)
     ];
+}
+
+task publishPub(type: Publisher, dependsOn: 'transferAfuGeologiePub'){
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dataIdent = "ch.so.afu.geologie
+    dbSchema = "afu_geologie_pub_v1"
+    modelsToPublish = "SO_AFU_Geologie_20200831"
+	userFormats = true
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
 }
