@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAfuImmissionskartenPub'
+defaultTasks 'publipub'
 
 task transferAfuImmissionskartenPub(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -12,4 +12,15 @@ task transferAfuImmissionskartenPub(type: Db2Db){
             new TransferSet('afu_immissionskarten_pub_luftbelastung_2010_2020.sql',
                     'afu_immissionskarten_luft_pub_v1.luftbelastung_2010_2020', true)
     ];
+}
+
+task publipub(type: Publisher, dependsOn:'transferAfuImmissionskartenPub'){
+  dataIdent = "ch.so.afu.luftbelastung"
+  userFormats = true
+  database = [dbUriPub,dbUserPub,dbPwdPub]
+  dbSchema = "afu_immissionskarten_luft_v1"
+  modelsToPublish = "SO_AFU_Immissionskarten_20220522"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
 }
