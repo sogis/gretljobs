@@ -18,7 +18,7 @@ task publipub(type: Publisher, dependsOn:'transferAfuImmissionskartenPub'){
   dataIdent = "ch.so.afu.luftbelastung"
   userFormats = true
   database = [dbUriPub,dbUserPub,dbPwdPub]
-  dbSchema = "afu_immissionskarten_luft_v1"
+  dbSchema = "afu_immissionskarten_luft_pub_v1"
   modelsToPublish = "SO_AFU_Immissionskarten_20220522"
 
   target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
