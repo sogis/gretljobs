@@ -1,0 +1,15 @@
+SELECT 
+  t_id, 
+  t_ili_tid, 
+  beschreibung, 
+  szenario_art, 
+  abkuerzung_detailszenario, 
+  acode, 
+  grundhaeufigkeit_szenario, 
+  wahrscheinlichkeit_grundhaeufigkeit_art, 
+  relevant_asz, 
+  relevant_msz, 
+  relevant_q_stoff, 
+  bemerkung 
+FROM 
+  ${DB_Schema_QRcat}.qrcat_detailszenario_grundhaeufigkeit;

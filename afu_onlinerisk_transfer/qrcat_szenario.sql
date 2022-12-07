@@ -1,0 +1,26 @@
+SELECT 
+  t_id, 
+  t_ili_tid, 
+  szenario_titel, 
+  geometrie, 
+  szenario_art, 
+  wahrscheinlichkeit_szenario, 
+  asz_relevante_freisetzungsflaeche, 
+  msz_relevante_freigesetzte_stoffmenge, 
+  q_stoff_stoffspezverbrennungswaerme, 
+  lsz_90, 
+  lsz_1, 
+  betriebsfaktor_f_anz, 
+  bemerkung, 
+  f_bdo, 
+  f_car, 
+  f_sik, 
+  f_smn, 
+  id_detailszenarioghk, 
+  id_toxreferenzszenario, 
+  id_bereich, 
+  id_betrieb, 
+  id_stoff, 
+  id_stoff_in_bereich 
+FROM 
+  ${DB_Schema_QRcat}.qrcat_szenario;
