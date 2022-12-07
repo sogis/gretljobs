@@ -5,7 +5,7 @@ SELECT
     eigentum, 
     fischbestand, 
     fischerei, 
-    st_multi(st_union(geometrie)) AS geometrie
+    ST_Multi(ST_RemoveRepeatedPoints(ST_Union(geometrie), 0.001)) AS geometrie
 FROM 
     afu_gewaesser_v1.fischrevierabschnitt_v
 GROUP BY 
