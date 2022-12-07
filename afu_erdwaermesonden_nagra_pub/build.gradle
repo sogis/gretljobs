@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAfuNagra'
+defaultTasks 'publipub'
 
 task transferAfuNagra(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -11,4 +11,15 @@ task transferAfuNagra(type: Db2Db){
     transferSets = [
             new TransferSet('nagra_bohrtiefen_bohrtiefen.sql', 'afu_erdwaermesonden_nagra_pub.nagra_bohrtiefen_bohrtiefen', true)
     ];
+}
+
+task publipub(type: Publisher, dependsOn:'transferAfuNagra'){
+  dataIdent = "ch.so.afu.erdwaermesonden_nagra"
+  userFormats = true
+  database = [dbUriPub,dbUserPub,dbPwdPub]
+  dbSchema = "afu_erdwaermesonden_nagra_pub"
+  modelsToPublish = "SO_AFU_Nagra_Bohrtiefen_20190927"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
 }
