@@ -8,7 +8,7 @@ defaultTasks 'transfer_onlinerisk'
 def DB_Schema_QRcat = "afu_qrcat_v1"
 def DB_Schema_QRcat_Staging = "afu_qrcat_staging_v1"
 
-task transfer_qrcat_to_staging(type: Db2Db,dependsOn: "xxx"){
+task transfer_qrcat_to_staging(type: Db2Db){
     description = "Zuerst werden die scharfen QRcat Daten im staging-Schema parkiert"
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -28,7 +28,14 @@ task transfer_qrcat_to_staging(type: Db2Db,dependsOn: "xxx"){
     ];
 }
 
-task "clean_onlinerisk_before_import"(type: SqlExecutor) {
+task "clean_qrcat_before_onlinerisk_import"(type: SqlExecutor,dependsOn: "transfer_qrcat_to_staging") {
+description = "QRcat Daten in der richtigen Reihenfolge (dependencies) löschen vor dem Online-Risk Neuimport"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_QRcat:DB_Schema_QRcat]
+    sqlFiles = ['delete_qrcat.sql']
+}
+
+task "clean_onlinerisk_before_import"(type: SqlExecutor,dependsOn: "clean_qrcat_before_onlinerisk_import") {
     description = "OnlineRisk Daten in der richtigen Reihenfolge (dependencies) löschen vor dem Neuimport"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_QRcat:DB_Schema_QRcat]
