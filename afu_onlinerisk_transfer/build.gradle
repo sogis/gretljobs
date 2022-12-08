@@ -14,17 +14,17 @@ task transfer_qrcat_to_staging(type: Db2Db){
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_QRcat:DB_Schema_QRcat]
     transferSets = [
-            new TransferSet('qrcat_szenario_art.sql', DB_Schema_QRcat_Staging + '.qrcat_szenario_art', false),
-            new TransferSet('qrcat_letalitaetsradius_art.sql', DB_Schema_QRcat_Staging + '.qrcat_letalitaetsradius_art', false),
-            new TransferSet('qrcat_bevoelkerung_typ.sql', DB_Schema_QRcat_Staging + '.qrcat_bevoelkerung_typ', false),
-            new TransferSet('qrcat_wk_grundhaeufigkeit_art.sql', DB_Schema_QRcat_Staging + '.qrcat_wk_grundhaeufigkeit_art', false),
-            new TransferSet('qrcat_toxreferenzszenario_typstoff.sql', DB_Schema_QRcat_Staging + '.qrcat_toxreferenzszenario_typstoff', false),
-            new TransferSet('qrcat_toxreferenzszenario.sql', DB_Schema_QRcat_Staging + '.qrcat_toxreferenzszenario', false),
-            new TransferSet('qrcat_detailszenario_grundhaeufigkeit.sql', DB_Schema_QRcat_Staging + '.qrcat_detailszenario_grundhaeufigkeit', false),
-            new TransferSet('qrcat_fwert.sql', DB_Schema_QRcat_Staging + '.qrcat_fwert', false),
-            new TransferSet('qrcat_szenario.sql', DB_Schema_QRcat_Staging + '.qrcat_szenario', false),
-            new TransferSet('qrcat_toxischunguenstigster_sektor.sql', DB_Schema_QRcat_Staging + '.qrcat_toxischunguenstigster_sektor', false),
-            new TransferSet('qrcat_letalflaeche.sql', DB_Schema_QRcat_Staging + '.qrcat_letalflaeche', false)
+            new TransferSet('qrcat_szenario_art.sql', "${DB_Schema_QRcat_Staging}.qrcat_szenario_art", true),
+            new TransferSet('qrcat_letalitaetsradius_art.sql', "${DB_Schema_QRcat_Staging}.qrcat_letalitaetsradius_art", true),
+            new TransferSet('qrcat_bevoelkerung_typ.sql', "${DB_Schema_QRcat_Staging}.qrcat_bevoelkerung_typ", true),
+            new TransferSet('qrcat_wk_grundhaeufigkeit_art.sql', "${DB_Schema_QRcat_Staging}.qrcat_wk_grundhaeufigkeit_art", true),
+            new TransferSet('qrcat_toxreferenzszenario_typstoff.sql', "${DB_Schema_QRcat_Staging}.qrcat_toxreferenzszenario_typstoff", true),
+            new TransferSet('qrcat_toxreferenzszenario.sql', "${DB_Schema_QRcat_Staging}.qrcat_toxreferenzszenario", true),
+            new TransferSet('qrcat_detailszenario_grundhaeufigkeit.sql', "${DB_Schema_QRcat_Staging}.qrcat_detailszenario_grundhaeufigkeit", true),
+            new TransferSet('qrcat_fwert.sql', "${DB_Schema_QRcat_Staging}.qrcat_fwert", true),
+            new TransferSet('qrcat_szenario.sql', "${DB_Schema_QRcat_Staging}.qrcat_szenario", true),
+            new TransferSet('qrcat_toxischunguenstigster_sektor.sql', "${DB_Schema_QRcat_Staging}.qrcat_toxischunguenstigster_sektor", true),
+            new TransferSet('qrcat_letalflaeche.sql', "${DB_Schema_QRcat_Staging}.qrcat_letalflaeche", true)
     ];
 }
 
@@ -62,16 +62,16 @@ task transfer_qrcat_from_staging(type: Db2Db,dependsOn: "transfer_onlinerisk"){
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_QRcat:DB_Schema_QRcat_Staging]
     transferSets = [
-            new TransferSet('qrcat_szenario_art.sql', DB_Schema_QRcat + '.qrcat_szenario_art', false),
-            new TransferSet('qrcat_letalitaetsradius_art.sql', DB_Schema_QRcat + '.qrcat_letalitaetsradius_art', false),
-            new TransferSet('qrcat_bevoelkerung_typ.sql', DB_Schema_QRcat + '.qrcat_bevoelkerung_typ', false),
-            new TransferSet('qrcat_wk_grundhaeufigkeit_art.sql', DB_Schema_QRcat + '.qrcat_wk_grundhaeufigkeit_art', false),
-            new TransferSet('qrcat_toxreferenzszenario_typstoff.sql', DB_Schema_QRcat + '.qrcat_toxreferenzszenario_typstoff', false),
-            new TransferSet('qrcat_toxreferenzszenario.sql', DB_Schema_QRcat + '.qrcat_toxreferenzszenario', false),
-            new TransferSet('qrcat_detailszenario_grundhaeufigkeit.sql', DB_Schema_QRcat + '.qrcat_detailszenario_grundhaeufigkeit', false),
-            new TransferSet('qrcat_fwert.sql', DB_Schema_QRcat + '.qrcat_fwert', false),
-            new TransferSet('qrcat_szenario.sql', DB_Schema_QRcat + '.qrcat_szenario', false),
-            new TransferSet('qrcat_toxischunguenstigster_sektor.sql', DB_Schema_QRcat + '.qrcat_toxischunguenstigster_sektor', false),
-            new TransferSet('qrcat_letalflaeche.sql', DB_Schema_QRcat + '.qrcat_letalflaeche', false)
+            new TransferSet('qrcat_szenario_art.sql', "${DB_Schema_QRcat}.qrcat_szenario_art", false),
+            new TransferSet('qrcat_letalitaetsradius_art.sql', "${DB_Schema_QRcat}.qrcat_letalitaetsradius_art", false),
+            new TransferSet('qrcat_bevoelkerung_typ.sql', "${DB_Schema_QRcat}.qrcat_bevoelkerung_typ", false),
+            new TransferSet('qrcat_wk_grundhaeufigkeit_art.sql', "${DB_Schema_QRcat}.qrcat_wk_grundhaeufigkeit_art", false),
+            new TransferSet('qrcat_toxreferenzszenario_typstoff.sql', "${DB_Schema_QRcat}.qrcat_toxreferenzszenario_typstoff", false),
+            new TransferSet('qrcat_toxreferenzszenario.sql', "${DB_Schema_QRcat}.qrcat_toxreferenzszenario", false),
+            new TransferSet('qrcat_detailszenario_grundhaeufigkeit.sql', "${DB_Schema_QRcat}.qrcat_detailszenario_grundhaeufigkeit", false),
+            new TransferSet('qrcat_fwert.sql', "${DB_Schema_QRcat}.qrcat_fwert", false),
+            new TransferSet('qrcat_szenario.sql', "${DB_Schema_QRcat}.qrcat_szenario", false),
+            new TransferSet('qrcat_toxischunguenstigster_sektor.sql', "${DB_Schema_QRcat}.qrcat_toxischunguenstigster_sektor", false),
+            new TransferSet('qrcat_letalflaeche.sql', "${DB_Schema_QRcat}.qrcat_letalflaeche", false)
     ];
 }
