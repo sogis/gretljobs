@@ -34,6 +34,7 @@ SELECT
   END AS stand_txt, 
   rohstoffart, 
   gestaltungsplanvorhanden, 
+  gestaltungsplanvorhanden as gestaltungsplanvorhanden_txt,
   richtplannummer, 
   standrichtplan, 
   rrb_nr, 
