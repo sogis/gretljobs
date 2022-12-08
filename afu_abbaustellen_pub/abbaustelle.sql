@@ -4,6 +4,7 @@ SELECT
   aktennummer, 
   gemeinde_name, 
   gemeinde_bfs, 
+  art,
   CASE 
       WHEN art = 'AusgangslageKiesgrube' 
           THEN 'Ausgangslage Kiesgrube'
@@ -21,14 +22,15 @@ SELECT
           THEN 'Zwischenergebnis Kiesgrube'
       WHEN art = 'ZwischenergebnisSteinbruch' 
           THEN 'Zwischenergebnis Steinbruch'
-      ELSE art_txt
+      ELSE art
   END AS art_txt,
+  stand,
   CASE
       WHEN stand = 'NurAuffuellung'
           THEN 'Nur Auffuellung'
       WHEN stand = 'InAbbau'
           THEN 'In Abbau'
-      ELSE stand_txt
+      ELSE stand
   END AS stand_txt, 
   rohstoffart, 
   gestaltungsplanvorhanden, 
