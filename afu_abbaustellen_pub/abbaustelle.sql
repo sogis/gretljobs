@@ -21,15 +21,15 @@ SELECT
           THEN 'Zwischenergebnis Kiesgrube'
       WHEN art = 'ZwischenergebnisSteinbruch' 
           THEN 'Zwischenergebnis Steinbruch'
-      ELSE art
-  END AS art,
+      ELSE art_txt
+  END AS art_txt,
   CASE
       WHEN stand = 'NurAuffuellung'
           THEN 'Nur Auffuellung'
       WHEN stand = 'InAbbau'
           THEN 'In Abbau'
-      ELSE stand
-  END AS stand, 
+      ELSE stand_txt
+  END AS stand_txt, 
   rohstoffart, 
   gestaltungsplanvorhanden, 
   richtplannummer, 
