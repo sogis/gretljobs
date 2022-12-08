@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transfer_onlinerisk'
+defaultTasks 'transfer_qrcat_from_staging'
 
 def DB_Schema_QRcat = "afu_qrcat_v1"
 def DB_Schema_QRcat_Staging = "afu_qrcat_staging_v1"
@@ -29,7 +29,7 @@ task transfer_qrcat_to_staging(type: Db2Db){
 }
 
 task "clean_qrcat_before_onlinerisk_import"(type: SqlExecutor,dependsOn: "transfer_qrcat_to_staging") {
-description = "QRcat Daten in der richtigen Reihenfolge (dependencies) löschen vor dem Online-Risk Neuimport"
+description = "QRcat Daten in der richtigen Reihenfolge (dependencies) löschen vor dem Online-Risk Löschen und Neuimport"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_QRcat:DB_Schema_QRcat]
     sqlFiles = ['delete_qrcat.sql']
@@ -53,5 +53,25 @@ task transfer_onlinerisk(type: Db2Db,dependsOn: "clean_onlinerisk_before_import"
             new TransferSet('bereich.sql', 'afu_qrcat_v1.onlinerisk_bereich', true),
             new TransferSet('stoff.sql', 'afu_qrcat_v1.onlinerisk_stoff', true),
             new TransferSet('stoff_in_bereich.sql', 'afu_qrcat_v1.onlinerisk_stoff_in_bereich', true)
+    ];
+}
+
+task transfer_qrcat_from_staging(type: Db2Db,dependsOn: "transfer_onlinerisk"){
+    description = "Reimport der scharfen QRcat Daten die im staging-Schema parkiert waren"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_QRcat:DB_Schema_QRcat_Staging]
+    transferSets = [
+            new TransferSet('qrcat_szenario_art.sql', DB_Schema_QRcat + '.qrcat_szenario_art', false),
+            new TransferSet('qrcat_letalitaetsradius_art.sql', DB_Schema_QRcat + '.qrcat_letalitaetsradius_art', false),
+            new TransferSet('qrcat_bevoelkerung_typ.sql', DB_Schema_QRcat + '.qrcat_bevoelkerung_typ', false),
+            new TransferSet('qrcat_wk_grundhaeufigkeit_art.sql', DB_Schema_QRcat + '.qrcat_wk_grundhaeufigkeit_art', false),
+            new TransferSet('qrcat_toxreferenzszenario_typstoff.sql', DB_Schema_QRcat + '.qrcat_toxreferenzszenario_typstoff', false),
+            new TransferSet('qrcat_toxreferenzszenario.sql', DB_Schema_QRcat + '.qrcat_toxreferenzszenario', false),
+            new TransferSet('qrcat_detailszenario_grundhaeufigkeit.sql', DB_Schema_QRcat + '.qrcat_detailszenario_grundhaeufigkeit', false),
+            new TransferSet('qrcat_fwert.sql', DB_Schema_QRcat + '.qrcat_fwert', false),
+            new TransferSet('qrcat_szenario.sql', DB_Schema_QRcat + '.qrcat_szenario', false),
+            new TransferSet('qrcat_toxischunguenstigster_sektor.sql', DB_Schema_QRcat + '.qrcat_toxischunguenstigster_sektor', false),
+            new TransferSet('qrcat_letalflaeche.sql', DB_Schema_QRcat + '.qrcat_letalflaeche', false)
     ];
 }
