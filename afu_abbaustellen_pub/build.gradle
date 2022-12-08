@@ -65,7 +65,7 @@ task writeToPub(type: Db2Db, dependsOn: importAppData){
     ];
 }
 
-ask publipub(type: Publisher, dependsOn:'writeToPub'){
+task publipub(type: Publisher, dependsOn:'writeToPub'){
   dataIdent = "ch.so.afu.abbaustellen"
   userFormats = true
   database = [dbUriPub,dbUserPub,dbPwdPub]
