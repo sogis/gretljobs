@@ -2,7 +2,7 @@ SELECT
    sto.id_stoff AS t_id,
    stasto.text AS stoff_name,
    sto.display AS stoff_anzeigetext,
-   staagg.text AS aggregatzustand,
+   replace(replace(staagg.text,'ü','ue'),'ö','oe') AS aggregatzustand,
    sto.ms_stfv::numeric AS mengenschwelle_stfv,
    CASE WHEN sto.cas = '' THEN NULL ELSE sto.cas END AS cas_nummer,
    sto.cea_nummer AS cea_nummer,
