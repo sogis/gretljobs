@@ -82,6 +82,7 @@ for (jobFile in jobFiles) {
       for ( r in roles ) {
         authorization {
           permissions(r.trim(), ['hudson.model.Item.Build', 'hudson.model.Item.Read'])
+          permissions(r.trim().replaceAll('gretl-users-','GA_Gretl_'), ['hudson.model.Item.Build', 'hudson.model.Item.Read'])
         }
       }
     }
