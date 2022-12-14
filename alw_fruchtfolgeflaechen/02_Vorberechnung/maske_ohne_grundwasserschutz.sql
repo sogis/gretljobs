@@ -6,7 +6,7 @@ WITH grundwasserschutz AS (
     SELECT
         ST_union(apolygon) AS geometrie
     FROM 
-        afu_gewaesserschutz_pub.gewaesserschutz_zone_areal
+        afu_gewaesserschutz_pub.gewaesserschutz_schutzzone
     WHERE 
         typ IN ('S1')
 )
