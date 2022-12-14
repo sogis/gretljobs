@@ -101,7 +101,7 @@ task uploadGefkartMgdm (dependsOn: zipGefkartMgdm) {
     def zipFilePath = Paths.get(pathToTempFolder.toString(), zipName)
 
     doLast {
-        def response = ["curl", "-u", aiLogin, "-F", "topic=gefahrenkarten", "-F",
+        def response = ["curl", "-u", aiLogin, "-F", "topic=gefahrenkarten_v1_3", "-F",
                         "lv95_file=@" + zipFilePath, "-F", "publish=true", serverUrl
                         ].execute().text
         println(response)
