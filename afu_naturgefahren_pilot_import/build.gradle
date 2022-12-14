@@ -1,0 +1,36 @@
+apply plugin: 'ch.so.agi.gretl'
+
+import ch.so.agi.gretl.tasks.*
+
+defaultTasks 'importDataset'
+
+def schemaName = 'afu_naturgefahren_pilot_v1'
+def modelName = 'SO_AFU_Naturgefahren_Pilot_20221130'
+def importTopics = 'SO_AFU_Naturgefahren_Pilot_20221130.Befunde;SO_AFU_Naturgefahren_Pilot_20221130.Kartographische_Produkte'
+
+task renameFile(type: Copy) {
+    from "upload/"
+    into "upload/"
+    include("uploadFile")
+    rename("uploadFile", "uploadFile.xtf")
+}
+
+task deleteDataset(type: Ili2pgDelete, dependsOn: renameFile) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = modelName
+    dbschema = schemaName
+    dataset = ili2pgDataset
+}
+
+task importDataset (type: Ili2pgImport, dependsOn: deleteDataset) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = schemaName
+    models = modelName
+    dataset = ili2pgDataset
+    topics = importTopics
+    dataFile = "upload/uploadFile.xtf"
+}
+
+/*
+./start-gretl.sh --docker-image sogis/gretl:latest --docker-network host --job-directory $PWD/afu_naturgefahren_pilot_import -Pili2pgDataset=dulliken
+*/
