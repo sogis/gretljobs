@@ -8,6 +8,7 @@ defaultTasks "publishPub"
 def tmpDir = buildDir.toString()
 def xtfPath = tmpDir + "/data.xtf"
 
+/*
 task exportXtf(type: Ili2pgExport){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "avt_kunstbauten_staging_v1"
@@ -28,8 +29,18 @@ task writeToPub(type: Db2Db, dependsOn: validate){
         new TransferSet('kunstbaute.sql', 'avt_kunstbauten_pub_v1.kunstbaute', true)
     ];
 }
+*/
 
-task publishPub(type: Publisher, dependsOn: writeToPub){
+task publishPub1(type:Exec){//, dependsOn: writeToPub){
+    doLast{
+      println new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    }
+
+    workingDir file(projectDir).getParentFile()
+    commandLine 'cat', 'publisher_grooming.json'
+}
+
+task publishPub2(type: Publisher, dependsOn: writeToPub){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.avt.kunstbauten"
     dbSchema = "avt_kunstbauten_pub_v1"
@@ -37,4 +48,23 @@ task publishPub(type: Publisher, dependsOn: writeToPub){
     userFormats = true
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
 }
+
+task publishPub(){
+  dependsOn publishPub2
+  dependsOn publishPub1
+}
+
+/*
+export ORG_GRADLE_PROJECT_simiMetadataServiceUrl=http://localhost:8080/app/rest
+export ORG_GRADLE_PROJECT_simiMetadataServiceUser=admin
+export ORG_GRADLE_PROJECT_simiMetadataServicePwd=admin
+
+export ORG_GRADLE_PROJECT_dbUriPub=***
+export ORG_GRADLE_PROJECT_dbUserPub=***
+export ORG_GRADLE_PROJECT_dbPwdPub=***
+
+./start-gretl.sh --docker-image sogis/gretl:latest --docker-network host --job-directory $PWD -p avt_kunstbauten_pub
+*/

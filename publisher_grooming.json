@@ -1,0 +1,20 @@
+{
+  "grooming": {
+    "daily": {
+       "from": 0,
+       "to": 7
+    },
+    "weekly": {
+       "from": 7,
+       "to": 31
+    },
+    "monthly": {
+       "from": 31,
+       "to": 303
+    },
+    "yearly": {
+       "from": 303,
+       "to": null
+    }
+  }
+}
