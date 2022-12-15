@@ -365,6 +365,13 @@ Danach kann der GRETL-Container gestartet werden. Beispiel-Aufruf:
 docker pull sogis/gretl:latest
 ./start-gretl.sh --docker-image sogis/gretl:latest [--docker-network NETWORK] --job-directory $PWD/jobname [taskName...] [--option-name...]
 ```
+Andere Variante, falls auch Zugriff auf Dateien ausserhalb des Job-Verzeichnis
+benötigt wird:
+```
+docker pull sogis/gretl:latest
+./start-gretl.sh --docker-image sogis/gretl:latest [--docker-network NETWORK] --job-directory $PWD --project-dir jobname [taskName...] [--option-name...]
+```
+
 
 Mit `--docker-image IMAGE:TAG` wird angegeben,
 welches Image man starten möchte.
