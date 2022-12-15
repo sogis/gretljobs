@@ -13,6 +13,8 @@ task publishEdit(type: Publisher) {
     modelsToPublish = "SO_AWJF_Waldstandorte_20211027"
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
 }
 
 task transferAwjfSogis(type: Db2Db, dependsOn: 'publishEdit') {
@@ -35,13 +37,15 @@ task transferAwjfEdit(type: Db2Db, dependsOn: 'transferAwjfSogis') {
 }
 
 task publipubOberhoehenbonitaet(type: Publisher, dependsOn: 'transferAwjfEdit') {
-  dataIdent = "ch.so.awjf.oberhoehenbonitaet"
-  userFormats = true
-  database = [dbUriPub,dbUserPub,dbPwdPub]
-  dbSchema = "awjf_wald_oberhoehenbonitaet_pub_v1"
-  modelsToPublish = "SO_AWJF_Wald_Oberhoehenbonitaet_20211027"
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
-  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    dataIdent = "ch.so.awjf.oberhoehenbonitaet"
+    userFormats = true
+    database = [dbUriPub,dbUserPub,dbPwdPub]
+    dbSchema = "awjf_wald_oberhoehenbonitaet_pub_v1"
+    modelsToPublish = "SO_AWJF_Wald_Oberhoehenbonitaet_20211027"
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
 }
 
 task publishPub(type: Publisher, dependsOn: 'publipubOberhoehenbonitaet') {
@@ -49,9 +53,11 @@ task publishPub(type: Publisher, dependsOn: 'publipubOberhoehenbonitaet') {
     dataIdent = "ch.so.awjf.waldstandorte"
     dbSchema = "awjf_waldstandorte_pub_v1"
     modelsToPublish = "SO_AWJF_Waldstandorte_Publikation_20211027"
-	userFormats = true
+    userFormats = true
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
 }
 
 task refreshSolr(type:Exec, dependsOn: 'publishPub') {
