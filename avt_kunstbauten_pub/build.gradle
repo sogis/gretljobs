@@ -40,7 +40,7 @@ task publishPub1(type:Exec){//, dependsOn: writeToPub){
     commandLine 'cat', 'publisher_grooming.json'
 }
 
-task publishPub2(type: Publisher, dependsOn: writeToPub){
+task publishPub2(type: Publisher){//, dependsOn: writeToPub){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.avt.kunstbauten"
     dbSchema = "avt_kunstbauten_pub_v1"
