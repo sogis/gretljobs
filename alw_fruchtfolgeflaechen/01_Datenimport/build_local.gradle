@@ -78,7 +78,7 @@ task importAltlasten(type: Db2Db, dependsOn: makeSchemaAltlasten){
 
 task makeSchemaGewaesserschutz(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    models = "SO_AfU_Gewaesserschutz_Publikation_20210303"
+    models = "SO_AfU_Gewaesserschutz_Publikation_20220817"
     dbschema = "afu_gewaesserschutz_pub"
     strokeArcs = true
     beautifyEnumDispName = true
@@ -91,7 +91,7 @@ task importGewaesserschutz(type: Db2Db, dependsOn: makeSchemaGewaesserschutz){
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     transferSets = [
-            new TransferSet('gewaesserschutz_zone_areale.sql','afu_gewaesserschutz_pub.gewaesserschutz_zone_areal', true)
+            new TransferSet('gewaesserschutz_zone_areale.sql','afu_gewaesserschutz_pub.gewaesserschutz_schutzzone', true)
     ];        
 }
 
@@ -188,7 +188,7 @@ task makeSchemaAuen(type: Ili2pgImportSchema){
 task downloadAuen(type: Download, dependsOn: makeSchemaAuen) {
     description = "Download Auen" 
 
-    src 'http://data.geo.admin.ch/ch.bafu.bundesinventare-auen/data.zip'
+    src 'https://data.geo.admin.ch/ch.bafu.bundesinventare-auen/bundesinventare-auen/bundesinventare-auen_2056.shp.zip'
     dest file(pathToDataZip)
     overwrite true 
     doLast {
@@ -206,14 +206,14 @@ task importAuen(type: ShpImport, dependsOn: unpackFilesAuen){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     schemaName = "auen"
     tableName = "auen_standorte"
-    dataFile = file(pathToUnzipFolder.toString()+'/Auen_LV95/au.shp')
+    dataFile = file(pathToUnzipFolder.toString()+'/N2017_Revision_Auengebiete_20171101_20221122.shp')
 }
 
 task importAuen2(type: ShpImport, dependsOn: importAuen){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     schemaName = "auen"
     tableName = "auen_standorte"
-    dataFile = file(pathToUnzipFolder.toString()+'/Auen_LV95/auA2.shp')
+    dataFile = file(pathToUnzipFolder.toString()+'/N2017_Revision_Auengebiete_Anhang2_20171101.shp')
 }
 
 ////////////////Flachmoore ///////////////////////
@@ -395,7 +395,7 @@ task importSchadstoffbelasteteBoeden(type: Db2Db, dependsOn: makeSchemaSchadstof
 
 task makeSchemaNutzungsplanung(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    models = "SO_Nutzungsplanung_Publikation_20190909"
+    models = "SO_ARP_Nutzungsplanung_Publikation_20201005"
     dbschema = "arp_npl_pub"
     strokeArcs = true
     beautifyEnumDispName = true
