@@ -12,6 +12,8 @@ task publishEdit(type: Publisher){
     modelsToPublish = "SO_AWJF_Jagdreviere_Jagdbanngebiete_202000804"
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
 }
 
 task transferAwjfJagd(type: Db2Db, dependsOn: publishEdit){
@@ -31,7 +33,9 @@ task publishPub(type: Publisher, dependsOn:transferAwjfJagd){
     dataIdent = "ch.so.awjf.jagdreviere"
     dbSchema = "awjf_jagdreviere_jagdbanngebiete_pub_v1"
     modelsToPublish = "SO_AWJF_Jagdreviere_Jagdbanngebiete_Publikation_202000804"
-	userFormats = true
+    userFormats = true
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
 }

@@ -10,9 +10,11 @@ task publishEdit (type: Publisher){
     dataIdent = "ch.so.awjf.waldwanderung"
     dbSchema = "awjf_waldwanderwege"
     modelsToPublish = "SO_AWJF_Waldwanderwege_202000804"
-	userFormats = true
+    userFormats = true
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
 }
 
 task transferWaldwanderwege(type: Db2Db, dependsOn: 'publishEdit'){

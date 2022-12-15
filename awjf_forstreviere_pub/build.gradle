@@ -6,15 +6,17 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'publipub'
 
 task publiedit(type: Publisher){
-  dataIdent = "ch.so.awjf.forstreviere.relational"
-  userFormats = true
+    dataIdent = "ch.so.awjf.forstreviere.relational"
+    userFormats = true
 
-  database = [dbUriEdit,dbUserEdit,dbPwdEdit]
-  dbSchema = "awjf_forstreviere"
-  modelsToPublish = "SO_Forstreviere_20170512"
+    database = [dbUriEdit,dbUserEdit,dbPwdEdit]
+    dbSchema = "awjf_forstreviere"
+    modelsToPublish = "SO_Forstreviere_20170512"
 
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
-  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
 }
 
 task transferAwjfForstreviere(type: Db2Db, dependsOn: 'publiedit'){
@@ -29,14 +31,16 @@ task transferAwjfForstreviere(type: Db2Db, dependsOn: 'publiedit'){
 }
 
 task publipub(type: Publisher, dependsOn: 'transferAwjfForstreviere'){
-  dataIdent = "ch.so.awjf.forstreviere"
-  userFormats = true
+    dataIdent = "ch.so.awjf.forstreviere"
+    userFormats = true
 
-  database = [dbUriPub,dbUserPub,dbPwdPub]
-  dbSchema = "awjf_forstreviere_pub"
-  modelsToPublish = "SO_Forstreviere_Publikation_20170428"
+    database = [dbUriPub,dbUserPub,dbPwdPub]
+    dbSchema = "awjf_forstreviere_pub"
+    modelsToPublish = "SO_Forstreviere_Publikation_20170428"
 
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
-  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
 }
 

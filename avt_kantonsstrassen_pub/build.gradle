@@ -36,15 +36,17 @@ task importPunkte(type: ShpImport, dependsOn: importAchsen){
     encoding = "UTF-8"
 }
 task publipub(type: Publisher, dependsOn: 'importPunkte'){
-  dataIdent = "ch.so.avt.kantonsstrassen"
-  userFormats = true
+    dataIdent = "ch.so.avt.kantonsstrassen"
+    userFormats = true
 
-  database = [dbUriPub,dbUserPub,dbPwdPub]
-  dbSchema = "avt_kantonsstrassen_pub"
-  modelsToPublish = "SO_AVT_Kantonsstrassen_Publikation_20200707"
+    database = [dbUriPub,dbUserPub,dbPwdPub]
+    dbSchema = "avt_kantonsstrassen_pub"
+    modelsToPublish = "SO_AVT_Kantonsstrassen_Publikation_20200707"
 
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
-  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
 }
 
 task refreshSolr(type:Exec, dependsOn:'publipub') {
