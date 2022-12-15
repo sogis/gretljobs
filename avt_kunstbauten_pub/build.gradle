@@ -48,7 +48,7 @@ task publishPub2(type: Publisher){//, dependsOn: writeToPub){
     userFormats = true
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-    kgdiTokenService = [simiMetadataServiceUrl + "/v2/oauth/token", simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
 }
 
