@@ -118,6 +118,7 @@ git checkout -b branchname
   * `awsAccessKeyAgi`, `awsSecretAccessKeyAgi`
   * `geoservicesHostName` (der Wert dieser Variable ist je nach Umgebung `geo-t.so.ch`, `geo-i.so.ch` oder `geo.so.ch`)
   * `simiMetadataServiceUrl`, `simiMetadataServiceUser`, `simiMetadataServicePwd`
+  * `simiTokenServiceUrl`, `simiTokenServiceUser`, `simiTokenServicePwd`
   * `solrIndexupdaterBaseUrl` (die interne Basis-URL zum Indexupdater für Solr)
   * `gretlEnvironment` (der Wert dieser Variable ist je nach Umgebung `test`, `integration` oder `production`)
 
