@@ -33,7 +33,7 @@ task writeToPub(type: Db2Db, dependsOn: validate){
 
 task publishPub1(type:Exec){//, dependsOn: writeToPub){
     doLast{
-      println new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+      println "publishPub1: Groom file path: " + new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     }
 
     workingDir file(projectDir).getParentFile()
