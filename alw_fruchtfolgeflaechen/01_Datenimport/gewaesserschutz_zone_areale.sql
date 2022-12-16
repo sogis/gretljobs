@@ -1,10 +1,11 @@
 SELECT 
-    t_id, 
     typ, 
     gesetzeskonform, 
     rechtskraftdatum, 
     dokumente, 
-    apolygon
+    apolygon, 
+    rechtsstatus, 
+    bemerkung
 FROM 
-    afu_gewaesserschutz_pub.gewaesserschutz_zone_areal
+    afu_gewaesserschutz_pub_v1.gewaesserschutz_schutzzone
 ;

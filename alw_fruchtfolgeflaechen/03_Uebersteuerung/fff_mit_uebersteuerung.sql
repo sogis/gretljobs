@@ -25,7 +25,7 @@ grundwasserschutz_S2 AS (
     SELECT 
         ST_snaptogrid(ST_union(apolygon),0.001) AS geometrie
     FROM 
-        afu_gewaesserschutz_pub.gewaesserschutz_zone_areal
+        afu_gewaesserschutz_pub.gewaesserschutz_schutzzone
     WHERE 
         typ = 'S2'
 ),

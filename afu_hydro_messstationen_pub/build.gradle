@@ -12,6 +12,8 @@ task publishEdit(type: Publisher){
     modelsToPublish = "SO_AFU_Hydro_Messstationen_20220706"
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
 }
 
 task transferData(type: Db2Db, dependsOn:publishEdit){
@@ -36,4 +38,6 @@ task publishPub(type: Publisher, dependsOn:updateTypTxt){
 	userFormats = true
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
 }

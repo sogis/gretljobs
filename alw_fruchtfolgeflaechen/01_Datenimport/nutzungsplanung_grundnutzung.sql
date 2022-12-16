@@ -9,14 +9,16 @@ SELECT
     typ_nutzungsziffer_art, 
     typ_geschosszahl, 
     geometrie, 
-    geschaefts_nummer AS name_nummer, 
+    geschaefts_nummer, 
     rechtsstatus, 
-    publiziertab AS publiziert_ab, 
+    publiziertab, 
     bemerkungen, 
     erfasser, 
     datum_erfassung, 
     dokumente, 
-    bfs_nr
+    bfs_nr, 
+    typ_code_kt,
+    typ_code_ch
 FROM 
     arp_nutzungsplanung_pub_v1.nutzungsplanung_grundnutzung
 ;

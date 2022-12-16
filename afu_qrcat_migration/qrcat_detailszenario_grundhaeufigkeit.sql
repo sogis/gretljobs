@@ -5,7 +5,7 @@ SELECT
      WHEN dszen."Szenario" = 'e' THEN 'Explosion'
      WHEN dszen."Szenario" = 't' THEN 'toxische_Wolke'
   END AS szenario_art,
-  dszen."Detailszenario" AS abkuerzung_detailszenario,
+  rtrim(dszen."Detailszenario") AS abkuerzung_detailszenario,
   dszen."TEXTCODE" AS acode,
   dszen."W_GHK" AS grundhaeufigkeit_szenario,
   'pro_Jahr' AS wahrscheinlichkeit_grundhaeufigkeit_art,
