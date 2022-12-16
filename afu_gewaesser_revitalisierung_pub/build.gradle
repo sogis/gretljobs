@@ -3,20 +3,9 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPub'
+defaultTasks 'transferData'
 
-task publishEdit(type: Publisher){
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dataIdent = "ch.so.afu.fliessgewaesser.revitalisierung.relational"
-    dbSchema = "afu_gewaesser_revitalisierung_v1"
-    modelsToPublish = "SO_AFU_Gewaesser_Revitalisierung_20220629"
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
-    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
-}
-
-task transferData(type: Db2Db, dependsOn: publishEdit){
+task transferData(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -25,14 +14,3 @@ task transferData(type: Db2Db, dependsOn: publishEdit){
     ];
 }
 
-task publishPub(type: Publisher, dependsOn:transferData){
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    dataIdent = "ch.so.afu.fliessgewaesser.revitalisierung"
-    dbSchema = "afu_gewaesser_revitalisierung_pub_v1"
-    modelsToPublish = "SO_AFU_Gewaesser_Revitalisierung_20220629"
-	userFormats = true
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
-    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
-}
