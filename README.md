@@ -118,6 +118,7 @@ git checkout -b branchname
   * `awsAccessKeyAgi`, `awsSecretAccessKeyAgi`
   * `geoservicesHostName` (der Wert dieser Variable ist je nach Umgebung `geo-t.so.ch`, `geo-i.so.ch` oder `geo.so.ch`)
   * `simiMetadataServiceUrl`, `simiMetadataServiceUser`, `simiMetadataServicePwd`
+  * `simiTokenServiceUrl`, `simiTokenServiceUser`, `simiTokenServicePwd`
   * `solrIndexupdaterBaseUrl` (die interne Basis-URL zum Indexupdater für Solr)
   * `gretlEnvironment` (der Wert dieser Variable ist je nach Umgebung `test`, `integration` oder `production`)
 
@@ -364,6 +365,13 @@ Danach kann der GRETL-Container gestartet werden. Beispiel-Aufruf:
 docker pull sogis/gretl:latest
 ./start-gretl.sh --docker-image sogis/gretl:latest [--docker-network NETWORK] --job-directory $PWD/jobname [taskName...] [--option-name...]
 ```
+Andere Variante, falls auch Zugriff auf Dateien ausserhalb des Job-Verzeichnis
+benötigt wird:
+```
+docker pull sogis/gretl:latest
+./start-gretl.sh --docker-image sogis/gretl:latest [--docker-network NETWORK] --job-directory $PWD --project-dir jobname [taskName...] [--option-name...]
+```
+
 
 Mit `--docker-image IMAGE:TAG` wird angegeben,
 welches Image man starten möchte.

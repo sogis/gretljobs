@@ -3,8 +3,9 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPub'
+defaultTasks 'transferData'
 
+/*
 task publishEdit(type: Publisher){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dataIdent = "ch.so.afu.fliessgewaesser.revitalisierung.relational"
@@ -16,8 +17,10 @@ task publishEdit(type: Publisher){
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
+*/
 
-task transferData(type: Db2Db, dependsOn: publishEdit){
+//task transferData(type: Db2Db, dependsOn: publishEdit){
+task transferData(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -26,6 +29,7 @@ task transferData(type: Db2Db, dependsOn: publishEdit){
     ];
 }
 
+/*
 task publishPub(type: Publisher, dependsOn:transferData){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.afu.fliessgewaesser.revitalisierung"
@@ -38,3 +42,4 @@ task publishPub(type: Publisher, dependsOn:transferData){
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
+*/
