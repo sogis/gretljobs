@@ -15,6 +15,7 @@ task publishEdit(type: Publisher) {
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
 task transferAwjfSogis(type: Db2Db, dependsOn: 'publishEdit') {
@@ -46,6 +47,7 @@ task publipubOberhoehenbonitaet(type: Publisher, dependsOn: 'transferAwjfEdit') 
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
 task publishPub(type: Publisher, dependsOn: 'publipubOberhoehenbonitaet') {
@@ -58,6 +60,7 @@ task publishPub(type: Publisher, dependsOn: 'publipubOberhoehenbonitaet') {
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
 task refreshSolr(type:Exec, dependsOn: 'publishPub') {
