@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS
 SELECT 
     ST_intersection(maske.geometrie,alte_fff.geometrie,0.001) AS geometrie, 
     alte_fff.anrechenbar,
-    alte_fff.spezialfall,
+    null as spezialfall,
     alte_fff.bezeichnung, 
     alte_fff.datenstand
 INTO 
