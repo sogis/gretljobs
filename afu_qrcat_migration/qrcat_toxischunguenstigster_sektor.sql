@@ -4,10 +4,10 @@ SELECT
    --the radius is not present in the sektor table, we derive it from the Letalflaechen
    round(MIN(lf.r_p_lr)::numeric,2) AS letalitaetsradius,
    CASE WHEN sekt.typ = 'vz' THEN 'Wohnbevoelkerung' WHEN sekt.typ = 'bz' THEN 'Arbeitsbevoelkerung' WHEN sekt.typ = 'vzbz' THEN 'WohnUndArbeitsbevoelkerung' END AS bevoelkerung_typ,
-   NULL AS bevoelkerung_anzahl,
+   -- temporarily we use the population as a placeholder to hold the old id
+   sekt.szenario_id AS bevoelkerung_anzahl,
    sekt.risiko AS risikozahl,
    sekt.n_tote AS anzahl_tote,
-   sekt.szenario_id::text AS bemerkung,
    --later we need to revise the szenario_id based on the new szenario import (new id)
    --99999 is just a place-holder pointing to a dummy record
    99999 AS id_szenario

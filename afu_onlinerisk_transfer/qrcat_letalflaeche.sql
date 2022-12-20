@@ -8,7 +8,6 @@ SELECT
   bevoelkerung_anzahl, 
   risikozahl, 
   anzahl_tote, 
-  bemerkung, 
   id_szenario 
 FROM 
   ${DB_Schema_QRcat}.qrcat_letalflaeche;
