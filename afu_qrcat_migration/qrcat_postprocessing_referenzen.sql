@@ -53,11 +53,10 @@ UPDATE ${DB_Schema_QRcat}.qrcat_szenario s
 UPDATE ${DB_Schema_QRcat}.qrcat_letalflaeche l
     SET id_szenario = s.t_id
  FROM ${DB_Schema_QRcat}.qrcat_szenario s
-      WHERE s.t_id != 99999 AND l.bemerkung::integer = (s.bemerkung::jsonb -> 'szenario_id')::integer;
+      WHERE s.t_id != 99999 AND l.bevoelkerung_anzahl::integer = (s.bemerkung::jsonb -> 'szenario_id')::integer;
 
 -- Referenzen toxisch ungünstigster Sektor
--- Referenzen Letalfläche korrigieren
 UPDATE ${DB_Schema_QRcat}.qrcat_toxischunguenstigster_sektor sekt
     SET id_szenario = szen.t_id
  FROM ${DB_Schema_QRcat}.qrcat_szenario szen
-      WHERE szen.t_id != 99999 AND sekt.bemerkung::integer = (szen.bemerkung::jsonb -> 'szenario_id')::integer;
+      WHERE szen.t_id != 99999 AND sekt.bevoelkerung_anzahl::integer = (szen.bemerkung::jsonb -> 'szenario_id')::integer;
