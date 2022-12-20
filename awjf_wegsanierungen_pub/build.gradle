@@ -29,12 +29,15 @@ task transferAwjfWegsanierungen(type: Db2Db, dependsOn: 'publiedit'){
 task publipub(type: Publisher, dependsOn: 'transferAwjfWegsanierungen'){
   dataIdent = "ch.so.awjf.wegsanierung"
   userFormats = true
-
   database = [dbUriPub,dbUserPub,dbPwdPub]
   dbSchema = "awjf_wegsanierungen_pub"
   modelsToPublish = "SO_AWJF_Wegsanierungen_Publikation_20170629"
-
+  
   target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+
 }
 
