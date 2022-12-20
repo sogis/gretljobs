@@ -6,15 +6,17 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'publipub'
 
 task publiedit(type: Publisher){
-  dataIdent = "ch.so.awjf.seltene_baumarten.relational"
-  userFormats = true
+    dataIdent = "ch.so.awjf.seltene_baumarten.relational"
+    userFormats = true
+    database = [dbUriEdit,dbUserEdit,dbPwdEdit]
+    dbSchema = "awjf_seltene_baeume"
+    modelsToPublish = "SO_AWJF_Seltene_Baumarten_20190211"
 
-  database = [dbUriEdit,dbUserEdit,dbPwdEdit]
-  dbSchema = "awjf_seltene_baeume"
-  modelsToPublish = "SO_AWJF_Seltene_Baumarten_20190211"
-
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
-  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
 
@@ -28,14 +30,16 @@ task transferAwjfSelteneBaeume(type: Db2Db, dependsOn: 'publiedit'){
 }
 
 task publipub(type: Publisher, dependsOn: 'transferAwjfSelteneBaeume'){
-  dataIdent = "ch.so.awjf.seltene_baumarten"
-  userFormats = true
+    dataIdent = "ch.so.awjf.seltene_baumarten"
+    userFormats = true
+    database = [dbUriPub,dbUserPub,dbPwdPub]
+    dbSchema = "awjf_seltene_baeume_pub"
+    modelsToPublish = "SO_AWJF_Seltene_Baumarten_Publikation_20191015"
 
-  database = [dbUriPub,dbUserPub,dbPwdPub]
-  dbSchema = "awjf_seltene_baeume_pub"
-  modelsToPublish = "SO_AWJF_Seltene_Baumarten_Publikation_20191015"
-
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
-  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
