@@ -34,11 +34,13 @@ task deleteFromWaldpflegeKontrolle(type: SqlExecutor, dependsOn: 'transferAwjfWa
 task publipub(type: Publisher, dependsOn:'deleteFromWaldpflegeKontrolle'){
   dataIdent = "ch.so.awjf.waldpflege"
   userFormats = true
-
   database = [dbUriPub,dbUserPub,dbPwdPub]
   dbSchema = "awjf_waldpflege_kontrolle_pub"
   modelsToPublish = "SO_AWJF_Waldpflege_Kontrolle_20210202"
 
   target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
