@@ -8,13 +8,15 @@ defaultTasks 'publipub'
 task publiedit(type: Publisher){
   dataIdent = "ch.so.awjf.wegsanierung.relational"
   userFormats = true
-
   database = [dbUriEdit,dbUserEdit,dbPwdEdit]
   dbSchema = "awjf_wegsanierungen_v1"
   modelsToPublish = "SO_AWJF_Wegsanierungen_20170629"
 
   target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
 task transferAwjfWegsanierungen(type: Db2Db, dependsOn: 'publiedit'){
