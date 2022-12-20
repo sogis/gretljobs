@@ -7,7 +7,6 @@ defaultTasks 'publipub'
 
 task publiedit(type: Publisher){
   dataIdent = "ch.so.awjf.wegsanierung.relational"
-  userFormats = true
   database = [dbUriEdit,dbUserEdit,dbPwdEdit]
   dbSchema = "awjf_wegsanierungen_v1"
   modelsToPublish = "SO_AWJF_Wegsanierungen_20170629"
