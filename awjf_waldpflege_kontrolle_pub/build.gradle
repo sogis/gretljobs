@@ -7,7 +7,6 @@ defaultTasks 'publipub'
 
 task publiedit(type: Publisher){
   dataIdent = "ch.so.awjf.waldpflege.relational.kontrolle"
-  userFormats = true
   database = [dbUriEdit, dbUserEdit, dbPwdEdit]
   dbSchema = "awjf_waldpflege_kontrolle"
   modelsToPublish = "SO_AWJF_Waldpflege_Kontrolle_20210202"
