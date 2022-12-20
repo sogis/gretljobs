@@ -4,14 +4,28 @@ import ch.so.agi.gretl.api.TransferSet
 import java.nio.file.Paths
 import de.undercouch.gradle.tasks.download.Download
 
-defaultTasks "writeToPub"
+defaultTasks "publipub"
 
 def tmpDir = buildDir.toString()
 def appXtfPath = tmpDir + "/appdata.xtf"
 def gisXtfPath = tmpDir + "/geodata.xtf"
 def schemaNameEdit = "afu_abbaustellen_v1"
 
-task downloadAppXtf(type: Download){
+task publiedit(type: Publisher){
+  dataIdent = "ch.so.afu.abbaustellen.relational"
+  database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+  dbSchema = "afu_abbaustellen_v1"
+  modelsToPublish = "SO_AFU_ABBAUSTELLEN_20210630"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+
+task downloadAppXtf(type: Download, dependsOn: publiedit){
     description "Download transferfile from afu webapp 'abbaustellen'"
     src afuAbbaustellenAppXtfUrl
     dest appXtfPath
@@ -53,7 +67,19 @@ task writeToPub(type: Db2Db, dependsOn: importAppData){
     ];
 }
 
+task publipub(type: Publisher, dependsOn:'writeToPub'){
+  dataIdent = "ch.so.afu.abbaustellen"
+  userFormats = true
+  database = [dbUriPub,dbUserPub,dbPwdPub]
+  dbSchema = "afu_abbaustellen_pub_v2"
+  modelsToPublish = "SO_AFU_ABBAUSTELLEN_Publikation_20221103"
 
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
 
 
 
