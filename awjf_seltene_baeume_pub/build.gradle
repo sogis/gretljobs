@@ -7,7 +7,6 @@ defaultTasks 'publipub'
 
 task publiedit(type: Publisher){
     dataIdent = "ch.so.awjf.seltene_baumarten.relational"
-    userFormats = true
     database = [dbUriEdit,dbUserEdit,dbPwdEdit]
     dbSchema = "awjf_seltene_baeume"
     modelsToPublish = "SO_AWJF_Seltene_Baumarten_20190211"
