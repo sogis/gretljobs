@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publipub'
+defaultTasks 'transferAfuImmissionskartenPub'
 
 task transferAfuImmissionskartenPub(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -14,6 +14,7 @@ task transferAfuImmissionskartenPub(type: Db2Db){
     ];
 }
 
+/*
 task publipub(type: Publisher, dependsOn:'transferAfuImmissionskartenPub'){
   dataIdent = "ch.so.afu.luftbelastung"
   userFormats = true
@@ -27,3 +28,4 @@ task publipub(type: Publisher, dependsOn:'transferAfuImmissionskartenPub'){
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
   if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
+*/
