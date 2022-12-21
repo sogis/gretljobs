@@ -11,7 +11,6 @@ def appXtfPath = tmpDir + "/appdata.xtf"
 def gisXtfPath = tmpDir + "/geodata.xtf"
 def schemaNameEdit = "afu_abbaustellen_v1"
 
-/*
 task publiedit(type: Publisher){
   dataIdent = "ch.so.afu.abbaustellen.relational"
   database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -24,9 +23,9 @@ task publiedit(type: Publisher){
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
   if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
-*/
 
-task downloadAppXtf(type: Download){
+
+task downloadAppXtf(type: Download, dependsOn: publiedit){
     description "Download transferfile from afu webapp 'abbaustellen'"
     src afuAbbaustellenAppXtfUrl
     dest appXtfPath
@@ -67,7 +66,7 @@ task writeToPub(type: Db2Db, dependsOn: importAppData){
         new TransferSet('abbaustelle.sql', 'afu_abbaustellen_pub_v2.abbaustelle', true)
     ];
 }
-/*
+
 task publipub(type: Publisher, dependsOn:'writeToPub'){
   dataIdent = "ch.so.afu.abbaustellen"
   userFormats = true
@@ -81,7 +80,7 @@ task publipub(type: Publisher, dependsOn:'writeToPub'){
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
   if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
-*/
+
 
 
 
