@@ -14,8 +14,14 @@ Ein Ausführungsversuch auf GRETL-Integration wird mit Fehler abgebrochen.
 
 ## Fehlerbehandlung bei gebrochenen Referenzen
 
-Bei inkonsistenzen zwischen den Identifieren auf Integration und Produktion
+Bei inkonsistenzen zwischen den Identifikatoren auf Integration und Produktion
 bricht der Job beim restorePubDates-Task mit Referenz-Fehler ab.
+
+### Während Rollout
+
+Die auskommentierte Where-Bedingung am Ende der [SQL-Datei](post_copy/restore_pub_dates.sql) des restorePubDates-Task "aktivieren". Damit wird der Fehler während dem Rollout "unterdrückt".
+
+### Kurz nach Rollout
 
 Bei gebrochenen Referenzen den Inhalt der [SQL-Datei](post_copy/restore_pub_dates.sql) des restorePubDates-Task
 kopieren. In der Kopie das CTE mit dem auskommentierten SELECT anstelle des
@@ -42,7 +48,7 @@ Resultat von `SELECT * FROM leftjoin`
 
 Anhand der Boolean-Spalten **tp_broken** und **area_broken** wird klar, welche Referenzen gebrochen sind.
 
-Ursache wird typischerweise die Umbenennung des Identifikators der Themenbereitstellung sein.
+Ursache wird typischerweise die Umbenennung des Identifikators der Themenbereitstellung sein. Nach dem manuellen Abgleich der Identifikatoren kann der Rollout-Job erneut ausgeführt werden. Das Query SELECT * FROM leftjoin sollte nun keine Zeilen mehr generieren.
 
 ## Vorgehen bei Schemaänderungen der SIMI-DB
 

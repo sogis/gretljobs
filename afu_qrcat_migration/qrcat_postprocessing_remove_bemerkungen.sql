@@ -27,3 +27,12 @@ DELETE FROM ${DB_Schema_QRcat}.qrcat_szenario WHERE t_id = 99999;
 -- remove Bemerkung holding old ids from old system
 UPDATE ${DB_Schema_QRcat}.qrcat_szenario
 	SET bemerkung = NULL;
+
+-- remove old ids from population fields
+-- Letalfläche
+UPDATE ${DB_Schema_QRcat}.qrcat_letalflaeche
+  SET bevoelkerung_anzahl = NULL;
+
+-- Toxisch ungünstigster Sektor
+UPDATE ${DB_Schema_QRcat}.qrcat_toxischunguenstigster_sektor
+  SET bevoelkerung_anzahl = NULL;

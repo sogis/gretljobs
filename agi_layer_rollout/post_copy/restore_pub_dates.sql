@@ -82,5 +82,5 @@ FROM
   simi.simitheme_published_sub_area_helper h
 JOIN
   leftjoin l ON h.id = l.helper_id 
--- WHERE l.a_id IS NOT NULL AND l.tp_id IS NOT NULL -- Where aktivieren, um alle helper-eintraege mit intakten links zurückzuschreiben
+-- WHERE l.a_id IS NOT NULL AND l.tp_id IS NOT NULL -- Where aktivieren, um nur die Helper-Eintraege mit übereinstimmenden Identifikatoren zurückzuschreiben.
 ;

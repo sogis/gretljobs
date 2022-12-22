@@ -6,7 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 description = "GRETL-Job für Datenübernahme der Polizeiregionen innerhalb der edit-DB, ins pub-Schema (pub-DB, edit-DB)"
 
 
-defaultTasks 'transferAgiPolizeiregionen'
+defaultTasks 'publipub'
 
 
 task transferAgiPolizeiregionen(type: Db2Db) {
@@ -18,3 +18,17 @@ task transferAgiPolizeiregionen(type: Db2Db) {
     ]
 }
 
+task publipub(type: Publisher, dependsOn: 'transferAgiPolizeiregionen'){
+  dataIdent = "ch.so.agi.polizeiregionen"
+  userFormats = true
+
+  database = [dbUriPub,dbUserPub,dbPwdPub]
+  dbSchema = "agi_polizeiregionen_pub_v1"
+  modelsToPublish = "SO_AGI_Polizeiregionen_20221010"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
