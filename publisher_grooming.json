@@ -1,7 +1,7 @@
 {
   "grooming": {
     "daily": {
-       "from": 0,
+       "from": 2,
        "to": 7
     },
     "weekly": {
