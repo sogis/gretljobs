@@ -1,9 +1,0 @@
-SELECT 
-  itfcode, 
-  ilicode, 
-  seq, 
-  inactive, 
-  dispname, 
-  description 
-FROM 
-  ${DB_Schema_QRcat}.qrcat_bevoelkerung_typ;
