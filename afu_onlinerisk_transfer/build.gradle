@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transfer_qrcat_from_staging'
+defaultTasks 'betriebe_fehlende_koordinaten_ergaenzen'
 
 def DB_Schema_QRcat = "afu_qrcat_v1"
 def DB_Schema_QRcat_Staging = "afu_qrcat_staging_v1"
@@ -64,4 +64,11 @@ task transfer_qrcat_from_staging(type: Db2Db,dependsOn: "transfer_onlinerisk"){
             new TransferSet('qrcat_toxischunguenstigster_sektor.sql', "${DB_Schema_QRcat}.qrcat_toxischunguenstigster_sektor", false),
             new TransferSet('qrcat_letalflaeche.sql', "${DB_Schema_QRcat}.qrcat_letalflaeche", false)
     ];
+}
+
+task "betriebe_fehlende_koordinaten_ergaenzen"(type: SqlExecutor,dependsOn: "transfer_qrcat_from_staging") {
+    description = "Bei den Betrieben gibt es fehlende Koordinaten die wir versuchen aus den verbundenen Tabellen zu ergänzen."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_QRcat:DB_Schema_QRcat]
+    sqlFiles = ['update_fehlende_koordinaten_betrieb.sql']
 }
