@@ -2,7 +2,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 import ch.so.agi.gretl.tasks.*
 
-defaultTasks 'replaceDataset'
+defaultTasks 'publishPub'
 
 task copyCsvFile(type: Copy) {
     from "upload/"
@@ -19,4 +19,17 @@ task replaceDataset (type: Ili2pgImport, dependsOn: 'copyCsvFile') {
     disableValidation = true
     deleteData = true
     dataFile = "upload/uploadFile.xtf"  // name is injected by jenkins
+}
+
+task publishPub(type: Publisher, dependsOn:replaceDataset){
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dataIdent = "ch.so.avt.groblaermkataster"
+    dbSchema = "avt_groblaermkataster_pub"
+    modelsToPublish = "SO_AVT_Groblaermkataster_20190709"
+    userFormats = true
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
