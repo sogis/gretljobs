@@ -130,6 +130,7 @@ task importDataToGeopackage(type: Ili2gpkgImport, dependsOn: 'exportFFF') {
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     dataFile = file(exportFile);
     dbfile = file(exportFileGeopackage)  
+    strokeArcs = true //damit keine nicht vorhandene Kreisbögen erstellt werden
     disableValidation = true //Da schon der Export validiert wurde, muss der Import nicht auch noch mal validiert werden!
     disableAreaValidation = true //Siehe oben
 }
