@@ -18,7 +18,7 @@ adressenZusammenfuehren AS (
         a.geometrie AS gwr_edid_geom,
         a.bfsnr
     FROM
-        agi_swisstopo_gebaeudeadressen_pub.gebaeudeadressen_adresse AS a
+        agi_swisstopo_gebaeudeadressen_pub_v1.gebaeudeadressen_adresse AS a
     LEFT JOIN agi_mopublic_pub.mopublic_bodenbedeckung AS b
         ON 
         a.geometrie && b.geometrie
@@ -48,7 +48,7 @@ UNION ALL
         a.geometrie AS gwr_edid_geom,
         a.bfsnr
     FROM
-        agi_swisstopo_gebaeudeadressen_pub.gebaeudeadressen_adresse AS a
+        agi_swisstopo_gebaeudeadressen_pub_v1.gebaeudeadressen_adresse AS a
     LEFT JOIN agi_mopublic_pub.mopublic_bodenbedeckung_proj AS b
         ON 
         a.geometrie && b.geometrie
@@ -78,7 +78,7 @@ UNION ALL
         a.geometrie AS gwr_edid_geom,
         a.bfsnr
     FROM
-        agi_swisstopo_gebaeudeadressen_pub.gebaeudeadressen_adresse AS a
+        agi_swisstopo_gebaeudeadressen_pub_v1.gebaeudeadressen_adresse AS a
     LEFT JOIN agi_mopublic_pub.mopublic_einzelobjekt_flaeche AS b
         ON 
         a.geometrie && b.geometrie
