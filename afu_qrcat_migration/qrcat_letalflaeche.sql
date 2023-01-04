@@ -6,7 +6,7 @@ SELECT
 	 -- temporary storing the id, as the old data doesn't hold the population
    szenario_id AS bevoelkerung_anzahl,
    risiko AS risikozahl,
-   n_tote AS anzahl_tote,
+   COALESCE(n_tote,0) AS anzahl_tote,
    99999 AS id_szenario
 FROM
  qrcat.betbev_ot_letalflaechen_pt
