@@ -12,9 +12,6 @@ SELECT
 	  b.personal,
 	  b.letzte_kontrolle,
 	  b.naechste_kontrolle,
-	  0 AS anzahl_szenarien_brand,
-	  0 AS anzahl_szenarien_explosion,
-	  0 AS anzahl_szenarien_toxische_wolke,  
 	  'Point(' || b.koordinate_x::text || ' ' || b.koordinate_y::text || ')' AS geometrie
   FROM afu_online_risk.betrieb b
    LEFT JOIN afu_online_risk.konstruktion k
