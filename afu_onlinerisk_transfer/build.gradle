@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'betriebe_update_anzahl_szenarien'
+defaultTasks 'betriebe_fehlende_koordinaten_ergaenzen'
 
 def DB_Schema_QRcat = "afu_qrcat_v1"
 def DB_Schema_QRcat_Staging = "afu_qrcat_staging_v1"
@@ -71,11 +71,4 @@ task "betriebe_fehlende_koordinaten_ergaenzen"(type: SqlExecutor,dependsOn: "tra
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_QRcat:DB_Schema_QRcat]
     sqlFiles = ['update_fehlende_koordinaten_betrieb.sql']
-}
-
-task "betriebe_update_anzahl_szenarien"(type: SqlExecutor,dependsOn: "betriebe_fehlende_koordinaten_ergaenzen") {
-    description = "Aktualisiere die Anzahl der verbundenen Szenarien an Betrieben."
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlParameters = [DB_Schema_QRcat:DB_Schema_QRcat]
-    sqlFiles = ['update_anzahl_szenarien_betrieb.sql']
 }
