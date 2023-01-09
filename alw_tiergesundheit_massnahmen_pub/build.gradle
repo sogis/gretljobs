@@ -13,7 +13,7 @@ task transferTiergesundheitMassnahmen(type: Db2Db) {
     ];
 }
 
-ask publishPub(type: Publisher, dependsOn: 'transferTiergesundheitMassnahmen'){
+task publishPub(type: Publisher, dependsOn: 'transferTiergesundheitMassnahmen'){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.alw.bienenstandorte_und_sperrgebiete"
     dbSchema = "alw_tiergesundheit_massnahmen_pub"
