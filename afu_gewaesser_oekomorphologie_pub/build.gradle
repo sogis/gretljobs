@@ -73,13 +73,13 @@ task updateEnumTxtCols(type: SqlExecutor, dependsOn:updateBooleanEnumTxtCols){
     ]
 }
 
-task publishPub(type: MyPublisher, dependsOn:updateEnumTxtCols){
+task publishPub(type: Publisher, dependsOn:updateEnumTxtCols){
     doFirst{println "conf: " + db}
  
-    
+    dbUriPub = [switchToProd(dbUriPub)]
     database = [dbUriPub, dbUserPub, dbPwdPub]
     
-   db = [switchToProd(dbUriPub)]
+   
     
     dataIdent = "ch.so.afu.fliessgewaesser.oekomorphologie"
     dbSchema = "afu_gewaesser_oekomorphologie_pub_v1"
