@@ -76,7 +76,7 @@ task updateEnumTxtCols(type: SqlExecutor, dependsOn:updateBooleanEnumTxtCols){
 task publishPub(type: Publisher, dependsOn:updateEnumTxtCols){
     doFirst{println "conf: " + db}
  
-    //db = [switchToProd(dbUriPub)]
+    db = [switchToProd(dbUriPub)]
     database = [switchToProd(dbUriPub), dbUserPub, dbPwdPub]
     
    
