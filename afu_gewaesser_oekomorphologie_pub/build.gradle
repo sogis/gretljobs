@@ -20,20 +20,7 @@ class MyPublisher extends DefaultTask {
 defaultTasks "other"
 
 
-task other(dependsOn: publishPub){
-  doLast{
-    println 'Reading from ' + dbUriPub + '.';
-  }
-}
 
-def switchToProd(dbUri) {
-  String readUri = dbUri.replaceFirst("geodb-t.", "geodb.")
-
-  if(readUri.equals(dbUri))
-    readUri = dbUri.replaceFirst("geodb-i.", "geodb.")
-
-  return readUri
-}
 
 task transferAfuOekomorphologie(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -100,4 +87,19 @@ task publishPub(type: MyPublisher, dependsOn:updateEnumTxtCols){
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+task other(dependsOn: publishPub){
+  doLast{
+    println 'Reading from ' + dbUriPub + '.';
+  }
+}
+
+def switchToProd(dbUri) {
+  String readUri = dbUri.replaceFirst("geodb-t.", "geodb.")
+
+  if(readUri.equals(dbUri))
+    readUri = dbUri.replaceFirst("geodb-i.", "geodb.")
+
+  return readUri
 }
