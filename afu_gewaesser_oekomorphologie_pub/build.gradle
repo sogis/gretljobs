@@ -77,7 +77,7 @@ task publishPub(type: MyPublisher, dependsOn:updateEnumTxtCols){
     doFirst{println "conf: " + db}
     db = [switchToProd(dbUriPub)]
     
-    database = [dbUriPub, dbUserPub, dbPwdPub]
+//    database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.afu.fliessgewaesser.oekomorphologie"
     dbSchema = "afu_gewaesser_oekomorphologie_pub_v1"
     modelsToPublish = "SO_AFU_Gewaesser_Oekomorphologie_Publikation_20220426"
