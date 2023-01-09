@@ -3,7 +3,37 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPub'
+
+class MyPublisher extends DefaultTask {
+
+    @Input
+    String[] db
+
+    @TaskAction
+    def publish() {
+        println db
+    }
+}
+
+
+//defaultTasks "defaultTasks 'publishPub'"
+defaultTasks "other"
+
+
+task other(dependsOn: publishPub){
+  doLast{
+    println 'Reading from ' + dbUriPub + '.';
+  }
+}
+
+def switchToProd(dbUri) {
+  String readUri = dbUri.replaceFirst("geodb-t.", "geodb.")
+
+  if(readUri.equals(dbUri))
+    readUri = dbUri.replaceFirst("geodb-i.", "geodb.")
+
+  return readUri
+}
 
 task transferAfuOekomorphologie(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -56,7 +86,10 @@ task updateEnumTxtCols(type: SqlExecutor, dependsOn:updateBooleanEnumTxtCols){
     ]
 }
 
-task publishPub(type: Publisher, dependsOn:updateEnumTxtCols){
+task publishPub(type: MyPublisher, dependsOn:updateEnumTxtCols){
+    doFirst{println "conf: " + db}
+    db = [switchToProd(dbUriPub)]
+    
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.afu.fliessgewaesser.oekomorphologie"
     dbSchema = "afu_gewaesser_oekomorphologie_pub_v1"
