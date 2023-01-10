@@ -7,7 +7,6 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'publishPub'
 
 
-
 task transferAfuOekomorphologie(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
