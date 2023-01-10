@@ -42,7 +42,7 @@ task publishEdit(type: Publisher, dependsOn: replaceDataset){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dataIdent = "ch.so.avt.strassenlaerm.relational"
     dbSchema = "avt_strassenlaerm_v1"
-    modelsToPublish = "SO_AVT_Strassenlaerm_20190806"
+    dataset = "data"
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
