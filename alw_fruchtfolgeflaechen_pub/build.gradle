@@ -16,7 +16,10 @@ import java.nio.file.Files
 
 apply plugin: 'ch.so.agi.gretl'
 
+/*
 defaultTasks 'uploadXtfToS3Geodata', 'uploadXtfLatestToS3Geodata', 'uploadGpkgLatestToS3Geodata', 'publipub'
+*/
+defaultTasks 'publipub'
 
 /*
 Je nach Umgebung wird der s3AgiTargetBucket definiert
@@ -66,7 +69,7 @@ task publipub(type: Publisher, dependsOn:'statistik_to_pub_db'){
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
   if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
-
+/*
 
 /*
 Einige Variablen müssen noch definiert werden. Dann wird ein Interlis XTF exportiert
@@ -168,3 +171,4 @@ task uploadGpkgLatestToS3Geodata(type: S3Upload, dependsOn: 'zipGpkgFileLatest')
     bucketName = s3AgiTargetBucket
     acl = "public-read"
 }
+*/
