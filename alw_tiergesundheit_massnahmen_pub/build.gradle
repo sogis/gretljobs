@@ -15,7 +15,7 @@ task transferTiergesundheitMassnahmen(type: Db2Db) {
 
 task publishPub(type: Publisher, dependsOn: 'transferTiergesundheitMassnahmen'){
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    dataIdent = "ch.so.alw.bienenstandorte_und_sperrgebiete"
+    dataIdent = "ch.so.alw.massnahmengebiete_tiergesundheit"
     dbSchema = "alw_tiergesundheit_massnahmen_pub"
     modelsToPublish = "SO_ALW_Tiergesundheit_Massnahmen_20210426"
     userFormats = true
