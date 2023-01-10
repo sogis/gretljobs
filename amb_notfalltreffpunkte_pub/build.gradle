@@ -8,7 +8,7 @@ defaultTasks 'publipub'
 task publiedit(type: Publisher){
   dataIdent = "ch.so.amb.notfalltreffpunkte.relational"
   database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-  dbSchema = "amb_notfalltreffpunkte"bienens
+  dbSchema = "amb_notfalltreffpunkte"
   modelsToPublish = "SO_AMB_Notfalltreffpunkte_20180413"
 
   target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
