@@ -70,10 +70,9 @@ task publipub(type: Publisher, dependsOn:'statistik_to_pub_db'){
   if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 /*
-/*
 Einige Variablen müssen noch definiert werden. Dann wird ein Interlis XTF exportiert
 */
-
+/*
 Date date = new Date()
 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd")
 String todayDate = formatter.format(date) 
