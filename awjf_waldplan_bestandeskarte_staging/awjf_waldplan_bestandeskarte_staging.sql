@@ -33,6 +33,4 @@ FROM
     awjf_waldplan_bestandeskarte_v1.waldplan_bestandeskarte
 WHERE
     astatus = 'Review'
-OR
-    id_wp = 0
 ;
