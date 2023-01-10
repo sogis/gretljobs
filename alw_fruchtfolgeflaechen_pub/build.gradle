@@ -93,7 +93,7 @@ task exportFFF(type: Ili2pgExport, dependsOn: 'fff_to_pub_db') {
     models = "SO_ALW_Fruchtfolgeflaechen_Publikation_20220110"
     dataFile = exportFile
 }
-
+*/
 /*
 Zippt das XTF und ladet den aktuellen Stand mit Datum hoch
 */
