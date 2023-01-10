@@ -97,6 +97,7 @@ task exportFFF(type: Ili2pgExport, dependsOn: 'fff_to_pub_db') {
 /*
 Zippt das XTF und ladet den aktuellen Stand mit Datum hoch
 */
+/*
 task zipXtfFile(type: Zip, dependsOn: 'exportFFF') {
     description = "Zipt das xtf-File mit den Fruchtfolgeflaechen für den Upload nach S3"
     from pathToTempFolder
@@ -115,7 +116,7 @@ task uploadXtfToS3Geodata(type: S3Upload, dependsOn: 'zipXtfFile') {
     bucketName = s3AgiTargetBucket
     acl = "public-read"
 }
-
+*/
 /*
 Zippt das XTF und lädt den aktuellen Stand als "Latest" hoch
 */
