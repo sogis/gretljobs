@@ -30,7 +30,7 @@ task fff_to_pub_db(type: Db2Db){
 
 }
 
-task statistik_to_pub_db(type: Db2Db){
+task statistik_to_pub_db(type: Db2Db, dependsOn:fff_to_pub_db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
