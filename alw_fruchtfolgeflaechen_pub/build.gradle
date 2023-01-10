@@ -141,6 +141,7 @@ task uploadXtfLatestToS3Geodata(type: S3Upload, dependsOn: 'zipXtfFileLatest') {
 /*
 Wandelt den aktuellen Export zu einem Geopackage um und lädt ihn hoch
 */
+/*
 task importDataToGeopackage(type: Ili2gpkgImport, dependsOn: 'exportFFF') {
     models = "SO_ALW_Fruchtfolgeflaechen_Publikation_20220110"
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
