@@ -16,7 +16,7 @@ import java.nio.file.Files
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'uploadXtfToS3Geodata', 'uploadXtfLatestToS3Geodata', 'uploadGpkgLatestToS3Geodata', 'statistik_to_pub_db'
+defaultTasks 'uploadXtfToS3Geodata', 'uploadXtfLatestToS3Geodata', 'uploadGpkgLatestToS3Geodata', 'publipub'
 
 /*
 Je nach Umgebung wird der s3AgiTargetBucket definiert
@@ -52,6 +52,21 @@ task statistik_to_pub_db(type: Db2Db){
     ];        
 
 }
+
+task publipub(type: Publisher, dependsOn:'statistik_to_pub_db'){
+  dataIdent = "ch.so.alw.fruchtfolgeflaechen"
+  userFormats = true
+  database = [dbUriPub,dbUserPub,dbPwdPub]
+  dbSchema = "alw_fruchtfolgeflaechen_pub_v1"
+  modelsToPublish = "SO_ALW_Fruchtfolgeflaechen_Publikation_20220110"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
 
 /*
 Einige Variablen müssen noch definiert werden. Dann wird ein Interlis XTF exportiert
