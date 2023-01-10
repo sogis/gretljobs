@@ -151,7 +151,8 @@ task importDataToGeopackage(type: Ili2gpkgImport, dependsOn: 'exportFFF') {
     disableValidation = true //Da schon der Export validiert wurde, muss der Import nicht auch noch mal validiert werden!
     disableAreaValidation = true //Siehe oben
 }
-
+*/
+/*
 task zipGpkgFileLatest(type: Zip, dependsOn: 'importDataToGeopackage') {
     description = "Zipt das gpkg-File mit den Fruchtfolgeflaechen für den Upload nach S3"
     from pathToTempFolder
@@ -159,7 +160,8 @@ task zipGpkgFileLatest(type: Zip, dependsOn: 'importDataToGeopackage') {
     archiveName zipFileNameLatestGeopackage
     destinationDir(file(pathToTempFolder))
 }
-
+*/
+/*
 task uploadGpkgLatestToS3Geodata(type: S3Upload, dependsOn: 'zipGpkgFileLatest') {
     description = "Gpkg-File nach S3 hochladen."
     accessKey = awsAccessKeyAgi
