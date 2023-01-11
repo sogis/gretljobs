@@ -19,7 +19,7 @@ task validateCsv(type: CsvValidator) {
 }
 
 task truncateTable(type: SqlExecutor, dependsOn: 'validateCsv') {
-    description = "Leert die Tabelle grundstuecke_grundstueck"
+    description = "Leert die Tabelle grundstuecke_liegenschaft"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = [
             'truncate_table.sql'
