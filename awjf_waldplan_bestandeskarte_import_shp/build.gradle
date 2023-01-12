@@ -1,0 +1,39 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+import java.nio.file.Files
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: "de.undercouch.download"
+apply plugin: 'ch.so.agi.gretl'
+
+
+defaultTasks 'importWaldplan'
+
+// def pathToTempFolder = System.getProperty("java.io.tmpdir")
+// def pathToUnzipFolder = Paths.get(pathToTempFolder, "unzip_data")
+// def pathToDataFile = Paths.get(pathToTempFolder)
+// def pathToDataZip = Paths.get(pathToTempFolder, 'data.zip')
+
+def pathToShpFolder = Paths.get(System.getProperty("java.io.tmpdir"), "shapefile").toString() 
+def uploadFile = 'upload/uploadFile'
+
+
+task unzipShape(type: Copy) {
+    from zipTree(uploadFile)
+    into pathToShpFolder
+}
+
+// task validate(type: ShpValidator){
+//     models = "SO_AWJF_Waldplan_Bestandeskarte_20230111"
+//     dataFiles = ["data.shp"]                                                                                        //wie muss hier der Pfad definiert werden???????????????????????????
+// }
+
+
+
+task importWaldplan(type: ShpImport, dependsOn: unzipShape){
+    database = [dbUriEdit, dbUserEditb, dbPwdEdit]
+    schemaName = "awjf_waldplan_bestandeskarte_v1"
+    tableName = "waldplan_bestandeskarte"
+    dataFile = file(pathToShpFolder.toString()+"import_waldplan.shp") 
+}
