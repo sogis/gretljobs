@@ -38,7 +38,7 @@ task importCsv(type: CsvImport, dependsOn: 'truncateTable') {
     dataFile = fileName
 }
 
-task transferToPub(type: Db2Db) {
+task transferToPub(type: Db2Db, dependsOn: 'importCsv') {
     description = "Publiziert in die Pub-DB"
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
