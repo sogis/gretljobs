@@ -1,0 +1,48 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferToPub'
+
+def iliModelName = "SO_HBA_Gebaeude_20230111"
+def fileName = "20230110_sap_Gebaeude.csv"
+
+task validateCsv(type: CsvValidator) {
+    description = "Validiert die CSV-Datei"
+    models = iliModelName
+    firstLineIsHeader = true
+    encoding = "ISO-8859-1"
+    valueSeparator = ";"
+    valueDelimiter = null
+    dataFiles = [fileName]
+}
+
+task truncateTable(type: SqlExecutor, dependsOn: 'validateCsv') {
+    description = "Leert die Tabelle gebaeude_gebaeude"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = [
+            'truncate_table.sql'
+    ]
+}
+
+task importCsv(type: CsvImport, dependsOn: 'truncateTable') {
+    description = "Import die CVS-Datei in die Datenbank"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = "hba_gebaeude_v1"
+    tableName = "gebaeude_gebaeude"
+    firstLineIsHeader=true
+    encoding = "ISO-8859-1"
+    valueSeparator = ";"
+    valueDelimiter = null
+    dataFile = fileName
+}
+
+task transferToPub(type: Db2Db, dependsOn: 'importCsv') {
+    description = "Publiziert in die Pub-DB"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('transfer_gebaeude.sql', 'hba_gebaeude_pub_v1.gebaeude_gebaeude', true)
+    ];
+}
