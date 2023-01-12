@@ -32,7 +32,7 @@ task unzipShape(type: Copy) {
 
 
 task importWaldplan(type: ShpImport, dependsOn: unzipShape){
-    database = [dbUriEdit, dbUserEditb, dbPwdEdit]
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = "awjf_waldplan_bestandeskarte_v1"
     tableName = "waldplan_bestandeskarte"
     dataFile = file(pathToShpFolder.toString()+"import_waldplan.shp") 
