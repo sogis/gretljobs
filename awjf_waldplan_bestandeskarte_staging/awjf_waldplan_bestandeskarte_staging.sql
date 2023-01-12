@@ -28,8 +28,7 @@ SELECT
     objnummer,
     weidewald,
     gb_gem_bfs,
-    astatus,
-    hoheitsgrenzen_gemeindegrenze.gemeindename
+    astatus
 FROM
     awjf_waldplan_bestandeskarte_v1.waldplan_bestandeskarte
     LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze
