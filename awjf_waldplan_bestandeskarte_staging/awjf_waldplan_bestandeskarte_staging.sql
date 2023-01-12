@@ -1,5 +1,5 @@
 SELECT
-    waldplan_bestandeskarte.geometrie,
+    geometrie,
     id_wp,
     fid_amtei,
     fid_fk,
@@ -31,8 +31,6 @@ SELECT
     astatus
 FROM
     awjf_waldplan_bestandeskarte_v1.waldplan_bestandeskarte
-    LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze
-        ON hoheitsgrenzen_gemeindegrenze.bfs_gemeindenummer = waldplan_bestandeskarte.gem_bfs
 WHERE
     astatus = 'Review'
 ;
