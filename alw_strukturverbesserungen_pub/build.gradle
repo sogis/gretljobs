@@ -31,7 +31,7 @@ task transfer_SVGIS(type: Db2Db, dependsOn:'publiedit'){
     ];
 }
 
-ask publipub(type: Publisher, dependsOn:'transfer_SVGIS'){
+task publipub(type: Publisher, dependsOn:'transfer_SVGIS'){
   dataIdent = "ch.so.alw.strukturverbesserungen"
   userFormats = true
   database = [dbUriPub,dbUserPub,dbPwdPub]
