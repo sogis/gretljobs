@@ -5,7 +5,7 @@ import ch.so.agi.gretl.api.TransferSet
 defaultTasks 'importWaldplan'
 
 
-task copyZipFile(type: Copy, dependsOn: deleteCsvTableRows) {
+task copyZipFile(type: Copy) {
     from "upload/"
     into "upload/"
     include("uploadFile")
