@@ -13,7 +13,7 @@ defaultTasks 'importWaldplan'
 // def pathToDataFile = Paths.get(pathToTempFolder)
 // def pathToDataZip = Paths.get(pathToTempFolder, 'data.zip')
 
-def pathToShpFolder = Paths.get(System.getProperty("java.io.tmpdir"), "shapefile").toString() 
+// def pathToShpFolder = Paths.get(System.getProperty("java.io.tmpdir"), "shapefile").toString() 
 def uploadFile = 'upload/uploadFile'
 
 
