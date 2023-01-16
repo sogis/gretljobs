@@ -18,13 +18,11 @@ task unzipShape(type: Copy, dependsOn: copyZipFile){
 //     include '**/*.*'
 }
 
-// task validate(type: ShpValidator){
-//     models = 'SO_AWJF_Waldplan_Bestandeskarte_20230111'
-//     dataFiles = ['data.shp']                                                                                        //wie muss hier der Pfad definiert werden???????????????????????????
-// }
 
 task validateShpFile(type: CsvValidator, dependsOn: unzipShape) {
     models = 'SO_AWJF_Waldplan_Bestandeskarte_20230111'
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    modeldir = System.getProperty('user.dir')
     dataFiles = [file('upload/wap_bst_es_sicherung_rode_221209_11.shp')]
 }
 
