@@ -17,9 +17,17 @@ def pathToShpFolder = Paths.get(System.getProperty("java.io.tmpdir"), "shapefile
 def uploadFile = 'upload/uploadFile'
 
 
+
+
+task copyZipFile(type: Copy) {
+    from "upload/"
+    into "upload/"
+    include("uploadFile")
+    rename("uploadFile", "uploadFile.zip")
+}
 task unzipShape(type: Copy) {
     from zipTree(uploadFile)
-    into pathToShpFolder
+    into "upload/"
 }
 
 // task validate(type: ShpValidator){
@@ -29,10 +37,11 @@ task unzipShape(type: Copy) {
 
 
 
-task importWaldplan(type: ShpImport, dependsOn: unzipShape){
+task importWaldplan(type: ShpImport){
+                                                                                                                    //task importWaldplan(type: ShpImport, dependsOn: unzipShape){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = "awjf_waldplan_bestandeskarte_v1"
     tableName = "waldplan_bestandeskarte"
 //     dataFile = file(pathToShpFolder.toString()+"import_waldplan.shp")
-    dataFile = file("import_waldplan.shp")
+    dataFile = file("upload/wap_bst_es_sicherung_rode_221209_11.shp")
 }
