@@ -66,7 +66,8 @@ SELECT
         WHEN nutzungsart = 'Stiftungsvermögen' THEN 'Stiftungsvermögen'
     END AS nutzungsart_txt,
     wirtschaftseinheit,
-    geometrie
+    geometrie,
+    fahrzeugladestation
 FROM 
 (
     SELECT DISTINCT ON (gebaeude.t_id)
@@ -75,7 +76,8 @@ FROM
         gebaeude.energietraeger,
         gebaeude.nutzungsart,
         gebaeude.wirtschaftseinheit, 
-        av_gebaeude.geometrie
+        av_gebaeude.geometrie,
+        gebaeude.fahrzeugladestation
     FROM 
         hba_gebaeude_v1.gebaeude_gebaeude AS gebaeude
         INNER JOIN av_gebaeude
@@ -95,7 +97,8 @@ FROM
         gebaeude.energietraeger,
         gebaeude.nutzungsart,
         gebaeude.wirtschaftseinheit, 
-        av_gebaeude.geometrie
+        av_gebaeude.geometrie,
+        gebaeude.fahrzeugladestation
     FROM 
         hba_gebaeude_v1.gebaeude_gebaeude AS gebaeude
         INNER JOIN av_gebaeude 
@@ -104,5 +107,4 @@ FROM
         gebaeude.egid IS NOT NULL 
 )
 AS foo
-    
     
