@@ -19,17 +19,16 @@ task unzipShape(type: Copy, dependsOn: copyZipFile){
 }
 
 
-task validateShpFile(type: CsvValidator, dependsOn: unzipShape) {
-    models = 'SO_AWJF_Waldplan_Bestandeskarte_20230111'
-    modeldir = System.getProperty('user.dir')                                                 // später löschen
-//     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-    modeldir = System.getProperty('user.dir')
-    dataFiles = [file('upload/wap_bst_es_sicherung_rode_221209_11.shp')]
-}
+// task validateShpFile(type: CsvValidator, dependsOn: unzipShape) {        // geht nicht wegen GeometryCHLV95_V1: model(s) not found
+//     models = 'SO_AWJF_Waldplan_Bestandeskarte_20230111'
+//     modeldir = System.getProperty('user.dir')                                                 // später löschen
+// //     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+//     modeldir = System.getProperty('user.dir')
+//     dataFiles = [file('upload/wap_bst_es_sicherung_rode_221209_11.shp')]
+// }
+// 
 
-
-task importWaldplan(type: ShpImport, dependsOn: 'validateShpFile'){
-                                                                                                                    //task importWaldplan(type: ShpImport, dependsOn: unzipShape){
+task importWaldplan(type: ShpImport, dependsOn: unzipShape){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = 'awjf_waldplan_bestandeskarte_v1'
     tableName = 'waldplan_bestandeskarte'
