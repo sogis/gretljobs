@@ -7,7 +7,6 @@ defaultTasks 'publipub'
 
 task publiedit(type: Publisher){
   dataIdent = "ch.so.afu.ch.so.alw.strukturverbesserungen.relational"
-  userFormats = true
   database = [dbUriEdit, dbUserEdit, dbPwdEdit]
   dbSchema = "alw_strukturverbesserungen"
   modelsToPublish = "SO_ALW_Strukturverbesserungen_20190912"
