@@ -3,9 +3,22 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transfer_SVGIS'
+defaultTasks 'publipub'
 
-task transfer_SVGIS(type: Db2Db){
+task publiedit(type: Publisher){
+  dataIdent = "ch.so.afu.ch.so.alw.strukturverbesserungen.relational"
+  database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+  dbSchema = "alw_strukturverbesserungen"
+  modelsToPublish = "SO_ALW_Strukturverbesserungen_20190912"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+task transfer_SVGIS(type: Db2Db, dependsOn:'publiedit'){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -15,4 +28,18 @@ task transfer_SVGIS(type: Db2Db){
             new TransferSet('genossenschaft.sql', 'alw_strukturverbesserungen_pub.strukturvrbssrung_genossenschaft', true),
             new TransferSet('massnahme.sql', 'alw_strukturverbesserungen_pub.strukturvrbssrung_massnahme', true)
     ];
+}
+
+task publipub(type: Publisher, dependsOn:'transfer_SVGIS'){
+  dataIdent = "ch.so.alw.strukturverbesserungen"
+  userFormats = true
+  database = [dbUriPub,dbUserPub,dbPwdPub]
+  dbSchema = "alw_strukturverbesserungen_pub"
+  modelsToPublish = "SO_ALW_Strukturverbesserungen_Publikation_20190905"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
