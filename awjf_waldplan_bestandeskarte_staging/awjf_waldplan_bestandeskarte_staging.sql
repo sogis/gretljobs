@@ -28,7 +28,8 @@ SELECT
     objnummer,
     weidewald,
     gb_gem_bfs,
-    astatus
+    astatus,
+    wap_vollstaendig
 FROM
     awjf_waldplan_bestandeskarte_v1.waldplan_bestandeskarte
 WHERE
