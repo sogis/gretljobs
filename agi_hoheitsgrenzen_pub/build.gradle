@@ -83,7 +83,21 @@ task refreshSolr(type:Exec, dependsOn:'transferAgiHoheitsgrenzenToPubDb') {
     commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.agi.gemeindegrenzen,ch.so.agi.bezirksgrenzen'
 }
 
-task transferAgiHoheitsgrenzenToSogisDb(type: Db2Db, dependsOn:'refreshSolr') {
+task publipub(type: Publisher, dependsOn:'refreshSolr'){
+  dataIdent = "ch.so.agi.av.hoheitsgrenzen"
+  userFormats = true
+  database = [dbUriPub,dbUserPub,dbPwdPub]
+  dbSchema = "agi_hoheitsgrenzen_pub"
+  modelsToPublish = "SO_Hoheitsgrenzen_Publikation_20170626"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+task transferAgiHoheitsgrenzenToSogisDb(type: Db2Db, dependsOn:'publipub') {
     description = "Schreibt die Daten in die SOGIS-DB zurück"
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
