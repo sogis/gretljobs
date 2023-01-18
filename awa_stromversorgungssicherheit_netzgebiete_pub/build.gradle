@@ -4,6 +4,7 @@ import java.nio.file.Paths
 
 defaultTasks 'uploadMgdmNetzgebiete'
 
+
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
 def mgdmNetzgebieteXtfFileName = "ch.so.awa.stromversorgungssicherheit_netzgebiete.mgdm.xtf"
@@ -22,7 +23,21 @@ task transferNetzgebiete(type: Db2Db){
     ];
 }
 
-task exportMgdmNetzgebiete(type: Ili2pgExport, dependsOn: 'transferNetzgebiete') {
+task publipub(type: Publisher, dependsOn:'transferNetzgebiete'){
+  dataIdent = "ch.so.awa.netzgebiete"
+  userFormats = true
+  database = [dbUriPub,dbUserPub,dbPwdPub]
+  dbSchema = "awa_stromversorgungssicherheit_pub"
+  modelsToPublish = "SO_AWA_Stromversorgungssicherheit_Publikation_20210629"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+task exportMgdmNetzgebiete(type: Ili2pgExport, dependsOn: 'publipub') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = "SupplySecurity_RuledAreas_V1_2"
     dbschema = "awa_stromversorgungssicherheit"
