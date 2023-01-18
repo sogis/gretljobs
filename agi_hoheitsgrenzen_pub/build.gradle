@@ -6,7 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 description = "GRETL-Job für Datenumbau der Hoheitsgrenzen innerhalb der edit-DB, ins pub-Schema (pub-DB, edit-DB), am Ende ins pub-Schema der sogis-DB"
 
 
-defaultTasks 'transferAgiHoheitsgrenzenToSogisDb'
+defaultTasks 'publipub'
 
 
 task transferAgiHoheitsgrenzen(type: Db2Db) {
@@ -96,7 +96,7 @@ task publipub(type: Publisher, dependsOn:'refreshSolr'){
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
   if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
-
+/*
 task transferAgiHoheitsgrenzenToSogisDb(type: Db2Db, dependsOn:'publipub') {
     description = "Schreibt die Daten in die SOGIS-DB zurück"
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
@@ -128,3 +128,4 @@ task transferAgiHoheitsgrenzenToSogisDb(type: Db2Db, dependsOn:'publipub') {
                     'agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsname_a4', true)
     ]
 }
+*/
