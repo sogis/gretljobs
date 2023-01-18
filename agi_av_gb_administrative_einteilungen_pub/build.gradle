@@ -1,7 +1,7 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'transferAvGbAdminEinteilungen'
+defaultTasks 'publipub'
 
 task transferAvGbAdminEinteilungen(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -10,4 +10,18 @@ task transferAvGbAdminEinteilungen(type: Db2Db){
             new TransferSet("transform_nachfuehrngskrise_gemeinde.sql", 'agi_av_gb_admin_einteilung_pub.nachfuehrngskrise_gemeinde', true),
             new TransferSet("transform_grundbuchkreise_grundbuchkreis.sql", 'agi_av_gb_admin_einteilung_pub.grundbuchkreise_grundbuchkreis', true)
     ];
+}
+
+task publipub(type: Publisher, dependsOn:'transferAvGbAdminEinteilungen'){
+  dataIdent = "ch.so.agi.av.administrative_einteilung"
+  userFormats = true
+  database = [dbUriPub,dbUserPub,dbPwdPub]
+  dbSchema = "agi_av_gb_admin_einteilung_pub"
+  modelsToPublish = "SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
