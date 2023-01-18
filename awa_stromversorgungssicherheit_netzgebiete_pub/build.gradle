@@ -2,8 +2,10 @@ import ch.so.agi.gretl.api.TransferSet
 import ch.so.agi.gretl.tasks.*
 import java.nio.file.Paths
 
+defaultTasks 'publipub'
+/*
 defaultTasks 'uploadMgdmNetzgebiete'
-
+*/
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
@@ -36,7 +38,7 @@ task publipub(type: Publisher, dependsOn:'transferNetzgebiete'){
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
   if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
-
+/*
 task exportMgdmNetzgebiete(type: Ili2pgExport, dependsOn: 'publipub') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = "SupplySecurity_RuledAreas_V1_2"
@@ -71,3 +73,4 @@ task uploadMgdmNetzgebiete(dependsOn: 'zipMgdmNetzgebiete') {
         }
     }
 }
+*/
