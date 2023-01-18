@@ -5,7 +5,16 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferAwjfWaldplanPub'
 
-task transferAwjfWaldplanPub(type: Db2Db){
+
+task transferAwjfWaldplanUebersichtPub(type: Db2Db){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('awjf_waldplan_bestandeskarte_uebersicht_pub.sql', 'awjf_waldplan_bestandeskarte_pub_v1.waldplan_uebersicht', true)
+    ];        
+}
+
+task transferAwjfWaldplanPub(type: Db2Db, depends on: transferAwjfWaldplanUebersichtPub){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
