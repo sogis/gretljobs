@@ -2071,7 +2071,10 @@ SELECT
     dokument.rechtsstatus,
     dokument.textimweb,
     dokument.bemerkungen,
-    dokument.rechtsvorschrift
+    dokument.rechtsvorschrift,
+    dokument.publiziertbis,
+    dokument.aktuelle_ortsplanung,
+    dokument.zustaendige_amt
 FROM
     arp_nutzungsplanung_transfer_v1.rechtsvorschrften_dokument AS dokument
     LEFT JOIN arp_nutzungsplanung_transfer_v1.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS ueberlagernd_flaeche_dokument
@@ -2121,7 +2124,10 @@ SELECT
     dokument.rechtsstatus,
     dokument.textimweb,
     dokument.bemerkungen,
-    dokument.rechtsvorschrift
+    dokument.rechtsvorschrift,
+    dokument.publiziertbis,
+    dokument.aktuelle_ortsplanung,
+    dokument.zustaendige_amt
 FROM
     arp_nutzungsplanung_transfer_v1.rechtsvorschrften_dokument AS dokument
     LEFT JOIN arp_nutzungsplanung_transfer_v1.erschlssngsplnung_typ_erschliessung_flaechenobjekt_dokument AS erschliessung_flaechenobjekt_dokument
@@ -2171,7 +2177,11 @@ SELECT
     dokument.rechtsstatus,
     dokument.textimweb,
     dokument.bemerkungen,
-    dokument.rechtsvorschrift
+    dokument.rechtsvorschrift,
+    dokument.publiziertbis,
+    dokument.aktuelle_ortsplanung,
+    dokument.zustaendige_amt
+FROM
 FROM
     arp_nutzungsplanung_transfer_v1.rechtsvorschrften_dokument AS dokument
     LEFT JOIN arp_nutzungsplanung_transfer_v1.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument AS erschliessung_linienobjekt_dokument
