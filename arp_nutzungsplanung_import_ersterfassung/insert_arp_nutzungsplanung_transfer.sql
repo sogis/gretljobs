@@ -66,7 +66,9 @@ SELECT
     'https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/' || textimweb AS textimweb,
     bemerkungen,
     rechtsvorschrift,
-    NULL AS publiziertbis
+    NULL AS publiziertbis,
+    FALSE AS aktuelle_ortsplanung,
+    'Amt für Raumplanung' AS zustaendige_amt
 FROM
     arp_nutzungsplanung_import_v1.rechtsvorschrften_dokument
 ;

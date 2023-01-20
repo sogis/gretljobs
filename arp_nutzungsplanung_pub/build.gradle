@@ -19,7 +19,7 @@ task exportDataEdit (type: Ili2pgExport, dependsOn: 'deleteData_transfer_pub') {
     description = "Exportiert die Daten mit DataSet= BFSNr aus dem Schema arp_nutzungsplanung in ein INTERLIS-Datei."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_v1'
-    models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
+    models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118'
     dataset = bfsnr
     dataFile= file(bfsnr + ".xtf")
     disableValidation = true
@@ -29,7 +29,7 @@ task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
     dataFiles = file(bfsnr + ".xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-    configFile = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.ini'
+    configFile = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.ini'
     allObjectsAccessible = true
     failOnError = true
 }

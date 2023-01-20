@@ -1,4 +1,4 @@
--- Datenumbau von Modell SO_Nutzungsplanung_20171118 ins Modell SO_ARP_Nutzungsplanung_Nachfuehrung_20201005
+-- Datenumbau von Modell SO_Nutzungsplanung_20171118 ins Modell SO_ARP_Nutzungsplanung_Nachfuehrung_20221118
 -- Datenumbau erfolgt pro XTF
 
 -- dataset
@@ -22,7 +22,7 @@ INSERT INTO arp_nutzungsplanung_transfer_v1.t_ili2db_basket
 SELECT
     basket.t_id,
     basket.dataset,
-    replace (basket.topic, 'SO_Nutzungsplanung_20171118', 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005')AS topic,
+    replace (basket.topic, 'SO_Nutzungsplanung_20171118', 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118')AS topic,
     basket.t_ili_tid,
     basket.attachmentkey,
     basket.domains
@@ -32,12 +32,12 @@ WHERE basket.topic != 'SO_Nutzungsplanung_20171118.TransferMetadaten'
         AND
       basket.topic != 'SO_Nutzungsplanung_20171118.Verfahrenstand'
 ;
--- neue Topic SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Laermempfindlichkeitsstufen einfügen in basket
+-- neue Topic SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Laermempfindlichkeitsstufen einfügen in basket
 INSERT INTO arp_nutzungsplanung_transfer_v1.t_ili2db_basket
 SELECT
     nextval('arp_nutzungsplanung_import_v1.t_ili2db_seq'::regclass) AS t_id,
     basket.dataset,
-   'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Laermempfindlichkeitsstufen' AS topic,
+   'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Laermempfindlichkeitsstufen' AS topic,
     NULL AS t_ili_tid,
     'Datenumbau neues Topic Laermempfindlichkeitsstufen' attachmentkey,
     NULL AS domains
@@ -57,7 +57,7 @@ SELECT
         arp_nutzungsplanung_transfer_v1.t_ili2db_dataset
     WHERE
         datasetname='Kanton') AS dataset,
-    'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Nutzungsplanung' AS topic,
+    'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Nutzungsplanung' AS topic,
     Null AS t_ili_tid,
     'Nachfuehrung_Kanton' AS attachmentkey,
     Null AS domains
@@ -73,7 +73,7 @@ SELECT
         arp_nutzungsplanung_transfer_v1.t_ili2db_dataset
     WHERE
         datasetname='Kanton') AS dataset,
-    'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung' AS topic,
+    'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung' AS topic,
     Null AS t_ili_tid,
     'Nachfuehrung_Kanton' AS attachmentkey,
     Null AS domains
@@ -89,7 +89,7 @@ SELECT
         arp_nutzungsplanung_transfer_v1.t_ili2db_dataset
     WHERE
         datasetname='Kanton') AS dataset,
-    'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Rechtsvorschriften' AS topic,
+    'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Rechtsvorschriften' AS topic,
     Null AS t_ili_tid,
     'Nachfuehrung_Kanton' AS attachmentkey,
     Null AS domains
@@ -118,7 +118,9 @@ SELECT
     'https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/' || textimweb AS textimweb,
     bemerkungen,
     rechtsvorschrift,
-    NULL AS publiziertbis
+    NULL AS publiziertbis,
+    FALSE AS aktuelle_ortsplanung,
+    'Amt für Raumplanung' AS zustaendige_amt
 FROM
     arp_nutzungsplanung_import_v1.rechtsvorschrften_dokument
 ;
@@ -295,7 +297,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Nutzungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Nutzungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         WHEN 'N610_Perimeter_kantonaler_Nutzungsplan'
@@ -305,7 +307,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Nutzungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Nutzungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
           ELSE t_basket
@@ -390,7 +392,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Nutzungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Nutzungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         WHEN 'N610_Perimeter_kantonaler_Nutzungsplan'
@@ -400,7 +402,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Nutzungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Nutzungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
           ELSE ueberlagernd_flaeche.t_basket
@@ -512,7 +514,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE  
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Nutzungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Nutzungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         WHEN 'N610_Perimeter_kantonaler_Nutzungsplan'
@@ -522,7 +524,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Nutzungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Nutzungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         ELSE typ_ueberlagernd_flaeche_dokument.t_basket
@@ -974,7 +976,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         WHEN 'E561_Kantonsstrasse'
@@ -984,7 +986,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE 
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         ELSE t_basket
@@ -1020,7 +1022,7 @@ SELECT
                 FROM
                      arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE  
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         WHEN 'E561_Kantonsstrasse'
@@ -1030,7 +1032,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE 
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         ELSE erschliessung_flaechenobjekt.t_basket
@@ -1094,7 +1096,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE  
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         WHEN 'E561_Kantonsstrasse'
@@ -1104,7 +1106,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE 
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         ELSE erschliessung_flaechenobjekt_dokument.t_basket
@@ -1223,7 +1225,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE 
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         WHEN 'E712_Vorbaulinie_kantonal'
@@ -1233,7 +1235,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE 
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         WHEN 'E713_Gestaltungsbaulinie_kantonal'
@@ -1243,7 +1245,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE 
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         WHEN 'E714_Rueckwaertige_Baulinie_kantonal'
@@ -1253,7 +1255,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE 
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         WHEN 'E715_Baulinie_Infrastruktur_kantonal'
@@ -1263,7 +1265,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE 
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         WHEN 'E719_weitere_nationale_und_kantonale_Baulinien'
@@ -1273,7 +1275,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE 
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         ELSE t_basket
@@ -1319,7 +1321,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         WHEN 'E712_Vorbaulinie_kantonal'
@@ -1329,7 +1331,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE 
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         WHEN 'E713_Gestaltungsbaulinie_kantonal'
@@ -1339,7 +1341,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE 
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         WHEN 'E714_Rueckwaertige_Baulinie_kantonal'
@@ -1349,7 +1351,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE 
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         WHEN 'E715_Baulinie_Infrastruktur_kantonal'
@@ -1359,7 +1361,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE 
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         WHEN 'E719_weitere_nationale_und_kantonale_Baulinien'
@@ -1369,7 +1371,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         ELSE  erschliessung_linienobjekt.t_basket
@@ -1444,7 +1446,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE 
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         WHEN 'E712_Vorbaulinie_kantonal'
@@ -1454,7 +1456,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE 
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         WHEN 'E713_Gestaltungsbaulinie_kantonal'
@@ -1464,7 +1466,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         WHEN 'E714_Rueckwaertige_Baulinie_kantonal'
@@ -1474,7 +1476,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE 
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         WHEN 'E715_Baulinie_Infrastruktur_kantonal'
@@ -1484,7 +1486,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE 
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         WHEN 'E719_weitere_nationale_und_kantonale_Baulinien'
@@ -1494,7 +1496,7 @@ SELECT
                 FROM
                     arp_nutzungsplanung_transfer_v1.t_ili2db_basket
                 WHERE 
-                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Erschliessungsplanung'
+                    topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Erschliessungsplanung'
                     AND
                     attachmentkey = 'Nachfuehrung_Kanton')
         ELSE  erschliessung_linienobjekt_dokument.t_basket
@@ -1775,7 +1777,7 @@ SELECT
         FROM
             arp_nutzungsplanung_transfer_v1.t_ili2db_basket
         WHERE  
-            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Laermempfindlichkeitsstufen'
+            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Laermempfindlichkeitsstufen'
     ) AS t_basket,
     t_datasetname,
     t_ili_tid,
@@ -1812,7 +1814,7 @@ SELECT
         FROM
             arp_nutzungsplanung_transfer_v1.t_ili2db_basket
         WHERE  
-            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Laermempfindlichkeitsstufen'
+            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Laermempfindlichkeitsstufen'
     ) AS t_basket,
     ueberlagernd_flaeche.t_datasetname,
     ueberlagernd_flaeche.t_ili_tid,
@@ -1879,7 +1881,7 @@ SELECT
         FROM
             arp_nutzungsplanung_transfer_v1.t_ili2db_basket
         WHERE  
-            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Laermempfindlichkeitsstufen'
+            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Laermempfindlichkeitsstufen'
     ) AS t_basket,
     ueberlagernd_flaeche_dokument.t_datasetname,
     ueberlagernd_flaeche_dokument.typ_ueberlagernd_flaeche,
@@ -1958,7 +1960,7 @@ INSERT INTO
         FROM
             arp_nutzungsplanung_transfer_v1.t_ili2db_basket
         WHERE  
-            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Laermempfindlichkeitsstufen'
+            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Laermempfindlichkeitsstufen'
         ) AS t_basket,
         typ_empfindlichkeitsstufe_dokument.t_datasetname,
         typ_empfindlichkeitsstufe_dokument.typ_empfindlichkeitsstufen,
@@ -1999,7 +2001,7 @@ WHERE
     AND
     ueberlagernd_flaeche_dokument.t_datasetname=dataset.datasetname
     AND
-    basket.topic = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Rechtsvorschriften'
+    basket.topic = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Rechtsvorschriften'
     AND
     dataset.t_id=basket.dataset
 ;
@@ -2017,7 +2019,7 @@ WHERE
     AND
     erschliessung_flaechenobjekt_dokument.t_datasetname=dataset.datasetname
     AND
-    basket.topic = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Rechtsvorschriften'
+    basket.topic = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Rechtsvorschriften'
     AND
     dataset.t_id=basket.dataset
 ;
@@ -2035,7 +2037,7 @@ WHERE
     AND
     erschliessung_linienobjekt_dokument.t_datasetname=dataset.datasetname
     AND
-    basket.topic = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Rechtsvorschriften'
+    basket.topic = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Rechtsvorschriften'
     AND
     dataset.t_id=basket.dataset
 ;
@@ -2052,7 +2054,7 @@ SELECT
         FROM
             arp_nutzungsplanung_transfer_v1.t_ili2db_basket
         WHERE 
-            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Rechtsvorschriften'
+            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Rechtsvorschriften'
             AND
             attachmentkey = 'Nachfuehrung_Kanton'
     ) AS t_basket,
@@ -2069,7 +2071,10 @@ SELECT
     dokument.rechtsstatus,
     dokument.textimweb,
     dokument.bemerkungen,
-    dokument.rechtsvorschrift
+    dokument.rechtsvorschrift,
+    dokument.publiziertbis,
+    dokument.aktuelle_ortsplanung,
+    dokument.zustaendige_amt
 FROM
     arp_nutzungsplanung_transfer_v1.rechtsvorschrften_dokument AS dokument
     LEFT JOIN arp_nutzungsplanung_transfer_v1.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS ueberlagernd_flaeche_dokument
@@ -2102,7 +2107,7 @@ SELECT
         FROM
             arp_nutzungsplanung_transfer_v1.t_ili2db_basket
         WHERE 
-            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Rechtsvorschriften'
+            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Rechtsvorschriften'
         AND
             attachmentkey = 'Nachfuehrung_Kanton'
     ) AS t_basket,
@@ -2119,7 +2124,10 @@ SELECT
     dokument.rechtsstatus,
     dokument.textimweb,
     dokument.bemerkungen,
-    dokument.rechtsvorschrift
+    dokument.rechtsvorschrift,
+    dokument.publiziertbis,
+    dokument.aktuelle_ortsplanung,
+    dokument.zustaendige_amt
 FROM
     arp_nutzungsplanung_transfer_v1.rechtsvorschrften_dokument AS dokument
     LEFT JOIN arp_nutzungsplanung_transfer_v1.erschlssngsplnung_typ_erschliessung_flaechenobjekt_dokument AS erschliessung_flaechenobjekt_dokument
@@ -2152,7 +2160,7 @@ SELECT
         FROM
             arp_nutzungsplanung_transfer_v1.t_ili2db_basket
         WHERE 
-            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Rechtsvorschriften'
+            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Rechtsvorschriften'
         AND
             attachmentkey = 'Nachfuehrung_Kanton'
     ) AS t_basket, 
@@ -2169,7 +2177,10 @@ SELECT
     dokument.rechtsstatus,
     dokument.textimweb,
     dokument.bemerkungen,
-    dokument.rechtsvorschrift
+    dokument.rechtsvorschrift,
+    dokument.publiziertbis,
+    dokument.aktuelle_ortsplanung,
+    dokument.zustaendige_amt
 FROM
     arp_nutzungsplanung_transfer_v1.rechtsvorschrften_dokument AS dokument
     LEFT JOIN arp_nutzungsplanung_transfer_v1.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument AS erschliessung_linienobjekt_dokument
@@ -2188,4 +2199,40 @@ WHERE
    (dokument+3000000)=dokument_table.t_id
     AND 
     erschliessung_linienobjekt_dokument.t_datasetname= 'Kanton'
+;
+
+--Dokumente Zuordnung RRB und SBV
+--RRB
+INSERT INTO arp_nutzungsplanung_transfer_v1.rechtsvorschrften_dokument_entscheid_sbv
+SELECT
+    nextval('arp_nutzungsplanung_transfer_v1.t_ili2db_seq'::regclass) AS t_id,
+    dokument_plan.t_basket,
+    dokument_plan.t_datasetname,
+    dokument_plan.t_id AS dokument_planregister,
+    dokument_rrb.t_id AS entscheide_sbv
+FROM
+    arp_nutzungsplanung_transfer_v1.rechtsvorschrften_dokument AS dokument_plan
+        LEFT JOIN 
+            arp_nutzungsplanung_transfer_v1.rechtsvorschrften_dokument AS dokument_rrb ON SPLIT_PART(dokument_plan.textimweb,'/',9) = replace(SPLIT_PART(dokument_rrb.textimweb,'/',9),'-E','-P')
+WHERE
+    RIGHT(dokument_plan.textimweb,5)='P.pdf'  
+        AND
+            RIGHT(dokument_rrb.textimweb,5)='E.pdf'
+;
+--SBV
+INSERT INTO arp_nutzungsplanung_transfer_v1.rechtsvorschrften_dokument_entscheid_sbv
+SELECT
+    nextval('arp_nutzungsplanung_transfer_v1.t_ili2db_seq'::regclass) AS t_id,
+    dokument_plan.t_basket,
+    dokument_plan.t_datasetname,
+    dokument_plan.t_id AS dokument_planregister,
+    dokument_sbv.t_id AS entscheide_sbv
+FROM
+    arp_nutzungsplanung_transfer_v1.rechtsvorschrften_dokument AS dokument_plan
+        LEFT JOIN 
+            arp_nutzungsplanung_transfer_v1.rechtsvorschrften_dokument AS dokument_sbv ON SPLIT_PART(dokument_plan.textimweb,'/',9) = replace(SPLIT_PART(dokument_sbv.textimweb,'/',9),'-S','-P')
+WHERE
+    RIGHT(dokument_plan.textimweb,5)='P.pdf'  
+        AND
+            RIGHT(dokument_sbv.textimweb,5)='S.pdf'
 ;

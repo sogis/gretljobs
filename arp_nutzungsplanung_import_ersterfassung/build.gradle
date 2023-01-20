@@ -45,7 +45,7 @@ task transferData(type: SqlExecutor, dependsOn: 'deleteData_transfer') {
 task deleteData_import(type: Ili2pgDelete, dependsOn: 'transferData') {
     description = "Löscht/leert Daten mit dem angegebenen Datasetname (BFS-Nr.) aus dem Schema arp_nutzungsplanung_import_v1"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
+    models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118'
     dbschema = 'arp_nutzungsplanung_import_v1'
     dataset = ili2pgDataset
 }
@@ -60,7 +60,7 @@ task exportDataEdit (type: Ili2pgExport, dependsOn: 'deleteData_transfer_pub') {
     description = "Exportiert die Daten mit DataSet= BFSNr aus dem Schema arp_nutzungsplanung_transfer in ein INTERLIS-Datei."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_transfer_v1'
-    models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
+    models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118'
     dataset = ili2pgDataset
     dataFile= file(ili2pgDataset + "for_stage.xtf")
     disableValidation = true

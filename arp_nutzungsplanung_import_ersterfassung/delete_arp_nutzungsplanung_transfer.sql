@@ -78,6 +78,10 @@ DELETE FROM
 DELETE FROM
     arp_nutzungsplanung_transfer_v1.laermmpfhktsstfen_typ_empfindlichkeitsstufe
 ;
+-- Dokument Zuordnung
+DELETE FROM
+    arp_nutzungsplanung_transfer_v1.rechtsvorschrften_dokument_entscheid_sbv
+;
 -- Dokument
 DELETE FROM
     arp_nutzungsplanung_transfer_v1.rechtsvorschrften_dokument
