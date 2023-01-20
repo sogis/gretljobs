@@ -2182,7 +2182,6 @@ SELECT
     dokument.aktuelle_ortsplanung,
     dokument.zustaendige_amt
 FROM
-FROM
     arp_nutzungsplanung_transfer_v1.rechtsvorschrften_dokument AS dokument
     LEFT JOIN arp_nutzungsplanung_transfer_v1.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument AS erschliessung_linienobjekt_dokument
     ON dokument.t_id = erschliessung_linienobjekt_dokument.dokument
