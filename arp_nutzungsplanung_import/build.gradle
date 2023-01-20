@@ -39,7 +39,7 @@ task deleteData_transfer(type: SqlExecutor, dependsOn: 'deleteXtfFile_upload') {
 task deleteData_import(type: Ili2pgDelete) {
     description = "Löscht/leert Daten mit dem angegebenen Datasetname (BFS-Nr.) aus dem Schema arp_nutzungsplanung_import_v1"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
+    models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118'
     dbschema = 'arp_nutzungsplanung_import_v1'
     dataset = ili2pgDataset
 }
@@ -55,7 +55,7 @@ task exportData_Dataset_BFSNr(type: Ili2pgExport) {
     description = "Exportiert die umgebauten Daten mit DataSet= BFSNr aus dem Schema arp_nutzungsplanung_transfer in ein INTERLIS-Datei."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_transfer_v1'
-    models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
+    models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118'
     dataset = ili2pgDataset
     dataFile= file(ili2pgDataset + ".xtf")
     disableValidation = true
@@ -77,7 +77,7 @@ task importData_Dataset_BFSNr(type: Ili2pgImport) {
     description = 'Import der umgebaute INTERLIS-Datei in das Schema arp_nutzungsplanung mit Dataset=BFS-Nr. Im Schema arp_nutzungsplanung werden die Daten nachgeführt.'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_v1'
-    models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
+    models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118'
     dataset = ili2pgDataset
     dataFile = file(ili2pgDataset + ".xtf")
     disableValidation = true
@@ -88,7 +88,7 @@ task exportData_Dataset_Kanton(type: Ili2pgExport) {
     description = "Exportiert die umgebauten Daten mit DataSet=Kanton aus dem Schema arp_nutzungsplanung_transfer in ein INTERLIS-Datei."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_transfer_v1'
-    models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
+    models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118'
     dataset = 'Kanton'
     dataFile = file(ili2pgDataset + "_Kanton.xtf")
     disableValidation = true
@@ -110,7 +110,7 @@ task importData_Dataset_Kanton(type: Ili2pgImport) {
     description = 'Import der umgebaute INTERLIS-Datei in das Schema arp_nutzungsplanung mit Dataset=Kanton. Im Schema arp_nutzungsplanung werden die Daten nachgeführt.'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_kanton_v1'
-    models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005'
+    models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118'
     dataFile = file(ili2pgDataset + "_Kanton.xtf")
     disableValidation = true
     finalizedBy deleteXtfFile_Kanton
