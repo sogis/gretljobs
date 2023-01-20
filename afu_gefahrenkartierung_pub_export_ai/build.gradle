@@ -60,7 +60,7 @@ task publishPub(type: Publisher, dependsOn: 'pubGefkart'){
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-    configFile = "afu_gefahrenkartierung_pub.toml"
+    validationConfig = "afu_gefahrenkartierung_pub.toml"
 }
 
 /*
