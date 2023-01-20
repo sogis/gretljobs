@@ -50,7 +50,7 @@ task pubGefkart(type: Db2Db){
 	];    
 }
 
-task publishPub(type: Publisher, ependsOn: 'pubGefkart'){
+task publishPub(type: Publisher, dependsOn: 'pubGefkart'){
     dataIdent = "ch.so.afu.gefahrenkartierung"
     dbSchema = "afu_gefahrenkartierung_pub"
     modelsToPublish = "SO_AfU_Gefahrenkartierung_20181129"
