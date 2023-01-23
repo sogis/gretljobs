@@ -23,7 +23,7 @@ task validateWaldpflegeKontrolle(type: IliValidator, dependsOn: 'exportWaldpfleg
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
-task transferAwjfWaldpflegeKontrollePub(type: Db2Db, dependsOn: 'exportWaldpflegeKontrolle') {
+task transferAwjfWaldpflegeKontrollePub(type: Db2Db, dependsOn: 'validateWaldpflegeKontrolle') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
