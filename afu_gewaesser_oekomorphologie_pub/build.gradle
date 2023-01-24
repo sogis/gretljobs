@@ -4,8 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 
 
-//defaultTasks 'publishPub'
-defaultTasks 'updateEnumTxtCols'
+defaultTasks 'publishPub'
 
 
 task transferAfuOekomorphologie(type: Db2Db){
@@ -58,10 +57,10 @@ task updateEnumTxtCols(type: SqlExecutor, dependsOn:updateBooleanEnumTxtCols){
         [schema: 'afu_gewaesser_oekomorphologie_pub_v1', table: 'oekomorphologie', attribute: 'beurteilungsuferbreiterechts', enumTable: 'beurteilungsuferbreite']
     ]
 }
-/*
+
 task publishPub(type: Publisher, dependsOn:updateEnumTxtCols){
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    dataIdent = "ch.so.afu.fliessgewaesser.oekomorphologie"
+    dataIdent = "ch.so.afu.gewaesser_oekomorphologie"
     dbSchema = "afu_gewaesser_oekomorphologie_pub_v1"
     modelsToPublish = "SO_AFU_Gewaesser_Oekomorphologie_Publikation_20220426"
     userFormats = true
@@ -71,4 +70,4 @@ task publishPub(type: Publisher, dependsOn:updateEnumTxtCols){
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
-*/
+
