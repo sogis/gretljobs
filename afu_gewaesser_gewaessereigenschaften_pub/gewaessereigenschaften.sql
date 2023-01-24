@@ -1,5 +1,5 @@
 SELECT 
-    geometrie,
+    ST_RemoveRepeatedPoints(geometrie, 0.001) AS geometrie,        /* Ausnahme, da abgeleitete Geometrie */
     gnrso,
     typ,
     '' AS typ_txt,
