@@ -59,7 +59,7 @@ task updateEnumTxtCols(type: SqlExecutor, dependsOn:updateBooleanEnumTxtCols){
 }
 
 task publishPub(type: Publisher, dependsOn:updateEnumTxtCols){
-    database = [switchToProd(dbUriPub), dbUserPub, dbPwdPub]
+    database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.afu.fliessgewaesser.oekomorphologie"
     dbSchema = "afu_gewaesser_oekomorphologie_pub_v1"
     modelsToPublish = "SO_AFU_Gewaesser_Oekomorphologie_Publikation_20220426"
@@ -69,14 +69,4 @@ task publishPub(type: Publisher, dependsOn:updateEnumTxtCols){
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-}
-
-
-def switchToProd(dbUri) {
-  String readUri = dbUri.replaceFirst("geodb-t.", "geodb.")
-
-  if(readUri.equals(dbUri))
-    readUri = dbUri.replaceFirst("geodb-i.", "geodb.")
-
-  return readUri
 }
