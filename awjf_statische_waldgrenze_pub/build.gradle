@@ -78,7 +78,7 @@ task importXTF_pub(type: Ili2pgImport) {
     finalizedBy deleteData_staging_pub
 }
 
-task publishPub(type: Publisher){
+task publishPub(type: Publisherr, dependsOn: 'importXTF_pub'){
     database = [dbUriPub,dbUserPub,dbPwdPub]
     dataIdent = "ch.so.awjf.statische_waldgrenze"
     dbSchema = "awjf_statische_waldgrenze_pub_v1"
