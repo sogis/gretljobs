@@ -3,12 +3,24 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'validateData', 'importXTF_pub'
+defaultTasks 'validateData', 'publishPub'
 
 def FileName = "awjf_statische_waldgrenze.xtf"
 def FileNamePub = "awjf_statische_waldgrenze_pub.xtf"
 
-task exportDataEdit (type: Ili2pgExport) {
+task publiedit(type: Publisher){
+  database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+  dataIdent = "ch.so.awjf.statische_waldgrenze.relational"
+  dbSchema = "awjf_statische_waldgrenze_v1"
+  modelsToPublish = "SO_AWJF_Statische_Waldgrenzen_20191119"
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+task exportDataEdit (type: Ili2pgExport, dependsOn: 'publiedit') {
     description = "Exportiert die Daten aus dem Schema awjf_statische_waldgrenze in eine INTERLIS-Datei."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'awjf_statische_waldgrenze'
@@ -64,4 +76,17 @@ task importXTF_pub(type: Ili2pgImport) {
     deleteData = true
     disableValidation = true
     finalizedBy deleteData_staging_pub
+}
+
+task publishPub(type: Publisher, dependsOn: 'importXTF_pub'){
+    database = [dbUriPub,dbUserPub,dbPwdPub]
+    dataIdent = "ch.so.awjf.statische_waldgrenze"
+    dbSchema = "awjf_statische_waldgrenze_pub_v1"
+    modelsToPublish = "SO_AWJF_Statische_Waldgrenzen_Publikation_20191119"
+    userFormats = true
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
