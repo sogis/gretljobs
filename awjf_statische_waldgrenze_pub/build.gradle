@@ -11,7 +11,7 @@ def FileNamePub = "awjf_statische_waldgrenze_pub.xtf"
 task publiedit(type: Publisher){
   database = [dbUriEdit, dbUserEdit, dbPwdEdit]
   dataIdent = "ch.so.awjf.statische_waldgrenze.relational"
-  dbSchema = "awjf_statische_waldgrenze_v1"
+  dbSchema = "awjf_statische_waldgrenze"
   modelsToPublish = "SO_AWJF_Statische_Waldgrenzen_20191119"
   target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
