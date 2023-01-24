@@ -5,7 +5,7 @@ import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 import java.nio.file.Paths
 
-defaultTasks 'transferData'
+defaultTasks 'publishPub'
 //defaultTasks 'replaceDataset'
 
 ext {
@@ -38,11 +38,35 @@ task replaceDataset (type: Ili2pgReplace, dependsOn: downloadData) {
     //dataFile = "strassenlaerm.xtf" // name is injected by jenkins
 }
 
+task publishEdit(type: Publisher, dependsOn: replaceDataset){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dataIdent = "ch.so.avt.strassenlaerm.relational"
+    dbSchema = "avt_strassenlaerm_v1"
+    dataset = "data"
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
 
-task transferData(type: Db2Db, dependsOn: replaceDataset) {
+task transferData(type: Db2Db, dependsOn: publishEdit) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet("transform_immission_strasse_pointofdetermination.sql", 'avt_strassenlaerm_pub_v1.strassenlaerm_belastung', true)
     ];
+}
+
+task publishPub(type: Publisher, dependsOn:transferData){
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dataIdent = "ch.so.avt.strassenlaerm"
+    dbSchema = "avt_strassenlaerm_pub_v1"
+    modelsToPublish = "SO_AVT_Strassenlaerm_Publikation_20190802"
+    userFormats = true
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
