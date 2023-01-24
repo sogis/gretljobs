@@ -21,9 +21,7 @@ WHERE
     (
         bodenbedeckung_boflaeche.art = 'bestockt.geschlossener_Wald' 
         OR 
-        bodenbedeckung_boflaeche.art = 'bestockt.uebrige_bestockte.Hecke' 
-        OR 
-        bodenbedeckung_boflaeche.art = 'bestockt.uebrige_bestockte.Parkanlage_bestockt'
+        bodenbedeckung_boflaeche.art = 'bestockt.uebrige_bestockte.Hecke'
     )
 AND 
    bodenbedeckung_boflaeche.t_datasetname::int NOT IN ( 
