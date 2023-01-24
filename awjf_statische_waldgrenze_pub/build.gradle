@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'validateData', 'publishPub'
+defaultTasks 'validateData', 'importXTF_pub', 'publishPub'
 
 def FileName = "awjf_statische_waldgrenze.xtf"
 def FileNamePub = "awjf_statische_waldgrenze_pub.xtf"
@@ -78,7 +78,7 @@ task importXTF_pub(type: Ili2pgImport) {
     finalizedBy deleteData_staging_pub
 }
 
-task publishPub(type: Publisher, dependsOn: 'importXTF_pub'){
+task publishPub(type: Publisher){
     database = [dbUriPub,dbUserPub,dbPwdPub]
     dataIdent = "ch.so.awjf.statische_waldgrenze"
     dbSchema = "awjf_statische_waldgrenze_pub_v1"
