@@ -449,7 +449,7 @@ SELECT
     minimaler_uferbereich.breite AS minimaleruferbereich, 
     raumbedarf.raumbedarf, 
     attr.erhebungsdatum,
-    ST_RemoveRepeatedPoints(attr.geometrie, 0.001) AS geometrie    /* Ausnahme, da abgeleitete Geometrie */
+    ST_ReducePrecision(attr.geometrie, 0.001) AS geometrie    /* Ausnahme, da abgeleitete Geometrie */
 FROM 
     afu_gewaesser_v1.oekomorph_v attr 
 JOIN 
