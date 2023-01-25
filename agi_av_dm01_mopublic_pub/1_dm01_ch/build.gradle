@@ -1,0 +1,35 @@
+import ch.so.agi.gretl.tasks.*
+
+def dm01SoDir = rootProject.ext.dm01SoDir
+def dm01ChDir = file("$buildDir/dm01_ch")
+
+task createFederalFiles(type: Av2ch, dependsOn: ':0_dm01_so:execProjPubTasks') {
+    inputFile = fileTree(dm01SoDir) { include '*.itf' }
+    outputDirectory = dm01ChDir
+    modeldir = "https://geo.so.ch/models/"
+    zip = false
+
+    doLast {
+        println "Federal files created: " + dm01ChDir + " from: " + fileTree(dm01SoDir)
+    }
+}
+
+task publish(type: Publisher, dependsOn: createFederalFiles){
+    dataIdent = 'ch.so.agi.av.dm01_ch'
+    modelsToPublish = 'DM01AVCH24LV95D'
+    regions = project(':0_dm01_so').tasks.publish.publishedRegions
+    userFormats = true
+    sourcePath = new File(dm01ChDir, 'dummy.itf')
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    //validationConfig = "$projectDir/../novalidation.toml"
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    //target = [file("$buildDir/published")]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+}
+
+task execProjPubTasks(dependsOn: publish){}
+
+
+

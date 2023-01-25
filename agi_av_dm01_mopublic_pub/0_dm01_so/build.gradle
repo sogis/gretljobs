@@ -1,0 +1,123 @@
+import ch.so.agi.gretl.tasks.*
+
+rootProject.defaultTasks 'execAllProjAllTasks'
+
+rootProject.ext.dm01SoDir = file("$buildDir/dm01_so/") // referenced from subprojects
+
+def dm01SoDir = rootProject.ext.dm01SoDir
+def dm01SoZippedDir = new File(dm01SoDir, 'zip')
+
+task downloadFiles(type: FtpDownload) {
+    doFirst {
+        dm01SoZippedDir.mkdirs()
+    }
+
+    server = ftpServerInfogrips
+    user = ftpUserInfogrips
+    password = ftpPwdInfogrips
+    systemType = "WINDOWS"
+    fileType = "BINARY"
+    localDir = dm01SoZippedDir
+    remoteDir = "\\dm01avso24lv95\\itf"
+    remoteFile = "*.zip"
+
+    doLast {
+        def filesToProcess = fileTree(dm01SoZippedDir).getFiles()
+
+        if(filesToProcess.size() > 0){
+            println "Processing files: " + filesToProcess
+        }
+        else{
+            println 'No files to process on ftp. Skipping all remaining tasks of build'
+
+            def falseClosure = { return false }
+
+            for(taskSet in rootProject.getAllTasks(true).values()){
+                for(task in taskSet){
+                    if(!task.equals(it)) // it = this task
+                        task.onlyIf(falseClosure)
+                }
+            }                
+        }          
+    }
+}
+
+/*
+task downloadFiles(type: Copy) {
+  from file("$buildDir/ftpReplacement")
+  into dm01SoZippedDir
+}
+*/
+
+task unzipFiles(dependsOn: downloadFiles) {
+    doLast {
+        fileTree(dm01SoZippedDir).files.each {
+            String fileName = it
+            copy {
+                from zipTree(fileName)
+                into dm01SoDir
+
+                include "**/*.itf"
+                include "**/*.ITF"
+
+                rename { String jt ->
+                    return jt.substring(0,4) + ".itf"
+                }
+            }
+        }
+        println "File(s) unzipped to directory: " + dm01SoDir
+    }
+}
+
+task publish(type: Publisher, dependsOn:unzipFiles){
+    dataIdent = 'ch.so.agi.av.dm01_so'
+    modelsToPublish = 'DM01AVSO24LV95'
+    region = '.*'
+    sourcePath = new File(dm01SoDir, 'dummy.itf')
+    //target = [file("$buildDir/published")]
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+    //validationConfig = "$projectDir/../novalidation.toml"
+}
+
+task importData(type: Ili2pgReplace, dependsOn: publish) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = 'DM01AVSO24LV95'
+    dbschema = 'agi_dm01avso24'
+    dataFile = fileTree(dir: dm01SoDir, include: '*.itf')
+    dataset = dataFile
+    datasetSubstring = 0..4
+
+    disableValidation = true
+
+    doLast {
+        println "Data imported into db: " + dbUriEdit
+    }
+}
+
+task execProjPubTasks(dependsOn: publish){}
+
+task execAllPubTasks(){
+    dependsOn ':2_mopublic:execProjPubTasks'
+    dependsOn ':1_dm01_ch:execProjPubTasks'
+    // Da 1_dm01_ch und 2_mopublic von 0_dm01_so abhängig sind, wird 0_dm01_so immer auch ausgeführt.
+}
+
+/* task deleteFtpFiles(dependsOn: execAllPubTasks) {} */
+
+task deleteFtpFiles(type: FtpDelete, dependsOn: execAllPubTasks) {
+    onlyIf {
+        gretlEnvironment == "production"
+    }
+    server = ftpServerInfogrips
+    user = ftpUserInfogrips
+    password = ftpPwdInfogrips
+    systemType = "WINDOWS"
+    remoteDir = "\\dm01avso24lv95\\itf"
+    remoteFile = fileTree(dm01SoZippedDir) { include '*.zip' }
+}
+
+task execAllProjAllTasks(dependsOn: deleteFtpFiles){}
