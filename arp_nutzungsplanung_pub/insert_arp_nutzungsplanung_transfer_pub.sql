@@ -24,7 +24,7 @@ FROM
     LEFT JOIN arp_nutzungsplanung_v1.t_ili2db_dataset AS dataset
     ON basket.dataset=dataset.t_id
 WHERE
-    topic = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Nutzungsplanung'
+    topic = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Nutzungsplanung'
 AND
     dataset.datasetname::int4 = ${bfsnr_param}
 ;
