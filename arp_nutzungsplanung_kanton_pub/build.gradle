@@ -7,7 +7,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'importXTF_stage', 'importXTF_pub'
+defaultTasks 'importXTF_stage', 'importXTF_pub', 'publish'
 
 task deleteData_transfer_pub (type: SqlExecutor) {
     description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_transfer_pub."
@@ -82,4 +82,17 @@ task importXTF_pub(type: Ili2pgReplace) {
     dataFile = file("kanton_pub.xtf")
     disableValidation = true
     finalizedBy delete_Dataset_stage
+}
+
+task publish(type: Publisher, dependsOn: validateData){
+    dataIdent = 'ch.so.arp.nutzungsplanung.kantonal'
+    modelsToPublish = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
+    userFormats = true
+    region = "kanton"
+    sourcePath = file("kanton_pub.xtf")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
