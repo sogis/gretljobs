@@ -88,7 +88,7 @@ task importXTF_pub(type: Ili2pgReplace) {
 
 task publish(type: Publisher, dependsOn: validateData){
     dataIdent = 'ch.so.arp.nutzungsplanung.kommunal'
-    modelsToPublish = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
+    // modelsToPublish = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
     userFormats = true
     region = bfsnr
     sourcePath = file(bfsnr + "_pub.xtf")

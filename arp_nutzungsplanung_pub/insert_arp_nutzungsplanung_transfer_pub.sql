@@ -15,7 +15,7 @@ INSERT INTO arp_nutzungsplanung_transfer_pub_v1.t_ili2db_basket
 SELECT
     basket.t_id,
     basket.dataset,
-    replace (basket.topic, 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005', 'SO_ARP_Nutzungsplanung_Publikation_20201005')AS topic,
+    replace (basket.topic, 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118', 'SO_ARP_Nutzungsplanung_Publikation_20201005')AS topic,
     basket.t_ili_tid,
     basket.attachmentkey,
     basket.domains
