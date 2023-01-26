@@ -85,3 +85,16 @@ task importXTF_pub(type: Ili2pgReplace) {
     disableValidation = true
     finalizedBy delete_Dataset_stage
 }
+
+task publish(type: Publisher, dependsOn: validateData){
+    dataIdent = 'ch.so.arp.nutzungsplanung.kommunal'
+    modelsToPublish = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
+    userFormats = true
+    region = bfsnr
+    sourcePath = file(bfsnr + "_pub.xtf")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+}
