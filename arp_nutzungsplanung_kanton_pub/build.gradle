@@ -88,7 +88,6 @@ task publish(type: Publisher, dependsOn: validateData){
     dataIdent = 'ch.so.arp.nutzungsplanung.kantonal'
     modelsToPublish = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
     userFormats = true
-    region = "kanton"
     sourcePath = file("kanton_pub.xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
