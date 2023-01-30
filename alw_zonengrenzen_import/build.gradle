@@ -7,7 +7,7 @@ apply plugin: 'de.undercouch.download'
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'transferAlwZonengrenzen'
+defaultTasks 'publishPub'
 
 
 // Download-Verzeichnis
@@ -71,7 +71,7 @@ task transferAlwZonengrenzen(type: Db2Db, dependsOn: 'importData'){
     ];
 }
 
-task publishPub(type: Publisher, dependsOn: 'transferAwjfNaturgefahrenhinweiskarte'){
+task publishPub(type: Publisher, dependsOn: 'transferAlwZonengrenzen'){
     database = [dbUriPub,dbUserPub,dbPwdPub]
     dataIdent = "ch.so.alw.landwirtschaftliche_zonengrenzen"
     dbSchema = "alw_zonengrenzen_pub"
