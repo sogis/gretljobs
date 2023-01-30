@@ -6,7 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'publipub'
 
 task publiedit(type: Publisher){
-  dataIdent = "ch.so.afu.ch.so.alw.strukturverbesserungen.relational"
+  dataIdent = "ch.so.alw.strukturverbesserungen.relational"
   database = [dbUriEdit, dbUserEdit, dbPwdEdit]
   dbSchema = "alw_strukturverbesserungen"
   modelsToPublish = "SO_ALW_Strukturverbesserungen_20190912"
