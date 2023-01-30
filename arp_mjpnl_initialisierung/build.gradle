@@ -13,9 +13,10 @@ import java.io.File
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'importGELAN'
+defaultTasks 'GelanBezugsjahrBereinigen'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def DB_Schema_MJPNL = "arp_mjpnl_v1"
 
 remotes {
     sftpServer {
@@ -65,4 +66,12 @@ task importGELAN(type: Ili2pgReplace, dependsOn: downloadData) {
     topics = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426.Betriebsdaten_Strukturdaten'
     dataFile = Paths.get(pathToTempFolder, 'Export_ais_agrardaten.xtf')
     dataset = 'GELAN'
+}
+
+
+task GelanBezugsjahrBereinigen(type: SqlExecutor, dependsOn: importGELAN) {
+    description = "Beim GELAN-Import kommen öfter doppelte Jahre. Das jeweils nicht benötigte wird entfernt"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['delete_gelandata_from_other_year.sql']
 }
