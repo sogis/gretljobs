@@ -70,3 +70,16 @@ task transferAlwZonengrenzen(type: Db2Db, dependsOn: 'importData'){
             new TransferSet('alw_zonengrenzen_pub.sql', 'alw_zonengrenzen_pub.zonengrenzen_zonengrenze', true)
     ];
 }
+
+task publishPub(type: Publisher, dependsOn: 'transferAwjfNaturgefahrenhinweiskarte'){
+    database = [dbUriPub,dbUserPub,dbPwdPub]
+    dataIdent = "ch.so.alw.landwirtschaftliche_zonengrenzen"
+    dbSchema = "alw_zonengrenzen_pub"
+    modelsToPublish = "SO_ALW_Landwirtschaftliche_Zonengrenzen_Publikation_20200630"
+    userFormats = true
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
