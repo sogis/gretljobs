@@ -28,7 +28,7 @@ task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
     dataFiles = file("kanton.xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-    configFile = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.ini'
+    configFile = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.ini'
     allObjectsAccessible = true
     failOnError = true
 }
