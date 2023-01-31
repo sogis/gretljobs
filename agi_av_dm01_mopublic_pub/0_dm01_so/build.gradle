@@ -80,7 +80,7 @@ task publish(type: Publisher, dependsOn:unzipFiles){
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
-    //validationConfig = "$projectDir/../novalidation.toml"
+    validationConfig = "$projectDir/../novalidation.toml"
 }
 
 task importData(type: Ili2pgReplace, dependsOn: publish) {
@@ -106,8 +106,6 @@ task execAllPubTasks(){
     // Da 1_dm01_ch und 2_mopublic von 0_dm01_so abhängig sind, wird 0_dm01_so immer auch ausgeführt.
 }
 
-/* task deleteFtpFiles(dependsOn: execAllPubTasks) {} */
-
 task deleteFtpFiles(type: FtpDelete, dependsOn: execAllPubTasks) {
     onlyIf {
         gretlEnvironment == "production"
@@ -120,4 +118,5 @@ task deleteFtpFiles(type: FtpDelete, dependsOn: execAllPubTasks) {
     remoteFile = fileTree(dm01SoZippedDir) { include '*.zip' }
 }
 
-task execAllProjAllTasks(dependsOn: deleteFtpFiles){}
+//task execAllProjAllTasks(dependsOn: deleteFtpFiles){}
+task execAllProjAllTasks(dependsOn: execAllPubTasks){}

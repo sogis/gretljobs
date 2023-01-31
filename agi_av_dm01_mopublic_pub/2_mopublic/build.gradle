@@ -54,7 +54,7 @@ task publish(type: Publisher, dependsOn: refreshSolr){
     //target = [file("$buildDir/published")]
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-    //validationConfig = "$projectDir/../novalidation.toml"
+    validationConfig = "$projectDir/../novalidation.toml"
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
