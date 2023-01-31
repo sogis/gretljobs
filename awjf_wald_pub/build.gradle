@@ -18,17 +18,7 @@ task publishEdit(type: Publisher) {
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
-task transferAwjfSogis(type: Db2Db, dependsOn: 'publishEdit') {
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
-    transferSets = [
-            new TransferSet('awjf_wald_pub_wald_uebersicht.sql', 'awjf_wald_pub.wald_uebersicht', true),
-            new TransferSet('awjf_wald_pub_wap_bst.sql', 'awjf_wald_pub.wap_bst', true),
-            new TransferSet('awjf_wald_pub_wap_bst_bkt.sql', 'awjf_wald_pub.wap_bst_bkt', true)
-    ];        
-}
-
-task transferAwjfEdit(type: Db2Db, dependsOn: 'transferAwjfSogis') {
+task transferAwjfEdit(type: Db2Db, dependsOn: 'publishEdit') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
