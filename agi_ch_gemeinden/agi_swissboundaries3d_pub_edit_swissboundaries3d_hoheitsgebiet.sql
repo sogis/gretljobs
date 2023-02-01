@@ -36,7 +36,7 @@ WITH geometrie AS (
         )
         AND
         (
-           tlm_grenzen_ tlm_hoheitsgebiet.kantonsnummer IS NOT NULL
+           tlm_grenzen_tlm_hoheitsgebiet.kantonsnummer IS NOT NULL
             AND 
             (
                 kanton.kanton_teil = 0
