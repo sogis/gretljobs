@@ -6,11 +6,11 @@ WITH geometrie AS (
         land.aname AS land,
         ST_Force2D(ST_Collect(tlm_kantonsgebiet.shape)) AS geometrie
     FROM
-        agi_swissboundaries3d.tlm_kantonsgebiet
+        agi_swissboundaries3d_v1.tlm_grenzen_tlm_kantonsgebiet
         LEFT JOIN
-            agi_swissboundaries3d.tlm_landesgebiet land
+            agi_swissboundaries3d_v1.tlm_grenzen_tlm_landesgebiet land
             ON
-                land.icc = tlm_kantonsgebiet.icc
+                land.icc = tlm_grenzen_tlm_kantonsgebiet.icc
     WHERE
         land.land_teil = 0
         OR
@@ -31,7 +31,7 @@ SELECT
 FROM
     geometrie
     LEFT JOIN 
-        agi_swissboundaries3d.tlm_kantonsgebiet kanton
+        agi_swissboundaries3d_v1.tlm_grenzen_tlm_kantonsgebiet kanton
         ON
             kanton.kantonsnummer = geometrie.kantonsnummer
 WHERE
