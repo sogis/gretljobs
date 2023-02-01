@@ -13,8 +13,8 @@ defaultTasks 'transferDataToPubDb'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
-def pathToDataZip = Paths.get(pathToTempFolder, 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill.zip')
-def xtfFilePath = Paths.get(pathToUnzipFolder.toString(),'swissBOUNDARIES3D_1_3.xtf')
+def pathToDataZip = Paths.get(pathToTempFolder, 'cdata.zip')
+def xtfFilePath = Paths.get(pathToUnzipFolder.toString(),'swissBOUNDARIES3D_1_4.xtf')
 
 
 task download(type: Download){
@@ -22,14 +22,14 @@ task download(type: Download){
     doLast {
         println "File downloaded to: " + pathToTempFolder
     }
-    src 'https://data.geo.admin.ch/ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill/xtf/2056/ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill.zip'
+    src 'https://data.geo.admin.ch/ch.swisstopo.swissboundaries3d/swissboundaries3d_2023-01/swissboundaries3d_2023-01_2056_5728.xtf.zip'
     dest pathToTempFolder
     overwrite true
 }
 
 
 task unzipSwissBoundaries3D(type: Copy, dependsOn: 'download'){
-    description = "Unzip swissBOUNDARIES3D_1_3.xtf from ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill.zip."
+    description = "Unzip swissBOUNDARIES3D_1_4.xtf from swissboundaries3d_2023-01_2056_5728.xtf.zip."
     doLast {
         println "File unzipped to directory: " + pathToUnzipFolder
     }
@@ -45,8 +45,8 @@ task dbImport(type: Ili2pgImport, dependsOn: 'unzipSwissBoundaries3D'){
         println "Data imported into db: " + dbUriEdit
     }
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = "agi_swissboundaries3d"
-    models = "swissBOUNDARIES3D_ili2_LV95_V1_3"
+    dbschema = "agi_swissboundaries3d_v1"
+    models = "swissBOUNDARIES3D_ili2_LV95_V1_4"
     disableValidation = false
     dataFile = file(xtfFilePath)
     deleteData = true
