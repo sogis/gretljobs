@@ -1,9 +1,9 @@
 --Hoheitsgebiet
 WITH geometrie AS (
     SELECT
-        tlm_hoheitsgebiet.bfs_nummer,
-        tlm_hoheitsgebiet.aname AS hoheitsgebietsname,
-        tlm_hoheitsgebiet.objektart as hoheitsgebietsart,
+        tlm_grenzen_tlm_hoheitsgebiet.bfs_nummer,
+        tlm_grenzen_tlm_hoheitsgebiet.aname AS hoheitsgebietsname,
+        tlm_grenzen_tlm_hoheitsgebiet.objektart as hoheitsgebietsart,
         bezirk.aname AS bezirksname,
         kanton.aname AS kanton,
         land.aname AS land,
