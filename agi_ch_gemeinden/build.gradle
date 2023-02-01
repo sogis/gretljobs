@@ -13,7 +13,7 @@ defaultTasks 'transferDataToPubDb'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
-def pathToDataZip = Paths.get(pathToTempFolder, 'cdata.zip')
+def pathToDataZip = Paths.get(pathToTempFolder, 'swissboundaries3d_2023-01_2056_5728.xtf.zip')
 def xtfFilePath = Paths.get(pathToUnzipFolder.toString(),'swissBOUNDARIES3D_1_4.xtf')
 
 
