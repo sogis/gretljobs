@@ -1,8 +1,8 @@
 --Kanton
 WITH geometrie AS (
     SELECT
-        tlm_kantonsgebiet.kantonsnummer,
-        tlm_kantonsgebiet.aname AS kantonsname,
+        tlm_grenzen_tlm_kantonsgebiet.kantonsnummer,
+        tlm_grenzen_tlm_kantonsgebiet.aname AS kantonsname,
         land.aname AS land,
         ST_Force2D(ST_Collect(tlm_grenzen_tlm_kantonsgebiet.shape)) AS geometrie
     FROM
