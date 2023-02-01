@@ -7,7 +7,7 @@ WITH geometrie AS (
         bezirk.aname AS bezirksname,
         kanton.aname AS kanton,
         land.aname AS land,
-        ST_Force2D(ST_Collect(tlm_hoheitsgebiet.shape)) AS geometrie
+        ST_Force2D(ST_Collect(tlm_grenzen_tlm_hoheitsgebiet.shape)) AS geometrie
     FROM
         agi_swissboundaries3d_v1.tlm_grenzen_tlm_hoheitsgebiet
         LEFT JOIN 
@@ -24,7 +24,7 @@ WITH geometrie AS (
                 land.icc = tlm_grenzen_tlm_hoheitsgebiet.icc
     WHERE
         (
-            tlm_hoheitsgebiet.bezirksnummer IS NOT NULL 
+            tlm_grenzen_tlm_hoheitsgebiet.bezirksnummer IS NOT NULL 
             AND 
             (
                 bezirk.bezirk_teil = 0
@@ -32,11 +32,11 @@ WITH geometrie AS (
                 bezirk.bezirk_teil= 1
             )
             OR 
-            tlm_hoheitsgebiet.bezirksnummer IS NULL 
+            tlm_grenzen_tlm_hoheitsgebiet.bezirksnummer IS NULL 
         )
         AND
         (
-            tlm_hoheitsgebiet.kantonsnummer IS NOT NULL
+           tlm_grenzen_ tlm_hoheitsgebiet.kantonsnummer IS NOT NULL
             AND 
             (
                 kanton.kanton_teil = 0
@@ -44,7 +44,7 @@ WITH geometrie AS (
                 kanton.kanton_teil = 1
             )
             OR 
-            tlm_hoheitsgebiet.kantonsnummer IS NULL 
+            tlm_grenzen_tlm_hoheitsgebiet.kantonsnummer IS NULL 
         )
         AND
         (
