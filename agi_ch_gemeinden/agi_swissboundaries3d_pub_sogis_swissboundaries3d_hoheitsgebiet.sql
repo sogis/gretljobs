@@ -9,17 +9,17 @@ WITH geometrie AS (
         land.aname AS land,
         ST_Force_2D(ST_Collect(tlm_grenzen_tlm_hoheitsgebiet.shape)) AS geometrie
     FROM
-        agi_swissboundaries3d.tlm_grenzen_tlm_hoheitsgebiet
+        agi_swissboundaries3d_v1.tlm_grenzen_tlm_hoheitsgebiet
         LEFT JOIN 
-            agi_swissboundaries3d.tlm_grenzen_tlm_bezirksgebiet bezirk
+            agi_swissboundaries3d_v1.tlm_grenzen_tlm_bezirksgebiet bezirk
             ON 
                 bezirk.bezirksnummer = tlm_grenzen_tlm_hoheitsgebiet.bezirksnummer
         LEFT JOIN
-            agi_swissboundaries3d.tlm_grenzen_tlm_kantonsgebiet kanton
+            agi_swissboundaries3d_v1.tlm_grenzen_tlm_kantonsgebiet kanton
             ON
                 kanton.kantonsnummer = tlm_grenzen_tlm_hoheitsgebiet.kantonsnummer
         LEFT JOIN
-            agi_swissboundaries3d.tlm_grenzen_tlm_landesgebiet land
+            agi_swissboundaries3d_v1.tlm_grenzen_tlm_landesgebiet land
             ON
                 land.icc = tlm_grenzen_tlm_hoheitsgebiet.icc
     WHERE
@@ -74,7 +74,7 @@ SELECT
 FROM
     geometrie
     LEFT JOIN 
-        agi_swissboundaries3d.tlm_grenzen_tlm_hoheitsgebiet hoheitsgebiet
+        agi_swissboundaries3d_v1.tlm_grenzen_tlm_hoheitsgebiet hoheitsgebiet
         ON
             hoheitsgebiet.bfs_nummer = geometrie.bfs_nummer
 WHERE

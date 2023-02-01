@@ -4,7 +4,7 @@ WITH geometrie AS (
         tlm_grenzen_tlm_landesgebiet.aname AS landesname,
         ST_Force_2D(ST_Collect(tlm_grenzen_tlm_landesgebiet.shape)) AS geometrie
     FROM
-        agi_swissboundaries3d.tlm_grenzen_tlm_landesgebiet
+        agi_swissboundaries3d_v1.tlm_grenzen_tlm_landesgebiet
     GROUP BY
         landeskuerzel,
         landesname
@@ -19,7 +19,7 @@ SELECT
 FROM
     geometrie
     LEFT JOIN 
-        agi_swissboundaries3d.tlm_grenzen_tlm_landesgebiet land
+        agi_swissboundaries3d_v1.tlm_grenzen_tlm_landesgebiet land
         ON
             land.icc = geometrie.landeskuerzel
 WHERE
