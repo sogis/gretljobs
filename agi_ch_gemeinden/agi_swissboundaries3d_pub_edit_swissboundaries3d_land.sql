@@ -1,7 +1,7 @@
 WITH geometrie AS (
     SELECT
-        tlm_landesgebiet.icc As landeskuerzel,
-        tlm_landesgebiet.aname AS landesname,
+        tlm_grenzen_tlm_landesgebiet.icc As landeskuerzel,
+        tlm_grenzen_tlm_landesgebiet.aname AS landesname,
         ST_Force2D(ST_Collect(tlm_grenzen_tlm_landesgebiet.shape)) AS geometrie
     FROM
         agi_swissboundaries3d_v1.tlm_grenzen_tlm_landesgebiet
