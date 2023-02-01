@@ -1,8 +1,8 @@
 --Bezirke
 WITH geometrie AS (
     SELECT
-        tlm_bezirksgebiet.bezirksnummer,
-        tlm_bezirksgebiet.aname AS bezirksname,
+        tlm_grenzen_tlm_bezirksgebiet.bezirksnummer,
+        tlm_grenzen_tlm_bezirksgebiet.aname AS bezirksname,
         kanton.aname AS kanton,
         land.aname AS land,
         ST_Force2D(ST_Collect(tlm_grenzen_tlm_bezirksgebiet.shape)) AS geometrie
