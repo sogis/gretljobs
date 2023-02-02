@@ -139,7 +139,7 @@ task exportDataExport (type: Ili2pgExport, dependsOn: 'transferDataExport') {
 }
 
 task publishAlt(type: Publisher, dependsOn: exportDataExport){
-    dataIdent = 'ch.so.arp.nutzungsplanung.kantonal.modell_2017.relational'
+    dataIdent = 'ch.so.arp.nutzungsplanung.kommunal.modell_2017.relational'
     modelsToPublish = 'SO_Nutzungsplanung_20171118'
     region = '.*'
     userFormats = true
