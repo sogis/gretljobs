@@ -111,7 +111,7 @@ ueberlagernd_flaeche AS (
         ueberlagernd_flaeche.geometrie,
         ueberlagernd_flaeche.geschaefts_nummer,
         ueberlagernd_flaeche.rechtsstatus,
-        ueberlagernd_flaeche.publiziertab,
+        COALESCE(ueberlagernd_flaeche.publiziertab, CURRENT_DATE),
         ueberlagernd_flaeche.bemerkungen,
         ueberlagernd_flaeche.erfasser,
         ueberlagernd_flaeche.datum AS datum_erfassung,
