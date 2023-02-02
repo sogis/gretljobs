@@ -106,7 +106,7 @@ task publish(type: Publisher, dependsOn: importXTF_pub){
     userFormats = true
     modelsToPublish = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
     region = '.*'
-    sourcePath = file("kommunal_pub", 'dummy.itf')
+    sourcePath = new File("kommunal_pub", 'dummy.itf')
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
@@ -143,7 +143,7 @@ task publishAlt(type: Publisher, dependsOn: exportDataExport){
     modelsToPublish = 'SO_Nutzungsplanung_20171118'
     region = '.*'
     userFormats = true
-    sourcePath = file("modell_2017", 'dummy.itf')
+    sourcePath = new File("modell_2017", 'dummy.itf')
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
