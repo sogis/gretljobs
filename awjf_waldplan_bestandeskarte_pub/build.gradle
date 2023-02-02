@@ -3,12 +3,26 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAwjfWaldplanPub'
 
-task transferAwjfWaldplanPub(type: Db2Db){
+defaultTasks 'refreshSolr'
+
+
+task transferAwjfWaldplanUebersichtPub(type: Db2Db){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('awjf_waldplan_bestandeskarte_uebersicht_pub.sql', 'awjf_waldplan_bestandeskarte_pub_v1.waldplan_uebersicht', true)
+    ];        
+}
+
+task transferAwjfWaldplanPub(type: Db2Db, dependsOn: transferAwjfWaldplanUebersichtPub){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('awjf_waldplan_bestandeskarte_pub.sql', 'awjf_waldplan_bestandeskarte_pub_v1.waldplan_bestandeskarte', true)
     ];        
+}
+
+task refreshSolr(type: Exec, dependsOn: transferAwjfWaldplanPub) {
+    commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.bestandeskarte_wald_flaechen,ch.so.awjf.waldplan.waldeigentum,ch.so.awjf.waldplan.waldfunktion,ch.so.awjf.waldplan.waldplantyp'
 }
