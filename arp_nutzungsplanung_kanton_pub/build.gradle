@@ -20,13 +20,13 @@ task exportDataEdit (type: Ili2pgExport, dependsOn: 'deleteData_transfer_pub') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_kanton_v1'
     models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118'
-    dataFile= file("kanton.xtf")
+    dataFile= file("kanton/kanton.xtf")
     disableValidation = true
 }
 
 task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
-    dataFiles = file("kanton.xtf")
+    dataFiles = file("kanton/kanton.xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     configFile = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.ini'
     allObjectsAccessible = true
@@ -37,7 +37,7 @@ task publishEdit(type: Publisher, dependsOn: validateDataEdit){
     dataIdent = 'ch.so.arp.nutzungsplanung.kantonal.relational'
     modelsToPublish = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118'
     userFormats = true
-    sourcePath = file("kanton.xtf")
+    sourcePath = file("kanton/kanton.xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
@@ -56,13 +56,13 @@ task exportData (type: Ili2pgExport, dependsOn: 'transferData') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_transfer_pub_v1'
     models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
-    dataFile= file("kanton_pub.xtf")
+    dataFile= file("kanton_pub/kanton_pub.xtf")
     disableValidation = true
 }
 
 task validateData(type: IliValidator, dependsOn: 'exportData') {
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
-    dataFiles = file("kanton_pub.xtf")
+    dataFiles = file("kanton_pub/kanton_pub.xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     failOnError = true
 }
@@ -73,7 +73,7 @@ task importXTF_stage(type: Ili2pgReplace, dependsOn: 'validateData') {
     dbschema = 'arp_nutzungsplanung_staging_v1'
     models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
     dataset = 'Kanton'
-    dataFile = file("kanton_pub.xtf")
+    dataFile = file("kanton_pub/kanton_pub.xtf")
     disableValidation = true
 }
 
@@ -91,7 +91,7 @@ task importXTF_pub(type: Ili2pgReplace) {
     dbschema = 'arp_nutzungsplanung_pub_v1'
     models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
     dataset = 'Kanton'
-    dataFile = file("kanton_pub.xtf")
+    dataFile = file("kanton_pub/kanton_pub.xtf")
     disableValidation = true
     finalizedBy delete_Dataset_stage
 }
@@ -100,7 +100,7 @@ task publishPub(type: Publisher, dependsOn: validateData){
     dataIdent = 'ch.so.arp.nutzungsplanung.kantonal'
     modelsToPublish = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
     userFormats = true
-    sourcePath = file("kanton_pub.xtf")
+    sourcePath = file("kanton_pub/kanton_pub.xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
@@ -127,7 +127,7 @@ task exportDataExport (type: Ili2pgExport, dependsOn: 'transferDataExport') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_nutzungsplanung_export_v1'
     models = 'SO_Nutzungsplanung_20171118'
-    dataFile= file("kanton_modell_2017.xtf")
+    dataFile= file("kanton_alt/kanton_modell_2017.xtf")
     disableValidation = false
 }
 
@@ -135,7 +135,7 @@ task publishAlt(type: Publisher, dependsOn: exportDataExport){
     dataIdent = 'ch.so.arp.nutzungsplanung.kantonal.modell_2017.relational'
     modelsToPublish = 'SO_Nutzungsplanung_20171118'
     userFormats = true
-    sourcePath = file("kanton_modell_2017.xtf")
+    sourcePath = file("kanton_alt/kanton_modell_2017.xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
