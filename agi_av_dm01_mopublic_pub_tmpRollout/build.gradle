@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 defaultTasks 'refreshSolr'
 def schemaNamePub = 'agi_mopublic_pub'
 
-task transferAgiMopublic(type: Db2Db, dependsOn: ':0_dm01_so:execProjPubTasks'){
+task transferAgiMopublic(type: Db2Db){
     description = "Datenumbau in das SO-MOpublic-Publikationsmodell."
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
