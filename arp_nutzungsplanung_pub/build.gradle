@@ -34,7 +34,20 @@ task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
     failOnError = true
 }
 
-task transferData(type: SqlExecutor, dependsOn: 'validateDataEdit') {
+task publishEdit(type: Publisher, dependsOn: validateDataEdit){
+    dataIdent = 'ch.so.arp.nutzungsplanung.kommunal.relational'
+    modelsToPublish = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118'
+    region = '.*'
+    userFormats = true
+    sourcePath = file(bfsnr + ".xtf")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+}
+
+task transferData(type: SqlExecutor, dependsOn: 'publishEdit') {
     description = "Führt den Datenumbau in das Schema arp_nutzungsplanung_transfer_pub durch. Das braucht es, damit ein XFT pro Dataser ins Schema arp_nutzungsplanung_pub importiert resp. ersetzt werden kann"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [bfsnr_param:bfsnr]
@@ -88,10 +101,47 @@ task importXTF_pub(type: Ili2pgReplace) {
 
 task publish(type: Publisher, dependsOn: validateData){
     dataIdent = 'ch.so.arp.nutzungsplanung.kommunal'
-    // modelsToPublish = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
     userFormats = true
-    region = bfsnr
+    modelsToPublish = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
+    region = '.*'
     sourcePath = file(bfsnr + "_pub.xtf")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+}
+
+// TASKS FÜR ALTES MODELL
+
+task deleteData_export (type: SqlExecutor) { 
+    description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_export_v1."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["delete_arp_nutzungsplanung_export.sql"]
+}
+
+task transferDataExport(type: SqlExecutor, dependsOn: 'deleteData_export') {
+    description = "Führt den Datenumbau in das Schema arp_nutzungsplanung_export_v1 durch. Das braucht es, damit die Daten auch im alten Modell abgegeben werden können"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [bfsnr_param:bfsnr]
+    sqlFiles = ["insert_arp_nutzungsplanung_export_20221108.sql"]
+}
+
+task exportDataExport (type: Ili2pgExport, dependsOn: 'transferDataExport') {
+    description = "Exportiert die umgebauten Daten aus dem Schema arp_nutzungsplanung_export_v1 in ein INTERLIS-Datei."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'arp_nutzungsplanung_export_v1'
+    models = 'SO_Nutzungsplanung_20171118'
+    dataFile= file(bfsnr + "_modell_2017.xtf")
+    disableValidation = false
+}
+
+task publishAlt(type: Publisher, dependsOn: exportDataExport){
+    dataIdent = 'ch.so.arp.nutzungsplanung.kantonal.modell_2017.relational'
+    modelsToPublish = 'SO_Nutzungsplanung_20171118'
+    region = '.*'
+    userFormats = true
+    sourcePath = file(bfsnr + "_modell_2017.xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]

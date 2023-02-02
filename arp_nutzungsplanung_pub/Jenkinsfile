@@ -36,7 +36,7 @@ pipeline {
                 unstash name: "gretljob"
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
-                        sh "gretl -Pbfsnr=${params.bfsnr} importXTF_pub publish"
+                        sh "gretl -Pbfsnr=${params.bfsnr} importXTF_pub publish publishAlt"
                     }
                 }
             }
