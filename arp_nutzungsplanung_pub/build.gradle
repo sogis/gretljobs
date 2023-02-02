@@ -23,7 +23,7 @@ task exportDataEdit (type: Ili2pgExport, dependsOn: 'deleteData_transfer_pub') {
     dbschema = 'arp_nutzungsplanung_v1'
     models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118'
     dataset = bfsnr
-    dataFile= file("kommunal_edit/" + bfsnr + ".xtf")
+    dataFile = file("kommunal_edit/" + bfsnr + ".xtf")
     disableValidation = true
 }
 
@@ -41,7 +41,7 @@ task publishEdit(type: Publisher, dependsOn: validateDataEdit){
     modelsToPublish = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118'
     region = '.*'
     userFormats = true
-    sourcePath = new File("kommunal_edit", 'dummy.itf')
+    sourcePath = file("kommunal_edit/" + bfsnr + ".xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
@@ -106,7 +106,7 @@ task publish(type: Publisher, dependsOn: importXTF_pub){
     userFormats = true
     modelsToPublish = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
     region = '.*'
-    sourcePath = new File("kommunal_pub", 'dummy.itf')
+    sourcePath = file("kommunal_pub/" + bfsnr + "_pub.xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
@@ -143,7 +143,7 @@ task publishAlt(type: Publisher, dependsOn: exportDataExport){
     modelsToPublish = 'SO_Nutzungsplanung_20171118'
     region = '.*'
     userFormats = true
-    sourcePath = new File("modell_2017", 'dummy.itf')
+    sourcePath = file("modell_2017/" + bfsnr + "_modell_2017.xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
