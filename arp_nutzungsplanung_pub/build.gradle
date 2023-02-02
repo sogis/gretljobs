@@ -99,7 +99,7 @@ task importXTF_pub(type: Ili2pgReplace) {
     finalizedBy delete_Dataset_stage
 }
 
-task publish(type: Publisher, dependsOn: validateData){
+task publish(type: Publisher, dependsOn: importXTF_pub){
     dataIdent = 'ch.so.arp.nutzungsplanung.kommunal'
     userFormats = true
     modelsToPublish = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
