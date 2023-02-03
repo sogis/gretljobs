@@ -1,21 +1,20 @@
-import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
+import ch.so.agi.gretl.tasks.*
 
 
 defaultTasks 'importWaldplan'
 
 
-task copyZipFile(type: Copy) {
-    from "upload/"
-    into "upload/"
-    include("uploadFile")
-    rename("uploadFile", "uploadFile.zip")
-}
+def shpName = 'wap_bst_es_sicherung_rode_221209_11.shp'
+def pathToShpFolder = Paths.get(System.getProperty("java.io.tmpdir"), "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx").toString() 
+def uploadFile = 'upload/uploadFile'
 
-task unzipShape(type: Copy, dependsOn: copyZipFile){
-    from zipTree(file("upload/uploadFile.zip"))
-    into file("upload")
-//     include '**/*.*'
+task unpackShapes(type: Copy) {
+    from zipTree(uploadFile)
+    into pathToShpFolder
 }
 
 
@@ -28,9 +27,13 @@ task unzipShape(type: Copy, dependsOn: copyZipFile){
 // }
 // 
 
-task importWaldplan(type: ShpImport, dependsOn: unzipShape){
+task importWaldplan(type: ShpImport, dependsOn: unpackShapes){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = 'awjf_waldplan_bestandeskarte_v1'
     tableName = 'waldplan_bestandeskarte'
-    dataFile = file('upload/wap_bst_es_sicherung_rode_221209_11.shp')
+    
+    
+    
+    dataFile = Paths.get(pathToShpFolder, shpName) 
+//     dataFile = file('upload/wap_bst_es_sicherung_rode_221209_11.shp')
 }
