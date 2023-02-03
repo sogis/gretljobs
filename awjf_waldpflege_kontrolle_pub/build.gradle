@@ -38,7 +38,7 @@ task deleteFromWaldpflegeKontrolle(type: SqlExecutor, dependsOn: 'transferAwjfWa
 }
 
 task publipub(type: Publisher, dependsOn:'deleteFromWaldpflegeKontrolle'){
-  dataIdent = "ch.so.awjf.waldpflege.kontrolle"
+  dataIdent = "ch.so.awjf.waldpflege"
   userFormats = true
   database = [dbUriPub,dbUserPub,dbPwdPub]
   dbSchema = "awjf_waldpflege_kontrolle_pub"
