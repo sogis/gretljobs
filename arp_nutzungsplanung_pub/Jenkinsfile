@@ -13,7 +13,7 @@ pipeline {
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
                         sh "gretl -Pbfsnr=${params.bfsnr} importXTF_stage"
-                        zip zipFile: 'xtfdata.zip', glob: '*.xtf', archive: true
+                        zip zipFile: 'xtfdata.zip', glob: 'kommunal_edit/*.xtf,kommunal_pub/*.xtf', archive: true
                     }
                 }
                 stash name: "gretljob"
