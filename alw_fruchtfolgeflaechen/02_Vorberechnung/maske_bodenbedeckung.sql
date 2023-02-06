@@ -1,4 +1,14 @@
-WITH humusiert AS (
+WITH bfs_nr_umliegende_gemeinden AS (
+    SELECT 
+        DISTINCT bfs_nr 
+    FROM 
+        agi_mopublic_pub.mopublic_gemeindegrenze
+    WHERE 
+        ST_Touches(geometrie, (SELECT st_union(geometrie) FROM agi_mopublic_pub.mopublic_gemeindegrenze WHERE bfs_nr = ${bfsnr}))
+        OR 
+        bfs_nr = ${bfsnr}        
+),
+humusiert AS (
 
     SELECT 
         ST_union(geometrie) AS geometrie
@@ -18,7 +28,8 @@ bestockt AS (
     WHERE 
         art_txt IN ('geschlossener_Wald', 'Parkanlage_bestockt', 'Hecke', 'uebrige_bestockte') 
         AND 
-        bfs_nr = ${bfsnr}
+--        bfs_nr = ${bfsnr}
+        bfs_nr IN (SELECT bfs_nr FROM bfs_nr_umliegende_gemeinden)
 ),
 
 gebaeude AS (
@@ -29,7 +40,8 @@ gebaeude AS (
     WHERE 
         art_txt IN ('Gebaeude') 
         AND 
-        bfs_nr = ${bfsnr}
+--        bfs_nr = ${bfsnr}
+        bfs_nr IN (SELECT bfs_nr FROM bfs_nr_umliegende_gemeinden)
 ), 
 
 gewaesser AS (
@@ -40,7 +52,8 @@ gewaesser AS (
     WHERE 
         art_txt IN ('fliessendes Gewaesser') 
         AND 
-        bfs_nr = ${bfsnr}
+--        bfs_nr = ${bfsnr}
+        bfs_nr IN (SELECT bfs_nr FROM bfs_nr_umliegende_gemeinden)
 ), 
 
 strassen AS (
@@ -51,7 +64,8 @@ strassen AS (
     WHERE 
         art_txt IN ('Strasse_Weg','Bahn','Trottoir','Verkehrsinsel','Flugplatz') 
         AND 
-        bfs_nr = ${bfsnr}
+--        bfs_nr = ${bfsnr}
+        bfs_nr IN (SELECT bfs_nr FROM bfs_nr_umliegende_gemeinden)
 ), 
 
 nicht_bestockt AS (
