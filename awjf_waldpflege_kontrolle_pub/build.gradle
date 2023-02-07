@@ -10,20 +10,19 @@ defaultTasks 'publipub'
 
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
 
-task publiedit(type: Publisher){
-  dataIdent = "ch.so.awjf.waldpflege.relational.kontrolle"
-  database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-  dbSchema = "awjf_waldpflege_kontrolle"
-  modelsToPublish = "SO_AWJF_Waldpflege_Kontrolle_20210202"
-
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
-  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
-  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+task exportWaldpflegeKontrolle(type: Ili2pgExport) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'awjf_waldpflege_kontrolle'
+    models = 'SO_AWJF_Waldpflege_Kontrolle_20210202'
+    disableValidation = true
+    dataFile = file(Paths.get(pathToTempFolder, 'waldpflege.xtf'))
+}
+task validateWaldpflegeKontrolle(type: IliValidator, dependsOn: 'exportWaldpflegeKontrolle') {
+    dataFiles = [Paths.get(pathToTempFolder, 'waldpflege.xtf')]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
-task transferAwjfWaldpflegeKontrollePub(type: Db2Db, dependsOn: 'publiedit') {
+task transferAwjfWaldpflegeKontrollePub(type: Db2Db, dependsOn: 'validateWaldpflegeKontrolle') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -37,7 +36,7 @@ task deleteFromWaldpflegeKontrolle(type: SqlExecutor, dependsOn: 'transferAwjfWa
     sqlFiles = ['delete_from_awjf_waldpflege_kontrolle.sql']
 }
 
-task publipub(type: Publisher, dependsOn:'deleteFromWaldpflegeKontrolle'){
+task publipub(type: Publisher, dependsOn: 'deleteFromWaldpflegeKontrolle'){
   dataIdent = "ch.so.awjf.waldpflege"
   userFormats = true
   database = [dbUriPub,dbUserPub,dbPwdPub]
