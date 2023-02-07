@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAlwHanglagen'
+defaultTasks 'publishPub'
 
 task transferAlwHanglagen(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -11,4 +11,17 @@ task transferAlwHanglagen(type: Db2Db){
     transferSets = [
             new TransferSet('alw_bund_hanglagen_allgemein_pub_hl_allgemein.sql', 'alw_bund_hanglagen_allgemein_pub.hl_allgemein', true)
     ];
+}
+
+task publishPub(type: Publisher, dependsOn: 'transferAlwHanglagen'){
+    database = [dbUriPub,dbUserPub,dbPwdPub]
+    dataIdent = "ch.so.alw.hanglagen"
+    dbSchema = "alw_bund_hanglagen_allgemein_pub"
+    modelsToPublish = "SO_AGI_ALW_hl_allgemein_pub_20210208"
+    userFormats = true
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
