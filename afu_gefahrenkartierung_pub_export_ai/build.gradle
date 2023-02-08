@@ -50,10 +50,24 @@ task pubGefkart(type: Db2Db){
 	];    
 }
 
+task publishPub(type: Publisher, dependsOn: 'pubGefkart'){
+    database = [dbUriPub,dbUserPub,dbPwdPub]
+    dataIdent = "ch.so.afu.gefahrenkartierung"
+    dbSchema = "afu_gefahrenkartierung_pub"
+    modelsToPublish = "SO_AfU_Gefahrenkartierung_20181129"
+    userFormats = true
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    validationConfig = "afu_gefahrenkartierung_pub.toml"
+}
+
 /*
 2. Transform the data from model SO_AfU_Gefahrenkartierung into bafu model Hazard_Mapping using GRETL sql
 */
-task mapGefkart2Mgdm(type: Db2Db, dependsOn: 'pubGefkart'){
+task mapGefkart2Mgdm(type: Db2Db, dependsOn: 'publishPub'){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
