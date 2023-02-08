@@ -1,8 +1,8 @@
 SELECT
     lz_flaeche.t_id,
     lz_flaeche.flaeche,
-    erstellungsdatum,
-    katalogtyp.lz_code::int,
+    aenderungsdatum AS erstellungsdatum,
+    katalogtyp.lz_code,
     katalogtyp.typ_de AS typ
 FROM
     alw_zonengrenzen.zonengrenzen_lz_flaeche AS lz_flaeche

@@ -24,7 +24,7 @@ task deleteFromZonengrenzenTables(type: SqlExecutor) {
 
 task downloadKataloge(type: Download, dependsOn: 'deleteFromZonengrenzenTables'){
     description = 'Download der Kataloge'
-    src 'https://models.geo.admin.ch/BLW/landwirtschaftliche_zonengrenzen_kataloge_20140701.xml'
+    src 'https://models.geo.admin.ch/BLW/LWB_Landwirtschaftliche_Zonengrenzen_Kataloge_V2_0.xml'
     dest pathToTempFolder
     overwrite true
 }
@@ -33,12 +33,12 @@ task importKataloge(type: Ili2pgReplace, dependsOn: 'downloadKataloge'){
      description = 'Import der Kataloge'
      database = [dbUriEdit, dbUserEdit, dbPwdEdit]
      dbschema = 'alw_zonengrenzen'
-     models = 'Landwirtschaftliche_Zonengrenzen_LV95_V1_2'
-     dataFile = file(Paths.get(pathToTempFolder.toString(), 'landwirtschaftliche_zonengrenzen_kataloge_20140701.xml'))
-     dataset = 'landwirtschaftliche_zonengrenzen_kataloge_20140701.xml-2938'
+     models = 'LWB_Landwirtschaftliche_Zonengrenzen_V2_0'
+     dataFile = file(Paths.get(pathToTempFolder.toString(), 'LWB_Landwirtschaftliche_Zonengrenzen_Kataloge_V2_0.xml'))
+     dataset = 'lwb_landwirtschaftliche_zonengrenzen_kataloge_V2_0.xml'
 }
 
-task 'downloadData'(type: Download, dependsOn: 'importKataloge'){
+task downloadData(type: Download, dependsOn: 'importKataloge'){
     description = 'Download Landwirtschaftliche Zonengrenzen'
     src 'https://data.geo.admin.ch/ch.blw.landwirtschaftliche-zonengrenzen/NachF_LWZ_INTERLIS2.zip'
     dest pathToTempFolder
@@ -56,7 +56,7 @@ task importData(type: Ili2pgReplace, dependsOn: 'unzipData'){
     description = 'Import der Landwirtschaftlichen Zonengrenzen'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'alw_zonengrenzen'
-    models = 'Landwirtschaftliche_Zonengrenzen_LV95_V1_2'
+    models = 'LWB_Landwirtschaftliche_Zonengrenzen_V2_0'
     dataFile = file(Paths.get(pathToUnzipFolder.toString(), 'NachF_LWZ_INTERLIS2.xtf'))
     dataset = 'NachF_LWZ_INTERLIS2.xtf'
     strokeArcs = true
