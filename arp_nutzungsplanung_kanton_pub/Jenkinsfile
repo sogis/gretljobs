@@ -13,7 +13,7 @@ pipeline {
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
                         sh "gretl importXTF_stage"
-                        zip zipFile: 'xtfdata.zip', glob: '*.xtf', archive: true
+                        zip zipFile: 'xtfdata.zip', glob: 'kanton/kanton.xtf,kanton_pub/kanton_pub.xtf', archive: true
                     }
                 }
                 stash name: "gretljob"
@@ -36,7 +36,7 @@ pipeline {
                 unstash name: "gretljob"
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
-                        sh "gretl importXTF_pub"
+                        sh "gretl importXTF_pub publishPub PublishAlt"
                     }
                 }
             }
