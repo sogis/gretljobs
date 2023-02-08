@@ -8,8 +8,6 @@ defaultTasks 'validateData', 'publishPub'
 
 def FileName = "awjf_statische_waldgrenze.xtf"
 def FileNamePub = "awjf_statische_waldgrenze_pub.xtf"
-def dm01SoDir = rootProject.ext.dm01SoDir
-def dm01SoZippedDir = new File(dm01SoDir, 'zip')
 
 task publiedit(type: Publisher){
   database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -87,7 +85,6 @@ task publishPub(type: Publisher, dependsOn: 'importXTF_pub'){
     dbSchema = "awjf_statische_waldgrenze_pub_v1"
     modelsToPublish = "SO_AWJF_Statische_Waldgrenzen_Publikation_20191119"
     userFormats = true
-    sourcePath = new File(dm01SoDir, 'dummy.itf')
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
