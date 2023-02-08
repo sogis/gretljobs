@@ -3,6 +3,9 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
+def dm01SoDir = rootProject.ext.dm01SoDir
+def dm01SoZippedDir = new File(dm01SoDir, 'zip')
+
 defaultTasks 'validateData', 'publishPub'
 
 def FileName = "awjf_statische_waldgrenze.xtf"
@@ -84,6 +87,7 @@ task publishPub(type: Publisher, dependsOn: 'importXTF_pub'){
     dbSchema = "awjf_statische_waldgrenze_pub_v1"
     modelsToPublish = "SO_AWJF_Statische_Waldgrenzen_Publikation_20191119"
     userFormats = true
+    sourcePath = new File(dm01SoDir, 'dummy.itf')
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
