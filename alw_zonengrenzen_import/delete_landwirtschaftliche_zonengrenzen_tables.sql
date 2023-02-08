@@ -1,9 +1,3 @@
-DELETE FROM
-    alw_zonengrenzen.catlgbjttrs_v1catalogues_item
-;
-DELETE FROM 
-    alw_zonengrenzen.gueltigkeitsdauer_bezugsjahr
-;
 DELETE FROM 
     alw_zonengrenzen.languagecode_iso639_1
 ;
