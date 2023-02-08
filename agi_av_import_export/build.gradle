@@ -158,7 +158,7 @@ task importData(type: Ili2pgReplace, dependsOn: 'uploadDxfGeobauFiles') {
 }
 */
 
-task deleteFtpFiles(type: FtpDelete, dependsOn: 'importData') {
+task deleteFtpFiles(type: FtpDelete, dependsOn: 'uploadDxfGeobauFiles') {
     onlyIf {
         gretlEnvironment == "production"
     }
