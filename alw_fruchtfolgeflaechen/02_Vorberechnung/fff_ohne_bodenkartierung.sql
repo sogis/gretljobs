@@ -4,7 +4,12 @@ DROP TABLE IF EXISTS
 
 SELECT 
     ST_intersection(maske.geometrie,alte_fff.geometrie,0.001) AS geometrie, 
-    alte_fff.anrechenbar,
+    CASE 
+    	WHEN alte_fff.bezeichnung = 'geeignet'
+    	THEN 1 
+    	WHEN alte_fff.bezeichnung = 'bedingt_geeignet'
+    	THEN 0.5
+    END AS anrechenbar,
     null as spezialfall,
     alte_fff.bezeichnung, 
     alte_fff.datenstand
