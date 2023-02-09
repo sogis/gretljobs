@@ -8,7 +8,7 @@
     array_to_json(dokumente.dokumente) AS dokumente, 
     wkb_geometry AS geometrie
 FROM 
-    (SELECT * FROM vegas.obj_objekt_v where objekttyp_id = 25 AND ARCHIVE = 0) weitere_einbauten
+    (SELECT * FROM vegas.obj_objekt_v2 where objekttyp_id = 25 AND ARCHIVE = 0) weitere_einbauten
 LEFT JOIN 
     (SELECT 
          array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
@@ -32,7 +32,7 @@ UNION ALL
     array_to_json(dokumente.dokumente) AS dokumente, 
     wkb_geometry AS geometrie
 FROM 
-    (SELECT * FROM vegas.obj_objekt_v where (objekttyp_id = 18) AND (schachttyp = 2) AND (zustand != 4) AND ARCHIVE = 0) versickerungsschacht
+    (SELECT * FROM vegas.obj_objekt_v2 where (objekttyp_id = 18) AND (schachttyp = 2) AND (zustand != 4) AND ARCHIVE = 0) versickerungsschacht
 LEFT JOIN 
     (SELECT 
          array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
@@ -81,7 +81,7 @@ UNION ALL
         array_to_json(dokumente.dokumente) AS dokumente, 
         wkb_geometry AS geometrie
     FROM 
-        (SELECT * FROM vegas.obj_objekt_v WHERE objekttyp_id = 35 AND "archive" = 0) gerammt
+        (SELECT * FROM vegas.obj_objekt_v2 WHERE objekttyp_id = 35 AND "archive" = 0) gerammt
     LEFT JOIN 
         (SELECT 
              array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
@@ -129,7 +129,7 @@ UNION ALL
         array_to_json(dokumente.dokumente) AS dokumente, 
         wkb_geometry AS geometrie
     FROM 
-        (SELECT * FROM vegas.obj_objekt_v WHERE objekttyp_id = 21 AND "archive" = 0) baggerschlitz
+        (SELECT * FROM vegas.obj_objekt_v2 WHERE objekttyp_id = 21 AND "archive" = 0) baggerschlitz
     LEFT JOIN 
         (SELECT 
              array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
