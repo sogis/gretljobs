@@ -10,5 +10,5 @@ task "letalflaechen_berechnen"(type: SqlExecutor) {
     description = "QRcat: Letalflächen und toxisch ungünstigste Sektoren berechnen."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_QRcat:DB_Schema_QRcat]
-    sqlFiles = ['letalflaechen.sql']
+    sqlFiles = ['letalflaechen.sql','toxisch_unguenstigste_sektoren.sql']
 }
