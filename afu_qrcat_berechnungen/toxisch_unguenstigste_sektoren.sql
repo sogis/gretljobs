@@ -27,7 +27,7 @@
         ), 
         
         /* Dreieck mit Hilfe von ST_Project
-         * ST_Project funktioniert nur mit Geographie-Datentyp --> Braucht Transformation */
+         * ST_Project funktioniert nur mit Geographie-Datentyp -> Braucht Transformation */
         ST_MakePolygon(
           ST_MakeLine(
             array[ sz.geometrie, 
@@ -59,7 +59,7 @@
         ), 
         
         /* Dreieck mit Hilfe von ST_Project
-         * ST_Project funktioniert nur mit Geographie-Datentyp --> Braucht Transformation */
+         * ST_Project funktioniert nur mit Geographie-Datentyp -> Braucht Transformation */
         ST_MakePolygon(
           ST_MakeLine(
             array[ sz.geometrie, 
