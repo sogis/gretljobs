@@ -1,0 +1,14 @@
+import ch.so.agi.gretl.tasks.*
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'letalflaechen_berechnen'
+
+def DB_Schema_QRcat = "afu_qrcat_v1"
+
+task "letalflaechen_berechnen"(type: SqlExecutor) {
+    description = "QRcat: Letalflächen und toxisch ungünstigste Sektoren berechnen."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_QRcat:DB_Schema_QRcat]
+    sqlFiles = ['letalflaechen.sql']
+}
