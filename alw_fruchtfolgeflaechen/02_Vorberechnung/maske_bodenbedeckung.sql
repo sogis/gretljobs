@@ -4,7 +4,7 @@ WITH bfs_nr_umliegende_gemeinden AS (
     FROM 
         agi_mopublic_pub.mopublic_gemeindegrenze
     WHERE 
-        ST_Touches(geometrie, (SELECT st_union(geometrie) FROM agi_mopublic_pub.mopublic_gemeindegrenze WHERE bfs_nr = ${bfsnr}))
+        ST_intersects(geometrie, (SELECT st_union(geometrie) FROM agi_mopublic_pub.mopublic_gemeindegrenze WHERE bfs_nr = ${bfsnr}))
         OR 
         bfs_nr = ${bfsnr}        
 ),
