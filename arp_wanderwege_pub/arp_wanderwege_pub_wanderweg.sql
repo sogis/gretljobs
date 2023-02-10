@@ -1,34 +1,11 @@
 SELECT
-    wkb_geometry AS geometrie,
-    status,
-    CASE
-        WHEN status = 11
-            THEN 'bestehend'
-        WHEN status = 12
-            THEN 'geplant'
-        WHEN status = 13
-            THEN 'aufzuhebend'
-    END AS status_txt,
-    oberflaeche,
-    CASE
-        WHEN oberflaeche = 21
-            THEN 'geeignet'
-        WHEN oberflaeche = 22
-            THEN 'ungeeignet'
-        WHEN oberflaeche = 23
-            THEN 'unbekannt'
-    END AS oberflaeche_txt,
-    kategorie,
-    CASE
-        WHEN kategorie = 31
-            THEN 'Wanderweg'
-        WHEN kategorie = 32
-            THEN 'Bergwanderweg'
-    END AS kategorie_txt,
-    wanderland,
-    ogc_fid AS t_id
+    ST_Force2D(ageometry) AS geometrie,
+    surface.aname_de AS oberflaeche,
+    hiking_segment_type.aname_de AS wanderweg_typ
 FROM
-    public.arp_wweg
-WHERE
-    archive = 0
+    arp_wanderwege_v1.hpm_walk_lv95_hiking_way AS hiking_way
+    LEFT JOIN arp_wanderwege_v1.hpm_catalogues_surface AS surface
+    ON surface.t_id = hiking_way.surface
+    LEFT JOIN arp_wanderwege_v1.hpm_catalogues_hiking_segment_type AS hiking_segment_type
+    ON hiking_segment_type.t_id = hiking_way.hiking_segment_type
 ;

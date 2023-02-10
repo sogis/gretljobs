@@ -6,9 +6,11 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferArpWanderwege'
 
 task transferArpWanderwege(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('arp_wanderwege_pub_wanderweg.sql', 'arp_wanderwege_pub.wanderweg', true)
+            new TransferSet('arp_wanderwege_pub_route.sql', 'arp_wanderwege_pub_v1.wanderwege_route', true),
+            new TransferSet('arp_wanderwege_pub_wanderweg.sql', 'arp_wanderwege_pub_v1.wanderwege_wanderweg', true),
+            new TransferSet('arp_wanderwege_pub_signalisation.sql', 'arp_wanderwege_pub_v1.wanderwege_signalisation', true)
     ];
 }
