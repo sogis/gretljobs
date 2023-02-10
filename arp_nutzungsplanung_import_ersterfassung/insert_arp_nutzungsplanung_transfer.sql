@@ -1,4 +1,4 @@
--- Datenumbau von Modell SO_Nutzungsplanung_20171118 ins Modell SO_ARP_Nutzungsplanung_Nachfuehrung_20201005
+-- Datenumbau von Modell SO_Nutzungsplanung_20171118 ins Modell SO_ARP_Nutzungsplanung_Nachfuehrung_20221118
 -- Datenumbau erfolgt pro XTF
 
 -- dataset
@@ -17,7 +17,7 @@ INSERT INTO arp_nutzungsplanung_transfer_v1.t_ili2db_basket
 SELECT
     basket.t_id,
     basket.dataset,
-    replace (basket.topic, 'SO_Nutzungsplanung_20171118', 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005')AS topic,
+    replace (basket.topic, 'SO_Nutzungsplanung_20171118', 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118')AS topic,
     basket.t_ili_tid,
     basket.attachmentkey,
     basket.domains
@@ -27,12 +27,12 @@ WHERE basket.topic != 'SO_Nutzungsplanung_20171118.TransferMetadaten'
         AND
       basket.topic != 'SO_Nutzungsplanung_20171118.Verfahrenstand'
 ;
--- neue Topic SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Laermempfindlichkeitsstufen einfügen in basket
+-- neue Topic SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Laermempfindlichkeitsstufen einfügen in basket
 INSERT INTO arp_nutzungsplanung_transfer_v1.t_ili2db_basket
 SELECT
     nextval('arp_nutzungsplanung_import_v1.t_ili2db_seq'::regclass) AS t_id,
     basket.dataset,
-   'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Laermempfindlichkeitsstufen' AS topic,
+   'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Laermempfindlichkeitsstufen' AS topic,
     NULL AS t_ili_tid,
     'Datenumbau neues Topic Laermempfindlichkeitsstufen' attachmentkey,
     NULL AS domains
