@@ -4,7 +4,7 @@ import java.nio.file.Paths
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'validateData', 'deleteData_staging_pub', 'uploadXtf'
+defaultTasks 'publiedit', 'deleteData_staging_pub', 'uploadXtf'
 
 def fileName = "afu_gewaesserschutz_zonen_areale.xtf"
 def fileNameZip = "afu_gewaesserschutz_zonen_areale.zip"
@@ -25,7 +25,7 @@ task publiedit(type: Publisher){
   if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
-task transferGewaesserschutz_staging(type: Db2Db, dependsOn: 'Publisher') {
+task transferGewaesserschutz_staging(type: Db2Db, dependsOn: 'publiedit') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
