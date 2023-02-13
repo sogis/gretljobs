@@ -1,0 +1,34 @@
+DELETE FROM arp_nutzungsplanung_mgdm_v1.geobasisdaten_geometrie_dokument
+;
+DELETE FROM arp_nutzungsplanung_mgdm_v1.geobasisdaten_grundnutzung_zonenflaeche
+;
+DELETE FROM arp_nutzungsplanung_mgdm_v1.geobasisdaten_ueberlagernde_festlegung
+;
+DELETE FROM arp_nutzungsplanung_mgdm_v1.geobasisdaten_linienbezogene_festlegung
+;
+DELETE FROM arp_nutzungsplanung_mgdm_v1.geobasisdaten_objektbezogene_festlegung
+;
+DELETE FROM arp_nutzungsplanung_mgdm_v1.geobasisdaten_typ_dokument
+;
+DELETE FROM arp_nutzungsplanung_mgdm_v1.geobasisdaten_typ
+;
+DELETE FROM arp_nutzungsplanung_mgdm_v1.geobasisdaten_typ_kt
+;
+DELETE FROM arp_nutzungsplanung_mgdm_v1.localiseduri
+;
+DELETE FROM arp_nutzungsplanung_mgdm_v1.localisedblob
+;
+DELETE FROM arp_nutzungsplanung_mgdm_v1.localisedtext
+;
+DELETE FROM arp_nutzungsplanung_mgdm_v1.multilingualuri
+;
+DELETE FROM arp_nutzungsplanung_mgdm_v1.multilingualblob
+;
+DELETE FROM arp_nutzungsplanung_mgdm_v1.multilingualtext
+;
+DELETE FROM arp_nutzungsplanung_mgdm_v1.rechtsvorschrften_dokument
+;
+DELETE FROM arp_nutzungsplanung_mgdm_v1.transfermetadaten_amt
+;
+DELETE FROM arp_nutzungsplanung_mgdm_v1.transfermetadaten_datenbestand
+;

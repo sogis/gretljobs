@@ -143,4 +143,18 @@ task publishAlt(type: Publisher, dependsOn: exportDataExport){
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
 
+// EXPORT AI 
+
+task deleteMgdmLandUsesPlansData(type: SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['truncate_all_arp_npl_mgdm_tables.sql']
+}
+
+task importMgdmHauptnutzung(type: Ili2pgImport, dependsOn: 'deleteMgdmLandUsesPlansData') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdmHauptnutzung
+    dbschema = dbSchemaMgdmLandUsePlans
+    dataFile = file("Hauptnutzung_CH_V1_1.xml")
+    disableValidation = true
+}
 

@@ -1,0 +1,739 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- File Nutzungsplanung_Catalogue_CH_V1_2_20210901.xml VERSION="2021-09-01" (https://models.geo.admin.ch/ARE/) -->
+<TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+  <HEADERSECTION SENDER="ili2fme-7.0.12-64da269a4d5d9bb4f93a412cf9be2456fcc54faf" VERSION="2.3">
+    <MODELS>
+      <MODEL NAME="CoordSys" VERSION="2015-11-24" URI="http://www.interlis.ch/models"/>
+      <MODEL NAME="Units" VERSION="2012-02-20" URI="http://www.interlis.ch/models"/>
+      <MODEL NAME="InternationalCodes_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="Localisation_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="LocalisationCH_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="Dictionaries_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="DictionariesCH_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="GeometryCHLV03_V1" VERSION="2017-12-04" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="GeometryCHLV95_V1" VERSION="2017-12-04" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="CHAdminCodes_V1" VERSION="2018-02-19" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="AdministrativeUnits_V1" VERSION="2020-08-25" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="AdministrativeUnitsCH_V1" VERSION="2020-04-24" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="Nutzungsplanung_V1_2" VERSION="2021-09-01" URI="https://models.geo.admin.ch/ARE/"/>
+    </MODELS>
+  </HEADERSECTION>
+  <DATASECTION>
+    <Nutzungsplanung_V1_2.Catalogue_CH BID="ch.admin.are.nutzungsplanung_catalogue_ch_v1_2_20210901">
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.11">
+        <Code>11</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Wohnzonen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Zones d'habitation</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Zone residenziali</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.12">
+        <Code>12</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Arbeitszonen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Zones d'activités économiques</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Zone per il lavoro</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.13">
+        <Code>13</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Mischzonen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Zones mixtes</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Zone miste</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.14">
+        <Code>14</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Zentrumszonen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Zones centrales</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Zone centrali</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.15">
+        <Code>15</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Zonen für öffentliche Nutzungen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Zones affectées à des besoins publics</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Zone destinate a utilizzazioni pubbliche</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.16">
+        <Code>16</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>eingeschränkte Bauzonen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Zones à bâtir à constructibilité restreinte</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Zone edificabili limitate</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.17">
+        <Code>17</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Tourismus- und Freizeitzonen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Zones de tourisme et de loisirs</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Zone per il turismo e il tempo libero</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.18">
+        <Code>18</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Verkehrszonen innerhalb der Bauzonen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Zones de transport à l'intérieur des zones à bâtir</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Zone di traffico all'interno delle zone edificabili</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.19">
+        <Code>19</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>weitere Bauzonen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>autres zones à bâtir</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>altre zone edificabili</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.21">
+        <Code>21</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>allgemeine Landwirtschaftszonen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Zones agricoles ordinaires</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Zone agricole generali</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.22">
+        <Code>22</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Speziallandwirtschaftszonen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Zones agricoles spécialisées</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Zone agricole speciali</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.23">
+        <Code>23</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Rebbauzonen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Zones viticoles</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Zone viticole</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.29">
+        <Code>29</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>weitere Landwirtschaftszonen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>autres zones agricoles</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>altre zone agricole</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.31">
+        <Code>31</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Schutzzonen für Lebensräume und Landschaften</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Zones de protection de la nature et du paysage</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Zone di protezione per habitat e paesaggi</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.32">
+        <Code>32</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Zonen für Gewässer und ihre Ufer</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Zone des eaux et des rives</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Zone delle acque e delle rive</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.39">
+        <Code>39</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>weitere Schutzzonen ausserhalb der Bauzonen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>autres zones à protéger à l'extérieur des zones à bâtir</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>altre zone di protezione fuori delle zone edificabili</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.41">
+        <Code>41</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Zonen für Kleinsiedlung</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Zones pour petites entités urbanisées</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Zone per piccolo insediamento</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.42">
+        <Code>42</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Verkehrsflächen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Espace de transport</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Aree di traffico</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.43">
+        <Code>43</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Reservezonen nach Art. 18 Abs. 2 RPG</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Zone d'affectation différée selon l'art. 18, al. 2, LAT</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Zone di riserva seconde l'art. 18 cpv. 2 LPT</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.44">
+        <Code>44</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Wald</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Aire forestière</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Foresta</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.49">
+        <Code>49</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>weitere Zonen nach Art. 18 Abs. 1 RPG ausserhalb der Bauzonen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>autres zones selon l'art. 18, al. 1, LAT à l'extérieur des zones à bâtir</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>altre zone seconde l'art. 18 cpv. 2 LPT fuori delle zone edificabili</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.51">
+        <Code>51</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>überlagernde Ortsbildschutzzonen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Zones superposées de protection du site bâti</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Zone di protezione per habitat e paesaggi con sovrapposizioni</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.52">
+        <Code>52</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>überlagernde Schutzzonen für Lebensräume und Landschaften</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Zones superposées de protection de la nature et du paysage</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Zone di protezione per habitat e paesaggi con sovrapposizioni</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.53">
+        <Code>53</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>überlagernde Gefahrenzonen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Zones de danger superposées</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Zone di pericolo con sovrapposizioni</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.59">
+        <Code>59</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>weitere überlagernde Nutzungszonen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>autres zones superposées</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>altre zone di utilizzazione con sovrapposizioni</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.61">
+        <Code>61</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Bereiche rechtsgültiger Sondernutzungspläne</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Périmètres avec plan spécial en vigueur</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Perimetri con piano particolareggiato in vigore</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.62">
+        <Code>62</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Bereiche mit Sondernutzungsplanungspflicht</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Périmètres avec plan spécial obligatoire non encore en vigueur</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Perimetri con obbligo di piano particolareggiato</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.63">
+        <Code>63</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Bereiche einer späteren Erschliessungsetappe</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Périmètres avec étape d'équipement différée</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Superfici attribuite a una tappa di urbanizzazione successiva</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.69">
+        <Code>69</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>weitere flächenbezogene Festlegungen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>autres périmètres superposés</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>altre determinazioni riferite alla superficie</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.71">
+        <Code>71</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Baulinien</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Alignement</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Linee di arretramento</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.79">
+        <Code>79</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>weitere linienbezogene Festlegungen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>autres contenus linéaires</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>altre determinazioni riferite a linee</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.81">
+        <Code>81</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Naturobjekte</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Objets naturels</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Oggetti naturali</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.82">
+        <Code>82</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Kulturobjekte</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>Monuments culturels</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>Oggetti culturali</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+      <Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH TID="ch.admin.are.nutzungsplanung_catalogue_ch.89">
+        <Code>89</Code>
+        <Designation>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>weitere punktbezogene Festlegungen</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>fr</Language>
+                <Text>autres contenus ponctuels</Text>
+              </LocalisationCH_V1.LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>it</Language>
+                <Text>altre determinazioni riferite a punti</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Designation>
+      </Nutzungsplanung_V1_2.Catalogue_CH.Catalogue_CH>
+    </Nutzungsplanung_V1_2.Catalogue_CH>
+  </DATASECTION>
+</TRANSFER>
