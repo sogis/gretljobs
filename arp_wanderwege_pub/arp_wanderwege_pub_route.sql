@@ -36,9 +36,9 @@ routes AS (
         route.route_description AS beschreibung,
         route.starting_point AS startpunkt,
         route.destination AS ziel,
-        catalogues_direction.aname_de AS signalisation_richtung,
+        catalogues_direction.aname_de AS signalisationsrichtung,
         substr(metadata.last_updated, 1, 4)||'-'||substr(metadata.last_updated, 5, 2)||'-'||substr(metadata.last_updated, 7, 2) AS letzte_aktualisierung,
-        metadata.contact_information AS kontakt_information
+        metadata.contact_information AS kontakt
     FROM
         arp_wanderwege_v1.hpm_base_route AS route
         LEFT JOIN arp_wanderwege_v1.hpm_base_way_route AS way_route
@@ -72,10 +72,10 @@ SELECT
     routes.beschreibung,
     routes.startpunkt,
     routes.ziel,
-    routes.signalisation_richtung,
-    string_agg(location_categories.location_category, E'\n') AS route_standorte,
+    routes.signalisationsrichtung,
+    string_agg(location_categories.location_category, E'\n') AS routenstandorte,
     routes.letzte_aktualisierung,
-    routes.kontakt_information
+    routes.kontakt
 FROM
     location_categories,
     routes
@@ -91,7 +91,7 @@ WHERE
     routes.beschreibung,
     routes.startpunkt,
     routes.ziel,
-    routes.signalisation_richtung,
+    routes.signalisationsrichtung,
     location_categories.base_route_id,
     routes.letzte_aktualisierung,
-    routes.kontakt_information
+    routes.kontakt
