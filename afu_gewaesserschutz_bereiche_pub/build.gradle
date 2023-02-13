@@ -34,7 +34,7 @@ task transferGewaesserschutz(type: Db2Db, dependsOn: 'publiedit') {
     ];
 }
 
-task publipub(type: Publisher, dependsOn: 'transferAwjfWegsanierungen'){
+task publipub(type: Publisher, dependsOn: 'transferGewaesserschutz'){
   dataIdent = "ch.so.afu.gewaesserschutz"
   userFormats = true
   database = [dbUriPub,dbUserPub,dbPwdPub]
