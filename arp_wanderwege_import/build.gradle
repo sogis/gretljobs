@@ -6,12 +6,31 @@ import java.io.File
 
 defaultTasks 'importWanderwegeEdit'
 
+/*
+task deleteFromWanderwegeTables(type: SqlExecutor) {
+    description = 'Löscht die Daten aus dem Schema.'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['delete_arp_wanderwege_tables.sql']
+}
 
+task downloadKataloge(type: Download, dependsOn: deleteFromWanderwegeTables){
+    description = 'Download der Kataloge'
+    src 'https://models.geo.admin.ch/BLW/landwirtschaftliche_zonengrenzen_kataloge_20140701.xml'
+    dest pathToTempFolder
+    overwrite true
+}
+
+task copyXtfFile(type: Copy) {
+    from "upload/"
+    into "upload/"
+    include("uploadFile")
+    rename("uploadFile", "uploadFile.xtf")
+}*/
 
 task importKataloge(type: Ili2pgReplace){
      description = 'Import der Kataloge'
      database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-     dbschema = 'arp_wanderwege_v1'
+     dbschema = 'arp_wanderwege_v2'
      models = 'hpm_network_V1'
      dataFile = 'Hpm_Catalogues_V1.xml'
      dataset = 'Hpm_Catalogues_V1.xml'
@@ -19,10 +38,11 @@ task importKataloge(type: Ili2pgReplace){
      importBid = true
 }
 
-task importWanderwegeEdit(type: Ili2pgReplace, dependsOn: 'importKataloge'){
+task importWanderwegeEdit(type: ------------------------Ili2pgReplace){
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////task importWanderwegeEdit(type: ----------------------Ili2pgReplace, dependsOn: 'importKataloge'){
      description = 'Import der Wanderwege aus MISTRA in die Edit-DB'
      database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-     dbschema = 'arp_wanderwege_v1'
+     dbschema = 'arp_wanderwege_v2'
      models = 'hpm_network_V1'
      dataFile = 'LV_Hpm_Network_V1.xtf'
      dataset = 'LV_Hpm_Network_V1.xtf'
@@ -30,3 +50,20 @@ task importWanderwegeEdit(type: Ili2pgReplace, dependsOn: 'importKataloge'){
      importBid = true
      disableValidation = true
 }
+
+/*
+task rename(type: Copy) {
+    from 'upload'
+    into 'upload'
+    rename 'uploadFile','uploadFile.xtf'
+}
+
+task importWanderwegeEdit(type: Ili2pgImport, dependsOn: rename){
+     description = 'Import der Wanderwege aus MISTRA in die Edit-DB'
+     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+     dbschema = 'arp_wanderwege_v2'
+     models = 'hpm_network_V1'
+     dataFile = 'upload/uploadFile.xtf'
+     deleteData = true
+}
+*/
