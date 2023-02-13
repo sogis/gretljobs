@@ -1,12 +1,22 @@
+import ch.so.agi.gretl.api.TransferSet
 import ch.so.agi.gretl.tasks.*
-import java.nio.file.Files
 import java.nio.file.Paths
-import java.io.File
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'de.undercouch.download'
+apply plugin: 'ch.so.agi.gretl'
 
 
 defaultTasks 'importWanderwegeEdit'
 
-/*
+
+// Download-Verzeichnis
+def pathToTempFolder = System.getProperty('java.io.tmpdir')
+// def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
+// def pathToDataZip = Paths.get(pathToTempFolder, 'NachF_LWZ_INTERLIS2.zip')
+
+
+
 task deleteFromWanderwegeTables(type: SqlExecutor) {
     description = 'Löscht die Daten aus dem Schema.'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -15,11 +25,12 @@ task deleteFromWanderwegeTables(type: SqlExecutor) {
 
 task downloadKataloge(type: Download, dependsOn: deleteFromWanderwegeTables){
     description = 'Download der Kataloge'
-    src 'https://models.geo.admin.ch/BLW/landwirtschaftliche_zonengrenzen_kataloge_20140701.xml'
+    src 'https://models.geo.admin.ch/BLW/LWB_Landwirtschaftliche_Zonengrenzen_Kataloge_V2_0.xml'
     dest pathToTempFolder
     overwrite true
 }
 
+/*
 task copyXtfFile(type: Copy) {
     from "upload/"
     into "upload/"
@@ -27,7 +38,7 @@ task copyXtfFile(type: Copy) {
     rename("uploadFile", "uploadFile.xtf")
 }*/
 
-task importKataloge(type: Ili2pgReplace){
+task importKataloge(type: Ili2pgReplace, dependsOn: downloadKataloge){
      description = 'Import der Kataloge'
      database = [dbUriEdit, dbUserEdit, dbPwdEdit]
      dbschema = 'arp_wanderwege_v2'
@@ -38,8 +49,26 @@ task importKataloge(type: Ili2pgReplace){
      importBid = true
 }
 
-task importWanderwegeEdit(type: ------------------------Ili2pgReplace){
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////task importWanderwegeEdit(type: ----------------------Ili2pgReplace, dependsOn: 'importKataloge'){
+/*
+task rename(type: Copy) {
+    from 'upload'
+    into 'upload'
+    rename 'uploadFile','uploadFile.xtf'
+}
+
+task importWanderwegeEdit(type: Ili2pgImport, dependsOn: importKataloge){
+     description = 'Import der Wanderwege aus MISTRA in die Edit-DB'
+     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+     dbschema = 'arp_wanderwege_v2'
+     models = 'hpm_network_V1'
+     dataFile = 'upload/uploadFile.xtf'
+     dataset = 'LV_Hpm_Network_V1.xtf'
+     importTid = true
+     importBid = true
+}
+*/
+
+task importWanderwegeEdit(type: Ili2pgReplace, dependsOn: importKataloge){
      description = 'Import der Wanderwege aus MISTRA in die Edit-DB'
      database = [dbUriEdit, dbUserEdit, dbPwdEdit]
      dbschema = 'arp_wanderwege_v2'
@@ -48,22 +77,7 @@ task importWanderwegeEdit(type: ------------------------Ili2pgReplace){
      dataset = 'LV_Hpm_Network_V1.xtf'
      importTid = true
      importBid = true
-     disableValidation = true
+                                                                                            disableValidation = true    // es sind noch
 }
 
-/*
-task rename(type: Copy) {
-    from 'upload'
-    into 'upload'
-    rename 'uploadFile','uploadFile.xtf'
-}
 
-task importWanderwegeEdit(type: Ili2pgImport, dependsOn: rename){
-     description = 'Import der Wanderwege aus MISTRA in die Edit-DB'
-     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-     dbschema = 'arp_wanderwege_v2'
-     models = 'hpm_network_V1'
-     dataFile = 'upload/uploadFile.xtf'
-     deleteData = true
-}
-*/
