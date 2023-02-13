@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'addArpRichtplanPubDocuments'
+defaultTasks 'publipub'
 
 
 task transferArpRichtplanPubSogis(type: Db2Db) {
@@ -17,8 +17,20 @@ task transferArpRichtplanPubSogis(type: Db2Db) {
     ]
 }
 
+task publiedit(type: Publisher, dependsOn: 'transferArpRichtplanPubSogis'){
+  dataIdent = "ch.so.arp.richtplan.relational"
+  database = [dbUriEdit,dbUserEdit,dbPwdEdit]
+  dbSchema = "arp_richtplan_v1"
+  modelsToPublish = "SO_ARP_Richtplan_20220630"
 
-task transferArpRichtplanPubEdit(type: Db2Db, dependsOn: 'transferArpRichtplanPubSogis') {
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+task transferArpRichtplanPubEdit(type: Db2Db, dependsOn: 'publiedit') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -44,3 +56,19 @@ task addArpRichtplanPubDocuments(type: SqlExecutor, dependsOn: 'transferArpRicht
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ['arp_richtplan_pub_add_documents.sql']
 }
+
+task publipub(type: Publisher, dependsOn: 'addArpRichtplanPubDocuments'){
+  dataIdent = "ch.so.arp.richtplan"
+  userFormats = true
+  database = [dbUriPub,dbUserPub,dbPwdPub]
+  dbSchema = "arp_richtplan_pub_v1"
+  modelsToPublish = "SO_ARP_Richtplan_Publikation_20220630"
+
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+
+}
+
