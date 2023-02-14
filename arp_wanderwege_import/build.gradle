@@ -16,12 +16,11 @@ def pathToTempFolder = System.getProperty('java.io.tmpdir')
 
 
 task copyXtfFile(type: Copy) {
-    from 'upload/'
-    into 'upload/'
-    include('uploadFile')
-    rename('uploadFile', 'uploadFile.xtf')
+    from "upload/"
+    into "upload/"
+    include("uploadFile")
+    rename("uploadFile", "uploadFile.xtf")
 }
-
 
 task deleteFromWanderwegeTables(type: SqlExecutor, dependsOn: copyXtfFile) {
     description = 'Löscht die Daten aus dem Schema.'
