@@ -33,8 +33,8 @@ task importKataloge(type: Ili2pgReplace, dependsOn: downloadKataloge){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_wanderwege_v1'
     models = 'hpm_network_V1'
-//      dataFile = 'Hpm_Catalogues_V1.xml'
-    dataFile = file(Paths.get(pathToTempFolder.toString(), 'Hpm_Catalogues_V1.xml'))
+     dataFile = 'Hpm_Catalogues_V1.xml'
+//     dataFile = file(Paths.get(pathToTempFolder.toString(), 'Hpm_Catalogues_V1.xml'))
     dataset = 'Hpm_Catalogues_V1.xml'
     importTid = true
     importBid = true
