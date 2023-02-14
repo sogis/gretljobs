@@ -8,7 +8,7 @@ defaultTasks 'transferData'
 task publishedit(type: Publisher){
   dataIdent = "ch.so.afu.hydrologische_einzugsgebiete.relational"
   userFormats = true
-  database = [dbUriPub,dbUserPub,dbPwdPub]
+  database = [dbUriEdit,dbUserEdit,dbPwdEdit]
   dbSchema = "afu_hydrologische_einzugsgebiete_v1"
   modelsToPublish = "SO_AFU_Hydrologische_Einzugsgebiete_20220628"
 
