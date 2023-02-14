@@ -170,7 +170,7 @@ INSERT INTO ${DB_Schema_QRcat}.qrcat_letalflaeche (
   bevoelkerung_anzahl, risikozahl, 
   anzahl_tote, id_szenario
 )
-/* Wohnbevoelkerung LR1 */
+/* Wohnbevoelkerung LR1, äusserer Radius */
 SELECT 
   uuid_generate_v4() AS t_ili_tid, 
   buffer_geom_lr1 AS geometrie, 
@@ -194,7 +194,7 @@ FROM
   szen 
 UNION 
   
-  /* Wohnbevoelkerung LR90 */
+  /* Wohnbevoelkerung LR90, innerer Radius */
 SELECT 
   uuid_generate_v4() AS t_ili_tid, 
   buffer_geom_lr90 AS geometrie, 
@@ -212,7 +212,7 @@ FROM
   szen 
 UNION 
   
-  /* Arbeitsbevoelkerung LR1 */
+  /* Arbeitsbevoelkerung LR1, äusserer Radius */
 SELECT 
   uuid_generate_v4() AS t_ili_tid, 
   buffer_geom_lr1 AS geometrie, 
@@ -234,7 +234,7 @@ FROM
   szen 
 UNION 
   
-  /* Arbeitsbevoelkerung LR90 */
+  /* Arbeitsbevoelkerung LR90, innerer Radius */
 SELECT 
   uuid_generate_v4() AS t_ili_tid, 
   buffer_geom_lr90 AS geometrie, 
@@ -252,7 +252,7 @@ FROM
   szen 
 UNION 
   
-  /* Wohn- und Arbeitsbevoelkerung je 50% LR1 */
+  /* Wohn- und Arbeitsbevoelkerung je 50% LR1, äusserer Radius */
 SELECT 
   uuid_generate_v4() AS t_ili_tid, 
   buffer_geom_lr1 AS geometrie, 
@@ -274,7 +274,7 @@ FROM
   szen 
 UNION 
   
-  /* Wohn- und Arbeitsbevoelkerung je 50%  LR90 */
+  /* Wohn- und Arbeitsbevoelkerung je 50%  LR90, innerer Radius */
 SELECT 
   uuid_generate_v4() AS t_ili_tid, 
   buffer_geom_lr90 AS geometrie, 
