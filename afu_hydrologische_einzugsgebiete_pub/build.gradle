@@ -6,7 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferData'
 
 task publishedit(type: Publisher){
-  dataIdent = "ch.so.afu.hydrologische_einzugsgebiete.relational"
+  dataIdent = "ch.so.afu.hydrologische_einzugsgebiete"
   userFormats = true
   database = [dbUriEdit,dbUserEdit,dbPwdEdit]
   dbSchema = "afu_hydrologische_einzugsgebiete_v1"
