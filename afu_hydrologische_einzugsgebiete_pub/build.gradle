@@ -11,12 +11,12 @@ task publishedit(type: Publisher){
   database = [dbUriEdit,dbUserEdit,dbPwdEdit]
   dbSchema = "afu_hydrologische_einzugsgebiete_v1"
   modelsToPublish = "SO_AFU_Hydrologische_Einzugsgebiete_20220628"
-  validationConfig = "config.toml"
   target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
   kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
   if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+  validationConfig = "config.toml"
 
 }
 
