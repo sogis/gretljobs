@@ -6,7 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferAvtGesamtverkehrsmodellPub'
 
 task publishedit(type: Publisher){
-  dataIdent = "ch.so.avt.verkehrsmodell.relational"
+  dataIdent = "ch.so.avt.verkehrsmodell"
   userFormats = true
   database = [dbUriEdit,dbUserEdit,dbPwdEdit]
   dbSchema = "avt_gesamtverkehrsmodell_2015_v1"
