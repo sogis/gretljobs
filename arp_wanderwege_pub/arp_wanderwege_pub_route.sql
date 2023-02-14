@@ -21,7 +21,9 @@ location_categories AS (
         LEFT JOIN arp_wanderwege_v1.hpm_base_route AS base_route
         ON route_signalisation.each_route_signalisation_entry_has_one_route = base_route.t_id
 WHERE
-    ST_Within(signalisation.ageometry, (SELECT ST_Buffer(ST_Union(geometrie), 2000) FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze))
+    ST_Within(
+        signalisation.ageometry,
+        (SELECT ST_Buffer(ST_Union(geometrie), 2000) FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze))
     ORDER BY
         base_route.t_id,
         position_number
