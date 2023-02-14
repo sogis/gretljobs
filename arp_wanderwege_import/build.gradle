@@ -80,4 +80,9 @@ task importWanderwegeEdit(type: Ili2pgReplace, dependsOn: importKataloge){
                                                                                             disableValidation = true    // es sind noch
 }
 
+task deleteOutsidePerimeter(type: SqlExecutor, dependsOn: importWanderwegeEdit){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['delete_outside_perimeter.sql']
+}
+
 
