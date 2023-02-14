@@ -5,7 +5,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferData'
 
-task publishedit(type: Publisher, dependsOn: 'transferAwjfWegsanierungen'){
+task publishedit(type: Publisher){
   dataIdent = "ch.so.afu.hydrologische_einzugsgebiete.relational"
   userFormats = true
   database = [dbUriPub,dbUserPub,dbPwdPub]
