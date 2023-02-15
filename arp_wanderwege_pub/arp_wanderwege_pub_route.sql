@@ -33,16 +33,14 @@ routes AS (
     SELECT
         route.t_id,
         ST_Multi(ST_Union(ST_Force2D(ageometry))) AS geometrie,
-        route.technical_route_number AS technische_route_nr,
-        route.technical_route_name AS technische_route_name,
-        route.touristic_route_number AS touristische_route_nr,
-        route.touristic_route_name AS touristische_route_name,
-        route.route_description AS beschreibung,
-        route.starting_point AS startpunkt,
+        route.technical_route_name AS technischer_routenname,
+        route.technical_route_number AS technische_routennummer,
+        route.starting_point AS start,
         route.destination AS ziel,
         catalogues_direction.aname_de AS signalisationsrichtung,
+        route.route_description AS beschreibung,
         substr(metadata.last_updated, 1, 4)||'-'||substr(metadata.last_updated, 5, 2)||'-'||substr(metadata.last_updated, 7, 2) AS letzte_aktualisierung,
-        metadata.contact_information AS kontakt
+        'https://www.solothurner-wanderwege.ch/de/kontakt' AS kontakt
     FROM
         arp_wanderwege_v1.hpm_base_route AS route
         LEFT JOIN arp_wanderwege_v1.hpm_base_way_route AS way_route
@@ -54,14 +52,12 @@ routes AS (
         metadata
     GROUP BY
         route.t_id,
-        route.technical_route_number,
         route.technical_route_name,
-        route.touristic_route_number,
-        route.touristic_route_name,
-        route.route_description,
+        route.technical_route_number,
         route.starting_point,
         route.destination,
         catalogues_direction.aname_de,
+        route.route_description,
         metadata.last_updated,
         metadata.contact_information
 )
@@ -69,15 +65,13 @@ routes AS (
 SELECT
     routes.t_id,
     routes.geometrie,
-    routes.technische_route_nr,
-    routes.technische_route_name,
-    routes.touristische_route_nr,
-    routes.touristische_route_name,
-    routes.beschreibung,
-    routes.startpunkt,
+    routes.technischer_routenname,
+    routes.technische_routennummer,
+    routes.start,
     routes.ziel,
-    routes.signalisationsrichtung,
     string_agg(location_categories.location_category, E'\n') AS routenstandorte,
+    routes.signalisationsrichtung,
+    routes.beschreibung,
     routes.letzte_aktualisierung,
     routes.kontakt
 FROM
@@ -88,14 +82,12 @@ WHERE
  GROUP BY
     routes.t_id,
     routes.geometrie,
-    routes.technische_route_nr,
-    routes.technische_route_name,
-    routes.touristische_route_nr,
-    routes.touristische_route_name,
-    routes.beschreibung,
-    routes.startpunkt,
+    routes.technischer_routenname,
+    routes.technische_routennummer,
+    routes.start,
     routes.ziel,
     routes.signalisationsrichtung,
     location_categories.base_route_id,
+    routes.beschreibung,
     routes.letzte_aktualisierung,
     routes.kontakt
