@@ -40,7 +40,7 @@ routes AS (
         catalogues_direction.aname_de AS signalisationsrichtung,
         route.route_description AS beschreibung,
         substr(metadata.last_updated, 1, 4)||'-'||substr(metadata.last_updated, 5, 2)||'-'||substr(metadata.last_updated, 7, 2) AS letzte_aktualisierung,
-        '<a href="https://www.solothurner-wanderwege.ch/de/kontakt" target="_blank">https://www.solothurner-wanderwege.ch/de/kontakt</a>' AS kontakt
+        '<a href="https://www.solothurner-wanderwege.ch/de/kontakt" target="_blank">Solothurner Wanderwege</a>' AS kontakt
     FROM
         arp_wanderwege_v1.hpm_base_route AS route
         LEFT JOIN arp_wanderwege_v1.hpm_base_way_route AS way_route
