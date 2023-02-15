@@ -3,7 +3,7 @@ SELECT
     field_name AS standortname,
     altitude AS hoehe,
     NULL AS standortnummer,
-    dokument
+    NULL AS dokument
 FROM
     arp_wanderwege_v1.hpm_walk_lv95_signalisation
 ;
