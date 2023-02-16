@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferArpWanderwege'
+defaultTasks 'updateStandortLink'
 
 task transferArpWanderwege(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -13,4 +13,12 @@ task transferArpWanderwege(type: Db2Db){
             new TransferSet('arp_wanderwege_pub_wanderweg.sql', 'arp_wanderwege_pub_v1.wanderwege_wanderweg', true),
             new TransferSet('arp_wanderwege_pub_signalisation.sql', 'arp_wanderwege_pub_v1.wanderwege_signalisation', true)
     ];
+}
+
+task updateStandortLink(type: SqlExecutor, dependsOn: transferArpWanderwege){
+    description = 'Generiert die Links zu den Dokumenten aus dem Attribut standortname'
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = [
+            'update_standort_link.sql'
+    ]
 }
