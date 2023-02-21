@@ -10,9 +10,7 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'importWanderwegeEdit'
 
 
-// Download-Verzeichnis
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
-
 
 
 task copyZipFile(type: Copy) {
@@ -46,8 +44,7 @@ task importKataloge(type: Ili2pgReplace, dependsOn: downloadKataloge){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_wanderwege_v1'
     models = 'hpm_network_V1'
-    dataFile = 'Hpm_Catalogues_V1.xml'                                                                                // später löschen, Katalog hat seit Test-Import etwas geändert
-//    dataFile = file(Paths.get(pathToTempFolder.toString(), 'Hpm_Catalogues_V1.xml'))
+   dataFile = file(Paths.get(pathToTempFolder.toString(), 'Hpm_Catalogues_V1.xml'))
     dataset = 'Hpm_Catalogues_V1.xml'
     importTid = true
     importBid = true
@@ -62,5 +59,5 @@ task importWanderwegeEdit(type: Ili2pgReplace, dependsOn: importKataloge){
     dataset = 'LV_Hpm_Network_V1.xtf'
     importTid = true
     importBid = true
-    disableValidation = true                                                                                                    // es sind noch Fehler im XTF
+    disableValidation = true                     // es sind noch Geometrie-Fehler im XTF
 }
