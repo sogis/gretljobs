@@ -15,7 +15,7 @@ def pathToTempFolder = System.getProperty('java.io.tmpdir')
 
 
 
-task copyXtfFile(type: Copy) {
+task copyZipFile(type: Copy) {
     from 'upload/'
     into 'upload/'
     include('uploadFile')
@@ -28,7 +28,7 @@ task unzipData(type: Copy, dependsOn: copyZipFile){
     include '**/*.xtf'
 }
 
-task deleteFromWanderwegeTables(type: SqlExecutor, dependsOn: copyXtfFile) {
+task deleteFromWanderwegeTables(type: SqlExecutor, dependsOn: unzipData) {
     description = 'Löscht die Daten aus dem Schema.'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['delete_arp_wanderwege_tables.sql']
