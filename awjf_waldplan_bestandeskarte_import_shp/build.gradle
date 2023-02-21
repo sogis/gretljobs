@@ -8,9 +8,9 @@ import ch.so.agi.gretl.tasks.*
 defaultTasks 'importWaldplan'
 
 
-def shpName = 'wap_bst_es_sicherung_rode_221209_11.shp'
-def pathToShpFolder = Paths.get(System.getProperty("java.io.tmpdir"), "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx").toString() 
-def uploadFile = 'upload/uploadFile'
+def shpName = 'waldplan.shp'
+def pathToShpFolder = Paths.get(System.getProperty("java.io.tmpdir"), "waldplan").toString() 
+///////////////def uploadFile = 'upload/uploadFile'
 
 task unpackShapes(type: Copy) {
     from zipTree(uploadFile)
@@ -23,7 +23,7 @@ task unpackShapes(type: Copy) {
 //     modeldir = System.getProperty('user.dir')                                                 // später löschen
 // //     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 //     modeldir = System.getProperty('user.dir')
-//     dataFiles = [file('upload/wap_bst_es_sicherung_rode_221209_11.shp')]
+//     dataFiles = [file('upload/waldplan.shp')]
 // }
 // 
 
@@ -35,5 +35,5 @@ task importWaldplan(type: ShpImport, dependsOn: unpackShapes){
     
     
     dataFile = Paths.get(pathToShpFolder, shpName) 
-//     dataFile = file('upload/wap_bst_es_sicherung_rode_221209_11.shp')
+//     dataFile = file('upload/waldplan.shp')
 }
