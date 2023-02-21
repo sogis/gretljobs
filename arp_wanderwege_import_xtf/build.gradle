@@ -19,7 +19,13 @@ task copyXtfFile(type: Copy) {
     from 'upload/'
     into 'upload/'
     include('uploadFile')
-    rename('uploadFile', 'uploadFile.xtf')
+    rename('uploadFile', 'uploadFile.zip')
+}
+
+task unzipData(type: Copy, dependsOn: copyZipFile){
+    from zipTree(file('upload/uploadFile.zip'))
+    into file('upload')
+    include '**/*.xtf'
 }
 
 task deleteFromWanderwegeTables(type: SqlExecutor, dependsOn: copyXtfFile) {
@@ -52,7 +58,7 @@ task importWanderwegeEdit(type: Ili2pgReplace, dependsOn: importKataloge){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_wanderwege_v1'
     models = 'hpm_network_V1'
-    dataFile = 'upload/uploadFile.xtf'
+    dataFile = 'upload/LV_Hpm_Network_V1.xtf'
     importTid = true
     importBid = true
     disableValidation = true                                                                                                    // es sind noch Fehler im XTF
