@@ -140,6 +140,9 @@ task uploadDxfGeobauFiles(type: S3Upload, dependsOn: 'createDxfGeobauFiles') {
     acl = "public-read"
 }
 
+task importData(dependsOn: 'uploadDxfGeobauFiles'){} //empty task def keeping all dependency chains unchanged
+
+/*
 //task importData(type: Ili2pgReplace, dependsOn: 'unzipFiles') {
 task importData(type: Ili2pgReplace, dependsOn: 'uploadDxfGeobauFiles') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -155,6 +158,7 @@ task importData(type: Ili2pgReplace, dependsOn: 'uploadDxfGeobauFiles') {
         println "Data imported into db: " + dbUriEdit
     }
 }
+*/
 
 task deleteFtpFiles(type: FtpDelete, dependsOn: 'importData') {
     onlyIf {

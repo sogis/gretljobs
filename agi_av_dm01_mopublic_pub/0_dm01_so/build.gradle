@@ -98,7 +98,7 @@ task importData(type: Ili2pgReplace, dependsOn: publish) {
     }
 }
 
-task execProjPubTasks(dependsOn: publish){}
+task execProjPubTasks(dependsOn: importData){}
 
 task execAllPubTasks(){
     dependsOn ':2_mopublic:execProjPubTasks'
