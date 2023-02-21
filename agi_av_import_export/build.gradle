@@ -141,7 +141,6 @@ task uploadDxfGeobauFiles(type: S3Upload, dependsOn: 'createDxfGeobauFiles') {
 }
 
 //task importData(type: Ili2pgReplace, dependsOn: 'unzipFiles') {
-/*
 task importData(type: Ili2pgReplace, dependsOn: 'uploadDxfGeobauFiles') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = 'DM01AVSO24LV95'
@@ -156,9 +155,8 @@ task importData(type: Ili2pgReplace, dependsOn: 'uploadDxfGeobauFiles') {
         println "Data imported into db: " + dbUriEdit
     }
 }
-*/
 
-task deleteFtpFiles(type: FtpDelete, dependsOn: 'uploadDxfGeobauFiles') {
+task deleteFtpFiles(type: FtpDelete, dependsOn: 'importData') {
     onlyIf {
         gretlEnvironment == "production"
     }
