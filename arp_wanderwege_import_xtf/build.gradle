@@ -59,6 +59,7 @@ task importWanderwegeEdit(type: Ili2pgReplace, dependsOn: importKataloge){
     dbschema = 'arp_wanderwege_v1'
     models = 'hpm_network_V1'
     dataFile = 'upload/LV_Hpm_Network_V1.xtf'
+    dataset = 'LV_Hpm_Network_V1.xtf'
     importTid = true
     importBid = true
     disableValidation = true                                                                                                    // es sind noch Fehler im XTF
