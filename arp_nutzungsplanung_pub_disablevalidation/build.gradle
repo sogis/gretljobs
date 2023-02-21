@@ -49,6 +49,7 @@ task publishEdit(type: Publisher, dependsOn: exportDataEdit) {
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+    validationConfig = "$projectDir/config.toml"
 }
 
 task transferData(type: SqlExecutor, dependsOn: 'publishEdit') {
@@ -116,6 +117,7 @@ task publish(type: Publisher, dependsOn: importXTF_pub){
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+    validationConfig = "$projectDir/config.toml"
 }
 
 // TASKS FÜR ALTES MODELL
@@ -153,4 +155,5 @@ task publishAlt(type: Publisher, dependsOn: exportDataExport){
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+    validationConfig = "$projectDir/config.toml"
 }
