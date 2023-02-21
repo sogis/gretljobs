@@ -32,3 +32,9 @@ DELETE FROM arp_nutzungsplanung_mgdm_v1.transfermetadaten_amt
 ;
 DELETE FROM arp_nutzungsplanung_mgdm_v1.transfermetadaten_datenbestand
 ;
+DELETE FROM arp_nutzungsplanung_mgdm_v1.catalogue_ch_catalogue_ch
+;
+DELETE FROM arp_nutzungsplanung_mgdm_v1.t_ili2db_basket
+;
+DELETE FROM arp_nutzungsplanung_mgdm_v1.t_ili2db_dataset
+;
