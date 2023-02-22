@@ -13,7 +13,7 @@ import java.io.File
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'GelanBezugsjahrBereinigen'
+defaultTasks 'BetriebZuBFFFlaechenZuweisen'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def DB_Schema_MJPNL = "arp_mjpnl_v1"
@@ -74,4 +74,11 @@ task GelanBezugsjahrBereinigen(type: SqlExecutor, dependsOn: importGELAN) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
     sqlFiles = ['delete_gelandata_from_other_year.sql']
+}
+
+task BetriebZuBFFFlaechenZuweisen(type: SqlExecutor, dependsOn: GelanBezugsjahrBereinigen) {
+    description = "Die BFF2-Flächen haben im Modell keine Zuweisung zu Betrieb und Person. Mit einem Extra-Skript passiert die Zuweisung zum Betrieb."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['update_betrieb_bff2-flaechen.sql']
 }

@@ -94,6 +94,28 @@ DELETE
     bezugsjahr != (SELECT bezugsjahr FROM bj)
 ;
 
+-- bff_qualitaet
+WITH ndays AS (
+   -- Anzahl Tage im aktuellen Jahr werden extrahiert
+   SELECT EXTRACT('day' FROM age(now(),(date_part('year',now())::TEXT || '-01-01 00:00:000')::timestamp)) AS ndays
+),
+bj AS (
+   SELECT
+     -- falls jünger als Ende Februar (60 Tage) werden die Daten des
+     -- Vorjahres verwendet
+     CASE
+         WHEN ndays < 60 THEN 
+           date_part('year',now())::int4 - 1
+         ELSE date_part('year',now())::int4
+     END AS bezugsjahr
+   FROM ndays
+)
+DELETE
+    FROM ${DB_Schema_MJPNL}.bff_qualitaet_bff_qualitaet
+  WHERE
+    bezugsjahr != (SELECT bezugsjahr FROM bj)
+;
+
 -- bewirtschaftungseinheit
 WITH ndays AS (
    -- Anzahl Tage im aktuellen Jahr werden extrahiert
