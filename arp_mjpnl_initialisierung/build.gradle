@@ -59,11 +59,11 @@ task downloadData(dependsOn: 'importMJPNL') {
 }
 
 task importGELAN(type: Ili2pgReplace, dependsOn: downloadData) {
-    description = 'Import resp. ersetzt täglich die GELAN-Daten (nur Topic: Betriebsdaten_Strukturdaten) in der Erfassungsdatenbank, Schema arp_mjpnl_v1'
+    description = 'Import resp. ersetzt täglich die GELAN-Daten (nur Topics: Betriebsdaten_Strukturdaten und BFF_Qualitaet) in der Erfassungsdatenbank, Schema arp_mjpnl_v1'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_mjpnl_v1"
     models = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426'
-    topics = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426.Betriebsdaten_Strukturdaten'
+    topics = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426.Betriebsdaten_Strukturdaten;SO_ALW_Landwirtschaft_Tierhaltung_20210426.BFF_Qualitaet'
     dataFile = Paths.get(pathToTempFolder, 'Export_ais_agrardaten.xtf')
     dataset = 'GELAN'
 }
