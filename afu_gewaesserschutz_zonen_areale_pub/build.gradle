@@ -63,7 +63,7 @@ task transferGewaesserschutz_pub(type: Db2Db, dependsOn: 'validateData') {
 }
 
 task publishPub(type: Publisher, dependsOn: 'transferGewaesserschutz_pub'){
-    database = [dbUriPub, dbUserPub, dbPwdPub]
+    database = [switchToProd(dbUriPub), dbUserPub, dbPwdPub]
     dataIdent = "ch.so.afu.gewaesserschutz.zonen_areale"
     dbSchema = "afu_gewaesserschutz_pub_v1"
     modelsToPublish = "SO_AfU_Gewaesserschutz_Publikation_20220817"
@@ -106,4 +106,13 @@ task deleteData_staging_pub (type: SqlExecutor, dependsOn: 'transferGewaessersch
     description = "Löscht/leert die Daten aus dem Schema afu_gewaesserschutz_staging"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ["delete_afu_gewaesserschutz_staging.sql"]
+}
+
+def switchToProd(dbUri) {
+  String readUri = dbUri.replaceFirst("geodb-t.", "geodb.")
+
+  if(readUri.equals(dbUri))
+    readUri = dbUri.replaceFirst("geodb-i.", "geodb.")
+
+  return readUri
 }
