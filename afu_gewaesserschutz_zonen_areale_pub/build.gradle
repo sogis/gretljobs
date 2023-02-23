@@ -4,7 +4,8 @@ import java.nio.file.Paths
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'validateData', 'deleteData_staging_pub', 'uploadXtf'
+// defaultTasks 'validateData', 'deleteData_staging_pub', 'uploadXtf'
+                                                                                                                defaultTasks 'validateData', 'deleteData_staging_pub''
 
 def fileName = "afu_gewaesserschutz_zonen_areale.xtf"
 def fileNameZip = "afu_gewaesserschutz_zonen_areale.zip"
@@ -75,13 +76,7 @@ task publishPub(type: Publisher, dependsOn: 'transferGewaesserschutz_pub'){
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
-task deleteData_staging_pub (type: SqlExecutor, dependsOn: 'publishPub') {
-    description = "Löscht/leert die Daten aus dem Schema afu_gewaesserschutz_staging"
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlFiles = ["delete_afu_gewaesserschutz_staging.sql"]
-}
-
-task zipXtf(type: Zip, dependsOn: 'deleteData_staging_pub'){
+task zipXtf(type: Zip, dependsOn: 'transferGewaesserschutz_pub'){
     from "."
     include fileName
     archiveName fileNameZip
@@ -106,4 +101,11 @@ task uploadXtf(dependsOn: 'zipXtf') {
             throw new GradleException()
         }
     }
+}
+
+
+task deleteData_staging_pub (type: SqlExecutor, dependsOn: 'transferGewaesserschutz_pub') {
+    description = "Löscht/leert die Daten aus dem Schema afu_gewaesserschutz_staging"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ["delete_afu_gewaesserschutz_staging.sql"]
 }
