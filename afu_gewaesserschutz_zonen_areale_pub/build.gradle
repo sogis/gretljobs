@@ -62,7 +62,20 @@ task transferGewaesserschutz_pub(type: Db2Db, dependsOn: 'validateData') {
     ];
 }
 
-task zipXtf(type: Zip, dependsOn: 'transferGewaesserschutz_pub'){
+task publishPub(type: Publisher, dependsOn: 'transferGewaesserschutz_pub'){
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dataIdent = "ch.so.afu.gewaesserschutz.zonen_areale"
+    dbSchema = "afu_gewaesserschutz_pub_v1"
+    modelsToPublish = "SO_AfU_Gewaesserschutz_Publikation_20220817"
+    userFormats = true
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+task zipXtf(type: Zip, dependsOn: 'publishPub'){
     from "."
     include fileName
     archiveName fileNameZip
