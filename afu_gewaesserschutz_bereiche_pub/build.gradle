@@ -53,7 +53,7 @@ task validateData(type: IliValidator, dependsOn: 'exportData') {
     failOnError = true
 }
 
-task publishPub(type: Publisher, dependsOn: 'uploadXtf'){
+task publishPub(type: Publisher, dependsOn: 'validateData'){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.afu.gewaesserschutz.bereiche"
     dbSchema = "afu_gewaesserschutz_pub_v1"
@@ -66,7 +66,7 @@ task publishPub(type: Publisher, dependsOn: 'uploadXtf'){
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
-task zipXtf(type: Zip, dependsOn: 'validateData'){
+task zipXtf(type: Zip, dependsOn: 'publishPub'){
     from "."
     include fileName
     archiveName fileNameZip
