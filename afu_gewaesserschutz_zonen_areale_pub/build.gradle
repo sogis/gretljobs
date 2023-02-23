@@ -64,7 +64,7 @@ task transferGewaesserschutz_pub(type: Db2Db, dependsOn: 'validateData') {
 
 task publishPub(type: Publisher, dependsOn: 'transferGewaesserschutz_pub'){
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    dataIdent = "ch.so.afu.gewaesserschutz"
+    dataIdent = "ch.so.afu.gewaesserschutz.zonen_areale"
     dbSchema = "afu_gewaesserschutz_pub_v1"
     modelsToPublish = "SO_AfU_Gewaesserschutz_Publikation_20220817"
     userFormats = true
