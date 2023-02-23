@@ -53,6 +53,19 @@ task validateData(type: IliValidator, dependsOn: 'exportData') {
     failOnError = true
 }
 
+task publishPub(type: Publisher, dependsOn: 'uploadXtf'){
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dataIdent = "ch.so.afu.gewaesserschutz.bereiche"
+    dbSchema = "afu_gewaesserschutz_pub_v1"
+    modelsToPublish = "SO_AfU_Gewaesserschutz_Publikation_20210303"
+    userFormats = true
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
 task zipXtf(type: Zip, dependsOn: 'validateData'){
     from "."
     include fileName
@@ -78,17 +91,4 @@ task uploadXtf(dependsOn: 'zipXtf') {
             throw new GradleException()
         }
     }
-}
-
-task publishPub(type: Publisher, dependsOn: 'uploadXtf'){
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    dataIdent = "ch.so.afu.gewaesserschutz.bereiche"
-    dbSchema = "afu_gewaesserschutz_pub_v1"
-    modelsToPublish = "SO_AfU_Gewaesserschutz_Publikation_20210303"
-    userFormats = true
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
-    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
-    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
