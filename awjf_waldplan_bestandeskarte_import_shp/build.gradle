@@ -4,36 +4,47 @@ import java.nio.file.Paths
 import java.io.File
 import ch.so.agi.gretl.tasks.*
 
+apply plugin: 'de.undercouch.download'
+apply plugin: 'ch.so.agi.gretl'
+
 
 defaultTasks 'importWaldplan'
 
 
-def shpName = 'waldplan.shp'
-def pathToShpFolder = Paths.get(System.getProperty("java.io.tmpdir"), "waldplan").toString() 
-///////////////def uploadFile = 'upload/uploadFile'
 
-task unpackShapes(type: Copy) {
-    from zipTree(uploadFile)
-    into pathToShpFolder
-}
+def shpName = 'waldplan.shp'
+
+// task copyZipFile(type: Copy) {
+//     from 'upload/'
+//     into 'upload/'
+//     include('uploadFile')
+//     rename('uploadFile', 'uploadFile.zip')
+// }
+// 
+// task unzipData(type: Copy, dependsOn: copyZipFile){
+//     from zipTree(file('upload/uploadFile.zip'))
+//     into file('upload')
+//     include '**/*.*'
+// }
+
 
 
 // task validateShpFile(type: CsvValidator, dependsOn: unzipShape) {        // geht nicht wegen GeometryCHLV95_V1: model(s) not found
-//     models = 'SO_AWJF_Waldplan_Bestandeskarte_20230111'
-//     modeldir = System.getProperty('user.dir')                                                 // später löschen
-// //     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+task validateShpFile(type: ShpValidator) {
+    models = 'SO_AWJF_Waldplan_Bestandeskarte_20230111'
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 //     modeldir = System.getProperty('user.dir')
 //     dataFiles = [file('upload/waldplan.shp')]
-// }
-// 
+    dataFiles = ['waldplan.shp']
+}
 
-task importWaldplan(type: ShpImport, dependsOn: unpackShapes){
+
+task importWaldplan(type: ShpImport, dependsOn: validateShpFile){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = 'awjf_waldplan_bestandeskarte_v1'
     tableName = 'waldplan_bestandeskarte'
     
     
-    
-    dataFile = Paths.get(pathToShpFolder, shpName) 
+    dataFile = 'waldplan.shp' 
 //     dataFile = file('upload/waldplan.shp')
 }
