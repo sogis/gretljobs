@@ -82,7 +82,7 @@ task uploadXtf(dependsOn: 'zipXtf') {
 
 task publishPub(type: Publisher, dependsOn: 'uploadXtf') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    dataIdent = "ch.so.afu.gewaesserschutz.bereiche"
+    dataIdent = "ch.so.afu.gewaesserschutz"
     dbSchema = "afu_gewaesserschutz_pub_v1"
     modelsToPublish = "SO_AfU_Gewaesserschutz_Publikation_20220817"
     userFormats = true
