@@ -60,27 +60,7 @@ task zipXtf(type: Zip, dependsOn: 'validateData') {
     destinationDir(file("."))
 }
 
-/* Falls man auf geodienste.ch alles löschen will/muss (siehe zweiter Abschnitt), muss man
-* einmalig replace_all=true setzen. Curl-Befehl kann natürlich auch lokal
-* ausgeführt werden.
-*
-* Achtung: Die Dateinamen müssen immer gleich sein. Diese werden als 
-* dataset-Name verwendet. Will man die Namen ändern, siehe erster Abschnitt
-* des Kommentars.
-*/
-task uploadXtf(dependsOn: 'zipXtf') {
-    doLast {
-        def response = ["curl", "-u", aiLogin, "-F", "topic=planerischer_gewaesserschutz", "-F",
-                        "lv95_file=@" + Paths.get(".", fileNameZip), "-F", "publish=true", "-F", "replace_all=false",
-                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
-        println(response)
-        if (response.contains("false") || response == null || response.trim().isEmpty()) {
-            throw new GradleException()
-        }
-    }
-}
-
-task publishPub(type: Publisher, dependsOn: 'uploadXtf') {
+task publishPub(type: Publisher, dependsOn: 'zipXtf') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.afu.gewaesserschutz"
     dbSchema = "afu_gewaesserschutz_pub_v1"
@@ -93,3 +73,22 @@ task publishPub(type: Publisher, dependsOn: 'uploadXtf') {
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
+/* Falls man auf geodienste.ch alles löschen will/muss (siehe zweiter Abschnitt), muss man
+* einmalig replace_all=true setzen. Curl-Befehl kann natürlich auch lokal
+* ausgeführt werden.
+*
+* Achtung: Die Dateinamen müssen immer gleich sein. Diese werden als 
+* dataset-Name verwendet. Will man die Namen ändern, siehe erster Abschnitt
+* des Kommentars.
+*/
+task uploadXtf(dependsOn: 'publishPub') {
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=planerischer_gewaesserschutz", "-F",
+                        "lv95_file=@" + Paths.get(".", fileNameZip), "-F", "publish=true", "-F", "replace_all=false",
+                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
+}
