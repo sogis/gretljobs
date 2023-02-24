@@ -11,41 +11,22 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'importWaldplan'
 
 
-
-def shpName = 'waldplan.shp'
-
-// task copyZipFile(type: Copy) {
-//     from 'upload/'
-//     into 'upload/'
-//     include('uploadFile')
-//     rename('uploadFile', 'uploadFile.zip')
-// }
-// 
-// task unzipData(type: Copy, dependsOn: copyZipFile) {
-//     from zipTree(file('upload/uploadFile.zip'))
-//     into file('upload')
-//     include '**/*.*'
-// }
-
-
-
-// task validateShpFile(type: CsvValidator, dependsOn: unzipShape) {        // geht nicht wegen GeometryCHLV95_V1: model(s) not found
-task validateShpFile(type: ShpValidator) {
-    models = 'SO_AWJF_Waldplan_Bestandeskarte_20230111'
-    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-//     modeldir = System.getProperty('user.dir')
-//     dataFiles = [file('upload/waldplan.shp')]
-    dataFiles = ['waldplan.shp']
+task copyZipFile(type: Copy) {
+    from 'upload/'
+    into 'upload/'
+    include('uploadFile')
+    rename('uploadFile', 'uploadFile.zip')
 }
 
+task unzipData(type: Copy, dependsOn: copyZipFile) {
+    from zipTree(file('upload/uploadFile.zip'))
+    into file('upload')
+    include '**/*.*'
+}
 
-// task importWaldplan(type: ShpImport, dependsOn: validateShpFile) {
-task importWaldplan(type: ShpImport) {
+task importWaldplan(type: ShpImport, dependsOn: unzipData) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = 'awjf_waldplan_bestandeskarte_v1'
     tableName = 'waldplan_bestandeskarte'
-    
-    
-    dataFile = 'waldplan.shp' 
-//     dataFile = file('upload/waldplan.shp')
+    dataFile = file('upload/waldplan.shp')
 }
