@@ -21,7 +21,7 @@ def shpName = 'waldplan.shp'
 //     rename('uploadFile', 'uploadFile.zip')
 // }
 // 
-// task unzipData(type: Copy, dependsOn: copyZipFile){
+// task unzipData(type: Copy, dependsOn: copyZipFile) {
 //     from zipTree(file('upload/uploadFile.zip'))
 //     into file('upload')
 //     include '**/*.*'
@@ -39,7 +39,8 @@ task validateShpFile(type: ShpValidator) {
 }
 
 
-task importWaldplan(type: ShpImport, dependsOn: validateShpFile){
+// task importWaldplan(type: ShpImport, dependsOn: validateShpFile) {
+task importWaldplan(type: ShpImport) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = 'awjf_waldplan_bestandeskarte_v1'
     tableName = 'waldplan_bestandeskarte'
