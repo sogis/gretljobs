@@ -4,8 +4,8 @@ import java.nio.file.Paths
 
 apply plugin: 'ch.so.agi.gretl'
 
-// defaultTasks 'validateData', 'deleteData_staging_pub', 'uploadXtf'
-                                                                                                                defaultTasks 'validateData', 'deleteData_staging_pub'
+defaultTasks 'validateData', 'deleteData_staging_pub', 'uploadXtf'
+
 
 def fileName = "afu_gewaesserschutz_zonen_areale.xtf"
 def fileNameZip = "afu_gewaesserschutz_zonen_areale.zip"
@@ -65,7 +65,7 @@ task transferGewaesserschutz_pub(type: Db2Db, dependsOn: 'validateData') {
 
 task publishPub(type: Publisher, dependsOn: 'transferGewaesserschutz_pub'){
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    dataIdent = "ch.so.afu.gewaesserschutz.zonen_areale"
+    dataIdent = "ch.so.afu.gewaesserschutz"
     dbSchema = "afu_gewaesserschutz_pub_v1"
     modelsToPublish = "SO_AfU_Gewaesserschutz_Publikation_20220817"
     userFormats = true
@@ -76,7 +76,7 @@ task publishPub(type: Publisher, dependsOn: 'transferGewaesserschutz_pub'){
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
-task zipXtf(type: Zip, dependsOn: 'transferGewaesserschutz_pub'){
+task zipXtf(type: Zip, dependsOn: 'publishPub'){
     from "."
     include fileName
     archiveName fileNameZip
