@@ -4,7 +4,7 @@ import java.nio.file.Paths
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'uploadXtf'
+defaultTasks 'publishPub'
 
 def fileName = "afu_gewaesserschutz_bereiche.xtf"
 def fileNameZip = "afu_gewaesserschutz_bereiche.zip"
@@ -53,20 +53,7 @@ task validateData(type: IliValidator, dependsOn: 'exportData') {
     failOnError = true
 }
 
-task publishPub(type: Publisher, dependsOn: 'validateData'){
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    dataIdent = "ch.so.afu.gewaesserschutz.bereiche"
-    dbSchema = "afu_gewaesserschutz_pub_v1"
-    modelsToPublish = "SO_AfU_Gewaesserschutz_Publikation_20220817"
-    userFormats = true
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
-    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
-    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-}
-
-task zipXtf(type: Zip, dependsOn: 'publishPub'){
+task zipXtf(type: Zip, dependsOn: 'validateData') {
     from "."
     include fileName
     archiveName fileNameZip
@@ -92,3 +79,17 @@ task uploadXtf(dependsOn: 'zipXtf') {
         }
     }
 }
+
+task publishPub(type: Publisher, dependsOn: 'uploadXtf') {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dataIdent = "ch.so.afu.gewaesserschutz.bereiche"
+    dbSchema = "afu_gewaesserschutz_pub_v1"
+    modelsToPublish = "SO_AfU_Gewaesserschutz_Publikation_20220817"
+    userFormats = true
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
