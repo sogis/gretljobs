@@ -141,7 +141,6 @@ task publishAlt(type: Publisher, dependsOn: exportDataExport){
     dataIdent = 'ch.so.arp.nutzungsplanung.kommunal_modell_2017'
     modelsToPublish = 'SO_Nutzungsplanung_20171118'
     region = '.*'
-    userFormats = true
     sourcePath = file("modell_2017/" + bfsnr + ".xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
