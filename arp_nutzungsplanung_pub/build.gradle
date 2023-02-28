@@ -40,7 +40,6 @@ task publishEdit(type: Publisher, dependsOn: validateDataEdit){
     dataIdent = 'ch.so.arp.nutzungsplanung.kommunal.relational'
     modelsToPublish = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118'
     region = '.*'
-    userFormats = true
     sourcePath = file("kommunal_edit/" + bfsnr + ".xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
