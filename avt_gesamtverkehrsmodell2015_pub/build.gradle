@@ -18,9 +18,10 @@ task publishedit(type: Publisher){
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
   if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
+task transferAvtGesamtverkehrsmodellPub(type: Db2Db, dependsOn: 'publishedit') {
 */
 task transferAvtGesamtverkehrsmodellPub(type: Db2Db) {
--task transferAvtGesamtverkehrsmodellPub(type: Db2Db, dependsOn: 'publishedit') {
+
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
