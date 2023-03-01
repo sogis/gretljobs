@@ -125,7 +125,7 @@ task transferDataExport(type: SqlExecutor, dependsOn: 'deleteData_export') {
     description = "Führt den Datenumbau in das Schema arp_nutzungsplanung_export_v1 durch. Das braucht es, damit die Daten auch im alten Modell abgegeben werden können"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [bfsnr_param:bfsnr]
-    sqlFiles = ["insert_arp_nutzungsplanung_export_20221108.sql"]
+    sqlFiles = ["insert_arp_nutzungsplanung_export_2017.sql"]
 }
 
 task exportDataExport (type: Ili2pgExport, dependsOn: 'transferDataExport') {
@@ -147,4 +147,72 @@ task publishAlt(type: Publisher, dependsOn: exportDataExport){
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+}
+
+// EXPORT AI 
+
+task deleteMgdmLandUsesPlansData(type: SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['truncate_all_arp_npl_mgdm_tables.sql']
+}
+
+task importMgdmHauptnutzung(type: Ili2pgImport, dependsOn: 'deleteMgdmLandUsesPlansData') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdm
+    dbschema = dbSchemaMgdmLandUsePlans
+    dataset = 'catalogue_ch'
+    dataFile = file("Nutzungsplanung_Catalogue_CH_V1_2_20210901.xml")
+}
+
+//Hier wird ein leeres XTF importiert, damit ein Basket vorhanden ist, auf den im nächsten Schritt dann referenziert werden kann. 
+task importEmptyXtf(type: Ili2pgImport, dependsOn: 'importMgdmHauptnutzung') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdm
+    dbschema = dbSchemaMgdmLandUsePlans
+    dataset = 'data'
+    dataFile = file("arp_nutzungsplanung_empty.xtf")
+}
+
+task transferLandUsePlansData(type: SqlExecutor, dependsOn: 'importEmptyXtf') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['arp_nutzungsplanung_kommunal_mgdm.sql']
+}
+
+task exportMgdmLandUsePlans(type: Ili2pgExport, dependsOn: 'transferLandUsePlansData') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdm
+    dbschema = dbSchemaMgdmLandUsePlans
+    dataFile = file(mgdmLandUsePlansXtfFileName)
+    disableValidation = true
+    dataset = 'data'  
+}
+
+task validateMgdmLandUsePlans(type: IliValidator, dependsOn: 'exportMgdmLandUsePlans') {
+    dataFiles = [file("Nutzungsplanung_Catalogue_CH_V1_2_20210901.xml"), file(mgdmLandUsePlansXtfFileName)]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    logFile = "ilivalidator_landuseplans.log"
+    allObjectsAccessible = true
+    configFile = "config.toml"
+    failOnError = true
+}
+
+task zipMgdmLandUsePlans(type: Zip, dependsOn: 'validateMgdmLandUsePlans'){
+    from pathToTempFolder
+    from "."
+    include mgdmLandUsePlansXtfFileName
+    include "config.toml"
+    archiveName mgdmLandUsePlansZipFileName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadMgdmLandUsePlans(dependsOn: 'zipMgdmLandUsePlans') {
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_nutzungsplanung", "-F",
+                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), mgdmLandUsePlansZipFileName), "-F", "publish=true",
+                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
 }
