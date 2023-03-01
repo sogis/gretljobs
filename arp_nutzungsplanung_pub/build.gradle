@@ -40,7 +40,6 @@ task publishEdit(type: Publisher, dependsOn: validateDataEdit){
     dataIdent = 'ch.so.arp.nutzungsplanung.kommunal.relational'
     modelsToPublish = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118'
     region = '.*'
-    userFormats = true
     sourcePath = file("kommunal_edit/" + bfsnr + ".xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
@@ -126,7 +125,7 @@ task transferDataExport(type: SqlExecutor, dependsOn: 'deleteData_export') {
     description = "Führt den Datenumbau in das Schema arp_nutzungsplanung_export_v1 durch. Das braucht es, damit die Daten auch im alten Modell abgegeben werden können"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [bfsnr_param:bfsnr]
-    sqlFiles = ["insert_arp_nutzungsplanung_export_20221108.sql"]
+    sqlFiles = ["insert_arp_nutzungsplanung_export_2017.sql"]
 }
 
 task exportDataExport (type: Ili2pgExport, dependsOn: 'transferDataExport') {
@@ -142,7 +141,6 @@ task publishAlt(type: Publisher, dependsOn: exportDataExport){
     dataIdent = 'ch.so.arp.nutzungsplanung.kommunal_modell_2017'
     modelsToPublish = 'SO_Nutzungsplanung_20171118'
     region = '.*'
-    userFormats = true
     sourcePath = file("modell_2017/" + bfsnr + ".xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]

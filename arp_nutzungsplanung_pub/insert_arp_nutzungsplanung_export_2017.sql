@@ -104,6 +104,8 @@ FROM
     arp_nutzungsplanung_v1.nutzungsplanung_grundnutzung
 WHERE
     t_datasetname::int4 = ${bfsnr_param}
+    AND 
+    rechtsstatus = 'inKraft'
 ;
 
 --Beziehung Dokument Grundnutzung
