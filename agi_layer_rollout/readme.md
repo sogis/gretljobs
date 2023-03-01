@@ -4,7 +4,24 @@ Kopiert die Metadaten von der Integration in die Zielumgebung.
 Ausser der drei Tabellen simitheme_sub_area, simitheme_published_sub_area
 und simitheme_published_sub_area_helper werden alle Daten kopiert 1:1.
 
-Master für die drei Tabellen ist nicht die Integration, sondern die Zielumgebung. Die Verknüpfung durch Befüllen von simitheme_published_sub_area erfolgt ganz am Schluss dieses Jobs durch den Task **restorePubDates**.
+## Erhalt des produktiven Publikationsdatums
+
+Master für die drei Tabellen ist nicht die Integration, sondern die Zielumgebung. Ablauf der Verknüpfung Integration -> Zielumgebung
+
+Auf Zielumgebung:
+* Delete * from simitheme_published_sub_area_helper
+* Kopieren der Attribute und Identifier von simitheme_published_sub_area und den verknüpften Tabellen nach simitheme_published_sub_area_helper 
+* Delete * from simitheme_published_sub_area
+* Aktualisierung aller anderen Tabellen aus Integration
+* Ermittlung der technischen ID's von Themenbereitstellung und SubArea aufgrund der Indentifier. "Rückinsert" des Inhalts von simitheme_published_sub_area_helper nach simitheme_published_sub_area.
+
+### Bei Anpassung
+
+Abwägen, ob eine Vereinfachung möglich ist durch:
+* Neue Attribute für die Identifier direkt in der Tabelle simitheme_published_sub_area (oder in einer 1:0..1 verknüpften Hilfstabelle simitheme_published_sub_area_identifier).
+* Entfernen der Hilfstabelle simitheme_published_sub_area_helper
+* Vorteil einfachere Queries, weniger Schemaredundanz
+* Nachteil FK's in simitheme_published_sub_area müssen (temporär) nullable sein.
 
 ## Zielumgebung
 
