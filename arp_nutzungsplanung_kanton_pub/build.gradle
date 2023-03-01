@@ -36,7 +36,6 @@ task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
 task publishEdit(type: Publisher, dependsOn: validateDataEdit){
     dataIdent = 'ch.so.arp.nutzungsplanung.kantonal.relational'
     modelsToPublish = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118'
-    userFormats = true
     sourcePath = file("kanton/kanton.xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
