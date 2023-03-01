@@ -134,7 +134,7 @@ task exportDataExport (type: Ili2pgExport, dependsOn: 'transferDataExport') {
 task publishAlt(type: Publisher, dependsOn: exportDataExport){
     dataIdent = 'ch.so.arp.nutzungsplanung.kantonal_modell_2017'
     modelsToPublish = 'SO_Nutzungsplanung_20171118'
-    userFormats = true
+    userFormats = false
     sourcePath = file("kanton_alt/kanton_modell_2017.xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
