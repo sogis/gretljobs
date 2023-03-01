@@ -20,7 +20,7 @@ task publishedit(type: Publisher){
 }
 */
 task transferAvtGesamtverkehrsmodellPub(type: Db2Db) {
---task transferAvtGesamtverkehrsmodellPub(type: Db2Db, dependsOn: 'publishedit') {
+-task transferAvtGesamtverkehrsmodellPub(type: Db2Db, dependsOn: 'publishedit') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
