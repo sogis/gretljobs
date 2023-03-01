@@ -5,7 +5,20 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferAvtGesamtverkehrsmodellPub'
 
-task transferAvtGesamtverkehrsmodellPub(type: Db2Db) {
+task publishedit(type: Publisher){
+  dataIdent = "ch.so.avt.verkehrsmodell"
+  userFormats = true
+  database = [dbUriEdit,dbUserEdit,dbPwdEdit]
+  dbSchema = "avt_gesamtverkehrsmodell_2015_v1"
+  modelsToPublish = "SO_AVT_Gesamtverkehrsmodell_2015_20220729"
+  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+task transferAvtGesamtverkehrsmodellPub(type: Db2Db, dependsOn: 'publishedit') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
