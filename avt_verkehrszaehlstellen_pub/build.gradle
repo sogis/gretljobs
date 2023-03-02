@@ -7,8 +7,6 @@ defaultTasks 'refreshSolr'
 
 task publiedit(type: Publisher){
     dataIdent = "ch.so.avt.verkehrszaehlstellen.relational"
-    userFormats = true
-
     database = [dbUriEdit,dbUserEdit,dbPwdEdit]
     dbSchema = "avt_verkehrszaehlstellen"
     modelsToPublish = "SO_AVT_Verkehrszaehlstellen_20190206"
