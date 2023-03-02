@@ -13,7 +13,6 @@ def schemaNameEdit = "afu_abbaustellen_v1"
 
 task publiedit(type: Publisher){
   dataIdent = "ch.so.afu.abbaustellen.relational"
-  userFormats = true
   database = [dbUriEdit, dbUserEdit, dbPwdEdit]
   dbSchema = "afu_abbaustellen_v1"
   modelsToPublish = "SO_AFU_ABBAUSTELLEN_20210630"
