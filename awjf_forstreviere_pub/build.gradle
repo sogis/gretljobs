@@ -7,8 +7,6 @@ defaultTasks 'publipub'
 
 task publiedit(type: Publisher){
     dataIdent = "ch.so.awjf.forstreviere.relational"
-    userFormats = true
-
     database = [dbUriEdit,dbUserEdit,dbPwdEdit]
     dbSchema = "awjf_forstreviere"
     modelsToPublish = "SO_Forstreviere_20170512"
