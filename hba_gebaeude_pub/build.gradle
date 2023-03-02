@@ -6,7 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferToPub'
 
 def iliModelName = "SO_HBA_Gebaeude_20230111"
-def fileName = "20230116_sap_Gebaeude.csv"
+def fileName = "20230124_sap_Gebaeude.csv"
 
 task validateCsv(type: CsvValidator) {
     description = "Validiert die CSV-Datei"
