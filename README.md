@@ -109,6 +109,7 @@ git checkout -b branchname
   * `ftpUserEmapis`, `ftpPwdEmapis`
   * `sftpServerGelan`, `sftpUserGelan`, `sftpPwdGelan`
   * `sftpServerSogis`, `sftpUserSogis`, `sftpPwdSogis`
+  * für Datentransfer Gemdat: `host = sftpServerSogis`, `user = sftpUserSogisGemdat`, `identity = file('/home/gradle/.sshkeys/id_rsa')`
   * `aiServer`, `aiUser`, `aiPwd`
   * `infofloraUser`, `infofloraPwd`
   * `igelToken`
