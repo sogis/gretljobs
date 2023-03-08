@@ -13,19 +13,3 @@ task transferAfuImmissionskartenPub(type: Db2Db){
                     'afu_immissionskarten_luft_pub_v1.luftbelastung_2010_2020', true)
     ];
 }
-
-/*
-task publipub(type: Publisher, dependsOn:'transferAfuImmissionskartenPub'){
-  dataIdent = "ch.so.afu.luftbelastung"
-  userFormats = true
-  database = [dbUriPub,dbUserPub,dbPwdPub]
-  dbSchema = "afu_immissionskarten_luft_pub_v1"
-  modelsToPublish = "SO_AFU_Immissionskarten_20220522"
-
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
-  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
-  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-}
-*/
