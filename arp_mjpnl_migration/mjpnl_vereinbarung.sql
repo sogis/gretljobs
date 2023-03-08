@@ -36,7 +36,11 @@ SELECT
   FALSE AS ist_nutzungsvereinbarung,
   Round((ST_Area(vbggeom.wkb_geometry) / 10000)::NUMERIC,2) AS flaeche, --Fläche IN ha, auf 2 Kommastellen gerundet
   rrb.rrbnr AS rrb_nr,
-  rrb.rrbdatum AS rrb_publiziert_ab,
+  --Input-Daten haben tw komische RRB-Datum
+  CASE
+      WHEN rrb.rrbdatum < '1582-01-01'::DATE THEN '1582-01-01'::DATE
+      ELSE rrb.rrbdatum
+  END AS rrb_publiziert_ab,
   'aktiv' AS status_vereinbarung, --TODO: MAPPING von Status code alt --> neu
   FALSE AS soemmerungsgebiet, --im Postprocessing zu ersetzen
   'MJPNL_2020' AS mjpnl_version,
@@ -48,7 +52,7 @@ SELECT
   7::int8 AS uzl_subregion, -- im Postprocessing zu ersetzen
   'migration' AS dateipfad_oder_url,
   vbg.gueltigab AS erstellungsdatum,
-  vbg.bearbeiter AS operator_erstellung
+  RTRIM(vbg.bearbeiter) AS operator_erstellung
 FROM mjpnatur.flaechen mjpfl
    LEFT JOIN mjpnatur.vereinbarung vbg
      ON mjpfl.vereinbarungid = vbg.vereinbarungsid AND vbg.archive = 0
