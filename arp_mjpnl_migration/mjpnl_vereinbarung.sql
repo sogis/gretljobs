@@ -46,7 +46,7 @@ SELECT
   ',"vbart_vbflaeche_alt":' || COALESCE(vbartfl.bez,'NULL') ||
   '}'  AS bemerkung, --TODO: Zwischenparkieren weiterer alter Attribut-Werte
   7::int8 AS uzl_subregion, -- im Postprocessing zu ersetzen
-  NULL::TEXT AS dateipfad_oder_url,
+  'migration' AS dateipfad_oder_url,
   vbg.gueltigab AS erstellungsdatum,
   vbg.bearbeiter AS operator_erstellung
 FROM mjpnatur.flaechen mjpfl
