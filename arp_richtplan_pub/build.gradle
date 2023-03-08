@@ -5,7 +5,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'publipub'
 
-
+/*
 task transferArpRichtplanPubSogis(type: Db2Db) {
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
@@ -56,8 +56,10 @@ task addArpRichtplanPubDocuments(type: SqlExecutor, dependsOn: 'transferArpRicht
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ['arp_richtplan_pub_add_documents.sql']
 }
-
 task publipub(type: Publisher, dependsOn: 'addArpRichtplanPubDocuments'){
+*/
+
+task publipub(type: Publisher){
   dataIdent = "ch.so.arp.richtplan"
   userFormats = true
   database = [dbUriPub,dbUserPub,dbPwdPub]
