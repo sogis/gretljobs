@@ -3,7 +3,7 @@ SELECT
   'bla' AS vereinbarungs_nr,--im Postprocessing zu ersetzen
   vbg.vbnr AS vereinbarungs_nr_alt,
   mjpfl.flaecheid AS flaechen_id_alt,
-  vbggeom.wkb_geometry AS geometrie,
+  ST_Multi(vbggeom.wkb_geometry)::geometry(MultiPolygon,2056) AS geometrie,
   9999999 AS gelan_pid_gelan, --im Postprocessing zu ersetzen
   '9999999' AS gelan_bewe_id, --im Postprocessing zu ersetzen
   FALSE AS uebersteuerung_bewirtschafter,
