@@ -37,15 +37,14 @@ SELECT
   Round((ST_Area(vbggeom.wkb_geometry) / 10000)::NUMERIC,2) AS flaeche, --Fläche IN ha, auf 2 Kommastellen gerundet
   rrb.rrbnr AS rrb_nr,
   rrb.rrbdatum AS rrb_publiziert_ab,
-  'angemeldet' AS status_vereinbarung, --TODO: MAPPING von Status code alt --> neu
+  'aktiv' AS status_vereinbarung, --TODO: MAPPING von Status code alt --> neu
   FALSE AS soemmerungsgebiet, --im Postprocessing zu ersetzen
   'MJPNL_2020' AS mjpnl_version,
   4::integer AS kontrollintervall,
-  COALESCE(vbg.notiz,'') || '\n§\n' || 
-  vbartvb.bez AS vereinbarungsart_vereinbarung ||
-  vbartfl.bez AS vereinbarungsart_flaeche ||
-  
-  AS bemerkung, --TODO: Zwischenparkieren diverser alter Attribut-Werte
+  COALESCE(vbg.notiz,'') || E'\n§\n' ||
+  '{"vbart_vereinbarung_alt":' || COALESCE(vbartvb.bez,'NULL') ||
+  ',"vbart_vbflaeche_alt":' || COALESCE(vbartfl.bez,'NULL') ||
+  '}'  AS bemerkung, --TODO: Zwischenparkieren weiterer alter Attribut-Werte
   7::int8 AS uzl_subregion, -- im Postprocessing zu ersetzen
   NULL::TEXT AS dateipfad_oder_url,
   vbg.gueltigab AS erstellungsdatum,
