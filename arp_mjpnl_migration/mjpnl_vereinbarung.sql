@@ -68,6 +68,7 @@ FROM mjpnatur.flaechen mjpfl
 WHERE
     mjpfl.archive = 0
     AND vbggeom.wkb_geometry IS NOT NULL
+    AND ST_Area(vbggeom.wkb_geometry) > 1 --IGNORE small OR emptry geometries
     AND NOT (vbartvb.bez = 'Waldränder' AND vbartfl.bez IS NULL)
     AND NOT (vbartvb.bez = 'Waldränder' AND vbartfl.bez = 'Waldränder')
     AND NOT (vbartvb.bez IS NULL AND vbartfl.bez = 'Waldränder')
