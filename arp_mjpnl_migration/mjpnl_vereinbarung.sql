@@ -24,6 +24,7 @@ SELECT
     WHEN vbartvb.bez = 'Heumatten' AND vbartfl.bez = 'Waldränder' THEN 'Wiese'
     WHEN vbartvb.bez = 'Heumatten' AND vbartfl.bez = 'Weiden' THEN 'Weide_LN'
     WHEN vbartvb.bez = 'Hochstamm' AND vbartfl.bez IS NULL THEN 'OBL'
+    WHEN vbartvb.bez = 'Hochstamm' AND vbartfl.bez = 'Waldränder' THEN 'OBL'
     WHEN vbartvb.bez = 'Hochstamm' AND vbartfl.bez = 'Weiden' THEN 'Weide_LN'
     WHEN vbartvb.bez = 'Hochstamm' AND vbartfl.bez = 'Wiesen am Bach' THEN 'Wiese'
     WHEN vbartvb.bez = 'Waldränder' AND vbartfl.bez = 'Weiden' THEN 'Weide_LN'
