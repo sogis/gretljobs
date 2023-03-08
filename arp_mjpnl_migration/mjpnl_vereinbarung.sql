@@ -66,6 +66,7 @@ FROM mjpnatur.flaechen mjpfl
      ON mjpfl.flaechenartid = vbartfl.vbartid AND vbartfl.archive = 0
 WHERE
     mjpfl.archive = 0
+    AND vbggeom.wkb_geometry IS NOT NULL
     AND NOT (vbartvb.bez = 'Waldränder' AND vbartfl.bez IS NULL)
     AND NOT (vbartvb.bez = 'Waldränder' AND vbartfl.bez = 'Waldränder')
     AND NOT (vbartvb.bez IS NULL AND vbartfl.bez = 'Waldränder')
