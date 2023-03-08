@@ -52,7 +52,7 @@ SELECT
   7::int8 AS uzl_subregion, -- im Postprocessing zu ersetzen
   'migration' AS dateipfad_oder_url,
   COALESCE(vbg.gueltigab,'1900-01-01'::DATE) AS erstellungsdatum,
-  RTRIM(vbg.bearbeiter) AS operator_erstellung
+  COALESCE(RTRIM(vbg.bearbeiter),'unbekannt (Migration)') AS operator_erstellung
 FROM mjpnatur.flaechen mjpfl
    LEFT JOIN mjpnatur.vereinbarung vbg
      ON mjpfl.vereinbarungid = vbg.vereinbarungsid AND vbg.archive = 0
