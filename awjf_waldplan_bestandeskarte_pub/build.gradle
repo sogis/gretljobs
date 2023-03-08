@@ -40,3 +40,16 @@ task transferAwjfWaldplanPub(type: Db2Db, dependsOn: transferAwjfWaldplanUebersi
 task refreshSolr(type: Exec, dependsOn: transferAwjfWaldplanPub) {
     commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.bestandeskarte_wald_flaechen,ch.so.awjf.waldplan.waldeigentum,ch.so.awjf.waldplan.waldfunktion,ch.so.awjf.waldplan.waldplantyp'
 }
+
+// task publishPub(type: Publisher, dependsOn: 'publipubOberhoehenbonitaet') {
+//     database = [dbUriPub, dbUserPub, dbPwdPub]
+//     dataIdent = "ch.so.awjf.waldplan_bestandeskarte"
+//     dbSchema = "awjf_waldplan_bestandeskarte_pub_v1"
+//     modelsToPublish = "SO_AWJF_Waldplan_Bestandeskarte_Publikation_20230111"
+//     userFormats = true
+//     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+//     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+//     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+//     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+//     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+// }
