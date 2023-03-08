@@ -48,7 +48,7 @@ SELECT
   7::int8 AS uzl_subregion, -- im Postprocessing zu ersetzen
   NULL::TEXT AS dateipfad_oder_url,
   vbg.gueltigab AS erstellungsdatum,
-  vbg.bearbeiter AS operatur_erstellung
+  vbg.bearbeiter AS operator_erstellung
 FROM mjpnatur.flaechen mjpfl
    LEFT JOIN mjpnatur.vereinbarung vbg
      ON mjpfl.vereinbarungid = vbg.vereinbarungsid AND vbg.archive = 0
