@@ -50,7 +50,7 @@ SELECT
   '{"vbart_vereinbarung_alt":' || COALESCE(vbartvb.bez,'NULL') ||
   ',"vbart_vbflaeche_alt":' || COALESCE(vbartfl.bez,'NULL') ||
   '}'  AS bemerkung, --TODO: Zwischenparkieren weiterer alter Attribut-Werte
-  7::int8 AS uzl_subregion, -- im Postprocessing zu ersetzen
+  18::int8 AS uzl_subregion, -- im Postprocessing zu ersetzen
   'migration' AS dateipfad_oder_url,
   COALESCE(vbg.gueltigab,'1900-01-01'::DATE) AS erstellungsdatum,
   COALESCE(RTRIM(vbg.bearbeiter),'unbekannt (Migration)') AS operator_erstellung
