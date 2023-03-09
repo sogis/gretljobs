@@ -18,7 +18,7 @@ WITH vbtmp AS (
            WHEN vb.vereinbarungsart = 'ALR_Saum' THEN 'ALRS'
          END AS beznr_vbart          
     FROM
-      {DB_Schema_MJPNL}.mjpnl_vereinbarung vb
+      ${DB_Schema_MJPNL}.mjpnl_vereinbarung vb
       LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksgrenze bez
         ON ST_Within(ST_PointOnSurface(vb.geometrie),bez.geometrie)
 ),
@@ -31,7 +31,7 @@ vbnr AS (
 )
 -- das eigentliche Update basierend auf den obigen Temporärdaten mit Zählern
 UPDATE
-     {DB_Schema_MJPNL}.mjpnl_vereinbarung vb
+     ${DB_Schema_MJPNL}.mjpnl_vereinbarung vb
   SET
      vereinbarungs_nr = vbnr.vbnr
     FROM vbnr

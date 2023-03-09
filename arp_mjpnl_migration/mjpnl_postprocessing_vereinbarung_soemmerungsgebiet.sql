@@ -13,7 +13,7 @@ WITH lwzon AS (
       WHERE typ.typ_de = 'Sömmerungsgebiet'
 )
 UPDATE
-     {DB_Schema_MJPNL}.mjpnl_vereinbarung vb
+     ${DB_Schema_MJPNL}.mjpnl_vereinbarung vb
   SET
      soemmerungsgebiet = True,
      vereinbarungsart = CASE WHEN vereinbarungsart = 'Weide_LN' THEN 'Weide_SOEG' ELSE vereinbarungsart END
