@@ -2,6 +2,10 @@
 
 Mit diesem Job werden die AV-Daten gemeindeweise über die Datenbanken und den Datenbezug publiziert.
 
+## Von AV-Aktualisierung abhängige Jobs
+
+Viele zeitgesteuerte Jobs sind von der AV-Aktualisierung abhängig (WMTS-Seeding, ...). Als Konvention wird davon ausgegangen, dass dieser Job vor Mitternacht durchgelaufen ist, und abhängige Jobs darum nach Mitternacht aktualisierte AV-Daten konsumieren werden.
+
 ## Aufteilung in Sub-Projekte
 
 Der Job ist in drei Sub-Projekte aufgeteilt. Gemäss dem jeweiligen INTERLIS-Modell.
