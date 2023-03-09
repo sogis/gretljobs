@@ -9,7 +9,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transfer_mjpnl'
+defaultTasks 'postprocessing_import'
 
 def DB_Schema_MJPNL = "arp_mjpnl_v1"
 
@@ -29,9 +29,16 @@ task "transfer_mjpnl"(type: Db2Db,dependsOn: "clean_mjpnl_before_import"){
     ];
 }
 
-task "postprocessing_import"(type: SqlExecutor,dependsOn: "transfer_mjpnl") {
+task "postprocessing_soeg"(type: SqlExecutor,dependsOn: "transfer_mjpnl") {
+    description = "Check ob Vereinbarungsfläche in Sömmerungsgebiet liegt."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['mjpnl_postprocessing_vereinbarung_soemmerungsgebiet.sql']
+}
+
+task "postprocessing_import"(type: SqlExecutor,dependsOn: "postprocessing_soeg") {
     description = "Diverse spatial joins und default-Werte zuweisen."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
-    sqlFiles = ['mjpnl_postprocessing_vereinbarungen.sql']
+    sqlFiles = ['mjpnl_postprocessing_vereinbarungsnummern.sql']
 }
