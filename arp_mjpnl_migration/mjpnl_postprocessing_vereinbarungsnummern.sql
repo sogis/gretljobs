@@ -36,6 +36,6 @@ UPDATE
      vereinbarungs_nr = vbnr.vbnr
     FROM vbnr
  WHERE vb.mjpnl_version = 'MJPNL_2020'
-   AND vbg.vereinbarungs_nr = 'bla'
+   AND vb.vereinbarungs_nr = 'bla'
    AND vb.t_id = vbnr.t_id
 ;
