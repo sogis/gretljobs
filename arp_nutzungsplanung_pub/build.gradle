@@ -4,12 +4,24 @@
 
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
+
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'importXTF_stage', 'importXTF_pub'
-//defaultTasks 'validateDataEdit'
-//List<String> bfsnr = Arrays.asList("2492")
+defaultTasks 'importXTF_stage', 'importXTF_pub', 'uploadMgdmLandUsePlans'
+//defaultTasks 'uploadMgdmLandUsePlans'
+//def bfsnr = '2492'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def iliModelMgdm = "Nutzungsplanung_V1_2"
+def dbSchemaMgdmLandUsePlans = "arp_nutzungsplanung_mgdm_v1"
+def mgdmLandUsePlansXtfFileName = "mgdm/ch.so.arp.npl.mgdm."+bfsnr+".xtf"
+def mgdmLandUsePlansZipFileName = "mgdm/ch.so.arp.npl.mgdm."+bfsnr+".zip"
+def mgdmLandUsePlansXtfFileNameclean = "ch.so.arp.npl.mgdm."+bfsnr+".xtf"
+
 
 task deleteData_transfer_pub (type: SqlExecutor) {
     description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_transfer_pub."
@@ -173,18 +185,19 @@ task importEmptyXtf(type: Ili2pgImport, dependsOn: 'importMgdmHauptnutzung') {
     dataFile = file("arp_nutzungsplanung_empty.xtf")
 }
 
+
 task transferLandUsePlansData(type: SqlExecutor, dependsOn: 'importEmptyXtf') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [bfsnr_param:bfsnr]
     sqlFiles = ['arp_nutzungsplanung_kommunal_mgdm.sql']
 }
 
 task exportMgdmLandUsePlans(type: Ili2pgExport, dependsOn: 'transferLandUsePlansData') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    models = iliModelMgdm
     dbschema = dbSchemaMgdmLandUsePlans
     dataFile = file(mgdmLandUsePlansXtfFileName)
-    disableValidation = true
-    dataset = 'data'  
+    disableValidation = true 
+    dataset = bfsnr
 }
 
 task validateMgdmLandUsePlans(type: IliValidator, dependsOn: 'exportMgdmLandUsePlans') {
@@ -198,18 +211,23 @@ task validateMgdmLandUsePlans(type: IliValidator, dependsOn: 'exportMgdmLandUseP
 
 task zipMgdmLandUsePlans(type: Zip, dependsOn: 'validateMgdmLandUsePlans'){
     from pathToTempFolder
-    from "."
-    include mgdmLandUsePlansXtfFileName
+    from "./mgdm"
+    include mgdmLandUsePlansXtfFileNameclean
     include "config.toml"
     archiveName mgdmLandUsePlansZipFileName
     destinationDir(file(pathToTempFolder))
 }
 
 task uploadMgdmLandUsePlans(dependsOn: 'zipMgdmLandUsePlans') {
+
+    def zipFilePath = Paths.get(pathToTempFolder.toString(), mgdmLandUsePlansZipFileName)
+    def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
+
     doLast {
-        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_nutzungsplanung", "-F",
-                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), mgdmLandUsePlansZipFileName), "-F", "publish=true",
-                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_nutzungsplanung_v1_2", "-F",
+                        "lv95_file=@" + zipFilePath, "-F", "publish=true", "-F", "replace_all=false", serverUrl
+                        ].execute().text
+
         println(response)
         if (response.contains("false") || response == null || response.trim().isEmpty()) {
             throw new GradleException()

@@ -1,39 +1,13 @@
 -- CTE braucht es, damit man anschliessend nur auf Punkttypen
 -- joined und nicht auf andere Typen mit dem gleiche Code.
-INSERT INTO arp_nutzungsplanung_mgdm_v1.t_ili2db_dataset
-    (
-     t_id,
-     datasetname 
-    )
-    SELECT
-        t_id, 
-        datasetname 
-    FROM 
-        arp_nutzungsplanung_v1.t_ili2db_dataset
-    WHERE 
-        datasetname = 2578::TEXT
-;
 
-INSERT INTO arp_nutzungsplanung_mgdm_v1.t_ili2db_basket
-    (
-     t_id,
-     dataset,
-     topic,
-     t_ili_tid,
-     attachmentkey,
-     domains
-    )
-    SELECT
-        t_id,
-        dataset,
-        topic,
-        t_ili_tid,
-        attachmentkey,
-        domains
-    FROM 
-        arp_nutzungsplanung_v1.t_ili2db_basket
-    WHERE 
-        dataset = (SELECT t_id FROM arp_nutzungsplanung_v1.t_ili2db_dataset WHERE datasetname = 2578::TEXT)
+-- Das leere xtf, welches importiert wird um t_basket und t_dataset zu erhalten, hat ein Dataset namens data. Das wird hier zur bfsnr korrigiert. 
+UPDATE 
+    arp_nutzungsplanung_mgdm_v1.t_ili2db_dataset 
+SET 
+    datasetname = ${bfsnr_param}
+WHERE 
+    datasetname = 'data'
 ;
 
 WITH typ_kt_grundnutzung AS (
@@ -93,8 +67,25 @@ INSERT INTO arp_nutzungsplanung_mgdm_v1.geobasisdaten_typ
     )
 SELECT 
     typ.t_id,
-    typ.t_basket,
-    typ.t_datasetname,
+    (SELECT 
+         t_id 
+     FROM 
+         arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+     WHERE 
+         topic = 'Nutzungsplanung_V1_2.Geobasisdaten'
+    ) AS t_basket, 
+    (SELECT 
+         datasetname 
+     FROM 
+         arp_nutzungsplanung_mgdm_v1.t_ili2db_dataset tid 
+     WHERE 
+         t_id = (SELECT 
+                     dataset 
+                 FROM 
+                     arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+                 WHERE 
+                     topic = 'Nutzungsplanung_V1_2.Geobasisdaten')
+    ) AS t_datasetname,
     typ.code_kommunal AS acode,
     typ.bezeichnung,
     typ.abkuerzung,
@@ -109,7 +100,7 @@ FROM
     LEFT JOIN typ_kt_grundnutzung AS typ_kt
     ON typ_kt.acode = substring(typ.typ_kt FROM 2 FOR 3)
 WHERE 
-    typ.t_datasetname = 2578::TEXT
+    typ.t_datasetname::int4 = ${bfsnr_param}
 ;
 
 INSERT INTO arp_nutzungsplanung_mgdm_v1.geobasisdaten_grundnutzung_zonenflaeche 
@@ -125,8 +116,25 @@ INSERT INTO arp_nutzungsplanung_mgdm_v1.geobasisdaten_grundnutzung_zonenflaeche
     )
 SELECT 
     t_id,
-    t_basket, 
-    t_datasetname,
+    (SELECT 
+         t_id 
+     FROM 
+         arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+     WHERE 
+         topic = 'Nutzungsplanung_V1_2.Geobasisdaten'
+    ) AS t_basket, 
+    (SELECT 
+         datasetname 
+     FROM 
+         arp_nutzungsplanung_mgdm_v1.t_ili2db_dataset tid 
+     WHERE 
+         t_id = (SELECT 
+                     dataset 
+                 FROM 
+                     arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+                 WHERE 
+                     topic = 'Nutzungsplanung_V1_2.Geobasisdaten')
+    ) AS t_datasetname,
     geometrie, 
     COALESCE(publiziertab,now()) AS publiziertab,
     rechtsstatus,
@@ -145,13 +153,11 @@ FROM
             typ_grundnutzung
         FROM 
             arp_nutzungsplanung_v1.nutzungsplanung_grundnutzung
-       -- WHERE 
-       --     t_datasetname <> '2403' WIESO???
     ) AS grundnutzung
 WHERE 
     ST_Area(geometrie) > 0
     AND 
-    t_datasetname = 2578::TEXT
+    t_datasetname::int4 = ${bfsnr_param}
 ;
 
 WITH typ_kt_flaeche AS (
@@ -272,8 +278,25 @@ INSERT INTO arp_nutzungsplanung_mgdm_v1.geobasisdaten_typ
     )
 SELECT 
     typ.t_id,
-    typ.t_basket, 
-    typ.t_datasetname,
+    (SELECT 
+         t_id 
+     FROM 
+         arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+     WHERE 
+         topic = 'Nutzungsplanung_V1_2.Geobasisdaten'
+    ) AS t_basket, 
+    (SELECT 
+         datasetname 
+     FROM 
+         arp_nutzungsplanung_mgdm_v1.t_ili2db_dataset tid 
+     WHERE 
+         t_id = (SELECT 
+                     dataset 
+                 FROM 
+                     arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+                 WHERE 
+                     topic = 'Nutzungsplanung_V1_2.Geobasisdaten')
+    ) AS t_datasetname,
     typ.code_kommunal AS acode,
     typ.bezeichnung,
     typ.abkuerzung,
@@ -286,7 +309,7 @@ FROM
     JOIN typ_kt_flaeche AS typ_kt
     ON typ_kt.acode = substring(typ.typ_kt FROM 2 FOR 3)
 WHERE 
-    typ.t_datasetname = 2578::TEXT
+    typ.t_datasetname::int4 = ${bfsnr_param}
 ;
 
 INSERT INTO arp_nutzungsplanung_mgdm_v1.geobasisdaten_ueberlagernde_festlegung
@@ -314,8 +337,25 @@ FROM
     (
         SELECT 
             flaeche.t_id,
-            flaeche.t_basket, 
-            flaeche.t_datasetname,
+            (SELECT 
+                 t_id 
+             FROM 
+                 arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+             WHERE 
+                 topic = 'Nutzungsplanung_V1_2.Geobasisdaten'
+            ) AS t_basket, 
+            (SELECT 
+                 datasetname 
+             FROM 
+                 arp_nutzungsplanung_mgdm_v1.t_ili2db_dataset tid 
+             WHERE 
+                 t_id = (SELECT 
+                             dataset 
+                         FROM 
+                             arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+                         WHERE 
+                             topic = 'Nutzungsplanung_V1_2.Geobasisdaten')
+            ) AS t_datasetname,
             ST_GeometryN(ST_CollectionExtract(ST_MakeValid(ST_RemoveRepeatedPoints(ST_SnapToGrid(flaeche.geometrie, 0.001))), 3), 1) AS geometrie,
             COALESCE(flaeche.publiziertab, now()) publiziertab,
             flaeche.rechtsstatus,
@@ -329,7 +369,7 @@ FROM
 WHERE 
     ST_Area(geometrie) > 0
     AND 
-    t_datasetname = 2578::TEXT
+    t_datasetname::int4 = ${bfsnr_param}
 ;
 
 WITH typ_kt_linie AS (
@@ -393,8 +433,25 @@ INSERT INTO arp_nutzungsplanung_mgdm_v1.geobasisdaten_typ
     )
 SELECT 
     typ.t_id,
-    typ.t_basket, 
-    typ.t_datasetname,
+    (SELECT 
+         t_id 
+     FROM 
+         arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+     WHERE 
+         topic = 'Nutzungsplanung_V1_2.Geobasisdaten'
+    ) AS t_basket, 
+    (SELECT 
+         datasetname 
+     FROM 
+         arp_nutzungsplanung_mgdm_v1.t_ili2db_dataset tid 
+     WHERE 
+         t_id = (SELECT 
+                     dataset 
+                 FROM 
+                     arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+                 WHERE 
+                     topic = 'Nutzungsplanung_V1_2.Geobasisdaten')
+    ) AS t_datasetname,
     typ.code_kommunal AS acode,
     typ.bezeichnung,
     typ.abkuerzung,
@@ -407,7 +464,7 @@ FROM
     JOIN typ_kt_linie AS typ_kt
     ON typ_kt.acode = substring(typ.typ_kt FROM 2 FOR 3)
 WHERE 
-    typ.t_datasetname = 2578::TEXT
+    typ.t_datasetname::int4 = ${bfsnr_param}
 ;
 
 INSERT INTO arp_nutzungsplanung_mgdm_v1.geobasisdaten_linienbezogene_festlegung  
@@ -434,8 +491,25 @@ FROM
     (
         SELECT 
             linie.t_id,        
-            linie.t_basket, 
-            linie.t_datasetname,
+            (SELECT 
+                 t_id 
+             FROM 
+                 arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+             WHERE 
+                 topic = 'Nutzungsplanung_V1_2.Geobasisdaten'
+            ) AS t_basket, 
+            (SELECT 
+                 datasetname 
+             FROM 
+                 arp_nutzungsplanung_mgdm_v1.t_ili2db_dataset tid 
+             WHERE 
+                 t_id = (SELECT 
+                             dataset 
+                         FROM 
+                             arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+                         WHERE 
+                             topic = 'Nutzungsplanung_V1_2.Geobasisdaten')
+            ) AS t_datasetname,
             ST_GeometryFromText(regexp_replace(regexp_replace(ST_AsText(geometrie),'(NaN NaN)+,*','','g'),',\)$',')'), 2056) AS geometrie,
             linie.publiziertab,
             linie.rechtsstatus,
@@ -447,7 +521,7 @@ FROM
             ON linie.typ_ueberlagernd_linie = typ.t_id             
     ) AS foo
 WHERE 
-    t_datasetname = 2578::TEXT
+    t_datasetname::int4 = ${bfsnr_param}
 ;
 
 WITH typ_kt_linie_erschliessung AS (
@@ -506,8 +580,25 @@ INSERT INTO arp_nutzungsplanung_mgdm_v1.geobasisdaten_typ
     )
 SELECT 
     typ.t_id,
-    typ.t_basket, 
-    typ.t_datasetname,
+    (SELECT 
+         t_id 
+     FROM 
+         arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+     WHERE 
+         topic = 'Nutzungsplanung_V1_2.Geobasisdaten'
+    ) AS t_basket, 
+    (SELECT 
+         datasetname 
+     FROM 
+         arp_nutzungsplanung_mgdm_v1.t_ili2db_dataset tid 
+     WHERE 
+         t_id = (SELECT 
+                     dataset 
+                 FROM 
+                     arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+                 WHERE 
+                     topic = 'Nutzungsplanung_V1_2.Geobasisdaten')
+    ) AS t_datasetname,
     typ.code_kommunal AS acode,
     typ.bezeichnung,
     typ.abkuerzung,
@@ -520,7 +611,7 @@ FROM
     JOIN typ_kt_linie_erschliessung AS typ_kt
     ON typ_kt.acode = substring(typ.typ_kt FROM 2 FOR 3)
 WHERE 
-    typ.t_datasetname = 2578::TEXT
+    typ.t_datasetname::int4 = ${bfsnr_param}
 ;
 
 INSERT INTO arp_nutzungsplanung_mgdm_v1.geobasisdaten_linienbezogene_festlegung  
@@ -536,7 +627,7 @@ INSERT INTO arp_nutzungsplanung_mgdm_v1.geobasisdaten_linienbezogene_festlegung
     )
 SELECT 
     t_id,
-    t_basket,
+    t_basket, 
     t_datasetname,
     ST_GeometryN(ST_CollectionExtract(ST_MakeValid(ST_RemoveRepeatedPoints(ST_SnapToGrid(foo.geometrie, 0.001))), 2), 1) AS geometrie,
     COALESCE(publiziertab,now()) AS publiziertab, 
@@ -547,8 +638,25 @@ FROM
     (
         SELECT 
             linie.t_id,        
-            linie.t_basket, 
-            linie.t_datasetname,
+            (SELECT 
+                 t_id 
+             FROM 
+                 arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+             WHERE 
+                 topic = 'Nutzungsplanung_V1_2.Geobasisdaten'
+            ) AS t_basket, 
+            (SELECT 
+                 datasetname 
+             FROM 
+                 arp_nutzungsplanung_mgdm_v1.t_ili2db_dataset tid 
+             WHERE 
+                 t_id = (SELECT 
+                             dataset 
+                         FROM 
+                             arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+                         WHERE 
+                             topic = 'Nutzungsplanung_V1_2.Geobasisdaten')
+            ) AS t_datasetname,
             ST_GeometryFromText(regexp_replace(regexp_replace(ST_AsText(geometrie),'(NaN NaN)+,*','','g'),',\)$',')'), 2056) AS geometrie,
             linie.publiziertab,
             linie.rechtsstatus,
@@ -560,8 +668,10 @@ FROM
             ON linie.typ_erschliessung_linienobjekt = typ.t_id             
     ) AS foo
 WHERE 
-    t_datasetname = 2578::TEXT
+    t_datasetname::int4 = ${bfsnr_param}
 ;
+
+--HIER 
 
 WITH typ_kt_ueberlagernd_punkt AS (
     INSERT INTO arp_nutzungsplanung_mgdm_v1.geobasisdaten_typ_kt
@@ -618,8 +728,25 @@ INSERT INTO arp_nutzungsplanung_mgdm_v1.geobasisdaten_typ
     )
 SELECT 
     typ.t_id,
-    typ.t_basket, 
-    typ.t_datasetname,
+    (SELECT 
+         t_id 
+     FROM 
+         arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+     WHERE 
+         topic = 'Nutzungsplanung_V1_2.Geobasisdaten'
+    ) AS t_basket, 
+    (SELECT 
+         datasetname 
+     FROM 
+         arp_nutzungsplanung_mgdm_v1.t_ili2db_dataset tid 
+     WHERE 
+         t_id = (SELECT 
+                     dataset 
+                 FROM 
+                     arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+                 WHERE 
+                     topic = 'Nutzungsplanung_V1_2.Geobasisdaten')
+    ) AS t_datasetname,
     typ.code_kommunal AS acode,
     typ.bezeichnung,
     typ.abkuerzung,
@@ -632,7 +759,7 @@ FROM
     JOIN typ_kt_ueberlagernd_punkt AS typ_kt
     ON typ_kt.acode = substring(typ.typ_kt FROM 2 FOR 3)
 WHERE 
-    typ.t_datasetname = 2578::TEXT
+    typ.t_datasetname::int4 = ${bfsnr_param}
 ;
 
 INSERT INTO arp_nutzungsplanung_mgdm_v1.geobasisdaten_objektbezogene_festlegung 
@@ -648,8 +775,25 @@ INSERT INTO arp_nutzungsplanung_mgdm_v1.geobasisdaten_objektbezogene_festlegung
     )
 SELECT 
     punkt.t_id,
-    punkt.t_basket,
-    punkt.t_datasetname,
+    (SELECT 
+         t_id 
+     FROM 
+         arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+     WHERE 
+         topic = 'Nutzungsplanung_V1_2.Geobasisdaten'
+    ) AS t_basket, 
+    (SELECT 
+         datasetname 
+     FROM 
+         arp_nutzungsplanung_mgdm_v1.t_ili2db_dataset tid 
+     WHERE 
+         t_id = (SELECT 
+                     dataset 
+                 FROM 
+                     arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+                 WHERE 
+                     topic = 'Nutzungsplanung_V1_2.Geobasisdaten')
+    ) AS t_datasetname,
     punkt.geometrie,
     punkt.publiziertab,
     punkt.rechtsstatus,
@@ -660,7 +804,7 @@ FROM
     JOIN arp_nutzungsplanung_mgdm_v1.geobasisdaten_typ AS typ 
     ON punkt.typ_ueberlagernd_punkt = typ.t_id 
 WHERE 
-    punkt.t_datasetname = 2578::TEXT
+    punkt.t_datasetname::int4 = ${bfsnr_param}
 ;
 -- DOKUMENTE
 INSERT INTO arp_nutzungsplanung_mgdm_v1.rechtsvorschrften_dokument 
@@ -680,8 +824,25 @@ INSERT INTO arp_nutzungsplanung_mgdm_v1.rechtsvorschrften_dokument
     )
 SELECT
     t_id,
-    t_basket, 
-    t_datasetname,
+    (SELECT 
+         t_id 
+     FROM 
+         arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+     WHERE 
+         topic = 'Nutzungsplanung_V1_2.Rechtsvorschriften'
+    ) AS t_basket, 
+    (SELECT 
+         datasetname 
+     FROM 
+         arp_nutzungsplanung_mgdm_v1.t_ili2db_dataset tid 
+     WHERE 
+         t_id = (SELECT 
+                     dataset 
+                 FROM 
+                     arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+                 WHERE 
+                     topic = 'Nutzungsplanung_V1_2.Rechtsvorschriften')
+    ) AS t_datasetname,
     t_ili_tid,
     'Rechtsvorschrift' AS typ, 
     titel||', '||offiziellertitel AS titel,
@@ -696,7 +857,7 @@ FROM
 WHERE 
     rechtsvorschrift IS TRUE 
     AND 
-    t_datasetname = 2578::TEXT
+    t_datasetname::int4 = ${bfsnr_param}
 ;
 
 WITH multilingualuri AS
@@ -712,14 +873,31 @@ WITH multilingualuri AS
         )
     SELECT
         nextval('arp_nutzungsplanung_mgdm_v1.t_ili2db_seq'::regclass) AS t_id,
-        t_basket,
-        t_datasetname,
+        (SELECT 
+             t_id 
+         FROM 
+             arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+         WHERE 
+             topic = 'Nutzungsplanung_V1_2.Rechtsvorschriften'
+        ) AS t_basket, 
+        (SELECT 
+             datasetname 
+         FROM 
+             arp_nutzungsplanung_mgdm_v1.t_ili2db_dataset tid 
+         WHERE 
+             t_id = (SELECT 
+                         dataset 
+                     FROM 
+                         arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+                     WHERE 
+                         topic = 'Nutzungsplanung_V1_2.Rechtsvorschriften')
+        ) AS t_datasetname,
         0 AS t_seq,
         rechtsvorschrften_dokument.t_id AS rechtsvrschrftn_dkment_textimweb
     FROM
         arp_nutzungsplanung_mgdm_v1.rechtsvorschrften_dokument AS rechtsvorschrften_dokument
     WHERE 
-        t_datasetname = 2578::TEXT 
+        t_datasetname::int4 = ${bfsnr_param} 
     RETURNING *
 )
 ,
@@ -727,8 +905,25 @@ localiseduri AS
 (
     SELECT 
         nextval('arp_nutzungsplanung_mgdm_v1.t_ili2db_seq'::regclass) AS t_id,
-        rechtsvorschrften_dokument.t_basket,
-        rechtsvorschrften_dokument.t_datasetname,        
+        (SELECT 
+             t_id 
+         FROM 
+             arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+         WHERE 
+             topic = 'Nutzungsplanung_V1_2.Rechtsvorschriften'
+        ) AS t_basket, 
+        (SELECT 
+             datasetname 
+         FROM 
+             arp_nutzungsplanung_mgdm_v1.t_ili2db_dataset tid 
+         WHERE 
+             t_id = (SELECT 
+                         dataset 
+                     FROM 
+                         arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+                     WHERE 
+                         topic = 'Nutzungsplanung_V1_2.Rechtsvorschriften')
+        ) AS t_datasetname,      
         0 AS t_seq,
         'de' AS alanguage,
         textimweb AS atext,
@@ -738,7 +933,7 @@ localiseduri AS
         RIGHT JOIN multilingualuri 
         ON multilingualuri.rechtsvrschrftn_dkment_textimweb = rechtsvorschrften_dokument.t_id
     WHERE 
-        rechtsvorschrften_dokument.t_datasetname = 2578::TEXT
+        rechtsvorschrften_dokument.t_datasetname::int4 = ${bfsnr_param}
 )
 INSERT INTO
     arp_nutzungsplanung_mgdm_v1.localiseduri
@@ -762,5 +957,6 @@ INSERT INTO
     FROM 
         localiseduri
 ;
+
 
 
