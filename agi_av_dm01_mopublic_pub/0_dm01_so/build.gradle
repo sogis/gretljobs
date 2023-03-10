@@ -106,9 +106,6 @@ task execAllPubTasks(){
     // Da 1_dm01_ch und 2_mopublic von 0_dm01_so abhängig sind, wird 0_dm01_so immer auch ausgeführt.
 }
 
-task deleteFtpFiles(dependsOn: execAllPubTasks) {}
-
-/*
 task deleteFtpFiles(type: FtpDelete, dependsOn: execAllPubTasks) {
     onlyIf {
         gretlEnvironment == "production"
@@ -120,6 +117,5 @@ task deleteFtpFiles(type: FtpDelete, dependsOn: execAllPubTasks) {
     remoteDir = "\\dm01avso24lv95\\itf"
     remoteFile = fileTree(dm01SoZippedDir) { include '*.zip' }
 }
-*/
 
 task execAllProjAllTasks(dependsOn: deleteFtpFiles){}
