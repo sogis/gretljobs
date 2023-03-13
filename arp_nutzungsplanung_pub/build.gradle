@@ -220,6 +220,7 @@ task zipMgdmLandUsePlans(type: Zip, dependsOn: 'validateMgdmLandUsePlans'){
 
 task uploadMgdmLandUsePlans(dependsOn: 'zipMgdmLandUsePlans') {
 
+    def aiLogin = aiUser + ":" + aiPwd
     def zipFilePath = Paths.get(pathToTempFolder.toString(), mgdmLandUsePlansZipFileName)
     def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
 
