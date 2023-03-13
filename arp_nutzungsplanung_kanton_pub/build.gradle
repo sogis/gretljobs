@@ -4,6 +4,9 @@
 
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
 
 apply plugin: 'ch.so.agi.gretl'
 
@@ -16,8 +19,8 @@ def mgdmLandUsePlansXtfFileName = "ch.so.arp.npl.mgdm.kanton.xtf"
 def mgdmLandUsePlansZipFileName = "ch.so.arp.npl.mgdm.kanton.zip"
 
 //defaultTasks 'importXTF_stage', 'importXTF_pub', 'publish'
-defaultTasks 'zipMgdmLandUsePlans'
-/*
+//defaultTasks 'uploadMgdmLandUsePlans'
+
 task deleteData_transfer_pub (type: SqlExecutor) {
     description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_transfer_pub."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -151,7 +154,7 @@ task publishAlt(type: Publisher, dependsOn: exportDataExport){
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
-*/
+
 // EXPORT AI 
 
 task deleteMgdmLandUsesPlansData(type: SqlExecutor) {
@@ -209,10 +212,16 @@ task zipMgdmLandUsePlans(type: Zip, dependsOn: 'validateMgdmLandUsePlans'){
 }
 
 task uploadMgdmLandUsePlans(dependsOn: 'zipMgdmLandUsePlans') {
+
+    def aiLogin = aiUser + ":" + aiPwd
+    def zipFilePath = Paths.get(pathToTempFolder.toString(), mgdmLandUsePlansZipFileName)
+    def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
+
     doLast {
-        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_nutzungsplanung", "-F",
-                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), mgdmLandUsePlansZipFileName), "-F", "publish=true",
-                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_nutzungsplanung_v1_2", "-F",
+                        "lv95_file=@" + zipFilePath, "-F", "publish=true", "-F", "replace_all=false", serverUrl
+                        ].execute().text
+
         println(response)
         if (response.contains("false") || response == null || response.trim().isEmpty()) {
             throw new GradleException()
