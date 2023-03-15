@@ -34,14 +34,13 @@ task refreshSolr(type: Exec, dependsOn: transferAwjfWaldplanPub) {
 
 task publishPub(type: Publisher, dependsOn: 'refreshSolr') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    dataIdent = 'ch.so.awjf.waldplan_bestandeskarte'
-    dbSchema = 'awjf_waldplan_bestandeskarte_pub_v1'
-    modelsToPublish = 'SO_AWJF_Waldplan_Bestandeskarte_Publikation_20230111'
-//     region = '.*'
+    dataIdent = "ch.so.awjf.waldplan_bestandeskarte"
+    dbSchema = "awjf_waldplan_bestandeskarte_pub_v1"
+    modelsToPublish = "SO_AWJF_Waldplan_Bestandeskarte_Publikation_20230111"
     userFormats = true
-    target = ['sftp://$sftpServerSogis/$sftpUserSogis', sftpUserSogis, sftpPwdSogis]
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-    grooming = new File(file(projectDir).getParentFile(), 'publisher_grooming.json')
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
