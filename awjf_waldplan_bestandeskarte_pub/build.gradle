@@ -1,9 +1,6 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-import java.nio.file.Paths
-import de.undercouch.gradle.tasks.download.Download
-
 apply plugin: 'ch.so.agi.gretl'
 
 
@@ -12,9 +9,6 @@ defaultTasks 'publishPub'
 
 task deleteAwjfWaldplanPub(type: SqlExecutor){
     database = [dbUriPub, dbUserPub, dbPwdPub]
-//     if ( bfsnrUeberarbeitung.length() > 0 ) {
-//         sqlParameters = [bfsnr_param:'WHERE waldplan_bestandeskarte.gem_bfs NOT IN (' + bfsnrUeberarbeitung + ')']
-//     }
     sqlFiles = ['delete_awjf_waldplan_bestandeskarte_pub.sql']      
 }
 
@@ -29,9 +23,6 @@ task transferAwjfWaldplanUebersichtPub(type: Db2Db, dependsOn: deleteAwjfWaldpla
 task transferAwjfWaldplanPub(type: Db2Db, dependsOn: transferAwjfWaldplanUebersichtPub){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
-//     if ( bfsnrUeberarbeitung.length() > 0 ) {
-//         sqlParameters = [bfsnr_param:'AND waldplan_bestandeskarte.gem_bfs NOT IN (' + bfsnrUeberarbeitung + ')']
-//     }
     transferSets = [
             new TransferSet('awjf_waldplan_bestandeskarte_pub.sql', 'awjf_waldplan_bestandeskarte_pub_v1.waldplan_bestandeskarte', false)
     ];        
