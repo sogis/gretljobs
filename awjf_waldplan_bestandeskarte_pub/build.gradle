@@ -45,8 +45,8 @@ task publishPub(type: Publisher, dependsOn: 'refreshSolr') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = 'ch.so.awjf.waldplan_bestandeskarte'
     dbSchema = 'awjf_waldplan_bestandeskarte_pub_v1'
-//     modelsToPublish = 'SO_AWJF_Waldplan_Bestandeskarte_Publikation_20230111'
-    region = '.*'
+    modelsToPublish = 'SO_AWJF_Waldplan_Bestandeskarte_Publikation_20230111'
+//     region = '.*'
     userFormats = true
     target = ['sftp://$sftpServerSogis/$sftpUserSogis', sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
