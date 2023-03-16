@@ -1,5 +1,5 @@
 SELECT
-    ST_MakeValid(ST_RemoveRepeatedPoints(ST_SnapToGrid(geometrie, 0.001))) AS geometrie,
+    ST_RemoveRepeatedPoints(geometrie, 0.1) AS geometrie,
     id_wp,
     fid_amtei,
     fid_fk,
