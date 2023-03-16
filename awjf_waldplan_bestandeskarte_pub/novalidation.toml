@@ -1,0 +1,6 @@
+["PARAMETER"]
+# Globale Validator Einstellungen
+#
+# Validierung generell ausschalten
+# on/off
+validation="off"
