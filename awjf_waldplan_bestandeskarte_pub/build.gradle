@@ -33,7 +33,7 @@ task refreshSolr(type: Exec, dependsOn: transferAwjfWaldplanPub) {
 }
 
 task publishPub(type: Publisher, dependsOn: 'refreshSolr') {
-    database = [dbUriPub, dbUserPub, dbPwdPub]
+    database = [switchToProd(dbUriPub), dbUserPub, dbPwdPub]
     dataIdent = "ch.so.awjf.waldplan_bestandeskarte"
     dbSchema = "awjf_waldplan_bestandeskarte_pub_v1"
     modelsToPublish = "SO_AWJF_Waldplan_Bestandeskarte_Publikation_20230111"
@@ -44,4 +44,12 @@ task publishPub(type: Publisher, dependsOn: 'refreshSolr') {
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+def switchToProd(dbUri) {
+  String readUri = dbUri.replaceFirst("geodb-t.", "geodb.")
+
+  if(readUri.equals(dbUri))
+    readUri = dbUri.replaceFirst("geodb-i.", "geodb.")
+
+  return readUri
 }
