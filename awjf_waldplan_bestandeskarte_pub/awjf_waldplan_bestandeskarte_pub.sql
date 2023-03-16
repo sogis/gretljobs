@@ -1,5 +1,5 @@
 SELECT
-    waldplan_bestandeskarte.geometrie,
+    ST_RemoveRepeatedPoints(waldplan_bestandeskarte.geometrie, 0.01) AS geometrie,
     id_wp,
     fid_amtei,
     fid_fk,
