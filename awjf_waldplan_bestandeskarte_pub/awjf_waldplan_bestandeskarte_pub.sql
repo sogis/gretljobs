@@ -1,5 +1,5 @@
 SELECT
-    ST_RemoveRepeatedPoints(geometrie, 0.1) AS geometrie,
+    ST_RemoveRepeatedPoints(geometrie, 0.01) AS geometrie,
     id_wp,
     fid_amtei,
     fid_fk,
