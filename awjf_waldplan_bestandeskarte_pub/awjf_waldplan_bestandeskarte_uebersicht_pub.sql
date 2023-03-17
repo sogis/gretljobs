@@ -1,6 +1,6 @@
 SELECT 
     waldplan_bestandeskarte.t_id, 
-    ST_Multi(ST_RemoveRepeatedPoints(waldplan_bestandeskarte.geometrie, 0.5)) AS geometrie, 
+    ST_Multi(ST_RemoveRepeatedPoints(waldplan_bestandeskarte.geometrie, 0.1)) AS geometrie, 
     'Waldplan'::text AS typ
 FROM 
     awjf_waldplan_bestandeskarte_v1.waldplan_bestandeskarte

@@ -37,7 +37,7 @@ task publishPub(type: Publisher, dependsOn: 'refreshSolr') {
     dataIdent = "ch.so.awjf.waldplan_bestandeskarte"
     dbSchema = "awjf_waldplan_bestandeskarte_pub_v1"
     modelsToPublish = "SO_AWJF_Waldplan_Bestandeskarte_Publikation_20230111"
-    userFormats = true
+// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //     userFormats = true
     validationConfig = "novalidation.toml"
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
