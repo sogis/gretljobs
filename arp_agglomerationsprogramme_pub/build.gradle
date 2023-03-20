@@ -9,7 +9,7 @@ task publiedit(type: Publisher){
   dataIdent = "ch.so.arp.agglomerationsprogramme.relational"
   database = [dbUriEdit, dbUserEdit, dbPwdEdit]
   dbSchema = "arp_agglomerationsprogramme_v1"
-  modelsToPublish = "SO_Agglomerationsprogramme_Publikation_GDI_20230317"
+  modelsToPublish = "SO_Agglomerationsprogramme_GDI_20230317"
 
   target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
@@ -40,7 +40,7 @@ task publipub(type: Publisher, dependsOn:'transferArpAggloprogramme'){
   userFormats = true
   database = [dbUriPub,dbUserPub,dbPwdPub]
   dbSchema = "arp_agglomerationsprogramme_pub_v1"
-  modelsToPublish = "SO_Agglomerationsprogramme_GDI_20230317"
+  modelsToPublish = "SO_Agglomerationsprogramme_Publikation_GDI_20230317.ili"
 
   target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
