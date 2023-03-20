@@ -4,6 +4,3 @@
 # Validierung generell ausschalten
 # on/off
 validation="off"
-disableAreaValidation="true"
-areaOverlapValidation="off"
-disableRounding="true"
