@@ -15,7 +15,7 @@ task publiedit(type: Publisher){
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
   kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
-  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+  if (findProperty('ilivalidatorModeldir')) modeldir = "Models; http://models.geo.admin.ch"
 }
 
 task transferArpAggloprogramme(type: Db2Db, dependsOn:publiedit){
@@ -46,5 +46,5 @@ task publipub(type: Publisher, dependsOn:'transferArpAggloprogramme'){
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
   kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
-  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+  if (findProperty('ilivalidatorModeldir')) modeldir = "Models; http://models.geo.admin.ch"
 }
