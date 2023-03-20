@@ -40,7 +40,7 @@ task publipub(type: Publisher, dependsOn:'transferArpAggloprogramme'){
   userFormats = true
   database = [dbUriPub,dbUserPub,dbPwdPub]
   dbSchema = "arp_agglomerationsprogramme_pub_v1"
-  modelsToPublish = "SO_Agglomerationsprogramme_Publikation_GDI_20230317.ili"
+  modelsToPublish = "SO_Agglomerationsprogramme_Publikation_GDI_20230317"
 
   target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
