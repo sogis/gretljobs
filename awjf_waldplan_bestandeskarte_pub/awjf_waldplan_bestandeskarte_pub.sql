@@ -1,5 +1,5 @@
 SELECT
-    geometrie,
+    waldplan_bestandeskarte.geometrie,
     id_wp,
     fid_amtei,
     fid_fk,
@@ -173,4 +173,5 @@ WHERE
     OR
         id_wp > 0
     )
+${bfsnr_param}
 ;
