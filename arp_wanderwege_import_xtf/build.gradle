@@ -22,7 +22,7 @@ task copyZipFile(type: Copy) {
 task unzipData(type: Copy, dependsOn: copyZipFile) {
     from zipTree(file('upload/uploadFile.zip'))
     into file('upload')
-    include '**/*.xtf'
+//     include '**/*.xtf'
 }
 
 task deleteFromWanderwegeTables(type: SqlExecutor, dependsOn: unzipData) {
@@ -31,19 +31,20 @@ task deleteFromWanderwegeTables(type: SqlExecutor, dependsOn: unzipData) {
     sqlFiles = ['delete_arp_wanderwege_tables.sql']
 }
 
-task downloadKataloge(type: Download, dependsOn: deleteFromWanderwegeTables) {
-    description = 'Download der Kataloge'
-    src 'https://models.geo.admin.ch/ASTRA/Hpm_Catalogues_V1.xml'
-    dest pathToTempFolder
-    overwrite true
-}
+// task downloadKataloge(type: Download, dependsOn: deleteFromWanderwegeTables) {
+//     description = 'Download der Kataloge'
+//     src 'https://models.geo.admin.ch/ASTRA/Hpm_Catalogues_V1.xml'
+//     dest pathToTempFolder
+//     overwrite true
+// }
 
-task importKataloge(type: Ili2pgReplace, dependsOn: downloadKataloge) {
+task importKataloge(type: Ili2pgReplace, dependsOn: deleteFromWanderwegeTables) {
     description = 'Import der Kataloge'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_wanderwege_v1'
     models = 'hpm_network_V1'
-    dataFile = file(Paths.get(pathToTempFolder.toString(), 'Hpm_Catalogues_V1.xml'))
+//     dataFile = file(Paths.get(pathToTempFolder.toString(), 'Hpm_Catalogues_V1.xml'))
+    dataFile = 'upload/Hpm_Catalogues_V1.xml'
     dataset = 'Hpm_Catalogues_V1.xml'
     importTid = true
     importBid = true
