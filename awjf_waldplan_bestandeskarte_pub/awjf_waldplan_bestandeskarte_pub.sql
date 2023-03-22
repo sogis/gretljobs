@@ -173,5 +173,4 @@ WHERE
     OR
         id_wp > 0
     )
-${bfsnr_param}
 ;
