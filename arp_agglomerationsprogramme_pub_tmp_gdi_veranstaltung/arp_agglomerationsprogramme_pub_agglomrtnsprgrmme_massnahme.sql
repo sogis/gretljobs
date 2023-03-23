@@ -47,7 +47,7 @@ SELECT
     END AS geometrietyp
 FROM
     arp_agglomerationsprogramme_v1.agglomrtnsprgrmme_massnahme massnahme
-    LEFT JOIN arp_agglomerationsprogramme.agglomrtnsprgrmme_agglomerationsprogramm aggloprogramm
+    LEFT JOIN arp_agglomerationsprogramme_v1.agglomrtnsprgrmme_agglomerationsprogramm aggloprogramm
         ON massnahme.agglo_programm = aggloprogramm.t_id
     LEFT JOIN arp_agglomerationsprogramme_v1.agglomrtnsprgrmme_paket paket
         ON massnahme.paket = paket.t_id
