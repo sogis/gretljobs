@@ -8,8 +8,8 @@ defaultTasks 'publipub'
 task publiedit(type: Publisher){
   dataIdent = "ch.so.arp.agglomerationsprogramme.relational"
   database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-  dbSchema = "arp_agglomerationsprogramme_v1"
-  modelsToPublish = "SO_Agglomerationsprogramme_20200618"
+  dbSchema = "arp_agglomerationsprogramme_v2"
+  modelsToPublish = "SO_Agglomerationsprogramme_GDI_20230317"
 
   target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
@@ -23,15 +23,15 @@ task transferArpAggloprogramme(type: Db2Db, dependsOn:publiedit){
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
         new TransferSet('arp_agglomerationsprogramme_pub_agglomrtnsprgrmme_massnahme.sql',
-            'arp_agglomerationsprogramme_pub_v1.agglomrtnsprgrmme_massnahmen', true),
+            'arp_agglomerationsprogramme_pub_v2.agglomrtnsprgrmme_massnahmen', true),
         new TransferSet('arp_agglomerationsprogramme_pub_agglomrtnsprgrmme_massnahme_punkt.sql',
-            'arp_agglomerationsprogramme_pub_v1.agglomrtnsprgrmme_massnahme_punkt', true),
+            'arp_agglomerationsprogramme_pub_v2.agglomrtnsprgrmme_massnahme_punkt', true),
         new TransferSet('arp_agglomerationsprogramme_pub_agglomrtnsprgrmme_massnahme_linie.sql',
-            'arp_agglomerationsprogramme_pub_v1.agglomrtnsprgrmme_massnahme_linie', true),		
+            'arp_agglomerationsprogramme_pub_v2.agglomrtnsprgrmme_massnahme_linie', true),		
         new TransferSet('arp_agglomerationsprogramme_pub_agglomrtnsprgrmme_massnahme_flaeche.sql',
-            'arp_agglomerationsprogramme_pub_v1.agglomrtnsprgrmme_massnahme_flaeche', true),		
+            'arp_agglomerationsprogramme_pub_v2.agglomrtnsprgrmme_massnahme_flaeche', true),		
         new TransferSet('arp_agglomerationsprogramme_pub_agglomrtnsprgrmme_uebersicht_gemeinde.sql',
-            'arp_agglomerationsprogramme_pub_v1.agglomrtnsprgrmme_uebersicht_gemeinde', true)				
+            'arp_agglomerationsprogramme_pub_v2.agglomrtnsprgrmme_uebersicht_gemeinde', true)				
     ];
 }
 
@@ -39,8 +39,8 @@ task publipub(type: Publisher, dependsOn:'transferArpAggloprogramme'){
   dataIdent = "ch.so.arp.agglomerationsprogramme"
   userFormats = true
   database = [dbUriPub,dbUserPub,dbPwdPub]
-  dbSchema = "arp_agglomerationsprogramme_pub_v1"
-  modelsToPublish = "SO_Agglomerationsprogramme_Publikation_20200813"
+  dbSchema = "arp_agglomerationsprogramme_pub_v2"
+  modelsToPublish = "SO_Agglomerationsprogramme_Publikation_GDI_20230317"
 
   target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]

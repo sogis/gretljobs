@@ -28,12 +28,12 @@ SELECT
     gemeinden_ref.geometrie
  
 FROM
-    arp_agglomerationsprogramme_v1.agglomrtnsprgrmme_agglomerationsprogramm AS aggloprogramm
-    JOIN arp_agglomerationsprogramme_v1.agglomrtnsprgrmme_massnahme AS massnahme
+    arp_agglomerationsprogramme_v2.agglomrtnsprgrmme_agglomerationsprogramm AS aggloprogramm
+    JOIN arp_agglomerationsprogramme_v2.agglomrtnsprgrmme_massnahme AS massnahme
         ON aggloprogramm.t_id = massnahme.agglo_programm
-    JOIN arp_agglomerationsprogramme_v1.agglomrtnsprgrmme_gemeinde_massnahme AS gemeinde_massnahme
+    JOIN arp_agglomerationsprogramme_v2.agglomrtnsprgrmme_gemeinde_massnahme AS gemeinde_massnahme
         ON massnahme.t_id = gemeinde_massnahme.massnahme
-    JOIN arp_agglomerationsprogramme_v1.agglomrtnsprgrmme_gemeinde AS gemeinde
+    JOIN arp_agglomerationsprogramme_v2.agglomrtnsprgrmme_gemeinde AS gemeinde
         ON gemeinde_massnahme.gemeinde_name = gemeinde.t_id
     JOIN gemeinden_ref
         ON gemeinde.bfs_nr = gemeinden_ref.bfs_nummer
