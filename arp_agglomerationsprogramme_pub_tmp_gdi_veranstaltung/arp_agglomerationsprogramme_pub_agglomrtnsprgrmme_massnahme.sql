@@ -3,6 +3,7 @@ SELECT
     aggloprogramm.generation,
     aggloprogramm.agglo_nu AS agglomerationsprogramm_nr,
     aggloprogramm.url AS agglomerationsprogramm_url,
+    aggloprogramm.pruefbericht_bund,
     paket.handlungsfeld,
     paket.handlungspaket_kuerzel || ' - ' || paket.handlungspaket AS handlungspaket,
     paket.massnahmekategorie,
@@ -46,30 +47,30 @@ SELECT
         ELSE 'keine_Geometrie'
     END AS geometrietyp
 FROM
-    arp_agglomerationsprogramme_v1.agglomrtnsprgrmme_massnahme massnahme
+    arp_agglomerationsprogramme_v2.agglomrtnsprgrmme_massnahme massnahme
     LEFT JOIN arp_agglomerationsprogramme.agglomrtnsprgrmme_agglomerationsprogramm aggloprogramm
         ON massnahme.agglo_programm = aggloprogramm.t_id
-    LEFT JOIN arp_agglomerationsprogramme_v1.agglomrtnsprgrmme_paket paket
+    LEFT JOIN arp_agglomerationsprogramme_v2.agglomrtnsprgrmme_paket paket
         ON massnahme.paket = paket.t_id
-    LEFT JOIN arp_agglomerationsprogramme_v1.agglomrtnsprgrmme_agglo_point punktobjekt
+    LEFT JOIN arp_agglomerationsprogramme_v2.agglomrtnsprgrmme_agglo_point punktobjekt
         ON massnahme.punkte_geometrie = punktobjekt.t_id
-    LEFT JOIN arp_agglomerationsprogramme_v1.agglomrtnsprgrmme_agglo_line linienobjekt
+    LEFT JOIN arp_agglomerationsprogramme_v2.agglomrtnsprgrmme_agglo_line linienobjekt
         ON massnahme.linien_geometrie = linienobjekt.t_id
-    LEFT JOIN arp_agglomerationsprogramme_v1.agglomrtnsprgrmme_agglo_surface flaechenobjekt
+    LEFT JOIN arp_agglomerationsprogramme_v2.agglomrtnsprgrmme_agglo_surface flaechenobjekt
         ON massnahme.flaechen_geometrie = flaechenobjekt.t_id 
-    LEFT JOIN arp_agglomerationsprogramme_v1.agglomrtnsprgrmme_federfuehrung_massnahme federfuehrung_massnahme
+    LEFT JOIN arp_agglomerationsprogramme_v2.agglomrtnsprgrmme_federfuehrung_massnahme federfuehrung_massnahme
         ON massnahme.t_id = federfuehrung_massnahme.massnahme
-    LEFT JOIN arp_agglomerationsprogramme_v1.agglomrtnsprgrmme_federfuehrung federfuehrung
+    LEFT JOIN arp_agglomerationsprogramme_v2.agglomrtnsprgrmme_federfuehrung federfuehrung
         ON federfuehrung_massnahme.federfuehrung_name = federfuehrung.t_id
-     LEFT JOIN arp_agglomerationsprogramme_v1.agglomrtnsprgrmme_gemeinde_massnahme gemeinde_massnahme
+     LEFT JOIN arp_agglomerationsprogramme_v2.agglomrtnsprgrmme_gemeinde_massnahme gemeinde_massnahme
         ON massnahme.t_id = gemeinde_massnahme.massnahme
-    LEFT JOIN arp_agglomerationsprogramme_v1.agglomrtnsprgrmme_gemeinde gemeinde
+    LEFT JOIN arp_agglomerationsprogramme_v2.agglomrtnsprgrmme_gemeinde gemeinde
         ON gemeinde_massnahme.gemeinde_name = gemeinde.t_id
-    LEFT JOIN arp_agglomerationsprogramme_v1.agglomrtnsprgrmme_projektphase projektphase 
+    LEFT JOIN arp_agglomerationsprogramme_v2.agglomrtnsprgrmme_projektphase projektphase 
 	ON projektphase.ilicode = massnahme.projektphase
-    LEFT JOIN arp_agglomerationsprogramme_v1.agglomrtnsprgrmme_prioritaet prioritaet 
+    LEFT JOIN arp_agglomerationsprogramme_v2.agglomrtnsprgrmme_prioritaet prioritaet 
 	ON prioritaet.ilicode = massnahme.prioritaet 
-    LEFT JOIN arp_agglomerationsprogramme_v1.agglomrtnsprgrmme_umsetzungsstand umsetzungsstand 
+    LEFT JOIN arp_agglomerationsprogramme_v2.agglomrtnsprgrmme_umsetzungsstand umsetzungsstand 
 	ON umsetzungsstand.ilicode = massnahme.umsetzungsstand 	
 
 GROUP BY
