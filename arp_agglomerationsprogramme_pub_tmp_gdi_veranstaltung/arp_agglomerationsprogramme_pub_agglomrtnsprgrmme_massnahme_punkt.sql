@@ -3,7 +3,7 @@ SELECT
     aggloprogramm.generation,
     aggloprogramm.agglo_nu AS agglomerationsprogramm_nr,
     aggloprogramm.url AS agglomerationsprogramm_url,
-    aggloprogramm.bruefbericht_bund,
+    aggloprogramm.pruefbericht_bund,
     paket.handlungsfeld,
     paket.handlungspaket_kuerzel || ' - ' || paket.handlungspaket AS handlungspaket,
     paket.massnahmekategorie,
