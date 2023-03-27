@@ -21,6 +21,7 @@ task transferAwjfWaldplanPub(type: Db2Db, dependsOn: transferAwjfWaldplanUebersi
             new TransferSet('awjf_waldplan_bestandeskarte_pub.sql', 'awjf_waldplan_bestandeskarte_pub_v1.waldplan_bestandeskarte', true)
     ];        
 }
+
 task refreshSolr(type: Exec, dependsOn: transferAwjfWaldplanPub) {
     commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.bestandeskarte_wald_flaechen,ch.so.awjf.waldplan.waldeigentum,ch.so.awjf.waldplan.waldfunktion,ch.so.awjf.waldplan.waldplantyp'
 }
