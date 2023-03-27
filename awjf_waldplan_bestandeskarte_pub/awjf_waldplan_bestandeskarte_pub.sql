@@ -29,7 +29,7 @@ SELECT
     weidewald,
     gb_gem_bfs,
     astatus,
-    'Olten' AS gemeindename,
+    hoheitsgrenzen_gemeindegrenze.gemeindename,
     CASE 
         WHEN fid_eig = 1000
             THEN '1000 - Bundeswald' 
@@ -166,7 +166,8 @@ SELECT
     END AS bsttyp_text
 FROM
     awjf_waldplan_bestandeskarte_v1.waldplan_bestandeskarte
-
+    LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze
+    ON hoheitsgrenzen_gemeindegrenze.bfs_gemeindenummer = waldplan_bestandeskarte.gem_bfs
 WHERE
     (
         astatus = 'abgeschlossen'
