@@ -36,7 +36,6 @@ def mgdmWaldabstandXtfFileName = "mgdm/ch.so.arp.waldabstand.mgdm."+bfsnr+".xtf"
 def mgdmWaldabstandZipFileName = "mgdm/ch.so.arp.waldabstand.mgdm."+bfsnr+".zip"
 def mgdmWaldabstandXtfFileNameclean = "ch.so.arp.waldabstand.mgdm."+bfsnr+".xtf"
 
-/*
 
 task deleteData_transfer_pub (type: SqlExecutor) {
     description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_transfer_pub."
@@ -316,8 +315,6 @@ task uploadMgdmNoiseSensitivityLevels(dependsOn: 'zipMgdmNoiseSensitivityLevels'
         }
     }
 }
-
-*/
 
 //Waldabstandslinien
 
