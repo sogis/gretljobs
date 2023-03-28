@@ -38,9 +38,7 @@ SELECT
 FROM
     awjf_waldplan_bestandeskarte_staging_v1.waldplan_bestandeskarte
 WHERE
-    (
-        astatus = 'abgeschlossen'
-    OR
-        id_wp > 0
-    )
+    astatus = 'abgeschlossen'
+AND
+    id_wp > 0
 ;
