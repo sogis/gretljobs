@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+  <HEADERSECTION VERSION="2.3" SENDER="ili2pg">
+    <MODELS/>
+  </HEADERSECTION>
+  <DATASECTION>
+    <Waldabstandslinien_V1_2.Rechtsvorschriften BID="Waldabstandslinien_V1_2.Rechtsvorschriften">
+    </Waldabstandslinien_V1_2.Rechtsvorschriften>
+    <Waldabstandslinien_V1_2.Geobasisdaten BID="Waldabstandslinien_V1_2.Geobasisdaten">
+    </Waldabstandslinien_V1_2.Geobasisdaten>
+    <Waldabstandslinien_V1_2.TransferMetadaten BID="Waldabstandslinien_V1_2.TransferMetadaten">
+    </Waldabstandslinien_V1_2.TransferMetadaten>
+  </DATASECTION>
+</TRANSFER>

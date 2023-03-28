@@ -1,0 +1,16 @@
+DELETE FROM arp_laermempfindlichkeitsstufen_mgdm_v1.geobasisdaten_typ_dokument
+;
+DELETE FROM arp_laermempfindlichkeitsstufen_mgdm_v1.geobasisdaten_laermempfindlichkeit_zonenflaeche
+;
+DELETE FROM arp_laermempfindlichkeitsstufen_mgdm_v1.geobasisdaten_typ
+;
+DELETE FROM arp_laermempfindlichkeitsstufen_mgdm_v1.localiseduri
+;
+DELETE FROM arp_laermempfindlichkeitsstufen_mgdm_v1.multilingualuri
+;
+DELETE FROM arp_laermempfindlichkeitsstufen_mgdm_v1.rechtsvorschrften_dokument
+;
+DELETE FROM arp_laermempfindlichkeitsstufen_mgdm_v1.t_ili2db_basket 
+;
+DELETE FROM arp_laermempfindlichkeitsstufen_mgdm_v1.t_ili2db_dataset 
+;

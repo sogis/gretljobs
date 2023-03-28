@@ -1,0 +1,56 @@
+Info: ilivalidator-1.12.1-8d9b922cd26b01147d77a23d300d952d29359a30
+Info: ili2c-5.2.8-61f7212579ac3c4ae219d511afb5a0615855bc73
+Info: iox-ili-1.21.13-0ca3feb59eff9c381b29139d8f808b4de2464d49
+Info: User <?>
+Info: Start date 2023-03-27 12:37
+Info: maxMemory 466432 KB
+Info: dataFile </home/gradle/project/mgdm/ch.so.arp.laerm.mgdm.2492.xtf>
+Info: configFile </home/gradle/project/config.toml>
+Info: modeldir <%ITF_DIR;http://models.interlis.ch/;%JAR_DIR/ilimodels>
+Info: lookup model <Laermempfindlichkeitsstufen_V1_2> 2.3 in repository </home/gradle/project/mgdm/>
+Info: lookup model <Laermempfindlichkeitsstufen_V1_2> 2.3 in repository <http://models.interlis.ch/>
+Info: lookup model <Laermempfindlichkeitsstufen_V1_2> 2.3 in repository <http://models.geo.admin.ch/>
+Info: lookup model <GeometryCHLV95_V1> 2.3 in repository </home/gradle/project/mgdm/>
+Info: lookup model <GeometryCHLV95_V1> 2.3 in repository <http://models.interlis.ch/>
+Info: lookup model <GeometryCHLV95_V1> 2.3 in repository <http://models.geo.admin.ch/>
+Info: lookup model <CHAdminCodes_V1> 2.3 in repository </home/gradle/project/mgdm/>
+Info: lookup model <CHAdminCodes_V1> 2.3 in repository <http://models.interlis.ch/>
+Info: lookup model <CHAdminCodes_V1> 2.3 in repository <http://models.geo.admin.ch/>
+Info: lookup model <InternationalCodes_V1> 2.3 in repository </home/gradle/project/mgdm/>
+Info: lookup model <InternationalCodes_V1> 2.3 in repository <http://models.interlis.ch/>
+Info: lookup model <InternationalCodes_V1> 2.3 in repository <http://models.geo.admin.ch/>
+Info: lookup model <CoordSys> 2.3 in repository </home/gradle/project/mgdm/>
+Info: lookup model <CoordSys> 2.3 in repository <http://models.interlis.ch/>
+Info: lookup model <Units> 2.3 in repository </home/gradle/project/mgdm/>
+Info: lookup model <Units> 2.3 in repository <http://models.interlis.ch/>
+Info: ilifile </home/gradle/.ilicache/models.interlis.ch/refhb23/CoordSys-20151124.ili>
+Info: ilifile </home/gradle/.ilicache/models.geo.admin.ch/CH/CHBase_Part2_LOCALISATION_V1.ili>
+Info: ilifile </home/gradle/.ilicache/models.interlis.ch/refhb23/Units-20120220.ili>
+Info: ilifile </home/gradle/.ilicache/models.geo.admin.ch/CH/CHBase_Part4_ADMINISTRATIVEUNITS_V1.ili>
+Info: ilifile </home/gradle/.ilicache/models.geo.admin.ch/CH/CHBase_Part1_GEOMETRY_V1.ili>
+Info: ilifile </home/gradle/.ilicache/models.geo.admin.ch/BAFU/Laermempfindlichkeitsstufen_V1_2.ili>
+Info: validate data...
+Info: assume unknown external objects
+Info: disable rounding
+Info: first validation pass...
+Info: second validation pass...
+Info: validate unique constraint Localisation_V1.MultilingualText.Constraint1...
+Info: validate mandatory constraint LocalisationCH_V1.LocalisedText.Constraint1...
+Info: validate unique constraint Laermempfindlichkeitsstufen_V1_2.MultilingualUri.Constraint1...
+Info: validate multiplicity of role Laermempfindlichkeitsstufen_V1_2.Geobasisdaten.Typ_Dokument.Typ...
+Info: validate multiplicity of role Laermempfindlichkeitsstufen_V1_2.Geobasisdaten.Geometrie_Dokument.Geometrie...
+Info: validate mandatory constraint Laermempfindlichkeitsstufen_V1_2.Geobasisdaten.Typ.Constraint1...
+Info: validate multiplicity of role Laermempfindlichkeitsstufen_V1_2.Geobasisdaten.Typ_Dokument.Dokument...
+Info: validate multiplicity of role Laermempfindlichkeitsstufen_V1_2.Geobasisdaten.Typ_Geometrie.Geometrie...
+Info: validate target of role Laermempfindlichkeitsstufen_V1_2.Geobasisdaten.Typ_Geometrie.Typ...
+Info: validate multiplicity of role Laermempfindlichkeitsstufen_V1_2.Geobasisdaten.Geometrie_Dokument.Dokument...
+Info: validate multiplicity of role Laermempfindlichkeitsstufen_V1_2.Geobasisdaten.Typ_Geometrie.Typ...
+Info: object count 320 (structured elements 425)
+Info: /home/gradle/project/mgdm/ch.so.arp.laerm.mgdm.2492.xtf: Laermempfindlichkeitsstufen_V1_2.Geobasisdaten BID=Laermempfindlichkeitsstufen_V1_2.Geobasisdaten
+Info:     301 objects in CLASS Laermempfindlichkeitsstufen_V1_2.Geobasisdaten.Laermempfindlichkeit_Zonenflaeche
+Info:       3 objects in CLASS Laermempfindlichkeitsstufen_V1_2.Geobasisdaten.Typ
+Info: /home/gradle/project/mgdm/ch.so.arp.laerm.mgdm.2492.xtf: Laermempfindlichkeitsstufen_V1_2.Rechtsvorschriften BID=1000000005251
+Info:      16 objects in CLASS Laermempfindlichkeitsstufen_V1_2.Rechtsvorschriften.Dokument
+Info: /home/gradle/project/mgdm/ch.so.arp.laerm.mgdm.2492.xtf: Laermempfindlichkeitsstufen_V1_2.TransferMetadaten BID=1000000005253
+Info: ...validation done
+Info: End date 2023-03-27 12:37 validation took 00h:00m:02s.0324ms
