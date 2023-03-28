@@ -15,7 +15,7 @@ task transferAwjfWaldplanUebersichtPub(type: Db2Db) {
 }
 
 task transferAwjfWaldplanPub(type: Db2Db, dependsOn: transferAwjfWaldplanUebersichtPub) {
-    sourceDb = [[dbUriPub, dbUserPub, dbPwdPub]]
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = sourceDb
     transferSets = [
             new TransferSet('awjf_waldplan_bestandeskarte_pub.sql', 'awjf_waldplan_bestandeskarte_pub_v1.waldplan_bestandeskarte', true)
