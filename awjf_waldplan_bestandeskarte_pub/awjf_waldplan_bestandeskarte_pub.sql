@@ -1,5 +1,5 @@
 SELECT
-    waldplan_bestandeskarte.geometrie,
+    geometrie,
     id_wp,
     fid_amtei,
     fid_fk,
