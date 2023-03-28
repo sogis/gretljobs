@@ -1,14 +1,39 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
 
 apply plugin: 'ch.so.agi.gretl'
 
+
+
 defaultTasks 'transferAwjfWaldplanStaging'
 
-task transferAwjfWaldplanStaging(type: Db2Db){
+
+
+task transferAwjfWaldplanReview(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('awjf_waldplan_bestandeskarte_staging.sql', 'awjf_waldplan_bestandeskarte_staging_v1.waldplan_bestandeskarte', true)
+            new TransferSet('awjf_waldplan_bestandeskarte_review.sql', 'awjf_waldplan_bestandeskarte_staging_v1.waldplan_bestandeskarte_review', true)
+    ];        
+}
+
+task deleteAwjfWaldplanStaging(type: SqlExecutor, dependsOn: transferAwjfWaldplanReview) {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    if ( bfsnrUeberarbeitung.length() > 0 ) {
+        sqlParameters = [bfsnr_param:'WHERE waldplan_bestandeskarte.gem_bfs NOT IN (' + bfsnrUeberarbeitung + ')']
+    }
+    sqlFiles = ['delete_awjf_waldplan_bestandeskarte_staging.sql']      
+}
+
+task transferAwjfWaldplanStaging(type: Db2Db, dependsOn: deleteAwjfWaldplanStaging) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    if ( bfsnrUeberarbeitung.length() > 0 ) {
+        sqlParameters = [bfsnr_param:'AND waldplan_bestandeskarte.gem_bfs NOT IN (' + bfsnrUeberarbeitung + ')']
+    }
+    transferSets = [
+            new TransferSet('awjf_waldplan_bestandeskarte_staging.sql', 'awjf_waldplan_bestandeskarte_staging_v1.waldplan_bestandeskarte', false)
     ];        
 }
