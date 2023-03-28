@@ -15,7 +15,7 @@ task transferAwjfWaldplanReview(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('awjf_waldplan_bestandeskarte_review.sql', 'awjf_waldplan_bestandeskarte_staging_v1.waldplan_bestandeskarte_review', true)
+            new TransferSet('awjf_waldplan_bestandeskarte_staging_review.sql', 'awjf_waldplan_bestandeskarte_staging_v1.waldplan_bestandeskarte_review', true)
     ];        
 }
 
