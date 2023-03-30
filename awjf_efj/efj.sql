@@ -1,5 +1,6 @@
 select 
-    rowdef.*
+    rowdef.*, 
+    st_makepoint(rowdef.x_koordinate, rowdef.y_koordinate) AS geometrie
 from 
     awjf_efj_v1.efj_abgaenge s
 CROSS JOIN LATERAL
@@ -26,3 +27,4 @@ CROSS JOIN LATERAL
         "y_koordinate" INTEGER,
         "apolygon" TEXT
     )
+
