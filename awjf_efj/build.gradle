@@ -1,0 +1,37 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+defaultTasks "transformAndPub"
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def today = new Date()
+def formattedDate = today.format("yyyy-MM-dd")
+
+task download(type: Download) {
+    description = "Download JSON der Abgänge"
+    src "https://efj-services.verw.rootso.org/webapi/api/Geo/GeoPositions?format=json&type=fallwild,jagd&from=2021-1-1&to="+formattedDate
+    dest pathToTempFolder + "/efj.json"
+    overwrite true
+     doLast {
+        println "File downloaded to: " + pathToTempFolder
+    }
+}
+
+task import_efj(type: JsonImport, dependsOn: download) {
+    description = "Import der Abgänge"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    jsonFile = pathToTempFolder + "/efj.json"
+    qualifiedTableName = "awjf_efj_v1.efj_abgaenge"
+    columnName = "content"
+    deleteAllRows = true
+}
+
+task transformAndPub(type: Db2Db, dependsOn: import_efj){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('efj.sql', 'awjf_efj_pub_v1.efj_abgaenge', true)
+    ];
+}
