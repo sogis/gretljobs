@@ -1,0 +1,36 @@
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+
+defaultTasks "copyData"
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def today = new Date()
+def formattedDate = today.format("yyyy-MM-dd")
+def xtfFile = "ch.so.awjf.gebiete_efj2_"+formattedDate+".xtf"
+
+task umbau(type: SqlExecutor) {
+    description = "Löscht die Daten im Schema awjf_efj_geodaten_upload und befüllt die Tabellen neu."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["geodaten.sql"]
+}
+
+task exportData (type: Ili2pgExport, dependsOn: 'umbau') {
+    description = "Exportiert die Daten in ein INTERLIS-Datei."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'awjf_efj_geodaten_upload_v1'
+    models = 'SO_AWJF_Rahmenmodell_EFJ2_20220818'
+    dataFile = file(xtfFile)
+    disableValidation = true
+}
+
+task validateData(type: IliValidator, dependsOn: 'exportData') {
+    description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
+    dataFiles = file(xtfFile)
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    allObjectsAccessible = true
+    failOnError = true
+}
+
+task copyData(type:Exec, dependsOn:'validateData') {
+	commandLine 'curl --insecure -i -X POST -F file=@'+xtfFile+' -F valid_from='+formattedDate+' https://efj-services-i.verw.rootso.org/webapi/api/geo/geodata'
+}
