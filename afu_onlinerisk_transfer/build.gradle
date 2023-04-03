@@ -3,7 +3,8 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'betriebe_fehlende_koordinaten_ergaenzen'
+/*defaultTasks 'betriebe_fehlende_koordinaten_ergaenzen'*/
+defaultTasks 'transfer_onlinerisk'
 
 def DB_Schema_QRcat = "afu_qrcat_v1"
 def DB_Schema_QRcat_Staging = "afu_qrcat_staging_v1"
@@ -37,7 +38,8 @@ task "clean_onlinerisk_before_import"(type: SqlExecutor,dependsOn: "clean_qrcat_
     sqlFiles = ['delete_online_risk.sql']
 }
 
-task transfer_onlinerisk(type: Db2Db,dependsOn: "clean_onlinerisk_before_import"){
+/*task transfer_onlinerisk(type: Db2Db,dependsOn: "clean_onlinerisk_before_import"){*/
+task transfer_onlinerisk(type: Db2Db){
     description = "Übertrag benötigte OnlineRisk-Daten aus AIO PostgreSQL-Datenbank"
     sourceDb = [dbUriOnlinerisk, dbUserOnlinerisk, dbPwdOnlinerisk]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
