@@ -1,0 +1,122 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'de.undercouch.download'
+apply plugin: 'ch.so.agi.gretl'
+
+
+
+defaultTasks 'refreshSolrKbs', 'refreshSolrKbsRestricted', 'transferKbsToSogisDb', 'uploadMgdm'
+
+
+// Download-Verzeichnis
+def pathToTempFolder = System.getProperty('java.io.tmpdir')
+def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
+def pathToDataZip = Paths.get(pathToTempFolder, 'data.zip')
+def kbsData = 'SO_AFU_KbS_Publikation'
+def kbsDataRestricted = 'SO_AFU_KbS_Publikation_restricted'
+
+def aiLogin = aiUser + ":" + aiPwd
+
+
+task downloadKbsData(type: Download) {
+    src 'http://altlast4web.verw.rootso.org/interlis_exports/so_pub/data.zip'
+    dest pathToTempFolder
+    overwrite true
+    acceptAnyCertificate true
+}
+
+task unzipKbsData(type: Copy, dependsOn: 'downloadKbsData') {
+    from zipTree(pathToDataZip)
+    into file(pathToUnzipFolder)
+    include '**/*.xtf'
+    rename { String fileName ->
+            if (fileName.contains(kbsData)) {
+                return kbsData + '.xtf'
+            }
+            return fileName
+        }
+}
+
+task importKbsData(type: Ili2pgReplace, dependsOn: 'unzipKbsData') {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = 'afu_altlasten_pub_v2'
+    models = 'SO_AFU_KbS_Publikation__20230104'
+    dataFile = file(Paths.get(pathToUnzipFolder.toString(), kbsData + '.xtf'))
+    dataset = kbsData
+    strokeArcs = true
+}
+
+task downloadKbsRestrictedData(type: Download, dependsOn: 'importKbsData') {
+    src 'http://altlast4web.verw.rootso.org/interlis_exports/so_res/data.zip'
+    dest pathToTempFolder
+    overwrite true
+     acceptAnyCertificate true
+}
+
+task unzipKbsRestrictedData(type: Copy, dependsOn: 'downloadKbsRestrictedData') {
+    from zipTree(pathToDataZip)
+    into file(pathToUnzipFolder)
+    include '**/*.xtf'
+    rename { String fileName ->
+            if (fileName.contains(kbsDataRestricted)) {
+                return kbsDataRestricted + '.xtf'
+            }
+            return fileName
+        }
+}
+
+task importKbsRestrictedData(type: Ili2pgReplace, dependsOn: 'unzipKbsRestrictedData') {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = 'afu_altlasten_restricted_pub_v1'
+    models = 'SO_AFU_KbS_Publikation_restricted_20221209'
+    dataFile = file(Paths.get(pathToUnzipFolder.toString(), kbsDataRestricted + '.xtf'))
+    dataset = kbsDataRestricted
+    strokeArcs = true
+}
+
+task refreshSolrKbs(type:Exec, dependsOn:'importKbsData') {
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte'
+}
+
+task refreshSolrKbsRestricted(type:Exec, dependsOn:'importKbsRestrictedData') {
+        commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte_geschuetzt'
+}
+
+task transferKbsToOldPubSchema(type: Db2Db) {
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = sourceDb
+    transferSets = [
+            new TransferSet('afu_altlasten_pub_standorte.sql', 'afu_altlasten_pub.belastete_standorte', true),
+            new TransferSet('afu_altlasten_pub_standorte_altlast4web.sql', 'afu_altlasten_pub.belastete_standorte_altlast4web', true)
+    ];
+}
+
+task transferKbsToSogisDb(type: Db2Db, dependsOn: 'transferKbsToOldPubSchema') {
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    transferSets = [
+            new TransferSet('afu_altlasten_pub_sogis.sql', 'auszug_akt_altlasten17785.altlasten_belastete_standorte', true)
+    ];
+}
+
+task downloadMgdm(type: Download) {
+    src "https://altlast4web.verw.rootso.org/interlis_exports/mgdm/data.zip"
+    dest pathToTempFolder
+    overwrite true
+    acceptAnyCertificate true
+}
+
+task uploadMgdm(dependsOn: 'downloadMgdm') {
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=kataster_belasteter_standorte_v1_4", "-F",
+                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), 'data.zip'), "-F", "publish=true",
+                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
+}
