@@ -183,12 +183,7 @@ SELECT
     lw1 *(wbev_lr1 - wbev_lr90) + lw90 * wbev_lr90
   ) ^ 2 * wahrscheinlichkeit_szenario AS risikozahl,
   /* Anzahl Tote im Szenario berechnen */
-  Round(
-    (
-      lw1 *(wbev_lr1 - wbev_lr90) + lw90 * wbev_lr90
-    ), 
-    2
-  ) AS anzahl_tote, 
+  ceil(lw1 *(wbev_lr1 - wbev_lr90) + lw90 * wbev_lr90) AS anzahl_tote, 
   t_id AS id_szenario 
 FROM 
   szen 
@@ -203,10 +198,7 @@ SELECT
   'Wohnbevoelkerung' AS bevoelkerung_typ, 
   wbev_lr90 AS bevoelkerung_anzahl, 
   (lw90 * wbev_lr90) ^ 2 * wahrscheinlichkeit_szenario AS risikozahl, 
-  Round(
-    (lw90 * wbev_lr90), 
-    2
-  ) AS anzahl_tote, 
+  ceil(lw90 * wbev_lr90) AS anzahl_tote, 
   t_id AS id_szenario 
 FROM 
   szen 
@@ -223,12 +215,7 @@ SELECT
   (
     lw1 *(abev_lr1 - abev_lr90) + lw90 * abev_lr90
   ) ^ 2 * wahrscheinlichkeit_szenario AS risikozahl, 
-  Round(
-    (
-      lw1 *(abev_lr1 - abev_lr90) + lw90 * abev_lr90
-    ), 
-    2
-  ) AS anzahl_tote, 
+  ceil(lw1 *(abev_lr1 - abev_lr90) + lw90 * abev_lr90) AS anzahl_tote, 
   t_id AS id_szenario 
 FROM 
   szen 
@@ -243,10 +230,7 @@ SELECT
   'Arbeitsbevoelkerung' AS bevoelkerung_typ, 
   abev_lr90 AS bevoelkerung_anzahl, 
   (lw90 * abev_lr90) ^ 2 * wahrscheinlichkeit_szenario AS risikozahl, 
-  Round(
-    (lw90 * abev_lr90), 
-    2
-  ) AS anzahl_tote, 
+  ceil(lw90 * abev_lr90) AS anzahl_tote, 
   t_id AS id_szenario 
 FROM 
   szen 
@@ -263,12 +247,7 @@ SELECT
   (
     lw1 *(wabev_lr1 - wabev_lr90) + lw90 * wabev_lr90
   ) ^ 2 * wahrscheinlichkeit_szenario AS risikozahl, 
-  Round(
-    (
-      lw1 *(wabev_lr1 - wabev_lr90) + lw90 * wabev_lr90
-    ), 
-    2
-  ) AS anzahl_tote, 
+  ceil(lw1 *(wabev_lr1 - wabev_lr90) + lw90 * wabev_lr90) AS anzahl_tote, 
   t_id AS id_szenario 
 FROM 
   szen 

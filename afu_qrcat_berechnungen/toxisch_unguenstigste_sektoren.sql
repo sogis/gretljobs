@@ -453,10 +453,7 @@
      'Wohnbevoelkerung' AS bevoelkerung_typ,
      slr90.wbev_lr90 AS bevoelkerung_anzahl,
      (slr90.lw90 * slr90.wbev_lr90) ^ 2 * slr90.wahrscheinlichkeit_szenario AS risikozahl,
-     Round(
-        (slr90.lw90 * slr90.wbev_lr90), 
-        2
-     ) AS anzahl_tote,
+     ceil(slr90.lw90 * slr90.wbev_lr90) AS anzahl_tote,
      slr1.id_szenario
   FROM sectors_lr1 slr1
     LEFT JOIN szen slr90 ON
@@ -473,10 +470,7 @@
      'Arbeitsbevoelkerung' AS bevoelkerung_typ,
      slr90.abev_lr90 AS bevoelkerung_anzahl,
      (slr90.lw90 * slr90.abev_lr90) ^ 2 * slr90.wahrscheinlichkeit_szenario AS risikozahl,
-     Round(
-        (slr90.lw90 * slr90.abev_lr90), 
-        2
-     ) AS anzahl_tote,
+     ceil(slr90.lw90 * slr90.abev_lr90) AS anzahl_tote,
      slr1.id_szenario
   FROM sectors_lr1 slr1
     LEFT JOIN szen slr90 ON
