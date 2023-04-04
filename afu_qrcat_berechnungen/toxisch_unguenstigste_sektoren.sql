@@ -333,7 +333,7 @@
       ) ^ 2 * wahrscheinlichkeit_szenario AS risikozahl, 
       Round(
         (
-          lw1 *(wabev_lr1 - wabev_lr90) + lw90 * wabev_lr9
+          lw1 *(wabev_lr1 - wabev_lr90) + lw90 * wabev_lr90
         ), 
         2
       ) AS anzahl_tote, 
