@@ -253,12 +253,7 @@
         lw1 *(wbev_lr1 - wbev_lr90) + lw90 * wbev_lr90
       ) ^ 2 * wahrscheinlichkeit_szenario AS risikozahl, 
       /* Berechnung Anzahl Tote */
-      Round(
-        (
-          lw1 *(wbev_lr1 - wbev_lr90) + lw90 * wbev_lr90
-        ), 
-        2
-      ) AS anzahl_tote,
+      ceil(lw1 *(wbev_lr1 - wbev_lr90) + lw90 * wbev_lr90) AS anzahl_tote,
       /* Der Link zum Szenario */
       t_id AS id_szenario 
     FROM 
@@ -293,12 +288,7 @@
       (
         lw1 *(abev_lr1 - abev_lr90) + lw90 * abev_lr90
       ) ^ 2 * wahrscheinlichkeit_szenario AS risikozahl, 
-      Round(
-        (
-          lw1 *(abev_lr1 - abev_lr90) + lw90 * abev_lr90
-        ), 
-        2
-      ) AS anzahl_tote, 
+      ceil(lw1 *(abev_lr1 - abev_lr90) + lw90 * abev_lr90) AS anzahl_tote, 
       t_id AS id_szenario 
     FROM 
       szen sz_aussen
@@ -331,12 +321,7 @@
       (
         lw1 *(wabev_lr1 - wabev_lr90) + lw90 * wabev_lr90
       ) ^ 2 * wahrscheinlichkeit_szenario AS risikozahl, 
-      Round(
-        (
-          lw1 *(wabev_lr1 - wabev_lr90) + lw90 * wabev_lr90
-        ), 
-        2
-      ) AS anzahl_tote, 
+      ceil(lw1 *(wabev_lr1 - wabev_lr90) + lw90 * wabev_lr90) AS anzahl_tote, 
       t_id AS id_szenario 
     FROM 
       szen sz_aussen
@@ -404,7 +389,7 @@
             WHEN bevoelkerung_typ = 'WohnUndArbeitsbevoelkerung' THEN
                (szorig.lw1 * (szorig.wabev_lr1 - szorig.wabev_lr90) + szorig.lw90 * szorig.wabev_lr90) ^ 2 * szorig.wahrscheinlichkeit_szenario
         END AS risikozahl,
-        Round(
+        ceil(
             CASE
                 WHEN bevoelkerung_typ = 'Wohnbevoelkerung' THEN
                    (szorig.lw1 * (szorig.wbev_lr1 - szorig.wbev_lr90) + szorig.lw90 * szorig.wbev_lr90)
@@ -412,9 +397,7 @@
                    (szorig.lw1 * (szorig.abev_lr1 - szorig.abev_lr90) + szorig.lw90 * szorig.abev_lr90)
                 WHEN bevoelkerung_typ = 'WohnUndArbeitsbevoelkerung' THEN
                    (szorig.lw1 * (szorig.wabev_lr1 - szorig.wabev_lr90) + szorig.lw90 * szorig.wabev_lr90)
-            END,
-            2
-        ) AS anzahl_tote, 
+            END) AS anzahl_tote, 
         szctlr1.id_szenario 
       FROM 
         szen_count_lr1 szctlr1
