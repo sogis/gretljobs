@@ -12,8 +12,8 @@ import java.io.File
 apply plugin: 'ch.so.agi.gretl'
 
 //defaultTasks 'importXTF_stage', 'importXTF_pub', 'uploadMgdmLandUsePlans'
-defaultTasks 'uploadMgdmPlanungszonen'
-def bfsnr = '2492'
+//defaultTasks 'uploadMgdmPlanungszonen'
+//def bfsnr = '2492'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
@@ -41,7 +41,7 @@ def mgdmPlanungszonenXtfFileName = "mgdm/ch.so.arp.planungszonen.mgdm."+bfsnr+".
 def mgdmPlanungszonenZipFileName = "mgdm/ch.so.arp.planungszonen.mgdm."+bfsnr+".zip"
 def mgdmPlanungszonenXtfFileNameclean = "ch.so.arp.planungszonen.mgdm."+bfsnr+".xtf"
 
-/*
+//Normale Publikation
 
 task deleteData_transfer_pub (type: SqlExecutor) {
     description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_transfer_pub."
@@ -388,8 +388,6 @@ task uploadMgdmWaldabstandslinien(dependsOn: 'zipMgdmWaldabstandslinien') {
 }
 
 //Planungszonen
-
-*/
 
 task deleteMgdmPlanungszonenData(type: SqlExecutor) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
