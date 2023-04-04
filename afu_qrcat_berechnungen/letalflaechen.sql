@@ -163,7 +163,7 @@ szen AS (
     szen_temp s
 )
 
---/* the actual insert */
+/* the actual insert */
 INSERT INTO ${DB_Schema_QRcat}.qrcat_letalflaeche (
   t_ili_tid, geometrie, letalitaetsradius_art, 
   letalitaetsradius, bevoelkerung_typ, 
@@ -267,7 +267,7 @@ SELECT
 FROM 
   szen 
 ORDER BY
-  9 ASC, --id_szenario
-  5 ASC, --bevoelkerung_typ
-  3 ASC  --letalitaetsradius_art
+  9 ASC, /* id_szenario */
+  5 ASC, /* bevoelkerung_typ */
+  3 ASC  /* letalitaetsradius_art */
 ;

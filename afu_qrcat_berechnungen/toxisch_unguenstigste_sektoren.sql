@@ -367,7 +367,7 @@
         AND anzahl_max = 1
     UNION
       /* Der zweite Teil selektiert Fälle bei denen es keinen klaren "Gewinner" gibt
-       * (anzahl_max > 1) --> der Ost-Sektor (90 Grad) muss gewählt werden
+       * (anzahl_max > 1) -> der Ost-Sektor (90 Grad) muss gewählt werden
        */
       SELECT 
         uuid_generate_v4() AS t_ili_tid, 
@@ -427,6 +427,7 @@
     id_szenario
   FROM sectors_lr1
   UNION
+  /* dann die inneren Sektoren LR90 */
   /* LR90 Sektor(en) Wohnbevölkerung - inner Radius */
   SELECT
      uuid_generate_v4() AS t_ili_tid,
