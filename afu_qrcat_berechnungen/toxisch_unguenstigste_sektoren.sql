@@ -333,7 +333,7 @@
       ) ^ 2 * wahrscheinlichkeit_szenario AS risikozahl, 
       Round(
         (
-          lw1 *(wabev_lr1 - wabev_lr90) + lw90 * wabev_lr90
+          lw1 *(wabev_lr1 - wabev_lr90) + lw90 * wabev_lr9
         ), 
         2
       ) AS anzahl_tote, 
@@ -361,6 +361,9 @@
    * wie auch den Winkel des Sektors (angle)
    */
   sectors_lr1 AS (
+      /* Der erste Teil selektiert Fälle bei denen es einen klaren "Gewinner" gibt
+       * (nur 1 Sektor mit Maximalwert)
+       */
       SELECT 
         uuid_generate_v4() AS t_ili_tid, 
         geometrie,
@@ -377,6 +380,48 @@
       WHERE 
         bevoelkerung_anzahl > 0 
         AND anzahl_max = 1
+    UNION
+      /* Der zweite Teil selektiert Fälle bei denen es keinen klaren "Gewinner" gibt
+       * (anzahl_max > 1) --> der Ost-Sektor (90 Grad) muss gewählt werden
+       */
+      SELECT 
+        uuid_generate_v4() AS t_ili_tid, 
+        szorig.sector_lr1 AS geometrie,
+        szorig.angle,
+        szctlr1.letalitaetsradius_art, 
+        szctlr1.letalitaetsradius, 
+        szctlr1.bevoelkerung_typ,
+        CASE
+            WHEN bevoelkerung_typ = 'Wohnbevoelkerung' THEN szorig.wbev_lr1
+            WHEN bevoelkerung_typ = 'Arbeitsbevoelkerung' THEN szorig.abev_lr1
+            WHEN bevoelkerung_typ = 'WohnUndArbeitsbevoelkerung' THEN szorig.wabev_lr1
+        END AS bevoelkerung_anzahl, 
+        CASE
+            WHEN bevoelkerung_typ = 'Wohnbevoelkerung' THEN
+               (szorig.lw1 * (szorig.wbev_lr1 - szorig.wbev_lr90) + szorig.lw90 * szorig.wbev_lr90) ^ 2 * szorig.wahrscheinlichkeit_szenario
+            WHEN bevoelkerung_typ = 'Arbeitsbevoelkerung' THEN
+               (szorig.lw1 * (szorig.abev_lr1 - szorig.abev_lr90) + szorig.lw90 * szorig.abev_lr90) ^ 2 * szorig.wahrscheinlichkeit_szenario
+            WHEN bevoelkerung_typ = 'WohnUndArbeitsbevoelkerung' THEN
+               (szorig.lw1 * (szorig.wabev_lr1 - szorig.wabev_lr90) + szorig.lw90 * szorig.wabev_lr90) ^ 2 * szorig.wahrscheinlichkeit_szenario
+        END AS risikozahl,
+        Round(
+            CASE
+                WHEN bevoelkerung_typ = 'Wohnbevoelkerung' THEN
+                   (szorig.lw1 * (szorig.wbev_lr1 - szorig.wbev_lr90) + szorig.lw90 * szorig.wbev_lr90)
+                WHEN bevoelkerung_typ = 'Arbeitsbevoelkerung' THEN
+                   (szorig.lw1 * (szorig.abev_lr1 - szorig.abev_lr90) + szorig.lw90 * szorig.abev_lr90)
+                WHEN bevoelkerung_typ = 'WohnUndArbeitsbevoelkerung' THEN
+                   (szorig.lw1 * (szorig.wabev_lr1 - szorig.wabev_lr90) + szorig.lw90 * szorig.wabev_lr90)
+            END,
+            2
+        ) AS anzahl_tote, 
+        szctlr1.id_szenario 
+      FROM 
+        szen_count_lr1 szctlr1
+        /* wir müssen hier zu den vorigen, nicht aggregierten Zwischenresultaten joinen, für den richtigen Sektor) nach Osten*/
+        LEFT JOIN szen szorig ON szctlr1.id_szenario = szorig.t_id AND szorig.angle = 90
+      WHERE 
+        anzahl_max > 1
   )
   /* Das eigentliche INSERT statement */
   INSERT INTO ${DB_Schema_QRcat}.qrcat_toxischunguenstigster_sektor (
