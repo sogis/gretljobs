@@ -283,10 +283,7 @@ SELECT
   'WohnUndArbeitsbevoelkerung' AS bevoelkerung_typ, 
   wabev_lr90 AS bevoelkerung_anzahl, 
   (lw90 * wabev_lr90) ^ 2 * wahrscheinlichkeit_szenario AS risikozahl, 
-  Round(
-    (lw90 * wabev_lr90), 
-    2
-  ) AS anzahl_tote, 
+  ceil(lw90 * wabev_lr90) AS anzahl_tote, 
   t_id AS id_szenario 
 FROM 
   szen 
