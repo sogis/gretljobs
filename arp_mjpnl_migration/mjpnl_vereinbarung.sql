@@ -47,8 +47,8 @@ SELECT
   'MJPNL_2020' AS mjpnl_version,
   4::integer AS kontrollintervall,
   COALESCE(vbg.notiz,'') || E'\n§\n' ||
-  '{"vbart_vereinbarung_alt":' || COALESCE(vbartvb.bez,'NULL') ||
-  ',"vbart_vbflaeche_alt":' || COALESCE(vbartfl.bez,'NULL') ||
+  '{"vereinbarungsart_alt":' || COALESCE(vbartvb.bez,'NULL') ||
+  ',"vereinbarungsflaeche_alt":' || COALESCE(mjpfl.flaeche::text,'NULL') ||
   '}'  AS bemerkung, --TODO: Zwischenparkieren weiterer alter Attribut-Werte
   18::int8 AS uzl_subregion, -- im Postprocessing zu ersetzen
   'migration' AS dateipfad_oder_url,
