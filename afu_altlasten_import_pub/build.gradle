@@ -22,7 +22,7 @@ def aiLogin = aiUser + ":" + aiPwd
 
 
 task downloadKbsData(type: Download) {
-    src 'http://altlast4web.verw.rootso.org/interlis_exports/so_pub/data.zip'
+    src 'https://altlast4web.verw.rootso.org/interlis_exports/so_pub/data.zip'
     dest pathToTempFolder
     overwrite true
     acceptAnyCertificate true
@@ -50,7 +50,7 @@ task importKbsData(type: Ili2pgReplace, dependsOn: 'unzipKbsData') {
 }
 
 task downloadKbsRestrictedData(type: Download, dependsOn: 'importKbsData') {
-    src 'http://altlast4web.verw.rootso.org/interlis_exports/so_res/data.zip'
+    src 'https://altlast4web.verw.rootso.org/interlis_exports/so_res/data.zip'
     dest pathToTempFolder
     overwrite true
      acceptAnyCertificate true
