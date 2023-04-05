@@ -47,5 +47,5 @@ task "postprocessing_vereinbarungen"(type: SqlExecutor,dependsOn: "postprocessin
     description = "Diverse spatial joins und default-Werte zuweisen."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
-    sqlFiles = ['mjpnl_postprocessing_vereinbarungen.sql']
+    sqlFiles = ['mjpnl_postprocessing_vereinbarungen_gemeinden_zuweisen.sql','mjpnl_postprocessing_vereinbarungen_flurnamen_liegenschaften_zuweisen.sql']
 }
