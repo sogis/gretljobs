@@ -68,7 +68,7 @@ FROM mjpnatur.flaechen mjpfl
    LEFT JOIN mjpnatur.vbart vbartfl
      ON mjpfl.flaechenartid = vbartfl.vbartid AND vbartfl.archive = 0
    LEFT JOIN mjpnatur.personen pers
-     ON vbg.persid = pers.persid
+     ON vbg.persid = pers.persid AND pers.archive = 0
 WHERE
     mjpfl.archive = 0
     AND vbggeom.wkb_geometry IS NOT NULL
