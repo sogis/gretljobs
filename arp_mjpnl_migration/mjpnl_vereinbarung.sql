@@ -11,28 +11,40 @@ SELECT
   ARRAY[]::varchar[] AS gemeinde, --im Postprocessing zu ersetzen
   ARRAY[]::varchar[] AS gb_nr, --im Postprocessing zu ersetzen
   ARRAY[]::varchar[] AS flurname, --im Postprocessing zu ersetzen
+  -- die Unterscheidung ob Weide_LN oder Weide_SoeG wird im Post-processing gemacht
+  -- Standardmässig werden alle Weiden der Weide_LN zu
   CASE
-    WHEN vbartvb.bez = 'Ansaatwiesen' AND vbartfl.bez IS NULL THEN 'Wiese'
-    WHEN vbartvb.bez = 'Ansaatwiesen' AND vbartfl.bez = 'Weiden' THEN 'Weide_LN'
-    WHEN vbartvb.bez = 'Ansaatwiesen' AND vbartfl.bez = 'Waldränder' THEN 'Wiese'
-    WHEN vbartvb.bez = 'Hecken' AND vbartfl.bez IS NULL THEN 'Hecke'
-    WHEN vbartvb.bez = 'Hecken' AND vbartfl.bez = 'Heumatten' THEN 'Wiese'
-    WHEN vbartvb.bez = 'Hecken' AND vbartfl.bez = 'Waldränder' THEN 'Hecke'
-    WHEN vbartvb.bez = 'Hecken' AND vbartfl.bez = 'Weiden' THEN 'Weide_LN'
-    WHEN vbartvb.bez = 'Heumatten' AND vbartfl.bez IS NULL THEN 'Wiese'
-    WHEN vbartvb.bez = 'Heumatten' AND vbartfl.bez = 'Hecken' THEN 'Hecke'
-    WHEN vbartvb.bez = 'Heumatten' AND vbartfl.bez = 'Waldränder' THEN 'Wiese'
-    WHEN vbartvb.bez = 'Heumatten' AND vbartfl.bez = 'Weiden' THEN 'Weide_LN'
-    WHEN vbartvb.bez = 'Hochstamm' AND vbartfl.bez IS NULL THEN 'OBL'
-    WHEN vbartvb.bez = 'Hochstamm' AND vbartfl.bez = 'Waldränder' THEN 'OBL'
-    WHEN vbartvb.bez = 'Hochstamm' AND vbartfl.bez = 'Weiden' THEN 'Weide_LN'
-    WHEN vbartvb.bez = 'Hochstamm' AND vbartfl.bez = 'Wiesen am Bach' THEN 'Wiese'
-    WHEN vbartvb.bez = 'Waldränder' AND vbartfl.bez = 'Weiden' THEN 'Weide_LN'
-    WHEN vbartvb.bez = 'Weiden' AND vbartfl.bez IS NULL THEN 'Weide_LN'
-    WHEN vbartvb.bez IS NULL AND vbartfl.bez = 'Weiden' THEN 'Weide_LN'
-    WHEN vbartvb.bez = 'Wiesen am Bach' AND vbartfl.bez IS NULL THEN 'WBL_Wiese'
-    WHEN vbartvb.bez = 'Wiesen am Bach' AND vbartfl.bez = 'Waldränder' THEN 'WBL_Wiese'
-    WHEN vbartvb.bez = 'Wiesen am Bach' AND vbartfl.bez = 'Weiden' THEN 'WBL_Weide'
+    WHEN vbartvb.bez = 'Ansaatwiesen' AND flart.bez = 'Ansaatwiese' THEN 'Wiese'
+    WHEN vbartvb.bez = 'Ansaatwiesen' AND flart.bez = 'Heumatte' THEN 'Wiese'
+    WHEN vbartvb.bez = 'Ansaatwiesen' AND flart.bez = 'Streuefläche' THEN 'Wiese'
+    WHEN vbartvb.bez = 'Hecken' AND flart.bez = 'Ansaatwiese'  THEN 'Wiese'
+    WHEN vbartvb.bez = 'Hecken' AND flart.bez = 'Hecke' THEN 'Hecke'
+    WHEN vbartvb.bez = 'Hecken' AND flart.bez = 'Heumatte' THEN 'Wiese'
+    WHEN vbartvb.bez = 'Hecken' AND flart.bez = 'Lebhag' THEN 'Lebhag'
+    WHEN vbartvb.bez = 'Hecken' AND flart.bez = 'Streuefläche' THEN 'Wiese'
+    WHEN vbartvb.bez = 'Hecken' AND flart.bez = 'Weide' THEN 'Weide_LN'
+    WHEN vbartvb.bez = 'Heumatten' AND flart.bez = 'Ansaatwiese' THEN 'Wiese'
+    WHEN vbartvb.bez = 'Heumatten' AND flart.bez = 'Heumatte' THEN 'Wiese'
+    WHEN vbartvb.bez = 'Heumatten' AND flart.bez = 'Streuefläche' THEN 'Wiese'
+    WHEN vbartvb.bez = 'Hochstamm' AND flart.bez = 'Ansaatwiese' THEN 'Wiese'
+    WHEN vbartvb.bez = 'Hochstamm' AND flart.bez = 'Heumatte' THEN 'Wiese'
+    WHEN vbartvb.bez = 'Hochstamm' AND flart.bez = 'Hostett' THEN 'Hostett'
+    WHEN vbartvb.bez = 'Hochstamm' AND flart.bez = 'Obstbaumlandschaft' THEN 'OBL'
+    WHEN vbartvb.bez = 'Hochstamm' AND flart.bez = 'Weide' THEN 'Weide_LN'
+    WHEN vbartvb.bez = 'Waldränder' AND flart.bez = 'Ansaatwiese' THEN 'Wiese'
+    WHEN vbartvb.bez = 'Waldränder' AND flart.bez = 'Heumatte' THEN 'Wiese'
+    WHEN vbartvb.bez = 'Waldränder' AND flart.bez = 'Weide' THEN 'Weide_LN'
+    WHEN vbartvb.bez = 'Weiden' THEN 'Weide_LN'
+    WHEN vbartvb.bez = 'Wiesen am Bach' AND flart.bez = 'Ansaatwiese' THEN 'Wiese'
+    WHEN vbartvb.bez = 'Wiesen am Bach' AND flart.bez = 'Heumatte' THEN 'Wiese'
+    WHEN vbartvb.bez = 'Wiesen am Bach' AND flart.bez = 'Uferbereich' THEN 'Hecke'
+    WHEN vbartvb.bez = 'Wiesen am Bach' AND flart.bez = 'Weide' THEN 'Weide_LN'
+    WHEN vbartvb.bez IS NULL AND flart.bez = 'Ansaatwiese' THEN 'Wiese'
+    WHEN vbartvb.bez IS NULL AND flart.bez = 'Heumatte' THEN 'Wiese'
+    WHEN vbartvb.bez IS NULL AND flart.bez = 'Lebhag' THEN 'Lebhag'
+    WHEN vbartvb.bez IS NULL AND flart.bez = 'Streuefläche' THEN 'Wiese'
+    WHEN vbartvb.bez IS NULL AND flart.bez = 'Weide LN' THEN 'Weide_LN'
+    WHEN vbartvb.bez IS NULL AND flart.bez = 'Weide SöG' THEN 'Weide_LN'
   END AS vereinbarungsart,    
   FALSE AS ist_nutzungsvereinbarung,
   Round((ST_Area(vbggeom.wkb_geometry) / 10000)::NUMERIC,2) AS flaeche, --Fläche IN ha, auf 2 Kommastellen gerundet
@@ -48,7 +60,7 @@ SELECT
   4::integer AS kontrollintervall,
   COALESCE(vbg.notiz,'') || E'\n§\n' ||
   '{\n"vbart_vereinbarung_alt":' || COALESCE(vbartvb.bez,'NULL') || ',\n' ||
-  '"vbart_vereinbarungsflaeche_alt":' || COALESCE(vbartfl.bez,'NULL') || ',\n' ||
+  '"vbart_flaechenart_alt":' || COALESCE(flart.bez,'NULL') || ',\n' ||
   '"vereinbarungsflaeche_alt":' || COALESCE(mjpfl.flaeche::text,'NULL') || ',\n' ||
   '"bewirtschafter_alt":' || COALESCE(pers.name || COALESCE(' '|| pers.vorname,''),'NULL') ||
   '\n}'  AS bemerkung, --TODO: Zwischenparkieren weiterer alter Attribut-Werte
@@ -65,8 +77,8 @@ FROM mjpnatur.flaechen mjpfl
      ON vbg.rrbbeschlussid = rrb.rrbid AND rrb.archive = 0
    LEFT JOIN mjpnatur.vbart vbartvb
      ON vbg.vbartid = vbartvb.vbartid AND vbartvb.archive = 0
-   LEFT JOIN mjpnatur.vbart vbartfl
-     ON mjpfl.flaechenartid = vbartfl.vbartid AND vbartfl.archive = 0
+   LEFT JOIN mjpnatur.flaechenart flart
+     ON mjpfl.flaechenartid = flart.flaechenartid AND flart.archive = 0
    LEFT JOIN mjpnatur.personen pers
      ON vbg.persid = pers.persid AND pers.archive = 0
 WHERE
@@ -74,8 +86,7 @@ WHERE
     AND vbggeom.wkb_geometry IS NOT NULL
     AND ST_IsValid(vbggeom.wkb_geometry)
     AND Round((ST_Area(vbggeom.wkb_geometry) / 10000)::NUMERIC,2) > 0 --IGNORE small OR emptry geometries
-    AND NOT (vbartvb.bez = 'Waldränder' AND vbartfl.bez IS NULL)
-    AND NOT (vbartvb.bez = 'Waldränder' AND vbartfl.bez = 'Waldränder')
-    AND NOT (vbartvb.bez IS NULL AND vbartfl.bez = 'Waldränder')
-    AND NOT (vbartvb.bez = 'Waldreservate' AND vbartfl.bez IS NULL)
+    AND NOT (vbartvb.bez = 'Heumatten' AND flart.bez = 'Feuchtgebiet')
+    AND NOT (vbartvb.bez = 'Waldränder' AND flart.bez = 'Waldrand')
+    AND NOT (vbartvb.bez = 'Waldreservate' AND flart.bez = 'Waldreservat')
 ;
