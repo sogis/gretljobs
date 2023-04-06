@@ -49,8 +49,9 @@ SELECT
   COALESCE(vbg.notiz,'') || E'\n§\n' ||
   '{\n"vbart_vereinbarung_alt":' || COALESCE(vbartvb.bez,'NULL') ||
   '\n,"vbart_vereinbarungsflaeche_alt":' || COALESCE(vbartfl.bez,'NULL') ||
- '\n,"vereinbarungsflaeche_alt":' || COALESCE(mjpfl.flaeche::text,'NULL') ||
-  '}'  AS bemerkung, --TODO: Zwischenparkieren weiterer alter Attribut-Werte
+  '\n,"vereinbarungsflaeche_alt":' || COALESCE(mjpfl.flaeche::text,'NULL') ||
+  '\n,"bewirtschafter_alt":' || COALESCE(pers.name || COALESCE(' '|| pers.vorname,''),'NULL') ||
+  '\n}'  AS bemerkung, --TODO: Zwischenparkieren weiterer alter Attribut-Werte
   18::int8 AS uzl_subregion, -- im Postprocessing zu ersetzen
   'migration' AS dateipfad_oder_url,
   COALESCE(vbg.gueltigab,'1900-01-01'::DATE) AS erstellungsdatum,
@@ -66,6 +67,8 @@ FROM mjpnatur.flaechen mjpfl
      ON vbg.vbartid = vbartvb.vbartid AND vbartvb.archive = 0
    LEFT JOIN mjpnatur.vbart vbartfl
      ON mjpfl.flaechenartid = vbartfl.vbartid AND vbartfl.archive = 0
+   LEFT JOIN mjpnatur.personen pers
+     ON vbg.persid = pers.persid
 WHERE
     mjpfl.archive = 0
     AND vbggeom.wkb_geometry IS NOT NULL
