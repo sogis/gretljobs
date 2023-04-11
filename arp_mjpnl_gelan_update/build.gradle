@@ -1,0 +1,67 @@
+description = """\n
+Initialisierung des MJPNL Schemas mit diversen relativ statischen Tabellen (ähnlich Katalogen / Wertelisten)
+und Geometrien die kaum ändern. Ausserdem Import der GELAN-Daten TOPIC Betriebsdaten_Strukturdaten
+
+Fragen an: Andreas Neumann (AGI) und Odile Bruggisser (ARP)
+"""
+
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
+defaultTasks 'BetriebZuBFFFlaechenZuweisen'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def DB_Schema_MJPNL = "arp_mjpnl_v1"
+
+remotes {
+    sftpServer {
+        host = "${sftpServerGelan}"
+        user = "${sftpUserGelan}"
+        password = "${sftpPwdGelan}"
+    }
+}
+
+task downloadData() {
+    description = "Download file from SFTP server"
+    doLast {
+        ssh.settings {
+            knownHosts = allowAnyHosts
+        }
+        ssh.run {
+            session(remotes.sftpServer) {
+                get from: "Prod/Export_ais_agrardaten.xtf", into: pathToTempFolder
+            }
+        }
+        println "File downloaded from SFTP server"
+    }
+}
+
+task importGELAN(type: Ili2pgReplace, dependsOn: downloadData) {
+    description = 'Import resp. ersetzt täglich die GELAN-Daten (nur Topics: Betriebsdaten_Strukturdaten und BFF_Qualitaet) in der Erfassungsdatenbank, Schema arp_mjpnl_v1'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "arp_mjpnl_v1"
+    models = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426'
+    topics = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426.Betriebsdaten_Strukturdaten;SO_ALW_Landwirtschaft_Tierhaltung_20210426.BFF_Qualitaet'
+    dataFile = Paths.get(pathToTempFolder, 'Export_ais_agrardaten.xtf')
+    dataset = 'GELAN'
+}
+
+
+task GelanBezugsjahrBereinigen(type: SqlExecutor, dependsOn: importGELAN) {
+    description = "Beim GELAN-Import kommen öfter doppelte Jahre. Das jeweils nicht benötigte wird entfernt"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['delete_gelandata_from_other_year.sql']
+}
+
+task BetriebZuBFFFlaechenZuweisen(type: SqlExecutor, dependsOn: GelanBezugsjahrBereinigen) {
+    description = "Die BFF2-Flächen haben im Modell keine Zuweisung zu Betrieb und Person. Mit einem Extra-Skript passiert die Zuweisung zum Betrieb."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['update_betrieb_bff2-flaechen.sql']
+}
