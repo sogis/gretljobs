@@ -17,7 +17,7 @@ task "clean_mjpnl_before_import"(type: SqlExecutor) {
     description = "MJPNL Daten in der richtigen Reihenfolge (dependencies) löschen vor dem Neuimport"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
-    sqlFiles = ['delete_mjpnl_before_import.sql']
+    sqlFiles = ['delete_mjpnl_before_import.sql','mjpnl_dummy_entries.sql']
 }
 
 task "transfer_mjpnl"(type: Db2Db,dependsOn: "clean_mjpnl_before_import"){
@@ -25,7 +25,8 @@ task "transfer_mjpnl"(type: Db2Db,dependsOn: "clean_mjpnl_before_import"){
     sourceDb = ['jdbc:postgresql://geodb.verw.rootso.org/sogis', dbUserSogis, dbPwdSogis]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
-            new TransferSet('mjpnl_vereinbarung.sql', 'arp_mjpnl_v1.mjpnl_vereinbarung', false)
+            new TransferSet('mjpnl_vereinbarung.sql', 'arp_mjpnl_v1.mjpnl_vereinbarung', false),
+            new TransferSet('mjpnl_leistung.sql', 'arp_mjpnl_v1.mjpnl_abrechnung_per_leistung', false)
     ];
 }
 
