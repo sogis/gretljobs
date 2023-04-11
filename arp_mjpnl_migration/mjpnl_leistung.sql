@@ -38,5 +38,5 @@ FROM mjpnatur.leistung l
    LEFT JOIN mjpnatur.status stat ON l.status_auszahlung = stat.statuscd AND statustypid = 'ANZ'
 WHERE
    l.datum_auszahlung >= '2020-01-01' AND l.datum_auszahlung != '9999-01-01'
-   AND l.betrag > 0
+   AND l.betrag > 0 AND l.betrag <= 10000 /* TODO remove upper limit after model update */
 ;
