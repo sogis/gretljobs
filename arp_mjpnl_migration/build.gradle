@@ -30,14 +30,14 @@ task "transfer_mjpnl"(type: Db2Db,dependsOn: "clean_mjpnl_before_import"){
     ];
 }
 
-task "postprocessing_soeg"(type: SqlExecutor,dependsOn: "transfer_mjpnl") {
-    description = "Check ob Vereinbarungsfläche in Sömmerungsgebiet liegt."
+task "postprocessing_soeg_uzl"(type: SqlExecutor,dependsOn: "transfer_mjpnl") {
+    description = "Check ob Vereinbarungsfläche in Sömmerungsgebiet liegt. Korrekte UZL Subregion zuweisen."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
-    sqlFiles = ['mjpnl_postprocessing_vereinbarung_soemmerungsgebiet.sql']
+    sqlFiles = ['mjpnl_postprocessing_vereinbarung_soemmerungsgebiet.sql','mjpnl_postprocessing_vereinbarung_uzl-region.sql']
 }
 
-task "postprocessing_vereinbarungsnummern"(type: SqlExecutor,dependsOn: "postprocessing_soeg") {
+task "postprocessing_vereinbarungsnummern"(type: SqlExecutor,dependsOn: "postprocessing_soeg_uzl") {
     description = "Neue Vereinbarungsnummern erstellen."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
@@ -45,17 +45,24 @@ task "postprocessing_vereinbarungsnummern"(type: SqlExecutor,dependsOn: "postpro
 }
 
 task "postprocessing_flurnamen_liegenschaften"(type: SqlExecutor,dependsOn: "postprocessing_vereinbarungsnummern") {
-    description = "Diverse spatial joins und default-Werte zuweisen."
+    description = "Spatial Joins zu Gemeinden (Name und BFS-Nr) und Flurnamen herstellen."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
     sqlFiles = ['mjpnl_postprocessing_vereinbarungen_gemeinden_zuweisen.sql','mjpnl_postprocessing_vereinbarungen_flurnamen_liegenschaften_zuweisen.sql']
 }
 
 task "postprocessing_gelan_bewirtschaftungseinheiten"(type: SqlExecutor,dependsOn: "postprocessing_flurnamen_liegenschaften") {
-    description = "Diverse spatial joins und default-Werte zuweisen."
+    description = "Spatial join von Vereinbarung zu GELAN Bewirtschaftungseinheit herstellen."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
     sqlFiles = ['mjpnl_postprocessing_vereinbarungen_gelan_bewirtschaftungseinheiten.sql']
+}
+
+task "postprocessing_gelan_bewirtschafter"(type: SqlExecutor,dependsOn: "postprocessing_gelan_bewirtschaftungseinheiten") {
+    description = "Foreign keys zwischen Leistungen und Vereinbarungen wiederherstellen."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['mjpnl_postprocessing_leistungen_fkey_vereinbarungen.sql']
 }
 
 task "postprocessing_gelan_bewirtschafter"(type: SqlExecutor,dependsOn: "postprocessing_gelan_bewirtschaftungseinheiten") {
