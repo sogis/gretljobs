@@ -1,14 +1,14 @@
 --GELAN Bewirtschaftungseinheit zuweisen
 UPDATE
-   arp_mjpnl_v1.mjpnl_vereinbarung AS vbg
+   ${DB_Schema_MJPNL}.mjpnl_vereinbarung AS vbg
      SET gelan_pid_gelan=(
        COALESCE(
         (SELECT
          p.pid_gelan
         FROM
-           arp_mjpnl_v1.betrbsdttrktrdten_bewirtschaftungseinheit bw
-           LEFT JOIN arp_mjpnl_v1.betrbsdttrktrdten_betrieb b ON bw.betrieb = b.t_id
-           LEFT JOIN arp_mjpnl_v1.betrbsdttrktrdten_gelan_person p ON b.person = p.t_id
+           ${DB_Schema_MJPNL}.betrbsdttrktrdten_bewirtschaftungseinheit bw
+           LEFT JOIN ${DB_Schema_MJPNL}.betrbsdttrktrdten_betrieb b ON bw.betrieb = b.t_id
+           LEFT JOIN ${DB_Schema_MJPNL}.betrbsdttrktrdten_gelan_person p ON b.person = p.t_id
          WHERE
            bewe_id = vbg.gelan_bewe_id
 		),9999999)

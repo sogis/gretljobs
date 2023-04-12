@@ -1,6 +1,6 @@
 --Flurnamen und Liegenschaften zuweisen
 UPDATE
-   arp_mjpnl_v1.mjpnl_vereinbarung AS vbg
+   ${DB_Schema_MJPNL}.mjpnl_vereinbarung AS vbg
 	 SET flurname=(
         SELECT
 		 COALESCE(array_agg(fn.aname),'{"unbekannt"}') AS flurname
