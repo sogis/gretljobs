@@ -9,7 +9,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'postprocessing_gelan_bewirtschafter'
+defaultTasks 'postprocessing_fkey_leistung_vereinbarung'
 
 def DB_Schema_MJPNL = "arp_mjpnl_v1"
 
@@ -59,15 +59,16 @@ task "postprocessing_gelan_bewirtschaftungseinheiten"(type: SqlExecutor,dependsO
 }
 
 task "postprocessing_gelan_bewirtschafter"(type: SqlExecutor,dependsOn: "postprocessing_gelan_bewirtschaftungseinheiten") {
+    description = "GELAN Bewirtschafter zuweisen."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['mjpnl_postprocessing_vereinbarungen_gelan_bewirtschafter.sql']
+}
+
+task "postprocessing_fkey_leistung_vereinbarung"(type: SqlExecutor,dependsOn: "postprocessing_gelan_bewirtschafter") {
     description = "Foreign keys zwischen Leistungen und Vereinbarungen wiederherstellen."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
     sqlFiles = ['mjpnl_postprocessing_leistungen_fkey_vereinbarungen.sql']
 }
 
-task "postprocessing_gelan_bewirtschafter"(type: SqlExecutor,dependsOn: "postprocessing_gelan_bewirtschaftungseinheiten") {
-    description = "Diverse spatial joins und default-Werte zuweisen."
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
-    sqlFiles = ['mjpnl_postprocessing_vereinbarungen_gelan_bewirtschafter.sql']
-}
