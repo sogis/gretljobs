@@ -69,6 +69,6 @@ task "postprocessing_abrechnung_leistungen"(type: SqlExecutor,dependsOn: "postpr
     description = "Foreign keys zwischen Leistungen und Vereinbarungen wiederherstellen."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
-    sqlFiles = ['mjpnl_postprocessing_leistungen_fkey_vereinbarungen.sql','mjpnl_postprocessing_abrechnung_per_vereinbarung.sql']
+    sqlFiles = ['mjpnl_postprocessing_leistungen_fkey_vereinbarungen.sql','mjpnl_postprocessing_abrechnung_per_vereinbarung.sql','mjpnl_postprocessing_abrechnung_per_bewirtschafter.sql']
 }
 
