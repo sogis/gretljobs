@@ -22,7 +22,7 @@ FROM
   WHERE
     lstg.vereinbarung != 9999999
     AND vbg.t_id IS NOT NULL
-  GROUP BY vbg.vereinbarungs_nr, vbg.flurname, vbg.gemeinde, vbg.flaeche,
+  GROUP BY vbg.t_id, vbg.vereinbarungs_nr, vbg.flurname, vbg.gemeinde, vbg.flaeche,
            lstg.auszahlungsjahr, lstg.status_abrechnung, lstg.datum_abrechnung
   ORDER BY  vbg.vereinbarungs_nr, lstg.datum_abrechnung ASC
   ;
