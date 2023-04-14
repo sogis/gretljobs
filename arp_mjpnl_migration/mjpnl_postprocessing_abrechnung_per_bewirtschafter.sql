@@ -9,6 +9,8 @@ WITH gelan_persons AS (
 SELECT 
     DISTINCT
       pers.pid_gelan,
+      pers.name_vorname,
+      pers.ortschaft,
       pers.iban
 FROM
     ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
