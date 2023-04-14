@@ -13,7 +13,8 @@ SELECT
   lstg.auszahlungsjahr,
   lstg.status_abrechnung,
   lstg.datum_abrechnung,
-  9999999 AS abrechnungperbewirtschafter
+  9999999 AS abrechnungperbewirtschafter,
+  vbg.t_id AS vereinbarung
 FROM
   ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
