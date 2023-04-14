@@ -2,7 +2,7 @@
 
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung 
   (t_basket, vereinbarungs_nr, flurnamen, gemeinde, flaeche, gesamtbetrag,
-   auszahlungsjahr, status_abrechnung, datum_abrechnung, abrechnungperbewirtschafter)
+   auszahlungsjahr, status_abrechnung, datum_abrechnung, abrechnungperbewirtschafter, vereinbarung)
 SELECT
   5 AS t_basket,
   vbg.vereinbarungs_nr,
