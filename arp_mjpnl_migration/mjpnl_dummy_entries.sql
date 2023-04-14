@@ -40,10 +40,10 @@ VALUES(
 
 /* Dummy-Entry Abrechnung per Bewirtschafter */
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_bewirtschafter
-(t_id, t_basket, t_ili_tid, gelan_pid_gelan, gelan_iban, betrag_total, status_abrechnung, datum_abrechnung, auszahlungsjahr, bemerkung, dateipfad_oder_url, erstellungsdatum, operator_erstellung, aenderungsdatum, operator_aenderung)
-VALUES(9999999, 5, uuid_generate_v4(), (SELECT pid_gelan FROM ${DB_Schema_MJPNL}.betrbsdttrktrdten_gelan_person LIMIT 1), 'CH16090100565713403', 99, 'initialisiert', '1990-01-01', 1900, 'Dummy-Entry', 'Dummy-Pfad', now()::date, 'bjsvwneu', NULL, NULL);
+(t_id, t_basket, t_ili_tid, gelan_pid_gelan, gelan_person, gelan_ortschaft, gelan_iban, betrag_total, status_abrechnung, datum_abrechnung, auszahlungsjahr, bemerkung, dateipfad_oder_url, erstellungsdatum, operator_erstellung, aenderungsdatum, operator_aenderung)
+VALUES(9999999, 5, uuid_generate_v4(), (SELECT pid_gelan FROM ${DB_Schema_MJPNL}.betrbsdttrktrdten_gelan_person LIMIT 1), 'Dummy-Name','Dummy-Ortschaft', 'CH16090100565713403', 99, 'initialisiert', '1990-01-01', 1900, 'Dummy-Entry', 'Dummy-Pfad', now()::date, 'bjsvwneu', NULL, NULL);
 
 /* Dummy-Entry Abrechnung per Vereinbarung */
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung
-(t_id, t_basket, t_ili_tid, vereinbarungs_nr, flurnamen, gemeinde, flaeche, gesamtbetrag, auszahlungsjahr, status_abrechnung, datum_abrechnung, bemerkung, abrechnungperbewirtschafter)
-VALUES(9999999, 5, uuid_generate_v4(), '01_DUMMY_00001', 'Dummy-Flurnamen', 'Dummy-Gemeinde', 99, 99, 1900, 'initialisiert', '1990-01-01', 'Dummy Entry', 9999999);
+(t_id, t_basket, t_ili_tid, vereinbarungs_nr, flurnamen, gemeinde, flaeche, gesamtbetrag, auszahlungsjahr, status_abrechnung, datum_abrechnung, bemerkung, abrechnungperbewirtschafter, vereinbarung)
+VALUES(9999999, 5, uuid_generate_v4(), '01_DUMMY_00001', 'Dummy-Flurnamen', 'Dummy-Gemeinde', 99, 99, 1900, 'initialisiert', '1990-01-01', 'Dummy Entry', 9999999, 9999999);

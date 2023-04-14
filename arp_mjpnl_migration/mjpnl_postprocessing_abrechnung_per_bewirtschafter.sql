@@ -1,7 +1,7 @@
 /* Zusammenzug Zahlungen per Bewirtschafter, Auszahlungsjahr und Status Zahlung */
 
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_bewirtschafter 
-(t_basket, gelan_pid_gelan, gelan_iban, gelan_person, gelan_ortschaft, betrag_total, status_abrechnung,
+(t_basket, gelan_pid_gelan, gelan_person, gelan_ortschaft, gelan_iban, betrag_total, status_abrechnung,
  datum_abrechnung, auszahlungsjahr, dateipfad_oder_url, erstellungsdatum, operator_erstellung)
 
 WITH gelan_persons AS (
@@ -23,9 +23,9 @@ FROM
 SELECT 
    5 AS t_basket,   
    pers.pid_gelan,
-   pers.iban,
    pers.name_vorname AS gelan_person,
    pers.ortschaft AS gelan_ortschaft,
+   pers.iban,
    SUM(abrg_vbg.gesamtbetrag) AS betrag_total,
    MIN(abrg_vbg.status_abrechnung) AS status_abrechnung,
    MAX(abrg_vbg.datum_abrechnung) AS datum_abrechnung,
