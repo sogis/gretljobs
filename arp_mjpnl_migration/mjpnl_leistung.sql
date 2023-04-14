@@ -36,7 +36,18 @@ SELECT
 FROM mjpnatur.leistung l
    LEFT JOIN mjpnatur.leistungsart lart ON l.leistungartid = lart.leistungsartid AND lart.archive = 0
    LEFT JOIN mjpnatur.status stat ON l.status_auszahlung = stat.statuscd AND statustypid = 'ANZ'
+   LEFT JOIN mjpnatur.flaechen mjpfl ON l.polyid = mjpfl.flaecheid AND mjpfl.archive = 0
+   LEFT JOIN mjpnatur.flaechenart flart ON mjpfl.flaechenartid = flart.flaechenartid AND flart.archive = 0
+   LEFT JOIN mjpnatur.flaechen_geom_t vbggeom ON mjpfl.polyid = vbggeom.polyid AND vbggeom.archive = 0
+   LEFT JOIN mjpnatur.vereinbarung vbg ON mjpfl.vereinbarungid = vbg.vereinbarungsid AND vbg.archive = 0
+   LEFT JOIN mjpnatur.vbart vbartvb ON vbg.vbartid = vbartvb.vbartid AND vbartvb.archive = 0
 WHERE
    l.datum_auszahlung >= '2020-01-01' AND l.datum_auszahlung != '9999-01-01'
-   AND l.betrag > 0 AND l.betrag <= 10000 /* TODO remove upper limit after model update */
+   AND vbggeom.wkb_geometry IS NOT NULL
+   AND ST_IsValid(vbggeom.wkb_geometry)
+   AND Round((ST_Area(vbggeom.wkb_geometry) / 10000)::NUMERIC,2) > 0 --IGNORE small OR emptry geometries
+   AND NOT (vbartvb.bez = 'Heumatten' AND flart.bez = 'Feuchtgebiet')
+   AND NOT (vbartvb.bez = 'Waldränder' AND flart.bez = 'Waldrand')
+   AND NOT (vbartvb.bez = 'Waldreservate' AND flart.bez = 'Waldreservat')
+   -- AND l.betrag > 0
 ;
