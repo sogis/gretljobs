@@ -104,11 +104,11 @@ git checkout -b branchname
   * `dbUriKaso`, `dbUserKaso`, `dbPwdKaso`
   * `dbUriCapitastra`, `dbUserCapitastra`, `dbPwdCapitastra`
   * `efjServicesUrl`
-  * `ftpServerZivilschutz`, `ftpUserZivilschutz`, `ftpPwdZivilschutz`
+  * `ftpUserEmapis`, `ftpPwdEmapis`
   * `ftpServerFledermaus`, `ftpUserFledermaus`, `ftpPwdFledermaus`
   * `ftpServerInfogrips`, `ftpUserInfogrips`, `ftpPwdInfogrips`
   * `ftpServerWaldportal`, `ftpUserWaldportal`, `ftpPwdWaldportal`
-  * `ftpUserEmapis`, `ftpPwdEmapis`
+  * `ftpServerZivilschutz`, `ftpUserZivilschutz`, `ftpPwdZivilschutz`
   * `sftpServerGelan`, `sftpUserGelan`, `sftpPwdGelan`
   * `sftpServerSogis`, `sftpUserSogis`, `sftpPwdSogis`
   * für Datentransfer Gemdat: `host = sftpServerSogis`, `user = sftpUserSogisGemdat`, `identity = file('/home/gradle/.sshkeys/id_rsa')`
