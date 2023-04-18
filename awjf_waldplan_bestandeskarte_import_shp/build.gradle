@@ -29,4 +29,5 @@ task importWaldplan(type: ShpImport, dependsOn: unzipData) {
     schemaName = 'awjf_waldplan_bestandeskarte_v1'
     tableName = 'waldplan_bestandeskarte'
     dataFile = file('upload/waldplan.shp')
+    encoding = 'UTF-8'
 }
