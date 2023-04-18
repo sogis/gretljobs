@@ -1,0 +1,115 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+import de.undercouch.gradle.tasks.download.Download
+import java.text.SimpleDateFormat
+import java.util.zip.ZipInputStream
+import java.util.zip.ZipEntry
+import java.nio.file.Paths
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
+defaultTasks 'importWaldportal', 'importWaldportalPub'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+ext.filename = 'bar'
+/////////////////////////////////////////////////
+//Konfiguration
+def xtfFileName = 'SO_awjf_waldportal_prod.xtf'
+def umgebung = "prod"
+////////////////////////////////////////////////
+// Credentials für den SFTP-Server
+remotes {
+    sftpServer {
+        host = ftpServerWaldportal
+        user = ftpUserWaldportal
+        password = ftpPwdWaldportal
+    }
+}
+
+//Download-Task
+task download () {
+    description = "Download file from SFTP server"
+    doLast {
+        ssh.settings {
+            knownHosts = allowAnyHosts
+        }
+        ssh.run {
+            session(remotes.sftpServer) {
+                get from: umgebung, into: pathToTempFolder
+            }
+        }
+        println "File downloaded from SFTP server"
+    }
+}
+
+// Über die ersten 10 Zeichen des Filenamens wird erruiert, welches das neuste File ist
+// TODO: Abklären, ob das IMMER so ist! 
+task show_latest_file (dependsOn:download){
+    doLast {
+        def latestFile = null
+        def latestDate = null
+        def files =  fileTree(pathToTempFolder).filter { it.isFile() }.files
+        files.each { file ->
+            def filename = file.name
+            try {
+                def dateFormat = new SimpleDateFormat("yyyy-MM-dd")
+                def fileDate = dateFormat.parse(filename.substring(0,10))
+                if (latestDate == null || fileDate.after(latestDate)) {
+                    latestDate = fileDate
+                    latestFile = filename
+                }
+            }
+            catch (Exception e) {
+                return; 
+            }
+        }
+        println "Latest file: ${latestFile}"
+        project.filename = latestFile
+    }
+}
+  
+task unpackFile(dependsOn: show_latest_file) {   
+    doLast {
+        ZipInputStream zis = new ZipInputStream(
+            new FileInputStream(pathToTempFolder+"/"+project.filename)
+        )
+        ZipEntry entry = zis.getNextEntry()
+        while (entry != null) {
+            File file = new File(pathToTempFolder.toString(), entry.getName())
+            if (entry.isDirectory()) {
+                file.mkdirs()
+            } else {
+                FileOutputStream fos = new FileOutputStream(file)
+                byte[] buffer = new byte[1024]
+                int len
+                while ((len = zis.read(buffer)) > 0) {
+                    fos.write(buffer, 0, len)
+                }
+                fos.close()
+            }
+            entry = zis.getNextEntry()
+            println file.name
+        }
+        zis.closeEntry()
+        zis.close()
+    }
+}
+
+task importWaldportal(type: Ili2pgImport, dependsOn: unpackFile) {
+    description = 'Import einmal in der Woche die Waldportal-Daten in der Erfassungsdatenbank'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "awjf_waldportal_v1"
+    models = 'SO_AWJF_Waldportal_20221216'
+    dataFile = Paths.get(pathToTempFolder, xtfFileName)
+    deleteData = true
+}
+
+task importWaldportalPub(type: Ili2pgImport, dependsOn: importWaldportal) {
+    description = 'Import einmal in der Woche die Waldportal-Daten in der Publikationsdatenbank'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = "awjf_waldportal_pub_v1"
+    models = 'SO_AWJF_Waldportal_20221216'
+    dataFile = Paths.get(pathToTempFolder, xtfFileName)
+    deleteData = true
+}
