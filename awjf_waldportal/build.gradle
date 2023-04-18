@@ -4,21 +4,26 @@ import de.undercouch.gradle.tasks.download.Download
 import java.text.SimpleDateFormat
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipEntry
+import java.nio.file.Paths
 
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'unpackFile'
+defaultTasks 'importWaldportal', 'importWaldportalPub'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 ext.filename = 'bar'
-
+/////////////////////////////////////////////////
+//Konfiguration
+def xtfFileName = 'SO_awjf_waldportal_prod.xtf'
+def umgebung = "prod"
+////////////////////////////////////////////////
 // Credentials für den SFTP-Server
 remotes {
     sftpServer {
-        host = "ftp.interconnect.ch"
-        user = "waldSO"
-        password = "voVW2FRiSeGkBy"
+        host = ftpServerWaldportal
+        user = ftpUserWaldportal
+        password = ftpPwdWaldportal
     }
 }
 
@@ -31,7 +36,7 @@ task download () {
         }
         ssh.run {
             session(remotes.sftpServer) {
-                get from: "test", into: pathToTempFolder
+                get from: umgebung, into: pathToTempFolder
             }
         }
         println "File downloaded from SFTP server"
@@ -91,11 +96,20 @@ task unpackFile(dependsOn: show_latest_file) {
     }
 }
 
-task importWaldportal(type: Ili2pgReplace, dependsOn: unpackFile) {
-    description = 'Import resp. ersetzt einmal in der Woche die GELAN-Daten (Topic: GELAN_Bodenbedeckung, Datentransfer) in der Erfassungsdatenbank'
+task importWaldportal(type: Ili2pgImport, dependsOn: unpackFile) {
+    description = 'Import einmal in der Woche die Waldportal-Daten in der Erfassungsdatenbank'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = "alw_landwirtschaft_tierhaltung_v1"
-    models = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426'
-    dataFile = Paths.get(pathToTempFolder, 'Export_ais_ln.xtf')
-    dataset = 'bodenbedeckung'
+    dbschema = "awjf_waldportal_v1"
+    models = 'SO_AWJF_Waldportal_20221216'
+    dataFile = Paths.get(pathToTempFolder, xtfFileName)
+    deleteData = true
+}
+
+task importWaldportalPub(type: Ili2pgImport, dependsOn: importWaldportal) {
+    description = 'Import einmal in der Woche die Waldportal-Daten in der Publikationsdatenbank'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = "awjf_waldportal_pub_v1"
+    models = 'SO_AWJF_Waldportal_20221216'
+    dataFile = Paths.get(pathToTempFolder, xtfFileName)
+    deleteData = true
 }
