@@ -59,10 +59,18 @@ SELECT
   'MJPNL_2020' AS mjpnl_version,
   4::integer AS kontrollintervall,
   COALESCE(vbg.notiz,'') || E'\n§\n' ||
-  '{\n"vbart_vereinbarung_alt":' || COALESCE(vbartvb.bez,'NULL') || ',\n' ||
-  '"vbart_flaechenart_alt":' || COALESCE(flart.bez,'NULL') || ',\n' ||
-  '"vereinbarungsflaeche_alt":' || COALESCE(mjpfl.flaeche::text,'NULL') || ',\n' ||
-  '"bewirtschafter_alt":' || COALESCE(pers.name || COALESCE(' '|| pers.vorname,''),'NULL') ||
+  '{\n"vbart_vereinbarung_alt":''' || COALESCE(vbartvb.bez,'NULL') || ''',\n' ||
+  '"vbart_flaechenart_alt":''' || COALESCE(flart.bez,'NULL') || ''',\n' ||
+  '"vereinbarungsflaeche_alt":' || COALESCE(Round(mjpfl.flaeche::NUMERIC,2)::text,'') || ',\n' ||
+  '"bewirtschafter_alt":''' || COALESCE(pers.name || COALESCE(' '|| pers.vorname,''),'NULL') || ''',\n' ||
+  CASE WHEN mjpfl.wiesenkategorie IS NOT NULL AND mjpfl.wiesenkategorie > 0 THEN
+    '"wiesenkategorie":''' || wieskat.kurzbez || ''''
+    ELSE ''
+  END ||
+  CASE WHEN mjpfl.laufmeter IS NOT NULL AND mjpfl.laufmeter > 0 THEN
+    '"hecken_laufmeter":' || Round(mjpfl.laufmeter) || ',\n'
+    ELSE ''
+  END ||
   '\n}'  AS bemerkung, --TODO: Zwischenparkieren weiterer alter Attribut-Werte
   18::int8 AS uzl_subregion, -- im Postprocessing zu ersetzen
   'migration' AS dateipfad_oder_url,
@@ -81,6 +89,8 @@ FROM mjpnatur.flaechen mjpfl
      ON mjpfl.flaechenartid = flart.flaechenartid AND flart.archive = 0
    LEFT JOIN mjpnatur.personen pers
      ON vbg.persid = pers.persid AND pers.archive = 0
+   LEFT JOIN mjpnatur.code wieskat
+     ON mjpfl.wiesenkategorie > 1 AND mjpfl.wiesenkategorie = wieskat.codeid AND wieskat.codetypid = 'FLK' --Naturschutzkategorie
 WHERE
     mjpfl.archive = 0
     AND vbggeom.wkb_geometry IS NOT NULL
@@ -90,3 +100,4 @@ WHERE
     AND NOT (vbartvb.bez = 'Waldränder' AND flart.bez = 'Waldrand')
     AND NOT (vbartvb.bez = 'Waldreservate' AND flart.bez = 'Waldreservat')
 ;
+
