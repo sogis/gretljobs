@@ -31,7 +31,7 @@ SET
 UPDATE
      avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten
 SET
-    total_gewichtete_haltestellenabfahrten =sum_abfahrten_gewichtet.total
+    total_gewichtete_haltestellenabfahrten = sum_abfahrten_gewichtet.total
 FROM
     (
     SELECT
