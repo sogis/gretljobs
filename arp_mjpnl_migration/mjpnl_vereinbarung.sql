@@ -58,20 +58,65 @@ SELECT
   FALSE AS soemmerungsgebiet, --im Postprocessing zu ersetzen
   'MJPNL_2020' AS mjpnl_version,
   4::integer AS kontrollintervall,
-  COALESCE(vbg.notiz,'') || E'\n§\n' ||
-  '{\n"vbart_vereinbarung_alt":''' || COALESCE(vbartvb.bez,'NULL') || ''',\n' ||
-  '"vbart_flaechenart_alt":''' || COALESCE(flart.bez,'NULL') || ''',\n' ||
-  '"vereinbarungsflaeche_alt":' || COALESCE(Round(mjpfl.flaeche::NUMERIC,2)::text,'') || ',\n' ||
-  '"bewirtschafter_alt":''' || COALESCE(pers.name || COALESCE(' '|| pers.vorname,''),'NULL') || ''',\n' ||
-  CASE WHEN mjpfl.wiesenkategorie IS NOT NULL AND mjpfl.wiesenkategorie > 0 THEN
-    '"wiesenkategorie":''' || wieskat.kurzbez || ''''
-    ELSE ''
-  END ||
-  CASE WHEN mjpfl.laufmeter IS NOT NULL AND mjpfl.laufmeter > 0 THEN
-    '"hecken_laufmeter":' || Round(mjpfl.laufmeter) || ',\n'
-    ELSE ''
-  END ||
-  '\n}'  AS bemerkung, --TODO: Zwischenparkieren weiterer alter Attribut-Werte
+  replace(
+      COALESCE(vbg.notiz,'') || E'\n§\n' ||
+      '{\n"vbart_vereinbarung_alt":''' || COALESCE(vbartvb.bez,'NULL') || ''',\n' ||
+      '"vbart_flaechenart_alt":''' || COALESCE(flart.bez,'NULL') || ''',\n' ||
+      '"vereinbarungsflaeche_alt":' || COALESCE(Round(mjpfl.flaeche::NUMERIC,2)::text,'') || ',\n' ||
+      '"bewirtschafter_alt":''' || COALESCE(pers.name || COALESCE(' '|| pers.vorname,''),'NULL') || ''',\n' ||
+      CASE WHEN mjpfl.wiesenkategorie IS NOT NULL AND mjpfl.wiesenkategorie > 0 THEN
+        '"wiesenkategorie":''' || COALESCE(wieskat.kurzbez,'-') || ''',\n'
+        ELSE ''
+      END ||
+      CASE WHEN mjpfl.schnittzeitpunkt IS NOT NULL AND mjpfl.schnittzeitpunkt <> '' THEN
+        '"schnittzeitpunkt":''' || mjpfl.schnittzeitpunkt || ''',\n'
+        ELSE ''
+      END ||
+      CASE WHEN mjpfl.balkenmaeher IS NOT NULL AND mjpfl.balkenmaeher = TRUE THEN
+        '"balkenmaeher":' || mjpfl.balkenmaeher || ',\n'
+        ELSE ''
+      END ||
+      CASE WHEN mjpfl.herbstweide IS NOT NULL AND mjpfl.herbstweide = TRUE THEN
+        '"herbstweide":' || mjpfl.herbstweide || ',\n'
+        ELSE ''
+      END ||
+      CASE WHEN mjpfl.emden IS NOT NULL AND mjpfl.emden > 0 THEN
+        '"emden":''' || COALESCE(emden.kurzbez,'-') || ''',\n'
+        ELSE ''
+      END ||
+      CASE WHEN mjpfl.rkzugstreifen  IS NOT NULL AND mjpfl.rkzugstreifen = TRUE THEN
+        '"rueckzugstreifen":' || mjpfl.rkzugstreifen || ',\n'
+        ELSE ''
+      END ||
+      CASE WHEN mjpfl.oeqv_q_attest IS NOT NULL AND mjpfl.oeqv_q_attest > 0 THEN
+        '"oeqv_q_attest":''' || COALESCE(oeqv.kurzbez,'-') || ''',\n'
+        ELSE ''
+      END ||
+      CASE WHEN mjpfl.datum_oeqv IS NOT NULL AND mjpfl.datum_oeqv != '9999-01-01'::date THEN
+        '"oeqv_datum":''' || COALESCE(mjpfl.datum_oeqv::text,'-') || ''',\n'
+        ELSE ''
+      END ||
+      CASE WHEN mjpfl.laufmeter IS NOT NULL AND mjpfl.laufmeter > 0 THEN
+        '"hecken_laufmeter":' || Round(mjpfl.laufmeter) || ',\n'
+        ELSE ''
+      END ||
+      CASE WHEN mjpfl.bffii_flaeche IS NOT NULL AND mjpfl.bffii_flaeche > 0 THEN
+        '"bffii_flaeche":' || Round(mjpfl.bffii_flaeche,2) || ',\n'
+        '"bffii_indikatoren":''' || COALESCE(mjpfl.bffii_indikatoren,'-') || ''',\n'
+        ELSE ''
+      END ||
+      CASE WHEN mjpfl.datum_beurt IS NOT NULL AND mjpfl.datum_beurt != '9999-01-01'::date THEN
+        '"datum_beurteilung":''' || COALESCE(mjpfl.datum_beurt::text,'-') || ''',\n'
+        ELSE ''
+      END ||
+      CASE WHEN mjpfl.letzter_unterhalt IS NOT NULL AND mjpfl.letzter_unterhalt != '9999-01-01'::date THEN
+        '"letzter_unterhalt":''' || COALESCE(mjpfl.letzter_unterhalt::text,'-') || ''',\n'
+        ELSE ''
+      END ||
+      '\n}',
+      ',\n\n}',
+      '\n}'
+    ) AS bemerkung, --TODO: Zwischenparkieren weiterer alter Attribut-Werte
   18::int8 AS uzl_subregion, -- im Postprocessing zu ersetzen
   'migration' AS dateipfad_oder_url,
   COALESCE(vbg.gueltigab,'1900-01-01'::DATE) AS erstellungsdatum,
@@ -90,7 +135,11 @@ FROM mjpnatur.flaechen mjpfl
    LEFT JOIN mjpnatur.personen pers
      ON vbg.persid = pers.persid AND pers.archive = 0
    LEFT JOIN mjpnatur.code wieskat
-     ON mjpfl.wiesenkategorie > 1 AND mjpfl.wiesenkategorie = wieskat.codeid AND wieskat.codetypid = 'FLK' --Naturschutzkategorie
+     ON mjpfl.wiesenkategorie > 0 AND mjpfl.wiesenkategorie = wieskat.codeid AND wieskat.codetypid = 'FLK' --Naturschutzkategorie
+   LEFT JOIN mjpnatur.code oeqv
+     ON mjpfl.oeqv_q_attest > 0 AND mjpfl.oeqv_q_attest = oeqv.codeid AND oeqv.codetypid = 'OEQV' --ÖQV-Q Attest
+   LEFT JOIN mjpnatur.code emden
+     ON mjpfl.emden > 0 AND mjpfl.emden = emden.codeid AND emden.codetypid = 'EMD' --Emden
 WHERE
     mjpfl.archive = 0
     AND vbggeom.wkb_geometry IS NOT NULL
