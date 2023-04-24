@@ -2,7 +2,7 @@ SELECT
   5 AS t_basket, --Basket für reguläre MJPNL-Daten (ausserhalb von Basisdaten)
   'bla' AS vereinbarungs_nr,--im Postprocessing zu ersetzen
   vbg.vbnr AS vereinbarungs_nr_alt,
-  mjpfl.flaecheid AS flaechen_id_alt,
+  vbggeom.polyid AS flaechen_id_alt,
   ST_Multi(vbggeom.wkb_geometry) AS geometrie,
   9999999 AS gelan_pid_gelan, --im Postprocessing zu ersetzen
   '9999999' AS gelan_bewe_id, --im Postprocessing zu ersetzen
@@ -100,11 +100,6 @@ SELECT
         '"hecken_laufmeter":' || Round(mjpfl.laufmeter) || ',\n'
         ELSE ''
       END ||
-      CASE WHEN mjpfl.bffii_flaeche IS NOT NULL AND mjpfl.bffii_flaeche > 0 THEN
-        '"bffii_flaeche":' || Round(mjpfl.bffii_flaeche,2) || ',\n'
-        '"bffii_indikatoren":''' || COALESCE(mjpfl.bffii_indikatoren,'-') || ''',\n'
-        ELSE ''
-      END ||
       CASE WHEN mjpfl.datum_beurt IS NOT NULL AND mjpfl.datum_beurt != '9999-01-01'::date THEN
         '"datum_beurteilung":''' || COALESCE(mjpfl.datum_beurt::text,'-') || ''',\n'
         ELSE ''
@@ -149,4 +144,5 @@ WHERE
     AND NOT (vbartvb.bez = 'Waldränder' AND flart.bez = 'Waldrand')
     AND NOT (vbartvb.bez = 'Waldreservate' AND flart.bez = 'Waldreservat')
 ;
+
 
