@@ -47,7 +47,7 @@ task auswertungGesamt(type: SqlExecutor, dependsOn: auswertungGTFSGewichtung){
 task updateKosten(type: SqlExecutor, dependsOn: auswertungGesamt){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [currentYear: currentYear]
-    sqlFiles = ['berechnung_kosten.sql']
+    sqlFiles = ['update_kosten.sql']
 }
 
 task updateLinieStichtag(type: SqlExecutor, dependsOn: updateKosten){
