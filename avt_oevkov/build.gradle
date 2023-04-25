@@ -11,41 +11,55 @@ description = "GRETL-Job für die Berechnung des OEVKOV in der Edit-DB"
 def currentYear = '2023'
 
 
-defaultTasks 'do_Gesamtberechnung'
+defaultTasks 'insertHaltestellenbuffer'
 
-task AuswertungGTFS(type: SqlExecutor){
+
+task deleteGTFSData(type: SqlExecutor){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [currentYear: currentYear]
+    sqlFiles = ['delete_from_auswertung_gtfs.sql']
+}
+
+task auswertungGTFS(type: SqlExecutor, dependsOn: deleteGTFSData){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [currentYear: currentYear]
     sqlFiles = ['insert_into_gtfs_auswertung.sql']
 }
 
-task AuswertungGesamt(type: SqlExecutor){
+task auswertungGTFSExceptions(type: SqlExecutor, dependsOn: auswertungGTFS){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [currentYear: currentYear]
+    sqlFiles = ['insert_into_gesamtauswertung_exceptions.sql']
+}
+
+task auswertungGTFSGewichtung(type: SqlExecutor, dependsOn: auswertungGTFSExceptions){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [currentYear: currentYear]
+    sqlFiles = ['update_gtfs_auswertung_gewichtung.sql']
+}
+
+task auswertungGesamt(type: SqlExecutor, dependsOn: auswertungGTFSGewichtung){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [currentYear: currentYear]
     sqlFiles = ['insert_into_gesamtauswertung.sql']
 }
 
-task AuswertungKosten(type: SqlExecutor){
+task updateKosten(type: SqlExecutor, dependsOn: auswertungGesamt){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [currentYear: currentYear]
     sqlFiles = ['berechnung_kosten.sql']
 }
 
-task AuswertungHaltestellenbuffer(type: SqlExecutor){
+task updateLinieStichtag(type: SqlExecutor, dependsOn: updateKosten){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [currentYear: currentYear]
+    sqlFiles = ['update_linie_stichtag.sql']
+}
+
+task insertHaltestellenbuffer(type: SqlExecutor, dependsOn: updateLinieStichtag){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [currentYear: currentYear]
     sqlFiles = ['haltestellenbuffer_insert.sql']
 }
 
-
-task do_Gesamtberechnung(){
-    description = "This task performs all OEVKOV calculation tasks."
-    doLast {
-        println "Gesamtberechnung finished"
-    }
-}
-
-do_Gesamtberechnung.dependsOn{
-    tasks.findAll { task -> task.name.startsWith('Auswertung')}
-}
 
