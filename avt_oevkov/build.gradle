@@ -29,7 +29,7 @@ task auswertungGTFS(type: SqlExecutor, dependsOn: deleteGTFSData){
 task auswertungGTFSExceptions(type: SqlExecutor, dependsOn: auswertungGTFS){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [currentYear: currentYear]
-    sqlFiles = ['insert_into_gesamtauswertung_exceptions.sql']
+    sqlFiles = ['insert_into_gtfs_auswertung_exceptions.sql']
 }
 
 task auswertungGTFSGewichtung(type: SqlExecutor, dependsOn: auswertungGTFSExceptions){
