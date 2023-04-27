@@ -103,6 +103,7 @@ git checkout -b branchname
   * `dbUriAltlast4web`, `dbUserAltlast4web`, `PdbPwdAltlast4web`
   * `dbUriKaso`, `dbUserKaso`, `dbPwdKaso`
   * `dbUriCapitastra`, `dbUserCapitastra`, `dbPwdCapitastra`
+  * `digiplanUser`, `digiplanPwd`
   * `efjServicesUrl`
   * `ftpUserEmapis`, `ftpPwdEmapis`
   * `ftpServerFledermaus`, `ftpUserFledermaus`, `ftpPwdFledermaus`
