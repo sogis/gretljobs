@@ -16,7 +16,7 @@ INSERT INTO
 -- *********************************************************************************
 
     WITH calendar AS (
-        -- dayofweek (1=fährt, 0=fährt nicht) am Stichtag 
+-- dayofweek (1=fährt, 0=fährt nicht) am Stichtag 
         SELECT
             service_id,
         CASE
@@ -41,8 +41,8 @@ INSERT INTO
             avt_oevkov_${currentYear}_v1.gtfs_calendar
     ),
     exception AS (
-        -- exception_type=1: Der Fahrbetrieb wurde für das angegebene Datum hinzugefügt.
-        -- exception_type=2: Der Fahrbetrieb wurde für das angegebene Datum entfernt.
+-- exception_type=1: Der Fahrbetrieb wurde für das angegebene Datum hinzugefügt.
+-- exception_type=2: Der Fahrbetrieb wurde für das angegebene Datum entfernt.
         SELECT
             service_id,
             exception_type
@@ -58,28 +58,28 @@ INSERT INTO
     ),
     alle_trips_stichtag AS (
         SELECT
-        trip_id 
-            FROM 
-                avt_oevkov_${currentYear}_v1.gtfs_trip
-              WHERE
-                  (
-                  gtfs_trip.service_id IN (
-                      SELECT
-                          service_id
-                      FROM
-                          calendar
-                      WHERE
-                          dayofweek = 1
-                  )
-                  OR
-                      gtfs_trip.service_id IN (
-                          SELECT
+            trip_id 
+                FROM 
+                    avt_oevkov_${currentYear}_v1.gtfs_trip
+                WHERE
+                    (
+                     gtfs_trip.service_id IN (
+                         SELECT
+                             service_id
+                         FROM
+                             calendar
+                         WHERE
+                             dayofweek = 1
+                     )
+                     OR
+                     gtfs_trip.service_id IN (
+                         SELECT
                               service_id
-                          FROM
+                         FROM
                               exception
-                          WHERE
+                         WHERE
                               exception_type = 1
-                      )
+                     )
                   )
               AND
                   gtfs_trip.service_id NOT IN (
@@ -113,42 +113,27 @@ INSERT INTO
                     THEN 3
             END AS verkehrsmittel
         FROM
-            avt_oevkov_${currentYear}_v1.gtfs_agency AS agency, 
-            avt_oevkov_${currentYear}_v1.gtfs_route AS route,
-            avt_oevkov_${currentYear}_v1.gtfs_trip AS trip,
-            avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime,
-            avt_oevkov_${currentYear}_v1.gtfs_stop AS stop,
-            avt_oevkov_${currentYear}_v1.sachdaten_linie_route AS linie 
+            avt_oevkov_${currentYear}_v1.gtfs_agency AS agency
+            LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_route AS route
+                ON agency.agency_id::text = route.agency_id 
+            LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_trip AS trip
+                ON route.route_id = trip.route_id
+            LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime
+                ON stoptime.trip_id = trip.trip_id
+            LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stop AS stop
+                ON stop.stop_id = stoptime.stop_id
+            LEFT JOIN avt_oevkov_${currentYear}_v1.sachdaten_linie_route AS linie
+                ON route.route_id = linie.route_id
         WHERE
-            (
-            trip.service_id IN (
+            trip.trip_id IN (
                 SELECT
-                    service_id
+                    trip_id
                 FROM
-                    calendar
-                WHERE dayofweek = 1
-            )
-            OR
-            trip.service_id IN (
-                SELECT
-                    service_id
-                FROM
-                    exception
-                WHERE
-                    exception_type = 1
-               )
+                    alle_trips_stichtag
             )
         AND
-            trip.service_id NOT IN (
-                SELECT
-                    service_id
-                FROM
-                    exception
-                WHERE
-                    exception_type = 2
-        )
-        AND
--- diese Haltestellen werden nur wegen Spezialfall Bahnhof Olten benötigt
+-- diese Haltestellen werden nur wegen Spezialfall Bahnhof Olten benötigt,
+-- da nur Fahrten zählen, die ab Olten in diesen Bahnhöfen anhalten
             stop.stop_name NOT IN (
                 'Aarau',
                 'Langenthal',
@@ -157,20 +142,9 @@ INSERT INTO
         AND
 -- diese Unternehmen fahren offizielle Haltestellen an, werden aber im OEVKOV nicht berücksichtigt
             agency.unternehmer NOT IN (
-                'Domo Swiss Express AG'
+                'Domo Swiss Express AG',
+                'Events / Manifestations / Eventi'
             )
-        AND
-            agency.agency_id::text = route.agency_id
-        AND
-            route.route_id = trip.route_id
-        AND
-            route.route_id = linie.route_id
-        AND
-            stop.stop_id = stoptime.stop_id
-        AND
-            stoptime.trip_id = trip.trip_id
---         AND
---             trip_headsign <> stop.stop_name
         AND
             pickup_type = 0
         AND
@@ -204,8 +178,7 @@ INSERT INTO
             trip_headsign,
             pickup_type,
             verkehrsmittel
-    )
- 
+    ) 
 
 -- die meisten Haltestellen
     SELECT
@@ -221,7 +194,6 @@ INSERT INTO
        trip_headsign <> stop_name
        
 -- *********** hier kommen die Ausnahmen, die werden weiter unten abgehandelt ***********
-    
 -- gewisse Bahnhöfe müssen separat behandelt werden wegen der Zuordnung zu den Linien
     AND
         stop_name NOT IN (
@@ -236,6 +208,7 @@ INSERT INTO
             'Schönenwerd SO',
             'Solothurn'
         )
+-- ***************************** Ende der Ausnahmen *********************************
     GROUP BY
         stop_name,
         route_id,
@@ -243,9 +216,9 @@ INSERT INTO
         unternehmer,
         verkehrsmittel
 
--- ***************************** Ende der Ausnahmen *********************************
 
--- **************************************************************************************
+
+-- *********************************************************************************
 -- ab hier werden die Bahnhöfe und andere Knotenpunkte behandelt,
 -- wegen Aufteilung in Linien beim OEVKOV
 
@@ -335,16 +308,13 @@ INSERT INTO
             SELECT
                 alle_trips_stichtag.trip_id
             FROM
-                alle_trips_stichtag,
-                avt_oevkov_${currentYear}_v1.gtfs_route AS route_einschraenkung,
-                avt_oevkov_${currentYear}_v1.gtfs_stop AS stop_einschraenkung,
-                avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
+                alle_trips_stichtag
+                LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
+                    ON stoptime_einschraenkung.trip_id = alle_trips_stichtag.trip_id
+                LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stop AS stop_einschraenkung
+                    ON stop_einschraenkung.stop_id = stoptime_einschraenkung.stop_id
            WHERE
                stop_einschraenkung.stop_name IN ('Solothurn', 'Oensingen')
-           AND
-               stop_einschraenkung.stop_id = stoptime_einschraenkung.stop_id
-           AND
-               stoptime_einschraenkung.trip_id = alle_trips_stichtag.trip_id
          )
     GROUP BY
         stop_name,
@@ -379,16 +349,13 @@ INSERT INTO
             SELECT
                 alle_trips_stichtag.trip_id
             FROM
-                alle_trips_stichtag,
-                avt_oevkov_${currentYear}_v1.gtfs_route AS route_einschraenkung,
-                avt_oevkov_${currentYear}_v1.gtfs_stop AS stop_einschraenkung,
-                avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
+                alle_trips_stichtag
+                LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
+                    ON stoptime_einschraenkung.trip_id = alle_trips_stichtag.trip_id
+                LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stop AS stop_einschraenkung
+                    ON stop_einschraenkung.stop_id = stoptime_einschraenkung.stop_id
            WHERE
                stop_einschraenkung.stop_name IN ('Langenthal')
-           AND
-               stop_einschraenkung.stop_id = stoptime_einschraenkung.stop_id
-           AND
-               stoptime_einschraenkung.trip_id = alle_trips_stichtag.trip_id
          )
     GROUP BY
         stop_name,
@@ -504,7 +471,6 @@ INSERT INTO
 
     UNION ALL
 
-
 -- Bahnhof Olten: L510 Olten - Luzern (IR/RE), RegioExpress zählt hier zu R
     SELECT
         stop_name,
@@ -530,18 +496,15 @@ INSERT INTO
             SELECT
                 alle_trips_stichtag.trip_id 
             FROM 
-                alle_trips_stichtag,
-                avt_oevkov_${currentYear}_v1.gtfs_route AS route_einschraenkung,
-                avt_oevkov_${currentYear}_v1.gtfs_stop AS stop_einschraenkung,
-                avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
+                alle_trips_stichtag
+                LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
+                    ON stoptime_einschraenkung.trip_id = alle_trips_stichtag.trip_id
+                LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stop AS stop_einschraenkung
+                    ON stop_einschraenkung.stop_id = stoptime_einschraenkung.stop_id
             WHERE
                 stop_einschraenkung.stop_name = 'Zofingen'
             AND
                 trip_headsign = 'Luzern'
-            AND
-                stop_einschraenkung.stop_id = stoptime_einschraenkung.stop_id
-            AND
-                stoptime_einschraenkung.trip_id = alle_trips_stichtag.trip_id
             AND
                 route_desc IN ('RE', 'IR')
         )
@@ -590,16 +553,13 @@ INSERT INTO
             SELECT
                 alle_trips_stichtag.trip_id 
             FROM
-                alle_trips_stichtag,
-                avt_oevkov_${currentYear}_v1.gtfs_route AS route_einschraenkung,
-                avt_oevkov_${currentYear}_v1.gtfs_stop AS stop_einschraenkung,
-                avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
+                alle_trips_stichtag
+                LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
+                    ON stoptime_einschraenkung.trip_id = alle_trips_stichtag.trip_id
+                LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stop AS stop_einschraenkung
+                    ON stop_einschraenkung.stop_id = stoptime_einschraenkung.stop_id
               WHERE
                   stop_einschraenkung.stop_name = 'Aarau'
-              AND
-                  stop_einschraenkung.stop_id = stoptime_einschraenkung.stop_id
-              AND
-                  stoptime_einschraenkung.trip_id = alle_trips_stichtag.trip_id
         )
     GROUP BY
         stop_name,

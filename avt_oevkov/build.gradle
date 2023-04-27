@@ -8,7 +8,7 @@ description = "GRETL-Job für die Berechnung des OEVKOV in der Edit-DB"
 
 
 // OEVKOV Variablen
-def currentYear = '2023'
+def currentYear = '2022'                   ////////////////////////////////////////////////////////// Achtung: anpassen
 
 
 defaultTasks 'insertHaltestellenbuffer'
@@ -29,7 +29,7 @@ task auswertungGTFS(type: SqlExecutor, dependsOn: deleteGTFSData){
 task auswertungGTFSExceptions(type: SqlExecutor, dependsOn: auswertungGTFS){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [currentYear: currentYear]
-    sqlFiles = ['insert_into_gtfs_auswertung_exceptions.sql']
+    sqlFiles = ['insert_into_gtfs_auswertung_ausnahmen.sql']
 }
 
 task auswertungGTFSGewichtung(type: SqlExecutor, dependsOn: auswertungGTFSExceptions){
@@ -38,13 +38,25 @@ task auswertungGTFSGewichtung(type: SqlExecutor, dependsOn: auswertungGTFSExcept
     sqlFiles = ['update_gtfs_auswertung_gewichtung.sql']
 }
 
-task auswertungGesamt(type: SqlExecutor, dependsOn: auswertungGTFSGewichtung){
+task deleteAuswertungGesamt(type: SqlExecutor, dependsOn: auswertungGTFSGewichtung){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [currentYear: currentYear]
     sqlFiles = ['insert_into_gesamtauswertung.sql']
 }
 
-task updateKosten(type: SqlExecutor, dependsOn: auswertungGesamt){
+task auswertungGesamt(type: SqlExecutor, dependsOn: deleteAuswertungGesamt){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [currentYear: currentYear]
+    sqlFiles = ['insert_into_gesamtauswertung.sql']
+}
+
+task auswertungGesamtKorrekturen(type: SqlExecutor, dependsOn: auswertungGesamt){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [currentYear: currentYear]
+    sqlFiles = ['insert_into_gesamtauswertung_korrekturen.sql']
+}
+
+task updateKosten(type: SqlExecutor, dependsOn: auswertungGesamtKorrekturen){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [currentYear: currentYear]
     sqlFiles = ['update_kosten.sql']
@@ -56,10 +68,14 @@ task updateLinieStichtag(type: SqlExecutor, dependsOn: updateKosten){
     sqlFiles = ['update_linie_stichtag.sql']
 }
 
-task insertHaltestellenbuffer(type: SqlExecutor, dependsOn: updateLinieStichtag){
+task deleteHaltestellenbuffer(type: SqlExecutor, dependsOn: updateLinieStichtag){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [currentYear: currentYear]
-    sqlFiles = ['haltestellenbuffer_insert.sql']
+    sqlFiles = ['delete_from_haltestellenbuffer.sql']
 }
 
-
+task insertHaltestellenbuffer(type: SqlExecutor, dependsOn: deleteHaltestellenbuffer){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [currentYear: currentYear]
+    sqlFiles = ['insert_haltestellenbuffer.sql']
+}

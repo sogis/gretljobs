@@ -1,8 +1,6 @@
 DELETE FROM avt_oevkov_${currentYear}_v1.auswertung_gesamtauswertung
 ;
 
-
-
 INSERT INTO
     avt_oevkov_${currentYear}_v1.auswertung_gesamtauswertung
         (
@@ -21,7 +19,7 @@ INSERT INTO
          bemerkungen
         )
         (
-        WITH gtfs_abfahrten AS (
+WITH gtfs_abfahrten AS (
         SELECT
             auswertung.haltestellenname,
             auswertung.unternehmer,
@@ -171,165 +169,75 @@ INSERT INTO
                 WHEN
                      (korrektur.unternehmer <> gtfs_abfahrten.unternehmer
                      AND
-                         korrektur.verkehrsmittel <> gtfs_abfahrten.verkehrsmittel
-                     AND
-                         gtfs_abfahrten.bemerkungen IS NULL)
-                     THEN
-                         E'Unternehmer geändert: GTFS: '||gtfs_abfahrten.unternehmer||
-                         E'\nVerkehrsmittel geändert: GTFS: '||
-                         CASE
-                             WHEN gtfs_abfahrten.verkehrsmittel = 1
-                                 THEN
-                                    avt_verkehrsmittel.verkehrsmittel_text
-                             WHEN gtfs_abfahrten.verkehrsmittel = 2
-                                 THEN
-                                    avt_verkehrsmittel.verkehrsmittel_text
-                             WHEN gtfs_abfahrten.verkehrsmittel = 3
-                                 THEN
-                                    avt_verkehrsmittel.verkehrsmittel_text
-                        END
-                WHEN
-                     (korrektur.unternehmer <> gtfs_abfahrten.unternehmer
-                     AND
-                         korrektur.verkehrsmittel <> gtfs_abfahrten.verkehrsmittel
-                     AND
-                         gtfs_abfahrten.bemerkungen IS NOT NULL)
-                     THEN
-                         gtfs_abfahrten.bemerkungen||
-                         E'\nUnternehmer geändert: GTFS: '||
-                         gtfs_abfahrten.unternehmer||
-                         E'\nVerkehrsmittel geändert: GTFS: '||
-                         CASE
-                             WHEN gtfs_abfahrten.verkehrsmittel = 1
-                                 THEN
-                                    avt_verkehrsmittel.verkehrsmittel_text
-                             WHEN
-                                     gtfs_abfahrten.verkehrsmittel = 2
-                                 THEN
-                                    avt_verkehrsmittel.verkehrsmittel_text
-                             WHEN gtfs_abfahrten.verkehrsmittel = 3
-                                 THEN
-                                      avt_verkehrsmittel.verkehrsmittel_text
-                         END
-                WHEN
-                     (korrektur.unternehmer <> gtfs_abfahrten.unternehmer
-                     AND
-                         gtfs_abfahrten.bemerkungen IS NULL)
-                     THEN
-                         'Unternehmer geändert: GTFS = '||gtfs_abfahrten.unternehmer
-                WHEN
+                         korrektur.verkehrsmittel <> gtfs_abfahrten.verkehrsmittel)
+                   THEN
+                       CASE
+                           WHEN
+                               gtfs_abfahrten.bemerkungen IS NULL
+                               THEN
+                                   E'Unternehmer geändert: GTFS: '||gtfs_abfahrten.unternehmer||
+                                   E'\nVerkehrsmittel geändert: GTFS: '|| avt_verkehrsmittel.verkehrsmittel_text
+                          WHEN
+                             gtfs_abfahrten.bemerkungen IS NOT NULL
+                             THEN
+                                 gtfs_abfahrten.bemerkungen||
+                                 E'Unternehmer geändert: GTFS: '||gtfs_abfahrten.unternehmer||
+                                 E'\nVerkehrsmittel geändert: GTFS: '|| avt_verkehrsmittel.verkehrsmittel_text
+                       END
+               WHEN
                      korrektur.unternehmer <> gtfs_abfahrten.unternehmer
-                     AND
-                         gtfs_abfahrten.bemerkungen IS NOT NULL
-                     THEN  gtfs_abfahrten.bemerkungen||
-                         E'\nUnternehmer geändert: GTFS = '||gtfs_abfahrten.unternehmer
-                WHEN
+                   THEN
+                       CASE
+                           WHEN
+                               gtfs_abfahrten.bemerkungen IS NULL
+                               THEN
+                                   'Unternehmer geändert: GTFS = '||gtfs_abfahrten.unternehmer
+                          WHEN
+                             gtfs_abfahrten.bemerkungen IS NOT NULL
+                             THEN
+                                 gtfs_abfahrten.bemerkungen||
+                                 E'\nUnternehmer geändert: GTFS = '||gtfs_abfahrten.unternehmer
+                       END                        
+               WHEN
                      korrektur.verkehrsmittel <> gtfs_abfahrten.verkehrsmittel
-                     AND
-                         gtfs_abfahrten.bemerkungen IS NULL
-                THEN 'Verkehrsmittel geändert: GTFS: '||
-                     CASE
-                             WHEN gtfs_abfahrten.verkehrsmittel = 1
-                                 THEN
-                                     avt_verkehrsmittel.verkehrsmittel_text
-                             WHEN gtfs_abfahrten.verkehrsmittel = 2
-                                 THEN
-                                     avt_verkehrsmittel.verkehrsmittel_text
-                             WHEN gtfs_abfahrten.verkehrsmittel = 3
-                                 THEN
-                                     avt_verkehrsmittel.verkehrsmittel_text
-                         END
-                WHEN
-                     korrektur.verkehrsmittel <> gtfs_abfahrten.verkehrsmittel
-                     AND
-                         gtfs_abfahrten.bemerkungen IS NOT NULL
-                    THEN
-                        gtfs_abfahrten.bemerkungen||
-                        E'\nVerkehrsmittel geändert: GTFS: '||
-                        CASE
-                             WHEN gtfs_abfahrten.verkehrsmittel = 1
-                                 THEN
-                                    avt_verkehrsmittel.verkehrsmittel_text
-                             WHEN gtfs_abfahrten.verkehrsmittel = 2
-                                 THEN
-                                    avt_verkehrsmittel.verkehrsmittel_text
-                             WHEN gtfs_abfahrten.verkehrsmittel = 3
-                                 THEN
-                                    avt_verkehrsmittel.verkehrsmittel_text
-                        END
+                   THEN
+                       CASE
+                           WHEN
+                               gtfs_abfahrten.bemerkungen IS NULL
+                               THEN
+                                   'Verkehrsmittel geändert: GTFS: '|| avt_verkehrsmittel.verkehrsmittel_text
+                          WHEN
+                             gtfs_abfahrten.bemerkungen IS NOT NULL
+                             THEN
+                                 gtfs_abfahrten.bemerkungen||
+                                 E'\nVerkehrsmittel geändert: GTFS: '|| avt_verkehrsmittel.verkehrsmittel_text
+                       END
                 ELSE
                     gtfs_abfahrten.bemerkungen
-            END AS bemerkungen     
+            END AS bemerkungen    
         FROM
             avt_oevkov_${currentYear}_v1.sachdaten_haltestelle_anrechnung AS anrechnung
             LEFT JOIN gtfs_abfahrten
                 ON anrechnung.haltestellenname = gtfs_abfahrten.haltestellenname
+            LEFT JOIN avt_verkehrsmittel
+                ON avt_verkehrsmittel.verkehrsmittel = gtfs_abfahrten.verkehrsmittel
            LEFT JOIN avt_oevkov_${currentYear}_v1.auswertung_abfahrten_korrigiert AS korrektur
                  ON ((anrechnung.haltestellenname = korrektur.haltestellenname
                        AND
                           gtfs_abfahrten.linie = korrektur.linie)
-                      OR
+                       OR
                           (gtfs_abfahrten.linie = korrektur.linie
                            AND
                                korrektur.haltestellenname = '--- Alle'))
                        AND 
                            (anrechnung.haltestellenname = korrektur.haltestellenname
                             OR korrektur.haltestellenname = '--- Alle')
-            LEFT JOIN avt_verkehrsmittel
-                ON avt_verkehrsmittel.verkehrsmittel = gtfs_abfahrten.verkehrsmittel
         WHERE
             anrechnung.haltestellenname IN (
                 SELECT
                     haltestellenname
                 FROM
                     avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs
-              )   
-        )
-;
-
-
--- Haltestellen einfügen, welche in der Auswertung fehlen, für die aber eine Korrektur eingetragen wurde
-INSERT INTO
-    avt_oevkov_${currentYear}_v1.auswertung_gesamtauswertung
-        (
-         gemeindename,
-         haltestellenname,
-         unternehmer,
-         linie,
-         verkehrsmittel,
-         gewichtung,
-         anrechnung,
-         abfahrten_gtfs_korrigiert,
-         abfahrten_ungewichtet,
-         abfahrten_gewichtet,
-         bemerkungen
-        )
-        (
-        SELECT
-            gemeindename,
-            korrektur.haltestellenname,
-            unternehmer,
-            linie,
-            verkehrsmittel,
-            gewichtung,
-            anrechnung,
-            abfahrten_korrigiert AS abfahrten_gtfs_korrigiert,
-            abfahrten_korrigiert AS abfahrten_ungewichtet,
-            (abfahrten_korrigiert *  gewichtung  *  anrechnung  /  100)::numeric(5,1) AS abfahrten_gewichtet,
-            bemerkungen
-        FROM
-            avt_oevkov_${currentYear}_v1.auswertung_abfahrten_korrigiert AS korrektur
-            LEFT JOIN avt_oevkov_${currentYear}_v1.sachdaten_haltestelle_anrechnung AS anrechnung
-            ON
-                korrektur.haltestellenname = anrechnung.haltestellenname
-        WHERE
-            korrektur.haltestellenname||korrektur.linie NOT IN (
-            SELECT
-                haltestellenname||linie
-            FROM
-                avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs
-        )
-        AND
-            korrektur.haltestellenname <> '--- Alle'
+              )
         )
 ;

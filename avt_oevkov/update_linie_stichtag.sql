@@ -10,6 +10,7 @@ WHERE
 ;
 
 WITH calendar AS (
+    -- dayofweek (1=fährt, 0=fährt nicht) am Stichtag
     SELECT
         service_id,
     CASE
@@ -44,10 +45,13 @@ exception AS (
                 SELECT
                     stichtag
                 FROM
-                    avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten)
+                    avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten
+                )
 ),
 trips AS (
-    SELECT route_id
+    -- alle trips (Fahrten) welche am Stichtag fahren
+    SELECT
+        route_id
     FROM 
         avt_oevkov_${currentYear}_v1.gtfs_trip
     WHERE
