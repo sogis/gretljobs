@@ -61,16 +61,16 @@ SELECT
   4::integer AS kontrollintervall,
   replace(
       COALESCE(vbg.notiz,'') || E'\n§\n' ||
-      '{\n"vbart_vereinbarung_alt":''' || COALESCE(vbartvb.bez,'NULL') || ''',\n' ||
-      '"vbart_flaechenart_alt":''' || COALESCE(flart.bez,'NULL') || ''',\n' ||
+      '{\n"vbart_vereinbarung_alt":"' || COALESCE(vbartvb.bez,'NULL') || '",\n' ||
+      '"vbart_flaechenart_alt":"' || COALESCE(flart.bez,'NULL') || '",\n' ||
       '"vereinbarungsflaeche_alt":' || COALESCE(Round(mjpfl.flaeche::NUMERIC,2)::text,'') || ',\n' ||
-      '"bewirtschafter_alt":''' || COALESCE(pers.name || COALESCE(' '|| pers.vorname,''),'NULL') || ''',\n' ||
+      '"bewirtschafter_alt":"' || COALESCE(pers.name || COALESCE(' '|| pers.vorname,''),'NULL') || '",\n' ||
       CASE WHEN mjpfl.wiesenkategorie IS NOT NULL AND mjpfl.wiesenkategorie > 0 THEN
-        '"wiesenkategorie":''' || COALESCE(wieskat.kurzbez,'-') || ''',\n'
+        '"wiesenkategorie":"' || COALESCE(wieskat.kurzbez,'-') || '",\n'
         ELSE ''
       END ||
       CASE WHEN mjpfl.schnittzeitpunkt IS NOT NULL AND mjpfl.schnittzeitpunkt <> '' THEN
-        '"schnittzeitpunkt":''' || mjpfl.schnittzeitpunkt || ''',\n'
+        '"schnittzeitpunkt":"' || mjpfl.schnittzeitpunkt || '",\n'
         ELSE ''
       END ||
       CASE WHEN mjpfl.balkenmaeher IS NOT NULL AND mjpfl.balkenmaeher = TRUE THEN
@@ -82,7 +82,7 @@ SELECT
         ELSE ''
       END ||
       CASE WHEN mjpfl.emden IS NOT NULL AND mjpfl.emden > 0 THEN
-        '"emden":''' || COALESCE(emden.kurzbez,'-') || ''',\n'
+        '"emden":"' || COALESCE(emden.kurzbez,'-') || '",\n'
         ELSE ''
       END ||
       CASE WHEN mjpfl.rkzugstreifen  IS NOT NULL AND mjpfl.rkzugstreifen = TRUE THEN
@@ -90,11 +90,11 @@ SELECT
         ELSE ''
       END ||
       CASE WHEN mjpfl.oeqv_q_attest IS NOT NULL AND mjpfl.oeqv_q_attest > 0 THEN
-        '"oeqv_q_attest":''' || COALESCE(oeqv.kurzbez,'-') || ''',\n'
+        '"oeqv_q_attest":"' || COALESCE(oeqv.kurzbez,'-') || '",\n'
         ELSE ''
       END ||
       CASE WHEN mjpfl.datum_oeqv IS NOT NULL AND mjpfl.datum_oeqv != '9999-01-01'::date THEN
-        '"oeqv_datum":''' || COALESCE(mjpfl.datum_oeqv::text,'-') || ''',\n'
+        '"oeqv_datum":"' || COALESCE(mjpfl.datum_oeqv::text,'-') || '",\n'
         ELSE ''
       END ||
       CASE WHEN mjpfl.laufmeter IS NOT NULL AND mjpfl.laufmeter > 0 THEN
@@ -102,11 +102,11 @@ SELECT
         ELSE ''
       END ||
       CASE WHEN mjpfl.datum_beurt IS NOT NULL AND mjpfl.datum_beurt != '9999-01-01'::date THEN
-        '"datum_beurteilung":''' || COALESCE(mjpfl.datum_beurt::text,'-') || ''',\n'
+        '"datum_beurteilung":"' || COALESCE(mjpfl.datum_beurt::text,'-') || '",\n'
         ELSE ''
       END ||
       CASE WHEN mjpfl.letzter_unterhalt IS NOT NULL AND mjpfl.letzter_unterhalt != '9999-01-01'::date THEN
-        '"letzter_unterhalt":''' || COALESCE(mjpfl.letzter_unterhalt::text,'-') || ''',\n'
+        '"letzter_unterhalt":"' || COALESCE(mjpfl.letzter_unterhalt::text,'-') || '",\n'
         ELSE ''
       END ||
       '\n}',
