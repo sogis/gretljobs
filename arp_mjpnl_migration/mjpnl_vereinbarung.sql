@@ -24,6 +24,7 @@ SELECT
     WHEN vbartvb.bez = 'Hecken' AND flart.bez = 'Streuefläche' THEN 'Wiese'
     WHEN vbartvb.bez = 'Hecken' AND flart.bez = 'Weide' THEN 'Weide_LN'
     WHEN vbartvb.bez = 'Heumatten' AND flart.bez = 'Ansaatwiese' THEN 'Wiese'
+    WHEN vbartvb.bez = 'Heumatten' AND flart.bez = 'Feuchtgebiet' THEN 'Wiese'
     WHEN vbartvb.bez = 'Heumatten' AND flart.bez = 'Heumatte' THEN 'Wiese'
     WHEN vbartvb.bez = 'Heumatten' AND flart.bez = 'Streuefläche' THEN 'Wiese'
     WHEN vbartvb.bez = 'Hochstamm' AND flart.bez = 'Ansaatwiese' THEN 'Wiese'
@@ -140,7 +141,6 @@ WHERE
     AND vbggeom.wkb_geometry IS NOT NULL
     AND ST_IsValid(vbggeom.wkb_geometry)
     AND Round((ST_Area(vbggeom.wkb_geometry) / 10000)::NUMERIC,2) > 0 --IGNORE small OR emptry geometries
-    AND NOT (vbartvb.bez = 'Heumatten' AND flart.bez = 'Feuchtgebiet')
     AND NOT (vbartvb.bez = 'Waldränder' AND flart.bez = 'Waldrand')
     AND NOT (vbartvb.bez = 'Waldreservate' AND flart.bez = 'Waldreservat')
 ;
