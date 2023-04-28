@@ -48,7 +48,7 @@ task "postprocessing_flurnamen_liegenschaften"(type: SqlExecutor,dependsOn: "pos
     description = "Spatial Joins zu Gemeinden (Name und BFS-Nr) und Flurnamen herstellen."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
-    sqlFiles = ['mjpnl_postprocessing_vereinbarungen_gemeinden_zuweisen.sql','mjpnl_postprocessing_vereinbarungen_flurnamen_liegenschaften_zuweisen.sql']
+    sqlFiles = ['mjpnl_postprocessing_vereinbarungen_gemeinden_zuweisen.sql','mjpnl_postprocessing_vereinbarungen_flurnamen_zuweisen.sql','mjpnl_postprocessing_vereinbarungen_liegenschaften_zuweisen.sql']
 }
 
 task "postprocessing_gelan_bewirtschaftungseinheiten"(type: SqlExecutor,dependsOn: "postprocessing_flurnamen_liegenschaften") {
