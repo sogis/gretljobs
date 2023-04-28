@@ -13,9 +13,6 @@ UPDATE
         WHERE
           ls.t_datasetname::integer = ANY (vbg.bfs_nr)
            AND ST_Intersects(ls.geometrie,vbg.geometrie)
-           /* doesn't work (memory problems) 
-             AND
-            (ST_MaximumInscribedCircle(ST_Intersection(ls.geometrie,vbg.geometrie))).radius > 1 */
      )
 WHERE
   vbg.mjpnl_version = 'MJPNL_2020'
