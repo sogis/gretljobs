@@ -172,5 +172,7 @@ WHERE
     astatus = 'abgeschlossen'
 AND
     id_wp > 0
+AND
+    wptyp < 9
 ${bfsnr_param}
 ;
