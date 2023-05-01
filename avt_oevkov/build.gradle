@@ -8,7 +8,7 @@ description = "GRETL-Job für die Berechnung des OEVKOV in der Edit-DB"
 
 
 // OEVKOV Variablen
-def currentYear = '2022'                   ////////////////////////////////////////////////////////// Achtung: anpassen
+def currentYear = '2023'
 
 
 defaultTasks 'insertHaltestellenbuffer'
@@ -41,7 +41,7 @@ task auswertungGTFSGewichtung(type: SqlExecutor, dependsOn: auswertungGTFSExcept
 task deleteAuswertungGesamt(type: SqlExecutor, dependsOn: auswertungGTFSGewichtung){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [currentYear: currentYear]
-    sqlFiles = ['insert_into_gesamtauswertung.sql']
+    sqlFiles = ['delete_from_auswertung_gesamtauswertung.sql']
 }
 
 task auswertungGesamt(type: SqlExecutor, dependsOn: deleteAuswertungGesamt){

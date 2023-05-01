@@ -25,7 +25,7 @@ INSERT INTO
             anrechnung,
             abfahrten_korrigiert AS abfahrten_gtfs_korrigiert,
             abfahrten_korrigiert AS abfahrten_ungewichtet,
-            (abfahrten_korrigiert *  gewichtung  *  anrechnung  /  100)::numeric(5,1) AS abfahrten_gewichtet,
+            (abfahrten_korrigiert  *  gewichtung  *  anrechnung  /  100)::numeric(5,1) AS abfahrten_gewichtet,
             bemerkungen
         FROM
             avt_oevkov_${currentYear}_v1.auswertung_abfahrten_korrigiert AS korrektur
