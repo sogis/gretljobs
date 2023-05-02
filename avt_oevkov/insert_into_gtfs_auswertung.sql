@@ -10,7 +10,6 @@ INSERT INTO
         verkehrsmittel
     )
     (
-
     WITH calendar AS (
     -- dayofweek (1=fährt, 0=fährt nicht) am Stichtag
         SELECT
@@ -21,17 +20,9 @@ INSERT INTO
                      SELECT
                          stichtag
                      FROM
-                         avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten), 'Day')))) = 'thursday'
+                         avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten), 'Day')))) = 'friday'
                 THEN
-                    gtfs_calendar.thursday
-            WHEN
-                (SELECT BTRIM(lower(to_char((
-                     SELECT
-                         stichtag
-                     FROM
-                          avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten), 'Day')))) = 'tuesday'
-                THEN
-                    gtfs_calendar.tuesday
+                    gtfs_calendar.friday
         END AS dayofweek
         FROM
             avt_oevkov_${currentYear}_v1.gtfs_calendar
@@ -102,14 +93,11 @@ INSERT INTO
             count(departure_time) AS gtfs_count,
             CASE
                 -- Bus
-                WHEN route_desc = 'B'
+                WHEN route_desc IN ('B', 'BN', 'BP', 'EXB', 'KB', 'NFB')
                      THEN 1
-                -- Fernverkehr
-                WHEN route_desc IN ('RE', 'IR', 'IC')
-                     THEN 2
                 -- Regionalverkehr
-                WHEN route_desc IN ('R', 'S', 'SN', 'T')
-                    THEN 3
+                WHEN route_desc IN ('NFT', 'R', 'RB', 'RE', 'S', 'SN', 'T', 'TER')
+                     THEN 2
             END AS verkehrsmittel
         FROM
             avt_oevkov_${currentYear}_v1.gtfs_agency AS agency
@@ -151,15 +139,20 @@ INSERT INTO
             )
         AND
            route_desc IN (
-               'B',          -- Bus
-               'EC',         -- EuroCity
-               'IC',         -- InterCity
-               'IR',         -- InterRegio
-               'R',          -- Regio
-               'RE',         -- RegioExpress
-               'S',          -- S-Bahn
-               'SN',         -- Nacht-S-Bahn
-               'T'           -- Tram
+                'B',        -- Bus 
+                'BN',       -- Nachtbus
+                'BP',       -- PanoramaBus
+                'EXB',      -- Expressbus
+                'KB',       -- Kleinbus
+                'NFB',      -- Niederflur-Bus
+                'NFT', 	    -- Niederflur-Tram
+                'R',        -- Regio
+                'RB',       -- Regionalbahn
+                'RE',       -- RegioExpress
+                'S',        -- S-Bahn
+                'SN',       -- Nacht-S-Bahn
+                'T', 	    -- Tram
+                'TER'       -- Train Express Regional
            )
         GROUP BY
             stop.stop_name,
@@ -280,11 +273,8 @@ INSERT INTO
     AND
          trip_headsign IN (
              'Biel/Bienne',
-             'Genève-Aéroport',
              'Langendorf',
-             'Lausanne',
              'Lommiswil',
-             'Morges',
              'Oensingen',
              'Solothurn'
          )
@@ -466,7 +456,7 @@ INSERT INTO
     AND
         substring(linienname from 1 for 4) = 'L510'
     AND
-        route_desc IN ('RE', 'IR')
+        route_desc = 'RE'
     AND
         -- Bedingung Halt in Zofingen
         trip_id IN (
@@ -483,7 +473,7 @@ INSERT INTO
             AND
                 trip_headsign = 'Luzern'
             AND
-                route_desc IN ('RE', 'IR')
+                route_desc = 'RE'
         )
     GROUP BY
         stop_name,
@@ -509,14 +499,9 @@ INSERT INTO
     AND
         trip_headsign IN (
             'Baden',
-            'Chur',
-            'Romanshorn',
-            'Rorschach',
             'Rotkreuz',
-            'St. Gallen',
             'Turgi',
             'Wettingen',
-            'Zürich Flughafen',
             'Zürich HB'
         )
     AND

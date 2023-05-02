@@ -10,27 +10,21 @@ WHERE
 ;
 
 WITH calendar AS (
-    -- dayofweek (1=fährt, 0=fährt nicht) am Stichtag
-    SELECT
-        service_id,
-    CASE
-        WHEN (
-            SELECT BTRIM(lower(to_char((
-                SELECT
-                     stichtag
-                FROM
-                    avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten), 'Day')))
-        ) = 'thursday'
-            THEN thursday
-        WHEN (
-             SELECT BTRIM(lower(to_char((
-                 SELECT
-                     stichtag
-                 FROM
-                     avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten), 'Day')))
-        ) = 'tuesday'
-            THEN tuesday
-    END AS dayofweek
+     -- dayofweek (1=fährt, 0=fährt nicht) am Stichtag
+     SELECT
+            service_id,
+        CASE
+            WHEN
+                (SELECT BTRIM(lower(to_char((
+                     SELECT
+                         stichtag
+                     FROM
+                         avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten), 'Day')))) = 'friday'
+                THEN
+                    gtfs_calendar.friday
+        END AS dayofweek
+        FROM
+            avt_oevkov_${currentYear}_v1.gtfs_calendar
     FROM
         avt_oevkov_${currentYear}_v1.gtfs_calendar
 ),
@@ -48,7 +42,7 @@ exception AS (
                     avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten
                 )
 ),
-trips AS (
+alle_trips_stichtag AS (
     -- alle trips (Fahrten) welche am Stichtag fahren
     SELECT
         route_id
@@ -98,6 +92,6 @@ WHERE
         SELECT
             route_id
         FROM
-            trips
+            alle_trips_stichtag
     )
 ;

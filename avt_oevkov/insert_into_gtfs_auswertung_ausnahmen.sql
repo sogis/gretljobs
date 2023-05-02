@@ -12,7 +12,7 @@ INSERT INTO
      )
      (
      WITH calendar AS (
-        -- dayofweek (1=fährt, 0=fährt nicht) am Stichtag 
+     -- dayofweek (1=fährt, 0=fährt nicht) am Stichtag
         SELECT
             service_id,
         CASE
@@ -21,17 +21,9 @@ INSERT INTO
                      SELECT
                          stichtag
                      FROM
-                         avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten), 'Day')))) = 'thursday'
-                THEN 
-                    gtfs_calendar.thursday
-            WHEN
-                (SELECT BTRIM(lower(to_char((
-                     SELECT
-                         stichtag
-                     FROM
-                          avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten), 'Day')))) = 'tuesday'
+                         avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten), 'Day')))) = 'friday'
                 THEN
-                    gtfs_calendar.tuesday
+                    gtfs_calendar.friday
         END AS dayofweek
         FROM
             avt_oevkov_${currentYear}_v1.gtfs_calendar
@@ -87,28 +79,25 @@ INSERT INTO
                     exception_type = 2
             )
     )
-     SELECT
+    SELECT
          stop_name,
          route.route_id,
          linie.linienname,
          agency.unternehmer,
          0 as gtfs_count,
-         CASE
-             WHEN route_desc = 'B'
-                 THEN 1
-             WHEN route_desc IN ('RE', 'IR', 'IC')
-                 THEN 2
-             WHEN route_desc IN ('R', 'S', 'SN', 'T')
-                 THEN 3
-            END AS verkehrsmittel
+         1 AS verkehrsmittel
      FROM
-         alle_trips_stichtag,
-         avt_oevkov_${currentYear}_v1.gtfs_agency AS agency,
-         avt_oevkov_${currentYear}_v1.gtfs_route AS route,
-         avt_oevkov_${currentYear}_v1.gtfs_trip AS trip,
-         avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime,
-         avt_oevkov_${currentYear}_v1.gtfs_stop AS stop,
-         avt_oevkov_${currentYear}_v1.sachdaten_linie_route AS linie
+            avt_oevkov_${currentYear}_v1.gtfs_agency AS agency
+            LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_route AS route
+                ON agency.agency_id::text = route.agency_id
+            LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_trip AS trip
+                ON route.route_id = trip.route_id
+            LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime
+                ON stoptime.trip_id = trip.trip_id
+            LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stop AS stop
+                ON stop.stop_id = stoptime.stop_id
+            LEFT JOIN avt_oevkov_${currentYear}_v1.sachdaten_linie_route AS linie
+                ON route.route_id = linie.route_id
      WHERE
          trip.trip_id IN (
             SELECT
@@ -121,22 +110,14 @@ INSERT INTO
             SELECT
                 haltestellenname||linie
             FROM 
-                avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs
+                avt_oevkov_2023_v1.auswertung_auswertung_gtfs
     )
-    AND
-        agency.agency_id::text = route.agency_id  
-    AND
-        route.route_id = trip.route_id
-    AND
-        route.route_id = linie.route_id
-    AND
-        stop.stop_id = stoptime.stop_id
-    AND
-        stoptime.trip_id = trip.trip_id
     AND
         pickup_type > 0
     AND
-        route_desc = 'B'
+        trip_headsign <> stop_name
+    AND
+        route_desc IN ('B', 'BN', 'BP', 'EXB', 'KB', 'NFB')
     GROUP BY
         stop.stop_name,
         route.route_id,
