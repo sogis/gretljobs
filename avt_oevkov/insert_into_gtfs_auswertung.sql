@@ -115,7 +115,7 @@ INSERT INTO
             trip_headsign <> stop_name
         AND
         -- Regulärer Zustieg
-            pickup_type = 0
+            (pickup_type = 0 OR pickup_type IS NULL)
         AND
             trip.trip_id IN (
                 SELECT

@@ -113,7 +113,7 @@ INSERT INTO
                 avt_oevkov_2023_v1.auswertung_auswertung_gtfs
     )
     AND
-        pickup_type > 0
+        (pickup_type = 0 OR pickup_type IS NULL)
     AND
         trip_headsign <> stop_name
     AND

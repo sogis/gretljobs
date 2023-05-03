@@ -26,13 +26,14 @@ task auswertungGTFS(type: SqlExecutor, dependsOn: deleteGTFSData){
     sqlFiles = ['insert_into_gtfs_auswertung.sql']
 }
 
-task auswertungGTFSExceptions(type: SqlExecutor, dependsOn: auswertungGTFS){
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlParameters = [currentYear: currentYear]
-    sqlFiles = ['insert_into_gtfs_auswertung_ausnahmen.sql']
-}
+// ev. nicht mehr nötig
+// task auswertungGTFSExceptions(type: SqlExecutor, dependsOn: auswertungGTFS){
+//     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+//     sqlParameters = [currentYear: currentYear]
+//     sqlFiles = ['insert_into_gtfs_auswertung_ausnahmen.sql']
+// }
 
-task auswertungGTFSGewichtung(type: SqlExecutor, dependsOn: auswertungGTFSExceptions){
+task auswertungGTFSGewichtung(type: SqlExecutor, dependsOn: auswertungGTFS){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [currentYear: currentYear]
     sqlFiles = ['update_gtfs_auswertung_gewichtung.sql']
