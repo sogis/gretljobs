@@ -23,8 +23,6 @@ WITH calendar AS (
                 THEN
                     gtfs_calendar.friday
         END AS dayofweek
-        FROM
-            avt_oevkov_${currentYear}_v1.gtfs_calendar
     FROM
         avt_oevkov_${currentYear}_v1.gtfs_calendar
 ),
