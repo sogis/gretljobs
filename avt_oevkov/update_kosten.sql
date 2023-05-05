@@ -11,20 +11,19 @@ SET
 UPDATE
     avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten
 SET
-    gemeindeanteil = (gesamtkosten_angebot + gesamtkosten_fabi_beitraege)   *  0.37
+    gemeindeanteil = (gesamtkosten_angebot + gesamtkosten_fabi_beitraege) * 0.37
 ;
 
 -- Einwohner Total
 UPDATE
     avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten
 SET
-    total_einwohner = 
-    (
-    SELECT
-        sum(einwohnerzahl)
-     FROM
-         avt_oevkov_${currentYear}_v1.auswertung_gemeinde_einwohner_kosten                                                                                                                           
-     )
+    total_einwohner = (
+         SELECT
+             sum(einwohnerzahl)
+         FROM
+             avt_oevkov_${currentYear}_v1.auswertung_gemeinde_einwohner_kosten                                                                                                                           
+    )
 ;
 
 -- Gewichtete Haltestellenabfahrten Total
@@ -45,14 +44,14 @@ FROM
 UPDATE
     avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten
 SET
-    kosten_pro_haltestellenabfahrt = round(gemeindeanteil  /  total_gewichtete_haltestellenabfahrten  *  5  /  7, 1)
+    kosten_pro_haltestellenabfahrt = round(gemeindeanteil / total_gewichtete_haltestellenabfahrten * 5 / 7, 1)
 ;
 
 -- Kosten pro Einwohner (2/7)
 UPDATE
     avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten
 SET
-    kosten_pro_einwohner = gemeindeanteil  /
+    kosten_pro_einwohner = gemeindeanteil /
        (
        SELECT
             sum(einwohnerzahl)
@@ -65,17 +64,17 @@ SET
 UPDATE
     avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten
 SET
-    schwellenwert = gemeindeanteil  /
-         (
+    schwellenwert = gemeindeanteil /
+        (
          SELECT
              sum(einwohnerzahl)
          FROM
              avt_oevkov_${currentYear}_v1.auswertung_gemeinde_einwohner_kosten
-         )  *  1.5
+        ) * 1.5
 ;
 
--- Tabelle avt_oevkov_${currentYear}_v1.auswertung_gemeinde_einwohner_kosten
--- Zuerst alle Werte 0 setzen für Neuberechnung
+-- Tabelle avt_oevkov_${currentYear}_v1.auswertung_gemeinde_einwohner_kosten:
+-- alle Werte 0 setzen für Neuberechnung
 UPDATE
      avt_oevkov_${currentYear}_v1.auswertung_gemeinde_einwohner_kosten
 SET
@@ -111,37 +110,41 @@ FROM
 UPDATE
     avt_oevkov_${currentYear}_v1.auswertung_gemeinde_einwohner_kosten
 SET
-    kosten_angebot = (einwohnerzahl  *
-        (
-        SELECT
-             gesamtkosten_angebot  /  7 * 2  /  total_einwohner  *  0.37
-        FROM
-            avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten
-        )) 
-        +  (gewichtete_haltestellenabfahrten *
-               (
-               SELECT
-                   gesamtkosten_angebot  /  7 * 5  /  total_gewichtete_haltestellenabfahrten  *  0.37
-               FROM
-                   avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten
-               )
-           )
+    kosten_angebot = (
+        einwohnerzahl * (
+            SELECT
+                gesamtkosten_angebot / 7 * 2 / total_einwohner * 0.37
+            FROM
+                avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten
+        ))
+        +
+        (gewichtete_haltestellenabfahrten * (
+            SELECT
+                gesamtkosten_angebot / 7 * 5 / total_gewichtete_haltestellenabfahrten * 0.37
+            FROM
+                avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten
+            )
+        )
 ;
 
 -- Kosten gemäss Anzahl Einwohner
 UPDATE
     avt_oevkov_${currentYear}_v1.auswertung_gemeinde_einwohner_kosten
 SET
-    kosten_anzahl_einwohner = (einwohnerzahl  *
-          (SELECT
-               gesamtkosten_fabi_beitraege  /  7 *  2  /  total_einwohner  *  0.37
+    kosten_anzahl_einwohner = (einwohnerzahl * (
+          SELECT
+               gesamtkosten_fabi_beitraege / 7 * 2 / total_einwohner * 0.37
           FROM
-            avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten)
-        )  +   (gewichtete_haltestellenabfahrten  *
-          (SELECT
-             gesamtkosten_fabi_beitraege  / 7  *  5  /   total_gewichtete_haltestellenabfahrten  *  0.37
-         FROM
-            avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten)
+              avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten
+            )
+        )
+        +
+        (gewichtete_haltestellenabfahrten * (
+          SELECT
+              gesamtkosten_fabi_beitraege / 7 * 5 / total_gewichtete_haltestellenabfahrten * 0.37
+          FROM
+             avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten
+           )
         )
 ;
 
@@ -149,21 +152,21 @@ SET
 UPDATE
     avt_oevkov_${currentYear}_v1.auswertung_gemeinde_einwohner_kosten
 SET
-    kosten_total = round(kosten_angebot, 0)  +  round(kosten_anzahl_einwohner, 0)
+    kosten_total = round(kosten_angebot, 0) + round(kosten_anzahl_einwohner, 0)
 ;
 
 -- Kosten pro Einwohner
 UPDATE
     avt_oevkov_${currentYear}_v1.auswertung_gemeinde_einwohner_kosten
 SET
-    kosten_pro_einwohner = kosten_total  /  einwohnerzahl
+    kosten_pro_einwohner = kosten_total / einwohnerzahl
 ;
 
 -- Kosten reduziert gemäss Schwellenwert
 UPDATE
     avt_oevkov_${currentYear}_v1.auswertung_gemeinde_einwohner_kosten AS gemeindekosten
 SET
-    kosten_minus_schwellenwert = schwellenwert  *  einwohnerzahl
+    kosten_minus_schwellenwert = schwellenwert * einwohnerzahl
 FROM
       avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten AS grunddaten
 WHERE
@@ -174,7 +177,7 @@ WHERE
 UPDATE
     avt_oevkov_${currentYear}_v1.auswertung_gemeinde_einwohner_kosten AS gemeindekosten
 SET
-    kosten_ueber_schwellenwert = kosten_total  -  kosten_minus_schwellenwert
+    kosten_ueber_schwellenwert = kosten_total - kosten_minus_schwellenwert
 FROM
       avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten AS grunddaten
 WHERE
