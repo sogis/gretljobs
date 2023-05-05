@@ -1,0 +1,12 @@
+SELECT
+    geometrie,
+    nummer,
+    flaeche,
+    typ,
+    aggloprogramm,
+    lufttemperatur_14uhr,
+    pet_14uhr,
+    lufttemperatur_04uhr
+FROM
+    afu_klimaanalyse_v1.entwicklungsflaechen
+;
