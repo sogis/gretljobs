@@ -24,7 +24,7 @@ task transferKlimaanalysePub(type: Db2Db) {
             new TransferSet('kaltluftbereich_ist_pub.sql', 'afu_klimaanalyse_v1.kaltluftbereich_ist', true),
             new TransferSet('kaltluftbereich_zukunft_pub.sql', 'afu_klimaanalyse_v1.kaltluftbereich_zukunft', true),
             new TransferSet('kaltluftentstehung_ist_pub.sql', 'afu_klimaanalyse_v1.kaltluftentstehung_ist', true), 
-            new TransferSet('kaltluftentstehung_zuktnft_pub.sql', 'afu_klimaanalyse_v1.kaltluftentstehung_zukunft', true),
+            new TransferSet('kaltluftentstehung_zukunft_pub.sql', 'afu_klimaanalyse_v1.kaltluftentstehung_zukunft', true),
             new TransferSet('kaltluftprozess_ist_pub.sql', 'afu_klimaanalyse_v1.kaltluftprozess_ist', true),
             new TransferSet('kaltluftprozess_zukunft_pub.sql', 'afu_klimaanalyse_v1.kaltluftprozess_zukunft', true)
     ];
