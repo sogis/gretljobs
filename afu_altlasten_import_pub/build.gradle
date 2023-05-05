@@ -123,10 +123,10 @@ task uploadMgdm(dependsOn: 'downloadMgdm') {
 
 
 def switchToTest(dbUriSogis) {
-  String readUriSogis = dbUriSogis.replaceFirst("geodb-i.", "geodb-t.")
+  String readUriSogis = dbUriSogis.replaceFirst("geodb.verw.", "geodb-t.verw.")
 
   if(readUriSogis.equals(dbUriSogis))
-    readUriSogis = dbUriSogis.replaceFirst("geodb-i.", "geodb-t.")
-
+    readUriSogis = dbUriSogis.replaceFirst("geodb.verw.", "geodb-t.verw.")
+  println readUriSogis
   return readUriSogis
 }
