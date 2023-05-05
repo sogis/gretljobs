@@ -4,15 +4,15 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'validataKlimaData'
+defaultTasks 'transferKlimaanalysePub'
 
 
-tasks.register('validataKlimaData', Ili2pgValidate) {
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    models = "SO_AFU_Klimaanalyse_20230413"
-    modeldir = rootProject.projectDir.toString() + ";http://models.interlis.ch"
-    dbschema = "afu_klimaanalyse_v1"
-}
+// tasks.register('validataKlimaData', Ili2pgValidate) {
+//     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+//     models = "SO_AFU_Klimaanalyse_20230413"
+//     modeldir = rootProject.projectDir.toString() + ";http://models.interlis.ch"
+//     dbschema = "afu_klimaanalyse_v1"
+// }
 
 task transferKlimaanalysePub(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
