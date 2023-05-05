@@ -8,7 +8,8 @@ apply plugin: 'ch.so.agi.gretl'
 
 
 
-defaultTasks 'refreshSolrKbs', 'refreshSolrKbsRestricted', 'transferKbsToSogisDb', 'uploadMgdm'
+//////////////////////////////////////////////////////defaultTasks 'refreshSolrKbs', 'refreshSolrKbsRestricted', 'transferKbsToSogisDb', 'uploadMgdm'
+defaultTasks 'refreshSolrKbs', 'refreshSolrKbsRestricted', 'uploadMgdm'
 
 
 // Download-Verzeichnis
