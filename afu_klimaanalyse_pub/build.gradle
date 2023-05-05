@@ -1,0 +1,31 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+
+defaultTasks 'validataKlimaData'
+
+
+tasks.register('validataKlimaData', Ili2pgValidate) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = "SO_AFU_Klimaanalyse_20230413"
+    modeldir = rootProject.projectDir.toString() + ";http://models.interlis.ch"
+    dbschema = "afu_klimaanalyse_v1"
+}
+
+task transferKlimaanalysePub(type: Db2Db) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('arbeitszone_ohne_wohnen_pub.sql', 'afu_klimaanalyse_v1.arbeitszone_ohne_wohnen', true),
+            new TransferSet('ausgangsgroessen_bewertung_pub.sql', 'afu_klimaanalyse_v1.ausgangsgroessen_bewertung', true),
+            new TransferSet('entwicklungsflaechen_pub.sql', 'afu_klimaanalyse_v1.entwicklungsflaechen', true),
+            new TransferSet('kaltluftbereich_ist_pub.sql', 'afu_klimaanalyse_v1.kaltluftbereich_ist', true),
+            new TransferSet('kaltluftbereich_zukunft_pub.sql', 'afu_klimaanalyse_v1.kaltluftbereich_zukunft', true),
+            new TransferSet('kaltluftentstehung_ist_pub.sql', 'afu_klimaanalyse_v1.kaltluftentstehung_ist', true), 
+            new TransferSet('kaltluftentstehung_zukinft_pub.sql', 'afu_klimaanalyse_v1.kaltluftentstehung_zukunft', true),
+            new TransferSet('kaltluftprozess_ist_pub.sql', 'afu_klimaanalyse_v1.kaltluftprozess_ist', true),
+            new TransferSet('kaltluftprozess_zukunft_pub.sql', 'afu_klimaanalyse_v1.kaltluftprozess_zukunft', true)
+    ];
+}
