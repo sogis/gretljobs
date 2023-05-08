@@ -21,6 +21,7 @@ task transferKlimaanalysePub(type: Db2Db) {
             new TransferSet('arbeitszone_ohne_wohnen_pub.sql', 'afu_klimaanalyse_pub_v1.arbeitszone_ohne_wohnen', true),
             new TransferSet('ausgangsgroessen_bewertung_pub.sql', 'afu_klimaanalyse_pub_v1.ausgangsgroessen_bewertung', true),
             new TransferSet('entwicklungsflaechen_pub.sql', 'afu_klimaanalyse_pub_v1.entwicklungsflaechen', true),
+            new TransferSet('entwicklungsflaechen_agglopr_pub.sql', 'afu_klimaanalyse_pub_v1.entwicklungsflaechen_agglopr', true),
             new TransferSet('kaltluftbereich_ist_pub.sql', 'afu_klimaanalyse_pub_v1.kaltluftbereich_ist', true),
             new TransferSet('kaltluftbereich_zukunft_pub.sql', 'afu_klimaanalyse_pub_v1.kaltluftbereich_zukunft', true),
             new TransferSet('kaltluftentstehung_ist_pub.sql', 'afu_klimaanalyse_pub_v1.kaltluftentstehung_ist', true), 
