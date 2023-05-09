@@ -2,6 +2,7 @@ SELECT
     geometrie,
     nutzung,
     waldflaeche,
+    waldflaeche::text AS waldflaeche_txt,
     lufttemperatur_04uhr,
     windgeschwindigkeit,
     pet,
