@@ -1,0 +1,9 @@
+SELECT
+    geometrie,
+    windgeschwindigkeit,
+    windrichtung,
+    u_komponente,
+    v_komponente
+FROM
+    afu_klimaanalyse_windpfeile_v1.windpfeil_200m_zukunft
+;
