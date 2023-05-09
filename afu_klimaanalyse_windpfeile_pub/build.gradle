@@ -1,0 +1,28 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+
+defaultTasks 'transferWindpfeilePub'
+
+
+
+task transferKlimaanalysePub(type: Db2Db) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('windpfeile_10m_ist_pub', 'afu_klimaanalyse_windpfeile_pub_v1.windpfeil_10m_ist', true),
+            new TransferSet('windpfeile_50m_ist_pub', 'afu_klimaanalyse_windpfeile_pub_v1.windpfeil_50m_ist', true),
+            new TransferSet('windpfeile_100m_ist_pub', 'afu_klimaanalyse_windpfeile_pub_v1.windpfeil_100m_ist', true),
+            new TransferSet('windpfeile_200m_ist_pub', 'afu_klimaanalyse_windpfeile_pub_v1.windpfeil_200m_ist', true),
+            new TransferSet('windpfeile_300m_ist_pub', 'afu_klimaanalyse_windpfeile_pub_v1.windpfeil_300m_ist', true),
+            new TransferSet('windpfeile_500m_ist_pub', 'afu_klimaanalyse_windpfeile_pub_v1.windpfeil_500m_ist', true),
+            new TransferSet('windpfeile_10m_zukunft_pub', 'afu_klimaanalyse_windpfeile_pub_v1.windpfeil_10m_zukunft', true),
+            new TransferSet('windpfeile_50m_zukunft_pub', 'afu_klimaanalyse_windpfeile_pub_v1.windpfeil_50m_zukunft', true),
+            new TransferSet('windpfeile_100m_zukunft_pub', 'afu_klimaanalyse_windpfeile_pub_v1.windpfeil_100m_zukunft', true),
+            new TransferSet('windpfeile_200m_zukunft_pub', 'afu_klimaanalyse_windpfeile_pub_v1.windpfeil_200m_zukunft', true),
+            new TransferSet('windpfeile_300m_zukunft_pub', 'afu_klimaanalyse_windpfeile_pub_v1.windpfeil_300m_zukunft', true),
+            new TransferSet('windpfeile_500m_zukunft_pub', 'afu_klimaanalyse_windpfeile_pub_v1.windpfeil_500m_zukunft', true),
+    ];
+}
