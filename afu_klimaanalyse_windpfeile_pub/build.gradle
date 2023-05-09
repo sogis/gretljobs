@@ -8,7 +8,7 @@ defaultTasks 'transferWindpfeilePub'
 
 
 
-task transferKlimaanalysePub(type: Db2Db) {
+task transferWindpfeilePub(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
