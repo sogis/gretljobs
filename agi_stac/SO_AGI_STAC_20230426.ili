@@ -1,0 +1,88 @@
+INTERLIS 2.3;
+
+/** !!------------------------------------------------------------------------------
+ *  !! Version    | wer | Änderung
+ *  !!------------------------------------------------------------------------------
+ *  !! 2023-04-26 | sz  | Ersterfassung
+ *  !!==============================================================================
+ */
+!!@ technicalContact=mailto:agi@bd.so.ch
+!!@ furtherInformation=http://geo.so.ch/models/AGI/SO_AGI_STAC_20230426.uml
+
+MODEL SO_AGI_STAC_20230426 (de)
+AT "https://agi.so.ch"
+VERSION "2023-04-26" =
+  DOMAIN
+
+    SOOID = OID TEXT*255;
+
+  TOPIC Collections =
+    OID AS SOOID;
+
+    STRUCTURE Office =
+      AgencyName : TEXT;
+      Abbreviation : TEXT;
+      Division : TEXT;
+      OfficeAtWeb : URI;
+      Email : URI;
+      Phone : TEXT;
+    END Office;
+  
+    STRUCTURE BoundingBox = 
+      westlimit: MANDATORY -9999999..9999999;
+      southlimit: MANDATORY -9999999..9999999;
+      eastlimit: MANDATORY -9999999..9999999;
+      northlimit: MANDATORY -9999999..9999999;
+    END BoundingBox;
+  
+    STRUCTURE Interval =
+      StartDate : FORMAT INTERLIS.XMLDate "1990-1-1" .. "2100-12-31";
+      EndDate : FORMAT INTERLIS.XMLDate "1990-1-1" .. "2100-12-31";
+    END Interval;
+
+    STRUCTURE Asset = 
+      Identifier : MANDATORY TEXT;
+      Title : MANDATORY TEXT;
+      MediaType : MANDATORY TEXT; !! FIXME? Enumeration?
+      Href : MANDATORY URI;
+    END Asset;
+
+    STRUCTURE Item = 
+      Identifier : MANDATORY TEXT;
+      Title : TEXT;
+      Date: MANDATORY FORMAT INTERLIS.XMLDate "1990-1-1" .. "2100-12-31";
+      !!@ili2db.mapping=JSON
+      Boundary : BoundingBox;
+      Geometry : MTEXT; !! FIXME 
+      !!@ili2db.mapping=JSON
+      Assets : BAG {1..*} OF Asset;
+    END Item;
+
+    STRUCTURE Keyword_ = 
+      Keyword : MANDATORY TEXT;
+    END Keyword_;
+
+    CLASS Collection =
+      Identifier : MANDATORY TEXT;
+      Title : MANDATORY TEXT;
+      ShortDescription : MTEXT;
+      !!@ili2db.mapping=JSON
+      SpatialExtent : BAG {1..*} OF BoundingBox;
+      !!@ili2db.mapping=JSON
+      TemporalExtent : BAG {1..*} OF Interval;
+      Licence : MANDATORY URI;
+      !!@ili2db.mapping=JSON
+      Keywords : BAG {0..*} OF Keyword_;
+      !!@ili2db.mapping=JSON
+      Owner : MANDATORY Office;
+      !!@ili2db.mapping=JSON
+      Servicer : MANDATORY Office;
+      !! !!@ili2db.mapping=JSON
+      Items : BAG {1..*} OF Item;
+
+      UNIQUE Identifier;
+    END Collection;
+
+  END Collections;
+
+END SO_AGI_STAC_20230426.

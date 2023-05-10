@@ -1,0 +1,57 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import java.nio.file.Files
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: "de.undercouch.download"
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'uploadXtf'
+
+def bucket = "ch.so.agi.geodata-dev"
+if (gretlEnvironment == "test") {
+    bucket = "ch.so.agi.geodata-test"
+} else if (gretlEnvironment == "integration") {
+    bucket = "ch.so.agi.geodata-int"
+} else if (gretlEnvironment == "production") {
+    bucket = "ch.so.agi.sodata-prod"
+}
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def xmlFileName = "datasearch.xml"
+def xtfFileName = "datasearch.xtf" // Namen ergibt sich aus dem XslTransformer-Task
+def configFileUrl = "https://s3.eu-central-1.amazonaws.com/$bucket/$xmlFileName"
+
+tasks.register('downloadXml', Download) {
+    src configFileUrl
+    dest file(pathToTempFolder)
+}
+
+tasks.register('transform', XslTransformer) {
+    dependsOn 'downloadXml'
+    xslFile = file("xml2xtf.xsl")
+    xmlFile = file(Paths.get(pathToTempFolder, xmlFileName))
+    outDirectory = file(".")
+}
+
+tasks.register('importXtf', Ili2pgImport) {
+    dependsOn 'transform'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "agi_stac_v1"
+    models = "SO_AGI_STAC_20230426"
+    disableValidation = false
+    deleteData = true
+    dataFile = file(xtfFileName)
+}
+
+tasks.register('uploadXtf', S3Upload) {
+    dependsOn 'importXtf'
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    sourceFile = file(xtfFileName)
+    endPoint = "https://s3.eu-central-1.amazonaws.com"
+    region = "eu-central-1"
+    bucketName = bucket
+    acl = "public-read"
+}
