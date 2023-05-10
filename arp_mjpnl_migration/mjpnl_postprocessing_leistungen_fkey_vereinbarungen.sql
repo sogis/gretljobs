@@ -5,7 +5,7 @@ UPDATE
 FROM
    ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg
    LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
-     ON vbg.flaechen_id_alt = (split_part(lstg.bemerkung,'§',2)::jsonb -> 'polyid')::int4
+     ON vbg.flaechen_id_alt = (split_part(lstg.bemerkung,'§',2)::jsonb -> 'polyidfromflaechen')::int4
 WHERE 
   lstgorig.t_id = lstg.t_id
   AND lstgorig.vereinbarung = 9999999
