@@ -561,11 +561,12 @@ WITH typ_kt_linie_erschliessung AS (
     FROM
         arp_nutzungsplanung_v1.erschlssngsplnung_ep_typ_kanton_erschliessung_linienobjekt AS linie
         LEFT JOIN arp_nutzungsplanung_mgdm_v1.catalogue_ch_catalogue_ch AS hauptnutzung
-        ON hauptnutzung.acode::text = substring(ilicode FROM 2 FOR 2)
+        ON hauptnutzung.acode::INTEGER in (71,71,73,74,75,76,77,78) --Ganzer range der Baulinien
     WHERE 
         hauptnutzung.t_ili_tid IS NOT NULL 
     RETURNING *
 )
+
 INSERT INTO arp_nutzungsplanung_mgdm_v1.geobasisdaten_typ 
     (
         t_id,
@@ -806,6 +807,8 @@ FROM
 WHERE 
     punkt.t_datasetname::int4 = ${bfsnr_param}
 ;
+
+
 -- DOKUMENTE
 INSERT INTO arp_nutzungsplanung_mgdm_v1.rechtsvorschrften_dokument 
     ( 
@@ -958,5 +961,41 @@ INSERT INTO
         localiseduri
 ;
 
-
+INSERT INTO 
+    arp_nutzungsplanung_mgdm_v1.geobasisdaten_typ_dokument
+    (
+        t_id,
+        t_basket,
+        t_datasetname,
+        typ, 
+        dokument
+    )
+    SELECT
+        t_id, 
+        (SELECT 
+             t_id 
+         FROM 
+             arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+         WHERE 
+             topic = 'Nutzungsplanung_V1_2.Rechtsvorschriften'
+        ) AS t_basket, 
+        (SELECT 
+             datasetname 
+         FROM 
+             arp_nutzungsplanung_mgdm_v1.t_ili2db_dataset tid 
+         WHERE 
+             t_id = (SELECT 
+                         dataset 
+                     FROM 
+                         arp_nutzungsplanung_mgdm_v1.t_ili2db_basket 
+                     WHERE 
+                         topic = 'Nutzungsplanung_V1_2.Rechtsvorschriften')
+        ) AS t_datasetname,   
+        typ_grundnutzung AS typ, 
+        dokument 
+    FROM 
+        arp_nutzungsplanung_v1.nutzungsplanung_typ_grundnutzung_dokument 
+    WHERE 
+        t_datasetname = ${bfsnr_param}::TEXT 
+;
 

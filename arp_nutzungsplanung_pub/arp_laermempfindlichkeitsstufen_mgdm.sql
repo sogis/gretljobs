@@ -287,4 +287,40 @@ INSERT INTO
         localiseduri
 ;
 
-
+INSERT INTO 
+    arp_laermempfindlichkeitsstufen_mgdm_v1.geobasisdaten_typ_dokument
+    (
+        t_id,
+        t_basket,
+        t_datasetname,
+        typ, 
+        dokument
+    )
+    SELECT
+        t_id, 
+        (SELECT 
+             t_id 
+         FROM 
+             arp_laermempfindlichkeitsstufen_mgdm_v1.t_ili2db_basket 
+         WHERE 
+             topic = 'Laermempfindlichkeitsstufen_V1_2.Rechtsvorschriften'
+        ) AS t_basket, 
+        (SELECT 
+             datasetname 
+         FROM 
+             arp_laermempfindlichkeitsstufen_mgdm_v1.t_ili2db_dataset tid 
+         WHERE 
+             t_id = (SELECT 
+                         dataset 
+                     FROM 
+                         arp_laermempfindlichkeitsstufen_mgdm_v1.t_ili2db_basket 
+                     WHERE 
+                         topic = 'Laermempfindlichkeitsstufen_V1_2.Rechtsvorschriften')
+        ) AS t_datasetname,   
+        typ_empfindlichkeitsstufen AS typ, 
+        dokument 
+    FROM 
+        arp_nutzungsplanung_v1.laermmpfhktsstfen_typ_empfindlichkeitsstufe_dokument
+    WHERE 
+        t_datasetname = ${bfsnr_param}::TEXT 
+;

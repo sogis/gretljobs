@@ -39,6 +39,8 @@ FROM
     basket
 WHERE
     ilicode = 'E725_Waldabstandslinie'
+    AND 
+    t_datasetname::int4 = ${bfsnr_param}
 ;
 
 WITH basket AS (     
@@ -79,6 +81,8 @@ FROM
     ON typ.typ_kt = mgdm_typ.bezeichnung 
 WHERE
     typ.typ_kt = 'E725_Waldabstandslinie'
+    AND 
+    t_datasetname::int4 = ${bfsnr_param}
 ;
 
 -- DOKUMENTE
@@ -214,4 +218,42 @@ INSERT INTO
         multilingualuri_localisedtext
     FROM 
         localiseduri
+;
+
+INSERT INTO 
+    arp_waldabstandslinien_mgdm_v1.geobasisdaten_typ_dokument
+    (
+        t_id,
+        t_basket,
+        t_datasetname,
+        typ, 
+        dokument
+    )
+    SELECT
+        t_id, 
+        (SELECT 
+             t_id 
+         FROM 
+             arp_waldabstandslinien_mgdm_v1.t_ili2db_basket 
+         WHERE 
+             topic = 'Waldabstandslinien_V1_2.Rechtsvorschriften'
+        ) AS t_basket, 
+        (SELECT 
+             datasetname 
+         FROM 
+             arp_waldabstandslinien_mgdm_v1.t_ili2db_dataset tid 
+         WHERE 
+             t_id = (SELECT 
+                         dataset 
+                     FROM 
+                         arp_waldabstandslinien_mgdm_v1.t_ili2db_basket 
+                     WHERE 
+                         topic = 'Waldabstandslinien_V1_2.Rechtsvorschriften')
+        ) AS t_datasetname,   
+        typ_empfindlichkeitsstufen AS typ, 
+        dokument 
+    FROM 
+        arp_nutzungsplanung_v1.laermmpfhktsstfen_typ_empfindlichkeitsstufe_dokument
+    WHERE 
+        t_datasetname = ${bfsnr_param}::TEXT 
 ;
