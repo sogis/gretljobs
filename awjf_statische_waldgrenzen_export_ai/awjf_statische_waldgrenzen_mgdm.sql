@@ -1,33 +1,9 @@
-/*
-* Wenn in 'waldgrenzen' gegenueber den aktivierten Gemeinden getestet wird,
-* gibt es 1019 Records, sonst 1020. Da alle 107 Gemeinden freigeschaltet sind,
-* kann es wohl nur am Geoprocessing liegen.
-*/
-
-WITH activated_municipalities AS 
-( 
-    SELECT 
-        gemeinden.gemeinde 
-    FROM 
-        agi_konfiguration_oerebv2.konfiguration_gemeindemitoerebk AS gemeinden
-        LEFT JOIN agi_konfiguration_oerebv2.themaref AS thema 
-        ON thema.konfiguratn_gmndmtrebk_themen = gemeinden.t_id
-    WHERE 
-        thema = 'ch.StatischeWaldgrenzen'
-)   
-,
-waldgrenzen AS 
+WITH waldgrenzen AS 
 (
     SELECT 
         waldgrenze.*
-        --gemeindegrenze.bfs_gemeindenummer,
-        --activated_municipalities.gemeinde
     FROM 
         awjf_statische_waldgrenze.geobasisdaten_waldgrenze_linie AS waldgrenze
-        --LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS gemeindegrenze
-        --ON ST_Intersects(ST_LineInterpolatePoint(waldgrenze.geometrie, 0.5), gemeindegrenze.geometrie)
-        --JOIN activated_municipalities
-        --ON activated_municipalities.gemeinde = gemeindegrenze.bfs_gemeindenummer 
     WHERE 
         waldgrenze.rechtsstatus = 'inKraft'
 )
