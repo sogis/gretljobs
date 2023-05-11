@@ -9,11 +9,11 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'uploadXtf'
 
-def bucket = "ch.so.agi.geodata-dev"
+def bucket = "ch.so.agi.sodata-dev"
 if (gretlEnvironment == "test") {
-    bucket = "ch.so.agi.geodata-test"
+    bucket = "ch.so.agi.sodata-test"
 } else if (gretlEnvironment == "integration") {
-    bucket = "ch.so.agi.geodata-int"
+    bucket = "ch.so.agi.sodata-int"
 } else if (gretlEnvironment == "production") {
     bucket = "ch.so.agi.sodata-prod"
 }
