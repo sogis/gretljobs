@@ -20,6 +20,7 @@ WITH basket AS (
 INSERT INTO 
     arp_waldabstandslinien_mgdm_v1.geobasisdaten_typ 
     (
+        t_id,
         t_basket,
         t_datasetname,
         acode,
@@ -28,17 +29,18 @@ INSERT INTO
         verbindlichkeit
     ) 
 SELECT 
+    erschliessung.t_id,
     basket.t_id AS t_basket, 
     ${bfsnr_param} AS t_datasetname,
-    substring(ilicode FROM 2 FOR 3) AS acode, 
-    ilicode AS bezeichnung, 
-    substring(ilicode FROM 1 FOR 4) AS abkuerzung,
+    substring(typ_kt FROM 2 FOR 3) AS acode, 
+    typ_kt AS bezeichnung, 
+    substring(typ_kt FROM 1 FOR 4) AS abkuerzung,
     'Nutzungsplanfestlegung' AS verbindlichkeit
 FROM 
-    arp_nutzungsplanung_v1.erschlssngsplnung_ep_typ_kanton_erschliessung_linienobjekt, 
+    arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_linienobjekt erschliessung, 
     basket
 WHERE
-    ilicode = 'E725_Waldabstandslinie'
+    typ_kt = 'E725_Waldabstandslinie'
     AND 
     t_datasetname::int4 = ${bfsnr_param}
 ;
@@ -82,7 +84,7 @@ FROM
 WHERE
     typ.typ_kt = 'E725_Waldabstandslinie'
     AND 
-    t_datasetname::int4 = ${bfsnr_param}
+    linienobjekt.t_datasetname::int4 = ${bfsnr_param}
 ;
 
 -- DOKUMENTE
@@ -227,7 +229,7 @@ INSERT INTO
         t_basket,
         t_datasetname,
         typ, 
-        dokument
+        vorschrift --WIESO HEISST DAS NICHT "dokument" wie sonst überall? 
     )
     SELECT
         t_id, 
@@ -250,10 +252,12 @@ INSERT INTO
                      WHERE 
                          topic = 'Waldabstandslinien_V1_2.Rechtsvorschriften')
         ) AS t_datasetname,   
-        typ_empfindlichkeitsstufen AS typ, 
+        typ_erschliessung_linienobjekt  AS typ, 
         dokument 
     FROM 
-        arp_nutzungsplanung_v1.laermmpfhktsstfen_typ_empfindlichkeitsstufe_dokument
+        arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument
     WHERE 
         t_datasetname = ${bfsnr_param}::TEXT 
+        and 
+        typ_erschliessung_linienobjekt in (select t_id from arp_waldabstandslinien_mgdm_v1.geobasisdaten_typ)
 ;
