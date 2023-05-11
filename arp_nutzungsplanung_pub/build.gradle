@@ -4,12 +4,44 @@
 
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
+
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'importXTF_stage', 'importXTF_pub'
-//defaultTasks 'validateDataEdit'
-//List<String> bfsnr = Arrays.asList("2492")
+//defaultTasks 'importXTF_stage', 'importXTF_pub', 'uploadMgdmLandUsePlans'
+//defaultTasks 'uploadMgdmPlanungszonen'
+//def bfsnr = '2492'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+def iliModelMgdm = "Nutzungsplanung_V1_2"
+def dbSchemaMgdmLandUsePlans = "arp_nutzungsplanung_mgdm_v1"
+def mgdmLandUsePlansXtfFileName = "mgdm/ch.so.arp.npl.mgdm."+bfsnr+".xtf"
+def mgdmLandUsePlansZipFileName = "mgdm/ch.so.arp.npl.mgdm."+bfsnr+".zip"
+def mgdmLandUsePlansXtfFileNameclean = "ch.so.arp.npl.mgdm."+bfsnr+".xtf"
+
+def iliModelMgdmNoiseSensitivityLevels = "Laermempfindlichkeitsstufen_V1_2"
+def dbSchemaMgdmSensitivityLevels = "arp_laermempfindlichkeitsstufen_mgdm_v1"
+def mgdmSensitivityLevelsXtfFileName = "mgdm/ch.so.arp.laerm.mgdm."+bfsnr+".xtf"
+def mgdmSensitivityLevelsZipFileName = "mgdm/ch.so.arp.laerm.mgdm."+bfsnr+".zip"
+def mgdmSensitivityLevelsXtfFileNameclean = "ch.so.arp.laerm.mgdm."+bfsnr+".xtf"
+
+def iliModelMgdmWaldabstand = "Waldabstandslinien_V1_2"
+def dbSchemaWaldabstand = "arp_waldabstandslinien_mgdm_v1"
+def mgdmWaldabstandXtfFileName = "mgdm/ch.so.arp.waldabstand.mgdm."+bfsnr+".xtf"
+def mgdmWaldabstandZipFileName = "mgdm/ch.so.arp.waldabstand.mgdm."+bfsnr+".zip"
+def mgdmWaldabstandXtfFileNameclean = "ch.so.arp.waldabstand.mgdm."+bfsnr+".xtf"
+
+def iliModelMgdmPlanungszonen = "Planungszonen_V1_1"
+def dbSchemaPlanungszonen = "arp_planungszonen_mgdm_v1"
+def mgdmPlanungszonenXtfFileName = "mgdm/ch.so.arp.planungszonen.mgdm."+bfsnr+".xtf"
+def mgdmPlanungszonenZipFileName = "mgdm/ch.so.arp.planungszonen.mgdm."+bfsnr+".zip"
+def mgdmPlanungszonenXtfFileNameclean = "ch.so.arp.planungszonen.mgdm."+bfsnr+".xtf"
+
+//Normale Publikation
 
 task deleteData_transfer_pub (type: SqlExecutor) {
     description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_transfer_pub."
@@ -147,4 +179,275 @@ task publishAlt(type: Publisher, dependsOn: exportDataExport){
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+}
+
+// EXPORT AI 
+
+// Nutzungsplanung
+
+task deleteMgdmLandUsesPlansData(type: SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['truncate_all_arp_npl_mgdm_tables.sql']
+}
+
+task importMgdmHauptnutzung(type: Ili2pgImport, dependsOn: 'deleteMgdmLandUsesPlansData') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdm
+    dbschema = dbSchemaMgdmLandUsePlans
+    dataset = 'catalogue_ch'
+    dataFile = file("Nutzungsplanung_Catalogue_CH_V1_2_20210901.xml")
+}
+
+//Hier wird ein leeres XTF importiert, damit ein Basket vorhanden ist, auf den im nächsten Schritt dann referenziert werden kann. 
+task importEmptyXtf(type: Ili2pgImport, dependsOn: 'importMgdmHauptnutzung') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdm
+    dbschema = dbSchemaMgdmLandUsePlans
+    dataset = 'data'
+    dataFile = file("arp_nutzungsplanung_empty.xtf")
+}
+
+
+task transferLandUsePlansData(type: SqlExecutor, dependsOn: 'importEmptyXtf') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [bfsnr_param:bfsnr]
+    sqlFiles = ['arp_nutzungsplanung_kommunal_mgdm.sql']
+}
+
+task exportMgdmLandUsePlans(type: Ili2pgExport, dependsOn: 'transferLandUsePlansData') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = dbSchemaMgdmLandUsePlans
+    dataFile = file(mgdmLandUsePlansXtfFileName)
+    disableValidation = true 
+    dataset = bfsnr
+}
+
+task validateMgdmLandUsePlans(type: IliValidator, dependsOn: 'exportMgdmLandUsePlans') {
+    dataFiles = [file("Nutzungsplanung_Catalogue_CH_V1_2_20210901.xml"), file(mgdmLandUsePlansXtfFileName)]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    logFile = "ilivalidator_landuseplans.log"
+    allObjectsAccessible = true
+    configFile = "config.toml"
+    failOnError = true
+}
+
+task zipMgdmLandUsePlans(type: Zip, dependsOn: 'validateMgdmLandUsePlans'){
+    from pathToTempFolder
+    from "./mgdm"
+    include mgdmLandUsePlansXtfFileNameclean
+    include "config.toml"
+    archiveName mgdmLandUsePlansZipFileName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadMgdmLandUsePlans(dependsOn: 'zipMgdmLandUsePlans') {
+
+    def aiLogin = aiUser + ":" + aiPwd
+    def zipFilePath = Paths.get(pathToTempFolder.toString(), mgdmLandUsePlansZipFileName)
+    def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
+
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_nutzungsplanung_v1_2", "-F",
+                        "lv95_file=@" + zipFilePath, "-F", "publish=true", "-F", "replace_all=false", serverUrl
+                        ].execute().text
+
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
+}
+
+//Laermempfindlichkeitsstufen
+
+task deleteMgdmLaermData(type: SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['truncate_all_arp_laermempfindlichkeit_mgdm_tables.sql']
+}
+
+//Hier wird ein leeres XTF importiert, damit ein Basket vorhanden ist, auf den im nächsten Schritt dann referenziert werden kann. 
+task importEmptyXtfLaerm(type: Ili2pgImport, dependsOn: 'deleteMgdmLaermData') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdmNoiseSensitivityLevels
+    dbschema = dbSchemaMgdmSensitivityLevels
+    dataset = 'data'
+    dataFile = file("arp_laermempfindlichkeitsstufen_empty.xtf")
+}
+
+task transferNoiseSensitivityLevels(type: SqlExecutor, dependsOn: 'importEmptyXtfLaerm') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [bfsnr_param:bfsnr]
+    sqlFiles = ['arp_laermempfindlichkeitsstufen_mgdm.sql']
+}
+
+task exportMgdmNoiseSensitivityLevels(type: Ili2pgExport, dependsOn: 'transferNoiseSensitivityLevels') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdmNoiseSensitivityLevels
+    dbschema = dbSchemaMgdmSensitivityLevels
+    dataFile = file(mgdmSensitivityLevelsXtfFileName)
+    disableValidation = true
+}
+
+task validateMgdmNoiseSensitivityLevels(type: IliValidator, dependsOn: 'exportMgdmNoiseSensitivityLevels') {
+    dataFiles = [file(mgdmSensitivityLevelsXtfFileName)]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    logFile = "ilivalidator_noisesensitivitylevels.log"
+    configFile = "config.toml"
+    failOnError = true
+}
+
+task zipMgdmNoiseSensitivityLevels(type: Zip, dependsOn: 'validateMgdmNoiseSensitivityLevels'){
+    from pathToTempFolder
+    from "./mgdm"
+    include mgdmSensitivityLevelsXtfFileNameclean
+    include "config.toml"
+    archiveName mgdmSensitivityLevelsZipFileName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadMgdmNoiseSensitivityLevels(dependsOn: 'zipMgdmNoiseSensitivityLevels') {
+
+    def aiLogin = aiUser + ":" + aiPwd
+    def zipFilePath = Paths.get(pathToTempFolder.toString(), mgdmSensitivityLevelsZipFileName)
+    def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
+
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_laermempfindlichkeitsstufen_v1_2", "-F",
+                        "lv95_file=@" + zipFilePath, "-F", "publish=true", "-F", "replace_all=false", serverUrl
+                        ].execute().text
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
+}
+
+//Waldabstandslinien
+
+task deleteMgdmWaldData(type: SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['truncate_all_arp_waldabstandslinien_mgdm_tables.sql']
+}
+
+//Hier wird ein leeres XTF importiert, damit ein Basket vorhanden ist, auf den im nächsten Schritt dann referenziert werden kann. 
+task importEmptyXtfWald(type: Ili2pgImport, dependsOn: 'deleteMgdmWaldData') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdmWaldabstand
+    dbschema = dbSchemaWaldabstand
+    dataset = 'data'
+    dataFile = file("arp_waldabstandslinien_empty.xtf")
+}
+
+
+task transferWaldabstandslinien(type: SqlExecutor, dependsOn: 'importEmptyXtfWald') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [bfsnr_param:bfsnr]
+    sqlFiles = ['arp_waldabstandslinien_mgdm.sql']
+}
+
+task exportMgdmWaldabstandslinien(type: Ili2pgExport, dependsOn: 'transferWaldabstandslinien') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdmWaldabstand
+    dbschema = dbSchemaWaldabstand
+    dataFile = file(mgdmWaldabstandXtfFileName)
+    disableValidation = true
+}
+
+task validateMgdmWaldabstandslinien(type: IliValidator, dependsOn: 'exportMgdmWaldabstandslinien') {
+    dataFiles = [file(mgdmWaldabstandXtfFileName)]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    logFile = "ilivalidator_waldabstandslinien.log"
+    configFile = "config.toml"
+    failOnError = true
+}
+
+task zipMgdmWaldabstandslinien(type: Zip, dependsOn: 'validateMgdmWaldabstandslinien'){
+    from pathToTempFolder
+    from "./mgdm"
+    include mgdmWaldabstandXtfFileNameclean
+    include "config.toml"
+    archiveName mgdmWaldabstandZipFileName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadMgdmWaldabstandslinien(dependsOn: 'zipMgdmWaldabstandslinien') {
+
+    def aiLogin = aiUser + ":" + aiPwd
+    def zipFilePath = Paths.get(pathToTempFolder.toString(), mgdmWaldabstandZipFileName)
+    def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
+
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_waldabstandslinien_v1_2", "-F",
+                        "lv95_file=@" + zipFilePath, "-F", "publish=true", "-F", "replace_all=false", serverUrl
+                        ].execute().text
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
+}
+
+//Planungszonen
+
+task deleteMgdmPlanungszonenData(type: SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['truncate_all_arp_planungszonen_mgdm_tables.sql']
+}
+
+//Hier wird ein leeres XTF importiert, damit ein Basket vorhanden ist, auf den im nächsten Schritt dann referenziert werden kann. 
+task importEmptyXtfPlanungszonen(type: Ili2pgImport, dependsOn: 'deleteMgdmPlanungszonenData') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdmPlanungszonen
+    dbschema = dbSchemaPlanungszonen
+    dataset = 'data'
+    dataFile = file("arp_planungszonen_empty.xtf")
+}
+
+task transferPlanungszonen(type: SqlExecutor, dependsOn: 'importEmptyXtfPlanungszonen') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [bfsnr_param:bfsnr]
+    sqlFiles = ['arp_planungszonen_mgdm.sql']
+}
+
+
+task exportMgdmPlanungszonen(type: Ili2pgExport, dependsOn: 'transferPlanungszonen') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdmPlanungszonen
+    dbschema = dbSchemaPlanungszonen
+    dataFile = file(mgdmPlanungszonenXtfFileName)
+    disableValidation = true
+}
+
+task validateMgdmPlanungszonen(type: IliValidator, dependsOn: 'exportMgdmPlanungszonen') {
+    dataFiles = [file(mgdmPlanungszonenXtfFileName)]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    logFile = "ilivalidator_planungszonen.log"
+    configFile = "config.toml"
+    failOnError = true
+}
+
+task zipMgdmPlanungszonen(type: Zip, dependsOn: 'validateMgdmPlanungszonen'){
+    from pathToTempFolder
+    from "./mgdm"
+    include mgdmPlanungszonenXtfFileNameclean
+    include "config.toml"
+    archiveName mgdmPlanungszonenZipFileName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadMgdmPlanungszonen(dependsOn: 'zipMgdmPlanungszonen') {
+
+    def aiLogin = aiUser + ":" + aiPwd
+    def zipFilePath = Paths.get(pathToTempFolder.toString(), mgdmPlanungszonenZipFileName)
+    def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
+
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=planungszonen_v1_1", "-F",
+                        "lv95_file=@" + zipFilePath, "-F", "publish=true", "-F", "replace_all=false", serverUrl
+                        ].execute().text
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
 }
