@@ -1,0 +1,2 @@
+SELECT fundstellen_nummer, oereb_flaeche, amultipolygon, fundstelle_role
+FROM ada_archaeologie_v1.geo_flaeche;

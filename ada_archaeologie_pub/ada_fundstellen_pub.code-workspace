@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../sogis-interlis-repository/models/ADA"
+		},
+		{
+			"path": "../../schema-jobs/topics/oereb_v2"
+		},
+		{
+			"path": "../../schema-jobs/topics/ada_archaeologie"
+		}
+	],
+	"settings": {}
+}
