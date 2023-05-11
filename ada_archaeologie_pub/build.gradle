@@ -1,11 +1,3 @@
-/*
-Schema
-./start-gretl.sh --docker-image sogis/gretl:latest --docker-network schema-jobs_default --topic-name ada_archaeologie --schema-dirname schema_pub createSchema configureSchema
-
-Data
-./start-gretl.sh --docker-image sogis/gretl:latest --docker-network host --job-directory $PWD/ada_fundstellen_pub
-*/
-
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
@@ -13,11 +5,8 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'setEnumTxt'
 
-def edit = ['jdbc:postgresql://localhost:54321/edit', 'ddluser', 'ddluser']
-//def edit = [dbUriEdit, dbUserEdit, dbPwdEdit]
-
-def pub = ['jdbc:postgresql://localhost:54322/pub', 'ddluser', 'ddluser']
-//def pub = [dbUriPub, dbUserPub, dbPwdPub]
+def edit = [dbUriEdit, dbUserEdit, dbPwdEdit]
+def pub = [dbUriPub, dbUserPub, dbPwdPub]
 
 task tmpTransferLocal(type: Db2Db){
     sourceDb = ['jdbc:postgresql://geodb-i.rootso.org/edit', 'fuu', 'bar']
@@ -46,8 +35,18 @@ task updateRelationTids(type: SqlExecutor, dependsOn: importFromImdas){
     sqlFiles = ['update_relation/attr_geo.sql', 'update_relation/fst_rrb.sql']
 }
 
-task validateJoined(dependsOn: updateRelationTids) {}
+
+task validateJoined(dependsOn: updateRelationTids) {
+    doLast{println 'Validierung deaktiviert bis zur Datenmigration'}
+}
 /*
+Nach der Datenmigration müssen noch einzelne Geometriefehler korrigiert werden
+
+Vorgehen:
+- Daten migrieren
+- In diesem Job die Validierung aktivieren
+- ADA unterstützen, damit die Daten korrigiert werden können
+
 task validateJoined(type: Ili2pgValidate, dependsOn: updateRelationTids) {
     description = 'Validiert die Sach- und Geodaten und Beziehungen gemäss Edit-Modell'
     database = edit
@@ -64,18 +63,13 @@ task copyToPubDb(type: Db2Db, dependsOn: validateJoined){
     targetDb = pub
     transferSets = [
         new TransferSet('to_pub_db/flaeche.sql', 'ada_archaeologie_pub_v1.restricted_flaechenfundstelle', true),
-        new TransferSet('to_pub_db/punkt.sql', 'ada_archaeologie_pub_v1.restricted_punktfundstelle', true)
-        /*
-        ,
-        new TransferSet('to_pub_db/ablage_gemeinde.sql', 'ada_archaeologie_pub_v1.public_archiv_gemeinde', true),
+        new TransferSet('to_pub_db/punkt.sql', 'ada_archaeologie_pub_v1.restricted_punktfundstelle', true),
+        new TransferSet('to_pub_db/ablage_gemeinde.sql', 'ada_archaeologie_pub_v1.public_ablage_gemeinde', true),
         new TransferSet('to_pub_db/schutzbereich.sql', 'ada_archaeologie_pub_v1.public_schutzbereich_innenstadt', true)
-        */
     ]
 }
-
 task publicInSiedlung(dependsOn: copyToPubDb){}
 
-/*
 task publicInSiedlung(type: SqlExecutor, dependsOn: copyToPubDb){
     description = 'Kopiert alle Fundstellen im Siedlungsgebiet in die öffentlichen Tabellen'
     database = pub
@@ -86,7 +80,6 @@ task publicInSiedlung(type: SqlExecutor, dependsOn: copyToPubDb){
         'public/punkt_insert.sql'
     ]
 }
-*/
 
 task setEnumTxt(type: SqlExecutor, dependsOn: publicInSiedlung){
     description = 'Setzt die sprechenden Bezeichnungen *_txt der Enumerationen aller Fundstellen-Tabellen'
