@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+<HEADERSECTION SENDER="ili2pg-4.3.1-23b1f79e8ad644414773bb9bd1a97c8c265c5082" VERSION="2.3"><MODELS><MODEL NAME="Units" VERSION="2012-02-20" URI="http://www.interlis.ch/models"></MODEL><MODEL NAME="InternationalCodes_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"></MODEL><MODEL NAME="Localisation_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"></MODEL><MODEL NAME="LocalisationCH_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"></MODEL><MODEL NAME="Dictionaries_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"></MODEL><MODEL NAME="DictionariesCH_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"></MODEL><MODEL NAME="CoordSys" VERSION="2015-11-24" URI="http://www.interlis.ch/models"></MODEL><MODEL NAME="CHAdminCodes_V1" VERSION="2018-02-19" URI="http://www.geo.admin.ch"></MODEL><MODEL NAME="AdministrativeUnits_V1" VERSION="2022-10-06" URI="http://www.geo.admin.ch"></MODEL><MODEL NAME="AdministrativeUnitsCH_V1" VERSION="2020-04-24" URI="http://www.geo.admin.ch"></MODEL><MODEL NAME="GeometryCHLV03_V1" VERSION="2017-12-04" URI="http://www.geo.admin.ch"></MODEL><MODEL NAME="GeometryCHLV95_V1" VERSION="2017-12-04" URI="http://www.geo.admin.ch"></MODEL><MODEL NAME="Nutzungsplanung_V1_2" VERSION="2021-11-19" URI="https://models.geo.admin.ch/ARE/"></MODEL></MODELS></HEADERSECTION>
+<DATASECTION>
+<Nutzungsplanung_V1_2.Catalogue_CH BID="Nutzungsplanung_V1_2.Catalogue_CH">
+</Nutzungsplanung_V1_2.Catalogue_CH>
+<Nutzungsplanung_V1_2.Rechtsvorschriften BID="Nutzungsplanung_V1_2.Rechtsvorschriften">
+</Nutzungsplanung_V1_2.Rechtsvorschriften>
+<Nutzungsplanung_V1_2.Geobasisdaten BID="Nutzungsplanung_V1_2.Geobasisdaten">
+</Nutzungsplanung_V1_2.Geobasisdaten>
+<Nutzungsplanung_V1_2.TransferMetadaten BID="Nutzungsplanung_V1_2.TransferMetadaten">
+</Nutzungsplanung_V1_2.TransferMetadaten>
+</DATASECTION>
+</TRANSFER>

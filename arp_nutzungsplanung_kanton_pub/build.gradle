@@ -4,10 +4,22 @@
 
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'importXTF_stage', 'importXTF_pub', 'publish'
+//Für Export AI
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def dbSchemaLandUsePlansKanton = "arp_nutzungsplanung_kanton_v1"
+def iliModelMgdm = "Nutzungsplanung_V1_2"
+def dbSchemaMgdmLandUsePlans = "arp_nutzungsplanung_mgdm_v1"
+def mgdmLandUsePlansXtfFileName = "ch.so.arp.npl.mgdm.kanton.xtf"
+def mgdmLandUsePlansZipFileName = "ch.so.arp.npl.mgdm.kanton.zip"
+
+//defaultTasks 'importXTF_stage', 'importXTF_pub', 'publish'
+//defaultTasks 'uploadMgdmLandUsePlans'
 
 task deleteData_transfer_pub (type: SqlExecutor) {
     description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_transfer_pub."
@@ -95,7 +107,7 @@ task importXTF_pub(type: Ili2pgReplace) {
     finalizedBy delete_Dataset_stage
 }
 
-task publishPub(type: Publisher, dependsOn: validateData){
+task publishPub(type: Publisher, dependsOn: importXTF_pub){
     dataIdent = 'ch.so.arp.nutzungsplanung.kantonal'
     modelsToPublish = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
     userFormats = true
@@ -141,4 +153,76 @@ task publishAlt(type: Publisher, dependsOn: exportDataExport){
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
 
+// EXPORT AI 
 
+task deleteMgdmLandUsesPlansData(type: SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['truncate_all_arp_npl_mgdm_tables.sql']
+}
+
+task importMgdmHauptnutzung(type: Ili2pgImport, dependsOn: 'deleteMgdmLandUsesPlansData') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdm
+    dbschema = dbSchemaMgdmLandUsePlans
+    dataset = 'catalogue_ch'
+    dataFile = file("Nutzungsplanung_Catalogue_CH_V1_2_20210901.xml")
+}
+
+//Hier wird ein leeres XTF importiert, damit ein Basket vorhanden ist, auf den im nächsten Schritt dann referenziert werden kann. 
+task importEmptyXtf(type: Ili2pgImport, dependsOn: 'importMgdmHauptnutzung') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdm
+    dbschema = dbSchemaMgdmLandUsePlans
+    dataset = 'data'
+    dataFile = file("arp_nutzungsplanung_empty.xtf")
+}
+
+task transferLandUsePlansData(type: SqlExecutor, dependsOn: 'importEmptyXtf') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['arp_nutzungsplanung_mgdm.sql']
+}
+
+task exportMgdmLandUsePlans(type: Ili2pgExport, dependsOn: 'transferLandUsePlansData') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdm
+    dbschema = dbSchemaMgdmLandUsePlans
+    dataFile = file(mgdmLandUsePlansXtfFileName)
+    disableValidation = true
+    dataset = 'data'  
+}
+
+task validateMgdmLandUsePlans(type: IliValidator, dependsOn: 'exportMgdmLandUsePlans') {
+    dataFiles = [file("Nutzungsplanung_Catalogue_CH_V1_2_20210901.xml"), file(mgdmLandUsePlansXtfFileName)]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    logFile = "ilivalidator_landuseplans.log"
+    allObjectsAccessible = true
+    configFile = "config.toml"
+    failOnError = true
+}
+
+task zipMgdmLandUsePlans(type: Zip, dependsOn: 'validateMgdmLandUsePlans'){
+    from pathToTempFolder
+    from "."
+    include mgdmLandUsePlansXtfFileName
+    include "config.toml"
+    archiveName mgdmLandUsePlansZipFileName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadMgdmLandUsePlans(dependsOn: 'zipMgdmLandUsePlans') {
+
+    def aiLogin = aiUser + ":" + aiPwd
+    def zipFilePath = Paths.get(pathToTempFolder.toString(), mgdmLandUsePlansZipFileName)
+    def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
+
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_nutzungsplanung_v1_2", "-F",
+                        "lv95_file=@" + zipFilePath, "-F", "publish=true", "-F", "replace_all=false", serverUrl
+                        ].execute().text
+
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
+}
