@@ -20,6 +20,7 @@ WITH basket AS (
 INSERT INTO 
     arp_laermempfindlichkeitsstufen_mgdm_v1.geobasisdaten_typ 
     (
+        t_id,
         t_basket,
         t_datasetname,
         acode,
@@ -30,6 +31,7 @@ INSERT INTO
         verbindlichkeit 
     )
 SELECT
+    laermmpfhktsstfen_typ_empfindlichkeitsstufe.t_id,
     basket.t_id AS t_basket, 
     ${bfsnr_param} AS t_datasetname,
     substring(typ_kt FROM 2 FOR 3) || '0' AS acode,        
