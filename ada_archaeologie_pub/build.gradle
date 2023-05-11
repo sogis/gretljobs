@@ -68,7 +68,6 @@ task copyToPubDb(type: Db2Db, dependsOn: validateJoined){
         new TransferSet('to_pub_db/schutzbereich.sql', 'ada_archaeologie_pub_v1.public_schutzbereich_innenstadt', true)
     ]
 }
-task publicInSiedlung(dependsOn: copyToPubDb){}
 
 task publicInSiedlung(type: SqlExecutor, dependsOn: copyToPubDb){
     description = 'Kopiert alle Fundstellen im Siedlungsgebiet in die öffentlichen Tabellen'
