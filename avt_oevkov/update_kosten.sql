@@ -113,14 +113,14 @@ SET
     kosten_angebot = (
         einwohnerzahl * (
             SELECT
-                gesamtkosten_angebot / 7 * 2 / total_einwohner * 0.37
+                gesamtkosten_angebot * 0.3 / total_einwohner * 0.37
             FROM
                 avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten
         ))
         +
         (gewichtete_haltestellenabfahrten * (
             SELECT
-                gesamtkosten_angebot / 7 * 5 / total_gewichtete_haltestellenabfahrten * 0.37
+                gesamtkosten_angebot * 0.7 / total_gewichtete_haltestellenabfahrten * 0.37
             FROM
                 avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten
             )
@@ -133,7 +133,7 @@ UPDATE
 SET
     kosten_anzahl_einwohner = (einwohnerzahl * (
           SELECT
-               gesamtkosten_fabi_beitraege / 7 * 2 / total_einwohner * 0.37
+               gesamtkosten_fabi_beitraege * 0.3 / total_einwohner * 0.37
           FROM
               avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten
             )
@@ -141,7 +141,7 @@ SET
         +
         (gewichtete_haltestellenabfahrten * (
           SELECT
-              gesamtkosten_fabi_beitraege / 7 * 5 / total_gewichtete_haltestellenabfahrten * 0.37
+              gesamtkosten_fabi_beitraege * 0.7 / total_gewichtete_haltestellenabfahrten * 0.37
           FROM
              avt_oevkov_${currentYear}_v1.sachdaten_oevkov_daten
            )
