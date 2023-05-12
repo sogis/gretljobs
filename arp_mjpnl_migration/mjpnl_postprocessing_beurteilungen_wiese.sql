@@ -69,9 +69,9 @@ tmp2 AS (
        *,
        regexp_replace(replace(schnittzeitpunkt,'/','-'), '[^0-9.-]', '', 'g') AS schnittzeitpkt_prep,
        CASE
-           WHEN old_attr->>'wiesenkategorie' = 'I' THEN 700
-           WHEN old_attr->>'wiesenkategorie' = 'II' THEN 450
-           WHEN old_attr->>'wiesenkategorie' = 'II / RF' THEN 250
+           WHEN old_attr->>'wiesenkategorie' = 'I' THEN 600
+           WHEN old_attr->>'wiesenkategorie' = 'II' THEN 400
+           WHEN old_attr->>'wiesenkategorie' = 'II / RF' THEN 200
            WHEN old_attr->>'wiesenkategorie' = 'RF / II' THEN 100
            WHEN old_attr->>'wiesenkategorie' = 'RF' THEN 0
            ELSE 0
@@ -90,7 +90,7 @@ SELECT
    TRUE AS einstiegskriterium_verzichthilfsstoffe,
    TRUE AS einstiegskriterium_keineinsatzwieseneggenstriegelwalzen,
    TRUE AS einstiegskriterium_bodenheu,
-   200 AS einstiegskriterium_abgeltung_ha,
+   0 AS einstiegskriterium_abgeltung_ha,
    0 AS einstufungbeurteilungistzustand_flora_naehrstoffzeiger,
    0 AS einstufungbeurteilungistzustand_flora_typische_arten,
    0 AS einstufungbeurteilungistzustand_flora_bes_typ_arten,
@@ -106,9 +106,9 @@ SELECT
        ELSE 'Kat_W_RF'
    END AS einstufungbeurteilungistzustand_wiesenkategorie,
    CASE
-       WHEN old_attr->>'wiesenkategorie' = 'I' THEN 700
-       WHEN old_attr->>'wiesenkategorie' = 'II' THEN 450
-       WHEN old_attr->>'wiesenkategorie' = 'II / RF' THEN 250
+       WHEN old_attr->>'wiesenkategorie' = 'I' THEN 600
+       WHEN old_attr->>'wiesenkategorie' = 'II' THEN 400
+       WHEN old_attr->>'wiesenkategorie' = 'II / RF' THEN 200
        WHEN old_attr->>'wiesenkategorie' = 'RF / II' THEN 100
        WHEN old_attr->>'wiesenkategorie' = 'RF' THEN 0
        ELSE 0
