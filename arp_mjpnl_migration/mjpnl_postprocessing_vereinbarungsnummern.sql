@@ -10,7 +10,7 @@ WITH vbtmp AS (
            WHEN vb.vereinbarungsart = 'Weide_SOEG' THEN 'WeSöG'
            WHEN vb.vereinbarungsart = 'Hecke' THEN 'He'
            WHEN vb.vereinbarungsart = 'Lebhag' THEN 'Le'
-           WHEN vb.vereinbarungsart = 'Hostett' THEN 'Ho'
+           WHEN vb.vereinbarungsart = 'Hostet' THEN 'Ho'
            WHEN vb.vereinbarungsart = 'OBL' THEN 'OBL'
            WHEN vb.vereinbarungsart = 'WBL_Wiese' THEN 'WBLWi'
            WHEN vb.vereinbarungsart = 'WBL_Weide' THEN 'WBLWe'

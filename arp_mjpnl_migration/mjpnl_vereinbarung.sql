@@ -29,7 +29,7 @@ SELECT
     WHEN vbartvb.bez = 'Heumatten' AND flart.bez = 'Streuefläche' THEN 'Wiese'
     WHEN vbartvb.bez = 'Hochstamm' AND flart.bez = 'Ansaatwiese' THEN 'Wiese'
     WHEN vbartvb.bez = 'Hochstamm' AND flart.bez = 'Heumatte' THEN 'Wiese'
-    WHEN vbartvb.bez = 'Hochstamm' AND flart.bez = 'Hostett' THEN 'Hostett'
+    WHEN vbartvb.bez = 'Hochstamm' AND flart.bez = 'Hostett' THEN 'Hostet'
     WHEN vbartvb.bez = 'Hochstamm' AND flart.bez = 'Obstbaumlandschaft' THEN 'OBL'
     WHEN vbartvb.bez = 'Hochstamm' AND flart.bez = 'Weide' THEN 'Weide_LN'
     WHEN vbartvb.bez = 'Waldränder' AND flart.bez = 'Ansaatwiese' THEN 'Wiese'

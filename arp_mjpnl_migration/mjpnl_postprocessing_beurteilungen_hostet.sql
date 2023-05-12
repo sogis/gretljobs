@@ -38,9 +38,9 @@ WITH tmp AS (
         t_id,
         t_basket,
         vereinbarungs_nr,
-        (string_to_array(bemerkung,'§'))[2]::jsonb AS old_attr,
+        (string_to_array(bemerkung,'§'))[2]::jsonb AS old_attr
     FROM ${DB_Schema_MJPNL}.mjpnl_vereinbarung
-        WHERE vereinbarungsart = 'Hostett' AND vereinbarungs_nr != '01_DUMMY_00001'
+        WHERE vereinbarungsart = 'Hostet' AND vereinbarungs_nr != '01_DUMMY_00001'
 )
 SELECT
    t_basket,
