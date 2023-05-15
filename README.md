@@ -213,12 +213,12 @@ Mehrere Benutzer oder Gruppen
 können mit Komma getrennt aneinandergereiht werden.
 Folgende GRETL-spezifischen Benutzergruppen stehen im Moment zur Verfügung:
 
-* gretl-users-barpa
-* gretl-users-bdafu
-* gretl-users-bvtaa
-* gretl-users-edden
-* gretl-users-vkfaa
-* gretl-users-vlwaa
+* gretl-users-barpa (ARP)
+* gretl-users-bdafu (AfU)
+* gretl-users-bvtaa (AVT)
+* gretl-users-edden (ADA)
+* gretl-users-vkfaa (AWJF)
+* gretl-users-vlwaa (ALW)
 
 Allerdings können auch diejenigen Benutzer oder Gruppen, welche durch globale Berechtigungseinstellungen in Jenkins dazu bereichtigt sind, den Job starten. Wenn man diese Einstellung weglässt, ist es von den globalen Berechtigungseinstellungen abhängig, wer den Job manuell starten darf.
 
