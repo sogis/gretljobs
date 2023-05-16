@@ -8,8 +8,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 
 
-//////////////////////////////////////////////////////defaultTasks 'refreshSolrKbs', 'refreshSolrKbsRestricted', 'transferKbsToSogisDb', 'uploadMgdm'
-defaultTasks 'refreshSolrKbs', 'refreshSolrKbsRestricted', 'uploadMgdm'
+defaultTasks 'refreshSolrKbs', 'refreshSolrKbsRestricted', 'transferKbsToSogisDb', 'uploadMgdm'
 
 
 // Download-Verzeichnis
@@ -95,15 +94,13 @@ task transferKbsToOldPubSchema(type: Db2Db) {
     ];
 }
 
-// //DELETE FROM TABLE auszug_akt_altlasten17785.altlasten_belastete_standorte failed.
-// // org.postgresql.util.PSQLException: ERROR: cannot execute DELETE in a read-only transaction
-// task transferKbsToSogisDb(type: Db2Db, dependsOn: 'transferKbsToOldPubSchema') {
-//     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
-//     targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-//     transferSets = [
-//             new TransferSet('afu_altlasten_pub_sogis.sql', 'auszug_akt_altlasten17785.altlasten_belastete_standorte', true)
-//     ];
-// }
+task transferKbsToSogisDb(type: Db2Db, dependsOn: 'transferKbsToOldPubSchema') {
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    transferSets = [
+            new TransferSet('afu_altlasten_pub_sogis.sql', 'auszug_akt_altlasten17785.altlasten_belastete_standorte', true)
+    ];
+}
 
 task downloadMgdm(type: Download) {
     src "https://altlast4web.verw.rootso.org/interlis_exports/mgdm/data.zip"
