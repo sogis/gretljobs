@@ -102,8 +102,8 @@ SELECT
        WHEN old_attr->>'wiesenkategorie' = 'II' THEN 'Kat_II_artenreicheWiese'
        WHEN old_attr->>'wiesenkategorie' = 'II / RF' THEN 'Kat_II_RF'
        WHEN old_attr->>'wiesenkategorie' = 'RF / II' THEN 'Kat_RF_II'
-       WHEN old_attr->>'wiesenkategorie' = 'RF' THEN 'Kat_W_RF'
-       ELSE 'Kat_W_RF'
+       WHEN old_attr->>'wiesenkategorie' = 'RF' THEN 'Kat_RF'
+       ELSE 'Kat_RF'
    END AS einstufungbeurteilungistzustand_wiesenkategorie,
    CASE
        WHEN old_attr->>'wiesenkategorie' = 'I' THEN 600
