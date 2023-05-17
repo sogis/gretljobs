@@ -87,5 +87,5 @@ task setEnumTxt(type: SqlExecutor, dependsOn: publicInSiedlung){
 }
 
 task refreshSolr(type:Exec, dependsOn:'setEnumTxt') {
-	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.ada.archaeologie.flaechenfundtsellen,ch.so.ada.archaeologie.flaechenfundtsellen_geschuetzt,ch.so.ada.archaeologie.punktfundstellen,ch.so.ada.archaeologie.punktfundstellen_geschuetzt' 
+	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.ada.archaeologie.flaechenfundstellen,ch.so.ada.archaeologie.flaechenfundstellen_geschuetzt,ch.so.ada.archaeologie.punktfundstellen,ch.so.ada.archaeologie.punktfundstellen_geschuetzt' 
 }
