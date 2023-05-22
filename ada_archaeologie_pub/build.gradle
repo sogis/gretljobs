@@ -86,6 +86,19 @@ task setEnumTxt(type: SqlExecutor, dependsOn: publicInSiedlung){
     sqlFiles = ['enum_txt/update_txt.sql']
 }
 
-task refreshSolr(type:Exec, dependsOn:'setEnumTxt') {
+task publishPub(type: Publisher, dependsOn: 'setEnumTxt') {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dataIdent = "ch.so.ada.archaeologie"
+    dbSchema = "ada_archaeologie_pub_v1"
+    modelsToPublish = "SO_ADA_Archaeologie_Publikation_20230417"
+    userFormats = true
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+task refreshSolr(type:Exec, dependsOn:'publishPub') {
 	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.ada.archaeologie.flaechenfundstellen,ch.so.ada.archaeologie.flaechenfundstellen_geschuetzt,ch.so.ada.archaeologie.punktfundstellen,ch.so.ada.archaeologie.punktfundstellen_geschuetzt' 
 }
