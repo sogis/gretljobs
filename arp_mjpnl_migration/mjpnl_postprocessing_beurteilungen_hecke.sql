@@ -89,7 +89,7 @@ SELECT
    TRUE AS einstiegskriterium_verzichthilfsstoffe,
    TRUE AS einstiegskriterium_keineinsatzwieseneggenstriegelwalzen,
    TRUE AS einstiegskriterium_bff_stufe_i_ii_erfuellt,
-   0 AS einstiegskriterium_abgeltung_ha,
+   200 AS einstiegskriterium_abgeltung_ha,
    0 AS faunabonus_anzahl_arten,
    0 AS faunabonus_artenvielfalt_abgeltung_pauschal,
    FALSE AS einstufungbeurteilungistzustand_artenvielfalt_strauch_bmrten,

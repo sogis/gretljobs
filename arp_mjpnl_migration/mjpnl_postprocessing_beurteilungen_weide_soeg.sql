@@ -108,7 +108,7 @@ SELECT
    TRUE AS einstiegskriterium_verzichthilfsstoffe,
    TRUE AS einstiegskriterium_keineinsatzwieseneggenstriegelwalzen,
    TRUE AS einstiegskriterium_bff_stufe_i_ii_erfuellt,
-   0 AS einstiegskriterium_abgeltung_ha,
+   100 AS einstiegskriterium_abgeltung_ha,
    0 AS einstufungbeurteilungistzustand_flora_naehrstoffzeiger,
    0 AS einstufungbeurteilungistzustand_flora_typische_arten,
    0 AS einstufungbeurteilungistzustand_flora_bes_typ_arten,
