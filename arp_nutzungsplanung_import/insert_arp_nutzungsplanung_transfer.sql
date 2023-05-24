@@ -115,7 +115,7 @@ SELECT
             THEN 'AenderungMitVorwirkung'
         ELSE 'inKraft'
     END AS rechtsstatus,
-    'https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/' || textimweb AS textimweb,
+    'https://planregister-data.so.ch/public/' || LOWER(REPLACE(SPLIT_PART(dok.textimweb,'/',7),SPLIT_PART(SPLIT_PART(dok.textimweb,'/',7),'-',1) || '-','')) || '/'|| SPLIT_PART(dok.textimweb,'/',9) AS textimweb,
     bemerkungen,
     rechtsvorschrift,
     NULL AS publiziertbis,
