@@ -7,9 +7,9 @@ INSERT
        einstiegskriterium_obl,
        --ignored:zusatzdokument_datum,
        --ignored:zusatzdokument_dateipfad,
-       grundbeitrag_baum_anzahl, --check: grundbeitrag_baum_anzahl,0 <- evtl. erschwernisbäume / grb-b grundbeitrag
+       grundbeitrag_baum_anzahl,
        grundbeitrag_baum_total,
-       beitrag_baumab40cmdurchmesser_anzahl, --check: beitrag_baumab40cmdurchmesser_anzahl, <- evtl. auch besondere strukturvielfalt s für bäume
+       beitrag_baumab40cmdurchmesser_anzahl,
        beitrag_baumab40cmdurchmesser_total,
        beitrag_erntepflicht_anzahl,
        beitrag_erntepflicht_total,
@@ -45,10 +45,10 @@ WITH tmp AS (
 SELECT
    t_basket,
    TRUE AS einstiegskriterium_obl,
-   0 AS grundbeitrag_baum_anzahl, --check: grundbeitrag_baum_anzahl,0 <- evtl. erschwernisbäume / grb-b grundbeitrag
-   0 AS grundbeitrag_baum_total,
-   0 AS beitrag_baumab40cmdurchmesser_anzahl, --check: beitrag_baumab40cmdurchmesser_anzahl, <- evtl. auch besondere strukturvielfalt s für bäume
-   0 AS beitrag_baumab40cmdurchmesser_total,
+   0 AS grundbeitrag_baum_anzahl, --check: aus leistung die Anzahl Einheiten, bei Grundbeitrag (oder wenn nicht vorhanden Erschwernis (E-B))
+   0 AS grundbeitrag_baum_total, --check: rechne Betrag (aus ILI) mal anzahl
+   0 AS beitrag_baumab40cmdurchmesser_anzahl, --check: aus leistung die Anzahl Einheiten, bei Bes. Strukturvielfalt (S-B)
+   0 AS beitrag_baumab40cmdurchmesser_total, --check: rechne Betrag (aus ILI) mal anzahl
    0 AS beitrag_erntepflicht_anzahl,
    0 AS beitrag_erntepflicht_total,
    0 AS beitrag_oekoplus_anzahl,
