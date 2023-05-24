@@ -871,7 +871,7 @@ INSERT INTO
         t_datasetname,
         t_seq,
         alanguage,
-        atext,
+        coalesce (atext,'https://planregister-data.so.ch/public/kanton/Dokument-nicht-digital-verfuegbar.pdf') AS atext, --Wenn kein Dokument vorhanden, soll auf dieses Dokument verwiesen werden
         multilingualuri_localisedtext
     FROM 
         localiseduri
