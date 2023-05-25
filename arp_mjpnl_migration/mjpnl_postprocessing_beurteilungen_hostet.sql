@@ -41,14 +41,57 @@ WITH tmp AS (
         (string_to_array(bemerkung,'§'))[2]::jsonb AS old_attr
     FROM ${DB_Schema_MJPNL}.mjpnl_vereinbarung
         WHERE vereinbarungsart = 'Hostet' AND vereinbarungs_nr != '01_DUMMY_00001'
+),
+tmp_baeume AS (
+    SELECT 
+      vereinbarung,
+      anzahl_einheiten,
+      leistung_beschrieb
+    FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung
+    WHERE (vereinbarung, datum_abrechnung) IN 
+      ( SELECT 
+        vereinbarung, MAX(datum_abrechnung)
+      FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung
+      GROUP BY vereinbarung
+      )
+),
+-- anzahl der bäume auf der letzten leistung dieser art (Grundbeitrag (Bäume)) lesen
+tmp_grundbeitrag_baeume AS (
+    SELECT 
+      vereinbarung,
+      anzahl_einheiten AS anzahl_grundbeitrag
+    FROM tmp_baeume
+    WHERE leistung_beschrieb = 'Grundbeitrag (Bäume)'
+),
+-- anzahl der bäume auf der letzten leistung dieser art (Erschwernis (E-B)) lesen
+tmp_erschwernis_baeume AS (
+    SELECT 
+      vereinbarung,
+      anzahl_einheiten AS anzahl_erschwernis
+    FROM tmp_baeume
+    WHERE leistung_beschrieb = 'Erschwernis (E-B)'
+),
+-- anzahl der bäume auf der letzten leistung dieser art (Bes. Strukturvielfalt (S-B)) lesen
+tmp_40cm_baeume AS (
+    SELECT 
+      vereinbarung,
+      anzahl_einheiten AS anzahl_40cm
+    FROM tmp_baeume
+    WHERE leistung_beschrieb = 'Bes. Strukturvielfalt (S-B)'
+),
+tmp2 AS ( 
+    SELECT * FROM tmp 
+    LEFT JOIN tmp_grundbeitrag_baeume ON tmp.t_id = tmp_grundbeitrag_baeume.vereinbarung
+    LEFT JOIN tmp_erschwernis_baeume ON tmp.t_id = tmp_erschwernis_baeume.vereinbarung
+    LEFT JOIN tmp_40cm_baeume ON tmp.t_id = tmp_40cm_baeume.vereinbarung
 )
 SELECT
    t_basket,
    TRUE AS einstiegskriterium_hostet,
-   0 AS grundbeitrag_baum_anzahl, --check: aus leistung die Anzahl Einheiten, bei Grundbeitrag (oder wenn nicht vorhanden Erschwernis (E-B))
-   0 AS grundbeitrag_baum_total, --check: rechne Betrag (aus ILI) mal anzahl
-   0 AS beitrag_baumab40cmdurchmesser_anzahl, --check: aus leistung die Anzahl Einheiten, bei Bes. Strukturvielfalt (S-B)
-   0 AS beitrag_baumab40cmdurchmesser_total, --check: rechne Betrag (aus ILI) mal anzahl
+   COALESCE(anzahl_grundbeitrag, anzahl_erschwernis, 0) AS grundbeitrag_baum_anzahl,
+   COALESCE(anzahl_grundbeitrag, anzahl_erschwernis, 0)*5 AS grundbeitrag_baum_total,
+   COALESCE(anzahl_40cm, 0) AS beitrag_baumab40cmdurchmesser_anzahl, 
+   COALESCE(anzahl_40cm, 0)*15 AS beitrag_baumab40cmdurchmesser_total,
    0 AS beitrag_erntepflicht_anzahl,
    0 AS beitrag_erntepflicht_total,
    0 AS beitrag_oekoplus_anzahl,
@@ -66,5 +109,5 @@ SELECT
    (SELECT t_id FROM ${DB_Schema_MJPNL}.mjpnl_berater WHERE aname = 'Bruggisser') AS berater,
    t_id AS vereinbarung
 FROM
-  tmp
+  tmp2
 ;
