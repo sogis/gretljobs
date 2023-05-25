@@ -229,7 +229,7 @@ task uploadPlanregister(dependsOn: 'zipPlanregister') {
 
 // EXPORT AI 
 
-task deleteMgdmLandUsesPlansData(type: SqlExecutor) {
+task deleteMgdmLandUsesPlansData(type: SqlExecutor, dependsOn: 'uploadPlanregister') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['truncate_all_arp_npl_mgdm_tables.sql']
 }
