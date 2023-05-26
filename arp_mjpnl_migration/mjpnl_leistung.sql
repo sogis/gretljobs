@@ -4,7 +4,7 @@ SELECT
     CASE
         WHEN l.ansatz > 0 AND l.mass > 0 THEN 
             CASE 
-                WHEN lart.kurzbez IN ('Erschwernis (E-B)', 'Bes. Strukturvielfalt (S-B)', 'Grundbeitrag (Bäume)') THEN 'pro_Stueck'
+                WHEN lart.kurzbez IN ('Erschwernis (E-B)', 'Bes. Strukturvielfalt (S-B)', 'Grundbeitrag (Bäume)') THEN 'per_stueck'
                 ELSE 'per_ha'
             END
         ELSE 'pauschal'
