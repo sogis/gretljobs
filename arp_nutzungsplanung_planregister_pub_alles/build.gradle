@@ -9,6 +9,7 @@ import java.io.File
 apply plugin: 'ch.so.agi.gretl'
 
 //Für Planregister
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def iliModelPlanregister = "SO_Nutzungsplanung_Planregister_Publikation_20221115"
 def dbSchemaPlanregister = "arp_nutzungsplanung_planregister_pub_v1"
 def PlanregisterXtfFileName = "ch.so.arp.planregister.xml" //Muss xml heissen wegen Planregister
