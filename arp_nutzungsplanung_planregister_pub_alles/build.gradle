@@ -1,0 +1,76 @@
+// Datenumbau alle Nutzungsplanungsdaten für Planregsiter und sendet dieses an Typo3
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
+
+apply plugin: 'ch.so.agi.gretl'
+
+//Für Planregister
+def iliModelPlanregister = "SO_Nutzungsplanung_Planregister_Publikation_20221115"
+def dbSchemaPlanregister = "arp_nutzungsplanung_planregister_pub_v1"
+def PlanregisterXtfFileName = "ch.so.arp.planregister.xml" //Muss xml heissen wegen Planregister
+def PlanregisterZipFileName = "ch.so.arp.planregister.gz"
+
+
+//defaultTasks ''
+
+task transfer_planregister_alles(type: Db2Db) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('insert_dataset.sql', 'arp_nutzungsplanung_planregister_pub_v1.t_ili2db_dataset', true),
+            new TransferSet('insert_basket.sql', 'arp_nutzungsplanung_planregister_pub_v1.t_ili2db_basket', true),
+            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_grundwasserschutz.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', true),
+            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_kantonal.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', true),
+            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_kommunal.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', true),
+            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_naturreservate.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', true),
+            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_waldgrenze.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', true)
+    ];
+}
+
+task deleteData_doppelte_dokumente (type: SqlExecutor, dependsOn:transfer_planregister_alles) {
+    description = "Löscht die doppelten Dokumente aus dem Schema arp_nutzungsplanung_planregister_pub" 
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ["delete_arp_nutzungsplanung_planregister_pub_doppelte_dokumente.sql"]
+}
+
+task export_planregister_pub(type: Ili2pgExport, dependsOn: 'deleteData_doppelte_dokumente') {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    models = iliModelPlanregister
+    dbschema = dbSchemaPlanregister
+    dataFile = file(PlanregisterXtfFileName)
+    disableValidation = true
+    // Kein Dataset, weil alle Daten enthalten sein sollen. 
+}
+
+task zipPlanregister(type: Tar, dependsOn: 'export_planregister_pub') {
+    archiveName = PlanregisterZipFileName
+    from pathToTempFolder
+    from "."
+    include PlanregisterXtfFileName
+    destinationDir(file(pathToTempFolder))
+    extension 'gz'
+    compression = Compression.GZIP
+}
+
+task uploadPlanregister(dependsOn: 'zipPlanregister') {
+
+    def digiplanLogin = digiplanUser + ":" + digiplanPwd
+    def zipFilePath = Paths.get(pathToTempFolder.toString(), PlanregisterZipFileName)
+    //def serverUrl = "https://so.ch/typo3/api/digiplan"
+    def serverUrl = "https://testweb.so.ch/ typo3/api/digiplan"
+
+    doLast {
+        def response = ["curl", "-v", "-u", digiplanLogin, "--data-binary", "@" + zipFilePath, "-H", "Content-Type: application/xml", "-H", "Content-Encoding: gzip", "-X", "POST", serverUrl
+                        ].execute().text
+
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
+}
+
