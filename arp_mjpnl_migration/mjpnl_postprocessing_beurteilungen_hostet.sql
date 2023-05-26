@@ -42,42 +42,35 @@ WITH tmp AS (
     FROM ${DB_Schema_MJPNL}.mjpnl_vereinbarung
         WHERE vereinbarungsart = 'Hostet' AND vereinbarungs_nr != '01_DUMMY_00001'
 ),
-tmp_baeume AS (
-    SELECT 
-      vereinbarung,
-      anzahl_einheiten,
-      leistung_beschrieb
-    FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung
-    WHERE (vereinbarung, datum_abrechnung) IN 
-      ( SELECT 
-        vereinbarung, MAX(datum_abrechnung)
-      FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung
-      GROUP BY vereinbarung
-      )
-),
--- anzahl der bäume auf der letzten leistung dieser art (Grundbeitrag (Bäume)) lesen
+-- summe anzahl der bäume auf der 23er leistungen dieser art (Grundbeitrag (Bäume)) lesen
 tmp_grundbeitrag_baeume AS (
     SELECT 
       vereinbarung,
-      anzahl_einheiten AS anzahl_grundbeitrag
-    FROM tmp_baeume
+      SUM(anzahl_einheiten) AS anzahl_grundbeitrag
+    FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung
     WHERE leistung_beschrieb = 'Grundbeitrag (Bäume)'
+      AND ( status_abrechnung != "ausbezahlt" OR datum_abrechnung >= '2023-01-01' )
+    GROUP BY vereinbarung
 ),
--- anzahl der bäume auf der letzten leistung dieser art (Erschwernis (E-B)) lesen
+-- summe anzahl der bäume auf der 23er leistungen dieser art (Erschwernis (E-B)) lesen
 tmp_erschwernis_baeume AS (
     SELECT 
       vereinbarung,
-      anzahl_einheiten AS anzahl_erschwernis
-    FROM tmp_baeume
+      SUM(anzahl_einheiten) AS anzahl_erschwernis
+    FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung
     WHERE leistung_beschrieb = 'Erschwernis (E-B)'
+      AND ( status_abrechnung != "ausbezahlt" OR datum_abrechnung >= '2023-01-01' )
+    GROUP BY vereinbarung
 ),
--- anzahl der bäume auf der letzten leistung dieser art (Bes. Strukturvielfalt (S-B)) lesen
+-- summe anzahl der bäume auf der 23er leistungen dieser art (Bes. Strukturvielfalt (S-B)) lesen
 tmp_40cm_baeume AS (
     SELECT 
       vereinbarung,
-      anzahl_einheiten AS anzahl_40cm
-    FROM tmp_baeume
+      SUM(anzahl_einheiten) AS anzahl_40cm
+    FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung
     WHERE leistung_beschrieb = 'Bes. Strukturvielfalt (S-B)'
+      AND ( status_abrechnung != "ausbezahlt" OR datum_abrechnung >= '2023-01-01' )
+    GROUP BY vereinbarung
 ),
 tmp2 AS ( 
     SELECT * FROM tmp 

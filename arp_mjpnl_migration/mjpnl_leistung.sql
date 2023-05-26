@@ -18,13 +18,19 @@ SELECT
         ELSE 1
     END AS anzahl_einheiten,
     l.betrag AS betrag_total,
-    extract(YEAR FROM datum_auszahlung) AS auszahlungsjahr,
+    CASE
+        WHEN datum_auszahlung = '9999-01-01' THEN 2023
+        ELSE extract(YEAR FROM datum_auszahlung) 
+    END AS auszahlungsjahr,
     CASE
         WHEN stat.kurzbez = 'ausbezahlt' THEN 'ausbezahlt'
         /*WHEN stat.kurzbez = 'übernommen ARP' THEN 'ausbezahlt_vomArpUebernommen'*/
         ELSE 'bestaetigt'
     END AS status_abrechnung,
-    l.datum_auszahlung AS datum_abrechnung,
+    CASE
+        WHEN datum_auszahlung = '9999-01-01' THEN NULL
+        ELSE l.datum_auszahlung 
+    END AS datum_abrechnung,
     COALESCE(l.bemerkung,'') ||
     '\n§\n' ||
     '{' ||
@@ -33,7 +39,7 @@ SELECT
        '\n"polyidfromflaechen":' || l.polyidfromflaechen::TEXT || ',' ||
        '\n"status_auszahlung_kurz":"' || stat.kurzbez || '"' || ',' ||      
        '\n"status_auszahlung_lang":"' || stat.bezeichnung || '"' || ',' ||      
-       '\n"datum_abrechnung":"' || l.datum_auszahlung::date::text || '"' ||  
+       '\n"datum_abrechnung":"' || l.datum_auszahlung::date::text || '"' || ',' ||  
        '\n"gueltigbis":"' || l.gueltigbis::date::text || '"' ||     
     '\n}'::TEXT AS bemerkung,
     9999999 AS abrechnungpervereinbarung,
@@ -48,7 +54,7 @@ FROM mjpnatur.leistung l
    LEFT JOIN mjpnatur.vbart vbartvb ON vbg.vbartid = vbartvb.vbartid AND vbartvb.archive = 0
 WHERE
    -- alle ausbezahlten seit 2020 und noch nicht ausbezahlten, die bis 2023 gültig sind
-   ( l.datum_auszahlung >= '2020-01-01' AND l.datum_auszahlung != '9999-01-01') OR gueltigbis = '2023-12-31'
+   ( ( l.datum_auszahlung >= '2020-01-01' AND l.datum_auszahlung != '9999-01-01') OR l.gueltigbis = '2023-12-31' )
    AND vbggeom.wkb_geometry IS NOT NULL
    AND ST_IsValid(vbggeom.wkb_geometry)
    AND Round((ST_Area(vbggeom.wkb_geometry) / 10000)::NUMERIC,2) > 0 --IGNORE small OR emptry geometries
