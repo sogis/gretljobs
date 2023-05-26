@@ -9,7 +9,9 @@ SELECT
   array_to_string(vbg.flurname,', ') AS flurnamen,
   array_to_string(vbg.gemeinde,', ') AS gemeinde,
   vbg.flaeche,
-  SUM(lstg.betrag_total) AS gesamtbetrag,
+  CASE WHEN SUM(lstg.betrag_total) THEN SUM(lstg.betrag_total)
+  ELSE 0
+  END AS gesamtbetrag,
   lstg.auszahlungsjahr,
   lstg.status_abrechnung,
   lstg.datum_abrechnung,
