@@ -24,10 +24,10 @@ task transfer_planregister_alles(type: Db2Db) {
             new TransferSet('insert_dataset.sql', 'arp_nutzungsplanung_planregister_pub_v1.t_ili2db_dataset', true),
             new TransferSet('insert_basket.sql', 'arp_nutzungsplanung_planregister_pub_v1.t_ili2db_basket', true),
             new TransferSet('insert_arp_nutzungsplanung_planregister_pub_grundwasserschutz.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', true),
-            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_kantonal.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', true),
-            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_kommunal.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', true),
-            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_naturreservate.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', true),
-            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_waldgrenze.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', true)
+            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_kantonal.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', false),
+            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_kommunal.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', false),
+            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_naturreservate.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', false),
+            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_waldgrenze.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', false)
     ];
 }
 
