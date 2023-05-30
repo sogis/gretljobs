@@ -16,6 +16,7 @@ WITH dokument_plan_waldgrenze AS(
                 THEN 'in Kraft'
             WHEN 'laufendeAenderung'
                 THEN 'Änderung mit Vorwirkungt'
+            ELSE 'aufgehoben'
         END AS rechtsstatus,
         dokument.text_im_web AS dokument_url,
         --Encoding von 'https://geo.so.ch/map?t=nutzungsplanung&hp=ch.so.agi.gemeindegrenzen&hf=[["gemeindename","=","' || gemeinde.gemeindename || '"]]'
