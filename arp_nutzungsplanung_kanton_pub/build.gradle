@@ -215,11 +215,10 @@ task uploadPlanregister(dependsOn: 'zipPlanregister') {
     def digiplanLogin = digiplanUser + ":" + digiplanPwd
     def zipFilePath = Paths.get(pathToTempFolder.toString(), PlanregisterZipFileName)
     //def serverUrl = "https://so.ch/typo3/api/digiplan"
-    def serverUrl = "https://testweb.so.ch/ typo3/api/digiplan"
+    def serverUrl = "https://testweb.so.ch/typo3/api/digiplan"
 
     doLast {
-        def response = ["curl", "-v", "-u", digiplanLogin, "--data-binary", "@" + zipFilePath, "-H", "Content-Type: application/xml", "-H", "Content-Encoding: gzip", "-X", "POST", serverUrl
-                        ].execute().text
+        def response = ["curl", "-v", "-u", digiplanLogin, "--data-binary", "@" + zipFilePath, "-H", "Content-Type: application/xml", "-H", "Content-Encoding: gzip", "-X", "POST", serverUrl].execute().text
 
         println(response)
         if (response.contains("false") || response == null || response.trim().isEmpty()) {
