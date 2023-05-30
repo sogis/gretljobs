@@ -87,7 +87,7 @@ SELECT
 
 SELECT 
     DISTINCT ON (plan.plan_t_id)
-    nextval('arp_nutzungsplanung_planregister_v1.t_ili2db_seq'::regclass) AS t_id,
+    --plan.plan_t_id AS t_id, automatisch beim Import
     'nutzungsplanung_kommunal' || '_' || plan.bfsnr AS t_datasetname,
     plan.planungsinstrument,
     plan.bezeichnung,

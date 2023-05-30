@@ -53,12 +53,9 @@ dokument_rrb AS(
         AND
         dokument.offiziellenr IS NOT NULL -- es gibt Pläne der Nutzungsplanung die erfasst sind unter dem Typ RRB, welche aber keine Nummer haben. RRB haben immer eine Nummer
     )
-    
-  
-INSERT INTO arp_nutzungsplanung_planregister_v1.planregister_dokument
 
 SELECT 
-    nextval('arp_nutzungsplanung_planregister_v1.t_ili2db_seq'::regclass) AS t_id,
+    --waldfeststellungsplan.t_id AS t_id, automatisch beim Import
     'statische_waldgrenze' AS t_datasetname,
     waldfeststellungsplan.planungsinstrument,
     waldfeststellungsplan.bezeichnung,

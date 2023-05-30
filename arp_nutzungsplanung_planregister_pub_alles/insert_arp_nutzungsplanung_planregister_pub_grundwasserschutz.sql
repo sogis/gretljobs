@@ -51,10 +51,8 @@ dokument_sbv AS(
  
    )
 
-INSERT INTO arp_nutzungsplanung_planregister_v1.planregister_dokument
-
 SELECT
-    nextval('arp_nutzungsplanung_planregister_v1.t_ili2db_seq'::regclass) AS t_id,
+    --schutzzonenplan.t_id AS t_id, automatisch beim Import
     'gewaesserschutz' AS t_datasetname,
     schutzzonenplan.planungsinstrument,
     schutzzonenplan.bezeichnung,

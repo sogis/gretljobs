@@ -9,9 +9,8 @@ WITH dokument_plan_naturreservat AS(
         END AS planungsinstrument,
         dokument.bezeichnung AS bezeichnung,
         'Kanton' AS planungsbehoerde,
- --     Gemeindenamen von der URL übernehmen https://planregister-data.so.ch/public/Erlinsbach/101-39-P.pdf
-       --SPLIT_PART(dokument.dateipfad,'/',5) AS gemeinde,
-       SPLIT_PART(SPLIT_PART(dokument.dateipfad,'/',7),'-',2) AS gemeinde, --solang die Ablage noch auf g: ist
+       --Gemeindenamen von der URL übernehmen https://planregister-data.so.ch/public/Erlinsbach/101-39-P.pdf
+        INITCAP(REPLACE(REPLACE(REPLACE(SPLIT_PART(dokument.dateipfad,'/',5),'ue','ü'),'oe','ö'),'ae','ä')) AS gemeinde,
         dokument.publiziertab AS rechtskraft_ab,
         CASE dokument.rechtsstatus
             WHEN 'inKraft'
@@ -21,14 +20,14 @@ WITH dokument_plan_naturreservat AS(
         END AS rechtsstatus,
         dokument.dateipfad AS dokument_url,
         --Encoding von 'https://geo.so.ch/map?t=nutzungsplanung&hp=ch.so.agi.gemeindegrenzen&hf=[["gemeindename","=","' || gemeinde.gemeindename || '"]]'
-        'https://geo.so.ch/map?t=nutzungsplanung&hp=ch.so.agi.gemeindegrenzen&hf=%5B%5B%22gemeindename%22,%22=%22,%22' || 'Solothurn' || '%22%5D%5D' AS karte_url,
+        'https://geo.so.ch/map?t=nutzungsplanung&hp=ch.so.agi.gemeindegrenzen&hf=%5B%5B%22gemeindename%22,%22=%22,%22' || INITCAP(REPLACE(REPLACE(REPLACE(SPLIT_PART(dokument.dateipfad,'/',5),'ue','ü'),'oe','ö'),'ae','ä')) || '%22%5D%5D' AS karte_url,
         'Amt für Raumplanung' AS zustaendige_amt,
         False AS aktuelle_ortsplanung,
         dokument.offiziellenr
 FROM
     arp_naturreservate.reservate_reservat AS reservat 
     LEFT JOIN
-     arp_naturreservate.reservate_reservat_dokument AS dokument_reservat ON reservat.t_id=dokument_reservat.reservat
+    arp_naturreservate.reservate_reservat_dokument AS dokument_reservat ON reservat.t_id=dokument_reservat.reservat
     left JOIN  
     arp_naturreservate.reservate_dokument AS dokument ON dokument.t_id=dokument_reservat.dokument 
 WHERE 
@@ -74,12 +73,10 @@ WHERE
         AND 
             dokument.typ ='Sonderbauvorschriften'
     )
-  
-INSERT INTO arp_nutzungsplanung_planregister_v1.planregister_dokument
 
 SELECT 
     DISTINCT ON (naturreservat.t_id)
-    nextval('arp_nutzungsplanung_planregister_v1.t_ili2db_seq'::regclass) AS t_id,
+    --naturreservat.t_id AS t_id, automatisch beim Import
     'naturreservat' AS t_datasetname,
     naturreservat.planungsinstrument,
     naturreservat.bezeichnung,
