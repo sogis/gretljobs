@@ -1,18 +1,117 @@
 -- Dataset anlegen
-WITH dataset AS (
-VALUES
-(nextval('arp_nutzungsplanung_planregister_pub_v1.t_ili2db_seq'::regclass),'gewaesserschutz'),
-(nextval('arp_nutzungsplanung_planregister_pub_v1.t_ili2db_seq'::regclass),'nutzungsplanung_kantonal'),
-(nextval('arp_nutzungsplanung_planregister_pub_v1.t_ili2db_seq'::regclass),'naturreservate'),
-(nextval('arp_nutzungsplanung_planregister_pub_v1.t_ili2db_seq'::regclass),'statische_waldgrenze')
-).
-
-dataset_kommunal AS (
-    SELECT
-        nextval('arp_nutzungsplanung_planregister_pub_v1.t_ili2db_seq'::regclass) AS t_id,
-        'nutzungsplanung_kommunal' || '_' || nutzungsplanung.datasetname AS datasetname
-    FROM
-        arp_nutzungsplanung_v1.t_ili2db_dataset AS nutzungsplanung
+WITH dataset AS     (
+    VALUES
+    (1,'gewaesserschutz'),
+    (2,'nutzungsplanung_kantonal'),
+    (3,'naturreservate'),
+    (4,'statische_waldgrenze'),
+    (5,'nutzungsplanung_kommunal_2492'),
+    (6,'nutzungsplanung_kommunal_2491'),
+    (7,'nutzungsplanung_kommunal_2502'),
+    (8,'nutzungsplanung_kommunal_2501'),
+    (9,'nutzungsplanung_kommunal_2585'),
+    (10,'nutzungsplanung_kommunal_2573'),
+    (11,'nutzungsplanung_kommunal_2457'),
+    (12,'nutzungsplanung_kommunal_2584'),
+    (13,'nutzungsplanung_kommunal_2582'),
+    (14,'nutzungsplanung_kommunal_2580'),
+    (15,'nutzungsplanung_kommunal_2581'),
+    (16,'nutzungsplanung_kommunal_2575'),
+    (17,'nutzungsplanung_kommunal_2408'),
+    (18,'nutzungsplanung_kommunal_2407'),
+    (19,'nutzungsplanung_kommunal_2461'),
+    (20,'nutzungsplanung_kommunal_2445'),
+    (21,'nutzungsplanung_kommunal_2456'),
+    (22,'nutzungsplanung_kommunal_2455'),
+    (23,'nutzungsplanung_kommunal_2464'),
+    (24,'nutzungsplanung_kommunal_2542'),
+    (25,'nutzungsplanung_kommunal_2550'),
+    (26,'nutzungsplanung_kommunal_2551'),
+    (27,'nutzungsplanung_kommunal_2546'),
+    (28,'nutzungsplanung_kommunal_2523'),
+    (29,'nutzungsplanung_kommunal_2516'),
+    (30,'nutzungsplanung_kommunal_2545'),
+    (31,'nutzungsplanung_kommunal_2548'),
+    (32,'nutzungsplanung_kommunal_2549'),
+    (33,'nutzungsplanung_kommunal_2541'),
+    (34,'nutzungsplanung_kommunal_2424'),
+    (35,'nutzungsplanung_kommunal_2518'),
+    (36,'nutzungsplanung_kommunal_2421'),
+    (37,'nutzungsplanung_kommunal_2426'),
+    (38,'nutzungsplanung_kommunal_2425'),
+    (39,'nutzungsplanung_kommunal_2621'),
+    (40,'nutzungsplanung_kommunal_2622'),
+    (41,'nutzungsplanung_kommunal_2620'),
+    (42,'nutzungsplanung_kommunal_2616'),
+    (43,'nutzungsplanung_kommunal_2615'),
+    (44,'nutzungsplanung_kommunal_2611'),
+    (45,'nutzungsplanung_kommunal_2617'),
+    (46,'nutzungsplanung_kommunal_2614'),
+    (47,'nutzungsplanung_kommunal_2613'),
+    (48,'nutzungsplanung_kommunal_2618'),
+    (49,'nutzungsplanung_kommunal_2472'),
+    (50,'nutzungsplanung_kommunal_2475'),
+    (51,'nutzungsplanung_kommunal_2474'),
+    (52,'nutzungsplanung_kommunal_2478'),
+    (53,'nutzungsplanung_kommunal_2401'),
+    (54,'nutzungsplanung_kommunal_2473'),
+    (55,'nutzungsplanung_kommunal_2481'),
+    (56,'nutzungsplanung_kommunal_2476'),
+    (57,'nutzungsplanung_kommunal_2477'),
+    (58,'nutzungsplanung_kommunal_2479'),
+    (59,'nutzungsplanung_kommunal_2619'),
+    (60,'nutzungsplanung_kommunal_2514'),
+    (61,'nutzungsplanung_kommunal_2403'),
+    (62,'nutzungsplanung_kommunal_2586'),
+    (63,'nutzungsplanung_kommunal_2480'),
+    (64,'nutzungsplanung_kommunal_2430'),
+    (65,'nutzungsplanung_kommunal_2511'),
+    (66,'nutzungsplanung_kommunal_2405'),
+    (67,'nutzungsplanung_kommunal_2601'),
+    (68,'nutzungsplanung_kommunal_2534'),
+    (69,'nutzungsplanung_kommunal_2535'),
+    (70,'nutzungsplanung_kommunal_2530'),
+    (71,'nutzungsplanung_kommunal_2493'),
+    (72,'nutzungsplanung_kommunal_2495'),
+    (73,'nutzungsplanung_kommunal_2532'),
+    (74,'nutzungsplanung_kommunal_2500'),
+    (75,'nutzungsplanung_kommunal_2579'),
+    (76,'nutzungsplanung_kommunal_2543'),
+    (77,'nutzungsplanung_kommunal_2547'),
+    (78,'nutzungsplanung_kommunal_2402'),
+    (79,'nutzungsplanung_kommunal_2404'),
+    (80,'nutzungsplanung_kommunal_2583'),
+    (81,'nutzungsplanung_kommunal_2406'),
+    (82,'nutzungsplanung_kommunal_2513'),
+    (83,'nutzungsplanung_kommunal_2553'),
+    (84,'nutzungsplanung_kommunal_2517'),
+    (85,'nutzungsplanung_kommunal_2422'),
+    (86,'nutzungsplanung_kommunal_2556'),
+    (87,'nutzungsplanung_kommunal_2520'),
+    (88,'nutzungsplanung_kommunal_2525'),
+    (89,'nutzungsplanung_kommunal_2427'),
+    (90,'nutzungsplanung_kommunal_2526'),
+    (91,'nutzungsplanung_kommunal_2428'),
+    (92,'nutzungsplanung_kommunal_2527'),
+    (93,'nutzungsplanung_kommunal_2528'),
+    (94,'nutzungsplanung_kommunal_2499'),
+    (95,'nutzungsplanung_kommunal_2524'),
+    (96,'nutzungsplanung_kommunal_2612'),
+    (97,'nutzungsplanung_kommunal_2554'),
+    (98,'nutzungsplanung_kommunal_2471'),
+    (99,'nutzungsplanung_kommunal_2544'),
+    (100,'nutzungsplanung_kommunal_2572'),
+    (101,'nutzungsplanung_kommunal_2576'),
+    (102,'nutzungsplanung_kommunal_2503'),
+    (103,'nutzungsplanung_kommunal_2578'),
+    (104,'nutzungsplanung_kommunal_2463'),
+    (105,'nutzungsplanung_kommunal_2497'),
+    (106,'nutzungsplanung_kommunal_2555'),
+    (107,'nutzungsplanung_kommunal_2465'),
+    (108,'nutzungsplanung_kommunal_2574'),
+    (109,'nutzungsplanung_kommunal_2519'),
+    (110,'nutzungsplanung_kommunal_2571'),
+    (111,'nutzungsplanung_kommunal_2529')
 )
         
 SELECT
@@ -20,12 +119,4 @@ SELECT
     column2 AS datasetname
 FROM 
     dataset
-    
-UNION
-
-SELECT
-    t_id,
-    datasetname
-FROM 
-    dataset_kommunal
 ;
