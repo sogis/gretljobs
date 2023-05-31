@@ -26,53 +26,41 @@ remotes {
     }
 }
 
-task copyBeraterXtfFile(type: Copy) {
+task copyXtfFile(type: Copy) {
     from "upload/"
     into "upload/"
-    rename("uploadBeraterFile", "mjpnl_berater_init.xtf")
+    rename("uploadFile", "mjpnl_init.xtf")
 }
 
-task importBeraterMJPNL(type: Ili2pgReplace, dependsOn: 'copyBeraterXtfFile') {
+task importBeraterMJPNL(type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
   description = "Liest die Berater (MJPNL) ein."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_mjpnl_v1"
     models = "SO_ARP_MJPNL_20201026"
     topics = "SO_ARP_MJPNL_20201026.MJPNL"
-    dataFile = "upload/mjpnl_berater_init.xtf"
+    dataFile = "upload/mjpnl_init.xtf"
     dataset = "MJPNL"
     logFile = "ili2pgimport.log"
 }
 
-task copyKatalogeXtfFile(type: Copy, dependsOn: 'importBeraterMJPNL') {
-    from "upload/"
-    into "upload/"
-    rename("uploadKatalogFile", "mjpnl_kataloge_init.xtf")
-}
-
-task importKatalogeMJPNL(type: Ili2pgReplace, dependsOn: 'copyKatalogeXtfFile') {
+task importKatalogeMJPNL(type: Ili2pgReplace, dependsOn: 'importBeraterMJPNL') {
   description = "Liest die Faunaliste, Floraliste (Kataloge) ein."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_mjpnl_v1"
     models = "SO_ARP_MJPNL_20201026"
     topics = "SO_ARP_MJPNL_20201026.Kataloge"
-    dataFile = "upload/mjpnl_kataloge_init.xtf"
+    dataFile = "upload/mjpnl_init.xtf"
     dataset = "MJPNL_Kataloge"
     logFile = "ili2pgimport.log"
 }
 
-task copyUmweltzieleXtfFile(type: Copy, dependsOn: 'importKatalogeMJPNL') {
-    from "upload/"
-    into "upload/"
-    rename("uploadUZLFile", "mjpnl_umweltziele_init.xtf")
-}
-
-task importUmweltzieleMJPNL(type: Ili2pgReplace, dependsOn: 'copyUmweltzieleXtfFile') {
+task importUmweltzieleMJPNL(type: Ili2pgReplace, dependsOn: 'importKatalogeMJPNL') {
   description = "Liest die UZL-Subregionen (Umweltziele) ein."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_mjpnl_v1"
     models = "SO_ARP_MJPNL_20201026"
     topics = "SO_ARP_MJPNL_20201026.Umweltziele"
-    dataFile = "upload/mjpnl_umweltziele_init.xtf"
+    dataFile = "upload/mjpnl_init.xtf"
     dataset = "MJPNL_Umweltziele"
     logFile = "ili2pgimport.log"
 }
