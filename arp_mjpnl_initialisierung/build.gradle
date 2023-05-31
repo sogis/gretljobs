@@ -32,7 +32,7 @@ task copyBeraterXtfFile(type: Copy) {
     rename("uploadBeraterFile", "mjpnl_berater_init.xtf")
 }
 
-task importBeraterMJPNL(type: Ili2pgReplace, dependsOn: 'copyBeraterXtfFiles') {
+task importBeraterMJPNL(type: Ili2pgReplace, dependsOn: 'copyBeraterXtfFile') {
   description = "Liest die Berater (MJPNL) ein."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_mjpnl_v1"
