@@ -26,24 +26,58 @@ remotes {
     }
 }
 
-task copyXtfFile(type: Copy) {
+task copyBeraterXtfFile(type: Copy) {
     from "upload/"
     into "upload/"
-    rename("uploadFile", "mjpnl_init.xtf")
+    rename("uploadBeraterFile", "mjpnl_berater_init.xtf")
 }
 
-task importMJPNL(type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
-  description = "Liest die Faunaliste, Floraliste und UZL-Subregionen ein."
+task importBeraterMJPNL(type: Ili2pgReplace, dependsOn: 'copyBeraterXtfFile') {
+  description = "Liest die Berater (MJPNL) ein."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_mjpnl_v1"
     models = "SO_ARP_MJPNL_20201026"
     topics = "SO_ARP_MJPNL_20201026.MJPNL"
-    dataFile = "upload/mjpnl_init.xtf"
-    dataset = "MJPNL Basisdaten"
+    dataFile = "upload/mjpnl_berater_init.xtf"
+    dataset = "MJPNL"
     logFile = "ili2pgimport.log"
 }
 
-task downloadData(dependsOn: 'importMJPNL') {
+task copyKatalogeXtfFile(type: Copy, dependsOn: 'importBeraterMJPNL') {
+    from "upload/"
+    into "upload/"
+    rename("uploadKatalogFile", "mjpnl_kataloge_init.xtf")
+}
+
+task importKatalogeMJPNL(type: Ili2pgReplace, dependsOn: 'copyKatalogeXtfFile') {
+  description = "Liest die Faunaliste, Floraliste (Kataloge) ein."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "arp_mjpnl_v1"
+    models = "SO_ARP_MJPNL_20201026"
+    topics = "SO_ARP_MJPNL_20201026.Kataloge"
+    dataFile = "upload/mjpnl_kataloge_init.xtf"
+    dataset = "MJPNL_Kataloge"
+    logFile = "ili2pgimport.log"
+}
+
+task copyUmweltzieleXtfFile(type: Copy, dependsOn: 'importKatalogeMJPNL') {
+    from "upload/"
+    into "upload/"
+    rename("uploadUZLFile", "mjpnl_umweltziele_init.xtf")
+}
+
+task importUmweltzieleMJPNL(type: Ili2pgReplace, dependsOn: 'copyUmweltzieleXtfFile') {
+  description = "Liest die UZL-Subregionen (Umweltziele) ein."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "arp_mjpnl_v1"
+    models = "SO_ARP_MJPNL_20201026"
+    topics = "SO_ARP_MJPNL_20201026.Umweltziele"
+    dataFile = "upload/mjpnl_umweltziele_init.xtf"
+    dataset = "MJPNL_Umweltziele"
+    logFile = "ili2pgimport.log"
+}
+
+task downloadData(dependsOn: 'importUmweltzieleMJPNL') {
     description = "Download file from SFTP server"
     doLast {
         ssh.settings {

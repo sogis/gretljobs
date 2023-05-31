@@ -33,7 +33,7 @@ SELECT
    MAX(abrg_vbg.datum_abrechnung) AS datum_abrechnung,
    abrg_vbg.auszahlungsjahr,
    'Migration' AS dateipfad_oder_url,
-   MAX(abrg_vbg.datum_abrechnung) AS erstellungsdatum,
+   COALESCE ( MAX(abrg_vbg.datum_abrechnung), now()::date ) AS erstellungsdatum,
    'Migration' AS operator_erstellung
 FROM
   gelan_persons pers

@@ -31,7 +31,7 @@ VALUES(
   'MJPNL_2020',
   4,
   'Dummy-Entry',
-  (SELECT t_id FROM ${DB_Schema_MJPNL}.mjpnl_uzl_subregion LIMIT 1),
+  (SELECT t_id FROM ${DB_Schema_MJPNL}.umweltziele_uzl_subregion LIMIT 1),
   'Dummy-Pfad',
   now()::date,
   'bjsvwneu',

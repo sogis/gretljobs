@@ -30,7 +30,14 @@ task "transfer_mjpnl"(type: Db2Db,dependsOn: "clean_mjpnl_before_import"){
     ];
 }
 
-task "postprocessing_soeg_uzl"(type: SqlExecutor,dependsOn: "transfer_mjpnl") {
+task "postprocessing_remove_duplicate_coords"(type: SqlExecutor,dependsOn: "transfer_mjpnl") {
+    description = "Doppelte Koordinaten in Vereinbarungs-Geometrien entfernen"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['mjpnl_postprocessing_remove_duplicate_coords.sql']
+}
+
+task "postprocessing_soeg_uzl"(type: SqlExecutor,dependsOn: "postprocessing_remove_duplicate_coords") {
     description = "Check ob Vereinbarungsfläche in Sömmerungsgebiet liegt. Korrekte UZL Subregion zuweisen."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
@@ -76,6 +83,6 @@ task "postprocessing_beurteilungen_erstellen"(type: SqlExecutor,dependsOn: "post
     description = "Beurteilungen erstellen."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
-    sqlFiles = ['mjpnl_postprocessing_beurteilungen_wiese.sql']
+    sqlFiles = ['mjpnl_postprocessing_beurteilungen_wiese.sql','mjpnl_postprocessing_beurteilungen_hecke.sql','mjpnl_postprocessing_beurteilungen_hostet.sql','mjpnl_postprocessing_beurteilungen_obl.sql','mjpnl_postprocessing_beurteilungen_weide_ln.sql','mjpnl_postprocessing_beurteilungen_weide_soeg.sql']
 }
 
