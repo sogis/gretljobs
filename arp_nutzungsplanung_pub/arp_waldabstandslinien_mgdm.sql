@@ -133,6 +133,13 @@ WHERE
     rechtsvorschrift IS TRUE 
     AND 
     t_datasetname::int4 = ${bfsnr_param}
+    AND 
+    rechtsstatus IN (
+                     SELECT
+                         ilicode 
+                     FROM 
+                         arp_waldabstandslinien_mgdm_v1.rechtsstatus
+                    )
 ;
 
 WITH multilingualuri AS
