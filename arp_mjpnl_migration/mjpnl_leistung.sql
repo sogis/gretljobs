@@ -1,5 +1,5 @@
 SELECT
-    5 AS t_basket,
+    (SELECT t_id FROM ${DB_Schema_MJPNL}.t_ili2db_basket WHERE topic = 'SO_ARP_MJPNL_20201026.MJPNL' LIMIT 1) AS t_basket,
     lart.kurzbez AS leistung_beschrieb,
     CASE
         WHEN l.ansatz > 0 AND l.mass > 0 THEN 

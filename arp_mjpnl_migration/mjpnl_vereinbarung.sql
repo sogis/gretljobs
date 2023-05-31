@@ -1,5 +1,5 @@
 SELECT
-  5 AS t_basket, --Basket für reguläre MJPNL-Daten (ausserhalb von Basisdaten)
+  (SELECT t_id FROM ${DB_Schema_MJPNL}.t_ili2db_basket WHERE topic = 'SO_ARP_MJPNL_20201026.MJPNL' LIMIT 1) AS t_basket, --Basket für reguläre MJPNL-Daten (ausserhalb von Basisdaten)
   'bla' AS vereinbarungs_nr,--im Postprocessing zu ersetzen
   vbg.vbnr AS vereinbarungs_nr_alt,
   vbggeom.polyid AS flaechen_id_alt,
