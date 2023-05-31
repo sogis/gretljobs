@@ -12,7 +12,7 @@ pipeline {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
-                        zip zipFile: 'xtfdata.zip', glob: '*.xtf', archive: true
+                        zip zipFile: 'xtfdata.zip', glob: '*.xml', archive: true
                     }
                 }
             }
