@@ -2,16 +2,12 @@
 node('master') {
     stage('Prepare') {
         uploadDirName = 'upload'
-        uploadBeraterFileName = 'uploadBeraterFile'
-        uploadKatalogFileName = 'uploadKatalogFile'
-        uploadUZLFileName = 'uploadUZLFile'
+        uploadFileName = 'uploadFile'
         // By default the uploaded file is stored in the following directory:
         buildDir = "$JENKINS_HOME/jobs/$JOB_BASE_NAME/builds/$BUILD_NUMBER"
         // Create a subdirectory for the uploaded file:
         sh "mkdir $buildDir/$uploadDirName"
-        inputFile = input message: 'Datei mit den Berater hochladen', parameters: [file(name: "$uploadDirName/$uploadBeraterFileName", description: 'Hochzuladende XTF-Datei (Berater) auswählen')]
-        inputFile = input message: 'Datei mit den Katalogen (Flora/Fauna) hochladen', parameters: [file(name: "$uploadDirName/$uploadKatalogFileName", description: 'Hochzuladende XTF-Datei (Katalogen) auswählen')]
-        inputFile = input message: 'Datei mit den Umweltzielen (UZL Subregionen) hochladen', parameters: [file(name: "$uploadDirName/$uploadUZLFileName", description: 'Hochzuladende XTF-Datei (UZL) auswählen')]
+        inputFile = input message: 'Datei hochladen mit Basisdaten (Berater, UZL) und Katalogen auswählen', parameters: [file(name: "$uploadDirName/$uploadFileName", description: 'Hochzuladende XTF Datei auswählen')]
         dir(buildDir) {
             stash name: 'uploadDir', includes: "upload/**"
         }
