@@ -48,7 +48,7 @@ INSERT INTO
         SELECT
             trip_id 
         FROM 
-                avt_oevkov_${currentYear}_v1.gtfs_trip
+            avt_oevkov_${currentYear}_v1.gtfs_trip
         WHERE
             (
             gtfs_trip.service_id IN (
@@ -117,13 +117,13 @@ INSERT INTO
     AND
         trip_headsign <> stop_name
     AND
-        route_desc IN ('B', 'BN', 'BP', 'EXB', 'KB', 'NFB')
+        route_desc IN ('B', 'BN', 'BP', 'EXB', 'KB', 'NFB', 'NFT', 'R', 'RB', 'RE', 'S', 'SN', 'T', 'TER')
     GROUP BY
         stop.stop_name,
         route.route_id,
         linie.linienname,
         agency.unternehmer,
         verkehrsmittel
-)
+    )
 ;
 

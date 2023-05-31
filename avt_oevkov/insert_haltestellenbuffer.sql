@@ -10,13 +10,13 @@ INSERT INTO avt_oevkov_${currentYear}_v1.so_geodaten_haltestellenbuffer
             CASE
                 WHEN verkehrsmittel IN (1,4)
                     THEN 'Bus'
-                WHEN verkehrsmittel IN (2, 3)
+                WHEN verkehrsmittel = 3
                     THEN 'Bahn'
             END AS verkehrsmittel,
             CASE
                 WHEN verkehrsmittel IN (1,4)
                     THEN ST_Buffer(haltestelle.geometrie, 250, 'quad_segs=16')
-                WHEN verkehrsmittel IN (2, 3) 
+                WHEN verkehrsmittel = 3
                     THEN ST_Buffer(haltestelle.geometrie, 500, 'quad_segs=16')
             END AS geometrie
         FROM

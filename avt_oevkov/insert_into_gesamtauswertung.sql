@@ -1,6 +1,6 @@
 INSERT INTO
     avt_oevkov_${currentYear}_v1.auswertung_gesamtauswertung
-        (
+    (
          gemeindename,
          haltestellenname,
          unternehmer,
@@ -14,8 +14,7 @@ INSERT INTO
          abfahrten_ungewichtet,
          abfahrten_gewichtet,
          bemerkungen
-        )
-        (
+    )
 WITH gtfs_abfahrten AS (
         SELECT
             auswertung.haltestellenname,
@@ -24,28 +23,24 @@ WITH gtfs_abfahrten AS (
             auswertung.verkehrsmittel,
             auswertung.gewichtung,
             CASE
-                WHEN  korrektur.linie = auswertung.linie
-                     AND
-                         korrektur.haltestellenname = '--- Alle'
+                WHEN korrektur.linie = auswertung.linie
+                    AND
+                        korrektur.haltestellenname = '--- Alle'
                     THEN
-                         korrektur.gewichtung
+                        korrektur.gewichtung
                 ELSE
                     NULL
             END AS gewichtung_korrigiert,
             sum(auswertung.anzahl_abfahrten_linie) AS anzahl_abfahrten_linie,
             korrektur.abfahrten_korrigiert,
             bemerkungen
-         FROM
+        FROM
              avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs AS auswertung
              LEFT JOIN avt_oevkov_${currentYear}_v1.auswertung_abfahrten_korrigiert AS korrektur
-                 ON (auswertung.haltestellenname = korrektur.haltestellenname
-                       AND
-                          auswertung.linie = korrektur.linie)
-                      OR
-                          (auswertung.linie = korrektur.linie
-                           AND
-                               korrektur.haltestellenname = '--- Alle')
-                          
+                 ON (auswertung.linie = korrektur.linie
+                     AND
+                     (auswertung.haltestellenname = korrektur.haltestellenname OR korrektur.haltestellenname = '--- Alle')
+                    )
         GROUP BY
             auswertung.haltestellenname,
             korrektur.haltestellenname,
@@ -85,74 +80,62 @@ WITH gtfs_abfahrten AS (
             anzahl_abfahrten_linie AS abfahrten_gtfs,
             CASE
                  WHEN
-                    ((gtfs_abfahrten.abfahrten_korrigiert = 0
+                    (gtfs_abfahrten.abfahrten_korrigiert = 0
                      OR
-                         gtfs_abfahrten.abfahrten_korrigiert IS NULL)
-                     AND
-                         gewichtung_korrigiert <> 0
-                     AND
-                         gewichtung_korrigiert IS NOT NULL)
+                     gtfs_abfahrten.abfahrten_korrigiert IS NULL
+                    )
+                    AND
+                        korrektur.haltestellenname <> '--- Alle'
                     THEN
                         NULL
                  WHEN
-                    ((gtfs_abfahrten.abfahrten_korrigiert = 0
-                     OR
-                         gtfs_abfahrten.abfahrten_korrigiert IS NULL)
-                     AND
-                         gewichtung_korrigiert = 0)
-                    THEN
-                      0  - anzahl_abfahrten_linie
-                ELSE
-                    gtfs_abfahrten.abfahrten_korrigiert
+                     gewichtung_korrigiert = 0
+                     THEN
+                        anzahl_abfahrten_linie  *  -1
+                 ELSE
+                     gtfs_abfahrten.abfahrten_korrigiert
             END AS abfahrten_gtfs_korrigiert,
             CASE
-                WHEN
-                    ((gtfs_abfahrten.abfahrten_korrigiert = 0
-                     OR
-                         gtfs_abfahrten.abfahrten_korrigiert IS NULL)
-                     AND
-                         gewichtung_korrigiert <> 0
-                     AND
-                         gewichtung_korrigiert IS NOT NULL
-                         )
-                    THEN
-                        anzahl_abfahrten_linie
                 WHEN
                     gewichtung_korrigiert = 0
                     THEN
                         0
                 WHEN
-                   gtfs_abfahrten.abfahrten_korrigiert  <> 0
+                   (gtfs_abfahrten.abfahrten_korrigiert  <> 0
                    AND
-                       gtfs_abfahrten.abfahrten_korrigiert  IS NOT NULL 
-                       THEN
-                            (anzahl_abfahrten_linie  +  gtfs_abfahrten.abfahrten_korrigiert)
+                   gtfs_abfahrten.abfahrten_korrigiert IS NOT NULL
+                   )
+                   THEN
+                       (anzahl_abfahrten_linie  +  gtfs_abfahrten.abfahrten_korrigiert)
                ELSE
                    anzahl_abfahrten_linie
             END AS abfahrten_ungewichtet,
             CASE
                 WHEN
-                    gtfs_abfahrten.abfahrten_korrigiert IS NOT NULL 
-                     AND
-                         gtfs_abfahrten.abfahrten_korrigiert <> 0
-                     AND
-                         gewichtung_korrigiert > 0
+                    gtfs_abfahrten.abfahrten_korrigiert <> 0
+                    AND
+                        gtfs_abfahrten.abfahrten_korrigiert IS NOT NULL
+                    AND
+                        gewichtung_korrigiert > 0
                     THEN
                        ((anzahl_abfahrten_linie  +  gtfs_abfahrten.abfahrten_korrigiert)
                               *  gewichtung_korrigiert  *  anrechnung  /  100)::numeric(5,1)
                 WHEN
-                    gtfs_abfahrten.abfahrten_korrigiert IS NOT NULL
+                    gtfs_abfahrten.abfahrten_korrigiert <> 0
                     AND
-                        gtfs_abfahrten.abfahrten_korrigiert <> 0
+                        gtfs_abfahrten.abfahrten_korrigiert IS NOT NULL
                     AND
-                    gewichtung_korrigiert IS NULL
+                        gewichtung_korrigiert IS NULL
                    THEN
                     ((anzahl_abfahrten_linie  +  gtfs_abfahrten.abfahrten_korrigiert)
                          *  gtfs_abfahrten.gewichtung  *  anrechnung  /  100)::numeric(5,1)
                 WHEN
-                    (gewichtung_korrigiert > 0
-                     AND (gtfs_abfahrten.abfahrten_korrigiert = 0
-                         OR gtfs_abfahrten.abfahrten_korrigiert IS NULL))
+                    (gtfs_abfahrten.abfahrten_korrigiert = 0
+                     OR
+                     gtfs_abfahrten.abfahrten_korrigiert IS NULL
+                    )
+                    AND
+                        gewichtung_korrigiert > 0
                     THEN
                         (anzahl_abfahrten_linie  *  gewichtung_korrigiert  *  anrechnung  /  100)::numeric(5,1)
                  WHEN
@@ -162,79 +145,20 @@ WITH gtfs_abfahrten AS (
                 ELSE
                     (anzahl_abfahrten_linie  *  gtfs_abfahrten.gewichtung  *  anrechnung  /  100)::numeric(5,1)
             END AS abfahrten_gewichtet,
-            CASE
-                WHEN
-                     (korrektur.unternehmer <> gtfs_abfahrten.unternehmer
-                     AND
-                         korrektur.verkehrsmittel <> gtfs_abfahrten.verkehrsmittel)
-                   THEN
-                       CASE
-                           WHEN
-                               gtfs_abfahrten.bemerkungen IS NULL
-                               THEN
-                                   E'Unternehmer geändert: GTFS: '||gtfs_abfahrten.unternehmer||
-                                   E'\nVerkehrsmittel geändert: GTFS: '|| avt_verkehrsmittel.verkehrsmittel_text
-                          WHEN
-                             gtfs_abfahrten.bemerkungen IS NOT NULL
-                             THEN
-                                 gtfs_abfahrten.bemerkungen||
-                                 E'Unternehmer geändert: GTFS: '||gtfs_abfahrten.unternehmer||
-                                 E'\nVerkehrsmittel geändert: GTFS: '|| avt_verkehrsmittel.verkehrsmittel_text
-                       END
-               WHEN
-                     korrektur.unternehmer <> gtfs_abfahrten.unternehmer
-                   THEN
-                       CASE
-                           WHEN
-                               gtfs_abfahrten.bemerkungen IS NULL
-                               THEN
-                                   'Unternehmer geändert: GTFS = '||gtfs_abfahrten.unternehmer
-                          WHEN
-                             gtfs_abfahrten.bemerkungen IS NOT NULL
-                             THEN
-                                 gtfs_abfahrten.bemerkungen||
-                                 E'\nUnternehmer geändert: GTFS = '||gtfs_abfahrten.unternehmer
-                       END                        
-               WHEN
-                     korrektur.verkehrsmittel <> gtfs_abfahrten.verkehrsmittel
-                   THEN
-                       CASE
-                           WHEN
-                               gtfs_abfahrten.bemerkungen IS NULL
-                               THEN
-                                   'Verkehrsmittel geändert: GTFS: '|| avt_verkehrsmittel.verkehrsmittel_text
-                          WHEN
-                             gtfs_abfahrten.bemerkungen IS NOT NULL
-                             THEN
-                                 gtfs_abfahrten.bemerkungen||
-                                 E'\nVerkehrsmittel geändert: GTFS: '|| avt_verkehrsmittel.verkehrsmittel_text
-                       END
-                ELSE
-                    gtfs_abfahrten.bemerkungen
-            END AS bemerkungen    
+            gtfs_abfahrten.bemerkungen
         FROM
             avt_oevkov_${currentYear}_v1.sachdaten_haltestelle_anrechnung AS anrechnung
             LEFT JOIN gtfs_abfahrten
                 ON anrechnung.haltestellenname = gtfs_abfahrten.haltestellenname
             LEFT JOIN avt_verkehrsmittel
                 ON avt_verkehrsmittel.verkehrsmittel = gtfs_abfahrten.verkehrsmittel
-           LEFT JOIN avt_oevkov_${currentYear}_v1.auswertung_abfahrten_korrigiert AS korrektur
-                 ON ((anrechnung.haltestellenname = korrektur.haltestellenname
-                       AND
-                          gtfs_abfahrten.linie = korrektur.linie)
-                       OR
-                          (gtfs_abfahrten.linie = korrektur.linie
-                           AND
-                               korrektur.haltestellenname = '--- Alle'))
-                       AND 
-                           (anrechnung.haltestellenname = korrektur.haltestellenname
-                            OR korrektur.haltestellenname = '--- Alle')
+            LEFT JOIN avt_oevkov_${currentYear}_v1.auswertung_abfahrten_korrigiert AS korrektur
+                 ON korrektur.haltestellenname = gtfs_abfahrten.haltestellenname
         WHERE
             anrechnung.haltestellenname IN (
                 SELECT
                     haltestellenname
                 FROM
                     avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs
-              )
-        )
+           )
 ;
