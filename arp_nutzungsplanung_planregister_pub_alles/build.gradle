@@ -62,7 +62,7 @@ task uploadPlanregister(dependsOn: 'zipPlanregister') {
     def zipFilePath = Paths.get(pathToTempFolder.toString(), PlanregisterZipFileName)
     //def serverUrl = "https://so.ch/typo3/api/digiplan"
     def serverUrl = "https://testweb.so.ch/typo3/api/digiplan"
-
+	               
     doLast {
         def response = ["curl", "-v", "-u", digiplanLogin, "--data-binary", "@"+zipFilePath, "-H", "'Content-Type: application/xml'", "-H", "'Content-Encoding: gzip'", "-o", "-X", serverUrl].execute().text
 

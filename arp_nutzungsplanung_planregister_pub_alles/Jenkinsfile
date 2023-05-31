@@ -1,0 +1,38 @@
+pipeline {
+    agent none
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 7, unit: 'DAYS')
+    }
+    stages {
+        stage('Import into staging schema') {
+            agent { label 'gretl' }
+            steps {
+                script { currentBuild.description = "${params.buildDescription}" }
+                git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
+                container('gretl') {
+                    dir(env.JOB_BASE_NAME) {
+                        zip zipFile: 'xtfdata.zip', glob: '*.xtf', archive: true
+                    }
+                }
+            }
+        }
+    }
+    post {
+        success {
+            emailext (
+                recipientProviders: [requestor()],
+                subject: "Planregister ist aktuallisiert (GRETL-Job ${JOB_NAME} ${BUILD_DISPLAY_NAME})",
+                body: "Planregister ist aktuallisiert ${JOB_NAME} (${BUILD_DISPLAY_NAME}). Die Log-Meldungen dazu finden Sie unter ${RUN_DISPLAY_URL}."
+            )
+        }
+        unsuccessful {
+            emailext (
+                to: '${DEFAULT_RECIPIENTS}',
+                recipientProviders: [requestor()],
+                subject: "GRETL-Job ${JOB_NAME} (${BUILD_DISPLAY_NAME}) ist fehlgeschlagen",
+                body: "Die Ausführung des GRETL-Jobs ${JOB_NAME} (${BUILD_DISPLAY_NAME}) war nicht erfolgreich. Details dazu finden Sie in den Log-Meldungen unter ${RUN_DISPLAY_URL}."
+            )
+        }
+    }
+}
