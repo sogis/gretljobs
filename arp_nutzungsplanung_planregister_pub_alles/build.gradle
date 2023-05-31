@@ -58,10 +58,10 @@ task zipPlanregister(type: Tar, dependsOn: 'export_planregister_pub') {
 
 task uploadPlanregister(dependsOn: 'zipPlanregister') {
 
-    def digiplanLogin = digiplanUser + ":" + digiplanPwd
+    def digiplanLogin = "_digiplan_:3cDK9qbnn9C"
     def zipFilePath = Paths.get(pathToTempFolder.toString(), PlanregisterZipFileName)
-    def serverUrl = "https://so.ch/typo3/api/digiplan"
-    //def serverUrl = "https://testweb.so.ch/ typo3/api/digiplan"
+    //def serverUrl = "https://so.ch/typo3/api/digiplan"
+    def serverUrl = "https://testweb.so.ch/typo3/api/digiplan"
 
     doLast {
         def response = ["curl", "-v", "-u", digiplanLogin, "--data-binary", "@"+zipFilePath, "-H", "'Content-Type: application/xml'", "-H", "'Content-Encoding: gzip'", "-o", "-X", serverUrl].execute().text
