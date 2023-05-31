@@ -1,5 +1,5 @@
 SELECT
-    (SELECT t_id FROM ${DB_Schema_MJPNL}.t_ili2db_basket WHERE topic = 'SO_ARP_MJPNL_20201026.MJPNL' LIMIT 1) AS t_basket,
+    9999999 AS t_basket, --Dummy-Basket für reguläre MJPNL-Daten (ausserhalb von Basisdaten)
     lart.kurzbez AS leistung_beschrieb,
     CASE
         WHEN l.ansatz > 0 AND l.mass > 0 THEN 

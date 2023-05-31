@@ -1,5 +1,5 @@
 SELECT
-  (SELECT t_id FROM ${DB_Schema_MJPNL}.t_ili2db_basket WHERE topic = 'SO_ARP_MJPNL_20201026.MJPNL' LIMIT 1) AS t_basket, --Basket für reguläre MJPNL-Daten (ausserhalb von Basisdaten)
+  9999999 AS t_basket, --Dummy-Basket für reguläre MJPNL-Daten (ausserhalb von Basisdaten)
   'bla' AS vereinbarungs_nr,--im Postprocessing zu ersetzen
   vbg.vbnr AS vereinbarungs_nr_alt,
   vbggeom.polyid AS flaechen_id_alt,
@@ -113,7 +113,7 @@ SELECT
       ',\n\n}',
       '\n}'
     ) AS bemerkung, --TODO: Zwischenparkieren weiterer alter Attribut-Werte
-  18::int8 AS uzl_subregion, -- im Postprocessing zu ersetzen
+  9999999 AS uzl_subregion, -- im Postprocessing zu ersetzen
   'migration' AS dateipfad_oder_url,
   COALESCE(vbg.gueltigab,'1900-01-01'::DATE) AS erstellungsdatum,
   COALESCE(RTRIM(vbg.bearbeiter),'unbekannt (Migration)') AS operator_erstellung

@@ -47,3 +47,27 @@ VALUES(9999999, (SELECT t_id FROM ${DB_Schema_MJPNL}.t_ili2db_basket WHERE topic
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung
 (t_id, t_basket, t_ili_tid, vereinbarungs_nr, flurnamen, gemeinde, flaeche, gesamtbetrag, auszahlungsjahr, status_abrechnung, datum_abrechnung, bemerkung, abrechnungperbewirtschafter, vereinbarung)
 VALUES(9999999, (SELECT t_id FROM ${DB_Schema_MJPNL}.t_ili2db_basket WHERE topic = 'SO_ARP_MJPNL_20201026.MJPNL' LIMIT 1), uuid_generate_v4(), '01_DUMMY_00001', 'Dummy-Flurnamen', 'Dummy-Gemeinde', 99, 99, 1900, 'initialisiert', '1990-01-01', 'Dummy Entry', 9999999, 9999999);
+
+/* Dummy-Entry in t_ili2db_basket um statische Baskets den Einträgen von mjpnl_leistung und mjpnl_vereinbarung zuzuweisen */
+INSERT
+  INTO ${DB_Schema_MJPNL}.t_ili2db_basket
+    (t_id, dataset, topic, t_ili_tid, attachmentkey)
+ SELECT
+    9999999 AS t_id,
+    t_id AS dataset,
+    'Dummy-Topic' AS topic,
+    uuid_generate_v4() AS t_ili_tid,
+    'Dummy' AS attachmentkey
+ FROM
+ ${DB_Schema_MJPNL}.t_ili2db_dataset
+ WHERE datasetname = 'MJPNL'
+;
+
+/* Dummy-Entry in umweltziele_uzl_subregion um statischer entry den Einträgen von mjpnl_leistung und mjpnl_vereinbarung zuzuweisen */
+INSERT
+  INTO ${DB_Schema_MJPNL}.umweltziele_uzl_subregion
+    (t_id, t_basket, srcode, srname,geometrie )
+ SELECT
+    9999999, u.t_basket, u.srcode, u.srname, u.geometrie
+ FROM ${DB_Schema_MJPNL}.umweltziele_uzl_subregion as u LIMIT 1
+;

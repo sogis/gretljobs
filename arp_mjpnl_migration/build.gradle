@@ -30,7 +30,14 @@ task "transfer_mjpnl"(type: Db2Db,dependsOn: "clean_mjpnl_before_import"){
     ];
 }
 
-task "postprocessing_remove_duplicate_coords"(type: SqlExecutor,dependsOn: "transfer_mjpnl") {
+task "postprocessing_fill_t_basket"(type: SqlExecutor,dependsOn: "transfer_mjpnl") {
+    description = "Füge den migrierten Daten korrekte Baskets zu"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['mjpnl_postprocessing_fill_t_basket.sql']
+}
+
+task "postprocessing_remove_duplicate_coords"(type: SqlExecutor,dependsOn: "postprocessing_fill_t_basket") {
     description = "Doppelte Koordinaten in Vereinbarungs-Geometrien entfernen"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
