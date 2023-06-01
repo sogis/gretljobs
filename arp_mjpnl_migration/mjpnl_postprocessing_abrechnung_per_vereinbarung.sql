@@ -2,7 +2,7 @@
 
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung 
   (t_basket, vereinbarungs_nr, flurnamen, gemeinde, flaeche, gesamtbetrag,
-   auszahlungsjahr, status_abrechnung, datum_abrechnung, abrechnungperbewirtschafter, vereinbarung)
+   auszahlungsjahr, status_abrechnung, datum_abrechnung, abrechnungperbewirtschafter, vereinbarung, migriert)
 SELECT
   (SELECT t_id FROM ${DB_Schema_MJPNL}.t_ili2db_basket WHERE t_ili_tid = 'SO_ARP_MJPNL_20201026.MJPNL' LIMIT 1) AS t_basket,
   vbg.vereinbarungs_nr,
@@ -14,7 +14,8 @@ SELECT
   lstg.status_abrechnung,
   lstg.datum_abrechnung,
   9999999 AS abrechnungperbewirtschafter,
-  vbg.t_id AS vereinbarung
+  vbg.t_id AS vereinbarung,
+  TRUE AS migriert
 FROM
   ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg

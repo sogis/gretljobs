@@ -2,7 +2,7 @@
 
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_bewirtschafter 
 (t_basket, gelan_pid_gelan, gelan_person, gelan_ortschaft, gelan_iban, betrag_total, status_abrechnung,
- datum_abrechnung, auszahlungsjahr, dateipfad_oder_url, erstellungsdatum, operator_erstellung)
+ datum_abrechnung, auszahlungsjahr, dateipfad_oder_url, erstellungsdatum, operator_erstellung, migriert)
 
 WITH gelan_persons AS (
 /* zuerst alle GELAN Personen filtern die eine aktive Vereinbarung haben */
@@ -34,7 +34,9 @@ SELECT
    abrg_vbg.auszahlungsjahr,
    'Migration' AS dateipfad_oder_url,
    COALESCE ( MAX(abrg_vbg.datum_abrechnung), now()::date ) AS erstellungsdatum,
-   'Migration' AS operator_erstellung
+   'Migration' AS operator_erstellung,
+   -- auch wenn diese Info redundant ist, bleibt es hilfreich um die migrierten Abrechnungen einheitlich filtern zu können
+   TRUE AS migriert
 FROM
   gelan_persons pers
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
