@@ -5,3 +5,6 @@ UPDATE
   FROM ${DB_Schema_MJPNL}.umweltziele_uzl_subregion uzl
     WHERE ST_Within(ST_PointOnSurface(vb.geometrie),uzl.geometrie)
 ;
+
+-- Lösche Dummy-UZL region
+DELETE FROM ${DB_Schema_MJPNL}.umweltziele_uzl_subregion WHERE t_id = 9999999;

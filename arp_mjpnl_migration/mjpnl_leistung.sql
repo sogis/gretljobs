@@ -1,5 +1,5 @@
 SELECT
-    5 AS t_basket,
+    9999999 AS t_basket, --Dummy-Basket für reguläre MJPNL-Daten (ausserhalb von Basisdaten)
     lart.kurzbez AS leistung_beschrieb,
     CASE
         WHEN l.ansatz > 0 AND l.mass > 0 THEN 
