@@ -1,0 +1,39 @@
+description = """\n
+Kalkulation der  arp_mjpnl_v1 (EDIT-DB)
+
+Fragen an: Odile Bruggisser (ARP)
+"""
+
+import ch.so.agi.gretl.tasks.*
+
+apply plugin: 'ch.so.agi.gretl'
+
+def DB_Schema_MJPNL = "arp_mjpnl_v1"
+
+task "clean_abrechnungen"(type: SqlExecutor) {
+    description = "Löscht alle Abrechnungen vom aktuellen Jahr (ausser die migrierten)"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['delete_mjpnl_abrechnungen.sql']
+}
+
+task "calculate_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "clean_abrechnungen") {
+    description = "Kalkuliert die Abrechnungen pro Leistung anhand aller Beurteilungen"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['calc_mjpnl_abrechnung_per_leistung_alr_buntbrache.sql', 'calc_mjpnl_abrechnung_per_leistung_obl.sql']
+}
+
+task "calculate_abrechnung_per_vereinbarung"(type: SqlExecutor,dependsOn: "calculate_abrechnung_per_leistung") {
+    description = "Kalkuliert die Abrechnungen pro Vereinbarung anhand aller Abrechnungen pro Leistung"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['calc_mjpnl_abrechnung_per_vereinbarung.sql']
+}
+
+task "calculate_abrechnung_per_bewirtschafter"(type: SqlExecutor,dependsOn: "calculate_abrechnung_per_vereinbarung") {
+    description = "Kalkuliert die Abrechnungen pro Bewirtschafter anhand aller Abrechnungen pro Leistung"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['calc_mjpnl_abrechnung_per_bewirtschafter.sql']
+}
