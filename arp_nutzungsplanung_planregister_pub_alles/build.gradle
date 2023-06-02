@@ -55,7 +55,7 @@ task zipPlanregister(type: Tar, dependsOn: 'export_planregister_pub') {
     compression = Compression.GZIP
 }
 
-task uploadPlanregister(type:Exec, dependsOn: 'zipPlanregister') {
+task uploadPlanregister(dependsOn: 'zipPlanregister') {
 
     def digiplanLogin = "_digiplan_:3cDK9qbnn9C"
     def zipFilePath = Paths.get(pathToTempFolder.toString(), PlanregisterZipFileName)
@@ -63,15 +63,11 @@ task uploadPlanregister(type:Exec, dependsOn: 'zipPlanregister') {
     def serverUrl = "https://testweb.so.ch/typo3/api/digiplan"
 
     doLast {
-        def response = ["curl", "-v", "-u", digiplanLogin, "--data-binary", "@"+zipFilePath, "-H", "'Content-Type: application/xml'", "-H", "'Content-Encoding: gzip'", "-o", "-X", serverUrl].execute().text
-		
+        def response = ["curl", "-i", "-v", "-u", digiplanLogin, "--data-binary", "@"+zipFilePath, "-H", "Content-Type: application/xml", "-H", "Content-Encoding: gzip", "-X", "POST", serverUrl].execute().text
 		println(response)
-        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+
+        if (!response.contains("HTTP/2 202")) {
             throw new GradleException()
         }
-	}
-	 
-    // commandLine 'curl', '-v', '-u', digiplanLogin, '--data-binary', '@' + zipFilePath, '-H', 'Content-Type: application/xml', '-H', 'Content-Encoding: gzip', serverUrl
-
-       // Es kommt KEINE Rückmeldung!
+    }
 }
