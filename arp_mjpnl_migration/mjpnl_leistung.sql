@@ -42,6 +42,7 @@ SELECT
        '\n"datum_abrechnung":"' || l.datum_auszahlung::date::text || '"' || ',' ||  
        '\n"gueltigbis":"' || l.gueltigbis::date::text || '"' ||     
     '\n}'::TEXT AS bemerkung,
+    TRUE AS migriert,
     9999999 AS abrechnungpervereinbarung,
     9999999 AS vereinbarung
 FROM mjpnatur.leistung l
