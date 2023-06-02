@@ -23,7 +23,7 @@ FROM
 )
 /* Dann Abrechnungsdaten per Bewirtschafter und Auszahlungsjahr und Status aggregieren */
 SELECT 
-   (SELECT t_id FROM ${DB_Schema_MJPNL}.t_ili2db_basket WHERE t_ili_tid = 'SO_ARP_MJPNL_20201026.MJPNL' LIMIT 1) AS t_basket,   
+   (SELECT t_id FROM ${DB_Schema_MJPNL}.t_ili2db_basket WHERE topic = 'SO_ARP_MJPNL_20201026.MJPNL' LIMIT 1) AS t_basket,   
    pers.pid_gelan,
    pers.name_vorname AS gelan_person,
    pers.ortschaft AS gelan_ortschaft,
