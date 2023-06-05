@@ -93,3 +93,9 @@ task "postprocessing_beurteilungen_erstellen"(type: SqlExecutor,dependsOn: "post
     sqlFiles = ['mjpnl_postprocessing_beurteilungen_wiese.sql','mjpnl_postprocessing_beurteilungen_hecke.sql','mjpnl_postprocessing_beurteilungen_hostet.sql','mjpnl_postprocessing_beurteilungen_obl.sql','mjpnl_postprocessing_beurteilungen_weide_ln.sql','mjpnl_postprocessing_beurteilungen_weide_soeg.sql']
 }
 
+task "clean_mjpnl_after_import"(type: SqlExecutor,dependsOn: "postprocessing_beurteilungen_erstellen"){
+    description = "Dummy Daten löschen"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['mjpnl_remove_dummy_entries.sql']
+}
