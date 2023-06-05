@@ -3,7 +3,8 @@ DELETE FROM
     ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung 
 WHERE 
     auszahlungsjahr = ( SELECT date_part('year', now())::integer ) 
-    AND migriert IS NOT TRUE;
+    AND migriert IS NOT TRUE
+    AND status_abrechnung != 'ausbezahlt'; -- weil dies ist eine manuell erfasste Leistung die separat ausbezahlt wurde
 
 
 DELETE FROM 

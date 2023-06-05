@@ -1,5 +1,6 @@
 /* Zusammenzug Zahlungen per Bewirtschafter, Auszahlungsjahr und Status Zahlung */
-/* Entspricht arp_mjpnl_migration/mjpnl_postprocessing_abrechnung_per_bewirtschafter.sql und muss noch angepasst werden*/
+/* Entspricht arp_mjpnl_migration/mjpnl_postprocessing_abrechnung_per_bewirtschafter.sql und muss noch angepasst werden
+Beachte auch, dass ausbezahlte leistungen nicht berücksichtigt werden sollen. */
 
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_bewirtschafter 
 (t_basket, gelan_pid_gelan, gelan_person, gelan_ortschaft, gelan_iban, betrag_total, status_abrechnung,
