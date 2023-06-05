@@ -31,7 +31,6 @@ FROM
 /* fkey update abrechnung_per_leistung zu abrechung_per_vereinbarung */  
 UPDATE ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung abr_lstg
 SET abrechnungpervereinbarung=abr_vbg.t_id
-SELECT abr_vbg.t_id
 FROM
    ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg,
    ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung abr_vbg
