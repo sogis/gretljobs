@@ -41,6 +41,7 @@ task importBeraterMJPNL(type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
     dataFile = "upload/mjpnl_init.xtf"
     dataset = "MJPNL"
     logFile = "ili2pgimport.log"
+    importBid = true
 }
 
 task importKatalogeMJPNL(type: Ili2pgReplace, dependsOn: 'importBeraterMJPNL') {
@@ -52,6 +53,7 @@ task importKatalogeMJPNL(type: Ili2pgReplace, dependsOn: 'importBeraterMJPNL') {
     dataFile = "upload/mjpnl_init.xtf"
     dataset = "MJPNL_Kataloge"
     logFile = "ili2pgimport.log"
+    importBid = true
 }
 
 task importUmweltzieleMJPNL(type: Ili2pgReplace, dependsOn: 'importKatalogeMJPNL') {
@@ -63,6 +65,7 @@ task importUmweltzieleMJPNL(type: Ili2pgReplace, dependsOn: 'importKatalogeMJPNL
     dataFile = "upload/mjpnl_init.xtf"
     dataset = "MJPNL_Umweltziele"
     logFile = "ili2pgimport.log"
+    importBid = true
 }
 
 task downloadData(dependsOn: 'importUmweltzieleMJPNL') {
