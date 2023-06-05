@@ -29,15 +29,15 @@ FROM
   ;
   
 /* fkey update abrechnung_per_leistung zu abrechung_per_vereinbarung */  
-UPDATE arp_mjpnl_v1.mjpnl_abrechnung_per_leistung abr_lstg
+UPDATE ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung abr_lstg
 SET abrechnungpervereinbarung=abr_vbg.t_id
 FROM
-   arp_mjpnl_v1.mjpnl_vereinbarung vbg,
-   arp_mjpnl_v1.mjpnl_abrechnung_per_vereinbarung abr_vbg
+   ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg,
+   ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung abr_vbg
 WHERE 
    abr_lstg.vereinbarung != 9999999
    AND vbg.t_id = abr_lstg.vereinbarung 
    AND vbg.vereinbarungs_nr = abr_vbg.vereinbarungs_nr
    AND abr_vbg.status_abrechnung = abr_lstg.status_abrechnung
-   AND abr_vbg.datum_abrechnung = abr_lstg.datum_abrechnung
+   AND ( abr_vbg.datum_abrechnung = abr_lstg.datum_abrechnung OR (abr_lstg.datum_abrechnung IS NULL AND abr_vbg.datum_abrechnung IS NULL ) )
 ;

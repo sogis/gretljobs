@@ -49,7 +49,7 @@ tmp_grundbeitrag_baeume AS (
       SUM(anzahl_einheiten) AS anzahl_grundbeitrag
     FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung
     WHERE leistung_beschrieb = 'Grundbeitrag (Bäume)'
-      AND ( status_abrechnung != 'ausbezahlt' OR datum_abrechnung >= '2023-01-01' )
+      AND auszahlungsjahr = 2023
     GROUP BY vereinbarung
 ),
 -- summe anzahl der bäume auf der 23er leistungen dieser art (Erschwernis (E-B)) lesen
@@ -59,7 +59,7 @@ tmp_erschwernis_baeume AS (
       SUM(anzahl_einheiten) AS anzahl_erschwernis
     FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung
     WHERE leistung_beschrieb = 'Erschwernis (E-B)'
-      AND ( status_abrechnung != 'ausbezahlt' OR datum_abrechnung >= '2023-01-01' )
+      AND auszahlungsjahr = 2023
     GROUP BY vereinbarung
 ),
 -- summe anzahl der bäume auf der 23er leistungen dieser art (Bes. Strukturvielfalt (S-B)) lesen
@@ -69,7 +69,7 @@ tmp_40cm_baeume AS (
       SUM(anzahl_einheiten) AS anzahl_40cm
     FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung
     WHERE leistung_beschrieb = 'Bes. Strukturvielfalt (S-B)'
-      AND ( status_abrechnung != 'ausbezahlt' OR datum_abrechnung >= '2023-01-01' )
+      AND auszahlungsjahr = 2023
     GROUP BY vereinbarung
 ),
 tmp2 AS ( 
