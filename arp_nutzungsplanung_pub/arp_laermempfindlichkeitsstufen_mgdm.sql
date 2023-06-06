@@ -122,7 +122,8 @@ SELECT
 FROM 
 (
     SELECT 
-        ST_GeometryN(ST_CollectionExtract(ST_MakeValid(ST_RemoveRepeatedPoints(ST_SnapToGrid(flaeche.geometrie, 0.001))), 3), 1) AS geometrie,
+	    DISTINCT ON (flaeche.t_id) --Wenn es mehrere Typen mit der gleichen Bezeichnung (typ.bezeichnung) gibt, werden die Geometrien verdoppelt. Vielleicht anders lösen bar als mit DISTINCT.
+        flaeche.geometrie AS geometrie,
         flaeche.rechtsstatus,  
         flaeche.publiziertab,
         flaeche.bemerkungen,
@@ -134,24 +135,12 @@ FROM
         LEFT JOIN arp_laermempfindlichkeitsstufen_mgdm_v1.geobasisdaten_typ AS mgdm_typ
         ON mgdm_typ.bezeichnung = typ.bezeichnung
     WHERE
-        typ.typ_kt IN 
-        (
-            'N680_Empfindlichkeitsstufe_I', 
-            'N681_Empfindlichkeitsstufe_II', 
-            'N682_Empfindlichkeitsstufe_II_aufgestuft', 
-            'N683_Empfindlichkeitsstufe_III', 
-            'N684_Empfindlichkeitsstufe_III_aufgestuft', 
-            'N685_Empfindlichkeitsstufe_IV',
-            'N686_keine_Empfindlichkeitsstufe'
-        )
-    AND
         flaeche.rechtsstatus = 'inKraft'
     AND 
         flaeche.t_datasetname::int4 = ${bfsnr_param}
 ) as foo,
     basket
-WHERE 
-    ST_Area(geometrie) > 0
+
 ;
 
 -- DOKUMENTE
