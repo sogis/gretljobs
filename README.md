@@ -372,29 +372,36 @@ Danach kann der GRETL-Container gestartet werden. Beispiel-Aufruf:
 
 ```
 docker pull sogis/gretl:latest
-./start-gretl.sh --docker-image sogis/gretl:latest [--docker-network NETWORK] --job-directory $PWD/jobname [taskName...] [--option-name...]
+docker run -i --rm --name gretl --user $UID \
+    --entrypoint=gretl \
+    -v $HOME/gretljobs.properties:/home/gradle/.gradle/gradle.properties \
+    -v $PWD/MY-JOB-NAME:/home/gradle/project \
+    --network MY-NETWORK-NAME \
+    sogis/gretl:latest [taskName...] [--option-name...]
 ```
 Andere Variante, falls auch Zugriff auf Dateien ausserhalb des Job-Verzeichnis
 benötigt wird:
 ```
 docker pull sogis/gretl:latest
-./start-gretl.sh --docker-image sogis/gretl:latest [--docker-network NETWORK] --job-directory $PWD --project-dir jobname [taskName...] [--option-name...]
+docker run -i --rm --name gretl --user $UID \
+    --entrypoint=gretl \
+    -v $HOME/gretljobs.properties:/home/gradle/.gradle/gradle.properties \
+    -v $PWD:/home/gradle/project \
+    --network MY-NETWORK-NAME \
+    sogis/gretl:latest --project-dir MY-JOB-NAME [taskName...] [--option-name...]
 ```
 
 
-Mit `--docker-image IMAGE:TAG` wird angegeben,
-welches Image man starten möchte.
+Mit `-v $PWD/MY-JOB-NAME:...` wird
+das Verzeichnis zum auszuführenden Job angegeben.
+Dies muss ein absoluter Pfad sein;
+deshalb steht hier der Vorschlag, `$PWD` zu verwenden.
 
-Mit `--docker-network NETWORK` (optional) kann angegeben werden,
+Mit `--network MY-NETWORK-NAME` (optional) kann angegeben werden,
 dass der GRETL-Container an ein bestimmtes Docker-Netzwerk
 angebunden werden soll.
 (Die Namen der verfügbaren Docker-Netzwerke
 können mit dem Befehl `docker network ls` ermittelt werden.)
-
-Mit `--job-directory $PWD/jobname` wird
-das Verzeichnis zum auszuführenden Job angegeben.
-Dies muss ein absoluter Pfad sein;
-deshalb steht hier der Vorschlag, `$PWD` zu verwenden.
 
 Mit `[taskName...]` (optional) können ein oder mehrere Tasks angegeben werden,
 die von GRETL ausgeführt werden sollen.
