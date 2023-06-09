@@ -26,14 +26,6 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-# Pass any environment variable starting with ORG_GRADLE_PROJECT_
-# to the container. This makes it available as a variable in the Gradle script.
-# Example: The value of ORG_GRADLE_PROJECT_dbUriPub can be accessed
-# with the variable dbUriPub in the Gradle script.
-for envvar in $(env | grep ORG_GRADLE_PROJECT_); do
-    envvars_string+="--env ${envvar} "
-done
-
 # Build a string containing the --network ... option if the --docker-network option has been set
 if [[ -v docker_network ]]; then
     declare network_string="--network ${docker_network}"
@@ -59,7 +51,6 @@ mkdir -p /tmp/gretl-share
 # 1. use a shell as entry point
 # 2. mount job directory as volume
 # 3. mount /tmp directory as GRETL share
-# 4. Pass all environment variables starting with ORG_GRADLE_PROJECT_ to the container
 # 5. run as current user to avoid permission problems on generated .gradle directory
 # 6. connect container to a specific docker network if specified by the user
 # 7. run gretl image passed by the user and gretl command with given parameters
@@ -68,7 +59,7 @@ docker run -i --rm --name gretl \
     --entrypoint="//bin/sh" \
     -v "/${job_directory}":/home/gradle/project \
     -v //tmp/gretl-share:/tmp/gretl-share \
-     ${envvars_string} \
+    -v $HOME/gretljobs.properties:/home/gradle/.gradle/gradle.properties \
     --user $UID \
     ${network_string} \
     "$docker_image" "-c" "$gretl_cmd"
