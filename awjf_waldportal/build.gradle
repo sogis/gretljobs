@@ -109,7 +109,7 @@ task publishEdit (type: Publisher, dependsOn: importWaldportal){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dataIdent = "ch.so.awjf.waldportal"
     modelsToPublish = 'SO_AWJF_Waldportal_20221216'
-    sourcePath = Paths.get(pathToTempFolder, xtfFileName)
+    sourcePath = file(Paths.get(pathToTempFolder, xtfFileName))
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
