@@ -353,16 +353,21 @@ docker exec -e PGHOST=/tmp -it gretljobs_edit-db_1 psql --single-transaction -d 
 ## GRETL Docker Image verwenden
 
 Für die Entwicklung von GRETL-Jobs
-kann GRETL mit einem Wrapper-Skript als Docker-Container gestartet werden.
+kann GRETL als Docker-Container gestartet werden.
 
-Zunächst müssen die Verbindungsparameter zu den DBs konfiguriert werden:
+Hierfür müssen zunächst die Verbindungsparameter zu den DBs
+und andere benötigte Variablen konfiguriert werden.
+Diese platziert man in einer Datei `gretljobs.properties`
+in seinem Home-Verzeichnis.
+Der Inhalt der Datei sieht z.B. so aus:
+
 ```
-export ORG_GRADLE_PROJECT_dbUriEdit=jdbc:postgresql://edit-db/edit
-export ORG_GRADLE_PROJECT_dbUserEdit=gretl
-export ORG_GRADLE_PROJECT_dbPwdEdit=gretl
-export ORG_GRADLE_PROJECT_dbUriPub=jdbc:postgresql://pub-db/pub
-export ORG_GRADLE_PROJECT_dbUserPub=gretl
-export ORG_GRADLE_PROJECT_dbPwdPub=gretl
+dbUriEdit=jdbc:postgresql://edit-db/edit
+dbUserEdit=gretl
+dbPwdEdit=gretl
+dbUriPub=jdbc:postgresql://pub-db/pub
+dbUserPub=gretl
+dbPwdPub=gretl
 ```
 
 Danach kann der GRETL-Container gestartet werden. Beispiel-Aufruf:
@@ -402,27 +407,6 @@ Die Gradle-Optionen sind unter
 https://docs.gradle.org/current/userguide/command_line_interface.html
 beschrieben oder aus der Ausgabe des Befehls `gradle -h` ersichtlich.
 Die Reihenfolge aller Optionen ist beliebig.
-
-Benötigt ein GRETL-Job Zugriff auf Datenbanken,
-können für die Entwicklung lokal Umgebungsvariablen
-nach dem folgenden Muster gesetzt werden;
-sie werden vom Skript `start-gretl.sh` dem GRETL-Container übergeben
-und können im `build.gradle` als Variablen genutzt werden
-(Namen siehe bei der Beschreibung von *build.gradle*):
-
-```
-export ORG_GRADLE_PROJECT_dbUriFoo=jdbc:postgresql://127.0.0.1/foodb
-export ORG_GRADLE_PROJECT_dbUserFoo=foo
-export ORG_GRADLE_PROJECT_dbPwdFoo=foopassword
-export ORG_GRADLE_PROJECT_dbUriBar=jdbc:postgresql://localhost/bardb?sslmode=require
-export ORG_GRADLE_PROJECT_dbUserBar=bar
-export ORG_GRADLE_PROJECT_dbPwdBar=barpassword
-export ORG_GRADLE_PROJECT_dbUriBaz=jdbc:postgresql://localhost:5432/bazdb?sslmode=require
-export ORG_GRADLE_PROJECT_dbUserBaz=barbar
-export ORG_GRADLE_PROJECT_dbPwdBaz=barbarpassword
-```
-
-Unter Ubuntu können diese Befehle in die Datei ~/.profile eingetragen werden, damit die Umgebungsvariablen immer verfügbar sind.
 
 
 ### Troubleshooting
