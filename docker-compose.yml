@@ -1,5 +1,12 @@
-version: '3'
+version: '3.2'
 services:
+  gretl:
+    image: sogis/gretl:2.2.350
+    profiles: ["app"]
+    entrypoint: ["gretl", "--project-cache-dir=/home/gradle/projectcache"]
+    volumes:
+      - $HOME/gretljobs.properties:/home/gradle/.gradle/gradle.properties
+      - .:/home/gradle/project
   edit-db:
     build: .
     image: sogis/postgis-db:localbuild

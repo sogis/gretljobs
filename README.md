@@ -269,61 +269,91 @@ damit alle Jenkinsfiles soweit möglich identisch sind.
 
 Die speziellen Fälle und die jeweiligen Vorlagen sind in [jenkinsfile_docs.md](jenkinsfile_docs.md) beschrieben.
 
-## Entwicklungs-DBs starten
 
-Zum starten von zwei leeren Entwicklungs-DBs
-steht in diesem Repository
-eine Konfiguration für Docker Compose zur Verfügung.
-Mit folgendem Befehl werden diese DBs gestartet;
-danach kann man Daten importieren
-und mit der Entwicklung von GRETL-Jobs beginnen.
+## GRETL Docker Image verwenden
 
-Zwei Docker-DB-Server starten; einer enthält die *edit*-DB, der andere die *pub*-DB:
-```
-docker-compose up --build
-```
-(Die Option `--build` kann man auch weglassen.
-Sie ist nur dann nötig,
-wenn am Dockerfile oder am Basis-Image etwas geändert hat.)
+Für die Entwicklung von GRETL-Jobs
+kann GRETL mit `docker compose` als Docker-Container gestartet werden.
 
-Nun können in den DBs nach Belieben Schemas angelegt und Daten importiert werden.
-Dies kann z.B. mit *ili2pg* erfolgen
-oder durch Ausführen von SQL-Skripten
-oder durch Restoren aus einem Dump.
+Hierfür müssen zunächst die Verbindungsparameter zu den DBs
+und andere benötigte Variablen konfiguriert werden.
+Diese platziert man in einer Datei `gretljobs.properties`
+in seinem Home-Verzeichnis.
+Der Inhalt der Datei sieht z.B. so aus:
 
-Die Daten bleiben auch
-z.B. nach `docker-compose stop` oder `docker-compose down` erhalten.
-Falls man mit leeren DBs neu starten möchte:
 ```
-docker-compose down
-docker volume prune
+dbUriEdit=jdbc:postgresql://edit-db/edit
+dbUserEdit=gretl
+dbPwdEdit=gretl
+dbUriPub=jdbc:postgresql://pub-db/pub
+dbUserPub=gretl
+dbPwdPub=gretl
 ```
-Dabei werden alle Docker Volumes, die nicht an einen Container angebunden sind,
-unwiderruflich gelöscht.
-(Falls man nur die Volumes dieser Entwicklungs-DBs löschen möchte,
-kann man den folgenden Befehl verwenden:
-`docker volume prune --filter 'label=com.docker.compose.project=gretljobs'`
-Wobei der *Value* des Labels nicht zwingend immer *gretljobs* ist,
+
+### Entwicklungs-DBs starten
+Falls man sie benötigt, startet man zunächst zwei DB-Container;
+einer enthält eine *edit*-DB, der andere eine *pub*-DB:
+```
+docker compose up -d
+```
+Nun legt man in diesen DBs die benötigten Schemas an
+und importiert nach Bedarf Daten,
+z.B. mit *ili2pg*, durch Ausführen eines Schema-Jobs,
+durch Ausführen von SQL-Skripten oder durch Restoren aus einem Dump.
+
+### GRETL-Job ausführen
+Der GRETL-Job wird mit folgendem Befehl gestartet:
+```
+docker compose run --rm -u $UID gretl --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
+```
+
+`MY_JOB_NAME` muss durch den Namen des auszuführenden GRETL-Jobs
+(den Ordnernamen) ersetzt werden.
+
+Mit `[OPTION...]` (optional) können beliebige Gradle-Optionen übergeben werden,
+auch z.B. `-Pmyprop=myvalue` und `-Dmyprop=myvalue`.
+
+Mit `[TASK...]` (optional) kann ein oder mehrere Tasks angegeben werden,
+die von GRETL ausgeführt werden sollen.
+Falls man nichts angibt,
+werden die allenfalls in `build.gradle` definierten `defaultTasks` ausgeführt.
+
+### Entwicklungs-DBs stoppen
+Die Entwicklungs-DB stoppt man mit
+```
+docker compose down
+```
+
+### Hinweise zu den DB-Containern
+#### Daten in den DBs löschen
+Die Daten in den DBs bleiben auch
+nach `docker-compose stop` oder `docker-compose down` erhalten.
+Falls man mit leeren DBs neu starten möchte,
+löscht man (nach dem Stoppen der DB-Container) deren Volumes
+mit folgendem Befehl:
+```
+docker volume prune --all --filter 'label=com.docker.compose.project=gretljobs'
+```
+(Wobei der *Value* des Labels nicht zwingend immer *gretljobs* ist,
 sondern vom Verzeichnisnamen abhängt, in welchem `docker-compose.yml` liegt;
 man kann ihn durch `docker volume inspect VOLUMENAME` herausfinden.)
 
+#### Verbindungsparameter für die DBs
 Die DBs sind mit folgenden Verbindungsparametern erreichbar:
 
-#### Edit-DB
-
+*Edit-DB:*
 * Hostname: `localhost`
 * Port: `54321`
 * DB-Name: `edit`
 * Benutzer: `ddluser` (zum Anlegen von Schemen, Tabellen usw.) bzw. `dmluser` oder `gretl` (für Lese- und Schreibzugriff); das Passwort lautet jeweils gleich wie der Benutzername
 
-#### Publikations-DB
-
+*Publikations-DB:*
 * Hostname: `localhost`
 * Port: `54322`
 * DB-Name: `pub`
 * Benutzer: `ddluser` (zum Anlegen von Schemen, Tabellen usw.) bzw. `dmluser` oder `gretl` (für Lese- und Schreibzugriff); das Passwort lautet jeweils gleich wie der Benutzername
 
-### Die Rollen (Benutzer und Gruppen) der produktiven DBs importieren
+#### Die Rollen (Benutzer und Gruppen) der produktiven DBs importieren
 
 Um auch die in den produktiven DBs vorhandenen DB-Rollen
 in den Entwicklungs-DBs verfügbar zu haben,
@@ -347,74 +377,6 @@ docker exec -e PGHOST=/tmp -it gretljobs_pub-db_1 psql --single-transaction -d p
 docker cp /tmp/globals_geodb.rootso.org.dmp gretljobs_edit-db_1:/tmp
 docker exec -e PGHOST=/tmp -it gretljobs_edit-db_1 psql --single-transaction -d edit -f /tmp/globals_geodb.rootso.org.dmp
 ```
-
-
-
-## GRETL Docker Image verwenden
-
-Für die Entwicklung von GRETL-Jobs
-kann GRETL als Docker-Container gestartet werden.
-
-Hierfür müssen zunächst die Verbindungsparameter zu den DBs
-und andere benötigte Variablen konfiguriert werden.
-Diese platziert man in einer Datei `gretljobs.properties`
-in seinem Home-Verzeichnis.
-Der Inhalt der Datei sieht z.B. so aus:
-
-```
-dbUriEdit=jdbc:postgresql://edit-db/edit
-dbUserEdit=gretl
-dbPwdEdit=gretl
-dbUriPub=jdbc:postgresql://pub-db/pub
-dbUserPub=gretl
-dbPwdPub=gretl
-```
-
-Danach kann der GRETL-Container gestartet werden. Beispiel-Aufruf:
-
-```
-docker pull sogis/gretl:latest
-docker run -i --rm --name gretl --user $UID \
-    --entrypoint=gretl \
-    -v $HOME/gretljobs.properties:/home/gradle/.gradle/gradle.properties \
-    -v $PWD/MY-JOB-NAME:/home/gradle/project \
-    --network MY-NETWORK-NAME \
-    sogis/gretl:latest [taskName...] [--option-name...]
-```
-Andere Variante, falls auch Zugriff auf Dateien ausserhalb des Job-Verzeichnis
-benötigt wird:
-```
-docker pull sogis/gretl:latest
-docker run -i --rm --name gretl --user $UID \
-    --entrypoint=gretl \
-    -v $HOME/gretljobs.properties:/home/gradle/.gradle/gradle.properties \
-    -v $PWD:/home/gradle/project \
-    --network MY-NETWORK-NAME \
-    sogis/gretl:latest --project-dir MY-JOB-NAME [taskName...] [--option-name...]
-```
-
-
-Mit `-v $PWD/MY-JOB-NAME:...` wird
-das Verzeichnis zum auszuführenden Job angegeben.
-Dies muss ein absoluter Pfad sein;
-deshalb steht hier der Vorschlag, `$PWD` zu verwenden.
-
-Mit `--network MY-NETWORK-NAME` (optional) kann angegeben werden,
-dass der GRETL-Container an ein bestimmtes Docker-Netzwerk
-angebunden werden soll.
-(Die Namen der verfügbaren Docker-Netzwerke
-können mit dem Befehl `docker network ls` ermittelt werden.)
-
-Mit `[taskName...]` (optional) können ein oder mehrere Tasks angegeben werden,
-die von GRETL ausgeführt werden sollen.
-
-Mit `[--option-name...]` können beliebige Gradle-Optionen verwendet werden,
-auch z.B. `-Pmyprop=myvalue` und `-Dmyprop=myvalue`.
-Die Gradle-Optionen sind unter
-https://docs.gradle.org/current/userguide/command_line_interface.html
-beschrieben oder aus der Ausgabe des Befehls `gradle -h` ersichtlich.
-Die Reihenfolge aller Optionen ist beliebig.
-
 
 ### Troubleshooting
 Wenn folgende Fehlermeldung auftritt, muss das *.gradle* Ordner im Job Ordner gelöscht werden.
