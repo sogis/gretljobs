@@ -296,10 +296,48 @@ einer enthält eine *edit*-DB, der andere eine *pub*-DB:
 ```
 docker compose up -d
 ```
+
+### Schema-Job ausführen
 Nun legt man in diesen DBs die benötigten Schemas an
 und importiert nach Bedarf Daten,
 z.B. mit *ili2pg*, durch Ausführen eines Schema-Jobs,
 durch Ausführen von SQL-Skripten oder durch Restoren aus einem Dump.
+
+Schema-Jobs kann man ebenfalls mit `docker compose`
+aus dem vorliegenden Verzeichnis heraus ausführen.
+Voraussetzung ist, dass das Repository *schema-jobs*
+in einem Ordner mit Name `schema-jobs` vorliegt;
+dieser muss sich auf derselben Ordner-Hierarchiestufe
+wie der Ordner mit den GRETL-Jobs befinden.
+
+Ein Schema-Job wird mit folgendem Befehl gestartet:
+```
+docker compose run --rm -u $UID --workdir /home/gradle/schema-jobs/shared/schema \
+  gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] [TASK...]
+```
+Beispiel:
+```
+docker compose run --rm -u $UID --workdir /home/gradle/schema-jobs/shared/schema \
+  gretl -PtopicName=agi_mopublic -PschemaDirName=schema_pub --console=rich createSchema configureSchema
+```
+
+`MY_TOPIC_NAME` muss durch den Namen des Topics (den Ordnernamen)
+und `MY_SCHEMA_DIRECTORY_NAME` durch den Namen des Unterordners,
+in welchem die Schema-Eigenschaften definiert sind,
+ersetzt werden.
+
+Die Option `-PdbName=MY_DB_NAME` ist nur in Ausnahmefällen nötig,
+z.B. wenn das Schema in einer anderen DB angelegt werden soll,
+als in der Datei `schema.properties` definiert ist.
+
+Mit `[OPTION...]` (optional) können beliebige Gradle-Optionen übergeben werden,
+auch z.B. `-Pmyprop=myvalue` und `-Dmyprop=myvalue`.
+Die Gradle-Optionen sind unter
+https://docs.gradle.org/current/userguide/command_line_interface.html
+beschrieben oder aus der Ausgabe des Befehls `gradle -h` ersichtlich.
+
+Mit `[TASK...]` (optional) kann ein oder mehrere Tasks angegeben werden,
+die von GRETL ausgeführt werden sollen, z.B. `dropSchema createSchema configureSchema`
 
 ### GRETL-Job ausführen
 Der GRETL-Job wird mit folgendem Befehl gestartet:

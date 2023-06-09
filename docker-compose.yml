@@ -7,6 +7,7 @@ services:
     volumes:
       - $HOME/gretljobs.properties:/home/gradle/.gradle/gradle.properties
       - .:/home/gradle/project
+      - ../schema-jobs:/home/gradle/schema-jobs
   edit-db:
     build: .
     image: sogis/postgis-db:localbuild
