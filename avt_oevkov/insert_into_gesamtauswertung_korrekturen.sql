@@ -30,8 +30,7 @@ INSERT INTO
         FROM
             avt_oevkov_${currentYear}_v1.auswertung_abfahrten_korrigiert AS korrektur
             LEFT JOIN avt_oevkov_${currentYear}_v1.sachdaten_haltestelle_anrechnung AS anrechnung
-            ON
-                korrektur.haltestellenname = anrechnung.haltestellenname
+                ON korrektur.haltestellenname = anrechnung.haltestellenname
         WHERE
             korrektur.haltestellenname||korrektur.linie NOT IN (
             SELECT

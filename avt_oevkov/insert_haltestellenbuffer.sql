@@ -23,6 +23,7 @@ INSERT INTO avt_oevkov_${currentYear}_v1.so_geodaten_haltestellenbuffer
             avt_oevkov_${currentYear}_v1.so_geodaten_haltestellen AS haltestelle
             LEFT JOIN avt_oevkov_${currentYear}_v1.auswertung_gesamtauswertung AS auswertung
                 ON haltestelle.haltestellenname = auswertung.haltestellenname 
-        WHERE auswertung.anrechnung > 0
+        WHERE
+            auswertung.anrechnung > 0
     )
 ;
