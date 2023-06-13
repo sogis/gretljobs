@@ -105,7 +105,7 @@ task importWaldportal(type: Ili2pgImport, dependsOn: unpackFile) {
     deleteData = true
 }
 
-task publish (type: Publisher, dependsOn: importWaldportal){
+task publishPub (type: Publisher, dependsOn: importWaldportal){
     dataIdent = "ch.so.awjf.waldportal"
     modelsToPublish = 'SO_AWJF_Waldportal_20221216'
     sourcePath = file(Paths.get(pathToTempFolder, xtfFileName))
@@ -116,7 +116,7 @@ task publish (type: Publisher, dependsOn: importWaldportal){
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
 
-task importWaldportalPub(type: Ili2pgImport, dependsOn: publish) {
+task importWaldportalPub(type: Ili2pgImport, dependsOn: publishPub) {
     description = 'Import einmal in der Woche die Waldportal-Daten in der Publikationsdatenbank'
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = "awjf_waldportal_pub_v1"
