@@ -44,7 +44,7 @@ task download () {
 }
 
 // Über die ersten 10 Zeichen des Filenamens wird erruiert, welches das neuste File ist
-// TODO: Abklären, ob das IMMER so ist! 
+
 task show_latest_file (dependsOn:download){
     doLast {
         def latestFile = null
@@ -106,7 +106,7 @@ task importWaldportal(type: Ili2pgImport, dependsOn: unpackFile) {
 }
 
 task publish (type: Publisher, dependsOn: importWaldportal){
-    dataIdent = "ch.so.awjf.waldportal"
+    dataIdent = "ch.so.awjf.waldmassnahmen_objekte"
     modelsToPublish = 'SO_AWJF_Waldportal_20221216'
     sourcePath = file(Paths.get(pathToTempFolder, xtfFileName))
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
