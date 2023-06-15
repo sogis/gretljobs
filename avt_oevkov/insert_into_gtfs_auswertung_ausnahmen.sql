@@ -85,7 +85,14 @@ INSERT INTO
          linie.linienname,
          agency.unternehmer,
          0 as gtfs_count,
-         1 AS verkehrsmittel
+        CASE
+            WHEN route_desc IN ('B', 'BN', 'BP', 'EXB', 'KB', 'NFB')
+                THEN 'Bus'
+            WHEN route_desc IN ('NFT', 'T')
+                THEN 'Tram'
+            WHEN route_desc IN ('R', 'RB', 'RE', 'S', 'SN', 'TER')
+                THEN 'Bahn'
+            END AS verkehrsmittel
      FROM
             avt_oevkov_${currentYear}_v1.gtfs_agency AS agency
             LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_route AS route

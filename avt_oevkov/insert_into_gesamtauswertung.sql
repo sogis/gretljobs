@@ -38,8 +38,7 @@ WITH gtfs_abfahrten AS (
              avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs AS auswertung
              LEFT JOIN avt_oevkov_${currentYear}_v1.auswertung_abfahrten_korrigiert AS korrektur
                  ON (auswertung.linie = korrektur.linie
-                     AND
-                     (auswertung.haltestellenname = korrektur.haltestellenname OR korrektur.haltestellenname = '--- Alle')
+                 AND (auswertung.haltestellenname = korrektur.haltestellenname OR korrektur.haltestellenname = '--- Alle')
                     )
         GROUP BY
             auswertung.haltestellenname,
@@ -53,13 +52,6 @@ WITH gtfs_abfahrten AS (
             auswertung.anzahl_abfahrten_linie,
             korrektur.abfahrten_korrigiert,
             bemerkungen
-        ),
-        avt_verkehrsmittel AS (
-        SELECT
-            verkehrsmittel,
-            verkehrsmittel_text
-        FROM
-            avt_oevkov_${currentYear}_v1.sachdaten_verkehrsmittel
         )
         SELECT
             anrechnung.gemeindename,
@@ -150,7 +142,7 @@ WITH gtfs_abfahrten AS (
             avt_oevkov_${currentYear}_v1.sachdaten_haltestelle_anrechnung AS anrechnung
             LEFT JOIN gtfs_abfahrten
                 ON anrechnung.haltestellenname = gtfs_abfahrten.haltestellenname
-            LEFT JOIN avt_verkehrsmittel
+            LEFT JOIN avt_oevkov_${currentYear}_v1.sachdaten_verkehrsmittel AS avt_verkehrsmittel
                 ON avt_verkehrsmittel.verkehrsmittel = gtfs_abfahrten.verkehrsmittel
             LEFT JOIN avt_oevkov_${currentYear}_v1.auswertung_abfahrten_korrigiert AS korrektur
                  ON korrektur.haltestellenname = gtfs_abfahrten.haltestellenname

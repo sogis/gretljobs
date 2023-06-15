@@ -92,12 +92,12 @@ INSERT INTO
             stoptime.pickup_type,
             count(departure_time) AS gtfs_count,
             CASE
-                -- Bus
                 WHEN route_desc IN ('B', 'BN', 'BP', 'EXB', 'KB', 'NFB')
-                     THEN 1
-                -- Regionalverkehr
-                WHEN route_desc IN ('NFT', 'R', 'RB', 'RE', 'S', 'SN', 'T', 'TER')
-                     THEN 3
+                    THEN 'Bus'
+                WHEN route_desc IN ('NFT', 'T')
+                    THEN 'Tram'
+                WHEN route_desc IN ('R', 'RB', 'RE', 'S', 'SN', 'TER')
+                    THEN 'Bahn'
             END AS verkehrsmittel
         FROM
             avt_oevkov_${currentYear}_v1.gtfs_agency AS agency
@@ -457,24 +457,24 @@ INSERT INTO
         substring(linienname from 1 for 4) = 'L510'
     AND
         route_desc = 'RE'
-    AND
-        -- Bedingung Halt in Zofingen
-        trip_id IN (
-            SELECT
-                alle_trips_stichtag.trip_id
-            FROM
-                alle_trips_stichtag
-                LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
-                    ON stoptime_einschraenkung.trip_id = alle_trips_stichtag.trip_id
-                LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stop AS stop_einschraenkung
-                    ON stop_einschraenkung.stop_id = stoptime_einschraenkung.stop_id
-            WHERE
-                stop_einschraenkung.stop_name = 'Zofingen'
-            AND
-                trip_headsign = 'Luzern'
-            AND
-                route_desc = 'RE'
-        )
+    --AND
+        ---- Bedingung Halt in Zofingen
+        --trip_id IN (
+            --SELECT
+                --alle_trips_stichtag.trip_id
+            --FROM
+                --alle_trips_stichtag
+                --LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
+                    --ON stoptime_einschraenkung.trip_id = alle_trips_stichtag.trip_id
+                --LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stop AS stop_einschraenkung
+                    --ON stop_einschraenkung.stop_id = stoptime_einschraenkung.stop_id
+            --WHERE
+                --stop_einschraenkung.stop_name = 'Zofingen'
+            --AND
+                --trip_headsign = 'Luzern'
+            --AND
+                --route_desc = 'RE'
+        --)
     GROUP BY
         stop_name,
         route_id,
