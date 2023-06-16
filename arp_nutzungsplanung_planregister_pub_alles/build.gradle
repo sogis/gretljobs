@@ -51,8 +51,9 @@ task zipPlanregister(type: Tar, dependsOn: 'export_planregister_pub') {
     from "."
     include PlanregisterXtfFileName
     destinationDir(file(pathToTempFolder))
-    extension 'gz'
+    //extension 'gz'
     compression = Compression.GZIP
+
 }
 
 task uploadPlanregister(dependsOn: 'zipPlanregister') {
