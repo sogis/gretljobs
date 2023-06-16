@@ -8,7 +8,7 @@ import java.io.File
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'uploadPlanregister'
+defaultTasks 'zipPlanregister'
 
 //Für Planregister
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
