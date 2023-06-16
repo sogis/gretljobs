@@ -63,7 +63,14 @@ task uploadPlanregister(dependsOn: 'zipPlanregister') {
     //def serverUrl = "https://testweb.so.ch/typo3/api/digiplan"
 
     doLast {
-        def response = ["curl", "-i", "-v", "-u", digiplanLogin, "--data-binary", "@"+zipFilePath, "-H", "Content-Type: application/xml", "-H", "Content-Encoding: gzip", "-X", "POST", serverUrl].execute().text
+	    println digiplanLogin
+	    println zipFilePath
+	    println serverUrl
+
+	    def command = ["curl", "-i", "-v", "-u", digiplanLogin, "--data-binary", "@"+zipFilePath, "-H", "Content-Type: application/xml", "-H", "Content-Encoding: gzip", "-X", "POST", serverUrl]
+        println command
+        
+        def response = command.execute().text
 		println(response)
 
         if (!response.contains("HTTP/2 202")) {
