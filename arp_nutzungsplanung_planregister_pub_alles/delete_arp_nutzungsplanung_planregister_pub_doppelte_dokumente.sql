@@ -15,6 +15,8 @@ FROM
     arp_nutzungsplanung_planregister_pub_v1.planregister_dokument b
 WHERE
     a.dokument_url = b.dokument_url
+	AND
+	a.gemeinde = b.gemeinde
     AND
     a.t_id < b.t_id
 )
