@@ -50,8 +50,8 @@ task zipPlanregister(type: Tar, dependsOn: 'export_planregister_pub') {
     archiveName = PlanregisterZipFileName
     from "."
     include PlanregisterXtfFileName
-    destinationDir(file(pathToTempFolder))
-    extension 'gz'
+    destinationDir = file(pathToTempFolder)
+    extension = 'gz'
     compression = Compression.GZIP
 
 }
