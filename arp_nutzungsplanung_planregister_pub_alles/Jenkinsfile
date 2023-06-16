@@ -10,7 +10,7 @@ pipeline {
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
                         sh 'gretl'
-						zip zipFile: 'xtfdata.zip', glob: '*.gz', archive: true
+						zip zipFile: 'xtfdata.zip', glob: '*', archive: true
                     }
                 }
             }
