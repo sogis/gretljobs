@@ -55,7 +55,7 @@ task zipPlanregister(type: Tar, dependsOn: 'export_planregister_pub') {
     compression = Compression.GZIP
 
 }
-
+/*
 task uploadPlanregister(dependsOn: 'zipPlanregister') {
 
     def digiplanLogin = digiplanUser + ":" + digiplanPwd
@@ -79,3 +79,4 @@ task uploadPlanregister(dependsOn: 'zipPlanregister') {
         }
     }
 }
+*/
