@@ -48,10 +48,9 @@ task export_planregister_pub(type: Ili2pgExport, dependsOn: 'deleteData_doppelte
 
 task zipPlanregister(type: Tar, dependsOn: 'export_planregister_pub') {
     archiveFileName = PlanregisterZipFileName
-    from "."
-    include PlanregisterXtfFileName
-    destinationDir = file(pathToTempFolder)
-    extension = 'tar.gz'
+    from PlanregisterXtfFileName
+    // include PlanregisterXtfFileName
+    destinationDirectory = file(pathToTempFolder)
     compression = Compression.GZIP
 
 }
