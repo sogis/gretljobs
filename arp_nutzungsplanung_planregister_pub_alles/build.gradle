@@ -51,7 +51,7 @@ task zipPlanregister(type: Tar, dependsOn: 'export_planregister_pub') {
     from "."
     include PlanregisterXtfFileName
     destinationDir = file(pathToTempFolder)
-    extension = 'tar'
+    extension = 'tar.gz'
     compression = Compression.GZIP
 
 }
