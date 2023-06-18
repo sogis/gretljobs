@@ -18,7 +18,9 @@ SELECT
     bewertung_tag,
     bewertung_code_tag.dispname AS bewertung_tag_txt,
     bewertung_nacht,
-    bewertung_code_nacht.dispname AS bewertung_nacht_txt
+    bewertung_code_nacht.dispname AS bewertung_nacht_txt,
+    bewertung_tag_pub,
+    bewertung_nacht_pub
 FROM
     afu_klimaanalyse_v1.ausgangsgroessen_bewertung AS ausgangsgroessen_bewertung
     LEFT JOIN afu_klimaanalyse_v1.ausgangsgroessen_bewertung_kaltluftprozess AS kaltluftprozess_code
