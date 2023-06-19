@@ -43,8 +43,7 @@ task copyData(dependsOn:'validateData') {
 
     doLast {
         def response = ["curl", "--insecure", "-X POST", "-F", "valid_from="+formattedDate, "-F",
-                        "file=@"+xtfFile+, serverUrl
-                        ].execute().text
+                        "file=@"+xtfFile, serverUrl].execute().text
         println(response)
     }
 }
