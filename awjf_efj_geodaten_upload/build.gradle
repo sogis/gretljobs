@@ -31,12 +31,6 @@ task validateData(type: IliValidator, dependsOn: 'exportData') {
     failOnError = true
 }
 
-/*
-task copyData(type:Exec, dependsOn:'validateData') {
-	commandLine 'curl --insecure -i -X POST -F file=@'+xtfFile+' -F valid_from='+formattedDate+' https://efj-services-i.verw.rootso.org/webapi/api/geo/geodata'
-}
-*/
-
 task copyData(dependsOn:'validateData') {
 
     def serverUrl = "https://efj-services-i.verw.rootso.org/webapi/api/geo/geodata"
