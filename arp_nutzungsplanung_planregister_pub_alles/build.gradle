@@ -15,8 +15,8 @@ def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def iliModelPlanregister = "SO_Nutzungsplanung_Planregister_Publikation_20221115"
 def dbSchemaPlanregister = "arp_nutzungsplanung_planregister_pub_v1"
 def planregisterFileBaseName = "ch.so.arp.planregister"
-def PlanregisterXtfFileName = planregisterFileBaseName+".xml" //Muss xml heissen wegen Planregister
-def PlanregisterZipFileName = planregisterFileBaseName+".gz"
+def planregisterXtfFileName = planregisterFileBaseName+".xml" //Muss xml heissen wegen Planregister
+def planregisterZipFileName = planregisterFileBaseName+".gz"
 
 task transfer_planregister_alles(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -42,7 +42,7 @@ task export_planregister_pub(type: Ili2pgExport, dependsOn: 'deleteData_doppelte
     database = [dbUriPub, dbUserPub, dbPwdPub]
     models = iliModelPlanregister
     dbschema = dbSchemaPlanregister
-    dataFile = file(PlanregisterXtfFileName)
+    dataFile = file(planregisterXtfFileName)
     disableValidation = true
     // Kein Dataset, weil alle Daten enthalten sein sollen. 
 }
@@ -52,8 +52,9 @@ task zipPlanregister(type: Tar, dependsOn: 'export_planregister_pub') {
     destinationDirectory = file(pathToTempFolder)
     extension 'gz'
     compression = Compression.GZIP
-    from (pathToTempFolder) 
-    include planregisterXtfFileName
+    from (pathToTempFolder) {
+        include planregisterXtfFileName
+    }
 }
 /*
 task uploadPlanregister(dependsOn: 'zipPlanregister') {
