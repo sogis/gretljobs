@@ -3,10 +3,17 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'refreshSolr'
+//defaultTasks 'refreshSolr'
+defaultTasks 'testImdasConnection'
 
 def edit = [dbUriEdit, dbUserEdit, dbPwdEdit]
 def pub = [dbUriPub, dbUserPub, dbPwdPub]
+
+task testImdasConnection(type: SqlExecutor){
+    description = 'Temporär zwecks Verbindungstest'
+    database = [dbUriImdaspro, dbUserImdaspro, dbPwdImdaspro]
+    sqlFiles = ['connTest.sql']
+}
 
 task tmpTransferLocal(type: Db2Db){
     sourceDb = ['jdbc:postgresql://geodb-i.rootso.org/edit', 'fuu', 'bar']
