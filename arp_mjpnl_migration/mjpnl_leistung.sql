@@ -23,9 +23,11 @@ SELECT
         ELSE extract(YEAR FROM datum_auszahlung) 
     END AS auszahlungsjahr,
     CASE
-        WHEN stat.kurzbez = 'ausbezahlt' THEN 'ausbezahlt'
-        /*WHEN stat.kurzbez = 'übernommen ARP' THEN 'ausbezahlt_vomArpUebernommen'*/
-        ELSE 'bestaetigt'
+        WHEN stat.kurzbez = 'freigegeben' THEN 'freigegeben'
+        WHEN stat.kurzbez = 'in Bearbeitung' THEN 'in_bearbeitung'
+        WHEN stat.kurzbez = 'Intern verrechnet' THEN 'intern_verrechnet'
+        WHEN stat.kurzbez IN ('ausbezahlt', 'erledigt LW', 'übernommen ARP', 'Archiv') THEN 'ausbezahlt'
+        ELSE 'in_bearbeitung'
     END AS status_abrechnung,
     CASE
         WHEN datum_auszahlung = '9999-01-01' THEN NULL
