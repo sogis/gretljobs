@@ -19,8 +19,8 @@ SELECT
     END AS anzahl_einheiten,
     l.betrag AS betrag_total,
     CASE
-        WHEN datum_auszahlung = '9999-01-01' THEN 2023
-        ELSE extract(YEAR FROM datum_auszahlung) 
+        WHEN l.datum_auszahlung = '9999-01-01' THEN 2023
+        ELSE extract(YEAR FROM l.datum_auszahlung) 
     END AS auszahlungsjahr,
     CASE
         WHEN stat.kurzbez = 'freigegeben' THEN 'freigegeben'
@@ -30,7 +30,7 @@ SELECT
         ELSE 'in_bearbeitung'
     END AS status_abrechnung,
     CASE
-        WHEN datum_auszahlung = '9999-01-01' THEN NULL
+        WHEN l.datum_auszahlung = '9999-01-01' THEN NULL
         ELSE l.datum_auszahlung 
     END AS datum_abrechnung,
     COALESCE(l.bemerkung,'') ||
@@ -45,6 +45,14 @@ SELECT
        '\n"gueltigbis":"' || l.gueltigbis::date::text || '"' ||     
     '\n}'::TEXT AS bemerkung,
     TRUE AS migriert,
+    CASE
+        WHEN extract(YEAR FROM l.datum_auszahlung) = 2023 -- wenn aus diesem Jahr und bereits ausbezahlt
+            OR lart.kurzbez IN ( 'Korrektur Vorjahr', 'Unterhaltsbeitrag', 'Pflanzmaterial', 'Kürzung', 'Saatgut' ) -- oder eines der spezifischen Arten
+            OR ( lart.kurzbez = 'Pauschale' AND substr(l.bemerkung,1,2) = 'e ' ) -- oder von der Art Pauschale, aber explizit in Bemerkung markiert
+        THEN TRUE
+        ELSE FALSE
+    END AS einmalig
+AS einmalig,
     9999999 AS abrechnungpervereinbarung,
     9999999 AS vereinbarung
 FROM mjpnatur.leistung l
