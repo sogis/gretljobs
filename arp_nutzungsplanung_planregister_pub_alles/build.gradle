@@ -1,6 +1,7 @@
 // Datenumbau alle Nutzungsplanungsdaten für Planregister und sendet dieses an Typo3
 
 import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.tasks.Curl.MethodType
 import ch.so.agi.gretl.api.TransferSet
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -8,15 +9,16 @@ import java.io.File
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'zipPlanregister'
+defaultTasks 'uploadPlanregister'
 
 //Für Planregister
-def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def iliModelPlanregister = "SO_Nutzungsplanung_Planregister_Publikation_20221115"
 def dbSchemaPlanregister = "arp_nutzungsplanung_planregister_pub_v1"
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def planregisterFileBaseName = "ch.so.arp.planregister"
-def planregisterXtfFileName = planregisterFileBaseName+".xml" //Muss xml heissen wegen Planregister
-def planregisterZipFileName = planregisterFileBaseName+".gz"
+def planregisterXtfFileName = planregisterFileBaseName+".xml"
+def planregisterZipFileName = planregisterFileBaseName+".xml.gz"
 
 task transfer_planregister_alles(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -32,52 +34,32 @@ task transfer_planregister_alles(type: Db2Db) {
     ];
 }
 
-task deleteData_doppelte_dokumente (type: SqlExecutor, dependsOn:transfer_planregister_alles) {
+task deleteData_doppelte_dokumente(type: SqlExecutor, dependsOn:transfer_planregister_alles) {
     description = "Löscht die doppelten Dokumente aus dem Schema arp_nutzungsplanung_planregister_pub" 
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ["delete_arp_nutzungsplanung_planregister_pub_doppelte_dokumente.sql"]
 }
 
-task export_planregister_pub(type: Ili2pgExport, dependsOn: 'deleteData_doppelte_dokumente') {
+task exportPlanregisterPub(type: Ili2pgExport, dependsOn: 'deleteData_doppelte_dokumente') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     models = iliModelPlanregister
     dbschema = dbSchemaPlanregister
-    dataFile = file(planregisterXtfFileName)
+    dataFile = file(Paths.get(pathToTempFolder, planregisterXtfFileName))
     disableValidation = true
     // Kein Dataset, weil alle Daten enthalten sein sollen. 
 }
 
-task zipPlanregister(type: Tar, dependsOn: 'export_planregister_pub') {
-    archiveBaseName = planregisterFileBaseName
-    destinationDirectory = file(pathToTempFolder)
-    extension 'gz'
-    compression = Compression.GZIP
-    from (pathToTempFolder) {
-        include planregisterXtfFileName
-    }
+task zipPlanregister(type: Gzip, dependsOn: 'exportPlanregisterPub') {
+    dataFile = file(Paths.get(pathToTempFolder, planregisterXtfFileName)) 
+    gzipFile = file(Paths.get(pathToTempFolder, planregisterZipFileName)) 
 }
-/*
-task uploadPlanregister(dependsOn: 'zipPlanregister') {
 
-    def digiplanLogin = digiplanUser + ":" + digiplanPwd
-    def zipFilePath = Paths.get(pathToTempFolder.toString(), PlanregisterZipFileName)
-    def serverUrl = "https://so.ch/typo3/api/digiplan"
-    //def serverUrl = "https://testweb.so.ch/typo3/api/digiplan"
-
-    doLast {
-	    println(digiplanLogin)
-	    println(zipFilePath)
-	    println(serverUrl)
-
-	    def command = ["curl", "-i", "-v", "-u", digiplanLogin, "--data-binary", "@"+zipFilePath, "-H", "Content-Type: application/xml", "-H", "Content-Encoding: gzip", "-X", "POST", serverUrl]
-        println (command)
-        
-        def response = command.execute().text
-		println(response)
-
-        if (!response.contains("HTTP/2 202")) {
-            throw new GradleException()
-        }
-    }
+task uploadPlanregister(type: Curl, dependsOn: 'zipPlanregister') {
+    serverUrl = "https://so.ch/typo3/api/digiplan"
+    method = MethodType.POST
+    headers = ["Content-Type": "application/xml", "Content-Encoding": "gzip"]
+    dataBinary = file(Paths.get(pathToTempFolder, planregisterZipFileName))
+    user = digiplanUser
+    password = digiplanPwd
+    expectedStatusCode = 202
 }
-*/
