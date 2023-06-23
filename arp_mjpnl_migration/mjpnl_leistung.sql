@@ -48,7 +48,7 @@ SELECT
     CASE
         WHEN extract(YEAR FROM l.datum_auszahlung) = 2023 -- wenn aus diesem Jahr und bereits ausbezahlt
             OR lart.kurzbez IN ( 'Korrektur Vorjahr', 'Unterhaltsbeitrag', 'Pflanzmaterial', 'Kürzung', 'Saatgut' ) -- oder eines der spezifischen Arten
-            OR ( lart.kurzbez = 'Pauschale' AND substr(l.bemerkung,1,2) = 'e ' ) -- oder von der Art Pauschale, aber explizit in Bemerkung markiert
+            OR lart.bez IN ( 'Pauschale einmalig (ha)', 'Pauschale einmalig (p)' ) -- oder eine einmalige Pauschale
         THEN TRUE
         ELSE FALSE
     END AS einmalig,
