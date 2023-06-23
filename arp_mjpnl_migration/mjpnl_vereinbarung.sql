@@ -59,6 +59,10 @@ SELECT
   FALSE AS soemmerungsgebiet, --im Postprocessing zu ersetzen
   'MJPNL_2020' AS mjpnl_version,
   4::integer AS kontrollintervall,
+  CASE
+    WHEN  vbg.vbnr IN ( '12.388', '23.304' ) THEN TRUE -- nur Wallierhof (Schloss Wartenfels und AWJF haben keine relevanten Vereinbarungen)                      
+    ELSE FALSE
+  END AS kantonsintern,
   replace(
       COALESCE(vbg.notiz,'') || E'\n§\n' ||
       '{\n"vbart_vereinbarung_alt":"' || COALESCE(vbartvb.bez,'NULL') || '",\n' ||
