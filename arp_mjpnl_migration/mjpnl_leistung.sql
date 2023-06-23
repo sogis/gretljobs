@@ -26,7 +26,7 @@ SELECT
         WHEN stat.kurzbez = 'freigegeben' THEN 'freigegeben'
         WHEN stat.kurzbez = 'in Bearbeitung' THEN 'in_bearbeitung'
         WHEN stat.kurzbez = 'Intern verrechnet' THEN 'intern_verrechnet'
-        WHEN stat.kurzbez IN ('ausbezahlt', 'erledigt LW', 'übernommen ARP', 'Archiv') THEN 'ausbezahlt'
+        WHEN stat.kurzbez IN ('ausbezahlt', 'erledigt LW', 'übernommen ARP') THEN 'ausbezahlt'
         ELSE 'in_bearbeitung'
     END AS status_abrechnung,
     CASE
@@ -51,8 +51,7 @@ SELECT
             OR ( lart.kurzbez = 'Pauschale' AND substr(l.bemerkung,1,2) = 'e ' ) -- oder von der Art Pauschale, aber explizit in Bemerkung markiert
         THEN TRUE
         ELSE FALSE
-    END AS einmalig
-AS einmalig,
+    END AS einmalig,
     9999999 AS abrechnungpervereinbarung,
     9999999 AS vereinbarung
 FROM mjpnatur.leistung l
