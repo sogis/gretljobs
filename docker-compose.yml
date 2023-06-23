@@ -1,7 +1,7 @@
 version: '3.2'
 services:
   gretl:
-    image: sogis/gretl:2.2.350
+    image: sogis/gretl:2.2.373
     profiles: ["app"]
     entrypoint: ["gretl", "--project-cache-dir=/home/gradle/projectcache"]
     volumes:
