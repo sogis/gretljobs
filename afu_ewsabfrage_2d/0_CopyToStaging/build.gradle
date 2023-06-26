@@ -1,0 +1,66 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+//defaultTasks 'refreshSolr'
+defaultTasks 'copyFrommopublic_grundstueck'
+
+def edit = [dbUriEdit, dbUserEdit, dbPwdEdit]
+def pub = [dbUriPub, dbUserPub, dbPwdPub]
+
+task copyFromEwsabfrage2d(type: Db2Db){
+    description = 'Importiert die Attributdaten aus dem Schema afu_ewsabfrage_2d_v1'
+    sourceDb = edit
+    targetDb = edit
+    transferSets = [
+        new TransferSet('copy2stage/ewsabfrage_tiefenbeschraenkung.sql', 'afu_ewsabfrage_2d_staging_v1.tiefenbeschraenkung', true)
+    ]
+}
+
+task copyFromMopublic_grundstueck(type: Db2Db, dependsOn: copyFromEwsabfrage2d){
+    description = 'Importiert die Attributdaten aus dem Schema agi_mopublic_pub'
+    sourceDb = pub
+    targetDb = edit
+    transferSets = [
+        new TransferSet('copy2stage/mopublic_grundstueck.sql', 'afu_ewsabfrage_2d_staging_v1.grundstueck', true)
+    ]
+}
+
+task copyFromMopublic_grundstueck(type: Db2Db, dependsOn: copyFromMopublic_grundstueck){
+    description = 'Importiert die Attributdaten aus dem Schema afu_gewaesserschutz_pub_v1'
+    sourceDb = pub
+    targetDb = edit
+    transferSets = [
+        new TransferSet('copy2stage/gewaesserschutz_schutzareal.sql', 'afu_ewsabfrage_2d_staging_v1.tiefenbeschraenkung', true),
+        new TransferSet('copy2stage/gewaesserschutz_schutzzone.sql', 'afu_ewsabfrage_2d_staging_v1.tiefenbeschraenkung', true)    ]
+}
+
+task copyFromBelasteter_standort(type: Db2Db, dependsOn: copyFromMopublic_grundstueck){
+    description = 'Importiert die Attributdaten aus dem Schema afu_altlasten_pub_v2'
+    sourceDb = pub
+    targetDb = edit
+    transferSets = [
+        new TransferSet('copy2stage/belasteter_standort.sql', 'afu_ewsabfrage_2d_staging_v1.abklaerung', true)
+    ]
+}
+
+task copyFromBelasteter_standort(type: Db2Db, dependsOn: copyFromMopublic_grundstueck){
+    description = 'Importiert die Attributdaten aus dem Schema afu_altlasten_pub_v2'
+    sourceDb = pub
+    targetDb = edit
+    transferSets = [
+        new TransferSet('copy2stage/belasteter_standort.sql', 'afu_ewsabfrage_2d_staging_v1.abklaerung', true)
+    ]
+}
+
+task copyFromRutschung_tief(type: Db2Db, dependsOn: copyFromBelasteter_standort){
+    description = 'Importiert die Attributdaten aus dem Schema awjf_naturgefahrenhinweiskarte_pub_v1'
+    sourceDb = pub
+    targetDb = edit
+    transferSets = [
+        new TransferSet('copy2stage/rutschung_tief.sql', 'afu_ewsabfrage_2d_staging_v1.abklaerung', true)
+    ]
+}
+
+
