@@ -3,6 +3,7 @@
 // Das resultierende XTF wird ins Schema "arp_nutzungsplanung_pub" importiert. Das Schema "arp_nutzungsplanung_transfer_pub" wird auch vom GRETL-Job arp_nutzungsplanung_pub verwendet.
 
 import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.tasks.Curl.MethodType
 import ch.so.agi.gretl.api.TransferSet
 import java.nio.file.Files
 import java.nio.file.Paths
