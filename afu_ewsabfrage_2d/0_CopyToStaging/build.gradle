@@ -3,8 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-//defaultTasks 'refreshSolr'
-defaultTasks 'copyFrommopublic_grundstueck'
+defaultTasks 'copyFromGrundwasserstrom_begrenzung_hgw'
 
 def edit = [dbUriEdit, dbUserEdit, dbPwdEdit]
 def pub = [dbUriPub, dbUserPub, dbPwdPub]
@@ -63,4 +62,22 @@ task copyFromRutschung_tief(type: Db2Db, dependsOn: copyFromBelasteter_standort)
     ]
 }
 
+task copyFromOekomorphologie(type: Db2Db, dependsOn: copyFromRutschung_tief){
+    description = 'Importiert die Attributdaten aus dem Schema afu_gewaesser_oekomorphologie_pub_v1'
+    sourceDb = pub
+    targetDb = edit
+    transferSets = [
+        new TransferSet('copy2stage/oekomorphologie.sql', 'afu_ewsabfrage_2d_staging_v1.abklaerung', true)
+    ]
+}
+
+
+task copyFromGrundwasserstrom_begrenzung_hgw(type: Db2Db, dependsOn: copyFromOekomorphologie){
+    description = 'Importiert die Attributdaten aus dem Schema afu_gewaesser_oekomorphologie_pub_v1'
+    sourceDb = pub
+    targetDb = edit
+    transferSets = [
+        new TransferSet('copy2stage/grundwasserstrom_begrenzung_hgw.sql', 'afu_ewsabfrage_2d_staging_v1.hinweis', true)
+    ]
+}
 
