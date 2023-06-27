@@ -4,4 +4,3 @@ DELETE FROM
 WHERE
     t_datasetname = 'nutzungsplanung_kommunal' || '_' || ${bfsnr_param}
 ;
-;
