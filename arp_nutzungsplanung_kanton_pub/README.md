@@ -19,6 +19,10 @@ Hinweis für Publikation Kanton gibt es ein eignener GRETL-Job.
 8. Bestätigung (manuell) Review ist i.O. 
 9. Import/Replace XTF in Schema «arp_nutzungsplanung_pub»
 10. Dataset aus Schema «arp_nutzungsplanung_staging» löschen
+11. Stellt die Daten (Modell Pub) für den Geodatenbezug bereit
+12. Stellt die Daten im "alten" Erfassungsmodell im Geodatenbezug bereit
+13. Aktuallisiert das Planregister
+14. Liefert die MGDM (Nutzungsplanung) an Geodienste
 
 ## GRETL
 Lokales arbeiten:
