@@ -21,11 +21,11 @@ def mgdmLandUsePlansZipFileName = "ch.so.arp.npl.mgdm.kanton.zip"
 //Für Planregister
 def iliModelPlanregister = "SO_Nutzungsplanung_Planregister_Publikation_20221115"
 def dbSchemaPlanregister = "arp_nutzungsplanung_planregister_pub_v1"
-def PlanregisterXtfFileName = "ch.so.arp.planregister.xml" //Muss xml heissen wegen Planregister
-def PlanregisterZipFileName = "ch.so.arp.planregister.gz"
+def planregisterFileBaseName = "ch.so.arp.planregister"
+def planregisterXtfFileName = planregisterFileBaseName+".xml"
+def planregisterZipFileName = planregisterFileBaseName+".xml.gz"
 
 //defaultTasks 'importXTF_stage', 'importXTF_pub', 'publish'
-//defaultTasks 'uploadPlanregister'
 
 task deleteData_transfer_pub (type: SqlExecutor) {
     description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_transfer_pub."
@@ -160,10 +160,10 @@ task publishAlt(type: Publisher, dependsOn: exportDataExport){
 }
 
 // EXPORT Typo3
-/* 
-// Auskommentiert bis funktioniert
+// Datenumbau für Planregister (Nur Daten aus Schema "arp_nutzungsplanung_kanton_v1" werden ersetzt) und sendet dieses an Typo3
 
-task deleteData_planregister_pub (type: SqlExecutor) {
+
+task deleteData_planregister_pub (type: SqlExecutor, dependsOn: publishAlt ) {
     description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_planregister_pub"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ["delete_arp_nutzungsplanung_planregister_pub_kantonal.sql"]
@@ -173,7 +173,7 @@ task transfer_planregister_pub(type: Db2Db, dependsOn: 'deleteData_planregister_
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_kantonal.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', true),            
+            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_kantonal.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', false),            
     ];
 }
 
@@ -183,44 +183,34 @@ task deleteData_doppelte_dokumente (type: SqlExecutor, dependsOn:transfer_planre
     sqlFiles = ["delete_arp_nutzungsplanung_planregister_pub_doppelte_dokumente.sql"]
 }
 
-task export_planregister_pub(type: Ili2pgExport, dependsOn: 'deleteData_doppelte_dokumente') {
+task exportPlanregisterPub(type: Ili2pgExport, dependsOn: 'deleteData_doppelte_dokumente') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     models = iliModelPlanregister
     dbschema = dbSchemaPlanregister
-    dataFile = file(PlanregisterXtfFileName)
+    dataFile = file(Paths.get(pathToTempFolder, planregisterXtfFileName))
     disableValidation = true
     // Kein Dataset, weil alle Daten enthalten sein sollen. 
 }
 
-task zipPlanregister(type: Tar, dependsOn: 'export_planregister_pub') {
-    archiveName = PlanregisterZipFileName
-    from pathToTempFolder
-    from "."
-    include PlanregisterXtfFileName
-    destinationDir(file(pathToTempFolder))
-    extension 'gz'
-    compression = Compression.GZIP
+task zipPlanregister(type: Gzip, dependsOn: 'exportPlanregisterPub') {
+    dataFile = file(Paths.get(pathToTempFolder, planregisterXtfFileName)) 
+    gzipFile = file(Paths.get(pathToTempFolder, planregisterZipFileName)) 
 }
 
-task uploadPlanregister(dependsOn: 'zipPlanregister') {
-
-    def digiplanLogin = digiplanUser + ":" + digiplanPwd
-    def zipFilePath = Paths.get(pathToTempFolder.toString(), PlanregisterZipFileName)
-    //def serverUrl = "https://so.ch/typo3/api/digiplan"
-    def serverUrl = "https://testweb.so.ch/typo3/api/digiplan"
-
-    doLast {
-        def response = ["curl", "-v", "-u", digiplanLogin, "--data-binary", "@"+zipFilePath, "-H", "'Content-Type: application/xml'", "-H", "'Content-Encoding: gzip'", "-o", "-X", serverUrl].execute().text
-
-        // Es kommt KEINE Rückmeldung! Das ist anscheinend so gewollt.
-    }
+task uploadPlanregister(type: Curl, dependsOn: 'zipPlanregister') {
+    serverUrl = "https://so.ch/typo3/api/digiplan"
+    //serverUrl = "https://testweb.so.ch/typo3/api/digiplan"
+    method = MethodType.POST
+    headers = ["Content-Type": "application/xml", "Content-Encoding": "gzip"]
+    dataBinary = file(Paths.get(pathToTempFolder, planregisterZipFileName))
+    user = digiplanUser
+    password = digiplanPwd
+    expectedStatusCode = 202
 }
-*/
+
 // EXPORT AI 
 
-//dependsOn: 'uploadPlanregister'
-
-task deleteMgdmLandUsesPlansData(type: SqlExecutor) {
+task deleteMgdmLandUsesPlansData(type: SqlExecutor , dependsOn: 'uploadPlanregister') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['truncate_all_arp_npl_mgdm_tables.sql']
 }

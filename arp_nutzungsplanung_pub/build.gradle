@@ -41,6 +41,13 @@ def mgdmPlanungszonenXtfFileName = "mgdm/ch.so.arp.planungszonen.mgdm."+bfsnr+".
 def mgdmPlanungszonenZipFileName = "mgdm/ch.so.arp.planungszonen.mgdm."+bfsnr+".zip"
 def mgdmPlanungszonenXtfFileNameclean = "ch.so.arp.planungszonen.mgdm."+bfsnr+".xtf"
 
+//Für Planregister
+def iliModelPlanregister = "SO_Nutzungsplanung_Planregister_Publikation_20221115"
+def dbSchemaPlanregister = "arp_nutzungsplanung_planregister_pub_v1"
+def planregisterFileBaseName = "ch.so.arp.planregister"
+def planregisterXtfFileName = planregisterFileBaseName+".xml"
+def planregisterZipFileName = planregisterFileBaseName+".xml.gz"
+
 //Normale Publikation
 
 task deleteData_transfer_pub (type: SqlExecutor) {
@@ -181,11 +188,60 @@ task publishAlt(type: Publisher, dependsOn: exportDataExport){
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
 
+// EXPORT Typo3
+// Datenumbau für Planregister (Nur Daten aus Schema "arp_nutzungsplanung_v1" werden ersetzt) und an Typo3 senden
+
+
+task deleteData_planregister_pub (type: SqlExecutor, dependsOn: publishAlt ) {
+    description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_planregister_pub"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ["delete_arp_nutzungsplanung_planregister_pub_kommunal.sql"]
+}
+
+task transfer_planregister_pub(type: Db2Db, dependsOn: 'deleteData_planregister_pub') {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_kommunal.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', false),            
+    ];
+}
+
+task deleteData_doppelte_dokumente (type: SqlExecutor, dependsOn:transfer_planregister_pub) {
+    description = "Löscht die doppelten Dokumente aus dem Schema arp_nutzungsplanung_planregister_pub" 
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ["delete_arp_nutzungsplanung_planregister_pub_doppelte_dokumente.sql"]
+}
+
+task exportPlanregisterPub(type: Ili2pgExport, dependsOn: 'deleteData_doppelte_dokumente') {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    models = iliModelPlanregister
+    dbschema = dbSchemaPlanregister
+    dataFile = file(Paths.get(pathToTempFolder, planregisterXtfFileName))
+    disableValidation = true
+    // Kein Dataset, weil alle Daten enthalten sein sollen. 
+}
+
+task zipPlanregister(type: Gzip, dependsOn: 'exportPlanregisterPub') {
+    dataFile = file(Paths.get(pathToTempFolder, planregisterXtfFileName)) 
+    gzipFile = file(Paths.get(pathToTempFolder, planregisterZipFileName)) 
+}
+
+task uploadPlanregister(type: Curl, dependsOn: 'zipPlanregister') {
+    serverUrl = "https://so.ch/typo3/api/digiplan"
+    //serverUrl = "https://testweb.so.ch/typo3/api/digiplan"
+    method = MethodType.POST
+    headers = ["Content-Type": "application/xml", "Content-Encoding": "gzip"]
+    dataBinary = file(Paths.get(pathToTempFolder, planregisterZipFileName))
+    user = digiplanUser
+    password = digiplanPwd
+    expectedStatusCode = 202
+}
+
 // EXPORT AI 
 
 // Nutzungsplanung
 
-task deleteMgdmLandUsesPlansData(type: SqlExecutor) {
+task deleteMgdmLandUsesPlansData(type: SqlExecutor, dependsOn: 'uploadPlanregister') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['truncate_all_arp_npl_mgdm_tables.sql']
 }
