@@ -196,12 +196,14 @@ task publishAlt(type: Publisher, dependsOn: exportDataExport){
 task deleteData_planregister_pub (type: SqlExecutor, dependsOn: publishAlt ) {
     description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_planregister_pub"
     database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlParameters = [bfsnr_param:bfsnr]
     sqlFiles = ["delete_arp_nutzungsplanung_planregister_pub_kommunal.sql"]
 }
 
 task transfer_planregister_pub(type: Db2Db, dependsOn: 'deleteData_planregister_pub') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlParameters = [bfsnr_param:bfsnr]
     transferSets = [
             new TransferSet('insert_arp_nutzungsplanung_planregister_pub_kommunal.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', false),            
     ];
@@ -228,8 +230,7 @@ task zipPlanregister(type: Gzip, dependsOn: 'exportPlanregisterPub') {
 }
 
 task uploadPlanregister(type: Curl, dependsOn: 'zipPlanregister') {
-    serverUrl = "https://so.ch/typo3/api/digiplan"
-    //serverUrl = "https://testweb.so.ch/typo3/api/digiplan"
+    serverUrl = digiplanUrl
     method = MethodType.POST
     headers = ["Content-Type": "application/xml", "Content-Encoding": "gzip"]
     dataBinary = file(Paths.get(pathToTempFolder, planregisterZipFileName))

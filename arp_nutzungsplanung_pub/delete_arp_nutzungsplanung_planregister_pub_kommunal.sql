@@ -1,4 +1,4 @@
--- Dataset kantonal
+-- Dataset kommunal
 DELETE FROM
     arp_nutzungsplanung_planregister_pub_v1.planregister_dokument
 WHERE
