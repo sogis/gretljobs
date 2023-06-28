@@ -1,0 +1,5 @@
+DELETE FROM afu_ewsabfrage_2d_staging_v1.abfrageperimeter;
+DELETE FROM afu_ewsabfrage_2d_staging_v1.abklaerung;
+DELETE FROM afu_ewsabfrage_2d_staging_v1.grundstueck;
+DELETE FROM afu_ewsabfrage_2d_staging_v1.hinweis;
+DELETE FROM afu_ewsabfrage_2d_staging_v1.tiefenbeschraenkung;
