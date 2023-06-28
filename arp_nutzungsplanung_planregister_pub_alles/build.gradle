@@ -55,7 +55,7 @@ task zipPlanregister(type: Gzip, dependsOn: 'exportPlanregisterPub') {
 }
 
 task uploadPlanregister(type: Curl, dependsOn: 'zipPlanregister') {
-    serverUrl = "https://so.ch/typo3/api/digiplan"
+    serverUrl = digiplanUrl
     method = MethodType.POST
     headers = ["Content-Type": "application/xml", "Content-Encoding": "gzip"]
     dataBinary = file(Paths.get(pathToTempFolder, planregisterZipFileName))
