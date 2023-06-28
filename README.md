@@ -105,7 +105,7 @@ git checkout -b branchname
   * `dbUriCapitastra`, `dbUserCapitastra`, `dbPwdCapitastra`
   * `dbUriEws`, `dbUserEws`, `dbPwdEws`
   * `dbUriImdaspro`, `dbUserImdaspro`, `dbPwdImdaspro`
-  * `digiplanUser`, `digiplanPwd`
+  * `digiplanUrl`, `digiplanUser`, `digiplanPwd`
   * `efjServicesUrl`
   * `ftpUserEmapis`, `ftpPwdEmapis`
   * `ftpServerFledermaus`, `ftpUserFledermaus`, `ftpPwdFledermaus`
