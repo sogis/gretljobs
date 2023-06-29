@@ -13,7 +13,7 @@ SELECT
 	concat(b.bezeichnung, ' in ', s.gemeinde, ', GB-NR ' || nullif(s.gbnummer, ''), ': ', array_to_string(vorkommnisse, ' | ')) AS hinweistext,
 	'EWS_Bohrung' AS hinweis,
 	FALSE AS hinweis_oeffentlich,
-	st_buffer(b.geometrie, 101) AS mpoly
+	ST_MULTI(st_buffer(b.geometrie, 101)) AS mpoly
 FROM
 	afu_grundlagendaten_ews_v1.bohrprofil p
     JOIN	
