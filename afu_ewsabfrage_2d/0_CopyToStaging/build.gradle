@@ -74,7 +74,7 @@ task copyFromOekomorphologie(type: Db2Db, dependsOn: copyFromRutschung_tief){
 }
 
 // innerhalb Grundwasservorkommen
-task copyFromGrundwasserstrom_begrenzung_hgw(type: Db2Db, dependsOn: copyFromAbklaerung){
+task copyFromGrundwasserstrom_begrenzung_hgw(type: Db2Db, dependsOn: copyFromOekomorphologie){
     description = 'Importiert die Attributdaten aus dem Schema afu_gewaesser_oekomorphologie_pub_v1'
     sourceDb = pub
     targetDb = edit
