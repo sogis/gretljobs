@@ -1,2 +1,0 @@
-include '0_CopyToStaging'
-include '1_CopyToPub'
