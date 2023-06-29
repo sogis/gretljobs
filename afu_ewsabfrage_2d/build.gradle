@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'copyFromBohrprofil'
+defaultTasks 'copyTpPub'
 
 def edit = [dbUriEdit, dbUserEdit, dbPwdEdit]
 def pub = [dbUriPub, dbUserPub, dbPwdPub]
@@ -14,6 +14,7 @@ task deleteStageObjects(type: SqlExecutor){
     sqlFiles = ['./0_CopyToStaging/deleteStageObjects.sql']
 }
 
+// DB2DB Tasks in Staging-Schema
 task copyFromEwsabfrage2d(type: Db2Db, dependsOn: deleteStageObjects){
     description = 'Importiert die Attributdaten aus dem Schema afu_ewsabfrage_2d_v1'
     sourceDb = edit
@@ -92,3 +93,15 @@ task copyFromBohrprofil(type: Db2Db, dependsOn: copyFromGrundwasserstrom_begrenz
     ]
 }
 
+// DB2DB Task von Staging nach Pub
+task copyToPub(type: Db2Db, dependsOn: copyFromBohrprofil){
+    description = 'Importiert die Attributdaten aus dem Schema afu_ewsabfrage_2d_staging_v1 in das Schema afu_ewsabfrage_2d_pub_v1'
+    sourceDb = edit
+    targetDb = pub
+    transferSets = [
+        new TransferSet('./1_CopyToPub/abklaerung.sql', 'afu_ewsabfrage_2d_pub_v1.abklaerung', true),
+        new TransferSet('./1_CopyToPub/grundstueck.sql', 'afu_ewsabfrage_2d_pub_v1.grundstueck', true),
+        new TransferSet('./1_CopyToPub/hinweis.sql', 'afu_ewsabfrage_2d_pub_v1.hinweis', true),
+        new TransferSet('./1_CopyToPub/tiegenbeschraenkung.sql', 'afu_ewsabfrage_2d_pub_v1.tiegenbeschraenkung', true)
+    ]
+}
