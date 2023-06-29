@@ -11,7 +11,7 @@ def pub = [dbUriPub, dbUserPub, dbPwdPub]
 task deleteStageObjects(type: SqlExecutor){
     description = 'Leert die Tabellem im Schema afu_ewsabfrage_2d_staging_v1'
     database = edit
-    sqlFiles = ['deleteStageObjects.sql']
+    sqlFiles = ['./0_CopyToStaging/deleteStageObjects.sql']
 }
 
 task copyFromEwsabfrage2d(type: Db2Db, dependsOn: deleteStageObjects){
@@ -19,8 +19,8 @@ task copyFromEwsabfrage2d(type: Db2Db, dependsOn: deleteStageObjects){
     sourceDb = edit
     targetDb = edit
     transferSets = [
-        new TransferSet('copy2stage/ewsabfrage_tiefenbeschraenkung.sql', 'afu_ewsabfrage_2d_staging_v1.tiefenbeschraenkung', false),
-        new TransferSet('copy2stage/abklaerung.sql', 'afu_ewsabfrage_2d_staging_v1.abklaerung', false)
+        new TransferSet('./0_CopyToStaging/ewsabfrage_tiefenbeschraenkung.sql', 'afu_ewsabfrage_2d_staging_v1.tiefenbeschraenkung', false),
+        new TransferSet('./0_CopyToStaging/abklaerung.sql', 'afu_ewsabfrage_2d_staging_v1.abklaerung', false)
     ]
 }
 
@@ -29,7 +29,7 @@ task copyFromMopublic_grundstueck(type: Db2Db, dependsOn: copyFromEwsabfrage2d){
     sourceDb = pub
     targetDb = edit
     transferSets = [
-        new TransferSet('copy2stage/mopublic_grundstueck.sql', 'afu_ewsabfrage_2d_staging_v1.grundstueck', false)
+        new TransferSet('./0_CopyToStaging/mopublic_grundstueck.sql', 'afu_ewsabfrage_2d_staging_v1.grundstueck', false)
     ]
 }
 
@@ -39,8 +39,8 @@ task copyFromGewaesserschutz(type: Db2Db, dependsOn: copyFromMopublic_grundstuec
     sourceDb = pub
     targetDb = edit
     transferSets = [
-        new TransferSet('copy2stage/gewaesserschutz_schutzareal.sql', 'afu_ewsabfrage_2d_staging_v1.tiefenbeschraenkung', false),
-        new TransferSet('copy2stage/gewaesserschutz_schutzzone.sql', 'afu_ewsabfrage_2d_staging_v1.tiefenbeschraenkung', false)    ]
+        new TransferSet('./0_CopyToStaging/gewaesserschutz_schutzareal.sql', 'afu_ewsabfrage_2d_staging_v1.tiefenbeschraenkung', false),
+        new TransferSet('./0_CopyToStaging/gewaesserschutz_schutzzone.sql', 'afu_ewsabfrage_2d_staging_v1.tiefenbeschraenkung', false)    ]
 }
 
 // innerhalb belastetem Standort
@@ -49,7 +49,7 @@ task copyFromBelasteter_standort(type: Db2Db, dependsOn: copyFromGewaesserschutz
     sourceDb = pub
     targetDb = edit
     transferSets = [
-        new TransferSet('copy2stage/belasteter_standort.sql', 'afu_ewsabfrage_2d_staging_v1.abklaerung', false)
+        new TransferSet('./0_CopyToStaging/belasteter_standort.sql', 'afu_ewsabfrage_2d_staging_v1.abklaerung', false)
     ]
 }
 
@@ -59,7 +59,7 @@ task copyFromRutschung_tief(type: Db2Db, dependsOn: copyFromBelasteter_standort)
     sourceDb = pub
     targetDb = edit
     transferSets = [
-        new TransferSet('copy2stage/rutschung_tief.sql', 'afu_ewsabfrage_2d_staging_v1.abklaerung', false)
+        new TransferSet('./0_CopyToStaging/rutschung_tief.sql', 'afu_ewsabfrage_2d_staging_v1.abklaerung', false)
     ]
 }
 
@@ -69,7 +69,7 @@ task copyFromOekomorphologie(type: Db2Db, dependsOn: copyFromRutschung_tief){
     sourceDb = pub
     targetDb = edit
     transferSets = [
-        new TransferSet('copy2stage/oekomorphologie.sql', 'afu_ewsabfrage_2d_staging_v1.abklaerung', false)
+        new TransferSet('./0_CopyToStaging/oekomorphologie.sql', 'afu_ewsabfrage_2d_staging_v1.abklaerung', false)
     ]
 }
 
@@ -79,7 +79,7 @@ task copyFromGrundwasserstrom_begrenzung_hgw(type: Db2Db, dependsOn: copyFromOek
     sourceDb = pub
     targetDb = edit
     transferSets = [
-        new TransferSet('copy2stage/grundwasserstrom_begrenzung_hgw.sql', 'afu_ewsabfrage_2d_staging_v1.hinweis', false)
+        new TransferSet('./0_CopyToStaging/grundwasserstrom_begrenzung_hgw.sql', 'afu_ewsabfrage_2d_staging_v1.hinweis', false)
     ]
 }
 
@@ -88,7 +88,7 @@ task copyFromBohrprofil(type: Db2Db, dependsOn: copyFromGrundwasserstrom_begrenz
     sourceDb = edit
     targetDb = edit
     transferSets = [
-        new TransferSet('copy2stage/bohrprofil.sql', 'afu_ewsabfrage_2d_staging_v1.hinweis', false)
+        new TransferSet('./0_CopyToStaging/bohrprofil.sql', 'afu_ewsabfrage_2d_staging_v1.hinweis', false)
     ]
 }
 
