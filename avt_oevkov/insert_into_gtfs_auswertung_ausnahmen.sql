@@ -1,4 +1,4 @@
--- Alle  Haltestellen, die wegen pickup_type = 0 herausfallen
+-- Alle  Haltestellen einfügen, die wegen pickup_type = 0 herausfallen
 -- oder am Stichtag 0 Abfahrten haben
 INSERT INTO
      avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs

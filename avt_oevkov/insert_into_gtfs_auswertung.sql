@@ -168,7 +168,7 @@ INSERT INTO
             verkehrsmittel
     )
 
--- die meisten Haltestellen ausser die Ausnahmen
+-- Abfahrten der meisten Haltestellen ausser den Ausnahmen
     SELECT
         stop_name,
         route_id,
@@ -178,7 +178,8 @@ INSERT INTO
         verkehrsmittel
     FROM
         abfahrten
--- *********** hier kommen die Ausnahmen, die werden weiter unten abgehandelt ***********
+        -- ***************************** Ausnahmen *********************************
+    -- hier kommen die Ausnahmen, die werden weiter unten abgehandelt ***********
     -- gewisse Bahnhöfe müssen separat behandelt werden wegen der Zuordnung zu den Linien im AVT
     WHERE
         stop_name NOT IN (
