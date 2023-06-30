@@ -3,6 +3,8 @@ services:
   gretl:
     image: sogis/gretl:2.2.373
     profiles: ["app"]
+    environment:
+      ORG_GRADLE_PROJECT_gretlEnvironment: development
     entrypoint: ["gretl", "--project-cache-dir=/home/gradle/projectcache"]
     volumes:
       - $HOME/gretljobs.properties:/home/gradle/.gradle/gradle.properties
