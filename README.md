@@ -95,7 +95,6 @@ git checkout -b branchname
 * Für den Zugriff auf Datenbanken und andere Ressourcen folgende Variablen verwenden:
   * `dbUriEdit`, `dbUserEdit`, `dbPwdEdit`
   * `dbUriPub`, `dbUserPub`, `dbPwdPub`
-  * `dbUriOereb`, `dbUserOereb`, `dbPwdOereb`
   * `dbUriOerebV2`, `dbUserOerebV2`, `dbPwdOerebV2`
   * `dbUriSimi`, `dbUserSimi`, `dbPwdSimi`
   * `dbUriSogis`, `dbUserSogis`, `dbPwdSogis`
