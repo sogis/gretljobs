@@ -97,6 +97,7 @@ git checkout -b branchname
   * `dbUriPub`, `dbUserPub`, `dbPwdPub`
   * `dbUriOerebV2`, `dbUserOerebV2`, `dbPwdOerebV2`
   * `dbUriSimi`, `dbUserSimi`, `dbPwdSimi`
+  * `dbUriIsboden`, `dbUserIsboden`, `dbPwdIsboden`
   * `dbUriSogis`, `dbUserSogis`, `dbPwdSogis`
   * `dbUriVerisoNplso`, `dbUserVerisoNplso`, `dbPwdVerisoNplso`
   * `dbUriAltlast4web`, `dbUserAltlast4web`, `PdbPwdAltlast4web`
