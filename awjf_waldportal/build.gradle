@@ -13,11 +13,14 @@ defaultTasks 'importWaldportal', 'importWaldportalPub'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 ext.filename = 'bar'
+
 /////////////////////////////////////////////////
 //Konfiguration
+def zipFileName = 'wpexport_so_latest.zip'
 def xtfFileName = 'SO_awjf_waldportal_prod.xtf'
-def umgebung = "prod"
+def umgebung = "prod/"
 ////////////////////////////////////////////////
+
 // Credentials für den SFTP-Server
 remotes {
     sftpServer {
@@ -36,64 +39,19 @@ task download () {
         }
         ssh.run {
             session(remotes.sftpServer) {
-                get from: umgebung, into: pathToTempFolder
+                get from: umgebung+zipFileName, into: pathToTempFolder
             }
         }
         println "File downloaded from SFTP server"
     }
 }
 
-// Über die ersten 10 Zeichen des Filenamens wird erruiert, welches das neuste File ist
-
-task show_latest_file (dependsOn:download){
-    doLast {
-        def latestFile = null
-        def latestDate = null
-        def files =  fileTree(pathToTempFolder).filter { it.isFile() }.files
-        files.each { file ->
-            def filename = file.name
-            try {
-                def dateFormat = new SimpleDateFormat("yyyy-MM-dd")
-                def fileDate = dateFormat.parse(filename.substring(0,10))
-                if (latestDate == null || fileDate.after(latestDate)) {
-                    latestDate = fileDate
-                    latestFile = filename
-                }
-            }
-            catch (Exception e) {
-                return; 
-            }
-        }
-        println "Latest file: ${latestFile}"
-        project.filename = latestFile
-    }
-}
-  
-task unpackFile(dependsOn: show_latest_file) {   
-    doLast {
-        ZipInputStream zis = new ZipInputStream(
-            new FileInputStream(pathToTempFolder+"/"+project.filename)
-        )
-        ZipEntry entry = zis.getNextEntry()
-        while (entry != null) {
-            File file = new File(pathToTempFolder.toString(), entry.getName())
-            if (entry.isDirectory()) {
-                file.mkdirs()
-            } else {
-                FileOutputStream fos = new FileOutputStream(file)
-                byte[] buffer = new byte[1024]
-                int len
-                while ((len = zis.read(buffer)) > 0) {
-                    fos.write(buffer, 0, len)
-                }
-                fos.close()
-            }
-            entry = zis.getNextEntry()
-            println file.name
-        }
-        zis.closeEntry()
-        zis.close()
-    }
+task unpackFile(type: Copy, dependsOn: download) {
+    def zipFile = file(pathToTempFolder+"/"+zipFileName)
+    def outputDir = file(pathToTempFolder)
+ 
+    from zipTree(zipFile)
+    into outputDir
 }
 
 task importWaldportal(type: Ili2pgImport, dependsOn: unpackFile) {
