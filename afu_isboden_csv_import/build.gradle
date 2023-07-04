@@ -12,12 +12,12 @@ defaultTasks 'update_auspraegungen_und_untertypen'
 
 task deleteData_transfer (type: SqlExecutor) {
     description = "Löscht/leert die Daten aus dem Schema afu_isboden_csv_import_v1."
-    database = [dbUriBoden, dbUserBoden, dbPwdBoden]
+    database = [dbUriIsboden, dbUserIsboden, dbPwdIsboden]
     sqlFiles = ["delete_afu_isboden_csv_import.sql"]
 }
 
 task csvimport(type: CsvImport, dependsOn: deleteData_transfer){
-    database = [dbUriBoden, dbUserBoden, dbPwdBoden]
+    database = [dbUriIsboden, dbUserIsboden, dbPwdIsboden]
     schemaName = "afu_isboden_csv_import_v1"
     tableName = "csv_import_csv_import_t"
     firstLineIsHeader=true
@@ -29,13 +29,13 @@ task csvimport(type: CsvImport, dependsOn: deleteData_transfer){
 
 task fillinPKs(type: SqlExecutor, dependsOn: 'csvimport') {
     description = "Der Primärschlüssel der Bodeneinheiten wird in die Impottabelle geschrieben"
-    database = [dbUriBoden, dbUserBoden, dbPwdBoden]
+    database = [dbUriIsboden, dbUserIsboden, dbPwdIsboden]
     sqlFiles = ["fillinpks.sql"]
 }
 
 task exportData(type: Ili2pgExport, dependsOn: 'fillinPKs') {
     description = "Exportiert die Daten aus dem Schema afu_isboden_csv_import_v1 in ein INTERLIS-Datei."
-    database = [dbUriBoden, dbUserBoden, dbPwdBoden]
+    database = [dbUriIsboden, dbUserIsboden, dbPwdIsboden]
     dbschema = 'afu_isboden_csv_import_v1'
     models = 'SO_AFU_Is_Boden_CsvImport_20230613'
     dataFile= file("export.xtf")
@@ -57,13 +57,13 @@ task validateDataEdit(type: IliValidator, dependsOn: 'exportData') {
 
 task updateBodeneinheiten(type: SqlExecutor, dependsOn: 'exportData') {
     description = "Die Tabelle bodeneinheit_t wird mit den neuen Werten geupdatet"
-    database = [dbUriBoden, dbUserBoden, dbPwdBoden]
+    database = [dbUriIsboden, dbUserIsboden, dbPwdIsboden]
     sqlFiles = ["update_bodeneinheit_t.sql"]
 }
 
 task update_auspraegungen_und_untertypen(type: SqlExecutor, dependsOn: 'updateBodeneinheiten') {
     description = "Die Tabellen bodeneinheit_auspraegung_t und zw_bodeneinheit_untertyp werden mit den neuen Werten geupdatet"
-    database = [dbUriBoden, dbUserBoden, dbPwdBoden]
+    database = [dbUriIsboden, dbUserIsboden, dbPwdIsboden]
     sqlFiles = ["update_untertypen.sql"]
 }
 
