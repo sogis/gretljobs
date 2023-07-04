@@ -24,7 +24,7 @@ task csvimport(type: CsvImport, dependsOn: deleteData_transfer){
     valueSeparator = ";"
     encoding = "UTF-8"
     println "Importiere folgendes file: data"
-    dataFile = file('data')
+    dataFile = file('upload/data')
 }
 
 task fillinPKs(type: SqlExecutor, dependsOn: 'csvimport') {
