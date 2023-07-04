@@ -1,0 +1,69 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'update_auspraegungen_und_untertypen'
+
+// CSV IMPORT
+
+task deleteData_transfer (type: SqlExecutor) {
+    description = "Löscht/leert die Daten aus dem Schema afu_isboden_csv_import_v1."
+    database = [dbUriBoden, dbUserBoden, dbPwdBoden]
+    sqlFiles = ["delete_afu_isboden_csv_import.sql"]
+}
+
+task csvimport(type: CsvImport, dependsOn: deleteData_transfer){
+    database = [dbUriBoden, dbUserBoden, dbPwdBoden]
+    schemaName = "afu_isboden_csv_import_v1"
+    tableName = "csv_import_csv_import_t"
+    firstLineIsHeader=true
+    valueSeparator = ";"
+    encoding = "UTF-8"
+    println "Importiere folgendes file: data"
+    dataFile = file('data')
+}
+
+task fillinPKs(type: SqlExecutor, dependsOn: 'csvimport') {
+    description = "Der Primärschlüssel der Bodeneinheiten wird in die Impottabelle geschrieben"
+    database = [dbUriBoden, dbUserBoden, dbPwdBoden]
+    sqlFiles = ["fillinpks.sql"]
+}
+
+task exportData(type: Ili2pgExport, dependsOn: 'fillinPKs') {
+    description = "Exportiert die Daten aus dem Schema afu_isboden_csv_import_v1 in ein INTERLIS-Datei."
+    database = [dbUriBoden, dbUserBoden, dbPwdBoden]
+    dbschema = 'afu_isboden_csv_import_v1'
+    models = 'SO_AFU_Is_Boden_CsvImport_20230613'
+    dataFile= file("export.xtf")
+    //disableValidation = true Validierung eingeschaltet, bis der validierungstask funktioniert. 
+}
+
+/*
+//Die Validierung funktioniert irgendwie nicht. Das Modell wird aus irgend einem unerfindlichen Grund nicht gefunden....  
+task validateDataEdit(type: IliValidator, dependsOn: 'exportData') {
+    description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
+    dataFiles = file("export.xtf")
+    //if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    //allObjectsAccessible = true
+    //failOnError = true
+}
+*/
+
+// UPDATE IS-BODEN
+
+task updateBodeneinheiten(type: SqlExecutor, dependsOn: 'exportData') {
+    description = "Die Tabelle bodeneinheit_t wird mit den neuen Werten geupdatet"
+    database = [dbUriBoden, dbUserBoden, dbPwdBoden]
+    sqlFiles = ["update_bodeneinheit_t.sql"]
+}
+
+task update_auspraegungen_und_untertypen(type: SqlExecutor, dependsOn: 'updateBodeneinheiten') {
+    description = "Die Tabellen bodeneinheit_auspraegung_t und zw_bodeneinheit_untertyp werden mit den neuen Werten geupdatet"
+    database = [dbUriBoden, dbUserBoden, dbPwdBoden]
+    sqlFiles = ["update_untertypen.sql"]
+}
+
