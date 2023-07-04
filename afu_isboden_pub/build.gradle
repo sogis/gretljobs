@@ -7,12 +7,12 @@ defaultTasks 'transferAfuIsboden'
 
 task preprocessing(type: SqlExecutor) {
     description = "Die Funktion afu_isboden.deploy_tables_as_products() wird aufgerufen. Diese spielt die Daten in die Tabelle bodeneinheit_onlinedata_t, welche dann im weiteren verwendet wird."
-    database = [dbUriBoden, dbUserBoden, dbPwdBoden]
+    database = [dbUriIsboden, dbUserIsboden, dbPwdIsboden]
     sqlFiles = ["afu_isboden_bodeneinheiten_to_onlinedata_t.sql"]
 }
 
 task transferAfuIsboden(type: Db2Db, dependsOn: 'preprocessing'){
-    sourceDb = [dbUriBoden, dbUserBoden, dbPwdBoden]
+    sourceDb = [dbUriIsboden, dbUserIsboden, dbPwdIsboden]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     fetchSize = 100
     batchSize = 100
