@@ -70,7 +70,7 @@ SET
              sum(einwohnerzahl)
          FROM
              avt_oevkov_${currentYear}_v1.auswertung_gemeinde_einwohner_kosten
-        ) * 1.5
+        ) * 2
 ;
 
 -- Tabelle avt_oevkov_${currentYear}_v1.auswertung_gemeinde_einwohner_kosten:

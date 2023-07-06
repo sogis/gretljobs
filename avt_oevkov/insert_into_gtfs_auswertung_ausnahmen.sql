@@ -1,4 +1,4 @@
--- Alle  Haltestellen, die wegen pickup_type = 0 herausfallen
+-- Alle  Haltestellen einfügen, die wegen pickup_type = 0 herausfallen
 -- oder am Stichtag 0 Abfahrten haben
 INSERT INTO
      avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs
@@ -48,7 +48,7 @@ INSERT INTO
         SELECT
             trip_id 
         FROM 
-                avt_oevkov_${currentYear}_v1.gtfs_trip
+            avt_oevkov_${currentYear}_v1.gtfs_trip
         WHERE
             (
             gtfs_trip.service_id IN (
@@ -85,7 +85,14 @@ INSERT INTO
          linie.linienname,
          agency.unternehmer,
          0 as gtfs_count,
-         1 AS verkehrsmittel
+        CASE
+            WHEN route_desc IN ('B', 'BN', 'BP', 'EXB', 'KB', 'NFB')
+                THEN 'Bus'
+            WHEN route_desc IN ('NFT', 'T')
+                THEN 'Tram'
+            WHEN route_desc IN ('R', 'RB', 'RE', 'S', 'SN', 'TER')
+                THEN 'Bahn'
+            END AS verkehrsmittel
      FROM
             avt_oevkov_${currentYear}_v1.gtfs_agency AS agency
             LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_route AS route
@@ -117,13 +124,13 @@ INSERT INTO
     AND
         trip_headsign <> stop_name
     AND
-        route_desc IN ('B', 'BN', 'BP', 'EXB', 'KB', 'NFB')
+        route_desc IN ('B', 'BN', 'BP', 'EXB', 'KB', 'NFB', 'NFT', 'R', 'RB', 'RE', 'S', 'SN', 'T', 'TER')
     GROUP BY
         stop.stop_name,
         route.route_id,
         linie.linienname,
         agency.unternehmer,
         verkehrsmittel
-)
+    )
 ;
 
