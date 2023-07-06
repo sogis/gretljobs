@@ -15,11 +15,11 @@ task transferRFS(type: Db2Db){
 }
 /*
 task publipub(type: Publisher, dependsOn: 'transferRFS'){
-  dataIdent = "ch.so.amb_regionale_fuehrungsstaebe"
+  dataIdent = "ch.so.amb.egionale_fuehrungsstaebe"
   userFormats = true
 
   database = [dbUriPub,dbUserPub,dbPwdPub]
-  dbSchema = "amb_regionale_fuehrungsstaebe_v1"
+  dbSchema = "amb_regionale_fuehrungsstaebe_pub_v1"
   modelsToPublish = "SO_AMB_Regionale_Fuehrungsstaebe_20230706"
 
   target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
