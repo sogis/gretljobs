@@ -9,7 +9,7 @@ task transferRFS(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('regionale_fuehrungsstaebe.sql', 'amb_regionale_fuehrungsstaebe_v1.rfs', true)
+            new TransferSet('regionale_fuehrungsstaebe.sql', 'amb_regionale_fuehrungsstaebe_pub_v1.rfs', true)
     ];
 }
 
