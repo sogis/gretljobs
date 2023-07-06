@@ -124,14 +124,6 @@ INSERT INTO
                     alle_trips_stichtag
             )
         AND
-        -- diese Haltestellen werden nur wegen Spezialfall Bahnhof Olten benötigt,
-        -- da nur die Fahrten zählen, welche ab Olten in diesen Bahnhöfen anhalten
-            stop.stop_name NOT IN (
-                'Aarau',
-                'Langenthal',
-                'Zofingen'
-            )
-        AND
         -- diese Unternehmen fahren offizielle Haltestellen an, werden aber im OEVKOV nicht berücksichtigt (2018)
             agency.unternehmer NOT IN (
                 'Domo Swiss Express AG',
@@ -320,20 +312,6 @@ INSERT INTO
         trip_headsign IN ('Bern', 'Langenthal')
     AND
         substring(linienname from 1 for 4) = 'L450'
-    ----AND
-        ------ Bedingung, dass Stop in Langenthal
-        ----trip_id IN (
-            ----SELECT
-                ----alle_trips_stichtag.trip_id
-            ----FROM
-                ----alle_trips_stichtag
-                ----LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
-                    ----ON stoptime_einschraenkung.trip_id = alle_trips_stichtag.trip_id
-                ----LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stop AS stop_einschraenkung
-                    ----ON stop_einschraenkung.stop_id = stoptime_einschraenkung.stop_id
-           ----WHERE
-               ----stop_einschraenkung.stop_name IN ('Langenthal')
-         ----)
     GROUP BY
         stop_name,
         route_id,
@@ -458,24 +436,6 @@ INSERT INTO
         substring(linienname from 1 for 4) = 'L510'
     AND
         route_desc = 'RE'
-    --AND
-        ---- Bedingung Halt in Zofingen
-        --trip_id IN (
-            --SELECT
-                --alle_trips_stichtag.trip_id
-            --FROM
-                --alle_trips_stichtag
-                --LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
-                    --ON stoptime_einschraenkung.trip_id = alle_trips_stichtag.trip_id
-                --LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stop AS stop_einschraenkung
-                    --ON stop_einschraenkung.stop_id = stoptime_einschraenkung.stop_id
-            --WHERE
-                --stop_einschraenkung.stop_name = 'Zofingen'
-            --AND
-                --trip_headsign = 'Luzern'
-            --AND
-                --route_desc = 'RE'
-        --)
     GROUP BY
         stop_name,
         route_id,
@@ -509,20 +469,6 @@ INSERT INTO
         substring(linienname from 1 for 4) = 'L650'
     AND
         linienname <> 'L650 Olten - Turgi (S29)'
-    --AND
-        ---- Bedingung Halt in Aarau
-        --trip_id IN (
-            --SELECT
-                --alle_trips_stichtag.trip_id
-            --FROM
-                --alle_trips_stichtag
-                --LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
-                    --ON stoptime_einschraenkung.trip_id = alle_trips_stichtag.trip_id
-                --LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stop AS stop_einschraenkung
-                    --ON stop_einschraenkung.stop_id = stoptime_einschraenkung.stop_id
-              --WHERE
-                  --stop_einschraenkung.stop_name = 'Aarau'
-        --)
     GROUP BY
         stop_name,
         route_id,
