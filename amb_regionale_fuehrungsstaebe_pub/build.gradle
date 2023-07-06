@@ -3,7 +3,8 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publipub'
+--defaultTasks 'publipub'
+defaultTasks 'transferRFS'
 
 task transferRFS(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -12,7 +13,7 @@ task transferRFS(type: Db2Db){
             new TransferSet('regionale_fuehrungsstaebe.sql', 'amb_regionale_fuehrungsstaebe_pub_v1.rfs', true)
     ];
 }
-
+/*
 task publipub(type: Publisher, dependsOn: 'transferRFS'){
   dataIdent = "ch.so.amb_regionale_fuehrungsstaebe"
   userFormats = true
@@ -27,3 +28,4 @@ task publipub(type: Publisher, dependsOn: 'transferRFS'){
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
   if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
+*/
