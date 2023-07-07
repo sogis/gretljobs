@@ -1,4 +1,7 @@
--- Summe ungewichtete Abfahrten pro Haltestelle und Linie 
+-- Summe ungewichtete Abfahrten pro Haltestelle und Linie
+DELETE FROM avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs
+;
+
 INSERT INTO
     avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs
     (
