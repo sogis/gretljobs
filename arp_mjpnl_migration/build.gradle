@@ -9,7 +9,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'postprocessing_beurteilungen_erstellen'
+defaultTasks 'clean_mjpnl_after_import'
 
 def DB_Schema_MJPNL = "arp_mjpnl_v1"
 
@@ -79,21 +79,21 @@ task "postprocessing_gelan_bewirtschafter"(type: SqlExecutor,dependsOn: "postpro
     sqlFiles = ['mjpnl_postprocessing_vereinbarungen_gelan_bewirtschafter.sql']
 }
 
-task "postprocessing_abrechnung_leistungen"(type: SqlExecutor,dependsOn: "postprocessing_gelan_bewirtschafter") {
-    description = "Foreign keys zwischen Leistungen und Vereinbarungen wiederherstellen."
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
-    sqlFiles = ['mjpnl_postprocessing_leistungen_fkey_vereinbarungen.sql','mjpnl_postprocessing_abrechnung_per_vereinbarung.sql','mjpnl_postprocessing_abrechnung_per_bewirtschafter.sql']
-}
-
-task "postprocessing_beurteilungen_erstellen"(type: SqlExecutor,dependsOn: "postprocessing_abrechnung_leistungen") {
+task "postprocessing_beurteilungen_erstellen"(type: SqlExecutor,dependsOn: "postprocessing_gelan_bewirtschafter") {
     description = "Beurteilungen erstellen."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
     sqlFiles = ['mjpnl_postprocessing_beurteilungen_wiese.sql','mjpnl_postprocessing_beurteilungen_hecke.sql','mjpnl_postprocessing_beurteilungen_hostet.sql','mjpnl_postprocessing_beurteilungen_obl.sql','mjpnl_postprocessing_beurteilungen_weide_ln.sql','mjpnl_postprocessing_beurteilungen_weide_soeg.sql']
 }
 
-task "clean_mjpnl_after_import"(type: SqlExecutor,dependsOn: "postprocessing_beurteilungen_erstellen"){
+task "postprocessing_abrechnung_leistungen"(type: SqlExecutor,dependsOn: "postprocessing_beurteilungen_erstellen") {
+    description = "Foreign keys zwischen Leistungen und Vereinbarungen wiederherstellen."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['mjpnl_postprocessing_leistungen_fkey_vereinbarungen.sql','mjpnl_postprocessing_abrechnung_per_vereinbarung.sql','mjpnl_postprocessing_abrechnung_per_bewirtschafter.sql']
+}
+
+task "clean_mjpnl_after_import"(type: SqlExecutor,dependsOn: "postprocessing_abrechnung_leistungen"){
     description = "Dummy Daten löschen"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
