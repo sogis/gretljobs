@@ -10,86 +10,86 @@ INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung (
     status_abrechnung,
     abrechnungpervereinbarung
 )
-WITH alle_obl AS (
+WITH alle_hostet AS (
     -- alle relevanten beurteilungen
     SELECT
         *,
-        obl.t_basket AS beurteilung_t_basket,
-        obl.vereinbarung AS beurteilung_vereinbarung
+        hostet.t_basket AS beurteilung_t_basket,
+        hostet.vereinbarung AS beurteilung_vereinbarung
     FROM 
-        ${DB_Schema_MJPNL}.mjpnl_beurteilung_obl AS obl
+        ${DB_Schema_MJPNL}.mjpnl_beurteilung_hostet AS hostet
     JOIN
         ${DB_Schema_MJPNL}.mjpnl_vereinbarung AS vereinbarung
         ON 
-        obl.vereinbarung = vereinbarung.t_id
+        hostet.vereinbarung = vereinbarung.t_id
     WHERE
-        obl.mit_bewirtschafter_besprochen IS TRUE
+        hostet.mit_bewirtschafter_besprochen IS TRUE
         AND vereinbarung.status_vereinbarung = 'aktiv'
 ),
-united_obl_leistungen AS (
+united_hostet_leistungen AS (
     -- union aller leistungen
-    SELECT -- OBL: Grundbeitrag
+    SELECT -- Hostet: Grundbeitrag
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
-        'OBL: Grundbeitrag' AS leistung_beschrieb,
+        'Hostet: Grundbeitrag' AS leistung_beschrieb,
         'per_stueck' AS abgeltungsart,
-        10 AS betrag_per_einheit,
+        5 AS betrag_per_einheit,
         grundbeitrag_baum_anzahl AS anzahl_einheiten,
         grundbeitrag_baum_total AS betrag_total
     FROM
-        alle_obl
+        alle_hostet
     WHERE
         grundbeitrag_baum_anzahl > 0
     UNION
-    SELECT -- OBL: BaumAb40cmDurchmesser
+    SELECT -- Hostet: BaumAb40cmDurchmesser
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
-        'OBL: BaumAb40cmDurchmesser' AS leistung_beschrieb,
+        'Hostet: BaumAb40cmDurchmesser' AS leistung_beschrieb,
         'per_stueck' AS abgeltungsart,
         15 AS betrag_per_einheit,
         beitrag_baumab40cmdurchmesser_anzahl AS anzahl_einheiten,
         beitrag_baumab40cmdurchmesser_total AS betrag_total
     FROM
-        alle_obl
+        alle_hostet
     WHERE
         beitrag_baumab40cmdurchmesser_anzahl > 0
     UNION
-    SELECT -- OBL: Erntepflicht
+    SELECT -- Hostet: Erntepflicht
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
-        'OBL: Erntepflicht' AS leistung_beschrieb,
+        'Hostet: Erntepflicht' AS leistung_beschrieb,
         'per_stueck' AS abgeltungsart,
         10 AS betrag_per_einheit,
         beitrag_erntepflicht_anzahl AS anzahl_einheiten,
         beitrag_erntepflicht_total AS betrag_total
     FROM
-        alle_obl
+        alle_hostet
     WHERE
         beitrag_erntepflicht_anzahl > 0
     UNION
-    SELECT -- OBL: Öko Plus
+    SELECT -- Hostet: Öko Plus
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
-        'OBL: Öko Plus' AS leistung_beschrieb,
+        'Hostet: Öko Plus' AS leistung_beschrieb,
         'per_stueck' AS abgeltungsart,
         10 AS betrag_per_einheit,
         beitrag_oekoplus_anzahl AS anzahl_einheiten,
         beitrag_oekoplus_total AS betrag_total
     FROM
-        alle_obl
+        alle_hostet
     WHERE
         beitrag_oekoplus_anzahl > 0
     UNION
-    SELECT -- OBL: Öko Maxi
+    SELECT -- Hostet: Öko Maxi
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
-        'OBL: Öko Maxi' AS leistung_beschrieb,
+        'Hostet: Öko Maxi' AS leistung_beschrieb,
         'per_stueck' AS abgeltungsart,
         10 AS betrag_per_einheit,
         beitrag_oekomaxi_anzahl AS anzahl_einheiten,
         beitrag_oekomaxi_total AS betrag_total
     FROM
-        alle_obl
+        alle_hostet
     WHERE
         beitrag_oekomaxi_anzahl > 0
 )
@@ -109,5 +109,5 @@ SELECT
     -- noch nicht existent, wird bei der Kalkulation von mjpnl_abrechnung_per_vereinbarung erstellt und ersetzt
     9999999 AS abrechnungpervereinbarung
 FROM
-    united_obl_leistungen
+    united_hostet_leistungen
 ;
