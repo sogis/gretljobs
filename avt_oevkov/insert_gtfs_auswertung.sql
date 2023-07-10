@@ -163,7 +163,7 @@ INSERT INTO
             verkehrsmittel
     )
 
--- Abfahrten der meisten Haltestellen ausser den Ausnahmen
+-- Abfahrten der meisten Haltestellen ausser den Ausnahmen unten
     SELECT
         stop_name,
         route_id,
@@ -179,15 +179,10 @@ INSERT INTO
     WHERE
         stop_name NOT IN (
             'Däniken SO',
-            --'Dornach-Arlesheim',
             'Dulliken',
-            --'Grenchen Nord',
-            --'Grenchen Süd',
             'Murgenthal',
-            --'Oensingen',
             'Olten',
             'Schönenwerd SO'
-            --'Solothurn'
         )
 -- ***************************** Ende der Ausnahmen *********************************
     GROUP BY
@@ -197,60 +192,8 @@ INSERT INTO
         unternehmer,
         verkehrsmittel
 
--- *********************************************************************************
 -- ab hier werden die Bahnhöfe und andere Knotenpunkte behandelt,
 -- wegen dem fehlenden Attribut "fahrplanfeld" muss die Aufteilung in Linien separat gemacht werden
-
-    --UNION ALL
-
----- Bahnhof Solothurn
----- wegen Linienbezeichnung: L410 Olten - Biel (IC5) und
----- L650 Olten - Zürich HB (IC5) haben die gleiche route_id
-    --SELECT
-        --stop_name,
-        --route_id,
-        --linienname,
-        --unternehmer,
-        --sum(gtfs_count),
-        --verkehrsmittel
-    --FROM
-        --abfahrten
-    --WHERE
-       --stop_name = 'Solothurn'
-    --AND
-        --substring(linienname from 1 for 4) NOT IN ('L650')
-    --GROUP BY
-        --stop_name,
-        --route_id,
-        --linienname,
-        --unternehmer,
-        --verkehrsmittel
-
-    --UNION ALL
-
----- Bahnhof Oensingen: L410 Biel - Olten
----- wegen Linienbezeichnung: L410 Olten - Biel (IC5) und
----- L650 Olten - Zürich HB (IC5) haben die gleiche route_id
-    --SELECT
-        --stop_name,
-        --route_id,
-        --linienname,
-        --unternehmer,
-        --sum(gtfs_count) AS gtfs_count,
-        --verkehrsmittel
-    --FROM
-        --abfahrten
-    --WHERE
-        --stop_name = 'Oensingen'
-    --AND
-        --substring(linienname from 1 for 4) NOT IN ('L650')
-    --GROUP BY
-        --stop_name,
-        --route_id,
-        --linienname,
-        --gtfs_count,
-        --unternehmer,
-        --verkehrsmittel
 
     UNION ALL
 
@@ -276,19 +219,6 @@ INSERT INTO
          )
     AND
         substring(linienname from 1 for 4) = 'L410'
-    --AND
-        --trip_id IN (
-            --SELECT
-                --alle_trips_stichtag.trip_id
-            --FROM
-                --alle_trips_stichtag
-                --LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stoptime AS stoptime_einschraenkung
-                    --ON stoptime_einschraenkung.trip_id = alle_trips_stichtag.trip_id
-                --LEFT JOIN avt_oevkov_${currentYear}_v1.gtfs_stop AS stop_einschraenkung
-                    --ON stop_einschraenkung.stop_id = stoptime_einschraenkung.stop_id
-           --WHERE
-               --stop_einschraenkung.stop_name IN ('Solothurn', 'Oensingen')
-         --)
     GROUP BY
         stop_name,
         route_id,
@@ -504,54 +434,6 @@ INSERT INTO
         unternehmer,
         verkehrsmittel
 
-    --UNION ALL
-
----- Bahnhof Grenchen Süd
----- wegen Linienbezeichnung: L410 Olten - Biel (IC5) und
----- L650 Olten - Zürich HB (IC5) haben die gleiche route_id
-    --SELECT
-        --stop_name,
-        --route_id,
-        --linienname,
-        --unternehmer,
-        --sum(gtfs_count),
-        --verkehrsmittel
-    --FROM
-        --abfahrten
-    --WHERE
-        --stop_name = 'Grenchen Süd'
-    --AND
-        --substring(linienname from 1 for 4) = 'L410'
-    --GROUP BY
-        --stop_name,
-        --route_id,
-        --linienname,
-        --unternehmer,
-        --verkehrsmittel
-
-    --UNION ALL
-
----- Bahnhof Grenchen Nord
-    --SELECT
-        --stop_name,
-        --route_id,
-        --linienname,
-        --unternehmer,
-        --sum(gtfs_count),
-        --verkehrsmittel
-    --FROM
-        --abfahrten
-    --WHERE
-        --stop_name = 'Grenchen Nord'
-    --AND
-        --route_desc = 'RE'
-    --GROUP BY
-        --stop_name,
-        --route_id,
-        --linienname,
-        --unternehmer,
-        --verkehrsmittel
-
    UNION ALL
 
 -- Bahnhof Murgenthal
@@ -576,30 +458,5 @@ INSERT INTO
         gtfs_count,
         unternehmer,
         verkehrsmittel
-
-     --UNION ALL
-
----- Bahnhof Dornach-Arlesheim:
----- 230 Biel - Delémont und 500 Basel-Olten S
----- haben die gleiche route_id
-    --SELECT
-        --stop_name,
-        --route_id,
-        --linienname,
-        --unternehmer,
-        --sum(gtfs_count),
-        --verkehrsmittel
-    --FROM
-        --abfahrten
-    --WHERE
-        --stop_name = 'Dornach-Arlesheim'
-    ----------------------------------------------------------------------------------------------------AND
-        ----------------------------------------------------------------------------------------------------substring(linienname from 1 for 4) = 'L230'
-    --GROUP BY
-        --stop_name,
-        --route_id,
-        --linienname,
-        --unternehmer,
-        --verkehrsmittel
     )
 ;
