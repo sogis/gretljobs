@@ -32,6 +32,7 @@ WITH gtfs_abfahrten AS (
                     THEN
                         korrektur.gewichtung
                 ELSE
+                -- Gewichtung kann nur für eine ganze Linie geändert werden
                     NULL
             END AS gewichtung_korrigiert,
             sum(auswertung.anzahl_abfahrten_linie) AS anzahl_abfahrten_linie,
@@ -84,7 +85,7 @@ WITH gtfs_abfahrten AS (
                     THEN
                         NULL
                  WHEN
-                     gewichtung_korrigiert = 0
+                     gtfs_abfahrten.gewichtung_korrigiert = 0
                      THEN
                         anzahl_abfahrten_linie  *  -1
                  ELSE
@@ -92,7 +93,7 @@ WITH gtfs_abfahrten AS (
             END AS abfahrten_gtfs_korrigiert,
             CASE
                 WHEN
-                    gewichtung_korrigiert = 0
+                    gtfs_abfahrten.gewichtung_korrigiert = 0
                     THEN
                         0
                 WHEN
@@ -111,16 +112,16 @@ WITH gtfs_abfahrten AS (
                     AND
                         gtfs_abfahrten.abfahrten_korrigiert IS NOT NULL
                     AND
-                        gewichtung_korrigiert > 0
+                        gtfs_abfahrten.gewichtung_korrigiert > 0
                     THEN
                        ((anzahl_abfahrten_linie  +  gtfs_abfahrten.abfahrten_korrigiert)
-                              *  gewichtung_korrigiert  *  anrechnung  /  100)::numeric(5,1)
+                              *  gtfs_abfahrten.gewichtung_korrigiert  *  anrechnung  /  100)::numeric(5,1)
                 WHEN
                     gtfs_abfahrten.abfahrten_korrigiert <> 0
                     AND
                         gtfs_abfahrten.abfahrten_korrigiert IS NOT NULL
                     AND
-                        gewichtung_korrigiert IS NULL
+                        gtfs_abfahrten.gewichtung_korrigiert IS NULL
                    THEN
                     ((anzahl_abfahrten_linie  +  gtfs_abfahrten.abfahrten_korrigiert)
                          *  gtfs_abfahrten.gewichtung  *  anrechnung  /  100)::numeric(5,1)
@@ -130,11 +131,11 @@ WITH gtfs_abfahrten AS (
                      gtfs_abfahrten.abfahrten_korrigiert IS NULL
                     )
                     AND
-                        gewichtung_korrigiert > 0
+                        gtfs_abfahrten.gewichtung_korrigiert > 0
                     THEN
-                        (anzahl_abfahrten_linie  *  gewichtung_korrigiert  *  anrechnung  /  100)::numeric(5,1)
+                        (anzahl_abfahrten_linie  *  gtfs_abfahrten.gewichtung_korrigiert  *  anrechnung  /  100)::numeric(5,1)
                  WHEN
-                    gewichtung_korrigiert = 0
+                    gtfs_abfahrten.gewichtung_korrigiert = 0
                     THEN
                         0
                 ELSE
