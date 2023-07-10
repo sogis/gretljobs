@@ -26,8 +26,8 @@ WITH alle_alr_buntbrache AS (
     WHERE
         alr_buntbrache.mit_bewirtschafter_besprochen IS TRUE
         AND vereinbarung.status_vereinbarung = 'aktiv'
-        -- und berücksichtige nur die neusten (sofern mehrere existieren) - das hier funktioniert nicht
-        AND alr_buntbrache.t_id IN (SELECT t_id, MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_alr_buntbrache GROUP BY t_id)
+        -- und berücksichtige nur die neusten (sofern mehrere existieren)
+        AND alr_buntbrache.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_alr_buntbrache b WHERE b.vereinbarung = alr_buntbrache.vereinbarung)
 ),
 united_alr_buntbrache_leistungen AS (
     -- union aller leistungen

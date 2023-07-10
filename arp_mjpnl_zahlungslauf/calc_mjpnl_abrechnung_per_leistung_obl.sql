@@ -25,6 +25,8 @@ WITH alle_obl AS (
     WHERE
         obl.mit_bewirtschafter_besprochen IS TRUE
         AND vereinbarung.status_vereinbarung = 'aktiv'
+        -- und berücksichtige nur die neusten (sofern mehrere existieren)
+        AND obl.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_obl b WHERE b.vereinbarung = obl.vereinbarung)
 ),
 united_obl_leistungen AS (
     -- union aller leistungen

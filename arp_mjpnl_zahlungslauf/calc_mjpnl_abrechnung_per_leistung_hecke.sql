@@ -25,6 +25,8 @@ WITH alle_hecke AS (
     WHERE
         hecke.mit_bewirtschafter_besprochen IS TRUE
         AND vereinbarung.status_vereinbarung = 'aktiv'
+        -- und berücksichtige nur die neusten (sofern mehrere existieren)
+        AND hecke.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_hecke b WHERE b.vereinbarung = hecke.vereinbarung)
 ),
 united_hecke_leistungen AS (
     -- union aller leistungen

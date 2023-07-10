@@ -25,6 +25,8 @@ WITH alle_wbl_wiese AS (
     WHERE
         wbl_wiese.mit_bewirtschafter_besprochen IS TRUE
         AND vereinbarung.status_vereinbarung = 'aktiv'
+        -- und berücksichtige nur die neusten (sofern mehrere existieren)
+        AND wbl_wiese.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_wbl_wiese b WHERE b.vereinbarung = wbl_wiese.vereinbarung)
 ),
 united_wbl_wiese_leistungen AS (
     -- union aller leistungen

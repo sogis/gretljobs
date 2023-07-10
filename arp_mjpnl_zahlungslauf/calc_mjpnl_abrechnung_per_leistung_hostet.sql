@@ -25,6 +25,8 @@ WITH alle_hostet AS (
     WHERE
         hostet.mit_bewirtschafter_besprochen IS TRUE
         AND vereinbarung.status_vereinbarung = 'aktiv'
+        -- und berücksichtige nur die neusten (sofern mehrere existieren)
+        AND hostet.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_hostet b WHERE b.vereinbarung = hostet.vereinbarung)
 ),
 united_hostet_leistungen AS (
     -- union aller leistungen
