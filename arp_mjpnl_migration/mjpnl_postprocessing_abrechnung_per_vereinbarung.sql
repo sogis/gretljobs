@@ -29,6 +29,7 @@ FROM
   ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
      ON lstg.vereinbarung = vbg.t_id
+  -- technically there could be multiple beurteilungen, but in this migration case it's only one. And only for wiese (no entries in wbl_wiese).
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_beurteilung_wiese bw
      ON lstg.vereinbarung = bw.vereinbarung
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_stueck
