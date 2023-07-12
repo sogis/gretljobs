@@ -169,8 +169,11 @@ SELECT
     /* Statisch kalkulierte und gleiche Werte */
     -- aktuelles Jahr
     (SELECT date_part('year', now())::integer) AS auszahlungsjahr,
-    -- Ursprungsstatus
-    'freigegeben' AS  status_abrechnung,
+    -- Ursprungsstatus mit Ausnahme der kantonsinternen Vereinbarungen
+    CASE
+        WHEN kantonsintern THEN 'intern_verrechnet'
+        ELSE 'freigegeben'
+    END AS status_abrechnung,
     -- noch nicht existent, wird bei der Kalkulation von mjpnl_abrechnung_per_vereinbarung erstellt und ersetzt
     9999999 AS abrechnungpervereinbarung
 FROM
