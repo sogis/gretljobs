@@ -10,14 +10,21 @@ apply plugin: 'ch.so.agi.gretl'
 
 def DB_Schema_MJPNL = "arp_mjpnl_v1"
 
-task "clean_abrechnungen"(type: SqlExecutor) {
-    description = "Löscht alle Abrechnungen vom aktuellen Jahr (ausser die migrierten)"
+task "cleanup_abrechnung_per_leistung"(type: SqlExecutor) {
+    description = "Löscht alle Leistungen vom aktuellen Jahr"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
-    sqlFiles = ['delete_mjpnl_abrechnungen.sql']
+    sqlFiles = ['delete_mjpnl_abrechnung_per_leistung.sql']
 }
 
-task "calculate_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "clean_abrechnungen") {
+task "cleanup_abrechnungen_per_bewirtschafter_und_vereinbarung"(type: SqlExecutor,dependsOn: "cleanup_abrechnung_per_leistung") {
+    description = "Löscht alle zusammengefassten Abrechnungen vom aktuellen Jahr"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['delete_mjpnl_abrechnung_per_vereinbarung.sql', 'delete_mjpnl_abrechnung_per_bewirtschafter.sql']
+}
+
+task "calculate_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "cleanup_abrechnungen_per_bewirtschafter_und_vereinbarung") {
     description = "Kalkuliert die Abrechnungen pro Leistung anhand aller Beurteilungen"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
