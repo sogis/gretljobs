@@ -25,14 +25,15 @@ task "cleanup_abrechnungen_per_bewirtschafter_und_vereinbarung"(type: SqlExecuto
 }
 
 task "calculate_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "cleanup_abrechnungen_per_bewirtschafter_und_vereinbarung") {
-    description = "Kalkuliert die Abrechnungen pro Leistung anhand aller Beurteilungen"
+    description = "Kalkuliert die Abrechnungen pro Leistung anhand der neusten besprochenen Beurteilungen"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
-    sqlFiles = ['calc_mjpnl_abrechnung_per_leistung_alr_buntbrache.sql', 'calc_mjpnl_abrechnung_per_leistung_alr_saum.sql', 'calc_mjpnl_abrechnung_per_leistung_hecke.sql', 'calc_mjpnl_abrechnung_per_leistung_hostet.sql', 'calc_mjpnl_abrechnung_per_leistung_obl.sql', 'calc_mjpnl_abrechnung_per_leistung_wbl_weide.sql', 'calc_mjpnl_abrechnung_per_leistung_wbl_wiese.sql', 'calc_mjpnl_abrechnung_per_leistung_weide_ln.sql', 'calc_mjpnl_abrechnung_per_leistung_weide_soeg.sql', 'calc_mjpnl_abrechnung_per_leistung_wiese.sql']
+    sqlFiles = ['calc_mjpnl_abrechnung_per_leistung_alr_buntbrache.sql', 'calc_mjpnl_abrechnung_per_leistung_alr_saum.sql', 'calc_mjpnl_abrechnung_per_leistung_hecke.sql', 'calc_mjpnl_abrechnung_per_leistung_hostet.sql', 'calc_mjpnl_abrechnung_per_leistung_obl.sql', 
+    'calc_mjpnl_abrechnung_per_leistung_wbl_weide.sql', 'calc_mjpnl_abrechnung_per_leistung_wbl_wiese.sql', 'calc_mjpnl_abrechnung_per_leistung_weide_ln.sql', 'calc_mjpnl_abrechnung_per_leistung_weide_soeg.sql', 'calc_mjpnl_abrechnung_per_leistung_wiese.sql']
 }
 
 task "copy_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "calculate_abrechnung_per_leistung") {
-    description = "Kopiert die Leistungen vom letzten Jahr, falls keine diesjährige kalkuliert werden konnten."
+    description = "Kopiert die Leistungen vom letzten Jahr, falls keine diesjährigen kalkuliert werden konnten, weil keine besprochene Beurteilung vorhanden"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
     sqlFiles = ['copy_mjpnl_abrechnung_per_leistung.sql']

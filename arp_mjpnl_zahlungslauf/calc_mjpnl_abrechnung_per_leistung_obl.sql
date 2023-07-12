@@ -105,7 +105,7 @@ SELECT
     betrag_total,
     /* Statisch kalkulierte und gleiche Werte */
     -- aktuelles Jahr
-    (SELECT date_part('year', now())::integer) AS auszahlungsjahr,
+    date_part('year', now())::integer AS auszahlungsjahr,
     -- Ursprungsstatus
     'initialisiert' AS  status_abrechnung,
     -- noch nicht existent, wird bei der Kalkulation von mjpnl_abrechnung_per_vereinbarung erstellt und ersetzt

@@ -168,7 +168,7 @@ SELECT
     betrag_total,
     /* Statisch kalkulierte und gleiche Werte */
     -- aktuelles Jahr
-    (SELECT date_part('year', now())::integer) AS auszahlungsjahr,
+    date_part('year', now())::integer AS auszahlungsjahr,
     -- Ursprungsstatus mit Ausnahme der kantonsinternen Vereinbarungen
     CASE
         WHEN kantonsintern THEN 'intern_verrechnet'
