@@ -1,15 +1,16 @@
 /* Zusammenzug Zahlungen per Vereinbarung und Datum der Auszahlung */
 
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung 
-  (t_basket, vereinbarungs_nr, gelan_bewe_id, gb_nr, flurnamen, gemeinde, flaeche, anzahl_baeume, betrag_flaeche, betrag_baeume, betrag_pauschal, gesamtbetrag,
+  (t_basket, vereinbarungs_nr, gelan_pid_gelan, gelan_bewe_id, gb_nr, flurnamen, gemeinde, flaeche, anzahl_baeume, betrag_flaeche, betrag_baeume, betrag_pauschal, gesamtbetrag,
    auszahlungsjahr, status_abrechnung, datum_abrechnung, bewirtschaftabmachung_schnittzeitpunkt_1, bewirtschaftabmachung_messerbalkenmaehgeraet, bewirtschaftabmachung_herbstweide,abrechnungperbewirtschafter, vereinbarung, migriert)
 SELECT
   (SELECT t_id FROM ${DB_Schema_MJPNL}.t_ili2db_basket WHERE t_ili_tid = 'SO_ARP_MJPNL_20201026.MJPNL' LIMIT 1) AS t_basket,
   vbg.vereinbarungs_nr,
+  vbg.gelan_pid_gelan,
   vbg.gelan_bewe_id,
-  vbg.gb_nr, --should be in future: array_to_string(vbg.gb_nr,', ') AS gb_nr,
-  array_to_string(vbg.flurname,', ') AS flurnamen,
-  array_to_string(vbg.gemeinde,', ') AS gemeinde,
+  array_to_string(vbg.gb_nr,',') AS gb_nr,
+  array_to_string(vbg.flurname,',') AS flurnamen,
+  array_to_string(vbg.gemeinde,',') AS gemeinde,
   vbg.flaeche,
   COALESCE(SUM(lstg_stueck.anzahl_einheiten),0) AS anzahl_baeume,
   COALESCE(SUM(lstg_ha.betrag_total),0) AS betrag_flaeche,
