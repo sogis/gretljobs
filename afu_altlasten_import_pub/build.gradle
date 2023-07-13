@@ -77,15 +77,15 @@ task importKbsRestrictedData(type: Ili2pgReplace, dependsOn: 'unzipKbsRestricted
     strokeArcs = true
 }
 
-task refreshSolrKbs(type:Exec, dependsOn:'importKbsData') {
+task refreshSolrKbs(type:Exec, dependsOn: 'importKbsRestrictedData') {
 	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte'
 }
 
-task refreshSolrKbsRestricted(type:Exec, dependsOn:'importKbsRestrictedData') {
+task refreshSolrKbsRestricted(type:Exec, dependsOn:'refreshSolrKbs') {
         commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte_geschuetzt'
 }
 
-task transferKbsToOldPubSchema(type: Db2Db) {
+task transferKbsToOldPubSchema(type: Db2Db, dependsOn: 'refreshSolrKbsRestricted') {
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = sourceDb
     transferSets = [
@@ -102,7 +102,7 @@ task transferKbsToSogisDb(type: Db2Db, dependsOn: 'transferKbsToOldPubSchema') {
     ];
 }
 
-task downloadMgdm(type: Download) {
+task downloadMgdm(type: Download, dependsOn: 'transferKbsToSogisDb') {
     src "https://altlast4web.verw.rootso.org/interlis_exports/mgdm/data.zip"
     dest pathToTempFolder
     overwrite true
