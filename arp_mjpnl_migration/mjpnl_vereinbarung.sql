@@ -59,7 +59,7 @@ SELECT
   FALSE AS soemmerungsgebiet, --im Postprocessing zu ersetzen
   'MJPNL_2020' AS mjpnl_version,
   4::integer AS kontrollintervall,
-  NULL AS ablaufdatum,
+  NULL AS ablaufdatum, --TODO:  Ablaufdatum in Vereinbarung
   CASE
     WHEN  vbg.vbnr IN ( '12.388', '23.304' ) THEN TRUE -- nur Wallierhof (Schloss Wartenfels und AWJF haben keine relevanten Vereinbarungen)                      
     ELSE FALSE

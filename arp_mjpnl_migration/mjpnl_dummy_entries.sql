@@ -4,7 +4,7 @@ INSERT INTO ${DB_Schema_MJPNL}.mjpnl_vereinbarung
 geometrie, gelan_pid_gelan, gelan_bewe_id, uebersteuerung_bewirtschafter,
 bfs_nr, gemeinde, gb_nr, flurname, vereinbarungsart, ist_nutzungsvereinbarung,
 flaeche, rrb_nr, rrb_publiziert_ab, status_vereinbarung, soemmerungsgebiet, mjpnl_version,
-kontrollintervall, bemerkung, uzl_subregion, dateipfad_oder_url, erstellungsdatum,
+kontrollintervall, ablaufdatum, bemerkung, uzl_subregion, dateipfad_oder_url, erstellungsdatum,
 operator_erstellung, aenderungsdatum, operator_aenderung)
 VALUES(
   9999999,
@@ -30,6 +30,7 @@ VALUES(
   false,
   'MJPNL_2020',
   4,
+  now()::date + 12 Jahre;  --TODO:  Ablaufdatum in Vereinbarung (man kann natürlich nicht einfach + 12 Jahre machen)
   'Dummy-Entry',
   (SELECT t_id FROM ${DB_Schema_MJPNL}.umweltziele_uzl_subregion LIMIT 1),
   'Dummy-Pfad',
