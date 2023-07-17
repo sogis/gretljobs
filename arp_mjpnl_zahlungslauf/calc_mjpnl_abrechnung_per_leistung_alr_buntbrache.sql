@@ -63,12 +63,20 @@ united_alr_buntbrache_leistungen AS (
 
     UNION
 
-    -- Entweder das oder alle auskommentierten unten... Nicht sicher, inwieweit auftgeteilt werden soll...
     SELECT -- ALR Buntbrache: Strukturelemente
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
-        'ALR Buntbrache: Strukturelemente' AS leistung_beschrieb,
+        'ALR Buntbrache: Strukturelemente (' ||
+            (SELECT CONCAT_WS(', ',
+                CASE WHEN strukturelemente_strauchgruppen THEN 'Strauchgruppen' END,
+                CASE WHEN strukturelemente_asthaufen_totholz THEN 'Asthaufen/Totholz' END,
+                CASE WHEN strukturelemente_steinhaufen THEN 'Steinhaufen' END,
+                CASE WHEN strukturelemente_schnittguthaufen THEN 'Schnittguthaufen' END,
+                CASE WHEN strukturelemente_erdhaufen THEN 'Erdhaufen' END
+            )) ||
+        ')'
+        AS leistung_beschrieb,
         'pauschal' AS abgeltungsart,
         strukturelemente_abgeltung_pauschal_total AS betrag_per_einheit,
         1 AS anzahl_einheiten,
@@ -77,86 +85,6 @@ united_alr_buntbrache_leistungen AS (
         alle_alr_buntbrache
     WHERE
         strukturelemente_abgeltung_pauschal_total > 0
-
-    '''
-    SELECT -- ALR Buntbrache: Strauchgruppen
-        beurteilung_t_basket AS t_basket,
-        beurteilung_vereinbarung AS vereinbarung,
-        /* Indiviuelle Werte */
-        'ALR Buntbrache: Strukturelement Strauchgruppen' AS leistung_beschrieb,
-        'pauschal' AS abgeltungsart,
-        strukturelemente_strauchgruppen_abgeltung_pauschal AS betrag_per_einheit,
-        1 AS anzahl_einheiten,
-        strukturelemente_strauchgruppen_abgeltung_pauschal AS betrag_total
-    FROM
-        alle_alr_buntbrache
-    WHERE
-        strukturelemente_strauchgruppen
-    
-    UNION
-    
-    SELECT -- ALR Buntbrache: Asthaufen, Totholz
-        beurteilung_t_basket AS t_basket,
-        beurteilung_vereinbarung AS vereinbarung,
-        /* Indiviuelle Werte */
-        'ALR Buntbrache: Strukturelement Asthaufen, Totholz' AS leistung_beschrieb,
-        'pauschal' AS abgeltungsart,
-        strukturelemente_asthaufen_totholz_abgeltung_pauschal AS betrag_per_einheit,
-        1 AS anzahl_einheiten,
-        strukturelemente_asthaufen_totholz_abgeltung_pauschal AS betrag_total
-    FROM
-        alle_alr_buntbrache
-    WHERE
-        strukturelemente_asthaufen_totholz
-    
-    UNION
-    
-    SELECT -- ALR Buntbrache: Steinhaufen
-        beurteilung_t_basket AS t_basket,
-        beurteilung_vereinbarung AS vereinbarung,
-        /* Indiviuelle Werte */
-        'ALR Buntbrache: Strukturelement Steinhaufen' AS leistung_beschrieb,
-        'pauschal' AS abgeltungsart,
-        strukturelemente_steinhaufen_abgeltung_pauschal AS betrag_per_einheit,
-        1 AS anzahl_einheiten,
-        strukturelemente_steinhaufen_abgeltung_pauschal AS betrag_total
-    FROM
-        alle_alr_buntbrache
-    WHERE
-        strukturelemente_steinhaufen
-
-    UNION
-    
-    SELECT -- ALR Buntbrache: Schnittguthaufen
-        beurteilung_t_basket AS t_basket,
-        beurteilung_vereinbarung AS vereinbarung,
-        /* Indiviuelle Werte */
-        'ALR Buntbrache: Strukturelement Schnittguthaufen' AS leistung_beschrieb,
-        'pauschal' AS abgeltungsart,
-        strukturelemente_schnittguthaufen_abgeltung_pauschal AS betrag_per_einheit,
-        1 AS anzahl_einheiten,
-        strukturelemente_schnittguthaufen_abgeltung_pauschal AS betrag_total
-    FROM
-        alle_alr_buntbrache
-    WHERE
-        strukturelemente_schnittguthaufen
-
-    UNION
-
-    SELECT -- ALR Buntbrache: Erdhaufen
-        beurteilung_t_basket AS t_basket,
-        beurteilung_vereinbarung AS vereinbarung,
-        /* Indiviuelle Werte */
-        'ALR Buntbrache: Strukturelement Erdhaufen' AS leistung_beschrieb,
-        'pauschal' AS abgeltungsart,
-        strukturelemente_erdhaufen_abgeltung_pauschal AS betrag_per_einheit,
-        1 AS anzahl_einheiten,
-        strukturelemente_erdhaufen_abgeltung_pauschal AS betrag_total
-    FROM
-        alle_alr_buntbrache
-    WHERE
-        strukturelemente_erdhaufen
-    '''
 )
 SELECT 
     t_basket,

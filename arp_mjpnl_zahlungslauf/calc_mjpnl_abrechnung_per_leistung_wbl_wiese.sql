@@ -40,35 +40,71 @@ united_wbl_wiese_leistungen AS (
         flaeche AS anzahl_einheiten,
         (flaeche * einstiegskriterium_abgeltung_ha) AS betrag_total
     FROM
-        alle_wbl_weide
+        alle_wbl_wiese
     WHERE
         flaeche > 0 AND einstiegskriterium_abgeltung_ha > 0
 
     UNION
 
-    -- Diese müssen aufgesplittet werden, da der eine pauschal und der andere per Ha
+    SELECT -- WBL Wiese: Faunabonus
+        beurteilung_t_basket AS t_basket,
+        beurteilung_vereinbarung AS vereinbarung,
+        /* Indiviuelle Werte */
+        'WBL Wiese: Faunabonus' AS leistung_beschrieb,
+        'per_stueck' AS abgeltungsart,
+        50 AS betrag_per_einheit,
+        einstufungbeurteilungistzustand_anzahl_fauna AS anzahl_einheiten,
+        einstufungbeurteilungistzustand_abgeltung_faunaliste_paschal AS betrag_total
+    FROM
+        alle_wbl_wiese
+    WHERE
+        einstufungbeurteilungistzustand_anzahl_fauna > 0
+
+    UNION
+
     SELECT -- WBL Wiese: Einstufung / Beurteilung Ist-Zustand
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
-        'WBL Wiese: Einstufung / Beurteilung Ist-Zustand' AS leistung_beschrieb,
+        'WBL Weide: Einstufung / Beurteilung Ist-Zustand (' || einstufungbeurteilungistzustand_wiesenkategorie || ')' AS leistung_beschrieb,
         'per_ha' AS abgeltungsart,
-        einstufungbeurteilungistzustand_abgeltung_ha AS betrag_per_einheit,
+        einstufungbeurteilungistzustand_wiesenkategorie_abgeltung_ha AS betrag_per_einheit,
         flaeche AS anzahl_einheiten,
-        (flaeche * einstufungbeurteilungistzustand_abgeltung_ha) AS betrag_total
+        (flaeche * einstufungbeurteilungistzustand_wiesenkategorie_abgeltung_ha) AS betrag_total
     FROM
         alle_wbl_wiese
     WHERE
-        flaeche > 0 AND einstufungbeurteilungistzustand_abgeltung_ha > 0
+        flaeche > 0 AND einstufungbeurteilungistzustand_wiesenkategorie_abgeltung_ha > 0
 
     UNION
 
-    -- Entweder das oder alle auskommentierten unten... Nicht sicher, inwieweit auftgeteilt werden soll...
+    SELECT -- WBL Wiese: Bewirtschaftungsabmachungen (Messerbalken-Mähgerät)
+        beurteilung_t_basket AS t_basket,
+        beurteilung_vereinbarung AS vereinbarung,
+        /* Indiviuelle Werte */
+        'WBL Wiese: Bewirtschaftungsabmachungen (Messerbalken-Mähgerät)' AS leistung_beschrieb,
+        'per_ha' AS abgeltungsart,
+        bewirtschaftabmachung_abgeltung_ha AS betrag_per_einheit,
+        flaeche AS anzahl_einheiten,
+        (flaeche * bewirtschaftabmachung_abgeltung_ha) AS betrag_total
+    FROM
+        alle_wbl_wiese
+    WHERE
+        flaeche > 0 AND bewirtschaftabmachung_abgeltung_ha > 0
+
+    UNION
+
     SELECT -- WBL Wiese: Erschwernis
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
-        'WBL Wiese: Erschwernis Massnahme 1: '||erschwernis_massnahme1_text||' / Massnahme 2: '||erschwernis_massnahme2_text AS leistung_beschrieb,
+        'WBL Wiese: Erschwernis (' ||
+            (SELECT CONCAT_WS(', ',
+                CASE WHEN erschwernis_massnahme1 THEN 'Massnahme 1: '||erschwernis_massnahme1_text END,
+                CASE WHEN erschwernis_massnahme2 THEN 'Massnahme 2: '||erschwernis_massnahme2_text END
+            )) ||
+        ')'
+        AS leistung_beschrieb,
         'per_ha' AS abgeltungsart,
         erschwernis_abgeltung_ha AS betrag_per_einheit,
         flaeche AS anzahl_einheiten,
@@ -78,48 +114,19 @@ united_wbl_wiese_leistungen AS (
     WHERE
         flaeche > 0 AND erschwernis_abgeltung_ha > 0
 
-    '''
     UNION
 
-    SELECT -- WBL Wiese: Erschwernis Massnahme 1
-        beurteilung_t_basket AS t_basket,
-        beurteilung_vereinbarung AS vereinbarung,
-        /* Indiviuelle Werte */
-        'WBL Wiese: Erschwernis Massnahme 1: '||erschwernis_massnahme1_text AS leistung_beschrieb,
-        'per_ha' AS abgeltungsart,
-        erschwernis_massnahme1_abgeltung_ha AS betrag_per_einheit,
-        flaeche AS anzahl_einheiten,
-        (flaeche * erschwernis_massnahme1_abgeltung_ha) AS betrag_total
-    FROM
-        alle_wbl_wiese
-    WHERE
-        flaeche > 0 AND erschwernis_massnahme1
-
-    UNION
-    
-    SELECT -- WBL Wiese: Erschwernis Massnahme 2
-        beurteilung_t_basket AS t_basket,
-        beurteilung_vereinbarung AS vereinbarung,
-        /* Indiviuelle Werte */
-        'WBL Wiese: Erschwernis Massnahme 2: '||erschwernis_massnahme2_text AS leistung_beschrieb,
-        'per_ha' AS abgeltungsart,
-        erschwernis_massnahme2_abgeltung_ha AS betrag_per_einheit,
-        flaeche AS anzahl_einheiten,
-        (flaeche * erschwernis_massnahme2_abgeltung_ha) AS betrag_total
-    FROM
-        alle_wbl_wiese
-    WHERE
-        flaeche > 0 AND erschwernis_massnahme2
-    '''
-
-    UNION
-
-    -- Entweder das oder einzelne Auflistung pro Art und Massnahme
     SELECT -- WBL Wiese: Artenförderung
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
-        'WBL Wiese: Artenförderung Massnahme 1 ('||artenfoerderung_ff_zielart1||') '||artenfoerderung_ff_zielart1_massnahme||' / Massnahme 2 ('||artenfoerderung_ff_zielart2||') '||artenfoerderung_ff_zielart2_massnahme||' / Massnahme 3 ('||artenfoerderung_ff_zielart3||') '||artenfoerderung_ff_zielart3_massnahme AS leistung_beschrieb,
+        'WBL Wiese: Artenförderung (' ||
+            (SELECT CONCAT_WS(', ',
+                CASE WHEN artenfoerderung_ff_zielart1 THEN 'Massnahme für '||artenfoerderung_ff_zielart1||': '||artenfoerderung_ff_zielart1_massnahme END,
+                CASE WHEN artenfoerderung_ff_zielart2 THEN 'Massnahme für '||artenfoerderung_ff_zielart2||': '||artenfoerderung_ff_zielart2_massnahme END,
+                CASE WHEN artenfoerderung_ff_zielart3 THEN 'Massnahme für '||artenfoerderung_ff_zielart3||': '||artenfoerderung_ff_zielart3_massnahme END
+            )) ||
+        ')' AS leistung_beschrieb,
         artenfoerderung_abgeltungsart AS abgeltungsart,
         artenfoerderung_abgeltung_total AS betrag_per_einheit,
         CASE WHEN artenfoerderung_abgeltungsart = 'pauschal' THEN 1 ELSE flaeche END AS anzahl_einheiten,
@@ -131,12 +138,22 @@ united_wbl_wiese_leistungen AS (
 
     UNION
 
-    -- Entweder das oder einzelne Auflistung pro Art
     SELECT -- WBL Wiese: Strukturelemente
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
-        'WBL Wiese: Strukturelemente' AS leistung_beschrieb,
+        'WBL Wiese: Strukturelemente (' ||
+            (SELECT CONCAT_WS(', ',
+                CASE WHEN strukturelemente_gewaesser THEN 'Temporäre Gewässer' END,
+                CASE WHEN strukturelemente_hochstaudenflurenriederoehrichte THEN 'Hochstaudenfluren/Riede/Röhrichte' END,
+                CASE WHEN strukturelemente_streuehaufen THEN 'Streuehaufen' END,
+                CASE WHEN strukturelemente_asthaufentotholz THEN 'Asthaufen/Totholz' END,
+                CASE WHEN strukturelemente_steinhaufen THEN 'Steinhaufen' END,
+                CASE WHEN strukturelemente_gebueschgruppen THEN 'Gebüschgruppen' END,
+                CASE WHEN strukturelemente_kopfweiden THEN 'Kopfweiden' END
+            )) ||
+        ')'
+        AS leistung_beschrieb,
         'pauschal' AS abgeltungsart,
         strukturelemente_abgeltung_total AS betrag_per_einheit,
         1 AS anzahl_einheiten,

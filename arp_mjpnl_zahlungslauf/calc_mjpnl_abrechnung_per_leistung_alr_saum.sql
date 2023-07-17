@@ -67,7 +67,15 @@ united_alr_saum_leistungen AS (
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
-        'ALR Saum: Strukturelemente' AS leistung_beschrieb,
+        'ALR Saum: Strukturelemente (' ||
+            (SELECT CONCAT_WS(', ',
+                CASE WHEN strukturelemente_strauchgruppen THEN 'Strauchgruppen' END,
+                CASE WHEN strukturelemente_asthaufen_totholz THEN 'Asthaufen/Totholz' END,
+                CASE WHEN strukturelemente_steinhaufen THEN 'Steinhaufen' END,
+                CASE WHEN strukturelemente_schnittguthaufen THEN 'Schnittguthaufen' END
+            )) ||
+        ')'
+        AS leistung_beschrieb,
         'pauschal' AS abgeltungsart,
         strukturelemente_abgeltung_pauschal_total AS betrag_per_einheit,
         1 AS anzahl_einheiten,
@@ -77,85 +85,6 @@ united_alr_saum_leistungen AS (
     WHERE
         strukturelemente_abgeltung_pauschal_total > 0
 
-    '''
-    SELECT -- ALR Saum: Strauchgruppen
-        beurteilung_t_basket AS t_basket,
-        beurteilung_vereinbarung AS vereinbarung,
-        /* Indiviuelle Werte */
-        'ALR Saum: Strukturelement Strauchgruppen' AS leistung_beschrieb,
-        'pauschal' AS abgeltungsart,
-        strukturelemente_strauchgruppen_abgeltung_pauschal AS betrag_per_einheit,
-        1 AS anzahl_einheiten,
-        strukturelemente_strauchgruppen_abgeltung_pauschal AS betrag_total
-    FROM
-        alle_alr_saum
-    WHERE
-        strukturelemente_strauchgruppen
-    
-    UNION
-    
-    SELECT -- ALR Saum: Asthaufen, Totholz
-        beurteilung_t_basket AS t_basket,
-        beurteilung_vereinbarung AS vereinbarung,
-        /* Indiviuelle Werte */
-        'ALR Saum: Strukturelement Asthaufen, Totholz' AS leistung_beschrieb,
-        'pauschal' AS abgeltungsart,
-        strukturelemente_asthaufen_totholz_abgeltung_pauschal AS betrag_per_einheit,
-        1 AS anzahl_einheiten,
-        strukturelemente_asthaufen_totholz_abgeltung_pauschal AS betrag_total
-    FROM
-        alle_alr_saum
-    WHERE
-        strukturelemente_asthaufen_totholz
-    
-    UNION
-    
-    SELECT -- ALR Saum: Steinhaufen
-        beurteilung_t_basket AS t_basket,
-        beurteilung_vereinbarung AS vereinbarung,
-        /* Indiviuelle Werte */
-        'ALR Saum: Strukturelement Steinhaufen' AS leistung_beschrieb,
-        'pauschal' AS abgeltungsart,
-        strukturelemente_steinhaufen_abgeltung_pauschal AS betrag_per_einheit,
-        1 AS anzahl_einheiten,
-        strukturelemente_steinhaufen_abgeltung_pauschal AS betrag_total
-    FROM
-        alle_alr_saum
-    WHERE
-        strukturelemente_steinhaufen
-
-    UNION
-    
-    SELECT -- ALR Saum: Schnittguthaufen
-        beurteilung_t_basket AS t_basket,
-        beurteilung_vereinbarung AS vereinbarung,
-        /* Indiviuelle Werte */
-        'ALR Saum: Strukturelement Schnittguthaufen' AS leistung_beschrieb,
-        'pauschal' AS abgeltungsart,
-        strukturelemente_schnittguthaufen_abgeltung_pauschal AS betrag_per_einheit,
-        1 AS anzahl_einheiten,
-        strukturelemente_schnittguthaufen_abgeltung_pauschal AS betrag_total
-    FROM
-        alle_alr_saum
-    WHERE
-        strukturelemente_schnittguthaufen
-
-    UNION
-
-    SELECT -- ALR Saum: Erdhaufen
-        beurteilung_t_basket AS t_basket,
-        beurteilung_vereinbarung AS vereinbarung,
-        /* Indiviuelle Werte */
-        'ALR Saum: Strukturelement Erdhaufen' AS leistung_beschrieb,
-        'pauschal' AS abgeltungsart,
-        strukturelemente_erdhaufen_abgeltung_pauschal AS betrag_per_einheit,
-        1 AS anzahl_einheiten,
-        strukturelemente_erdhaufen_abgeltung_pauschal AS betrag_total
-    FROM
-        alle_alr_saum
-    WHERE
-        strukturelemente_erdhaufen
-    '''
 )
 SELECT 
     t_basket,

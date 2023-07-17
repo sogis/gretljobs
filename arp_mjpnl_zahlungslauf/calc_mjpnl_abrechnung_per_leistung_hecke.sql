@@ -66,7 +66,19 @@ united_hecke_leistungen AS (
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
-        'Hecke: Einstufung / Beurteilung Ist-Zustand' AS leistung_beschrieb,
+        'Hecke: Einstufung / Beurteilung Ist-Zustand (' ||
+            (SELECT CONCAT_WS(', ',
+                CASE WHEN einstufungbeurteilungistzustand_artenvielfalt_strauch_bmrten THEN '10 Strauch-/Baumarten' END,
+                CASE WHEN einstufungbeurteilungistzustand_asthaufen THEN 'Asthaufen' END,
+                CASE WHEN einstufungbeurteilungistzustand_totholz THEN 'Totholz' END,
+                CASE WHEN einstufungbeurteilungistzustand_steinhaufen THEN 'Steinhaufen' END,
+                CASE WHEN einstufungbeurteilungistzustand_schichtholzbeigen THEN 'Schichtholzbeigen' END,
+                CASE WHEN einstufungbeurteilungistzustand_nisthilfe_wildbienen THEN 'Nisthilfe Wildbienen' END,
+                CASE WHEN einstufungbeurteilungistzustand_hoehlenbaeume_biotpbm_ttholz THEN 'Höhlen-/Biotopbäume' END,
+                CASE WHEN einstufungbeurteilungistzustand_sitzwarte THEN 'Sitzwarte' END
+            )) ||
+        ')'
+        AS leistung_beschrieb,
         'per_ha' AS abgeltungsart,
         einstufungbeurteilungistzustand_abgeltung_ha AS betrag_per_einheit,
         flaeche AS anzahl_einheiten,
@@ -82,7 +94,14 @@ united_hecke_leistungen AS (
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
-        'Hecke: Bewirtschaftung Krautsaum' AS leistung_beschrieb,
+        'Hecke: Bewirtschaftung Krautsaum (' ||
+            (SELECT CONCAT_WS(', ',
+                CASE WHEN bewirtschaftung_krautsaum THEN 'Krautsaum' END,
+                CASE WHEN bewirtschaftung_krautsaum_schnittzeitpunkte THEN 'Schnittzeitpunkte' END,
+                CASE WHEN bewirtschaftung_krautsaum_offener_boden THEN 'Offener Boden' END
+            )) ||
+        ')'
+        AS leistung_beschrieb,
         'per_ha' AS abgeltungsart,
         bewirtschaftung_krautsaum_abgeltung_ha AS betrag_per_einheit,
         flaeche AS anzahl_einheiten,
@@ -110,12 +129,18 @@ united_hecke_leistungen AS (
 
     UNION
     
-    -- Entweder das oder alle auskommentierten unten... Nicht sicher, inwieweit auftgeteilt werden soll...
     SELECT -- Hecke: Erschwernis
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
-        'Hecke: Erschwernis Massnahme 1: '||erschwernis_massnahme1_text||' / Massnahme 2: '||erschwernis_massnahme2_text||' / Massnahme 3: '||erschwernis_massnahme3_text AS leistung_beschrieb,
+        'Hecke: Erschwernis (' ||
+            (SELECT CONCAT_WS(', ',
+                CASE WHEN erschwernis_massnahme1 THEN 'Massnahme 1: '||erschwernis_massnahme1_text END,
+                CASE WHEN erschwernis_massnahme2 THEN 'Massnahme 2: '||erschwernis_massnahme2_text END,
+                CASE WHEN erschwernis_massnahme3 THEN 'Massnahme 3: '||erschwernis_massnahme3_text END
+            )) ||
+        ')'
+        AS leistung_beschrieb,
         'per_ha' AS abgeltungsart,
         erschwernis_abgeltung_ha AS betrag_per_einheit,
         flaeche AS anzahl_einheiten,
@@ -124,55 +149,6 @@ united_hecke_leistungen AS (
         alle_hecke
     WHERE
         flaeche > 0 AND erschwernis_abgeltung_ha > 0
-
-    UNION
-    '''
-    SELECT -- Hecke: Erschwernis Massnahme 1
-        beurteilung_t_basket AS t_basket,
-        beurteilung_vereinbarung AS vereinbarung,
-        /* Indiviuelle Werte */
-        'Hecke: Erschwernis Massnahme 1: '||erschwernis_massnahme1_text AS leistung_beschrieb,
-        'per_ha' AS abgeltungsart,
-        erschwernis_massnahme1_abgeltung_ha AS betrag_per_einheit,
-        flaeche AS anzahl_einheiten,
-        (flaeche * erschwernis_massnahme1_abgeltung_ha) AS betrag_total
-    FROM
-        alle_hecke
-    WHERE
-        flaeche > 0 AND erschwernis_massnahme1
-
-    UNION
-    
-    SELECT -- Hecke: Erschwernis Massnahme 2
-        beurteilung_t_basket AS t_basket,
-        beurteilung_vereinbarung AS vereinbarung,
-        /* Indiviuelle Werte */
-        'Hecke: Erschwernis Massnahme 2: '||erschwernis_massnahme2_text AS leistung_beschrieb,
-        'per_ha' AS abgeltungsart,
-        erschwernis_massnahme2_abgeltung_ha AS betrag_per_einheit,
-        flaeche AS anzahl_einheiten,
-        (flaeche * erschwernis_massnahme2_abgeltung_ha) AS betrag_total
-    FROM
-        alle_hecke
-    WHERE
-        flaeche > 0 AND erschwernis_massnahme2
-
-    UNION
-    
-    SELECT -- Hecke: Erschwernis Massnahme 3
-        beurteilung_t_basket AS t_basket,
-        beurteilung_vereinbarung AS vereinbarung,
-        /* Indiviuelle Werte */
-        'Hecke: Erschwernis Massnahme 3 '||erschwernis_massnahme3_text AS leistung_beschrieb,
-        'per_ha' AS abgeltungsart,
-        erschwernis_massnahme3_abgeltung_ha AS betrag_per_einheit,
-        flaeche AS anzahl_einheiten,
-        (flaeche * erschwernis_massnahme3_abgeltung_ha) AS betrag_total
-    FROM
-        alle_hecke
-    WHERE
-        flaeche > 0 AND erschwernis_massnahme13
-    '''
 )
 SELECT 
     t_basket,

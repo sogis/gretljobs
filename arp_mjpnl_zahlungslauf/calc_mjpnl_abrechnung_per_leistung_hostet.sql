@@ -42,7 +42,9 @@ united_hostet_leistungen AS (
         alle_hostet
     WHERE
         grundbeitrag_baum_anzahl > 0
+
     UNION
+
     SELECT -- Hostet: BaumAb40cmDurchmesser
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
@@ -55,7 +57,9 @@ united_hostet_leistungen AS (
         alle_hostet
     WHERE
         beitrag_baumab40cmdurchmesser_anzahl > 0
+
     UNION
+
     SELECT -- Hostet: Erntepflicht
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
@@ -68,7 +72,9 @@ united_hostet_leistungen AS (
         alle_hostet
     WHERE
         beitrag_erntepflicht_anzahl > 0
+
     UNION
+
     SELECT -- Hostet: Öko Plus
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
@@ -81,7 +87,9 @@ united_hostet_leistungen AS (
         alle_hostet
     WHERE
         beitrag_oekoplus_anzahl > 0
+
     UNION
+    
     SELECT -- Hostet: Öko Maxi
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
