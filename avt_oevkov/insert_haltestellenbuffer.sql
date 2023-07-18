@@ -9,7 +9,8 @@ INSERT INTO avt_oevkov_${currentYear}_v1.so_geodaten_haltestellenbuffer
     )
     (
         SELECT
-            DISTINCT ON (haltestelle.haltestellenname) haltestelle.haltestellenname,
+            DISTINCT ON (haltestelle.haltestellenname, verkehrsmittel)
+            haltestelle.haltestellenname,
             verkehrsmittel,
             CASE
                 WHEN verkehrsmittel = 'Bahn'
