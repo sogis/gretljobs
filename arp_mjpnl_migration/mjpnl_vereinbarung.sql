@@ -55,7 +55,11 @@ SELECT
       WHEN rrb.rrbdatum < '1582-01-01'::DATE THEN '1582-01-01'::DATE
       ELSE rrb.rrbdatum
   END AS rrb_publiziert_ab,
-  'aktiv' AS status_vereinbarung, --TODO: MAPPING von Status code alt --> neu
+  CASE 
+      WHEN stat.kurzbez = 'Vorbereitung' THEN 'bearbeiten'
+      WHEN stat.kurzbez = 'zurückgestellt' THEN 'zurueckgestellt'
+      ELSE stat.kurzbez -- aktiv oder inaktiv
+  END AS status_vereinbarung;
   FALSE AS soemmerungsgebiet, --im Postprocessing zu ersetzen
   'MJPNL_2020' AS mjpnl_version,
   4::integer AS kontrollintervall,
@@ -142,6 +146,8 @@ FROM mjpnatur.flaechen mjpfl
      ON mjpfl.oeqv_q_attest > 0 AND mjpfl.oeqv_q_attest = oeqv.codeid AND oeqv.codetypid = 'OEQV' --ÖQV-Q Attest
    LEFT JOIN mjpnatur.code emden
      ON mjpfl.emden > 0 AND mjpfl.emden = emden.codeid AND emden.codetypid = 'EMD' --Emden
+   LEFT JOIN mjpnatur.status stat 
+      ON vbg.statuscd = stat.statuscd AND stat.statustypid = 'FLA'
 WHERE
     mjpfl.archive = 0
     AND vbggeom.wkb_geometry IS NOT NULL
