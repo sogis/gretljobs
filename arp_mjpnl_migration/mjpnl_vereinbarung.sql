@@ -59,7 +59,8 @@ SELECT
   FALSE AS soemmerungsgebiet, --im Postprocessing zu ersetzen
   'MJPNL_2020' AS mjpnl_version,
   4::integer AS kontrollintervall,
-  NULL AS ablaufdatum, --TODO:  Ablaufdatum in Vereinbarung
+  vbg.gueltigab AS startdatum,
+  (vbg.gueltigab + INTERVAL '12 years')::DATE AS enddatum,
   CASE
     WHEN  vbg.vbnr IN ( '12.388', '23.304' ) THEN TRUE -- nur Wallierhof (Schloss Wartenfels und AWJF haben keine relevanten Vereinbarungen)                      
     ELSE FALSE
@@ -120,7 +121,7 @@ SELECT
     ) AS bemerkung, --TODO: Zwischenparkieren weiterer alter Attribut-Werte
   9999999 AS uzl_subregion, -- im Postprocessing zu ersetzen
   'migration' AS dateipfad_oder_url,
-  COALESCE(vbg.gueltigab,'1900-01-01'::DATE) AS erstellungsdatum,
+  COALESCE(vbg.refdat,'1900-01-01'::DATE) AS erstellungsdatum,
   COALESCE(RTRIM(vbg.bearbeiter),'unbekannt (Migration)') AS operator_erstellung
 FROM mjpnatur.flaechen mjpfl
    LEFT JOIN mjpnatur.vereinbarung vbg
