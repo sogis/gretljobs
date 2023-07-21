@@ -59,7 +59,7 @@ SELECT
       WHEN stat.kurzbez = 'Vorbereitung' THEN 'bearbeiten'
       WHEN stat.kurzbez = 'zurückgestellt' THEN 'zurueckgestellt'
       ELSE stat.kurzbez -- aktiv oder inaktiv
-  END AS status_vereinbarung;
+  END AS status_vereinbarung,
   FALSE AS soemmerungsgebiet, --im Postprocessing zu ersetzen
   'MJPNL_2020' AS mjpnl_version,
   4::integer AS kontrollintervall,

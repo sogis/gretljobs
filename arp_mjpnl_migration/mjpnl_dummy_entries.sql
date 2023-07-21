@@ -30,7 +30,7 @@ VALUES(
   false,
   'MJPNL_2020',
   4,
-  now()::DATE;
+  now()::DATE,
   (now()::DATE + INTERVAL '12 years')::DATE,
   'Dummy-Entry',
   (SELECT t_id FROM ${DB_Schema_MJPNL}.umweltziele_uzl_subregion LIMIT 1),
