@@ -58,6 +58,7 @@ SELECT
   CASE 
       WHEN stat.kurzbez = 'Vorbereitung' THEN 'bearbeiten'
       WHEN stat.kurzbez = 'zurückgestellt' THEN 'zurueckgestellt'
+      WHEN stat.kurzbez IS NULL THEN 'inaktiv'
       ELSE stat.kurzbez -- aktiv oder inaktiv
   END AS status_vereinbarung,
   FALSE AS soemmerungsgebiet, --im Postprocessing zu ersetzen
@@ -125,7 +126,11 @@ SELECT
     ) AS bemerkung, --TODO: Zwischenparkieren weiterer alter Attribut-Werte
   9999999 AS uzl_subregion, -- im Postprocessing zu ersetzen
   'migration' AS dateipfad_oder_url,
-  COALESCE(vbg.refdat,'1900-01-01'::DATE) AS erstellungsdatum,
+  CASE 
+    WHEN vbg.refdat < '1900-01-01'::DATE OR vbg.refdat IS NULL THEN '1900-01-01'::DATE 
+    WHEN vbg.refdat > '2100-12-31'::DATE THEN '2100-12-31'::DATE
+    ELSE vbg.refdat 
+  END AS erstellungsdatum,
   COALESCE(RTRIM(vbg.bearbeiter),'unbekannt (Migration)') AS operator_erstellung
 FROM mjpnatur.flaechen mjpfl
    LEFT JOIN mjpnatur.vereinbarung vbg
