@@ -4,7 +4,7 @@ INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung
   (t_basket, vereinbarungs_nr, gelan_pid_gelan, gelan_bewe_id, gb_nr, flurnamen, gemeinde, flaeche, anzahl_baeume, betrag_flaeche, betrag_baeume, betrag_pauschal, gesamtbetrag,
    auszahlungsjahr, status_abrechnung, datum_abrechnung, bewirtschaftabmachung_schnittzeitpunkt_1, bewirtschaftabmachung_messerbalkenmaehgeraet, bewirtschaftabmachung_herbstweide,abrechnungperbewirtschafter, vereinbarung, migriert)
 SELECT
-  (SELECT t_id FROM ${DB_Schema_MJPNL}.t_ili2db_basket WHERE t_ili_tid = 'SO_ARP_MJPNL_20201026.MJPNL' LIMIT 1) AS t_basket,
+  vbg.t_basket,
   vbg.vereinbarungs_nr,
   vbg.gelan_pid_gelan,
   vbg.gelan_bewe_id,
