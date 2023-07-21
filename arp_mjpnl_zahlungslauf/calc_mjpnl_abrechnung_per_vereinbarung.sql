@@ -4,6 +4,11 @@
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung 
   (t_basket, vereinbarungs_nr, gelan_pid_gelan, gelan_bewe_id, gb_nr, flurnamen, gemeinde, flaeche, anzahl_baeume, betrag_flaeche, betrag_baeume, betrag_pauschal, gesamtbetrag,
    auszahlungsjahr, status_abrechnung, datum_abrechnung, bewirtschaftabmachung_schnittzeitpunkt_1, bewirtschaftabmachung_messerbalkenmaehgeraet, bewirtschaftabmachung_herbstweide,abrechnungperbewirtschafter, vereinbarung, migriert)
+WITH beurteilungs_metainfo_wiesen AS (
+	SELECT vereinbarung, beurteilungsdatum, bewirtschaftabmachung_schnittzeitpunkt_1, bewirtschaftabmachung_messerbalkenmaehgeraet, bewirtschaftabmachung_herbstweide FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_wiese WHERE mit_bewirtschafter_besprochen
+	UNION 
+	SELECT vereinbarung, beurteilungsdatum, bewirtschaftabmachung_schnittzeitpunkt_1, bewirtschaftabmachung_messerbalkenmaehgeraet, bewirtschaftabmachung_herbstweide FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_wbl_wiese WHERE mit_bewirtschafter_besprochen
+)
 SELECT
   vbg.t_basket,
   vbg.vereinbarungs_nr,
@@ -44,10 +49,10 @@ FROM
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
      ON lstg.vereinbarung = vbg.t_id
   -- Werte der Beurteilung Wiese
-  LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_beurteilung_wiese bw
+  LEFT JOIN beurteilungs_metainfo_wiesen bw
      ON lstg.vereinbarung = bw.vereinbarung
      -- berücksichtige nur die neusten (sofern mehrere existieren)
-     AND bw.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_wiese b WHERE b.vereinbarung = lstg.vereinbarung)
+     AND bw.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM beurteilungs_metainfo_wiesen b WHERE b.vereinbarung = lstg.vereinbarung)
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_stueck
      ON lstg_stueck.t_id = lstg.t_id AND lstg_stueck.abgeltungsart = 'per_stueck'
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_ha
