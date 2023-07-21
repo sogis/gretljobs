@@ -33,13 +33,13 @@ SELECT
    CASE WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung v WHERE v.status_abrechnung = 'freigegeben' AND v.gelan_pid_gelan = pers.pid_gelan) > 0 
      THEN 'freigegeben' 
      -- ansonsten ist es für alle gleich ("ausbezahlt" oder "intern_verrechnet")
-     ELSE MAX(v.status_abrechnung) 
+     ELSE MAX(abrg_vbg.status_abrechnung) 
    END AS status_abrechnung,
    -- wenn es eine status_abrechnung "freigegeben" gibt, dann soll es noch kein datum_abrechnung haben
    CASE WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung v WHERE v.status_abrechnung = 'freigegeben' AND v.gelan_pid_gelan = pers.pid_gelan) > 0 
      THEN NULL
      -- ansonsten kann es das späteste datum nehmen
-     ELSE MAX(v.datum_abrechnung) 
+     ELSE MAX(abrg_vbg.datum_abrechnung) 
    END AS datum_abrechnung,
    abrg_vbg.auszahlungsjahr,
    'Migration' AS dateipfad_oder_url,
@@ -64,7 +64,6 @@ WITH abrg_per_bewirtschafter AS (
 SELECT 
    abrg_bew.t_id,
    abrg_bew.auszahlungsjahr,
-   abrg_bew.status_abrechnung,
    vbg.vereinbarungs_nr 
 FROM
    ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_bewirtschafter abrg_bew
@@ -72,9 +71,8 @@ FROM
       ON abrg_bew.gelan_pid_gelan = vbg.gelan_pid_gelan
    WHERE
       abrg_bew.t_id != 9999999
-   ORDER BY vbg.vereinbarungs_nr ASC, abrg_bew.auszahlungsjahr ASC, abrg_bew.status_abrechnung ASC
+   ORDER BY vbg.vereinbarungs_nr ASC, abrg_bew.auszahlungsjahr ASC
 )
-/* Update der Abrechnung per Vereinbarung über gemeinsame Attribute */
 UPDATE
   ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung abrg_vbg 
     SET abrechnungperbewirtschafter = abrg_bew.t_id
@@ -82,5 +80,4 @@ UPDATE
     WHERE
        abrg_vbg.vereinbarungs_nr = abrg_bew.vereinbarungs_nr
        AND abrg_vbg.auszahlungsjahr = abrg_bew.auszahlungsjahr 
-       AND abrg_vbg.status_abrechnung = abrg_bew.status_abrechnung
 ;
