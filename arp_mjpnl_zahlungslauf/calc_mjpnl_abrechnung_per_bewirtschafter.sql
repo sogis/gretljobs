@@ -65,7 +65,6 @@ WITH abrg_per_bewirtschafter AS (
 SELECT 
    abrg_bew.t_id,
    abrg_bew.auszahlungsjahr,
-   abrg_bew.status_abrechnung,
    vbg.vereinbarungs_nr 
 FROM
    ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_bewirtschafter abrg_bew
@@ -73,7 +72,8 @@ FROM
       ON abrg_bew.gelan_pid_gelan = vbg.gelan_pid_gelan
    WHERE
       abrg_bew.t_id != 9999999
-   ORDER BY vbg.vereinbarungs_nr ASC, abrg_bew.auszahlungsjahr ASC, abrg_bew.status_abrechnung ASC
+      AND abrg_bew.auszahlungsjahr = date_part('year', now())::integer
+   ORDER BY vbg.vereinbarungs_nr ASC, abrg_bew.auszahlungsjahr ASC
 )
 /* Update der Abrechnung per Vereinbarung über gemeinsame Attribute */
 UPDATE
@@ -82,6 +82,5 @@ UPDATE
   FROM abrg_per_bewirtschafter abrg_bew
     WHERE
        abrg_vbg.vereinbarungs_nr = abrg_bew.vereinbarungs_nr
-       AND abrg_vbg.auszahlungsjahr = abrg_bew.auszahlungsjahr 
-       AND abrg_vbg.status_abrechnung = abrg_bew.status_abrechnung
+       AND abrg_vbg.auszahlungsjahr = date_part('year', now())::integer
 ;
