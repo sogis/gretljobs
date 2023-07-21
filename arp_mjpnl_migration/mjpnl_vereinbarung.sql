@@ -55,11 +55,17 @@ SELECT
       WHEN rrb.rrbdatum < '1582-01-01'::DATE THEN '1582-01-01'::DATE
       ELSE rrb.rrbdatum
   END AS rrb_publiziert_ab,
-  'aktiv' AS status_vereinbarung, --TODO: MAPPING von Status code alt --> neu
+  CASE 
+      WHEN stat.kurzbez = 'Vorbereitung' THEN 'bearbeiten'
+      WHEN stat.kurzbez = 'zurückgestellt' THEN 'zurueckgestellt'
+      WHEN stat.kurzbez IS NULL THEN 'inaktiv'
+      ELSE stat.kurzbez -- aktiv oder inaktiv
+  END AS status_vereinbarung,
   FALSE AS soemmerungsgebiet, --im Postprocessing zu ersetzen
   'MJPNL_2020' AS mjpnl_version,
   4::integer AS kontrollintervall,
-  NULL AS ablaufdatum,
+  vbg.gueltigab AS startdatum,
+  (vbg.gueltigab + INTERVAL '12 years')::DATE AS enddatum,
   CASE
     WHEN  vbg.vbnr IN ( '12.388', '23.304' ) THEN TRUE -- nur Wallierhof (Schloss Wartenfels und AWJF haben keine relevanten Vereinbarungen)                      
     ELSE FALSE
@@ -120,7 +126,11 @@ SELECT
     ) AS bemerkung, --TODO: Zwischenparkieren weiterer alter Attribut-Werte
   9999999 AS uzl_subregion, -- im Postprocessing zu ersetzen
   'migration' AS dateipfad_oder_url,
-  COALESCE(vbg.gueltigab,'1900-01-01'::DATE) AS erstellungsdatum,
+  CASE 
+    WHEN vbg.refdat < '1900-01-01'::DATE OR vbg.refdat IS NULL THEN '1900-01-01'::DATE 
+    WHEN vbg.refdat > '2100-12-31'::DATE THEN '2100-12-31'::DATE
+    ELSE vbg.refdat 
+  END AS erstellungsdatum,
   COALESCE(RTRIM(vbg.bearbeiter),'unbekannt (Migration)') AS operator_erstellung
 FROM mjpnatur.flaechen mjpfl
    LEFT JOIN mjpnatur.vereinbarung vbg
@@ -141,6 +151,8 @@ FROM mjpnatur.flaechen mjpfl
      ON mjpfl.oeqv_q_attest > 0 AND mjpfl.oeqv_q_attest = oeqv.codeid AND oeqv.codetypid = 'OEQV' --ÖQV-Q Attest
    LEFT JOIN mjpnatur.code emden
      ON mjpfl.emden > 0 AND mjpfl.emden = emden.codeid AND emden.codetypid = 'EMD' --Emden
+   LEFT JOIN mjpnatur.status stat 
+      ON vbg.statuscd = stat.statuscd AND stat.statustypid = 'FLA'
 WHERE
     mjpfl.archive = 0
     AND vbggeom.wkb_geometry IS NOT NULL
