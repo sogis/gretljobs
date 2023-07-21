@@ -18,8 +18,18 @@ SELECT
   COALESCE(SUM(lstg_pauschal.betrag_total),0) AS betrag_pauschal,
   COALESCE(SUM(lstg.betrag_total),0) AS gesamtbetrag,
   lstg.auszahlungsjahr,
-  lstg.status_abrechnung,
-  lstg.datum_abrechnung,
+  -- wenn es ein status_abrechnung "freigegeben" gibt, dann soll der status "freigegeben" sein
+  CASE WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l WHERE l.status_abrechnung = 'freigegeben' AND l.vereinbarung = vbg.t_id) > 0 
+   THEN 'freigegeben' 
+   -- ansonsten ist es für alle gleich ("ausbezahlt" oder "intern_verrechnet")
+   ELSE MAX(lstg.status_abrechnung) 
+  END AS status_abrechnung,
+  -- wenn es ein status_abrechnung "freigegeben" gibt, dann soll es noch kein datum_abrechnung haben
+  CASE WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l WHERE l.status_abrechnung = 'freigegeben' AND l.vereinbarung = vbg.t_id) > 0 
+   THEN NULL
+   -- ansonsten kann es das späteste datum nehmen
+   ELSE MAX(lstg.datum_abrechnung) 
+  END AS datum_abrechnung,
   bw.bewirtschaftabmachung_schnittzeitpunkt_1,
   COALESCE(bw.bewirtschaftabmachung_messerbalkenmaehgeraet, FALSE) as bewirtschaftabmachung_messerbalkenmaehgeraet,
   COALESCE(bw.bewirtschaftabmachung_herbstweide, FALSE) as bewirtschaftabmachung_herbstweide,
@@ -27,12 +37,16 @@ SELECT
   vbg.t_id AS vereinbarung,
   TRUE AS migriert
 FROM
+  -- Werte der einzelnen Leistungen
   ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg
+  -- Werte der Vereinbarung
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
      ON lstg.vereinbarung = vbg.t_id
-  -- technically there could be multiple beurteilungen, but in this migration case it's only one. And only for wiese (no entries in wbl_wiese).
+  -- Werte der Beurteilung Wiese - unterscheided sich vom Zahlungslauf, da wir hier keine wbl_wiese berücksichtigen müssen (da keine existieren in den alten daten)
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_beurteilung_wiese bw
      ON lstg.vereinbarung = bw.vereinbarung
+     -- berücksichtige nur die neusten (sofern mehrere existieren)
+     AND bw.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_wiese b WHERE b.vereinbarung = lstg.vereinbarung)
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_stueck
      ON lstg_stueck.t_id = lstg.t_id AND lstg_stueck.abgeltungsart = 'per_stueck'
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_ha
@@ -40,12 +54,13 @@ FROM
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_pauschal
      ON lstg_pauschal.t_id = lstg.t_id AND lstg_pauschal.abgeltungsart = 'pauschal'
   WHERE
-    lstg.vereinbarung != 9999999
-    AND vbg.t_id IS NOT NULL
+    vbg.t_id IS NOT NULL
+    -- berücksichtige nur relevante status
+    AND lstg.status_abrechnung NOT IN ('in_bearbeitung', 'abgeltungslos')
+    AND lstg.vereinbarung != 9999999
   GROUP BY vbg.t_id, vbg.vereinbarungs_nr, vbg.gelan_bewe_id, vbg.gb_nr, vbg.flurname, vbg.gemeinde, vbg.flaeche,
-           lstg.auszahlungsjahr, lstg.status_abrechnung, lstg.datum_abrechnung, 
-           bw.bewirtschaftabmachung_schnittzeitpunkt_1, bw.bewirtschaftabmachung_messerbalkenmaehgeraet, bw.bewirtschaftabmachung_herbstweide
-  ORDER BY  vbg.vereinbarungs_nr, lstg.datum_abrechnung ASC
+           lstg.auszahlungsjahr, bw.bewirtschaftabmachung_schnittzeitpunkt_1, bw.bewirtschaftabmachung_messerbalkenmaehgeraet, bw.bewirtschaftabmachung_herbstweide
+  ORDER BY  vbg.vereinbarungs_nr ASC
   ;
   
 /* fkey update abrechnung_per_leistung zu abrechung_per_vereinbarung */  
@@ -58,6 +73,5 @@ WHERE
    abr_lstg.vereinbarung != 9999999
    AND vbg.t_id = abr_lstg.vereinbarung 
    AND vbg.vereinbarungs_nr = abr_vbg.vereinbarungs_nr
-   AND abr_vbg.status_abrechnung = abr_lstg.status_abrechnung
-   AND ( abr_vbg.datum_abrechnung = abr_lstg.datum_abrechnung OR (abr_lstg.datum_abrechnung IS NULL AND abr_vbg.datum_abrechnung IS NULL ) )
+   AND abr_vbg.auszahlungsjahr = abr_lstg.auszahlungsjahr
 ;
