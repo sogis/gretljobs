@@ -302,13 +302,27 @@ z.B. mit *ili2pg*, durch Ausführen eines Schema-Jobs,
 durch Ausführen von SQL-Skripten oder durch Restoren aus einem Dump.
 
 Schema-Jobs kann man ebenfalls mit `docker compose`
-aus dem vorliegenden Verzeichnis heraus ausführen.
+entweder aus dem vorliegenden Verzeichnis heraus
+oder aus dem Verzeichnis `schema-jobs` heraus ausführen.
 Voraussetzung ist, dass das Repository *schema-jobs*
 in einem Ordner mit Name `schema-jobs` vorliegt;
 dieser muss sich auf derselben Ordner-Hierarchiestufe
 wie der Ordner mit den GRETL-Jobs befinden.
 
-Ein Schema-Job wird mit folgendem Befehl gestartet:
+Ein Schema-Job kann mit folgendem Befehl
+aus dem `schema-jobs`-Verzeichnis heraus gestartet werden:
+```
+docker compose -f ../gretljobs/docker-compose.yml run --rm -u $UID --workdir /home/gradle/schema-jobs/shared/schema \
+  gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] [TASK...]
+```
+Beispiel:
+```
+docker compose -f ../gretljobs/docker-compose.yml run --rm -u $UID --workdir /home/gradle/schema-jobs/shared/schema \
+  gretl -PtopicName=agi_mopublic -PschemaDirName=schema_pub --console=rich createSchema configureSchema
+```
+
+Oder er kann mit folgendem Befehl
+aus dem `gretljobs`-Verzeichnis heraus gestartet werden:
 ```
 docker compose run --rm -u $UID --workdir /home/gradle/schema-jobs/shared/schema \
   gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] [TASK...]
@@ -318,6 +332,7 @@ Beispiel:
 docker compose run --rm -u $UID --workdir /home/gradle/schema-jobs/shared/schema \
   gretl -PtopicName=agi_mopublic -PschemaDirName=schema_pub --console=rich createSchema configureSchema
 ```
+
 
 `MY_TOPIC_NAME` muss durch den Namen des Topics (den Ordnernamen)
 und `MY_SCHEMA_DIRECTORY_NAME` durch den Namen des Unterordners,
