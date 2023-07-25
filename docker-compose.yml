@@ -1,4 +1,3 @@
-version: '3.2'
 services:
   gretl:
     image: sogis/gretl:2.2.373
@@ -11,65 +10,37 @@ services:
       - .:/home/gradle/project
       - ../schema-jobs:/home/gradle/schema-jobs
   edit-db:
-    build: .
-    image: sogis/postgis-db:localbuild
+    image: bitnami/postgresql:14.8.0-debian-11-r74
     environment:
-      MODE: postgres
-      PG_DATABASE: edit
-      PG_LOCALE: de_CH.UTF-8
-      PG_PRIMARY_PORT: 5432
-      PG_MODE: primary
-      PG_USER: ddluser
-      PG_PASSWORD: ddluser
-      PG_PRIMARY_USER: repl
-      PG_PRIMARY_PASSWORD: repl
-      PG_ROOT_PASSWORD: secret
+      POSTGRESQL_DATABASE: edit
+      POSTGRESQL_USERNAME: ddluser
+      POSTGRESQL_PASSWORD: ddluser
+      POSTGRESQL_POSTGRES_PASSWORD: secret
+      POSTGRESQL_INITSCRIPTS_USERNAME: postgres
+      POSTGRESQL_INITSCRIPTS_PASSWORD: secret
+      #POSTGRESQL_INITDB_ARGS: --locale=de_CH.UTF-8
     ports:
       - "54321:5432"
     volumes:
-      - ./setup.sql:/pgconf/setup.sql
-      - sshd_edit:/sshd
-      - pgconf_edit:/pgconf
-      - pgdata_edit:/pgdata
-      - pgwal_edit:/pgwal
-      - recover_edit:/recover
-      - backrestrepo_edit:/backrestrepo
-    hostname: primary-edit
+      - ./setup.sql:/docker-entrypoint-preinitdb.d/setup.sql
+      - ./prepare_setup.sh:/docker-entrypoint-preinitdb.d/prepare_setup.sh
+      - postgresql_data_edit:/bitnami/postgresql
   pub-db:
-    build: .
-    image: sogis/postgis-db:localbuild
+    image: bitnami/postgresql:14.8.0-debian-11-r74
     environment:
-      MODE: postgres
-      PG_DATABASE: pub
-      PG_LOCALE: de_CH.UTF-8
-      PG_PRIMARY_PORT: 5432
-      PG_MODE: primary
-      PG_USER: ddluser
-      PG_PASSWORD: ddluser
-      PG_PRIMARY_USER: repl
-      PG_PRIMARY_PASSWORD: repl
-      PG_ROOT_PASSWORD: secret
+      POSTGRESQL_DATABASE: pub
+      POSTGRESQL_USERNAME: ddluser
+      POSTGRESQL_PASSWORD: ddluser
+      POSTGRESQL_POSTGRES_PASSWORD: secret
+      POSTGRESQL_INITSCRIPTS_USERNAME: postgres
+      POSTGRESQL_INITSCRIPTS_PASSWORD: secret
+      #POSTGRESQL_INITDB_ARGS: --locale=de_CH.UTF-8
     ports:
       - "54322:5432"
     volumes:
-      - ./setup.sql:/pgconf/setup.sql
-      - sshd_pub:/sshd
-      - pgconf_pub:/pgconf
-      - pgdata_pub:/pgdata
-      - pgwal_pub:/pgwal
-      - recover_pub:/recover
-      - backrestrepo_pub:/backrestrepo
-    hostname: primary-pub
+      - ./setup.sql:/docker-entrypoint-preinitdb.d/setup.sql
+      - ./prepare_setup.sh:/docker-entrypoint-preinitdb.d/prepare_setup.sh
+      - postgresql_data_pub:/bitnami/postgresql
 volumes:
-  sshd_edit:
-  pgconf_edit:
-  pgdata_edit:
-  pgwal_edit:
-  recover_edit:
-  backrestrepo_edit:
-  sshd_pub:
-  pgconf_pub:
-  pgdata_pub:
-  pgwal_pub:
-  recover_pub:
-  backrestrepo_pub:
+  postgresql_data_edit:
+  postgresql_data_pub:
