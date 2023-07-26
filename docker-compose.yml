@@ -9,6 +9,7 @@ services:
       - $HOME/gretljobs.properties:/home/gradle/.gradle/gradle.properties
       - .:/home/gradle/project
       - ../schema-jobs:/home/gradle/schema-jobs
+      - /tmp:/gretl-share
   edit-db:
     image: bitnami/postgresql:14.8.0-debian-11-r74
     environment:
