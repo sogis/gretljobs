@@ -3,10 +3,9 @@ import java.nio.file.Paths
 import java.nio.file.Files
 import de.undercouch.gradle.tasks.download.Download
 
-
 apply plugin: 'ch.so.agi.gretl'
 
-def BfsNrGemeinden = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
+def bfsNrGemeinden = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
                       2421, 2422, 2424, 2425, 2426, 2427, 2428, 2430,
                       2445,
                       2455, 2456, 2457,
@@ -29,9 +28,9 @@ def BfsNrGemeinden = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
                       2620, 2621, 2622
 ]
 
-
-def ZipName = 'LV95.zip'
+def zipName = 'LV95.zip'
 def pathToTempFolder = Files.createTempDirectory("avexportai-").toFile().getAbsolutePath()
+//def pathToTempFolder = "/tmp/gretl-share/"
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
 
 def aiLogin = aiUser + ":" + aiPwd
@@ -44,30 +43,22 @@ defaultTasks 'uploadAvCh'
 
 task downloadFiles(type: Download) {
     description = "AV-Daten im DM01 in temp-Ordner herunterladen"
-    def UrlArray =[]
+    def urlArray =[]
 
-    BfsNrGemeinden.each {
-        UrlArray << "https://s3.eu-central-1.amazonaws.com/ch.so.agi.av.dm01avch24lv95d/"+ it + "00.itf.zip"
+    bfsNrGemeinden.each {
+        urlArray << "https://files.geo.so.ch/ch.so.agi.av.dm01_ch/aktuell/"+ it + ".ch.so.agi.av.dm01_ch.itf.zip"
     }
 
-    src(UrlArray)
+    src(urlArray)
     dest pathToTempFolder
 }
 
-task unzipAllData(dependsOn: downloadFiles) {
-    description = "Entzippt heruntergeladene AV-Daten. Übergeordneter Task."
-}
-
-unzipAllData.finalizedBy {
-    tasks.findAll { task -> task.name.startsWith('unzipData_') }
-}
-
-BfsNrGemeinden.each {
+bfsNrGemeinden.each {
     def bfsNr = it
 
     task "unzipData_$bfsNr"(type: Copy, dependsOn: 'downloadFiles'){
         description = "Entzippt AV-Daten der entsprechenden Gemeinde."
-        def pathToZippedData =  Paths.get(pathToTempFolder, bfsNr + "00.itf.zip")
+        def pathToZippedData =  Paths.get(pathToTempFolder, bfsNr + ".ch.so.agi.av.dm01_ch.itf.zip")
 
         doLast {
             println "File unzipped to directory: " + pathToUnzipFolder
@@ -79,20 +70,28 @@ BfsNrGemeinden.each {
     }
 }
 
+task unzipAllData(dependsOn: downloadFiles) {
+    description = "Entzippt heruntergeladene AV-Daten. Übergeordneter Task."
+}
+
+unzipAllData.finalizedBy {
+    tasks.findAll { task -> task.name.startsWith('unzipData_') }
+}
+
 task zipAllDataToOneZipArchiv(type: Zip, dependsOn: unzipAllData){
     description = "Zippt die xtf-Files mit dem Daten der amtlichen Vermessung (DM01 vom Bund) für den Upload in die " +
             "Aggregationsinfrastruktur."
     from pathToUnzipFolder
-    archiveName ZipName
+    archiveName zipName
     destinationDir(file(pathToTempFolder))
-    include "**/2*00.itf"
+    include "**/2*_ch.itf"
 }
 
 task uploadAvCh(dependsOn: zipAllDataToOneZipArchiv) {
     description = "Lädt die Daten der amtlichen Vermessung (DM01 vom Bund) in die Aggregationsinfrastruktur hoch."
     doLast {
         def response = ["curl", "-u", aiLogin, "-F", "topic=av", "-F",
-                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), ZipName), "-F", "publish=true",
+                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), zipName), "-F", "publish=true",
                         "https://" + aiServer + "/data_agg/interlis/import"].execute().text
         println(response)
     }
@@ -101,9 +100,9 @@ task uploadAvCh(dependsOn: zipAllDataToOneZipArchiv) {
 
 task removeAvFiles(type: Delete){
     description = "Entfernt während der Ausführung des Jobs erstellte AV-Dateien."
-    delete file(Paths.get(pathToTempFolder.toString(), ZipName)),
+    delete file(Paths.get(pathToTempFolder.toString(), zipName)),
             pathToUnzipFolder,
             fileTree(pathToTempFolder).matching {
-                include "**/2*00.itf*"
+                include "**/2*_ch.itf*"
     }  
 }
