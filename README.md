@@ -314,24 +314,24 @@ wie der Ordner mit den GRETL-Jobs befinden.
 Ein Schema-Job kann mit folgendem Befehl
 aus dem `schema-jobs`-Verzeichnis heraus gestartet werden:
 ```
-docker compose -f ../gretljobs/docker-compose.yml run --rm -u $UID --workdir /home/gradle/schema-jobs/shared/schema \
+docker compose -f ../gretljobs/docker-compose.yml run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
   gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] [TASK...]
 ```
 Beispiel:
 ```
-docker compose -f ../gretljobs/docker-compose.yml run --rm -u $UID --workdir /home/gradle/schema-jobs/shared/schema \
+docker compose -f ../gretljobs/docker-compose.yml run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
   gretl -PtopicName=agi_mopublic -PschemaDirName=schema_pub --console=rich createSchema configureSchema
 ```
 
 Oder er kann mit folgendem Befehl
 aus dem `gretljobs`-Verzeichnis heraus gestartet werden:
 ```
-docker compose run --rm -u $UID --workdir /home/gradle/schema-jobs/shared/schema \
+docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
   gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] [TASK...]
 ```
 Beispiel:
 ```
-docker compose run --rm -u $UID --workdir /home/gradle/schema-jobs/shared/schema \
+docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
   gretl -PtopicName=agi_mopublic -PschemaDirName=schema_pub --console=rich createSchema configureSchema
 ```
 
