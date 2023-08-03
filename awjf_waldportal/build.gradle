@@ -68,7 +68,7 @@ task publish (type: Publisher, dependsOn: importWaldportal){
     userFormats = true
 
     database = [dbUriEdit,dbUserEdit,dbPwdEdit]
-    dbSchema = "awjf_waldb_vportal_pu1"
+    dbSchema = "awjf_waldportal_v1"
     modelsToPublish = 'SO_AWJF_Waldportal_20230719'
 
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
