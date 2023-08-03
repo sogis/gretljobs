@@ -65,7 +65,6 @@ task importWaldportal(type: Ili2pgImport, dependsOn: unpackFile) {
 
 task publish (type: Publisher, dependsOn: importWaldportal){
     dataIdent = "ch.so.awjf.waldmassnahmen_objekte"
-    userFormats = true
 
     database = [dbUriEdit,dbUserEdit,dbPwdEdit]
     dbSchema = "awjf_waldportal_v1"
