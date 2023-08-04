@@ -87,7 +87,7 @@ task publishPub(type: Publisher, dependsOn: 'transferGewaesserschutz_pub'){
 // Datenumbau für Planregister (Nur Daten aus Schema "afu_gewaesserschutz_zonen_areale_v1" werden ersetzt) und an Typo3 senden
 
 
-task deleteData_planregister_pub (type: SqlExecutor, dependsOn: publishAlt ) {
+task deleteData_planregister_pub (type: SqlExecutor, dependsOn: publishPub ) {
     description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_planregister_pub"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ["delete_arp_nutzungsplanung_planregister_pub_grundwasserschutz.sql"]

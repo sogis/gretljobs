@@ -84,7 +84,7 @@ task importXTF_pub(type: Ili2pgImport) {
 // Datenumbau für Planregister (Nur Daten aus Schema "arp_naturreservate" werden ersetzt) und an Typo3 senden
 
 
-task deleteData_planregister_pub (type: SqlExecutor, dependsOn: publishAlt ) {
+task deleteData_planregister_pub (type: SqlExecutor, dependsOn: importXTF_pub ) {
     description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_planregister_pub"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ["delete_arp_nutzungsplanung_planregister_pub_naturreservate.sql"]

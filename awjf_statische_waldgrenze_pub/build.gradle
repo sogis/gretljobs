@@ -103,7 +103,7 @@ task publishPub(type: Publisher, dependsOn: 'importXTF_pub'){
 // Datenumbau für Planregister (Nur Daten aus Schema "awjf_statische_waldgrenze" werden ersetzt) und an Typo3 senden
 
 
-task deleteData_planregister_pub (type: SqlExecutor, dependsOn: publishAlt ) {
+task deleteData_planregister_pub (type: SqlExecutor, dependsOn: publishPub ) {
     description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_planregister_pub"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ["delete_arp_nutzungsplanung_planregister_pub_statische_waldgrenze.sql"]
