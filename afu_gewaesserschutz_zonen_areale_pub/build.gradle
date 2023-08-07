@@ -136,8 +136,7 @@ task uploadPlanregister(type: Curl, dependsOn: 'zipPlanregister') {
     expectedStatusCode = 202
 }
 
-
-task zipXtf(type: Zip, dependsOn: 'publishPub'){
+task zipXtf(type: Zip, dependsOn: 'uploadPlanregister'){
     from "."
     include fileName
     archiveName fileNameZip
@@ -163,7 +162,6 @@ task uploadXtf(dependsOn: 'zipXtf') {
         }
     }
 }
-
 
 task deleteData_staging_pub (type: SqlExecutor, dependsOn: 'transferGewaesserschutz_pub') {
     description = "Löscht/leert die Daten aus dem Schema afu_gewaesserschutz_staging"
