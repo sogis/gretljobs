@@ -8,6 +8,8 @@ defaultTasks 'validateData', 'uploadPlanregister'
 def FileName = "arp_naturreservate.xtf"
 def FileNamePub = "arp_naturreservate_pub.xtf"
 
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
 //Für Planregister
 def iliModelPlanregister = "SO_Nutzungsplanung_Planregister_Publikation_20221115"
 def dbSchemaPlanregister = "arp_nutzungsplanung_planregister_pub_v1"
