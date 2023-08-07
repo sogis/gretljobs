@@ -117,7 +117,7 @@ INSERT INTO
             SELECT
                 haltestellenname||linie
             FROM 
-                avt_oevkov_2023_v1.auswertung_auswertung_gtfs
+                avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs
     )
     AND
         (pickup_type = 0 OR pickup_type IS NULL)
