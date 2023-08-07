@@ -31,8 +31,8 @@ INSERT INTO
             avt_oevkov_${currentYear}_v1.gtfs_calendar
     ),
     exception AS (
-    -- exception_type=1: Der Fahrbetrieb wurde für das angegebene Datum in gtfs_calendar_dates hinzugefügt.
-    -- exception_type=2: Der Fahrbetrieb wurde für das angegebene Datum in gtfs_calendar_dates entfernt.
+        -- exception_type=1: Der Fahrbetrieb wurde für das angegebene Datum in gtfs_calendar_dates hinzugefügt.
+        -- exception_type=2: Der Fahrbetrieb wurde für das angegebene Datum in gtfs_calendar_dates entfernt.
         SELECT
             service_id,
             exception_type
@@ -117,7 +117,7 @@ INSERT INTO
         WHERE
             trip_headsign <> stop_name
         AND
-        -- Regulärer Zustieg
+            -- Regulärer Zustieg
             (pickup_type = 0 OR pickup_type IS NULL)
         AND
             trip.trip_id IN (
@@ -127,7 +127,7 @@ INSERT INTO
                     alle_trips_stichtag
             )
         AND
-        -- diese Unternehmen fahren offizielle Haltestellen an, werden aber im OEVKOV nicht berücksichtigt (2018)
+            -- diese Unternehmen fahren offizielle Haltestellen an, werden aber im OEVKOV nicht berücksichtigt (Stand 2018)
             agency.unternehmer NOT IN (
                 'Domo Swiss Express AG',
                 'Events / Manifestations / Eventi'
@@ -163,7 +163,7 @@ INSERT INTO
             verkehrsmittel
     )
 
--- Abfahrten der meisten Haltestellen ausser den Ausnahmen unten
+    -- Abfahrten der meisten Haltestellen ausser den Ausnahmen unten
     SELECT
         stop_name,
         route_id,
@@ -173,7 +173,7 @@ INSERT INTO
         verkehrsmittel
     FROM
         abfahrten
-        -- ***************************** Ausnahmen *********************************
+    -- ************************************ Ausnahmen *******************************************
     -- hier kommen die Ausnahmen, die werden weiter unten abgehandelt ***********
     -- gewisse Bahnhöfe müssen separat behandelt werden wegen der Zuordnung zu den Linien im AVT
     WHERE
@@ -184,7 +184,7 @@ INSERT INTO
             'Olten',
             'Schönenwerd SO'
         )
--- ***************************** Ende der Ausnahmen *********************************
+    -- ***************************** Ende der Ausnahmen *********************************
     GROUP BY
         stop_name,
         route_id,
@@ -192,12 +192,12 @@ INSERT INTO
         unternehmer,
         verkehrsmittel
 
--- ab hier werden die Bahnhöfe und andere Knotenpunkte behandelt,
--- wegen dem fehlenden Attribut "fahrplanfeld" muss die Aufteilung in Linien separat gemacht werden
+    -- ab hier werden die Bahnhöfe behandelt,
+    -- wegen dem fehlenden Attribut "fahrplanfeld" muss die Aufteilung in Linien separat gemacht werden
 
     UNION ALL
 
--- Bahnhof Olten: L410 Biel - Olten
+    -- Bahnhof Olten: L410 Biel - Olten
     SELECT
         stop_name,
         route_id,
@@ -210,14 +210,6 @@ INSERT INTO
     WHERE
         stop_name = 'Olten'
     AND
-         trip_headsign IN (
-             'Biel/Bienne',
-             'Langendorf',
-             'Lommiswil',
-             'Oensingen',
-             'Solothurn'
-         )
-    AND
         substring(linienname from 1 for 4) = 'L410'
     GROUP BY
         stop_name,
@@ -229,7 +221,7 @@ INSERT INTO
 
     UNION ALL
 
--- Bahnhof Olten: L450 Olten - Bern
+    -- Bahnhof Olten: L450 Olten - Bern
     SELECT
         stop_name,
         route_id,
@@ -254,7 +246,7 @@ INSERT INTO
 
     UNION ALL
 
--- Bahnhof Olten: L500 Olten - Basel (S3)
+    -- Bahnhof Olten: L500 Olten - Basel (S3)
     SELECT
         stop_name,
         route_id,
@@ -277,7 +269,7 @@ INSERT INTO
 
     UNION ALL
 
--- Bahnhof Olten: L503 Olten - Sissach (S9)
+    -- Bahnhof Olten: L503 Olten - Sissach (S9)
     SELECT
         stop_name,
         route_id,
@@ -300,58 +292,7 @@ INSERT INTO
 
     UNION ALL
 
--- Bahnhof Olten: L650 Turgi - Sursee (S29)
-    SELECT
-        stop_name,
-        route_id,
-        linienname,
-        unternehmer,
-        sum(gtfs_count),
-        verkehrsmittel
-    FROM
-        abfahrten
-    WHERE
-        stop_name = 'Olten'
-    AND
-        linienname = 'L650 Olten - Turgi (S29)'
-    AND
-       trip_headsign IN ('Brugg AG', 'Turgi')
-    GROUP BY
-        stop_name,
-        route_id,
-        trip_headsign,
-        linienname,
-        unternehmer,
-        verkehrsmittel
-
-    UNION ALL
-
-    SELECT
-        stop_name,
-        route_id,
-        linienname,
-        unternehmer,
-        sum(gtfs_count),
-        verkehrsmittel
-    FROM
-        abfahrten
-    WHERE
-        stop_name = 'Olten'
-    AND
-        linienname = 'L510 Olten - Zofingen/Sursee (S29)'
-    AND
-       trip_headsign IN ('Sursee', 'Zofingen')
-    GROUP BY
-        stop_name,
-        route_id,
-        trip_headsign,
-        linienname,
-        unternehmer,
-        verkehrsmittel
-
-    UNION ALL
-
--- Bahnhof Olten: L510 Olten - Luzern (IR/RE), RegioExpress zählt hier zu R
+    -- Bahnhof Olten: L510 Olten - Luzern (RE)
     SELECT
         stop_name,
         route_id,
@@ -376,9 +317,59 @@ INSERT INTO
         unternehmer,
         verkehrsmittel
 
-     UNION ALL
+    UNION ALL
 
--- Bahnhof Olten: L650 Olten - Zürich HB (RE)
+    -- Bahnhof Olten: L510 Olten - Zofingen/Sursee (S29)
+    SELECT
+        stop_name,
+        route_id,
+        linienname,
+        unternehmer,
+        sum(gtfs_count),
+        verkehrsmittel
+    FROM
+        abfahrten
+    WHERE
+        stop_name = 'Olten'
+    AND
+        linienname = 'L510 Olten - Zofingen/Sursee (S29)'
+    AND
+       trip_headsign IN ('Sursee', 'Zofingen')
+    GROUP BY
+        stop_name,
+        route_id,
+        linienname,
+        unternehmer,
+        verkehrsmittel
+
+    UNION ALL
+    
+    -- Bahnhof Olten: L650 Turgi - Sursee (S29)
+    SELECT
+        stop_name,
+        route_id,
+        linienname,
+        unternehmer,
+        sum(gtfs_count),
+        verkehrsmittel
+    FROM
+        abfahrten
+    WHERE
+        stop_name = 'Olten'
+    AND
+        linienname = 'L650 Olten - Turgi (S29)'
+    AND
+       trip_headsign IN ('Brugg AG', 'Turgi')
+    GROUP BY
+        stop_name,
+        route_id,
+        linienname,
+        unternehmer,
+        verkehrsmittel
+
+    UNION ALL
+
+    -- Bahnhof Olten: L650 Olten - Zürich HB (RE)
     SELECT
         stop_name,
         route_id,
@@ -395,8 +386,8 @@ INSERT INTO
             'Baden',
             'Rotkreuz',
             'Turgi',
-            'Wettingen'
-            --'Zürich HB'
+            'Wettingen',
+            'Zürich HB'
         )
     AND
         substring(linienname from 1 for 4) = 'L650'
@@ -411,8 +402,8 @@ INSERT INTO
 
     UNION ALL
 
--- Däniken, Dulliken, Schönenwerd:
--- 650 Olten-Zürich R, S und 450 Bern - Olten haben die gleiche route_id!
+    -- Däniken, Dulliken, Schönenwerd:
+    -- 650 Olten-Zürich R, S und 450 Bern - Olten haben die gleiche route_id!
     SELECT
     stop_name,
         route_id,
@@ -436,8 +427,8 @@ INSERT INTO
 
    UNION ALL
 
--- Bahnhof Murgenthal
--- 650 Olten-Zürich R, S und 450 Bern - Olten haben die gleiche route_id!
+    -- Bahnhof Murgenthal
+    -- 650 Olten-Zürich R, S und 450 Bern - Olten haben die gleiche route_id!
     SELECT
     stop_name,
         route_id,
