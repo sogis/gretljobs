@@ -87,7 +87,7 @@ SELECT
     naturreservat.dokument_url,
     rrb.rrb_datum,
     rrb.rrb_nr,
-    NULL AS rrb_url, --rrb.rrb_url,   !!!! doppelet RRB müssen bereinigt werden
+    rrb.rrb_url AS rrb_url,
     sbv.sonderbauvorschrift_url,
     naturreservat.karte_url,
     naturreservat.zustaendige_amt,
