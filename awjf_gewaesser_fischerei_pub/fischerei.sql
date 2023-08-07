@@ -3,7 +3,11 @@ SELECT
     aname, 
     beschreibung, 
     eigentum, 
-    fischbestand, 
+    CASE
+        WHEN fischbestand = 'G' THEN 'Gemischt'
+        WHEN fischbestand = 'E' THEN 'Edelfisch'
+        ELSE NULL
+    END AS fischbestand, 
     fischerei, 
     ST_Multi(ST_RemoveRepeatedPoints(ST_Union(geometrie), 0.001)) AS geometrie
 FROM 
