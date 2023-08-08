@@ -3,12 +3,49 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferData'
+defaultTasks 'publishPub'
 
-task transferData(type: Db2Db){
+task publishEdit(type: Publisher) {
+    dataIdent = "ch.so.afu.ara_einzugsgebiete.relational"
+    userFormats = true
+    database = [dbUriEdit,dbUserEdit,dbPwdEdit]
+    dbSchema = "afu_ara_einzugsgebiete"
+    modelsToPublish = "SO_AFU_ARA_Einzugsgebiete_20201016"
+
+    // Bewusst nur exportiert und auf files.geo.so.ch bereitgestellt.
+    // Damit stehen sie v.a. uns als XTF zur Verfügung. Müsste mit AfU
+    // abgesprochen werden, ob sie "richtig" öffentlich gemacht werden 
+    // sollen.
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    //target = ["/tmp/gretl-share"]
+    //kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    //kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+task transferData(type: Db2Db, dependsOn: 'publishEdit') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('afu_ara_einzugsgebiete.sql', 'afu_ara_einzugsgebiete_pub.einzugsgebiete_ara_einzugsgebiet', true),
     ];
+}
+
+task publishPub(type: Publisher, dependsOn: 'transferData') {
+    dataIdent = "ch.so.afu.ara_einzugsgebiete"
+    userFormats = true
+    database = [dbUriEdit,dbUserEdit,dbPwdEdit]
+    dbSchema = "afu_ara_einzugsgebiete"
+    modelsToPublish = "SO_AFU_ARA_Einzugsgebiete_20201016"
+
+    // Bewusst nur exportiert und auf files.geo.so.ch bereitgestellt.
+    // Damit stehen sie v.a. uns als XTF zur Verfügung. Müsste mit AfU
+    // abgesprochen werden, ob sie "richtig" öffentlich gemacht werden 
+    // sollen.
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    //kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    //kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
