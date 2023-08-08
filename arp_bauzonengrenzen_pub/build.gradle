@@ -3,8 +3,8 @@ import ch.so.agi.gretl.api.*
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'createAllData'
-//defaultTasks 'publishPub'
+//defaultTasks 'createAllData'
+defaultTasks 'publishPub'
 
 def todaysDate = new Date().format('yyyy-MM-dd')
 
