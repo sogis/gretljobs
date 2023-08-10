@@ -85,16 +85,16 @@ task refreshSolrKbsRestricted(type:Exec, dependsOn:'refreshSolrKbs') {
         commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte_geschuetzt'
 }
 
-// task transferKbsToOldPubSchema(type: Db2Db, dependsOn: 'refreshSolrKbsRestricted') {
-//     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
-//     targetDb = sourceDb
-//     transferSets = [
-//             new TransferSet('afu_altlasten_pub_standorte.sql', 'afu_altlasten_pub.belastete_standorte', true),
-//             new TransferSet('afu_altlasten_pub_standorte_altlast4web.sql', 'afu_altlasten_pub.belastete_standorte_altlast4web', true)
-//     ];
-// }
+task transferKbsToOldPubSchema(type: Db2Db, dependsOn: 'refreshSolrKbsRestricted') {
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = sourceDb
+    transferSets = [
+            new TransferSet('afu_altlasten_pub_standorte.sql', 'afu_altlasten_pub.belastete_standorte', true),
+            new TransferSet('afu_altlasten_pub_standorte_altlast4web.sql', 'afu_altlasten_pub.belastete_standorte_altlast4web', true)
+    ];
+}
 
-task transferKbsToSogisDb(type: Db2Db, dependsOn: 'refreshSolrKbsRestricted') {
+task transferKbsToSogisDb(type: Db2Db, dependsOn: 'transferKbsToOldPubSchema') {
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
     transferSets = [
