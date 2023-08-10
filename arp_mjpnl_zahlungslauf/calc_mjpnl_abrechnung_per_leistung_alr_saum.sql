@@ -26,7 +26,7 @@ WITH alle_alr_saum AS (
         alr_saum.mit_bewirtschafter_besprochen IS TRUE
         AND vereinbarung.status_vereinbarung = 'aktiv'
         -- und berücksichtige nur die neusten (sofern mehrere existieren)
-        AND alr_saum.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_alr_saum b WHERE b.vereinbarung = alr_saum.vereinbarung)
+        AND alr_saum.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_alr_saum b WHERE b.mit_bewirtschafter_besprochen IS TRUE AND b.vereinbarung = alr_saum.vereinbarung)
 ),
 united_alr_saum_leistungen AS (
     -- union aller leistungen
@@ -38,7 +38,8 @@ united_alr_saum_leistungen AS (
         'per_stueck' AS abgeltungsart,
         100 AS betrag_per_einheit,
         faunabonus_anzahl_arten AS anzahl_einheiten,
-        faunabonus_artenvielfalt_abgeltung_pauschal AS betrag_total
+        faunabonus_artenvielfalt_abgeltung_pauschal AS betrag_total,
+        kantonsintern
     FROM
         alle_alr_saum
     WHERE
@@ -54,7 +55,8 @@ united_alr_saum_leistungen AS (
         'per_ha' AS abgeltungsart,
         bewirtschaftung_abgeltung_ha AS betrag_per_einheit,
         flaeche AS anzahl_einheiten,
-        (flaeche * bewirtschaftung_abgeltung_ha) AS betrag_total
+        (flaeche * bewirtschaftung_abgeltung_ha) AS betrag_total,
+        kantonsintern
     FROM
         alle_alr_saum
     WHERE
@@ -79,7 +81,8 @@ united_alr_saum_leistungen AS (
         'pauschal' AS abgeltungsart,
         strukturelemente_abgeltung_pauschal_total AS betrag_per_einheit,
         1 AS anzahl_einheiten,
-        strukturelemente_abgeltung_pauschal_total AS betrag_total
+        strukturelemente_abgeltung_pauschal_total AS betrag_total,
+        kantonsintern
     FROM
         alle_alr_saum
     WHERE

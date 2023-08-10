@@ -26,7 +26,7 @@ WITH alle_hostet AS (
         hostet.mit_bewirtschafter_besprochen IS TRUE
         AND vereinbarung.status_vereinbarung = 'aktiv'
         -- und berücksichtige nur die neusten (sofern mehrere existieren)
-        AND hostet.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_hostet b WHERE b.vereinbarung = hostet.vereinbarung)
+        AND hostet.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_hostet b WHERE b.mit_bewirtschafter_besprochen IS TRUE AND b.vereinbarung = hostet.vereinbarung)
 ),
 united_hostet_leistungen AS (
     -- union aller leistungen
@@ -37,7 +37,8 @@ united_hostet_leistungen AS (
         'per_stueck' AS abgeltungsart,
         5 AS betrag_per_einheit,
         grundbeitrag_baum_anzahl AS anzahl_einheiten,
-        grundbeitrag_baum_total AS betrag_total
+        grundbeitrag_baum_total AS betrag_total,
+        kantonsintern
     FROM
         alle_hostet
     WHERE
@@ -52,7 +53,8 @@ united_hostet_leistungen AS (
         'per_stueck' AS abgeltungsart,
         15 AS betrag_per_einheit,
         beitrag_baumab40cmdurchmesser_anzahl AS anzahl_einheiten,
-        beitrag_baumab40cmdurchmesser_total AS betrag_total
+        beitrag_baumab40cmdurchmesser_total AS betrag_total,
+        kantonsintern
     FROM
         alle_hostet
     WHERE
@@ -67,7 +69,8 @@ united_hostet_leistungen AS (
         'per_stueck' AS abgeltungsart,
         10 AS betrag_per_einheit,
         beitrag_erntepflicht_anzahl AS anzahl_einheiten,
-        beitrag_erntepflicht_total AS betrag_total
+        beitrag_erntepflicht_total AS betrag_total,
+        kantonsintern
     FROM
         alle_hostet
     WHERE
@@ -82,7 +85,8 @@ united_hostet_leistungen AS (
         'per_stueck' AS abgeltungsart,
         10 AS betrag_per_einheit,
         beitrag_oekoplus_anzahl AS anzahl_einheiten,
-        beitrag_oekoplus_total AS betrag_total
+        beitrag_oekoplus_total AS betrag_total,
+        kantonsintern
     FROM
         alle_hostet
     WHERE
@@ -97,7 +101,8 @@ united_hostet_leistungen AS (
         'per_stueck' AS abgeltungsart,
         10 AS betrag_per_einheit,
         beitrag_oekomaxi_anzahl AS anzahl_einheiten,
-        beitrag_oekomaxi_total AS betrag_total
+        beitrag_oekomaxi_total AS betrag_total,
+        kantonsintern
     FROM
         alle_hostet
     WHERE

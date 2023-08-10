@@ -54,7 +54,7 @@ FROM
   LEFT JOIN beurteilungs_metainfo_wiesen bw
      ON lstg.vereinbarung = bw.vereinbarung
      -- berücksichtige nur die neusten (sofern mehrere existieren)
-     AND bw.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM beurteilungs_metainfo_wiesen b WHERE b.vereinbarung = lstg.vereinbarung)
+     AND bw.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM beurteilungs_metainfo_wiesen b WHERE b.mit_bewirtschafter_besprochen IS TRUE AND b.vereinbarung = lstg.vereinbarung)
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_stueck
      ON lstg_stueck.t_id = lstg.t_id AND lstg_stueck.abgeltungsart = 'per_stueck'
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_ha
@@ -70,7 +70,7 @@ FROM
     -- berücksichtige nur relevante status
     AND lstg.status_abrechnung NOT IN ('in_bearbeitung', 'abgeltungslos')
     -- berücksichtige nur diesjährige Leistungen
-    AND lstg.auszahlungsjahr = date_part('year', now())::integer;
+    AND lstg.auszahlungsjahr = date_part('year', now())::integer
   GROUP BY vbg.t_id, vbg.vereinbarungs_nr, vbg.gelan_bewe_id, vbg.gb_nr, vbg.flurname, vbg.gemeinde, vbg.flaeche,
            lstg.auszahlungsjahr, bw.bewirtschaftabmachung_schnittzeitpunkt_1, bw.bewirtschaftabmachung_messerbalkenmaehgeraet, bw.bewirtschaftabmachung_herbstweide
   ORDER BY  vbg.vereinbarungs_nr ASC

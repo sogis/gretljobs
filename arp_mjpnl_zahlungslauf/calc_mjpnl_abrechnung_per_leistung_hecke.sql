@@ -26,7 +26,7 @@ WITH alle_hecke AS (
         hecke.mit_bewirtschafter_besprochen IS TRUE
         AND vereinbarung.status_vereinbarung = 'aktiv'
         -- und berücksichtige nur die neusten (sofern mehrere existieren)
-        AND hecke.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_hecke b WHERE b.vereinbarung = hecke.vereinbarung)
+        AND hecke.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_hecke b WHERE b.mit_bewirtschafter_besprochen IS TRUE AND b.vereinbarung = hecke.vereinbarung)
 ),
 united_hecke_leistungen AS (
     -- union aller leistungen
@@ -38,7 +38,8 @@ united_hecke_leistungen AS (
         'per_ha' AS abgeltungsart,
         200 AS betrag_per_einheit,
         flaeche AS anzahl_einheiten,
-        (flaeche * einstiegskriterium_abgeltung_ha) AS betrag_total
+        (flaeche * einstiegskriterium_abgeltung_ha) AS betrag_total,
+        kantonsintern
     FROM
         alle_hecke
     WHERE
@@ -54,7 +55,8 @@ united_hecke_leistungen AS (
         'per_stueck' AS abgeltungsart,
         100 AS betrag_per_einheit,
         faunabonus_anzahl_arten AS anzahl_einheiten,
-        faunabonus_artenvielfalt_abgeltung_pauschal AS betrag_total
+        faunabonus_artenvielfalt_abgeltung_pauschal AS betrag_total,
+        kantonsintern
     FROM
         alle_hecke
     WHERE
@@ -82,7 +84,8 @@ united_hecke_leistungen AS (
         'per_ha' AS abgeltungsart,
         einstufungbeurteilungistzustand_abgeltung_ha AS betrag_per_einheit,
         flaeche AS anzahl_einheiten,
-        (flaeche * einstufungbeurteilungistzustand_abgeltung_ha) AS betrag_total
+        (flaeche * einstufungbeurteilungistzustand_abgeltung_ha) AS betrag_total,
+        kantonsintern
     FROM
         alle_hecke
     WHERE
@@ -105,7 +108,8 @@ united_hecke_leistungen AS (
         'per_ha' AS abgeltungsart,
         bewirtschaftung_krautsaum_abgeltung_ha AS betrag_per_einheit,
         flaeche AS anzahl_einheiten,
-        (flaeche * bewirtschaftung_krautsaum_abgeltung_ha) AS betrag_total
+        (flaeche * bewirtschaftung_krautsaum_abgeltung_ha) AS betrag_total,
+        kantonsintern
     FROM
         alle_hecke
     WHERE
@@ -121,7 +125,8 @@ united_hecke_leistungen AS (
         'per_stueck' AS abgeltungsart,
         1.50 AS betrag_per_einheit,
         bewirtschaftung_lebhag_laufmeter AS anzahl_einheiten,
-        bewirtschaftung_lebhag_abgeltung_pauschal AS betrag_total
+        bewirtschaftung_lebhag_abgeltung_pauschal AS betrag_total,
+        kantonsintern
     FROM
         alle_hecke
     WHERE
@@ -144,7 +149,8 @@ united_hecke_leistungen AS (
         'per_ha' AS abgeltungsart,
         erschwernis_abgeltung_ha AS betrag_per_einheit,
         flaeche AS anzahl_einheiten,
-        (flaeche * erschwernis_abgeltung_ha) AS betrag_total
+        (flaeche * erschwernis_abgeltung_ha) AS betrag_total,
+        kantonsintern
     FROM
         alle_hecke
     WHERE

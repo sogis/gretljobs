@@ -26,7 +26,7 @@ WITH alle_wiese AS (
         wiese.mit_bewirtschafter_besprochen IS TRUE
         AND vereinbarung.status_vereinbarung = 'aktiv'
         -- und berücksichtige nur die neusten (sofern mehrere existieren)
-        AND wiese.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_wiese b WHERE b.vereinbarung = wiese.vereinbarung)
+        AND wiese.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_wiese b WHERE b.mit_bewirtschafter_besprochen IS TRUE AND b.vereinbarung = wiese.vereinbarung)
 ),
 united_wiese_leistungen AS (
     -- union aller leistungen
@@ -38,7 +38,8 @@ united_wiese_leistungen AS (
         'per_ha' AS abgeltungsart,
         200 AS betrag_per_einheit,
         flaeche AS anzahl_einheiten,
-        (flaeche * einstiegskriterium_abgeltung_ha) AS betrag_total
+        (flaeche * einstiegskriterium_abgeltung_ha) AS betrag_total,
+        kantonsintern
     FROM
         alle_wiese
     WHERE
@@ -54,7 +55,8 @@ united_wiese_leistungen AS (
         'per_stueck' AS abgeltungsart,
         50 AS betrag_per_einheit,
         einstufungbeurteilungistzustand_anzahl_fauna AS anzahl_einheiten,
-        einstufungbeurteilungistzustand_abgeltung_faunaliste_paschal AS betrag_total
+        einstufungbeurteilungistzustand_abgeltung_faunaliste_paschal AS betrag_total,
+        kantonsintern
     FROM
         alle_wiese
     WHERE
@@ -70,7 +72,8 @@ united_wiese_leistungen AS (
         'per_ha' AS abgeltungsart,
         einstufungbeurteilungistzustand_wiesenkategorie_abgeltung_ha AS betrag_per_einheit,
         flaeche AS anzahl_einheiten,
-        (flaeche * einstufungbeurteilungistzustand_wiesenkategorie_abgeltung_ha) AS betrag_total
+        (flaeche * einstufungbeurteilungistzustand_wiesenkategorie_abgeltung_ha) AS betrag_total,
+        kantonsintern
     FROM
         alle_wiese
     WHERE
@@ -86,7 +89,8 @@ united_wiese_leistungen AS (
         'per_ha' AS abgeltungsart,
         bewirtschaftabmachung_abgeltung_ha AS betrag_per_einheit,
         flaeche AS anzahl_einheiten,
-        (flaeche * bewirtschaftabmachung_abgeltung_ha) AS betrag_total
+        (flaeche * bewirtschaftabmachung_abgeltung_ha) AS betrag_total,
+        kantonsintern
     FROM
         alle_wbl_wiese
     WHERE
@@ -108,7 +112,8 @@ united_wiese_leistungen AS (
         'per_ha' AS abgeltungsart,
         erschwernis_abgeltung_ha AS betrag_per_einheit,
         flaeche AS anzahl_einheiten,
-        (flaeche * erschwernis_abgeltung_ha) AS betrag_total
+        (flaeche * erschwernis_abgeltung_ha) AS betrag_total,
+        kantonsintern
     FROM
         alle_wiese
     WHERE
@@ -131,7 +136,8 @@ united_wiese_leistungen AS (
         artenfoerderung_abgeltungsart AS abgeltungsart,
         artenfoerderung_abgeltung_total AS betrag_per_einheit,
         CASE WHEN artenfoerderung_abgeltungsart = 'pauschal' THEN 1 ELSE flaeche END AS anzahl_einheiten,
-        CASE WHEN artenfoerderung_abgeltungsart = 'pauschal' THEN artenfoerderung_abgeltung_total ELSE (flaeche * artenfoerderung_abgeltung_total) END AS betrag_total
+        CASE WHEN artenfoerderung_abgeltungsart = 'pauschal' THEN artenfoerderung_abgeltung_total ELSE (flaeche * artenfoerderung_abgeltung_total) END AS betrag_total,
+        kantonsintern
     FROM
         alle_wiese
     WHERE
