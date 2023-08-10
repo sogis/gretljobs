@@ -91,7 +91,7 @@ SELECT
 
 SELECT 
     DISTINCT ON (plan.plan_t_id)
-    nextval('arp_nutzungsplanung_planregister_v1.t_ili2db_seq'::regclass) AS t_id,
+    nextval('arp_nutzungsplanung_planregister_pub_v1.t_ili2db_seq'::regclass) AS t_id,
     'nutzungsplanung_kommunal' || '_' || ${bfsnr_param} AS t_datasetname,
     plan.planungsinstrument,
     plan.bezeichnung,
