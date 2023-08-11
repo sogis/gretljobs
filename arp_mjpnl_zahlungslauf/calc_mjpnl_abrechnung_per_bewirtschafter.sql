@@ -60,7 +60,7 @@ FROM
   GROUP BY pers.pid_gelan, pers.iban, pers.name_vorname, pers.ortschaft, abrg_vbg.auszahlungsjahr
   ORDER BY pers.pid_gelan ASC
 
-/* fkey update abrechnung_per_vereinbarung zu abrechnung_per_weirtschafter */
+/* Abrechnung per Vereinbarung aktualisieren mit Fremdschlüsseln zur Abrechnung per Bewirtschafter */
 WITH abrg_per_bewirtschafter AS (
 SELECT 
    abrg_bew.t_id,
