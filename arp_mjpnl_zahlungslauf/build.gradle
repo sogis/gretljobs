@@ -9,25 +9,33 @@ import ch.so.agi.gretl.tasks.*
 apply plugin: 'ch.so.agi.gretl'
 
 def DB_Schema_MJPNL = "arp_mjpnl_v1"
+def AUSZAHLUNGSJAHR = auszahlungsjahr
 
 task "cleanup_abrechnung_per_leistung"(type: SqlExecutor) {
     description = "Löscht alle diesjährigen Leistungen (die nicht einmalig sind)"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
     sqlFiles = ['delete_mjpnl_abrechnung_per_leistung.sql']
 }
 
 task "cleanup_abrechnungen_per_bewirtschafter_und_vereinbarung"(type: SqlExecutor,dependsOn: "cleanup_abrechnung_per_leistung") {
     description = "Löscht alle diesjährigen zusammengefassten Abrechnungen"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
     sqlFiles = ['delete_mjpnl_abrechnung_per_vereinbarung.sql', 'delete_mjpnl_abrechnung_per_bewirtschafter.sql']
 }
 
-task "calculate_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "cleanup_abrechnungen_per_bewirtschafter_und_vereinbarung") {
+task "create_dummy_entries"(type: SqlExecutor,dependsOn: "cleanup_abrechnung_per_leistung") {
+    description = "Erstellt Dummy Entries, damit die FK Constraints nicht verletzt werden (da die Leistungen vor den Zusammenzügen erstellt werden)"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
+    sqlFiles = ['create_dummy_entries.sql']
+}
+
+task "calculate_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "create_dummy_entries") {
     description = "Kalkuliert für alle aktiven Vereinbarungen die Abrechnungen pro Leistung anhand der neusten besprochenen Beurteilungen"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
     sqlFiles = ['calc_mjpnl_abrechnung_per_leistung_alr_buntbrache.sql', 'calc_mjpnl_abrechnung_per_leistung_alr_saum.sql', 'calc_mjpnl_abrechnung_per_leistung_hecke.sql', 'calc_mjpnl_abrechnung_per_leistung_hostet.sql', 'calc_mjpnl_abrechnung_per_leistung_obl.sql', 
     'calc_mjpnl_abrechnung_per_leistung_wbl_weide.sql', 'calc_mjpnl_abrechnung_per_leistung_wbl_wiese.sql', 'calc_mjpnl_abrechnung_per_leistung_weide_ln.sql', 'calc_mjpnl_abrechnung_per_leistung_weide_soeg.sql', 'calc_mjpnl_abrechnung_per_leistung_wiese.sql']
 }
@@ -35,19 +43,27 @@ task "calculate_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "cleanup_a
 task "copy_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "calculate_abrechnung_per_leistung") {
     description = "Kopiert für alle aktiven Vereinbarungen die Leistungen vom letzten Jahr, falls keine diesjährigen kalkuliert werden konnten, weil keine besprochene Beurteilung vorhanden"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
     sqlFiles = ['copy_mjpnl_abrechnung_per_leistung.sql']
 }
+
 task "calculate_abrechnung_per_vereinbarung"(type: SqlExecutor,dependsOn: "copy_abrechnung_per_leistung") {
     description = "Kalkuliert die Abrechnungen pro Vereinbarung anhand aller Abrechnungen pro Leistung"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
     sqlFiles = ['calc_mjpnl_abrechnung_per_vereinbarung.sql']
 }
 
 task "calculate_abrechnung_per_bewirtschafter"(type: SqlExecutor,dependsOn: "calculate_abrechnung_per_vereinbarung") {
     description = "Kalkuliert die Abrechnungen pro Bewirtschafter anhand aller Abrechnungen pro Leistung"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
     sqlFiles = ['calc_mjpnl_abrechnung_per_bewirtschafter.sql']
+}
+
+task "remove_dummy_entries"(type: SqlExecutor,dependsOn: "calculate_abrechnung_per_vereinbarung") {
+    description = "Löscht die Dummie-Entries wieder"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
+    sqlFiles = ['remove_dummy_entries.sql']
 }

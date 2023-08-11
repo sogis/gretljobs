@@ -58,7 +58,7 @@ VALUES
     false,
     'Dummy-Pfad',
     now()::DATE,
-    'Test'
+    'Tester'
 );
 
 /* alr_saum */
@@ -115,7 +115,7 @@ VALUES
     false,
     'Dummy-Pfad',
     now()::DATE,
-    'Test'
+    'Tester'
 );
 
 /* hecke MIT zwei Beurteilungen*/
@@ -172,7 +172,7 @@ VALUES
     false,
     'Dummy-Pfad',
     now()::DATE,
-    'Test'
+    'Tester'
 );
 
 -- Beurteilung 1 (alt - zählt nicht)
@@ -298,7 +298,7 @@ VALUES
     5, -- abgeltung_generisch_betrag,
     2221.5, -- abgeltung_total,
     now()::date-20, -- erstellungsdatum,
-    'Test', -- operator_erstellung,
+    'Tester', -- operator_erstellung,
     (SELECT t_id FROM arp_mjpnl_v1.mjpnl_berater WHERE aname = 'Bruggisser'), -- berater,
     (SELECT t_id FROM arp_mjpnl_v1.mjpnl_vereinbarung WHERE vereinbarungs_nr = '01_TEST_00003') -- vereinbarung
 );
@@ -427,7 +427,7 @@ VALUES
     5, -- abgeltung_generisch_betrag,
     2221.5, -- abgeltung_total,
     now()::date-20, -- erstellungsdatum,
-    'Test', -- operator_erstellung,
+    'Tester', -- operator_erstellung,
     (SELECT t_id FROM arp_mjpnl_v1.mjpnl_berater WHERE aname = 'Bruggisser'), -- berater,
     (SELECT t_id FROM arp_mjpnl_v1.mjpnl_vereinbarung WHERE vereinbarungs_nr = '01_TEST_00003') -- vereinbarung
 );
@@ -556,7 +556,7 @@ VALUES
     5, -- abgeltung_generisch_betrag,
     2221.5, -- abgeltung_total,
     now()::date-20, -- erstellungsdatum,
-    'Test', -- operator_erstellung,
+    'Tester', -- operator_erstellung,
     (SELECT t_id FROM arp_mjpnl_v1.mjpnl_berater WHERE aname = 'Bruggisser'), -- berater,
     (SELECT t_id FROM arp_mjpnl_v1.mjpnl_vereinbarung WHERE vereinbarungs_nr = '01_TEST_00003') -- vereinbarung
 );
