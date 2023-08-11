@@ -1,0 +1,51 @@
+import java.nio.file.Paths
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'de.undercouch.download'
+
+defaultTasks 'validateData'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def zipFileName = "so.zip"
+def zipFile = Paths.get(pathToTempFolder, zipFileName).toFile()
+def sqliteFile = Paths.get(pathToTempFolder, "data.sqlite")
+def dbUriGwr = "jdbc:sqlite:"+sqliteFile.toFile().getAbsolutePath()  
+
+def iliModelName = "";
+
+tasks.register('downloadFile', Download) {
+    src "https://public.madd.bfs.admin.ch/$zipFileName"
+    dest zipFile
+    overwrite true
+
+    doLast {
+        println("File downloaded: " + zipFile.getAbsolutePath())
+    }
+}
+
+tasks.register('unzipFile', Copy) {
+    dependsOn 'downloadFile'
+    from zipTree(zipFile)
+    into file(pathToTempFolder)
+    include "**/data.sqlite"
+
+    doLast {
+        println("Unzip file into: " + pathToTempFolder)
+    }
+}
+
+tasks.register('importData', Db2Db) {
+    dependsOn 'unzipFile'
+    //database = [dbUriGwr]
+    //sqlFiles = ['importData.sql']
+
+    sourceDb = [dbUriGwr]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+        new TransferSet('importData.sql', 'agi_gwr_v1.gwr_gebaeude', true)
+    ];
+}
+
