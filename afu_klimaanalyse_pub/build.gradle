@@ -4,15 +4,9 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'transferKlimaanalysePub'
+defaultTasks 'publishPub'
 
 
-// tasks.register('validataKlimaData', Ili2pgValidate) {
-//     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-//     models = "SO_AFU_Klimaanalyse_20230413"
-//     modeldir = rootProject.projectDir.toString() + ";http://models.interlis.ch"
-//     dbschema = "afu_klimaanalyse_v1"
-// }
 
 task transferKlimaanalysePub(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -29,4 +23,17 @@ task transferKlimaanalysePub(type: Db2Db) {
             new TransferSet('kaltluftprozess_ist_pub.sql', 'afu_klimaanalyse_pub_v1.kaltluftprozess_ist', true),
             new TransferSet('kaltluftprozess_zukunft_pub.sql', 'afu_klimaanalyse_pub_v1.kaltluftprozess_zukunft', true)
     ];
+}
+
+task publishPub(type: Publisher, dependsOn: 'transferKlimaanalysePub'){
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dataIdent = "ch.so.afu.klimaanalyse"
+    dbSchema = "afu_klimaanalyse_pub_v1"
+    modelsToPublish = "SO_AFU_Klimaanalyse_20230413"
+    userFormats = true
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
