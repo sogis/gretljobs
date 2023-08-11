@@ -2,7 +2,7 @@
 
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung 
   (t_basket, vereinbarungs_nr, gelan_pid_gelan, gelan_bewe_id, gb_nr, flurnamen, gemeinde, flaeche, anzahl_baeume, betrag_flaeche, betrag_baeume, betrag_pauschal_regulaer, betrag_pauschal_einmalig_ausbezahlt, betrag_pauschal_einmalig_freigegeben, gesamtbetrag,
-   auszahlungsjahr, status_abrechnung, datum_abrechnung, bewirtschaftabmachung_schnittzeitpunkt_1, bewirtschaftabmachung_messerbalkenmaehgeraet, bewirtschaftabmachung_herbstweide,abrechnungperbewirtschafter, vereinbarung, migriert)
+   auszahlungsjahr, status_abrechnung, datum_abrechnung, bewirtschaftabmachung_schnittzeitpunkt_1, bewirtschaftabmachung_messerbalkenmaehgeraet, bewirtschaftabmachung_herbstweide, vereinbarung, migriert)
 SELECT
   vbg.t_basket,
   vbg.vereinbarungs_nr,
@@ -35,7 +35,6 @@ SELECT
   bw.bewirtschaftabmachung_schnittzeitpunkt_1,
   COALESCE(bw.bewirtschaftabmachung_messerbalkenmaehgeraet, FALSE) as bewirtschaftabmachung_messerbalkenmaehgeraet,
   COALESCE(bw.bewirtschaftabmachung_herbstweide, FALSE) as bewirtschaftabmachung_herbstweide,
-  9999999 AS abrechnungperbewirtschafter,
   vbg.t_id AS vereinbarung,
   TRUE AS migriert
 FROM

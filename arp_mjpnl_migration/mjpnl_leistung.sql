@@ -52,7 +52,6 @@ SELECT
         THEN TRUE
         ELSE FALSE
     END AS einmalig,
-    9999999 AS abrechnungpervereinbarung,
     9999999 AS vereinbarung
 FROM mjpnatur.leistung l
    LEFT JOIN mjpnatur.leistungsart lart ON l.leistungartid = lart.leistungsartid AND lart.archive = 0
