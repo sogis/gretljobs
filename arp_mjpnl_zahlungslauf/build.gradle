@@ -50,3 +50,4 @@ task "calculate_abrechnung_per_bewirtschafter"(type: SqlExecutor,dependsOn: "cal
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
     sqlFiles = ['calc_mjpnl_abrechnung_per_bewirtschafter.sql']
+}
