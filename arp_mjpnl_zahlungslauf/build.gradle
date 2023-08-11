@@ -24,7 +24,14 @@ task "cleanup_abrechnungen_per_bewirtschafter_und_vereinbarung"(type: SqlExecuto
     sqlFiles = ['delete_mjpnl_abrechnung_per_vereinbarung.sql', 'delete_mjpnl_abrechnung_per_bewirtschafter.sql']
 }
 
-task "calculate_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "cleanup_abrechnungen_per_bewirtschafter_und_vereinbarung") {
+task "create_dummy_entries"(type: SqlExecutor,dependsOn: "cleanup_abrechnung_per_leistung") {
+    description = "Erstellt Dummy Entries, damit die FK Constraints nicht verletzt werden (da die Leistungen vor den Zusammenzügen erstellt werden)"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['create_dummy_entries.sql']
+}
+
+task "calculate_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "create_dummy_entries") {
     description = "Kalkuliert für alle aktiven Vereinbarungen die Abrechnungen pro Leistung anhand der neusten besprochenen Beurteilungen"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
@@ -38,6 +45,7 @@ task "copy_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "calculate_abre
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
     sqlFiles = ['copy_mjpnl_abrechnung_per_leistung.sql']
 }
+
 task "calculate_abrechnung_per_vereinbarung"(type: SqlExecutor,dependsOn: "copy_abrechnung_per_leistung") {
     description = "Kalkuliert die Abrechnungen pro Vereinbarung anhand aller Abrechnungen pro Leistung"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -50,4 +58,11 @@ task "calculate_abrechnung_per_bewirtschafter"(type: SqlExecutor,dependsOn: "cal
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
     sqlFiles = ['calc_mjpnl_abrechnung_per_bewirtschafter.sql']
+}
+
+task "remove_dummy_entries"(type: SqlExecutor,dependsOn: "calculate_abrechnung_per_vereinbarung") {
+    description = "Löscht die Dummie-Entries wieder"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['remove_dummy_entries.sql']
 }
