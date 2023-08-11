@@ -6,7 +6,7 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'de.undercouch.download'
 
-defaultTasks 'validateData'
+defaultTasks 'importData'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def zipFileName = "so.zip"
@@ -39,9 +39,6 @@ tasks.register('unzipFile', Copy) {
 
 tasks.register('importData', Db2Db) {
     dependsOn 'unzipFile'
-    //database = [dbUriGwr]
-    //sqlFiles = ['importData.sql']
-
     sourceDb = [dbUriGwr]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
