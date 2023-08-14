@@ -16,7 +16,7 @@ services:
         source: ../schema-jobs
         target: /home/gradle/schema-jobs
       - type: bind
-        source: /tmp
+        source: ${TMP:-/tmp}
         target: /gretl-share
   edit-db:
     image: bitnami/postgresql:14.8.0-debian-11-r74
