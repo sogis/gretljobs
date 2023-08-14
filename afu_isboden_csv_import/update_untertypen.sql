@@ -40,6 +40,7 @@ AND
 INSERT INTO 
     afu_isboden.bodeneinheit_auspraegung_t 
         (
+        pk_bodeneinheit,
         fk_bodeneinheit,
         is_hauptauspraegung,
         gewichtung_auspraegung,
@@ -74,6 +75,7 @@ INSERT INTO
         ) 
         (
         select 
+            auspraegung_pk,
             bodeneinheiten_pk,
             is_hauptauspraegung::boolean,
             gewichtung_auspraegung::integer,
