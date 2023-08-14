@@ -6,10 +6,18 @@ services:
       ORG_GRADLE_PROJECT_gretlEnvironment: development
     entrypoint: ["gretl", "--project-cache-dir=/home/gradle/projectcache"]
     volumes:
-      - $HOME/gretljobs.properties:/home/gradle/.gradle/gradle.properties
-      - .:/home/gradle/project
-      - ../schema-jobs:/home/gradle/schema-jobs
-      - /tmp:/gretl-share
+      - type: bind
+        source: $HOME/gretljobs.properties
+        target: /home/gradle/.gradle/gradle.properties
+      - type: bind
+        source: .
+        target: /home/gradle/project
+      - type: bind
+        source: ../schema-jobs
+        target: /home/gradle/schema-jobs
+      - type: bind
+        source: /tmp
+        target: /gretl-share
   edit-db:
     image: bitnami/postgresql:14.8.0-debian-11-r74
     environment:
@@ -23,9 +31,15 @@ services:
     ports:
       - "54321:5432"
     volumes:
-      - ./setup.sql:/docker-entrypoint-preinitdb.d/setup.sql
-      - ./prepare_setup.sh:/docker-entrypoint-preinitdb.d/prepare_setup.sh
-      - postgresql_data_edit:/bitnami/postgresql
+      - type: bind
+        source: ./setup.sql
+        target: /docker-entrypoint-preinitdb.d/setup.sql
+      - type: bind
+        source: ./prepare_setup.sh
+        target: /docker-entrypoint-preinitdb.d/prepare_setup.sh
+      - type: volume
+        source: postgresql_data_edit
+        target: /bitnami/postgresql
   pub-db:
     image: bitnami/postgresql:14.8.0-debian-11-r74
     environment:
@@ -39,9 +53,15 @@ services:
     ports:
       - "54322:5432"
     volumes:
-      - ./setup.sql:/docker-entrypoint-preinitdb.d/setup.sql
-      - ./prepare_setup.sh:/docker-entrypoint-preinitdb.d/prepare_setup.sh
-      - postgresql_data_pub:/bitnami/postgresql
+      - type: bind
+        source: ./setup.sql
+        target: /docker-entrypoint-preinitdb.d/setup.sql
+      - type: bind
+        source: ./prepare_setup.sh
+        target: /docker-entrypoint-preinitdb.d/prepare_setup.sh
+      - type: volume
+        source: postgresql_data_pub
+        target: /bitnami/postgresql
 volumes:
   postgresql_data_edit:
   postgresql_data_pub:
