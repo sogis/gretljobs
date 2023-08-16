@@ -69,8 +69,6 @@ FROM
    ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_bewirtschafter abrg_bew
    LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
       ON abrg_bew.gelan_pid_gelan = vbg.gelan_pid_gelan
-   WHERE
-      abrg_bew.t_id != 9999999
    ORDER BY vbg.vereinbarungs_nr ASC, abrg_bew.auszahlungsjahr ASC
 )
 UPDATE

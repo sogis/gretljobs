@@ -40,16 +40,6 @@ VALUES(
   NULL,
   NULL);
 
-/* Dummy-Entry Abrechnung per Bewirtschafter */
-INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_bewirtschafter
-(t_id, t_basket, t_ili_tid, gelan_pid_gelan, gelan_person, gelan_ortschaft, gelan_iban, betrag_total, status_abrechnung, datum_abrechnung, auszahlungsjahr, bemerkung, dateipfad_oder_url, erstellungsdatum, operator_erstellung, aenderungsdatum, operator_aenderung, migriert)
-VALUES(9999999, (SELECT t_id FROM ${DB_Schema_MJPNL}.t_ili2db_basket WHERE t_ili_tid = 'SO_ARP_MJPNL_20201026.MJPNL' LIMIT 1), uuid_generate_v4(), (SELECT pid_gelan FROM ${DB_Schema_MJPNL}.betrbsdttrktrdten_gelan_person LIMIT 1), 'Dummy-Name','Dummy-Ortschaft', 'CH16090100565713403', 99, 'initialisiert', '1990-01-01', 1900, 'Dummy-Entry', 'Dummy-Pfad', now()::DATE, 'bjsvwneu', NULL, NULL, TRUE);
-
-/* Dummy-Entry Abrechnung per Vereinbarung */
-INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung
-(t_id, t_basket, t_ili_tid, vereinbarungs_nr, gelan_pid_gelan, gelan_bewe_id, gb_nr, flurnamen, gemeinde, flaeche, anzahl_baeume, betrag_flaeche, betrag_baeume, betrag_pauschal, gesamtbetrag, auszahlungsjahr, status_abrechnung, datum_abrechnung, bewirtschaftabmachung_messerbalkenmaehgeraet, bewirtschaftabmachung_herbstweide, bemerkung, abrechnungperbewirtschafter, vereinbarung, migriert)
-VALUES(9999999, (SELECT t_id FROM ${DB_Schema_MJPNL}.t_ili2db_basket WHERE t_ili_tid = 'SO_ARP_MJPNL_20201026.MJPNL' LIMIT 1), uuid_generate_v4(), '01_DUMMY_00001', (SELECT pid_gelan FROM ${DB_Schema_MJPNL}.betrbsdttrktrdten_gelan_person LIMIT 1), 'GELAN_BEWE_DUMMY', '{"Dummy-GBNr"}', 'Dummy-Flurnamen', 'Dummy-Gemeinde', 99, 0, 99, 0, 0, 99, 1900, 'initialisiert', '1990-01-01', FALSE, FALSE, 'Dummy Entry', 9999999, 9999999, TRUE);
-
 /* Dummy-Entry in t_ili2db_basket um statische Baskets den Einträgen von mjpnl_leistung und mjpnl_vereinbarung zuzuweisen */
 INSERT
   INTO ${DB_Schema_MJPNL}.t_ili2db_basket

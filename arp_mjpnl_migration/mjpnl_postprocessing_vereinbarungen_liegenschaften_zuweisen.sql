@@ -12,7 +12,11 @@ UPDATE
                    AND gs.t_id = ls.liegenschaft_von
         WHERE
           ls.t_datasetname::integer = ANY (vbg.bfs_nr)
-           AND ST_Intersects(ls.geometrie,vbg.geometrie)
+          AND (
+            ST_Intersects(ls.geometrie,vbg.geometrie)
+            AND
+            (ST_Area(ST_Intersection(ls.geometrie,vbg.geometrie))) > 1
+          )
      )
 WHERE
   vbg.mjpnl_version = 'MJPNL_2020'

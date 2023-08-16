@@ -1,8 +1,8 @@
 /* Zusammenzug Zahlungen per Vereinbarung und Datum der Auszahlung */
 
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung 
-  (t_basket, vereinbarungs_nr, gelan_pid_gelan, gelan_bewe_id, gb_nr, flurnamen, gemeinde, flaeche, anzahl_baeume, betrag_flaeche, betrag_baeume, betrag_pauschal, gesamtbetrag,
-   auszahlungsjahr, status_abrechnung, datum_abrechnung, bewirtschaftabmachung_schnittzeitpunkt_1, bewirtschaftabmachung_messerbalkenmaehgeraet, bewirtschaftabmachung_herbstweide,abrechnungperbewirtschafter, vereinbarung, migriert)
+  (t_basket, vereinbarungs_nr, gelan_pid_gelan, gelan_bewe_id, gb_nr, flurnamen, gemeinde, flaeche, anzahl_baeume, betrag_flaeche, betrag_baeume, betrag_pauschal_regulaer, betrag_pauschal_einmalig_ausbezahlt, betrag_pauschal_einmalig_freigegeben, gesamtbetrag,
+   auszahlungsjahr, status_abrechnung, datum_abrechnung, bewirtschaftabmachung_schnittzeitpunkt_1, bewirtschaftabmachung_messerbalkenmaehgeraet, bewirtschaftabmachung_herbstweide, vereinbarung, migriert)
 SELECT
   vbg.t_basket,
   vbg.vereinbarungs_nr,
@@ -15,7 +15,9 @@ SELECT
   COALESCE(SUM(lstg_stueck.anzahl_einheiten),0) AS anzahl_baeume,
   COALESCE(SUM(lstg_ha.betrag_total),0) AS betrag_flaeche,
   COALESCE(SUM(lstg_stueck.betrag_total),0) AS betrag_baeume,
-  COALESCE(SUM(lstg_pauschal.betrag_total),0) AS betrag_pauschal,
+  COALESCE(SUM(lstg_pauschal_reg.betrag_total),0) AS betrag_pauschal_regulaer,
+  COALESCE(SUM(lstg_pauschal_einmalig_ausbez.betrag_total),0) AS betrag_pauschal_einmalig_ausbezahlt,
+  COALESCE(SUM(lstg_pauschal_einmalig_freigeg.betrag_total),0) AS betrag_pauschal_einmalig_freigegeben,
   COALESCE(SUM(lstg.betrag_total),0) AS gesamtbetrag,
   lstg.auszahlungsjahr,
   -- wenn es ein status_abrechnung "freigegeben" gibt, dann soll der status "freigegeben" sein
@@ -33,7 +35,6 @@ SELECT
   bw.bewirtschaftabmachung_schnittzeitpunkt_1,
   COALESCE(bw.bewirtschaftabmachung_messerbalkenmaehgeraet, FALSE) as bewirtschaftabmachung_messerbalkenmaehgeraet,
   COALESCE(bw.bewirtschaftabmachung_herbstweide, FALSE) as bewirtschaftabmachung_herbstweide,
-  9999999 AS abrechnungperbewirtschafter,
   vbg.t_id AS vereinbarung,
   TRUE AS migriert
 FROM
@@ -51,8 +52,12 @@ FROM
      ON lstg_stueck.t_id = lstg.t_id AND lstg_stueck.abgeltungsart = 'per_stueck'
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_ha
      ON lstg_ha.t_id = lstg.t_id AND lstg_ha.abgeltungsart = 'per_ha'
-  LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_pauschal
-     ON lstg_pauschal.t_id = lstg.t_id AND lstg_pauschal.abgeltungsart = 'pauschal'
+  LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_pauschal_reg
+     ON lstg_pauschal_reg.t_id = lstg.t_id AND lstg_pauschal_reg.abgeltungsart = 'pauschal' AND lstg_pauschal_reg.einmalig IS NOT TRUE
+  LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_pauschal_einmalig_ausbez
+     ON lstg_pauschal_einmalig_ausbez.t_id = lstg.t_id AND lstg_pauschal_einmalig_ausbez.abgeltungsart = 'pauschal' AND lstg_pauschal_einmalig_ausbez.einmalig IS TRUE AND lstg_pauschal_einmalig_ausbez.status_abrechnung = 'ausbezahlt'
+  LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_pauschal_einmalig_freigeg
+     ON lstg_pauschal_einmalig_freigeg.t_id = lstg.t_id AND lstg_pauschal_einmalig_freigeg.abgeltungsart = 'pauschal' AND lstg_pauschal_einmalig_freigeg.einmalig IS TRUE AND lstg_pauschal_einmalig_freigeg.status_abrechnung = 'freigegeben'
   WHERE
     vbg.t_id IS NOT NULL
     -- berücksichtige nur relevante status
