@@ -7,7 +7,7 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'publishPub'
 
 
-/*
+
 task transferKlimaanalysePub(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
@@ -23,10 +23,9 @@ task transferKlimaanalysePub(type: Db2Db) {
             new TransferSet('kaltluftprozess_ist_pub.sql', 'afu_klimaanalyse_pub_v1.kaltluftprozess_ist', true),
             new TransferSet('kaltluftprozess_zukunft_pub.sql', 'afu_klimaanalyse_pub_v1.kaltluftprozess_zukunft', true)
     ];
-}*/
+}
 
-// task publishPub(type: Publisher, dependsOn: 'transferKlimaanalysePub') {
-task publishPub(type: Publisher) {
+task publishPub(type: Publisher, dependsOn: 'transferKlimaanalysePub') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.afu.klimaanalyse"
     dbSchema = "afu_klimaanalyse_pub_v1"
