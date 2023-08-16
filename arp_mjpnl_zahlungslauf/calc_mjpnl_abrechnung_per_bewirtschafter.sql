@@ -56,7 +56,7 @@ FROM
   WHERE 
     abrg_vbg.gesamtbetrag IS NOT NULL
     -- berücksichtige nur diesjährige Leistungen
-    AND abrg_vbg.auszahlungsjahr = date_part('year', now())::integer;
+    AND abrg_vbg.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer;
   GROUP BY pers.pid_gelan, pers.iban, pers.name_vorname, pers.ortschaft, abrg_vbg.auszahlungsjahr
   ORDER BY pers.pid_gelan ASC
 
@@ -72,7 +72,7 @@ FROM
       ON abrg_bew.gelan_pid_gelan = vbg.gelan_pid_gelan
    WHERE
       abrg_bew.t_id != 9999999
-      AND abrg_bew.auszahlungsjahr = date_part('year', now())::integer
+      AND abrg_bew.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer
    ORDER BY vbg.vereinbarungs_nr ASC, abrg_bew.auszahlungsjahr ASC
 )
 /* Update der Abrechnung per Vereinbarung über gemeinsame Attribute */
@@ -82,5 +82,5 @@ UPDATE
   FROM abrg_per_bewirtschafter abrg_bew
     WHERE
        abrg_vbg.vereinbarungs_nr = abrg_bew.vereinbarungs_nr
-       AND abrg_vbg.auszahlungsjahr = date_part('year', now())::integer
+       AND abrg_vbg.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer
 ;
