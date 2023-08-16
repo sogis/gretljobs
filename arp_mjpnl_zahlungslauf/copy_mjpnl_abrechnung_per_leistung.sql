@@ -61,11 +61,11 @@ SELECT
     l.betrag_per_einheit,
     l.anzahl_einheiten,
     l.betrag_total,
-    date_part('year', now())::integer AS auszahlungsjahr,
+    ${AUSZAHLUNGSJAHR}::integer AS auszahlungsjahr,
     l.status_abrechnung,
-    'Migriert aus '||date_part('year', now())::integer-1||' '||COALESCE(l.bemerkung,'') as bemerkung,
+    'Migriert aus '||${AUSZAHLUNGSJAHR}::integer-1||' '||COALESCE(l.bemerkung,'') as bemerkung,
     l.abrechnungpervereinbarung
 FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l
 INNER JOIN relevante_vereinbarungen rel_vbg
 ON l.vereinbarung = rel_vbg.t_id
-WHERE l.auszahlungsjahr = date_part('year', now())-1 AND NOT einmalig;
+WHERE l.auszahlungsjahr = ${AUSZAHLUNGSJAHR}-1 AND NOT einmalig;

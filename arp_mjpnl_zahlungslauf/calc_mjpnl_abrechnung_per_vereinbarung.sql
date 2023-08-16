@@ -70,7 +70,7 @@ FROM
     -- berücksichtige nur relevante status
     AND lstg.status_abrechnung NOT IN ('in_bearbeitung', 'abgeltungslos')
     -- berücksichtige nur diesjährige Leistungen
-    AND lstg.auszahlungsjahr = date_part('year', now())::integer
+    AND lstg.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer
   GROUP BY vbg.t_id, vbg.vereinbarungs_nr, vbg.gelan_bewe_id, vbg.gb_nr, vbg.flurname, vbg.gemeinde, vbg.flaeche,
            lstg.auszahlungsjahr, bw.bewirtschaftabmachung_schnittzeitpunkt_1, bw.bewirtschaftabmachung_messerbalkenmaehgeraet, bw.bewirtschaftabmachung_herbstweide
   ORDER BY  vbg.vereinbarungs_nr ASC
@@ -86,7 +86,7 @@ WHERE
    abr_lstg.vereinbarung != 9999999
    AND vbg.t_id = abr_lstg.vereinbarung 
    AND vbg.vereinbarungs_nr = abr_vbg.vereinbarungs_nr
-   AND abr_lstg.auszahlungsjahr = date_part('year', now())::integer
-   AND abr_vbg.auszahlungsjahr = date_part('year', now())::integer
+   AND abr_lstg.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer
+   AND abr_vbg.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer
 ;
 
