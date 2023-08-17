@@ -7,8 +7,7 @@ INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung (
     anzahl_einheiten,
     betrag_total,
     auszahlungsjahr,
-    status_abrechnung,
-    abrechnungpervereinbarung
+    status_abrechnung
 )
 WITH alle_weide_ln AS (
     -- alle relevanten beurteilungen
@@ -113,9 +112,9 @@ united_weide_ln_leistungen AS (
         /* Indiviuelle Werte */
         'Weide LN: Artenförderung (' ||
             (SELECT CONCAT_WS(', ',
-                CASE WHEN artenfoerderung_ff_zielart1 THEN 'Massnahme für '||artenfoerderung_ff_zielart1||': '||artenfoerderung_ff_zielart1_massnahme END,
-                CASE WHEN artenfoerderung_ff_zielart2 THEN 'Massnahme für '||artenfoerderung_ff_zielart2||': '||artenfoerderung_ff_zielart2_massnahme END,
-                CASE WHEN artenfoerderung_ff_zielart3 THEN 'Massnahme für '||artenfoerderung_ff_zielart3||': '||artenfoerderung_ff_zielart3_massnahme END
+                CASE WHEN artenfoerderung_ff_zielart1 IS NOT NULL THEN 'Massnahme für '||artenfoerderung_ff_zielart1||': '||artenfoerderung_ff_zielart1_massnahme END,
+                CASE WHEN artenfoerderung_ff_zielart2 IS NOT NULL THEN 'Massnahme für '||artenfoerderung_ff_zielart2||': '||artenfoerderung_ff_zielart2_massnahme END,
+                CASE WHEN artenfoerderung_ff_zielart3 IS NOT NULL THEN 'Massnahme für '||artenfoerderung_ff_zielart3||': '||artenfoerderung_ff_zielart3_massnahme END
             )) ||
         ')'
         AS leistung_beschrieb,
@@ -144,9 +143,7 @@ SELECT
     CASE
         WHEN kantonsintern THEN 'intern_verrechnet'
         ELSE 'freigegeben'
-    END AS status_abrechnung,
-    -- noch nicht existent, wird bei der Kalkulation von mjpnl_abrechnung_per_vereinbarung erstellt und ersetzt
-    9999999 AS abrechnungpervereinbarung
+    END AS status_abrechnung
 FROM
     united_weide_ln_leistungen
 ;

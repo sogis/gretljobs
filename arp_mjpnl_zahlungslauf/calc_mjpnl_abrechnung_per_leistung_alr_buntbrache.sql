@@ -7,8 +7,7 @@ INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung (
     anzahl_einheiten,
     betrag_total,
     auszahlungsjahr,
-    status_abrechnung,
-    abrechnungpervereinbarung
+    status_abrechnung
 )
 WITH alle_alr_buntbrache AS (
     -- alle relevanten beurteilungen 
@@ -104,9 +103,7 @@ SELECT
     CASE
         WHEN kantonsintern THEN 'intern_verrechnet'
         ELSE 'freigegeben'
-    END AS status_abrechnung,
-    -- noch nicht existent, wird bei der Kalkulation von mjpnl_abrechnung_per_vereinbarung erstellt und ersetzt
-    9999999 AS abrechnungpervereinbarung
+    END AS status_abrechnung
 FROM
     united_alr_buntbrache_leistungen
 ;
