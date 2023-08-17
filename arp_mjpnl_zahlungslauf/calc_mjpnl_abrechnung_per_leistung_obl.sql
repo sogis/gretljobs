@@ -7,8 +7,7 @@ INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung (
     anzahl_einheiten,
     betrag_total,
     auszahlungsjahr,
-    status_abrechnung,
-    abrechnungpervereinbarung
+    status_abrechnung
 )
 WITH alle_obl AS (
     -- alle relevanten beurteilungen
@@ -120,9 +119,7 @@ SELECT
     -- aktuelles Jahr
     ${AUSZAHLUNGSJAHR}::integer AS auszahlungsjahr,
     -- Ursprungsstatus
-    'initialisiert' AS  status_abrechnung,
-    -- noch nicht existent, wird bei der Kalkulation von mjpnl_abrechnung_per_vereinbarung erstellt und ersetzt
-    9999999 AS abrechnungpervereinbarung
+    'initialisiert' AS  status_abrechnung
 FROM
     united_obl_leistungen
 ;
