@@ -3,7 +3,7 @@
 
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung 
   (t_basket, vereinbarungs_nr, gelan_pid_gelan, gelan_bewe_id, gb_nr, flurnamen, gemeinde, flaeche, anzahl_baeume, betrag_flaeche, betrag_baeume, betrag_pauschal_regulaer, betrag_pauschal_einmalig_ausbezahlt, betrag_pauschal_einmalig_freigegeben, gesamtbetrag,
-   auszahlungsjahr, status_abrechnung, datum_abrechnung, bewirtschaftabmachung_schnittzeitpunkt_1, bewirtschaftabmachung_messerbalkenmaehgeraet, bewirtschaftabmachung_herbstweide,abrechnungperbewirtschafter, vereinbarung, migriert)
+   auszahlungsjahr, status_abrechnung, datum_abrechnung, bewirtschaftabmachung_schnittzeitpunkt_1, bewirtschaftabmachung_messerbalkenmaehgeraet, bewirtschaftabmachung_herbstweide, vereinbarung, migriert)
 WITH beurteilungs_metainfo_wiesen AS (
 	SELECT vereinbarung, beurteilungsdatum, bewirtschaftabmachung_schnittzeitpunkt_1, bewirtschaftabmachung_messerbalkenmaehgeraet, bewirtschaftabmachung_herbstweide FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_wiese WHERE mit_bewirtschafter_besprochen
 	UNION 
@@ -41,7 +41,6 @@ SELECT
   bw.bewirtschaftabmachung_schnittzeitpunkt_1,
   COALESCE(bw.bewirtschaftabmachung_messerbalkenmaehgeraet, FALSE) as bewirtschaftabmachung_messerbalkenmaehgeraet,
   COALESCE(bw.bewirtschaftabmachung_herbstweide, FALSE) as bewirtschaftabmachung_herbstweide,
-  9999999 AS abrechnungperbewirtschafter,
   vbg.t_id AS vereinbarung,
   FALSE AS migriert
 FROM
@@ -54,7 +53,7 @@ FROM
   LEFT JOIN beurteilungs_metainfo_wiesen bw
      ON lstg.vereinbarung = bw.vereinbarung
      -- berücksichtige nur die neusten (sofern mehrere existieren)
-     AND bw.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM beurteilungs_metainfo_wiesen b WHERE b.mit_bewirtschafter_besprochen IS TRUE AND b.vereinbarung = lstg.vereinbarung)
+     AND bw.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM beurteilungs_metainfo_wiesen b WHERE b.vereinbarung = lstg.vereinbarung)
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_stueck
      ON lstg_stueck.t_id = lstg.t_id AND lstg_stueck.abgeltungsart = 'per_stueck'
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_ha
@@ -83,8 +82,7 @@ FROM
    ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg,
    ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung abr_vbg
 WHERE 
-   abr_lstg.vereinbarung != 9999999
-   AND vbg.t_id = abr_lstg.vereinbarung 
+    vbg.t_id = abr_lstg.vereinbarung 
    AND vbg.vereinbarungs_nr = abr_vbg.vereinbarungs_nr
    AND abr_lstg.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer
    AND abr_vbg.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer
