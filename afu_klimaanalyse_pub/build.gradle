@@ -27,7 +27,7 @@ task transferKlimaanalysePub(type: Db2Db) {
 
 task publishPub(type: Publisher, dependsOn: 'transferKlimaanalysePub') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    dataIdent = "ch.so.afu.testdatensatz"
+    dataIdent = "ch.so.afu.klimaanalyse"
     dbSchema = "afu_klimaanalyse_pub_v1"
     modelsToPublish = "SO_AFU_Klimaanalyse_20230413"
 //     userFormats = true
