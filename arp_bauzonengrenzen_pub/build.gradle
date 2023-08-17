@@ -50,6 +50,7 @@ task publishPub(type: Publisher, dependsOn:'createAllData') {
 }
 
 tasks.register('publishMetaFile', MetaPublisher) {
+    dependsOn 'publishPub'
     metaConfigFile = file("meta.toml")
     target =  ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
 }
