@@ -82,8 +82,7 @@ FROM
    ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg,
    ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung abr_vbg
 WHERE 
-   abr_lstg.vereinbarung != 9999999
-   AND vbg.t_id = abr_lstg.vereinbarung 
+    vbg.t_id = abr_lstg.vereinbarung 
    AND vbg.vereinbarungs_nr = abr_vbg.vereinbarungs_nr
    AND abr_lstg.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer
    AND abr_vbg.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer
