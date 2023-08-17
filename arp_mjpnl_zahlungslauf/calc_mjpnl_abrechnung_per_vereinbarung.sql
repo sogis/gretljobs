@@ -40,7 +40,7 @@ SELECT
   END AS datum_abrechnung,
   bw.bewirtschaftabmachung_schnittzeitpunkt_1,
   COALESCE(bw.bewirtschaftabmachung_messerbalkenmaehgeraet, FALSE) as bewirtschaftabmachung_messerbalkenmaehgeraet,
-  COALESCE(bw.bewirtschaftabmachung_herbstweide, FALSE) as bewirtschaftabmachung_herbstweide
+  COALESCE(bw.bewirtschaftabmachung_herbstweide, FALSE) as bewirtschaftabmachung_herbstweide,
   vbg.t_id AS vereinbarung,
   FALSE AS migriert
 FROM
@@ -53,7 +53,7 @@ FROM
   LEFT JOIN beurteilungs_metainfo_wiesen bw
      ON lstg.vereinbarung = bw.vereinbarung
      -- berücksichtige nur die neusten (sofern mehrere existieren)
-     AND bw.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM beurteilungs_metainfo_wiesen b WHERE b.mit_bewirtschafter_besprochen IS TRUE AND b.vereinbarung = lstg.vereinbarung)
+     AND bw.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM beurteilungs_metainfo_wiesen b WHERE b.vereinbarung = lstg.vereinbarung)
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_stueck
      ON lstg_stueck.t_id = lstg.t_id AND lstg_stueck.abgeltungsart = 'per_stueck'
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_ha
