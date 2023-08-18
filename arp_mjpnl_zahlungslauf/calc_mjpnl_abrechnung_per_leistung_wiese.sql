@@ -84,7 +84,7 @@ united_wiese_leistungen AS (
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
-        'Wiese: BBewirtschaftungsabmachungen (Messerbalken-Mähgerät)' AS leistung_beschrieb,
+        'Wiese: Bewirtschaftungsabmachungen (Messerbalken-Mähgerät)' AS leistung_beschrieb,
         'per_ha' AS abgeltungsart,
         bewirtschaftabmachung_abgeltung_ha AS betrag_per_einheit,
         flaeche AS anzahl_einheiten,
