@@ -82,7 +82,7 @@ git checkout -b branchname
 
 * `import`-Statements zuoberst einfügen
 * Danach das `apply plugin`-Statement einfügen
-* Als DB-User bei AGI-Datenbanken `gretl` verwenden.
+* Als DB-User bei AGI-Datenbanken `gretl`, bei den Entwicklungs-Datenbanken `dmluser` verwenden.
 * Als (temporäres) Verzeichnis beim Herunterladen von Dateien etc. ```System.getProperty("java.io.tmpdir")``` verwenden. Dies ist das temp-Verzeichnis des Betriebssystems. Heruntergeladene und temporäre Dateien bitte trotzdem mittels abschliessenden Task wieder löschen.
 * Immer mindestens einen DefaultTask setzen mit dem das Skript startet. Dadurch muss kein Task beim Aufruf von GRETL mitgegeben werden (Bsp ```defaultTasks 'transferAgiHoheitsgrenzen'```).
 * `println` einsetzen wo sinnvoll, also informativ.
@@ -283,11 +283,11 @@ Der Inhalt der Datei sieht z.B. so aus:
 
 ```
 dbUriEdit=jdbc:postgresql://edit-db/edit
-dbUserEdit=gretl
-dbPwdEdit=gretl
+dbUserEdit=dmluser
+dbPwdEdit=dmluser
 dbUriPub=jdbc:postgresql://pub-db/pub
-dbUserPub=gretl
-dbPwdPub=gretl
+dbUserPub=dmluser
+dbPwdPub=dmluser
 ```
 
 ### Entwicklungs-DBs starten
@@ -398,13 +398,13 @@ Die DBs sind mit folgenden Verbindungsparametern erreichbar:
 * Hostname: `localhost`
 * Port: `54321`
 * DB-Name: `edit`
-* Benutzer: `ddluser` (zum Anlegen von Schemen, Tabellen usw.) bzw. `dmluser` oder `gretl` (für Lese- und Schreibzugriff); das Passwort lautet jeweils gleich wie der Benutzername
+* Benutzer: `ddluser` (zum Anlegen von Schemen, Tabellen usw.) bzw. `dmluser` (für Lese- und Schreibzugriff); das Passwort lautet jeweils gleich wie der Benutzername
 
 *Publikations-DB:*
 * Hostname: `localhost`
 * Port: `54322`
 * DB-Name: `pub`
-* Benutzer: `ddluser` (zum Anlegen von Schemen, Tabellen usw.) bzw. `dmluser` oder `gretl` (für Lese- und Schreibzugriff); das Passwort lautet jeweils gleich wie der Benutzername
+* Benutzer: `ddluser` (zum Anlegen von Schemen, Tabellen usw.) bzw. `dmluser` (für Lese- und Schreibzugriff); das Passwort lautet jeweils gleich wie der Benutzername
 
 #### Die Rollen (Benutzer und Gruppen) der produktiven DBs importieren
 
@@ -417,7 +417,7 @@ die für die Entwicklungs-DBs nicht nötig sind,
 und importiert sie dann mit `psql` in die Entwicklungs-DBs:
 ```
 scp geoutil.verw.rootso.org:/opt/workspace/dbdump/globals_geodb.rootso.org.dmp /tmp
-sed -E -i.bak '/^CREATE ROLE (postgres|admin|gretl)\;/d; /^ALTER ROLE (postgres|admin|gretl) /d' /tmp/globals_geodb.rootso.org.dmp
+sed -E -i.bak '/^CREATE ROLE (postgres|admin)\;/d; /^ALTER ROLE (postgres|admin) /d' /tmp/globals_geodb.rootso.org.dmp
 psql --single-transaction -h localhost -p 54321 -d edit -U postgres -f /tmp/globals_geodb.rootso.org.dmp
 psql --single-transaction -h localhost -p 54322 -d pub -U postgres -f /tmp/globals_geodb.rootso.org.dmp
 ```
