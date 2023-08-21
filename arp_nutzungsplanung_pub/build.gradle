@@ -139,7 +139,7 @@ task publish(type: Publisher, dependsOn: importXTF_pub){
     region = '.*'
     sourcePath = file("kommunal_pub/" + bfsnr + ".xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpServerSogis ? "sftp://$sftpServerSogis/$sftpUserSogis" : buildDir.toString(), sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
