@@ -8,11 +8,11 @@
 # exclude .gradle directories
 **/.gradle/
 
-# exclude .vagrant directory
-**/.vagrant/
-
 # exclude *.retry files
 **/*.retry
+
+# exclude .vagrant directory
+**/.vagrant/
 
 # macOS
 .DS_Store
