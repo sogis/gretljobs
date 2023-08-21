@@ -11,6 +11,9 @@
 # exclude *.retry files
 **/*.retry
 
+# exclude Gradle build directories
+**/build/
+
 # exclude .vagrant directory
 **/.vagrant/
 
