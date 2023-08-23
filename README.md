@@ -312,6 +312,33 @@ Erläuterungen:
   _Voraussetzung_: Die Ordner _gretljobs_ und _schema-jobs_ müssen sich
   im gleichen übergeordneten Ordner befinden.
 
+### GRETL-Job ausführen
+```
+docker compose run --rm -u $UID gretl --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
+```
+Dieser Befehl startet den GRETL-Job `MY_JOB_NAME`.
+
+Beispiele:
+```
+docker compose run --rm -u $UID gretl --project-dir=arp_nutzungsplanung_pub
+```
+```
+docker compose run --rm -u $UID gretl --project-dir=arp_nutzungsplanung_pub -Pbfsnr=2408 importXTF_stage
+```
+
+Erläuterungen:
+
+* `MY_JOB_NAME` muss durch den Namen des auszuführenden GRETL-Jobs
+  (den Ordnernamen) ersetzt werden.
+* Mit `OPTION...` (optional) können beliebige Gradle-Optionen übergeben werden,
+  z.B.: `--console=rich`, `-Pmyprop=myvalue`, `-Dmyprop=myvalue`.
+  Dokumentation der Gradle-Optionen:
+  https://docs.gradle.org/current/userguide/command_line_interface.html
+* Mit `TASK...` (optional) kann ein oder mehrere Tasks angegeben werden,
+  die von GRETL ausgeführt werden sollen;
+  falls man nichts angibt,
+  werden die in `build.gradle` definierten `defaultTasks` ausgeführt.
+
 ### Schema-Job ausführen
 ```
 docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
@@ -350,33 +377,6 @@ Erläuterungen:
   dass GRETL-Jobs auf diese Schemen zugreifen können (Lese- und Schreibrechte).
   Das heisst, dass lokal der Task `grantPrivileges`
   im Normalfall nicht ausgeführt werden muss.
-
-### GRETL-Job ausführen
-```
-docker compose run --rm -u $UID gretl --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
-```
-Dieser Befehl startet den GRETL-Job `MY_JOB_NAME`.
-
-Beispiele:
-```
-docker compose run --rm -u $UID gretl --project-dir=arp_nutzungsplanung_pub
-```
-```
-docker compose run --rm -u $UID gretl --project-dir=arp_nutzungsplanung_pub -Pbfsnr=2408 importXTF_stage
-```
-
-Erläuterungen:
-
-* `MY_JOB_NAME` muss durch den Namen des auszuführenden GRETL-Jobs
-  (den Ordnernamen) ersetzt werden.
-* Mit `OPTION...` (optional) können beliebige Gradle-Optionen übergeben werden,
-  z.B.: `--console=rich`, `-Pmyprop=myvalue`, `-Dmyprop=myvalue`.
-  Dokumentation der Gradle-Optionen:
-  https://docs.gradle.org/current/userguide/command_line_interface.html
-* Mit `TASK...` (optional) kann ein oder mehrere Tasks angegeben werden,
-  die von GRETL ausgeführt werden sollen;
-  falls man nichts angibt,
-  werden die in `build.gradle` definierten `defaultTasks` ausgeführt.
 
 ### DB-Container stoppen
 ```
