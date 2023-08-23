@@ -1,6 +1,6 @@
 services:
   gretl:
-    image: sogis/gretl:2.2.373
+    image: sogis/gretl:${GRETL_IMAGE_TAG:-2.2.373}
     profiles: ["app"]
     environment:
       ORG_GRADLE_PROJECT_gretlEnvironment: development

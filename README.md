@@ -338,6 +338,12 @@ Erläuterungen:
   die von GRETL ausgeführt werden sollen;
   falls man nichts angibt,
   werden die in `build.gradle` definierten `defaultTasks` ausgeführt.
+* Falls man einen GRETL-Job mit einem ganz bestimmten GRETL-Image-Tag (z.B. `latest`)
+  ausführen möchte, stellt man dem Compose-Befehl
+  die Variablendefinition `GRETL_IMAGE_TAG=MYTAG` voran, z.B.:
+  ```
+  GRETL_IMAGE_TAG=latest docker compose run --rm -u $UID gretl --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
+  ```
 
 ### Schema-Job ausführen
 ```
@@ -377,6 +383,13 @@ Erläuterungen:
   dass GRETL-Jobs auf diese Schemen zugreifen können (Lese- und Schreibrechte).
   Das heisst, dass lokal der Task `grantPrivileges`
   im Normalfall nicht ausgeführt werden muss.
+* Falls man einen Schema-Job mit einem ganz bestimmten GRETL-Image-Tag (z.B. `latest`)
+  ausführen möchte, stellt man dem Compose-Befehl
+  die Variablendefinition `GRETL_IMAGE_TAG=MYTAG` voran, z.B.:
+  ```
+  GRETL_IMAGE_TAG=latest docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
+    gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
+  ```
 
 ### DB-Container stoppen
 ```
