@@ -285,17 +285,34 @@ Der Inhalt der Datei sieht z.B. so aus:
 dbUriEdit=jdbc:postgresql://edit-db/edit
 dbUserEdit=dmluser
 dbPwdEdit=dmluser
+dbUserEditDdl=ddluser
+dbPwdEditDdl=ddluser
 dbUriPub=jdbc:postgresql://pub-db/pub
 dbUserPub=dmluser
 dbPwdPub=dmluser
+dbUserPubDdl=ddluser
+dbPwdPubDdl=ddluser
 ```
 
 ### Entwicklungs-DBs starten
-Falls man sie benötigt, startet man zunächst zwei DB-Container;
-einer enthält eine *edit*-DB, der andere eine *pub*-DB:
 ```
 docker compose up -d
 ```
+Mit diesem Befehl werden zwei DB-Container gestartet,
+von denen einer eine *edit*-DB, der andere eine *pub*-DB enthält.
+
+Alternative: Entwicklungs-DBs aus dem _schema-jobs_-Verzeichnis heraus starten:
+```
+docker compose -f ../gretljobs/docker-compose.yml up -d
+```
+
+Erläuterungen:
+* Alle Compose-Befehle können wahlweise
+  auch aus dem _schema-jobs_-Verzeichnis heraus gestartet werden;
+  hierzu muss man mit der Option `-f`
+  auf die Datei `docker-compose.yml` des Verzeichnis _gretljobs_ verweisen.
+  _Voraussetzung_: Die Ordner _gretljobs_ und _schema-jobs_ müssen sich
+  im gleichen übergeordneten Ordner befinden.
 
 ### Schema-Job ausführen
 Nun legt man in diesen DBs die benötigten Schemas an
@@ -355,57 +372,85 @@ Mit `[TASK...]` (optional) kann ein oder mehrere Tasks angegeben werden,
 die von GRETL ausgeführt werden sollen, z.B. `dropSchema createSchema configureSchema`
 
 ### GRETL-Job ausführen
-Der GRETL-Job wird mit folgendem Befehl gestartet:
 ```
 docker compose run --rm -u $UID gretl --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
 ```
+Dieser Befehl startet den GRETL-Job `MY_JOB_NAME`.
 
-`MY_JOB_NAME` muss durch den Namen des auszuführenden GRETL-Jobs
-(den Ordnernamen) ersetzt werden.
+Beispiele:
+```
+docker compose run --rm -u $UID gretl --project-dir=arp_nutzungsplanung_pub
+```
+```
+docker compose run --rm -u $UID gretl --project-dir=arp_nutzungsplanung_pub -Pbfsnr=2408 importXTF_stage
+```
 
-Mit `[OPTION...]` (optional) können beliebige Gradle-Optionen übergeben werden,
-auch z.B. `-Pmyprop=myvalue` und `-Dmyprop=myvalue`.
+Erläuterungen:
 
-Mit `[TASK...]` (optional) kann ein oder mehrere Tasks angegeben werden,
-die von GRETL ausgeführt werden sollen.
-Falls man nichts angibt,
-werden die allenfalls in `build.gradle` definierten `defaultTasks` ausgeführt.
+* `MY_JOB_NAME` muss durch den Namen des auszuführenden GRETL-Jobs
+  (den Ordnernamen) ersetzt werden
+* Mit `[OPTION...]` (optional) können beliebige Gradle-Optionen übergeben werden,
+  z.B.: `--console=rich`, `-Pmyprop=myvalue`, `-Dmyprop=myvalue`
+* Mit `[TASK...]` (optional) kann ein oder mehrere Tasks angegeben werden,
+  die von GRETL ausgeführt werden sollen;
+  falls man nichts angibt,
+  werden die allenfalls in `build.gradle` definierten `defaultTasks` ausgeführt
 
-### Entwicklungs-DBs stoppen
-Die Entwicklungs-DB stoppt man mit
+### DB-Container stoppen
+```
+docker compose stop
+```
+So werden die Entwicklungs-DB gestoppt.
+Die Daten der DBs bleiben erhalten,
+da sie in Docker-Volumes gespeichert sind,
+die hierbei nicht gelöscht werden.
+
+### DB-Container stoppen und löschen
 ```
 docker compose down
 ```
+Die Entwicklungs-DBs werden gestoppt, die DB-Container gelöscht
+und zugleich auch das von Docker Compose angelegte Docker-Netzwerk gelöscht.
+Die Daten der DBs bleiben aber auch in diesem Fall erhalten,
+Weil die Docker-Volumes nicht gelöscht werden.
 
-### Hinweise zu den DB-Containern
-#### Daten in den DBs löschen
-Die Daten in den DBs bleiben auch
-nach `docker-compose stop` oder `docker-compose down` erhalten.
-Falls man mit leeren DBs neu starten möchte,
-löscht man (nach dem Stoppen der DB-Container) deren Volumes
-mit folgendem Befehl:
+### Daten der DB-Container löschen
 ```
 docker volume prune --all --filter 'label=com.docker.compose.project=gretljobs'
 ```
-(Wobei der *Value* des Labels nicht zwingend immer *gretljobs* ist,
-sondern vom Verzeichnisnamen abhängt, in welchem `docker-compose.yml` liegt;
-man kann ihn durch `docker volume inspect VOLUMENAME` herausfinden.)
+Mit diesem Befehl werden die Volumes der DB-Container
+und damit die Daten in den Entwicklungs-DBs gelöscht.
+(Die DB-Container müssen vorgängig mit dem Befehl `docker compose down`
+ebenfalls gelöscht werden.)
 
-#### Verbindungsparameter für die DBs
-Die DBs sind mit folgenden Verbindungsparametern erreichbar:
+Erläuterungen:
+
+* Der *Value* des Labels `com.docker.compose.project`
+  ist nicht zwingend immer `gretljobs`,
+  sondern er ist vom Verzeichnisnamen abhängig,
+  in welchem `docker-compose.yml` liegt;
+  man kann ihn durch `docker volume inspect VOLUMENAME` herausfinden.
+
+### Verbindungsparameter für die Entwicklungs-DBs
+Die Entwicklungs-DBs sind mit folgenden Verbindungsparametern erreichbar:
 
 *Edit-DB:*
 * Hostname: `localhost`
 * Port: `54321`
 * DB-Name: `edit`
-* Benutzer: `ddluser` (zum Anlegen von Schemen, Tabellen usw.) bzw. `dmluser` (für Lese- und Schreibzugriff); das Passwort lautet jeweils gleich wie der Benutzername
+* Benutzer mit DDL-Rechten: `ddluser` (zum Anlegen von Schemen, Tabellen usw.)
+* Benutzer mit DML-Rechten: `dmluser` (für Lese- und Schreibzugriff)
+* Passwörter: lauten jeweils gleich wie der Benutzername
 
 *Publikations-DB:*
 * Hostname: `localhost`
 * Port: `54322`
 * DB-Name: `pub`
-* Benutzer: `ddluser` (zum Anlegen von Schemen, Tabellen usw.) bzw. `dmluser` (für Lese- und Schreibzugriff); das Passwort lautet jeweils gleich wie der Benutzername
+* Benutzer mit DDL-Rechten: `ddluser` (zum Anlegen von Schemen, Tabellen usw.)
+* Benutzer mit DML-Rechten: `dmluser` (für Lese- und Schreibzugriff)
+* Passwörter: lauten jeweils gleich wie der Benutzername
 
+### Hinweise zu den DB-Containern
 #### Die Rollen (Benutzer und Gruppen) der produktiven DBs importieren
 
 Um auch die in den produktiven DBs vorhandenen DB-Rollen
