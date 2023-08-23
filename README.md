@@ -416,7 +416,8 @@ Erläuterungen:
   man kann ihn durch `docker volume inspect VOLUMENAME` herausfinden.
 
 ### Verbindungsparameter für die Entwicklungs-DBs
-Die Entwicklungs-DBs sind mit folgenden Verbindungsparametern erreichbar:
+Die Entwicklungs-DBs sind z.B. aus _DBeaver_ oder _psql_
+mit folgenden Verbindungsparametern erreichbar:
 
 *Edit-DB:*
 * Hostname: `localhost`
