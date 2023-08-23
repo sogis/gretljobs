@@ -301,7 +301,7 @@ docker compose up -d
 Mit diesem Befehl werden zwei DB-Container gestartet,
 von denen einer eine *edit*-DB, der andere eine *pub*-DB enthält.
 
-Alternative: Entwicklungs-DBs aus dem _schema-jobs_-Verzeichnis heraus starten:
+_Alternative_: Entwicklungs-DBs aus dem _schema-jobs_-Verzeichnis heraus starten:
 ```
 docker compose -f ../gretljobs/docker-compose.yml up -d
 ```
@@ -315,61 +315,43 @@ Erläuterungen:
   im gleichen übergeordneten Ordner befinden.
 
 ### Schema-Job ausführen
-Nun legt man in diesen DBs die benötigten Schemas an
-und importiert nach Bedarf Daten,
-z.B. mit *ili2pg*, durch Ausführen eines Schema-Jobs,
-durch Ausführen von SQL-Skripten oder durch Restoren aus einem Dump.
-
-Schema-Jobs kann man ebenfalls mit `docker compose`
-entweder aus dem vorliegenden Verzeichnis heraus
-oder aus dem Verzeichnis `schema-jobs` heraus ausführen.
-Voraussetzung ist, dass das Repository *schema-jobs*
-in einem Ordner mit Name `schema-jobs` vorliegt;
-dieser muss sich auf derselben Ordner-Hierarchiestufe
-wie der Ordner mit den GRETL-Jobs befinden.
-
-Ein Schema-Job kann mit folgendem Befehl
-aus dem `schema-jobs`-Verzeichnis heraus gestartet werden:
-```
-docker compose -f ../gretljobs/docker-compose.yml run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
-  gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] [TASK...]
-```
-Beispiel:
-```
-docker compose -f ../gretljobs/docker-compose.yml run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
-  gretl -PtopicName=agi_mopublic -PschemaDirName=schema_pub --console=rich createSchema configureSchema
-```
-
-Oder er kann mit folgendem Befehl
-aus dem `gretljobs`-Verzeichnis heraus gestartet werden:
 ```
 docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
-  gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] [TASK...]
+  gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
 ```
+Dieser Befehl startet den Schema-Job im Ordner `MY_TOPIC_NAME\MY_SCHEMA_DIRECTORY_NAME`.
+
 Beispiel:
 ```
 docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
-  gretl -PtopicName=agi_mopublic -PschemaDirName=schema_pub --console=rich createSchema configureSchema
+  gretl -PtopicName=agi_mopublic -PschemaDirName=schema_pub createSchema configureSchema
+```
+Beispiel für Start desselben Schema-Jobs aus dem _schema-jobs_-Verzeichnis heraus:
+```
+docker compose -f ../gretljobs/docker-compose.yml run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
+  gretl -PtopicName=agi_mopublic -PschemaDirName=schema_pub createSchema configureSchema
 ```
 
 
-`MY_TOPIC_NAME` muss durch den Namen des Topics (den Ordnernamen)
-und `MY_SCHEMA_DIRECTORY_NAME` durch den Namen des Unterordners,
-in welchem die Schema-Eigenschaften definiert sind,
-ersetzt werden.
-
-Die Option `-PdbName=MY_DB_NAME` ist nur in Ausnahmefällen nötig,
-z.B. wenn das Schema in einer anderen DB angelegt werden soll,
-als in der Datei `schema.properties` definiert ist.
-
-Mit `[OPTION...]` (optional) können beliebige Gradle-Optionen übergeben werden,
-auch z.B. `-Pmyprop=myvalue` und `-Dmyprop=myvalue`.
-Die Gradle-Optionen sind unter
-https://docs.gradle.org/current/userguide/command_line_interface.html
-beschrieben oder aus der Ausgabe des Befehls `gradle -h` ersichtlich.
-
-Mit `[TASK...]` (optional) kann ein oder mehrere Tasks angegeben werden,
-die von GRETL ausgeführt werden sollen, z.B. `dropSchema createSchema configureSchema`
+Erläuterungen:
+* `MY_TOPIC_NAME` muss durch den Namen des Topics (den Ordnernamen)
+  und `MY_SCHEMA_DIRECTORY_NAME` durch den Namen des Unterordners,
+  in welchem die Schema-Eigenschaften definiert sind,
+  ersetzt werden.
+* Die Option `-PdbName=MY_DB_NAME` (optional) ist nur in Ausnahmefällen nötig,
+  z.B. wenn das Schema in einer anderen DB angelegt werden soll,
+  als in der Datei `schema.properties` definiert ist.
+* Mit `OPTION...` (optional) können beliebige Gradle-Optionen übergeben werden,
+  z.B.: `--console=rich`, `-Pmyprop=myvalue`, `-Dmyprop=myvalue`.
+* Mit `TASK...` muss angegeben werden, welcher Task bzw. welche Tasks
+  von GRETL ausgeführt werden sollen,
+  z.B. `dropSchema` oder `createSchema configureSchema`.
+* Der Task `configureSchema` setzt, wenn er lokal,
+  d.h. in einer Development-Umgebung ausgeführt wird,
+  gleichzeitig auch die Berechtigungen auf den DB-Schemen und Tabellen so,
+  dass GRETL-Jobs auf diese Schemen zugreifen können (Lese- und Schreibrechte).
+  Das heisst, dass lokal der Task `grantPrivileges`
+  im Normalfall nicht ausgeführt werden muss.
 
 ### GRETL-Job ausführen
 ```
@@ -388,13 +370,15 @@ docker compose run --rm -u $UID gretl --project-dir=arp_nutzungsplanung_pub -Pbf
 Erläuterungen:
 
 * `MY_JOB_NAME` muss durch den Namen des auszuführenden GRETL-Jobs
-  (den Ordnernamen) ersetzt werden
-* Mit `[OPTION...]` (optional) können beliebige Gradle-Optionen übergeben werden,
-  z.B.: `--console=rich`, `-Pmyprop=myvalue`, `-Dmyprop=myvalue`
-* Mit `[TASK...]` (optional) kann ein oder mehrere Tasks angegeben werden,
+  (den Ordnernamen) ersetzt werden.
+* Mit `OPTION...` (optional) können beliebige Gradle-Optionen übergeben werden,
+  z.B.: `--console=rich`, `-Pmyprop=myvalue`, `-Dmyprop=myvalue`.
+  Dokumentation der Gradle-Optionen:
+  https://docs.gradle.org/current/userguide/command_line_interface.html
+* Mit `TASK...` (optional) kann ein oder mehrere Tasks angegeben werden,
   die von GRETL ausgeführt werden sollen;
   falls man nichts angibt,
-  werden die allenfalls in `build.gradle` definierten `defaultTasks` ausgeführt
+  werden die in `build.gradle` definierten `defaultTasks` ausgeführt.
 
 ### DB-Container stoppen
 ```
