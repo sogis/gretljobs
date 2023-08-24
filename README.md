@@ -304,6 +304,8 @@ simiMetadataServicePwd=
 simiTokenServiceUrl=
 simiTokenServiceUser=
 simiTokenServicePwd=
+
+ilivalidatorModeldir=%ITF_DIR;https://geo.so.ch/models/;%JAR_DIR/ilimodels
 ```
 
 ### Entwicklungs-DBs starten
