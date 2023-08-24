@@ -273,6 +273,8 @@ Die speziellen Fälle und die jeweiligen Vorlagen sind in [jenkinsfile_docs.md](
 Für die Entwicklung von GRETL-Jobs
 kann GRETL mit `docker compose` als Docker-Container gestartet werden.
 
+### Voraussetzungen
+
 Hierfür müssen zunächst die Verbindungsparameter zu den DBs
 und andere benötigte Variablen konfiguriert werden.
 Diese platziert man in einer Datei `gretljobs.properties`
@@ -391,29 +393,29 @@ Erläuterungen:
     gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
   ```
 
-### DB-Container stoppen
+### Entwicklungs-DBs stoppen
 ```
 docker compose stop
 ```
-So werden die Entwicklungs-DB gestoppt.
+So werden die Entwicklungs-DB-Container gestoppt.
 Die Daten der DBs bleiben erhalten,
 da sie in Docker-Volumes gespeichert sind,
 die hierbei nicht gelöscht werden.
 
-### DB-Container stoppen und löschen
+### Entwicklungs-DBs stoppen und DB-Container löschen
 ```
 docker compose down
 ```
-Die Entwicklungs-DBs werden gestoppt, die DB-Container gelöscht
+Die Entwicklungs-DB-Container werden gestoppt, die DB-Container gelöscht
 und zugleich auch das von Docker Compose angelegte Docker-Netzwerk gelöscht.
 Die Daten der DBs bleiben aber auch in diesem Fall erhalten,
 Weil die Docker-Volumes nicht gelöscht werden.
 
-### Daten der DB-Container löschen
+### Daten der Entwicklungs-DB-Container löschen
 ```
 docker volume prune --all --filter 'label=com.docker.compose.project=gretljobs'
 ```
-Mit diesem Befehl werden die Volumes der DB-Container
+Mit diesem Befehl werden die Volumes der Entwicklungs-DB-Container
 und damit die Daten in den Entwicklungs-DBs gelöscht.
 (Die DB-Container müssen vorgängig mit dem Befehl `docker compose down`
 ebenfalls gelöscht werden.)
