@@ -4,14 +4,18 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'publishPub'
 
+task selectLandCoverFeatures(type: SqlExecutor) {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['init.sql']
+}
+
 task publishPub(type: Publisher){
+    dependsOn 'selectLandCoverFeatures'
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.avt.bodenabsorption"
     dbSchema = "avt_bodenabsorption_pub"
-    //modelsToPublish = "SO_AVT_Bodenabsorption_20230824"
-    region = "[2][5][4|5][4|9]"
+    region =  2492
     userFormats = true
     target = [file("build")]
-    modeldir = "%ILI_FROM_DB;%XTF_DIR;/home/gradle/project/;https://geo.so.ch/models/"
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
