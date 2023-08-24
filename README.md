@@ -292,6 +292,16 @@ dbUserPub=dmluser
 dbPwdPub=dmluser
 dbUserPubDdl=ddluser
 dbPwdPubDdl=ddluser
+
+sftpUrlSogis=build
+sftpUserSogis=
+sftpPwdSogis=
+simiMetadataServiceUrl=
+simiMetadataServiceUser=
+simiMetadataServicePwd=
+simiTokenServiceUrl=
+simiTokenServiceUser=
+simiTokenServicePwd=
 ```
 
 ### Entwicklungs-DBs starten
