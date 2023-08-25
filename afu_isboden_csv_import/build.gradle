@@ -37,7 +37,7 @@ task exportData(type: Ili2pgExport, dependsOn: 'fillinPKs') {
     description = "Exportiert die Daten aus dem Schema afu_isboden_csv_import_v1 in ein INTERLIS-Datei."
     database = [dbUriIsboden, dbUserIsboden, dbPwdIsboden]
     dbschema = 'afu_isboden_csv_import_v1'
-    models = 'SO_AFU_Is_Boden_CsvImport_20230613'
+    models = 'SO_AFU_Is_Boden_CsvImport_20230810'
     dataFile= file("export.xtf")
     //disableValidation = true Validierung eingeschaltet, bis der validierungstask funktioniert. 
 }

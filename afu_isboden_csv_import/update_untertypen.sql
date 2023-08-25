@@ -40,6 +40,7 @@ AND
 INSERT INTO 
     afu_isboden.bodeneinheit_auspraegung_t 
         (
+        pk_bodeneinheit,
         fk_bodeneinheit,
         is_hauptauspraegung,
         gewichtung_auspraegung,
@@ -74,6 +75,7 @@ INSERT INTO
         ) 
         (
         select 
+            auspraegung_pk,
             bodeneinheiten_pk,
             is_hauptauspraegung::boolean,
             gewichtung_auspraegung::integer,
@@ -115,7 +117,7 @@ INSERT INTO
 with auspraegungen as (
     select 
         fk_bodeneinheit as pk_bodeneinheit,
-        max(pk_bodeneinheit) as pk_auspraegung, --falls Haut und Nebenausprägungen
+        pk_bodeneinheit as pk_auspraegung, --falls Haut und Nebenausprägungen (evtl. nicht mehr relevant) 
         csv_import.gewichtung_auspraegung
     from 
         afu_isboden.bodeneinheit_auspraegung_t auspraegung
@@ -124,18 +126,16 @@ with auspraegungen as (
         on 
         auspraegung.fk_bodeneinheit = csv_import.bodeneinheiten_pk 
         and 
-        auspraegung.gewichtung_auspraegung = csv_import.gewichtung_auspraegung::afu_isboden.d_gt_0_le_100 
+        auspraegung.pk_bodeneinheit = csv_import.auspraegung_pk
     where 
         fk_bodeneinheit in (select bodeneinheiten_pk from afu_isboden_csv_import_v1.csv_import_csv_import_t)
-    group by 
-        csv_import.gewichtung_auspraegung,
-        fk_bodeneinheit
 ), 
 
 --Macht für jeden Untertyp einer Bodeneinheit eine neue Zeile. Erleichtert später den Import und macht eine for-schlaufe überflüssig
 untertypen as (
     select 
         bodeneinheiten_pk, 
+        auspraegung_pk as fk_auspraegung,
         trim((regexp_split_to_table(CONCAT(
             coalesce(untertyp_e, ''),
             coalesce(',' ||untertyp_k, ''),
@@ -146,21 +146,17 @@ untertypen as (
             coalesce(',' ||untertyp_div, '')
         )::text,','))) as untertypen
     from 
-        afu_isboden_csv_import_v1.csv_import_csv_import_t
+        afu_isboden_csv_import_v1.csv_import_csv_import_t csv_import
 ),
 
 untertypen_mit_auspraegungen_und_untertypen as (
     select 
         untertypen.bodeneinheiten_pk, 
-        auspraegungen.pk_auspraegung,
+        untertypen.fk_auspraegung AS pk_auspraegung,
         untertypen.untertypen, 
         untertyp_t.pk_untertyp as pk_untertyp 
     from 
         untertypen untertypen
-    left join 
-        auspraegungen auspraegungen
-        on 
-        auspraegungen.pk_bodeneinheit = untertypen.bodeneinheiten_pk
     left join 
         afu_isboden.untertyp_t untertyp_t 
         on 
