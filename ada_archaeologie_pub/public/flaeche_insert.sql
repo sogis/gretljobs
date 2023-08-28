@@ -8,7 +8,6 @@ WITH flaeche_beruert_siedlung AS (
         geschuetzt_txt, 
         qualitaet_lokalisierung, 
         qualitaet_lokalisierung_txt, 
-        kurzbeschreibung, 
         gemeindename_ablage, 
         rrb_nummer
     FROM 
@@ -28,7 +27,6 @@ INSERT INTO ada_archaeologie_pub_v1.public_flaechenfundstelle_siedlungsgebiet(
     geschuetzt_txt, 
     qualitaet_lokalisierung, 
     qualitaet_lokalisierung_txt, 
-    kurzbeschreibung, 
     gemeindename_ablage, 
     rrb_nummer
 )
@@ -41,7 +39,6 @@ SELECT
     geschuetzt_txt, 
     qualitaet_lokalisierung, 
     qualitaet_lokalisierung_txt, 
-    kurzbeschreibung, 
     gemeindename_ablage, 
     rrb_nummer
 FROM flaeche_beruert_siedlung
