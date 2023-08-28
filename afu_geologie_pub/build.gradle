@@ -25,7 +25,7 @@ task publishPub(type: Publisher, dependsOn: 'transferAfuGeologiePub'){
     dbSchema = "afu_geologie_pub_v1"
     modelsToPublish = "SO_AFU_Geologie_20200831"
     userFormats = true
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")

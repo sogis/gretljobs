@@ -12,7 +12,7 @@ task publishedit(type: Publisher){
   database = [dbUriEdit,dbUserEdit,dbPwdEdit]
   dbSchema = "avt_gesamtverkehrsmodell_2015_v1"
   modelsToPublish = "SO_AVT_Gesamtverkehrsmodell_2015_20220729"
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
   kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")

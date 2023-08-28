@@ -52,7 +52,7 @@ task publish(type: Publisher, dependsOn: refreshSolr){
     regions = project(':0_dm01_so').tasks.publish.publishedRegions
     userFormats = true
     //target = [file("$buildDir/published")]
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     validationConfig = "$projectDir/../novalidation.toml"
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]

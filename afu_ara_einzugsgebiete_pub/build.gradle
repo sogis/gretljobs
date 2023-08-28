@@ -16,7 +16,7 @@ task publishEdit(type: Publisher) {
     // Damit stehen sie v.a. uns als XTF zur Verfügung. Müsste mit AfU
     // abgesprochen werden, ob sie "richtig" öffentlich gemacht werden 
     // sollen.
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     //target = ["/tmp/gretl-share"]
     //kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     //kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
@@ -43,7 +43,7 @@ task publishPub(type: Publisher, dependsOn: 'transferData') {
     // Damit stehen sie v.a. uns als XTF zur Verfügung. Müsste mit AfU
     // abgesprochen werden, ob sie "richtig" öffentlich gemacht werden 
     // sollen.
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     //kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     //kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")

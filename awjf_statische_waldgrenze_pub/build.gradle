@@ -28,7 +28,7 @@ task publiedit(type: Publisher){
   dataIdent = "ch.so.awjf.statische_waldgrenze.relational"
   dbSchema = "awjf_statische_waldgrenze"
   modelsToPublish = "SO_AWJF_Statische_Waldgrenzen_20191119"
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
   kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
@@ -99,7 +99,7 @@ task publishPub(type: Publisher, dependsOn: 'importXTF_pub'){
     dbSchema = "awjf_statische_waldgrenze_pub_v1"
     modelsToPublish = "SO_AWJF_Statische_Waldgrenzen_Publikation_20191119"
     userFormats = true
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")

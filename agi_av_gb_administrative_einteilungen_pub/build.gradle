@@ -19,7 +19,7 @@ task publipub(type: Publisher, dependsOn:'transferAvGbAdminEinteilungen'){
   dbSchema = "agi_av_gb_admin_einteilung_pub"
   modelsToPublish = "SO_AGI_AV_GB_Administrative_Einteilungen_Publikation_20180822"
 
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
   kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")

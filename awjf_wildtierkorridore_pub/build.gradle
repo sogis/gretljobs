@@ -24,7 +24,7 @@ task publipub(type: Publisher, dependsOn:'transferAwjfWildtierkorridorePub'){
     dbSchema = "awjf_wildtierkorridore_pub_v1"
     modelsToPublish = "SO_AWJF_Wildtierkorridore_20210831"
 
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")

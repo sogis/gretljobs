@@ -27,7 +27,7 @@ task publishPub(type: Publisher, dependsOn:replaceDataset){
     dbSchema = "avt_groblaermkataster_pub"
     modelsToPublish = "SO_AVT_Groblaermkataster_20190709"
     userFormats = true
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")

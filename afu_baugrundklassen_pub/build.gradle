@@ -12,7 +12,7 @@ task publishEdit(type: Publisher){
     dataIdent = "ch.so.afu.baugrundklassen.relational"
     dbSchema = "afu_baugrundklassen_v1"
     modelsToPublish = "SO_AFU_Baugrundklassen_20201023"
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
@@ -33,7 +33,7 @@ task publishPub(type: Publisher, dependsOn: 'transferAfuBaugrundklassenPub'){
     dbSchema = "afu_baugrundklassen_pub_v1"
     modelsToPublish = "SO_AFU_Baugrundklassen_Publikation_20201023"
     userFormats = true
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")

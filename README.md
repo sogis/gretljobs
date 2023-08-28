@@ -113,7 +113,7 @@ git checkout -b branchname
   * `ftpServerWaldportal`, `ftpUserWaldportal`, `ftpPwdWaldportal`
   * `ftpServerZivilschutz`, `ftpUserZivilschutz`, `ftpPwdZivilschutz`
   * `sftpServerGelan`, `sftpUserGelan`, `sftpPwdGelan`
-  * `sftpServerSogis`, `sftpUserSogis`, `sftpPwdSogis`
+  * `sftpUrlSogis`, `sftpUserSogis`, `sftpPwdSogis`
   * für Datentransfer Gemdat: `host = sftpServerSogis`, `user = sftpUserSogisGemdat`, `identity = file('/home/gradle/.sshkeys/id_rsa')`
   * `aiServer`, `aiUser`, `aiPwd`
   * `infofloraUser`, `infofloraPwd`

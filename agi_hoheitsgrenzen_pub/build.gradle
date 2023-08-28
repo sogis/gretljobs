@@ -89,7 +89,7 @@ task publishPub(type: Publisher, dependsOn:'refreshSolr'){
     dbSchema = "agi_hoheitsgrenzen_pub"
     modelsToPublish = "SO_Hoheitsgrenzen_Publikation_20170626"
     userFormats = true
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")

@@ -57,7 +57,7 @@ task publishEdit(type: Publisher, dependsOn: validateDataEdit){
     modelsToPublish = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118'
     sourcePath = file("kanton/kanton.xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
@@ -120,7 +120,7 @@ task publishPub(type: Publisher, dependsOn: importXTF_pub){
     userFormats = true
     sourcePath = file("kanton_pub/kanton_pub.xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
@@ -154,7 +154,7 @@ task publishAlt(type: Publisher, dependsOn: exportDataExport){
     modelsToPublish = 'SO_Nutzungsplanung_20171118'
     sourcePath = file("kanton_alt/kanton_modell_2017.xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")

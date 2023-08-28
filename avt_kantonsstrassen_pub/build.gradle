@@ -43,7 +43,7 @@ task publipub(type: Publisher, dependsOn: 'importPunkte'){
     dbSchema = "avt_kantonsstrassen_pub"
     modelsToPublish = "SO_AVT_Kantonsstrassen_Publikation_20200707"
 
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")

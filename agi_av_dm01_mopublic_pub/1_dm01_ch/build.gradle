@@ -22,7 +22,7 @@ task publish(type: Publisher, dependsOn: createFederalFiles){
     sourcePath = new File(dm01ChDir, 'dummy.itf')
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     validationConfig = "$projectDir/../novalidation.toml"
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     //target = [file("$buildDir/published")]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]

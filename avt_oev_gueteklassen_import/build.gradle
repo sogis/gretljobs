@@ -40,7 +40,7 @@ task publipub(type: Publisher, dependsOn: import_to_pub){
     dbSchema = "avt_oev_gueteklassen_pub_v1"
     modelsToPublish = "SO_AVT_Oev_Gueteklassen_20220120"
 
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
