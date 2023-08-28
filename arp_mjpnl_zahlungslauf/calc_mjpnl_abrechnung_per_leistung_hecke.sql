@@ -139,9 +139,9 @@ united_hecke_leistungen AS (
         /* Indiviuelle Werte */
         'Hecke: Erschwernis (' ||
             (SELECT CONCAT_WS(', ',
-                CASE WHEN erschwernis_massnahme1 THEN 'Massnahme 1: '||erschwernis_massnahme1_text END,
-                CASE WHEN erschwernis_massnahme2 THEN 'Massnahme 2: '||erschwernis_massnahme2_text END,
-                CASE WHEN erschwernis_massnahme3 THEN 'Massnahme 3: '||erschwernis_massnahme3_text END
+                CASE WHEN erschwernis_massnahme1 THEN 'Massnahme 1: '||COALESCE(erschwernis_massnahme1_text,'') END,
+                CASE WHEN erschwernis_massnahme2 THEN 'Massnahme 2: '||COALESCE(erschwernis_massnahme2_text,'') END,
+                CASE WHEN erschwernis_massnahme3 THEN 'Massnahme 3: '||COALESCE(erschwernis_massnahme3_text,'') END
             )) ||
         ')'
         AS leistung_beschrieb,

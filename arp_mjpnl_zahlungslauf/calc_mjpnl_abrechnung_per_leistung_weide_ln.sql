@@ -89,8 +89,8 @@ united_weide_ln_leistungen AS (
         /* Indiviuelle Werte */
         'Weide LN: Erschwernis (' ||
             (SELECT CONCAT_WS(', ',
-                CASE WHEN erschwernis_massnahme1 THEN 'Massnahme 1: '||erschwernis_massnahme1_text END,
-                CASE WHEN erschwernis_massnahme2 THEN 'Massnahme 2: '||erschwernis_massnahme2_text END
+                CASE WHEN erschwernis_massnahme1 THEN 'Massnahme 1: '||COALESCE(erschwernis_massnahme1_text,'') END,
+                CASE WHEN erschwernis_massnahme2 THEN 'Massnahme 2: '||COALESCE(erschwernis_massnahme2_text,'') END
             )) ||
         ')'
         AS leistung_beschrieb,
@@ -112,9 +112,9 @@ united_weide_ln_leistungen AS (
         /* Indiviuelle Werte */
         'Weide LN: Artenförderung (' ||
             (SELECT CONCAT_WS(', ',
-                CASE WHEN artenfoerderung_ff_zielart1 IS NOT NULL THEN 'Massnahme für '||artenfoerderung_ff_zielart1||': '||artenfoerderung_ff_zielart1_massnahme END,
-                CASE WHEN artenfoerderung_ff_zielart2 IS NOT NULL THEN 'Massnahme für '||artenfoerderung_ff_zielart2||': '||artenfoerderung_ff_zielart2_massnahme END,
-                CASE WHEN artenfoerderung_ff_zielart3 IS NOT NULL THEN 'Massnahme für '||artenfoerderung_ff_zielart3||': '||artenfoerderung_ff_zielart3_massnahme END
+                CASE WHEN artenfoerderung_ff_zielart1 IS NOT NULL THEN 'Massnahme für '||artenfoerderung_ff_zielart1||': '||COALESCE(artenfoerderung_ff_zielart1_massnahme,'') END,
+                CASE WHEN artenfoerderung_ff_zielart2 IS NOT NULL THEN 'Massnahme für '||artenfoerderung_ff_zielart2||': '||COALESCE(artenfoerderung_ff_zielart2_massnahme,'') END,
+                CASE WHEN artenfoerderung_ff_zielart3 IS NOT NULL THEN 'Massnahme für '||artenfoerderung_ff_zielart3||': '||COALESCE(artenfoerderung_ff_zielart3_massnahme,'') END
             )) ||
         ')'
         AS leistung_beschrieb,
