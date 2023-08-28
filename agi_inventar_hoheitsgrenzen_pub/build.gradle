@@ -9,7 +9,7 @@ task publiedit(type: Publisher){
   dbSchema = "agi_inventar_hoheitsgrenzen"
   modelsToPublish = "SO_AGI_Inventar_Hoheitsgrenzen_20191129"
 
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
   kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
@@ -32,7 +32,7 @@ task publipub(type: Publisher, dependsOn:'transferAgiKantonsgrenzsteine'){
   dbSchema = "agi_inventar_hoheitsgrenzen_pub"
   modelsToPublish = "SO_AGI_Inventar_Hoheitsgrenzen_Publikation_20191129"
 
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
   kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")

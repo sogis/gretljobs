@@ -10,7 +10,7 @@ task publiedit(type: Publisher){
   dataIdent = "ch.so.awjf.naturgefahrenhinweiskarte.relational"
   dbSchema = "awjf_naturgefahrenhinweiskarte_v1"
   modelsToPublish = "SO_AWJF_Naturgefahrenhinweiskarte_20220125"
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
   kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
@@ -40,7 +40,7 @@ task publishPub(type: Publisher, dependsOn: 'transferAwjfNaturgefahrenhinweiskar
     dbSchema = "awjf_naturgefahrenhinweiskarte_pub_v1"
     modelsToPublish = "SO_AWJF_Naturgefahrenhinweiskarte_Publikation_20220125"
     userFormats = true
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")

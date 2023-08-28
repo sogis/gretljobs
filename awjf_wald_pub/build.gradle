@@ -11,7 +11,7 @@ task publishEdit(type: Publisher) {
     dataIdent = "ch.so.awjf.waldstandorte.relational"
     dbSchema = "awjf_waldstandorte_v1"
     modelsToPublish = "SO_AWJF_Waldstandorte_20211027"
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
@@ -33,7 +33,7 @@ task publipubOberhoehenbonitaet(type: Publisher, dependsOn: 'transferAwjfEdit') 
     database = [dbUriPub,dbUserPub,dbPwdPub]
     dbSchema = "awjf_wald_oberhoehenbonitaet_pub_v1"
     modelsToPublish = "SO_AWJF_Wald_Oberhoehenbonitaet_20211027"
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
@@ -46,7 +46,7 @@ task publishPub(type: Publisher, dependsOn: 'publipubOberhoehenbonitaet') {
     dbSchema = "awjf_waldstandorte_pub_v1"
     modelsToPublish = "SO_AWJF_Waldstandorte_Publikation_20211027"
     userFormats = true
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")

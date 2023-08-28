@@ -100,7 +100,7 @@ task publishPub(type: Publisher, dependsOn: 'setEnumTxt') {
     modelsToPublish = "SO_ADA_Archaeologie_Publikation_20230417"
     userFormats = true
     validationConfig = "validation.toml"
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")

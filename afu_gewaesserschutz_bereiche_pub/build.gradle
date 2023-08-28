@@ -66,7 +66,7 @@ task publishPub(type: Publisher, dependsOn: 'zipXtf') {
     dbSchema = "afu_gewaesserschutz_pub_v1"
     modelsToPublish = "SO_AfU_Gewaesserschutz_Publikation_20220817"
     userFormats = true
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")

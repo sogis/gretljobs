@@ -11,7 +11,7 @@ task publiedit(type: Publisher){
   dbSchema = "alw_strukturverbesserungen"
   modelsToPublish = "SO_ALW_Strukturverbesserungen_20190912"
 
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
   kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
@@ -37,7 +37,7 @@ task publipub(type: Publisher, dependsOn:'transfer_SVGIS'){
   dbSchema = "alw_strukturverbesserungen_pub"
   modelsToPublish = "SO_ALW_Strukturverbesserungen_Publikation_20190905"
 
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
   kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")

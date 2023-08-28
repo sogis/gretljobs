@@ -11,7 +11,7 @@ task publiedit(type: Publisher){
   dbSchema = "amb_notfalltreffpunkte"
   modelsToPublish = "SO_AMB_Notfalltreffpunkte_20180413"
 
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
   kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
@@ -33,7 +33,7 @@ task publipub(type: Publisher, dependsOn:'transferAmbNotfalltreffpunkte'){
   dbSchema = "amb_notfalltreffpunkte_pub"
   modelsToPublish = "SO_AMB_Notfalltreffpunkte_Publikation_20180822"
 
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
   kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")

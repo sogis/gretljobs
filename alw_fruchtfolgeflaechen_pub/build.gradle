@@ -58,7 +58,7 @@ task publipub(type: Publisher, dependsOn:'statistik_to_pub_db'){
   dbSchema = "alw_fruchtfolgeflaechen_pub_v1"
   modelsToPublish = "SO_ALW_Fruchtfolgeflaechen_Publikation_20220110"
   
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
   kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")

@@ -26,7 +26,7 @@ task publipub(type: Publisher, dependsOn: 'transferAgiPolizeiregionen'){
   dbSchema = "agi_polizeiregionen_pub_v1"
   modelsToPublish = "SO_AGI_Polizeiregionen_20221010"
 
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
   kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")

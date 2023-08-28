@@ -9,7 +9,7 @@ task publiedit(type: Publisher){
   dbSchema = "ags_religionsgemeinschaften_v1"
   modelsToPublish = "SO_AGS_Religionsgemeinschaften_20220422"
 
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
   kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
@@ -31,7 +31,7 @@ task publipub(type: Publisher, dependsOn:'transferAgsReligionsgemeinschaften'){
   dbSchema = "ags_religionsgemeinschaften_pub_v1"
   modelsToPublish = "SO_AGS_Religionsgemeinschaften_Publikation_20220427"
 
-  target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
   kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")

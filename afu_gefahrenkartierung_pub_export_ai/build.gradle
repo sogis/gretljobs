@@ -56,7 +56,7 @@ task publishPub(type: Publisher, dependsOn: 'pubGefkart'){
     dbSchema = "afu_gefahrenkartierung_pub"
     modelsToPublish = "SO_AfU_Gefahrenkartierung_20181129"
     userFormats = true
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
