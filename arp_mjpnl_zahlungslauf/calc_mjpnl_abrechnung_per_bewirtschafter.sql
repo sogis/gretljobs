@@ -31,13 +31,13 @@ SELECT
    pers.iban,
    SUM(abrg_vbg.gesamtbetrag) AS betrag_total,
    -- wenn es eine status_abrechnung "freigegeben" gibt, dann soll der status "freigegeben" sein
-   CASE WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung v WHERE v.status_abrechnung = 'freigegeben' AND v.gelan_pid_gelan = pers.pid_gelan) > 0 
+   CASE WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung v WHERE v.status_abrechnung = 'freigegeben' AND v.gelan_pid_gelan = pers.pid_gelan AND v.auszahlungsjahr = abrg_vbg.auszahlungsjahr) > 0 
      THEN 'freigegeben' 
      -- ansonsten ist es für alle gleich ("ausbezahlt" oder "intern_verrechnet")
      ELSE MAX(abrg_vbg.status_abrechnung) 
    END AS status_abrechnung,
    -- wenn es eine status_abrechnung "freigegeben" gibt, dann soll es noch kein datum_abrechnung haben
-   CASE WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung v WHERE v.status_abrechnung = 'freigegeben' AND v.gelan_pid_gelan = pers.pid_gelan) > 0 
+   CASE WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung v WHERE v.status_abrechnung = 'freigegeben' AND v.gelan_pid_gelan = pers.pid_gelan AND v.auszahlungsjahr = abrg_vbg.auszahlungsjahr) > 0 
      THEN NULL
      -- ansonsten kann es das späteste datum nehmen
      ELSE MAX(abrg_vbg.datum_abrechnung) 
