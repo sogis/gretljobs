@@ -7,20 +7,20 @@
 -- die Daten müssen wegen Fremdschlüssel-Beziehungen in der richtigen Reihenfolge gelöscht werden
 
 -- zuerst summe_tiere_flaechen loeschen
-WITH ndays AS (
-   -- Anzahl Tage im aktuellen Jahr werden extrahiert
-   SELECT EXTRACT('day' FROM age(now(),(date_part('year',now())::TEXT || '-01-01 00:00:000')::timestamp)) AS ndays
+WITH nmonth AS (
+   -- Aktueller Monat wird extrahiert
+  SELECT date_part('month',now()) AS nmonth
 ),
 bj AS (
    SELECT
-     -- falls jünger als Ende Februar (60 Tage) werden die Daten des
+     -- falls Monat kleiner als März (3) werden die Daten des
      -- Vorjahres verwendet
      CASE
-         WHEN ndays < 60 THEN 
+         WHEN nmonth < 3 THEN 
            date_part('year',now())::int4 - 1
          ELSE date_part('year',now())::int4
      END AS bezugsjahr
-   FROM ndays
+   FROM nmonth
 )
 DELETE
     FROM ${DB_Schema_MJPNL}.betrbsdttrktrdten_summe_tiere_flaechen
@@ -29,20 +29,20 @@ DELETE
 ;
 
 -- dann kultur_flaechen
-WITH ndays AS (
-   -- Anzahl Tage im aktuellen Jahr werden extrahiert
-   SELECT EXTRACT('day' FROM age(now(),(date_part('year',now())::TEXT || '-01-01 00:00:000')::timestamp)) AS ndays
+WITH nmonth AS (
+   -- Aktueller Monat wird extrahiert
+  SELECT date_part('month',now()) AS nmonth
 ),
 bj AS (
    SELECT
-     -- falls jünger als Ende Februar (60 Tage) werden die Daten des
+     -- falls Monat kleiner als März (3) werden die Daten des
      -- Vorjahres verwendet
      CASE
-         WHEN ndays < 60 THEN 
+         WHEN nmonth < 3 THEN 
            date_part('year',now())::int4 - 1
          ELSE date_part('year',now())::int4
      END AS bezugsjahr
-   FROM ndays
+   FROM nmonth
 )
 DELETE
     FROM ${DB_Schema_MJPNL}.betrbsdttrktrdten_kultur_flaechen
@@ -51,20 +51,20 @@ DELETE
 ;
 
 -- dann kultur_punktelemente
-WITH ndays AS (
-   -- Anzahl Tage im aktuellen Jahr werden extrahiert
-   SELECT EXTRACT('day' FROM age(now(),(date_part('year',now())::TEXT || '-01-01 00:00:000')::timestamp)) AS ndays
+WITH nmonth AS (
+   -- Aktueller Monat wird extrahiert
+  SELECT date_part('month',now()) AS nmonth
 ),
 bj AS (
    SELECT
-     -- falls jünger als Ende Februar (60 Tage) werden die Daten des
+     -- falls Monat kleiner als März (3) werden die Daten des
      -- Vorjahres verwendet
      CASE
-         WHEN ndays < 60 THEN 
+         WHEN nmonth < 3 THEN 
            date_part('year',now())::int4 - 1
          ELSE date_part('year',now())::int4
      END AS bezugsjahr
-   FROM ndays
+   FROM nmonth
 )
 DELETE
     FROM ${DB_Schema_MJPNL}.betrbsdttrktrdten_kultur_punktelemente
@@ -73,20 +73,20 @@ DELETE
 ;
 
 -- kulturenkatalog
-WITH ndays AS (
-   -- Anzahl Tage im aktuellen Jahr werden extrahiert
-   SELECT EXTRACT('day' FROM age(now(),(date_part('year',now())::TEXT || '-01-01 00:00:000')::timestamp)) AS ndays
+WITH nmonth AS (
+   -- Aktueller Monat wird extrahiert
+  SELECT date_part('month',now()) AS nmonth
 ),
 bj AS (
    SELECT
-     -- falls jünger als Ende Februar (60 Tage) werden die Daten des
+     -- falls Monat kleiner als März (3) werden die Daten des
      -- Vorjahres verwendet
      CASE
-         WHEN ndays < 60 THEN 
+         WHEN nmonth < 3 THEN 
            date_part('year',now())::int4 - 1
          ELSE date_part('year',now())::int4
      END AS bezugsjahr
-   FROM ndays
+   FROM nmonth
 )
 DELETE
     FROM ${DB_Schema_MJPNL}.betrbsdttrktrdten_kulturenkatalog
@@ -95,20 +95,20 @@ DELETE
 ;
 
 -- bff_qualitaet
-WITH ndays AS (
-   -- Anzahl Tage im aktuellen Jahr werden extrahiert
-   SELECT EXTRACT('day' FROM age(now(),(date_part('year',now())::TEXT || '-01-01 00:00:000')::timestamp)) AS ndays
+WITH nmonth AS (
+   -- Aktueller Monat wird extrahiert
+  SELECT date_part('month',now()) AS nmonth
 ),
 bj AS (
    SELECT
-     -- falls jünger als Ende Februar (60 Tage) werden die Daten des
+     -- falls Monat kleiner als März (3) werden die Daten des
      -- Vorjahres verwendet
      CASE
-         WHEN ndays < 60 THEN 
+         WHEN nmonth < 3 THEN 
            date_part('year',now())::int4 - 1
          ELSE date_part('year',now())::int4
      END AS bezugsjahr
-   FROM ndays
+   FROM nmonth
 )
 DELETE
     FROM ${DB_Schema_MJPNL}.bff_qualitaet_bff_qualitaet
@@ -117,20 +117,20 @@ DELETE
 ;
 
 -- bewirtschaftungseinheit
-WITH ndays AS (
-   -- Anzahl Tage im aktuellen Jahr werden extrahiert
-   SELECT EXTRACT('day' FROM age(now(),(date_part('year',now())::TEXT || '-01-01 00:00:000')::timestamp)) AS ndays
+WITH nmonth AS (
+   -- Aktueller Monat wird extrahiert
+  SELECT date_part('month',now()) AS nmonth
 ),
 bj AS (
    SELECT
-     -- falls jünger als Ende Februar (60 Tage) werden die Daten des
+     -- falls Monat kleiner als März (3) werden die Daten des
      -- Vorjahres verwendet
      CASE
-         WHEN ndays < 60 THEN 
+         WHEN nmonth < 3 THEN 
            date_part('year',now())::int4 - 1
          ELSE date_part('year',now())::int4
      END AS bezugsjahr
-   FROM ndays
+   FROM nmonth
 )
 DELETE
     FROM ${DB_Schema_MJPNL}.betrbsdttrktrdten_bewirtschaftungseinheit
@@ -139,20 +139,20 @@ DELETE
 ;
 
 -- standorte
-WITH ndays AS (
-   -- Anzahl Tage im aktuellen Jahr werden extrahiert
-   SELECT EXTRACT('day' FROM age(now(),(date_part('year',now())::TEXT || '-01-01 00:00:000')::timestamp)) AS ndays
+WITH nmonth AS (
+   -- Aktueller Monat wird extrahiert
+  SELECT date_part('month',now()) AS nmonth
 ),
 bj AS (
    SELECT
-     -- falls jünger als Ende Februar (60 Tage) werden die Daten des
+     -- falls Monat kleiner als März (3) werden die Daten des
      -- Vorjahres verwendet
      CASE
-         WHEN ndays < 60 THEN 
+         WHEN nmonth < 3 THEN 
            date_part('year',now())::int4 - 1
          ELSE date_part('year',now())::int4
      END AS bezugsjahr
-   FROM ndays
+   FROM nmonth
 )
 DELETE
     FROM ${DB_Schema_MJPNL}.betrbsdttrktrdten_standorte
@@ -161,20 +161,20 @@ DELETE
 ;
 
 -- bewirtschaftungseinheit
-WITH ndays AS (
-   -- Anzahl Tage im aktuellen Jahr werden extrahiert
-   SELECT EXTRACT('day' FROM age(now(),(date_part('year',now())::TEXT || '-01-01 00:00:000')::timestamp)) AS ndays
+WITH nmonth AS (
+   -- Aktueller Monat wird extrahiert
+  SELECT date_part('month',now()) AS nmonth
 ),
 bj AS (
    SELECT
-     -- falls jünger als Ende Februar (60 Tage) werden die Daten des
+     -- falls Monat kleiner als März (3) werden die Daten des
      -- Vorjahres verwendet
      CASE
-         WHEN ndays < 60 THEN 
+         WHEN nmonth < 3 THEN 
            date_part('year',now())::int4 - 1
          ELSE date_part('year',now())::int4
      END AS bezugsjahr
-   FROM ndays
+   FROM nmonth
 )
 DELETE
     FROM ${DB_Schema_MJPNL}.betrbsdttrktrdten_bewirtschaftungseinheit
@@ -183,20 +183,20 @@ DELETE
 ;
 
 -- betrieb
-WITH ndays AS (
-   -- Anzahl Tage im aktuellen Jahr werden extrahiert
-   SELECT EXTRACT('day' FROM age(now(),(date_part('year',now())::TEXT || '-01-01 00:00:000')::timestamp)) AS ndays
+WITH nmonth AS (
+   -- Aktueller Monat wird extrahiert
+  SELECT date_part('month',now()) AS nmonth
 ),
 bj AS (
    SELECT
-     -- falls jünger als Ende Februar (60 Tage) werden die Daten des
+     -- falls Monat kleiner als März (3) werden die Daten des
      -- Vorjahres verwendet
      CASE
-         WHEN ndays < 60 THEN 
+         WHEN nmonth < 3 THEN 
            date_part('year',now())::int4 - 1
          ELSE date_part('year',now())::int4
      END AS bezugsjahr
-   FROM ndays
+   FROM nmonth
 )
 DELETE
     FROM ${DB_Schema_MJPNL}.betrbsdttrktrdten_betrieb
