@@ -118,8 +118,11 @@ SELECT
     /* Statisch kalkulierte und gleiche Werte */
     -- aktuelles Jahr
     ${AUSZAHLUNGSJAHR}::integer AS auszahlungsjahr,
-    -- Ursprungsstatus
-    'initialisiert' AS  status_abrechnung
+    -- Ursprungsstatus mit Ausnahme der kantonsinternen Vereinbarungen
+    CASE
+        WHEN kantonsintern THEN 'intern_verrechnet'
+        ELSE 'freigegeben'
+    END AS status_abrechnung
 FROM
     united_obl_leistungen
 ;
