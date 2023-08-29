@@ -783,10 +783,10 @@ VALUES
 -- 3 arten faunabonus = 300 p 
 -- eine bewirtschaftung nicht = 0 ha
 -- Strauch 100 + Steinhaufen 50 + Schnittgut 50 = 200 p 
--- pauschal: 600
+-- pauschal: 500
 -- per ha: 0
 -- * flaeche 1.5 = 0
--- total = 600
+-- total = 500
 INSERT INTO arp_mjpnl_v1.mjpnl_beurteilung_alr_saum
 (
     t_basket,
