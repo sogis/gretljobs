@@ -6,10 +6,10 @@ defaultTasks 'uploadMgdmWaldgrenzen'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
-def iliModelMgdmWaldgrenzen = "Waldgrenzen_LV95_V1_1"
-def dbSchemaMgdmWaldgrenzen = "awjf_statische_waldgrenzen_mgdm"
-def mgdmWaldgrenzenXtfFileName = "ch.so.awjf.waldgrenzen.mgdm.xtf"
-def mgdmWaldgrenzenZipFileName = "ch.so.awjf.waldgrenzen.mdgm.zip"
+def iliModelMgdmWaldgrenzen = "Waldgrenzen_V1_2"
+def dbSchemaMgdmWaldgrenzen = "awjf_statische_waldgrenze_mgdm_v1"
+def mgdmWaldgrenzenXtfFileName = "ch.so.awjf.waldgrenze.mgdm.xtf"
+def mgdmWaldgrenzenZipFileName = "ch.so.awjf.waldgrenze.mdgm.zip"
 
 def aiLogin = aiUser + ":" + aiPwd
 
@@ -31,7 +31,7 @@ task validateMgdmWaldgrenzen(type: IliValidator, dependsOn: 'exportMgdmWaldgrenz
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     logFile = "ilivalidator_waldgrenzen.log"
     //configFile = "config.toml"
-    failOnError = false
+    failOnError = true
 }
 
 task zipMgdmWaldgrenzen(type: Zip, dependsOn: 'validateMgdmWaldgrenzen'){
@@ -45,7 +45,7 @@ task zipMgdmWaldgrenzen(type: Zip, dependsOn: 'validateMgdmWaldgrenzen'){
 
 task uploadMgdmWaldgrenzen(dependsOn: 'zipMgdmWaldgrenzen') {
     doLast {
-        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_waldgrenzen", "-F",
+        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_waldgrenzen_v1_2", "-F",
                         "lv95_file=@" + Paths.get(pathToTempFolder.toString(), mgdmWaldgrenzenZipFileName), "-F", "publish=true",
                         "https://" + aiServer + "/data_agg/interlis/import"].execute().text
         println(response)
