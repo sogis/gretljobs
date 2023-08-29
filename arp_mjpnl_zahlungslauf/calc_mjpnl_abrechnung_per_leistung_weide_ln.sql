@@ -85,7 +85,7 @@ united_weide_ln_leistungen AS (
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
         'Weide LN: Einstufung / Beurteilung Ist-Zustand (' || einstufungbeurteilungistzustand_weidenkategorie ||
-            CASE WHEN einstufungbeurteilungistzustand_struktur_optimal_beibehalten THEN ' + Struktur optimal beibehalten' END ||
+            CASE WHEN einstufungbeurteilungistzustand_struktur_optimal_beibehalten THEN ' + Struktur optimal beibehalten' ELSE '' END ||
         ')'
         AS leistung_beschrieb,
         'per_ha' AS abgeltungsart,
