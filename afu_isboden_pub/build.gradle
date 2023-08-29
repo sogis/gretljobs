@@ -5,16 +5,21 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferAfuIsboden'
 
-task transferAfuIsboden(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+task preprocessing(type: SqlExecutor) {
+    description = "Die Funktion afu_isboden.deploy_tables_as_products() wird aufgerufen. Diese spielt die Daten in die Tabelle bodeneinheit_onlinedata_t, welche dann im weiteren verwendet wird."
+    database = [dbUriIsboden, dbUserIsboden, dbPwdIsboden]
+    sqlFiles = ["afu_isboden_bodeneinheiten_to_onlinedata_t.sql"]
+}
+
+task transferAfuIsboden(type: Db2Db, dependsOn: 'preprocessing'){
+    sourceDb = [dbUriIsboden, dbUserIsboden, dbPwdIsboden]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     fetchSize = 100
     batchSize = 100
     transferSets = [
             new TransferSet('afu_isboden_pub_bodeneinheit.sql', 'afu_isboden_pub.bodeneinheit', true),
             new TransferSet('afu_isboden_pub_bodenerosion.sql', 'afu_isboden_pub.bodenerosion', true),
-            new TransferSet('afu_isboden_pub_hinweiskarte_bodenverdichtung.sql',
-                    'afu_isboden_pub.hinweiskarte_bodenverdichtung', true)
+            new TransferSet('afu_isboden_pub_hinweiskarte_bodenverdichtung.sql','afu_isboden_pub.hinweiskarte_bodenverdichtung', true)
     ]
 }
 
