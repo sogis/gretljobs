@@ -29,6 +29,23 @@ WITH alle_wiese AS (
 ),
 united_wiese_leistungen AS (
     -- union aller leistungen
+    SELECT -- Abgeltung generisch 
+        beurteilung_t_basket AS t_basket,
+        beurteilung_vereinbarung AS vereinbarung,
+        /* Indiviuelle Werte */
+        'Wiese: Abgeltung generisch' AS leistung_beschrieb,
+        'pauschal' AS abgeltungsart,
+        abgeltung_generisch_betrag AS betrag_per_einheit,
+        1 AS anzahl_einheiten,
+        abgeltung_generisch_betrag AS betrag_total,
+        kantonsintern
+    FROM
+        alle_wiese
+    WHERE
+        abgeltung_generisch_betrag > 0
+
+    UNION
+
     SELECT -- Wiese: Einstiegskriterien
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,

@@ -29,6 +29,23 @@ WITH alle_wbl_weide AS (
 ),
 united_wbl_weide_leistungen AS (
     -- union aller leistungen
+    SELECT -- Abgeltung generisch 
+        beurteilung_t_basket AS t_basket,
+        beurteilung_vereinbarung AS vereinbarung,
+        /* Indiviuelle Werte */
+        'WBL Weide: Abgeltung generisch' AS leistung_beschrieb,
+        'pauschal' AS abgeltungsart,
+        abgeltung_generisch_betrag AS betrag_per_einheit,
+        1 AS anzahl_einheiten,
+        abgeltung_generisch_betrag AS betrag_total,
+        kantonsintern
+    FROM
+        alle_wbl_weide
+    WHERE
+        abgeltung_generisch_betrag > 0
+
+    UNION
+
     SELECT -- WBL Weide: Einstiegskriterien
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
