@@ -123,6 +123,13 @@ SELECT
 FROM 
     awjf_statische_waldgrenze.dokumente_dokument dokument, 
     basket
+where 
+    rechtsstatus in (
+                     select 
+                         ilicode 
+                     from 
+                         awjf_statische_waldgrenze_mgdm_v1.rechtsstatus
+                     )
 ;
 
 with basket AS 
