@@ -7,9 +7,9 @@ defaultTasks 'uploadMgdmWaldgrenzen'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
 def iliModelMgdmWaldgrenzen = "Waldgrenzen_V1_2"
-def dbSchemaMgdmWaldgrenzen = "awjf_statische_waldgrenzen_mgdm_v1"
-def mgdmWaldgrenzenXtfFileName = "ch.so.awjf.waldgrenzen.mgdm.xtf"
-def mgdmWaldgrenzenZipFileName = "ch.so.awjf.waldgrenzen.mdgm.zip"
+def dbSchemaMgdmWaldgrenzen = "awjf_statische_waldgrenze_mgdm_v1"
+def mgdmWaldgrenzenXtfFileName = "ch.so.awjf.waldgrenze.mgdm.xtf"
+def mgdmWaldgrenzenZipFileName = "ch.so.awjf.waldgrenze.mdgm.zip"
 
 def aiLogin = aiUser + ":" + aiPwd
 
