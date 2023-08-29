@@ -25,7 +25,7 @@ FROM
     ON basket.dataset=dataset.t_id
 WHERE
     topic != 'SO_ARP_Nutzungsplanung_Nachfuehrung_20201005.Laermempfindlichkeitsstufen'
-AND
+    AND
     dataset.datasetname::int4 = ${bfsnr_param}
 ;
 
@@ -56,6 +56,8 @@ FROM
     arp_nutzungsplanung_v1.rechtsvorschrften_dokument
 WHERE
     t_datasetname::int4 = ${bfsnr_param}
+    AND
+    rechtsstatus = 'inKraft' -- nur die inKraft sind, weil es aufgehobene Pläne gibt ohne Datum und bei Modell 2017 ist das Attribut "publiziertab" MANDATORY!
 ;
 
 -- Grundnutzung

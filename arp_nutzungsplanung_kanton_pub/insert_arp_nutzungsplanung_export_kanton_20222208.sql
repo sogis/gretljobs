@@ -77,6 +77,8 @@ SELECT
     rechtsvorschrift
 FROM
     arp_nutzungsplanung_kanton_v1.rechtsvorschrften_dokument
+WHERE
+    rechtsstatus = 'inKraft' -- nur die inKraft sind, weil es aufgehobene Pläne gibt ohne Datum und bei Modell 2017 ist das Attribut "publiziertab" MANDATORY!
 ;
 
 --überlagernde Fläche
