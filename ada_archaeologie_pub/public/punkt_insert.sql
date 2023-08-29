@@ -9,9 +9,7 @@ WITH punkt_in_siedlung AS (
         qualitaet_lokalisierung, 
         qualitaet_lokalisierung_txt, 
         gemeindename_ablage, 
-        rrb_nummer,
-        x_koordinate,
-        y_koordinate
+        rrb_nummer
     FROM 
         ada_archaeologie_pub_v1.restricted_punktfundstelle p
     JOIN
@@ -28,9 +26,7 @@ INSERT INTO ada_archaeologie_pub_v1.public_punktfundstelle_siedlungsgebiet (
     qualitaet_lokalisierung, 
     qualitaet_lokalisierung_txt, 
     gemeindename_ablage, 
-    rrb_nummer,
-    x_koordinate,
-    y_koordinate
+    rrb_nummer
 )
 SELECT
     punkt, 
@@ -42,8 +38,6 @@ SELECT
     qualitaet_lokalisierung, 
     qualitaet_lokalisierung_txt, 
     gemeindename_ablage, 
-    rrb_nummer,
-    x_koordinate,
-    y_koordinate
+    rrb_nummer
 FROM punkt_in_siedlung
 ;
