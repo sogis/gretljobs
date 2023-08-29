@@ -1,21 +1,35 @@
 import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPub'
+defaultTasks 'publishData'
 
+/**
+ * Select all landcover features from Amtliche Vermessung and 
+ * add the Bodenfaktor G
+ */
 task selectLandCoverFeatures(type: SqlExecutor) {
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlFiles = ['init.sql']
+    database = [dbUriEdit, dbUserEditDdl, dbPwdEditDdl]
+    sqlFiles = ['clean_table_bodenfaktor.sql', 'insert_bodenfaktor.sql']
 }
 
-task publishPub(type: Publisher){
+/**
+ * Export the data from the edit database to INTERLIS and
+ * GIS files and forward these files to the KGDI
+ */
+task publishData(type: Publisher){
     dependsOn 'selectLandCoverFeatures'
-    database = [dbUriPub, dbUserPub, dbPwdPub]
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dataIdent = "ch.so.avt.bodenabsorption"
-    dbSchema = "avt_bodenabsorption_pub"
-    region =  2492
+    dbSchema = "avt_bodenabsorption"
+    region = ".*" //"25[0-5][0-9]"
+    // To discuss !! Dataset 2421 gives validation errors
+    validationConfig = "avt_bodenabsorption_validation_config.ini"
     userFormats = true
-    target = [file("build")]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    // Uncomment in production: !!
+    //kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    //kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }

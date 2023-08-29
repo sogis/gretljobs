@@ -1,0 +1,1 @@
+TRUNCATE TABLE avt_bodenabsorption.bodenfaktor;
