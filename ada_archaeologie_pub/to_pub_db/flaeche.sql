@@ -1,5 +1,7 @@
 SELECT
     f.fundstellen_nummer, 
+    f.x_koordinate,
+    f.y_koordinate,
     fundst_adresse_flurname, 
     fundstellen_art, 
     geschuetzt, 
