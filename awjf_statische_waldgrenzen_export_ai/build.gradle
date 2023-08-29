@@ -31,7 +31,7 @@ task validateMgdmWaldgrenzen(type: IliValidator, dependsOn: 'exportMgdmWaldgrenz
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     logFile = "ilivalidator_waldgrenzen.log"
     //configFile = "config.toml"
-    failOnError = false
+    failOnError = true
 }
 
 task zipMgdmWaldgrenzen(type: Zip, dependsOn: 'validateMgdmWaldgrenzen'){
