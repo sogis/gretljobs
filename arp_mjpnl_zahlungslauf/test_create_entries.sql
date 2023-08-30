@@ -1431,6 +1431,7 @@ INSERT INTO arp_mjpnl_v1.mjpnl_beurteilung_wbl_wiese
     artenfoerderung_abgeltungsart,
     artenfoerderung_abgeltung_total,
     strukturelemente_gewaesser,
+    strukturelemente_gewaesser_abgeltung,
     strukturelemente_hochstaudenflurenriederoehrichte,
     strukturelemente_hochstaudenflurenriederoehrichte_abgeltung,
     strukturelemente_streuehaufen,
@@ -1496,6 +1497,7 @@ VALUES
     'pauschal',         -- artenfoerderung_abgeltungsart
     100.00,             -- artenfoerderung_abgeltung_total
     false,              -- strukturelemente_gewaesser
+    0.00,               -- strukturelemente_gewaesser_abgeltung
     false,              -- strukturelemente_hochstaudenflurenriederoehrichte
     0.00,               -- strukturelemente_hochstaudenflurenriederoehrichte_abgeltung
     false,              -- strukturelemente_streuehaufen
