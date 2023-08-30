@@ -1,4 +1,4 @@
-INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung (
+INSERT INTO arp_mjpnl_v1.mjpnl_abrechnung_per_leistung (
     t_basket,
     vereinbarung,
     leistung_beschrieb,
@@ -14,39 +14,39 @@ INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung (
 WITH alle_beurteilungen AS (
   -- alle beurteilungen
   SELECT mit_bewirtschafter_besprochen, vereinbarung
-  FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_alr_buntbrache
+  FROM arp_mjpnl_v1.mjpnl_beurteilung_alr_buntbrache
   UNION
   SELECT mit_bewirtschafter_besprochen, vereinbarung
-  FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_alr_saum
+  FROM arp_mjpnl_v1.mjpnl_beurteilung_alr_saum
   UNION
   SELECT mit_bewirtschafter_besprochen, vereinbarung
-  FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_hecke
+  FROM arp_mjpnl_v1.mjpnl_beurteilung_hecke
   UNION
   SELECT mit_bewirtschafter_besprochen, vereinbarung
-  FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_hostet
+  FROM arp_mjpnl_v1.mjpnl_beurteilung_hostet
   UNION
   SELECT mit_bewirtschafter_besprochen, vereinbarung
-  FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_obl
+  FROM arp_mjpnl_v1.mjpnl_beurteilung_obl
   UNION
   SELECT mit_bewirtschafter_besprochen, vereinbarung
-  FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_wbl_weide
+  FROM arp_mjpnl_v1.mjpnl_beurteilung_wbl_weide
   UNION
   SELECT mit_bewirtschafter_besprochen, vereinbarung
-  FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_wbl_wiese
+  FROM arp_mjpnl_v1.mjpnl_beurteilung_wbl_wiese
   UNION
   SELECT mit_bewirtschafter_besprochen, vereinbarung
-  FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_weide_ln
+  FROM arp_mjpnl_v1.mjpnl_beurteilung_weide_ln
   UNION
   SELECT mit_bewirtschafter_besprochen, vereinbarung
-  FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_weide_soeg
+  FROM arp_mjpnl_v1.mjpnl_beurteilung_weide_soeg
   UNION
   SELECT mit_bewirtschafter_besprochen, vereinbarung
-  FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_wiese
+  FROM arp_mjpnl_v1.mjpnl_beurteilung_wiese
 ),
 relevante_vereinbarungen AS (
   -- alle vereinbarungen mit unbesprochener oder keiner beurteilung
   SELECT * 
-  FROM ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
+  FROM arp_mjpnl_v1.mjpnl_vereinbarung vbg
   LEFT JOIN alle_beurteilungen be
   ON be.vereinbarung = vbg.t_id
   WHERE vbg.status_vereinbarung = 'aktiv'
@@ -61,11 +61,11 @@ SELECT
     l.betrag_per_einheit,
     l.anzahl_einheiten,
     l.betrag_total,
-    ${AUSZAHLUNGSJAHR}::integer AS auszahlungsjahr,
+    2024::integer AS auszahlungsjahr,
     'freigegeben' AS status_abrechnung,
-    'Migriert aus '||${AUSZAHLUNGSJAHR}::integer-1||' '||COALESCE(l.bemerkung,'') as bemerkung,
+    'Migriert aus '||2024::integer-1||' '||COALESCE(l.bemerkung,'') as bemerkung,
     l.abrechnungpervereinbarung
-FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l
+FROM arp_mjpnl_v1.mjpnl_abrechnung_per_leistung l
 INNER JOIN relevante_vereinbarungen rel_vbg
 ON l.vereinbarung = rel_vbg.t_id
-WHERE l.auszahlungsjahr = ${AUSZAHLUNGSJAHR}-1 AND NOT einmalig AND l.status_abrechnung = 'ausbezahlt';
+WHERE l.auszahlungsjahr = 2024-1 AND einmalig IS NOT TRUE AND l.status_abrechnung = 'ausbezahlt'; 

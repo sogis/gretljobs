@@ -3,7 +3,7 @@ DELETE FROM
     ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung
 WHERE 
     auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer
-    AND NOT einmalig; -- denn diese wurden manuell erfasst
+    AND einmalig IS NOT TRUE; -- denn diese wurden manuell erfasst (also wir nehmen false und null)
     
 -- und alle andern (die einmaligen) möchten wir vom CASCADE delete bewahren, also FK auf NULL setzen
 UPDATE
