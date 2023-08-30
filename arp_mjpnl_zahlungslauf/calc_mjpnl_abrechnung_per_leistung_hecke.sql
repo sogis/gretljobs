@@ -29,6 +29,23 @@ WITH alle_hecke AS (
 ),
 united_hecke_leistungen AS (
     -- union aller leistungen
+    SELECT -- Abgeltung generisch 
+        beurteilung_t_basket AS t_basket,
+        beurteilung_vereinbarung AS vereinbarung,
+        /* Indiviuelle Werte */
+        'Hecke: Abgeltung generisch' AS leistung_beschrieb,
+        'pauschal' AS abgeltungsart,
+        abgeltung_generisch_betrag AS betrag_per_einheit,
+        1 AS anzahl_einheiten,
+        abgeltung_generisch_betrag AS betrag_total,
+        kantonsintern
+    FROM
+        alle_hecke
+    WHERE
+        abgeltung_generisch_betrag > 0
+
+    UNION
+
     SELECT -- Hecke: Einstiegskriterien
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
@@ -139,9 +156,9 @@ united_hecke_leistungen AS (
         /* Indiviuelle Werte */
         'Hecke: Erschwernis (' ||
             (SELECT CONCAT_WS(', ',
-                CASE WHEN erschwernis_massnahme1 THEN 'Massnahme 1: '||erschwernis_massnahme1_text END,
-                CASE WHEN erschwernis_massnahme2 THEN 'Massnahme 2: '||erschwernis_massnahme2_text END,
-                CASE WHEN erschwernis_massnahme3 THEN 'Massnahme 3: '||erschwernis_massnahme3_text END
+                CASE WHEN erschwernis_massnahme1 THEN 'Massnahme 1: '||COALESCE(erschwernis_massnahme1_text,'') END,
+                CASE WHEN erschwernis_massnahme2 THEN 'Massnahme 2: '||COALESCE(erschwernis_massnahme2_text,'') END,
+                CASE WHEN erschwernis_massnahme3 THEN 'Massnahme 3: '||COALESCE(erschwernis_massnahme3_text,'') END
             )) ||
         ')'
         AS leistung_beschrieb,

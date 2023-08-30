@@ -29,6 +29,23 @@ WITH alle_obl AS (
 ),
 united_obl_leistungen AS (
     -- union aller leistungen
+    SELECT -- Abgeltung generisch 
+        beurteilung_t_basket AS t_basket,
+        beurteilung_vereinbarung AS vereinbarung,
+        /* Indiviuelle Werte */
+        'OBL: Abgeltung generisch' AS leistung_beschrieb,
+        'pauschal' AS abgeltungsart,
+        abgeltung_generisch_betrag AS betrag_per_einheit,
+        1 AS anzahl_einheiten,
+        abgeltung_generisch_betrag AS betrag_total,
+        kantonsintern
+    FROM
+        alle_obl
+    WHERE
+        abgeltung_generisch_betrag > 0
+
+    UNION
+
     SELECT -- OBL: Grundbeitrag
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
@@ -118,8 +135,11 @@ SELECT
     /* Statisch kalkulierte und gleiche Werte */
     -- aktuelles Jahr
     ${AUSZAHLUNGSJAHR}::integer AS auszahlungsjahr,
-    -- Ursprungsstatus
-    'initialisiert' AS  status_abrechnung
+    -- Ursprungsstatus mit Ausnahme der kantonsinternen Vereinbarungen
+    CASE
+        WHEN kantonsintern THEN 'intern_verrechnet'
+        ELSE 'freigegeben'
+    END AS status_abrechnung
 FROM
     united_obl_leistungen
 ;
