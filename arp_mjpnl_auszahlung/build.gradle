@@ -14,21 +14,21 @@ def AUSZAHLUNGSJAHR = auszahlungsjahr
 
 task "update_abrechnung_per_leistung"(type: SqlExecutor) {
 
-    description = "Setzt Status der Abrechnungen pro Leistung auf ausbezahlt"
+    description = "Setzt Status der Abrechnungen pro Leistung auf ausbezahlt, sofern freigegeben"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
     sqlFiles = ['update_mjpnl_abrechnung_per_leistung.sql']
 }
 
 task "update_abrechnung_per_vereinbarung"(type: SqlExecutor,dependsOn: "copy_abrechnung_per_leistung") {
-    description = "Setzt Status der Abrechnungen pro Vereinbarung auf ausbezahlt"
+    description = "Setzt Status der Abrechnungen pro Vereinbarung auf ausbezahlt, sofern freigegeben"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
     sqlFiles = ['update_mjpnl_abrechnung_per_vereinbarung.sql']
 }
 
 task "update_abrechnung_per_bewirtschafter"(type: SqlExecutor,dependsOn: "update_abrechnung_per_vereinbarung") {
-    description = "Setzt Status der Abrechnungen pro Bewirtschafter auf ausbezahlt"
+    description = "Setzt Status der Abrechnungen pro Bewirtschafter auf ausbezahlt, sofern freigegeben"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
     sqlFiles = ['update_mjpnl_abrechnung_per_bewirtschafter.sql']
