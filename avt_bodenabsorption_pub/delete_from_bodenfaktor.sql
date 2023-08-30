@@ -1,0 +1,1 @@
+DELETE FROM avt_bodenabsorption.bodenfaktor;

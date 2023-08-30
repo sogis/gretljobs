@@ -3,6 +3,10 @@ WITH bodenfaktorg_lookup AS (
         *
     FROM (
         VALUES
+            -- Werte und deren Reihenfolge entsprechen dem Datenmodell
+            -- DM01AVSO24LV95. Im Sinne der Vollständigkeit sind alle
+            -- Bodenbedeckungsarten übernommen worden, auch die, die im Kanton
+            -- keine Verwendung finden.
             ( 1 , 'Gebaeude', 0.1 ),        
             ( 2 , 'befestigt.Strasse_Weg', 0 ),        
             ( 3 , 'befestigt.Trottoir', 0 ),        
@@ -51,15 +55,17 @@ INSERT INTO avt_bodenabsorption.bodenfaktor (t_basket, t_datasetname, bodenfakto
 (
     SELECT
         abb.t_id as t_basket,
-        --bb.t_datasetname,
         abd.datasetname as t_datasetname,
-        --bb.art,
         bfl.val AS bodenfaktorg,
         abd.datasetname::integer as bfsnr,
         bb.geometrie
-    FROM agi_dm01avso24.bodenbedeckung_boflaeche bb
-    LEFT JOIN bodenfaktorg_lookup bfl ON bb.art = bfl.code
-    FULL OUTER JOIN avt_bodenabsorption.t_ili2db_dataset abd ON abd.datasetname = bb.t_datasetname
-    FULL OUTER JOIN avt_bodenabsorption.t_ili2db_basket abb ON abb.dataset = abd.t_id
+    FROM
+        agi_dm01avso24.bodenbedeckung_boflaeche bb
+    LEFT JOIN bodenfaktorg_lookup bfl
+        ON bb.art = bfl.code
+    FULL OUTER JOIN avt_bodenabsorption.t_ili2db_dataset abd
+        ON abd.datasetname = bb.t_datasetname
+    FULL OUTER JOIN avt_bodenabsorption.t_ili2db_basket abb
+        ON abb.dataset = abd.t_id
 );
 

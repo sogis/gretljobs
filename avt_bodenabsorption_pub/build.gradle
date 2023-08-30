@@ -6,30 +6,32 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'publishData'
 
 /**
- * Select all landcover features from Amtliche Vermessung and 
- * add the Bodenfaktor G
+ * Datenbankabfrage, welche alle Objekte der Bodenbeckung aus der
+ * Amtlichen Vermessung auswählt und mit dem Bodenfaktor G
+ * ergänzt.
  */
 task selectLandCoverFeatures(type: SqlExecutor) {
-    database = [dbUriEdit, dbUserEditDdl, dbPwdEditDdl]
-    sqlFiles = ['clean_table_bodenfaktor.sql', 'insert_bodenfaktor.sql']
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['delete_from_bodenfaktor.sql', 'insert_into_bodenfaktor.sql']
 }
 
 /**
- * Export the data from the edit database to INTERLIS and
- * GIS files and forward these files to the KGDI
+ * Exportiere die Daten aus der edit Datenbank nach INTERLIS bzw.
+ * GIS Dateien und leite diese an die KGDI weiter
  */
 task publishData(type: Publisher){
     dependsOn 'selectLandCoverFeatures'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dataIdent = "ch.so.avt.bodenabsorption"
     dbSchema = "avt_bodenabsorption"
-    region = ".*" //"25[0-5][0-9]"
-    // To discuss !! Dataset 2421 gives validation errors
+    region = ".*" // Wähle alle datasets aus
+    // Beim Import der AV Daten findet keine Validierung statt, folglich
+    // ist nicht sichergestellt, dass alle Daten valid sind und die Validierung
+    // muss hier ebenfalls ausgeschaltet werden.
     validationConfig = "avt_bodenabsorption_validation_config.ini"
     userFormats = true
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
-    // Uncomment in production: !!
-    //kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-    //kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
