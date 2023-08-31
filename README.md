@@ -328,6 +328,61 @@ Erläuterungen:
   _Voraussetzung_: Die Ordner _gretljobs_ und _schema-jobs_ müssen sich
   im gleichen übergeordneten Ordner befinden.
 
+### Entwicklungs-DBs stoppen
+```
+docker compose stop
+```
+So werden die Entwicklungs-DB-Container gestoppt.
+Die Daten der DBs bleiben erhalten,
+da sie in Docker-Volumes gespeichert sind,
+die hierbei nicht gelöscht werden.
+
+### Entwicklungs-DBs stoppen und DB-Container löschen
+```
+docker compose down
+```
+Die Entwicklungs-DB-Container werden gestoppt, die DB-Container gelöscht
+und zugleich auch das von Docker Compose angelegte Docker-Netzwerk gelöscht.
+Die Daten der DBs bleiben aber auch in diesem Fall erhalten,
+Weil die Docker-Volumes nicht gelöscht werden.
+
+### Daten der Entwicklungs-DB-Container löschen
+```
+docker volume prune --all --filter 'label=com.docker.compose.project=gretljobs'
+```
+Mit diesem Befehl werden die Volumes der Entwicklungs-DB-Container
+und damit die Daten in den Entwicklungs-DBs gelöscht.
+(Die DB-Container müssen vorgängig mit dem Befehl `docker compose down`
+ebenfalls gelöscht werden.)
+
+Erläuterungen:
+
+* Der *Value* des Labels `com.docker.compose.project`
+  ist nicht zwingend immer `gretljobs`,
+  sondern er ist vom Verzeichnisnamen abhängig,
+  in welchem `docker-compose.yml` liegt;
+  man kann ihn durch `docker volume inspect VOLUMENAME` herausfinden.
+
+### Verbindungsparameter für die Entwicklungs-DBs
+Die Entwicklungs-DBs sind z.B. aus _DBeaver_ oder _psql_
+mit folgenden Verbindungsparametern erreichbar:
+
+*Edit-DB:*
+* Hostname: `localhost`
+* Port: `54321`
+* DB-Name: `edit`
+* Benutzer mit DDL-Rechten: `ddluser` (zum Anlegen von Schemen, Tabellen usw.)
+* Benutzer mit DML-Rechten: `dmluser` (für Lese- und Schreibzugriff)
+* Passwörter: lauten jeweils gleich wie der Benutzername
+
+*Publikations-DB:*
+* Hostname: `localhost`
+* Port: `54322`
+* DB-Name: `pub`
+* Benutzer mit DDL-Rechten: `ddluser` (zum Anlegen von Schemen, Tabellen usw.)
+* Benutzer mit DML-Rechten: `dmluser` (für Lese- und Schreibzugriff)
+* Passwörter: lauten jeweils gleich wie der Benutzername
+
 ### GRETL-Job ausführen
 ```
 docker compose run --rm -u $UID gretl --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
@@ -406,61 +461,6 @@ Erläuterungen:
   GRETL_IMAGE_TAG=latest docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
     gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
   ```
-
-### Entwicklungs-DBs stoppen
-```
-docker compose stop
-```
-So werden die Entwicklungs-DB-Container gestoppt.
-Die Daten der DBs bleiben erhalten,
-da sie in Docker-Volumes gespeichert sind,
-die hierbei nicht gelöscht werden.
-
-### Entwicklungs-DBs stoppen und DB-Container löschen
-```
-docker compose down
-```
-Die Entwicklungs-DB-Container werden gestoppt, die DB-Container gelöscht
-und zugleich auch das von Docker Compose angelegte Docker-Netzwerk gelöscht.
-Die Daten der DBs bleiben aber auch in diesem Fall erhalten,
-Weil die Docker-Volumes nicht gelöscht werden.
-
-### Daten der Entwicklungs-DB-Container löschen
-```
-docker volume prune --all --filter 'label=com.docker.compose.project=gretljobs'
-```
-Mit diesem Befehl werden die Volumes der Entwicklungs-DB-Container
-und damit die Daten in den Entwicklungs-DBs gelöscht.
-(Die DB-Container müssen vorgängig mit dem Befehl `docker compose down`
-ebenfalls gelöscht werden.)
-
-Erläuterungen:
-
-* Der *Value* des Labels `com.docker.compose.project`
-  ist nicht zwingend immer `gretljobs`,
-  sondern er ist vom Verzeichnisnamen abhängig,
-  in welchem `docker-compose.yml` liegt;
-  man kann ihn durch `docker volume inspect VOLUMENAME` herausfinden.
-
-### Verbindungsparameter für die Entwicklungs-DBs
-Die Entwicklungs-DBs sind z.B. aus _DBeaver_ oder _psql_
-mit folgenden Verbindungsparametern erreichbar:
-
-*Edit-DB:*
-* Hostname: `localhost`
-* Port: `54321`
-* DB-Name: `edit`
-* Benutzer mit DDL-Rechten: `ddluser` (zum Anlegen von Schemen, Tabellen usw.)
-* Benutzer mit DML-Rechten: `dmluser` (für Lese- und Schreibzugriff)
-* Passwörter: lauten jeweils gleich wie der Benutzername
-
-*Publikations-DB:*
-* Hostname: `localhost`
-* Port: `54322`
-* DB-Name: `pub`
-* Benutzer mit DDL-Rechten: `ddluser` (zum Anlegen von Schemen, Tabellen usw.)
-* Benutzer mit DML-Rechten: `dmluser` (für Lese- und Schreibzugriff)
-* Passwörter: lauten jeweils gleich wie der Benutzername
 
 ### Hinweise zu den DB-Containern
 #### Die Rollen (Benutzer und Gruppen) der produktiven DBs importieren
