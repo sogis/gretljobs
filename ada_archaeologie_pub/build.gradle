@@ -3,8 +3,8 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'refreshSolr'
-//defaultTasks 'testImdasConnection'
+//defaultTasks 'refreshSolr'
+defaultTasks 'testImdasConnection'
 
 def edit = [dbUriEdit, dbUserEdit, dbPwdEdit]
 def pub = [dbUriPub, dbUserPub, dbPwdPub]
