@@ -308,7 +308,9 @@ simiTokenServicePwd=
 ilivalidatorModeldir=%ITF_DIR;https://geo.so.ch/models/;%JAR_DIR/ilimodels
 ```
 
-### Entwicklungs-DBs starten
+### Entwicklungs-DBs nutzen
+
+#### Entwicklungs-DBs starten
 ```
 docker compose up -d
 ```
@@ -328,7 +330,7 @@ Erläuterungen:
   _Voraussetzung_: Die Ordner _gretljobs_ und _schema-jobs_ müssen sich
   im gleichen übergeordneten Ordner befinden.
 
-### Entwicklungs-DBs stoppen
+#### Entwicklungs-DBs stoppen
 ```
 docker compose stop
 ```
@@ -337,7 +339,7 @@ Die Daten der DBs bleiben erhalten,
 da sie in Docker-Volumes gespeichert sind,
 die hierbei nicht gelöscht werden.
 
-### Entwicklungs-DBs stoppen und DB-Container löschen
+#### Entwicklungs-DBs stoppen und DB-Container löschen
 ```
 docker compose down
 ```
@@ -346,7 +348,7 @@ und zugleich auch das von Docker Compose angelegte Docker-Netzwerk gelöscht.
 Die Daten der DBs bleiben aber auch in diesem Fall erhalten,
 Weil die Docker-Volumes nicht gelöscht werden.
 
-### Daten der Entwicklungs-DB-Container löschen
+#### Daten der Entwicklungs-DB-Container löschen
 ```
 docker volume prune --all --filter 'label=com.docker.compose.project=gretljobs'
 ```
@@ -363,7 +365,7 @@ Erläuterungen:
   in welchem `docker-compose.yml` liegt;
   man kann ihn durch `docker volume inspect VOLUMENAME` herausfinden.
 
-### Verbindungsparameter für die Entwicklungs-DBs
+#### Verbindungsparameter für die Entwicklungs-DBs
 Die Entwicklungs-DBs sind z.B. aus _DBeaver_ oder _psql_
 mit folgenden Verbindungsparametern erreichbar:
 
