@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'refreshSolr'
+defaultTasks 'transferAdagisa'
 
 task transferAdagisa(type: Db2Db){
     sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
@@ -16,7 +16,8 @@ task transferAdagisa(type: Db2Db){
                     true)
     ];
 }
-
+/* Auskommentiert am 31.08.2023, sc: ch.so.ada.adagisa.punktfundstellen_geschuetzt gibt Fehler im Indexupdater da View leer ist. Wird nicht mehr korrigiert
 task refreshSolr(type:Exec, dependsOn:'transferAdagisa') {
 	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.ada.adagisa.flaechenfundstellen_geschuetzt,ch.so.ada.adagisa.punktfundstellen_geschuetzt,ch.so.ada.adagisa.punktfundstellen_ungeschuetzt'
 }
+*/
