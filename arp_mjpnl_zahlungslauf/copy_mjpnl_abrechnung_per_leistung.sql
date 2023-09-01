@@ -54,9 +54,9 @@ relevante_vereinbarungen AS (
   WHERE vbg.status_vereinbarung = 'aktiv'
   AND be.mit_bewirtschafter_besprochen IS NOT TRUE
   AND ( -- ..und keinen migrierten Leistungen
-    SELECT COUNT(*) FROM arp_mjpnl_v1.mjpnl_abrechnung_per_leistung
+    SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung
     WHERE migriert AND auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer and vereinbarung = vbg.t_id
-  )>0
+  )=0
 )
 -- alle letztjährigen leistungen der vereinbarungen mit unbesprochener oder keiner beurteilung
 SELECT 
