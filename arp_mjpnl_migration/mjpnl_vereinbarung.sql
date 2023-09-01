@@ -6,6 +6,7 @@ SELECT
   ST_Multi(vbggeom.wkb_geometry) AS geometrie,
   9999999 AS gelan_pid_gelan, --im Postprocessing zu ersetzen
   '9999999' AS gelan_bewe_id, --im Postprocessing zu ersetzen
+  TRUE AS bewe_id_geprueft,
   FALSE AS uebersteuerung_bewirtschafter,
   ARRAY[]::integer[] AS bfs_nr, --im Postprocessing zu ersetzen
   ARRAY[]::varchar[] AS gemeinde, --im Postprocessing zu ersetzen
