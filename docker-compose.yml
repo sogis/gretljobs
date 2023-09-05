@@ -32,11 +32,8 @@ services:
       - "54321:5432"
     volumes:
       - type: bind
-        source: ./setup.sql
-        target: /docker-entrypoint-preinitdb.d/setup.sql
-      - type: bind
-        source: ./prepare_setup.sh
-        target: /docker-entrypoint-preinitdb.d/prepare_setup.sh
+        source: ./docker-compose/initdb.d
+        target: /docker-entrypoint-initdb.d
       - type: volume
         source: postgresql_data_edit
         target: /bitnami/postgresql
@@ -54,11 +51,8 @@ services:
       - "54322:5432"
     volumes:
       - type: bind
-        source: ./setup.sql
-        target: /docker-entrypoint-preinitdb.d/setup.sql
-      - type: bind
-        source: ./prepare_setup.sh
-        target: /docker-entrypoint-preinitdb.d/prepare_setup.sh
+        source: ./docker-compose/initdb.d
+        target: /docker-entrypoint-initdb.d
       - type: volume
         source: postgresql_data_pub
         target: /bitnami/postgresql
