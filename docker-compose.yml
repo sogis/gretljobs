@@ -32,6 +32,9 @@ services:
       - "54321:5432"
     volumes:
       - type: bind
+        source: ./docker-compose/preinitdb.d
+        target: /docker-entrypoint-preinitdb.d
+      - type: bind
         source: ./docker-compose/initdb.d
         target: /docker-entrypoint-initdb.d
       - type: volume
@@ -50,6 +53,9 @@ services:
     ports:
       - "54322:5432"
     volumes:
+      - type: bind
+        source: ./docker-compose/preinitdb.d
+        target: /docker-entrypoint-preinitdb.d
       - type: bind
         source: ./docker-compose/initdb.d
         target: /docker-entrypoint-initdb.d
