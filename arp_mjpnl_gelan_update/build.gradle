@@ -13,7 +13,7 @@ import java.io.File
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'BetriebZuBFFFlaechenZuweisen'
+defaultTasks 'BewirtschafterZuVereinbarungZuweisen'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def DB_Schema_MJPNL = "arp_mjpnl_v1"
@@ -64,4 +64,18 @@ task BetriebZuBFFFlaechenZuweisen(type: SqlExecutor, dependsOn: GelanBezugsjahrB
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
     sqlFiles = ['update_betrieb_bff2-flaechen.sql']
+}
+
+task BetriebZuVereinbarungZuweisen(type: SqlExecutor,dependsOn: BetriebZuBFFFlaechenZuweisen) {
+    description = "Spatial join von Vereinbarung zu GELAN Bewirtschaftungseinheit herstellen und bewe_id_geprueft invalidieren"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['mjpnl_update_vereinbarungen_gelan_bewirtschaftungseinheiten.sql']
+}
+
+task BewirtschafterZuVereinbarungZuweisen(type: SqlExecutor,dependsOn: BetriebZuVereinbarungZuweisen) {
+    description = "GELAN Bewirtschafter zuweisen sofern keine Übersteuerung aktiv"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['mjpnl_update_vereinbarungen_gelan_bewirtschafter.sql']
 }
