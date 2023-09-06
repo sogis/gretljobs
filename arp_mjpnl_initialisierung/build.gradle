@@ -13,7 +13,7 @@ import java.io.File
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'BetriebZuBFFFlaechenZuweisen'
+defaultTasks 'CreateTriggerBewirtschafterHistorisierung'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def DB_Schema_MJPNL = "arp_mjpnl_v1"
@@ -106,4 +106,11 @@ task BetriebZuBFFFlaechenZuweisen(type: SqlExecutor, dependsOn: GelanBezugsjahrB
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
     sqlFiles = ['update_betrieb_bff2-flaechen.sql']
+}
+
+task CreateTriggerBewirtschafterHistorisierung(type: SqlExecutor, dependsOn: BetriebZuBFFFlaechenZuweisen) {
+    description = "Erstellen einer Trigger-Funktion die bei Änderung in vereinbarung von gelan_pid_gelan den alten Bewirtschafter in eine Historisierungstabelle schreibt."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['create_trigger_mjpnl_vereinbarung_bewirtschafter_historisierung.sql']
 }
