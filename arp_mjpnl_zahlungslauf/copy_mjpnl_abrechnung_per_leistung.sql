@@ -9,6 +9,7 @@ INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung (
     auszahlungsjahr,
     status_abrechnung,
     bemerkung,
+    migriert,
     abrechnungpervereinbarung
 )
 WITH alle_beurteilungen AS (
@@ -45,14 +46,19 @@ WITH alle_beurteilungen AS (
 ),
 relevante_vereinbarungen AS (
   -- alle vereinbarungen mit unbesprochener oder keiner beurteilung
+  -- ...und keinen migrierten Leistungen (Berücksichtigung Migrationsjahr)
   SELECT * 
   FROM ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
   LEFT JOIN alle_beurteilungen be
   ON be.vereinbarung = vbg.t_id
-  WHERE vbg.status_vereinbarung = 'aktiv'
+  WHERE vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE
   AND be.mit_bewirtschafter_besprochen IS NOT TRUE
+  AND ( -- ..und keinen migrierten Leistungen
+    SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung
+    WHERE migriert AND auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer and vereinbarung = vbg.t_id
+  )=0
 )
--- alle letztjährigen leistungen der  vereinbarungen mit unbesprochener oder keiner beurteilung
+-- alle letztjährigen leistungen der vereinbarungen mit unbesprochener oder keiner beurteilung
 SELECT 
     l.t_basket, 
     l.vereinbarung, 
@@ -63,7 +69,8 @@ SELECT
     l.betrag_total,
     ${AUSZAHLUNGSJAHR}::integer AS auszahlungsjahr,
     'freigegeben' AS status_abrechnung,
-    'Migriert aus '||${AUSZAHLUNGSJAHR}::integer-1||' '||COALESCE(l.bemerkung,'') as bemerkung,
+    'Übernommen aus '||${AUSZAHLUNGSJAHR}::integer-1||' '||COALESCE(l.bemerkung,'') as bemerkung,
+    FALSE AS migriert,
     l.abrechnungpervereinbarung
 FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l
 INNER JOIN relevante_vereinbarungen rel_vbg
