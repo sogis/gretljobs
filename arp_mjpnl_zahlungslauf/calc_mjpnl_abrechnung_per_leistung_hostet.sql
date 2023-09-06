@@ -23,7 +23,7 @@ WITH alle_hostet AS (
         hostet.vereinbarung = vereinbarung.t_id
     WHERE
         hostet.mit_bewirtschafter_besprochen IS TRUE
-        AND vereinbarung.status_vereinbarung = 'aktiv'
+        AND vereinbarung.status_vereinbarung = 'aktiv' AND vereinbarung.bewe_id_geprueft IS TRUE
         -- und berücksichtige nur die neusten (sofern mehrere existieren)
         AND hostet.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_hostet b WHERE b.mit_bewirtschafter_besprochen IS TRUE AND b.vereinbarung = hostet.vereinbarung)
 ),

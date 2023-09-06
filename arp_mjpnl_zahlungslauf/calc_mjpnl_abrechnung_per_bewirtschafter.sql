@@ -19,7 +19,7 @@ FROM
       ON vbg.gelan_pid_gelan = pers.pid_gelan
    WHERE
      pers.pid_gelan IS NOT NULL AND pers.iban IS NOT NULL
-     AND vbg.status_vereinbarung = 'aktiv'
+     AND vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE
    ORDER BY pers.pid_gelan ASC
 )
 /* Dann Abrechnungsdaten per Bewirtschafter und Auszahlungsjahr und Status aggregieren */

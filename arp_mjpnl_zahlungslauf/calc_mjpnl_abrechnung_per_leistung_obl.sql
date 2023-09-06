@@ -23,7 +23,7 @@ WITH alle_obl AS (
         obl.vereinbarung = vereinbarung.t_id
     WHERE
         obl.mit_bewirtschafter_besprochen IS TRUE
-        AND vereinbarung.status_vereinbarung = 'aktiv'
+        AND vereinbarung.status_vereinbarung = 'aktiv' AND vereinbarung.bewe_id_geprueft IS TRUE
         -- und berücksichtige nur die neusten (sofern mehrere existieren)
         AND obl.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_obl b WHERE b.mit_bewirtschafter_besprochen IS TRUE AND b.vereinbarung = obl.vereinbarung)
 ),

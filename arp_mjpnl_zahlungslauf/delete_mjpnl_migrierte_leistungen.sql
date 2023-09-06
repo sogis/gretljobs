@@ -42,6 +42,6 @@ WHERE
         FROM ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
         LEFT JOIN alle_beurteilungen be
             ON be.vereinbarung = vbg.t_id
-        WHERE vbg.status_vereinbarung = 'aktiv'
+        WHERE vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE
             AND be.mit_bewirtschafter_besprochen IS TRUE
     )
