@@ -1,7 +1,8 @@
 SELECT 
-    rrb_nummer, 
-    titel, 
-    datum, 
-    dateiname
+    substring(rrb_nummer FOR 10) AS rrb_nummer, 
+    substring(rrb_titel FOR 200) AS titel, 
+    rrb_datum AS datum, 
+    substring(name_der_datei FOR 40) AS dateiname
 FROM 
-    ada_archaeologie_v1.fachapplikation_regierungsratsbeschluss_imdasview;
+    rep_view_rrb
+;
