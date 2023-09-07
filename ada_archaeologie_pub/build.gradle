@@ -30,7 +30,7 @@ task updateRelationTids(type: SqlExecutor, dependsOn: importFromImdas){
     description = 'Aktualisiert die t_id Beziehungsspalten aufgrund der Fst-Nummer / RRB-Nummer'
     database = edit
     sqlFiles = [
-            'update_relation/tmp_update_fakerefs.sql', //Todo entfernen
+            //'update_relation/tmp_update_fakerefs.sql', //Todo entfernen
             'update_relation/attr_geo.sql', 
             'update_relation/fst_rrb.sql'
         ]
