@@ -81,7 +81,8 @@ WITH tmp AS (
         t_basket,
         vereinbarungs_nr,
         flaeche,
-        (string_to_array(bemerkung,'§'))[2]::jsonb AS old_attr
+        (string_to_array(bemerkung,'§'))[2]::jsonb AS old_attr,
+        geometrie
     FROM ${DB_Schema_MJPNL}.mjpnl_vereinbarung
         WHERE vereinbarungsart = 'Weide_SOEG' AND vereinbarungs_nr != '01_DUMMY_00001'
 ),
@@ -162,7 +163,23 @@ SELECT
    Round(abgeltung_per_ha_total * flaeche,2) AS abgeltung_total,
    now()::date AS erstellungsdatum,
    'Migration' AS operator_erstellung,
-   (SELECT t_id FROM ${DB_Schema_MJPNL}.mjpnl_berater WHERE aname = 'Bruggisser') AS berater,
+   (SELECT t_id FROM ${DB_Schema_MJPNL}.mjpnl_berater WHERE aname = 
+    (SELECT 
+        CASE 
+            WHEN b.bezirksname IN ('Solothurn', 'Lebern', 'Wasseramt') THEN 'Staub'
+            WHEN b.bezirksname IN ('Bucheggberg') THEN 'Bruggisser'
+            WHEN b.bezirksname IN ('Olten', 'Gösgen') THEN 'Jäggi'
+            WHEN b.bezirksname IN ('Thal', 'Gäu') THEN 'Solothurnmann'
+            WHEN b.bezirksname IN ('Dorneck') THEN 'Borer'
+            WHEN b.bezirksname IN ('Thierstein') THEN 'Weber'
+            --fallback
+            ELSE 'Bruggisser'
+        END AS ermittelter_berater
+    FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksgrenze b
+    WHERE ST_Intersects(tmp2.geometrie, b.geometrie)
+    LIMIT 1
+    )
+   ) AS berater,
    t_id AS vereinbarung
 FROM
   tmp2

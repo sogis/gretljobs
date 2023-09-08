@@ -38,7 +38,8 @@ WITH tmp AS (
         t_id,
         t_basket,
         vereinbarungs_nr,
-        (string_to_array(bemerkung,'§'))[2]::jsonb AS old_attr
+        (string_to_array(bemerkung,'§'))[2]::jsonb AS old_attr,
+        geometrie
     FROM ${DB_Schema_MJPNL}.mjpnl_vereinbarung
         WHERE vereinbarungsart = 'OBL' AND vereinbarungs_nr != '01_DUMMY_00001'
 ),
@@ -99,7 +100,17 @@ SELECT
    0 AS abgeltung_total,
    now()::date AS erstellungsdatum,
    'Migration' AS operator_erstellung,
-   (SELECT t_id FROM ${DB_Schema_MJPNL}.mjpnl_berater WHERE aname = 'Bruggisser') AS berater,
+   (SELECT t_id FROM ${DB_Schema_MJPNL}.mjpnl_berater WHERE aname = 
+    (SELECT 
+        CASE 
+            WHEN b.bezirksname IN ('Dorneck') THEN 'Meier'
+            ELSE 'Gschwind-Holzherr'
+        END AS ermittelter_berater
+    FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksgrenze b
+    WHERE ST_Intersects(tmp2.geometrie, b.geometrie)
+    LIMIT 1
+    )
+   ) AS berater,
    t_id AS vereinbarung
 FROM
   tmp2

@@ -128,7 +128,7 @@ SELECT
    0 AS abgeltung_total,
    now()::date AS erstellungsdatum,
    'Migration' AS operator_erstellung,
-   (SELECT t_id FROM ${DB_Schema_MJPNL}.mjpnl_berater WHERE aname = 'Bruggisser') AS berater,
+   (SELECT t_id FROM ${DB_Schema_MJPNL}.mjpnl_berater WHERE aname = 'Jäggi') AS berater,
    t_id AS vereinbarung
 FROM
   tmp

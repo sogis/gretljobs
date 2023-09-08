@@ -58,7 +58,8 @@ WITH tmp AS (
         vereinbarungs_nr,
         flaeche,
         (string_to_array(bemerkung,'§'))[2]::jsonb AS old_attr,
-        ltrim(regexp_replace((string_to_array(bemerkung,'§'))[2]::jsonb->>'schnittzeitpunkt','[^0-9./-]', '', 'g'),'.') AS schnittzeitpunkt
+        ltrim(regexp_replace((string_to_array(bemerkung,'§'))[2]::jsonb->>'schnittzeitpunkt','[^0-9./-]', '', 'g'),'.') AS schnittzeitpunkt,
+        geometrie
     FROM ${DB_Schema_MJPNL}.mjpnl_vereinbarung
         WHERE vereinbarungsart = 'Wiese' AND vereinbarungs_nr != '01_DUMMY_00001'
 ),
@@ -184,7 +185,23 @@ SELECT
    Round(abgeltung_per_ha_total * flaeche,2) AS abgeltung_total,
    now()::date AS erstellungsdatum,
    'Migration' AS operator_erstellung,
-   (SELECT t_id FROM ${DB_Schema_MJPNL}.mjpnl_berater WHERE aname = 'Bruggisser') AS berater,
+   (SELECT t_id FROM ${DB_Schema_MJPNL}.mjpnl_berater WHERE aname = 
+    (SELECT 
+        CASE 
+            WHEN b.bezirksname IN ('Solothurn', 'Lebern', 'Wasseramt') THEN 'Staub'
+            WHEN b.bezirksname IN ('Bucheggberg') THEN 'Bruggisser'
+            WHEN b.bezirksname IN ('Olten', 'Gösgen') THEN 'Jäggi'
+            WHEN b.bezirksname IN ('Thal', 'Gäu') THEN 'Solothurnmann'
+            WHEN b.bezirksname IN ('Dorneck') THEN 'Borer'
+            WHEN b.bezirksname IN ('Thierstein') THEN 'Weber'
+            --fallback
+            ELSE 'Bruggisser'
+        END AS ermittelter_berater
+    FROM agi_hoheitsgrenzen_pub.hoheitsgrenzen_bezirksgrenze b
+    WHERE ST_Intersects(tmp2.geometrie, b.geometrie)
+    LIMIT 1
+    )
+   ) AS berater,
    t_id AS vereinbarung
 FROM
   tmp2
