@@ -77,7 +77,7 @@ task publishPub(type: Publisher, dependsOn: 'setEnumTxt') {
     dbSchema = "ada_archaeologie_pub_v1"
     modelsToPublish = "SO_ADA_Archaeologie_Publikation_20230417"
     userFormats = true
-    validationConfig = "validation.toml"
+    validationConfig = "tmppublisher/validation.toml"
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
