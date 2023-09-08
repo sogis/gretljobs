@@ -1,0 +1,47 @@
+INTERLIS 2.3;
+
+/** !!------------------------------------------------------------------------------
+ *  !! Version    | wer | Änderung
+ *  !!------------------------------------------------------------------------------
+ *  !! 2020-07-28 | jek | Ersterfassung
+ *  !!==============================================================================
+ */
+!!@ technicalContact=mailto:agi@bd.so.ch
+MODEL SO_AGI_Gebaeude_20230904 (de)
+AT "http://www.geo.so.ch/models/AGI"
+VERSION "2023-09-24"  =
+
+  IMPORTS GeometryCHLV95_V1;
+
+  TOPIC Main =
+
+    /** Gebaeude, geometrisch als Gebäudeumriss abgebildet
+     */
+    CLASS Gebaeude =
+      /** Bezeichnung
+       */
+      Bezeichnung : MANDATORY TEXT*50;
+
+      /** Umriss-Polygon des Gebaeudes
+      */
+      Umriss : MANDATORY GeometryCHLV95_V1.Surface;
+
+    END Gebaeude;
+
+    /** Erschliessungs-Arten (Gas, Zuwasser, Abwasser, Strom, ...)
+     */
+    CLASS Erschliessung =
+      /** Bezeichnung
+      */
+      Bezeichnung : MANDATORY TEXT*50;
+
+    END Erschliessung;
+
+    ASSOCIATION Gebaeude__Erschliessung = 
+      Gebaeude_R -- {0..*} Gebaeude;  
+      Erschliessung_R -- {0..*} Erschliessung;      
+    END Gebaeude__Erschliessung;
+
+  END Main;
+
+END SO_AGI_Gebaeude_20230904.

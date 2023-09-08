@@ -1,0 +1,29 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+//defaultTasks 'loadEditData'
+
+task loadEditData(type: Ili2pgImport){
+     description = 'Import beispielhafter Edit-Daten'
+     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+     dbschema = 'agi_gebaeude_bsp_v1'
+     modeldir = "$projectDir/div;https://geo.so.ch/models/"
+     dataFile = 'div/editdata.xtf'
+}
+
+task transferToPub(type: Db2Db){
+    description = 'Transfer (Publikation) auf die Pub-DB'
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('gebaeude_pub.sql', 'agi_gebaeude_bsp_pub_v1.gebaeude', true)
+    ];
+}
+
+/*
+docker compose run --rm -u $UID gretl --project-dir=agi_gebaeude_bsp loadEditData
+
+docker compose run --rm -u $UID gretl --project-dir=agi_gebaeude_bsp transferToPub
+*/

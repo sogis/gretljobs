@@ -1,0 +1,3 @@
+- Erschliessungen in Pub-Modell in jedem Fall vorhanden (nicht null)?
+- Ein Gebäude gehört immer zu einer Ortschaft
+
