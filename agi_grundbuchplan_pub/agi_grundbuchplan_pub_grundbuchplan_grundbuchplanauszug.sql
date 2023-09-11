@@ -11,7 +11,6 @@ WITH
             concat(btrim(strasse), ' ', btrim(hausnummer::text)) AS strasse,
             concat(plz, ' ', btrim(ortschaft)) AS ort,
             concat('Tel.: ', btrim(telefon)) AS tel,
-            concat('Fax: ', ''::text) AS fax,
             concat('E-Mail: ', btrim(email)) AS email,
             concat('Web: ', btrim(web)) AS web,
             bfsnr AS gem_bfs
@@ -22,11 +21,10 @@ WITH
             nfgeometer,
             firma,
             concat(firma, ', ', firma_zusatz, strasse, ', ', ort) AS adresse,
-            concat(tel, ', ', fax, ', ' , email, ', ' , web) AS kontakt,
+            concat(tel, ', ' , email, ', ' , web) AS kontakt,
             strasse,
             ort,
             tel,
-            fax,
             email,
             web,
             gem_bfs
@@ -79,7 +77,6 @@ SELECT
     firma.strasse AS strasse_nummer, 
     firma.ort AS plz_ortschaft, 
     firma.tel, 
-    firma.fax, 
     firma.email, 
     firma.web
 FROM 
