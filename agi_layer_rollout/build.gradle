@@ -4,10 +4,12 @@ import ch.so.agi.gretl.api.TransferSet
 defaultTasks "restorePubDates"
 
 def writeUri = dbUriSimi
+def readUri = deferReadUri(dbUriSimi)
+//def readUri = "jdbc:postgresql://dbs_int:5432/simi"
+//def writeUri = "jdbc:postgresql://dbs_prod:5432/simi"
+
 def writeUser = dbUserSimi
 def writePass = dbPwdSimi
-
-def readUri = deferReadUri(dbUriSimi)
 def readUser = dbUserSimi
 def readPass = dbPwdSimi
 
@@ -20,24 +22,84 @@ def deferReadUri(dbUri) {
   return readUri
 }
 
+// Sicherstellung der Datenkonsistenz Integration <> Produktion (Db-Verbindungen, Gebietseinteilung und Themenbereitstellung)
+
 task assertValidConf(){
   doLast{
-      println 'Environment: ' + simiEnv
-      if(!gretlEnvironment.equals(simiEnv))
-        throw new RuntimeException("The entered environment '" + simiEnv + "' is invalid.")
-
       if(readUri.equals(writeUri))
         throw new RuntimeException("Read and write Db must be different.")
 
-      def validEnv = gretlEnvironment.equals("test") || gretlEnvironment.equals("production")
+      def validEnv = gretlEnvironment.equals("test") || gretlEnvironment.equals("production") || gretlEnvironment.equals("development")
       if(!validEnv)
-        throw new RuntimeException("Must only be started from test or prod environment")
+        throw new RuntimeException("Must only be started from test, prod or dev environment")
 
       println 'Reading from ' + readUri + '. Writing to ' + writeUri + '.';
   }
 }
 
-task backupPubDates(type: SqlExecutor, dependsOn: assertValidConf){
+task copyProdSubareas(type: Db2Db, dependsOn: assertValidConf){ 
+    description = 'Kopiert die auf der Produktion vorhandenen Subareas zwecks Konsistenz-Sicherstellung (auf Integration)'
+    sourceDb = [writeUri, writeUser, writePass]
+    targetDb = [readUri, readUser, readPass]
+    transferSets = [
+        new TransferSet('assert_consistent/copy_prod_subareas.sql', 'simi.simitheme_published_sub_area_helper', true)
+    ];
+}
+
+task logMissingSubareas(type: SqlExecutor, dependsOn: copyProdSubareas){
+    doFirst {
+      logger.lifecycle('Bei Subarea-Inkonsistenzen werden folgend die auf der Produktion fehlenden Subareas ausgegeben.')
+    }
+
+    description = 'Gibt Subareas aus, welche auf Integration verwendet werden, aber auf prod nicht vorhanden sind (= Inkonsistenz)'
+    database = [readUri, readUser, readPass]
+    sqlFiles = [
+        'assert_consistent/missing_subareas.sql'
+    ]
+}
+
+task failOnMissingSubareas(type: Db2Db, dependsOn: logMissingSubareas){ 
+    description = 'Provoziert Fehler und Abbruch mittels Insert der inkompatiblen Zeilen von missing_subareas.sql in Tabelle simitheme_published_sub_area'
+    sourceDb = [readUri, readUser, readPass]
+    targetDb = [readUri, readUser, readPass]
+    transferSets = [
+        new TransferSet('assert_consistent/missing_subareas.sql', 'simi.simitheme_published_sub_area', true)
+    ];
+}
+
+task copyProdThemepubs(type: Db2Db, dependsOn: failOnMissingSubareas){ 
+    description = 'Kopiert die auf der Produktion vorhandenen publizierten Themenbereitstellungen zwecks Konsistenz-Sicherstellung (auf Integration)'
+    sourceDb = [writeUri, writeUser, writePass]
+    targetDb = [readUri, readUser, readPass]
+    transferSets = [
+        new TransferSet('assert_consistent/copy_prod_themepubs.sql', 'simi.simitheme_published_sub_area_helper', true)
+    ];
+}
+
+task logMissingThemepubs(type: SqlExecutor, dependsOn: copyProdThemepubs){
+    doFirst {
+      logger.lifecycle('Bei Themenbereitstellungs-Inkonsistenzen werden folgend die produktiven Bereitstellungen ausgegeben, welche auf der Integration nicht vorhanden sind.')
+    }
+
+    description = 'Gibt Themenbereitstellungen aus, welche auf der Prod verwendet werden, aber auf der Integration nicht vorhanden sind (= Inkonsistenz)'
+    database = [readUri, readUser, readPass]
+    sqlFiles = [
+        'assert_consistent/missing_themepubs.sql'
+    ]
+}
+
+task failOnMissingThemepubs(type: Db2Db, dependsOn: logMissingThemepubs){ 
+    description = 'Provoziert Fehler und Abbruch mittels Insert der inkompatiblen Zeilen von missing_themepubs.sql in Tabelle simitheme_published_sub_area'
+    sourceDb = [readUri, readUser, readPass]
+    targetDb = [readUri, readUser, readPass]
+    transferSets = [
+        new TransferSet('assert_consistent/missing_themepubs.sql', 'simi.simitheme_published_sub_area', true)
+    ];
+}
+
+// Rollout Integration -> Produktion
+
+task backupPubDates(type: SqlExecutor, dependsOn: failOnMissingThemepubs){
     database = [writeUri, writeUser, writePass]
     sqlFiles = [
         'pre_copy/clear_helper.sql',
