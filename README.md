@@ -417,6 +417,9 @@ docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schem
 ```
 Dieser Befehl startet den Schema-Job im Ordner `MY_TOPIC_NAME\MY_SCHEMA_DIRECTORY_NAME`.
 
+_Voraussetzung_: Die Ordner _gretljobs_ und _schema-jobs_ müssen sich
+im gleichen übergeordneten Ordner befinden.
+
 Beispiel:
 ```
 docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
