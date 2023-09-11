@@ -346,24 +346,16 @@ docker compose down
 Die Entwicklungs-DB-Container werden gestoppt, die DB-Container gelöscht
 und zugleich auch das von Docker Compose angelegte Docker-Netzwerk gelöscht.
 Die Daten der DBs bleiben aber auch in diesem Fall erhalten,
-Weil die Docker-Volumes nicht gelöscht werden.
+weil die Docker-Volumes nicht gelöscht werden.
 
 #### Daten der Entwicklungs-DB-Container löschen
 ```
-docker volume prune --all --filter 'label=com.docker.compose.project=gretljobs'
+docker volume rm gretljobs_postgresql_data_edit gretljobs_postgresql_data_pub
 ```
 Mit diesem Befehl werden die Volumes der Entwicklungs-DB-Container
 und damit die Daten in den Entwicklungs-DBs gelöscht.
 (Die DB-Container müssen vorgängig mit dem Befehl `docker compose down`
 ebenfalls gelöscht werden.)
-
-Erläuterungen:
-
-* Der *Value* des Labels `com.docker.compose.project`
-  ist nicht zwingend immer `gretljobs`,
-  sondern er ist vom Verzeichnisnamen abhängig,
-  in welchem `docker-compose.yml` liegt;
-  man kann ihn durch `docker volume inspect VOLUMENAME` herausfinden.
 
 #### Verbindungsparameter für die Entwicklungs-DBs
 Die Entwicklungs-DBs sind z.B. aus _DBeaver_ oder _psql_
