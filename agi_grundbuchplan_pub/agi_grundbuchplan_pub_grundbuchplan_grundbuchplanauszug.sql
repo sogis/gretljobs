@@ -21,7 +21,7 @@ WITH
             nfgeometer,
             firma,
             concat(firma, ', ', firma_zusatz, strasse, ', ', ort) AS adresse,
-            concat(tel, ', ', fax, ', ' , email, ', ' , web) AS kontakt,
+            concat(tel, ', ' , email, ', ' , web) AS kontakt,
             strasse,
             ort,
             tel,
