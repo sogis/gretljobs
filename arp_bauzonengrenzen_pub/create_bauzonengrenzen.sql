@@ -102,7 +102,7 @@ bauzone_mit_gewaesser AS
         gewaesser_filter
 )
 SELECT 
-    ST_Union(geometrie) AS geometrie,
+    ST_Multi(ST_Union(geometrie)) AS geometrie,
     bfsnr,
     zonentyp
 FROM 
