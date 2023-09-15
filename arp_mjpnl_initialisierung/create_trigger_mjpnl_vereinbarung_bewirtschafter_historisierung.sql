@@ -4,8 +4,8 @@ CREATE OR REPLACE FUNCTION ${DB_Schema_MJPNL}.historisiere_bewirtschafter() RETU
 BEGIN
     -- Bei der Migration ist gelan_pid_gelan zwischenzeitlich 9999999 - dies soll nicht berücksichtigt werden
     IF NEW.gelan_pid_gelan != OLD.gelan_pid_gelan AND OLD.gelan_pid_gelan != 9999999 THEN
-        INSERT INTO ${DB_Schema_MJPNL}.mjpnl_vereinbarung_bewirtschafter_historie(t_basket, vereinbarungs_nr, gelan_pid_gelan, jahr_bewirtschafterwechsel, vereinbarung)
-        VALUES (NEW.t_basket, NEW.vereinbarungs_nr, OLD.gelan_pid_gelan, date_part('year',now())::int4, NEW.t_id);
+        INSERT INTO ${DB_Schema_MJPNL}.mjpnl_vereinbarung_bewirtschafter_historie(t_basket, vereinbarungs_nr, gelan_pid_gelan, jahr_bewirtschafterwechsel, aenderungsdatum, vereinbarung)
+        VALUES (NEW.t_basket, NEW.vereinbarungs_nr, OLD.gelan_pid_gelan, date_part('year',now())::int4, now(), NEW.t_id);
     END IF;
     RETURN NEW;
 END; $$
