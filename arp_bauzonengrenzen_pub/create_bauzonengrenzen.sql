@@ -47,29 +47,54 @@ WITH bauzonen_ohne_gewaesser AS
         bfs_nr
 )
 ,
+gewaesser_gewaesserraum AS 
+(
+    SELECT
+        (ST_Dump(ST_Union(geometrie))).geom AS geometrie,
+        bfs_nr
+    FROM 
+        arp_nutzungsplanung_pub_v1.nutzungsplanung_grundnutzung AS g
+    WHERE 
+        bfs_nr = ${bfsnr}
+    AND 
+    (
+         substring(typ_kt from 2 for 3)::int = 320 
+         OR 
+         substring(typ_kt from 2 for 3)::int = 329
+    )
+    GROUP BY 
+        bfs_nr 
+)
+,
 gewaesser_intersection AS 
 (
     SELECT 
-        t_id,
-        bfs_nr AS bfsnr,
+        --t_id,
+        bauzonen_ohne_gewaesser.bfsnr,
         bauzonen_ohne_gewaesser.zonentyp,
         --ST_Intersects(bauzonen_ohne_gewaesser.geometrie, g.geometrie), 
         ST_Length(ST_CollectionExtract(ST_Intersection(bauzonen_ohne_gewaesser.geometrie, g.geometrie),2)) / ST_Perimeter(g.geometrie) AS ratio, 
         ST_Perimeter(g.geometrie),
         g.geometrie
     FROM 
-        arp_nutzungsplanung_pub_v1.nutzungsplanung_grundnutzung AS g
+        gewaesser_gewaesserraum AS g
         LEFT JOIN bauzonen_ohne_gewaesser
         ON ST_Intersects(bauzonen_ohne_gewaesser.geometrie, g.geometrie) 
     WHERE 
         bfs_nr = ${bfsnr}
+        /*
         AND 
         (
             substring(typ_kt from 2 for 3)::int = 320  
         )
+        */
         AND 
             ST_Intersection(bauzonen_ohne_gewaesser.geometrie, g.geometrie) IS NOT NULL
 )
+--SELECT 
+--*
+--FROM 
+--gewaesser_intersection
 ,
 gewaesser_filter AS 
 (
@@ -80,7 +105,7 @@ gewaesser_filter AS
     FROM 
         gewaesser_intersection
     WHERE 
-        ratio > 0.9
+        ratio > 0.8
 )
 ,
 bauzone_mit_gewaesser AS 
