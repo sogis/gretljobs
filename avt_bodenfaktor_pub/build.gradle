@@ -24,7 +24,6 @@ task publishData(type: Publisher){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dataIdent = "ch.so.avt.bodenfaktor"
     dbSchema = "avt_bodenfaktor"
-    modelsToPublish = 'SO_AVT_Bodenabsorption_20230824'
     region = ".*" // Wähle alle datasets aus
     // Beim Import der AV Daten findet keine Validierung statt, folglich
     // ist nicht sichergestellt, dass alle Daten valid sind und die Validierung
