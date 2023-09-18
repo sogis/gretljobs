@@ -19,7 +19,7 @@ task selectLandCoverFeatures(type: SqlExecutor) {
  * Exportiere die Daten aus der edit Datenbank nach INTERLIS bzw.
  * GIS Dateien und leite diese an die KGDI weiter
  */
-task publishData(type: Publisher){
+task publishData(type: Publisher, dependsOn: 'selectLandCoverFeatures'){
     dependsOn 'selectLandCoverFeatures'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dataIdent = "ch.so.avt.bodenfaktor"
