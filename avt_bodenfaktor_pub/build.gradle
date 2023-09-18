@@ -22,13 +22,13 @@ task selectLandCoverFeatures(type: SqlExecutor) {
 task publishData(type: Publisher){
     dependsOn 'selectLandCoverFeatures'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dataIdent = "ch.so.avt.bodenabsorption"
-    dbSchema = "avt_bodenabsorption"
+    dataIdent = "ch.so.avt.bodenfaktor"
+    dbSchema = "avt_bodenfaktor"
     region = ".*" // Wähle alle datasets aus
     // Beim Import der AV Daten findet keine Validierung statt, folglich
     // ist nicht sichergestellt, dass alle Daten valid sind und die Validierung
     // muss hier ebenfalls ausgeschaltet werden.
-    validationConfig = "avt_bodenabsorption_validation_config.ini"
+    validationConfig = "avt_bodenfaktor_validation_config.ini"
     userFormats = true
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]

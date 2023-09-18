@@ -51,7 +51,7 @@ WITH bodenfaktorg_lookup AS (
     )
     AS t (id, code, val)
 )
-INSERT INTO avt_bodenabsorption.bodenfaktor (t_basket, t_datasetname, bodenfaktorg, bfsnr, geometrie)
+INSERT INTO avt_bodenfaktor.bodenfaktor (t_basket, t_datasetname, bodenfaktorg, bfsnr, geometrie)
 (
     SELECT
         abb.t_id as t_basket,
@@ -63,9 +63,9 @@ INSERT INTO avt_bodenabsorption.bodenfaktor (t_basket, t_datasetname, bodenfakto
         agi_dm01avso24.bodenbedeckung_boflaeche bb
     LEFT JOIN bodenfaktorg_lookup bfl
         ON bb.art = bfl.code
-    FULL OUTER JOIN avt_bodenabsorption.t_ili2db_dataset abd
+    FULL OUTER JOIN avt_bodenfaktor.t_ili2db_dataset abd
         ON abd.datasetname = bb.t_datasetname
-    FULL OUTER JOIN avt_bodenabsorption.t_ili2db_basket abb
+    FULL OUTER JOIN avt_bodenfaktor.t_ili2db_basket abb
         ON abb.dataset = abd.t_id
 );
 
