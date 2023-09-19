@@ -20,12 +20,6 @@ task auswertungGTFS(type: SqlExecutor){
     sqlFiles = ['insert_gtfs_auswertung.sql']
 }
 
-// task auswertungGTFSAusnahmen(type: SqlExecutor, dependsOn: auswertungGTFS){
-//     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-//     sqlParameters = [currentYear: currentYear]
-//     sqlFiles = ['insert_gtfs_auswertung_ausnahmen.sql']
-// }
-
 task auswertungGTFSGewichtung(type: SqlExecutor, dependsOn: auswertungGTFS){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [currentYear: currentYear]
