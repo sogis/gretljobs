@@ -308,8 +308,6 @@ INSERT INTO
         trip_headsign = 'Luzern'
     AND
         substring(linienname from 1 for 4) = 'L510'
-    AND
-        route_desc = 'RE'
     GROUP BY
         stop_name,
         route_id,
