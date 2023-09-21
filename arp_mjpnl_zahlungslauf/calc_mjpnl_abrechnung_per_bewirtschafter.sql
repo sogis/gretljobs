@@ -1,5 +1,5 @@
 /* Zusammenzug Zahlungen per Bewirtschafter, Auszahlungsjahr und Status Zahlung */
-/* Entspricht arp_mjpnl_migration/mjpnl_postprocessing_abrechnung_per_bewirtschafter.sql muss allerdings nur die diesjährigen Leistungen berücksichtigen */
+/* Entspricht arp_mjpnl_migration/mjpnl_postprocessing_abrechnung_per_bewirtschafter.sql muss allerdings nur die diesjährigen Leistungen berücksichtigen - somit stimmt auch die Historisierung, weil es den aktuellen Bewirtschafter nimmt. */
 
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_bewirtschafter 
 (t_basket, gelan_pid_gelan, gelan_person, gelan_ortschaft, gelan_iban, betrag_total, status_abrechnung,
