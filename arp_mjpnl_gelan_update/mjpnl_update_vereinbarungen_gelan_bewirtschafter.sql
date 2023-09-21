@@ -14,5 +14,5 @@ UPDATE
 		),9999999)
      )
  WHERE
-  vbg.gelan_pid_gelan = 9999999 AND vbg.gelan_bewe_id != '9999999'
+  vbg.uebersteuerung_bewirtschafter IS FALSE
 ;
