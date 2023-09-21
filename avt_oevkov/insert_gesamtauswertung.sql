@@ -41,9 +41,8 @@ WITH gtfs_abfahrten AS (
         FROM
              avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs AS auswertung
              LEFT JOIN avt_oevkov_${currentYear}_v1.auswertung_abfahrten_korrigiert AS korrektur
-                 ON (auswertung.linie = korrektur.linie
-                 AND (auswertung.haltestellenname = korrektur.haltestellenname OR korrektur.haltestellenname = '--- Alle')
-                    )
+                 ON auswertung.linie = korrektur.linie
+                    AND (auswertung.haltestellenname = korrektur.haltestellenname OR korrektur.haltestellenname = '--- Alle')
         GROUP BY
             auswertung.haltestellenname,
             korrektur.haltestellenname,
@@ -146,15 +145,28 @@ WITH gtfs_abfahrten AS (
             avt_oevkov_${currentYear}_v1.sachdaten_haltestelle_anrechnung AS anrechnung
             LEFT JOIN gtfs_abfahrten
                 ON anrechnung.haltestellenname = gtfs_abfahrten.haltestellenname
-            LEFT JOIN avt_oevkov_${currentYear}_v1.sachdaten_verkehrsmittel AS avt_verkehrsmittel
-                ON avt_verkehrsmittel.verkehrsmittel = gtfs_abfahrten.verkehrsmittel
             LEFT JOIN avt_oevkov_${currentYear}_v1.auswertung_abfahrten_korrigiert AS korrektur
                  ON korrektur.haltestellenname = gtfs_abfahrten.haltestellenname
         WHERE
             anrechnung.haltestellenname IN (
-                SELECT
-                    haltestellenname
-                FROM
-                    avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs
-           )
+               SELECT
+                   haltestellenname
+               FROM
+                   avt_oevkov_${currentYear}_v1.auswertung_auswertung_gtfs
+            )
+        GROUP BY
+            anrechnung.gemeindename,
+            gtfs_abfahrten.haltestellenname,
+            gtfs_abfahrten.unternehmer,
+            korrektur.unternehmer,
+            gtfs_abfahrten.linie,
+            gtfs_abfahrten.verkehrsmittel,
+            gtfs_abfahrten.gewichtung,
+            gtfs_abfahrten.gewichtung_korrigiert,
+            anrechnung.anrechnung,
+            anzahl_abfahrten_linie,
+            abfahrten_gtfs_korrigiert,
+            abfahrten_ungewichtet,
+            abfahrten_gewichtet,
+            gtfs_abfahrten.bemerkungen
 ;
