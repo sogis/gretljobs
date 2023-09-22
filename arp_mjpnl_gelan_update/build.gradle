@@ -13,7 +13,7 @@ import java.io.File
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'BewirtschafterZuVereinbarungZuweisen'
+defaultTasks 'KulturflaechenInVereinbarungZuweisen'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def DB_Schema_MJPNL = "arp_mjpnl_v1"
@@ -78,4 +78,11 @@ task BewirtschafterZuVereinbarungZuweisen(type: SqlExecutor,dependsOn: BetriebZu
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
     sqlFiles = ['mjpnl_update_vereinbarungen_gelan_bewirtschafter.sql']
+}
+
+task KulturflaechenInVereinbarungZuweisen(type: SqlExecutor,dependsOn: BewirtschafterZuVereinbarungZuweisen) {
+    description = "GELAN Kulturflaechen in Vereinbarung abfüllen."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
+    sqlFiles = ['mjpnl_update_vereinbarungen_gelan_kulturflaechen.sql']
 }
