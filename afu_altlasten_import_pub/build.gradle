@@ -40,12 +40,11 @@ task unzipKbsData(type: Copy, dependsOn: 'downloadKbsData') {
         }
 }
 
-task importKbsData(type: Ili2pgReplace, dependsOn: 'unzipKbsData') {
+task importKbsData(type: Ili2pgImport, dependsOn: 'unzipKbsData') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'afu_altlasten_pub_v2'
     models = 'SO_AFU_KbS_Publikation__20230104'
     dataFile = file(Paths.get(pathToUnzipFolder.toString(), kbsData + '.xtf'))
-    dataset = kbsData
     strokeArcs = true
 }
 
@@ -68,12 +67,11 @@ task unzipKbsRestrictedData(type: Copy, dependsOn: 'downloadKbsRestrictedData') 
         }
 }
 
-task importKbsRestrictedData(type: Ili2pgReplace, dependsOn: 'unzipKbsRestrictedData') {
+task importKbsRestrictedData(type: Ili2pgImport, dependsOn: 'unzipKbsRestrictedData') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'afu_altlasten_restricted_pub_v1'
     models = 'SO_AFU_KbS_Publikation_restricted_20221209'
     dataFile = file(Paths.get(pathToUnzipFolder.toString(), kbsDataRestricted + '.xtf'))
-    dataset = kbsDataRestricted
     strokeArcs = true
 }
 
@@ -94,13 +92,13 @@ task transferKbsToOldPubSchema(type: Db2Db, dependsOn: 'refreshSolrKbsRestricted
     ];
 }
 
-task transferKbsToSogisDb(type: Db2Db, dependsOn: 'transferKbsToOldPubSchema') {
-    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
-    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    transferSets = [
-            new TransferSet('afu_altlasten_pub_sogis.sql', 'auszug_akt_altlasten17785.altlasten_belastete_standorte', true)
-    ];
-}
+// task transferKbsToSogisDb(type: Db2Db, dependsOn: 'transferKbsToOldPubSchema') {
+//     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+//     targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+//     transferSets = [
+//             new TransferSet('afu_altlasten_pub_sogis.sql', 'auszug_akt_altlasten17785.altlasten_belastete_standorte', true)
+//     ];
+// }
 
 task downloadMgdm(type: Download, dependsOn: 'transferKbsToSogisDb') {
     src "https://altlast4web.verw.rootso.org/interlis_exports/mgdm/data.zip"
