@@ -100,7 +100,7 @@ task transferKbsToOldPubSchema(type: Db2Db, dependsOn: 'refreshSolrKbsRestricted
 //     ];
 // }
 
-task downloadMgdm(type: Download, dependsOn: 'transferKbsToSogisDb') {
+task downloadMgdm(type: Download, dependsOn: 'transferKbsToOldPubSchema') {
     src "https://altlast4web.verw.rootso.org/interlis_exports/mgdm/data.zip"
     dest pathToTempFolder
     overwrite true
