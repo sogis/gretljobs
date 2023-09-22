@@ -1,4 +1,4 @@
-/* Zusammenzug Zahlungen per Bewirtschafter, Auszahlungsjahr und Status Zahlung */
+/* Zusammenzug Zahlungen per Bewirtschafter, Auszahlungsjahr und Status Zahlung nur für das Jahr 2023 (da wir die Historisierung der Bewirtschafter der Vorjahren nicht haben).*/
 
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_bewirtschafter 
 (t_basket, gelan_pid_gelan, gelan_person, gelan_ortschaft, gelan_iban, betrag_total, status_abrechnung,
@@ -59,7 +59,7 @@ FROM
      ON vbg.vereinbarungs_nr = abrg_vbg.vereinbarungs_nr
   WHERE 
     abrg_vbg.gesamtbetrag IS NOT NULL 
-    AND abrg_vbg.auszahlungsjahr IS NOT NULL
+    AND abrg_vbg.auszahlungsjahr = 2023
   GROUP BY pers.pid_gelan, pers.iban, pers.name_vorname, pers.ortschaft, abrg_vbg.auszahlungsjahr
   ORDER BY pers.pid_gelan ASC
 ;

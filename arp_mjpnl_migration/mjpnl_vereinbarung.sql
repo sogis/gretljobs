@@ -156,6 +156,7 @@ FROM mjpnatur.flaechen mjpfl
       ON vbg.statuscd = stat.statuscd AND stat.statustypid = 'FLA'
 WHERE
     mjpfl.archive = 0
+    AND vbg.vbnr IS NOT NULL -- um zu verhindern, dass "tote" links leere Vereinbarungen mitziehen
     AND vbggeom.wkb_geometry IS NOT NULL
     AND ST_IsValid(vbggeom.wkb_geometry)
     AND Round((ST_Area(vbggeom.wkb_geometry) / 10000)::NUMERIC,2) > 0 --IGNORE small OR emptry geometries

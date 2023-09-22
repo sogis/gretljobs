@@ -26,7 +26,7 @@ INSERT
        --ignored: bewirtschaftung_hecke_typ_niederhecke,
        --ignored: bewirtschaftung_hecke_typ_hochhecke,
        --ignored: bewirtschaftung_hecke_typ_baumhecke,
-       --ignored: bewirtschaftung_hecke_typ_lebhag,
+       bewirtschaftung_hecke_typ_lebhag,
        --ignored: bewirtschaftung_hecke_unterhalt,
        --ignored: bewirtschaftung_hecke_unterhaltsintervall,
        bewirtschaftung_hecke_letzterunterhalt,
@@ -75,6 +75,7 @@ WITH tmp AS (
         t_id,
         t_basket,
         vereinbarungs_nr,
+        vereinbarungsart,
         flaeche,
         (string_to_array(bemerkung,'§'))[2]::jsonb AS old_attr
     FROM ${DB_Schema_MJPNL}.mjpnl_vereinbarung
@@ -101,6 +102,7 @@ SELECT
    FALSE AS einstufungbeurteilungistzustand_hoehlenbaeume_biotpbm_ttholz,
    FALSE AS einstufungbeurteilungistzustand_sitzwarte,
    0 AS einstufungbeurteilungistzustand_abgeltung_ha,
+   CASE WHEN vereinbarungsart = 'Lebhag' THEN TRUE ELSE FALSE END AS bewirtschaftung_hecke_typ_lebhag,
    substring(old_attr->>'letzter_unterhalt', 0, 5)::integer AS bewirtschaftung_hecke_letzterunterhalt,
    FALSE AS bewirtschaftung_krautsaum,
    FALSE AS bewirtschaftung_krautsaum_schnittzeitpunkte,
@@ -108,7 +110,7 @@ SELECT
    FALSE AS bewirtschaftung_krautsaum_keine_beweidung,
    FALSE AS bewirtschaftung_krautsaum_beweidung_nach_absprache,
    0 AS bewirtschaftung_krautsaum_abgeltung_ha,
-   (old_attr->>'hecken_laufmeter')::integer AS bewirtschaftung_lebhag_laufmeter,
+   CASE WHEN vereinbarungsart = 'Lebhag' THEN (old_attr->>'hecken_laufmeter')::integer ELSE 0 END AS bewirtschaftung_lebhag_laufmeter,
    FALSE AS erschwernis_massnahme1,
    0 AS erschwernis_massnahme1_abgeltung_ha,
    FALSE AS erschwernis_massnahme2,
