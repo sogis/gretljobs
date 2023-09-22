@@ -12,6 +12,7 @@ SELECT
   ARRAY[]::varchar[] AS gemeinde, --im Postprocessing zu ersetzen
   ARRAY[]::varchar[] AS gb_nr, --im Postprocessing zu ersetzen
   ARRAY[]::varchar[] AS flurname, --im Postprocessing zu ersetzen
+  ARRAY[]::varchar[] AS kultur_id, --im Postprocessing zu ersetzen
   -- die Unterscheidung ob Weide_LN oder Weide_SoeG wird im Post-processing gemacht
   -- Standardmässig werden alle Weiden der Weide_LN zu
   CASE

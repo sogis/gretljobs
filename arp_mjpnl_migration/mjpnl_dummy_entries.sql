@@ -2,7 +2,7 @@
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_vereinbarung
 (t_id, t_basket, t_ili_tid, vereinbarungs_nr, vereinbarungs_nr_alt, flaechen_id_alt,
 geometrie, gelan_pid_gelan, gelan_bewe_id, uebersteuerung_bewirtschafter, bewe_id_geprueft,
-bfs_nr, gemeinde, gb_nr, flurname, vereinbarungsart, ist_nutzungsvereinbarung,
+bfs_nr, gemeinde, gb_nr, flurname, kultur_id, vereinbarungsart, ist_nutzungsvereinbarung,
 flaeche, rrb_nr, rrb_publiziert_ab, status_vereinbarung, soemmerungsgebiet, mjpnl_version,
 kontrollintervall, startdatum, enddatum, bemerkung, uzl_subregion, dateipfad_oder_url, erstellungsdatum,
 operator_erstellung, aenderungsdatum, operator_aenderung)
@@ -22,6 +22,7 @@ VALUES(
   '{"Dummy-Gemeinde"}',
   '{"Dummy-GBNr"}',
   '{"Dummy-Flurname"}',
+  '{"Dummy-KulturId"}',
   'Wiese',
   false,
   1,

@@ -1,7 +1,7 @@
 /* Zusammenzug Zahlungen per Vereinbarung und Datum der Auszahlung */
 
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung 
-  (t_basket, vereinbarungs_nr, gelan_pid_gelan, gelan_bewe_id, gb_nr, flurnamen, gemeinde, flaeche, anzahl_baeume, betrag_flaeche, betrag_baeume, betrag_pauschal_regulaer, betrag_pauschal_einmalig_ausbezahlt, betrag_pauschal_einmalig_freigegeben, gesamtbetrag,
+  (t_basket, vereinbarungs_nr, gelan_pid_gelan, gelan_bewe_id, gb_nr, flurnamen, kultur_ids, gemeinde, flaeche, anzahl_baeume, betrag_flaeche, betrag_baeume, betrag_pauschal_regulaer, betrag_pauschal_einmalig_ausbezahlt, betrag_pauschal_einmalig_freigegeben, gesamtbetrag,
    auszahlungsjahr, status_abrechnung, datum_abrechnung, bewirtschaftabmachung_schnittzeitpunkt_1, bewirtschaftabmachung_messerbalkenmaehgeraet, bewirtschaftabmachung_herbstweide, vereinbarung, migriert)
 SELECT
   vbg.t_basket,
@@ -10,6 +10,7 @@ SELECT
   vbg.gelan_bewe_id,
   array_to_string(vbg.gb_nr,',') AS gb_nr,
   array_to_string(vbg.flurname,',') AS flurnamen,
+  array_to_string(vbg.kultur_id,',') AS kultur_ids,
   array_to_string(vbg.gemeinde,',') AS gemeinde,
   vbg.flaeche,
   COALESCE(SUM(lstg_stueck.anzahl_einheiten),0) AS anzahl_baeume,
@@ -68,7 +69,7 @@ FROM
     -- berücksichtige nur relevante status (in_bearbeitung wird berücksichtigt, aber der Status wird übernommen)
     AND lstg.status_abrechnung != 'abgeltungslos'
     AND lstg.vereinbarung != 9999999
-  GROUP BY vbg.t_id, vbg.vereinbarungs_nr, vbg.gelan_bewe_id, vbg.gb_nr, vbg.flurname, vbg.gemeinde, vbg.flaeche,
+  GROUP BY vbg.t_id, vbg.vereinbarungs_nr, vbg.gelan_bewe_id, vbg.gb_nr, vbg.flurname, vbg.kultur_id, vbg.gemeinde, vbg.flaeche,
            lstg.auszahlungsjahr, bw.bewirtschaftabmachung_schnittzeitpunkt_1, bw.bewirtschaftabmachung_messerbalkenmaehgeraet, bw.bewirtschaftabmachung_herbstweide
   ORDER BY  vbg.vereinbarungs_nr ASC
   ;
