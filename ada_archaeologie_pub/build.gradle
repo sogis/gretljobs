@@ -3,13 +3,6 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-/*
-docker compose run --rm -u $UID gretl --project-dir=ada_archaeologie_pub
-
-docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
-  gretl -PtopicName=ada_archaeologie -PschemaDirName=schema dropSchema createSchema configureSchema
-*/
-
 defaultTasks 'refreshSolr'
 
 def edit = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -30,7 +23,6 @@ task updateRelationTids(type: SqlExecutor, dependsOn: importFromImdas){
     description = 'Aktualisiert die t_id Beziehungsspalten aufgrund der Fst-Nummer / RRB-Nummer'
     database = edit
     sqlFiles = [
-            //'update_relation/tmp_update_fakerefs.sql', //Todo entfernen
             'update_relation/attr_geo.sql', 
             'update_relation/fst_rrb.sql'
         ]
@@ -64,8 +56,7 @@ task publicInSiedlung(type: SqlExecutor, dependsOn: copyToPubDb){
     ]
 }
 
-//task setEnumTxt(type: SqlExecutor, dependsOn: publicInSiedlung){
-task setEnumTxt(type: SqlExecutor, dependsOn: copyToPubDb){
+task setEnumTxt(type: SqlExecutor, dependsOn: publicInSiedlung){
     description = 'Setzt die sprechenden Bezeichnungen *_txt der Enumerationen aller Fundstellen-Tabellen'
     database = pub
     sqlFiles = ['enum_txt/update_txt.sql']
@@ -88,16 +79,3 @@ task publishPub(type: Publisher, dependsOn: 'setEnumTxt') {
 task refreshSolr(type:Exec, dependsOn:'publishPub') {
 	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.ada.archaeologie.flaechenfundstellen,ch.so.ada.archaeologie.flaechenfundstellen_geschuetzt,ch.so.ada.archaeologie.punktfundstellen,ch.so.ada.archaeologie.punktfundstellen_geschuetzt' 
 }
-
-/*
-task tmpTransferLocal(type: Db2Db){
-    description = 'Temporär zwecks Kopieren der Tabelleninhalte zwischen den Umgebungen'
-    sourceDb = ['jdbc:postgresql://geodb.rootso.org/edit', 'fuu', 'bar']
-    targetDb = edit
-    transferSets = [
-        new TransferSet('tmptransfer/flaeche.sql', 'ada_archaeologie_v1.geo_flaeche', true),
-        new TransferSet('tmptransfer/ablage_gemeinde.sql', 'ada_archaeologie_v1.geo_ablage_gemeinde', true),
-        new TransferSet('tmptransfer/schutzbereich.sql', 'ada_archaeologie_v1.geo_schutzbereich_innenstadt', true)
-    ]
-}
-*/
