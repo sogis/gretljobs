@@ -8,7 +8,7 @@ SELECT
     geschuetzt::varchar as geschuetzt_txt, -- Attribut wird von schema-job angelegt. Setzen auf dummy-wert.
     qualitaet_lokalisierung, 
     qualitaet_lokalisierung as qualitaet_lokalisierung_txt,
-    kurzbeschreibung, 
+    substring(kurzbeschreibung FOR 3000) as kurzbeschreibung, 
     gemeindename_ablage, 
     rrb_nummer,
     g.amultipolygon 
