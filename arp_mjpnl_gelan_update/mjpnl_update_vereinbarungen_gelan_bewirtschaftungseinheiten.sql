@@ -9,9 +9,11 @@ FROM
 JOIN
     ${DB_Schema_MJPNL}.betrbsdttrktrdten_bewirtschaftungseinheit bw
   ON
-    ST_Within(ST_PointOnSurface(vbg.geometrie),bw.geometrie)
+    ST_Intersects(vbg.geometrie, bw.geometrie)
 WHERE 
   vbg.gelan_bewe_id != bw.bewe_id
+ORDER BY ST_Area(ST_Intersection(vbg.geometrie, bw.geometrie)) DESC
+LIMIT 1
 );
 
 --GELAN Bewirtschaftungseinheit zuweisen
@@ -24,7 +26,9 @@ UPDATE
         FROM
            ${DB_Schema_MJPNL}.betrbsdttrktrdten_bewirtschaftungseinheit bw
          WHERE
-           ST_Within(ST_PointOnSurface(vbg.geometrie),bw.geometrie)
+            ST_Intersects(vbg.geometrie, bw.geometrie)     
+            ORDER BY ST_Area(ST_Intersection(vbg.geometrie, bw.geometrie)) DESC
+            LIMIT 1
         ),'9999999')
      )
 ;
