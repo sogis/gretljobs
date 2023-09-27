@@ -8,7 +8,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 
 
-defaultTasks 'uploadMgdm'
+defaultTasks 'publishPub'
 
 
 // Download-Verzeichnis
@@ -119,4 +119,17 @@ task uploadMgdm(dependsOn: 'downloadMgdm') {
             throw new GradleException()
         }
     }
+}
+
+task publishPub(type: Publisher, dependsOn: 'uploadMgdm'){
+    dataIdent = "ch.so.afu.belastete_standorte"
+    userFormats = true
+    database = [dbUriPub,dbUserPub,dbPwdPub]
+    dbSchema = "afu_altlasten_pub_v2"
+    modelsToPublish = "SO_AFU_KbS_Publikation__20230104"
+    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
