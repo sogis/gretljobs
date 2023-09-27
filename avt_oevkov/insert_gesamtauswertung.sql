@@ -26,13 +26,11 @@ WITH gtfs_abfahrten AS (
             auswertung.verkehrsmittel,
             auswertung.gewichtung,
             CASE
-                WHEN korrektur.linie = auswertung.linie
-                    AND
-                        korrektur.haltestellenname = '--- Alle'
+                -- Gewichtung kann nur für eine ganze Linie geändert werden
+                WHEN korrektur.linie = auswertung.linie AND korrektur.haltestellenname = '--- Alle'
                     THEN
                         korrektur.gewichtung
                 ELSE
-                -- Gewichtung kann nur für eine ganze Linie geändert werden
                     NULL
             END AS gewichtung_korrigiert,
             sum(auswertung.anzahl_abfahrten_linie) AS anzahl_abfahrten_linie,
@@ -60,8 +58,9 @@ WITH gtfs_abfahrten AS (
             anrechnung.gemeindename,
             gtfs_abfahrten.haltestellenname,
             CASE
+                -- Unternehmer kann nur für eine ganze Linie geändert werden
                 WHEN
-                     korrektur.unternehmer <> gtfs_abfahrten.unternehmer
+                     korrektur.unternehmer <> gtfs_abfahrten.unternehmer AND korrektur.haltestellenname = '--- Alle'
                      THEN
                          korrektur.unternehmer
                 ELSE
@@ -157,6 +156,7 @@ WITH gtfs_abfahrten AS (
         GROUP BY
             anrechnung.gemeindename,
             gtfs_abfahrten.haltestellenname,
+            korrektur.haltestellenname,
             gtfs_abfahrten.unternehmer,
             korrektur.unternehmer,
             gtfs_abfahrten.linie,
