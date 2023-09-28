@@ -27,7 +27,7 @@ auf die hochgeladene Datei zugegriffen werden.
 
 ## Nach dem Start des GRETL-Jobs in Jenkins eine Datei hochladen und zusätzlich den Dataset-Namen (z.B. BFS-Nummer) angeben
 
-Vorlage: [arp_npl_import/Jenkinsfile](arp_npl_import/Jenkinsfile)
+Vorlage: [arp_nutzungsplanung_import/Jenkinsfile](arp_nutzungsplanung_import/Jenkinsfile)
 
 Auch hier wird man direkt nach dem Start des Jobs gefragt,
 welche Datei man hochladen möchte, und man muss einen Dataset-Namen angeben.
