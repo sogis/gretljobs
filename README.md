@@ -174,7 +174,6 @@ parameters.fileParam=filename.xtf
 parameters.stringParams=parameterName;default value;parameter description
 triggers.upstream=other_job_name
 authorization.permissions=gretl-users-barpa
-nodeLabel=gretl-bigtmp
 ```
 
 Mit `logRotator.numToKeep` kann eingestellt werden, wieviele Ausführungen des Jobs aufbewahrt werden sollen, d.h. für wieviele Ausführungen beispielsweise das Logfile vorgehalten wird. Standardwert ist 15. Wenn man diese Einstellung weglässt, werden also die 15 letzten Ausführungen aufbewahrt.
@@ -224,16 +223,16 @@ Folgende GRETL-spezifischen Benutzergruppen stehen im Moment zur Verfügung:
 
 Allerdings können auch diejenigen Benutzer oder Gruppen, welche durch globale Berechtigungseinstellungen in Jenkins dazu bereichtigt sind, den Job starten. Wenn man diese Einstellung weglässt, ist es von den globalen Berechtigungseinstellungen abhängig, wer den Job manuell starten darf.
 
-Mit `nodeLabel` kann bestimmt werden,
+Zudem kann mit der Eigenschaft `nodeLabel` bestimmt werden,
 auf welchem Node der Job ausgeführt werden soll.
-Erlaubt ist hier der Wert `gretl-bigtmp`
-damit der Job auf einem Jenkins Agent
-mit einem grösseren `/tmp`-Verzeichnis ausgeführt wird.
-Und der Wert `gretl-2.2`,
+Möglich ist hier der Wert `gretl-2.2`,
 damit der Job auf einem Jenkins Agent
 mit GRETL Version 2.2 ausgeführt wird.
 (Im Moment zeigt allerdings auch der normale Jenkins Agent
 auf Version 2.2; es gibt also keinen Unterschied.)
+Diese Property dient primär dazu,
+dass bei einem grösseren Versionssprung von GRETL
+nicht alle Jobs gleichzeitig umgestellt werden müssen.
 Lässt man diese Property weg,
 wird der Job auf dem normalen Jenkins Agent
 (mit dem Label `gretl`) ausgeführt.
