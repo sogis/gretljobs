@@ -22,7 +22,7 @@ INSERT INTO
         typ 
     )
 SELECT 
-    9999 AS identifikator, 
+    100000 AS identifikator, 
     geometrie AS geometrie_flaeche, 
     'Kanton' AS typ
 FROM 
