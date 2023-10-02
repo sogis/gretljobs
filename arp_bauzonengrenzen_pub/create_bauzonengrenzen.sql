@@ -69,7 +69,6 @@ gewaesser_gewaesserraum AS
 gewaesser_intersection AS 
 (
     SELECT 
-        --t_id,
         bauzonen_ohne_gewaesser.bfsnr,
         bauzonen_ohne_gewaesser.zonentyp,
         --ST_Intersects(bauzonen_ohne_gewaesser.geometrie, g.geometrie), 
@@ -91,10 +90,6 @@ gewaesser_intersection AS
         AND 
             ST_Intersection(bauzonen_ohne_gewaesser.geometrie, g.geometrie) IS NOT NULL
 )
---SELECT 
---*
---FROM 
---gewaesser_intersection
 ,
 gewaesser_filter AS 
 (
@@ -135,36 +130,3 @@ FROM
 GROUP BY
     zonentyp, bfsnr
 ;
-
--- SELECT 
---     ST_Multi(ST_Union(geometrie, 0.001)),
---     bfs_nr AS bfsnr,
---     'Bauzone' AS zonentyp
--- FROM 
---     arp_nutzungsplanung_pub_v1.nutzungsplanung_grundnutzung
--- WHERE 
---     bfs_nr = ${bfsnr}
---     AND 
---     (
---         substring(typ_kt from 2 for 2)::int < 20  
---     )
--- GROUP BY
---     bfs_nr
-
--- UNION ALL
-
--- SELECT 
---     ST_Multi(ST_Union(geometrie, 0.001)),
---     bfs_nr AS bfsnr,
---     'Reservezone' AS zonentyp
--- FROM 
---     arp_nutzungsplanung_pub_v1.nutzungsplanung_grundnutzung
--- WHERE 
---     bfs_nr = ${bfsnr}
---     AND 
---     (
---         substring(typ_kt from 2 for 2)::int = 43
---     )
--- GROUP BY
---     bfs_nr
--- ;
