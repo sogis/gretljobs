@@ -19,7 +19,8 @@ def dbSchemaPlanregister = "arp_nutzungsplanung_planregister_pub_v1"
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def planregisterFileBaseName = "ch.so.arp.planregister"
-def planregisterXtfFileName = planregisterFileBaseName+".xml"
+def planregisterXmlFileName = planregisterFileBaseName+".xml"
+def planregisterXtfFileName = planregisterFileBaseName+".xtf"
 def planregisterZipFileName = planregisterFileBaseName+".xml.gz"
 
 // task transfer_planregister_alles(type: Db2Db) {
@@ -47,13 +48,13 @@ task exportPlanregisterPub(type: Ili2pgExport) {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     models = iliModelPlanregister
     dbschema = dbSchemaPlanregister
-    dataFile = file(Paths.get(pathToTempFolder, planregisterXtfFileName))
+    dataFile = file(Paths.get(pathToTempFolder, planregisterXmlFileName))
     disableValidation = true
     // Kein Dataset, weil alle Daten enthalten sein sollen. 
 }
 
 task zipPlanregister(type: Gzip, dependsOn: 'exportPlanregisterPub') {
-    dataFile = file(Paths.get(pathToTempFolder, planregisterXtfFileName)) 
+    dataFile = file(Paths.get(pathToTempFolder, planregisterXmlFileName)) 
     gzipFile = file(Paths.get(pathToTempFolder, planregisterZipFileName)) 
 }
 
@@ -67,15 +68,18 @@ task uploadPlanregister(type: Curl, dependsOn: 'zipPlanregister') {
     expectedStatusCode = 202
 }
 
-task publishPub(type: Publisher, dependsOn:'uploadPlanregister') {
-//task publishPub(type: Publisher) {    
+// Datenbezug kennt *.xml nicht, nur *.xtf
+task renameXml2Xtf(type: Copy, dependsOn: 'uploadPlanregister') {
+    from file(Paths.get(pathToTempFolder, planregisterXmlFileName))
+    into file(Paths.get(pathToTempFolder))
+    rename { String fileName ->
+        fileName.replace("xml", "xtf")
+    }
+}
+
+task publishPub(type: Publisher, dependsOn:'renameXml2Xtf') {
     dataIdent = dataIdentifier
     validationConfig =  "config.ini"
-
-    //userFormats = true
-    //database = [dbUriPub,dbUserPub,dbPwdPub]
-    //dbSchema = "arp_bauzonengrenzen_pub"
-    //modelsToPublish = "SO_ARP_Bauzonengrenzen_20210120"
 
     // Bewusst nur exportiert und auf files.geo.so.ch bereitgestellt.
     // Damit stehen sie v.a. uns als XTF zur Verfügung. Müsste mit ARP
@@ -88,5 +92,5 @@ task publishPub(type: Publisher, dependsOn:'uploadPlanregister') {
     //kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     //kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
-    //if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
