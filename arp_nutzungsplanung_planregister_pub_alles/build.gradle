@@ -9,9 +9,11 @@ import java.io.File
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'uploadPlanregister'
+defaultTasks 'publishPub'
 
 //Für Planregister
+def dataIdentifier = "ch.so.arp.nutzungsplanung_planregister"
+
 def iliModelPlanregister = "SO_Nutzungsplanung_Planregister_Publikation_20221115"
 def dbSchemaPlanregister = "arp_nutzungsplanung_planregister_pub_v1"
 
@@ -62,4 +64,26 @@ task uploadPlanregister(type: Curl, dependsOn: 'zipPlanregister') {
     user = digiplanUser
     password = digiplanPwd
     expectedStatusCode = 202
+}
+
+task publishPub(type: Publisher, dependsOn:'uploadPlanregister') {
+//task publishPub(type: Publisher) {    
+    dataIdent = dataIdentifier
+    //userFormats = true
+    //database = [dbUriPub,dbUserPub,dbPwdPub]
+    //dbSchema = "arp_bauzonengrenzen_pub"
+    //modelsToPublish = "SO_ARP_Bauzonengrenzen_20210120"
+
+    // Bewusst nur exportiert und auf files.geo.so.ch bereitgestellt.
+    // Damit stehen sie v.a. uns als XTF zur Verfügung. Müsste mit ARP
+    // abgesprochen werden, ob sie "richtig" öffentlich gemacht werden 
+    // sollen.
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    sourcePath = file(Paths.get(pathToTempFolder, planregisterXtfFileName))
+
+    //target = ["/tmp/gretl-share"]
+    //kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    //kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    //if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
