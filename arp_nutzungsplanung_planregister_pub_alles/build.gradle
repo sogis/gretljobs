@@ -81,10 +81,6 @@ task publishPub(type: Publisher, dependsOn:'renameXml2Xtf') {
     dataIdent = dataIdentifier
     validationConfig =  "config.ini"
 
-    // Bewusst nur exportiert und auf files.geo.so.ch bereitgestellt.
-    // Damit stehen sie v.a. uns als XTF zur Verfügung. Müsste mit ARP
-    // abgesprochen werden, ob sie "richtig" öffentlich gemacht werden 
-    // sollen.
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     sourcePath = file(Paths.get(pathToTempFolder, planregisterXtfFileName))
 
