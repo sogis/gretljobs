@@ -37,14 +37,10 @@ task publishPub(type: Publisher, dependsOn:'createAllData') {
     dbSchema = "arp_bauzonengrenzen_pub"
     modelsToPublish = "SO_ARP_Bauzonengrenzen_20210120"
 
-    // Bewusst nur exportiert und auf files.geo.so.ch bereitgestellt.
-    // Damit stehen sie v.a. uns als XTF zur Verfügung. Müsste mit ARP
-    // abgesprochen werden, ob sie "richtig" öffentlich gemacht werden 
-    // sollen.
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     //target = ["/tmp/gretl-share"]
-    //kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-    //kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
