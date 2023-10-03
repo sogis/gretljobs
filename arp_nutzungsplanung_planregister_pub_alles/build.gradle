@@ -70,6 +70,8 @@ task uploadPlanregister(type: Curl, dependsOn: 'zipPlanregister') {
 task publishPub(type: Publisher, dependsOn:'uploadPlanregister') {
 //task publishPub(type: Publisher) {    
     dataIdent = dataIdentifier
+    validationConfig =  "config.ini"
+
     //userFormats = true
     //database = [dbUriPub,dbUserPub,dbPwdPub]
     //dbSchema = "arp_bauzonengrenzen_pub"
