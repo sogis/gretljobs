@@ -23,28 +23,28 @@ def planregisterXmlFileName = planregisterFileBaseName+".xml"
 def planregisterXtfFileName = planregisterFileBaseName+".xtf"
 def planregisterZipFileName = planregisterFileBaseName+".xml.gz"
 
-// task transfer_planregister_alles(type: Db2Db) {
-//     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-//     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
-//     transferSets = [
-//             new TransferSet('insert_dataset.sql', 'arp_nutzungsplanung_planregister_pub_v1.t_ili2db_dataset', true),
-//             new TransferSet('insert_basket.sql', 'arp_nutzungsplanung_planregister_pub_v1.t_ili2db_basket', true),
-//             new TransferSet('insert_arp_nutzungsplanung_planregister_pub_grundwasserschutz.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', true),
-//             new TransferSet('insert_arp_nutzungsplanung_planregister_pub_kantonal.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', false),
-//             new TransferSet('insert_arp_nutzungsplanung_planregister_pub_kommunal.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', false),
-//             new TransferSet('insert_arp_nutzungsplanung_planregister_pub_naturreservate.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', false),
-//             new TransferSet('insert_arp_nutzungsplanung_planregister_pub_waldgrenze.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', false)
-//     ];
-// }
+task transfer_planregister_alles(type: Db2Db) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('insert_dataset.sql', 'arp_nutzungsplanung_planregister_pub_v1.t_ili2db_dataset', true),
+            new TransferSet('insert_basket.sql', 'arp_nutzungsplanung_planregister_pub_v1.t_ili2db_basket', true),
+            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_grundwasserschutz.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', true),
+            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_kantonal.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', false),
+            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_kommunal.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', false),
+            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_naturreservate.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', false),
+            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_waldgrenze.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', false)
+    ];
+}
 
-// task deleteData_doppelte_dokumente(type: SqlExecutor, dependsOn:transfer_planregister_alles) {
-//     description = "Löscht die doppelten Dokumente aus dem Schema arp_nutzungsplanung_planregister_pub" 
-//     database = [dbUriPub, dbUserPub, dbPwdPub]
-//     sqlFiles = ["delete_arp_nutzungsplanung_planregister_pub_doppelte_dokumente.sql"]
-// }
+task deleteData_doppelte_dokumente(type: SqlExecutor, dependsOn:transfer_planregister_alles) {
+    description = "Löscht die doppelten Dokumente aus dem Schema arp_nutzungsplanung_planregister_pub" 
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ["delete_arp_nutzungsplanung_planregister_pub_doppelte_dokumente.sql"]
+}
 
-//task exportPlanregisterPub(type: Ili2pgExport, dependsOn: 'deleteData_doppelte_dokumente') {
-task exportPlanregisterPub(type: Ili2pgExport) {
+task exportPlanregisterPub(type: Ili2pgExport, dependsOn: 'deleteData_doppelte_dokumente') {
+//task exportPlanregisterPub(type: Ili2pgExport) {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     models = iliModelPlanregister
     dbschema = dbSchemaPlanregister
