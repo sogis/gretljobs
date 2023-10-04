@@ -1,0 +1,113 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'de.undercouch.download'
+apply plugin: 'ch.so.agi.gretl'
+
+
+
+defaultTasks 'transferSammelereignisPub'
+
+
+def pathToTempFolder = System.getProperty('java.io.tmpdir')
+def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
+def pathToDataZip = Paths.get(pathToTempFolder, 'naturereigniskataster_v1_0_SO_lv95.zip')
+def XtfName = 'storme_interlis_export_MGDM_SO'
+
+
+
+task downloadKatasterData(type: Download) {
+    src 'https://www.geodienste.ch/downloads/interlis/naturereigniskataster/SO/naturereigniskataster_v1_0_SO_lv95.zip'
+    dest pathToTempFolder
+}
+
+task unzipKatasterData(type: Copy, dependsOn: 'downloadKatasterData') {
+    from zipTree(pathToDataZip)
+    into file(pathToUnzipFolder)
+    include '**/*.xtf'
+    rename { String fileName ->
+        if (fileName.contains(XtfName)) {
+            return XtfName + '.xtf'
+        }
+        return fileName
+    }
+}
+
+task importKatasterData(type: Ili2pgReplace, dependsOn: 'unzipKatasterData') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'afu_naturereigniskataster_mgdm_v1'
+    models = 'Naturereigniskataster_MGDM_LV95_V1'
+    dataFile = file(Paths.get(pathToUnzipFolder.toString(), XtfName + '.xtf'))
+    dataset = XtfName
+    strokeArcs = true
+}
+
+task transferBasisinromationPub(type: Db2Db, dependsOn: 'importKatasterData') {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('basisinformationen_pub.sql', 'afu_naturereigniskataster_pub_v1.basisinformation', true)
+    ];
+}
+
+task transferProzessraumAndererPub(type: Db2Db, dependsOn: 'transferBasisinromationPub') {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('prozess_anderer_pub.sql', 'afu_naturereigniskataster_pub_v1.prozessraum_a', true)
+    ];
+}
+
+task transferProzessraumEinsturzAbsenkungPub(type: Db2Db, dependsOn: 'transferProzessraumAndererPub') {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('prozessraum_einsturz_absenkung_pub.sql', 'afu_naturereigniskataster_pub_v1.prozessraum_ea', true)
+    ];
+}
+
+task transferProzessraumLawinePub(type: Db2Db, dependsOn: 'transferProzessraumEinsturzAbsenkungPub') {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('prozessraum_lawine_pub.sql', 'afu_naturereigniskataster_pub_v1.prozessraum_l', true)
+    ];
+}
+
+task transferProzessraumRutschungPub(type: Db2Db, dependsOn: 'transferProzessraumLawinePub') {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('prozessraum_rutschung_pub.sql', 'afu_naturereigniskataster_pub_v1.prozessraum_r', true)
+    ];
+}
+
+task transferProzessraumSturzPub(type: Db2Db, dependsOn: 'transferProzessraumRutschungPub') {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('prozessraum_sturz_pub.sql', 'afu_naturereigniskataster_pub_v1.prozessraum_s', true)
+    ];
+}
+
+task transferProzessraumWasserPub(type: Db2Db, dependsOn: 'transferProzessraumSturzPub') {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('prozessraum_wasser_pub.sql', 'afu_naturereigniskataster_pub_v1.prozessraum_w', true)
+    ];
+}
+
+task transferSammelereignisPub(type: Db2Db, dependsOn: 'transferProzessraumWasserPub') {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('sammelereignis_pub.sql', 'afu_naturereigniskataster_pub_v1.sammelereignis', true)
+    ];
+}
+
+
+
+
