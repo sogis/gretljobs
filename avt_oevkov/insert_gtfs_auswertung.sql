@@ -174,8 +174,7 @@ INSERT INTO
     FROM
         abfahrten
     -- ************************************ Ausnahmen *******************************************
-    -- hier kommen die Ausnahmen, die werden weiter unten abgehandelt ***********
-    -- gewisse Bahnhöfe müssen separat behandelt werden wegen der Zuordnung zu den Linien im AVT
+    -- gewisse Bahnhöfe müssen separat behandelt werden wegen der Zuordnung der route_id zu den OeV-Linien im AVT
     WHERE
         stop_name NOT IN (
             'Däniken SO',
@@ -192,8 +191,8 @@ INSERT INTO
         unternehmer,
         verkehrsmittel
 
-    -- ab hier werden die Bahnhöfe behandelt,
-    -- wegen dem fehlenden Attribut "fahrplanfeld" muss die Aufteilung in Linien separat gemacht werden
+    -- ab hier werden  Bahnhöfe behandelt, die wegen mehrfacher Zuordnung der route_id
+    -- zu den OeV-Liniennach trip_headsign aufgeteilt werden müssen
 
     UNION ALL
 
