@@ -8,7 +8,7 @@ SELECT
 FROM
     afu_naturereigniskataster_mgdm_v1.storme_mgdm_prozessraum_ea AS prozessraum
     INNER JOIN afu_naturereigniskataster_mgdm_v1.storme_mgdm_basisinformation AS basisinformation
-      ON prozessraum.bi = basisinformation.t_id AND substring(bi_storme_nr, 4, 4)::int >= 2019
+      ON prozessraum.bi = basisinformation.t_id AND pr_evidenz <> 'externe_Datenquelle'
     LEFT JOIN afu_naturereigniskataster_mgdm_v1.storme_mgdm_detailinformation_ea_e AS detailinformation
       ON prozessraum.di_storme_mgdm_detailinformation_ea_e = detailinformation.t_id
 ;
