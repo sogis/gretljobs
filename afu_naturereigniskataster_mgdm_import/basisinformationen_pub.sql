@@ -37,6 +37,22 @@ CASE
 END AS bemerkungen_schaeden
 FROM
     afu_naturereigniskataster_mgdm_v1.storme_mgdm_basisinformation AS basisinformation
-    LEFT JOIN afu_naturereigniskataster_mgdm_v1.storme_mgdm_schaden AS schaden 
+    LEFT JOIN (
+        SELECT
+            DISTINCT ON (bi)
+            bi,
+            sc_mensch_tier,
+            sc_sachwerte,
+            sc_infrastruktur,
+            sc_lw_wald,
+            sc_bemerkungen,
+            sc_menschen_tot,
+            sc_menschen_verletzt,
+            sc_tiere 
+        FROM
+            afu_naturereigniskataster_mgdm_v1.storme_mgdm_schaden
+    ) AS schaden 
         ON basisinformation.t_id = schaden.bi
+    --LEFT JOIN afu_naturereigniskataster_mgdm_v1.storme_mgdm_schaden AS schaden 
+        --ON basisinformation.t_id = schaden.bi
 ;
