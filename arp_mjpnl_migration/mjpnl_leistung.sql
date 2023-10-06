@@ -47,7 +47,7 @@ SELECT
     TRUE AS migriert,
     CASE
         WHEN extract(YEAR FROM l.datum_auszahlung) = 2023 -- wenn aus diesem Jahr und bereits ausbezahlt
-            OR lart.kurzbez IN ( 'Korrektur Vorjahr', 'Unterhaltsbeitrag', 'Pflanzmaterial', 'Kürzung', 'Saatgut' ) -- oder eines der spezifischen Arten
+            OR lart.kurzbez IN ( 'Korrektur Vorjahr', 'Unterhaltsbeitrag', 'Pflanzmaterial', 'Kürzung', 'Saatgut', 'Säuberungsschnitte' ) -- oder eines der spezifischen Arten
             OR lart.bez IN ( 'Pauschale einmalig (ha)', 'Pauschale einmalig (p)' ) -- oder eine einmalige Pauschale
         THEN TRUE
         ELSE FALSE
