@@ -46,7 +46,7 @@ SELECT
     '\n}'::TEXT AS bemerkung,
     TRUE AS migriert,
     CASE
-        WHEN extract(YEAR FROM l.datum_auszahlung) = 2023 -- wenn aus diesem Jahr und bereits ausbezahlt
+        WHEN (l.gueltigbis = '2023-12-31' AND extract(YEAR FROM l.datum_auszahlung) = 2023) -- wenn aus diesem Jahr und bereits ausbezahlt
             OR lart.kurzbez IN ( 'Korrektur Vorjahr', 'Unterhaltsbeitrag', 'Pflanzmaterial', 'Kürzung', 'Saatgut', 'Säuberungsschnitte' ) -- oder eines der spezifischen Arten
             OR lart.bez IN ( 'Pauschale einmalig (ha)', 'Pauschale einmalig (p)' ) -- oder eine einmalige Pauschale
         THEN TRUE
