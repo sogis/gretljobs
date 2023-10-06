@@ -20,7 +20,7 @@ SELECT
     l.betrag AS betrag_total,
     CASE
         WHEN l.datum_auszahlung = '9999-01-01' THEN 2023
-        ELSE extract(YEAR FROM l.datum_auszahlung) 
+        ELSE extract(YEAR FROM l.gueltigbis) 
     END AS auszahlungsjahr,
     CASE
         WHEN stat.kurzbez = 'freigegeben' THEN 'freigegeben'
@@ -63,7 +63,7 @@ FROM mjpnatur.leistung l
    LEFT JOIN mjpnatur.vbart vbartvb ON vbg.vbartid = vbartvb.vbartid AND vbartvb.archive = 0
 WHERE
    -- alle ausbezahlten seit 2020 und noch nicht ausbezahlten, die bis 2023 gültig sind
-   ( ( l.datum_auszahlung >= '2020-01-01' AND l.datum_auszahlung != '9999-01-01') OR l.gueltigbis = '2023-12-31' )
+   ( ( l.gueltigab >= '2020-01-01' AND l.datum_auszahlung != '9999-01-01') OR l.gueltigbis = '2023-12-31' )
    AND vbggeom.wkb_geometry IS NOT NULL
    AND ST_IsValid(vbggeom.wkb_geometry)
    AND Round((ST_Area(vbggeom.wkb_geometry) / 10000)::NUMERIC,2) > 0 --IGNORE small OR emptry geometries
