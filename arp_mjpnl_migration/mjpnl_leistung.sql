@@ -67,7 +67,6 @@ WHERE
    AND vbggeom.wkb_geometry IS NOT NULL
    AND ST_IsValid(vbggeom.wkb_geometry)
    AND Round((ST_Area(vbggeom.wkb_geometry) / 10000)::NUMERIC,2) > 0 --IGNORE small OR emptry geometries
-   AND NOT flart.bez = 'Waldrand'
-   AND NOT flart.bez = 'Waldreservat'
+   AND flart.bez NOT IN ('Waldrand', 'Waldreservat')
    -- AND l.betrag > 0
 ;
