@@ -7,7 +7,7 @@ defaultTasks 'publishPub'
 
 task publishEdit(type: Publisher) {
     dataIdent = "ch.so.afu.ara_einzugsgebiete.relational"
-    userFormats = true
+    userFormats = false
     database = [dbUriEdit,dbUserEdit,dbPwdEdit]
     dbSchema = "afu_ara_einzugsgebiete"
     modelsToPublish = "SO_AFU_ARA_Einzugsgebiete_20201016"
