@@ -78,7 +78,7 @@ task importKbsRestrictedData(type: Ili2pgImport, dependsOn: 'unzipKbsRestrictedD
 }
 
 task refreshSolrKbs(type:Exec, dependsOn: 'importKbsRestrictedData') {
-	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte'
+    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte'
 }
 
 task refreshSolrKbsRestricted(type:Exec, dependsOn:'refreshSolrKbs') {
