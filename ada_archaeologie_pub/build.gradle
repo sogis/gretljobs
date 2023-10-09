@@ -28,9 +28,12 @@ task updateRelationTids(type: SqlExecutor, dependsOn: importFromImdas){
         ]
 }
 
-// Nach Korrekturen mit ersetzen mit Task in job ada_archaeologie_tmp_validate
-task validateJoined(dependsOn: updateRelationTids) {
-    doLast{println 'Validierung deaktiviert bis zur Datenbereinigung'}
+task validateJoined(type: Ili2pgValidate) {
+    description = 'Validiert die Sach- und Geodaten und Beziehungen gemäss Edit-Modell'
+    database = edit
+    models = 'SO_ADA_Archaeologie_20230417'
+    modeldir = '%ILI_FROM_DB;http://models.interlis.ch/'
+    dbschema = 'ada_archaeologie_v1'
 }
 
 task copyToPubDb(type: Db2Db, dependsOn: validateJoined){
@@ -68,7 +71,6 @@ task publishPub(type: Publisher, dependsOn: 'setEnumTxt') {
     dbSchema = "ada_archaeologie_pub_v1"
     modelsToPublish = "SO_ADA_Archaeologie_Publikation_20230417"
     userFormats = true
-    validationConfig = "tmppublisher/validation.toml"
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
