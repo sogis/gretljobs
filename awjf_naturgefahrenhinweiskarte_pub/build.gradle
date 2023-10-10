@@ -8,8 +8,8 @@ defaultTasks 'publishPub'
 task publiedit(type: Publisher){
   database = [dbUriEdit, dbUserEdit, dbPwdEdit]
   dataIdent = "ch.so.awjf.naturgefahrenhinweiskarte.relational"
-  dbSchema = "awjf_naturgefahrenhinweiskarte_v1"
-  modelsToPublish = "SO_AWJF_Naturgefahrenhinweiskarte_20220125"
+  dbSchema = "awjf_naturgefahrenhinweiskarte_v2"
+  modelsToPublish = "SO_AWJF_Naturgefahrenhinweiskarte_20231010"
   target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
   kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]

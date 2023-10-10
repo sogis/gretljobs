@@ -6,5 +6,5 @@ SELECT
             THEN 'Übersarung /Schwemmkegel'
     END AS code_text
 FROM 
-    awjf_naturgefahrenhinweiskarte_v1.uebersarung
+    awjf_naturgefahrenhinweiskarte_v2.uebersarung
 ;
