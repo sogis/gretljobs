@@ -8,5 +8,5 @@ SELECT
             THEN 'Schutzgüter betroffen'
     END AS code_text
 FROM 
-   awjf_naturgefahrenhinweiskarte_v1.rutschung_lockergestein
+   awjf_naturgefahrenhinweiskarte_v2.rutschung_lockergestein
 ;
