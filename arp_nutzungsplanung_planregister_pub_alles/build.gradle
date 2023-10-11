@@ -79,7 +79,6 @@ task renameXml2Xtf(type: Copy, dependsOn: 'uploadPlanregister') {
 
 task publishPub(type: Publisher, dependsOn:'renameXml2Xtf') {
     dataIdent = dataIdentifier
-    validationConfig =  "config.ini"
 
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     sourcePath = file(Paths.get(pathToTempFolder, planregisterXtfFileName))
