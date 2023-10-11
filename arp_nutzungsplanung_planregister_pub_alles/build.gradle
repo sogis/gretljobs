@@ -9,15 +9,18 @@ import java.io.File
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'uploadPlanregister'
+defaultTasks 'publishPub'
 
 //Für Planregister
+def dataIdentifier = "ch.so.arp.nutzungsplanung_planregister"
+
 def iliModelPlanregister = "SO_Nutzungsplanung_Planregister_Publikation_20221115"
 def dbSchemaPlanregister = "arp_nutzungsplanung_planregister_pub_v1"
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def planregisterFileBaseName = "ch.so.arp.planregister"
-def planregisterXtfFileName = planregisterFileBaseName+".xml"
+def planregisterXmlFileName = planregisterFileBaseName+".xml"
+def planregisterXtfFileName = planregisterFileBaseName+".xtf"
 def planregisterZipFileName = planregisterFileBaseName+".xml.gz"
 
 task transfer_planregister_alles(type: Db2Db) {
@@ -41,16 +44,17 @@ task deleteData_doppelte_dokumente(type: SqlExecutor, dependsOn:transfer_planreg
 }
 
 task exportPlanregisterPub(type: Ili2pgExport, dependsOn: 'deleteData_doppelte_dokumente') {
+//task exportPlanregisterPub(type: Ili2pgExport) {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     models = iliModelPlanregister
     dbschema = dbSchemaPlanregister
-    dataFile = file(Paths.get(pathToTempFolder, planregisterXtfFileName))
+    dataFile = file(Paths.get(pathToTempFolder, planregisterXmlFileName))
     disableValidation = true
     // Kein Dataset, weil alle Daten enthalten sein sollen. 
 }
 
 task zipPlanregister(type: Gzip, dependsOn: 'exportPlanregisterPub') {
-    dataFile = file(Paths.get(pathToTempFolder, planregisterXtfFileName)) 
+    dataFile = file(Paths.get(pathToTempFolder, planregisterXmlFileName)) 
     gzipFile = file(Paths.get(pathToTempFolder, planregisterZipFileName)) 
 }
 
@@ -62,4 +66,26 @@ task uploadPlanregister(type: Curl, dependsOn: 'zipPlanregister') {
     user = digiplanUser
     password = digiplanPwd
     expectedStatusCode = 202
+}
+
+// Datenbezug kennt *.xml nicht, nur *.xtf
+task renameXml2Xtf(type: Copy, dependsOn: 'uploadPlanregister') {
+    from file(Paths.get(pathToTempFolder, planregisterXmlFileName))
+    into file(Paths.get(pathToTempFolder))
+    rename { String fileName ->
+        fileName.replace("xml", "xtf")
+    }
+}
+
+task publishPub(type: Publisher, dependsOn:'renameXml2Xtf') {
+    dataIdent = dataIdentifier
+
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    sourcePath = file(Paths.get(pathToTempFolder, planregisterXtfFileName))
+
+    //target = ["/tmp/gretl-share"]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
