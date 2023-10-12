@@ -1,0 +1,49 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.tasks.Curl.MethodType
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'publishPub'
+
+def dataIdentifier = "ch.so.arp.nutzungsplanung_planregister"
+
+def iliModelPlanregister = "SO_Nutzungsplanung_Planregister_Publikation_20221115"
+def dbSchemaPlanregister = "arp_nutzungsplanung_planregister_pub_v1"
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def planregisterFileBaseName = "ch.so.arp.planregister"
+def planregisterXmlFileName = planregisterFileBaseName+".xml"
+def planregisterXtfFileName = planregisterFileBaseName+".xtf"
+
+task exportPlanregisterPub(type: Ili2pgExport) {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    models = iliModelPlanregister
+    dbschema = dbSchemaPlanregister
+    dataFile = file(Paths.get(pathToTempFolder, planregisterXmlFileName))
+    disableValidation = false
+}
+
+// Datenbezug kennt *.xml nicht, nur *.xtf
+task renameXml2Xtf(type: Copy, dependsOn: 'exportPlanregisterPub') {
+    from file(Paths.get(pathToTempFolder, planregisterXmlFileName))
+    into file(Paths.get(pathToTempFolder))
+    rename { String fileName ->
+        fileName.replace("xml", "xtf")
+    }
+}
+
+task publishPub(type: Publisher, dependsOn:'renameXml2Xtf') {
+    dataIdent = dataIdentifier
+
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    sourcePath = file(Paths.get(pathToTempFolder, planregisterXtfFileName))
+
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
