@@ -5,7 +5,7 @@ import java.nio.file.Paths
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: "org.hidetake.ssh"
 
-defaultTasks 'transform'
+defaultTasks 'importData'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def downloadFolder = Paths.get(pathToTempFolder, "download").toFile()
@@ -80,6 +80,7 @@ tasks.register('transform', XslTransformer) {
 }
 
 tasks.register('uploadXtfToS3', S3Upload) {
+    dependsOn 'transform'
     description = "XTF-Dateien nach S3 hochladen."
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
@@ -91,6 +92,7 @@ tasks.register('uploadXtfToS3', S3Upload) {
 }
 
 tasks.register('importData', Ili2pgReplace) {
+    dependsOn 'uploadXtfToS3'
     description = 'Import der Meldungen als XTF in die Datenbank'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "agi_av_meldewesen_import_v1"
