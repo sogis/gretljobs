@@ -1,0 +1,126 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import java.nio.file.Paths
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: "org.hidetake.ssh"
+
+defaultTasks 'downloadFromSgv'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def downloadFolder = Paths.get(pathToTempFolder, "download").toFile()
+def transformFolder = Paths.get(pathToTempFolder, "transform").toFile()
+def remoteDirectory = "sgv-gemdat/sgv/ech0132-test/"
+
+println downloadFolder
+println transformFolder
+
+if (!downloadFolder.exists()) {
+    downloadFolder.mkdirs()
+}
+
+if (!transformFolder.exists()) {
+    transformFolder.mkdirs()
+}
+
+def bucketSuffix = '-undefined'
+    if ( gretlEnvironment == 'production' ) { 
+        bucketSuffix = ''
+    } else if ( gretlEnvironment == 'integration' || gretlEnvironment == 'development' ) { 
+        bucketSuffix = '-' + gretlEnvironment.substring(0, 3)
+    } else {
+        bucketSuffix = '-' + gretlEnvironment
+    }
+
+def sgvMeldungenBucket = "ch.so.agi.sgv-meldungen$bucketSuffix"
+
+remotes {
+    sftpServer {
+        host = "${ftpServerSogis}"
+        user = "${ftpUserSogisGemdat}"
+        //identity = file('/Users/stefan/keys/sgv/id_rsa')
+        identity = file('/home/gradle/.sshkeys/id_rsa')
+    }
+}
+
+tasks.register('downloadFromSgv') {
+    description = "Download files from SFTP server"
+    doLast {
+        ssh.settings {
+            knownHosts = allowAnyHosts
+        }
+
+        ssh.run {
+            session(remotes.sftpServer) {
+                get from: remoteDirectory, into: downloadFolder, filter: { it.name.toLowerCase().endsWith("xml") }
+            }
+        }
+        println "Files downloaded from SFTP server"
+    }
+}
+
+tasks.register('uploadXmlToS3', S3Upload) {
+    description = "Original XML-Dateien (eCH-0132-Meldungen) nach S3 hochladen."
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    sourceDir = file(downloadFolder)
+    endPoint = "https://s3.eu-central-1.amazonaws.com"
+    region = "eu-central-1"
+    bucketName = sgvMeldungenBucket
+    acl = "private"
+}
+
+tasks.register('transform', XslTransformer) {
+    description = "Transformiert die eCH-0132-Meldungen nach INTERLIS."
+    xslFile = file("./xml2xtf.xsl")
+    xmlFile = fileTree(downloadFolder).include { it.file.name.toLowerCase().endsWith("xml") }
+    outDirectory = file(transformFolder)
+}
+
+tasks.register('uploadXtfToS3', S3Upload) {
+    description = "XTF-Dateien nach S3 hochladen."
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    sourceDir = file(transformFolder)
+    endPoint = "https://s3.eu-central-1.amazonaws.com"
+    region = "eu-central-1"
+    bucketName = sgvMeldungenBucket
+    acl = "private"
+}
+
+tasks.register('importData', Ili2pgReplace) {
+    description = 'Import der Meldungen als XTF in die Datenbank'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "agi_av_meldewesen_import_v1"
+    models = 'SO_AGI_SGV_Meldungen_20221109'
+    dataFile = fileTree(dir: transformFolder, include: '*.xtf')
+    dataset = dataFile
+    disableValidation = false
+}
+
+// Löschen der Daten auf dem FTP-Server.
+// Lokales Löschen nicht notwendig, da im Container.
+tasks.register('deleteDataOnFtp') {
+    description = "Delete files on SFTP server"
+    doLast {
+        ssh.settings {
+            knownHosts = allowAnyHosts
+        }
+        ssh.run {
+            session(remotes.sftpServer) {
+                fileTree(downloadFolder).matching {
+                    include "**/*.xml"
+                }.each {
+                    def fileName = remoteDirectory + it.getName()
+                    println "Deleting: " + fileName
+                    // ************ TODO !!!!!!!!!! -> det ret = remove fileName
+                    def ret = remove '/remote/file'
+                    if (!ret) {
+                        throw new GradleException("could not delete: " + fileName)
+                    }
+                }
+            }
+        }
+        println "Files deleted on SFTP server"
+    }
+}
