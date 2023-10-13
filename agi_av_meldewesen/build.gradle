@@ -5,7 +5,7 @@ import java.nio.file.Paths
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: "org.hidetake.ssh"
 
-defaultTasks 'downloadFromSgv'
+defaultTasks 'transform'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def downloadFolder = Paths.get(pathToTempFolder, "download").toFile()
@@ -60,6 +60,7 @@ tasks.register('downloadFromSgv') {
 }
 
 tasks.register('uploadXmlToS3', S3Upload) {
+    dependsOn 'downloadFromSgv'
     description = "Original XML-Dateien (eCH-0132-Meldungen) nach S3 hochladen."
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
@@ -71,6 +72,7 @@ tasks.register('uploadXmlToS3', S3Upload) {
 }
 
 tasks.register('transform', XslTransformer) {
+    dependsOn 'uploadXmlToS3'
     description = "Transformiert die eCH-0132-Meldungen nach INTERLIS."
     xslFile = file("./xml2xtf.xsl")
     xmlFile = fileTree(downloadFolder).include { it.file.name.toLowerCase().endsWith("xml") }
