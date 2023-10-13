@@ -36,8 +36,8 @@ def sgvMeldungenBucket = "ch.so.agi.sgv-meldungen$bucketSuffix"
 
 remotes {
     sftpServer {
-        host = "${ftpServerSogis}"
-        user = "${ftpUserSogisGemdat}"
+        host = "${sftpServerSogis}"
+        user = "${sftpUserSogisGemdat}"
         //identity = file('/Users/stefan/keys/sgv/id_rsa')
         identity = file('/home/gradle/.sshkeys/id_rsa')
     }
