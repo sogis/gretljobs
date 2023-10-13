@@ -5,7 +5,7 @@ import java.nio.file.Paths
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: "org.hidetake.ssh"
 
-defaultTasks 'importData'
+defaultTasks 'transfer'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def downloadFolder = Paths.get(pathToTempFolder, "download").toFile()
@@ -100,6 +100,13 @@ tasks.register('importData', Ili2pgReplace) {
     dataFile = fileTree(dir: transformFolder, include: '*.xtf')
     dataset = dataFile
     disableValidation = false
+}
+
+tasks.register('transfer', SqlExecutor) {
+    dependsOn 'importData'
+    description = 'Kopiert die (neuen) Meldungen in das Work-Schema'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['transfer_to_work.sql']
 }
 
 // Löschen der Daten auf dem FTP-Server.
