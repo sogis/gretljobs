@@ -16,7 +16,7 @@ task unpackShapes(type: Copy) {
 }
 
 task validate(type: ShpValidator, dependsOn: unpackShapes){
-    models = "SO_AVT_Achsen_Publikation_20200707"
+    models = "SO_AVT_Kantonsstrassen_Publikation_20200707"
     dataFiles = [Paths.get(pathToShpFolder, shpNamePunkte),Paths.get(pathToShpFolder, shpNameAchsen)]
 } 
 
