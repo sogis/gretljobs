@@ -15,12 +15,17 @@ task unpackShapes(type: Copy) {
     into pathToShpFolder
 }
 
-task validate(type: ShpValidator, dependsOn: unpackShapes){
+task validate_achsen(type: ShpValidator, dependsOn: unpackShapes){
     models = "SO_AVT_Kantonsstrassen_Publikation_20200707"
-    dataFiles = [Paths.get(pathToShpFolder, shpNamePunkte),Paths.get(pathToShpFolder, shpNameAchsen)]
+    dataFiles = [Paths.get(pathToShpFolder, shpNameAchsen)]
 } 
 
-task deleteAllFeatures(type: SqlExecutor, dependsOn: validate){
+task validate_punkte(type: ShpValidator, dependsOn: validate_achsen){
+    models = "SO_AVT_Kantonsstrassen_Publikation_20200707"
+    dataFiles = [Paths.get(pathToShpFolder, shpNamePunkte)]
+} 
+
+task deleteAllFeatures(type: SqlExecutor, dependsOn: validate_punkte){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ['delete_achsen_u_punkte.sql']
 }
