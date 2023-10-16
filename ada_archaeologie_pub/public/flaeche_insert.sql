@@ -16,6 +16,8 @@ WITH flaeche_beruert_siedlung AS (
         arp_bauzonengrenzen_pub.bauzonengrenzen_bauzonengrenze s ON public.ST_INTERSECTS(s.geometrie, f.amultipolygon)  
     WHERE
         public.ST_Area(public.ST_INTERSECTION(s.geometrie, f.amultipolygon)) > 5
+    GROUP BY 
+        f.amultipolygon,fundstellen_nummer,fundst_adresse_flurname, fundstellen_art, geschuetzt, geschuetzt_txt, qualitaet_lokalisierung, qualitaet_lokalisierung_txt, gemeindename_ablage, rrb_nummer
 )
 
 INSERT INTO ada_archaeologie_pub_v1.public_flaechenfundstelle_siedlungsgebiet(
