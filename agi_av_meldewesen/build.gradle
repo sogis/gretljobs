@@ -10,7 +10,6 @@ defaultTasks 'transfer'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def downloadFolder = Paths.get(pathToTempFolder, "download").toFile()
 def transformFolder = Paths.get(pathToTempFolder, "transform").toFile()
-def remoteDirectory = "sgv-gemdat/sgv/ech0132-test/"
 
 println downloadFolder
 println transformFolder
@@ -23,9 +22,11 @@ if (!transformFolder.exists()) {
     transformFolder.mkdirs()
 }
 
+def remoteDirectory = "sgv-gemdat/sgv/ech0132-test/"
 def bucketSuffix = '-undefined'
     if ( gretlEnvironment == 'production' ) { 
         bucketSuffix = ''
+        remoteDirectory = "sgv-gemdat/sgv/ech0132/"
     } else if ( gretlEnvironment == 'integration' || gretlEnvironment == 'development' ) { 
         bucketSuffix = '-' + gretlEnvironment.substring(0, 3)
     } else {
