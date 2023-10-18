@@ -21,19 +21,16 @@ SELECT
   COALESCE(SUM(lstg_pauschal_einmalig_freigeg.betrag_total),0) AS betrag_pauschal_einmalig_freigegeben,
   COALESCE(SUM(lstg.betrag_total),0) AS gesamtbetrag,
   lstg.auszahlungsjahr,
-  -- wenn es ein status_abrechnung "in_bearbeitung" oder wenn nicht dann "freigegeben" gibt, dann soll der status demensprechend gleich sein
+  -- wenn es ein status_abrechnung "freigegeben" gibt, dann soll der status demensprechend gleich sein
   CASE 
-   WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l WHERE l.status_abrechnung = 'in_bearbeitung' AND l.vereinbarung = vbg.t_id AND l.auszahlungsjahr = lstg.auszahlungsjahr) > 0 
-   THEN 'in_bearbeitung' 
    WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l WHERE l.status_abrechnung = 'freigegeben' AND l.vereinbarung = vbg.t_id AND l.auszahlungsjahr = lstg.auszahlungsjahr) > 0 
    THEN 'freigegeben' 
    -- ansonsten ist es für alle gleich ("ausbezahlt" oder "intern_verrechnet")
    ELSE MAX(lstg.status_abrechnung) 
   END AS status_abrechnung,
-  -- wenn es ein status_abrechnung "in_bearbeitung" oder "freigegeben" gibt, dann soll es noch kein datum_abrechnung haben
+  -- wenn es ein status_abrechnung "freigegeben" gibt, dann soll es noch kein datum_abrechnung haben
   CASE 
-   WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l WHERE l.status_abrechnung = 'freigegeben' AND l.vereinbarung = vbg.t_id AND l.auszahlungsjahr = lstg.auszahlungsjahr) > 0 
-   OR (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l WHERE l.status_abrechnung = 'in_bearbeitung' AND l.vereinbarung = vbg.t_id AND l.auszahlungsjahr = lstg.auszahlungsjahr) > 0 
+   WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l WHERE l.status_abrechnung = 'freigegeben' AND l.vereinbarung = vbg.t_id AND l.auszahlungsjahr = lstg.auszahlungsjahr) > 0
    THEN NULL
    -- ansonsten kann es das späteste datum nehmen
    ELSE MAX(lstg.datum_abrechnung) 
