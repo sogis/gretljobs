@@ -20,8 +20,7 @@ defaultTasks 'transferStehendeGewaesserPub'
 // }
 
 task importNeueAVGewaesser(type: SqlExecutor) {
-    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    targetDb = sourceDb
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['import_av_gewaesser.sql']
 }
 
