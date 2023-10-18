@@ -6,7 +6,7 @@ INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_bewirtschafter
  datum_abrechnung, auszahlungsjahr, dateipfad_oder_url, erstellungsdatum, operator_erstellung, migriert)
 
 WITH gelan_persons AS (
-/* zuerst alle GELAN Personen filtern die eine aktive Vereinbarung haben */
+/* zuerst alle GELAN Personen filtern die eine aktive Vereinbarung haben oder eine mit bereits ausbezahlten Leistungen */
 SELECT 
     DISTINCT
       pers.pid_gelan,
@@ -19,7 +19,13 @@ FROM
       ON vbg.gelan_pid_gelan = pers.pid_gelan
    WHERE
      pers.pid_gelan IS NOT NULL AND pers.iban IS NOT NULL
-     AND vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE
+     AND (
+        -- aktive und geprüfte Vereinbarungen
+        (vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE)
+        OR
+        -- mind. eine diesjährige Leistung, die bereits ausbezahlt ist
+        (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l WHERE l.status_abrechnung IN ('ausbezahlt','intern_verrechnet') AND l.vereinbarung = vbg.t_id AND l.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer) > 0 
+     )
    ORDER BY pers.pid_gelan ASC
 )
 /* Dann Abrechnungsdaten per Bewirtschafter und Auszahlungsjahr und Status aggregieren */
@@ -30,19 +36,16 @@ SELECT
    pers.ortschaft AS gelan_ortschaft,
    pers.iban,
    SUM(abrg_vbg.gesamtbetrag) AS betrag_total,
-   -- wenn es ein status_abrechnung "in_bearbeitung" oder wenn nicht dann "freigegeben" gibt, dann soll der status demensprechend gleich sein
+   -- wenn es ein status_abrechnung "freigegeben" gibt, dann soll der status demensprechend gleich sein
    CASE 
-     WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung v WHERE v.status_abrechnung = 'in_bearbeitung' AND v.gelan_pid_gelan = pers.pid_gelan AND v.auszahlungsjahr = abrg_vbg.auszahlungsjahr) > 0 
-     THEN 'in_bearbeitung' 
      WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung v WHERE v.status_abrechnung = 'freigegeben' AND v.gelan_pid_gelan = pers.pid_gelan AND v.auszahlungsjahr = abrg_vbg.auszahlungsjahr) > 0 
      THEN 'freigegeben' 
      -- ansonsten ist es für alle gleich ("ausbezahlt" oder "intern_verrechnet")
      ELSE MAX(abrg_vbg.status_abrechnung) 
    END AS status_abrechnung,
-   -- wenn es eine status_abrechnung "freigegeben" oder "in_bearbeitung" gibt, dann soll es noch kein datum_abrechnung haben
+   -- wenn es eine status_abrechnung "freigegeben" gibt, dann soll es noch kein datum_abrechnung haben
    CASE 
      WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung v WHERE v.status_abrechnung = 'freigegeben' AND v.gelan_pid_gelan = pers.pid_gelan AND v.auszahlungsjahr = abrg_vbg.auszahlungsjahr) > 0 
-     OR (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung v WHERE v.status_abrechnung = 'freigegeben' AND v.gelan_pid_gelan = pers.pid_gelan AND v.auszahlungsjahr = abrg_vbg.auszahlungsjahr) > 0 
      THEN NULL
      -- ansonsten kann es das späteste datum nehmen
      ELSE MAX(abrg_vbg.datum_abrechnung) 

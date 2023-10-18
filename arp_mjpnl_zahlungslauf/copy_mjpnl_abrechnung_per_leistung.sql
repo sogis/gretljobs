@@ -45,7 +45,7 @@ WITH alle_beurteilungen AS (
   FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_wiese
 ),
 relevante_vereinbarungen AS (
-  -- alle vereinbarungen mit unbesprochener oder keiner beurteilung
+  -- alle aktiven vereinbarungen mit unbesprochener oder keiner beurteilung
   -- ...und keinen migrierten Leistungen (Berücksichtigung Migrationsjahr)
   SELECT * 
   FROM ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg

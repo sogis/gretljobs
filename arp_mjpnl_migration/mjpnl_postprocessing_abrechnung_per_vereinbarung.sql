@@ -21,19 +21,16 @@ SELECT
   COALESCE(SUM(lstg_pauschal_einmalig_freigeg.betrag_total),0) AS betrag_pauschal_einmalig_freigegeben,
   COALESCE(SUM(lstg.betrag_total),0) AS gesamtbetrag,
   lstg.auszahlungsjahr,
-  -- wenn es ein status_abrechnung "in_bearbeitung" oder wenn nicht dann "freigegeben" gibt, dann soll der status demensprechend gleich sein
+  -- wenn es ein status_abrechnung "freigegeben" gibt, dann soll der status demensprechend gleich sein
   CASE 
-   WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l WHERE l.status_abrechnung = 'in_bearbeitung' AND l.vereinbarung = vbg.t_id AND l.auszahlungsjahr = lstg.auszahlungsjahr) > 0 
-   THEN 'in_bearbeitung' 
    WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l WHERE l.status_abrechnung = 'freigegeben' AND l.vereinbarung = vbg.t_id AND l.auszahlungsjahr = lstg.auszahlungsjahr) > 0 
    THEN 'freigegeben' 
    -- ansonsten ist es für alle gleich ("ausbezahlt" oder "intern_verrechnet")
    ELSE MAX(lstg.status_abrechnung) 
   END AS status_abrechnung,
-  -- wenn es ein status_abrechnung "in_bearbeitung" oder "freigegeben" gibt, dann soll es noch kein datum_abrechnung haben
+  -- wenn es ein status_abrechnung "freigegeben" gibt, dann soll es noch kein datum_abrechnung haben
   CASE 
-   WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l WHERE l.status_abrechnung = 'freigegeben' AND l.vereinbarung = vbg.t_id AND l.auszahlungsjahr = lstg.auszahlungsjahr) > 0 
-   OR (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l WHERE l.status_abrechnung = 'in_bearbeitung' AND l.vereinbarung = vbg.t_id AND l.auszahlungsjahr = lstg.auszahlungsjahr) > 0 
+   WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l WHERE l.status_abrechnung = 'freigegeben' AND l.vereinbarung = vbg.t_id AND l.auszahlungsjahr = lstg.auszahlungsjahr) > 0
    THEN NULL
    -- ansonsten kann es das späteste datum nehmen
    ELSE MAX(lstg.datum_abrechnung) 
@@ -65,9 +62,13 @@ FROM
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_pauschal_einmalig_freigeg
      ON lstg_pauschal_einmalig_freigeg.t_id = lstg.t_id AND lstg_pauschal_einmalig_freigeg.abgeltungsart = 'pauschal' AND lstg_pauschal_einmalig_freigeg.einmalig IS TRUE AND lstg_pauschal_einmalig_freigeg.status_abrechnung = 'freigegeben'
   WHERE
-    vbg.t_id IS NOT NULL AND vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE
-    -- berücksichtige nur relevante status (in_bearbeitung wird berücksichtigt, aber der Status wird übernommen)
-    AND lstg.status_abrechnung != 'abgeltungslos'
+    vbg.t_id IS NOT NULL AND (
+      ( vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE )
+      OR
+      lstg.status_abrechnung != 'freigegeben' -- freigegebene Leistungen werden nur für aktive und geprüfte Vereinbarungen miteinbezogen
+    )
+    -- berücksichtige nur relevante status ('freigegeben', 'ausbezahlt', 'intern_verrechnet') 
+    AND lstg.status_abrechnung NOT IN ('abgeltungslos', 'in_bearbeitung')
     AND lstg.vereinbarung != 9999999
   GROUP BY vbg.t_id, vbg.vereinbarungs_nr, vbg.gelan_bewe_id, vbg.gb_nr, vbg.flurname, vbg.kultur_id, vbg.gemeinde, vbg.flaeche,
            lstg.auszahlungsjahr, bw.bewirtschaftabmachung_schnittzeitpunkt_1, bw.bewirtschaftabmachung_messerbalkenmaehgeraet, bw.bewirtschaftabmachung_herbstweide
