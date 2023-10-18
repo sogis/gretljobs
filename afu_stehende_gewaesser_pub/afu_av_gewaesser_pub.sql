@@ -1,6 +1,6 @@
 SELECT 
     aname,
-    geometrie,
+    bodenbedeckung_boflaeche.geometrie,
     typ,
     gemeindename,
     erhebung_abgeschlossen
