@@ -1,0 +1,9 @@
+SELECT 
+    aname,
+    geometrie,
+    typ,
+    gemeindename,
+    erhebung_abgeschlossen
+FROM 
+    afu_stehende_gewaesser_v1.stehendes_gewaesser
+;
