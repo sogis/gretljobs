@@ -19,7 +19,16 @@ defaultTasks 'transferStehendeGewaesserPub'
 //     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 // }
 
-task transferStehendeGewaesserPub(type: Db2Db) {
+task importNeueAVGewaesser(type: SqlExecutor) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = sourceDb
+    sqlFiles = ['import_av_gewaesser.sql']
+    ];
+}
+
+
+
+task transferStehendeGewaesserPub(type: Db2Db, idependsOn: 'importNeueAVGewaesser') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
