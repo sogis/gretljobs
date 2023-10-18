@@ -28,8 +28,7 @@ task "cleanup_abrechnung_per_leistung_orphans"(type: SqlExecutor,dependsOn: "cle
 }
 
 task "cleanup_status_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "cleanup_abrechnung_per_leistung") {
-    description = "Setze die Status aller diesjährigen freigegeben-Leistungen, die einmalig oder migriert sind und *keine aktive* Vereinbarungen haben auf in_bearbeitung
-    Setze die Status aller diesjährigen in_bearbeitung-Leistungen, die migriert sind und eine *aktive* Vereinbarungen haben auf freigegeben"
+    description = "Setze die Status aller diesjährigen freigegeben-Leistungen, die einmalig oder migriert sind und *keine aktive* Vereinbarungen haben auf in_bearbeitung - Setze die Status aller diesjährigen in_bearbeitung-Leistungen, die migriert sind und eine *aktive* Vereinbarungen haben auf freigegeben"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
     sqlFiles = ['cleanup_mjpnl_abrechnung_per_leistung_status.sql']
