@@ -24,7 +24,7 @@ task importNeueAVGewaesser(type: SqlExecutor) {
     sqlFiles = ['import_av_gewaesser.sql']
 }
 
-task transferStehendeGewaesserPub(type: Db2Db, idependsOn: 'importNeueAVGewaesser') {
+task transferStehendeGewaesserPub(type: Db2Db, dependsOn: 'importNeueAVGewaesser') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
