@@ -62,9 +62,13 @@ FROM
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_pauschal_einmalig_freigeg
      ON lstg_pauschal_einmalig_freigeg.t_id = lstg.t_id AND lstg_pauschal_einmalig_freigeg.abgeltungsart = 'pauschal' AND lstg_pauschal_einmalig_freigeg.einmalig IS TRUE AND lstg_pauschal_einmalig_freigeg.status_abrechnung = 'freigegeben'
   WHERE
-    vbg.t_id IS NOT NULL AND vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE
-    -- berücksichtige nur relevante status (in_bearbeitung wird berücksichtigt, aber der Status wird übernommen)
-    AND lstg.status_abrechnung != 'abgeltungslos'
+    vbg.t_id IS NOT NULL AND (
+      ( vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE )
+      OR
+      lstg.status_abrechnung != 'freigegeben' -- freigegebene Leistungen werden nur für aktive und geprüfte Vereinbarungen miteinbezogen
+    )
+    -- berücksichtige nur relevante status ('freigegeben', 'ausbezahlt', 'intern_verrechnet') 
+    AND lstg.status_abrechnung NOT IN ('abgeltungslos', 'in_bearbeitung')
     AND lstg.vereinbarung != 9999999
   GROUP BY vbg.t_id, vbg.vereinbarungs_nr, vbg.gelan_bewe_id, vbg.gb_nr, vbg.flurname, vbg.kultur_id, vbg.gemeinde, vbg.flaeche,
            lstg.auszahlungsjahr, bw.bewirtschaftabmachung_schnittzeitpunkt_1, bw.bewirtschaftabmachung_messerbalkenmaehgeraet, bw.bewirtschaftabmachung_herbstweide

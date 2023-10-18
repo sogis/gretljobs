@@ -5,7 +5,7 @@ INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_bewirtschafter
  datum_abrechnung, auszahlungsjahr, dateipfad_oder_url, erstellungsdatum, operator_erstellung, migriert)
 
 WITH gelan_persons AS (
-/* zuerst alle GELAN Personen filtern die eine aktive Vereinbarung haben */
+/* zuerst alle GELAN Personen filtern die eine aktive Vereinbarung haben oder eine mit bereits ausbezahlten diesjährigen Leistungen */
 SELECT 
     DISTINCT
       pers.pid_gelan,
@@ -18,7 +18,13 @@ FROM
       ON vbg.gelan_pid_gelan = pers.pid_gelan
    WHERE
      pers.pid_gelan IS NOT NULL AND pers.iban IS NOT NULL
-     AND vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE
+     AND (
+        -- aktive und geprüfte Vereinbarungen
+        (vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE)
+        OR
+        -- mind. eine diesjährige Leistung, die bereits ausbezahlt ist
+        (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l WHERE l.status_abrechnung IN ('ausbezahlt','intern_verrechnet') AND l.vereinbarung = vbg.t_id AND l.auszahlungsjahr = 2023) > 0 
+     )
    ORDER BY pers.pid_gelan ASC
 )
 /* Dann Abrechnungsdaten per Bewirtschafter und Auszahlungsjahr und Status aggregieren */

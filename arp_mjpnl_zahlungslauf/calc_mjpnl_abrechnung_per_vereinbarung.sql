@@ -68,7 +68,12 @@ FROM
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_pauschal_einmalig_freigeg
      ON lstg_pauschal_einmalig_freigeg.t_id = lstg.t_id AND lstg_pauschal_einmalig_freigeg.abgeltungsart = 'pauschal' AND lstg_pauschal_einmalig_freigeg.einmalig IS TRUE AND lstg_pauschal_einmalig_freigeg.status_abrechnung = 'freigegeben'
   WHERE
-    vbg.t_id IS NOT NULL AND vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE
+    vbg.t_id IS NOT NULL AND 
+    (
+      ( vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE )
+      OR
+      lstg.status_abrechnung != 'freigegeben' -- freigegebene Leistungen werden nur für aktive und geprüfte Vereinbarungen miteinbezogen
+    )
     -- berücksichtige nur relevante status ('freigegeben', 'ausbezahlt', 'intern_verrechnet') 
     AND lstg.status_abrechnung NOT IN ('abgeltungslos', 'in_bearbeitung')
     -- berücksichtige nur diesjährige Leistungen

@@ -5,7 +5,10 @@ SET status_abrechnung = 'in_bearbeitung'
 FROM ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
 WHERE 
     l.vereinbarung = vbg.t_id
-    AND vbg.status_vereinbarung != 'aktiv'
+    AND NOT (
+        vbg.status_vereinbarung = 'aktiv'
+        AND vbg.bewe_id_geprueft IS TRUE
+    )
     AND l.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer
     AND l.status_abrechnung = 'freigegeben'
     AND (
@@ -21,7 +24,10 @@ SET status_abrechnung = 'freigegeben'
 FROM ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
 WHERE 
     l.vereinbarung = vbg.t_id
-    AND vbg.status_vereinbarung = 'aktiv'
+    AND (
+        vbg.status_vereinbarung = 'aktiv'
+        AND vbg.bewe_id_geprueft IS TRUE
+    )
     AND l.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer
     AND l.status_abrechnung = 'in_bearbeitung'
     AND l.migriert = TRUE
