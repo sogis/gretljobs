@@ -24,7 +24,7 @@ task transferStehendeGewaesserPub(type: Db2Db) {
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('afu_stehendes_gewaesser_pub.sql','afu_stehende_gewaesser_pub_v1.stehendes_gewaesser', true),
-            new TransferSet('afu_av_gewaesser_pub.sql','afu_stehende_gewaesser_v1_pub.av_gewaesser', true)
+            new TransferSet('afu_av_gewaesser_pub.sql','afu_stehende_gewaesser_pub_v1.av_gewaesser', true)
     ];
 }
 
