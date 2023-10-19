@@ -1,136 +1,100 @@
 (SELECT 
     'Kontrollschacht' AS trinkwasserobjektart,
     'Kontrollschacht' AS objekttyp_anzeige,
-    kontrollschacht.bezeichnung AS objektname, 
-    kontrollschacht.mobj_id AS objektnummer,
-    kontrollschacht.beschreibung AS technische_angabe,  
-    kontrollschacht.bemerkung AS bemerkung,
-    array_to_json(dokumente.dokumente) AS dokumente, 
-    kontrollschacht.wkb_geometry AS geometrie
-FROM 
-    vegas.obj_kontrollschacht kontrollschacht
+	ks.bezeichnung AS objektname, 
+	ks.objekt_id AS objektnummer,
+	ks.beschreibung AS technische_angabe,
+	ks.bemerkung,
+	array_to_json(dokumente.dokumente) AS dokumente, 
+	ks.geometrie
+FROM afu_wasserversorg_obj_v1.kontrollschacht ks
 LEFT JOIN 
-    (SELECT 
-         array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
-         y.vegas_id
-     FROM 
-         vegas.adm_dokument x, 
-         vegas.adm_objekt_dokument y 
-     WHERE x.dokument_id = y.dokument_id
-     GROUP BY y.vegas_id) dokumente ON kontrollschacht.vegas_id = dokumente.vegas_id
-WHERE archive = 0
-) 
-UNION ALL 
+	(SELECT
+		ksd.kontrollschacht_r,
+		array_agg(REPLACE(d.dateiname,'G:\documents\ch.so.afu.wasserversorgung\','https://geo.so.ch/docs/ch.so.afu.wasserversorgung/')) AS dokumente
+	FROM 
+		afu_wasserversorg_obj_v1.kontrollschacht__dokument ksd, 
+		afu_wasserversorg_obj_v1.dokument d 
+	WHERE ksd.dokument_r = d.t_id
+	GROUP BY ksd.kontrollschacht_r) dokumente ON ks.t_id = dokumente.kontrollschacht_r)
+UNION ALL
 (SELECT 
     'Sammelbrunnenstube' AS trinkwasserobjektart,
     'Sammelbrunnenstube' AS objekttyp_anzeige,
-    sammelbrunnenstube.bezeichnung AS objektname, 
-    sammelbrunnenstube.mobj_id AS objektnummer, 
-    sammelbrunnenstube.beschreibung AS technische_angabe,
-    sammelbrunnenstube.bemerkung AS bemerkung, 
-    array_to_json(dokumente.dokumente) AS dokumente,
-    sammelbrunnenstube.wkb_geometry AS geometrie
-FROM 
-    vegas.obj_sammelbrunnstube sammelbrunnenstube
+	sbs.bezeichnung AS objektname, 
+	sbs.objekt_id AS objektnummer,
+	sbs.beschreibung AS technische_angabe,
+	sbs.bemerkung,
+	array_to_json(dokumente.dokumente) AS dokumente, 
+	sbs.geometrie
+FROM afu_wasserversorg_obj_v1.sammelbrunnstube sbs
 LEFT JOIN 
-    (SELECT 
-         array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
-         y.vegas_id
-     FROM 
-         vegas.adm_dokument x, 
-         vegas.adm_objekt_dokument y 
-     WHERE x.dokument_id = y.dokument_id
-     GROUP BY y.vegas_id) dokumente ON sammelbrunnenstube.vegas_id = dokumente.vegas_id
-WHERE archive = 0
-) 
-UNION ALL 
+	(SELECT
+		sbsd.sammelbrunnstube_r,
+		array_agg(REPLACE(d.dateiname,'G:\documents\ch.so.afu.wasserversorgung\','https://geo.so.ch/docs/ch.so.afu.wasserversorgung/')) AS dokumente
+	FROM 
+		afu_wasserversorg_obj_v1.sammelbrunnstube__dokument sbsd, 
+		afu_wasserversorg_obj_v1.dokument d 
+	WHERE sbsd.dokument_r = d.t_id
+	GROUP BY sbsd.sammelbrunnstube_r) dokumente ON sbs.t_id = dokumente.sammelbrunnstube_r)
+UNION ALL
 (SELECT 
     'Quellwasserbehaelter' AS trinkwasserobjektart,
     'Quellwasserbehälter' AS objekttyp_anzeige,
-    quellwasserbehaelter.bezeichnung AS objektname, 
-    quellwasserbehaelter.mobj_id AS objektnummer, 
-    quellwasserbehaelter.beschreibung AS technische_angabe,
-    quellwasserbehaelter.bemerkung AS bemerkung, 
-    array_to_json(dokumente.dokumente) AS dokumente, 
-    quellwasserbehaelter.wkb_geometry AS geometrie
-FROM 
-    vegas.obj_quellwasserbehaelter quellwasserbehaelter
+	qwb.bezeichnung AS objektname, 
+	qwb.objekt_id AS objektnummer,
+	qwb.beschreibung AS technische_angabe,
+	qwb.bemerkung,
+	array_to_json(dokumente.dokumente) AS dokumente, 
+	qwb.geometrie
+FROM afu_wasserversorg_obj_v1.quellwasserbehaelter qwb
 LEFT JOIN 
-    (SELECT 
-         array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
-         y.vegas_id
-     FROM 
-         vegas.adm_dokument x, 
-         vegas.adm_objekt_dokument y 
-     WHERE x.dokument_id = y.dokument_id
-     GROUP BY y.vegas_id) dokumente ON Quellwasserbehaelter.vegas_id = dokumente.vegas_id
-WHERE archive = 0
-) 
+	(SELECT
+		qwbd.quellwasserbehaelter_r,
+		array_agg(REPLACE(d.dateiname,'G:\documents\ch.so.afu.wasserversorgung\','https://geo.so.ch/docs/ch.so.afu.wasserversorgung/')) AS dokumente
+	FROM 
+		afu_wasserversorg_obj_v1.quellwasserbehaelter__dokument qwbd, 
+		afu_wasserversorg_obj_v1.dokument d 
+	WHERE qwbd.dokument_r = d.t_id
+	GROUP BY qwbd.quellwasserbehaelter_r) dokumente ON qwb.t_id = dokumente.quellwasserbehaelter_r)
 UNION ALL
-(SELECT 
-    'Netzmessstelle' AS trinkwasserobjektart,
-    'Netzmessstelle' AS objekttyp_anzeige,
-    netzmessstelle.bezeichnung AS objektname, 
-    netzmessstelle.mobj_id AS objektnummer, 
-    netzmessstelle.beschreibung AS technische_angabe,
-    netzmessstelle.bemerkung AS bemerkung, 
-    array_to_json(dokumente.dokumente) AS dokumente, 
-    netzmessstelle.wkb_geometry AS geometrie
-FROM 
-    vegas.obj_netzmessstelle netzmessstelle
-LEFT JOIN 
-    (SELECT 
-         array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
-         y.vegas_id
-     FROM 
-         vegas.adm_dokument x, 
-         vegas.adm_objekt_dokument y 
-     WHERE x.dokument_id = y.dokument_id
-     GROUP BY y.vegas_id) dokumente ON netzmessstelle.vegas_id = dokumente.vegas_id
-WHERE archive = 0
-) 
-UNION ALL 
 (SELECT 
     'Pumpwerk' AS trinkwasserobjektart,
     'Pumpwerk' AS objekttyp_anzeige,
-    pumpwerk.bezeichnung AS objektname, 
-    pumpwerk.mobj_id AS objektnummer, 
-    pumpwerk.beschreibung AS technische_angabe,
-    pumpwerk.bemerkung AS bemerkung, 
-    array_to_json(dokumente.dokumente) AS dokumente, 
-    pumpwerk.wkb_geometry AS geometrie
-FROM 
-    vegas.obj_pumpwerk pumpwerk
+	pw.bezeichnung AS objektname, 
+	pw.objekt_id AS objektnummer,
+	pw.beschreibung AS technische_angabe,
+	pw.bemerkung,
+	array_to_json(dokumente.dokumente) AS dokumente, 
+	pw.geometrie
+FROM afu_wasserversorg_obj_v1.pumpwerk pw
 LEFT JOIN 
-    (SELECT 
-         array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
-         y.vegas_id
-     FROM 
-         vegas.adm_dokument x, 
-         vegas.adm_objekt_dokument y 
-     WHERE x.dokument_id = y.dokument_id
-     GROUP BY y.vegas_id) dokumente ON pumpwerk.vegas_id = dokumente.vegas_id
-WHERE archive = 0
-)
-UNION ALL 
+	(SELECT
+		qwbd.pumpwerk_r,
+		array_agg(REPLACE(d.dateiname,'G:\documents\ch.so.afu.wasserversorgung\','https://geo.so.ch/docs/ch.so.afu.wasserversorgung/')) AS dokumente
+	FROM 
+		afu_wasserversorg_obj_v1.pumpwerk__dokument qwbd, 
+		afu_wasserversorg_obj_v1.dokument d 
+	WHERE qwbd.dokument_r = d.t_id
+	GROUP BY qwbd.pumpwerk_r) dokumente ON pw.t_id = dokumente.pumpwerk_r)
+UNION ALL
 (SELECT 
     'Reservoir' AS trinkwasserobjektart,
     'Reservoir' AS objekttyp_anzeige,
-    reservoir.bezeichnung AS objektname, 
-    reservoir.mobj_id AS objektnummer, 
-    reservoir.beschreibung AS technische_angabe,
-    reservoir.bemerkung AS bemerkung, 
-    array_to_json(dokumente.dokumente) AS dokumente, 
-    reservoir.wkb_geometry AS geometrie
-FROM 
-    vegas.obj_reservoir reservoir
+	r.bezeichnung AS objektname, 
+	r.objekt_id AS objektnummer,
+	r.beschreibung AS technische_angabe,
+	r.bemerkung,
+	array_to_json(dokumente.dokumente) AS dokumente, 
+	r.geometrie
+FROM afu_wasserversorg_obj_v1.reservoir r
 LEFT JOIN 
-    (SELECT 
-         array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
-         y.vegas_id
-     FROM 
-         vegas.adm_dokument x, 
-         vegas.adm_objekt_dokument y 
-     WHERE x.dokument_id = y.dokument_id
-     GROUP BY y.vegas_id) dokumente ON reservoir.vegas_id = dokumente.vegas_id
-WHERE archive = 0)
+	(SELECT
+		rd.reservoir_r,
+		array_agg(REPLACE(d.dateiname,'G:\documents\ch.so.afu.wasserversorgung\','https://geo.so.ch/docs/ch.so.afu.wasserversorgung/')) AS dokumente
+	FROM 
+		afu_wasserversorg_obj_v1.reservoir__dokument rd, 
+		afu_wasserversorg_obj_v1.dokument d 
+	WHERE rd.dokument_r = d.t_id
+	GROUP BY rd.reservoir_r) dokumente ON r.t_id = dokumente.reservoir_r)
+;
