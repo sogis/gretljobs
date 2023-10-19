@@ -1,131 +1,76 @@
 (SELECT 
-     'sodbrunnen' AS fassungstyp, 
-     sodbrunnen.menge AS konzessionsmenge, 
-     sodbrunnen.schutzzone, 
-     CASE 
-         WHEN sodbrunnen.nutzungsart = 3 
-         THEN 'privat'
-         WHEN sodbrunnen.nutzungsart = 2 
-         THEN 'privat_oeffentliches_Interesse'
-         WHEN sodbrunnen.nutzungsart = 1 
-         THEN 'oeffentlich'
-     END AS nutzungstyp, 
-     CASE 
-         WHEN sodbrunnen.verwendung = 1 
-         THEN 'Trinkwasser' 
-         WHEN sodbrunnen.verwendung = 2 
-         THEN 'Brauchwasser'
-         WHEN sodbrunnen.verwendung = 3
-         THEN 'Notbrunnen'
-     END AS verwendungszweck,
-     'Sodbrunnen' AS objekttyp_anzeige,
-     sodbrunnen.bezeichnung AS objektname, 
-     sodbrunnen.mobj_id AS objektnummer,
-     sodbrunnen.beschreibung AS technische_angabe,
-     sodbrunnen.bemerkung AS bemerkung,
-     array_to_json(dokumente.dokumente) AS dokumente, 
-     wkb_geometry AS geometrie
- FROM (SELECT * FROM vegas.obj_objekt_v where objekttyp_id = 6 AND archive=0) sodbrunnen
- LEFT JOIN 
-     (SELECT 
-          array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
-          y.vegas_id
-      FROM 
-          vegas.adm_dokument x, 
-          vegas.adm_objekt_dokument y 
-      WHERE x.dokument_id = y.dokument_id
-      GROUP BY y.vegas_id) dokumente ON sodbrunnen.vegas_id = dokumente.vegas_id)
+	'Sodbrunnen' AS fassungstyp,
+	sb.konzessionsmenge, 
+	FALSE AS schutzzone, 
+	NULL AS nutzungstyp,
+	'Sodbrunnen' AS objekttyp_anzeige,
+	sb.verwendung AS verwendungszweck,
+	sb.bezeichnung AS objektname, 
+	sb.objekt_id AS objektnummer,
+	sb.beschreibung AS technische_angabe,
+	bemerkung,
+	array_to_json(dokumente.dokumente) AS dokumente, 
+	sb.geometrie
+FROM afu_grundwasserschutz_obj_v1.sodbrunnen sb
+LEFT JOIN 
+	(SELECT
+		sbd.sodbrunnen_r,
+		array_agg(REPLACE(d.dateiname,'G:\documents\ch.so.afu.grundwasserschutz\','https://geo.so.ch/docs/ch.so.afu.grundwasserschutz/')) AS dokumente
+	FROM 
+		afu_grundwasserschutz_obj_v1.sodbrunnen__dokument sbd, 
+		afu_grundwasserschutz_obj_v1.dokument d 
+	WHERE sbd.dokument_r = d.t_id
+	GROUP BY sbd.sodbrunnen_r) dokumente ON sb.t_id = dokumente.sodbrunnen_r)
 UNION ALL 
 (SELECT 
-     'horizontalfilterbrunnen' AS fassungstyp, 
-     horizontalfilterbrunnen.menge AS konzessionsmenge, 
-     horizontalfilterbrunnen.schutzzone, 
-     CASE 
-         WHEN horizontalfilterbrunnen.nutzungsart = 3 
-         THEN 'privat'
-         WHEN horizontalfilterbrunnen.nutzungsart = 2 
-         THEN 'privat_oeffentliches_Interesse'
-         WHEN horizontalfilterbrunnen.nutzungsart = 1 
-         THEN 'oeffentlich'
-     END AS nutzungstyp, 
-     CASE 
-         WHEN horizontalfilterbrunnen.verwendung = 1 
-         THEN 'Trinkwasser' 
-         WHEN horizontalfilterbrunnen.verwendung = 2 
-         THEN 'Brauchwasser'
-         WHEN horizontalfilterbrunnen.verwendung = 3
-         THEN 'Notbrunnen'
-     END AS verwendungszweck,
-     CASE 
-         WHEN horizontalfilterbrunnen.nutzungsart = 3 
-         THEN 'Horizontalfilterbrunnen mit privater Nutzung'
-         WHEN horizontalfilterbrunnen.nutzungsart = 2 
-         THEN 'Horizontalfilterbrunnen mit privater Nutzung von öffentlichem Interesse'
-         WHEN horizontalfilterbrunnen.nutzungsart = 1 
-         THEN 'Horizontalfilterbrunnen für die öffentliche Wasserversorgung' 
-         WHEN horizontalfilterbrunnen.nutzungsart IS NULL OR horizontalfilterbrunnen.nutzungsart > 3 
-         THEN 'Horizontalfilterbrunnen'
-     END AS objekttyp_anzeige,
-     horizontalfilterbrunnen.bezeichnung AS objektname, 
-     horizontalfilterbrunnen.mobj_id AS objektnummer,
-     horizontalfilterbrunnen.beschreibung AS technische_angabe,
-     horizontalfilterbrunnen.bemerkung AS bemerkung,
-     array_to_json(dokumente.dokumente) AS dokumente, 
-     wkb_geometry AS geometrie
- FROM (SELECT * FROM vegas.obj_objekt_v where objekttyp_id = 7 AND subtyp = 2 AND archive=0) horizontalfilterbrunnen
+	CASE
+		WHEN fb.typ = 'vertikal' THEN 'Vertikalfilterbrunnen'
+		WHEN fb.typ = 'horizontal' THEN 'Horizontalfilterbrunnen'
+	END AS fassungstyp, 
+    NULL AS konzessionsmenge,
+ 	CASE
+ 		WHEN fb.schutzzone = 'f' THEN FALSE
+ 		WHEN fb.schutzzone = 't' THEN TRUE
+    END AS schutzzone, 
+	CASE 
+		WHEN fb.nutzungsart = 'Private_Fassung' THEN 'privat'
+		WHEN fb.nutzungsart = 'Private_Fasung_von_oeffentlichem_Interesse' THEN 'privat_oeffentliches_Interesse'
+		WHEN fb.nutzungsart = 'Private_Fassung_von_oeffentlichem_Interesse' THEN 'privat_oeffentliches_Interesse'
+		WHEN fb.nutzungsart = 'Oeffentliche_Fassung' THEN 'oeffentlich'
+	END AS nutzungstyp, 
+	CASE
+		WHEN fb.typ = 'vertikal' THEN
+			CASE 
+				WHEN fb.nutzungsart = 'Private_Fassung' THEN 'Vertikalfilterbrunnen mit privater Nutzung'
+				WHEN fb.nutzungsart = 'Private_Fassung_von_oeffentlichem_Interesse' THEN 'Vertikalfilterbrunnen mit privater Nutzung von öffentlichem Interesse'
+				WHEN fb.nutzungsart = 'Private_Fasung_von_oeffentlichem_Interesse' THEN 'Vertikalfilterbrunnen mit privater Nutzung von öffentlichem Interesse'
+				WHEN fb.nutzungsart = 'Oeffentliche_Fassung' THEN 'Vertikalfilterbrunnen für die öffentliche Wasserversorgung' 
+				WHEN fb.nutzungsart = 'keine Angabe' THEN 'Vertikalfilterbrunnen'
+			END
+		WHEN fb.typ = 'horizontal' THEN 
+			CASE 
+				WHEN fb.nutzungsart = 'Private_Fassung' THEN 'Horizontalfilterbrunnen mit privater Nutzung'
+				WHEN fb.nutzungsart = 'Private_Fassung_von_oeffentlichem_Interesse' THEN 'Horizontalfilterbrunnen mit privater Nutzung von öffentlichem Interesse'
+				WHEN fb.nutzungsart = 'Private_Fasung_von_oeffentlichem_Interesse' THEN 'Horizontalfilterbrunnen mit privater Nutzung von öffentlichem Interesse'
+				WHEN fb.nutzungsart = 'Oeffentliche_Fassung' THEN 'Horizontalfilterbrunnen für die öffentliche Wasserversorgung' 
+				WHEN fb.nutzungsart = 'keine Angabe' THEN 'Horizontalfilterbrunnen'
+			END
+	END AS objekttyp_anzeige,
+	fb.verwendung AS verwendungszweck,
+    fb.bezeichnung AS objektname, 
+	fb.objekt_id AS objektnummer,
+	fb.beschreibung AS technische_angabe,
+	bemerkung,
+	array_to_json(dokumente.dokumente) AS dokumente, 
+	fb.geometrie
+ FROM afu_wasserversorg_obj_v1.filterbrunnen fb
  LEFT JOIN 
-     (SELECT 
-          array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente,
-          y.vegas_id
-      FROM 
-          vegas.adm_dokument x, 
-          vegas.adm_objekt_dokument y 
-      WHERE x.dokument_id = y.dokument_id
-      GROUP BY y.vegas_id) dokumente ON horizontalfilterbrunnen.vegas_id = dokumente.vegas_id)
-UNION ALL 
-(SELECT 
-     'vertikalfilterbrunnen' AS fassungstyp, 
-     vertikalfilterbrunnen.menge AS konzessionsmenge, 
-     vertikalfilterbrunnen.schutzzone, 
-     CASE 
-         WHEN vertikalfilterbrunnen.nutzungsart = 3 
-         THEN 'privat'
-         WHEN vertikalfilterbrunnen.nutzungsart = 2 
-         THEN 'privat_oeffentliches_Interesse'
-         WHEN vertikalfilterbrunnen.nutzungsart = 1 
-         THEN 'oeffentlich'
-     END AS nutzungstyp, 
-     CASE 
-         WHEN vertikalfilterbrunnen.verwendung = 1 
-         THEN 'Trinkwasser' 
-         WHEN vertikalfilterbrunnen.verwendung = 2 
-         THEN 'Brauchwasser'
-         WHEN vertikalfilterbrunnen.verwendung = 3
-         THEN 'Notbrunnen'
-     END AS verwendungszweck,
-     CASE 
-         WHEN vertikalfilterbrunnen.nutzungsart = 3 
-         THEN 'Vertikalfilterbrunnen mit privater Nutzung'
-         WHEN vertikalfilterbrunnen.nutzungsart = 2 
-         THEN 'Vertikalfilterbrunnen mit privater Nutzung von öffentlichem Interesse'
-         WHEN vertikalfilterbrunnen.nutzungsart = 1 
-         THEN 'Vertikalfilterbrunnen für die öffentliche Wasserversorgung' 
-         WHEN vertikalfilterbrunnen.nutzungsart IS NULL OR vertikalfilterbrunnen.nutzungsart > 3 
-         THEN 'Vertikalfilterbrunnen'
-     END AS objekttyp_anzeige,
-     vertikalfilterbrunnen.bezeichnung AS objektname, 
-     vertikalfilterbrunnen.mobj_id AS objektnummer,
-     vertikalfilterbrunnen.beschreibung AS technische_angabe,
-     vertikalfilterbrunnen.bemerkung AS bemerkung,
-     array_to_json(dokumente.dokumente) AS dokumente, 
-     wkb_geometry AS geometrie
- FROM (SELECT * FROM vegas.obj_objekt_v where objekttyp_id = 7 AND subtyp = 1 AND archive=0) vertikalfilterbrunnen
- LEFT JOIN 
-     (SELECT 
-          array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente,
-          y.vegas_id
-      FROM 
-          vegas.adm_dokument x, 
-          vegas.adm_objekt_dokument y 
-      WHERE x.dokument_id = y.dokument_id
-      GROUP BY y.vegas_id) dokumente ON vertikalfilterbrunnen.vegas_id = dokumente.vegas_id)
+	(SELECT
+		fbd.filterbrunnen_r,
+		array_agg(REPLACE(d.dateiname,'G:\documents\ch.so.afu.wasserversorgung\','https://geo.so.ch/docs/ch.so.afu.wasserversorgung/')) AS dokumente
+	FROM 
+		afu_wasserversorg_obj_v1.filterbrunnen__dokument fbd, 
+		afu_wasserversorg_obj_v1.dokument d 
+	WHERE fbd.dokument_r = d.t_id
+	GROUP BY fbd.filterbrunnen_r) dokumente ON fb.t_id = dokumente.filterbrunnen_r)
+;
