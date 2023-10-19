@@ -16,7 +16,7 @@
 		WHEN qg.nutzungsart = 'Private_Fassung_von_oeffentlichem_Interesse' THEN 'Gefasste Quelle mit privater Nutzung von öffentlichem Interesse'
 		WHEN qg.nutzungsart = 'Private_Fasung_von_oeffentlichem_Interesse' THEN 'Gefasste Quelle mit privater Nutzung von öffentlichem Interesse'
 		WHEN qg.nutzungsart = 'Oeffentliche_Fassung' THEN 'Gefasste Quelle für die öffentliche Wasserversorgung' 
-		WHEN qg.nutzungsart = 'keine Angabe' THEN 'Gefasste Quelle'
+		WHEN qg.nutzungsart = 'keine_Angabe' THEN 'Gefasste Quelle'
 	END AS objekttyp_anzeige,
 	qg.bezeichnung AS objektname, 
 	qg.objekt_id AS objektnummer,
