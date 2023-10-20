@@ -34,7 +34,6 @@ UNION ALL
     END AS schutzzone, 
 	CASE 
 		WHEN fb.nutzungsart = 'Private_Fassung' THEN 'privat'
-		WHEN fb.nutzungsart = 'Private_Fasung_von_oeffentlichem_Interesse' THEN 'privat_oeffentliches_Interesse'
 		WHEN fb.nutzungsart = 'Private_Fassung_von_oeffentlichem_Interesse' THEN 'privat_oeffentliches_Interesse'
 		WHEN fb.nutzungsart = 'Oeffentliche_Fassung' THEN 'oeffentlich'
 	END AS nutzungstyp, 
