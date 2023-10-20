@@ -27,7 +27,7 @@ UNION ALL
 		WHEN fb.typ = 'vertikal' THEN 'Vertikalfilterbrunnen'
 		WHEN fb.typ = 'horizontal' THEN 'Horizontalfilterbrunnen'
 	END AS fassungstyp, 
-    	NULL AS konzessionsmenge,
+    	fb.konzessionsmenge,
  	fb.schutzzone, 
 	CASE 
 		WHEN fb.nutzungsart = 'Private_Fassung' THEN 'privat'
