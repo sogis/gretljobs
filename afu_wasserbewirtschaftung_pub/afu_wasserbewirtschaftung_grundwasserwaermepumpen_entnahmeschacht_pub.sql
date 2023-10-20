@@ -15,7 +15,7 @@
 	bemerkung, 
 	array_to_json(dokumente.dokumente) AS dokumente, 
 	gwwp.geometrie
-FROM afu_grundwasserschutz_obj_v1.grundwasserwaermepumpe gwwp
+FROM (SELECT * FROM afu_grundwasserschutz_obj_v1.grundwasserwaermepumpe WHERE (zustand = 'Voranfrage' OR schachttyp = 'Entnahme')) gwwp
 LEFT JOIN 
 	(SELECT
 		gwwpd.grundwasserwaermepumpe_r,
