@@ -16,19 +16,3 @@ WHERE
         OR l.migriert = TRUE
     )
 ;
-
--- Setze die Status aller diesjährigen in_bearbeitung-Leistungen, die migriert sind und eine *aktive* Vereinbarungen haben auf freigegeben
--- Die einmaligen setzen wir nicht auf freigegeben (weil wir ja nicht wissen, ob sie absichtlich auf 'in_bearbeitung' standen vorher)
-UPDATE ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l
-SET status_abrechnung = 'freigegeben'
-FROM ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
-WHERE 
-    l.vereinbarung = vbg.t_id
-    AND (
-        vbg.status_vereinbarung = 'aktiv'
-        AND vbg.bewe_id_geprueft IS TRUE
-    )
-    AND l.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer
-    AND l.status_abrechnung = 'in_bearbeitung'
-    AND l.migriert = TRUE
-;
