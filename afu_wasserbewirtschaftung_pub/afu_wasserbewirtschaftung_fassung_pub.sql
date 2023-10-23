@@ -33,13 +33,13 @@ UNION ALL
 		WHEN fb.nutzungsart = 'Private_Fassung' THEN 'privat'
 		WHEN fb.nutzungsart = 'Private_Fassung_von_oeffentlichem_Interesse' THEN 'privat_oeffentliches_Interesse'
 		WHEN fb.nutzungsart = 'Oeffentliche_Fassung' THEN 'oeffentlich'
+		ELSE NULL
 	END AS nutzungstyp, 
 	CASE
 		WHEN fb.typ = 'vertikal' THEN
 			CASE 
 				WHEN fb.nutzungsart = 'Private_Fassung' THEN 'Vertikalfilterbrunnen mit privater Nutzung'
 				WHEN fb.nutzungsart = 'Private_Fassung_von_oeffentlichem_Interesse' THEN 'Vertikalfilterbrunnen mit privater Nutzung von öffentlichem Interesse'
-				WHEN fb.nutzungsart = 'Private_Fasung_von_oeffentlichem_Interesse' THEN 'Vertikalfilterbrunnen mit privater Nutzung von öffentlichem Interesse'
 				WHEN fb.nutzungsart = 'Oeffentliche_Fassung' THEN 'Vertikalfilterbrunnen für die öffentliche Wasserversorgung' 
 				WHEN fb.nutzungsart = 'keine_Angabe' THEN 'Vertikalfilterbrunnen'
 			END
@@ -47,12 +47,14 @@ UNION ALL
 			CASE 
 				WHEN fb.nutzungsart = 'Private_Fassung' THEN 'Horizontalfilterbrunnen mit privater Nutzung'
 				WHEN fb.nutzungsart = 'Private_Fassung_von_oeffentlichem_Interesse' THEN 'Horizontalfilterbrunnen mit privater Nutzung von öffentlichem Interesse'
-				WHEN fb.nutzungsart = 'Private_Fasung_von_oeffentlichem_Interesse' THEN 'Horizontalfilterbrunnen mit privater Nutzung von öffentlichem Interesse'
 				WHEN fb.nutzungsart = 'Oeffentliche_Fassung' THEN 'Horizontalfilterbrunnen für die öffentliche Wasserversorgung' 
 				WHEN fb.nutzungsart = 'keine_Angabe' THEN 'Horizontalfilterbrunnen'
 			END
 	END AS objekttyp_anzeige,
-	fb.verwendung AS verwendungszweck,
+	CASE
+		WHEN fb.verwendung = 'keine_Angabe' THEN NULL
+		ELSE fb.verwendung
+	END verwendungszweck,
     	fb.bezeichnung AS objektname, 
 	fb.objekt_id AS objektnummer,
 	fb.beschreibung AS technische_angabe,
