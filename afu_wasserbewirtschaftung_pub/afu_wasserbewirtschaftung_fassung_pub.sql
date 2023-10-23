@@ -61,7 +61,7 @@ UNION ALL
     	fb.bezeichnung AS objektname, 
 	fb.objekt_id AS objektnummer,
 	fb.beschreibung AS technische_angabe,
-	bemerkung,
+	fb.bemerkung,
 	array_to_json(dokumente.dokumente) AS dokumente, 
 	fb.geometrie
  FROM afu_wasserversorg_obj_v1.filterbrunnen fb
