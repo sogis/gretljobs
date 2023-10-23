@@ -10,7 +10,10 @@
 		WHEN qg.nutzungsart = 'Private_Fassung_von_oeffentlichem_Interesse' THEN 'privat_oeffentliches_Interesse'
 		WHEN qg.nutzungsart = 'Oeffentliche_Fassung' THEN 'oeffentlich'
 	END AS nutzungstyp,
-	verwendung AS verwendungszweck,
+	CASE
+		WHEN qg.verwendung = 'keine_Angabe' THEN NULL
+		ELSE qg.verwendung
+	END AS verwendungszweck,
 	CASE
 		WHEN qg.nutzungsart = 'Private_Fassung' THEN 'Gefasste Quelle mit privater Nutzung'
 		WHEN qg.nutzungsart = 'Private_Fassung_von_oeffentlichem_Interesse' THEN 'Gefasste Quelle mit privater Nutzung von öffentlichem Interesse'
