@@ -12,7 +12,7 @@
 	gwwp.bezeichnung AS objektname, 
 	gwwp.objekt_id AS objektnummer, 
 	gwwp.beschreibung AS technische_angabe, 
-	bemerkung, 
+	gwwp.bemerkung, 
 	array_to_json(dokumente.dokumente) AS dokumente, 
 	gwwp.geometrie
 FROM (SELECT * FROM afu_grundwasserschutz_obj_v1.grundwasserwaermepumpe WHERE (zustand = 'Voranfrage' OR schachttyp = 'Entnahme')) gwwp
