@@ -54,7 +54,7 @@ UNION ALL
 	CASE
 		WHEN fb.verwendung = 'keine_Angabe' THEN NULL
 		ELSE fb.verwendung
-	END verwendungszweck,
+	END AS verwendungszweck,
     	fb.bezeichnung AS objektname, 
 	fb.objekt_id AS objektnummer,
 	fb.beschreibung AS technische_angabe,
