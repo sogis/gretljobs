@@ -4,11 +4,14 @@
 	FALSE AS schutzzone, 
 	NULL AS nutzungstyp,
 	'Sodbrunnen' AS objekttyp_anzeige,
-	sb.verwendung AS verwendungszweck,
+	CASE
+		WHEN sb.verwendung = 'keine_Angabe' THEN NULL
+		ELSE sb.verwendung
+	END AS verwendungszweck,
 	sb.bezeichnung AS objektname, 
 	sb.objekt_id AS objektnummer,
 	sb.beschreibung AS technische_angabe,
-	bemerkung,
+	sb.bemerkung,
 	array_to_json(dokumente.dokumente) AS dokumente, 
 	sb.geometrie
 FROM afu_grundwasserschutz_obj_v1.sodbrunnen sb
