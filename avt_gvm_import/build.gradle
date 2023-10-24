@@ -6,6 +6,8 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.io.File
 
+apply plugin: 'ch.so.agi.gretl'
+
 defaultTasks 'importGVM'
 
 /* 

@@ -15,8 +15,7 @@ def pathToTempFolder = System.getProperty('java.io.tmpdir')
 task copyZipFile(type: Copy) {
     from 'upload/'
     into 'upload/'
-    include('uploadFile')
-    rename('uploadFile', 'uploadFile.zip')
+    rename 'uploadFile', 'uploadFile.zip'
 }
 
 task unzipData(type: Copy, dependsOn: copyZipFile) {
