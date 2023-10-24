@@ -23,7 +23,7 @@ task copyZipFile(type: Copy) {
 }
 
 task unzipData(type: Copy, dependsOn: copyZipFile) {
-    from zipTree(file('upload/uploadFile.zip'))
+    from zipTree(file('uploadFile.zip'))
     into file('data')
 }
 
