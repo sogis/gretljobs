@@ -12,8 +12,7 @@ defaultTasks 'importGVM'
 WICHTIG: Definition des GVM (Jahr)
 */ 
 def jahr = '2019'
-def modell = 'SO_AVT_Gesamtverkehrsmodell_2019_20230829'
-def dataFile = modell +'.xtf' // Heisst das Data-File wirklich immer so? 
+def dataFile = 'SO_AVT_Gesamtverkehrsmodell_2019_20230829.xtf' // Heisst das Data-File wirklich immer so? 
  
 
 task copyZipFile(type: Copy) {
@@ -28,13 +27,12 @@ task unzipData(type: Copy, dependsOn: copyZipFile) {
     into file('data')
 }
 
-task importGVM(type: Ili2pgReplace, dependsOn: unzipData){
+task importGVM(type: Ili2pgImport, dependsOn: unzipData){
      description = 'Import der GVM Daten'
      database = [dbUriEdit, dbUserEdit, dbPwdEdit]
      dbschema = 'avt_gesamtverkehrsmodell_' + jahr + '_v1'
-     models = modell
      dataFile = 'data/'+dataFile
-     dataset = 'gvm'
+     deleteData = true
 }
 
 
