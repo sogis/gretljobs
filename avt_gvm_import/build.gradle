@@ -9,6 +9,7 @@ import java.io.File
 apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'importGVM'
+def pathToTempFolder = System.getProperty('java.io.tmpdir')
 
 /* 
 WICHTIG: Definition des GVM (Jahr)
