@@ -1,31 +1,40 @@
-/*
-Import der Daten des Gesamtverkehrsmodell
-*/
+import ch.so.agi.gretl.api.TransferSet
 import ch.so.agi.gretl.tasks.*
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.io.File
 
+apply plugin: 'ch.so.agi.gretl'
+
 defaultTasks 'importGVM'
+
+def pathToTempFolder = System.getProperty('java.io.tmpdir')
 
 /* 
 WICHTIG: Definition des GVM (Jahr)
 */ 
 def jahr = '2019'
-def modell = 'SO_AVT_Gesamtverkehrsmodell_2019_20230829'
+def dataFile = 'SO_AVT_Gesamtverkehrsmodell_2019_20230829.xtf' // Heisst das Data-File wirklich immer so? 
  
 
-def uploadFileName = 'uploadFile'
-def exportFileName = 'data.xtf'
-def pathToUploadFolder = 'upload'
+task copyZipFile(type: Copy) {
+    from 'upload/'
+    into 'upload/'
+    include('uploadFile')
+    rename('uploadFile', 'uploadFile.zip')
+}
 
+task unzipData(type: Copy, dependsOn: copyZipFile) {
+    from zipTree(file('upload/uploadFile.zip'))
+    into file('upload')
+}
 
-task importGVM(type: Ili2pgReplace){
+task importGVM(type: Ili2pgImport, dependsOn: unzipData){
      description = 'Import der GVM Daten'
      database = [dbUriEdit, dbUserEdit, dbPwdEdit]
      dbschema = 'avt_gesamtverkehrsmodell_' + jahr + '_v1'
-     models = modell
-     dataFile = 'upload/data.xtf'
+     dataFile = 'upload/SO_AVT_Gesamtverkehrsmodell_2019_20230829.xtf'
+     deleteData = true
 }
 
 
