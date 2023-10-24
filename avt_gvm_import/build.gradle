@@ -20,7 +20,8 @@ def dataFile = 'SO_AVT_Gesamtverkehrsmodell_2019_20230829.xtf' // Heisst das Dat
 task copyZipFile(type: Copy) {
     from 'upload/'
     into 'upload/'
-    rename 'uploadFile', 'uploadFile.zip'
+    include('uploadFile')
+    rename('uploadFile', 'uploadFile.zip')
 }
 
 task unzipData(type: Copy, dependsOn: copyZipFile) {
