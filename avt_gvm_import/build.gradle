@@ -15,12 +15,19 @@ def jahr = '2019'
 def modell = 'SO_AVT_Gesamtverkehrsmodell_2019_20230829'
  
 
-def uploadFileName = 'uploadFile'
-def exportFileName = 'data.xtf'
-def pathToUploadFolder = 'upload'
+task copyZipFile(type: Copy) {
+    from 'upload/'
+    into 'upload/'
+    include('uploadFile')
+    rename('uploadFile', 'uploadFile.zip')
+}
 
+task unzipData(type: Copy, dependsOn: copyZipFile) {
+    from zipTree(file('upload/uploadFile.zip'))
+    into file('data.xtf')
+}
 
-task importGVM(type: Ili2pgReplace){
+task importGVM(type: Ili2pgReplace, dependsOn: unzipData){
      description = 'Import der GVM Daten'
      database = [dbUriEdit, dbUserEdit, dbPwdEdit]
      dbschema = 'avt_gesamtverkehrsmodell_' + jahr + '_v1'
