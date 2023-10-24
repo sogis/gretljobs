@@ -23,7 +23,7 @@ task copyZipFile(type: Copy) {
 }
 
 task unzipData(type: Copy, dependsOn: copyZipFile) {
-    from zipTree(file('uploadFile.zip'))
+    from zipTree(file('upload/uploadFile.zip'))
     into file('data')
 }
 
@@ -31,7 +31,7 @@ task importGVM(type: Ili2pgImport, dependsOn: unzipData){
      description = 'Import der GVM Daten'
      database = [dbUriEdit, dbUserEdit, dbPwdEdit]
      dbschema = 'avt_gesamtverkehrsmodell_' + jahr + '_v1'
-     dataFile = 'data/'+dataFile
+     dataFile = 'data/SO_AVT_Gesamtverkehrsmodell_2019_20230829.xtf'
      deleteData = true
 }
 
