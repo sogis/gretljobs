@@ -34,6 +34,7 @@ task importGVM(type: Ili2pgReplace, dependsOn: unzipData){
      dbschema = 'avt_gesamtverkehrsmodell_' + jahr + '_v1'
      models = modell
      dataFile = 'data/'+dataFile
+     dataset = 'gvm'
 }
 
 
