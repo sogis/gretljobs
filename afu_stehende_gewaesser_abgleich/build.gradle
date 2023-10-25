@@ -14,13 +14,11 @@ task importNeueAVGewaesser(type: SqlExecutor) {
     sqlFiles = ['import_av_gewaesser.sql']
 }
 
-
 task updateAvGewaesser(type: SqlExecutor, dependsOn: 'importNeueAVGewaesser') {
     description = 'Update stehende_gewaesser, wo kein AV-Gewässer mehr vorhanden ist'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['unlink_av_gewaesser.sql']
 }
-
 
 task updateGemeindename(type: SqlExecutor, dependsOn: 'updateAvGewaesser') {
     description = 'Update Gemeindename'
