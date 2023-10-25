@@ -19,7 +19,7 @@ task updateAvGewaesser(type: SqlExecutor, dependsOn: 'importNeueAVGewaesser') {
     sqlFiles = ['unlink_av_gewaesser.sql']
 }
 
-task updateGemeindename(type: SqlExecutor) {
+task updateGemeindename(type: SqlExecutor, dependsOn: 'updateAvGewaesser') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['update_gemeindename.sql']
 }
