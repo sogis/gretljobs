@@ -12,4 +12,6 @@ FROM
     ON art = 'Gewaesser.stehendes' AND ST_Within(ST_PointOnSurface(stehendes_gewaesser.geometrie), bodenbedeckung.geometrie)
 WHERE
     av_geometrie IS TRUE
+AND
+    av_link IS TRUE
 ;
