@@ -11,7 +11,7 @@ INSERT INTO
     )
     WITH new_av_gewaesser AS (
         SELECT
-            ST_Buffer(ST_PointOnSurface(geometrie), 10) AS geometrie_av
+            ST_Buffer(ST_PointOnSurface(geometrie), 5) AS geometrie_av
         FROM
             agi_dm01avso24.bodenbedeckung_boflaeche   
         WHERE
@@ -30,7 +30,8 @@ INSERT INTO
               --]
             --)
         --) AS geometrie,
-        ST_Buffer(ST_PointOnSurface(geometrie_av), 2) AS geometrie,
+        --ST_Buffer(ST_PointOnSurface(geometrie_av), 2) AS geometrie,
+        geometrie_av AS geometrie,
         'andere' AS typ,
         'Gemeindename' AS gemeindename,
         false AS erhebung_abgeschlossen,
