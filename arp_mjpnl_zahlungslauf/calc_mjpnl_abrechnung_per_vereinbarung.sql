@@ -14,10 +14,26 @@ SELECT
   vbg.vereinbarungs_nr,
   vbg.gelan_pid_gelan,
   vbg.gelan_bewe_id,
-  COALESCE(array_to_string(vbg.gb_nr,','),'keine') AS gb_nr,
-  COALESCE(array_to_string(vbg.flurname,','),'keine') AS flurnamen,
-  COALESCE(array_to_string(vbg.kultur_id,','),'keine') AS kultur_ids,
-  COALESCE(array_to_string(vbg.gemeinde,','),'keine') AS gemeinde,
+  CASE
+   WHEN array_length(vbg.gb_nr,1) IS NOT NULL 
+   THEN array_to_string(vbg.gb_nr,',') 
+   ELSE 'unbekannt'
+  END AS gb_nr,
+  CASE
+   WHEN array_length(vbg.flurname,1) IS NOT NULL 
+   THEN array_to_string(vbg.flurname,',') 
+   ELSE 'unbekannt'
+  END AS flurnamen,
+  CASE
+   WHEN array_length(vbg.kultur_id,1) IS NOT NULL 
+   THEN array_to_string(vbg.kultur_id,',') 
+   ELSE 'unbekannt'
+  END AS kultur_ids,
+  CASE
+   WHEN array_length(vbg.gemeinde,1) IS NOT NULL 
+   THEN array_to_string(vbg.gemeinde,',') 
+   ELSE 'unbekannt'
+  END AS gemeinde,
   vbg.flaeche,
   COALESCE(SUM(lstg_stueck.anzahl_einheiten),0) AS anzahl_baeume,
   COALESCE(SUM(lstg_ha.betrag_total),0) AS betrag_flaeche,
