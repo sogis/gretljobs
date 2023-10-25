@@ -30,8 +30,8 @@ INSERT INTO
               --]
             --)
         --) AS geometrie,
-        --ST_Buffer(ST_PointOnSurface(geometrie_av), 2) AS geometrie,
-        geometrie_av AS geometrie,
+        ST_Buffer(ST_Centroid(geometrie_av), 2) AS geometrie,
+        --geometrie_av AS geometrie,
         'andere' AS typ,
         'Gemeindename' AS gemeindename,
         false AS erhebung_abgeschlossen,
