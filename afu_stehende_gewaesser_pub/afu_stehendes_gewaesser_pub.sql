@@ -13,7 +13,7 @@ WHERE
 AND
     av_link IS FALSE
 
-UNION
+UNION ALL
     
 SELECT 
     aname,
