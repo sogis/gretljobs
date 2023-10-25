@@ -57,6 +57,7 @@ INSERT INTO
         geometrie,
         rechtsstatus,
         publiziertab,
+        publiziertbis,
         bemerkungen,
         typpz
     )
@@ -66,6 +67,7 @@ SELECT
     flaeche.geometrie,
     flaeche.rechtsstatus,
     flaeche.publiziertab,
+    flaeche.publiziertbis,
     flaeche.bemerkungen,
     mgdm_typ.t_id AS wal
 FROM 
