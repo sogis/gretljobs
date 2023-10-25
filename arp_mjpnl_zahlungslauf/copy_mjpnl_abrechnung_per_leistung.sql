@@ -46,17 +46,12 @@ WITH alle_beurteilungen AS (
 ),
 relevante_vereinbarungen AS (
   -- alle aktiven vereinbarungen mit unbesprochener oder keiner beurteilung
-  -- ...und keinen migrierten Leistungen (Berücksichtigung Migrationsjahr)
   SELECT * 
   FROM ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
   LEFT JOIN alle_beurteilungen be
   ON be.vereinbarung = vbg.t_id
   WHERE vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE
   AND be.mit_bewirtschafter_besprochen IS NOT TRUE
-  AND ( -- ..und keinen migrierten Leistungen
-    SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung
-    WHERE migriert AND auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer and vereinbarung = vbg.t_id
-  )=0
 )
 -- alle letztjährigen leistungen der vereinbarungen mit unbesprochener oder keiner beurteilung
 SELECT 
@@ -75,4 +70,6 @@ SELECT
 FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l
 INNER JOIN relevante_vereinbarungen rel_vbg
 ON l.vereinbarung = rel_vbg.t_id
-WHERE l.auszahlungsjahr = ${AUSZAHLUNGSJAHR}-1 AND einmalig IS NOT TRUE AND l.status_abrechnung = 'ausbezahlt';
+WHERE l.auszahlungsjahr = ${AUSZAHLUNGSJAHR}-1 AND einmalig IS NOT TRUE AND l.status_abrechnung = 'ausbezahlt'
+-- falls wir im Migrationsjahr sind, dann sollen keine Leistungen vom Vorjahr kopiert werden
+AND ${AUSZAHLUNGSJAHR} != 2023;
