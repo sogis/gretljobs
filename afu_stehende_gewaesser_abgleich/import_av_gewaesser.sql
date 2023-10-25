@@ -20,16 +20,17 @@ INSERT INTO
 
     SELECT
         NULL AS aname,
-        ST_MakePolygon(
-            ST_MakeLine(
-              ARRAY[
-                ST_SetSRID(ST_MakePoint(ST_X(ST_PointOnSurface(geometrie_av)), ST_Y(ST_PointOnSurface(geometrie_av)) + 0.3), 2056),
-                ST_SetSRID(ST_MakePoint(ST_X(ST_PointOnSurface(geometrie_av)) - 0.3, ST_Y(ST_PointOnSurface(geometrie_av)) -0.2), 2056),
-                ST_SetSRID(ST_MakePoint(ST_X(ST_PointOnSurface(geometrie_av)) + 0.3, ST_Y(ST_PointOnSurface(geometrie_av)) -0.2), 2056),
-                ST_SetSRID(ST_MakePoint(ST_X(ST_PointOnSurface(geometrie_av)), ST_Y(ST_PointOnSurface(geometrie_av)) + 0.3), 2056)
-              ]
-            )
-        ) AS geometrie,
+        --ST_MakePolygon(
+            --ST_MakeLine(
+              --ARRAY[
+                --ST_SetSRID(ST_MakePoint(ST_X(ST_PointOnSurface(geometrie_av)), ST_Y(ST_PointOnSurface(geometrie_av)) + 0.3), 2056),
+                --ST_SetSRID(ST_MakePoint(ST_X(ST_PointOnSurface(geometrie_av)) - 0.3, ST_Y(ST_PointOnSurface(geometrie_av)) -0.2), 2056),
+                --ST_SetSRID(ST_MakePoint(ST_X(ST_PointOnSurface(geometrie_av)) + 0.3, ST_Y(ST_PointOnSurface(geometrie_av)) -0.2), 2056),
+                --ST_SetSRID(ST_MakePoint(ST_X(ST_PointOnSurface(geometrie_av)), ST_Y(ST_PointOnSurface(geometrie_av)) + 0.3), 2056)
+              --]
+            --)
+        --) AS geometrie,
+        ST_Buffer(ST_PointOnSurface(geometrie_av), 2) AS geometrie,
         'andere' AS typ,
         'Gemeindename' AS gemeindename,
         false AS erhebung_abgeschlossen,
