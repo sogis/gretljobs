@@ -8,16 +8,16 @@ WITH av_gewaesser AS (
 ),
 
 not_av_gewaesser AS (
-SELECT
-    t_id
-FROM
-    afu_stehende_gewaesser_v1.stehendes_gewaesser
-    LEFT JOIN av_gewaesser
-      ON ST_Contains(av_gewaesser.geometrie_av, stehendes_gewaesser.geometrie)
-WHERE
-    av_gewaesser.geometrie_av IS NULL
-AND
-    av_geometrie IS TRUE
+    SELECT
+        t_id
+    FROM
+        afu_stehende_gewaesser_v1.stehendes_gewaesser
+        LEFT JOIN av_gewaesser
+          ON ST_Contains(av_gewaesser.geometrie_av, stehendes_gewaesser.geometrie)
+    WHERE
+        av_gewaesser.geometrie_av IS NULL
+    AND
+        av_geometrie IS TRUE
 )
 
 UPDATE
