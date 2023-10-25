@@ -23,7 +23,7 @@ not_av_gewaesser AS (
 UPDATE
     afu_stehende_gewaesser_v1.stehendes_gewaesser AS stehendes_gewaesser
 SET
-    av_link IS FALSE
+    av_link = FALSE
 FROM
     not_av_gewaesser
 WHERE
