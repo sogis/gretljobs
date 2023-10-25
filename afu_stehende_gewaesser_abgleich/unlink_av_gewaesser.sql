@@ -6,7 +6,6 @@ WITH av_gewaesser AS (
     WHERE
        art = 'Gewaesser.stehendes'
 ),
-
 not_av_gewaesser AS (
     SELECT
         t_id
@@ -19,7 +18,6 @@ not_av_gewaesser AS (
     AND
         av_geometrie IS TRUE
 )
-
 UPDATE
     afu_stehende_gewaesser_v1.stehendes_gewaesser AS stehendes_gewaesser
 SET

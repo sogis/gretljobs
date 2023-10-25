@@ -7,19 +7,23 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'updateGemeindename'
 
 
-// Import neue AV-Gewässer
+
 task importNeueAVGewaesser(type: SqlExecutor) {
+    description = 'Import neue AV-Gewässer'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['import_av_gewaesser.sql']
 }
 
-// Update stehende_gewaesser, wo kein AV-Gewässer mehr vorhanden ist
+
 task updateAvGewaesser(type: SqlExecutor, dependsOn: 'importNeueAVGewaesser') {
+    description = 'Update stehende_gewaesser, wo kein AV-Gewässer mehr vorhanden ist'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['unlink_av_gewaesser.sql']
 }
 
+
 task updateGemeindename(type: SqlExecutor, dependsOn: 'updateAvGewaesser') {
+    description = 'Update Gemeindename'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['update_gemeindename.sql']
 }
