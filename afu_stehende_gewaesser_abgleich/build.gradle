@@ -7,12 +7,13 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'updateAvGewaesser'
 
 
+// Import neue AV-Gewässer
 task importNeueAVGewaesser(type: SqlExecutor) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['import_av_gewaesser.sql']
 }
 
-// Update stehende_gewaesser, wo keine AV mehr vorhanden ist
+// Update stehende_gewaesser, wo kein AV-Gewässer mehr vorhanden ist
 task updateAvGewaesser(type: SqlExecutor, dependsOn: 'importNeueAVGewaesser') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['unlink_av_gewaesser.sql']
