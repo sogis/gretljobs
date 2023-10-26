@@ -4,8 +4,7 @@ SELECT
     typ,
     gemeindename,
     erhebung_abgeschlossen,
-    av_geometrie,
-    av_link
+    av_geometrie
 FROM 
     afu_stehende_gewaesser_v1.stehendes_gewaesser
 WHERE
@@ -21,8 +20,7 @@ SELECT
     typ,
     gemeindename,
     erhebung_abgeschlossen,
-    av_geometrie,
-    av_link
+    av_geometrie
 FROM 
     afu_stehende_gewaesser_v1.av_gewaesser
 ;
