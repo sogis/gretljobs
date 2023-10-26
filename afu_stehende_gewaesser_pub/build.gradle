@@ -35,7 +35,7 @@ task transferStehendeGewaesserPub(type: Db2Db, dependsOn: 'transferAvGewaesserEd
     ];
 }
 
-task deleteAvGewaesserEdit(type: Db2Db, dependsOn: 'transferStehendeGewaesserPub') {
+task deleteAvGewaesserEdit(type: SqlExecutor, dependsOn: 'transferStehendeGewaesserPub') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['delete_afu_av_gewaesser_edit.sql']
 }
