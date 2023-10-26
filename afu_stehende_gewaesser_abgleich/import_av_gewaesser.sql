@@ -19,7 +19,15 @@ INSERT INTO
     )
     SELECT
         NULL AS aname,
-        ST_Buffer(ST_Centroid(geometrie_av), 1) AS geometrie,
+        ST_MakePolygon(ST_MakeLine(
+          ARRAY[
+            ST_SetSRID(ST_MakePoint(ST_X(ST_PointOnSurface(geometrie_av)) - 1, ST_Y(ST_PointOnSurface(geometrie_av)) - 1), 2056),
+            ST_SetSRID(ST_MakePoint(ST_X(ST_PointOnSurface(geometrie_av)) - 1, ST_Y(ST_PointOnSurface(geometrie_av)) + 1), 2056),
+            ST_SetSRID(ST_MakePoint(ST_X(ST_PointOnSurface(geometrie_av)) + 1, ST_Y(ST_PointOnSurface(geometrie_av)) + 1), 2056),
+            ST_SetSRID(ST_MakePoint(ST_X(ST_PointOnSurface(geometrie_av)) + 1, ST_Y(ST_PointOnSurface(geometrie_av)) - 1), 2056),
+            ST_SetSRID(ST_MakePoint(ST_X(ST_PointOnSurface(geometrie_av)) - 1, ST_Y(ST_PointOnSurface(geometrie_av)) - 1), 2056)
+          ])
+        ) AS geometrie,
         'andere' AS typ,
         'Gemeindename' AS gemeindename,
         false AS erhebung_abgeschlossen,
