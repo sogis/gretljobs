@@ -20,6 +20,7 @@ defaultTasks 'deleteAvGewaesserEdit'
 // }
 
 task transferAvGewaesserEdit(type: Db2Db) {
+    description = "Join und Transfer der AV-Gewässer mit den AV-Buffern."
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
@@ -28,6 +29,7 @@ task transferAvGewaesserEdit(type: Db2Db) {
 }
 
 task transferStehendeGewaesserPub(type: Db2Db, dependsOn: 'transferAvGewaesserEdit') {
+    description = "Transfer aller stehenden Gewässer."
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -36,6 +38,7 @@ task transferStehendeGewaesserPub(type: Db2Db, dependsOn: 'transferAvGewaesserEd
 }
 
 task deleteAvGewaesserEdit(type: SqlExecutor, dependsOn: 'transferStehendeGewaesserPub') {
+    description = "Nach erfolgreicher Publikation werden alle AV-Gewässer in der Edit-DB gelöscht ."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['delete_afu_av_gewaesser_edit.sql']
 }
