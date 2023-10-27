@@ -9,11 +9,14 @@ INSERT INTO
         av_geometrie,
         av_link
     )
-    WITH new_av_gewaesser AS (
+ WITH new_av_gewaesser AS (
         SELECT
-            ST_Buffer(ST_PointOnSurface(geometrie), 5) AS geometrie_av
+            gemeindegrenze.gemeindename,
+            ST_Buffer(ST_PointOnSurface(bodenflaeche.geometrie), 5) AS geometrie_av
         FROM
-            agi_dm01avso24.bodenbedeckung_boflaeche   
+            agi_dm01avso24.bodenbedeckung_boflaeche AS bodenflaeche
+            LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS gemeindegrenze
+              ON bodenflaeche.t_datasetname::int = gemeindegrenze.bfs_gemeindenummer
         WHERE
            art = 'Gewaesser.stehendes'
     )
@@ -29,7 +32,7 @@ INSERT INTO
           ])
         ) AS geometrie,
         'andere' AS typ,
-        'Gemeindename' AS gemeindename,
+        new_av_gewaesser.gemeindename,
         false AS erhebung_abgeschlossen,
         true AS av_geometrie,
         true AS av_link

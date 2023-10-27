@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'updateGemeindename'
+defaultTasks 'updateAvGewaesser'
 
 
 
@@ -20,8 +20,8 @@ task updateAvGewaesser(type: SqlExecutor, dependsOn: 'importNeueAVGewaesser') {
     sqlFiles = ['unlink_av_gewaesser.sql']
 }
 
-task updateGemeindename(type: SqlExecutor, dependsOn: 'updateAvGewaesser') {
-    description = 'Update Gemeindename'
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ['update_gemeindename.sql']
-}
+// task updateGemeindename(type: SqlExecutor, dependsOn: 'updateAvGewaesser') {
+//     description = 'Update Gemeindename'
+//     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+//     sqlFiles = ['update_gemeindename.sql']
+// }
