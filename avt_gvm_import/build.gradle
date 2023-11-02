@@ -1,42 +1,53 @@
 import ch.so.agi.gretl.api.TransferSet
 import ch.so.agi.gretl.tasks.*
-import java.nio.file.Files
 import java.nio.file.Paths
-import java.util.zip.ZipInputStream
-import java.util.zip.ZipEntry
-import java.io.File
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'importGVM'
+defaultTasks 'dbImport'
+
+
+//WICHTIG: Definition des GVM (Jahr)
+ 
+def jahr = '2019'
+def InterlisFile = 'SO_AVT_Gesamtverkehrsmodell_2019_20230829.xtf' // Heisst das Data-File wirklich immer so? 
+
 
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
-
-/* 
-WICHTIG: Definition des GVM (Jahr)
-*/ 
-def jahr = '2019'
-def dataFile = 'SO_AVT_Gesamtverkehrsmodell_2019_20230829.xtf' // Heisst das Data-File wirklich immer so? 
- 
+def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
+def pathToDataZip = Paths.get(pathToTempFolder, "uploadFile.zip")
+def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), InterlisFile)
 
 task copyZipFile(type: Copy) {
     from 'upload/'
-    into 'upload/'
     include('uploadFile')
+    into pathToTempFolder
     rename('uploadFile', 'uploadFile.zip')
 }
 
-task unzipData(type: Copy, dependsOn: copyZipFile) {
-    from zipTree(file('upload/uploadFile.zip'))
-    into file(pathToTempFolder)
+
+
+task unzipData(type: Copy, dependsOn: 'copyZipFile') {
+    description = "Unzip file."
+    doLast {
+        println "File unzipped to directory: " + pathToUnzipFolder
+    }
+    from zipTree(pathToDataZip)
+    into file(pathToUnzipFolder)
+    include "**/*.xtf"
 }
 
-task importGVM(type: Ili2pgImport, dependsOn: unzipData) {
-     description = 'Import der GVM Daten'
-     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-     dbschema = 'avt_gesamtverkehrsmodell_2019_v1'
-     dataFile = Paths.get(pathToTempFolder, 'SO_AVT_Gesamtverkehrsmodell_2019_20230829.xtf')
-     deleteData = true
+task dbImport(type: Ili2pgImport, dependsOn: 'unzipData') {
+    description = "Import Geodata"
+    doLast {
+        println "Data imported into db: " + dbUriEdit
+    }
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "avt_gesamtverkehrsmodell_"+jahr+"_v1"
+    models = "SO_AVT_Gesamtverkehrsmodell_2019_20230829"
+    disableValidation = true
+    dataFile = file(xtfFilePath)
+    deleteData = true
+    strokeArcs = true
 }
-
 
