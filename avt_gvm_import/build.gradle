@@ -4,7 +4,7 @@ import java.nio.file.Paths
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'dbImport'
+defaultTasks 'dbImportPub'
 
 
 //WICHTIG: Definition des GVM (Jahr)
@@ -38,16 +38,42 @@ task unzipData(type: Copy, dependsOn: 'copyZipFile') {
 }
 
 task dbImport(type: Ili2pgImport, dependsOn: 'unzipData') {
-    description = "Import Geodata"
+    description = "Import Geodatato Edit"
     doLast {
         println "Data imported into db: " + dbUriEdit
     }
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "avt_gesamtverkehrsmodell_"+jahr+"_v1"
     models = "SO_AVT_Gesamtverkehrsmodell_2019_20230829"
-    disableValidation = true
     dataFile = file(xtfFilePath)
     deleteData = true
     strokeArcs = true
 }
 
+task dbImportPub(type: Ili2pgImport, dependsOn: 'dbImport') {
+    description = "Import Geodata to Pub"
+    doLast {
+        println "Data imported into db: " + dbUriPub
+    }
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = "avt_gesamtverkehrsmodell_"+jahr+"_pub_v1"
+    models = "SO_AVT_Gesamtverkehrsmodell_2019_20230829"
+    dataFile = file(xtfFilePath)
+    deleteData = true
+    strokeArcs = true
+}
+
+/*
+task publishPub(type: Publisher, dependsOn: writeToPub){
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dataIdent = "ch.so.avt.kunstbauten"
+    dbSchema = "avt_kunstbauten_pub_v1"
+    modelsToPublish = "SO_AVT_Kunstbauten_Publikation_20220207"
+    userFormats = true
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+*/
