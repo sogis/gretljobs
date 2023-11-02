@@ -13,7 +13,7 @@ defaultTasks 'removeFiles'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
-def pathToDataZip = Paths.get(pathToTempFolder, "PLZO_INTERLIS_LV95.zip")
+def pathToDataZip = Paths.get(pathToTempFolder, "ortschaftenverzeichnis_plz_2056_de.itf.zip")
 def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), 'PLZO_INTERLIS_LV95', 'PLZO_ITF_LV95.itf')
 
 
