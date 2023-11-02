@@ -4,7 +4,7 @@ import java.nio.file.Paths
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'dbImportPub'
+defaultTasks 'publishPub'
 
 
 //WICHTIG: Definition des GVM (Jahr)
@@ -63,12 +63,11 @@ task dbImportPub(type: Ili2pgImport, dependsOn: 'dbImport') {
     strokeArcs = true
 }
 
-/*
-task publishPub(type: Publisher, dependsOn: writeToPub){
+task publishPub(type: Publisher, dependsOn: dbImportPub){
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    dataIdent = "ch.so.avt.kunstbauten"
-    dbSchema = "avt_kunstbauten_pub_v1"
-    modelsToPublish = "SO_AVT_Kunstbauten_Publikation_20220207"
+    dataIdent = "ch.so.avt.verkehrsmodell."+jahr
+    dbSchema = "avt_gesamtverkehrsmodell_"+jahr+"_pub_v1"
+    modelsToPublish = "SO_AVT_Gesamtverkehrsmodell_2019_20230829"
     userFormats = true
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
@@ -76,4 +75,3 @@ task publishPub(type: Publisher, dependsOn: writeToPub){
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
-*/
