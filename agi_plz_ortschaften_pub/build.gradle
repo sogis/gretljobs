@@ -22,7 +22,7 @@ task download(type: Download){
     doLast {
         println "File downloaded to: " + pathToTempFolder
     }
-    src 'http://data.geo.admin.ch/ch.swisstopo-vd.ortschaftenverzeichnis_plz/PLZO_INTERLIS_LV95.zip'
+    src 'https://data.geo.admin.ch/ch.swisstopo-vd.ortschaftenverzeichnis_plz/ortschaftenverzeichnis_plz/ortschaftenverzeichnis_plz_2056_de.itf.zip'
     dest pathToTempFolder
     overwrite true
 }
