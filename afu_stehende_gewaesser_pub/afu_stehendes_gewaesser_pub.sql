@@ -9,8 +9,8 @@ WITH intersectsgemeinden AS (
        ON ST_Intersects (gemeindegrenze.geometrie,stehendes_gewaesser.geometrie)
     WHERE
         av_geometrie IS FALSE AND av_link IS FALSE
-   AND
-       ST_Area(ST_intersection(gemeindegrenze.geometrie, stehendes_gewaesser.geometrie)) > 5   -- Mindestgrösse?
+   --AND
+       --ST_Area(ST_intersection(gemeindegrenze.geometrie, stehendes_gewaesser.geometrie)) > 5   -- Mindestgrösse?
 )
 
 SELECT
