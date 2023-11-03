@@ -28,7 +28,7 @@ task updateRelationTids(type: SqlExecutor, dependsOn: importFromImdas){
         ]
 }
 
-task validateJoined(type: Ili2pgValidate) {
+task validateJoined(type: Ili2pgValidate, dependsOn: updateRelationTids) {
     description = 'Validiert die Sach- und Geodaten und Beziehungen gemäss Edit-Modell'
     database = edit
     models = 'SO_ADA_Archaeologie_20230417'
