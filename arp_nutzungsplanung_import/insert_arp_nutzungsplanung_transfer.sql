@@ -115,7 +115,7 @@ SELECT
             THEN 'AenderungMitVorwirkung'
         ELSE 'inKraft'
     END AS rechtsstatus,
-    'https://planregister-data.so.ch/public/' || LOWER(REPLACE(SPLIT_PART(textimweb,'/',7),SPLIT_PART(SPLIT_PART(textimweb,'/',7),'-',1) || '-','')) || '/'|| SPLIT_PART(textimweb,'/',9) AS textimweb,
+    textimweb,
     bemerkungen,
     rechtsvorschrift,
     NULL AS publiziertbis,
