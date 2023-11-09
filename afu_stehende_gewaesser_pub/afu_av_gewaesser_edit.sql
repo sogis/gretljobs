@@ -3,7 +3,6 @@ SELECT
     bodenbedeckung.geometrie,
     typ,
     gemeindename,
-    erhebung_abgeschlossen,
     av_geometrie,
     av_link
 FROM 
