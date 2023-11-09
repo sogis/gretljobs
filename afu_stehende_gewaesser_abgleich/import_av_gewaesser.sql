@@ -5,7 +5,6 @@ INSERT INTO
         geometrie,
         typ,
         gemeindename,
-        erhebung_abgeschlossen,
         av_geometrie,
         av_link
     )
@@ -33,7 +32,6 @@ INSERT INTO
         ) AS geometrie,
         'andere' AS typ,
         new_av_gewaesser.gemeindename,
-        false AS erhebung_abgeschlossen,
         true AS av_geometrie,
         true AS av_link
     FROM
