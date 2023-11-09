@@ -1,0 +1,38 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: "de.undercouch.download"
+
+defaultTasks 'downloadData'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+def dataSets = ['2471_gep']
+
+dataSets.each { dataSet ->
+
+    def dataSetUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata-dev/"+dataSet+".xtf"
+
+    tasks.register("download_$dataSet", Download) {
+        src dataSetUrl
+        dest pathToTempFolder
+        overwrite true
+    }
+
+/*
+    tasks.register("replace_$dataSet", Ili2pgReplace) {
+
+    }
+*/
+}
+
+task downloadData() {
+    description = "Download all datasets."
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('download_') }
+    }
+}
+

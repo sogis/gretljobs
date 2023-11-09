@@ -1,7 +1,7 @@
 /* Zusammenzug Zahlungen per Vereinbarung und Datum der Auszahlung */
 
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung 
-  (t_basket, vereinbarungs_nr, gelan_pid_gelan, gelan_bewe_id, gb_nr, flurnamen, kultur_ids, gemeinde, flaeche, anzahl_baeume, betrag_flaeche, betrag_baeume, betrag_pauschal_regulaer, betrag_pauschal_einmalig_ausbezahlt, betrag_pauschal_einmalig_freigegeben, gesamtbetrag,
+  (t_basket, vereinbarungs_nr, gelan_pid_gelan, gelan_bewe_id, gb_nr, flurnamen, kultur_ids, gemeinde, bemerkung, flaeche, anzahl_baeume, betrag_flaeche, betrag_baeume, betrag_pauschal_regulaer, betrag_pauschal_einmalig_ausbezahlt, betrag_pauschal_einmalig_freigegeben, gesamtbetrag,
    auszahlungsjahr, status_abrechnung, datum_abrechnung, bewirtschaftabmachung_schnittzeitpunkt_1, bewirtschaftabmachung_messerbalkenmaehgeraet, bewirtschaftabmachung_herbstweide, vereinbarung, migriert)
 SELECT
   vbg.t_basket,
@@ -28,6 +28,7 @@ SELECT
    THEN array_to_string(vbg.gemeinde,',') 
    ELSE 'unbekannt'
   END AS gemeinde,
+  vbg.vereinbarungs_nr_alt AS bemerkung,
   vbg.flaeche,
   COALESCE(SUM(lstg_stueck.anzahl_einheiten),0) AS anzahl_baeume,
   COALESCE(SUM(lstg_ha.betrag_total),0) AS betrag_flaeche,
