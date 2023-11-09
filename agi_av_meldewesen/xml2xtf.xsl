@@ -73,14 +73,15 @@
             </xsl:if>
 
             <Datum_Meldung xmlns="http://www.interlis.ch/INTERLIS2.3">
-                <xsl:value-of select="format-date(current-date(),'[Y0001]-[M01]-[D01]')"/>
+                <!--<xsl:value-of select="format-date(current-date(),'[Y0001]-[M01]-[D01]')"/>-->
+                <xsl:value-of select="substring(/eCH-0132:delivery/eCH-0132:deliveryHeader/eCH-0058:messageDate,1,10)"/>
             </Datum_Meldung>
 
             <Meldegrund xmlns="http://www.interlis.ch/INTERLIS2.3">
                 <xsl:value-of select="key('myns:lookup-eventType', eCH-0132:event, $myns:eventType-lookup)/@value"/>
             </Meldegrund>
 
-            <!-- Die notwendingen Infos für Löschung stecken XSD-bedingt im extesion-Element. Sad but true. -->
+            <!-- Die notwendingen Infos für Löschung stecken XSD-bedingt im extension-Element. Sad but true. -->
             <xsl:choose>
                 <xsl:when test="not(eCH-0132:event = (19, 20, 21))">
                     <xsl:message>Event type belongs to newInsuranceobject or newInsuranceValue.</xsl:message>
