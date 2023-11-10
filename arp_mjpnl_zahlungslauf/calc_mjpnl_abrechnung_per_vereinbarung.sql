@@ -5,9 +5,9 @@ INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung
   (t_basket, vereinbarungs_nr, gelan_pid_gelan, gelan_bewe_id, gb_nr, flurnamen, kultur_ids, gemeinde, bemerkung, flaeche, anzahl_baeume, betrag_flaeche, betrag_baeume, betrag_pauschal_regulaer, betrag_pauschal_einmalig_ausbezahlt, betrag_pauschal_einmalig_freigegeben, gesamtbetrag,
    auszahlungsjahr, status_abrechnung, datum_abrechnung, bewirtschaftabmachung_schnittzeitpunkt_1, bewirtschaftabmachung_messerbalkenmaehgeraet, bewirtschaftabmachung_herbstweide, vereinbarung, migriert)
 WITH beurteilungs_metainfo_wiesen AS (
-	SELECT vereinbarung, beurteilungsdatum, bewirtschaftabmachung_schnittzeitpunkt_1, bewirtschaftabmachung_messerbalkenmaehgeraet, bewirtschaftabmachung_herbstweide FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_wiese WHERE mit_bewirtschafter_besprochen
+	SELECT vereinbarung, beurteilungsdatum, bewirtschaftabmachung_schnittzeitpunkt_1, bewirtschaftabmachung_messerbalkenmaehgeraet, bewirtschaftabmachung_herbstweide FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_wiese
 	UNION 
-	SELECT vereinbarung, beurteilungsdatum, bewirtschaftabmachung_schnittzeitpunkt_1, bewirtschaftabmachung_messerbalkenmaehgeraet, bewirtschaftabmachung_herbstweide FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_wbl_wiese WHERE mit_bewirtschafter_besprochen
+	SELECT vereinbarung, beurteilungsdatum, bewirtschaftabmachung_schnittzeitpunkt_1, bewirtschaftabmachung_messerbalkenmaehgeraet, bewirtschaftabmachung_herbstweide FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_wbl_wiese
 )
 SELECT
   vbg.t_basket,
