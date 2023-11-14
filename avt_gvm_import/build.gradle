@@ -63,7 +63,12 @@ task dbImportPub(type: Ili2pgImport, dependsOn: 'dbImport') {
     strokeArcs = true
 }
 
-task publishPub(type: Publisher, dependsOn: dbImportPub){
+task update_txt_cols(type: SqlExecutor, dependsOn: dbImportPub) {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['update_dtv_klassen.sql']
+}
+
+task publishPub(type: Publisher, dependsOn: update_txt_cols){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.avt.verkehrsmodell."+jahr
     dbSchema = "avt_gesamtverkehrsmodell_"+jahr+"_pub_v1"
