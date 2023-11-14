@@ -7,8 +7,8 @@ INSERT INTO
         gemeindename,
         av_geometrie,
         av_link
-    )
- WITH new_av_gewaesser AS (
+    ) 
+    WITH new_av_gewaesser AS (
         SELECT
             gemeindegrenze.gemeindename,
             ST_Buffer(ST_PointOnSurface(bodenflaeche.geometrie), 5) AS geometrie_av
