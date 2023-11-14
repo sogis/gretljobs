@@ -19,6 +19,4 @@ SELECT
     av_geometrie
 FROM 
     afu_stehende_gewaesser_v1.stehendes_gewaesser_av
-WHERE
-    av_geometrie IS TRUE AND av_link IS TRUE
 ;
