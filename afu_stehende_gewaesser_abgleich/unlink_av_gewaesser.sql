@@ -18,14 +18,17 @@ not_av_gewaesser AS (
     AND
         av_geometrie IS TRUE
 )
-UPDATE
+DELETE FROM
     afu_stehende_gewaesser_v1.stehendes_gewaesser AS stehendes_gewaesser
-SET
-    av_link = FALSE
-FROM
-    not_av_gewaesser
 WHERE
-    stehendes_gewaesser.t_id = not_av_gewaesser.t_id
+    stehendes_gewaesser.t_id IN (
+        SELECT
+            t_id 
+        FROM
+            not_av_gewaesser
+    )  
+AND
+    stehendes_gewaesser.av_geometrie IS TRUE
 AND
     stehendes_gewaesser.av_link IS TRUE
 ;
