@@ -4,10 +4,10 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'deleteAvGewaesserEdit'
+defaultTasks 'transferStehendeGewaesserPub'
 
 
-// task publishEdit(type: Publisher){
+// task publishEdit(type: Publisher) {
 //     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
 //     dataIdent = "ch.so.afu.stehende_gewaesser.relational"
 //     dbSchema = "afu_stehende_gewaesser_v1"
@@ -19,16 +19,21 @@ defaultTasks 'deleteAvGewaesserEdit'
 //     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 // }
 
-task transferAvGewaesserEdit(type: Db2Db) {
-    description = "Join und Transfer der AV-Gewässer mit den AV-Buffern."
-    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    transferSets = [
-            new TransferSet('afu_av_gewaesser_edit.sql','afu_stehende_gewaesser_v1.stehendes_gewaesser_av', true)
-    ];
-}
+// task transferAvGewaesserEdit(type: Db2Db) {
+//     description = "Join und Transfer der AV-Gewässer mit den AV-Buffern."
+//     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+//     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+//     transferSets = [
+//             new TransferSet('afu_av_gewaesser_edit.sql','afu_stehende_gewaesser_v1.stehendes_gewaesser_av', true)
+//     ];
+// }
 
-task transferStehendeGewaesserPub(type: Db2Db, dependsOn: 'transferAvGewaesserEdit') {
+
+
+
+
+// task transferStehendeGewaesserPub(type: Db2Db, dependsOn: 'publishEdit') {
+task transferStehendeGewaesserPub(type: Db2Db) {
     description = "Transfer aller stehenden Gewässer."
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
@@ -37,13 +42,13 @@ task transferStehendeGewaesserPub(type: Db2Db, dependsOn: 'transferAvGewaesserEd
     ];
 }
 
-task deleteAvGewaesserEdit(type: SqlExecutor, dependsOn: 'transferStehendeGewaesserPub') {
-    description = "Nach erfolgreicher Publikation werden alle AV-Gewässer in der Edit-DB gelöscht ."
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ['delete_afu_av_gewaesser_edit.sql']
-}
+// task deleteAvGewaesserEdit(type: SqlExecutor, dependsOn: 'transferStehendeGewaesserPub') {
+//     description = "Nach erfolgreicher Publikation werden alle AV-Gewässer in der Edit-DB gelöscht ."
+//     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+//     sqlFiles = ['delete_afu_av_gewaesser_edit.sql']
+// }
 
-// task publishPub(type: Publisher, dependsOn: 'deleteAvGewaesserEdit'){
+// task publishPub(type: Publisher, dependsOn: 'deleteAvGewaesserEdit') {
 //     database = [dbUriPub, dbUserPub, dbPwdPub]
 //     dataIdent = "ch.so.afu.stehende_gewaesser"
 //     dbSchema = "afu_stehende_gewaesser_pub_v1"
