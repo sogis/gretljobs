@@ -4,24 +4,9 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'transferStehendeGewaesserPub'
+defaultTasks 'publishPub'
 
 
-// task publishEdit(type: Publisher) {
-//     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-//     dataIdent = "ch.so.afu.stehende_gewaesser.relational"
-//     dbSchema = "afu_stehende_gewaesser_v1"
-//     modelsToPublish = "SO_AfU_Stehende_Gewaesser_20231002"
-//     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
-//     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-//     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-//     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
-//     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-// }
-
-
-
-// task transferStehendeGewaesserPub(type: Db2Db, dependsOn: 'publishEdit') {
 task transferStehendeGewaesserPub(type: Db2Db) {
     description = "Transfer aller stehenden Gewässer."
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -30,7 +15,6 @@ task transferStehendeGewaesserPub(type: Db2Db) {
             new TransferSet('afu_stehendes_gewaesser_pub.sql','afu_stehende_gewaesser_pub_v1.stehendes_gewaesser', true)
     ];
 }
-
 
 task publishPub(type: Publisher, dependsOn: 'transferStehendeGewaesserPub') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
