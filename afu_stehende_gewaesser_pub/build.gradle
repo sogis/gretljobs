@@ -27,13 +27,4 @@ task publishPub(type: Publisher, dependsOn: 'transferStehendeGewaesserPub') {
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-    
-    
-    
-    
-    
-    
-    
-    
-    validationConfig = "novalidation.toml"
 }
