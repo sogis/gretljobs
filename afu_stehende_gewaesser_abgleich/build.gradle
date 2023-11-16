@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'updateAvGewaesser'
+defaultTasks 'unlinkAvGewaesser'
 
 
 
@@ -14,8 +14,8 @@ task importNeueAVGewaesser(type: SqlExecutor) {
     sqlFiles = ['import_av_gewaesser.sql']
 }
 
-task updateAvGewaesser(type: SqlExecutor, dependsOn: 'importNeueAVGewaesser') {
-    description = 'Update stehende_gewaesser, wo kein AV-Gewässer mehr vorhanden ist'
+task unlinkAvGewaesser(type: SqlExecutor, dependsOn: 'importNeueAVGewaesser') {
+    description = 'Geometrien löschen, wo kein AV-Gewässer mehr existiert'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['unlink_av_gewaesser.sql']
 }
