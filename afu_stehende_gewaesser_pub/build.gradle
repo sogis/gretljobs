@@ -32,7 +32,7 @@ task transferStehendeGewaesserPub(type: Db2Db) {
 }
 
 
-task publishPub(type: Publisher, dependsOn: 'deleteAvGewaesserEdit') {
+task publishPub(type: Publisher, dependsOn: 'transferStehendeGewaesserPub') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.afu.stehende_gewaesser"
     dbSchema = "afu_stehende_gewaesser_pub_v1"
