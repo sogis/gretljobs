@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'refreshSolr'
+defaultTasks 'validateJoined'
 
 def edit = [dbUriEdit, dbUserEdit, dbPwdEdit]
 def pub = [dbUriPub, dbUserPub, dbPwdPub]
@@ -24,7 +24,9 @@ task updateRelationTids(type: SqlExecutor, dependsOn: importFromImdas){
     database = edit
     sqlFiles = [
             'update_relation/attr_geo.sql', 
-            'update_relation/fst_rrb.sql'
+            'update_relation/fst_rrb.sql',
+            'update_relation/unlink_geomless_rrb.sql',
+            'update_relation/delete_unlinked_rrb.sql',
         ]
 }
 
