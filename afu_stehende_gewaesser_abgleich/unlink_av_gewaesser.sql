@@ -30,5 +30,5 @@ WHERE
 AND
     stehendes_gewaesser.av_geometrie IS TRUE
 AND
-    stehendes_gewaesser.av_link IS TRUE
+    stehendes_gewaesser.av_link IS FALSE
 ;
