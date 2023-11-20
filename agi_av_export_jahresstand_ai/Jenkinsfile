@@ -21,5 +21,12 @@ pipeline {
                 body: "Die Ausführung des GRETL-Jobs ${JOB_NAME} (${BUILD_DISPLAY_NAME}) war nicht erfolgreich. Details dazu finden Sie in den Log-Meldungen unter ${RUN_DISPLAY_URL}."
             )
         }
+        success {
+            emailext (
+                to: "${currentBuild.getBuildCauses()[0]._class == 'hudson.model.Cause$UserIdCause' ? emailextrecipients([requestor()]) : '$DEFAULT_RECIPIENTS'}",
+                subject: "GRETL-Job ${JOB_NAME} (${BUILD_DISPLAY_NAME}) wurde erfolgreich ausgeführt",
+                body: "Zur Kenntnisnahme: Soeben wurde der GRETL-Job ${JOB_NAME} (${BUILD_DISPLAY_NAME}) erfolgreich ausgeführt. Details dazu finden Sie in den Log-Meldungen unter ${RUN_DISPLAY_URL}."
+            )
+        }
     }
 }
