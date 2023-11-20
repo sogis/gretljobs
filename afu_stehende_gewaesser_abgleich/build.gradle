@@ -8,13 +8,13 @@ defaultTasks 'unlinkAvGewaesser'
 
 
 
-task importNeueAVGewaesser(type: SqlExecutor) {
+task importAVGewaesser(type: SqlExecutor) {
     description = 'Import neue AV-Gewässer'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['import_av_gewaesser.sql']
 }
 
-task unlinkAvGewaesser(type: SqlExecutor, dependsOn: 'importNeueAVGewaesser') {
+task unlinkAvGewaesser(type: SqlExecutor, dependsOn: 'importAVGewaesser') {
     description = 'Geometrien löschen, wo kein AV-Gewässer mehr existiert'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['unlink_av_gewaesser.sql']
