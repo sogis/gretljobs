@@ -1,5 +1,5 @@
 pipeline {
-    agent { label params.nodeLabel ?: 'gretl' }
+    agent { label 'master' }
     options {
         timeout(time: 6, unit: 'HOURS')
     }
