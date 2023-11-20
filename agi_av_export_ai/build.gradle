@@ -78,7 +78,7 @@ unzipAllData.finalizedBy {
     tasks.findAll { task -> task.name.startsWith('unzipData_') }
 }
 
-task zipAllDataToOneZipArchiv(type: Zip, dependsOn: unzipAllData){
+task zipAllDataToOneZipArchive(type: Zip, dependsOn: unzipAllData){
     description = "Zippt die xtf-Files mit dem Daten der amtlichen Vermessung (DM01 vom Bund) für den Upload in die " +
             "Aggregationsinfrastruktur."
     from pathToUnzipFolder
@@ -87,7 +87,7 @@ task zipAllDataToOneZipArchiv(type: Zip, dependsOn: unzipAllData){
     include "**/2*_ch.itf"
 }
 
-task uploadAvCh(dependsOn: zipAllDataToOneZipArchiv) {
+task uploadAvCh(dependsOn: zipAllDataToOneZipArchive) {
     description = "Lädt die Daten der amtlichen Vermessung (DM01 vom Bund) in die Aggregationsinfrastruktur hoch."
     doLast {
         def response = ["curl", "-u", aiLogin, "-F", "topic=${project.findProperty('topic') ?: 'av'}", "-F",
