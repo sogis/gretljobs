@@ -9,7 +9,7 @@ pipeline {
                 // Special case:
                 // Run a different GRETL-Job with specific parameter value,
                 // instead of running the gretl command as usual
-                build job: 'agi_av_export_ai', parameters: [string(name: 'topic', value: 'av_jahresstand'), string(name: 'BRANCH', value: "${params.BRANCH ?: 'main'}")]
+                build job: 'agi_av_export_ai', parameters: [string(name: 'topic', value: 'av_jahresstand')]
             }
         }
     }
