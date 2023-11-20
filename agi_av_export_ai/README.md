@@ -24,6 +24,12 @@ sondern er kann auf `master` laufen.
 (Auf `gretl` würde auch funktionieren, es braucht so aber etwas länger,
 weil dieser Agent ja erst gestartet werden muss.)
 
+Im Prinzip benötigt der Job *agi_av_export_jahresstand_ai*
+also kein `build.gradle`.
+Damit der Job aber dennoch
+vom *gretl-job-generator* in GRETL-Jenkins angelegt wird,
+liegt im Job-Ordner ein leeres `build.gradle` vor.
+
 Eine weitere, aber eher nebensächliche Besonderheit
 am Jenkinsfile von *agi_av_export_jahresstand_ai* ist,
 dass es auch bei Erfolg des Jobs ein E-Mail versendet.
