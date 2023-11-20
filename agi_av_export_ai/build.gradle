@@ -90,7 +90,7 @@ task zipAllDataToOneZipArchiv(type: Zip, dependsOn: unzipAllData){
 task uploadAvCh(dependsOn: zipAllDataToOneZipArchiv) {
     description = "Lädt die Daten der amtlichen Vermessung (DM01 vom Bund) in die Aggregationsinfrastruktur hoch."
     doLast {
-        def response = ["curl", "-u", aiLogin, "-F", "topic=av", "-F",
+        def response = ["curl", "-u", aiLogin, "-F", "topic=${project.findProperty('topic') ?: 'av'}", "-F",
                         "lv95_file=@" + Paths.get(pathToTempFolder.toString(), zipName), "-F", "publish=true",
                         "https://" + aiServer + "/data_agg/interlis/import"].execute().text
         println(response)
