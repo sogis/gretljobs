@@ -63,7 +63,10 @@ SELECT
     l.anzahl_einheiten,
     l.betrag_total,
     ${AUSZAHLUNGSJAHR}::integer AS auszahlungsjahr,
-    'freigegeben' AS status_abrechnung,
+    CASE
+        WHEN rel_vbg.kantonsintern THEN 'intern_verrechnet'
+        ELSE 'freigegeben'
+    END AS status_abrechnung,
     'Übernommen aus '||${AUSZAHLUNGSJAHR}::integer-1||' '||COALESCE(l.bemerkung,'') as bemerkung,
     FALSE AS migriert,
     l.abrechnungpervereinbarung
