@@ -1,5 +1,7 @@
-DELETE FROM
+UPDATE 
     afu_stehende_gewaesser_v1.stehendes_gewaesser
+SET
+    av_link = FALSE
 WHERE
     stehendes_gewaesser.t_id NOT IN (
         SELECT
