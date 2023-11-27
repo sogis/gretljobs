@@ -80,6 +80,7 @@ task publishEdit(type: Publisher, dependsOn: validateDataEdit){
     dataIdent = 'ch.so.arp.nutzungsplanung.kommunal.relational'
     modelsToPublish = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118'
     region = '.*'
+    userFormats = false
     sourcePath = file("kommunal_edit/" + bfsnr + ".xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
@@ -188,7 +189,7 @@ task publishAlt(type: Publisher, dependsOn: exportDataExport){
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
-/*
+
 // EXPORT Typo3
 // Datenumbau für Planregister (Nur Daten aus Schema "arp_nutzungsplanung_v1" werden ersetzt) und an Typo3 senden
 
@@ -509,4 +510,4 @@ task uploadMgdmPlanungszonen(dependsOn: 'zipMgdmPlanungszonen') {
         }
     }
 }
-*/
+
