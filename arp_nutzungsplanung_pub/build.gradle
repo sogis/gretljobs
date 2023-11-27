@@ -13,7 +13,7 @@ import java.io.File
 apply plugin: 'ch.so.agi.gretl'
 
 //defaultTasks 'importXTF_stage', 'importXTF_pub', 'uploadMgdmLandUsePlans'
-//defaultTasks 'uploadMgdmPlanungszonen'
+defaultTasks 'publishAlt'
 //def bfsnr = '2492'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
@@ -189,7 +189,7 @@ task publishAlt(type: Publisher, dependsOn: exportDataExport){
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
-
+/*
 // EXPORT Typo3
 // Datenumbau für Planregister (Nur Daten aus Schema "arp_nutzungsplanung_v1" werden ersetzt) und an Typo3 senden
 
@@ -510,3 +510,4 @@ task uploadMgdmPlanungszonen(dependsOn: 'zipMgdmPlanungszonen') {
         }
     }
 }
+*/
