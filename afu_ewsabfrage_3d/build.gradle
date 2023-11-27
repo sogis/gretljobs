@@ -1,0 +1,68 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'deleteRows2'
+
+def gpkLocation = "$buildDir/upload/ewsabfrage_3d.gpkg"
+
+def pubDb = [dbUriPub, dbUserPub, dbPwdPub]
+def pubSchema = "afu_ewsabfrage_3d_pub_v1"
+
+def editDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+def stageSchema = "afu_ewsabfrage_3d_staging_v1"
+
+task unzipUpload(type: Copy) {
+    def zipFile = 'upload/uploadFile'
+    def outputDir = "$buildDir/upload"
+ 
+    from zipTree(zipFile)
+    into outputDir
+}
+
+task deleteRows(type: SqlExecutor, dependsOn:unzipUpload){
+    description = 'Leert die Tabellem im Schema afu_ewsabfrage_3d*'
+    database = editDb
+    sqlFiles = [
+        'delete_stage/hinweis.sql',
+        'delete_stage/tiefenbeschraenkung.sql'
+    ]
+}
+
+task importTiefen(type: GpkgImport, dependsOn: deleteRows){
+    description = 'Importiert die Tabelle "tiefenbeschraenkung"'
+    database = editDb
+    schemaName = stageSchema
+    srcTableName = "tiefenbeschraenkung"
+    dstTableName = "tiefenbeschraenkung"
+    dataFile = gpkLocation
+}
+
+task importHinweis(type: GpkgImport, dependsOn: importTiefen){
+    description = 'Importiert die Tabelle "hinweis"'
+    database = editDb
+    schemaName = stageSchema
+    srcTableName = "hinweis"
+    dstTableName = "hinweis"
+    dataFile = gpkLocation
+}
+
+task copyToPub(type: Db2Db, dependsOn: importHinweis){
+    description = 'Kopiert die Tabelleninhalte transaktional auf die Pub-DB'
+    sourceDb = editDb
+    targetDb = pubDb
+    transferSets = [
+        new TransferSet('copy_to_pub/tiefenbeschraenkung.sql', 'afu_ewsabfrage_3d_pub_v1.tiefenbeschraenkung', true),
+        new TransferSet('copy_to_pub/hinweis.sql', 'afu_ewsabfrage_3d_pub_v1.hinweis', true)
+    ]
+}
+
+task deleteRows2(type: SqlExecutor, dependsOn: copyToPub){
+    description = 'Leert die Tabellen im Schema afu_ewsabfrage_3d*'
+    database = editDb
+    sqlFiles = [
+        'delete_stage/hinweis.sql',
+        'delete_stage/tiefenbeschraenkung.sql'
+    ]
+}

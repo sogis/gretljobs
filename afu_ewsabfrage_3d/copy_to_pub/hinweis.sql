@@ -1,0 +1,9 @@
+SELECT 
+    t_id, 
+    hinweis, 
+    tiefe_hinweis, 
+    hinweis_oeffentlich, 
+    punkt
+FROM 
+    afu_ewsabfrage_3d_staging_v1.hinweis
+;

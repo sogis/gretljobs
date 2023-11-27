@@ -1,0 +1,1 @@
+DELETE FROM afu_ewsabfrage_3d_staging_v1.tiefenbeschraenkung;

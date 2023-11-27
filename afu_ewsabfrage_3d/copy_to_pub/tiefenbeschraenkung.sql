@@ -1,0 +1,10 @@
+SELECT 
+    t_id, 
+    max_bohrtiefe, 
+    grund_beschraenkung, 
+    unsicherheit, 
+    entscheidungs_log, 
+    punkt
+FROM 
+    afu_ewsabfrage_3d_staging_v1.tiefenbeschraenkung
+;
