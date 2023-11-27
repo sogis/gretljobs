@@ -1,7 +1,7 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks "restorePubDates"
+defaultTasks "intPublishAllThemepubs"
 
 def writeUri = dbUriSimi
 def readUri = deferReadUri(dbUriSimi)
@@ -176,3 +176,11 @@ task restorePubDates(type: SqlExecutor, dependsOn: copyIntToProd){
       'post_copy/restore_pub_dates.sql'
     ]
 }
+
+task intPublishAllThemepubs(type: SqlExecutor, dependsOn: restorePubDates){
+    database = [readUri, readUser, readPass]
+    sqlFiles = [
+      'post_copy_on_int/publish_all_themepubs.sql'
+    ]
+}
+
