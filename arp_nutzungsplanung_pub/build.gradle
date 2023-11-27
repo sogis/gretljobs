@@ -13,7 +13,7 @@ import java.io.File
 apply plugin: 'ch.so.agi.gretl'
 
 //defaultTasks 'importXTF_stage', 'importXTF_pub', 'uploadMgdmLandUsePlans'
-//defaultTasks 'uploadMgdmPlanungszonen'
+// defaultTasks 'publishAlt'
 //def bfsnr = '2492'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
@@ -80,6 +80,7 @@ task publishEdit(type: Publisher, dependsOn: validateDataEdit){
     dataIdent = 'ch.so.arp.nutzungsplanung.kommunal.relational'
     modelsToPublish = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118'
     region = '.*'
+    userFormats = false
     sourcePath = file("kommunal_edit/" + bfsnr + ".xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
@@ -509,3 +510,4 @@ task uploadMgdmPlanungszonen(dependsOn: 'zipMgdmPlanungszonen') {
         }
     }
 }
+
