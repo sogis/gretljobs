@@ -1,15 +1,6 @@
 WITH flaeche_beruert_siedlung AS (
     SELECT 
-        f.amultipolygon, 
-        fundstellen_nummer, 
-        fundst_adresse_flurname, 
-        fundstellen_art, 
-        geschuetzt, 
-        geschuetzt_txt, 
-        qualitaet_lokalisierung, 
-        qualitaet_lokalisierung_txt, 
-        gemeindename_ablage, 
-        rrb_nummer
+        f.t_id AS flaeche_tid
     FROM 
         ada_archaeologie_pub_v1.restricted_flaechenfundstelle f
     JOIN
@@ -17,7 +8,7 @@ WITH flaeche_beruert_siedlung AS (
     WHERE
         public.ST_Area(public.ST_INTERSECTION(s.geometrie, f.amultipolygon)) > 5
     GROUP BY 
-        f.amultipolygon,fundstellen_nummer,fundst_adresse_flurname, fundstellen_art, geschuetzt, geschuetzt_txt, qualitaet_lokalisierung, qualitaet_lokalisierung_txt, gemeindename_ablage, rrb_nummer
+        f.t_id
 )
 
 INSERT INTO ada_archaeologie_pub_v1.public_flaechenfundstelle_siedlungsgebiet(
@@ -43,5 +34,8 @@ SELECT
     qualitaet_lokalisierung_txt, 
     gemeindename_ablage, 
     rrb_nummer
-FROM flaeche_beruert_siedlung
+FROM 
+    ada_archaeologie_pub_v1.restricted_flaechenfundstelle f
+JOIN
+    flaeche_beruert_siedlung s ON f.t_id = s.flaeche_tid
 ;
