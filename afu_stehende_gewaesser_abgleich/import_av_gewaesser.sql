@@ -6,7 +6,8 @@ INSERT INTO
         typ,
         gemeindename,
         av_geometrie,
-        av_link
+        av_link,
+        attribute_erfasst
     ) 
     WITH new_av_gewaesser AS (
         SELECT
@@ -30,10 +31,11 @@ INSERT INTO
             ST_SetSRID(ST_MakePoint(ST_X(ST_PointOnSurface(geometrie_av)) - 2, ST_Y(ST_PointOnSurface(geometrie_av)) - 2), 2056)
           ])
         ) AS geometrie,
-        'andere' AS typ,
+        NULL AS typ,
         new_av_gewaesser.gemeindename,
         true AS av_geometrie,
-        true AS av_link
+        true AS av_link,
+        false AS attribute_erfasst
     FROM
         new_av_gewaesser
         LEFT JOIN afu_stehende_gewaesser_v1.stehendes_gewaesser
