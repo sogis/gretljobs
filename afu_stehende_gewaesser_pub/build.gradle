@@ -7,7 +7,13 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'publishPub'
 
 
-task transferStehendeGewaesserPub(type: Db2Db) {
+tasks.register('validateGewaesser', Ili2pgValidate) {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    models = "SO_AFU_Stehende_Gewaesser_20231002"
+    dbschema = "afu_stehende_gewaesser_v1"
+}
+
+task transferStehendeGewaesserPub(type: Db2Db, dependsOn: 'validateGewaesser') {
     description = "Transfer aller stehenden Gewässer."
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
