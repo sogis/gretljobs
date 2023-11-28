@@ -10,9 +10,7 @@ defaultTasks 'publishPub'
 tasks.register('validateGewaesser', Ili2pgValidate) {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     models = "SO_AFU_Stehende_Gewaesser_20231002"
-    modeldir = rootProject.projectDir.toString() + ";http://models.interlis.ch"
     dbschema = "afu_stehende_gewaesser_v1"
-    logFile = file("fubar99.log")
 }
 
 task transferStehendeGewaesserPub(type: Db2Db, dependsOn: 'validateGewaesser') {
