@@ -8,7 +8,7 @@ defaultTasks 'publishPub'
 
 
 tasks.register('validateGewaesser', Ili2pgValidate) {
-    database = [dbUriPub, dbUserPub, dbPwdPub]
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = "SO_AFU_Stehende_Gewaesser_20231002"
     dbschema = "afu_stehende_gewaesser_v1"
 }
