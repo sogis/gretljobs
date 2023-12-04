@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 import java.nio.file.Paths
 
-defaultTasks "validate"
+defaultTasks "publishPub"
 
 def tmpDir = buildDir.toString()
 def xtfPath = tmpDir + "/data.xtf"
