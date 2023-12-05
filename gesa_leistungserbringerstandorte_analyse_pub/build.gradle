@@ -3,7 +3,8 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPub'
+//defaultTasks 'publishPub'
+defaultTasks 'transferData'
 
 task transferData(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
