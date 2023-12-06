@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+  <HEADERSECTION VERSION="2.3" SENDER="ili2pg">
+    <MODELS/>
+  </HEADERSECTION>
+  <DATASECTION>
+    <SO_AFU_Naturgefahren_Beurteilungsgebiet_20231127.Beurteilungsgebiet BID="SO_AFU_Naturgefahren_Beurteilungsgebiet_20231127.Beurteilungsgebiet">
+    </SO_AFU_Naturgefahren_Beurteilungsgebiet_20231127.Beurteilungsgebiet>
+  </DATASECTION>
+</TRANSFER>
