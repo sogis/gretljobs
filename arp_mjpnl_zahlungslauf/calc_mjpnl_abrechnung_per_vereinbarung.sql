@@ -36,7 +36,7 @@ SELECT
   END AS gemeinde,
   vbg.vereinbarungs_nr_alt AS bemerkung,
   vbg.flaeche,
-  COALESCE(SUM(lstg_stueck.anzahl_einheiten),0) AS anzahl_baeume,
+  COALESCE(SUM(lstg_baeume_grundbeitrag.anzahl_einheiten),0) AS anzahl_baeume,
   COALESCE(SUM(lstg_ha.betrag_total),0) AS betrag_flaeche,
   COALESCE(SUM(lstg_stueck.betrag_total),0) AS betrag_baeume,
   COALESCE(SUM(lstg_pauschal_reg.betrag_total),0) AS betrag_pauschal_regulaer,
@@ -76,6 +76,8 @@ FROM
      AND bw.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM beurteilungs_metainfo_wiesen b WHERE b.vereinbarung = lstg.vereinbarung)
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_stueck
      ON lstg_stueck.t_id = lstg.t_id AND lstg_stueck.abgeltungsart = 'per_stueck'
+  LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_baeume_grundbeitrag
+     ON lstg_baeume_grundbeitrag.t_id = lstg.t_id AND lstg_baeume_grundbeitrag.abgeltungsart = 'per_stueck' AND lstg_stuek.leistung_beschrieb IN ('Hostet: Grundbeitrag','OBL: Grundbeitrag','Grundbeitrag (Bäume)')
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_ha
      ON lstg_ha.t_id = lstg.t_id AND lstg_ha.abgeltungsart = 'per_ha'
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_pauschal_reg
