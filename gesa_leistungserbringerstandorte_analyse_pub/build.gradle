@@ -3,8 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-//defaultTasks 'publishPub'
-defaultTasks 'transferData'
+defaultTasks 'refreshSolr'
 
 task transferData(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -14,7 +13,7 @@ task transferData(type: Db2Db) {
                     'gesa_leistungserbringerstandorte_analyse_pub_v1.analyse_standort', true)
     ]
 }
-
+/*
 task publishPub(type: Publisher, dependsOn: 'transferData'){
     dataIdent = "ch.so.gesa.leistungserbringerstandorte_erreichbarkeitsanalyse"
     userFormats = true
@@ -29,4 +28,8 @@ task publishPub(type: Publisher, dependsOn: 'transferData'){
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
-
+task refreshSolr(type:Exec, dependsOn:'publishPub') {
+*/
+task refreshSolr(type:Exec, dependsOn:'transferData') {
+	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.gesa.leistungserbringerstandorte_erreichbarkeitsanalyse' 
+}
