@@ -137,8 +137,8 @@ united_hecke_leistungen AS (
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
-        'Hecke: Bewirtschaftung Lebhag pro Laufmeter' AS leistung_beschrieb,
-        'per_stueck' AS abgeltungsart,
+        'Hecke: Bewirtschaftung Lebhag pauschal' AS leistung_beschrieb,
+        'pauschal' AS abgeltungsart,
         1.50 AS betrag_per_einheit,
         bewirtschaftung_lebhag_laufmeter AS anzahl_einheiten,
         bewirtschaftung_lebhag_abgeltung_pauschal AS betrag_total,
