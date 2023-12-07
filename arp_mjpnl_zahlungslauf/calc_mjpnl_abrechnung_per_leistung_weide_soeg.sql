@@ -68,7 +68,7 @@ united_weide_soeg_leistungen AS (
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
         'Weide SöG: Faunabonus' AS leistung_beschrieb,
-        'per_stueck' AS abgeltungsart,
+        'pauschal' AS abgeltungsart,
         50 AS betrag_per_einheit,
         einstufungbeurteilungistzustand_anzahl_fauna AS anzahl_einheiten,
         einstufungbeurteilungistzustand_abgeltung_faunaliste_paschal AS betrag_total,
