@@ -77,7 +77,7 @@ FROM
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_stueck
      ON lstg_stueck.t_id = lstg.t_id AND lstg_stueck.abgeltungsart = 'per_stueck'
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_baeume_grundbeitrag
-     ON lstg_baeume_grundbeitrag.t_id = lstg.t_id AND lstg_baeume_grundbeitrag.abgeltungsart = 'per_stueck' AND lstg_stuek.leistung_beschrieb IN ('Hostet: Grundbeitrag','OBL: Grundbeitrag','Grundbeitrag (Bäume)')
+     ON lstg_baeume_grundbeitrag.t_id = lstg.t_id AND lstg_baeume_grundbeitrag.abgeltungsart = 'per_stueck' AND lstg_baeume_grundbeitrag.leistung_beschrieb IN ('Hostet: Grundbeitrag','OBL: Grundbeitrag','Grundbeitrag (Bäume)')
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_ha
      ON lstg_ha.t_id = lstg.t_id AND lstg_ha.abgeltungsart = 'per_ha'
   LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg_pauschal_reg
