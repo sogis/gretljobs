@@ -68,7 +68,7 @@ united_weide_ln_leistungen AS (
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
         'Weide LN: Faunabonus' AS leistung_beschrieb,
-        'per_stueck' AS abgeltungsart,
+        'pauschal' AS abgeltungsart,
         50 AS betrag_per_einheit,
         einstufungbeurteilungistzustand_anzahl_fauna AS anzahl_einheiten,
         einstufungbeurteilungistzustand_abgeltung_faunaliste_paschal AS betrag_total,
