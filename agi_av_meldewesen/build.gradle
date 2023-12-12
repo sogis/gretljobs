@@ -113,7 +113,8 @@ tasks.register('transfer', SqlExecutor) {
 /*
 Default-Value geht nicht, weil es eine SOOID ist (mit "_" als Prefix). SOOID o.ä. muss es 
 sein, weil ich so die Message-Id verwenden kann. Aber, ob wirklich notwendig (message id),
-weiss ich nicht.
+weiss ich nicht. Vielleicht auch premature of optimization is evil Moment, den ich 
+mitschleppe.
 */
 tasks.register('updateOid', SqlExecutor) {
     dependsOn 'transfer'
