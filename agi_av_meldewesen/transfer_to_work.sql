@@ -59,7 +59,7 @@ INSERT INTO
 )
 SELECT 
     m.t_ili_tid,
-    ST_PointOnSurface(grundstuecke.geometrie) AS lage,
+    ST_GeometryN(ST_GeneratePoints(grundstuecke.geometrie, 1), 1) AS lage,
     m.grundstuecksnummer,
     m.egrid,
     m.nbident,
