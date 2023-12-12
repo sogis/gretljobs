@@ -5,7 +5,7 @@ import java.nio.file.Paths
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: "org.hidetake.ssh"
 
-defaultTasks 'transfer'
+defaultTasks 'updateOid'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def downloadFolder = Paths.get(pathToTempFolder, "download").toFile()
@@ -108,6 +108,18 @@ tasks.register('transfer', SqlExecutor) {
     description = 'Kopiert die (neuen) Meldungen in das Work-Schema'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['transfer_to_work.sql']
+}
+
+/*
+Default-Value geht nicht, weil es eine SOOID ist (mit "_" als Prefix). SOOID o.ä. muss es 
+sein, weil ich so die Message-Id verwenden kann. Aber, ob wirklich notwendig (message id),
+weiss ich nicht.
+*/
+tasks.register('updateOid', SqlExecutor) {
+    dependsOn 'transfer'
+    description = 'Inserted eine OID in die t_ili_tid-Spalte für Punkte, die vom Geometer erfasst wurden.'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['update_Oid.sql']
 }
 
 // Löschen der Daten auf dem FTP-Server.
