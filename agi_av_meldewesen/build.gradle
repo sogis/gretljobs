@@ -120,7 +120,7 @@ tasks.register('updateOid', SqlExecutor) {
     dependsOn 'transfer'
     description = 'Inserted eine OID in die t_ili_tid-Spalte für Punkte, die vom Geometer erfasst wurden.'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ['update_Oid.sql']
+    sqlFiles = ['update_oid.sql']
 }
 
 // Löschen der Daten auf dem FTP-Server.
