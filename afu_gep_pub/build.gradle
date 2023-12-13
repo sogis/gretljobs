@@ -12,6 +12,8 @@ def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
 def dataSets = ['2471_gep']
 
+def schema = "afu_gep_v1"
+
 dataSets.each { dataSet ->
 
     def dataSetUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata-dev/"+dataSet+".xtf"
@@ -22,17 +24,21 @@ dataSets.each { dataSet ->
         overwrite true
     }
 
-/*
     tasks.register("replace_$dataSet", Ili2pgReplace) {
-
+        dependsOn "download_$dataSet"
+        database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+        dbschema = schema
+        models = 'VSADSSMINI_2020_LV95'
+        dataset = dataSet
+        dataFile = Paths.get(pathToTempFolder, dataSet + ".xtf").toFile()
+        disableValidation = true // Weil gewissen Dinge herabgeschwächt werden in der Prüfung. Die ini-Datei ist noch in keinem Repo.
     }
-*/
 }
 
-task downloadData() {
-    description = "Download all datasets."
+task replaceData() {
+    description = "Replace datasets."
     dependsOn {
-        tasks.findAll { task -> task.name.startsWith('download_') }
+        tasks.findAll { task -> task.name.startsWith('replace_') }
     }
 }
 
