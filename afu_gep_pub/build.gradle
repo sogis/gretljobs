@@ -51,7 +51,8 @@ tasks.register("transferData", Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('sql/wk/vsadssmini_paa_leitung_dr.sql', DB_SCHEMA_PUB+".paa_leitung_dr", true)
+            new TransferSet('sql/wk/vsadssmini_paa_leitung_dr.sql', DB_SCHEMA_PUB+".paa_leitung_dr", true),
+            new TransferSet('sql/wk/vsadssmini_paa_leitung_se.sql', DB_SCHEMA_PUB+".paa_leitung_se", true)
     ]
     sqlParameters = [DB_SCHEMA:DB_SCHEMA_EDIT]
 } 
