@@ -6,18 +6,22 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: "de.undercouch.download"
 
-defaultTasks 'downloadData'
+defaultTasks 'transferData'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
 def dataSets = ['2471_gep']
 
-def schema = "afu_gep_v1"
+def DB_SCHEMA_EDIT = "afu_gep_v1"
+def DB_SCHEMA_PUB = "afu_gep_pub_v1"
 
 dataSets.each { dataSet ->
 
     def dataSetUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata-dev/"+dataSet+".xtf"
 
+    /*
+    Wird sowieso anders werden. 
+    */
     tasks.register("download_$dataSet", Download) {
         src dataSetUrl
         dest pathToTempFolder
@@ -27,11 +31,11 @@ dataSets.each { dataSet ->
     tasks.register("replace_$dataSet", Ili2pgReplace) {
         dependsOn "download_$dataSet"
         database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-        dbschema = schema
+        dbschema = DB_SCHEMA_EDIT
         models = 'VSADSSMINI_2020_LV95'
         dataset = dataSet
         dataFile = Paths.get(pathToTempFolder, dataSet + ".xtf").toFile()
-        disableValidation = true // Weil gewissen Dinge herabgeschwächt werden in der Prüfung. Die ini-Datei ist noch in keinem Repo. Eventuell müsste man auch noch den Task anpassen, damit das überhaupt geht. Resp. geht es überhaupt mit ili2db?
+        disableValidation = true // Weil gewisse Dinge herabgeschwächt werden in der Prüfung. Die ini-Datei ist noch in keinem Repo. Eventuell müsste man auch noch den Task anpassen, damit das überhaupt geht. Resp. geht es überhaupt mit ili2db?
     }
 }
 
@@ -41,4 +45,14 @@ task replaceData() {
         tasks.findAll { task -> task.name.startsWith('replace_') }
     }
 }
+
+tasks.register("transferData", Db2Db) {
+    dependsOn "replaceData"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('vsadssmini_paa_leitung_dr.sql', DB_SCHEMA_PUB+".paa_leitung_dr", true)
+    ]
+    sqlParameters = [DB_SCHEMA:DB_SCHEMA_EDIT]
+} 
 
