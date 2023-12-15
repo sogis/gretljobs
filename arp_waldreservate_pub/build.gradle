@@ -17,7 +17,12 @@ task writeToPub(type: Db2Db){
     ];
 }
 
-task exportXtf(type: Ili2pgExport, dependsOn: writeToPub){
+task update_txt_cols(type: SqlExecutor, dependsOn: writeToPub) {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['update_txt.sql']
+}
+
+task exportXtf(type: Ili2pgExport, dependsOn: update_txt_cols){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = "arp_waldreservate_pub_v1"
     disableValidation = false
