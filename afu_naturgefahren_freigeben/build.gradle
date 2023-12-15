@@ -9,8 +9,8 @@ defaultTasks 'freigeben'
 def Auftragskennung = 'Himmelried'
 ///////////////////////////////////
 
-task freigeben(type: SqlExecutor, dependsOn: dbImportPub) {
+task freigeben(type: SqlExecutor) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlParameters = [kennung:Auftragskennung]
+    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
     sqlFiles = ['freigeben.sql']
 }
