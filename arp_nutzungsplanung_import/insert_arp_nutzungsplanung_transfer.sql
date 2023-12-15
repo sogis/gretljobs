@@ -2201,7 +2201,7 @@ WHERE
     erschliessung_linienobjekt_dokument.t_datasetname= 'Kanton'
 ;
 
---Dokumente Zuordnung RRB und SBV
+/*- -Dokumente Zuordnung RRB und SBV.  !!Wird beim Import manuell nochmals gemacht auch für die archivierten Pläne von Planregister
 --RRB
 INSERT INTO arp_nutzungsplanung_transfer_v1.rechtsvorschrften_dokument_entscheid_sbv
 SELECT
@@ -2235,4 +2235,4 @@ WHERE
     RIGHT(dokument_plan.textimweb,5)='P.pdf'  
         AND
             RIGHT(dokument_sbv.textimweb,5)='S.pdf'
-;
+;*/
