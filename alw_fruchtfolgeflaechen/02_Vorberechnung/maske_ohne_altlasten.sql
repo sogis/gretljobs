@@ -6,9 +6,14 @@ WITH altlasten AS (
     SELECT 
         ST_union(geometrie) AS geometrie
     FROM 
-        afu_altlasten_pub.belastete_standorte_altlast4web 
+        afu_altlasten_pub.belasteter_standort
     WHERE 
-        c_bere_res_abwbewe IN ('02','03','04','05','06','SO05')
+        "bewertung" in ('unbelastet',
+                        'Belastet, weder überwachungs- noch sanierungsbedürftig',
+                        'Belastet, überwachungsbedürftig',
+                        'Belastet, untersuchungsbedürftig',
+                        'Belastet, sanierungsbedürftig',
+                        'Belastet, keine schädlichen oder lästigen Einwirkungen zu erwarten')
 )
 
 SELECT 

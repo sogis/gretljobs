@@ -53,18 +53,21 @@ task importGemeindegrenzen(type: Db2Db, dependsOn: makeSchemaMopublic){
 
 ////////////////Kataster Belastete Standorte (KBS) ///////////////////////
 
-//Es gibt kein Modell. Da aber alles im Umbau ist, wird auch darauf verzichtet, ein solches an zu legen. 
-
-task makeSchemaAltlasten(type: SqlExecutor){
+task makeSchemaAltlasten(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['create_schema_and_table_afu_altlasten_pub.sql']
+    models = "SO_AFU_KbS_Publikation_restricted_20221209"
+    dbschema = "afu_altlasten_pub"
+    strokeArcs = true
+    beautifyEnumDispName = true
+    createUnique = true 
+    createMetaInfo = true 
 }
 
 task importAltlasten(type: Db2Db, dependsOn: makeSchemaAltlasten){
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     transferSets = [
-            new TransferSet('altlasten_belastete_standorte_altlast4web.sql','afu_altlasten_pub.belastete_standorte_altlast4web', true),
+            new TransferSet('altlasten_belastete_standorte.sql','afu_altlasten_pub.belasteter_standort', true),
     ];        
 }
 
@@ -163,7 +166,7 @@ task importKlimaeignung(type: Ili2pgReplace, dependsOn: ['importKlimaeignung_kat
 task makeSchemaAuen(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "Auen_fff_modell_20210811"
-    modeldir = "01_Datenimport/Auen; http://models.geo.admin.ch"
+    modeldir = "alw_fruchtfolgeflaechen/01_Datenimport/Auen; http://models.geo.admin.ch"
     dbschema = "auen"
     importTid = true
     strokeArcs = true
@@ -216,7 +219,7 @@ task importAuen2(type: ShpImport, dependsOn: importAuen){
 task makeSchemaFlachmoore(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "Flachmoore_fff_modell_20210811"
-    modeldir = "01_Datenimport/Flachmoore; http://models.geo.admin.ch"
+    modeldir = "alw_fruchtfolgeflaechen/01_Datenimport/Flachmoore; http://models.geo.admin.ch"
     dbschema = "flachmoore"
     importTid = true
     strokeArcs = true
@@ -261,7 +264,7 @@ task importFlachmoore(type: ShpImport, dependsOn: unpackFilesFlachmoore){
 task makeSchemaHochmoore(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "Hochmoore_fff_modell_20210811"
-    modeldir = "01_Datenimport/Hochmoore; http://models.geo.admin.ch"
+    modeldir = "alw_fruchtfolgeflaechen/01_Datenimport/Hochmoore; http://models.geo.admin.ch"
     dbschema = "hochmoore"
     importTid = true
     strokeArcs = true
@@ -305,7 +308,7 @@ task importHochmoore(type: ShpImport, dependsOn: unpackFilesHochmoore){
 task makeSchemaTww(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "Trockenwiesenweiden_fff_modell_20210811"
-    modeldir = "01_Datenimport/Trockenwiesen_und_Weiden; http://models.geo.admin.ch"
+    modeldir = "alw_fruchtfolgeflaechen/01_Datenimport/Trockenwiesen_und_Weiden; http://models.geo.admin.ch"
     dbschema = "trockenwiesenweiden"
     importTid = true
     strokeArcs = true
@@ -447,7 +450,7 @@ task importNaturreservate(type: Db2Db, dependsOn: makeSchemaNaturreservate){
 task makeSchemaNaturschutzobjekte(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_ARP_Naturschutzobjekte_Publikation_20210721"
-    modeldir = "01_Datenimport/Naturschutzobjekte; http://models.geo.admin.ch"
+    modeldir = "alw_fruchtfolgeflaechen/01_Datenimport/Naturschutzobjekte; http://models.geo.admin.ch"
     dbschema = "arp_naturschutz_pub"
     strokeArcs = true
     beautifyEnumDispName = true
