@@ -11,13 +11,19 @@ pipeline {
           spec:
             securityContext:
               supplementalGroups: [26]
+            volumes:
+              - name: gretl-secrets-volume
+                secret:
+                  secretName: gretl-secrets
             containers:
             - name: gretl
               envFrom:
               - configMapRef:
                   name: gretl-resources
-              - secretRef:
-                  name: gretl-secrets
+              volumeMounts:
+                - name: gretl-secrets-volume
+                  mountPath: /home/gradle/.gradle/gradle.properties
+                  subPath: gradle.properties
             - name: processing-db
               image: crunchydata/crunchy-postgres-gis:centos8-13.3-3.1-4.6.3
               env:
