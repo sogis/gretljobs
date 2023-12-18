@@ -68,7 +68,6 @@ pipeline {
                         input message: 'Resultat publizieren oder Berechnung nochmals durchführen?', parameters: [booleanParam(name: 'PUBLISH_RESULT', defaultValue: false, description: 'Häkchen setzen, um das Resultat zu publizieren und den Job abzuschliessen')]
                     }
                     sh 'gretl --project-dir=${env.JOB_BASE_NAME} fff_to_edit_db_finish'
-                    }
                 }
             }
         }
