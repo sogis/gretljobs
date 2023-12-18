@@ -1,0 +1,12 @@
+SELECT 
+    standortnummer,
+    bezeichnung, 
+    standorttyp, 
+    bearbeitungsstand, 
+    bewertung, 
+    untersuchungsstand, 
+    vollzug, 
+    geometrie
+FROM 
+    afu_altlasten_restricted_pub_v1.belasteter_standort
+;
