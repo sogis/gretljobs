@@ -61,13 +61,13 @@ pipeline {
             steps {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
-+                    sh "gretl --project-dir=${env.JOB_BASE_NAME} prepare_db importAll"
-+                    sh "gretl --project-dir=${env.JOB_BASE_NAME} fff_zusammensetzen"
++                    sh 'gretl --project-dir=${env.JOB_BASE_NAME} prepare_db importAll'
++                    sh 'gretl --project-dir=${env.JOB_BASE_NAME} fff_zusammensetzen'
 +                    waitUntil {
-+                        sh "gretl --project-dir=${env.JOB_BASE_NAME} fff_to_edit_db"
++                        sh 'gretl --project-dir=${env.JOB_BASE_NAME} fff_to_edit_db'
 +                        input message: 'Resultat publizieren oder Berechnung nochmals durchführen?', parameters: [booleanParam(name: 'PUBLISH_RESULT', defaultValue: false, description: 'Häkchen setzen, um das Resultat zu publizieren und den Job abzuschliessen')]
                      }
-+                    sh "gretl --project-dir=${env.JOB_BASE_NAME} fff_to_edit_db_finish"
++                    sh 'gretl --project-dir=${env.JOB_BASE_NAME} fff_to_edit_db_finish'
                     }
                 }
             }
