@@ -4,58 +4,58 @@ pipeline {
         timeout(time: 1, unit: 'DAYS')
     }
     agent {
-      kubernetes {
-        cloud 'openshift'
-        inheritFrom 'gretl'
-        yaml '''
-          spec:
-            securityContext:
-              supplementalGroups: [26]
-            volumes:
-              - name: gretl-secrets-volume
-                secret:
-                  secretName: gretl-secrets
-            containers:
-            - name: gretl
-              envFrom:
-              - configMapRef:
-                  name: gretl-resources
-              volumeMounts:
+        kubernetes {
+            cloud 'openshift'
+            inheritFrom 'gretl'
+            yaml '''
+            spec:
+              securityContext:
+                supplementalGroups: [26]
+              volumes:
                 - name: gretl-secrets-volume
-                  mountPath: /home/gradle/.gradle/gradle.properties
-                  subPath: gradle.properties
-            - name: processing-db
-              image: crunchydata/crunchy-postgres-gis:centos8-13.3-3.1-4.6.3
-              env:
-              - name: MODE
-                value: postgres
-              - name: PG_DATABASE
-                value: processing
-              - name: PG_LOCALE
-                value: en_US.UTF-8
-              - name: PG_PRIMARY_PORT
-                value: 5432
-              - name: PG_MODE
-                value: primary
-              - name: PG_USER
-                value: user
-              - name: PG_PASSWORD
-                value: pass
-              - name: PG_PRIMARY_USER
-                value: repl
-              - name: PG_PRIMARY_PASSWORD
-                value: repl
-              - name: PG_ROOT_PASSWORD
-                value: secret
-              resources:
-                requests:
-                  cpu: "1"
-                  memory: "4Gi"
-                limits:
-                  cpu: "2"
-                  memory: "8Gi"
-          '''
-      }
+                  secret:
+                    secretName: gretl-secrets
+              containers:
+                - name: gretl
+                  envFrom:
+                    - configMapRef:
+                        name: gretl-resources
+                  volumeMounts:
+                    - name: gretl-secrets-volume
+                      mountPath: /home/gradle/.gradle/gradle.properties
+                      subPath: gradle.properties
+                - name: processing-db
+                  image: crunchydata/crunchy-postgres-gis:centos8-13.3-3.1-4.6.3
+                  env:
+                    - name: MODE
+                      value: postgres
+                    - name: PG_DATABASE
+                      value: processing
+                    - name: PG_LOCALE
+                      value: en_US.UTF-8
+                    - name: PG_PRIMARY_PORT
+                      value: 5432
+                    - name: PG_MODE
+                      value: primary
+                    - name: PG_USER
+                      value: user
+                    - name: PG_PASSWORD
+                      value: pass
+                    - name: PG_PRIMARY_USER
+                      value: repl
+                    - name: PG_PRIMARY_PASSWORD
+                      value: repl
+                    - name: PG_ROOT_PASSWORD
+                      value: secret
+                  resources:
+                    requests:
+                      cpu: "1"
+                      memory: "4Gi"
+                    limits:
+                      cpu: "2"
+                      memory: "8Gi"
+'''
+        }
     }
     stages {
         stage('Run GRETL job') {
