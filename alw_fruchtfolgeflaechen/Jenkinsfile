@@ -38,7 +38,7 @@ pipeline {
                   image: crunchydata/crunchy-postgres-gis:centos8-13.3-3.1-4.6.3
                   resources:
                     requests:
-                      cpu: "1"
+                      cpu: 600m
                       memory: "4Gi"
                     limits:
                       cpu: "2"
