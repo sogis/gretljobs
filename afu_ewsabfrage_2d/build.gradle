@@ -102,6 +102,7 @@ task copyToPub(type: Db2Db, dependsOn: copyFromBohrprofil){
         new TransferSet('./1_CopyToPub/abklaerung.sql', 'afu_ewsabfrage_2d_pub_v1.abklaerung', true),
         new TransferSet('./1_CopyToPub/grundstueck.sql', 'afu_ewsabfrage_2d_pub_v1.grundstueck', true),
         new TransferSet('./1_CopyToPub/hinweis.sql', 'afu_ewsabfrage_2d_pub_v1.hinweis', true),
-        new TransferSet('./1_CopyToPub/tiefenbeschraenkung.sql', 'afu_ewsabfrage_2d_pub_v1.tiefenbeschraenkung', true)
+        new TransferSet('./1_CopyToPub/tiefenbeschraenkung.sql', 'afu_ewsabfrage_2d_pub_v1.tiefenbeschraenkung', true),
+        new TransferSet('./1_CopyToPub/abfrageperimeter.sql', 'afu_ewsabfrage_2d_pub_v1.abfrageperimeter', true)
     ]
 }
