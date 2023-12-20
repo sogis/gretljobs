@@ -5,8 +5,7 @@ pipeline {
     }
     agent {
         kubernetes {
-            cloud 'openshift'
-            inheritFrom 'gretl'
+            inheritFrom params.nodeLabel ?: 'gretl'
             yaml '''
             spec:
               securityContext:
