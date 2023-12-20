@@ -15,7 +15,22 @@ pipeline {
                   secret:
                     secretName: gretl-secrets
               containers:
+                - name: jnlp
+                  resources:
+                    requests:
+                      cpu: 200m
+                      memory: 256Mi
+                    limits:
+                      cpu: "1"
+                      memory: 512Mi
                 - name: gretl
+                  resources:
+                    requests:
+                      cpu: 200m
+                      memory: 1Gi
+                    limits:
+                      cpu: "1"
+                      memory: 3.5Gi
                   envFrom:
                     - configMapRef:
                         name: gretl-resources
