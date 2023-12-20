@@ -36,6 +36,13 @@ pipeline {
                       subPath: gradle.properties
                 - name: processing-db
                   image: crunchydata/crunchy-postgres-gis:centos8-13.3-3.1-4.6.3
+                  resources:
+                    requests:
+                      cpu: "1"
+                      memory: "4Gi"
+                    limits:
+                      cpu: "2"
+                      memory: "8Gi"
                   env:
                     - name: MODE
                       value: postgres
@@ -57,13 +64,6 @@ pipeline {
                       value: repl
                     - name: PG_ROOT_PASSWORD
                       value: secret
-                  resources:
-                    requests:
-                      cpu: "1"
-                      memory: "4Gi"
-                    limits:
-                      cpu: "2"
-                      memory: "8Gi"
               volumes:
                 - name: gretl-secrets-volume
                   secret:
