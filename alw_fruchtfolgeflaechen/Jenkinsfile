@@ -10,10 +10,6 @@ pipeline {
             spec:
               securityContext:
                 supplementalGroups: [26]
-              volumes:
-                - name: gretl-secrets-volume
-                  secret:
-                    secretName: gretl-secrets
               containers:
                 - name: jnlp
                   resources:
@@ -68,6 +64,10 @@ pipeline {
                     limits:
                       cpu: "2"
                       memory: "8Gi"
+              volumes:
+                - name: gretl-secrets-volume
+                  secret:
+                    secretName: gretl-secrets
 '''
         }
     }
