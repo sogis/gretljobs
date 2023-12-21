@@ -11,10 +11,10 @@ pipeline {
                     - name: gretl-tmp-volume
                       mountPath: /tmp
                       subPath: gretl
-                volumes:
-                  - name: gretl-tmp-volume
-                    persistentVolumeClaim:
-                      claimName: ${env.OPENSHIFT_PROJECT_NAME}-lowback
+              volumes:
+                - name: gretl-tmp-volume
+                  persistentVolumeClaim:
+                    claimName: ${env.OPENSHIFT_PROJECT_NAME}-lowback
 """
         }
     }
