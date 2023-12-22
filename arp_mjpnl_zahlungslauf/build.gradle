@@ -13,7 +13,7 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'calculate_abrechnung_per_bewirtschafter'
 
 def DB_Schema_MJPNL = "arp_mjpnl_v1"
-def AUSZAHLUNGSJAHR = auszahlungsjahr ?: new SimpleDateFormat("yyyy").format(new Date())
+def AUSZAHLUNGSJAHR = auszahlungsjahr ?: 2023 // new SimpleDateFormat("yyyy").format(new Date())
 
 task "cleanup_abrechnung_per_leistung"(type: SqlExecutor) {
     description = "Löscht alle diesjährigen Leistungen (die nicht einmalig oder migriert sind) und setzt FKs auf NULL"
