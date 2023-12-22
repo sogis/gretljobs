@@ -1,0 +1,42 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import java.nio.file.Files
+import groovy.json.JsonSlurper
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.ArrayList
+import java.util.Iterator
+import java.util.List
+
+
+apply plugin: 'ch.so.agi.gretl'
+
+
+defaultTasks 'truncateTables'
+
+
+task truncateTables(type: SqlExecutor) {
+    description = "Leert die Tabellen"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = [
+            'truncate_table.sql'
+    ]
+}
+
+task synoptische_intensitaets(type: SqlExecutor, dependsOn: truncateTables) {
+    description = "Berechnet die synoptische Intensität"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = [
+            'truncate_table.sql'
+    ]
+}
+
+task synoptische_intensitaets(type: Db2Db, dependsOn: truncateTables) {
+    description = "Transfer aller stehenden Gewässer."
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('synoptische_intensitaet.sql','afu_naturgefahren_staging_v1.synoptische_intensitaet', true)
+    ];
+}
