@@ -52,7 +52,34 @@ WITH leitungen AS (
         eig.organisationstyp AS eigentuemer_organisationstyp,
         eig.bezeichnung AS eigentuemer_bezeichnung,
         CASE
+            WHEN l.nutzungsart_ist = 'Bachwasser' AND profiltyp != 'offenes_Profil' THEN 'L_eindol'
+            WHEN l.funktionhydraulisch IN ('Pumpendruckleitung','Vakuumleitung') THEN 'L_PD'
             WHEN l.funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung') THEN 'L_Drainage'
+            ELSE
+                CASE 
+                    WHEN l.finanzierung = 'oeffentlich' THEN
+                        CASE 
+                            WHEN l.nutzungsart_ist = 'entlastetes_Mischabwasser' THEN 'L_Entl'
+                            WHEN l.nutzungsart_ist = 'Mischabwasser' THEN 'L_MA'
+                            WHEN l.nutzungsart_ist IN ('Schmutzabwasser','Industrieabwasser') THEN 'L_SA'
+                            WHEN l.nutzungsart_ist IN ('Reinabwasser','Niederschlagsabwasser') THEN 'L_RA'
+                            WHEN l.nutzungsart_ist IN ('andere','unbekannt') THEN 'L_unbekannt'
+                        END
+                    WHEN l.finanzierung != 'oeffentlich' AND eig.organisationstyp = 'Privat' THEN
+                        CASE
+                            WHEN l.nutzungsart_ist = 'Mischabwasser' THEN 'L_MA_LE'
+                            WHEN l.nutzungsart_ist IN ('Schmutzabwasser','Industrieabwasser') THEN 'L_SA_LE'
+                            WHEN l.nutzungsart_ist IN ('Reinabwasser','Niederschlagsabwasser') THEN 'L_RA_LE'
+                            WHEN l.nutzungsart_ist IN ('andere','unbekannt','entlastetes_Mischabwasser') THEN 'L_unbekannt_LE'
+                        END
+                    WHEN l.finanzierung != 'oeffentlich' AND eig.organisationstyp != 'Privat' THEN
+                        CASE
+                            WHEN l.nutzungsart_ist = 'Mischabwasser' THEN 'L_MA_dr'
+                            WHEN l.nutzungsart_ist IN ('Schmutzabwasser','Industrieabwasser') THEN 'L_SA_dr'
+                            WHEN l.nutzungsart_ist IN ('Reinabwasser','Niederschlagsabwasser') THEN 'L_RA_dr'
+                            WHEN l.nutzungsart_ist IN ('andere','unbekannt','entlastetes_Mischabwasser') THEN 'L_unbekannt_dr'
+                        END
+                END
         END AS stilid
     FROM
         ${DB_SCHEMA_EDIT}.vsadssmini_leitung l
@@ -60,8 +87,7 @@ WITH leitungen AS (
     WHERE
         l.verlauf IS NOT NULL 
 )
-INSERT INTO 
-    ${DB_SCHEMA_PUB_STAGING}.paa_leitung_dr 
+INSERT INTO ${DB_SCHEMA_PUB_STAGING}.saa_leitung_se 
     (
         baujahr, 
         baulicherzustand, 
@@ -76,7 +102,7 @@ INSERT INTO
         leckschutz, 
         lichte_breite, 
         lichte_hoehe, 
-        material, 
+        material,
         nutzungsart_geplant, 
         nutzungsart_ist, 
         oid_dss, 
@@ -115,7 +141,7 @@ SELECT
     zustandserhebung_jahr
 FROM leitungen
 WHERE astatus LIKE 'in_Betrieb%'
-AND funktionhierarchisch LIKE 'PAA.%'
-AND funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung')
+AND funktionhierarchisch LIKE 'SAA.%'
+AND funktionhydraulisch NOT IN ('Drainagetransportleitung', 'Sickerleitung')
 AND stilid IS NOT NULL
 ;

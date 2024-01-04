@@ -1,3 +1,5 @@
+
+
 WITH leitungen AS (
     SELECT
         l.t_ili_tid as oid_dss,
@@ -61,15 +63,14 @@ WITH leitungen AS (
         l.verlauf IS NOT NULL 
 )
 INSERT INTO 
-    ${DB_SCHEMA_PUB_STAGING}.paa_leitung_dr 
+    ${DB_SCHEMA_PUB_STAGING}.saa_leitung_dr 
     (
         baujahr, 
         baulicherzustand, 
         bezeichnung, 
         eigentuemer_bezeichnung, 
         eigentuemer_organisationstyp, 
-        finanzierung, 
-        funktionhierarchisch, 
+        finanzierung, funktionhierarchisch, 
         funktionhydraulisch, 
         laengeeffektiv, 
         lagebestimmung, 
@@ -115,7 +116,7 @@ SELECT
     zustandserhebung_jahr
 FROM leitungen
 WHERE astatus LIKE 'in_Betrieb%'
-AND funktionhierarchisch LIKE 'PAA.%'
+AND funktionhierarchisch LIKE 'SAA.%'
 AND funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung')
 AND stilid IS NOT NULL
 ;

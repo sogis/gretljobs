@@ -13,6 +13,7 @@ def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def dataSets = ['2471_gep']
 
 def DB_SCHEMA_EDIT = "afu_gep_v1"
+def DB_SCHEMA_PUB_STAGING = "afu_gep_wk_pub_staging_v1"
 def DB_SCHEMA_PUB = "afu_gep_wk_pub_v1"
 
 dataSets.each { dataSet ->
@@ -46,14 +47,51 @@ task replaceData() {
     }
 }
 
+// Achtung: Reihenfolge ist entscheidend!
+tasks.register('stageData', SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_SCHEMA_EDIT: DB_SCHEMA_EDIT, DB_SCHEMA_PUB_STAGING: DB_SCHEMA_PUB_STAGING]
+    sqlFiles = [
+        'sql/wk/delete.sql',
+        'sql/wk/vsadssmini_paa_beschriftung_l.sql',
+        'sql/wk/vsadssmini_paa_beschriftung_p.sql',
+        'sql/wk/vsadssmini_paa_bw.sql',
+        'sql/wk/vsadssmini_paa_leitung_dr.sql', 
+        'sql/wk/vsadssmini_paa_leitung_se.sql',
+        'sql/wk/vsadssmini_paa_sbw.sql',
+        'sql/wk/vsadssmini_paa_schacht_se.sql',
+        'sql/wk/vsadssmini_paa_schacht_dr.sql',
+
+        'sql/wk/vsadssmini_saa_bw.sql',
+        'sql/wk/vsadssmini_saa_leitung_dr.sql',
+        'sql/wk/vsadssmini_saa_leitung_se.sql',
+        'sql/wk/vsadssmini_saa_sbw.sql',
+        'sql/wk/vsadssmini_saa_schacht_se.sql',
+        'sql/wk/vsadssmini_saa_schacht_dr.sql',
+
+        'sql/wk/vsadssmini_mangel_knoten.sql',
+        'sql/wk/vsadssmini_mangel_leitung.sql'
+        ]
+}
+
+/*
 tasks.register("transferData", Db2Db) {
-    dependsOn "replaceData"
+    //dependsOn "replaceData"
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('sql/wk/vsadssmini_paa_leitung_dr.sql', DB_SCHEMA_PUB+".paa_leitung_dr", true),
-            new TransferSet('sql/wk/vsadssmini_paa_leitung_se.sql', DB_SCHEMA_PUB+".paa_leitung_se", true)
+            new TransferSet('sql/wk/vsadssmini_paa_leitung_se.sql', DB_SCHEMA_PUB+".paa_leitung_se", true),
+            new TransferSet('sql/wk/vsadssmini_saa_leitung_dr.sql', DB_SCHEMA_PUB+".saa_leitung_dr", true),
+            new TransferSet('sql/wk/vsadssmini_saa_leitung_se.sql', DB_SCHEMA_PUB+".saa_leitung_se", true),
+            new TransferSet('sql/wk/vsadssmini_paa_beschriftung_l.sql', DB_SCHEMA_PUB+".paa_beschriftung_l", true),
+            new TransferSet('sql/wk/vsadssmini_paa_beschriftung_p.sql', DB_SCHEMA_PUB+".paa_beschriftung_p", true),
+            new TransferSet('sql/wk/vsadssmini_paa_bw.sql', DB_SCHEMA_PUB+".paa_bw", true),
+            new TransferSet('sql/wk/vsadssmini_saa_bw.sql', DB_SCHEMA_PUB+".saa_bw", true),
+            new TransferSet('sql/wk/vsadssmini_paa_sbw.sql', DB_SCHEMA_PUB+".paa_sbw", true),
+            new TransferSet('sql/wk/vsadssmini_saa_sbw.sql', DB_SCHEMA_PUB+".saa_sbw", true),            
+            new TransferSet('sql/wk/vsadssmini_paa_schacht_dr.sql', DB_SCHEMA_PUB+".paa_schacht_dr", true)
     ]
     sqlParameters = [DB_SCHEMA:DB_SCHEMA_EDIT]
 } 
-
+*/

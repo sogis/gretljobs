@@ -90,11 +90,38 @@ SELECT
             END
     END AS stilid
 FROM
-    ${DB_SCHEMA}.vsadssmini_leitung l
-    LEFT JOIN ${DB_SCHEMA}.administration_organisation eig ON l.eigentuemerref = eig.t_id
+    ${DB_SCHEMA_EDIT}.vsadssmini_leitung l
+    LEFT JOIN ${DB_SCHEMA_EDIT}.administration_organisation eig ON l.eigentuemerref = eig.t_id
 WHERE
     l.verlauf IS NOT NULL 
 )
+INSERT INTO 
+    ${DB_SCHEMA_PUB_STAGING}.paa_leitung_se 
+    (
+        baujahr, 
+        baulicherzustand, 
+        bezeichnung, 
+        eigentuemer_bezeichnung, 
+        eigentuemer_organisationstyp, 
+        finanzierung, funktionhierarchisch, 
+        funktionhydraulisch, 
+        laengeeffektiv, 
+        lagebestimmung, 
+        leckschutz, 
+        lichte_breite, 
+        lichte_hoehe, 
+        material, 
+        nutzungsart_geplant, 
+        nutzungsart_ist, 
+        oid_dss, 
+        profiltyp, 
+        reliner_art, 
+        astatus, 
+        verlauf, 
+        dataset, 
+        stilid, 
+        zustandserhebung_jahr
+    )
 SELECT
     baujahr,
     baulicherzustand,
