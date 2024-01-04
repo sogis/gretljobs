@@ -1,4 +1,11 @@
 with 
+basket as (
+    select 
+        t_id 
+    from 
+        afu_naturgefahren_staging_v1.t_ili2db_basket
+),
+
 teilprozess_absenkung as ( 
     select 
        'ea_absenkung' as teilprozess,
@@ -639,7 +646,17 @@ alle_teilprozesse as (
     select * from teilprozess_ueberschwemmungstatisch_prio
 )
 
-select * from alle_teilprozesse
-
+select
+    basket.t_id as t_basket, 
+    teilprozess,
+    jaehrlichkeit::integer,
+    intensitaet,
+    geometrie, 
+    datenherkunft,
+    auftrag_neudaten
+from 
+    alle_teilprozesse, 
+    basket
 ;
    
+

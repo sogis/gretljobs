@@ -13,8 +13,10 @@ import java.util.List
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'truncateTables'
+defaultTasks 'synoptische_intensitaet'
 
+//NUR PROVISORISCH! 
+def Auftragskennung = 'Himmelried'
 
 task truncateTables(type: SqlExecutor) {
     description = "Leert die Tabellen"
@@ -24,19 +26,19 @@ task truncateTables(type: SqlExecutor) {
     ]
 }
 
-task synoptische_intensitaets(type: SqlExecutor, dependsOn: truncateTables) {
-    description = "Berechnet die synoptische Intensität"
+task createDatasetAndBaskets(type: SqlExecutor, dependsOn: truncateTables) {
+    description = "Bacht die Baskets bereit"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = [
-            'truncate_table.sql'
-    ]
+    sqlFiles = ['createbaskets.sql']
+    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 
-task synoptische_intensitaets(type: Db2Db, dependsOn: truncateTables) {
+task synoptische_intensitaet(type: Db2Db, dependsOn: createDatasetAndBaskets) {
     description = "Transfer aller stehenden Gewässer."
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
             new TransferSet('synoptische_intensitaet.sql','afu_naturgefahren_staging_v1.synoptische_intensitaet', true)
     ];
+    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
