@@ -71,12 +71,14 @@ meldungen AS
 UPDATE 
     agi_av_meldewesen_work_v1.meldungen_meldung 
 SET 
-    lage = subquery.lage
+    lage = subquery.lage,
+    gemeinde = subquery.gemeinde
 FROM 
 (
     SELECT 
         messageid,
-        lage
+        lage,
+        gemeinde
     FROM  
         meldungen
 ) 
