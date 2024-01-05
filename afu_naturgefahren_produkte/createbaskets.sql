@@ -2,56 +2,35 @@ delete from afu_naturgefahren_staging_v1.t_ili2db_basket;
 delete from afu_naturgefahren_staging_v1.t_ili2db_dataset;
 
 with 
-auftrag_basket as (
-    select 
-        t_basket 
+dataset as (
+    select
+        t_id  as dataset  
     from 
-        afu_naturgefahren_v1.auftrag 
+        afu_naturgefahren_v1.t_ili2db_dataset
     where 
-        kennung = ${kennung}
-), 
+        datasetname = ${kennung}
+),
 
-att_key as (
-    select distinct 
-        attachmentkey 
-    from 
-        afu_naturgefahren_v1.t_ili2db_basket,
-        auftrag_basket
-    where 
-        t_id = auftrag_basket.t_basket
-), 
-        
 basket as (
     select 
-        t_id,
-        dataset, 
-        topic 
+        basket.t_id,
+        basket.topic,
+        basket.attachmentkey
     from 
         afu_naturgefahren_v1.t_ili2db_basket basket,
-        att_key
+        dataset
     where 
-        basket.attachmentkey = att_key.attachmentkey 
-       and 
-       topic like '%Befunde'
- ),
- 
-datasetname as (
-    select 
-       datasetname 
-    from
-       afu_naturgefahren_v1.t_ili2db_dataset
-    where 
-       t_id = (select dataset from basket)
- ),
+        basket.dataset = dataset.dataset
+        and 
+        topic like '%Befunde'
+),
  
  insert_dataset as (
      insert into 
          afu_naturgefahren_staging_v1.t_ili2db_dataset (t_id, datasetname)
          select 
              nextval('afu_naturgefahren_staging_v1.t_ili2db_seq'::regclass) as t_id,
-             datasetname 
-         from
-             datasetname
+             ${kennung} as datasetname 
      returning t_id
  )
  
@@ -61,9 +40,8 @@ datasetname as (
          nextval('afu_naturgefahren_staging_v1.t_ili2db_seq'::regclass) as t_id,
          insert_dataset.t_id as dataset, 
          basket.topic as topic, 
-         att_key.attachmentkey  as attachmentkey 
+         basket.attachmentkey  as attachmentkey 
      from 
          insert_dataset,
-         basket,
-         att_key
+         basket
  

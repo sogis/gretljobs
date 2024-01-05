@@ -1,9 +1,24 @@
+-- ACHTUNG: NEUES DATASET UND BASKET MÜSSEN ANGELEGT WORDEN SEIN!!! 
 with 
-basket as (
-    select 
-        t_id 
+orig_dataset as (
+    select
+        t_id  as dataset  
     from 
-        afu_naturgefahren_staging_v1.t_ili2db_basket
+        afu_naturgefahren_v1.t_ili2db_dataset
+    where 
+        datasetname = ${kennung}
+),
+
+orig_basket as (
+    select 
+        basket.t_id 
+    from 
+        afu_naturgefahren_v1.t_ili2db_basket basket,
+        orig_dataset
+    where 
+        basket.dataset = orig_dataset.dataset
+        and 
+        topic like '%Befunde'
 ),
 
 teilprozess_absenkung as ( 
@@ -21,6 +36,8 @@ teilprozess_absenkung as (
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten, 
         case when 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             when
              (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
@@ -32,7 +49,10 @@ teilprozess_absenkung as (
     left join
         afu_naturgefahren_v1.t_ili2db_basket basket
         on 
-        befund.t_basket = basket.t_id    
+        befund.t_basket = basket.t_id  
+    where 
+        befund.t_basket in (select t_id from orig_basket)
+    
 ),
 
 teilprozess_absenkung_prio as (
@@ -77,6 +97,8 @@ teilprozess_bergundfelssturz as (
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten,
         case when 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             when
              (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
@@ -89,6 +111,8 @@ teilprozess_bergundfelssturz as (
         afu_naturgefahren_v1.t_ili2db_basket basket
         on 
         befund.t_basket = basket.t_id 
+    where 
+        befund.t_basket in (select t_id from orig_basket)
 ),
 
 teilprozess_bergundfelssturz_prio as (
@@ -133,6 +157,8 @@ teilprozess_einsturz as (
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten,
         case when 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             when
              (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
@@ -145,6 +171,8 @@ teilprozess_einsturz as (
         afu_naturgefahren_v1.t_ili2db_basket basket
         on 
         befund.t_basket = basket.t_id 
+    where 
+        befund.t_basket in (select t_id from orig_basket)
 ),
 
 teilprozess_einsturz_prio as (
@@ -189,6 +217,8 @@ teilprozess_eisschlag as (
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten,
         case when 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             when
              (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
@@ -201,6 +231,8 @@ teilprozess_eisschlag as (
         afu_naturgefahren_v1.t_ili2db_basket basket
         on 
         befund.t_basket = basket.t_id 
+    where 
+        befund.t_basket in (select t_id from orig_basket)
 ),
 
 teilprozess_eisschlag_prio as (
@@ -245,6 +277,8 @@ teilprozess_hangmure as (
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten,
         case when 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             when
              (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
@@ -257,6 +291,8 @@ teilprozess_hangmure as (
         afu_naturgefahren_v1.t_ili2db_basket basket
         on 
         befund.t_basket = basket.t_id 
+    where 
+        befund.t_basket in (select t_id from orig_basket)
 ),
 
 teilprozess_hangmure_prio as (
@@ -301,6 +337,8 @@ teilprozess_permanentrutschung as (
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten,
         case when 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             when
              (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
@@ -313,6 +351,8 @@ teilprozess_permanentrutschung as (
         afu_naturgefahren_v1.t_ili2db_basket basket
         on 
         befund.t_basket = basket.t_id 
+    where 
+        befund.t_basket in (select t_id from orig_basket)
 ),
 
 teilprozess_permanentrutschung_prio as (
@@ -357,6 +397,8 @@ teilprozess_spontanrutschung as (
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten,
         case when 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             when
              (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
@@ -369,6 +411,8 @@ teilprozess_spontanrutschung as (
         afu_naturgefahren_v1.t_ili2db_basket basket
         on 
         befund.t_basket = basket.t_id 
+    where 
+        befund.t_basket in (select t_id from orig_basket)
 ),
 
 teilprozess_spontanrutschung_prio as (
@@ -413,6 +457,8 @@ teilprozess_steinblockschlag as (
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten,
         case when 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             when
              (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
@@ -425,6 +471,8 @@ teilprozess_steinblockschlag as (
         afu_naturgefahren_v1.t_ili2db_basket basket
         on 
         befund.t_basket = basket.t_id 
+    where 
+        befund.t_basket in (select t_id from orig_basket)
 ),
 
 teilprozess_steinblockschlag_prio as (
@@ -469,6 +517,8 @@ teilprozess_uebermurung as (
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten,
         case when 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             when
              (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
@@ -481,6 +531,8 @@ teilprozess_uebermurung as (
         afu_naturgefahren_v1.t_ili2db_basket basket
         on 
         befund.t_basket = basket.t_id 
+    where 
+        befund.t_basket in (select t_id from orig_basket)
 ),
 
 teilprozess_uebermurung_prio as (
@@ -525,6 +577,8 @@ teilprozess_ueberschwemmungdynamisch as (
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten,
         case when 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             when
              (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
@@ -536,7 +590,9 @@ teilprozess_ueberschwemmungdynamisch as (
     left join
         afu_naturgefahren_v1.t_ili2db_basket basket
         on 
-        befund.t_basket = basket.t_id 
+        befund.t_basket = basket.t_id
+    where 
+        befund.t_basket in (select t_id from orig_basket)
 ),
 
 teilprozess_ueberschwemmungdynamisch_prio as (
@@ -581,6 +637,8 @@ teilprozess_ueberschwemmungstatisch as (
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten,
         case when 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             when
              (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
@@ -593,6 +651,8 @@ teilprozess_ueberschwemmungstatisch as (
         afu_naturgefahren_v1.t_ili2db_basket basket
         on 
         befund.t_basket = basket.t_id 
+    where 
+        befund.t_basket in (select t_id from orig_basket)
 ), 
 
 teilprozess_ueberschwemmungstatisch_prio as (
@@ -644,7 +704,14 @@ alle_teilprozesse as (
     select * from teilprozess_ueberschwemmungdynamisch_prio
     union all 
     select * from teilprozess_ueberschwemmungstatisch_prio
-)
+),
+
+ basket as (
+     select 
+         t_id 
+     from 
+         afu_naturgefahren_staging_v1.t_ili2db_basket
+ )
 
 select
     basket.t_id as t_basket, 
@@ -659,4 +726,6 @@ from
     basket
 ;
    
+
+
 
