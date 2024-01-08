@@ -96,7 +96,7 @@ WHERE
     l.verlauf IS NOT NULL 
 )
 INSERT INTO 
-    ${DB_SCHEMA_PUB_STAGING}.paa_leitung_se 
+    ${DB_SCHEMA_PUB_STAGING}.wk_paa_leitung_se 
     (
         baujahr, 
         baulicherzustand, 

@@ -82,7 +82,7 @@ WITH schaechte AS (
 )
 
 INSERT INTO 
-    ${DB_SCHEMA_PUB_STAGING}.paa_schacht_se 
+    ${DB_SCHEMA_PUB_STAGING}.wk_paa_schacht_se 
     (
         baujahr, 
         baulicherzustand, 

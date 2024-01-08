@@ -60,7 +60,7 @@ WITH sbw AS (
 	LEFT JOIN ${DB_SCHEMA_EDIT}.vsadssmini_sk sk ON k.t_id = sk.paa_knotenref
 	WHERE k.lage IS NOT NULL
 )
-INSERT INTO ${DB_SCHEMA_PUB_STAGING}.saa_sbw 
+INSERT INTO ${DB_SCHEMA_PUB_STAGING}.wk_saa_sbw 
 	(
 		baujahr, 
 		baulicherzustand, 

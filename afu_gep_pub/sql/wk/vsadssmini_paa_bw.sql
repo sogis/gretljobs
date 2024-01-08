@@ -38,7 +38,7 @@ WITH bw AS (
     WHERE detailgeometrie IS NOT NULL
 )
 INSERT INTO 
-    ${DB_SCHEMA_PUB_STAGING}.paa_bw 
+    ${DB_SCHEMA_PUB_STAGING}.wk_paa_bw 
     (
         eigentuemer_organisationstyp, 
         finanzierung, 

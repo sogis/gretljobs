@@ -61,7 +61,7 @@ WITH sbw AS (
     WHERE k.lage IS NOT NULL
 )
 INSERT INTO 
-    ${DB_SCHEMA_PUB_STAGING}.paa_sbw 
+    ${DB_SCHEMA_PUB_STAGING}.wk_paa_sbw 
     (
         baujahr, 
         baulicherzustand, 

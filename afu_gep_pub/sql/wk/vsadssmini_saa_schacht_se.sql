@@ -80,7 +80,7 @@ WITH schaechte AS (
 	WHERE k.lage IS NOT NULL
 )
 INSERT INTO 
-	${DB_SCHEMA_PUB_STAGING}.saa_schacht_se 
+	${DB_SCHEMA_PUB_STAGING}.wk_saa_schacht_se 
 	(
 		baujahr, 
 		baulicherzustand, 

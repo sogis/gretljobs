@@ -4,21 +4,21 @@ WITH mangel_l AS (
     FROM ${DB_SCHEMA_EDIT}.vsadssmini_leitung l
     LEFT JOIN (
         SELECT oid_dss, stilid
-        FROM ${DB_SCHEMA_PUB_STAGING}.paa_leitung_se
+        FROM ${DB_SCHEMA_PUB_STAGING}.wk_paa_leitung_se
             UNION ALL
         SELECT oid_dss, stilid
-        FROM ${DB_SCHEMA_PUB_STAGING}.paa_leitung_dr 
+        FROM ${DB_SCHEMA_PUB_STAGING}.wk_paa_leitung_dr 
             UNION ALL
         SELECT oid_dss, stilid
-        FROM ${DB_SCHEMA_PUB_STAGING}.saa_leitung_se
+        FROM ${DB_SCHEMA_PUB_STAGING}.wk_saa_leitung_se
             UNION ALL
         SELECT oid_dss, stilid
-        FROM ${DB_SCHEMA_PUB_STAGING}.saa_leitung_dr) u
+        FROM ${DB_SCHEMA_PUB_STAGING}.wk_saa_leitung_dr) u
         ON l.t_ili_tid = u.oid_dss
 )
 
 INSERT INTO 
-    ${DB_SCHEMA_PUB_STAGING}.mangel_leitung  
+    ${DB_SCHEMA_PUB_STAGING}.wk_mangel_leitung  
     (
         oid_dss, 
         verlauf, 

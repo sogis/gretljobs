@@ -87,7 +87,7 @@ WITH leitungen AS (
     WHERE
         l.verlauf IS NOT NULL 
 )
-INSERT INTO ${DB_SCHEMA_PUB_STAGING}.saa_leitung_se 
+INSERT INTO ${DB_SCHEMA_PUB_STAGING}.wk_saa_leitung_se 
     (
         baujahr, 
         baulicherzustand, 

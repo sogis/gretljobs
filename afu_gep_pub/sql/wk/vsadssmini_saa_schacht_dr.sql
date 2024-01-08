@@ -58,7 +58,7 @@ WITH schaechte AS (
 )
 
 INSERT INTO 
-    ${DB_SCHEMA_PUB_STAGING}.saa_schacht_dr 
+    ${DB_SCHEMA_PUB_STAGING}.wk_saa_schacht_dr 
     (
         baujahr, 
         baulicherzustand, 
@@ -106,7 +106,7 @@ FROM schaechte
 WHERE astatus LIKE 'in_Betrieb%'
 AND funktionhierarchisch = 'SAA'
 AND leitung_funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung')
-AND oid_dss NOT IN (SELECT oid_dss FROM ${DB_SCHEMA_PUB_STAGING}.saa_schacht_se)
-AND oid_dss NOT IN (SELECT oid_dss FROM ${DB_SCHEMA_PUB_STAGING}.saa_sbw)
+AND oid_dss NOT IN (SELECT oid_dss FROM ${DB_SCHEMA_PUB_STAGING}.wk_saa_schacht_se)
+AND oid_dss NOT IN (SELECT oid_dss FROM ${DB_SCHEMA_PUB_STAGING}.wk_saa_sbw)
 AND stilid IS NOT NULL
 ;

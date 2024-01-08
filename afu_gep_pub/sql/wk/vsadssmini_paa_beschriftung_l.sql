@@ -53,7 +53,7 @@ WITH beschriftung_l AS (
     WHERE lt.textpos IS NOT NULL AND lt.plantyp = 'Werkplan' AND l.verlauf IS NOT NULL
 )
 INSERT INTO 
-    ${DB_SCHEMA_PUB_STAGING}.paa_beschriftung_l 
+    ${DB_SCHEMA_PUB_STAGING}.wk_paa_beschriftung_l 
     (
         textinhalt, 
         textpos, 

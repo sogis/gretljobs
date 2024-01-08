@@ -51,7 +51,7 @@ WITH beschriftung_p AS (
     WHERE k.lage IS NOT NULL
 )
 INSERT INTO 
-    ${DB_SCHEMA_PUB_STAGING}.paa_beschriftung_p 
+    ${DB_SCHEMA_PUB_STAGING}.wk_paa_beschriftung_p 
     (
         textinhalt, 
         textpos, 
