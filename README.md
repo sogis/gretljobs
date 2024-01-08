@@ -319,16 +319,18 @@ von denen einer eine *edit*-DB, der andere eine *pub*-DB enthält.
 
 _Alternative_: Entwicklungs-DBs aus dem _schema-jobs_-Verzeichnis heraus starten:
 ```
-docker compose -f ../gretljobs/docker-compose.yml up -d
+COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose up -d
 ```
 
 Erläuterungen:
 * Alle Compose-Befehle können wahlweise
   auch aus dem _schema-jobs_-Verzeichnis heraus gestartet werden;
-  hierzu muss man mit der Option `-f`
-  auf die Datei `docker-compose.yml` des Verzeichnis _gretljobs_ verweisen.
-  _Voraussetzung_: Die Ordner _gretljobs_ und _schema-jobs_ müssen sich
-  im gleichen übergeordneten Ordner befinden.
+  hierzu muss man dem Befehl die Umgebungsvariable COMPOSE_FILE voranstellen
+  und so auf die Datei `docker-compose.yml` des Verzeichnis _gretljobs_ verweisen.
+
+  _Voraussetzung, damit dies funktioniert_:
+  Die Ordner _gretljobs_ und _schema-jobs_
+  müssen sich im gleichen übergeordneten Ordner befinden.
 
 #### Entwicklungs-DBs stoppen
 ```
@@ -427,7 +429,7 @@ docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schem
 ```
 Beispiel für Start desselben Schema-Jobs aus dem _schema-jobs_-Verzeichnis heraus:
 ```
-docker compose -f ../gretljobs/docker-compose.yml run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
+COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
   gretl -PtopicName=agi_mopublic -PschemaDirName=schema_pub createSchema configureSchema
 ```
 
