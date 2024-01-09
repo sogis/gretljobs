@@ -23,7 +23,6 @@ task createLayer(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
-        new TransferSet('createlayers/create_gk_synoptisch_generiert.sql', 'afu_gefahrenkartierung.gefahrenkartirung_gk_synoptisch_generiert', true),
         new TransferSet('createlayers/create_gk_mgdm_sturz.sql', 'afu_gefahrenkartierung.gefahrenkartirung_gk_mgdm', true),
         new TransferSet('createlayers/create_gk_mgdm_wasser.sql', 'afu_gefahrenkartierung.gefahrenkartirung_gk_mgdm', false),
         new TransferSet('createlayers/create_gk_mgdm_rutsch.sql', 'afu_gefahrenkartierung.gefahrenkartirung_gk_mgdm', false),
