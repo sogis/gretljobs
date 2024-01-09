@@ -13,7 +13,7 @@ import java.util.List
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'synoptische_intensitaet_altdaten_copy'
+defaultTasks 'gefahrengebiet_teilprozess_ueberflutung_altdaten_copy'
 
 //NUR PROVISORISCH! 
 def Auftragskennung = 'Himmelried'
@@ -33,6 +33,8 @@ task createDatasetAndBaskets(type: SqlExecutor, dependsOn: truncateTables) {
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 
+// SYNOPTISCHE INTENSITÄT
+
 task synoptische_intensitaet(type: Db2Db, dependsOn: createDatasetAndBaskets) {
     description = "Berechnugn der synoptischen Intensität mit den neuen Daten"
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -49,5 +51,121 @@ task synoptische_intensitaet_altdaten_copy(type: Db2Db, dependsOn: synoptische_i
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
             new TransferSet('synoptische_intensitaet_altdaten_copy.sql','afu_naturgefahren_staging_v1.synoptische_intensitaet', false)
+    ];
+}
+
+// GEFAHRENGEBIET TEILPROZESSE 
+
+task gefahrengebiet_teilprozess_absenkung_einsturz(type: Db2Db, dependsOn: synoptische_intensitaet_altdaten_copy) {
+    description = "Berechnugn der Gefahrengebiete des Teilprozesses Absenkung und Einsturz"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('gefahrengebiet_teilprozess_absenkung_einsturz.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_absenkung_einsturz', true)
+    ];
+    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
+}
+
+task gefahrengebiet_teilprozess_absenkung_einsturz_altdaten_copy(type: Db2Db, dependsOn: gefahrengebiet_teilprozess_absenkung_einsturz) {
+    description = "Kopieren der alten Daten der Gefahrengebiete des Teilprozesses Absenkung und Einsturz"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('gefahrengebiet_teilprozess_absenkung_einsturz_altdaten_copy.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_absenkung_einsturz', false)
+    ];
+}
+
+task gefahrengebiet_teilprozess_spontane_rutschung_hangmure(type: Db2Db, dependsOn: gefahrengebiet_teilprozess_absenkung_einsturz_altdaten_copy) {
+    description = "Berechnugn der Gefahrengebiete des Teilprozesses spontane Rutschungen und Hangmure"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('gefahrengebiet_teilprozess_spontan_rutschung_hangmure.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_spontane_rutschung_hangmure', true)
+    ];
+    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
+}
+
+task gefahrengebiet_teilprozess_spontane_rutschung_hangmure_altdaten_copy(type: Db2Db, dependsOn: gefahrengebiet_teilprozess_spontane_rutschung_hangmure) {
+    description = "Kopieren der alten Daten der Gefahrengebiete des Teilprozesses spontane Rutschungen und Hangmure"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('gefahrengebiet_teilprozess_spontane_rutschung_hangmure_altdaten_copy.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_spontane_rutschung_hangmure', false)
+    ];
+}
+
+task gefahrengebiet_teilprozess_murgang(type: Db2Db, dependsOn: gefahrengebiet_teilprozess_spontane_rutschung_hangmure_altdaten_copy) {
+    description = "Berechnugn der Gefahrengebiete des Teilprozesses Murgang"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('gefahrengebiet_teilprozess_murgang.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_murgang', true)
+    ];
+    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
+}
+
+task gefahrengebiet_teilprozess_murgang_altdaten_copy(type: Db2Db, dependsOn: gefahrengebiet_teilprozess_murgang) {
+    description = "Kopieren der alten Daten der Gefahrengebiete des Teilprozesses Murgang"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('gefahrengebiet_teilprozess_murgang_altdaten_copy.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_murgang', false)
+    ];
+}
+
+task gefahrengebiet_teilprozess_permanente_rutschung(type: Db2Db, dependsOn: gefahrengebiet_teilprozess_murgang_altdaten_copy) {
+    description = "Berechnugn der Gefahrengebiete des Teilprozesses permanente Rutschung"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('gefahrengebiet_teilprozess_permanente_rutschung.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_permanente_rutschung', true)
+    ];
+    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
+}
+
+task gefahrengebiet_teilprozess_permanente_rutschung_altdaten_copy(type: Db2Db, dependsOn: gefahrengebiet_teilprozess_permanente_rutschung) {
+    description = "Kopieren der alten Daten der Gefahrengebiete des Teilprozesses permanente Rutschung"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('gefahrengebiet_teilprozess_permanente_rutschung_altdaten_copy.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_permanente_rutschung', false)
+    ];
+}
+
+task gefahrengebiet_teilprozess_stein_block_fels_bergsturz(type: Db2Db, dependsOn: gefahrengebiet_teilprozess_permanente_rutschung_altdaten_copy) {
+    description = "Berechnugn der Gefahrengebiete des Teilprozesses Stein-/Blockschlag, Fels-/Bergsturz"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('gefahrengebiet_teilprozess_stein_block_fels_bergsturz.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_stein_block_fels_bergsturz', true)
+    ];
+    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
+}
+
+task gefahrengebiet_teilprozess_stein_block_fels_bergsturz_altdaten_copy(type: Db2Db, dependsOn: gefahrengebiet_teilprozess_stein_block_fels_bergsturz) {
+    description = "Kopieren der alten Daten der Gefahrengebiete des Teilprozesses Stein-/Blockschlag, Fels-/Bergsturz"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('gefahrengebiet_teilprozess_stein_block_fels_bergsturz_altdaten_copy.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_stein_block_fels_bergsturz', false)
+    ];
+}
+
+task gefahrengebiet_teilprozess_ueberflutung(type: Db2Db, dependsOn: gefahrengebiet_teilprozess_stein_block_fels_bergsturz_altdaten_copy) {
+    description = "Berechnugn der Gefahrengebiete des Teilprozesses Überflutung"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('gefahrengebiet_teilprozess_ueberflutung.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_ueberflutung', true)
+    ];
+    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
+}
+
+task gefahrengebiet_teilprozess_ueberflutung_altdaten_copy(type: Db2Db, dependsOn: gefahrengebiet_teilprozess_ueberflutung) {
+    description = "Kopieren der alten Daten der Gefahrengebiete des Teilprozesses Überflutung"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('gefahrengebiet_teilprozess_ueberflutung_altdaten_copy.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_ueberflutung', false)
     ];
 }
