@@ -128,11 +128,11 @@ sein, weil ich so die Message-Id verwenden kann. Aber, ob wirklich notwendig (me
 weiss ich nicht. Vielleicht auch premature of optimization is evil Moment, den ich 
 mitschleppe.
 */
-tasks.register('updateOid', SqlExecutor) {
+tasks.register('update_manual_records', SqlExecutor) {
     dependsOn 'updateLage'
-    description = 'Inserted eine OID in die t_ili_tid-Spalte für Punkte, die vom Geometer erfasst wurden.'
+    description = 'Inserted eine OID in die t_ili_tid-Spalte und weitere leere Attribute für Punkte, die vom Geometer erfasst wurden.'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ['update_oid.sql']
+    sqlFiles = ['update_manual_records.sql']
 }
 
 
