@@ -5,7 +5,7 @@ import java.nio.file.Paths
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: "org.hidetake.ssh"
 
-defaultTasks 'updateOid'
+defaultTasks 'update_manual_records'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def downloadFolder = Paths.get(pathToTempFolder, "download").toFile()
