@@ -308,7 +308,9 @@ simiTokenServicePwd=
 ilivalidatorModeldir=%ITF_DIR;https://geo.so.ch/models/;%JAR_DIR/ilimodels
 ```
 
-### Entwicklungs-DBs starten
+### Entwicklungs-DBs nutzen
+
+#### Entwicklungs-DBs starten
 ```
 docker compose up -d
 ```
@@ -317,16 +319,65 @@ von denen einer eine *edit*-DB, der andere eine *pub*-DB enthält.
 
 _Alternative_: Entwicklungs-DBs aus dem _schema-jobs_-Verzeichnis heraus starten:
 ```
-docker compose -f ../gretljobs/docker-compose.yml up -d
+COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose up -d
 ```
 
 Erläuterungen:
 * Alle Compose-Befehle können wahlweise
   auch aus dem _schema-jobs_-Verzeichnis heraus gestartet werden;
-  hierzu muss man mit der Option `-f`
-  auf die Datei `docker-compose.yml` des Verzeichnis _gretljobs_ verweisen.
-  _Voraussetzung_: Die Ordner _gretljobs_ und _schema-jobs_ müssen sich
-  im gleichen übergeordneten Ordner befinden.
+  hierzu muss man dem Befehl die Umgebungsvariable COMPOSE_FILE voranstellen
+  und so auf die Datei `docker-compose.yml` des Verzeichnis _gretljobs_ verweisen.
+
+  _Voraussetzung, damit dies funktioniert_:
+  Die Ordner _gretljobs_ und _schema-jobs_
+  müssen sich im gleichen übergeordneten Ordner befinden.
+
+#### Entwicklungs-DBs stoppen
+```
+docker compose stop
+```
+So werden die Entwicklungs-DB-Container gestoppt.
+Die Daten der DBs bleiben erhalten,
+da sie in Docker-Volumes gespeichert sind,
+die hierbei nicht gelöscht werden.
+
+#### Entwicklungs-DBs stoppen und DB-Container löschen
+```
+docker compose down
+```
+Die Entwicklungs-DB-Container werden gestoppt, die DB-Container gelöscht
+und zugleich auch das von Docker Compose angelegte Docker-Netzwerk gelöscht.
+Die Daten der DBs bleiben aber auch in diesem Fall erhalten,
+weil die Docker-Volumes nicht gelöscht werden.
+
+#### Daten der Entwicklungs-DB-Container löschen
+```
+docker volume rm gretljobs_postgresql_data_edit gretljobs_postgresql_data_pub
+```
+Mit diesem Befehl werden die Volumes der Entwicklungs-DB-Container
+und damit die Daten in den Entwicklungs-DBs gelöscht.
+(Die DB-Container müssen vorgängig mit dem Befehl `docker compose down`
+ebenfalls gelöscht werden.)
+
+#### Verbindungsparameter für die Entwicklungs-DBs
+Die Entwicklungs-DBs sind z.B. aus _DBeaver_ oder _psql_
+mit folgenden Verbindungsparametern erreichbar:
+
+*Edit-DB:*
+* Hostname: `localhost`
+* Port: `54321`
+* DB-Name: `edit`
+* Benutzer mit DDL-Rechten: `ddluser` (zum Anlegen von Schemen, Tabellen usw.)
+* Benutzer mit DML-Rechten: `dmluser` (für Lese- und Schreibzugriff)
+* Passwörter: lauten jeweils gleich wie der Benutzername
+
+*Publikations-DB:*
+* Hostname: `localhost`
+* Port: `54322`
+* DB-Name: `pub`
+* Benutzer mit DDL-Rechten: `ddluser` (zum Anlegen von Schemen, Tabellen usw.)
+* Benutzer mit DML-Rechten: `dmluser` (für Lese- und Schreibzugriff)
+* Passwörter: lauten jeweils gleich wie der Benutzername
 
 ### GRETL-Job ausführen
 ```
@@ -368,6 +419,9 @@ docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schem
 ```
 Dieser Befehl startet den Schema-Job im Ordner `MY_TOPIC_NAME\MY_SCHEMA_DIRECTORY_NAME`.
 
+_Voraussetzung_: Die Ordner _gretljobs_ und _schema-jobs_ müssen sich
+im gleichen übergeordneten Ordner befinden.
+
 Beispiel:
 ```
 docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
@@ -375,7 +429,7 @@ docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schem
 ```
 Beispiel für Start desselben Schema-Jobs aus dem _schema-jobs_-Verzeichnis heraus:
 ```
-docker compose -f ../gretljobs/docker-compose.yml run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
+COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
   gretl -PtopicName=agi_mopublic -PschemaDirName=schema_pub createSchema configureSchema
 ```
 
@@ -407,60 +461,9 @@ Erläuterungen:
     gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
   ```
 
-### Entwicklungs-DBs stoppen
-```
-docker compose stop
-```
-So werden die Entwicklungs-DB-Container gestoppt.
-Die Daten der DBs bleiben erhalten,
-da sie in Docker-Volumes gespeichert sind,
-die hierbei nicht gelöscht werden.
+### Daten in die Entwicklungs-DBs importieren
 
-### Entwicklungs-DBs stoppen und DB-Container löschen
-```
-docker compose down
-```
-Die Entwicklungs-DB-Container werden gestoppt, die DB-Container gelöscht
-und zugleich auch das von Docker Compose angelegte Docker-Netzwerk gelöscht.
-Die Daten der DBs bleiben aber auch in diesem Fall erhalten,
-Weil die Docker-Volumes nicht gelöscht werden.
-
-### Daten der Entwicklungs-DB-Container löschen
-```
-docker volume prune --all --filter 'label=com.docker.compose.project=gretljobs'
-```
-Mit diesem Befehl werden die Volumes der Entwicklungs-DB-Container
-und damit die Daten in den Entwicklungs-DBs gelöscht.
-(Die DB-Container müssen vorgängig mit dem Befehl `docker compose down`
-ebenfalls gelöscht werden.)
-
-Erläuterungen:
-
-* Der *Value* des Labels `com.docker.compose.project`
-  ist nicht zwingend immer `gretljobs`,
-  sondern er ist vom Verzeichnisnamen abhängig,
-  in welchem `docker-compose.yml` liegt;
-  man kann ihn durch `docker volume inspect VOLUMENAME` herausfinden.
-
-### Verbindungsparameter für die Entwicklungs-DBs
-Die Entwicklungs-DBs sind z.B. aus _DBeaver_ oder _psql_
-mit folgenden Verbindungsparametern erreichbar:
-
-*Edit-DB:*
-* Hostname: `localhost`
-* Port: `54321`
-* DB-Name: `edit`
-* Benutzer mit DDL-Rechten: `ddluser` (zum Anlegen von Schemen, Tabellen usw.)
-* Benutzer mit DML-Rechten: `dmluser` (für Lese- und Schreibzugriff)
-* Passwörter: lauten jeweils gleich wie der Benutzername
-
-*Publikations-DB:*
-* Hostname: `localhost`
-* Port: `54322`
-* DB-Name: `pub`
-* Benutzer mit DDL-Rechten: `ddluser` (zum Anlegen von Schemen, Tabellen usw.)
-* Benutzer mit DML-Rechten: `dmluser` (für Lese- und Schreibzugriff)
-* Passwörter: lauten jeweils gleich wie der Benutzername
+TODO
 
 ### Hinweise zu den DB-Containern
 #### Die Rollen (Benutzer und Gruppen) der produktiven DBs importieren
