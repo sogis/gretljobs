@@ -6,7 +6,7 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: "de.undercouch.download"
 
-//defaultTasks 'transferData'
+defaultTasks 'transferData'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
@@ -36,7 +36,7 @@ dataSets.each { dataSet ->
         models = 'VSADSSMINI_2020_LV95'
         dataset = dataSet
         dataFile = Paths.get(pathToTempFolder, dataSet + ".xtf").toFile()
-        disableValidation = true // Weil gewisse Dinge herabgeschwächt werden in der Prüfung. Die ini-Datei ist noch in keinem Repo. Eventuell müsste man auch noch den Task anpassen, damit das überhaupt geht. Resp. geht es überhaupt mit ili2db?
+        disableValidation = true // Weil gewisse Dinge herabgeschwächt werden in der Prüfung. Die ini-Datei ist noch in keinem Repo. Eventuell müsste man auch noch den Custom-Task anpassen, damit das überhaupt geht. Resp. geht es überhaupt mit ili2db?
     }
 }
 
@@ -49,6 +49,7 @@ task replaceData() {
 
 // Achtung: Reihenfolge ist entscheidend!
 tasks.register('stageData', SqlExecutor) {
+    dependsOn "replaceData"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_SCHEMA_EDIT: DB_SCHEMA_EDIT, DB_SCHEMA_PUB_STAGING: DB_SCHEMA_PUB_STAGING]
     sqlFiles = [
@@ -74,24 +75,29 @@ tasks.register('stageData', SqlExecutor) {
         ]
 }
 
-/*
 tasks.register("transferData", Db2Db) {
-    //dependsOn "replaceData"
+    dependsOn "stageData"
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('sql/wk/vsadssmini_paa_leitung_dr.sql', DB_SCHEMA_PUB+".paa_leitung_dr", true),
-            new TransferSet('sql/wk/vsadssmini_paa_leitung_se.sql', DB_SCHEMA_PUB+".paa_leitung_se", true),
-            new TransferSet('sql/wk/vsadssmini_saa_leitung_dr.sql', DB_SCHEMA_PUB+".saa_leitung_dr", true),
-            new TransferSet('sql/wk/vsadssmini_saa_leitung_se.sql', DB_SCHEMA_PUB+".saa_leitung_se", true),
-            new TransferSet('sql/wk/vsadssmini_paa_beschriftung_l.sql', DB_SCHEMA_PUB+".paa_beschriftung_l", true),
-            new TransferSet('sql/wk/vsadssmini_paa_beschriftung_p.sql', DB_SCHEMA_PUB+".paa_beschriftung_p", true),
-            new TransferSet('sql/wk/vsadssmini_paa_bw.sql', DB_SCHEMA_PUB+".paa_bw", true),
-            new TransferSet('sql/wk/vsadssmini_saa_bw.sql', DB_SCHEMA_PUB+".saa_bw", true),
-            new TransferSet('sql/wk/vsadssmini_paa_sbw.sql', DB_SCHEMA_PUB+".paa_sbw", true),
-            new TransferSet('sql/wk/vsadssmini_saa_sbw.sql', DB_SCHEMA_PUB+".saa_sbw", true),            
-            new TransferSet('sql/wk/vsadssmini_paa_schacht_dr.sql', DB_SCHEMA_PUB+".paa_schacht_dr", true)
+            new TransferSet('sql/wk/transfer_vsadssmini_paa_beschriftung_l.sql', DB_SCHEMA_PUB+".wk_paa_beschriftung_l", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_paa_beschriftung_p.sql', DB_SCHEMA_PUB+".wk_paa_beschriftung_p", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_paa_bw.sql', DB_SCHEMA_PUB+".wk_paa_bw", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_paa_leitung_dr.sql', DB_SCHEMA_PUB+".wk_paa_leitung_dr", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_paa_leitung_se.sql', DB_SCHEMA_PUB+".wk_paa_leitung_se", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_paa_sbw.sql', DB_SCHEMA_PUB+".wk_paa_sbw", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_paa_schacht_se.sql', DB_SCHEMA_PUB+".wk_paa_schacht_se", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_paa_schacht_dr.sql', DB_SCHEMA_PUB+".wk_paa_schacht_dr", true),
+
+            new TransferSet('sql/wk/transfer_vsadssmini_saa_bw.sql', DB_SCHEMA_PUB+".wk_saa_bw", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_saa_leitung_dr.sql', DB_SCHEMA_PUB+".wk_saa_leitung_dr", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_saa_leitung_se.sql', DB_SCHEMA_PUB+".wk_saa_leitung_se", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_saa_sbw.sql', DB_SCHEMA_PUB+".wk_saa_sbw", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_saa_schacht_se.sql', DB_SCHEMA_PUB+".wk_saa_schacht_se", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_saa_schacht_dr.sql', DB_SCHEMA_PUB+".wk_saa_schacht_dr", true),
+
+            new TransferSet('sql/wk/transfer_vsadssmini_mangel_knoten.sql', DB_SCHEMA_PUB+".wk_mangel_knoten", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_mangel_leitung.sql', DB_SCHEMA_PUB+".wk_mangel_leitung", true)
     ]
-    sqlParameters = [DB_SCHEMA:DB_SCHEMA_EDIT]
+    sqlParameters = [DB_SCHEMA:DB_SCHEMA_PUB_STAGING]
 } 
-*/
