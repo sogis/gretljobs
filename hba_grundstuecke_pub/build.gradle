@@ -6,7 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferToPub'
 
 def iliModelName = "SO_HBA_Grundstuecke_20240111"
-def fileName = "20231127_Grundstuecke.csv"
+def fileName = "20231127_Grundstuecke_fix.csv"
 def dbSchemaNameEdit = "hba_grundstuecke_v2"
 def dbSchemaNamePub = "hba_grundstuecke_pub_v2"
 
