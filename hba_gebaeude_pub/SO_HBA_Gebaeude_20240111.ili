@@ -1,0 +1,55 @@
+INTERLIS 2.3;
+
+/** !!------------------------------------------------------------------------------
+ *  !! Version    | wer | Änderung
+ *  !!------------------------------------------------------------------------------
+ *  !! 2024-01-11 | sz  | Initialerstellung
+ *  !! 2024-01-11 | sz  | Leichte Umstrukturierung
+ *  !!==============================================================================
+ */
+!!@ technicalContact=mailto:agi@bd.so.ch
+!!@ furtherInformation=https://geo.so.ch/models/HBA/SO_HBA_Gebaeude_20240111.uml
+!!@ shortDescription="Modell für den CSV-Import der Gebäude des Kantons via HBA"
+!!@ title="Gebäude des Kantons"
+MODEL SO_HBA_Gebaeude_20240111 (de)
+AT "https://hba.so.ch"
+VERSION "2024-01-11"  =
+
+  TOPIC Gebaeude =
+
+    CLASS Gebaeude =
+      /** Schweizweit eindeutiger Gebäudeidentifikator
+       */
+      egid : TEXT*20;
+      /** Ostwert der Koordinate
+       */
+      xkoordinaten : 2000000.000 .. 3000000.000;
+      /** Nordwert der Koordinate
+       */
+      ykoordinaten : 1000000.000 .. 2000000.000;
+      /** Buchhalterische Vermögensart
+       */
+      vermoegensart : MANDATORY (
+        AM,
+        SV,
+        VV,
+        FV
+      );
+      /** HBA-interne, eindeutige Nummer
+       */
+      wirtschaftseinheit : MANDATORY TEXT*20;
+      /** Aktuelle Nutzung des Gebäudes
+       */
+      aktuelle_nutzung : TEXT*50;
+      /** Priorität im Kontext der Immobilienstrategie
+       */
+      prio : (
+        C,
+        B,
+        A
+      );
+    END Gebaeude;
+
+  END Gebaeude;
+
+END SO_HBA_Gebaeude_20240111.

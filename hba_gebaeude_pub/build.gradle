@@ -5,8 +5,11 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferToPub'
 
-def iliModelName = "SO_HBA_Gebaeude_20230111"
-def fileName = "20230124_sap_Gebaeude.csv"
+def iliModelName = "SO_HBA_Gebaeude_20240111"
+def fileName = "20231127_Gebaeude.csv"
+
+def dbSchemaNameEdit = "hba_gebaeude_v2"
+def dbSchemaNamePub = "hba_gebaeude_pub_v2"
 
 task validateCsv(type: CsvValidator) {
     description = "Validiert die CSV-Datei"
@@ -29,7 +32,7 @@ task truncateTable(type: SqlExecutor, dependsOn: 'validateCsv') {
 task importCsv(type: CsvImport, dependsOn: 'truncateTable') {
     description = "Import die CVS-Datei in die Datenbank"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    schemaName = "hba_gebaeude_v1"
+    schemaName = dbSchemaNameEdit
     tableName = "gebaeude_gebaeude"
     firstLineIsHeader=true
     encoding = "ISO-8859-1"
@@ -43,6 +46,6 @@ task transferToPub(type: Db2Db, dependsOn: 'importCsv') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('transfer_gebaeude.sql', 'hba_gebaeude_pub_v1.gebaeude_gebaeude', true)
+            new TransferSet('transfer_gebaeude.sql', dbSchemaNamePub+'.gebaeude_gebaeude', true)
     ];
 }
