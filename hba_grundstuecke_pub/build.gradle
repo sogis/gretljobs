@@ -5,9 +5,15 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferToPub'
 
-def iliModelName = "SO_HBA_Grundstuecke_20230109"
-def fileName = "20230110_cafm_Grundstuecke.csv"
+def iliModelName = "SO_HBA_Grundstuecke_20240111"
+def fileName = "20231127_Grundstuecke.csv"
+def dbSchemaNameEdit = "hba_grundstuecke_v2"
+def dbSchemaNamePub = "hba_grundstuecke_pub_v2"
 
+// Achtung: Es dürfen keine leere Zeilen (resp. Zeilen mit nur Semikolons) im 
+// in der Datei vorhanden sein.
+// Achtung: In der Headerzeile muss allenfalls das letzte Semikolon gelöscht werden.
+// Bei den Zeilen mit den Werten spielt es keine Rolle. -> Melden
 task validateCsv(type: CsvValidator) {
     description = "Validiert die CSV-Datei"
     models = iliModelName
@@ -29,7 +35,7 @@ task truncateTable(type: SqlExecutor, dependsOn: 'validateCsv') {
 task importCsv(type: CsvImport, dependsOn: 'truncateTable') {
     description = "Import die CVS-Datei in die Datenbank"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    schemaName = "hba_grundstuecke_v1"
+    schemaName = dbSchemaNameEdit
     tableName = "grundstuecke_grundstueck"
     firstLineIsHeader=true
     encoding = "ISO-8859-1"
@@ -43,6 +49,6 @@ task transferToPub(type: Db2Db, dependsOn: 'importCsv') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('transfer_grundstuecke.sql', 'hba_grundstuecke_pub_v1.grundstuecke_liegenschaft', true)
+            new TransferSet('transfer_grundstuecke.sql', dbSchemaNamePub+'.grundstuecke_liegenschaft', true)
     ];
 }
