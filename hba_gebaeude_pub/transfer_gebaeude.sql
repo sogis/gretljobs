@@ -43,7 +43,7 @@ SELECT
         WHEN prio = 'B' THEN 'Nicht betriebsnotwendig, halten, periodische Überprüfung'
         WHEN prio = 'C' THEN 'Nicht betriebsnotwendig, verwertbar'
     END AS prioritaet_txt,
-    aktuelle_nutzung
+    nutzungsgruppe
 FROM 
 (
     SELECT DISTINCT ON (gebaeude.t_id)
@@ -51,7 +51,7 @@ FROM
         gebaeude.egid,
         gebaeude.vermoegensart,
         gebaeude.wirtschaftseinheit,
-        gebaeude.aktuelle_nutzung, 
+        gebaeude.aktuelle_nutzung AS nutzungsgruppe, 
         av_gebaeude.geometrie,
         gebaeude.prio
     FROM 
@@ -72,7 +72,7 @@ FROM
         gebaeude.egid,
         gebaeude.vermoegensart,
         gebaeude.wirtschaftseinheit,
-        gebaeude.aktuelle_nutzung, 
+        gebaeude.aktuelle_nutzung AS nutzungsgruppe, 
         av_gebaeude.geometrie,
         gebaeude.prio
     FROM 
