@@ -336,6 +336,10 @@ Erläuterungen:
 ```
 docker compose stop
 ```
+bzw.
+```
+COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose stop
+```
 So werden die Entwicklungs-DB-Container gestoppt.
 Die Daten der DBs bleiben erhalten,
 da sie in Docker-Volumes gespeichert sind,
@@ -344,6 +348,10 @@ die hierbei nicht gelöscht werden.
 #### Entwicklungs-DBs stoppen und DB-Container löschen
 ```
 docker compose down
+```
+bzw.
+```
+COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose down
 ```
 Die Entwicklungs-DB-Container werden gestoppt, die DB-Container gelöscht
 und zugleich auch das von Docker Compose angelegte Docker-Netzwerk gelöscht.
@@ -383,6 +391,10 @@ mit folgenden Verbindungsparametern erreichbar:
 ```
 docker compose run --rm -u $UID gretl --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
 ```
+bzw.
+```
+COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose run --rm -u $UID gretl --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
+```
 Dieser Befehl startet den GRETL-Job `MY_JOB_NAME`.
 
 Beispiele:
@@ -415,6 +427,11 @@ Erläuterungen:
 ### Schema-Job ausführen
 ```
 docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
+  gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
+```
+bzw.
+```
+COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
   gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
 ```
 Dieser Befehl startet den Schema-Job im Ordner `MY_TOPIC_NAME\MY_SCHEMA_DIRECTORY_NAME`.
