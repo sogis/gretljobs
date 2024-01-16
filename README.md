@@ -314,27 +314,36 @@ ilivalidatorModeldir=%ITF_DIR;https://geo.so.ch/models/;%JAR_DIR/ilimodels
 ```
 docker compose up -d
 ```
-Mit diesem Befehl werden zwei DB-Container gestartet,
-von denen einer eine *edit*-DB, der andere eine *pub*-DB enthält.
-
-_Alternative_: Entwicklungs-DBs aus dem _schema-jobs_-Verzeichnis heraus starten:
+bzw.
 ```
 COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose up -d
 ```
+Mit diesem Befehl werden zwei DB-Container gestartet,
+von denen einer eine *edit*-DB, der andere eine *pub*-DB enthält.
 
-Erläuterungen:
-* Alle Compose-Befehle können wahlweise
-  auch aus dem _schema-jobs_-Verzeichnis heraus gestartet werden;
-  hierzu muss man dem Befehl die Umgebungsvariable COMPOSE_FILE voranstellen
-  und so auf die Datei `docker-compose.yml` des Verzeichnis _gretljobs_ verweisen.
+Mit der ersten Variante des Befehls startet man die Entwicklungs-DBs,
+wenn man sich im _gretljobs_-Verzeichnis befindet.
+Mit der zweiten Variante startet man sie,
+wenn man sich im _schema-jobs_-Verzeichnis befindet.
 
-  _Voraussetzung, damit dies funktioniert_:
-  Die Ordner _gretljobs_ und _schema-jobs_
-  müssen sich im gleichen übergeordneten Ordner befinden.
+Auch die weiter unten in diesem Kapitel angegebenen Befehle
+lassen sich auf diese Art
+jeweils auch aus dem _schema-jobs_-Verzeichnis heraus ausführen.
+Man muss in diesem Fall also dem Befehl
+die Umgebungsvariable `COMPOSE_FILE` voranstellen
+und so auf die Datei `docker-compose.yml` des Verzeichnis _gretljobs_ verweisen.
+
+_Voraussetzung, damit dies funktioniert_:
+Die Ordner _gretljobs_ und _schema-jobs_
+müssen sich im gleichen übergeordneten Ordner befinden.
 
 #### Entwicklungs-DBs stoppen
 ```
 docker compose stop
+```
+bzw.
+```
+COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose stop
 ```
 So werden die Entwicklungs-DB-Container gestoppt.
 Die Daten der DBs bleiben erhalten,
@@ -344,6 +353,10 @@ die hierbei nicht gelöscht werden.
 #### Entwicklungs-DBs stoppen und DB-Container löschen
 ```
 docker compose down
+```
+bzw.
+```
+COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose down
 ```
 Die Entwicklungs-DB-Container werden gestoppt, die DB-Container gelöscht
 und zugleich auch das von Docker Compose angelegte Docker-Netzwerk gelöscht.
@@ -383,6 +396,10 @@ mit folgenden Verbindungsparametern erreichbar:
 ```
 docker compose run --rm -u $UID gretl --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
 ```
+bzw.
+```
+COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose run --rm -u $UID gretl --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
+```
 Dieser Befehl startet den GRETL-Job `MY_JOB_NAME`.
 
 Beispiele:
@@ -415,6 +432,11 @@ Erläuterungen:
 ### Schema-Job ausführen
 ```
 docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
+  gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
+```
+bzw.
+```
+COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
   gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
 ```
 Dieser Befehl startet den Schema-Job im Ordner `MY_TOPIC_NAME\MY_SCHEMA_DIRECTORY_NAME`.
