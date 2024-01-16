@@ -23,10 +23,30 @@ WITH grundstuecke AS
         ) o ON o.von = g.t_id 
 )
 ,
+meldungen_grundstuecke AS 
+(
+    SELECT
+        meldung.t_id,
+        t_ili_tid,
+        grundstuecke.nummer,
+        grundstuecke.nbident,
+        grundstuecke.egris_egrid,
+        grundstuecke.art,
+        grundstuecke.geometrie,
+        meldung.lage
+    FROM 
+        agi_av_meldewesen_work_v1.meldungen_meldung AS meldung
+        LEFT JOIN grundstuecke 
+        ON ST_Intersects(meldung.lage, grundstuecke.geometrie)
+    WHERE 
+        messageid IS NULL
+)
+,
 gemeinden AS 
 (
     SELECT 
-        aname, geometrie
+        aname, 
+        geometrie
     FROM 
         agi_dm01avso24.gemeindegrenzen_gemeinde AS gem
     LEFT JOIN
@@ -36,14 +56,15 @@ gemeinden AS
 gemeinden_grundstueck AS 
 (
     SELECT 
-        grundstuecke.nummer,
-        grundstuecke.nbident,
-        grundstuecke.egris_egrid,
+        meldungen_grundstuecke.t_id,
+        meldungen_grundstuecke.nummer,
+        meldungen_grundstuecke.nbident,
+        meldungen_grundstuecke.egris_egrid,
         gemeinden.aname
     FROM 
-        grundstuecke 
+        meldungen_grundstuecke 
         LEFT JOIN gemeinden 
-        ON ST_Intersects(ST_PointOnSurface(grundstuecke.geometrie), gemeinden.geometrie) 
+        ON ST_Intersects(ST_PointOnSurface(meldungen_grundstuecke.lage), gemeinden.geometrie) 
 )
 UPDATE 
     agi_av_meldewesen_work_v1.meldungen_meldung 
@@ -56,8 +77,9 @@ SET
 FROM 
 (
     SELECT 
+        t_id,
         nummer,
-        nbident,
+        gemeinden_grundstueck.nbident,
         egris_egrid,
         aname
     FROM  
@@ -66,4 +88,5 @@ FROM
 AS subquery
 WHERE 
     t_ili_tid IS NULL OR length(trim(t_ili_tid)) = 0
+    AND meldungen_meldung.t_id = subquery.t_id
 ;
