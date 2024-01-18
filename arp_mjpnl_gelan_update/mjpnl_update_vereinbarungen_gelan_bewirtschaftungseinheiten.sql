@@ -11,6 +11,8 @@ JOIN
   ON
     ST_Intersects(vbg.geometrie, bw.geometrie)
 WHERE 
+  ST_IsValid(vbg.geometrie) = TRUE 
+  AND
   vbg.gelan_bewe_id != bw.bewe_id
 ORDER BY ST_Area(ST_Intersection(vbg.geometrie, bw.geometrie)) DESC
 LIMIT 1
@@ -31,4 +33,6 @@ UPDATE
             LIMIT 1
         ),'9999999')
      )
+ WHERE
+  ST_IsValid(vbg.geometrie) = TRUE 
 ;
