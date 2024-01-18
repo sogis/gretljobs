@@ -31,6 +31,4 @@ UPDATE
             LIMIT 1
         ),'9999999')
      )
- WHERE
-  vbg.gelan_bewe_id = '9999999'
 ;
