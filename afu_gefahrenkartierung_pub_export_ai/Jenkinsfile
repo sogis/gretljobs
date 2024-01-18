@@ -10,7 +10,7 @@ pipeline {
                   volumeMounts:
                     - name: gretl-tmp-volume
                       mountPath: /tmp
-                      subPath: gretl
+                      subPath: gretl/${env.JOB_BASE_NAME}
               volumes:
                 - name: gretl-tmp-volume
                   persistentVolumeClaim:
