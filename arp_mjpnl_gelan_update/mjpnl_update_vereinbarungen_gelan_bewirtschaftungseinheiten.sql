@@ -16,12 +16,6 @@ UPDATE ${DB_Schema_MJPNL}.mjpnl_vereinbarung AS vbg
     )
 ;
 
-
-= bw.bewe_id
-ORDER BY ST_Area(ST_Intersection(vbg.geometrie, bw.geometrie)) DESC
-LIMIT 1
-);
-
 --GELAN Bewirtschaftungseinheit zuweisen
 UPDATE
    ${DB_Schema_MJPNL}.mjpnl_vereinbarung AS vbg
