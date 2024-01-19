@@ -4,7 +4,7 @@ UPDATE ${DB_Schema_MJPNL}.mjpnl_vereinbarung AS vbg
   WHERE 
     ST_IsValid(vbg.geometrie) = TRUE 
     AND
-    vbg.gelan_bewe_id ! = (
+    vbg.gelan_bewe_id NOT IN (
       SELECT
         bw.bewe_id
       FROM
