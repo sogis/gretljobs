@@ -194,7 +194,7 @@ task publishAlt(type: Publisher, dependsOn: exportDataExport){
 // Datenumbau für Planregister (Nur Daten aus Schema "arp_nutzungsplanung_v1" werden ersetzt) und an Typo3 senden
 
 
-task deleteData_planregister_pub (type: SqlExecutor) {
+task deleteData_planregister_pub(type: SqlExecutor) {
     description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_planregister_pub"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlParameters = [bfsnr_param:bfsnr]
@@ -206,12 +206,12 @@ task transfer_planregister_pub(type: Db2Db, dependsOn: 'deleteData_planregister_
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     sqlParameters = [bfsnr_param:bfsnr]
     transferSets = [
-            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_kommunal.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', false),            
+        new TransferSet('insert_arp_nutzungsplanung_planregister_pub_kommunal.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', false)
     ];
 }
 
-task deleteData_doppelte_dokumente (type: SqlExecutor, dependsOn:transfer_planregister_pub) {
-    description = "Löscht die doppelten Dokumente aus dem Schema arp_nutzungsplanung_planregister_pub" 
+task deleteData_doppelte_dokumente(type: SqlExecutor, dependsOn:transfer_planregister_pub) {
+    description = "Löscht die doppelten Dokumente aus dem Schema arp_nutzungsplanung_planregister_pub"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ["delete_arp_nutzungsplanung_planregister_pub_doppelte_dokumente.sql"]
 }
@@ -222,12 +222,12 @@ task exportPlanregisterPub(type: Ili2pgExport, dependsOn: 'deleteData_doppelte_d
     dbschema = dbSchemaPlanregister
     dataFile = file(Paths.get(pathToTempFolder, planregisterXtfFileName))
     disableValidation = true
-    // Kein Dataset, weil alle Daten enthalten sein sollen. 
+    // Kein Dataset, weil alle Daten enthalten sein sollen.
 }
 
 task zipPlanregister(type: Gzip, dependsOn: 'exportPlanregisterPub') {
-    dataFile = file(Paths.get(pathToTempFolder, planregisterXtfFileName)) 
-    gzipFile = file(Paths.get(pathToTempFolder, planregisterZipFileName)) 
+    dataFile = file(Paths.get(pathToTempFolder, planregisterXtfFileName))
+    gzipFile = file(Paths.get(pathToTempFolder, planregisterZipFileName))
 }
 
 task uploadPlanregister(type: Curl, dependsOn: 'zipPlanregister') {
