@@ -231,6 +231,7 @@ task zipPlanregister(type: Gzip, dependsOn: 'exportPlanregisterPub') {
 }
 
 task uploadPlanregister(type: Curl, dependsOn: 'zipPlanregister') {
+    finalizedBy 'removePlanregisterFiles'
     serverUrl = digiplanUrl
     method = MethodType.POST
     headers = ["Content-Type": "application/xml", "Content-Encoding": "gzip"]
@@ -238,6 +239,11 @@ task uploadPlanregister(type: Curl, dependsOn: 'zipPlanregister') {
     user = digiplanUser
     password = digiplanPwd
     expectedStatusCode = 202
+}
+
+task removePlanregisterFiles(type: Delete) {
+    delete file(Paths.get(pathToTempFolder, planregisterXtfFileName)),
+        file(Paths.get(pathToTempFolder, planregisterZipFileName))
 }
 
 // EXPORT AI 
