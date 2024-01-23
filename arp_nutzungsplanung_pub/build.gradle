@@ -194,7 +194,7 @@ task publishAlt(type: Publisher, dependsOn: exportDataExport){
 // Datenumbau für Planregister (Nur Daten aus Schema "arp_nutzungsplanung_v1" werden ersetzt) und an Typo3 senden
 
 
-task deleteData_planregister_pub (type: SqlExecutor, dependsOn: publishAlt ) {
+task deleteData_planregister_pub (type: SqlExecutor) {
     description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_planregister_pub"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlParameters = [bfsnr_param:bfsnr]
