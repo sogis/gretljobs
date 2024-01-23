@@ -244,7 +244,7 @@ task uploadPlanregister(type: Curl, dependsOn: 'zipPlanregister') {
 
 // Nutzungsplanung
 
-task deleteMgdmLandUsesPlansData(type: SqlExecutor, dependsOn: 'uploadPlanregister') {
+task deleteMgdmLandUsesPlansData(type: SqlExecutor) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['truncate_all_arp_npl_mgdm_tables.sql']
 }
@@ -510,4 +510,3 @@ task uploadMgdmPlanungszonen(dependsOn: 'zipMgdmPlanungszonen') {
         }
     }
 }
-

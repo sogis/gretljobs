@@ -36,7 +36,7 @@ pipeline {
                 unstash name: "gretljob"
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
-                        sh "gretl -Pbfsnr=${params.bfsnr} publish publishAlt transfer_planregister_pub uploadMgdmLandUsePlans uploadMgdmNoiseSensitivityLevels uploadMgdmWaldabstandslinien uploadMgdmPlanungszonen"
+                        sh "gretl -Pbfsnr=${params.bfsnr} publish publishAlt uploadPlanregister uploadMgdmLandUsePlans uploadMgdmNoiseSensitivityLevels uploadMgdmWaldabstandslinien uploadMgdmPlanungszonen"
                     }
                 }
             }
