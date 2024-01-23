@@ -1,80 +1,30 @@
-(SELECT 
-    TRUE AS gefasst,
-    NULL AS eigentuemer, 
-    a.min_schuettung, 
-    a.max_schuettung,
-    coalesce(a.schutzzone,FALSE) AS schutzzone, 
-    CASE 
-        WHEN a.nutzungsart_schutzzone = 3 
-        THEN 'privat'
-        WHEN a.nutzungsart_schutzzone = 2 
-        THEN 'privat_oeffentliches_Interesse'
-        WHEN a.nutzungsart_schutzzone = 1 
-        THEN 'oeffentlich'
-    END AS nutzungstyp, 
-    CASE 
-        WHEN a.verwendung = 1 
-        THEN 'Trinkwasser' 
-        WHEN a.verwendung = 2 
-        THEN 'Brauchwasser'
-        WHEN a.verwendung = 3
-        THEN 'Notbrunnen'
-    END AS verwendungszweck,
-    CASE 
-        WHEN a.nutzungsart_schutzzone = 3
-        THEN 'Gefasste Quelle mit privater Nutzung'
-        WHEN a.nutzungsart_schutzzone = 2
-        THEN 'Gefasste Quelle mit privater Nutzung von öffentlichem Interesse'
-        WHEN a.nutzungsart_schutzzone = 1
-        THEN 'Gefasste Quelle für die öffentliche Wasserversorgung'
-        WHEN a.nutzungsart_schutzzone IS NULL OR a.nutzungsart_schutzzone > 3 
-        THEN 'Gefasste Quelle'
-    END AS objekttyp_anzeige,
-    a.bezeichnung AS objektname, 
-    a.mobj_id AS objektnummer,
-    a.beschreibung AS technische_angabe,
-    a.bemerkung AS bemerkung, 
-    array_to_json(c.dokumente) AS dokumente, 
-    a.wkb_geometry AS geometrie
-FROM 
-    vegas.obj_quelle_gefasst a 
-LEFT JOIN 
-    (SELECT 
-         array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
-         y.vegas_id
-     FROM 
-         vegas.adm_dokument x, 
-         vegas.adm_objekt_dokument y 
-     WHERE x.dokument_id = y.dokument_id
-     GROUP BY y.vegas_id) c ON a.vegas_id = c.vegas_id
-WHERE a.archive = 0
-)
-UNION ALL 
-(SELECT 
-    FALSE AS gefasst, 
-    NULL AS eigentuemer, 
-    a.min_schuettung, 
-    a.max_schuettung, 
-    coalesce(a.schutzzone, FALSE) AS schutzzone,
-    NULL AS nutzungstyp, --Die nicht gefassten Quellen werden logischerweise auch nicht genutzt. 
-    NULL AS verwendungszweck, --Nicht gefasste Quellen werden nicht verwendet. 
-    'ungefasste Quelle' AS objekttyp_anzeige,
-    a.bezeichnung AS objektname, 
-    a.mobj_id AS objektnummer, 
-    a.beschreibung AS technische_angabe,
-    a.bemerkung AS bemerkung, 
-    array_to_json(c.dokumente) AS dokumente, 
-    a.wkb_geometry AS geometrie
- FROM 
-    vegas.obj_quelle a
-LEFT JOIN 
-    (SELECT 
-         array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
-         y.vegas_id
-     FROM 
-         vegas.adm_dokument x, 
-         vegas.adm_objekt_dokument y 
-     WHERE x.dokument_id = y.dokument_id
-     GROUP BY y.vegas_id) c ON a.vegas_id = c.vegas_id
-WHERE a.archive = 0
-);
+SELECT
+	 TRUE AS gefasst,
+	 NULL AS eigentuemer,
+	 minimale_schuettung AS min_schuettung,
+	 maximale_schuettung AS max_schuettung,
+	 schutzzone,
+	 CASE nutzungsart
+	 	WHEN 'Oeffentliche_Fassung' THEN 'oeffentlich'
+	 	WHEN 'Private_Fassung' THEN 'privat'
+	 	WHEN 'Private_Fassung_von_oeffentlichem_Interesse' THEN 'privat_oeffentliches_Interesse'
+	 	ELSE NULL
+	 END AS nutzungstyp,
+	 CASE verwendung 
+	 	WHEN 'Trinkwasser' THEN 'Trinkwasser'
+	 	WHEN 'Brauchwasser' THEN 'Brauchwasser'
+	 	WHEN 'Notbrunnen' THEN 'Notbrunnen'
+	 	ELSE NULL
+	 END AS verwendungszweck,
+	 CASE nutzungsart 
+	 	WHEN 'Oeffentliche_Fassung' THEN 'Gefasste Quelle für die öffentliche Wasserversorgung'
+	 	WHEN 'Private_Fassung' THEN 'Gefasste Quelle mit privater Nutzung'
+	 	WHEN 'Private_Fassung_von_oeffentlichem_Interesse' THEN 'Gefasste Quelle mit privater Nutzung von öffentlichem Interesse'
+	 	ELSE 'Gefasste Quelle'
+	 END AS objekttyp_anzeige,
+	 bezeichnung AS objektname,
+	 objekt_id AS objektnummer,
+	 beschreibung AS technische_angabe,
+	 bemerkung,
+	 geometrie
+FROM afu_wasserversorg_obj_v1.quelle_gefasst;
