@@ -13,7 +13,7 @@ import java.util.List
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'gefahrengebiet_teilprozess_ueberflutung_altdaten_copy'
+defaultTasks 'dokumente_pro_gemeinde'
 
 //NUR PROVISORISCH! 
 def Auftragskennung = 'Himmelried'
@@ -80,7 +80,7 @@ task gefahrengebiet_teilprozess_spontane_rutschung_hangmure(type: Db2Db, depends
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
-            new TransferSet('gefahrengebiet_teilprozess_spontan_rutschung_hangmure.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_spontane_rutschung_hangmure', true)
+            new TransferSet('gefahrengebiet_teilprozess_spontane_rutschung_hangmure.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_spontane_rutschung_hangmure', true)
     ];
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
@@ -168,4 +168,141 @@ task gefahrengebiet_teilprozess_ueberflutung_altdaten_copy(type: Db2Db, dependsO
     transferSets = [
             new TransferSet('gefahrengebiet_teilprozess_ueberflutung_altdaten_copy.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_ueberflutung', false)
     ];
+}
+
+//HAUPTPROZESSE
+
+task gefahrengebiet_hauptprozess_wasser(type: Db2Db, dependsOn: gefahrengebiet_teilprozess_ueberflutung_altdaten_copy) {
+    description = "Berechnugn der Gefahrengebiete des Hauptprozess Wasser"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('gefahrengebiet_hauptprozess_wasser.sql','afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozesse', true)
+    ];
+    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
+}
+
+task gefahrengebiet_hauptprozess_rutschung(type: Db2Db, dependsOn: gefahrengebiet_hauptprozess_wasser) {
+    description = "Berechnugn der Gefahrengebiete des Hauptprozess Rutschung"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('gefahrengebiet_hauptprozess_rutschung.sql','afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozesse', false)
+    ];
+    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
+}
+
+task gefahrengebiet_hauptprozess_sturz(type: Db2Db, dependsOn: gefahrengebiet_hauptprozess_rutschung) {
+    description = "Berechnugn der Gefahrengebiete des Hauptprozess Sturz"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('gefahrengebiet_hauptprozess_sturz.sql','afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozesse', false)
+    ];
+    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
+}
+
+task gefahrengebiet_hauptprozess_altdaten_copy(type: Db2Db, dependsOn: gefahrengebiet_hauptprozess_sturz) {
+    description = "Kopieren der alten Daten der Gefahrengebiete der Hauptprozesse"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('gefahrengebiet_hauptprozess_altdaten_copy.sql','afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozesse', false)
+    ];
+}
+
+// FLIESSRICHTUNG
+
+task fliessrichtung(type: Db2Db, dependsOn: gefahrengebiet_hauptprozess_altdaten_copy) {
+    description = "Kopieren der Fliessrichtungen"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('fliessrichtung.sql','afu_naturgefahren_staging_v1.fliessrichtung', true)
+    ];
+    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
+}
+
+task fliessrichtung_altdaten_copy(type: Db2Db, dependsOn: fliessrichtung) {
+    description = "Kopieren der alten Daten der fliessrichtung"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('fliessrichtung_altdaten_copy.sql','afu_naturgefahren_staging_v1.fliessrichtung', false)
+    ];
+}
+
+// FLIESSTIEFEN
+
+task fliesstiefen(type: Db2Db, dependsOn: fliessrichtung_altdaten_copy) {
+    description = "Kopieren der Fliesstiefen"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('fliesstiefen.sql','afu_naturgefahren_staging_v1.fliesstiefen', true)
+    ];
+    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
+}
+
+task fliesstiefen_altdaten_copy(type: Db2Db, dependsOn: fliesstiefen) {
+    description = "Kopieren der alten Daten der fliesstiefen"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('fliesstiefen_altdaten_copy.sql','afu_naturgefahren_staging_v1.fliesstiefen', false)
+    ];
+}
+
+// UFEREROSION
+
+task ufererosion(type: Db2Db, dependsOn: fliesstiefen_altdaten_copy) {
+    description = "Kopieren der Ufererosion"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('ufererosion.sql','afu_naturgefahren_staging_v1.ufererosion', true)
+    ];
+    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
+}
+
+task ufererosion_altdaten_copy(type: Db2Db, dependsOn: ufererosion) {
+    description = "Kopieren der alten Daten der Ufererosion"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('ufererosion_altdaten_copy.sql','afu_naturgefahren_staging_v1.ufererosion', false)
+    ];
+}
+
+// ERHEBUNGSGEBIET 
+
+task erhebungsgebiet(type: Db2Db, dependsOn: ufererosion_altdaten_copy) {
+    description = "Kopieren der Erhebungsgebiete"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('erhebungsgebiet.sql','afu_naturgefahren_staging_v1.erhebungsgebiet', true)
+    ];
+    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
+}
+
+// Dokumente pro Gemeinden 
+
+task copy_alte_dokumente(type: Db2Db, dependsOn: erhebungsgebiet) {
+    description = "Kopiert die alten Dokumente von der Pub-DB in die Edit-DB"
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('alte_dokumente_copy.sql','afu_naturgefahren_alte_dokumente_v1.alte_dokumente', true)
+    ];
+}
+
+task dokumente_pro_gemeinde(type: Db2Db, dependsOn: copy_alte_dokumente) {
+    description = "Teilt jedes Dokument einer Gemeinde mit entsprechendem Gemeindepolygon zu."
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('dokumente_pro_gemeinde.sql','afu_naturgefahren_staging_v1.dokumente_pro_gemeinde', true)
+    ];
+    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }

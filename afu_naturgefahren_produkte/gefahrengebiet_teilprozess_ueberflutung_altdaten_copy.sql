@@ -16,7 +16,7 @@ attribute_mapping as (
     FROM 
         afu_gefahrenkartierung.gefahrenkartirung_gk_wasser
     where 
-        prozessa = 'Ueberflutung'
+        prozessa IN ('Ueberflutung','nicht_rekonstruierbar')
 )
 
  select

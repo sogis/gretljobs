@@ -25,8 +25,6 @@ teilprozess_spontanrutschung as (
     select 
        'r_plo_spontane_rutschung' as teilprozess,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 'restgefaehrdung' 
-             when
              (string_to_array(iwcode, '_'))[1] = 'gelb' then 'gering' 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 'mittel' 
@@ -50,7 +48,7 @@ teilprozess_spontanrutschung as (
              when 
              (string_to_array(iwcode, '_'))[2] = 'stark' and (string_to_array(iwcode, '_'))[3] = '100' then 8
              when 
-             (string_to_array(iwcode, '_'))[2] = 'stark' and (string_to_array(iwcode, '_'))[3] = '300' then 7    
+             (string_to_array(iwcode, '_'))[2] = 'stark' and (string_to_array(iwcode, '_'))[3] = '300' then 7  
         end as charakterisierung,
         geometrie, 
         'Neudaten' as datenherkunft,
@@ -94,8 +92,6 @@ teilprozess_hangmure as (
     select 
        'r_plo_hangmure' as teilprozess,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 'restgefaehrdung' 
-             when
              (string_to_array(iwcode, '_'))[1] = 'gelb' then 'gering' 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 'mittel' 

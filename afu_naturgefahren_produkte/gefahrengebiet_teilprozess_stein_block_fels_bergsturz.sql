@@ -50,7 +50,9 @@ teilprozess_steinblockschlag as (
              when 
              (string_to_array(iwcode, '_'))[2] = 'stark' and (string_to_array(iwcode, '_'))[3] = '100' then 8
              when 
-             (string_to_array(iwcode, '_'))[2] = 'stark' and (string_to_array(iwcode, '_'))[3] = '300' then 7    
+             (string_to_array(iwcode, '_'))[2] = 'stark' and (string_to_array(iwcode, '_'))[3] = '300' then 7  
+             when 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 --Restgefährdung hat immer die niedrigste Prio  
         end as charakterisierung,
         geometrie, 
         'Neudaten' as datenherkunft,
@@ -119,7 +121,9 @@ teilprozess_felsbergsturz as (
              when 
              (string_to_array(iwcode, '_'))[2] = 'stark' and (string_to_array(iwcode, '_'))[3] = '100' then 8
              when 
-             (string_to_array(iwcode, '_'))[2] = 'stark' and (string_to_array(iwcode, '_'))[3] = '300' then 7    
+             (string_to_array(iwcode, '_'))[2] = 'stark' and (string_to_array(iwcode, '_'))[3] = '300' then 7   
+             when 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 --Restgefährdung hat immer die niedrigste Prio   
         end as charakterisierung,
         geometrie, 
         'Neudaten' as datenherkunft,
@@ -155,7 +159,7 @@ teilprozess_felsbergsturz_prio as (
         WHERE 
             a.geometrie && b.geometrie 
             and 
-            a.charakterisierung > b.charakterisierung              
+            a.charakterisierung < b.charakterisierung              
     ) AS blade
 ),
 

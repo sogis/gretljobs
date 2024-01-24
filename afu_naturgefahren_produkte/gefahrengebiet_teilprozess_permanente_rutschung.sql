@@ -25,8 +25,6 @@ teilprozess_permanentrutschung as (
     select 
        'r_permanente_rutschung' as teilprozess,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 'restgefaehrdung' 
-             when
              (string_to_array(iwcode, '_'))[1] = 'gelb' then 'gering' 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 'mittel' 
