@@ -306,6 +306,7 @@ task zipMgdmLandUsePlans(type: Zip, dependsOn: 'validateMgdmLandUsePlans'){
 }
 
 task uploadMgdmLandUsePlans(dependsOn: 'zipMgdmLandUsePlans') {
+    finalizedBy 'removeMgdmZipFiles'
 
     def aiLogin = aiUser + ":" + aiPwd
     def zipFilePath = Paths.get(pathToTempFolder.toString(), mgdmLandUsePlansZipFileName)
@@ -371,6 +372,7 @@ task zipMgdmNoiseSensitivityLevels(type: Zip, dependsOn: 'validateMgdmNoiseSensi
 }
 
 task uploadMgdmNoiseSensitivityLevels(dependsOn: 'zipMgdmNoiseSensitivityLevels') {
+    finalizedBy 'removeMgdmZipFiles'
 
     def aiLogin = aiUser + ":" + aiPwd
     def zipFilePath = Paths.get(pathToTempFolder.toString(), mgdmSensitivityLevelsZipFileName)
@@ -436,6 +438,7 @@ task zipMgdmWaldabstandslinien(type: Zip, dependsOn: 'validateMgdmWaldabstandsli
 }
 
 task uploadMgdmWaldabstandslinien(dependsOn: 'zipMgdmWaldabstandslinien') {
+    finalizedBy 'removeMgdmZipFiles'
 
     def aiLogin = aiUser + ":" + aiPwd
     def zipFilePath = Paths.get(pathToTempFolder.toString(), mgdmWaldabstandZipFileName)
@@ -501,6 +504,7 @@ task zipMgdmPlanungszonen(type: Zip, dependsOn: 'validateMgdmPlanungszonen'){
 }
 
 task uploadMgdmPlanungszonen(dependsOn: 'zipMgdmPlanungszonen') {
+    finalizedBy 'removeMgdmZipFiles'
 
     def aiLogin = aiUser + ":" + aiPwd
     def zipFilePath = Paths.get(pathToTempFolder.toString(), mgdmPlanungszonenZipFileName)
@@ -514,5 +518,11 @@ task uploadMgdmPlanungszonen(dependsOn: 'zipMgdmPlanungszonen') {
         if (response.contains("false") || response == null || response.trim().isEmpty()) {
             throw new GradleException()
         }
+    }
+}
+
+task removeMgdmZipFiles(type: Delete) {
+    delete fileTree(pathToTempFolder).matching {
+        include "mgdm/ch.so.arp.*.mgdm.*.zip"
     }
 }
