@@ -11,15 +11,12 @@ SELECT
     basket.t_id as t_basket,
     tiefe.wkp as jaehrlichkeit, 
     tiefe.ueberfl_hb as ueberschwemmung_tiefe, 
-    prozessquelle.bez_prozq as prozessquelle, 
-    tiefe.geometrie, 
+    null as prozessquelle_neudaten, 
+    st_multi(tiefe.geometrie) as geometrie, 
     'Altdaten' as datenherkunft,
     null as auftrag_neudaten
 FROM 
     basket,
     afu_gefahrenkartierung.gefahrenkartirung_ueberflutungskarte tiefe
-left join 
-    afu_gefahrenkartierung.gefahrenkartirung_prozessquelle_wasser prozessquelle 
-    on 
-    tiefe.prozessq = prozessquelle.id
 ;
+

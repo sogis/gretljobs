@@ -171,7 +171,7 @@ select
                       'link', berichte.link, 
                       'hauptprozess', berichte.hauptprozess, 
                       'jahr', berichte.jahr
-                      ) as dokument,
+                      ) as dokumente,
     gemeinden.geometrie, 
     'Neudaten' as datenherkunft, 
     basket.attachmentkey as auftrag_neudaten
@@ -197,7 +197,7 @@ select
     basket.t_id as t_basket,
     alte_dokumente.gemeinde_bfsnr,
     alte_dokumente.gemeinde_name,
-    alte_dokumente.dokument,
+    alte_dokumente.dokument as dokumente,
     alte_dokumente.geometrie, 
     'Altdaten' as datenherkunft, 
     null as auftrag_neudaten

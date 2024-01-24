@@ -9,7 +9,7 @@
 SELECT 
     basket.t_id as t_basket, 
     'w_ufererosion' as teilprozess, 
-    geometrie, 
+    st_multi(geometrie) as geometrie, 
     'Neudaten' as datenherkunft, 
     basket.attachmentkey as auftrag_neudaten
 FROM 

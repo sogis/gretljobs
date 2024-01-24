@@ -44,8 +44,8 @@ SELECT
     	when h = 'von_300_bis_400_cm' then 'groesser_200cm'
     	else 'BERECHNUNGSFEHLER' 
     end as ueberschwemmung_tiefe, 
-    prozessquelle.kennung as prozessquelle, 
-    geometrie, 
+    prozessquelle.kennung as prozessquelle_neudaten, 
+    st_multi(geometrie) as geometrie, 
     'Neudaten' as datenherkunft,
     basket.attachmentkey as auftrag_neudaten
 FROM 
@@ -58,3 +58,5 @@ left join
 where 
     tiefe.t_basket in (select t_id from orig_basket)
 ;
+
+
