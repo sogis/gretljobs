@@ -54,6 +54,9 @@ for (jobFile in jobFiles) {
   def productionEnv = ("${PROJECT_NAME}" == 'agi-gretl-production')
 
   pipelineJob(jobName) {
+    properties {
+      disableConcurrentBuilds {}
+    }
     if (!productionEnv) { // we don't want the BRANCH parameter in production environment
       parameters {
         stringParam('BRANCH', 'main', 'Name of branch to check out')
