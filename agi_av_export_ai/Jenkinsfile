@@ -1,7 +1,6 @@
 pipeline {
     agent { label params.nodeLabel ?: 'gretl' }
     options {
-        disableConcurrentBuilds()
         timeout(time: 6, unit: 'HOURS')
     }
     stages {
