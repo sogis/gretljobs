@@ -1,6 +1,7 @@
 pipeline {
     agent { label 'master' }
     options {
+        disableConcurrentBuilds()
         timeout(time: 6, unit: 'HOURS')
     }
     stages {
