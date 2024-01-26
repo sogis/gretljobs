@@ -10,6 +10,7 @@ orig_dataset as (
 
 orig_basket as (
     select 
+        basket.attachmentkey,
         basket.t_id 
     from 
         afu_naturgefahren_v1.t_ili2db_basket basket,
@@ -28,241 +29,129 @@ basket as (
 ), 
 
 hauptprozess_wasser as ( 
-    select 
-        'wasser' as hauptprozess,
-        'murgang' as teilprozess,
-        case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 'restgefaehrdung' 
-             when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 'gering' 
-             when
-             (string_to_array(iwcode, '_'))[1] = 'blau' then 'mittel' 
-             when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 'erheblich'
-        end as gefahrenstufe,
-        case when 
-             (string_to_array(iwcode, '_'))[2] = 'mittel' and (string_to_array(iwcode, '_'))[3] = '30' then 6
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'mittel' and (string_to_array(iwcode, '_'))[3] = '100' then 5
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'mittel' and (string_to_array(iwcode, '_'))[3] = '300' then 4
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'stark' and (string_to_array(iwcode, '_'))[3] = '30' then 9
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'stark' and (string_to_array(iwcode, '_'))[3] = '100' then 8
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'stark' and (string_to_array(iwcode, '_'))[3] = '300' then 7
-             when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 --Restgefährdung hat immer die niedrigste Prio
-        end as charakterisierung,
-        geometrie, 
-        'Neudaten' as datenherkunft,
-        basket.attachmentkey as auftrag_neudaten
-    from 
-        afu_naturgefahren_v1.befunduebermurung befund
-    left join
-        afu_naturgefahren_v1.t_ili2db_basket basket
-        on 
-        befund.t_basket = basket.t_id 
-    where 
-        befund.t_basket in (select t_id from orig_basket)
-        
+    SELECT
+        gefahrenstufe, 
+	    charakterisierung, 
+	    (st_dump(geometrie)).geom as geometrie	
+	FROM 
+	    afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_murgang 
+	where 
+	    datenherkunft = 'Neudaten'
     union all 
-    
     select 
-        'wasser' as hauptprozess,
-        'ueberschwemmung_statisch' as teilprozess,
-        case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 'restgefaehrdung' 
-             when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 'gering' 
-             when
-             (string_to_array(iwcode, '_'))[1] = 'blau' then 'mittel' 
-             when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 'erheblich'
-        end as gefahrenstufe,
-        case when 
-             (string_to_array(iwcode, '_'))[2] = 'schwach' and (string_to_array(iwcode, '_'))[3] = '30' then 3
-             when
-             (string_to_array(iwcode, '_'))[2] = 'schwach' and (string_to_array(iwcode, '_'))[3] = '100' then 2
-             when
-             (string_to_array(iwcode, '_'))[2] = 'schwach' and (string_to_array(iwcode, '_'))[3] = '300' then 1
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'mittel' and (string_to_array(iwcode, '_'))[3] = '30' then 6
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'mittel' and (string_to_array(iwcode, '_'))[3] = '100' then 5
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'mittel' and (string_to_array(iwcode, '_'))[3] = '300' then 4
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'stark' and (string_to_array(iwcode, '_'))[3] = '30' then 9
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'stark' and (string_to_array(iwcode, '_'))[3] = '100' then 8
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'stark' and (string_to_array(iwcode, '_'))[3] = '300' then 7  
-             when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 --Restgefährdung hast immer die niedrigste Prio              
-        end as charakterisierung,
-        geometrie, 
-        'Neudaten' as datenherkunft,
-        basket.attachmentkey as auftrag_neudaten
-    from 
-        afu_naturgefahren_v1.befundueberschwemmungstatisch befund
-    left join
-        afu_naturgefahren_v1.t_ili2db_basket basket
-        on 
-        befund.t_basket = basket.t_id 
-    where 
-        befund.t_basket in (select t_id from orig_basket)
-        
-    union all 
-    
-    select 
-        'wasser' as hauptprozess,
-        'ueberschwemmung_dynamisch' as teilprozess,
-        case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 'restgefaehrdung' 
-             when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 'gering' 
-             when
-             (string_to_array(iwcode, '_'))[1] = 'blau' then 'mittel' 
-             when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 'erheblich'
-        end as gefahrenstufe,
-        case when 
-             (string_to_array(iwcode, '_'))[2] = 'schwach' and (string_to_array(iwcode, '_'))[3] = '30' then 3
-             when
-             (string_to_array(iwcode, '_'))[2] = 'schwach' and (string_to_array(iwcode, '_'))[3] = '100' then 2
-             when
-             (string_to_array(iwcode, '_'))[2] = 'schwach' and (string_to_array(iwcode, '_'))[3] = '300' then 1
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'mittel' and (string_to_array(iwcode, '_'))[3] = '30' then 6
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'mittel' and (string_to_array(iwcode, '_'))[3] = '100' then 5
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'mittel' and (string_to_array(iwcode, '_'))[3] = '300' then 4
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'stark' and (string_to_array(iwcode, '_'))[3] = '30' then 9
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'stark' and (string_to_array(iwcode, '_'))[3] = '100' then 8
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'stark' and (string_to_array(iwcode, '_'))[3] = '300' then 7  
-             when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 --Restgefährdung hast immer die niedrigste Prio              
-        end as charakterisierung,
-        geometrie, 
-        'Neudaten' as datenherkunft,
-        basket.attachmentkey as auftrag_neudaten
-    from 
-        afu_naturgefahren_v1.befundueberschwemmungdynamisch befund
-    left join
-        afu_naturgefahren_v1.t_ili2db_basket basket
-        on 
-        befund.t_basket = basket.t_id 
-    where 
-        befund.t_basket in (select t_id from orig_basket)      
+	    gefahrenstufe,
+	    charakterisierung, 
+	    (ST_Dump(geometrie)).geom as geometrie
+	from 
+	    afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_ueberflutung
+	where 
+	    datenherkunft = 'Neudaten'
 ),
 
-hauptprozess_wasser_prio as (
+hauptprozess_wasser_clean as (
     SELECT 
-        a.hauptprozess,
-        a.gefahrenstufe,
-        case 
-	        when a.gefahrenstufe = 'restgefaehrdung' then 'EHQ'
-        	when (a.gefahrenstufe != 'restgefaehrdung' and teilprozess = 'murgang') then 'M'||a.charakterisierung
-        	when (a.gefahrenstufe != 'restgefaehrdung' and teilprozess = 'ueberschwemmung_statisch') then 'U'||a.charakterisierung
-        	when (a.gefahrenstufe != 'restgefaehrdung' and teilprozess = 'ueberschwemmung_dynamisch') then 'U'||a.charakterisierung
-        end as charakterisierung,
-        COALESCE(
-            ST_Difference(st_makevalid(a.geometrie), st_makevalid(blade.geometrie)),
+	    gefahrenstufe, 
+		charakterisierung, 
+		geometrie 
+	FROM 
+	    hauptprozess_wasser 
+	WHERE 
+        st_area(geometrie) > 0.001
+),
+
+hauptprozess_wasser_clean_prio as (
+    SELECT 
+	    gefahrenstufe, 
+		charakterisierung, 
+		geometrie,
+		CASE 
+		    WHEN gefahrenstufe = 'restgefaehrdung' THEN 0 
+		    WHEN gefahrenstufe = 'gering' THEN 1 
+		    WHEN gefahrenstufe = 'mittel' THEN 2 
+		    WHEN gefahrenstufe = 'erheblich' THEN 3
+		END as prio 
+	FROM 
+        hauptprozess_wasser_clean
+),
+
+hauptprozess_wasser_clean_prio_clip as (
+    SELECT 
+	    a.gefahrenstufe, 
+		a.charakterisierung, 
+		ST_Multi(COALESCE(
+            ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
-        ) AS geometrie, 
-        a.datenherkunft,
-        a.auftrag_neudaten
+        )) AS geometrie
     FROM  
-        hauptprozess_wasser AS a
+        hauptprozess_wasser_clean_prio AS a
     CROSS JOIN LATERAL (
         SELECT 
             ST_Union(geometrie) AS geometrie
         FROM   
-            hauptprozess_wasser AS b
+            hauptprozess_wasser_clean_prio AS b
         WHERE 
             a.geometrie && b.geometrie 
             and 
-            a.charakterisierung < b.charakterisierung
-    ) AS blade
-), 
-
-hauptprozess_wasser_geometry_cleaner as (
+            a.prio < b.prio              
+    ) AS blade		
+),
+	
+hauptprozess_wasser_point_on_polygons as (
     select 
-        hauptprozess, 
-        gefahrenstufe,
-        charakterisierung,
-        (st_dump(geometrie)).geom as geometrie,
-        datenherkunft,
-        auftrag_neudaten 
+	    gefahrenstufe,
+		charakterisierung, 
+		st_pointOnSurface((st_dump(geometrie)).geom) as punkt_geometrie 
+	FROM 
+	    hauptprozess_wasser_clean_prio_clip
+),
+
+hauptprozess_wasser_geometrie_union as (
+    select 
+        gefahrenstufe, 
+        st_union(geometrie) as geometrie 
     from 
-        hauptprozess_wasser_prio
-    where 
-        st_isempty(geometrie) is not true
-        and 
-        st_area(geometrie) > 0.01
-),
-
-hauptprozess_wasser_polygone_exterior as (
-    select
-        gefahrenstufe,
-        (st_DumpRings(geometrie)).geom as geometrie
-    from
-        hauptprozess_wasser_geometry_cleaner
-    where
-         st_isempty(geometrie) is not true  
-         and 
-         st_geometrytype(geometrie) = 'ST_Polygon'   
-),
-
-hauptprozess_wasser_boundary as (
-    select 
-        gefahrenstufe,
-        st_union(geometrie) as geometrie
-    from
-        hauptprozess_wasser_polygone_exterior
-    group by 
+        hauptprozess_wasser_clean_prio_clip
+    GROUP by 
         gefahrenstufe
 ),
 
-hauptprozess_wasser_split_poly AS (
-  SELECT 
-    (st_dump(st_polygonize(geometrie))).geom AS geometrie
-  FROM
-    hauptprozess_wasser_boundary
+hauptprozess_wasser_geometrie_split as (
+    select 
+        gefahrenstufe, 
+        (st_dump(geometrie)).geom as geometrie 
+    from 
+        hauptprozess_wasser_geometrie_union
 ),
 
-hauptprozess_wasser_split AS (
-  SELECT 
-    ROW_NUMBER() OVER() AS id,
-    geometrie AS poly,
-    st_pointonsurface(geometrie) AS point
-  FROM
-    hauptprozess_wasser_split_poly
+hauptprozess_wasser_charakterisierung_agg as (
+    select 
+        polygone.gefahrenstufe,
+        string_agg(distinct point.charakterisierung,' ') as charakterisierung,
+	    polygone.geometrie
+	FROM 
+	    hauptprozess_wasser_geometrie_split polygone 
+    LEFT JOIN 
+	    hauptprozess_wasser_point_on_polygons point 
+		ON 
+		ST_Dwithin(point.punkt_geometrie, polygone.geometrie,0)
+	group by 
+	    polygone.geometrie, 
+	    polygone.gefahrenstufe
 )
 
-SELECT 
+select 
     basket.t_id as t_basket,
-    p.hauptprozess,
-    p.gefahrenstufe,
-    array_agg(distinct p.charakterisierung ORDER BY p.charakterisierung) AS charakterisierung,
-    st_multi(poly) AS geometrie,
-    p.datenherkunft,
-    p.auftrag_neudaten
-from
+    'wasser' as hauptprozess,
+    gefahrenstufe,
+    charakterisierung,
+    st_multi(geometrie) as geometrie,
+    'Neudaten' as datenherkunft, 
+    orig_basket.attachmentkey as auftrag_neudaten   
+from 
     basket,
-    hauptprozess_wasser_split s
-JOIN
-    hauptprozess_wasser_geometry_cleaner p ON st_within(s.point, p.geometrie)
-GROUP BY 
-    s.id, p.hauptprozess, p.gefahrenstufe, p.datenherkunft, p.auftrag_neudaten, poly, basket.t_id
-;
-
-
-
-
+    orig_basket,
+    hauptprozess_wasser_charakterisierung_agg
+WHERE 
+    st_area(geometrie) > 0.001 
+    and 
+    charakterisierung is not null 

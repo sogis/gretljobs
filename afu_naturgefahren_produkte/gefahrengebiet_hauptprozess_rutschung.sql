@@ -10,6 +10,7 @@ orig_dataset as (
 
 orig_basket as (
     select 
+        basket.attachmentkey,
         basket.t_id 
     from 
         afu_naturgefahren_v1.t_ili2db_basket basket,
@@ -28,169 +29,129 @@ basket as (
 ), 
 
 hauptprozess_rutschung as ( 
-    select 
-       'r_permanente_rutschung' as teilprozess,
-        case when 
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 'gering' 
-             when
-             (string_to_array(iwcode, '_'))[1] = 'blau' then 'mittel' 
-             when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 'erheblich'
-        end as gefahrenstufe,
-        case when 
-             (string_to_array(iwcode, '_'))[2] = 'schwach' then 2
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'mittel'  then 5
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'stark' then 8 
-        end as charakterisierung,
-        geometrie, 
-        'Neudaten' as datenherkunft,
-        basket.attachmentkey as auftrag_neudaten
-    from 
-        afu_naturgefahren_v1.befundpermanenterutschung befund
-    left join
-        afu_naturgefahren_v1.t_ili2db_basket basket
-        on 
-        befund.t_basket = basket.t_id 
-    where 
-        befund.t_basket in (select t_id from orig_basket)
-        
+    SELECT
+        gefahrenstufe, 
+	    charakterisierung, 
+	    (st_dump(geometrie)).geom as geometrie	
+	FROM 
+	    afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_permanente_rutschung
+	where 
+	    datenherkunft = 'Neudaten'
     union all 
-    
     select 
-       'r_plo_spontane_rutschung' as teilprozess,
-        case when 
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 'gering' 
-             when
-             (string_to_array(iwcode, '_'))[1] = 'blau' then 'mittel' 
-             when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 'erheblich'
-        end as gefahrenstufe,
-        case when 
-             (string_to_array(iwcode, '_'))[2] = 'schwach' and (string_to_array(iwcode, '_'))[3] = '30' then 3
-             when
-             (string_to_array(iwcode, '_'))[2] = 'schwach' and (string_to_array(iwcode, '_'))[3] = '100' then 2
-             when
-             (string_to_array(iwcode, '_'))[2] = 'schwach' and (string_to_array(iwcode, '_'))[3] = '300' then 1
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'mittel' and (string_to_array(iwcode, '_'))[3] = '30' then 6
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'mittel' and (string_to_array(iwcode, '_'))[3] = '100' then 5
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'mittel' and (string_to_array(iwcode, '_'))[3] = '300' then 4
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'stark' and (string_to_array(iwcode, '_'))[3] = '30' then 9
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'stark' and (string_to_array(iwcode, '_'))[3] = '100' then 8
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'stark' and (string_to_array(iwcode, '_'))[3] = '300' then 7  
-        end as charakterisierung,
-        geometrie, 
-        'Neudaten' as datenherkunft,
-        basket.attachmentkey as auftrag_neudaten
-    from 
-        afu_naturgefahren_v1.befundspontanerutschung befund
-    left join
-        afu_naturgefahren_v1.t_ili2db_basket basket
-        on 
-        befund.t_basket = basket.t_id 
-    where 
-        befund.t_basket in (select t_id from orig_basket)
+	    gefahrenstufe,
+	    charakterisierung, 
+	    (ST_Dump(geometrie)).geom as geometrie
+	from 
+	    afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_spontane_rutschung_hangmure 
+	where 
+	    datenherkunft = 'Neudaten'
 ),
 
-hauptprozess_rutschung_prio as (
+hauptprozess_rutschung_clean as (
     SELECT 
-        'rutschung' as hauptprozess,
-        a.gefahrenstufe,
-        'H'||a.charakterisierung as charakterisierung,
-        COALESCE(
-            ST_Difference(st_makevalid(a.geometrie), st_makevalid(blade.geometrie)),
+	    gefahrenstufe, 
+		charakterisierung, 
+		geometrie 
+	FROM 
+	    hauptprozess_rutschung 
+	WHERE 
+        st_area(geometrie) > 0.001
+),
+
+hauptprozess_rutschung_clean_prio as (
+    SELECT 
+	    gefahrenstufe, 
+		charakterisierung, 
+		geometrie,
+		CASE 
+		    WHEN gefahrenstufe = 'restgefaehrdung' THEN 0 
+		    WHEN gefahrenstufe = 'gering' THEN 1 
+		    WHEN gefahrenstufe = 'mittel' THEN 2 
+		    WHEN gefahrenstufe = 'erheblich' THEN 3
+		END as prio 
+	FROM 
+        hauptprozess_rutschung_clean
+),
+
+hauptprozess_rutschung_clean_prio_clip as (
+    SELECT 
+	    a.gefahrenstufe, 
+		a.charakterisierung, 
+		ST_Multi(COALESCE(
+            ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
-        ) AS geometrie, 
-        a.datenherkunft,
-        a.auftrag_neudaten
+        )) AS geometrie
     FROM  
-        hauptprozess_rutschung AS a
+        hauptprozess_rutschung_clean_prio AS a
     CROSS JOIN LATERAL (
         SELECT 
             ST_Union(geometrie) AS geometrie
         FROM   
-            hauptprozess_rutschung AS b
+            hauptprozess_rutschung_clean_prio AS b
         WHERE 
             a.geometrie && b.geometrie 
             and 
-            a.charakterisierung < b.charakterisierung
-    ) AS blade
-), 
-
-hauptprozess_rutschung_geometry_cleaner as (
+            a.prio < b.prio              
+    ) AS blade		
+),
+	
+hauptprozess_rutschung_point_on_polygons as (
     select 
-        hauptprozess, 
-        gefahrenstufe,
-        charakterisierung,
-        (st_dump(geometrie)).geom as geometrie,
-        datenherkunft,
-        auftrag_neudaten 
+	    gefahrenstufe,
+		charakterisierung, 
+		st_pointOnSurface((st_dump(geometrie)).geom) as punkt_geometrie 
+	FROM 
+	    hauptprozess_rutschung_clean_prio_clip
+),
+
+hauptprozess_rutschung_geometrie_union as (
+    select 
+        gefahrenstufe, 
+        st_union(geometrie) as geometrie 
     from 
-        hauptprozess_rutschung_prio
-    where 
-        st_isempty(geometrie) is not true
-        and 
-        st_area(geometrie) > 0.01
-),
-
-hauptprozess_rutschung_polygone_exterior as (
-    select
-        gefahrenstufe,
-        (st_DumpRings(geometrie)).geom as geometrie
-    from
-        hauptprozess_rutschung_geometry_cleaner
-    where
-         st_isempty(geometrie) is not true  
-         and 
-         st_geometrytype(geometrie) = 'ST_Polygon'   
-),
-
-hauptprozess_rutschung_boundary as (
-    select 
-        gefahrenstufe,
-        st_union(geometrie) as geometrie
-    from
-        hauptprozess_rutschung_polygone_exterior
-    group by 
+        hauptprozess_rutschung_clean_prio_clip
+    GROUP by 
         gefahrenstufe
 ),
 
-hauptprozess_rutschung_split_poly AS (
-  SELECT 
-    (st_dump(st_polygonize(geometrie))).geom AS geometrie
-  FROM
-    hauptprozess_rutschung_boundary
+hauptprozess_rutschung_geometrie_split as (
+    select 
+        gefahrenstufe, 
+        (st_dump(geometrie)).geom as geometrie 
+    from 
+        hauptprozess_rutschung_geometrie_union
 ),
 
-hauptprozess_rutschung_split AS (
-  SELECT 
-    ROW_NUMBER() OVER() AS id,
-    geometrie AS poly,
-    st_pointonsurface(geometrie) AS point
-  FROM
-    hauptprozess_rutschung_split_poly
+hauptprozess_rutschung_charakterisierung_agg as (
+    select 
+        polygone.gefahrenstufe,
+        string_agg(distinct point.charakterisierung,' ') as charakterisierung,
+	    polygone.geometrie
+	FROM 
+	    hauptprozess_rutschung_geometrie_split polygone 
+    LEFT JOIN 
+	    hauptprozess_rutschung_point_on_polygons point 
+		ON 
+		ST_Dwithin(point.punkt_geometrie, polygone.geometrie,0)
+	group by 
+	    polygone.geometrie, 
+	    polygone.gefahrenstufe
 )
 
-SELECT 
+select 
     basket.t_id as t_basket,
-    p.hauptprozess,
-    p.gefahrenstufe,
-    array_agg(distinct p.charakterisierung ORDER BY p.charakterisierung) AS charakterisierung,
-    st_multi(poly) AS geometrie,
-    p.datenherkunft,
-    p.auftrag_neudaten
-from
+    'rutschung' as hauptprozess,
+    gefahrenstufe,
+    charakterisierung,
+    st_multi(geometrie) as geometrie,
+    'Neudaten' as datenherkunft, 
+    orig_basket.attachmentkey as auftrag_neudaten   
+from 
     basket,
-    hauptprozess_rutschung_split s
-JOIN
-    hauptprozess_rutschung_geometry_cleaner p ON st_within(s.point, p.geometrie)
-GROUP BY 
-    s.id, p.hauptprozess, p.gefahrenstufe, p.datenherkunft, p.auftrag_neudaten, poly, basket.t_id
-;
+    orig_basket,
+    hauptprozess_rutschung_charakterisierung_agg
+WHERE 
+    st_area(geometrie) > 0.001 
+    and 
+    charakterisierung is not null 
