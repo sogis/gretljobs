@@ -211,9 +211,30 @@ task gefahrengebiet_hauptprozess_altdaten_copy(type: Db2Db, dependsOn: gefahreng
     ];
 }
 
+// HAUPTPROZESSE SYNOPTISCH
+
+task gefahrengebiet_hauptprozesse_synoptisch(type: Db2Db, dependsOn: gefahrengebiet_hauptprozess_altdaten_copy) {
+    description = "Berechnugn der synoptischen Hauptprozess - Gefahrengebiete"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('gefahrengebiet_hauptprozesse_synoptisch.sql','afu_naturgefahren_staging_v1.synoptisches_gefahrengebiet', true)
+    ];
+    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
+}
+
+task gefahrengebiet_hauptprozesse_synoptisch_altdaten_copy(type: Db2Db, dependsOn: gefahrengebiet_hauptprozesse_synoptisch) {
+    description = "Kopieren der alten Daten der synoptischen Gefahrengebiete der Hauptprozesse"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('gefahrengebiet_hauptprozesse_synoptisch_altdaten_copy.sql','afu_naturgefahren_staging_v1.synoptisches_gefahrengebiet', false)
+    ];
+}
+
 // FLIESSRICHTUNG
 
-task fliessrichtung(type: Db2Db, dependsOn: gefahrengebiet_hauptprozess_altdaten_copy) {
+task fliessrichtung(type: Db2Db, dependsOn: gefahrengebiet_hauptprozesse_synoptisch_altdaten_copy) {
     description = "Kopieren der Fliessrichtungen"
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
