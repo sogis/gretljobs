@@ -171,7 +171,7 @@ Die Datei `job.properties` kann folgende Eigenschaften des GRETL-Jobs enthalten:
 ```java
 logRotator.numToKeep=30
 triggers.cron=H H(1-3) * * *
-parameters.fileParam=filename.xtf
+parameters.stashedFile=myfilename.xyz
 parameters.stringParams=parameterName;default value;parameter description
 triggers.upstream=other_job_name
 authorization.permissions=gretl-users-barpa
@@ -182,7 +182,10 @@ Falls man alle Ausführungen aufbewahren möchte, kann man hier den Wert `unlimi
 
 Mit `triggers.cron` kann eingestellt werden, zu welchem Zeitpunkt der Job automatisch gestartet werden soll. Im Beispiel `H H(1-3) * * *` wird der Job jeden Tag irgendwann zwischen 01:00 Uhr und 03:59 Uhr ausgeführt. (Dokumentation der Schreibweise siehe https://github.com/jenkinsci/jenkins/blob/master/core/src/main/resources/hudson/triggers/TimerTrigger/help-spec.jelly). Wenn man diese Einstellung weglässt, wird der Job nie automatisch gestartet, und er muss manuell gestartet werden.
 
-Mit `parameters.fileParam` kann erreicht werden, dass ein  Benutzer beim Starten des Jobs eine Datei hochladen muss, die dann vom GRETL-Job verarbeitet wird. Es wird ein Dateiname (z.B. `filename.xtf`) oder Pfad (z.B. `data/filename.xtf`) verlangt, mit welchem im GRETL-Job auf die Datei zugegriffen werden kann.
+Mit `parameters.stashedFile` kann konfiguriert werden,
+dass ein  Benutzer beim Starten des Jobs eine Datei hochladen muss.
+Man muss hier einen Dateinamen (z.B. `data.xtf`) angeben;
+unter diesem Dateinamen kann dann der GRETL-Job auf die Datei zugreifen.
 
 Mit `parameters.stringParams` können Parameter definiert werden,
 für welche der Benutzer beim manuellen Start des Jobs Werte übergeben kann.
