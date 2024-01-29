@@ -39,7 +39,7 @@ for (jobFile in jobFiles) {
   def jobProperties = new Properties([
     'authorization.permissions':'nobody',
     'logRotator.numToKeep':'15',
-    'parameters.fileParam':'none',
+    'parameters.stashedFile':'none',
     'parameters.stringParams':'none',
     'triggers.upstream':'none',
     'triggers.cron':''
@@ -62,9 +62,13 @@ for (jobFile in jobFiles) {
         stringParam('BRANCH', 'main', 'Name of branch to check out')
       }
     }
-    if (jobProperties.getProperty('parameters.fileParam') != 'none') {
+    if (jobProperties.getProperty('parameters.stashedFile') != 'none') {
       parameters {
-        fileParam(jobProperties.getProperty('parameters.fileParam'), 'Select file to upload')
+        // must be defined using the "Dynamic DSL" approach (https://github.com/jenkinsci/job-dsl-plugin/wiki/Dynamic-DSL):
+        stashedFile {
+          name(jobProperties.getProperty('parameters.stashedFile'))
+          description('Hochzuladende Datei auswählen')
+        }
       }
     }
     if (jobProperties.getProperty('parameters.stringParams') != 'none') {
