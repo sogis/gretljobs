@@ -1,0 +1,47 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'publishPub'
+
+task publiedit(type: Publisher){
+  database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+  dataIdent = "ch.so.awjf.naturgefahrenhinweiskarte.relational"
+  dbSchema = "awjf_naturgefahrenhinweiskarte_v2"
+  modelsToPublish = "SO_AWJF_Naturgefahrenhinweiskarte_20231010"
+  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+task transferAwjfNaturgefahrenhinweiskarte(type: Db2Db, dependsOn: 'publiedit'){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('blockschlag.sql','awjf_naturgefahrenhinweiskarte_pub_v2.blockschlag', true),
+            new TransferSet('murgang.sql','awjf_naturgefahrenhinweiskarte_pub_v2.murgang', true),
+            new TransferSet('rutschung_bekannt.sql','awjf_naturgefahrenhinweiskarte_pub_v2.rutschung_bekannt', true),
+            new TransferSet('rutschung_lockergestein.sql','awjf_naturgefahrenhinweiskarte_pub_v2.rutschung_lockergestein', true),
+            new TransferSet('rutschung_tief.sql','awjf_naturgefahrenhinweiskarte_pub_v2.rutschung_tief', true),
+            new TransferSet('steinschlag.sql','awjf_naturgefahrenhinweiskarte_pub_v2.steinschlag', true),
+            new TransferSet('talboeden_geringe_neigung.sql','awjf_naturgefahrenhinweiskarte_pub_v2.talboeden_geringe_neigung', true),
+            new TransferSet('ueberflutung.sql','awjf_naturgefahrenhinweiskarte_pub_v2.ueberflutung', true),
+            new TransferSet('uebersarung.sql','awjf_naturgefahrenhinweiskarte_pub_v2.uebersarung', true),
+    ];
+}
+
+task publishPub(type: Publisher, dependsOn: 'transferAwjfNaturgefahrenhinweiskarte'){
+    database = [dbUriPub,dbUserPub,dbPwdPub]
+    dataIdent = "ch.so.awjf.naturgefahrenhinweiskarte"
+    dbSchema = "awjf_naturgefahrenhinweiskarte_pub_v2"
+    modelsToPublish = "SO_AWJF_Naturgefahrenhinweiskarte_Publikation_20231010"
+    userFormats = true
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
