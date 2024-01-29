@@ -6,5 +6,5 @@ SELECT
             THEN 'Überflutungsgebiete'
     END AS code_text
 FROM 
-    awjf_naturgefahrenhinweiskarte_v2.ueberflutung
+    afu_naturgefahrenhinweiskarte_v1.ueberflutung
 ;

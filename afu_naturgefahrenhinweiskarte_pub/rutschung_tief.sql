@@ -8,5 +8,5 @@ SELECT
             THEN 'mässige Festigkeit / geringere Rutschneigung'
     END AS code_text
 FROM 
-    awjf_naturgefahrenhinweiskarte_v2.rutschung_tief
+    afu_naturgefahrenhinweiskarte_v1.rutschung_tief
 ;

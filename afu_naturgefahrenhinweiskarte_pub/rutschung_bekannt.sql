@@ -6,5 +6,5 @@ SELECT
             THEN 'aus diversen Quellen bekannte aktive oder nichtaktive Rutschgebiete'
     END AS code_text
 FROM 
-    awjf_naturgefahrenhinweiskarte_v2.rutschung_bekannt AS bekannte_rutschung
+    afu_naturgefahrenhinweiskarte_v1.rutschung_bekannt AS bekannte_rutschung
 ;
