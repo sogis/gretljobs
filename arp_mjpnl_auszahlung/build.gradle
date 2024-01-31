@@ -12,7 +12,7 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'update_abrechnung_per_bewirtschafter'
 
 def DB_Schema_MJPNL = "arp_mjpnl_v1"
-def AUSZAHLUNGSJAHR = auszahlungsjahr ?: String.valueOf( Integer.valueOf(new SimpleDateFormat("yyyy").format(new Date()))-1 ) 
+def AUSZAHLUNGSJAHR = String.valueOf( Integer.valueOf(new SimpleDateFormat("yyyy").format(new Date()))-1 ) 
 
 task "update_abrechnung_per_leistung"(type: SqlExecutor) {
 
