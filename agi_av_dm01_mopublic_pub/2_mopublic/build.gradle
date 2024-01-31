@@ -1,11 +1,10 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'publish'
+defaultTasks 'refreshSolr'
 
 def schemaNamePub = 'agi_mopublic_pub'
 
-//task transferAgiMopublic(type: Db2Db, dependsOn: ':0_dm01_so:execProjPubTasks'){
 task transferAgiMopublic(type: Db2Db){
     description = "Datenumbau in das SO-MOpublic-Publikationsmodell."
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -42,25 +41,7 @@ task placeInDatasets(type: SqlExecutor, dependsOn: transferAgiMopublic){
     sqlFiles = ['dataset/create_bfs_dsets.sql', 'dataset/update_basket_refs.sql']
 }
 
-//task refreshSolr(dependsOn:placeInDatasets){}
-
 task refreshSolr(type:Exec, dependsOn:placeInDatasets) {
     commandLine 'curl', '-i', '--max-time', '20', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.agi.av.bodenbedeckung,ch.so.agi.av.gebaeudeadressen.gebaeudeeingaenge,ch.so.agi.av.grundstuecke.rechtskraeftig,ch.so.agi.av.grundstuecke.projektierte,ch.so.agi.av.nomenklatur.flurnamen,ch.so.agi.av.nomenklatur.gelaendenamen'
 }
 
-task publish(type: Publisher, dependsOn: refreshSolr){
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    dbSchema = schemaNamePub
-    dataIdent = 'ch.so.agi.av.mopublic'
-    regions = project(':0_dm01_so').tasks.publish.publishedRegions
-    userFormats = true
-    //target = [file("$buildDir/published")]
-    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
-    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-    validationConfig = "$projectDir/../novalidation.toml"
-    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
-}
-
-//task execProjPubTasks(dependsOn: publish){}
