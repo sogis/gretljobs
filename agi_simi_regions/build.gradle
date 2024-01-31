@@ -13,7 +13,7 @@ def dbUserSimi = dbUserPub
 def dbPwdSimi = dbPwdPub
 */
 
-defaultTasks 'postCopy'
+defaultTasks 'postCopy__' // 20240131 Jek: Extra verkonfiguriert, damit das Ausführen fehlschlägt. Grund: Pendente Quellanpassung für die Gemeindeeinteilung.
 
 task preCopy(type: SqlExecutor){
     database = [dbUriSimi, dbUserSimi, dbPwdSimi]
