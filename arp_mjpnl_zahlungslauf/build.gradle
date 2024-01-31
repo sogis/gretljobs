@@ -14,7 +14,7 @@ defaultTasks 'calculate_abrechnung_per_bewirtschafter'
 
 def DB_Schema_MJPNL = "arp_mjpnl_v1"
 /* Falls kein auszahlungsjahr übergeben wird, nimmt es bei aktuellem Datum kleiner 15. Januar noch das Vorjahr und sonst das aktuelle Jahr */
-def AUSZAHLUNGSJAHR = auszahlungsjahr ?: Integer.valueOf(new SimpleDateFormat("MM").format(new Date())) == 1 && Integer.valueOf(new SimpleDateFormat("DD").format(new Date())) < 15 ? String.valueOf( Integer.valueOf(new SimpleDateFormat("yyyy").format(new Date()))-1 ) : new SimpleDateFormat("yyyy").format(new Date())
+def AUSZAHLUNGSJAHR = Integer.valueOf(new SimpleDateFormat("MM").format(new Date())) == 1 && Integer.valueOf(new SimpleDateFormat("DD").format(new Date())) > 15 ? String.valueOf( Integer.valueOf(new SimpleDateFormat("yyyy").format(new Date()))+1 ) : new SimpleDateFormat("yyyy").format(new Date())
 
 
 task "cleanup_abrechnung_per_leistung"(type: SqlExecutor) {
