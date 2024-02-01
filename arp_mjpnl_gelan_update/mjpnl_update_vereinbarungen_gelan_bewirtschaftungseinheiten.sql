@@ -14,6 +14,9 @@ UPDATE ${DB_Schema_MJPNL}.mjpnl_vereinbarung AS vbg
       ORDER BY ST_Area(ST_Intersection(vbg.geometrie, bw.geometrie)) DESC
       LIMIT 1
     )
+    AND
+    -- nur wenn aktuelles Datum nicht zwischen dem 1. Dezember und dem 15. Januar liegt
+    (date_part('month',now()) NOT IN (1,12) OR (date_part('month',now())=1 AND date_part('day',now())>15))
 ;
 
 --GELAN Bewirtschaftungseinheit zuweisen
@@ -34,4 +37,7 @@ UPDATE
      )
  WHERE
   ST_IsValid(vbg.geometrie) = TRUE 
+  AND
+  -- nur wenn aktuelles Datum nicht zwischen dem 1. Dezember und dem 15. Januar liegt
+  (date_part('month',now()) NOT IN (1,12) OR (date_part('month',now())=1 AND date_part('day',now())>15))
 ;
