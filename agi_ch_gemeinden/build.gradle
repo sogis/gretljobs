@@ -13,8 +13,8 @@ defaultTasks 'transferDataToPubDb'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
-def pathToDataZip = Paths.get(pathToTempFolder, 'swissboundaries3d_2023-01_2056_5728.xtf.zip')
-def xtfFilePath = Paths.get(pathToUnzipFolder.toString(),'swissBOUNDARIES3D_1_4.xtf')
+def pathToDataZip = Paths.get(pathToTempFolder, 'swissboundaries3d_2024-01_2056_5728.xtf.zip')
+def xtfFilePath = Paths.get(pathToUnzipFolder.toString(),'swissBOUNDARIES3D_1_5.xtf')
 
 
 task download(type: Download){
@@ -22,14 +22,14 @@ task download(type: Download){
     doLast {
         println "File downloaded to: " + pathToTempFolder
     }
-    src 'https://data.geo.admin.ch/ch.swisstopo.swissboundaries3d/swissboundaries3d_2023-01/swissboundaries3d_2023-01_2056_5728.xtf.zip'
+    src 'https://data.geo.admin.ch/ch.swisstopo.swissboundaries3d/swissboundaries3d_2024-01/swissboundaries3d_2024-01_2056_5728.xtf.zip'
     dest pathToTempFolder
     overwrite true
 }
 
 
 task unzipSwissBoundaries3D(type: Copy, dependsOn: 'download'){
-    description = "Unzip swissBOUNDARIES3D_1_4.xtf from swissboundaries3d_2023-01_2056_5728.xtf.zip."
+    description = "Unzip swissBOUNDARIES3D_1_5.xtf from swissboundaries3d_2024-01_2056_5728.xtf.zip."
     doLast {
         println "File unzipped to directory: " + pathToUnzipFolder
     }
@@ -45,8 +45,8 @@ task dbImport(type: Ili2pgImport, dependsOn: 'unzipSwissBoundaries3D'){
         println "Data imported into db: " + dbUriEdit
     }
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = "agi_swissboundaries3d_v1"
-    models = "swissBOUNDARIES3D_ili2_LV95_V1_4"
+    dbschema = "agi_swissboundaries3d_v2"
+    models = "swissBOUNDARIES3D_ili2_LV95_V1_5"
     disableValidation = false
     dataFile = file(xtfFilePath)
     deleteData = true
@@ -54,86 +54,4 @@ task dbImport(type: Ili2pgImport, dependsOn: 'unzipSwissBoundaries3D'){
 
     finalizedBy 'removeFiles'
 }
-
-
-task convertData(type: Db2Db, dependsOn: 'dbImport'){
-    description = "Convert swissBoundaries3D-Data"
-    doLast {
-        println "SwissBoundaries3D-Data are converted."
-    }
-
-    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    targetDb = sourceDb
-    transferSets = [
-            new TransferSet('agi_swissboundaries3d_pub_edit_swissboundaries3d_bezirk.sql',
-                    'agi_swissboundaries3d_pub.swissboundaries3d_bezirk', true),
-            new TransferSet('agi_swissboundaries3d_pub_edit_swissboundaries3d_hoheitsgebiet.sql',
-                    'agi_swissboundaries3d_pub.swissboundaries3d_hoheitsgebiet', true),
-            new TransferSet('agi_swissboundaries3d_pub_edit_swissboundaries3d_kanton.sql',
-                    'agi_swissboundaries3d_pub.swissboundaries3d_kanton', true),
-            new TransferSet('agi_swissboundaries3d_pub_edit_swissboundaries3d_land.sql',
-                    'agi_swissboundaries3d_pub.swissboundaries3d_land', true)
-    ]
-}
-
-
-task removeFiles(type: Delete) {
-    description = "Remove Files"
-    doLast {
-        println "Files removed."
-    }
-    delete file(pathToUnzipFolder), file(pathToDataZip)
-}
-
-task transferDataToPubDb(type: Db2Db, dependsOn: 'convertData'){
-    description = "Transfer swissBoundaries3D-Data to pub-DB"
-    doLast {
-        println "SwissBoundaries3D-Data are transfered."
-    }
-
-    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
-    transferSets = [
-            new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_bezirk.sql',
-                    'agi_swissboundaries3d_pub.swissboundaries3d_bezirk', true),
-            new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_hoheitsgebiet.sql',
-                    'agi_swissboundaries3d_pub.swissboundaries3d_hoheitsgebiet', true),
-            new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_kanton.sql',
-                    'agi_swissboundaries3d_pub.swissboundaries3d_kanton', true),
-            new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_land.sql',
-                    'agi_swissboundaries3d_pub.swissboundaries3d_land', true)
-    ]
-}
-/* 31.05.2021, bjsvwcur: Import gezügelt von sogis-DB auf edit-DB. Task "transferDataToSogisDb" deaktiviert da die Daten auf der sogis-DB nicht mehr nachgeführt werden.
-
-task transferDataToSogisDb(type: Db2Db, dependsOn: 'transferDataToPubDb'){
-    description = "Transfer swissBoundaries3D-Data to sogis-DB"
-    doLast {
-        println "SwissBoundaries3D-Data are transfered to sogis."
-    }
-
-    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    transferSets = [
-            new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_bezirk.sql',
-                    'agi_swissboundaries3d_pub.swissboundaries3d_bezirk', true),
-            new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_hoheitsgebiet.sql',
-                    'agi_swissboundaries3d_pub.swissboundaries3d_hoheitsgebiet', true),
-            new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_kanton.sql',
-                    'agi_swissboundaries3d_pub.swissboundaries3d_kanton', true),
-            new TransferSet('agi_swissboundaries3d_pub_pub_swissboundaries3d_land.sql',
-                    'agi_swissboundaries3d_pub.swissboundaries3d_land', true),
-            new TransferSet('agi_swissboundaries3d_sogis_agi_swissboundaries3d_bezirk.sql',
-                    'agi_swissboundaries3d.tlm_grenzen_tlm_bezirksgebiet', true),
-            new TransferSet('agi_swissboundaries3d_sogis_agi_swissboundaries3d_hoheitsgrenze.sql',
-                    'agi_swissboundaries3d.tlm_grenzen_tlm_hoheitsgrenze', true),
-            new TransferSet('agi_swissboundaries3d_sogis_agi_swissboundaries3d_hoheitsgebiet.sql',
-                    'agi_swissboundaries3d.tlm_grenzen_tlm_hoheitsgebiet', true),
-            new TransferSet('agi_swissboundaries3d_sogis_agi_swissboundaries3d_kanton.sql',
-                    'agi_swissboundaries3d.tlm_grenzen_tlm_kantonsgebiet', true),
-            new TransferSet('agi_swissboundaries3d_sogis_agi_swissboundaries3d_land.sql',
-                    'agi_swissboundaries3d.tlm_grenzen_tlm_landesgebiet', true)
-    ]
-}
-*/
 
