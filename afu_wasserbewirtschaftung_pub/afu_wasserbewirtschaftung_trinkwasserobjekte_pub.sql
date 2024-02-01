@@ -1,79 +1,102 @@
 WITH
 
- dokument_new AS (
- SELECT
-    d.dateiname,
-    fd.filterbrunnen_r,
-    kd.kontrollschacht_r,
-    pd.pumpwerk_r,
-    qgd.quelle_gefasst_r,
-    qd.quellwasserbehaelter_r,
-    rd.reservoir_r,
-    sd.sammelbrunnstube_r
-    FROM afu_wasserversorg_obj_v1.dokument d
-    LEFT JOIN afu_wasserversorg_obj_v1.filterbrunnen__dokument fd  ON d.t_id = fd.dokument_r
-    LEFT JOIN afu_wasserversorg_obj_v1.kontrollschacht__dokument kd  ON d.t_id = kd.dokument_r
-    LEFT JOIN afu_wasserversorg_obj_v1.pumpwerk__dokument pd ON d.t_id = pd.dokument_r
-    LEFT JOIN afu_wasserversorg_obj_v1.quelle_gefasst__dokument qgd  ON d.t_id = qgd.dokument_r
-    LEFT JOIN afu_wasserversorg_obj_v1.quellwasserbehaelter__dokument qd  ON d.t_id = qd.dokument_r
-    LEFT JOIN afu_wasserversorg_obj_v1.reservoir__dokument rd  ON d.t_id = rd.dokument_r
-    LEFT JOIN afu_wasserversorg_obj_v1.sammelbrunnstube__dokument sd ON d.t_id = sd.dokument_r
+http_dokument AS (
+    SELECT
+	    concat(
+		    'https://geo.so.ch/docs/ch.so.afu.wasserversorgung/', 
+		    split_part(
+			    dateiname, 
+			    'ch.so.afu.wasserversorgung\', 
+			    2
+		    )
+	    ) AS url,
+	    t_id
+    FROM 
+	    afu_wasserversorg_obj_v1.dokument d
 ),
 
 dokumente_filterbrunnen AS (
-SELECT
-	n.filterbrunnen_r,
-	concat('[',string_agg(concat('"',n.dateiname, '"'), ','),']') AS dokumente
-	FROM dokument_new n
-	GROUP BY n.filterbrunnen_r
+    SELECT
+ 	    fd.filterbrunnen_r,   
+	    json_agg(d.url ORDER BY url) AS dokumente
+    FROM 
+	    http_dokument d
+    JOIN
+	    afu_wasserversorg_obj_v1.filterbrunnen__dokument fd  ON d.t_id = fd.dokument_r
+    GROUP BY
+	    filterbrunnen_r
 ),
 
 dokumente_kontrollschacht AS (
-SELECT
-	n.kontrollschacht_r,
-	concat('[',string_agg(concat('"',n.dateiname, '"'), ','),']') AS dokumente
-	FROM dokument_new n
-	GROUP BY n.kontrollschacht_r
+    SELECT
+ 	    kontrollschacht_r,   
+	    json_agg(url ORDER BY url) AS dokumente
+    FROM 
+	    http_dokument d
+    JOIN
+	    afu_wasserversorg_obj_v1.kontrollschacht__dokument kd  ON d.t_id = kd.dokument_r
+    GROUP BY
+	    kontrollschacht_r
 ),
 
 dokumente_pumpwerk AS (
-SELECT
-	n.pumpwerk_r,
-	concat('[',string_agg(concat('"',n.dateiname, '"'), ','),']') AS dokumente
-	FROM dokument_new n
-	GROUP BY n.pumpwerk_r
+    SELECT
+ 	    pumpwerk_r,   
+	    json_agg(url ORDER BY url) AS dokumente
+    FROM 
+	    http_dokument d
+    JOIN
+	    afu_wasserversorg_obj_v1.pumpwerk__dokument pd  ON d.t_id = pd.dokument_r
+    GROUP BY
+	    pumpwerk_r
 ),
 
 dokumente_quelle_gefasst AS (
-SELECT
-	n.quelle_gefasst_r,
-	concat('[',string_agg(concat('"',n.dateiname, '"'), ','),']') AS dokumente
-	FROM dokument_new n
-	GROUP BY n.quelle_gefasst_r
+    SELECT
+ 	    quelle_gefasst_r,   
+	    json_agg(url ORDER BY url) AS dokumente
+    FROM 
+	    http_dokument d
+    JOIN
+	    afu_wasserversorg_obj_v1.quelle_gefasst__dokument qgd  ON d.t_id = qgd.dokument_r
+    GROUP BY
+	    quelle_gefasst_r
 ),
 
 dokumente_quellwasserbehaelter AS (
-SELECT
-	n.quellwasserbehaelter_r,
-	concat('[',string_agg(concat('"',n.dateiname, '"'), ','),']') AS dokumente
-	FROM dokument_new n
-	GROUP BY n.quellwasserbehaelter_r
+    SELECT
+ 	    quellwasserbehaelter_r,   
+	    json_agg(url ORDER BY url) AS dokumente
+    FROM 
+	    http_dokument d
+    JOIN
+	    afu_wasserversorg_obj_v1.quellwasserbehaelter__dokument qd  ON d.t_id = qd.dokument_r
+    GROUP BY
+	    quellwasserbehaelter_r
 ),
 
 dokumente_reservoir AS (
-SELECT
-	n.reservoir_r,
-	concat('[',string_agg(concat('"',n.dateiname, '"'), ','),']') AS dokumente
-	FROM dokument_new n
-	GROUP BY n.reservoir_r
+    SELECT
+ 	    reservoir_r,   
+	    json_agg(url ORDER BY url) AS dokumente
+    FROM 
+	    http_dokument d
+    JOIN
+	    afu_wasserversorg_obj_v1.reservoir__dokument rd  ON d.t_id = rd.dokument_r
+    GROUP BY
+	    reservoir_r
 ),
 
 dokumente_sammelbrunnstube AS (
-SELECT
-	n.sammelbrunnstube_r,
-	concat('[',string_agg(concat('"',n.dateiname, '"'), ','),']') AS dokumente
-	FROM dokument_new n
-	GROUP BY n.sammelbrunnstube_r
+    SELECT
+ 	    sammelbrunnstube_r,   
+	    json_agg(url ORDER BY url) AS dokumente
+    FROM 
+	    http_dokument d
+    JOIN
+	    afu_wasserversorg_obj_v1.sammelbrunnstube__dokument sd  ON d.t_id = sd.dokument_r
+    GROUP BY
+	    sammelbrunnstube_r
 ),
 
 pumpwerk AS (
@@ -88,7 +111,8 @@ pumpwerk AS (
 		geometrie
 	FROM
 		afu_wasserversorg_obj_v1.pumpwerk
-		LEFT JOIN dokumente_pumpwerk dp ON t_id = dp.pumpwerk_r
+	LEFT JOIN
+		dokumente_pumpwerk dp ON t_id = dp.pumpwerk_r
 ),
 
 reservoir AS (
@@ -103,7 +127,8 @@ reservoir AS (
 		geometrie
 	FROM
 		afu_wasserversorg_obj_v1.reservoir
-		LEFT JOIN dokumente_reservoir dr ON t_id = dr.reservoir_r
+	LEFT JOIN
+		dokumente_reservoir dr ON t_id = dr.reservoir_r
 ),
 
 sammelbrunnstube AS (
@@ -118,7 +143,8 @@ sammelbrunnstube AS (
 		geometrie
 	FROM
 		afu_wasserversorg_obj_v1.sammelbrunnstube
-		LEFT JOIN dokumente_sammelbrunnstube ds ON t_id = ds.sammelbrunnstube_r
+	LEFT JOIN
+		dokumente_sammelbrunnstube ds ON t_id = ds.sammelbrunnstube_r
 ),
 
 kontrollschacht AS (
@@ -133,7 +159,8 @@ kontrollschacht AS (
 		geometrie
 	FROM
 		afu_wasserversorg_obj_v1.kontrollschacht
-		LEFT JOIN dokumente_kontrollschacht dk ON t_id = dk.kontrollschacht_r
+	LEFT JOIN
+		dokumente_kontrollschacht dk ON t_id = dk.kontrollschacht_r
 ),
 
 quellwasserbehaelter AS (
@@ -148,20 +175,75 @@ quellwasserbehaelter AS (
 		geometrie
 	FROM
 		afu_wasserversorg_obj_v1.quellwasserbehaelter
-		LEFT JOIN dokumente_quellwasserbehaelter dq ON t_id = dq.quellwasserbehaelter_r
-),
-
-trinkwasserversorgung AS (
-	SELECT * FROM pumpwerk
-	UNION ALL
-	SELECT * FROM reservoir
-	UNION ALL
-	SELECT * FROM sammelbrunnstube
-	UNION ALL
-	SELECT * FROM kontrollschacht
-	UNION ALL
-	SELECT * FROM quellwasserbehaelter
+	LEFT JOIN
+		dokumente_quellwasserbehaelter dq ON t_id = dq.quellwasserbehaelter_r
 )
 
-SELECT * FROM trinkwasserversorgung;
+SELECT
+	trinkwasserobjektart,
+	objekttyp_anzeige,
+	objektname,
+	objektnummer,
+	technische_angabe,
+	bemerkung,
+	dokumente,
+	geometrie
+FROM
+	pumpwerk
+	
+UNION ALL
 
+SELECT
+	trinkwasserobjektart,
+	objekttyp_anzeige,
+	objektname,
+	objektnummer,
+	technische_angabe,
+	bemerkung,
+	dokumente,
+	geometrie
+FROM
+	reservoir
+	
+UNION ALL
+
+SELECT
+	trinkwasserobjektart,
+	objekttyp_anzeige,
+	objektname,
+	objektnummer,
+	technische_angabe,
+	bemerkung,
+	dokumente,
+	geometrie
+FROM
+	sammelbrunnstube
+
+UNION ALL
+	
+SELECT
+	trinkwasserobjektart,
+	objekttyp_anzeige,
+	objektname,
+	objektnummer,
+	technische_angabe,
+	bemerkung,
+	dokumente,
+	geometrie
+FROM
+	kontrollschacht
+
+UNION ALL
+
+SELECT
+	trinkwasserobjektart,
+	objekttyp_anzeige,
+	objektname,
+	objektnummer,
+	technische_angabe,
+	bemerkung,
+	dokumente,
+	geometrie
+FROM
+	quellwasserbehaelter
+;	
