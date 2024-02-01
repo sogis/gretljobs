@@ -45,7 +45,7 @@ task dbImport(type: Ili2pgImport, dependsOn: 'unzipSwissBoundaries3D'){
         println "Data imported into db: " + dbUriEdit
     }
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = "agi_swissboundaries3d_v1"
+    dbschema = "agi_swissboundaries3d_v2"
     models = "swissBOUNDARIES3D_ili2_LV95_V1_5"
     disableValidation = false
     dataFile = file(xtfFilePath)
