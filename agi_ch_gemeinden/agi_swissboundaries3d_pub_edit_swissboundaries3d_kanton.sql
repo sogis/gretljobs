@@ -18,7 +18,7 @@ geometrie AS (
         tlm_grenzen_tlm_kantonsgebiet.kantonsnummer,
         tlm_grenzen_tlm_kantonsgebiet.aname AS kantonsname,
         land.aname AS land,
-        ST_Collect(ms.surface) AS geometrie
+        ST_Force2D(ST_Collect(ms.surface)) AS geometrie
     FROM
         agi_swissboundaries3d_v2.tlm_grenzen_tlm_kantonsgebiet
         LEFT JOIN
