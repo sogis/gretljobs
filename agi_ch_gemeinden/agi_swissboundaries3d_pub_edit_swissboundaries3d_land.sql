@@ -16,7 +16,7 @@ geometrie AS (
         DISTINCT (tlm_grenzen_tlm_landesgebiet.icc, tlm_grenzen_tlm_landesgebiet.aname) AS bezirk,
         tlm_grenzen_tlm_landesgebiet.icc As landeskuerzel,
         tlm_grenzen_tlm_landesgebiet.aname AS landesname,
-        ST_Collect(ms.surface) AS geometrie
+        ST_Force2D(ST_Collect(ms.surface)) AS geometrie
     FROM
         agi_swissboundaries3d_v2.tlm_grenzen_tlm_landesgebiet
         LEFT JOIN
