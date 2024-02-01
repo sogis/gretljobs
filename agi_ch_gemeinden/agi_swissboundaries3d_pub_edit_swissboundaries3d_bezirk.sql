@@ -19,7 +19,7 @@ geometrie AS (
         tlm_grenzen_tlm_bezirksgebiet.aname AS bezirksname,
         kanton.aname AS kanton,
         land.aname AS land,
-        ST_Collect(ms.surface) AS geometrie
+        ST_Force2D(ST_Collect(ms.surface)) AS geometrie
 --        ST_Force2D(ST_Collect(tlm_grenzen_tlm_bezirksgebiet.shape)) AS geometrie
     FROM
         agi_swissboundaries3d_v2.tlm_grenzen_tlm_bezirksgebiet
