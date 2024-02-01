@@ -154,13 +154,16 @@ united_hecke_leistungen AS (
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
-        left(('Hecke: Erschwernis (' ||
-            (SELECT CONCAT_WS(', ',
-                CASE WHEN erschwernis_massnahme1 THEN 'Massnahme 1: '||COALESCE(left(erschwernis_massnahme1_text,60),'') END,
-                CASE WHEN erschwernis_massnahme2 THEN 'Massnahme 2: '||COALESCE(left(erschwernis_massnahme2_text,60),'') END,
-                CASE WHEN erschwernis_massnahme3 THEN 'Massnahme 3: '||COALESCE(left(erschwernis_massnahme3_text,60),'') END
-            )) ||
-        ')'),255)
+        regexp_replace(
+            left(('Hecke: Erschwernis (' ||
+                (SELECT CONCAT_WS(', ',
+                    CASE WHEN erschwernis_massnahme1 THEN 'Massnahme 1: '||COALESCE(left(erschwernis_massnahme1_text,60),'') END,
+                    CASE WHEN erschwernis_massnahme2 THEN 'Massnahme 2: '||COALESCE(left(erschwernis_massnahme2_text,60),'') END,
+                    CASE WHEN erschwernis_massnahme3 THEN 'Massnahme 3: '||COALESCE(left(erschwernis_massnahme3_text,60),'') END
+                )) ||
+            ')'),255),
+            E'[\n\r]+', ' ', 'g' 
+        )
         AS leistung_beschrieb,
         'per_ha' AS abgeltungsart,
         erschwernis_abgeltung_ha AS betrag_per_einheit,
