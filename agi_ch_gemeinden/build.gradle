@@ -55,3 +55,10 @@ task dbImport(type: Ili2pgImport, dependsOn: 'unzipSwissBoundaries3D'){
     finalizedBy 'removeFiles'
 }
 
+task removeFiles(type: Delete) {
+    description = "Remove Files"
+    doLast {
+        println "Files removed."
+    }
+    delete file(pathToUnzipFolder), file(pathToDataZip)
+}
