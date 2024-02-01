@@ -14,7 +14,7 @@ defaultTasks 'transferDataToPubDb'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
 def pathToDataZip = Paths.get(pathToTempFolder, 'swissboundaries3d_2024-01_2056_5728.xtf.zip')
-def xtfFilePath = Paths.get(pathToUnzipFolder.toString(),'swissBOUNDARIES3D_1_4.xtf')
+def xtfFilePath = Paths.get(pathToUnzipFolder.toString(),'swissBOUNDARIES3D_1_5.xtf')
 
 
 task download(type: Download){
@@ -29,7 +29,7 @@ task download(type: Download){
 
 
 task unzipSwissBoundaries3D(type: Copy, dependsOn: 'download'){
-    description = "Unzip swissBOUNDARIES3D_1_4.xtf from swissboundaries3d_2023-01_2056_5728.xtf.zip."
+    description = "Unzip swissBOUNDARIES3D_1_4.xtf from swissboundaries3d_2024-01_2056_5728.xtf.zip."
     doLast {
         println "File unzipped to directory: " + pathToUnzipFolder
     }
@@ -46,7 +46,7 @@ task dbImport(type: Ili2pgImport, dependsOn: 'unzipSwissBoundaries3D'){
     }
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "agi_swissboundaries3d_v1"
-    models = "swissBOUNDARIES3D_ili2_LV95_V1_4"
+    models = "swissBOUNDARIES3D_ili2_LV95_V1_5"
     disableValidation = false
     dataFile = file(xtfFilePath)
     deleteData = true
