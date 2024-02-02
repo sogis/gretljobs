@@ -11,7 +11,7 @@ UPDATE
            LEFT JOIN ${DB_Schema_MJPNL}.betrbsdttrktrdten_gelan_person p ON b.person = p.t_id
          WHERE
            bewe_id = vbg.gelan_bewe_id
-		),9999999)
+		    ),9999999)
      )
  WHERE
   vbg.uebersteuerung_bewirtschafter IS FALSE
