@@ -42,8 +42,11 @@ lfp1 AS (
         aimport.importdate AS importdatum,
         nachfuehrung.gueltigereintrag AS nachfuehrung,
         lagefixpunkt.geometrie,
-        pos.pos,
-        trim(to_char(ST_X(lagefixpunkt.geometrie), '9999999.000'))||' / '||trim(to_char(ST_Y(lagefixpunkt.geometrie), '9999999.000')) AS koordinate
+        pos.posX,
+        pos.posY,
+        trim(to_char(ST_X(lagefixpunkt.geometrie), '9999999.000'))||' / '||trim(to_char(ST_Y(lagefixpunkt.geometrie), '9999999.000')) AS koordinate,
+        trim(to_char(ST_X(pos.pos), '9999999.000'))::NUMERIC AS posX,
+        trim(to_char(ST_Y(pos.pos), '9999999.000'))::NUMERIC AS posY
     FROM
         agi_dm01avso24.fixpunktekatgrie1_lfp1 AS lagefixpunkt
         LEFT JOIN agi_dm01avso24.fixpunktekatgrie1_lfp1pos AS pos 
@@ -88,8 +91,9 @@ lfp2 AS (
         aimport.importdate AS importdatum,
         nachfuehrung.gueltigereintrag AS nachfuehrung,
         lagefixpunkt.geometrie,
-        pos.pos,
-        trim(to_char(ST_X(lagefixpunkt.geometrie), '9999999.000'))||' / '||trim(to_char(ST_Y(lagefixpunkt.geometrie), '9999999.000')) AS koordinate
+        trim(to_char(ST_X(lagefixpunkt.geometrie), '9999999.000'))||' / '||trim(to_char(ST_Y(lagefixpunkt.geometrie), '9999999.000')) AS koordinate,
+        trim(to_char(ST_X(pos.pos), '9999999.000'))::NUMERIC AS posX,
+        trim(to_char(ST_Y(pos.pos), '9999999.000'))::NUMERIC AS posY
     FROM
         agi_dm01avso24.fixpunktekatgrie2_lfp2 AS lagefixpunkt
         LEFT JOIN agi_dm01avso24.fixpunktekatgrie2_lfp2pos AS pos 
@@ -134,8 +138,9 @@ lfp3 AS (
         aimport.importdate AS importdatum,
         nachfuehrung.gueltigereintrag AS nachfuehrung,
         lagefixpunkt.geometrie,
-        pos.pos,
-        trim(to_char(ST_X(lagefixpunkt.geometrie), '9999999.000'))||' / '||trim(to_char(ST_Y(lagefixpunkt.geometrie), '9999999.000')) AS koordinate
+        trim(to_char(ST_X(lagefixpunkt.geometrie), '9999999.000'))||' / '||trim(to_char(ST_Y(lagefixpunkt.geometrie), '9999999.000')) AS koordinate,
+        trim(to_char(ST_X(pos.pos), '9999999.000'))::NUMERIC AS posX,
+        trim(to_char(ST_Y(pos.pos), '9999999.000'))::NUMERIC AS posY
     FROM
         agi_dm01avso24.fixpunktekatgrie3_lfp3 AS lagefixpunkt
         LEFT JOIN agi_dm01avso24.fixpunktekatgrie3_lfp3pos AS pos 
@@ -176,8 +181,9 @@ hfp1 AS (
         aimport.importdate AS importdatum,
         nachfuehrung.gueltigereintrag AS nachfuehrung,
         hoehenfixpunkt.geometrie,
-        pos.pos,
-        trim(to_char(ST_X(hoehenfixpunkt.geometrie), '9999999.000'))||' / '||trim(to_char(ST_Y(hoehenfixpunkt.geometrie), '9999999.000')) AS koordinate
+        trim(to_char(ST_X(hoehenfixpunkt.geometrie), '9999999.000'))||' / '||trim(to_char(ST_Y(hoehenfixpunkt.geometrie), '9999999.000')) AS koordinate,
+        trim(to_char(ST_X(pos.pos), '9999999.000'))::NUMERIC AS posX,
+        trim(to_char(ST_Y(pos.pos), '9999999.000'))::NUMERIC AS posY
     FROM
         agi_dm01avso24.fixpunktekatgrie1_hfp1 AS hoehenfixpunkt
         LEFT JOIN agi_dm01avso24.fixpunktekatgrie1_hfp1pos AS pos 
@@ -218,8 +224,9 @@ hfp2 AS (
         aimport.importdate AS importdatum,
         nachfuehrung.gueltigereintrag AS nachfuehrung,
         hoehenfixpunkt.geometrie,
-        pos.pos,
-        trim(to_char(ST_X(hoehenfixpunkt.geometrie), '9999999.000'))||' / '||trim(to_char(ST_Y(hoehenfixpunkt.geometrie), '9999999.000')) AS koordinate
+        trim(to_char(ST_X(hoehenfixpunkt.geometrie), '9999999.000'))||' / '||trim(to_char(ST_Y(hoehenfixpunkt.geometrie), '9999999.000')) AS koordinate,
+        trim(to_char(ST_X(pos.pos), '9999999.000'))::NUMERIC AS posX,
+        trim(to_char(ST_Y(pos.pos), '9999999.000'))::NUMERIC AS posY
     FROM
         agi_dm01avso24.fixpunktekatgrie2_hfp2 AS hoehenfixpunkt
         LEFT JOIN agi_dm01avso24.fixpunktekatgrie2_hfp2pos AS pos 
@@ -260,8 +267,9 @@ hfp3 AS (
         aimport.importdate AS importdatum,
         nachfuehrung.gueltigereintrag AS nachfuehrung,
         hoehenfixpunkt.geometrie,
-        pos.pos,
-        trim(to_char(ST_X(hoehenfixpunkt.geometrie), '9999999.000'))||' / '||trim(to_char(ST_Y(hoehenfixpunkt.geometrie), '9999999.000')) AS koordinate
+        trim(to_char(ST_X(hoehenfixpunkt.geometrie), '9999999.000'))||' / '||trim(to_char(ST_Y(hoehenfixpunkt.geometrie), '9999999.000')) AS koordinate,
+        trim(to_char(ST_X(pos.pos), '9999999.000'))::NUMERIC AS posX,
+        trim(to_char(ST_Y(pos.pos), '9999999.000'))::NUMERIC AS posY
     FROM
         agi_dm01avso24.fixpunktekatgrie3_hfp3 AS hoehenfixpunkt
         LEFT JOIN agi_dm01avso24.fixpunktekatgrie3_hfp3pos AS pos 
@@ -275,17 +283,17 @@ hfp3 AS (
 ),
 
 fp_union_all AS (
-    SELECT typ_txt, nbident, nummer, hoehe, bfs_nr, lagegenauigkeit, hoehengenauigkeit, punktzeichen_txt, orientierung, hali, vali, importdatum, nachfuehrung, geometrie, pos, koordinate FROM lfp1
+    SELECT typ_txt, nbident, nummer, hoehe, bfs_nr, lagegenauigkeit, hoehengenauigkeit, punktzeichen_txt, orientierung, hali, vali, importdatum, nachfuehrung, geometrie, koordinate, posX, posY FROM lfp1
     UNION ALL 
-    SELECT typ_txt, nbident, nummer, hoehe, bfs_nr, lagegenauigkeit, hoehengenauigkeit, punktzeichen_txt, orientierung, hali, vali, importdatum, nachfuehrung, geometrie, pos, koordinate FROM lfp2
+    SELECT typ_txt, nbident, nummer, hoehe, bfs_nr, lagegenauigkeit, hoehengenauigkeit, punktzeichen_txt, orientierung, hali, vali, importdatum, nachfuehrung, geometrie, koordinate, posX, posY FROM lfp2
     UNION ALL 
-    SELECT typ_txt, nbident, nummer, hoehe, bfs_nr, lagegenauigkeit, hoehengenauigkeit, punktzeichen_txt, orientierung, hali, vali, importdatum, nachfuehrung, geometrie, pos, koordinate FROM lfp3
+    SELECT typ_txt, nbident, nummer, hoehe, bfs_nr, lagegenauigkeit, hoehengenauigkeit, punktzeichen_txt, orientierung, hali, vali, importdatum, nachfuehrung, geometrie, koordinate, posX, posY FROM lfp3
     UNION ALL
-    SELECT typ_txt, nbident, nummer, hoehe, bfs_nr, lagegenauigkeit, hoehengenauigkeit, punktzeichen_txt, orientierung, hali, vali, importdatum, nachfuehrung, geometrie, pos, koordinate FROM hfp1
+    SELECT typ_txt, nbident, nummer, hoehe, bfs_nr, lagegenauigkeit, hoehengenauigkeit, punktzeichen_txt, orientierung, hali, vali, importdatum, nachfuehrung, geometrie, koordinate, posX, posY FROM hfp1
     UNION ALL
-    SELECT typ_txt, nbident, nummer, hoehe, bfs_nr, lagegenauigkeit, hoehengenauigkeit, punktzeichen_txt, orientierung, hali, vali, importdatum, nachfuehrung, geometrie, pos, koordinate FROM hfp2
+    SELECT typ_txt, nbident, nummer, hoehe, bfs_nr, lagegenauigkeit, hoehengenauigkeit, punktzeichen_txt, orientierung, hali, vali, importdatum, nachfuehrung, geometrie, koordinate, posX, posY FROM hfp2
     UNION ALL 
-    SELECT typ_txt, nbident, nummer, hoehe, bfs_nr, lagegenauigkeit, hoehengenauigkeit, punktzeichen_txt, orientierung, hali, vali, importdatum, nachfuehrung, geometrie, pos, koordinate FROM hfp3
+    SELECT typ_txt, nbident, nummer, hoehe, bfs_nr, lagegenauigkeit, hoehengenauigkeit, punktzeichen_txt, orientierung, hali, vali, importdatum, nachfuehrung, geometrie, koordinate, posX, posY FROM hfp3
 )
 
 SELECT 

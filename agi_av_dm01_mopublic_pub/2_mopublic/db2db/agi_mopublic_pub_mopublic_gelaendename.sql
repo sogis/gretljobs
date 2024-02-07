@@ -27,7 +27,8 @@ SELECT
             THEN 'Half'
         ELSE pos.vali
     END AS vali,
-    pos.pos,
+    trim(to_char(ST_X(pos.pos), '9999999.000'))::NUMERIC AS posX,
+    trim(to_char(ST_Y(pos.pos), '9999999.000'))::NUMERIC AS posY,
     gemeinde.aname AS gemeinde,
     ${basket_tid} AS t_basket
 FROM
