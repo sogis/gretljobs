@@ -15,7 +15,13 @@ attribute_mapping as (
         	then 's_fels_berg_sturz'
         	else null 
         end as teilprozess, 
-        gef_stufe as gefahrenstufe, 
+        case 
+            when gef_stufe = 'keine' then 'nicht_gefaehrdet'
+    	    when gef_stufe = 'vorhanden' then 'restgefaehrdung'
+            when gef_stufe = 'gering' then 'gering'
+            when gef_stufe = 'mittel' then 'mittel' 
+            when gef_stufe = 'erheblich' then 'erheblich'
+        end as gefahrenstufe, 
         replace(aindex, '_', '') as charakterisierung, 
         st_multi(geometrie) as geometrie --Im neuen Modell sind Multi-Polygone
     FROM 

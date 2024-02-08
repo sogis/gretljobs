@@ -9,7 +9,13 @@ basket as (
 attribute_mapping_hangmure as (
     SELECT 
         'r_plo_hangmure' as teilprozess, 
-        gef_stufe as gefahrenstufe, 
+        case 
+            when gef_stufe = 'keine' then 'nicht_gefaehrdet'
+    	    when gef_stufe = 'vorhanden' then 'restgefaehrdung'
+            when gef_stufe = 'gering' then 'gering'
+            when gef_stufe = 'mittel' then 'mittel' 
+            when gef_stufe = 'erheblich' then 'erheblich'
+        end as gefahrenstufe, 
         replace(aindex, '_', '') as charakterisierung, 
         st_multi(geometrie) as geometrie --Im neuen Modell sind Multi-Polygone
     FROM 
@@ -19,7 +25,13 @@ attribute_mapping_hangmure as (
 attribute_mapping_plo_rutschung as (
     SELECT 
         'r_plo_spontane_rutschung' as teilprozess, 
-        gef_stufe as gefahrenstufe, 
+        case 
+            when gef_stufe = 'keine' then 'nicht_gefaehrdet'
+    	    when gef_stufe = 'vorhanden' then 'restgefaehrdung'
+            when gef_stufe = 'gering' then 'gering'
+            when gef_stufe = 'mittel' then 'mittel' 
+            when gef_stufe = 'erheblich' then 'erheblich'
+        end as gefahrenstufe, 
         replace(aindex, '_', '') as charakterisierung, 
         st_multi(geometrie) as geometrie --Im neuen Modell sind Multi-Polygone
     FROM 

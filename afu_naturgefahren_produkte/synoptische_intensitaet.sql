@@ -717,7 +717,14 @@ select
     basket.t_id as t_basket, 
     teilprozess,
     jaehrlichkeit::integer,
-    intensitaet,
+    case 
+    	when intensitaet = 'keine_einwirkung' then 'keine_einwirkung'
+    	when intensitaet = 'einwirkung_vorhanden' then 'einwirkung_vorhanden'
+    	when intensitaet = 'schwach' then 'schwach'
+    	when intensitaet = 'mittel' then 'mittel'
+    	when intensitaet = 'hoch' then 'hoch'
+    	when intensitaet = 'stark' then 'hoch' -- IM MGDM gibt es nur hoch
+    end as intensitaet,
     geometrie, 
     datenherkunft,
     auftrag_neudaten
@@ -726,6 +733,7 @@ from
     basket
 ;
    
+
 
 
 

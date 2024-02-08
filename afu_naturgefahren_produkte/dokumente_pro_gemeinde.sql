@@ -166,11 +166,12 @@ select
     gemeinden.bfs_gemeindenummer as gemeinde_bfsnr, 
 --    gemeinde_nr_kanton, 
     gemeinden.gemeindename as gemeinde_name,
-    jsonb_build_object('titel', berichte.titel, 
-                      'dateiname', berichte.dateiname, 
-                      'link', berichte.link, 
-                      'hauptprozess', berichte.hauptprozess, 
-                      'jahr', berichte.jahr
+    jsonb_build_object('@type', 'SO_AFU_Naturgefahren_Kernmodell_20231016.Naturgefahren.Dokument',
+                      'Titel', berichte.titel, 
+                      'Dateiname', berichte.dateiname, 
+                      'Link', berichte.link, 
+                      'Hauptprozesse', berichte.hauptprozess, 
+                      'Jahr', berichte.jahr
                       ) as dokumente,
     gemeinden.geometrie, 
     'Neudaten' as datenherkunft, 

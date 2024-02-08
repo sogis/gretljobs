@@ -30,12 +30,38 @@ orig_basket as (
 
 hauptprozesse_clean as (
     SELECT 
-	    gefahrenstufe, 
-		charakterisierung, 
-		st_buffer(st_buffer(st_buffer(st_buffer(geometrie,-0.001),0.001),0.001),-0.001) as geometrie 
-	FROM 
-	    afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozesse 
-	WHERE 
+	gefahrenstufe, 
+        charakterisierung, 
+	st_buffer(st_buffer(st_buffer(st_buffer(geometrie,-0.001),0.001),0.001),-0.001) as geometrie 
+    FROM 
+	afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser 
+    WHERE 
+        st_area(geometrie) > 0.001
+        and 
+        datenherkunft = 'Neudaten'
+
+    union all 
+
+    SELECT 
+	gefahrenstufe, 
+        charakterisierung, 
+	st_buffer(st_buffer(st_buffer(st_buffer(geometrie,-0.001),0.001),0.001),-0.001) as geometrie 
+    FROM 
+	afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung 
+    WHERE 
+        st_area(geometrie) > 0.001
+        and 
+        datenherkunft = 'Neudaten'
+
+    union all 
+
+    SELECT 
+	gefahrenstufe, 
+        charakterisierung, 
+	st_buffer(st_buffer(st_buffer(st_buffer(geometrie,-0.001),0.001),0.001),-0.001) as geometrie 
+    FROM 
+	afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz 
+    WHERE 
         st_area(geometrie) > 0.001
         and 
         datenherkunft = 'Neudaten'

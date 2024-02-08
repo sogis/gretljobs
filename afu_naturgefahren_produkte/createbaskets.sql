@@ -39,7 +39,7 @@ basket as (
      select 
          nextval('afu_naturgefahren_staging_v1.t_ili2db_seq'::regclass) as t_id,
          insert_dataset.t_id as dataset, 
-         basket.topic as topic, 
+         'SO_AFU_Naturgefahren_Kernmodell_20231016.Naturgefahren' as topic, 
          basket.attachmentkey  as attachmentkey 
      from 
          insert_dataset,

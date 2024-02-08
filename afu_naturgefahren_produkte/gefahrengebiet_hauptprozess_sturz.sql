@@ -99,7 +99,7 @@ hauptprozess_sturz_point_on_polygons as (
 hauptprozess_sturz_geometrie_union as (
     select 
         gefahrenstufe, 
-        st_union(geometrie) as geometrie 
+        st_union(st_snaptogrid(geometrie,0.001)) as geometrie 
     from 
         hauptprozess_sturz_clean_prio_clip
     GROUP by 
@@ -135,7 +135,7 @@ select
     'sturz' as hauptprozess,
     gefahrenstufe,
     charakterisierung,
-    st_multi(geometrie) as geometrie,
+    st_snaptogrid(st_multi(geometrie),0.001) as geometrie, --snaptogrid um duplicate coordzu verhindern
     'Neudaten' as datenherkunft, 
     orig_basket.attachmentkey as auftrag_neudaten   
 from 

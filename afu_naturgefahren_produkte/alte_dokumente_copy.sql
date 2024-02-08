@@ -19,11 +19,12 @@ gemeinden as (
 select 
     gemeinden.bfs_gemeindenummer as gemeinde_bfsnr, 
     gemeinden.gemeindename as gemeinde_name,
-    json_build_object('titel', dokument->'name', 
-                      'dateiname', dokument->'name', 
-                      'link', dokument->'url',
-                      'hauptprozesse', 'nicht definiert',
-                      'jahr', 'nicht definiert'
+    json_build_object('@type', 'SO_AFU_Naturgefahren_Kernmodell_20231016.Naturgefahren.Dokument',
+                      'Titel', dokument->'name', 
+                      'Dateiname', dokument->'name', 
+                      'Link', dokument->'url',
+                      'Hauptprozesse', 'nicht definiert',
+                      'Jahr', 'nicht definiert'
                       ) as dokument,
    gemeinden.geometrie as geometrie
 from 
