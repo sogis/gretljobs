@@ -40,7 +40,7 @@ task publishData(type: Publisher){
     dependsOn "transferData"
     description = "Publiziere die Daten"
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    dataIdent = "ch.so.agi.lk_nachfuehrungseinheiten"
+    dataIdent = "ch.so.agi.lk.nachfuehrungseinheiten"
     dbSchema = "agi_lk_nachfuehrungseinheiten_pub_v1"
     modelsToPublish = "SO_AGI_LK_Nachfuehrungseinheiten_Publikation_20231124"
     userFormats = true
