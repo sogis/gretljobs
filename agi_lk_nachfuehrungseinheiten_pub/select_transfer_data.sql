@@ -1,7 +1,3 @@
-/* 
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Other/SQLTemplate.sql to edit this template
- */
 /**
  * Author:  bjsvwweb
  * Created: 19.12.2023
@@ -20,16 +16,13 @@ SELECT
     org.web AS nachfuehrungsstelle_web,
     org.email AS nachfuehrungsstelle_email
 FROM
-    agi_lk_nachfuehrungseinheiten_v1.nachfuehrngsnhten_perimeter p
+    agi_lk_nachfuehrungseinheiten_v1.perimeter p
 JOIN
-    agi_lk_nachfuehrungseinheiten_v1.nachfuehrngsnhten_perimeter_nachfuehrungseinheit pn
-        ON pn.perimeter = p.t_id
+    agi_lk_nachfuehrungseinheiten_v1.nachfuehrungseinheit nfe
+        ON nfe.perimeter = p.t_id
 JOIN
-    agi_lk_nachfuehrungseinheiten_v1.nachfuehrngsnhten_nachfuehrungseinheit nfe
-        ON pn.nachfuehrungseinheit = nfe.t_id
-JOIN
-    agi_lk_nachfuehrungseinheiten_v1.nachfuehrngsnhten_organisation org
+    agi_lk_nachfuehrungseinheiten_v1.organisation org
         ON nfe.nachfuehrungsstelle = org.t_id
 JOIN
-    agi_lk_nachfuehrungseinheiten_v1.nachfuehrngsnhten_medium med
-        ON nfe.amedium = med.t_id
+    agi_lk_nachfuehrungseinheiten_v1.amedium med
+        ON nfe.amedium = med.ilicode

@@ -28,7 +28,7 @@ task transferData(type: Db2Db) {
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
         new TransferSet('select_transfer_data.sql',
-                        'agi_lk_nachfuehrungseinheiten_pub_v1.nachfuehrngsnhten_nachfuehrungseinheit',
+                        'agi_lk_nachfuehrungseinheiten_pub_v1.nachfuehrungseinheit',
                         true)
     ];
 }
