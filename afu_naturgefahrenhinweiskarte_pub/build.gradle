@@ -33,7 +33,7 @@ task transferAfuNaturgefahrenhinweiskarte(type: Db2Db, dependsOn: 'publiedit'){
     ];
 }
 
-task publishPub(type: Publisher, dependsOn: 'transferAfufNaturgefahrenhinweiskarte'){
+task publishPub(type: Publisher, dependsOn: 'transferAfuNaturgefahrenhinweiskarte'){
     database = [dbUriPub,dbUserPub,dbPwdPub]
     dataIdent = "ch.so.afu.naturgefahrenhinweiskarte"
     dbSchema = "afu_naturgefahrenhinweiskarte_pub_v1"
