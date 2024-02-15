@@ -42,8 +42,6 @@ lfp1 AS (
         aimport.importdate AS importdatum,
         nachfuehrung.gueltigereintrag AS nachfuehrung,
         lagefixpunkt.geometrie,
-        pos.posX,
-        pos.posY,
         trim(to_char(ST_X(lagefixpunkt.geometrie), '9999999.000'))||' / '||trim(to_char(ST_Y(lagefixpunkt.geometrie), '9999999.000')) AS koordinate,
         trim(to_char(ST_X(pos.pos), '9999999.000'))::NUMERIC AS posX,
         trim(to_char(ST_Y(pos.pos), '9999999.000'))::NUMERIC AS posY
