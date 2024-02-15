@@ -133,8 +133,8 @@ reservoir AS (
 
 sammelbrunnstube AS (
     SELECT
-        'Sammelbrunnstube' AS trinkwasserobjektart,
-        'Sammelbrunnstube' AS objekttyp_anzeige,
+        'Sammelbrunnenstube' AS trinkwasserobjektart,
+        'Sammelbrunnenstube' AS objekttyp_anzeige,
         bezeichnung AS objektname,
         objekt_id AS objektnummer,
         beschreibung AS technische_angabe,
