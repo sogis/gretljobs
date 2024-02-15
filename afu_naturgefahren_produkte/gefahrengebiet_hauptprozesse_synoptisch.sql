@@ -1,26 +1,7 @@
+delete from afu_naturgefahren_staging_v1.synoptisches_gefahrengebiet
+;
+
 with 
-orig_dataset as (
-    select
-        t_id  as dataset  
-    from 
-        afu_naturgefahren_v1.t_ili2db_dataset
-    where 
-        datasetname = ${kennung}
-),
-
-orig_basket as (
-    select 
-        basket.attachmentkey,
-        basket.t_id 
-    from 
-        afu_naturgefahren_v1.t_ili2db_basket basket,
-        orig_dataset
-    where 
-        basket.dataset = orig_dataset.dataset
-        and 
-        topic like '%Befunde'
-),
-
  basket as (
      select 
          t_id 
@@ -32,54 +13,57 @@ hauptprozesse_clean as (
     SELECT 
 	gefahrenstufe, 
         charakterisierung, 
-	st_buffer(st_buffer(st_buffer(st_buffer(geometrie,-0.001),0.001),0.001),-0.001) as geometrie 
+	st_reduceprecision(geometrie,0.001) as geometrie 
     FROM 
 	afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser 
     WHERE 
         st_area(geometrie) > 0.001
-        and 
-        datenherkunft = 'Neudaten'
+--        and 
+--        datenherkunft = 'Neudaten'
 
     union all 
 
     SELECT 
 	gefahrenstufe, 
         charakterisierung, 
-	st_buffer(st_buffer(st_buffer(st_buffer(geometrie,-0.001),0.001),0.001),-0.001) as geometrie 
+	st_reduceprecision(geometrie,0.001) as geometrie  
     FROM 
 	afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung 
     WHERE 
         st_area(geometrie) > 0.001
-        and 
-        datenherkunft = 'Neudaten'
+--        and 
+--        datenherkunft = 'Neudaten'
 
     union all 
 
     SELECT 
 	gefahrenstufe, 
         charakterisierung, 
-	st_buffer(st_buffer(st_buffer(st_buffer(geometrie,-0.001),0.001),0.001),-0.001) as geometrie 
+	st_reduceprecision(geometrie,0.001) as geometrie 
     FROM 
 	afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz 
     WHERE 
         st_area(geometrie) > 0.001
-        and 
-        datenherkunft = 'Neudaten'
+--        and 
+--        datenherkunft = 'Neudaten'
 ),
 
 hauptprozesse_clean_prio as (
     SELECT 
-	    gefahrenstufe, 
-		charakterisierung, 
-		geometrie,
-		CASE 
-		    WHEN gefahrenstufe = 'restgefaehrdung' THEN 0 
-		    WHEN gefahrenstufe = 'gering' THEN 1 
-		    WHEN gefahrenstufe = 'mittel' THEN 2 
-		    WHEN gefahrenstufe = 'erheblich' THEN 3
-		END as prio 
-	FROM 
+        gefahrenstufe, 
+	    charakterisierung, 
+	    geometrie,
+	    CASE 
+		    when gefahrenstufe = 'nicht_gefaehrdet' then 0
+	        WHEN gefahrenstufe = 'restgefaehrdung' THEN 1 
+	        WHEN gefahrenstufe = 'gering' THEN 2 
+	        WHEN gefahrenstufe = 'mittel' THEN 3 
+	        WHEN gefahrenstufe = 'erheblich' THEN 4
+	END as prio 
+    FROM 
         hauptprozesse_clean
+    where 
+        st_isempty(geometrie) is not true
 ),
 
 hauptprozesse_clean_prio_clip as (
@@ -103,14 +87,25 @@ hauptprozesse_clean_prio_clip as (
             a.prio < b.prio              
     ) AS blade		
 ),
-	
+
+hauptprozesse_clip_clean as (
+    select 
+        gefahrenstufe, 
+        charakterisierung,
+        st_reducePrecision(geometrie,0.001) as geometrie
+    from 
+        hauptprozesse_clean_prio_clip
+),
+
 hauptprozesse_point_on_polygons as (
     select 
 	    gefahrenstufe,
-		charakterisierung, 
+		string_to_array(charakterisierung,' ') as charakterisierung, 
 		st_pointOnSurface((st_dump(geometrie)).geom) as punkt_geometrie 
 	FROM 
-	    hauptprozesse_clean --Hier nicht erst nach dem Clip, weil alle Hauptprozesse jeder Gefahrenstufe berücksichtigt werden sollen
+	    hauptprozesse_clip_clean
+	where 
+	    st_isempty(geometrie) is not true 
 ),
 
 hauptprozesse_geometrie_union as (
@@ -118,7 +113,9 @@ hauptprozesse_geometrie_union as (
         gefahrenstufe, 
         st_union(geometrie) as geometrie 
     from 
-        hauptprozesse_clean_prio_clip
+        hauptprozesse_clip_clean
+    where 
+	    st_isempty(geometrie) is not true 
     GROUP by 
         gefahrenstufe
 ),
@@ -131,11 +128,10 @@ hauptprozesse_geometrie_split as (
         hauptprozesse_geometrie_union
 ),
 
-
 hauptprozesse_charakterisierung_agg as (
     select 
         polygone.gefahrenstufe,
-        string_agg(distinct point.charakterisierung,' ') as charakterisierung,
+        string_agg(array_to_string(point.charakterisierung,', '),', ') as charakterisierung,
 	    polygone.geometrie
 	FROM 
 	    hauptprozesse_geometrie_split polygone 
@@ -143,23 +139,51 @@ hauptprozesse_charakterisierung_agg as (
 	    hauptprozesse_point_on_polygons point 
 		ON 
 		ST_Dwithin(point.punkt_geometrie, polygone.geometrie,0)
+    where 
+        st_area(polygone.geometrie) > 0.001
 	group by 
 	    polygone.geometrie, 
 	    polygone.gefahrenstufe
+),
+
+hauptprozesse_charakterisierung_sort as (
+    select 
+       gefahrenstufe,
+       array_to_string(
+           array(
+               select distinct 
+                   unnest(
+                       string_to_array(charakterisierung,', ')
+                   ) as x 
+               order by x
+           ),', '
+       ) as charakterisierung,
+	   geometrie
+	FROM 
+	    hauptprozesse_charakterisierung_agg 
+	where 
+	    charakterisierung is not null 
 )
 
+INSERT INTO afu_naturgefahren_staging_v1.synoptisches_gefahrengebiet (
+    t_basket, 
+    gefahrenstufe, 
+    charakterisierung, 
+    geometrie
+) 
 select 
     basket.t_id as t_basket,
     gefahrenstufe,
     charakterisierung,
-    st_multi(geometrie) as geometrie,
-    'Neudaten' as datenherkunft,
-    orig_basket.attachmentkey as auftrag_neudaten   
+    st_multi(geometrie) as geometrie 
 from 
     basket,
-    orig_basket,
-    hauptprozesse_charakterisierung_agg
+    hauptprozesse_charakterisierung_sort
 WHERE 
     st_area(geometrie) > 0.001 
     and 
     charakterisierung is not null 
+;
+
+
+

@@ -24,6 +24,16 @@ attribute_mapping as (
         prozessa = 'Murgang'
 )
 
+INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_murgang (
+    t_basket,
+    teilprozess, 
+    gefahrenstufe, 
+    charakterisierung, 
+    geometrie, 
+    datenherkunft, 
+    auftrag_neudaten
+)
+
  select
     basket.t_id as t_basket, 
     teilprozess,
@@ -36,3 +46,4 @@ from
     attribute_mapping syn,
     basket basket
 ;
+

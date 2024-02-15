@@ -66,10 +66,21 @@ attribute_mapping_perm_rutschung as (
         basket
 )
 
+INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung (
+    t_basket, 
+    hauptprozess, 
+    gefahrenstufe, 
+    charakterisierung, 
+    geometrie, 
+    datenherkunft, 
+    auftrag_neudaten
+)
+
     select * from attribute_mapping_hangmure
     union all 
     select * from attribute_mapping_plo_rutschung
     union all 
     select * from attribute_mapping_plo_rutschung
+
 
 

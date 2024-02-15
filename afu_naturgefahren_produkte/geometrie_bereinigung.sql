@@ -54,19 +54,35 @@ delete from afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_permanente_r
 where st_isempty(geometrie) = true
 ; 
 
-update afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_spontane_rutschung_hangmure 
+update afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_spontane_rutschung
 set geometrie = st_reducePrecision(geometrie,0.001)
 ;
 
-delete from afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_spontane_rutschung_hangmure 
+delete from afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_spontane_rutschung
 where st_isempty(geometrie) = true
 ; 
 
-update afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_stein_block_fels_bergsturz 
+update afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_hangmure 
 set geometrie = st_reducePrecision(geometrie,0.001)
 ;
 
-delete from afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_stein_block_fels_bergsturz 
+delete from afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_hangmure 
+where st_isempty(geometrie) = true
+; 
+
+update afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_stein_blockschlag 
+set geometrie = st_reducePrecision(geometrie,0.001)
+;
+
+delete from afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_stein_blockschlag 
+where st_isempty(geometrie) = true
+; 
+
+update afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_fels_bergsturz 
+set geometrie = st_reducePrecision(geometrie,0.001)
+;
+
+delete from afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_fels_bergsturz 
 where st_isempty(geometrie) = true
 ; 
 

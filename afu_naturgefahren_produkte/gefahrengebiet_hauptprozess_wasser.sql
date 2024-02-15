@@ -1,3 +1,6 @@
+delete from afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser
+;
+
 with 
 orig_dataset as (
     select
@@ -108,7 +111,7 @@ hauptprozess_wasser_point_on_polygons as (
 hauptprozess_wasser_geometrie_union as (
     select 
         gefahrenstufe, 
-        st_union(st_snaptogrid(geometrie,0.001)) as geometrie 
+        st_union(geometrie) as geometrie 
     from 
         hauptprozess_wasser_clean_prio_clip
     GROUP by 
@@ -127,16 +130,26 @@ hauptprozess_wasser_charakterisierung_agg as (
     select 
         polygone.gefahrenstufe,
         string_agg(distinct point.charakterisierung,' ') as charakterisierung,
-	    polygone.geometrie
-	FROM 
-	    hauptprozess_wasser_geometrie_split polygone 
+	polygone.geometrie
+    FROM 
+	hauptprozess_wasser_geometrie_split polygone 
     LEFT JOIN 
-	    hauptprozess_wasser_point_on_polygons point 
-		ON 
-		ST_Dwithin(point.punkt_geometrie, polygone.geometrie,0)
-	group by 
-	    polygone.geometrie, 
-	    polygone.gefahrenstufe
+	hauptprozess_wasser_point_on_polygons point 
+        ON 
+	ST_Dwithin(point.punkt_geometrie, polygone.geometrie,0)
+    group by 
+	polygone.geometrie, 
+	polygone.gefahrenstufe
+)
+
+INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser (
+    t_basket,
+    hauptprozess, 
+    gefahrenstufe, 
+    charakterisierung, 
+    geometrie, 
+    datenherkunft, 
+    auftrag_neudaten
 )
 
 select 
@@ -144,7 +157,7 @@ select
     'wasser' as hauptprozess,
     gefahrenstufe,
     charakterisierung,
-    st_snaptogrid(st_multi(geometrie),0.001) as geometrie, --snaptogrid um duplicate coordzu verhindern
+    st_multi(geometrie) as geometrie, 
     'Neudaten' as datenherkunft, 
     orig_basket.attachmentkey as auftrag_neudaten   
 from 
@@ -155,3 +168,4 @@ WHERE
     st_area(geometrie) > 0.01 
     and 
     charakterisierung is not null 
+;

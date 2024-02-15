@@ -8,8 +8,7 @@ basket as (
 
 attribute_mapping as (
     SELECT 
-        prozessa,
-        'w_ueberschwemmung' as teilprozess, 
+        's_fels_berg_sturz' as teilprozess, 
         case 
             when gef_stufe = 'keine' then 'nicht_gefaehrdet'
     	    when gef_stufe = 'vorhanden' then 'restgefaehrdung'
@@ -20,13 +19,13 @@ attribute_mapping as (
         replace(aindex, '_', '') as charakterisierung, 
         st_multi(geometrie) as geometrie --Im neuen Modell sind Multi-Polygone
     FROM 
-        afu_gefahrenkartierung.gefahrenkartirung_gk_wasser
+        afu_gefahrenkartierung.gefahrenkartirung_gk_sturz
     where 
-        prozessa IN ('Ueberflutung','nicht_rekonstruierbar')
+        prozessa = 'Felssturz'
 )
 
-INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_ueberflutung (
-    t_basket, 
+INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_fels_bergsturz (
+    t_basket,
     teilprozess, 
     gefahrenstufe, 
     charakterisierung, 
@@ -34,7 +33,6 @@ INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_ueberflutung
     datenherkunft, 
     auftrag_neudaten
 )
-
  select
     basket.t_id as t_basket, 
     teilprozess,
@@ -44,8 +42,10 @@ INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_ueberflutung
     'Altdaten' as datenherkunft,
     null as auftrag_neudaten
 from 
-    attribute_mapping syn,
+    attribute_mapping,
     basket basket
+where 
+    teilprozess is not null 
 ;
 
 

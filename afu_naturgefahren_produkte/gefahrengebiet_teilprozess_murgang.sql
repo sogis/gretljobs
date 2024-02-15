@@ -1,4 +1,8 @@
 -- ACHTUNG: NEUES DATASET UND BASKET MÜSSEN ANGELEGT WORDEN SEIN!!! 
+
+delete from afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_murgang 
+;
+
 with 
 orig_dataset as (
     select
@@ -93,6 +97,16 @@ teilprozess_murgang_prio as (
          afu_naturgefahren_staging_v1.t_ili2db_basket
  )
 
+INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_murgang (
+    t_basket,
+    teilprozess, 
+    gefahrenstufe, 
+    charakterisierung, 
+    geometrie, 
+    datenherkunft, 
+    auftrag_neudaten
+)
+
 select
     basket.t_id as t_basket, 
     teilprozess,
@@ -111,3 +125,4 @@ from
 where 
     st_isempty(geometrie) is not true 
 ;
+

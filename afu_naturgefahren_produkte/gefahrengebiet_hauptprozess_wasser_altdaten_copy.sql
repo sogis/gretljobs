@@ -4,7 +4,17 @@ basket as (
          t_id 
      from 
          afu_naturgefahren_staging_v1.t_ili2db_basket
-)    
+)
+
+INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser (
+    t_basket,
+    hauptprozess, 
+    gefahrenstufe, 
+    charakterisierung, 
+    geometrie, 
+    datenherkunft, 
+    auftrag_neudaten
+)
 
 SELECT 
     basket.t_id as t_basket,
@@ -23,3 +33,4 @@ SELECT
 FROM 
     afu_gefahrenkartierung.gefahrenkartirung_gk_wasser,
     basket
+;

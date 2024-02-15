@@ -1,3 +1,6 @@
+delete from afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz
+;
+
 with 
 orig_dataset as (
     select
@@ -34,7 +37,16 @@ hauptprozess_sturz as (
 	    charakterisierung, 
 	    (st_dump(geometrie)).geom as geometrie	
 	FROM 
-	    afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_stein_block_fels_bergsturz 
+	    afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_stein_blockschlag  
+    where 
+	    datenherkunft = 'Neudaten'
+	union all 
+	SELECT
+        gefahrenstufe, 
+	    charakterisierung, 
+	    (st_dump(geometrie)).geom as geometrie	
+	FROM 
+	    afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_fels_bergsturz 
     where 
 	    datenherkunft = 'Neudaten'
 ),
@@ -128,6 +140,16 @@ hauptprozess_sturz_charakterisierung_agg as (
 	group by 
 	    polygone.geometrie, 
 	    polygone.gefahrenstufe
+)
+
+INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz (
+    t_basket, 
+    hauptprozess, 
+    gefahrenstufe, 
+    charakterisierung, 
+    geometrie, 
+    datenherkunft, 
+    auftrag_neudaten
 )
 
 select 

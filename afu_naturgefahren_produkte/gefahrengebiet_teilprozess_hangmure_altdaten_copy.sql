@@ -6,15 +6,9 @@ basket as (
          afu_naturgefahren_staging_v1.t_ili2db_basket
 ), 
 
-attribute_mapping as (
+attribute_mapping_hangmure as (
     SELECT 
-        case 
-        	when prozessa = 'Stein_Blockschlag'
-        	then 's_stein_block_schlag'
-        	when prozessa = 'Felssturz'
-        	then 's_fels_berg_sturz'
-        	else null 
-        end as teilprozess, 
+        'r_plo_hangmure' as teilprozess, 
         case 
             when gef_stufe = 'keine' then 'nicht_gefaehrdet'
     	    when gef_stufe = 'vorhanden' then 'restgefaehrdung'
@@ -25,7 +19,17 @@ attribute_mapping as (
         replace(aindex, '_', '') as charakterisierung, 
         st_multi(geometrie) as geometrie --Im neuen Modell sind Multi-Polygone
     FROM 
-        afu_gefahrenkartierung.gefahrenkartirung_gk_sturz
+        afu_gefahrenkartierung.gefahrenkartirung_gk_hangmure 
+)
+
+INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_hangmure (
+    t_basket,
+    teilprozess, 
+    gefahrenstufe, 
+    charakterisierung, 
+    geometrie, 
+    datenherkunft, 
+    auftrag_neudaten
 )
 
  select
@@ -37,8 +41,8 @@ attribute_mapping as (
     'Altdaten' as datenherkunft,
     null as auftrag_neudaten
 from 
-    attribute_mapping,
+    attribute_mapping_hangmure,
     basket basket
-where 
-    teilprozess is not null 
 ;
+
+

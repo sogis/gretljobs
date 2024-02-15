@@ -1,3 +1,6 @@
+delete from afu_naturgefahren_staging_v1.fliessrichtung 
+;
+
 with 
 orig_dataset as (
     select
@@ -20,13 +23,23 @@ orig_basket as (
         topic like '%Befunde'
 ),
 
- basket as (
-     select 
-         t_id,
-         attachmentkey
-     from 
-         afu_naturgefahren_staging_v1.t_ili2db_basket
- )
+basket as (
+    select 
+        t_id,
+        attachmentkey
+    from 
+        afu_naturgefahren_staging_v1.t_ili2db_basket
+)
+
+INSERT INTO afu_naturgefahren_staging_v1.fliessrichtung (
+    t_basket,
+    jaehrlichkeit, 
+    fliessrichtung, 
+    prozessquelle_neudaten, 
+    geometrie, 
+    datenherkunft, 
+    auftrag_neudaten
+)
 
 SELECT 
     basket.t_id as t_basket, 
@@ -46,5 +59,3 @@ left join
 where 
     richtung.t_basket in (select t_id from orig_basket)
 ;
-    
-

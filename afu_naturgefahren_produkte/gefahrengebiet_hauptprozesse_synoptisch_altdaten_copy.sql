@@ -6,6 +6,15 @@ basket as (
         afu_naturgefahren_staging_v1.t_ili2db_basket
 )
 
+INSERT INTO afu_naturgefahren_staging_v1.synoptisches_gefahrengebiet (
+    t_basket,
+    gefahrenstufe, 
+    charakterisierung, 
+    geometrie, 
+    datenherkunft, 
+    auftrag_neudaten
+)
+
 select 
     basket.t_id as t_basket,
     case 

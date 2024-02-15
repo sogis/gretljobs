@@ -1,3 +1,6 @@
+delete from afu_naturgefahren_staging_v1.fliesstiefen 
+;
+
 with 
 orig_dataset as (
     select
@@ -21,12 +24,22 @@ orig_basket as (
 ),
 
  basket as (
-     select 
-         t_id,
-         attachmentkey
-     from 
-         afu_naturgefahren_staging_v1.t_ili2db_basket
- )
+    select 
+        t_id,
+        attachmentkey
+    from 
+        afu_naturgefahren_staging_v1.t_ili2db_basket
+)
+
+INSERT INTO afu_naturgefahren_staging_v1.fliesstiefen (
+    t_basket, 
+    jaehrlichkeit, 
+    ueberschwemmung_tiefe, 
+    prozessquelle_neudaten, 
+    geometrie, 
+    datenherkunft, 
+    auftrag_neudaten
+)
 
 SELECT 
     basket.t_id as t_basket,
@@ -58,5 +71,3 @@ left join
 where 
     tiefe.t_basket in (select t_id from orig_basket)
 ;
-
-

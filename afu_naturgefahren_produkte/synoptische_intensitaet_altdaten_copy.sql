@@ -59,7 +59,16 @@ attribute_mapping as (
 FROM 
 	afu_gefahrenkartierung.gefahrenkartirung_ik_synoptisch_mgdm
 )
- 
+
+INSERT INTO afu_naturgefahren_staging_v1.synoptische_intensitaet (
+    t_basket,
+    teilprozess, 
+    jaehrlichkeit, 
+    intensitaet, 
+    geometrie, 
+    datenherkunft, 
+    auftrag_neudaten
+)
  select
     basket.t_id as t_basket, 
     syn.teilproz as teilprozess,

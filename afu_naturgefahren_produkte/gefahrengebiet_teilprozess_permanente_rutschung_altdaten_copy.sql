@@ -22,6 +22,16 @@ attribute_mapping as (
         afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_kont_sackung
 )
 
+INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_permanente_rutschung (
+    t_basket,
+    teilprozess, 
+    gefahrenstufe, 
+    charakterisierung, 
+    geometrie, 
+    datenherkunft, 
+    auftrag_neudaten
+)
+
  select
     basket.t_id as t_basket, 
     teilprozess,
@@ -34,3 +44,4 @@ from
     attribute_mapping,
     basket basket
 ;
+

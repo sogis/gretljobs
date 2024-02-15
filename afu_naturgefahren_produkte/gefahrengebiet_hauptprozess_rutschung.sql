@@ -1,3 +1,6 @@
+delete from afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung
+;
+
 with 
 orig_dataset as (
     select
@@ -43,7 +46,16 @@ hauptprozess_rutschung as (
 	    charakterisierung, 
 	    (ST_Dump(geometrie)).geom as geometrie
 	from 
-	    afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_spontane_rutschung_hangmure 
+	    afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_spontane_rutschung 
+	where 
+	    datenherkunft = 'Neudaten'
+    union all 
+    select 
+	    gefahrenstufe,
+	    charakterisierung, 
+	    (ST_Dump(geometrie)).geom as geometrie
+	from 
+	    afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_hangmure 
 	where 
 	    datenherkunft = 'Neudaten'
 ),
@@ -108,7 +120,7 @@ hauptprozess_rutschung_point_on_polygons as (
 hauptprozess_rutschung_geometrie_union as (
     select 
         gefahrenstufe, 
-        st_union(st_snaptogrid(geometrie,0.001)) as geometrie 
+        st_union(geometrie) as geometrie 
     from 
         hauptprozess_rutschung_clean_prio_clip
     GROUP by 
@@ -139,12 +151,22 @@ hauptprozess_rutschung_charakterisierung_agg as (
 	    polygone.gefahrenstufe
 )
 
+INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung (
+    t_basket, 
+    hauptprozess, 
+    gefahrenstufe, 
+    charakterisierung, 
+    geometrie, 
+    datenherkunft, 
+    auftrag_neudaten
+)
+
 select 
     basket.t_id as t_basket,
     'rutschung' as hauptprozess,
     gefahrenstufe,
     charakterisierung,
-    st_snaptogrid(st_multi(geometrie),0.001) as geometrie, --snaptogrid um duplicate coordzu verhindern
+    st_multi(geometrie) as geometrie,
     'Neudaten' as datenherkunft, 
     orig_basket.attachmentkey as auftrag_neudaten   
 from 
@@ -155,3 +177,4 @@ WHERE
     st_area(geometrie) > 0.001 
     and 
     charakterisierung is not null 
+;

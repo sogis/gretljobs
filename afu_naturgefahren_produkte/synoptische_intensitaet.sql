@@ -1,4 +1,8 @@
 -- ACHTUNG: NEUES DATASET UND BASKET MÜSSEN ANGELEGT WORDEN SEIN!!! 
+
+delete from afu_naturgefahren_staging_v1.synoptische_intensitaet
+;
+
 with 
 orig_dataset as (
     select
@@ -713,6 +717,15 @@ alle_teilprozesse as (
          afu_naturgefahren_staging_v1.t_ili2db_basket
  )
 
+INSERT INTO afu_naturgefahren_staging_v1.synoptische_intensitaet (
+    t_basket,
+    teilprozess, 
+    jaehrlichkeit, 
+    intensitaet, 
+    geometrie, 
+    datenherkunft, 
+    auftrag_neudaten
+)
 select
     basket.t_id as t_basket, 
     teilprozess,

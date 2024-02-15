@@ -159,8 +159,9 @@ teilprozesse as (
         afu_naturgefahren_v1.befundueberschwemmungstatisch teilprozess_ueberschwemmungstatisch
     where 
         teilprozess_ueberschwemmungstatisch.t_basket in (select t_id from orig_basket)
-)
+),
 
+dokumente_union as (
 select 
     basket.t_id as t_basket, 
     gemeinden.bfs_gemeindenummer as gemeinde_bfsnr, 
@@ -173,9 +174,7 @@ select
                       'Hauptprozesse', berichte.hauptprozess, 
                       'Jahr', berichte.jahr
                       ) as dokumente,
-    gemeinden.geometrie, 
-    'Neudaten' as datenherkunft, 
-    basket.attachmentkey as auftrag_neudaten
+    gemeinden.geometrie
 from 
     basket,
     teilprozesse befund
@@ -199,11 +198,31 @@ select
     alte_dokumente.gemeinde_bfsnr,
     alte_dokumente.gemeinde_name,
     alte_dokumente.dokument as dokumente,
-    alte_dokumente.geometrie, 
-    'Altdaten' as datenherkunft, 
-    null as auftrag_neudaten
+    alte_dokumente.geometrie
 from 
     basket,
     afu_naturgefahren_alte_dokumente_v1.alte_dokumente alte_dokumente
-;
-    
+)
+
+INSERT INTO afu_naturgefahren_staging_v1.dokumente_pro_gemeinde (
+    t_basket, 
+    gemeinde_bfsnr, 
+    --gemeinde_nr_kanton, 
+    gemeinde_name, 
+    dokumente, 
+    geometrie
+)
+
+select 
+    t_basket,
+    gemeinde_bfsnr, 
+    gemeinde_name,
+    json_agg(dokumente) as dokumente,
+    geometrie
+from 
+    dokumente_union
+GROUP by 
+    t_basket,
+    gemeinde_bfsnr,
+    gemeinde_name,
+    geometrie 

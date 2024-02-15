@@ -1,4 +1,8 @@
 -- ACHTUNG: NEUES DATASET UND BASKET MÜSSEN ANGELEGT WORDEN SEIN!!! 
+
+delete from afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_ueberflutung 
+;
+
 with 
 orig_dataset as (
     select
@@ -21,7 +25,7 @@ orig_basket as (
         topic like '%Befunde'
 ),
 
-teilprozess_ueberschwemmung_statisch as ( 
+teilprozess_ueberschwemmung_statisch_dynamisch as ( 
     select 
        'w_ueberschwemmung' as teilprozess,
         case when 
@@ -65,34 +69,9 @@ teilprozess_ueberschwemmung_statisch as (
         befund.t_basket = basket.t_id 
     where 
         befund.t_basket in (select t_id from orig_basket)
-),
-
-teilprozess_ueberschwemmung_statisch_prio as (
-    SELECT 
-        a.teilprozess,
-        a.gefahrenstufe,
-        a.charakterisierung,
-        ST_Multi(COALESCE(
-            ST_Difference(a.geometrie, blade.geometrie),
-            a.geometrie
-        )) AS geometrie, 
-        a.datenherkunft,
-        a.auftrag_neudaten
-    FROM  
-        teilprozess_ueberschwemmung_statisch AS a
-    CROSS JOIN LATERAL (
-        SELECT 
-            ST_Union(geometrie) AS geometrie
-        FROM   
-            teilprozess_ueberschwemmung_statisch AS b
-        WHERE 
-            a.geometrie && b.geometrie 
-            and 
-            a.charakterisierung < b.charakterisierung              
-    ) AS blade
-),
-
-teilprozess_ueberschwemmung_dynamisch as ( 
+        
+    union all 
+    
     select 
        'w_ueberschwemmung' as teilprozess,
         case when 
@@ -138,7 +117,7 @@ teilprozess_ueberschwemmung_dynamisch as (
         befund.t_basket in (select t_id from orig_basket)
 ),
 
-teilprozess_ueberschwemmung_dynamisch_prio as (
+teilprozess_ueberschwemmung_statisch_dynamisch_prio as (
     SELECT 
         a.teilprozess,
         a.gefahrenstufe,
@@ -150,12 +129,12 @@ teilprozess_ueberschwemmung_dynamisch_prio as (
         a.datenherkunft,
         a.auftrag_neudaten
     FROM  
-        teilprozess_ueberschwemmung_dynamisch AS a
+        teilprozess_ueberschwemmung_statisch_dynamisch AS a
     CROSS JOIN LATERAL (
         SELECT 
             ST_Union(geometrie) AS geometrie
         FROM   
-            teilprozess_ueberschwemmung_dynamisch AS b
+            teilprozess_ueberschwemmung_statisch_dynamisch AS b
         WHERE 
             a.geometrie && b.geometrie 
             and 
@@ -168,13 +147,17 @@ teilprozess_ueberschwemmung_dynamisch_prio as (
          t_id 
      from 
          afu_naturgefahren_staging_v1.t_ili2db_basket
- ), 
- 
- teilprozesse_union as (
-     select * from teilprozess_ueberschwemmung_statisch_prio
-     union all 
-     select * from teilprozess_ueberschwemmung_dynamisch_prio
  )
+
+INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_ueberflutung (
+    t_basket, 
+    teilprozess, 
+    gefahrenstufe, 
+    charakterisierung, 
+    geometrie, 
+    datenherkunft, 
+    auftrag_neudaten
+)
 
 select
     basket.t_id as t_basket, 
@@ -189,9 +172,11 @@ select
     datenherkunft,
     auftrag_neudaten
 from 
-    teilprozesse_union, 
+    teilprozess_ueberschwemmung_statisch_dynamisch_prio, 
     basket
 where 
     st_isempty(geometrie) is not true 
 ;
+
+
 
