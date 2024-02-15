@@ -20,6 +20,14 @@ task preCopy(type: SqlExecutor){
     sqlFiles = ['pre_copy/refs_set_null.sql', 'pre_copy/delete_regions.sql']
 }
 
+task copyKanton(type: Db2Db, dependsOn: preCopy){
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriSimi, dbUserSimi, dbPwdSimi]
+    transferSets = [
+            new TransferSet('copy_from/kanton.sql', 'simi.simitheme_sub_area', false)
+    ];
+}
+
 task copyEditDb(type: Db2Db, dependsOn: preCopy){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriSimi, dbUserSimi, dbPwdSimi]
