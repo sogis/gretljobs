@@ -36,7 +36,7 @@ task copyEditDb(type: Db2Db, dependsOn: preCopy){
     ];
 }
 
-task postCopy(type: SqlExecutor, dependsOn: copyEditDb){
+task postCopy(type: SqlExecutor, dependsOn: [copyKanton, copyEditDb]){
     database = [dbUriSimi, dbUserSimi, dbPwdSimi]
     sqlFiles = ['post_copy/refs_reset.sql']
 }
