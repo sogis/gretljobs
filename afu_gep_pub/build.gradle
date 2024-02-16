@@ -28,8 +28,21 @@ dataSets.each { dataSet ->
         overwrite true
     }
 
-    tasks.register("replace_$dataSet", Ili2pgReplace) {
+    tasks.register("transferDataToOldModel_$dataSet") {
         dependsOn "download_$dataSet"
+        description = "Macht 'Datenumbau' vom 2020_1-Modell in das 2020-Modell. Danke SJB."
+        doLast {
+            ant.replace(
+                file: Paths.get(pathToTempFolder, dataSet + ".xtf").toFile(),
+                token: 'VSADSSMINI_2020_1_LV95',
+                value: 'VSADSSMINI_2020_LV95',
+                encoding: 'UTF-8'
+            )
+        }
+    }
+
+    tasks.register("replace_$dataSet", Ili2pgReplace) {
+        dependsOn "transferDataToOldModel_$dataSet"
         database = [dbUriEdit, dbUserEdit, dbPwdEdit]
         dbschema = DB_SCHEMA_EDIT
         models = 'VSADSSMINI_2020_LV95'
