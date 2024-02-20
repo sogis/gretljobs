@@ -13,18 +13,17 @@ def dbUserSimi = dbUserPub
 def dbPwdSimi = dbPwdPub
 */
 
-defaultTasks 'postCopy__' // 20240131 Jek: Extra verkonfiguriert, damit das Ausführen fehlschlägt. Grund: Pendente Quellanpassung für die Gemeindeeinteilung.
+defaultTasks 'postCopy' // 20240131 Jek: Extra verkonfiguriert, damit das Ausführen fehlschlägt. Grund: Pendente Quellanpassung für die Gemeindeeinteilung.
 
 task preCopy(type: SqlExecutor){
     database = [dbUriSimi, dbUserSimi, dbPwdSimi]
     sqlFiles = ['pre_copy/refs_set_null.sql', 'pre_copy/delete_regions.sql']
 }
 
-task copyGemeindenKanton(type: Db2Db, dependsOn: preCopy){
+task copyKanton(type: Db2Db, dependsOn: preCopy){
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriSimi, dbUserSimi, dbPwdSimi]
     transferSets = [
-            new TransferSet('copy_from/gemeinden.sql', 'simi.simitheme_sub_area', false),
             new TransferSet('copy_from/kanton.sql', 'simi.simitheme_sub_area', false)
     ];
 }
@@ -37,7 +36,7 @@ task copyEditDb(type: Db2Db, dependsOn: preCopy){
     ];
 }
 
-task postCopy(type: SqlExecutor, dependsOn: [copyGemeindenKanton, copyEditDb]){
+task postCopy(type: SqlExecutor, dependsOn: [copyKanton, copyEditDb]){
     database = [dbUriSimi, dbUserSimi, dbPwdSimi]
     sqlFiles = ['post_copy/refs_reset.sql']
 }
