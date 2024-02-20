@@ -1,0 +1,41 @@
+
+// Import Daten der Drainage (Modell VSADSSMINI_2020_LV95) pro Projekt (dataset mit Präfix "p_") oder Gemeinde (dataset mit Präfix "nf_") in das Schema "alw_drainage".  
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
+
+
+apply plugin: 'ch.so.agi.gretl'
+
+task copyXtfFile(type: Copy) {
+    from "upload/"
+    into "upload/"
+    include("uploadFile")
+    rename("uploadFile", "${ili2pgDataset}.xtf")
+}
+
+task validateXtfFile(type: IliValidator, dependsOn: 'copyXtfFile') {
+    description = "Validiert die hochgeladene Transferdatei gegen das Validierungsmodell."
+    dataFiles = "upload/${ili2pgDataset}.xtf"
+    configFile = 'VSADSSMINI_2020_LV95_Validierung_Drainage_20230731.ini'
+    allObjectsAccessible = false
+    failOnError = true
+}
+
+task importXtfFile(type: Ili2pgReplace, dependsOn: 'validateXtfFile') {
+    description = 'Importiert die geprüften Daten in das Schema alw_drainage. Die Validierung gegen das Modell ist deaktiviert, weil nebst den Drainagen noch andere Daten in der Lieferung enthalten sind und diese sind nicht valid'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'alw_drainagen_v1'
+    models = 'VSADSSMINI_2020_LV95'
+    deleteData= false
+    dataset = ili2pgDataset
+    dataFile = "upload/${ili2pgDataset}.xtf"
+    disableValidation = true // Weil nur Drainagen geprüft werden und die restlichen Daten werden nicht geprüft.
+}
+
+task deleteXtfFile_upload(type: Delete, dependsOn: 'importXtfFile'){
+    delete "upload/${ili2pgDataset}.xtf"
+}
