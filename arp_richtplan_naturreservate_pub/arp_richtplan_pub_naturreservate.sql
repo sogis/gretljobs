@@ -29,5 +29,5 @@ SELECT
     'bestehend' AS astatus,
     'naturreservate' AS datenquelle
 FROM
-    arp_naturreservate_pub.reservat
+    arp_naturreservate_pub.naturreservate_reservat
 ;

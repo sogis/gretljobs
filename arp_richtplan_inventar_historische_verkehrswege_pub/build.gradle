@@ -1,11 +1,54 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
 
+apply plugin: "de.undercouch.download"
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'dataTransfer'
+defaultTasks 'removeFiles'
 
-task deleteData(type: SqlExecutor){
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
+def pathToDataZip = Paths.get(pathToTempFolder, "ivs-nat_2056.xtf.zip")
+def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), 'IVS_V2_1_national_LV95.xtf')
+
+
+task download(type: Download){
+    description = "Download ivs-data from geo.admin.ch"
+    doLast {
+        println "File downloaded to: " + pathToTempFolder
+    }
+    src 'https://data.geo.admin.ch/ch.astra.ivs-nat/ivs-nat/ivs-nat_2056.xtf.zip'
+    dest pathToTempFolder
+    overwrite true
+}
+
+task unzipData(type: Copy, dependsOn: 'download'){
+    description = "Unzip Data.zip."
+    doLast {
+        println "File unzipped to directory: " + pathToUnzipFolder
+    }
+    from zipTree(pathToDataZip)
+    into file(pathToUnzipFolder)
+    include '**/*.xtf'
+}
+
+task dbImport(type: Ili2pgImport, dependsOn: 'unzipData'){
+    description = "Import IVS-Data into Edit database"
+    doLast {
+        println "Data imported into db: " + dbUriEdit
+    }
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "arp_inventar_historische_verkehrswege_v1"
+    models = "IVS_V2_1"
+    disableValidation = false
+    dataFile = file(xtfFilePath)
+    deleteData = true
+    strokeArcs = true
+}
+
+task deleteData(type: SqlExecutor, dependsOn: dbImport){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ['delete_inventar_historische_verkehrswege.sql']
 }
@@ -17,3 +60,28 @@ task dataTransfer(type: Db2Db, dependsOn: deleteData){
             new TransferSet('arp_richtplan_pub_inventar_historische_verkehrswege.sql', 'arp_richtplan_pub_v2.richtplankarte_ueberlagernde_linie', false)
     ];
 }
+
+task removeFiles(type: Delete, dependsOn: 'dataTransfer') {
+    description = "Remove Files"
+    doLast {
+        println "Files removed."
+    }
+    delete file(pathToUnzipFolder), file(pathToDataZip)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

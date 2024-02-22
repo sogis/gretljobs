@@ -11,7 +11,6 @@ INSERT INTO arp_richtplan_pub_v2.richtplankarte_ueberlagernde_flaeche (
     gemeindenamen,
     abstimmungskategorie,
     planungsstand,
-    dokumente,
     astatus,
     datenquelle
     )
@@ -22,11 +21,10 @@ Areal AS (
     SELECT
         'Grundwasserschutzzone_areal' AS objekttyp,
         'Areal' AS weitere_informationen,
-        st_multi(sa.apolygon) AS geometrie,
+        st_multi(st_union(sa.apolygon)) AS geometrie,
         string_agg(g.gemeindename, ', ') AS gemeindenamen,
         'Ausgangslage' AS abstimmungskategorie,
         'rechtsgueltig' AS planungsstand,
-        sa.dokumente AS dokumente,
         'bestehend' AS astatus,
         'gewaesserschutz' AS datenquelle
     FROM
@@ -39,8 +37,7 @@ Areal AS (
     AND
         st_multi(sa.apolygon) IS NOT NULL
     GROUP BY
-        sa.apolygon,
-        sa.dokumente
+        sa.rechtskraftdatum
     ORDER BY
         gemeindenamen
     ),
@@ -49,11 +46,10 @@ Zone AS(
     SELECT
         'Grundwasserschutzzone_areal' AS objekttyp,
         'Zone' AS weitere_informationen,
-        st_multi(sz.apolygon) AS geometrie,
+        st_multi(st_union(sz.apolygon)) AS geometrie,
         string_agg(g.gemeindename, ', ') AS gemeindenamen,
         'Ausgangslage' AS abstimmungskategorie,
         'rechtsgueltig' AS planungsstand,
-        sz.dokumente AS dokumente,
         'bestehend' AS astatus,
         'gewaesserschutz' AS datenquelle
     FROM
@@ -66,8 +62,7 @@ Zone AS(
     AND
         st_multi(sz.apolygon) IS NOT NULL
     GROUP BY
-        sz.apolygon,
-        sz.dokumente
+        sz.rechtskraftdatum
     ORDER BY
         gemeindenamen
     )
@@ -79,7 +74,6 @@ SELECT
     gemeindenamen,
     abstimmungskategorie,
     planungsstand,
-    dokumente,
     astatus,
     datenquelle
 FROM
@@ -94,7 +88,6 @@ SELECT
     gemeindenamen,
     abstimmungskategorie,
     planungsstand,
-    dokumente,
     astatus,
     datenquelle
 FROM

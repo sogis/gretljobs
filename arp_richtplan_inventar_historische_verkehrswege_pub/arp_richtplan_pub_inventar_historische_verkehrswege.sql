@@ -1,7 +1,7 @@
 SELECT
     NULL AS objektnummer,
     'Historischer_Verkehrsweg' AS objekttyp,
-    ST_Multi(i.ivs_geometrie) AS geometrie,
+    ST_Multi(ivs_geometrie) AS geometrie,
     NULL AS objektname,
     'Ausgangslage' AS abstimmungskategorie,
     NULL AS bedeutung,
@@ -18,9 +18,5 @@ SELECT
     NULL AS bundesblatt_datum,
     'inventar_historischer_verkehrsweg' AS datenquelle
 FROM
-    arp_inventar_historische_verkehrswege_v1.ivs_inventarkarte_ivs_linienobjekte_lv95 AS i
-JOIN
-    agi_hoheitsgrenzen_pub.kantonsgrenze AS k
-ON
-    ST_Intersects(i.ivs_geometrie, k.geometrie)
+    arp_inventar_historische_verkehrswege_v1.ivs_inventarkarte_ivs_linienobjekte_lv95
 ;
