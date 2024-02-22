@@ -24,7 +24,7 @@ SELECT
     'fruchtfolgeflaeche' AS datenquelle
 FROM
     alw_fruchtfolgeflaechen_pub_v1.fruchtfolgeflaeche AS f,
-    agi_hoheitsgrenzen_pub.gemeindegrenze AS g
+    agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS g
 WHERE 
     ST_Intersects(f.geometrie, g.geometrie) = TRUE
     AND

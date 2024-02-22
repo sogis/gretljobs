@@ -29,7 +29,7 @@ Areal AS (
         'gewaesserschutz' AS datenquelle
     FROM
         afu_gewaesserschutz_pub_v1.gewaesserschutz_schutzareal AS sa,
-        agi_hoheitsgrenzen_pub.gemeindegrenze AS g
+        agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS g
     WHERE
         sa.rechtsstatus = 'inKraft'
     AND
@@ -54,7 +54,7 @@ Zone AS(
         'gewaesserschutz' AS datenquelle
     FROM
         afu_gewaesserschutz_pub_v1.gewaesserschutz_schutzzone AS sz,
-        agi_hoheitsgrenzen_pub.gemeindegrenze AS g
+        agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS g
     WHERE
         sz.rechtsstatus = 'inKraft'
     AND
