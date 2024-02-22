@@ -1,0 +1,23 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'insertGemeindeRegion'
+
+def gemTid = '14900' // t_id der datenabdeckung, zu welcher die Gemeinden aktualisiert werden sollen
+
+task deleteGemeindeRegion(type: SqlExecutor){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [tid: gemTid]
+    sqlFiles = ['delete_gem_reg.sql']
+}
+
+task insertGemeindeRegion(type: Db2Db, dependsOn: deleteGemeindeRegion){
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [tid: gemTid]
+    transferSets = [
+            new TransferSet('insert_gem_reg.sql', 'agi_metadaten_datenabdeckung_v1.abdeckung_teilgebiet', false)
+    ];
+}

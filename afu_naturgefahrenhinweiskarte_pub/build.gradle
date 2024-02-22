@@ -1,0 +1,53 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'publishPub'
+
+/** 
+task publiedit(type: Publisher){
+  database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+  dataIdent = "ch.so.afu.naturgefahrenhinweiskarte.relational"
+  dbSchema = "afu_naturgefahrenhinweiskarte_v1"
+  modelsToPublish = "SO_AFU_Naturgefahrenhinweiskarte_20240124"
+  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+*/
+task publiedit(){}
+
+task transferAfuNaturgefahrenhinweiskarte(type: Db2Db, dependsOn: 'publiedit'){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('blockschlag.sql','afu_naturgefahrenhinweiskarte_pub_v1.blockschlag', true),
+            new TransferSet('murgang.sql','afu_naturgefahrenhinweiskarte_pub_v1.murgang', true),
+            new TransferSet('rutschung_bekannt.sql','afu_naturgefahrenhinweiskarte_pub_v1.rutschung_bekannt', true),
+            new TransferSet('rutschung_lockergestein.sql','afu_naturgefahrenhinweiskarte_pub_v1.rutschung_lockergestein', true),
+            new TransferSet('rutschung_tief.sql','afu_naturgefahrenhinweiskarte_pub_v1.rutschung_tief', true),
+            new TransferSet('steinschlag.sql','afu_naturgefahrenhinweiskarte_pub_v1.steinschlag', true),
+            new TransferSet('talboeden_geringe_neigung.sql','afu_naturgefahrenhinweiskarte_pub_v1.talboeden_geringe_neigung', true),
+            new TransferSet('ueberflutung.sql','afu_naturgefahrenhinweiskarte_pub_v1.ueberflutung', true),
+            new TransferSet('uebersarung.sql','afu_naturgefahrenhinweiskarte_pub_v1.uebersarung', true),
+    ];
+}
+
+/** 
+task publishPub(type: Publisher, dependsOn: 'transferAfufNaturgefahrenhinweiskarte'){
+    database = [dbUriPub,dbUserPub,dbPwdPub]
+    dataIdent = "ch.so.afu.naturgefahrenhinweiskarte"
+    dbSchema = "afu_naturgefahrenhinweiskarte_pub_v1"
+    modelsToPublish = "SO_AFU_Naturgefahrenhinweiskarte_Publikation_20240124"
+    userFormats = true
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+*/
+task publishPub(dependsOn: 'transferAfuNaturgefahrenhinweiskarte'){}

@@ -7,4 +7,10 @@ SET kultur_id=(
         ST_Intersects(kf.geometrie,vbg.geometrie)
         AND
         (ST_MaximumInscribedCircle(ST_Intersection(kf.geometrie,vbg.geometrie))).radius > 1
-);
+    )
+WHERE
+    ST_IsValid(vbg.geometrie) = TRUE 
+    AND
+    -- nur wenn aktuelles Datum nicht zwischen dem 1. Dezember und dem 15. Januar liegt
+    (date_part('month',now()) NOT IN (1,12) OR (date_part('month',now())=1 AND date_part('day',now())>15))
+;

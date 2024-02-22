@@ -15,7 +15,11 @@ with json_documents AS (
                 kanton AS "Kanton",
                 gemeinde AS "Gemeinde",
                 publiziert_ab AS "publiziert_ab",
-                rechtsstatus AS "Rechtsstatus",
+                CASE
+                    WHEN rechtsstatus = 'laufendeAenderungen'
+                        THEN 'laufendeAenderung'
+                    ELSE rechtsstatus
+                END AS "Rechtsstatus",
                 text_im_web AS "Text_im_Web",
                 bemerkungen AS "Bemerkungen",
                 datum_archivierung AS "Datum_Archivierung",
@@ -56,7 +60,11 @@ SELECT
     typ.art AS typ_art,
     waldgrenze.geometrie AS geometrie,
     waldgrenze.nummer AS nummer,
-    waldgrenze.rechtsstatus AS rechtsstatus,
+    CASE
+        WHEN waldgrenze.rechtsstatus = 'laufendeAenderungen'
+            THEN 'laufendeAenderung'
+        ELSE waldgrenze.rechtsstatus
+    END AS rechtsstatus,
     waldgrenze.publiziert_ab AS publiziert_ab,
     waldgrenze.bemerkungen AS bemerkungen,
     waldgrenze.erfasser AS erfasser,
