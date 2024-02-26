@@ -1,0 +1,31 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'validateMgdmData'
+
+/**
+ * Datenumbau aus dem Erfassungs-Modell in das MGDM
+ */
+task transferSchutzbautenobjekte(type: SqlExecutor){
+    description = "Baue die Daten vom Erfassungsmodell ins MGDM um"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = [
+        "delete_schutzbautenobjekte.sql",
+        "select_schutzbautenobjekte_wasser.sql",
+        "select_schutzbautenobjekte_rutschung.sql",
+        "select_schutzbautenobjekte_sturz.sql"
+    ]
+}
+
+/**
+ * Validiere die umgebauten Daten im MGDM
+ */
+task validateMgdmData(type: Ili2pgValidate){
+    dependsOn "transferSchutzbautenobjekte"
+    description = "Validiere die Daten im Modell Schutzbauten_LV95_V1"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = "Schutzbauten_LV95_V1"
+    dbschema = "afu_schutzbauten_mgdm_v1"
+}
