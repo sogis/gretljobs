@@ -25,4 +25,8 @@ FROM
     basket 
 where 
     prozessa = 'Ufererosion'
+and 
+    publiziert is true
 ;
+
+

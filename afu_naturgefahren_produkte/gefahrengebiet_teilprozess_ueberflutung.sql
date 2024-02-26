@@ -142,6 +142,36 @@ teilprozess_ueberschwemmung_statisch_dynamisch_prio as (
     ) AS blade
 ),
 
+teilprozess_ueberschwemmung_statisch_dynamisch_union as (
+    select 
+        teilprozess,
+        gefahrenstufe,
+        charakterisierung,
+        st_union(geometrie) as geometrie,
+        datenherkunft,
+        auftrag_neudaten
+    from 
+        teilprozess_ueberschwemmung_statisch_dynamisch_prio
+    group by 
+        teilprozess,
+        gefahrenstufe,
+        charakterisierung,
+        datenherkunft,
+        auftrag_neudaten
+),
+
+teilprozess_ueberschwemmung_statisch_dynamisch_dump as (
+    select 
+        teilprozess,
+        gefahrenstufe,
+        charakterisierung,
+        st_multi((st_dump(geometrie)).geom) as geometrie,
+        datenherkunft,
+        auftrag_neudaten
+    from 
+        teilprozess_ueberschwemmung_statisch_dynamisch_union
+), 
+
  basket as (
      select 
          t_id 
@@ -172,11 +202,12 @@ select
     datenherkunft,
     auftrag_neudaten
 from 
-    teilprozess_ueberschwemmung_statisch_dynamisch_prio, 
+    teilprozess_ueberschwemmung_statisch_dynamisch_dump, 
     basket
 where 
     st_isempty(geometrie) is not true 
 ;
+
 
 
 

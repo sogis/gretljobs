@@ -33,4 +33,6 @@ SELECT
 FROM 
     afu_gefahrenkartierung.gefahrenkartirung_gk_wasser,
     basket
+where 
+    publiziert is true
 ;

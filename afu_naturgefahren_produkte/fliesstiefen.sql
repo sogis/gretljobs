@@ -43,7 +43,12 @@ INSERT INTO afu_naturgefahren_staging_v1.fliesstiefen (
 
 SELECT 
     basket.t_id as t_basket,
-    tiefe.jaehrlichkeit, 
+    case 
+    	when tiefe.jaehrlichkeit = 'J_30' then '30'
+    	when tiefe.jaehrlichkeit = 'J_100' then '100'
+    	when tiefe.jaehrlichkeit = 'J_300' then '300'
+    	when tiefe.jaehrlichkeit = 'Restgefaehrdung' then 'Restgefaehrdung' 
+    end as jaehrlichkeit,  
     case 
     	when h = 'von_0_bis_25_cm' then 'von_0_bis_25cm'
     	when h = 'von_25_bis_50_cm' then 'von_25_bis_50cm' 

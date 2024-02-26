@@ -20,6 +20,8 @@ attribute_mapping_plo_rutschung as (
         st_multi(geometrie) as geometrie --Im neuen Modell sind Multi-Polygone
     FROM 
         afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_spontan 
+    where 
+        publiziert is true
 )
 
 INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_spontane_rutschung (
@@ -44,5 +46,6 @@ from
     attribute_mapping_plo_rutschung,
     basket basket
 ;
+
 
 

@@ -97,6 +97,36 @@ teilprozess_felsbergsturz_prio as (
     ) AS blade
 ),
 
+teilprozess_felsbergsturz_union as (
+    select 
+        teilprozess,
+        gefahrenstufe,
+        charakterisierung,
+        st_union(geometrie) as geometrie,
+        datenherkunft,
+        auftrag_neudaten
+    from 
+        teilprozess_felsbergsturz_prio
+    group by 
+        teilprozess,
+        gefahrenstufe,
+        charakterisierung,
+        datenherkunft,
+        auftrag_neudaten
+),
+
+teilprozess_felsbergsturz_dump as (
+    select 
+        teilprozess,
+        gefahrenstufe,
+        charakterisierung,
+        st_multi((st_dump(geometrie)).geom) as geometrie,
+        datenherkunft,
+        auftrag_neudaten
+    from 
+        teilprozess_felsbergsturz_union
+), 
+
  basket as (
      select 
          t_id 
@@ -127,11 +157,12 @@ select
     datenherkunft,
     auftrag_neudaten
 from 
-    teilprozess_felsbergsturz_prio, 
+    teilprozess_felsbergsturz_dump, 
     basket
 where 
     st_isempty(geometrie) is not true 
 ;
+
 
 
 

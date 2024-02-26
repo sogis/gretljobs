@@ -92,6 +92,36 @@ teilprozess_spontanrutschung_prio as (
     ) AS blade
 ),
 
+teilprozess_spontanrutschung_union as (
+    select 
+        teilprozess,
+        gefahrenstufe,
+        charakterisierung,
+        st_union(geometrie) as geometrie,
+        datenherkunft,
+        auftrag_neudaten
+    from 
+        teilprozess_spontanrutschung_prio
+    group by 
+        teilprozess,
+        gefahrenstufe,
+        charakterisierung,
+        datenherkunft,
+        auftrag_neudaten
+),
+
+teilprozess_spontanrutschung_dump as (
+    select 
+        teilprozess,
+        gefahrenstufe,
+        charakterisierung,
+        st_multi((st_dump(geometrie)).geom) as geometrie,
+        datenherkunft,
+        auftrag_neudaten
+    from 
+        teilprozess_spontanrutschung_union
+), 
+
  basket as (
      select 
          t_id 
@@ -118,11 +148,12 @@ select
     datenherkunft,
     auftrag_neudaten
 from 
-    teilprozess_spontanrutschung_prio, 
+    teilprozess_spontanrutschung_dump, 
     basket
 where 
     st_isempty(geometrie) is not true 
 ;
+
 
 
 

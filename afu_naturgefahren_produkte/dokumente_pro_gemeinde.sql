@@ -1,3 +1,6 @@
+delete from afu_naturgefahren_staging_v1.dokumente_pro_gemeinde 
+;
+
 with 
 orig_dataset as (
     select
@@ -162,7 +165,7 @@ teilprozesse as (
 ),
 
 dokumente_union as (
-select 
+select distinct 
     basket.t_id as t_basket, 
     gemeinden.bfs_gemeindenummer as gemeinde_bfsnr, 
 --    gemeinde_nr_kanton, 
@@ -174,7 +177,8 @@ select
                       'Hauptprozesse', berichte.hauptprozess, 
                       'Jahr', berichte.jahr
                       ) as dokumente,
-    gemeinden.geometrie
+    gemeinden.geometrie,
+    berichte.jahr::text as jahr
 from 
     basket,
     teilprozesse befund
@@ -193,12 +197,13 @@ left join
     
 union all 
 
-select 
+select distinct 
     basket.t_id as t_basket,
     alte_dokumente.gemeinde_bfsnr,
     alte_dokumente.gemeinde_name,
     alte_dokumente.dokument as dokumente,
-    alte_dokumente.geometrie
+    alte_dokumente.geometrie,
+    alte_dokumente.dokument ->> 'Jahr' as jahr
 from 
     basket,
     afu_naturgefahren_alte_dokumente_v1.alte_dokumente alte_dokumente
@@ -217,7 +222,7 @@ select
     t_basket,
     gemeinde_bfsnr, 
     gemeinde_name,
-    json_agg(dokumente) as dokumente,
+    json_agg(dokumente order by jahr) as dokumente,
     geometrie
 from 
     dokumente_union
@@ -226,3 +231,4 @@ GROUP by
     gemeinde_bfsnr,
     gemeinde_name,
     geometrie 
+

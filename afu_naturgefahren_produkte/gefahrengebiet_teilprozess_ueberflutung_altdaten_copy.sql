@@ -23,6 +23,8 @@ attribute_mapping as (
         afu_gefahrenkartierung.gefahrenkartirung_gk_wasser
     where 
         prozessa IN ('Ueberflutung','nicht_rekonstruierbar')
+        and 
+        publiziert is true
 )
 
 INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_ueberflutung (
@@ -47,5 +49,6 @@ from
     attribute_mapping syn,
     basket basket
 ;
+
 
 

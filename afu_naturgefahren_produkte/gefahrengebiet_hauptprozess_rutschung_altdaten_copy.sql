@@ -24,6 +24,8 @@ attribute_mapping_hangmure as (
     FROM 
         afu_gefahrenkartierung.gefahrenkartirung_gk_hangmure, 
         basket
+    where 
+        publiziert = true 
 ), 
 
 attribute_mapping_plo_rutschung as (
@@ -44,6 +46,8 @@ attribute_mapping_plo_rutschung as (
     FROM 
         afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_spontan,
         basket
+    where 
+        publiziert = true 
 ),
 
 attribute_mapping_perm_rutschung as (
@@ -64,6 +68,8 @@ attribute_mapping_perm_rutschung as (
     FROM 
         afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_kont_sackung,
         basket
+    where 
+        publiziert = true 
 )
 
 INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung (
@@ -80,7 +86,9 @@ INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung (
     union all 
     select * from attribute_mapping_plo_rutschung
     union all 
-    select * from attribute_mapping_plo_rutschung
+    select * from attribute_mapping_perm_rutschung
+
+
 
 
 

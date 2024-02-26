@@ -10,9 +10,7 @@ INSERT INTO afu_naturgefahren_staging_v1.synoptisches_gefahrengebiet (
     t_basket,
     gefahrenstufe, 
     charakterisierung, 
-    geometrie, 
-    datenherkunft, 
-    auftrag_neudaten
+    geometrie
 )
 
 select 
@@ -25,11 +23,10 @@ select
         	when gef_stufe = 'erheblich' then 'erheblich'
     end as gefahrenstufe, 
     replace(replace(synoptisch.aindex, '_', ''),',',' ') as charakterisierung,
-    st_multi(geometrie) as geometrie,
-    'Altdaten' as datenherkunft,
-    null as auftrag_neudaten   
+    st_multi(geometrie) as geometrie  
 from 
     basket,
     afu_gefahrenkartierung.gefahrenkartirung_gk_synoptisch_generiert synoptisch
 where 
     synoptisch.aindex is not null 
+

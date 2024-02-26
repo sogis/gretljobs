@@ -20,6 +20,8 @@ attribute_mapping_hangmure as (
         st_multi(geometrie) as geometrie --Im neuen Modell sind Multi-Polygone
     FROM 
         afu_gefahrenkartierung.gefahrenkartirung_gk_hangmure 
+    where 
+        publiziert is true
 )
 
 INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_hangmure (
@@ -44,5 +46,6 @@ from
     attribute_mapping_hangmure,
     basket basket
 ;
+
 
 

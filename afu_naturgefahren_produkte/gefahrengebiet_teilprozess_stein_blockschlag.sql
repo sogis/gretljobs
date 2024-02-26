@@ -96,6 +96,36 @@ teilprozess_steinblockschlag_prio as (
     ) AS blade
 ),
 
+teilprozess_steinblockschlag_union as (
+    select 
+        teilprozess,
+        gefahrenstufe,
+        charakterisierung,
+        st_union(geometrie) as geometrie,
+        datenherkunft,
+        auftrag_neudaten
+    from 
+        teilprozess_steinblockschlag_prio
+    group by 
+        teilprozess,
+        gefahrenstufe,
+        charakterisierung,
+        datenherkunft,
+        auftrag_neudaten
+),
+
+teilprozess_steinblockschlag_dump as (
+    select 
+        teilprozess,
+        gefahrenstufe,
+        charakterisierung,
+        st_multi((st_dump(geometrie)).geom) as geometrie,
+        datenherkunft,
+        auftrag_neudaten
+    from 
+        teilprozess_steinblockschlag_union
+), 
+
  basket as (
      select 
          t_id 
@@ -126,12 +156,8 @@ select
     datenherkunft,
     auftrag_neudaten
 from 
-    teilprozess_steinblockschlag_prio, 
+    teilprozess_steinblockschlag_dump, 
     basket
 where 
     st_isempty(geometrie) is not true 
 ;
-
-
-
-

@@ -81,7 +81,3 @@ from
     attribute_mapping syn,
     basket basket
 ;
-   
-
-
-

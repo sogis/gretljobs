@@ -22,6 +22,8 @@ attribute_mapping as (
         afu_gefahrenkartierung.gefahrenkartirung_gk_sturz
     where 
         prozessa = 'Stein_Blockschlag'
+        and 
+        publiziert is true
 )
 
 INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_stein_blockschlag (
@@ -47,5 +49,6 @@ from
 where 
     teilprozess is not null 
 ;
+
 
 

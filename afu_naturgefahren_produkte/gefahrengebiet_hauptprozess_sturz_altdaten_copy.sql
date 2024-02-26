@@ -33,3 +33,6 @@ SELECT
 FROM 
     afu_gefahrenkartierung.gefahrenkartirung_gk_sturz,
     basket
+where 
+    publiziert is true
+

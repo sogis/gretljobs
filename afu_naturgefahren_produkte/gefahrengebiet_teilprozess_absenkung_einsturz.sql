@@ -106,6 +106,36 @@ teilprozess_absenkung_einsturz_prio as (
     ) AS blade
 ),
 
+teilprozess_absenkung_einsturz_union as (
+    select 
+        teilprozess,
+        gefahrenstufe,
+        charakterisierung,
+        st_union(geometrie) as geometrie,
+        datenherkunft,
+        auftrag_neudaten
+    from 
+        teilprozess_absenkung_einsturz_prio
+    group by 
+        teilprozess,
+        gefahrenstufe,
+        charakterisierung,
+        datenherkunft,
+        auftrag_neudaten
+),
+
+teilprozess_absenkung_einsturz_dump as (
+    select 
+        teilprozess,
+        gefahrenstufe,
+        charakterisierung,
+        st_multi((st_dump(geometrie)).geom) as geometrie,
+        datenherkunft,
+        auftrag_neudaten
+    from 
+        teilprozess_absenkung_einsturz_union
+), 
+
  basket as (
      select 
          t_id 
@@ -131,10 +161,11 @@ select
     datenherkunft,
     auftrag_neudaten
 from 
-    teilprozess_absenkung_einsturz_prio, 
+    teilprozess_absenkung_einsturz_dump, 
     basket
 where 
     st_isempty(geometrie) is not true 
 ;
+
 
 
