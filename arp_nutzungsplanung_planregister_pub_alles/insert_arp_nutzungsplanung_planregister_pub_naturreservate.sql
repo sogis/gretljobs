@@ -10,7 +10,7 @@ WITH dokument_plan_naturreservat AS(
         dokument.bezeichnung AS bezeichnung,
         'Kanton' AS planungsbehoerde,
        --Gemeindenamen von der URL übernehmen https://planregister-data.so.ch/public/Erlinsbach/101-39-P.pdf
-        INITCAP(REPLACE(REPLACE(REPLACE(REPLACE(SPLIT_PART(dokument.dateipfad,'/',5),'ue','ü'),'oe','ö'),'ae','ä'),'st-','st. ')) AS gemeinde,
+        REPLACE(INITCAP(REPLACE(REPLACE(REPLACE(REPLACE(SPLIT_PART(dokument.dateipfad,'/',5),'ue','ü'),'oe','ö'),'ae','ä'),'st-','st. ')),'Erlinsbach','Erlinsbach (SO)') AS gemeinde,
         dokument.publiziertab AS rechtskraft_ab,
         CASE dokument.rechtsstatus
             WHEN 'inKraft'

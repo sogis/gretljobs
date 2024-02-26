@@ -272,6 +272,8 @@ ueberlagernd_flaeche AS (
         ueberlagernd_flaeche.t_datasetname::int4=${bfsnr_param}
     AND
         ueberlagernd_flaeche.publiziertbis IS NULL
+    OR
+        ueberlagernd_flaeche.publiziertbis > now()::date
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_ueberlagernd_flaeche

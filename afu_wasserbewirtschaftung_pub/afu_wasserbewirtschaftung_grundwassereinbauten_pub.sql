@@ -1,168 +1,261 @@
-(SELECT 
-    'weitere_Einbauten' AS objektart, 
-    'Weitere Einbauten' AS objekttyp_anzeige,
-    weitere_einbauten.bezeichnung AS objektname, 
-    weitere_einbauten.mobj_id AS objektnummer, 
-    weitere_einbauten.beschreibung AS technische_angabe, 
-    weitere_einbauten.bemerkung AS bemerkung, 
-    array_to_json(dokumente.dokumente) AS dokumente, 
-    wkb_geometry AS geometrie
-FROM 
-    (SELECT * FROM vegas.obj_objekt_v2 where objekttyp_id = 25 AND ARCHIVE = 0) weitere_einbauten
-LEFT JOIN 
-    (SELECT 
-         array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
-         y.vegas_id
-     FROM 
-         vegas.adm_dokument x, 
-         vegas.adm_objekt_dokument y 
-     WHERE 
-         x.dokument_id = y.dokument_id
-     GROUP BY 
-         y.vegas_id
-     ) dokumente ON weitere_einbauten.vegas_id = dokumente.vegas_id )
-UNION ALL 
-(SELECT 
-    'Versickerungsschacht' AS objektart, 
-    'Versickerungsschacht' AS objekttyp_anzeige,
-    versickerungsschacht.bezeichnung AS objektname, 
-    versickerungsschacht.mobj_id AS objektnummer, 
-    versickerungsschacht.beschreibung AS technische_angabe, 
-    versickerungsschacht.bemerkung AS bemerkung, 
-    array_to_json(dokumente.dokumente) AS dokumente, 
-    wkb_geometry AS geometrie
-FROM 
-    (SELECT * FROM vegas.obj_objekt_v2 where (objekttyp_id = 18) AND (schachttyp = 2) AND (zustand != 4) AND ARCHIVE = 0) versickerungsschacht
-LEFT JOIN 
-    (SELECT 
-         array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
-         y.vegas_id
-     FROM 
-         vegas.adm_dokument x, 
-         vegas.adm_objekt_dokument y 
-     WHERE 
-         x.dokument_id = y.dokument_id
-     GROUP BY 
-         y.vegas_id
-     ) dokumente ON versickerungsschacht.vegas_id = dokumente.vegas_id )
+WITH
 
-UNION ALL 
-    (SELECT 
-        'Grundwasserbeobachtung.Piezometer.Bohrung' AS objektart,
-        'Bohrung mit Piezometer' AS objekttyp_anzeige, 
-        bohrung.bezeichnung AS objektname, 
-        bohrung.mobj_id AS objektnummer,
-        bohrung.beschreibung AS technische_angabe,
-        bohrung.bemerkung AS bemerkung, 
-        array_to_json(dokumente.dokumente) AS dokumente, 
-        wkb_geometry AS geometrie
+http_dokument AS (
+    SELECT
+        concat(
+            'https://geo.so.ch/docs/ch.so.afu.grundwasserschutz/', 
+            split_part(
+                dateiname, 
+                'ch.so.afu.grundwasserschutz\', 
+                2
+            )
+        ) AS url,
+        t_id
     FROM 
-        (SELECT * FROM vegas.obj_bohrung WHERE piezometer IS TRUE AND "archive" = 0) bohrung 
-    LEFT JOIN 
-        (SELECT 
-             array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
-             y.vegas_id
-         FROM 
-             vegas.adm_dokument x, 
-             vegas.adm_objekt_dokument y 
-         WHERE 
-             x.dokument_id = y.dokument_id
-         GROUP BY 
-             y.vegas_id
-         ) dokumente ON bohrung.vegas_id = dokumente.vegas_id )
-UNION ALL 
-    (SELECT 
-        'Grundwasserbeobachtung.Piezometer.Gerammt' AS objektart,
-        'Piezometer gerammt' AS objekttyp_anzeige, 
-        gerammt.bezeichnung AS objektname, 
-        gerammt.mobj_id AS objektnummer,
-        gerammt.beschreibung AS technische_angabe,
-        gerammt.bemerkung AS bemerkung, 
-        array_to_json(dokumente.dokumente) AS dokumente, 
-        wkb_geometry AS geometrie
+        afu_grundwasserschutz_obj_v1.dokument d    
+),
+
+dokumente_baggerschlitz AS (
+    SELECT
+        bd.baggerschlitz_r,   
+        json_agg(d.url ORDER BY url) AS dokumente
     FROM 
-        (SELECT * FROM vegas.obj_objekt_v2 WHERE objekttyp_id = 35 AND "archive" = 0) gerammt
-    LEFT JOIN 
-        (SELECT 
-             array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
-             y.vegas_id
-         FROM 
-             vegas.adm_dokument x, 
-             vegas.adm_objekt_dokument y 
-         WHERE 
-             x.dokument_id = y.dokument_id
-         GROUP BY 
-             y.vegas_id
-         ) dokumente ON gerammt.vegas_id = dokumente.vegas_id )
-UNION ALL 
-    (SELECT 
-        'Grundwasserbeobachtung.Sondierung.Bohrung' AS objektart,
-        'Sondierungsbohrung' AS objekttyp_anzeige, 
-        sondierung.bezeichnung AS objektname, 
-        sondierung.mobj_id AS objektnummer,
-        sondierung.beschreibung AS technische_angabe,
-        sondierung.bemerkung AS bemerkung, 
-        array_to_json(dokumente.dokumente) AS dokumente, 
-        wkb_geometry AS geometrie
+        http_dokument d
+    JOIN
+        afu_grundwasserschutz_obj_v1.baggerschlitz__dokument bd  ON d.t_id = bd.dokument_r
+    GROUP BY
+        baggerschlitz_r
+),
+
+dokumente_bohrung AS (
+    SELECT
+        bd.bohrung_r,   
+        json_agg(d.url ORDER BY url) AS dokumente
     FROM 
-        (SELECT * FROM vegas.obj_bohrung WHERE piezometer IS FALSE AND "archive" = 0) sondierung 
-    LEFT JOIN 
-        (SELECT 
-             array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
-             y.vegas_id
-         FROM 
-             vegas.adm_dokument x, 
-             vegas.adm_objekt_dokument y 
-         WHERE 
-             x.dokument_id = y.dokument_id
-         GROUP BY 
-             y.vegas_id
-         ) dokumente ON sondierung.vegas_id = dokumente.vegas_id )
-UNION ALL 
-    (SELECT 
-        'Grundwasserbeobachtung.Sondierung.Baggerschlitz' AS objektart, 
+        http_dokument d
+    JOIN
+        afu_grundwasserschutz_obj_v1.bohrung__dokument bd  ON d.t_id = bd.dokument_r
+    GROUP BY
+        bohrung_r
+),
+
+dokumente_einbaute AS (
+    SELECT
+        ed.einbaute_r,   
+        json_agg(d.url ORDER BY url) AS dokumente
+    FROM 
+        http_dokument d
+    JOIN
+        afu_grundwasserschutz_obj_v1.einbaute__dokument ed  ON d.t_id = ed.dokument_r
+    GROUP BY
+        einbaute_r
+),
+
+dokumente_grundwasserwaermepumpe AS (
+    SELECT
+        gd.grundwasserwaermepumpe_r,   
+        json_agg(d.url ORDER BY url) AS dokumente
+    FROM 
+        http_dokument d
+    JOIN
+        afu_grundwasserschutz_obj_v1.grundwasserwaermepumpe__dokument gd  ON d.t_id = gd.dokument_r
+    GROUP BY
+        grundwasserwaermepumpe_r
+),
+
+dokumente_piezometer AS (
+    SELECT
+        pd.piezometer_gerammt_r,   
+        json_agg(d.url ORDER BY url) AS dokumente
+    FROM 
+        http_dokument d
+    JOIN
+        afu_grundwasserschutz_obj_v1.piezometer__dokument pd  ON d.t_id = pd.dokument_r
+    GROUP BY
+        piezometer_gerammt_r
+),
+
+baggerschlitz AS (
+    SELECT 
+        'Grundwasserbeobachtung.Sondierung.Baggerschlitz' AS objektart,
         'Sondierungsbaggerschlitz' AS objekttyp_anzeige,
-        baggerschlitz.bezeichnung AS objektname, 
-        baggerschlitz.mobj_id AS objektnummer,
-        baggerschlitz.beschreibung AS technische_angabe,
-        baggerschlitz.bemerkung AS bemerkung, 
-        array_to_json(dokumente.dokumente) AS dokumente, 
-        wkb_geometry AS geometrie
-    FROM 
-        (SELECT * FROM vegas.obj_objekt_v2 WHERE objekttyp_id = 21 AND "archive" = 0) baggerschlitz
-    LEFT JOIN 
-        (SELECT 
-             array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
-             y.vegas_id
-         FROM 
-             vegas.adm_dokument x, 
-             vegas.adm_objekt_dokument y 
-         WHERE 
-             x.dokument_id = y.dokument_id
-         GROUP BY 
-             y.vegas_id
-         ) dokumente ON baggerschlitz.vegas_id = dokumente.vegas_id )
-UNION ALL 
-    (SELECT 
-        'Grundwasserbeobachtung.Limnigraf' AS objektart,
-        'Limnigraf' AS objekttyp_anzeige, 
-        limnigraf.bezeichnung AS objektname, 
-        limnigraf.mobj_id AS objektnummer,
-        limnigraf.beschreibung AS technische_angabe,
-        limnigraf.bemerkung AS bemerkung, 
-        array_to_json(dokumente.dokumente) AS dokumente, 
-        wkb_geometry AS geometrie
-    FROM 
-        (SELECT * FROM vegas.obj_messstation WHERE objekttyp_id = 22 AND limnigraf IS TRUE AND "archive" = 0) limnigraf
-    LEFT JOIN 
-        (SELECT 
-             array_agg('https://geo.so.ch/docs/ch.so.afu.grundwasserbewirtschaftung/'||y.vegas_id||'_'||x.dokument_id||'.'||x.dateiendung) AS dokumente, 
-             y.vegas_id
-         FROM 
-             vegas.adm_dokument x, 
-             vegas.adm_objekt_dokument y 
-         WHERE 
-             x.dokument_id = y.dokument_id
-         GROUP BY 
-             y.vegas_id
-         ) dokumente ON limnigraf.vegas_id = dokumente.vegas_id );
+        bezeichnung AS objektname,
+        objekt_id AS objektnummer,
+        beschreibung AS technische_angabe,
+        bemerkung,
+        db.dokumente,
+        geometrie
+    FROM
+        afu_grundwasserschutz_obj_v1.baggerschlitz
+    LEFT JOIN
+        dokumente_baggerschlitz db ON t_id = db.baggerschlitz_r
+),
+
+sondierungsbohrung AS (
+    SELECT 
+        'Grundwasserbeobachtung.Sondierung.Bohrung' AS objektart,
+        'Sondierungsbohrung' AS objekttyp_anzeige,
+        bezeichnung AS objektname,
+        objekt_id AS objektnummer,
+        beschreibung AS technische_angabe,
+        bemerkung,
+        db.dokumente,
+        geometrie
+    FROM
+        afu_grundwasserschutz_obj_v1.bohrung
+    LEFT JOIN
+        dokumente_bohrung db ON t_id = db.bohrung_r
+    WHERE
+        piezometer = FALSE
+),
+
+piezometerbohrung AS (
+    SELECT 
+        'Grundwasserbeobachtung.Piezometer.Bohrung' AS objektart,
+        'Bohrung mit Piezometer' AS objekttyp_anzeige,
+        bezeichnung AS objektname,
+        objekt_id AS objektnummer,
+        beschreibung AS technische_angabe,
+        bemerkung,
+        db.dokumente,
+        geometrie
+    FROM
+        afu_grundwasserschutz_obj_v1.bohrung
+    LEFT JOIN
+        dokumente_bohrung db ON t_id = db.bohrung_r
+    WHERE
+        piezometer = TRUE
+),
+
+einbaute AS (
+    SELECT 
+        'weitere_Einbauten' AS objektart,
+        'Weitere Einbauten' AS objekttyp_anzeige,
+        bezeichnung AS objektname,
+        objekt_id AS objektnummer,
+        beschreibung AS technische_angabe,
+        bemerkung,
+        de.dokumente,
+        geometrie
+    FROM
+        afu_grundwasserschutz_obj_v1.einbaute
+    LEFT JOIN
+        dokumente_einbaute de ON t_id = de.einbaute_r
+),
+
+versickerungsschacht AS (
+    SELECT 
+        'Versickerungsschacht' AS objektart,
+        'Versickerungsschacht' AS objekttyp_anzeige,
+        bezeichnung AS objektname,
+        objekt_id AS objektnummer,
+        beschreibung AS technische_angabe,
+        bemerkung,
+        dg.dokumente,
+        geometrie
+    FROM
+        afu_grundwasserschutz_obj_v1.grundwasserwaermepumpe
+    LEFT JOIN
+        dokumente_grundwasserwaermepumpe dg ON t_id = dg.grundwasserwaermepumpe_r
+    WHERE
+        schachttyp = 'Rueckgabe'
+),
+
+piezometer_gerammt AS (
+    SELECT 
+        'Grundwasserbeobachtung.Piezometer.Gerammt' AS objektart,
+        'Piezometer gerammt' AS objekttyp_anzeige,
+        bezeichnung AS objektname,
+        objekt_id AS objektnummer,
+        beschreibung AS technische_angabe,
+        bemerkung,
+        dpg.dokumente,
+        geometrie
+    FROM
+        afu_grundwasserschutz_obj_v1.piezometer_gerammt
+    LEFT JOIN
+        dokumente_piezometer dpg ON t_id = dpg.piezometer_gerammt_r
+)
+
+SELECT
+    objektart,
+    objekttyp_anzeige,
+    objektname,
+    objektnummer,
+    technische_angabe,
+    bemerkung,
+    dokumente,
+    geometrie
+FROM
+    baggerschlitz
+    
+UNION ALL
+
+SELECT
+    objektart,
+    objekttyp_anzeige,
+    objektname,
+    objektnummer,
+    technische_angabe,
+    bemerkung,
+    dokumente,
+    geometrie
+FROM
+    sondierungsbohrung
+    
+UNION ALL
+    
+SELECT
+    objektart,
+    objekttyp_anzeige,
+    objektname,
+    objektnummer,
+    technische_angabe,
+    bemerkung,
+    dokumente,
+    geometrie
+FROM
+    piezometerbohrung
+        
+UNION ALL
+
+SELECT
+    objektart,
+    objekttyp_anzeige,
+    objektname,
+    objektnummer,
+    technische_angabe,
+    bemerkung,
+    dokumente,
+    geometrie
+FROM
+    einbaute
+    
+UNION ALL
+
+SELECT
+    objektart,
+    objekttyp_anzeige,
+    objektname,
+    objektnummer,
+    technische_angabe,
+    bemerkung,
+    dokumente,
+    geometrie
+FROM
+    versickerungsschacht
+
+UNION ALL
+
+SELECT
+    objektart,
+    objekttyp_anzeige,
+    objektname,
+    objektnummer,
+    technische_angabe,
+    bemerkung,
+    dokumente,
+    geometrie
+FROM
+    piezometer_gerammt
+;
