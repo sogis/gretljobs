@@ -1,10 +1,4 @@
 DELETE FROM 
-    arp_richtplan_pub_v2.richtplankarte_ueberlagernde_flaeche
-WHERE
-    datenquelle = 'abbaustellen'
-;
-
-DELETE FROM 
     arp_richtplan_pub_v2.detailkarten_flaeche
 WHERE
     datenquelle = 'abbaustellen'
