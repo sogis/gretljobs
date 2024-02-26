@@ -9,7 +9,10 @@ pipeline {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
-                        sh "gretl -Pauszahlungsjahr=${params.AUSZAHLUNGSJAHR}"
+                        dir('upload') {
+                            unstash name: 'uploadFile'
+                        }
+                        sh "gretl -Pili2pgDataset=${params.ili2pgDataset} deleteXtfFile_upload"
                     }
                 }
             }

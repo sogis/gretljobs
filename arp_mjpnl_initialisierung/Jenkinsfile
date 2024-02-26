@@ -1,21 +1,3 @@
-// Start with a scripted pipeline part
-node('master') {
-    stage('Prepare') {
-        uploadDirName = 'upload'
-        uploadFileName = 'uploadFile'
-        // By default the uploaded file is stored in the following directory:
-        buildDir = "$JENKINS_HOME/jobs/$JOB_BASE_NAME/builds/$BUILD_NUMBER"
-        // Create a subdirectory for the uploaded file:
-        sh "mkdir $buildDir/$uploadDirName"
-        inputFile = input message: 'Datei hochladen mit Basisdaten (Berater, UZL) und Katalogen auswählen', parameters: [file(name: "$uploadDirName/$uploadFileName", description: 'Hochzuladende XTF Datei auswählen')]
-        dir(buildDir) {
-            stash name: 'uploadDir', includes: "upload/**"
-        }
-        sh "rm -r $buildDir/$uploadDirName"
-    }
-}
-
-// Declarative pipeline starts here
 pipeline {
     agent { label params.nodeLabel ?: 'gretl' }
     options {
@@ -27,7 +9,9 @@ pipeline {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
-                        unstash name: 'uploadDir'
+                        dir('upload') {
+                            unstash name: 'uploadFile'
+                        }
                         sh 'gretl'
                     }
                 }

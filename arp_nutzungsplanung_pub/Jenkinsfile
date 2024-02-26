@@ -1,12 +1,29 @@
 pipeline {
     agent none
     options {
-        disableConcurrentBuilds()
         timeout(time: 7, unit: 'DAYS')
     }
     stages {
         stage('Import into staging schema') {
-            agent { label 'gretl' }
+            agent {
+                kubernetes {
+                    inheritFrom params.nodeLabel ?: 'gretl'
+                    yamlMergeStrategy merge()
+                    yaml """
+                    spec:
+                      containers:
+                        - name: gretl
+                          volumeMounts:
+                            - name: gretl-tmp-volume
+                              mountPath: /tmp
+                              subPath: gretl/${env.JOB_BASE_NAME}
+                      volumes:
+                        - name: gretl-tmp-volume
+                          persistentVolumeClaim:
+                            claimName: ${env.OPENSHIFT_PROJECT_NAME}-lowback
+"""
+                }
+            }
             steps {
                 script { currentBuild.description = "${params.buildDescription}" }
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
@@ -31,12 +48,30 @@ pipeline {
             }
         }
         stage('Import into pub schema') {
-            agent { label 'gretl' }
+            agent {
+                kubernetes {
+                    inheritFrom params.nodeLabel ?: 'gretl'
+                    yamlMergeStrategy merge()
+                    yaml """
+                    spec:
+                      containers:
+                        - name: gretl
+                          volumeMounts:
+                            - name: gretl-tmp-volume
+                              mountPath: /tmp
+                              subPath: gretl/${env.JOB_BASE_NAME}
+                      volumes:
+                        - name: gretl-tmp-volume
+                          persistentVolumeClaim:
+                            claimName: ${env.OPENSHIFT_PROJECT_NAME}-lowback
+"""
+                }
+            }
             steps {
                 unstash name: "gretljob"
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
-                        sh "gretl -Pbfsnr=${params.bfsnr} importXTF_pub publish publishAlt deleteData_planregister_pub transfer_planregister_pub uploadMgdmLandUsePlans uploadMgdmNoiseSensitivityLevels uploadMgdmWaldabstandslinien uploadMgdmPlanungszonen"
+                        sh "gretl -Pbfsnr=${params.bfsnr} publish publishAlt uploadPlanregister uploadMgdmLandUsePlans uploadMgdmNoiseSensitivityLevels uploadMgdmWaldabstandslinien uploadMgdmPlanungszonen"
                     }
                 }
             }

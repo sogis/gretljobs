@@ -1,0 +1,7 @@
+# exclude directories where xtf files are generated
+kommunal_edit/
+kommunal_pub/
+mgdm/
+
+# exclude log files
+*.log

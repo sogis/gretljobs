@@ -1,0 +1,32 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: "de.undercouch.download"
+
+defaultTasks 'importData'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+def dataSetName = "vsa_organisationen"
+def dataSetFileName = "${dataSetName}.xtf"
+def dataSetUrl = "https://vsa.ch/models/organisation/"+dataSetFileName
+
+tasks.register("downloadData", Download) {
+    src dataSetUrl
+    dest pathToTempFolder
+    overwrite true
+}
+
+tasks.register("importData", Ili2pgUpdate) {
+    dependsOn 'downloadData'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "alw_drainagen_v1"
+    models = "SIA405_Base_Abwasser_LV95"
+    dataFile = Paths.get(pathToTempFolder, dataSetFileName).toFile()
+    dataset = dataSetName
+    disableValidation = false
+    importBid = true
+}

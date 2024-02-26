@@ -10,7 +10,7 @@ defaultTasks 'transferData'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
-def dataSets = ['2471_gep']
+def dataSets = ['2471']
 
 def DB_SCHEMA_EDIT = "afu_gep_v1"
 def DB_SCHEMA_PUB_STAGING = "afu_gep_pub_staging_v1"
@@ -18,19 +18,31 @@ def DB_SCHEMA_PUB = "afu_gep_pub_v1"
 
 dataSets.each { dataSet ->
 
-    def dataSetUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata-dev/"+dataSet+".xtf"
+    //def dataSetUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata-dev/"+dataSet+".xtf"
+    def dataSetUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.afu.gep/edit/"+dataSet+".xtf"
 
-    /*
-    Wird sowieso anders werden. 
-    */
+    // Wird sich im Laufe der Zeit ändern.
     tasks.register("download_$dataSet", Download) {
         src dataSetUrl
         dest pathToTempFolder
         overwrite true
     }
 
-    tasks.register("replace_$dataSet", Ili2pgReplace) {
+    tasks.register("transferDataToOldModel_$dataSet") {
         dependsOn "download_$dataSet"
+        description = "Macht 'Datenumbau' vom 2020_1-Modell in das 2020-Modell. Danke SJB."
+        doLast {
+            ant.replace(
+                file: Paths.get(pathToTempFolder, dataSet + ".xtf").toFile(),
+                token: 'VSADSSMINI_2020_1_LV95',
+                value: 'VSADSSMINI_2020_LV95',
+                encoding: 'UTF-8'
+            )
+        }
+    }
+
+    tasks.register("replace_$dataSet", Ili2pgReplace) {
+        dependsOn "transferDataToOldModel_$dataSet"
         database = [dbUriEdit, dbUserEdit, dbPwdEdit]
         dbschema = DB_SCHEMA_EDIT
         models = 'VSADSSMINI_2020_LV95'
