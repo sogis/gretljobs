@@ -11,6 +11,7 @@ INSERT INTO arp_richtplan_pub_v2.richtplankarte_ueberlagernde_flaeche (
     gemeindenamen,
     abstimmungskategorie,
     planungsstand,
+    dokumente,
     astatus,
     datenquelle
     )
@@ -25,6 +26,7 @@ Areal AS (
         string_agg(g.gemeindename, ', ') AS gemeindenamen,
         'Ausgangslage' AS abstimmungskategorie,
         'rechtsgueltig' AS planungsstand,
+        'https://geo.so.ch/docs/ch.so.arp.richtplan/E-1_2.pdf' AS dokumente,
         'bestehend' AS astatus,
         'gewaesserschutz' AS datenquelle
     FROM
@@ -50,6 +52,7 @@ Zone AS(
         string_agg(g.gemeindename, ', ') AS gemeindenamen,
         'Ausgangslage' AS abstimmungskategorie,
         'rechtsgueltig' AS planungsstand,
+        'https://geo.so.ch/docs/ch.so.arp.richtplan/E-1_2.pdf' AS dokumente,
         'bestehend' AS astatus,
         'gewaesserschutz' AS datenquelle
     FROM
@@ -74,6 +77,7 @@ SELECT
     gemeindenamen,
     abstimmungskategorie,
     planungsstand,
+    dokumente,
     astatus,
     datenquelle
 FROM
@@ -88,6 +92,7 @@ SELECT
     gemeindenamen,
     abstimmungskategorie,
     planungsstand,
+    dokumente,
     astatus,
     datenquelle
 FROM

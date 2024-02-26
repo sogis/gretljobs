@@ -10,6 +10,7 @@ INSERT INTO arp_richtplan_pub_v2.richtplankarte_ueberlagernde_flaeche (
     gemeindenamen,
     abstimmungskategorie,
     planungsstand,
+    dokumente,
     astatus,
     datenquelle
     )
@@ -20,6 +21,7 @@ SELECT
     string_agg(g.gemeindename, ', ') AS gemeindenamen,
     'Ausgangslage' AS abstimmungskategorie,
     'rechtsgueltig' AS planungsstand,
+    'https://geo.so.ch/docs/ch.so.arp.richtplan/L-1_2.pdf' AS dokumente,
     'bestehend' AS astatus,
     'fruchtfolgeflaeche' AS datenquelle
 FROM

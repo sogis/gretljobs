@@ -25,7 +25,7 @@ SELECT
     teilgebietsnamen AS objektname,
     'Ausgangslage' AS abstimmungskategorie,
     'rechtsgueltig' AS planungsstand,
-    dokumente,
+    'https://geo.so.ch/docs/ch.so.arp.richtplan/L-5.pdf' AS dokumente,
     'bestehend' AS astatus,
     'naturreservate' AS datenquelle
 FROM
