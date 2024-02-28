@@ -1,0 +1,23 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'importXtFile'
+
+task copyXtfFile(type: Copy) {
+    from "upload/"
+    into "upload/"
+    include("uploadFile")
+    rename("uploadFile", "${ili2pgDataset}.xtf")
+}
+
+task importXtfFile(type: Ili2pgReplace, dependsOn: 'copyXtfFile') {
+    description = 'Import das XTF (Herkunft von Planungsbüros) einer Gemeinde in das Schema "afu_schutzbauten_v1".'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'afu_schutzbauten_v1'
+    models = 'SO_AFU_Schutzbauten_20231212'
+    deleteData= true
+    dataset = ili2pgDataset
+    dataFile = "upload/${ili2pgDataset}.xtf"
+}
