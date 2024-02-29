@@ -10,21 +10,21 @@ task transferSchutzbautenobjekte(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-        /*new TransferSet(
+        new TransferSet(
             'select_schutzbautenobjekt_punkt.sql',
             'afu_schutzbauten_pub_v1.schutzbautenobjekt_punkt',
             true
-        ),*/
+        ),
         new TransferSet(
             'select_schutzbautenobjekt_linie.sql',
             'afu_schutzbauten_pub_v1.schutzbautenobjekt_linie',
             true
-        )/*,
+        ),
         new TransferSet(
             'select_schutzbautenobjekt_flaeche.sql',
             'afu_schutzbauten_pub_v1.schutzbautenobjekt_flaeche',
             true
-        )*/
+        )
     ]
 }
 
