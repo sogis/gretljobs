@@ -10,7 +10,7 @@ defaultTasks 'transferData'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
-def dataSets = ['2546_was']
+def dataSets = ['2546_was', '2511_was']
 
 def DB_SCHEMA_EDIT = "agi_lkmap_v1"
 def DB_SCHEMA_PUB = "agi_lkmap_pub_v1"
@@ -56,7 +56,7 @@ dataSets.each { dataSet ->
                 new TransferSet('sql/wasser/lklinie.sql', DB_SCHEMA_PUB+".wasser_lklinie", false),
                 new TransferSet('sql/wasser/lkpunkt.sql', DB_SCHEMA_PUB+".wasser_lkpunkt", false)
         ]
-        sqlParameters = [DB_SCHEMA_EDIT:DB_SCHEMA_EDIT]
+        sqlParameters = [DB_SCHEMA_EDIT:DB_SCHEMA_EDIT, DATASET: "'"+dataSet+"'"]
     } 
 
 }
