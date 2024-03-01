@@ -49,8 +49,8 @@ task replaceStatus(dependsOn: exportAdressenZivilschutz) {
 task deleteCsvFile(type: Delete){
     delete "${csvFileName}"
 }
- 
-task uploadCsvFile (dependsOn: replaceStatus){
+
+task uploadCsvFile(dependsOn: replaceStatus) {
     description = "Upload file to FTP server"
     doLast {
         ssh.settings {
@@ -65,4 +65,3 @@ task uploadCsvFile (dependsOn: replaceStatus){
     }
     finalizedBy deleteCsvFile
 }
-
