@@ -51,7 +51,10 @@ task deleteCsvFile(type: Delete){
 }
 
 task uploadCsvFile(dependsOn: replaceStatus) {
-    description = "Upload file to FTP server"
+    description = "Upload file to FTP server; note that the upload is performed only in production environment"
+    onlyIf {
+        gretlEnvironment == 'production'
+    }
     doLast {
         ssh.settings {
             knownHosts = allowAnyHosts
