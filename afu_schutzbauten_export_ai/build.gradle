@@ -1,9 +1,12 @@
 import ch.so.agi.gretl.tasks.*
-import ch.so.agi.gretl.api.TransferSet
 
-apply plugin: 'ch.so.agi.gretl'
+apply plugin: "ch.so.agi.gretl"
 
-defaultTasks 'validateMgdmData'
+defaultTasks "validateData"
+
+def mgdmDbSchema = "afu_schutzbauten_mgdm_v1"
+def mgdmModelName = "Schutzbauten_LV95_V1"
+def outMgdmFile = "ch.so.schutzbauten_mgdm.xtf"
 
 /**
  * Datenumbau aus dem Erfassungs-Modell in das MGDM
@@ -20,12 +23,34 @@ task transferSchutzbautenobjekte(type: SqlExecutor){
 }
 
 /**
- * Validiere die umgebauten Daten im MGDM
+ * Validiere die umgebauten Daten direkt in der Datenbank
  */
 task validateMgdmData(type: Ili2pgValidate){
     dependsOn "transferSchutzbautenobjekte"
     description = "Validiere die Daten im Modell Schutzbauten_LV95_V1"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    models = "Schutzbauten_LV95_V1"
-    dbschema = "afu_schutzbauten_mgdm_v1"
+    models = mgdmModelName
+    dbschema = mgdmDbSchema
+}
+
+/**
+ * Exportiere die Daten im MGDM aus der Datenbank.
+ */
+task exportData(type: Ili2pgExport){
+    dependsOn "validateMgdmData"
+    description "Exportiere die Daten im MGDM aus der Datenbank"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = mgdmDbSchema
+    dataFile = outMgdmFile
+    models = mgdmModelName
+}
+
+/**
+ * Validiere den exportierten MGDM Datensatz.
+ */
+task validateData(type: IliValidator){
+    dependsOn "exportData"
+    description "Validiere den exportierten MGDM Datensatz"
+    dataFiles = outMgdmFile
+    logFile = "validation.log"
 }
