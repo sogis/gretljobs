@@ -1,27 +1,36 @@
 import ch.so.agi.gretl.tasks.*
-import java.io.File
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'importXtFile'
+defaultTasks 'replaceDataset'
 
-// Extract the datasetname from the filename. The filename must match
-// something like ch.so.AMT.BFS_202403041441.xtf.
-def datasetname = xtfFilename.findAll("ch.so.[a-zA-Z]+\\.[a-zA-Z0-9]+")[0]
+// Extrahiere den "datasetname" aus dem Dateinamen. Der Dateiname muss gemäss
+// folgendem Muster zusammengesetzt sein (analog z.B. zu oereb-db):
+// ch.so.{AMT}.schutzbauten.{BFSNR | beliebige Beschreibung für Perimeter}_{Suffix nicht berücksichtigt}.xtf
+def datasetname = xtfFilename.findAll("ch.so.[a-zA-Z]+.schutzbauten.[a-zA-Z0-9]+")[0]
 
 /**
- *
+ * Validiere zuerst die Daten.
  */
 task validateImportFile(type: IliValidator) {
     description = "Validiere die Import Datei"
-    dataFiles = file(xtfFilename)
+    dataFiles = [ file(xtfFilename) ]
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+
+    doFirst {
+        // Stelle sicher, dass der "datasetname" nicht null ist. So kann eine
+        // spätere Exception beim Ili2pgReplace Task verhindert werden.
+        if(!datasetname) {
+            throw new GradleException("Could not extract dataset from filename <" + xtfFilename + ">")
+        }
+    }
 }
 
 /**
- *
+ * Importiere oder ersetze (falls bereits vorhanden) das Dataset mit den neuen
+ * Daten
  */
-task importXtfFile(type: Ili2pgReplace) {
+task replaceDataset(type: Ili2pgReplace) {
     dependsOn validateImportFile
     description = 'Import das XTF (Herkunft von Planungsbüros) einer Gemeinde in das Schema "afu_schutzbauten_v1".'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -30,7 +39,8 @@ task importXtfFile(type: Ili2pgReplace) {
     deleteData= true
     dataset = datasetname
     dataFile = xtfFilename
-    doLast {
-        println "Dataset \"" + datasetname + "\" has been replaced."
+    doFirst {
+        // Schreibe den "datasetname" in die Ausgabe
+        println "Info: datasetname <" + datasetname + ">"
     }
 }
