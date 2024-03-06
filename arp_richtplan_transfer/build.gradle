@@ -6,6 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'datatransfer'
 
 task datatransfer(type: SqlExecutor){
+
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['arp_richtplan_transfer_ueberlagernder_punkt.sql']
 }
