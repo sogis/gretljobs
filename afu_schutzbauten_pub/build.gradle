@@ -6,31 +6,76 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'publishPubData'
 
 /**
- * Sammle alle Objekte aus der Erfassungsdatenbank nach Geometrie getrennt
- * und schreibe diese ins Publikationsmodell.
+ * Sammle alle Objekte aus der Erfassungsdatenbank nach Geometrie und
+ * Hauptprozess getrennt und schreibe diese ins Publikationsmodell.
  */
 task transferSchutzbautenobjekte(type: Db2Db){
     description = "Baue die Daten vom Erfassungsmodell ins Publikationsmodell um"
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-        // Punkt Objekte
+        // Punkt Objekte Hauptprozess Wasser
+        // Leere vorgängig die Tabelle
         new TransferSet(
-            'select_schutzbautenobjekt_punkt.sql',
+            'select_schutzbautenobjekt_wasser_punkt.sql',
             'afu_schutzbauten_pub_v1.schutzbautenobjekt_punkt',
             true
         ),
-        // Linien Objekte
+        // Punkt Objekte Hauptprozess Rutschung
+        // Leere die Tabelle *NICHT*
         new TransferSet(
-            'select_schutzbautenobjekt_linie.sql',
+            'select_schutzbautenobjekt_rutschung_punkt.sql',
+            'afu_schutzbauten_pub_v1.schutzbautenobjekt_punkt',
+            false // wichtig!
+        ),
+        // Punkt Objekte Hauptprozess Sturz
+        // Leere die Tabelle *NICHT*
+        new TransferSet(
+            'select_schutzbautenobjekt_sturz_punkt.sql',
+            'afu_schutzbauten_pub_v1.schutzbautenobjekt_punkt',
+            false // wichtig!
+        ),
+        // Linien Objekte Hauptprozess Wasser
+        // Leere vorgängig die Tabelle
+        new TransferSet(
+            'select_schutzbautenobjekt_wasser_linie.sql',
             'afu_schutzbauten_pub_v1.schutzbautenobjekt_linie',
             true
         ),
-        // Flächen Objekte
+        // Linien Objekte Hauptprozess Rutschung
+        // Leere die Tabelle *NICHT*
         new TransferSet(
-            'select_schutzbautenobjekt_flaeche.sql',
+            'select_schutzbautenobjekt_rutschung_linie.sql',
+            'afu_schutzbauten_pub_v1.schutzbautenobjekt_linie',
+            false // wichtig!
+        ),
+        // Linien Objekte Hauptprozess Sturz
+        // Leere die Tabelle *NICHT*
+        new TransferSet(
+            'select_schutzbautenobjekt_sturz_linie.sql',
+            'afu_schutzbauten_pub_v1.schutzbautenobjekt_linie',
+            false // wichtig!
+        ),
+        // Flächen Objekte Hauptprozess Wasser
+        // Leere vorgängig die Tabelle
+        new TransferSet(
+            'select_schutzbautenobjekt_wasser_flaeche.sql',
             'afu_schutzbauten_pub_v1.schutzbautenobjekt_flaeche',
             true
+        ),
+        // Flächen Objekte Hauptprozess Rutschung
+        // Leere die Tabelle *NICHT*
+        new TransferSet(
+            'select_schutzbautenobjekt_rutschung_flaeche.sql',
+            'afu_schutzbauten_pub_v1.schutzbautenobjekt_flaeche',
+            false // wichtig!
+        ),
+        // Flächen Objekte Hauptprozess Sturz
+        // Leere die Tabelle *NICHT*
+        new TransferSet(
+            'select_schutzbautenobjekt_sturz_flaeche.sql',
+            'afu_schutzbauten_pub_v1.schutzbautenobjekt_flaeche',
+            false // wichtig!
         )
     ]
 }
