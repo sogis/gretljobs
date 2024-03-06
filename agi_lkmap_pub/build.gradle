@@ -10,7 +10,7 @@ defaultTasks 'transferData'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
-def dataSets = ['2546_was', '2511_was', '2614_was']
+def dataSets = ['2479_was', '2546_was', '2511_was', '2614_was']
 
 def DB_SCHEMA_EDIT = "agi_lkmap_v1"
 def DB_SCHEMA_PUB = "agi_lkmap_pub_v1"
