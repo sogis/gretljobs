@@ -4,9 +4,6 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 
 /*
-COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
-gretl -PtopicName=afu_quellen_ungefasst -PschemaDirName=schema_staging dropSchema createSchema configureSchema
-
 docker compose run --rm -u $UID gretl --project-dir=afu_quellen_ungefasst_csvimport
 */
 
@@ -23,15 +20,6 @@ task deleteCsvTableRows(type: SqlExecutor){
     ]
 }
 
-/*
-task renameFile(type: Copy, dependsOn: deleteCsvTableRows) {
-    from "upload/"
-    into "upload/"
-    include("uploadFile")
-    rename("uploadFile", "uploadFile.csv")
-}
-*/
-
 task importCsv(type: CsvImport, dependsOn: deleteCsvTableRows) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = schemaNameStage
@@ -39,7 +27,7 @@ task importCsv(type: CsvImport, dependsOn: deleteCsvTableRows) {
     firstLineIsHeader = true
     valueSeparator = ','
     encoding = 'UTF-8'
-    dataFile = file("upload/quellen.csv")
+    dataFile = file("xyz.csv")
 }
 
 task refineImport(type: SqlExecutor, dependsOn: importCsv){

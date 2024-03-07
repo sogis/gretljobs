@@ -7,7 +7,7 @@ quell_gemeinde AS (
   FROM 
     afu_quellen_ungefasst_staging_v1.csv_import q
   LEFT JOIN
-    agi_hoheitsgrenzen_pub.gemeindegrenze g ON st_within(q.punkt, g.geom)
+    agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze g ON st_within(q.punkt, g.geometrie)
 )
 
 UPDATE 
