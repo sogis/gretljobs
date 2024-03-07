@@ -69,8 +69,9 @@ task unzipFiles(dependsOn: downloadFiles) {
         println "File(s) unzipped to directory: " + dm01SoDir
     }
 }
-*/
 task publish(type: Publisher, dependsOn:unzipFiles){
+*/
+task publish(type: Publisher){
     dataIdent = 'ch.so.agi.av.dm01_so'
     modelsToPublish = 'DM01AVSO24LV95'
     region = '.*'
