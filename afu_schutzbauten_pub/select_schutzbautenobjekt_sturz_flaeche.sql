@@ -1,3 +1,54 @@
+WITH schutzbauten_doku_ds AS (
+    SELECT
+        sd.t_id,
+        sd.schutzbaute_sturz_unterfangung,
+        sd.schutzbaute_sturz_andere_werksart_linie,
+        sd.schutzbaute_sturz_andere_werksart_punkt,
+        sd.schutzbaute_sturz_andere_werksart_flaeche,
+        sd.schutzbaute_sturz_galerie,
+        sd.schutzbaute_sturz_abdeckung_verankerung,
+        sd.schutzbaute_sturz_schutznetz_palisade_dmm_schtzzn_muer,
+        sd.schutzbaute_wasser_murbrecher_murbremse,
+        sd.schutzbaute_wasser_sperre_schwelle,
+        sd.schutzbaute_wasser_bruecke_steg,
+        sd.schutzbaute_wasser_geschiebeablagerungsplatz,
+        sd.schutzbaute_wasser_entlastungsbauwerk,
+        sd.schutzbaute_wasser_mauer,
+        sd.schutzbaute_wasser_rampe_sohlensicherung,
+        sd.schutzbaute_wasser_entlastungsstollen_kanal,
+        sd.schutzbaute_wasser_eindolung,
+        sd.schutzbaute_wasser_damm,
+        sd.schutzbaute_wasser_andere_werksart_punkt,
+        sd.schutzbaute_wasser_uferdeckwerk_ufermauer_lebendverbau,
+        sd.schutzbaute_wasser_furt,
+        sd.schutzbaute_wasser_rueckhaltebauwerk,
+        sd.schutzbaute_wasser_buhne,
+        sd.schutzbaute_wasser_andere_werksart_linie,
+        sd.schutzbaute_wasser_andere_werksart_flaeche,
+        sd.schutzbaute_rutschung_andere_werksart_punkt,
+        sd.schutzbaute_rutschung_abdeckung_ingmassnahme,
+        sd.schutzbaute_rutschung_hangstuetzwerk_entwassrng_plsade,
+        sd.schutzbaute_rutschung_andere_werksart_linie,
+        sd.schutzbaute_rutschung_auffangnetz,
+        sd.schutzbaute_rutschung_damm,
+        sd.schutzbaute_rutschung_andere_werksart_flaeche,
+        doku.titel,
+        doku.beschrieb,
+        'https://geo.so.ch/docs/ch.so.afu.schutzbauten/' || tidd.datasetname || '/' || doku.dateiname AS dokumentimweb,
+        'SO_AFU_Schutzbauten_Publikation_20231212.Schutzbauten.Dokument' AS ili_type
+    FROM
+        afu_schutzbauten_v1.schutzbaute_dokument sd
+    LEFT JOIN
+        afu_schutzbauten_v1.dokument doku
+            ON doku.t_id = sd.dokument
+    JOIN
+	afu_schutzbauten_v1.t_ili2db_basket tidb
+            ON tidb.t_id  = sd.t_basket
+    JOIN
+	afu_schutzbauten_v1.t_ili2db_dataset tidd
+            ON tidd.t_id = tidb.dataset
+)
+
 --------------------------------------------------------------------------------
 --
 -- Hauptprozess Sturz
@@ -57,20 +108,17 @@ LEFT JOIN
             array_to_json(
                 array_agg(
                     json_build_object(
-                        '@type', 'SO_AFU_Schutzbauten_Publikation_20231212.Schutzbauten.Dokument',
-                        'Titel', doku.titel,
-                        'Beschrieb', doku.beschrieb,
-                        'DokumentImWeb', 'https://geo.so.ch/docs/ch.so.afu.schutzbauten/' || doku.dateiname
+                        '@type', sd.ili_type,
+                        'Titel', sd.titel,
+                        'Beschrieb', sd.beschrieb,
+                        'DokumentImWeb', sd.dokumentimweb
                     )
                 )
             )::jsonb AS dokumente_json
         FROM
-            afu_schutzbauten_v1.dokument doku
-        JOIN
-            afu_schutzbauten_v1.schutzbaute_dokument sd
-                ON sd.dokument = doku.t_id
+            schutzbauten_doku_ds sd
         WHERE sd.schutzbaute_sturz_abdeckung_verankerung IS NOT NULL
-        GROUP BY sd.schutzbaute_sturz_abdeckung_verankerung
+        GROUP BY schutzbaute_t_id
     ) AS t
         ON t.schutzbaute_t_id = savk.t_id
 WHERE
@@ -137,20 +185,17 @@ LEFT JOIN
             array_to_json(
                 array_agg(
                     json_build_object(
-                        '@type', 'SO_AFU_Schutzbauten_Publikation_20231212.Schutzbauten.Dokument',
-                        'Titel', doku.titel,
-                        'Beschrieb', doku.beschrieb,
-                        'DokumentImWeb', 'https://geo.so.ch/docs/ch.so.afu.schutzbauten/' || doku.dateiname
+                        '@type', sd.ili_type,
+                        'Titel', sd.titel,
+                        'Beschrieb', sd.beschrieb,
+                        'DokumentImWeb', sd.dokumentimweb
                     )
                 )
             )::jsonb AS dokumente_json
         FROM
-            afu_schutzbauten_v1.dokument doku
-        JOIN
-            afu_schutzbauten_v1.schutzbaute_dokument sd
-                ON sd.dokument = doku.t_id
+            schutzbauten_doku_ds sd
         WHERE sd.schutzbaute_sturz_abdeckung_verankerung IS NOT NULL
-        GROUP BY sd.schutzbaute_sturz_abdeckung_verankerung
+        GROUP BY schutzbaute_t_id
     ) AS t
         ON t.schutzbaute_t_id = savk.t_id
 WHERE
@@ -217,20 +262,17 @@ LEFT JOIN
             array_to_json(
                 array_agg(
                     json_build_object(
-                        '@type', 'SO_AFU_Schutzbauten_Publikation_20231212.Schutzbauten.Dokument',
-                        'Titel', doku.titel,
-                        'Beschrieb', doku.beschrieb,
-                        'DokumentImWeb', 'https://geo.so.ch/docs/ch.so.afu.schutzbauten/' || doku.dateiname
+                        '@type', sd.ili_type,
+                        'Titel', sd.titel,
+                        'Beschrieb', sd.beschrieb,
+                        'DokumentImWeb', sd.dokumentimweb
                     )
                 )
             )::jsonb AS dokumente_json
         FROM
-            afu_schutzbauten_v1.dokument doku
-        JOIN
-            afu_schutzbauten_v1.schutzbaute_dokument sd
-                ON sd.dokument = doku.t_id
+            schutzbauten_doku_ds sd
         WHERE sd.schutzbaute_sturz_galerie IS NOT NULL
-        GROUP BY sd.schutzbaute_sturz_galerie
+        GROUP BY schutzbaute_t_id
     ) AS t
         ON t.schutzbaute_t_id = sgal.t_id
 
@@ -295,20 +337,17 @@ LEFT JOIN
             array_to_json(
                 array_agg(
                     json_build_object(
-                        '@type', 'SO_AFU_Schutzbauten_Publikation_20231212.Schutzbauten.Dokument',
-                        'Titel', doku.titel,
-                        'Beschrieb', doku.beschrieb,
-                        'DokumentImWeb', 'https://geo.so.ch/docs/ch.so.afu.schutzbauten/' || doku.dateiname
+                        '@type', sd.ili_type,
+                        'Titel', sd.titel,
+                        'Beschrieb', sd.beschrieb,
+                        'DokumentImWeb', sd.dokumentimweb
                     )
                 )
             )::jsonb AS dokumente_json
         FROM
-            afu_schutzbauten_v1.dokument doku
-        JOIN
-            afu_schutzbauten_v1.schutzbaute_dokument sd
-                ON sd.dokument = doku.t_id
+            schutzbauten_doku_ds sd
         WHERE sd.schutzbaute_sturz_andere_werksart_flaeche IS NOT NULL
-        GROUP BY sd.schutzbaute_sturz_andere_werksart_flaeche
+        GROUP BY schutzbaute_t_id
     ) AS t
         ON t.schutzbaute_t_id = sawf.t_id
 ;
