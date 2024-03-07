@@ -27,11 +27,10 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        bemerkungen   
+        zustandsbeurteilung_jahr
+        -- bemerkungen  wir übertragen keine Bemerkungen ins MGDM
     )
 (
-
 --------------------------------------------------------------------------------
 --
 -- Hauptprozess Wasser
@@ -70,8 +69,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_damm t
     JOIN
@@ -126,8 +124,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_mauer t
     JOIN
@@ -182,8 +179,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_sperre_schwelle t
     JOIN
@@ -240,8 +236,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_sperre_schwelle t
     JOIN
@@ -298,8 +293,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_rampe_sohlensicherung t
     JOIN
@@ -356,8 +350,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_rampe_sohlensicherung t
     JOIN
@@ -414,8 +407,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_buhne t
     JOIN
@@ -470,8 +462,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_uferdeckwerk_ufermauer_lebendverbau t
     JOIN
@@ -528,8 +519,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_uferdeckwerk_ufermauer_lebendverbau t
     JOIN
@@ -586,8 +576,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_uferdeckwerk_ufermauer_lebendverbau t
     JOIN
@@ -644,8 +633,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_rueckhaltebauwerk t
     JOIN
@@ -702,8 +690,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_rueckhaltebauwerk t
     JOIN
@@ -760,8 +747,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_rueckhaltebauwerk t
     JOIN
@@ -818,8 +804,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_rueckhaltebauwerk t
     JOIN
@@ -876,8 +861,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_geschiebeablagerungsplatz t
     JOIN
@@ -932,8 +916,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_entlastungsbauwerk t
     JOIN
@@ -988,8 +971,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_entlastungsstollen_kanal t
     JOIN
@@ -1046,8 +1028,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_entlastungsstollen_kanal t
     JOIN
@@ -1104,8 +1085,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_eindolung t
     JOIN
@@ -1160,8 +1140,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_murbrecher_murbremse t
     JOIN
@@ -1212,8 +1191,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_bruecke_steg t
 
@@ -1253,8 +1231,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_furt t
 
@@ -1294,8 +1271,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_andere_werksart_punkt t
 
@@ -1339,8 +1315,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_andere_werksart_linie t
     JOIN
@@ -1395,8 +1370,7 @@ INSERT INTO
         erhaltungsverantwortung_kategorie,
         erhaltungsverantwortung_name,
         zustand,
-        zustandsbeurteilung_jahr,
-        NULL::TEXT AS bemerkungen -- wir übertragen keine Bemerkungen ins MGDM
+        zustandsbeurteilung_jahr
     FROM
         afu_schutzbauten_v1.wasser_andere_werksart_flaeche t
     JOIN

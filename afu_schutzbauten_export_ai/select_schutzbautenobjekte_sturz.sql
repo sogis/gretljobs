@@ -28,7 +28,7 @@ INSERT INTO
         erhaltungsverantwortung_name,
         zustand,
         zustandsbeurteilung_jahr
-        -- bemerkungen   wir übertragen keine Bemerkungen ins MGDM
+        -- bemerkungen  wir übertragen keine Bemerkungen ins MGDM
     )
 (
 --------------------------------------------------------------------------------

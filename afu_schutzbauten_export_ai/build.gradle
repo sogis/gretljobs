@@ -23,21 +23,10 @@ task transferSchutzbautenobjekte(type: SqlExecutor){
 }
 
 /**
- * Validiere die umgebauten Daten direkt in der Datenbank
- */
-task validateMgdmData(type: Ili2pgValidate){
-    dependsOn "transferSchutzbautenobjekte"
-    description = "Validiere die Daten im Modell Schutzbauten_LV95_V1"
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    models = mgdmModelName
-    dbschema = mgdmDbSchema
-}
-
-/**
  * Exportiere die Daten im MGDM aus der Datenbank.
  */
 task exportData(type: Ili2pgExport){
-    dependsOn "validateMgdmData"
+    dependsOn "transferSchutzbautenobjekte"
     description "Exportiere die Daten im MGDM aus der Datenbank"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = mgdmDbSchema
