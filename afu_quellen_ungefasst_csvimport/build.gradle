@@ -23,21 +23,23 @@ task deleteCsvTableRows(type: SqlExecutor){
     ]
 }
 
+/*
 task renameFile(type: Copy, dependsOn: deleteCsvTableRows) {
     from "upload/"
     into "upload/"
     include("uploadFile")
     rename("uploadFile", "uploadFile.csv")
 }
+*/
 
-task importCsv(type: CsvImport, dependsOn: renameFile) {
+task importCsv(type: CsvImport, dependsOn: deleteCsvTableRows) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = schemaNameStage
     tableName = 'csv_import'
     firstLineIsHeader = true
     valueSeparator = ','
     encoding = 'UTF-8'
-    dataFile = file("csv_mod/uploadFile.csv")
+    dataFile = file("upload/quellen.csv")
 }
 
 task refineImport(type: SqlExecutor, dependsOn: importCsv){
