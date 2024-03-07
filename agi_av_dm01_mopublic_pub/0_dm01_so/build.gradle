@@ -7,7 +7,6 @@ rootProject.ext.dm01SoDir = file("$buildDir/dm01_so/") // referenced from subpro
 def dm01SoDir = rootProject.ext.dm01SoDir
 def dm01SoZippedDir = new File(dm01SoDir, 'zip')
 
-/*
 task downloadFiles(type: FtpDownload) {
     doFirst {
         dm01SoZippedDir.mkdirs()
@@ -42,14 +41,35 @@ task downloadFiles(type: FtpDownload) {
         }          
     }
 }
-*/
+
 /* auskommentiert lassen
 task downloadFiles(type: Copy) {
   from file("$buildDir/ftpReplacement")
   into dm01SoZippedDir
 }
 */
-task publish(type: Publisher){
+
+task unzipFiles(dependsOn: downloadFiles) {
+    doLast {
+        fileTree(dm01SoZippedDir).files.each {
+            String fileName = it
+            copy {
+                from zipTree(fileName)
+                into dm01SoDir
+
+                include "**/*.itf"
+                include "**/*.ITF"
+
+                rename { String jt ->
+                    return jt.substring(0,4) + ".itf"
+                }
+            }
+        }
+        println "File(s) unzipped to directory: " + dm01SoDir
+    }
+}
+
+task publish(type: Publisher, dependsOn:unzipFiles){
     dataIdent = 'ch.so.agi.av.dm01_so'
     modelsToPublish = 'DM01AVSO24LV95'
     region = '.*'
@@ -62,7 +82,7 @@ task publish(type: Publisher){
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
     validationConfig = "$projectDir/../novalidation.toml"
 }
-/*
+
 task importData(type: Ili2pgReplace, dependsOn: publish) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = 'DM01AVSO24LV95'
@@ -79,7 +99,7 @@ task importData(type: Ili2pgReplace, dependsOn: publish) {
 }
 
 task execProjPubTasks(dependsOn: importData){}
-*/
+
 task execAllPubTasks(){
     dependsOn ':2_mopublic:execProjPubTasks'
     dependsOn ':1_dm01_ch:execProjPubTasks'
