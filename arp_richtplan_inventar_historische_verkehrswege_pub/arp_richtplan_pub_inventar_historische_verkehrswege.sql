@@ -1,7 +1,7 @@
 SELECT
     NULL AS objektnummer,
     'Historischer_Verkehrsweg' AS objekttyp,
-    ST_Multi(ivs_geometrie) AS geometrie,
+    ST_Multi(lo.ivs_geometrie) AS geometrie,
     NULL AS objektname,
     'Ausgangslage' AS abstimmungskategorie,
     NULL AS bedeutung,
@@ -16,7 +16,10 @@ SELECT
     NULL AS bundesblatt_nr,
     NULL AS bundesblatt_url,
     NULL AS bundesblatt_datum,
-    'inventar_historischer_verkehrsweg' AS datenquelle
+    'inventar_historische_verkehrswege' AS datenquelle
 FROM
-    arp_inventar_historische_verkehrswege_v1.ivs_inventarkarte_ivs_linienobjekte_lv95
-;
+    arp_inventar_historische_verkehrswege_v1.ivs_inventarkarte_ivs_linienobjekte_lv95 AS lo
+LEFT JOIN
+    arp_inventar_historische_verkehrswege_v1.ivs_inventarkarte_ivs_signatur_linie AS sl ON lo.role_ivs_signatur_linie = sl.t_id
+WHERE sl.ivs_deutsch IN ('Regionale Bedeutung, historischer Verlauf mit Substanz', 'Regionale Bedeutung, historischer Verlauf mit viel Substanz')
+
