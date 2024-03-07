@@ -49,28 +49,6 @@ task downloadFiles(type: Copy) {
   into dm01SoZippedDir
 }
 */
-/*
-task unzipFiles(dependsOn: downloadFiles) {
-    doLast {
-        fileTree(dm01SoZippedDir).files.each {
-            String fileName = it
-            copy {
-                from zipTree(fileName)
-                into dm01SoDir
-
-                include "**/*.itf"
-                include "**/*.ITF"
-
-                rename { String jt ->
-                    return jt.substring(0,4) + ".itf"
-                }
-            }
-        }
-        println "File(s) unzipped to directory: " + dm01SoDir
-    }
-}
-task publish(type: Publisher, dependsOn:unzipFiles){
-*/
 task publish(type: Publisher){
     dataIdent = 'ch.so.agi.av.dm01_so'
     modelsToPublish = 'DM01AVSO24LV95'
