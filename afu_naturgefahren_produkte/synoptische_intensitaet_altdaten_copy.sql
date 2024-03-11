@@ -10,17 +10,14 @@ attribute_mapping as (
     SELECT 
 	    st_multi(geometrie) as geometrie, --Im neuen Modell sind Multi-Polygone
     	CASE 
-		    WHEN int_stufe = 'keine'
-			    THEN 'keine_einwirkung'
-			WHEN int_stufe = 'vorhanden'
+		WHEN int_stufe = 'vorhanden'
 			    THEN 'einwirkung_vorhanden'
-		    WHEN int_stufe = 'schwach'
+		WHEN int_stufe = 'schwach'
 			    THEN 'schwach'
-		    WHEN int_stufe = 'mittel'
+		WHEN int_stufe = 'mittel'
 			    THEN 'mittel'
 	        WHEN int_stufe = 'stark'
-			    THEN 'hoch'
-            ELSE 'MAPPING_ERROR' 
+			    THEN 'stark'
 	    END AS int_stufe,
 	    CASE
 		    WHEN wkp = 'von_0_bis_30_Jahre'
@@ -30,10 +27,11 @@ attribute_mapping as (
 		    WHEN wkp = 'von_100_bis_300_Jahre'
 			    THEN 300
 		    WHEN wkp = 'groesser_300_Jahre'
-			    THEN 500
+			    THEN -1 --Restgefährdung
 		    WHEN wkp IS NULL
-	            THEN NULL
-		    ELSE -9999
+	            THEN null
+	        WHEN int_stufe = 'vorhanden' --Restgefährdung
+	            then -1
 	    END AS wkp,
 	CASE
 		WHEN teilproz = 'Ufererosion'
@@ -54,10 +52,12 @@ attribute_mapping as (
 			THEN 's_fels_berg_sturz'
 		WHEN teilproz = 'Einsturz_Absenkung'
 		    THEN 'einsturz_absenkung'
-		ELSE 'MAPPING_ERROR'
 	END AS teilproz
 FROM 
 	afu_gefahrenkartierung.gefahrenkartirung_ik_synoptisch_mgdm
+where 
+    int_stufe != 'keine'
+    
 )
 
 INSERT INTO afu_naturgefahren_staging_v1.synoptische_intensitaet (

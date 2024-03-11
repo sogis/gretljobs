@@ -47,7 +47,7 @@ SELECT
     	when richtung.jaehrlichkeit = 'J_30' then '30'
     	when richtung.jaehrlichkeit = 'J_100' then '100'
     	when richtung.jaehrlichkeit = 'J_300' then '300'
-    	when richtung.jaehrlichkeit = 'Restgefaehrdung' then 'Restgefaehrdung' 
+    	when richtung.jaehrlichkeit = 'Restgefaehrdung' then '-1' 
     end as jaehrlichkeit, 
     richtung.azimuth as fliessrichtung, 
     prozessquelle.kennung as prozessquelle_neudaten, 

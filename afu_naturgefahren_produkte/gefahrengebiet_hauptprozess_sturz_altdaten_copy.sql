@@ -20,7 +20,6 @@ SELECT
     basket.t_id as t_basket,
     'sturz' as hauptprozess,
      case 
-	    when gef_stufe = 'keine' then 'nicht_gefaehrdet'
     	when gef_stufe = 'vorhanden' then 'restgefaehrdung'
     	when gef_stufe = 'gering' then 'gering'
     	when gef_stufe = 'mittel' then 'mittel' 
@@ -35,4 +34,7 @@ FROM
     basket
 where 
     publiziert is true
+    and 
+    gef_stufe != 'keine'
+
 

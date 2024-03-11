@@ -11,7 +11,6 @@ attribute_mapping_hangmure as (
         basket.t_id as t_basket,
         'rutschung' as hauptprozess, 
         case 
-	        when gef_stufe = 'keine' then 'nicht_gefaehrdet'
         	when gef_stufe = 'vorhanden' then 'restgefaehrdung'
         	when gef_stufe = 'gering' then 'gering'
         	when gef_stufe = 'mittel' then 'mittel' 
@@ -26,6 +25,8 @@ attribute_mapping_hangmure as (
         basket
     where 
         publiziert = true 
+        and 
+        gef_stufe != 'keine'
 ), 
 
 attribute_mapping_plo_rutschung as (
@@ -33,7 +34,6 @@ attribute_mapping_plo_rutschung as (
         basket.t_id as t_basket,
         'rutschung' as hauptprozess,
         case 
-	        when gef_stufe = 'keine' then 'nicht_gefaehrdet'
         	when gef_stufe = 'vorhanden' then 'restgefaehrdung'
         	when gef_stufe = 'gering' then 'gering'
         	when gef_stufe = 'mittel' then 'mittel' 
@@ -48,6 +48,8 @@ attribute_mapping_plo_rutschung as (
         basket
     where 
         publiziert = true 
+        and 
+        gef_stufe != 'keine'
 ),
 
 attribute_mapping_perm_rutschung as (
@@ -55,7 +57,6 @@ attribute_mapping_perm_rutschung as (
         basket.t_id as t_basket,
         'rutschung' as hauptprozess,
         case 
-	        when gef_stufe = 'keine' then 'nicht_gefaehrdet'
         	when gef_stufe = 'vorhanden' then 'restgefaehrdung'
         	when gef_stufe = 'gering' then 'gering'
         	when gef_stufe = 'mittel' then 'mittel' 
@@ -70,6 +71,8 @@ attribute_mapping_perm_rutschung as (
         basket
     where 
         publiziert = true 
+        and 
+        gef_stufe != 'keine'
 )
 
 INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung (
@@ -87,6 +90,7 @@ INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung (
     select * from attribute_mapping_plo_rutschung
     union all 
     select * from attribute_mapping_perm_rutschung
+
 
 
 

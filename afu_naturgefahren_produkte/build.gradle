@@ -128,6 +128,25 @@ task make_naturgefahren_alt_schema(type: Ili2pgImportSchema, dependsOn: createDa
     createTidCol = true
 }
 
+task copy_alte_natgef_daten(type: Db2Db, dependsOn:  make_naturgefahren_alt_schema) {
+    description = "Kopiert die alten NatGef Daten in die processing DB"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    transferSets = [
+            new TransferSet('copy_gefahrenkartierung_erhebiungsgebiet.sql','afu_gefahrenkartierung.gefahrenkartirung_erhebungsgebiet', true),
+            new TransferSet('copy_gefahrenkartirung_gk_absenkung_einsturz.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_absenkung_einsturz', true),
+            new TransferSet('copy_gefahrenkartirung_gk_hangmure.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_hangmure', true),
+            new TransferSet('copy_gefahrenkartirung_gk_rutsch_kont_sackung.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_kont_sackung', true),
+            new TransferSet('copy_gefahrenkartirung_gk_rutsch_spontan.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_spontan', true),
+            new TransferSet('copy_gefahrenkartirung_gk_sturz.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_sturz', true),
+            new TransferSet('copy_gefahrenkartirung_gk_synoptisch_generiert.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_synoptisch_generiert', true),
+            new TransferSet('copy_gefahrenkartirung_gk_wasser.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_wasser', true),
+            new TransferSet('copy_gefahrenkartirung_punktsignatur.sql','afu_gefahrenkartierung.gefahrenkartirung_punktsignatur', true),
+            new TransferSet('copy_gefahrenkartirung_ueberflutungskarte.sql','afu_gefahrenkartierung.gefahrenkartirung_ueberflutungskarte', true),
+            new TransferSet('copy_gefahrenkartirung_ik_synoptisch_mgdm.sql','afu_gefahrenkartierung.gefahrenkartirung_ik_synoptisch_mgdm', true)
+    ];
+}
+/*
 task export_alte_natgef_daten(type: Ili2pgExport, dependsOn: make_naturgefahren_alt_schema) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "afu_gefahrenkartierung"
@@ -144,8 +163,9 @@ task import_natgef_alt_daten(type: Ili2pgImport, dependsOn: export_alte_natgef_d
     disableValidation = true
     deleteData = true
 }
+*/
 
-task make_naturgefahren_beurteilungsgebiet_schema(type: Ili2pgImportSchema, dependsOn: import_natgef_alt_daten){
+task make_naturgefahren_beurteilungsgebiet_schema(type: Ili2pgImportSchema, dependsOn: copy_alte_natgef_daten){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_AFU_Naturgefahren_Beurteilungsgebiet_20231127"
     dbschema = "afu_naturgefahren_beurteilungsgebiet_v1"

@@ -168,7 +168,6 @@ dokumente_union as (
 select distinct 
     basket.t_id as t_basket, 
     gemeinden.bfs_gemeindenummer as gemeinde_bfsnr, 
---    gemeinde_nr_kanton, 
     gemeinden.gemeindename as gemeinde_name,
     jsonb_build_object('@type', 'SO_AFU_Naturgefahren_Kernmodell_20231016.Naturgefahren.Dokument',
                       'Titel', berichte.titel, 
@@ -212,7 +211,6 @@ from
 INSERT INTO afu_naturgefahren_staging_v1.dokumente_pro_gemeinde (
     t_basket, 
     gemeinde_bfsnr, 
-    --gemeinde_nr_kanton, 
     gemeinde_name, 
     dokumente, 
     geometrie

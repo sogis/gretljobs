@@ -22,6 +22,8 @@ attribute_mapping as (
         afu_gefahrenkartierung.gefahrenkartirung_gk_wasser
     where 
         prozessa = 'Murgang'
+        and
+        publiziert is true
 )
 
 INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_murgang (

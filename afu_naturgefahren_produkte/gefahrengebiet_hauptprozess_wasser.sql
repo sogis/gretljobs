@@ -98,49 +98,70 @@ hauptprozess_wasser_clean_prio_clip as (
             a.prio < b.prio              
     ) AS blade		
 ),
+
+hauptprozess_wasser_boundary as (
+  select 
+    st_union(st_boundary(geometrie)) as geometrie
+  from
+    hauptprozess_wasser_clean_prio_clip
+),
+
+hauptprozess_wasser_split_poly AS (
+  SELECT 
+    (st_dump(st_polygonize(geometrie))).geom AS geometrie
+  FROM
+    hauptprozess_wasser_boundary
+),
+
+hauptprozess_wasser_split_poly_points AS (
+  SELECT 
+    ROW_NUMBER() OVER() AS id,
+    geometrie AS poly,
+    st_pointonsurface(geometrie) AS point
+  FROM
+    hauptprozess_wasser_split_poly
+),
 	
 hauptprozess_wasser_point_on_polygons as (
-    select 
-	    gefahrenstufe,
-		charakterisierung, 
-		st_pointOnSurface((st_dump(geometrie)).geom) as punkt_geometrie 
-	FROM 
-	    hauptprozess_wasser_clean_prio_clip
-),
-
-hauptprozess_wasser_geometrie_union as (
-    select 
-        gefahrenstufe, 
-        st_union(geometrie) as geometrie 
-    from 
-        hauptprozess_wasser_clean_prio_clip
-    GROUP by 
-        gefahrenstufe
-),
-
-hauptprozess_wasser_geometrie_split as (
-    select 
-        gefahrenstufe, 
-        (st_dump(geometrie)).geom as geometrie 
-    from 
-        hauptprozess_wasser_geometrie_union
+    SELECT 
+        s.id,
+        p.gefahrenstufe,
+        string_agg(p.charakterisierung,', ') AS charakterisierung
+    FROM
+        hauptprozess_wasser_split_poly_points s
+    JOIN
+        hauptprozess_wasser_clean_prio_clip p ON st_within(s.point, p.geometrie)
+    GROUP BY 
+        s.id,
+        p.gefahrenstufe
 ),
 
 hauptprozess_wasser_charakterisierung_agg as (
     select 
         polygone.gefahrenstufe,
-        string_agg(distinct point.charakterisierung,' ') as charakterisierung,
-	polygone.geometrie
+        polygone.charakterisierung,
+	    point.poly as geometrie
     FROM 
-	hauptprozess_wasser_geometrie_split polygone 
+	    hauptprozess_wasser_split_poly_points point 
     LEFT JOIN 
-	hauptprozess_wasser_point_on_polygons point 
+	    hauptprozess_wasser_point_on_polygons polygone 
         ON 
-	ST_Dwithin(point.punkt_geometrie, polygone.geometrie,0)
+	    polygone.id = point.id
+),
+
+-- Flächen mit gleicher Gefahrenstufe und gleicher Charakterisierung können zusammengefasst werden
+hauptprozess_wasser_union as (
+    select 
+        gefahrenstufe,
+        charakterisierung,
+        st_union(geometrie) as geometrie
+    from 
+        hauptprozess_wasser_charakterisierung_agg
     group by 
-	polygone.geometrie, 
-	polygone.gefahrenstufe
+        gefahrenstufe,
+        charakterisierung 
 )
+
 
 INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser (
     t_basket,
@@ -163,9 +184,11 @@ select
 from 
     basket,
     orig_basket,
-    hauptprozess_wasser_charakterisierung_agg
+    hauptprozess_wasser_union
 WHERE 
     st_area(geometrie) > 0.01 
     and 
     charakterisierung is not null 
 ;
+
+

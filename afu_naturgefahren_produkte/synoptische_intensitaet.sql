@@ -29,24 +29,24 @@ teilprozess_absenkung as (
     select 
        'ea_absenkung' as teilprozess,
         case when 
-            (string_to_array(iwcode, '_'))[3] ~ '^[0-9\.]+$'
+                (string_to_array(iwcode, '_'))[3] ~ '^[0-9\.]+$'
             then 
                 (string_to_array(iwcode, '_'))[3]
             else 
-                null 
+                '-1' 
         end as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten, 
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
              when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
              when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 1 
+             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
         end as prio
     from 
         afu_naturgefahren_v1.befundabsenkung befund 
@@ -80,7 +80,7 @@ teilprozess_absenkung_prio as (
         WHERE 
             a.geometrie && b.geometrie 
             and 
-            a.prio > b.prio
+            a.prio < b.prio
             and 
             a.jaehrlichkeit = b.jaehrlichkeit 
     ) AS blade
@@ -94,20 +94,20 @@ teilprozess_bergundfelssturz as (
             then 
                 (string_to_array(iwcode, '_'))[3]
             else 
-                null 
+                '-1' 
         end as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
              when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
              when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 1 
+             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
         end as prio
     from 
         afu_naturgefahren_v1.befundbergfelssturz befund 
@@ -140,7 +140,7 @@ teilprozess_bergundfelssturz_prio as (
         WHERE 
             a.geometrie && b.geometrie 
             and 
-            a.prio > b.prio             
+            a.prio < b.prio             
             and 
             a.jaehrlichkeit = b.jaehrlichkeit 
     ) AS blade
@@ -154,20 +154,20 @@ teilprozess_einsturz as (
             then 
                 (string_to_array(iwcode, '_'))[3]
             else 
-                null 
+                '-1' 
         end as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
              when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
              when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 1 
+             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
         end as prio
     from 
         afu_naturgefahren_v1.befundeinsturz befund 
@@ -200,7 +200,7 @@ teilprozess_einsturz_prio as (
         WHERE 
             a.geometrie && b.geometrie 
             and 
-            a.prio > b.prio             
+            a.prio < b.prio             
             and 
             a.jaehrlichkeit = b.jaehrlichkeit 
     ) AS blade
@@ -214,20 +214,20 @@ teilprozess_eisschlag as (
             then 
                 (string_to_array(iwcode, '_'))[3]
             else 
-                null 
+                '-1' 
         end as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
              when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
              when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 1 
+             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
         end as prio
     from 
         afu_naturgefahren_v1.befundeisschlag befund 
@@ -260,7 +260,7 @@ teilprozess_eisschlag_prio as (
         WHERE 
             a.geometrie && b.geometrie 
             and 
-            a.prio > b.prio             
+            a.prio < b.prio             
             and 
             a.jaehrlichkeit = b.jaehrlichkeit 
     ) AS blade
@@ -274,20 +274,20 @@ teilprozess_hangmure as (
             then 
                 (string_to_array(iwcode, '_'))[3]
             else 
-                null 
+                '-1' 
         end as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
              when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
              when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 1 
+             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
         end as prio
     from 
         afu_naturgefahren_v1.befundhangmure befund 
@@ -320,7 +320,7 @@ teilprozess_hangmure_prio as (
         WHERE 
             a.geometrie && b.geometrie 
             and 
-            a.prio > b.prio             
+            a.prio < b.prio             
             and 
             a.jaehrlichkeit = b.jaehrlichkeit 
     ) AS blade
@@ -334,20 +334,20 @@ teilprozess_permanentrutschung as (
             then 
                 (string_to_array(iwcode, '_'))[3]
             else 
-                null 
+                '-1' 
         end as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
              when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
              when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 1 
+             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
         end as prio
     from 
         afu_naturgefahren_v1.befundpermanenterutschung befund 
@@ -380,7 +380,7 @@ teilprozess_permanentrutschung_prio as (
         WHERE 
             a.geometrie && b.geometrie 
             and 
-            a.prio > b.prio             
+            a.prio < b.prio             
             and 
             a.jaehrlichkeit = b.jaehrlichkeit 
     ) AS blade
@@ -394,20 +394,20 @@ teilprozess_spontanrutschung as (
             then 
                 (string_to_array(iwcode, '_'))[3]
             else 
-                null 
+                '-1' 
         end as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
              when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
              when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 1 
+             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
         end as prio
     from 
         afu_naturgefahren_v1.befundspontanerutschung befund 
@@ -440,7 +440,7 @@ teilprozess_spontanrutschung_prio as (
         WHERE 
             a.geometrie && b.geometrie 
             and 
-            a.prio > b.prio             
+            a.prio < b.prio             
             and 
             a.jaehrlichkeit = b.jaehrlichkeit 
     ) AS blade
@@ -454,20 +454,20 @@ teilprozess_steinblockschlag as (
             then 
                 (string_to_array(iwcode, '_'))[3]
             else 
-                null 
+                '-1' 
         end as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
              when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
              when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 1 
+             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
         end as prio
     from 
         afu_naturgefahren_v1.befundsteinblockschlag befund 
@@ -500,7 +500,7 @@ teilprozess_steinblockschlag_prio as (
         WHERE 
             a.geometrie && b.geometrie 
             and 
-            a.prio > b.prio             
+            a.prio < b.prio             
             and 
             a.jaehrlichkeit = b.jaehrlichkeit 
     ) AS blade
@@ -514,20 +514,20 @@ teilprozess_uebermurung as (
             then 
                 (string_to_array(iwcode, '_'))[3]
             else 
-                null 
+                '-1' 
         end as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
              when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
              when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 1 
+             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
         end as prio
     from 
         afu_naturgefahren_v1.befunduebermurung befund 
@@ -560,7 +560,7 @@ teilprozess_uebermurung_prio as (
         WHERE 
             a.geometrie && b.geometrie 
             and 
-            a.prio > b.prio             
+            a.prio < b.prio             
             and 
             a.jaehrlichkeit = b.jaehrlichkeit 
     ) AS blade
@@ -574,20 +574,20 @@ teilprozess_ueberschwemmungdynamisch as (
             then 
                 (string_to_array(iwcode, '_'))[3]
             else 
-                null 
+                '-1' 
         end as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
              when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
              when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 1 
+             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
         end as prio
     from 
         afu_naturgefahren_v1.befundueberschwemmungdynamisch befund 
@@ -620,7 +620,7 @@ teilprozess_ueberschwemmungdynamisch_prio as (
         WHERE 
             a.geometrie && b.geometrie 
             and 
-            a.prio > b.prio             
+            a.prio < b.prio             
             and 
             a.jaehrlichkeit = b.jaehrlichkeit 
     ) AS blade
@@ -634,20 +634,20 @@ teilprozess_ueberschwemmungstatisch as (
             then 
                 (string_to_array(iwcode, '_'))[3]
             else 
-                null 
+                '-1' 
         end as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
         'Neudaten' as datenherkunft,
         basket.attachmentkey as auftrag_neudaten,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 4 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
              when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 3 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
              when
              (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
              when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 1 
+             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
         end as prio
     from 
         afu_naturgefahren_v1.befundueberschwemmungstatisch befund 
@@ -680,7 +680,7 @@ teilprozess_ueberschwemmungstatisch_prio as (
         WHERE 
             a.geometrie && b.geometrie 
             and 
-            a.prio > b.prio             
+            a.prio < b.prio             
             and 
             a.jaehrlichkeit = b.jaehrlichkeit 
     ) AS blade
@@ -730,14 +730,7 @@ select
     basket.t_id as t_basket, 
     teilprozess,
     jaehrlichkeit::integer,
-    case 
-    	when intensitaet = 'keine_einwirkung' then 'keine_einwirkung'
-    	when intensitaet = 'einwirkung_vorhanden' then 'einwirkung_vorhanden'
-    	when intensitaet = 'schwach' then 'schwach'
-    	when intensitaet = 'mittel' then 'mittel'
-    	when intensitaet = 'hoch' then 'hoch'
-    	when intensitaet = 'stark' then 'hoch' -- IM MGDM gibt es nur hoch
-    end as intensitaet,
+    intensitaet,
     geometrie, 
     datenherkunft,
     auftrag_neudaten

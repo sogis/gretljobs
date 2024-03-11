@@ -47,7 +47,7 @@ SELECT
     	when tiefe.jaehrlichkeit = 'J_30' then '30'
     	when tiefe.jaehrlichkeit = 'J_100' then '100'
     	when tiefe.jaehrlichkeit = 'J_300' then '300'
-    	when tiefe.jaehrlichkeit = 'Restgefaehrdung' then 'Restgefaehrdung' 
+    	when tiefe.jaehrlichkeit = 'Restgefaehrdung' then '-1' 
     end as jaehrlichkeit,  
     case 
     	when h = 'von_0_bis_25_cm' then 'von_0_bis_25cm'

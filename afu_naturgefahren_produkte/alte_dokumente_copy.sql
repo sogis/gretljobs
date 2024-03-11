@@ -19,7 +19,7 @@ with dokumente as (
         	when (ik_ru_spon = true) or (ik_ru_kont = true) or (gk_ru_spon = true) or (gk_ru_kont = true) 
         	then 'Rutschung' 
         end as hauptprozess_rutschung, 
-        date_part('year', erst_dat) as jahr
+        left(right((json_array_elements(dokument::json) ->'name')::text,9),4) as jahr
     from 
         afu_gefahrenkartierung_pub.gefahrenkartirung_perimeter_gefahrenkartierung_v
 ),
@@ -49,4 +49,4 @@ from
 left join 
     gemeinden 
     on 
-    st_dwithin(dokumente.geometrie,gemeinden.geometrie,0)
+    st_dwithin(st_buffer(dokumente.geometrie,-1),gemeinden.geometrie,0)

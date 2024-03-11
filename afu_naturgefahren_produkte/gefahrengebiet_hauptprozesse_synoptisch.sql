@@ -11,41 +11,31 @@ with
 
 hauptprozesse_clean as (
     SELECT 
-	gefahrenstufe, 
+	    gefahrenstufe, 
         charakterisierung, 
-	st_reduceprecision(geometrie,0.001) as geometrie 
+	    geometrie 
     FROM 
-	afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser 
+	    afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser 
+    WHERE 
+        st_area(geometrie) > 0.001                      
+    union all
+    SELECT 
+	    gefahrenstufe, 
+        charakterisierung, 
+	    geometrie  
+    FROM 
+	    afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung 
     WHERE 
         st_area(geometrie) > 0.001
---        and 
---        datenherkunft = 'Neudaten'
-
     union all 
-
     SELECT 
-	gefahrenstufe, 
+	    gefahrenstufe, 
         charakterisierung, 
-	st_reduceprecision(geometrie,0.001) as geometrie  
-    FROM 
-	afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung 
-    WHERE 
-        st_area(geometrie) > 0.001
---        and 
---        datenherkunft = 'Neudaten'
-
-    union all 
-
-    SELECT 
-	gefahrenstufe, 
-        charakterisierung, 
-	st_reduceprecision(geometrie,0.001) as geometrie 
+	    geometrie 
     FROM 
 	afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz 
     WHERE 
         st_area(geometrie) > 0.001
---        and 
---        datenherkunft = 'Neudaten'
 ),
 
 hauptprozesse_clean_prio as (
@@ -97,53 +87,67 @@ hauptprozesse_clip_clean as (
         hauptprozesse_clean_prio_clip
 ),
 
-hauptprozesse_point_on_polygons as (
+hauptprozesse_boundary as (
     select 
-	    gefahrenstufe,
-		string_to_array(charakterisierung,' ') as charakterisierung, 
-		st_pointOnSurface((st_dump(geometrie)).geom) as punkt_geometrie 
-	FROM 
-	    hauptprozesse_clip_clean
-	where 
-	    st_isempty(geometrie) is not true 
-),
-
-hauptprozesse_geometrie_union as (
-    select 
-        gefahrenstufe, 
-        st_union(geometrie) as geometrie 
-    from 
+        st_union(st_boundary(geometrie)) as geometrie
+    from
         hauptprozesse_clip_clean
-    where 
-	    st_isempty(geometrie) is not true 
-    GROUP by 
-        gefahrenstufe
 ),
 
-hauptprozesse_geometrie_split as (
-    select 
-        gefahrenstufe, 
-        (st_dump(geometrie)).geom as geometrie 
-    from 
-        hauptprozesse_geometrie_union
+hauptprozesse_split_poly AS (
+  SELECT 
+    (st_dump(st_polygonize(geometrie))).geom AS geometrie
+  FROM
+    hauptprozesse_boundary
+),
+
+hauptprozesse_split_poly_points AS (
+  SELECT 
+    ROW_NUMBER() OVER() AS id,
+    geometrie AS poly,
+    st_pointonsurface(geometrie) AS point
+  FROM
+    hauptprozesse_split_poly
+),
+	
+hauptprozesse_point_on_polygons as (
+    SELECT 
+        s.id,
+        p.gefahrenstufe,
+        string_agg(p.charakterisierung,', ') AS charakterisierung
+    FROM
+        hauptprozesse_split_poly_points s
+    JOIN
+        hauptprozesse_clip_clean p ON st_within(s.point, p.geometrie)
+    GROUP BY 
+        s.id,
+        p.gefahrenstufe
 ),
 
 hauptprozesse_charakterisierung_agg as (
     select 
         polygone.gefahrenstufe,
-        string_agg(array_to_string(point.charakterisierung,', '),', ') as charakterisierung,
-	    polygone.geometrie
-	FROM 
-	    hauptprozesse_geometrie_split polygone 
+        polygone.charakterisierung,
+	    point.poly as geometrie
+    FROM 
+	    hauptprozesse_split_poly_points point 
     LEFT JOIN 
-	    hauptprozesse_point_on_polygons point 
-		ON 
-		ST_Dwithin(point.punkt_geometrie, polygone.geometrie,0)
-    where 
-        st_area(polygone.geometrie) > 0.001
-	group by 
-	    polygone.geometrie, 
-	    polygone.gefahrenstufe
+	    hauptprozesse_point_on_polygons polygone 
+        ON 
+	    polygone.id = point.id
+),
+
+-- Flächen mit gleicher Gefahrenstufe und gleicher Charakterisierung können zusammengefasst werden
+hauptprozesse_union as (
+    select 
+        gefahrenstufe,
+        charakterisierung,
+        st_union(geometrie) as geometrie
+    from 
+        hauptprozesse_charakterisierung_agg
+    group by 
+        gefahrenstufe,
+        charakterisierung 
 ),
 
 hauptprozesse_charakterisierung_sort as (
@@ -160,7 +164,7 @@ hauptprozesse_charakterisierung_sort as (
        ) as charakterisierung,
 	   geometrie
 	FROM 
-	    hauptprozesse_charakterisierung_agg 
+	    hauptprozesse_union 
 	where 
 	    charakterisierung is not null 
 )
@@ -184,6 +188,7 @@ WHERE
     and 
     charakterisierung is not null 
 ;
+
 
 
 
