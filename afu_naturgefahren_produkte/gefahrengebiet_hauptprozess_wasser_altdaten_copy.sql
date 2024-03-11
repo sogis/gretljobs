@@ -86,6 +86,20 @@ hauptprozess_alt_wasser_prio_2_clip as (
             and 
             a.prio < b.prio              
     ) AS blade		
+),
+
+hauptprozess_alt_wasser_union as (
+    select 
+        hauptprozess,
+        gefahrenstufe,
+        charakterisierung,
+        st_union(geometrie) as geometrie
+    from 
+        hauptprozess_alt_wasser_prio_2_clip
+    group by 
+        hauptprozess,
+        gefahrenstufe,
+        charakterisierung 
 )
 
 INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser (
@@ -107,8 +121,9 @@ SELECT
     'Altdaten' as datenherkunft, 
     null as auftrag_neudaten
 FROM 
-    hauptprozess_alt_wasser_prio_2_clip,
+    hauptprozess_alt_wasser_union,
     basket
 ;
+
 
 
