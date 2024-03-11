@@ -67,20 +67,3 @@ task removeFiles(type: Delete, dependsOn: 'dataTransfer') {
     }
     delete file(pathToUnzipFolder), file(pathToDataZip)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

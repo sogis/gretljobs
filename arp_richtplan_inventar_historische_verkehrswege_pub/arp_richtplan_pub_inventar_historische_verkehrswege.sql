@@ -22,4 +22,3 @@ FROM
 LEFT JOIN
     arp_inventar_historische_verkehrswege_v1.ivs_inventarkarte_ivs_signatur_linie AS sl ON lo.role_ivs_signatur_linie = sl.t_id
 WHERE sl.ivs_deutsch IN ('Regionale Bedeutung, historischer Verlauf mit Substanz', 'Regionale Bedeutung, historischer Verlauf mit viel Substanz')
-
