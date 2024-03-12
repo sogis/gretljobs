@@ -11,7 +11,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'copyDataPub'
 
-task rename(type: Copy) {
+task copyXtfFile(type: Copy) {
     from 'upload'
     into 'upload'
     rename 'uploadFile','uploadFile.xtf'
