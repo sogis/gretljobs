@@ -3,7 +3,7 @@ import ch.so.agi.gretl.tasks.*
 import java.nio.file.Paths
 import de.undercouch.gradle.tasks.download.Download
 
-
+// Update PLZ_Ortschaft manueller Datenimport. Daten werden zur Zeit manuell importiert da die neuen Daten zum herunterladen (Gretljob agi_plz_ortschaften_pub) nur mit INTERLIS 2.4 vorhanden sind.
 
 apply plugin: "de.undercouch.download"
 apply plugin: 'ch.so.agi.gretl'
