@@ -11,13 +11,29 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'copyDataPub'
 
-task copyXtfFile(type: Copy) {
-    from 'upload'
-    into 'upload'
-    rename 'uploadFile','uploadFile.xtf'
+def pathToTempFolder = System.getProperty('java.io.tmpdir')
+def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
+def pathToDataZip = Paths.get(pathToTempFolder, "uploadFile.zip")
+def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), InterlisFile)
+
+task copyZipFile(type: Copy) {
+    from 'upload/'
+    include('uploadFile')
+    into pathToTempFolder
+    rename('uploadFile', 'uploadFile.zip')
 }
 
-task dbImport(type: Ili2pgImport, dependsOn: 'copyXtfFile'){
+task unzipData(type: Copy, dependsOn: 'copyZipFile') {
+    description = "Unzip file."
+    doLast {
+        println "File unzipped to directory: " + pathToUnzipFolder
+    }
+    from zipTree(pathToDataZip)
+    into file(pathToUnzipFolder)
+    include "**/*.xtf"
+}
+
+task dbImport(type: Ili2pgImport, dependsOn: 'unzipData'){
     description = "Import plz_ortschaften-Data into Edit database"
     doLast {
         println "Data imported into db: " + dbUriEdit
@@ -26,7 +42,7 @@ task dbImport(type: Ili2pgImport, dependsOn: 'copyXtfFile'){
     dbschema = "agi_plz_ortschaften"
     models = "PLZOCH1LV95D"
     disableValidation = false
-    dataFile = 'upload/uploadFile.xtf'
+    dataFile = file(xtfFilePath)
     deleteData = true
     strokeArcs = true
 }
