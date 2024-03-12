@@ -11,6 +11,8 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'copyDataPub'
 
+def InterlisFile = 'PLZO_ITF_LV95.itf' // Heisst das Data-File wirklich immer so? 
+
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
 def pathToDataZip = Paths.get(pathToTempFolder, "uploadFile.zip")
@@ -30,7 +32,7 @@ task unzipData(type: Copy, dependsOn: 'copyZipFile') {
     }
     from zipTree(pathToDataZip)
     into file(pathToUnzipFolder)
-    include "**/*.xtf"
+    include "**/*.itf"
 }
 
 task dbImport(type: Ili2pgImport, dependsOn: 'unzipData'){
