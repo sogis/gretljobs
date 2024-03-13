@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPubData'
+defaultTasks 'transferSchutzbautenobjekte'
 
 /**
  * Sammle alle Objekte aus der Erfassungsdatenbank nach Geometrie und
@@ -84,6 +84,9 @@ task transferSchutzbautenobjekte(type: Db2Db){
  * Exportiere die Daten aus der edit Datenbank nach INTERLIS bzw.
  * GIS Dateien und leite diese an die KGDI weiter
  */
+/**
+ * Publiziere die Daten für den Datenbezug erst, sobald diese öffentlich
+ * verfügbar sein werden.
 task publishPubData(type: Publisher){
     dependsOn 'transferSchutzbautenobjekte'
     database = [dbUriPub, dbUserPub, dbPwdPub]
@@ -96,3 +99,4 @@ task publishPubData(type: Publisher){
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
+*/
