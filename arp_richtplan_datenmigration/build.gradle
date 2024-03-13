@@ -1,0 +1,21 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'datatransfer'
+
+task datatransfer(type: SqlExecutor){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = [
+            'arp_richtplan_delete_data.sql',
+            'arp_richtplan_dataset.sql',
+            'arp_richtplan_basket.sql',
+            'arp_richtplan_richtplankarte_dokument.sql',
+            'arp_richtplan_ueberlagernder_punkt.sql',
+            'arp_richtplan_ueberlagernde_flaeche.sql',
+            'arp_richtplan_ueberlagernde_linie.sql',
+            'arp_richtplan_raumkonzept_punkt.sql',
+            'arp_richtplan_raumkonzept_flaeche.sql'
+        ]
+}
