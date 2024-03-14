@@ -1,10 +1,12 @@
 INSERT INTO
     arp_richtplan_v2.raumkonzept_punkt (
+        t_id,
         objekttyp,
         geometrie
         )
 
 SELECT
+    t_id,
     CASE objekttyp
         WHEN 'Freizeitnutzung'
             THEN 'Landschaft_Freizeitnutzung'
