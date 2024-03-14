@@ -1,0 +1,10 @@
+SELECT
+    t_id,
+    atext,
+    kurztext,
+    indextext,
+    sprache,
+    ortschaftsname_von
+FROM 
+    agi_plz_ortschaften.plzortschaft_ortschaftsname
+;
