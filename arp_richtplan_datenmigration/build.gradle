@@ -9,6 +9,7 @@ task datatransfer(type: SqlExecutor){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = [
             'arp_richtplan_delete_data.sql',
+            'arp_richtplan_sequence.sql',
             'arp_richtplan_dataset.sql',
             'arp_richtplan_basket.sql',
             'arp_richtplan_richtplankarte_dokument.sql',

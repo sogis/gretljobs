@@ -1,11 +1,13 @@
 INSERT INTO
     arp_richtplan_v2.raumkonzept_flaeche (
+        t_id,
         objektname,
         objekttyp,
         geometrie
         )
 
 SELECT
+    t_id,
     objektname,
     CASE objekttyp
         WHEN 'Handlungsraum.agglogepraegt'
