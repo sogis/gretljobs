@@ -1,0 +1,11 @@
+SELECT
+    t_id,
+    nbident,
+    identifikator,
+    beschreibung,
+    gueltigkeit,
+    gueltigereintrag,
+    perimeter
+FROM 
+    agi_plz_ortschaften.plzortschaft_osnachfuehrung
+;
