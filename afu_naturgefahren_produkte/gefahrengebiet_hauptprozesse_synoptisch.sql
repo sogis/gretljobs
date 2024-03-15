@@ -150,6 +150,7 @@ hauptprozesse_union as (
         charakterisierung 
 ),
 
+-- Die Charakterisierungen müssen sortiert werden
 hauptprozesse_charakterisierung_sort as (
     select 
        gefahrenstufe,
@@ -167,17 +168,17 @@ hauptprozesse_charakterisierung_sort as (
 	    hauptprozesse_union 
 	where 
 	    charakterisierung is not null 
-)
+),
 
 --Polygone die unzusammenhängend sinnd müssen wieder aufgetrennt werden. 
---hauptprozesse_polygon_dump as (
---    select
---        gefahrenstufe, 
---        charakterisierung,
---        (st_dump(geometrie)).geom as geometrie
---    from 
---        hauptprozesse_charakterisierung_sort
---)
+hauptprozesse_polygon_dump as (
+    select
+        gefahrenstufe, 
+        charakterisierung,
+        (st_dump(geometrie)).geom as geometrie
+    from 
+        hauptprozesse_charakterisierung_sort
+)
 
 INSERT INTO afu_naturgefahren_staging_v1.synoptisches_gefahrengebiet (
     t_basket, 
@@ -192,7 +193,7 @@ select
     st_multi(geometrie) as geometrie 
 from 
     basket,
-    hauptprozesse_charakterisierung_sort
+    hauptprozesse_polygon_dump
 WHERE 
     st_area(geometrie) > 0.001 
     and 

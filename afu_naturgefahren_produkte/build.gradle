@@ -403,16 +403,16 @@ task gefahrengebiet_hauptprozess_sturz_altdaten_copy(type: SqlExecutor, dependsO
 task gefahrengebiet_hauptprozesse_synoptisch(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozess_sturz_altdaten_copy) {
     description = "Berechnugn der synoptischen Hauptprozess - Gefahrengebiete"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_hauptprozesse_synoptisch.sql']
-    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
+    sqlFiles = [
+                'gefahrengebiet_hauptprozesse_synoptisch_make_temp_tables.sql',
+                'gefahrengebiet_hauptprozesse_synoptisch_copy_all_to_temptables.sql',
+                'gefahrengebiet_hauptprozesse_synoptisch_create_split_poly.sql',
+                'gefahrengebiet_hauptprozesse_synoptisch_add_attributes.sql',
+                'gefahrengebiet_hauptprozesse_synoptisch_delete_holes.sql',
+                'gefahrengebiet_hauptprozesse_synoptisch_union.sql',
+                'gefahrengebiet_hauptprozesse_synoptisch.sql'
+    ]
 }
-
-// Muss nicht gemacht werden, weil alte Daten schon oben mit verrechnet werden. 
-//task gefahrengebiet_hauptprozesse_synoptisch_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozesse_synoptisch) {
-//    description = "Kopieren der alten Daten der synoptischen Gefahrengebiete der Hauptprozesse"
-//    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-//    sqlFiles = ['gefahrengebiet_hauptprozesse_synoptisch_altdaten_copy.sql']
-//}
 
 // FLIESSRICHTUNG
 
@@ -486,7 +486,33 @@ task dokumente_pro_gemeinde(type: SqlExecutor, dependsOn: copy_alte_dokumente) {
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 
-task clean_geometry(type: SqlExecutor, dependsOn: dokumente_pro_gemeinde) {
+// Kennwerte
+
+task kw_uebermurung_geschwindigkeit(type: SqlExecutor, dependsOn: dokumente_pro_gemeinde) {
+    description = "Kopieren der Kennwerte Übermurung Geschwindigkeit"
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['kw_uebermurung_geschwindigkeit.sql']
+    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
+}
+
+task kw_uebermurung_hoehe(type: SqlExecutor, dependsOn: kw_uebermurung_geschwindigkeit) {
+    description = "Kopieren der Kennwerte Übermurung Höhe"
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['kw_uebermurung_hoehe.sql']
+    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
+}
+
+task kw_ueberschwemmung_geschwindigkeit(type: SqlExecutor, dependsOn: kw_uebermurung_hoehe) {
+    description = "Kopieren der Kennwerte Überschwemmung Geschwindigkeit"
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['kw_ueberschwemmung_geschwindigkeit.sql']
+    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
+}
+
+//Geometriebereinigung
+
+task clean_geometry(type: SqlExecutor, dependsOn: kw_ueberschwemmung_geschwindigkeit) {
+    description = "Bereinigung der Geometrien durch st_reducePrecision"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['geometrie_bereinigung.sql']
 }
