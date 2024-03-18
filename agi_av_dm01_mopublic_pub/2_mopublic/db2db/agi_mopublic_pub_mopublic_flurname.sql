@@ -6,7 +6,8 @@ WITH pos AS
         hali,
         vali,
         ori,
-        pos,
+        trim(to_char(ST_X(pos), '9999999.000'))::NUMERIC AS posX,
+        trim(to_char(ST_Y(pos), '9999999.000'))::NUMERIC AS posY,
         gemeinde.aname AS gemeinde
     FROM
     agi_dm01avso24.nomenklatur_flurnamepos AS pos
@@ -42,7 +43,8 @@ SELECT
     END AS vali,
     aimport.importdate AS importdatum,
     flurname.geometrie AS geometrie,
-    pos.pos,
+    pos.posX,
+    pos.posY,
     pos.gemeinde AS gemeinde,
     ${basket_tid} AS t_basket
 FROM
