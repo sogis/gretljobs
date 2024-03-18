@@ -34,10 +34,10 @@ task pubFiles(type: Publisher, dependsOn: pubUpdateTxtCol){
     dataIdent = "ch.so.afu.quellen_ungefasst"
     dbSchema = schemaNameEdit
     modelsToPublish = iliModelName
-    target = [file("$buildDir")]
-    //target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
-    //kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-    //kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    //target = [file("$buildDir")]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
