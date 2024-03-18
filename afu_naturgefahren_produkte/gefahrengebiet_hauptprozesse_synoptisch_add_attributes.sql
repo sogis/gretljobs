@@ -29,7 +29,7 @@ joined as (
 	select 
 		sm.id,
 		sm.gef_max,
-		(distinct charakterisierung order by charakterisierung)::text as charakterisierung
+		string_agg(distinct charakterisierung,', ' order by charakterisierung)::text as charakterisierung
 	from 
 		splited_maxstufe sm
 	join

@@ -368,6 +368,7 @@ task gefahrengebiet_hauptprozess_wasser_altdaten_copy(type: SqlExecutor, depends
     description = "Kopieren der alten Daten der Gefahrengebiete des Hauptprozesses Wasser"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['gefahrengebiet_hauptprozess_wasser_altdaten_copy.sql']
+
 }
 
 task gefahrengebiet_hauptprozess_rutschung(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozess_wasser_altdaten_copy) {
@@ -410,7 +411,7 @@ task gefahrengebiet_hauptprozesse_synoptisch(type: SqlExecutor, dependsOn: gefah
                 'gefahrengebiet_hauptprozesse_synoptisch_add_attributes.sql',
                 'gefahrengebiet_hauptprozesse_synoptisch_delete_holes.sql',
                 'gefahrengebiet_hauptprozesse_synoptisch_union.sql',
-                'gefahrengebiet_hauptprozesse_synoptisch.sql'
+                'gefahrengebiet_hauptprozesse_synoptisch_sort_and_insert.sql'
     ]
 }
 

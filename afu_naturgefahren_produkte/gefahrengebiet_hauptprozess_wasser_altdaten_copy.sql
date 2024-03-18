@@ -22,7 +22,7 @@ hauptprozess_alt_wasser_prio as (
 		    WHEN gef_stufe = 'gering' then 1 
 		    WHEN gef_stufe = 'mittel' then 2 
 		    WHEN gef_stufe = 'erheblich' then 3
-		END as prio 
+		end || regexp_replace(aindex, '\D','','g') as prio --Die Prio setzt sich zusammen aus gef_stufe und Nummer der Charakterisierung. Grund: Geteilte Kästchen! 
 	FROM 
         afu_gefahrenkartierung.gefahrenkartirung_gk_wasser
     where 
@@ -54,40 +54,6 @@ hauptprozess_alt_wasser_prio_clip as (
     ) AS blade		
 ),
 
-hauptprozess_alt_wasser_prio_2 as (
-    SELECT 
-	    hauptprozess, 
-        gefahrenstufe, 
-		charakterisierung, 
-		geometrie,
-		substring(charakterisierung from 2 for 1) as prio 
-	FROM 
-        hauptprozess_alt_wasser_prio_clip
-),
-
-hauptprozess_alt_wasser_prio_2_clip as (
-    SELECT 
-	    a.hauptprozess,
-	    a.gefahrenstufe,
-		a.charakterisierung, 
-		ST_Multi(COALESCE(
-            ST_Difference(a.geometrie, blade.geometrie),
-            a.geometrie
-        )) AS geometrie
-    FROM  
-        hauptprozess_alt_wasser_prio_2 AS a
-    CROSS JOIN LATERAL (
-        SELECT 
-            ST_Union(geometrie) AS geometrie
-        FROM   
-            hauptprozess_alt_wasser_prio_2 AS b
-        WHERE 
-            a.geometrie && b.geometrie 
-            and 
-            a.prio < b.prio              
-    ) AS blade		
-),
-
 hauptprozess_alt_wasser_union as (
     select 
         hauptprozess,
@@ -95,7 +61,7 @@ hauptprozess_alt_wasser_union as (
         charakterisierung,
         st_union(geometrie) as geometrie
     from 
-        hauptprozess_alt_wasser_prio_2_clip
+        hauptprozess_alt_wasser_prio_clip
     group by 
         hauptprozess,
         gefahrenstufe,
@@ -124,6 +90,7 @@ FROM
     hauptprozess_alt_wasser_union,
     basket
 ;
+
 
 
 
