@@ -34,7 +34,7 @@ task pubFiles(type: Publisher, dependsOn: pubUpdateTxtCol){
     dataIdent = "ch.so.afu.quellen_ungefasst"
     dbSchema = schemaNameEdit
     modelsToPublish = iliModelName
-    userFormats = true
+    userFormats = false
     //target = [file("$buildDir")]
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
