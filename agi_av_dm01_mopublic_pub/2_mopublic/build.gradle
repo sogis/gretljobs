@@ -49,6 +49,7 @@ task publish(type: Publisher, dependsOn: refreshSolr){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbSchema = schemaNamePub
     dataIdent = 'ch.so.agi.av.mopublic'
+    modelsToPublish = "SO_AGI_MOpublic_20240202"
     regions = project(':0_dm01_so').tasks.publish.publishedRegions
     userFormats = true
     //target = [file("$buildDir/published")]
