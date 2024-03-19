@@ -8,7 +8,7 @@ defaultTasks 'transferToPub'
 def iliModelName = "SO_HBA_Grundstuecke_20240111"
 def fileName = "20240111_Grundstuecke.csv"
 def dbSchemaNameEdit = "hba_grundstuecke_v2"
-def dbSchemaNamePub = "hba_immobilienportfolio_v1"
+def dbSchemaNamePub = "hba_immobilienportfolio_pub_v1"
 
 // Achtung: Es dürfen keine leere Zeilen (resp. Zeilen mit nur Semikolons) im 
 // in der Datei vorhanden sein.
