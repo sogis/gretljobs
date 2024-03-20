@@ -52,3 +52,18 @@ task transferToPub(type: Db2Db, dependsOn: 'importCsv') {
             new TransferSet('transfer_grundstuecke.sql', dbSchemaNamePub+'.grundstuecke_grundstueck', true)
     ];
 }
+
+task publishPub(type: Publisher, dependsOn:'transferToPub') {
+    dataIdent = dataIdentifier
+    userFormats = true
+    database = [dbUriPub,dbUserPub,dbPwdPub]
+    dbSchema = dbSchemaNamePub
+    modelsToPublish = "SO_HBA_Immobilienportfolio_Publikation_20240319"
+
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    //target = ["/tmp/gretl-share"]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
