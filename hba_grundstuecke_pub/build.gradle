@@ -54,7 +54,7 @@ task transferToPub(type: Db2Db, dependsOn: 'importCsv') {
 }
 
 task publishPub(type: Publisher, dependsOn:'transferToPub') {
-    dataIdent = dataIdentifier
+    dataIdent = "ch.so.hba.immobilienportfolio"
     userFormats = true
     database = [dbUriPub,dbUserPub,dbPwdPub]
     dbSchema = dbSchemaNamePub
