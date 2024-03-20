@@ -4,7 +4,10 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'validateData'
 
-def outFile = ili2pgDataset + ".xtf"
+// Definiere einen Dateinamen mit einem Zeitstempel
+def outFilename = ili2pgDataset + "_" + new Date().format("yyyyMMddHHmmss")
+def outXtfFile = outFilename + ".xtf"
+def outLogFile = outFilename + ".log"
 
 /**
  * Exportiere das entsprechende Datast aus der Erfassungsdatenbank.
@@ -14,7 +17,7 @@ task exportData(type: Ili2pgExport){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "afu_schutzbauten_v1"
     dataset = ili2pgDataset
-    dataFile = outFile
+    dataFile = outXtfFile
     models = "SO_AFU_Schutzbauten_20231212"
 }
 
@@ -23,7 +26,7 @@ task exportData(type: Ili2pgExport){
  */
 task validateData(type: IliValidator){
     dependsOn exportData
-    description 'Validiere den exportierten Datensatz'
-    dataFiles = outFile
-    logFile = "validation.log"
+    description 'Validiere den exportierten Datensatz und schreibe eine Log-Datei'
+    dataFiles = outXtfFile
+    logFile = outLogFile
 }
