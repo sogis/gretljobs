@@ -15,7 +15,7 @@ WITH
         FROM
             arp_richtplan_v2.richtplankarte_ueberlagernder_punkt AS p
         JOIN
-            agi_hoheitsgrenzen_pub.gemeindegrenze AS g ON ST_Contains(g.geometrie, p.geometrie)
+            agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS g ON ST_Contains(g.geometrie, p.geometrie)
 )
 
 SELECT

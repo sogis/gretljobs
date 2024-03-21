@@ -13,7 +13,7 @@ WITH
         FROM
             arp_richtplan_v2.detailkarten_flaeche AS f           
         JOIN
-            agi_hoheitsgrenzen_pub.gemeindegrenze AS g ON ST_Intersects(f.geometrie, g.geometrie)
+            agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS g ON ST_Intersects(f.geometrie, g.geometrie)
         GROUP BY 
             f.objektname,
             f.richtplantext,
