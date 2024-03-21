@@ -11,10 +11,6 @@ DELETE FROM
 ;
 
 DELETE FROM
-    arp_richtplan_v2.richtplankarte_dokument
-;
-
-DELETE FROM
     arp_richtplan_v2.richtplankarte_ueberlagernder_punkt
 ;
 
@@ -39,5 +35,9 @@ DELETE FROM
 ;
 
 DELETE FROM 
-    arp_richtplan_v2.raumkonzept_flaeche 
+    arp_richtplan_v2.raumkonzept_flaeche
+;
+
+DELETE FROM
+    arp_richtplan_v2.richtplankarte_dokument
 ;
