@@ -15,6 +15,7 @@ SELECT
     bemerkung
 FROM
     arp_richtplan_v1.richtplankarte_dokument
+;
 
 UPDATE 
     arp_richtplan_v2.richtplankarte_dokument
