@@ -16,6 +16,7 @@ task datatransfer(type: SqlExecutor){
             'arp_richtplan_ueberlagernde_flaeche.sql',
             'arp_richtplan_ueberlagernde_linie.sql',
             'arp_richtplan_raumkonzept_punkt.sql',
-            'arp_richtplan_raumkonzept_flaeche.sql'
+            'arp_richtplan_raumkonzept_flaeche.sql',
+            'arp_richtplan_delete_duplicates.sql'
         ]
 }
