@@ -17,7 +17,7 @@ defaultTasks 'clean_geometry'
 //defaultTasks 'make_staging_schema'
 
 //NUR PROVISORISCH! 
-def Auftragskennung = 'Himmelried'
+def Auftragskennung = 'main'
 
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
 
@@ -91,17 +91,12 @@ task export_natgef_daten(type: Ili2pgExport, dependsOn: make_alte_dokumente_sche
     
 }
 
-task validateData(type: IliValidator, dependsOn: export_natgef_daten) {
-    dataFiles = file(Paths.get(pathToTempFolder, Auftragskennung+".xtf"))
-    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-    failOnError = true
-}
-
-task import_natgef_daten(type: Ili2pgReplace, dependsOn: validateData){
+task import_natgef_daten(type: Ili2pgReplace, dependsOn: export_natgef_daten){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     dataFile = file(Paths.get(pathToTempFolder, Auftragskennung+".xtf"))
     dbschema = "afu_naturgefahren_v1"
     dataset = Auftragskennung
+    deleteData = true
 }
 
 task createDatasetAndBaskets(type: SqlExecutor, dependsOn: import_natgef_daten) {
@@ -241,7 +236,7 @@ task import_hoheitsgrenzen(type: Ili2pgImport, dependsOn: export_hoheitsgrenzen)
 task synoptische_intensitaet(type: SqlExecutor, dependsOn: import_hoheitsgrenzen) {
     description = "Berechnugn der synoptischen Intensität mit den neuen Daten"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['synoptische_intensitaet.sql']
+    sqlFiles = ['synoptische_intensitaet_neu.sql']
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 

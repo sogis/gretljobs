@@ -8,6 +8,34 @@ hauptprozesse_clean as (
     FROM 
 	    afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser                       
     union all
+    select  --UFEREROSION aus Altdaten
+        case 
+    	    when gef_stufe = 'vorhanden' then 'restgefaehrdung'
+            when gef_stufe = 'gering' then 'gering'
+            when gef_stufe = 'mittel' then 'mittel' 
+            when gef_stufe = 'erheblich' then 'erheblich'
+        end as gefahrenstufe, 
+		replace(aindex, '_', '') as charakterisierung, 
+		geometrie
+	from 
+	    afu_gefahrenkartierung.gefahrenkartirung_gk_wasser
+	where 
+	    publiziert is true
+        and 
+        gef_stufe != 'keine'
+        and 
+        prozessa = 'Ufererosion'
+-- DIE NEUEN UFEREROSIONEN SOLLEN IN DER Syn. GK NICHT BERÜCKSICHTIGT WERDEN
+--    union all 
+--    select --Neue Ufererosionen
+--        'erheblich' as gefahrenstufe, 
+--        'Ufererosion' as charakterisierung, 
+--        geometrie 
+--    from 
+--        afu_naturgefahren_staging_v1.ufererosion
+--    where 
+--        datenherkunft = 'Neudaten'
+    union all 
     SELECT 
 	    gefahrenstufe, 
         charakterisierung, 

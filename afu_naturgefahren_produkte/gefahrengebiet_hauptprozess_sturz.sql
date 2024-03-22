@@ -2,31 +2,10 @@ delete from afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz
 ;
 
 with 
-orig_dataset as (
-    select
-        t_id  as dataset  
-    from 
-        afu_naturgefahren_v1.t_ili2db_dataset
-    where 
-        datasetname = ${kennung}
-),
-
-orig_basket as (
-    select 
-        basket.attachmentkey,
-        basket.t_id 
-    from 
-        afu_naturgefahren_v1.t_ili2db_basket basket,
-        orig_dataset
-    where 
-        basket.dataset = orig_dataset.dataset
-        and 
-        topic like '%Befunde'
-),
-
 basket as (
      select 
-         t_id 
+         t_id,
+         attachmentkey
      from 
          afu_naturgefahren_staging_v1.t_ili2db_basket
 ), 
@@ -112,6 +91,16 @@ hauptprozess_sturz_union as (
         charakterisierung 
 )
 
+,hauptprozess_sturz_dump as (
+    select 
+        gefahrenstufe,
+        charakterisierung,
+        (st_dump(geometrie)).geom as geometrie
+    from 
+        hauptprozess_sturz_union
+)
+
+
 INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz (
     t_basket, 
     hauptprozess, 
@@ -129,13 +118,14 @@ select
     charakterisierung,
     st_multi(geometrie) as geometrie,
     'Neudaten' as datenherkunft, 
-    orig_basket.attachmentkey as auftrag_neudaten   
+    basket.attachmentkey as auftrag_neudaten   
 from 
     basket,
-    orig_basket,
-    hauptprozess_sturz_union
+    hauptprozess_sturz_dump
 WHERE 
     st_area(geometrie) > 0.001 
     and 
     charakterisierung is not null 
+
+
 

@@ -10,14 +10,16 @@ attribute_mapping as (
     SELECT 
 	    st_multi(geometrie) as geometrie, --Im neuen Modell sind Multi-Polygone
     	CASE 
-		WHEN int_stufe = 'vorhanden'
+		    WHEN int_stufe = 'vorhanden'
 			    THEN 'einwirkung_vorhanden'
-		WHEN int_stufe = 'schwach'
+		    WHEN int_stufe = 'schwach'
 			    THEN 'schwach'
-		WHEN int_stufe = 'mittel'
+		    WHEN int_stufe = 'mittel'
 			    THEN 'mittel'
 	        WHEN int_stufe = 'stark'
 			    THEN 'stark'
+			when int_stufe = 'keine'
+			    then 'keine_einwirkung'
 	    END AS int_stufe,
 	    CASE
 		    WHEN wkp = 'von_0_bis_30_Jahre'
@@ -55,8 +57,6 @@ attribute_mapping as (
 	END AS teilproz
 FROM 
 	afu_gefahrenkartierung.gefahrenkartirung_ik_synoptisch_mgdm
-where 
-    int_stufe != 'keine'
     
 )
 
@@ -81,3 +81,4 @@ from
     attribute_mapping syn,
     basket basket
 ;
+

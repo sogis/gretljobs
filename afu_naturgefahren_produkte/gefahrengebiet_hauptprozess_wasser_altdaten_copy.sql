@@ -29,6 +29,8 @@ hauptprozess_alt_wasser_prio as (
         publiziert is true
         and 
         gef_stufe != 'keine'
+        and 
+        prozessa != 'Ufererosion'
 ),
 
 hauptprozess_alt_wasser_prio_clip as (
@@ -90,6 +92,7 @@ FROM
     hauptprozess_alt_wasser_union,
     basket
 ;
+
 
 
 
