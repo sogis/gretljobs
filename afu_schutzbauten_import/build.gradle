@@ -7,7 +7,7 @@ defaultTasks 'replaceDataset'
 // Extrahiere den "datasetname" aus dem Dateinamen. Der Dateiname muss gemäss
 // folgendem Muster zusammengesetzt sein (analog z.B. zu oereb-db):
 // {AMT}.{BFSNR | beliebige Beschreibung für Perimeter}_{Suffix nicht berücksichtigt}.xtf
-def datasetname = xtfFilename.findAll("^[a-zA-Z]{3,4}.[a-zA-Z0-9]+")[0]
+def datasetname = xtfFilename.findAll("^[a-zA-Z]{3,4}\\.[a-zA-Z0-9]+")[0]
 
 /**
  * Validiere zuerst die Daten.
