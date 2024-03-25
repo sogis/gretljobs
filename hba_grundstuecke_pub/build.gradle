@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.*
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPub'
+defaultTasks 'transferToPub'
 
 def iliModelName = "SO_HBA_Grundstuecke_20240111"
 def fileName = "20240321_Grundstuecke.csv"
