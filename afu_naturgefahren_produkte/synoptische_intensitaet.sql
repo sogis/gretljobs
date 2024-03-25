@@ -28,35 +28,33 @@ orig_basket as (
 teilprozess_absenkung as ( 
     select 
        'ea_absenkung' as teilprozess,
-        case when 
-                (string_to_array(iwcode, '_'))[3] ~ '^[0-9\.]+$'
-            then 
-                (string_to_array(iwcode, '_'))[3]
-            else 
-                '-1' 
-        end as jaehrlichkeit,
+        '-1' as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
-        'Neudaten' as datenherkunft,
-        basket.attachmentkey as auftrag_neudaten, 
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 1 
              when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' then 2 
              when
-             (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
+             (string_to_array(iwcode, '_'))[1] = 'blau' then 3 
              when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
+             (string_to_array(iwcode, '_'))[1] = 'rot' then 4 
         end as prio
     from 
         afu_naturgefahren_v1.befundabsenkung befund 
-    left join
-        afu_naturgefahren_v1.t_ili2db_basket basket
-        on 
-        befund.t_basket = basket.t_id  
     where 
         befund.t_basket in (select t_id from orig_basket)
-    
+    union all 
+    SELECT
+        'ea_absenkung' as teilprozess,
+        '-1' as jaehrlichkeit,  --Bei diesem Teilprozess gibt es keine Jährlichkeit
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        ea_absenkung != 'nicht_beurteilt'
 ),
 
 teilprozess_absenkung_prio as (
@@ -67,9 +65,7 @@ teilprozess_absenkung_prio as (
         ST_Multi(COALESCE(
             ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
-        )) AS geometrie, 
-        a.datenherkunft,
-        a.auftrag_neudaten
+        )) AS geometrie
     FROM  
         teilprozess_absenkung AS a
     CROSS JOIN LATERAL (
@@ -98,25 +94,63 @@ teilprozess_bergundfelssturz as (
         end as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
-        'Neudaten' as datenherkunft,
-        basket.attachmentkey as auftrag_neudaten,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 1 
              when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' then 2 
              when
-             (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
+             (string_to_array(iwcode, '_'))[1] = 'blau' then 3 
              when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
+             (string_to_array(iwcode, '_'))[1] = 'rot' then 4 
         end as prio
     from 
         afu_naturgefahren_v1.befundbergfelssturz befund 
-    left join
-        afu_naturgefahren_v1.t_ili2db_basket basket
-        on 
-        befund.t_basket = basket.t_id 
     where 
         befund.t_basket in (select t_id from orig_basket)
+    union all 
+    SELECT
+        's_fels_berg_sturz' as teilprozess,
+        '30' as jaehrlichkeit,
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        s_berg_felssturz != 'nicht_beurteilt'
+    union all 
+    SELECT
+        's_fels_berg_sturz' as teilprozess,
+        '100' as jaehrlichkeit,
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        s_berg_felssturz != 'nicht_beurteilt'
+    union all 
+    SELECT
+        's_fels_berg_sturz' as teilprozess,
+        '300' as jaehrlichkeit,
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        s_berg_felssturz != 'nicht_beurteilt'
+    union all 
+    SELECT
+        's_fels_berg_sturz' as teilprozess,
+        '-1' as jaehrlichkeit, --für die Restgefährdung
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        s_berg_felssturz != 'nicht_beurteilt'
 ),
 
 teilprozess_bergundfelssturz_prio as (
@@ -127,9 +161,7 @@ teilprozess_bergundfelssturz_prio as (
         ST_Multi(COALESCE(
             ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
-        )) AS geometrie, 
-        a.datenherkunft,
-        a.auftrag_neudaten
+        )) AS geometrie
     FROM  
         teilprozess_bergundfelssturz AS a
     CROSS JOIN LATERAL (
@@ -149,34 +181,33 @@ teilprozess_bergundfelssturz_prio as (
 teilprozess_einsturz as ( 
     select 
        'ea_einsturz' as teilprozess,
-        case when 
-            (string_to_array(iwcode, '_'))[3] ~ '^[0-9\.]+$'
-            then 
-                (string_to_array(iwcode, '_'))[3]
-            else 
-                '-1' 
-        end as jaehrlichkeit,
+        '-1' as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
-        geometrie, 
-        'Neudaten' as datenherkunft,
-        basket.attachmentkey as auftrag_neudaten,
+        geometrie,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 1 
              when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' then 2 
              when
-             (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
+             (string_to_array(iwcode, '_'))[1] = 'blau' then 3 
              when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
+             (string_to_array(iwcode, '_'))[1] = 'rot' then 4 
         end as prio
     from 
         afu_naturgefahren_v1.befundeinsturz befund 
-    left join
-        afu_naturgefahren_v1.t_ili2db_basket basket
-        on 
-        befund.t_basket = basket.t_id 
     where 
         befund.t_basket in (select t_id from orig_basket)
+    union all 
+    SELECT
+        'ea_einsturz' as teilprozess,
+        '-1' as jaehrlichkeit, --Bei diesem Teilprozess gibt es keine Jährlichkeit
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        ea_einsturz != 'nicht_beurteilt'
 ),
 
 teilprozess_einsturz_prio as (
@@ -187,9 +218,7 @@ teilprozess_einsturz_prio as (
         ST_Multi(COALESCE(
             ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
-        )) AS geometrie, 
-        a.datenherkunft,
-        a.auftrag_neudaten
+        )) AS geometrie
     FROM  
         teilprozess_einsturz AS a
     CROSS JOIN LATERAL (
@@ -197,66 +226,6 @@ teilprozess_einsturz_prio as (
             ST_Union(geometrie) AS geometrie
         FROM   
             teilprozess_einsturz AS b
-        WHERE 
-            a.geometrie && b.geometrie 
-            and 
-            a.prio < b.prio             
-            and 
-            a.jaehrlichkeit = b.jaehrlichkeit 
-    ) AS blade
-),
-
-teilprozess_eisschlag as ( 
-    select 
-       's_eisschlag' as teilprozess,
-        case when 
-            (string_to_array(iwcode, '_'))[3] ~ '^[0-9\.]+$'
-            then 
-                (string_to_array(iwcode, '_'))[3]
-            else 
-                '-1' 
-        end as jaehrlichkeit,
-        (string_to_array(iwcode, '_'))[2] as intensitaet,
-        geometrie, 
-        'Neudaten' as datenherkunft,
-        basket.attachmentkey as auftrag_neudaten,
-        case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
-             when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
-             when
-             (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
-             when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
-        end as prio
-    from 
-        afu_naturgefahren_v1.befundeisschlag befund 
-    left join
-        afu_naturgefahren_v1.t_ili2db_basket basket
-        on 
-        befund.t_basket = basket.t_id 
-    where 
-        befund.t_basket in (select t_id from orig_basket)
-),
-
-teilprozess_eisschlag_prio as (
-    SELECT 
-        a.teilprozess,
-        a.jaehrlichkeit,
-        a.intensitaet,
-        ST_Multi(COALESCE(
-            ST_Difference(a.geometrie, blade.geometrie),
-            a.geometrie
-        )) AS geometrie, 
-        a.datenherkunft,
-        a.auftrag_neudaten
-    FROM  
-        teilprozess_eisschlag AS a
-    CROSS JOIN LATERAL (
-        SELECT 
-            ST_Union(geometrie) AS geometrie
-        FROM   
-            teilprozess_eisschlag AS b
         WHERE 
             a.geometrie && b.geometrie 
             and 
@@ -278,25 +247,52 @@ teilprozess_hangmure as (
         end as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
-        'Neudaten' as datenherkunft,
-        basket.attachmentkey as auftrag_neudaten,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 1 
              when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' then 2 
              when
-             (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
+             (string_to_array(iwcode, '_'))[1] = 'blau' then 3 
              when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
+             (string_to_array(iwcode, '_'))[1] = 'rot' then 4 
         end as prio
     from 
         afu_naturgefahren_v1.befundhangmure befund 
-    left join
-        afu_naturgefahren_v1.t_ili2db_basket basket
-        on 
-        befund.t_basket = basket.t_id 
     where 
         befund.t_basket in (select t_id from orig_basket)
+    union all 
+    SELECT
+        'r_plo_hangmure' as teilprozess,
+        '30' as jaehrlichkeit, 
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        r_hangmure != 'nicht_beurteilt'
+    union all 
+    SELECT
+        'r_plo_hangmure' as teilprozess,
+        '100' as jaehrlichkeit, 
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        r_hangmure != 'nicht_beurteilt'
+    union all 
+    SELECT
+        'r_plo_hangmure' as teilprozess,
+        '300' as jaehrlichkeit, 
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        r_hangmure != 'nicht_beurteilt'
 ),
 
 teilprozess_hangmure_prio as (
@@ -307,9 +303,7 @@ teilprozess_hangmure_prio as (
         ST_Multi(COALESCE(
             ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
-        )) AS geometrie, 
-        a.datenherkunft,
-        a.auftrag_neudaten
+        )) AS geometrie
     FROM  
         teilprozess_hangmure AS a
     CROSS JOIN LATERAL (
@@ -329,34 +323,33 @@ teilprozess_hangmure_prio as (
 teilprozess_permanentrutschung as ( 
     select 
        'r_permanente_rutschung' as teilprozess,
-        case when 
-            (string_to_array(iwcode, '_'))[3] ~ '^[0-9\.]+$'
-            then 
-                (string_to_array(iwcode, '_'))[3]
-            else 
-                '-1' 
-        end as jaehrlichkeit,
+        '-1' as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
-        'Neudaten' as datenherkunft,
-        basket.attachmentkey as auftrag_neudaten,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 1 
              when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' then 2 
              when
-             (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
+             (string_to_array(iwcode, '_'))[1] = 'blau' then 3 
              when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
+             (string_to_array(iwcode, '_'))[1] = 'rot' then 4 
         end as prio
     from 
-        afu_naturgefahren_v1.befundpermanenterutschung befund 
-    left join
-        afu_naturgefahren_v1.t_ili2db_basket basket
-        on 
-        befund.t_basket = basket.t_id 
+        afu_naturgefahren_v1.befundpermanenterutschung befund
     where 
         befund.t_basket in (select t_id from orig_basket)
+    union all 
+    SELECT
+        'r_permanente_rutschung' as teilprozess,
+        '-1' as jaehrlichkeit, --Bei diesem Teilprozess gibt es keine Jährlichkeiten
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        r_permanente_rutschung != 'nicht_beurteilt'
 ),
 
 teilprozess_permanentrutschung_prio as (
@@ -367,9 +360,7 @@ teilprozess_permanentrutschung_prio as (
         ST_Multi(COALESCE(
             ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
-        )) AS geometrie, 
-        a.datenherkunft,
-        a.auftrag_neudaten
+        )) AS geometrie
     FROM  
         teilprozess_permanentrutschung AS a
     CROSS JOIN LATERAL (
@@ -398,16 +389,14 @@ teilprozess_spontanrutschung as (
         end as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
-        'Neudaten' as datenherkunft,
-        basket.attachmentkey as auftrag_neudaten,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 1 
              when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' then 2 
              when
-             (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
+             (string_to_array(iwcode, '_'))[1] = 'blau' then 3 
              when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
+             (string_to_array(iwcode, '_'))[1] = 'rot' then 4 
         end as prio
     from 
         afu_naturgefahren_v1.befundspontanerutschung befund 
@@ -417,6 +406,39 @@ teilprozess_spontanrutschung as (
         befund.t_basket = basket.t_id 
     where 
         befund.t_basket in (select t_id from orig_basket)
+    union all 
+    SELECT
+        'r_plo_spontane_rutschung' as teilprozess,
+        '30' as jaehrlichkeit, 
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        r_spontane_rutschung != 'nicht_beurteilt'
+    union all 
+    SELECT
+        'r_plo_spontane_rutschung' as teilprozess,
+        '100' as jaehrlichkeit, 
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        r_spontane_rutschung != 'nicht_beurteilt'
+    union all 
+    SELECT
+        'r_plo_spontane_rutschung' as teilprozess,
+        '300' as jaehrlichkeit, 
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        r_spontane_rutschung != 'nicht_beurteilt'
 ),
 
 teilprozess_spontanrutschung_prio as (
@@ -427,9 +449,7 @@ teilprozess_spontanrutschung_prio as (
         ST_Multi(COALESCE(
             ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
-        )) AS geometrie, 
-        a.datenherkunft,
-        a.auftrag_neudaten
+        )) AS geometrie
     FROM  
         teilprozess_spontanrutschung AS a
     CROSS JOIN LATERAL (
@@ -458,25 +478,63 @@ teilprozess_steinblockschlag as (
         end as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
-        'Neudaten' as datenherkunft,
-        basket.attachmentkey as auftrag_neudaten,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 1 
              when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' then 2 
              when
-             (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
+             (string_to_array(iwcode, '_'))[1] = 'blau' then 3 
              when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
+             (string_to_array(iwcode, '_'))[1] = 'rot' then 4 
         end as prio
     from 
         afu_naturgefahren_v1.befundsteinblockschlag befund 
-    left join
-        afu_naturgefahren_v1.t_ili2db_basket basket
-        on 
-        befund.t_basket = basket.t_id 
     where 
         befund.t_basket in (select t_id from orig_basket)
+    union all 
+    SELECT
+        's_stein_block_schlag' as teilprozess,
+        '30' as jaehrlichkeit, 
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        s_stein_blockschlag != 'nicht_beurteilt'
+    union all 
+    SELECT
+        's_stein_block_schlag' as teilprozess,
+        '100' as jaehrlichkeit, 
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        s_stein_blockschlag != 'nicht_beurteilt'
+    union all 
+    SELECT
+        's_stein_block_schlag' as teilprozess,
+        '300' as jaehrlichkeit, 
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        s_stein_blockschlag != 'nicht_beurteilt'
+    union all 
+    SELECT
+        's_stein_block_schlag' as teilprozess,
+        '-1' as jaehrlichkeit, 
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        s_stein_blockschlag != 'nicht_beurteilt'
 ),
 
 teilprozess_steinblockschlag_prio as (
@@ -487,9 +545,7 @@ teilprozess_steinblockschlag_prio as (
         ST_Multi(COALESCE(
             ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
-        )) AS geometrie, 
-        a.datenherkunft,
-        a.auftrag_neudaten
+        )) AS geometrie
     FROM  
         teilprozess_steinblockschlag AS a
     CROSS JOIN LATERAL (
@@ -518,25 +574,63 @@ teilprozess_uebermurung as (
         end as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
-        'Neudaten' as datenherkunft,
-        basket.attachmentkey as auftrag_neudaten,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 1 
              when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' then 2 
              when
-             (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
+             (string_to_array(iwcode, '_'))[1] = 'blau' then 3 
              when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
+             (string_to_array(iwcode, '_'))[1] = 'rot' then 4 
         end as prio
     from 
         afu_naturgefahren_v1.befunduebermurung befund 
-    left join
-        afu_naturgefahren_v1.t_ili2db_basket basket
-        on 
-        befund.t_basket = basket.t_id 
     where 
         befund.t_basket in (select t_id from orig_basket)
+    union all 
+    SELECT
+        'w_uebermurung' as teilprozess,
+        '30' as jaehrlichkeit, 
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        w_uebermurung != 'nicht_beurteilt'
+    union all 
+    SELECT
+        'w_uebermurung' as teilprozess,
+        '100' as jaehrlichkeit, 
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        w_uebermurung != 'nicht_beurteilt'
+    union all 
+    SELECT
+        'w_uebermurung' as teilprozess,
+        '300' as jaehrlichkeit, 
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        w_uebermurung != 'nicht_beurteilt'
+    union all 
+    SELECT
+        'w_uebermurung' as teilprozess,
+        '-1' as jaehrlichkeit, 
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        w_uebermurung != 'nicht_beurteilt'
 ),
 
 teilprozess_uebermurung_prio as (
@@ -547,9 +641,7 @@ teilprozess_uebermurung_prio as (
         ST_Multi(COALESCE(
             ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
-        )) AS geometrie, 
-        a.datenherkunft,
-        a.auftrag_neudaten
+        )) AS geometrie
     FROM  
         teilprozess_uebermurung AS a
     CROSS JOIN LATERAL (
@@ -566,7 +658,7 @@ teilprozess_uebermurung_prio as (
     ) AS blade
 ),
 
-teilprozess_ueberschwemmungdynamisch as ( 
+teilprozess_ueberschwemmung as ( 
     select 
        'w_ueberschwemmung' as teilprozess,
         case when 
@@ -578,55 +670,22 @@ teilprozess_ueberschwemmungdynamisch as (
         end as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
-        'Neudaten' as datenherkunft,
-        basket.attachmentkey as auftrag_neudaten,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 1 
              when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' then 2 
              when
-             (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
+             (string_to_array(iwcode, '_'))[1] = 'blau' then 3 
              when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
+             (string_to_array(iwcode, '_'))[1] = 'rot' then 4 
         end as prio
     from 
         afu_naturgefahren_v1.befundueberschwemmungdynamisch befund 
-    left join
-        afu_naturgefahren_v1.t_ili2db_basket basket
-        on 
-        befund.t_basket = basket.t_id
     where 
         befund.t_basket in (select t_id from orig_basket)
-),
-
-teilprozess_ueberschwemmungdynamisch_prio as (
-    SELECT 
-        a.teilprozess,
-        a.jaehrlichkeit,
-        a.intensitaet,
-        ST_Multi(COALESCE(
-            ST_Difference(a.geometrie, blade.geometrie),
-            a.geometrie
-        )) AS geometrie, 
-        a.datenherkunft,
-        a.auftrag_neudaten
-    FROM  
-        teilprozess_ueberschwemmungdynamisch AS a
-    CROSS JOIN LATERAL (
-        SELECT 
-            ST_Union(geometrie) AS geometrie
-        FROM   
-            teilprozess_ueberschwemmungdynamisch AS b
-        WHERE 
-            a.geometrie && b.geometrie 
-            and 
-            a.prio < b.prio             
-            and 
-            a.jaehrlichkeit = b.jaehrlichkeit 
-    ) AS blade
-),
-
-teilprozess_ueberschwemmungstatisch as ( 
+    
+    union all -- Dynamische und Statische Überschwemmungen werden zusammengefasst.
+    
     select 
        'w_ueberschwemmung' as teilprozess,
         case when 
@@ -638,28 +697,74 @@ teilprozess_ueberschwemmungstatisch as (
         end as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
-        'Neudaten' as datenherkunft,
-        basket.attachmentkey as auftrag_neudaten,
         case when 
-             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 0 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 1 
              when
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 1 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' then 2 
              when
-             (string_to_array(iwcode, '_'))[1] = 'blau' then 2 
+             (string_to_array(iwcode, '_'))[1] = 'blau' then 3 
              when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 3 
+             (string_to_array(iwcode, '_'))[1] = 'rot' then 4 
         end as prio
     from 
         afu_naturgefahren_v1.befundueberschwemmungstatisch befund 
-    left join
-        afu_naturgefahren_v1.t_ili2db_basket basket
-        on 
-        befund.t_basket = basket.t_id 
     where 
         befund.t_basket in (select t_id from orig_basket)
+    union all 
+    SELECT
+        'w_ueberschwemmung' as teilprozess,
+        '30' as jaehrlichkeit, 
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        w_ueberschwemmung_statisch != 'nicht_beurteilt'
+        or 
+        w_ueberschwemmung_dynamisch != 'nicht_beurteilt'
+    union all 
+    SELECT
+        'w_ueberschwemmung' as teilprozess,
+        '100' as jaehrlichkeit, 
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        w_ueberschwemmung_statisch != 'nicht_beurteilt'
+        or 
+        w_ueberschwemmung_dynamisch != 'nicht_beurteilt'
+    union all 
+    SELECT
+        'w_ueberschwemmung' as teilprozess,
+        '300' as jaehrlichkeit, 
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        w_ueberschwemmung_statisch != 'nicht_beurteilt'
+        or 
+        w_ueberschwemmung_dynamisch != 'nicht_beurteilt'
+    union all 
+    SELECT
+        'w_ueberschwemmung' as teilprozess,
+        '-1' as jaehrlichkeit, 
+        'keine_einwirkung' as intensitaet,
+        geometrie,
+        0 as prio
+    from
+        afu_naturgefahren_v1.abklaerungsperimeter
+    where 
+        w_ueberschwemmung_statisch != 'nicht_beurteilt'
+        or 
+        w_ueberschwemmung_dynamisch != 'nicht_beurteilt'
 ), 
 
-teilprozess_ueberschwemmungstatisch_prio as (
+teilprozess_ueberschwemmung_prio as (
     SELECT 
         a.teilprozess,
         a.jaehrlichkeit,
@@ -667,16 +772,14 @@ teilprozess_ueberschwemmungstatisch_prio as (
         ST_Multi(COALESCE(
             ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
-        )) AS geometrie, 
-        a.datenherkunft,
-        a.auftrag_neudaten
+        )) AS geometrie
     FROM  
-        teilprozess_ueberschwemmungstatisch AS a
+        teilprozess_ueberschwemmung AS a
     CROSS JOIN LATERAL (
         SELECT 
             ST_Union(geometrie) AS geometrie
         FROM   
-            teilprozess_ueberschwemmungstatisch AS b
+            teilprozess_ueberschwemmung AS b
         WHERE 
             a.geometrie && b.geometrie 
             and 
@@ -692,8 +795,6 @@ alle_teilprozesse as (
     select * from teilprozess_bergundfelssturz_prio
     union all 
     select * from teilprozess_einsturz_prio
-    union all 
-    select * from teilprozess_eisschlag_prio
     union  all
     select * from teilprozess_hangmure_prio
     union all 
@@ -705,14 +806,13 @@ alle_teilprozesse as (
     union all 
     select * from teilprozess_uebermurung_prio
     union all 
-    select * from teilprozess_ueberschwemmungdynamisch_prio
-    union all 
-    select * from teilprozess_ueberschwemmungstatisch_prio
+    select * from teilprozess_ueberschwemmung_prio
 ),
 
  basket as (
      select 
-         t_id 
+         t_id,
+         attachmentkey
      from 
          afu_naturgefahren_staging_v1.t_ili2db_basket
  )
@@ -732,13 +832,14 @@ select
     jaehrlichkeit::integer,
     intensitaet,
     geometrie, 
-    datenherkunft,
-    auftrag_neudaten
+    'Neudaten' as datenherkunft,
+    basket.attachmentkey as auftrag_neudaten
 from 
     alle_teilprozesse, 
     basket
 ;
    
+
 
 
 

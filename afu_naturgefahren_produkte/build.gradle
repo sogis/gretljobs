@@ -13,8 +13,7 @@ import java.util.List
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'clean_geometry'
-//defaultTasks 'make_staging_schema'
+defaultTasks 'copy_alle_natgef_produkte'
 
 //NUR PROVISORISCH! 
 def Auftragskennung = 'main'
@@ -25,7 +24,7 @@ def pathToTempFolder = System.getProperty('java.io.tmpdir')
 
 task prepare_db(type: SqlExecutor) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['prepare_db.sql']
+    sqlFiles = ['vorbereitung/prepare_db.sql']
 }
 
 task make_staging_schema(type: Ili2pgImportSchema, dependsOn: prepare_db){
@@ -48,7 +47,7 @@ task make_staging_schema(type: Ili2pgImportSchema, dependsOn: prepare_db){
 
 task truncate_tables(type: SqlExecutor, dependsOn: make_staging_schema) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['truncate_table.sql']
+    sqlFiles = ['vorbereitung/truncate_table.sql']
 }
 
 
@@ -102,7 +101,7 @@ task import_natgef_daten(type: Ili2pgReplace, dependsOn: export_natgef_daten){
 task createDatasetAndBaskets(type: SqlExecutor, dependsOn: import_natgef_daten) {
     description = "Bacht die Baskets bereit"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['createbaskets.sql']
+    sqlFiles = ['vorbereitung/createbaskets.sql']
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 
@@ -128,17 +127,17 @@ task copy_alte_natgef_daten(type: Db2Db, dependsOn:  make_naturgefahren_alt_sche
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     transferSets = [
-            new TransferSet('copy_gefahrenkartierung_erhebiungsgebiet.sql','afu_gefahrenkartierung.gefahrenkartirung_erhebungsgebiet', true),
-            new TransferSet('copy_gefahrenkartirung_gk_absenkung_einsturz.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_absenkung_einsturz', true),
-            new TransferSet('copy_gefahrenkartirung_gk_hangmure.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_hangmure', true),
-            new TransferSet('copy_gefahrenkartirung_gk_rutsch_kont_sackung.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_kont_sackung', true),
-            new TransferSet('copy_gefahrenkartirung_gk_rutsch_spontan.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_spontan', true),
-            new TransferSet('copy_gefahrenkartirung_gk_sturz.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_sturz', true),
-            new TransferSet('copy_gefahrenkartirung_gk_synoptisch_generiert.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_synoptisch_generiert', true),
-            new TransferSet('copy_gefahrenkartirung_gk_wasser.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_wasser', true),
-            new TransferSet('copy_gefahrenkartirung_punktsignatur.sql','afu_gefahrenkartierung.gefahrenkartirung_punktsignatur', true),
-            new TransferSet('copy_gefahrenkartirung_ueberflutungskarte.sql','afu_gefahrenkartierung.gefahrenkartirung_ueberflutungskarte', true),
-            new TransferSet('copy_gefahrenkartirung_ik_synoptisch_mgdm.sql','afu_gefahrenkartierung.gefahrenkartirung_ik_synoptisch_mgdm', true)
+            new TransferSet('copy_alte_natgef/copy_gefahrenkartierung_erhebiungsgebiet.sql','afu_gefahrenkartierung.gefahrenkartirung_erhebungsgebiet', true),
+            new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_gk_absenkung_einsturz.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_absenkung_einsturz', true),
+            new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_gk_hangmure.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_hangmure', true),
+            new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_gk_rutsch_kont_sackung.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_kont_sackung', true),
+            new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_gk_rutsch_spontan.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_spontan', true),
+            new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_gk_sturz.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_sturz', true),
+            new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_gk_synoptisch_generiert.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_synoptisch_generiert', true),
+            new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_gk_wasser.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_wasser', true),
+            new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_punktsignatur.sql','afu_gefahrenkartierung.gefahrenkartirung_punktsignatur', true),
+            new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_ueberflutungskarte.sql','afu_gefahrenkartierung.gefahrenkartirung_ueberflutungskarte', true),
+            new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_ik_synoptisch_mgdm.sql','afu_gefahrenkartierung.gefahrenkartirung_ik_synoptisch_mgdm', true)
     ];
 }
 /*
@@ -236,7 +235,7 @@ task import_hoheitsgrenzen(type: Ili2pgImport, dependsOn: export_hoheitsgrenzen)
 task synoptische_intensitaet(type: SqlExecutor, dependsOn: import_hoheitsgrenzen) {
     description = "Berechnugn der synoptischen Intensität mit den neuen Daten"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['synoptische_intensitaet_neu.sql']
+    sqlFiles = ['synoptische_intensitaet.sql']
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 
@@ -251,7 +250,7 @@ task synoptische_intensitaet_altdaten_copy(type: SqlExecutor, dependsOn: synopti
 task gefahrengebiet_teilprozess_absenkung_einsturz(type: SqlExecutor, dependsOn: synoptische_intensitaet_altdaten_copy) {
     description = "Berechnugn der Gefahrengebiete des Teilprozesses Absenkung und Einsturz"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_teilprozess_absenkung_einsturz.sql']
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_absenkung_einsturz.sql']
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 
@@ -260,86 +259,86 @@ task gefahrengebiet_teilprozess_absenkung_einsturz(type: SqlExecutor, dependsOn:
 task gefahrengebiet_teilprozess_hangmure(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_absenkung_einsturz) {
     description = "Berechnugn der Gefahrengebiete des Teilprozesses Hangmure"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_teilprozess_hangmure.sql']
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_hangmure.sql']
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 
 task gefahrengebiet_teilprozess_hangmure_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_hangmure) {
     description = "Kopieren der alten Daten der Gefahrengebiete des Teilprozesses Hangmure"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_teilprozess_hangmure_altdaten_copy.sql']
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_hangmure_altdaten_copy.sql']
 }
 
 task gefahrengebiet_teilprozess_spontane_rutschung(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_hangmure_altdaten_copy) {
     description = "Berechnugn der Gefahrengebiete des Teilprozesses spontane Rutschungen"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_teilprozess_spontane_rutschung.sql']
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_spontane_rutschung.sql']
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 
 task gefahrengebiet_teilprozess_spontane_rutschung_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_spontane_rutschung) {
     description = "Kopieren der alten Daten der Gefahrengebiete des Teilprozesses spontane Rutschungen"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_teilprozess_spontane_rutschung_altdaten_copy.sql']
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_spontane_rutschung_altdaten_copy.sql']
 }
 
 task gefahrengebiet_teilprozess_murgang(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_spontane_rutschung_altdaten_copy) {
     description = "Berechnugn der Gefahrengebiete des Teilprozesses Murgang"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_teilprozess_murgang.sql']
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_murgang.sql']
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 
 task gefahrengebiet_teilprozess_murgang_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_murgang) {
     description = "Kopieren der alten Daten der Gefahrengebiete des Teilprozesses Murgang"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_teilprozess_murgang_altdaten_copy.sql']
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_murgang_altdaten_copy.sql']
 }
 
 task gefahrengebiet_teilprozess_permanente_rutschung(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_murgang_altdaten_copy) {
     description = "Berechnugn der Gefahrengebiete des Teilprozesses permanente Rutschung"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_teilprozess_permanente_rutschung.sql']
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_permanente_rutschung.sql']
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 
 task gefahrengebiet_teilprozess_permanente_rutschung_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_permanente_rutschung) {
     description = "Kopieren der alten Daten der Gefahrengebiete des Teilprozesses permanente Rutschung"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_teilprozess_permanente_rutschung_altdaten_copy.sql']
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_permanente_rutschung_altdaten_copy.sql']
 }
 
 task gefahrengebiet_teilprozess_fels_bergsturz(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_permanente_rutschung_altdaten_copy) {
     description = "Berechnugn der Gefahrengebiete des Teilprozesses Fels-/Bergsturz"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_teilprozess_fels_bergsturz.sql']
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_fels_bergsturz.sql']
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 
 task gefahrengebiet_teilprozess_fels_bergsturz_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_fels_bergsturz) {
     description = "Kopieren der alten Daten der Gefahrengebiete des Teilprozesses Fels-/Bergsturz"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_teilprozess_fels_bergsturz_altdaten_copy.sql']
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_fels_bergsturz_altdaten_copy.sql']
 }
 
 task gefahrengebiet_teilprozess_stein_blockschlag(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_fels_bergsturz_altdaten_copy) {
     description = "Berechnugn der Gefahrengebiete des Teilprozesses Stein- Blockschlag"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_teilprozess_stein_blockschlag.sql']
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_stein_blockschlag.sql']
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 
 task gefahrengebiet_teilprozess_stein_blockschlag_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_stein_blockschlag) {
     description = "Kopieren der alten Daten der Gefahrengebiete des Teilprozesses Stein- Blockschlag"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_teilprozess_stein_blockschlag_altdaten_copy.sql']
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_stein_blockschlag_altdaten_copy.sql']
 }
 
 
 task gefahrengebiet_teilprozess_ueberflutung(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_stein_blockschlag_altdaten_copy) {
     description = "Berechnugn der Gefahrengebiete des Teilprozesses Überflutung"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_teilprozess_ueberflutung.sql']
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_ueberflutung.sql']
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 
@@ -347,7 +346,7 @@ task gefahrengebiet_teilprozess_ueberflutung(type: SqlExecutor, dependsOn: gefah
 task gefahrengebiet_teilprozess_ueberflutung_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_ueberflutung) {
     description = "Kopieren der alten Daten der Gefahrengebiete des Teilprozesses Überflutung"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_teilprozess_ueberflutung_altdaten_copy.sql']
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_ueberflutung_altdaten_copy.sql']
 }
 
 //HAUPTPROZESSE
@@ -355,21 +354,21 @@ task gefahrengebiet_teilprozess_ueberflutung_altdaten_copy(type: SqlExecutor, de
 task gefahrengebiet_hauptprozess_wasser(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_ueberflutung_altdaten_copy) {
     description = "Berechnugn der Gefahrengebiete des Hauptprozess Wasser"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_hauptprozess_wasser.sql']
+    sqlFiles = ['hauptprozesse/gefahrengebiet_hauptprozess_wasser.sql']
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 
 task gefahrengebiet_hauptprozess_wasser_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozess_wasser) {
     description = "Kopieren der alten Daten der Gefahrengebiete des Hauptprozesses Wasser"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_hauptprozess_wasser_altdaten_copy.sql']
+    sqlFiles = ['hauptprozesse/gefahrengebiet_hauptprozess_wasser_altdaten_copy.sql']
 
 }
 
 task gefahrengebiet_hauptprozess_rutschung(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozess_wasser_altdaten_copy) {
     description = "Berechnugn der Gefahrengebiete des Hauptprozess Rutschung"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_hauptprozess_rutschung.sql']
+    sqlFiles = ['hauptprozesse/gefahrengebiet_hauptprozess_rutschung.sql']
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 
@@ -377,20 +376,20 @@ task gefahrengebiet_hauptprozess_rutschung(type: SqlExecutor, dependsOn: gefahre
 task gefahrengebiet_hauptprozess_rutschung_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozess_rutschung) {
     description = "Kopieren der alten Daten der Gefahrengebiete des Hauptprozesses Rutschung"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_hauptprozess_rutschung_altdaten_copy.sql']
+    sqlFiles = ['hauptprozesse/gefahrengebiet_hauptprozess_rutschung_altdaten_copy.sql']
 }
 
 task gefahrengebiet_hauptprozess_sturz(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozess_rutschung_altdaten_copy) {
     description = "Berechnugn der Gefahrengebiete des Hauptprozess Sturz"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_hauptprozess_sturz.sql']
+    sqlFiles = ['hauptprozesse/gefahrengebiet_hauptprozess_sturz.sql']
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 
 task gefahrengebiet_hauptprozess_sturz_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozess_sturz) {
     description = "Kopieren der alten Daten der Gefahrengebiete des Hauptprozesses Sturz"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gefahrengebiet_hauptprozess_sturz_altdaten_copy.sql']
+    sqlFiles = ['hauptprozesse/gefahrengebiet_hauptprozess_sturz_altdaten_copy.sql']
 }
 
 // HAUPTPROZESSE SYNOPTISCH
@@ -400,13 +399,13 @@ task gefahrengebiet_hauptprozesse_synoptisch(type: SqlExecutor, dependsOn: gefah
     description = "Berechnugn der synoptischen Hauptprozess - Gefahrengebiete"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = [
-                'gefahrengebiet_hauptprozesse_synoptisch_make_temp_tables.sql',
-                'gefahrengebiet_hauptprozesse_synoptisch_copy_all_to_temptables.sql',
-                'gefahrengebiet_hauptprozesse_synoptisch_create_split_poly.sql',
-                'gefahrengebiet_hauptprozesse_synoptisch_add_attributes.sql',
-                'gefahrengebiet_hauptprozesse_synoptisch_delete_holes.sql',
-                'gefahrengebiet_hauptprozesse_synoptisch_union.sql',
-                'gefahrengebiet_hauptprozesse_synoptisch_sort_and_insert.sql'
+                'hauptprozesse/gefahrengebiet_hauptprozesse_synoptisch_make_temp_tables.sql',
+                'hauptprozesse/gefahrengebiet_hauptprozesse_synoptisch_copy_all_to_temptables.sql',
+                'hauptprozesse/gefahrengebiet_hauptprozesse_synoptisch_create_split_poly.sql',
+                'hauptprozesse/gefahrengebiet_hauptprozesse_synoptisch_add_attributes.sql',
+                'hauptprozesse/gefahrengebiet_hauptprozesse_synoptisch_delete_holes.sql',
+                'hauptprozesse/gefahrengebiet_hauptprozesse_synoptisch_union.sql',
+                'hauptprozesse/gefahrengebiet_hauptprozesse_synoptisch_sort_and_insert.sql'
     ]
 }
 
@@ -473,7 +472,7 @@ task copy_alte_dokumente(type: Db2Db, dependsOn: erhebungsgebiet) {
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     transferSets = [
-            new TransferSet('alte_dokumente_copy.sql','afu_naturgefahren_alte_dokumente_v1.alte_dokumente', true)
+            new TransferSet('vorbereitung/alte_dokumente_copy.sql','afu_naturgefahren_alte_dokumente_v1.alte_dokumente', true)
     ];
 }
 
@@ -513,4 +512,40 @@ task clean_geometry(type: SqlExecutor, dependsOn: kw_ueberschwemmung_geschwindig
     description = "Bereinigung der Geometrien durch st_reducePrecision"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['geometrie_bereinigung.sql']
+}
+
+//In die Edit-DB kopieren
+
+task truncate_edit_db_tables(type: SqlExecutor, dependsOn: clean_geometry) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['vorbereitung/truncate_table.sql']
+}
+
+task copy_alle_natgef_produkte(type: Db2Db, dependsOn:  truncate_edit_db_tables) {
+    description = "Kopiert die nun gerechneten NatGef-Produkte in die Edit-DB"
+    sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('copy_to_edit/publish_dokumente.sql','afu_naturgefahren_staging_v1.dokumente_pro_gemeinde', true),
+            new TransferSet('copy_to_edit/publish_erhebungsgebiet.sql','afu_naturgefahren_staging_v1.erhebungsgebiet', true),
+            new TransferSet('copy_to_edit/publish_fliessrichtung.sql','afu_naturgefahren_staging_v1.fliessrichtung', true),
+            new TransferSet('copy_to_edit/publish_fliesstiefen.sql','afu_naturgefahren_staging_v1.fliesstiefen', true),
+            new TransferSet('copy_to_edit/publish_gk_hauptprozess_rutschung.sql','afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung', true),
+            new TransferSet('copy_to_edit/publish_gk_hauptprozess_sturz.sql','afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz', true),
+            new TransferSet('copy_to_edit/publish_gk_hauptprozess_wasser.sql','afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser', true),
+            new TransferSet('copy_to_edit/publish_gk_teilprozess_absenkung_einsturz.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_absenkung_einsturz', true),
+            new TransferSet('copy_to_edit/publish_gk_teilprozess_fels_bergsturz.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_fels_bergsturz', true),
+            new TransferSet('copy_to_edit/publish_gk_teilprozess_hangmure.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_hangmure', true),
+            new TransferSet('copy_to_edit/publish_gk_teilprozess_murgang.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_murgang', true),
+            new TransferSet('copy_to_edit/publish_gk_teilprozess_permanente_rutschung.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_permanente_rutschung', true),
+            new TransferSet('copy_to_edit/publish_gk_teilprozess_spontane_rutschung.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_spontane_rutschung', true),
+            new TransferSet('copy_to_edit/publish_gk_teilprozess_stein_blockschlag.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_stein_blockschlag', true),
+            new TransferSet('copy_to_edit/publish_gk_teilprozess_ueberflutung.sql','afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_ueberflutung', true),
+            new TransferSet('copy_to_edit/publish_kennwert_uebermurung_geschwindigkeit.sql','afu_naturgefahren_staging_v1.kennwert_uebermurung_geschwindigkeit', true),
+            new TransferSet('copy_to_edit/publish_kennwert_uebermurung_hoehe.sql','afu_naturgefahren_staging_v1.kennwert_uebermurung_hoehe', true),
+            new TransferSet('copy_to_edit/publish_kennwert_ueberschwemmung_geschwindigkeit.sql','afu_naturgefahren_staging_v1.kennwert_ueberschwemmung_geschwindigkeit', true),
+            new TransferSet('copy_to_edit/publish_synoptische_intensitaet.sql','afu_naturgefahren_staging_v1.synoptische_intensitaet', true),
+            new TransferSet('copy_to_edit/publish_synoptisches_gefahrengebiet.sql','afu_naturgefahren_staging_v1.synoptisches_gefahrengebiet', true),
+            new TransferSet('copy_to_edit/publish_ufererosion.sql','afu_naturgefahren_staging_v1.ufererosion', true)
+    ];
 }

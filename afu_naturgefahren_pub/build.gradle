@@ -1,0 +1,38 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+
+apply plugin: 'ch.so.agi.gretl'
+
+
+defaultTasks 'copy_alle_natgef_produkte'
+
+//In die Pub-DB kopieren
+
+task copy_alle_natgef_produkte(type: Db2Db) {
+    description = "Kopiert die nun gerechneten NatGef-Produkte in die Edit-DB"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('copy_to_pub/publish_dokumente.sql','afu_naturgefahren_pub_v1.dokumente_pro_gemeinde', true),
+            new TransferSet('copy_to_pub/publish_erhebungsgebiet.sql','afu_naturgefahren_pub_v1.erhebungsgebiet', true),
+            new TransferSet('copy_to_pub/publish_fliessrichtung.sql','afu_naturgefahren_pub_v1.fliessrichtung', true),
+            new TransferSet('copy_to_pub/publish_fliesstiefen.sql','afu_naturgefahren_pub_v1.fliesstiefen', true),
+            new TransferSet('copy_to_pub/publish_gk_hauptprozess_rutschung.sql','afu_naturgefahren_pub_v1.gefahrengebiet_hauptprozess_rutschung', true),
+            new TransferSet('copy_to_pub/publish_gk_hauptprozess_sturz.sql','afu_naturgefahren_pub_v1.gefahrengebiet_hauptprozess_sturz', true),
+            new TransferSet('copy_to_pub/publish_gk_hauptprozess_wasser.sql','afu_naturgefahren_pub_v1.gefahrengebiet_hauptprozess_wasser', true),
+            new TransferSet('copy_to_pub/publish_gk_teilprozess_absenkung_einsturz.sql','afu_naturgefahren_pub_v1.gefahrengebiet_teilprozess_absenkung_einsturz', true),
+            new TransferSet('copy_to_pub/publish_gk_teilprozess_fels_bergsturz.sql','afu_naturgefahren_pub_v1.gefahrengebiet_teilprozess_fels_bergsturz', true),
+            new TransferSet('copy_to_pub/publish_gk_teilprozess_hangmure.sql','afu_naturgefahren_pub_v1.gefahrengebiet_teilprozess_hangmure', true),
+            new TransferSet('copy_to_pub/publish_gk_teilprozess_murgang.sql','afu_naturgefahren_pub_v1.gefahrengebiet_teilprozess_murgang', true),
+            new TransferSet('copy_to_pub/publish_gk_teilprozess_permanente_rutschung.sql','afu_naturgefahren_pub_v1.gefahrengebiet_teilprozess_permanente_rutschung', true),
+            new TransferSet('copy_to_pub/publish_gk_teilprozess_spontane_rutschung.sql','afu_naturgefahren_pub_v1.gefahrengebiet_teilprozess_spontane_rutschung', true),
+            new TransferSet('copy_to_pub/publish_gk_teilprozess_stein_blockschlag.sql','afu_naturgefahren_pub_v1.gefahrengebiet_teilprozess_stein_blockschlag', true),
+            new TransferSet('copy_to_pub/publish_gk_teilprozess_ueberflutung.sql','afu_naturgefahren_pub_v1.gefahrengebiet_teilprozess_ueberflutung', true),
+            new TransferSet('copy_to_pub/publish_kennwert_uebermurung_geschwindigkeit.sql','afu_naturgefahren_pub_v1.kennwert_uebermurung_geschwindigkeit', true),
+            new TransferSet('copy_to_pub/publish_kennwert_uebermurung_hoehe.sql','afu_naturgefahren_pub_v1.kennwert_uebermurung_hoehe', true),
+            new TransferSet('copy_to_pub/publish_kennwert_ueberschwemmung_geschwindigkeit.sql','afu_naturgefahren_pub_v1.kennwert_ueberschwemmung_geschwindigkeit', true),
+            new TransferSet('copy_to_pub/publish_synoptische_intensitaet.sql','afu_naturgefahren_pub_v1.synoptische_intensitaet', true),
+            new TransferSet('copy_to_pub/publish_synoptisches_gefahrengebiet.sql','afu_naturgefahren_pub_v1.synoptisches_gefahrengebiet', true),
+            new TransferSet('copy_to_pub/publish_ufererosion.sql','afu_naturgefahren_pub_v1.ufererosion', true)
+    ];
+}

@@ -1,0 +1,10 @@
+SELECT 
+    teilprozess, 
+    jaehrlichkeit, 
+    intensitaet, 
+    geometrie, 
+    datenherkunft, 
+    auftrag_neudaten
+FROM 
+    afu_naturgefahren_staging_v1.synoptische_intensitaet
+;
