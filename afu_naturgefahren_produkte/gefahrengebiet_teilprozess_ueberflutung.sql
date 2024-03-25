@@ -115,9 +115,27 @@ teilprozess_ueberschwemmung_statisch_dynamisch as (
         befund.t_basket = basket.t_id 
     where 
         befund.t_basket in (select t_id from orig_basket)
-),
+)
 
-teilprozess_ueberschwemmung_statisch_dynamisch_prio as (
+,teilprozess_ueberschwemmung_statisch_synamisch_priorisiert as (
+    select 
+        teilprozess,
+        gefahrenstufe,
+        charakterisierung,
+        geometrie,
+        datenherkunft,
+        auftrag_neudaten,
+        CASE 
+		    WHEN gefahrenstufe = 'restgefaehrdung' then 0 
+		    WHEN gefahrenstufe = 'gering' then 10 
+		    WHEN gefahrenstufe = 'mittel' then 20 
+		    WHEN gefahrenstufe = 'erheblich' then 30
+		end + charakterisierung as prio
+    from 
+        teilprozess_ueberschwemmung_statisch_dynamisch
+)
+
+,teilprozess_ueberschwemmung_statisch_dynamisch_prio as (
     SELECT 
         a.teilprozess,
         a.gefahrenstufe,
@@ -129,16 +147,16 @@ teilprozess_ueberschwemmung_statisch_dynamisch_prio as (
         a.datenherkunft,
         a.auftrag_neudaten
     FROM  
-        teilprozess_ueberschwemmung_statisch_dynamisch AS a
+        teilprozess_ueberschwemmung_statisch_synamisch_priorisiert AS a
     CROSS JOIN LATERAL (
         SELECT 
             ST_Union(geometrie) AS geometrie
         FROM   
-            teilprozess_ueberschwemmung_statisch_dynamisch AS b
+            teilprozess_ueberschwemmung_statisch_synamisch_priorisiert AS b
         WHERE 
             a.geometrie && b.geometrie 
             and 
-            a.charakterisierung < b.charakterisierung              
+            a.prio < b.prio              
     ) AS blade
 ),
 
@@ -207,6 +225,7 @@ from
 where 
     st_isempty(geometrie) is not true 
 ;
+
 
 
 
