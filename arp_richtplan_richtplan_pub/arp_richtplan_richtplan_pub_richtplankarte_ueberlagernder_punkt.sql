@@ -51,7 +51,7 @@ SELECT
     a.bundesblatt_nr,
     a.bundesblatt_url,
     a.bundesblatt_datum,
-    'Richtplan' AS datenquelle
+    'richtplan' AS datenquelle
 FROM
     ueberlagernder_punkt AS p  
 LEFT JOIN

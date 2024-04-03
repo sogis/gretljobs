@@ -30,7 +30,7 @@ SELECT
     a.bundesblatt_nr,
     a.bundesblatt_url,
     a.bundesblatt_datum,
-    'Richtplan' AS datenquelle
+    'richtplan' AS datenquelle
 FROM
     arp_richtplan_v2.richtplankarte_ueberlagernde_linie AS l 
 LEFT JOIN

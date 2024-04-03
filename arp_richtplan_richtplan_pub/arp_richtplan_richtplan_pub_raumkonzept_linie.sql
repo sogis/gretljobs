@@ -7,7 +7,7 @@ SELECT
     a.rrb_datum,
     a.rrb_url,
     a.bemerkung AS anpassung_bemerkung,
-    'Richtplan' AS datenquelle
+    'richtplan' AS datenquelle
 FROM
     arp_richtplan_v2.raumkonzept_linie AS l
 LEFT JOIN
