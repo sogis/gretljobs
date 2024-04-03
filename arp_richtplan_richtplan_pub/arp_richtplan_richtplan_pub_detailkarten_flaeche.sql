@@ -1,9 +1,9 @@
 SELECT
     f.objektname,
     f.objekttyp,
-    f.richtplantext,
     f.abstimmungskategorie,
     f.geometrie,
+    f.richtplantext,
     string_agg(g.gemeindename, ', ') AS gemeindenamen,
     f.anpassung AS richtplananpassung,
     a.rrb_nr,
@@ -25,8 +25,8 @@ LEFT JOIN
 GROUP BY 
     f.objektname,
     f.objekttyp,
-    f.richtplantext,
     f.abstimmungskategorie,
+    f.richtplantext,
     f.geometrie,
     f.anpassung,
     a.rrb_nr,
