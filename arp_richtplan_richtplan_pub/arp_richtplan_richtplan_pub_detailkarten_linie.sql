@@ -1,5 +1,6 @@
 SELECT
     l.objektname,
+    l.objekttyp,
     l.abstimmungskategorie,
     l.geometrie,
     l.anpassung AS richtplananpassung,
@@ -10,7 +11,7 @@ SELECT
     a.bundesblatt_nr,
     a.bundesblatt_url,
     a.bundesblatt_datum,
-    'Richtplan' AS datenquelle,
+    'richtplan' AS datenquelle,
     l.richtplantext,
     l.richtplantext_url,
     l.astatus
