@@ -12,7 +12,6 @@ dokumente AS (
         f.ueberlagernde_flaeche
 )
 
-
 SELECT
     f.t_id,
     f.objektnummer,

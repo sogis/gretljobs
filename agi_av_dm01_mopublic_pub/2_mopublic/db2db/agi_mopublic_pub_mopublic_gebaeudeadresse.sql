@@ -50,7 +50,8 @@ SELECT
     END AS vali,
     aimport.importdate AS importdatum,
     nachfuehrung.gueltigereintrag AS nachfuehrung,
-    hausnummer.pos
+    trim(to_char(ST_X(hausnummer.pos), '9999999.000'))::NUMERIC AS posX,
+    trim(to_char(ST_Y(hausnummer.pos), '9999999.000'))::NUMERIC AS posY
 FROM
     agi_dm01avso24.gebaeudeadressen_gebaeudeeingang AS gebauedeeingang
     LEFT JOIN agi_dm01avso24.gebaeudeadressen_hausnummerpos AS hausnummer
@@ -83,7 +84,8 @@ SELECT
     gebaeudeeingang.vali,
     gebaeudeeingang.importdatum,
     gebaeudeeingang.nachfuehrung,
-    gebaeudeeingang.pos
+    gebaeudeeingang.posX,
+    gebaeudeeingang.posY
 FROM
     strassenname
     RIGHT JOIN gebaeudeeingang
@@ -108,7 +110,8 @@ SELECT
     gebaeudeeingang_strassenname.vali,
     gebaeudeeingang_strassenname.importdatum,
     gebaeudeeingang_strassenname.nachfuehrung,
-    gebaeudeeingang_strassenname.pos,
+    gebaeudeeingang_strassenname.posX,
+    gebaeudeeingang_strassenname.posY,
     plz.plz,
     ortschaftsname.atext AS ortschaft
 FROM
@@ -143,7 +146,8 @@ SELECT
     gebaeudeeingang_strassenname_plz_ortschaft.importdatum,
     gebaeudeeingang_strassenname_plz_ortschaft.nachfuehrung,
     gebaeudeeingang_strassenname_plz_ortschaft.lage,
-    gebaeudeeingang_strassenname_plz_ortschaft.pos,
+    gebaeudeeingang_strassenname_plz_ortschaft.posX,
+    gebaeudeeingang_strassenname_plz_ortschaft.posY,
     ${basket_tid} AS t_basket
 FROM
     gebaeudeeingang_strassenname_plz_ortschaft

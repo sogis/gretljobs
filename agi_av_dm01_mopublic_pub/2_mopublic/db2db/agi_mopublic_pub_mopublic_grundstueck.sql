@@ -26,7 +26,8 @@ pos AS
                 THEN 'Half'
             ELSE vali
         END AS vali,
-        pos
+        trim(to_char(ST_X(pos), '9999999.000'))::NUMERIC AS posX,
+        trim(to_char(ST_Y(pos), '9999999.000'))::NUMERIC AS posY
     FROM 
         agi_dm01avso24.liegenschaften_grundstueckpos
 ),
@@ -56,7 +57,8 @@ grundstueck AS
         nachfuehrung.gueltigereintrag AS nachfuehrung,
         liegenschaft.geometrie AS geometrie,    
         ST_PointOnSurface(ST_MakeValid(liegenschaft.geometrie)) AS point_on_surface,
-        pos.pos
+        pos.posX,
+        pos.posY
     FROM
         agi_dm01avso24.liegenschaften_grundstueck AS grundstueck
         LEFT JOIN agi_dm01avso24.liegenschaften_liegenschaft AS liegenschaft
@@ -89,7 +91,8 @@ grundstueck AS
         nachfuehrung.gueltigereintrag AS nachfuehrung,
         selbstrecht.geometrie AS geometrie,
         ST_PointOnSurface(ST_MakeValid(selbstrecht.geometrie)) AS point_on_surface,
-        pos.pos
+        pos.posX,
+        pos.posY
     FROM
         agi_dm01avso24.liegenschaften_grundstueck AS grundstueck
         LEFT JOIN agi_dm01avso24.liegenschaften_selbstrecht AS selbstrecht 
@@ -150,7 +153,8 @@ SELECT
     importdatum,
     nachfuehrung,
     grundstueck.geometrie,  
-    pos,  
+    posX,
+    posY,  
     gemeinde.aname AS gemeinde,
     grundbuchkreis.aname AS grundbuch,
     ${basket_tid} AS t_basket

@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferGrundlagendaten_ews', 'transferGrundlagendaten_ews_alt_sogis'
+defaultTasks 'transferGrundlagendaten_ews'
 
 task transferGrundlagendaten_ews(type: Db2Db){
     sourceDb = [dbUriEws, dbUserEws, dbPwdEws]
@@ -14,30 +14,5 @@ task transferGrundlagendaten_ews(type: Db2Db){
             new TransferSet('bohrprofil.sql', 'afu_grundlagendaten_ews_v1.bohrprofil', true),
             new TransferSet('schicht.sql', 'afu_grundlagendaten_ews_v1.schicht', true),
             new TransferSet('vorkommnis.sql', 'afu_grundlagendaten_ews_v1.vorkommnis', true)
-    ];
-}
-
-// NUR NOCH NÖTIG, SOLANGE DER NADELSTICH VON DER ALTEN SOGIS-DB DATEN BRAUCHT!
-
-task truncateTable(type: SqlExecutor) {
-    description = "Leert die Tabellen"
-    database = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    sqlFiles = [
-            'delete-script.sql'
-    ]
-}
-
-task transferGrundlagendaten_ews_alt_sogis(type: Db2Db, dependsOn:truncateTable){
-    sourceDb = [dbUriEws, dbUserEws, dbPwdEws]
-    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    transferSets = [
-            new TransferSet('sogis_codetyp.sql', 'bohrung.codetyp', false),
-            new TransferSet('sogis_code.sql', 'bohrung.code', false),
-            new TransferSet('sogis_codeschicht.sql', 'bohrung.codeschicht', false),
-            new TransferSet('sogis_standort.sql', 'bohrung.standort', false),
-            new TransferSet('sogis_bohrung.sql', 'bohrung.bohrung', false),
-            new TransferSet('sogis_bohrprofil.sql', 'bohrung.bohrprofil', false),
-            new TransferSet('sogis_schicht.sql', 'bohrung.schicht', false),
-            new TransferSet('sogis_vorkommnis.sql', 'bohrung.vorkommnis', false)
     ];
 }
