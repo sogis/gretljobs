@@ -2,7 +2,7 @@ SELECT
     p.objekttyp,
     p.geometrie,
     p.objektname,
-    p.anpassung AS richtplananpassung,
+    a.jahr AS richtplananpassung,
     a.rrb_nr,
     a.rrb_datum,
     a.rrb_url,
