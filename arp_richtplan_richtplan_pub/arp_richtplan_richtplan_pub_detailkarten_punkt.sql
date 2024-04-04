@@ -18,6 +18,6 @@ SELECT
 FROM
     arp_richtplan_v2.detailkarten_punkt AS p           
 JOIN
-    agi_hoheitsgrenzen_pub.gemeindegrenze AS g ON ST_Contains(g.geometrie, p.geometrie)
+    agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS g ON ST_Contains(g.geometrie, p.geometrie)
 LEFT JOIN
     arp_richtplan_v2.detailkarten_anpassung AS a ON p.anpassung = a.t_id
