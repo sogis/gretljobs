@@ -22,7 +22,7 @@ SELECT
     'rechtsgueltig' AS planungsstand,
     d.dokumente,
     l.astatus,
-    l.anpassung AS richtplananpassung,
+    a.jahr AS richtplananpassung,
     a.rrb_nr,
     a.rrb_datum,
     a.rrb_url,

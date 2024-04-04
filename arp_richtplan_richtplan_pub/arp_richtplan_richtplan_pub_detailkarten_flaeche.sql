@@ -5,7 +5,7 @@ SELECT
     f.geometrie,
     f.richtplantext,
     string_agg(g.gemeindename, ', ') AS gemeindenamen,
-    f.anpassung AS richtplananpassung,
+    a.jahr AS richtplananpassung,
     a.rrb_nr,
     a.rrb_datum,
     a.rrb_url,
@@ -19,7 +19,7 @@ SELECT
 FROM
     arp_richtplan_v2.detailkarten_flaeche AS f           
 JOIN
-    agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS g ON ST_Intersects(f.geometrie, g.geometrie)
+    agi_hoheitsgrenzen_pub.gemeindegrenze AS g ON ST_Intersects(f.geometrie, g.geometrie)
 LEFT JOIN
     arp_richtplan_v2.detailkarten_anpassung AS a ON f.anpassung = a.t_id
 GROUP BY 
@@ -28,7 +28,7 @@ GROUP BY
     f.abstimmungskategorie,
     f.richtplantext,
     f.geometrie,
-    f.anpassung,
+    a.jahr,
     a.rrb_nr,
     a.rrb_datum,
     a.rrb_url,

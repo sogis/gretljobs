@@ -25,7 +25,7 @@ SELECT
     'rechtsgueltig' AS planungsstand,
     d.dokumente,
     f.astatus,
-    f.anpassung AS richtplananpassung,
+    a.jahr AS richtplananpassung,
     a.rrb_nr,
     a.rrb_datum,
     a.rrb_url,
@@ -37,7 +37,7 @@ SELECT
 FROM
     arp_richtplan_v2.richtplankarte_ueberlagernde_flaeche AS f           
 JOIN
-    agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS g ON ST_Intersects(f.geometrie, g.geometrie)
+    agi_hoheitsgrenzen_pub.gemeindegrenze AS g ON ST_Intersects(f.geometrie, g.geometrie)
 LEFT JOIN
     arp_richtplan_v2.richtplankarte_anpassung AS a ON f.anpassung = a.t_id
 LEFT JOIN
@@ -53,7 +53,7 @@ GROUP BY
     f.bedeutung,
     d.dokumente,
     f.astatus,
-    f.anpassung,
+    a.jahr,
     a.rrb_nr,
     a.rrb_datum,
     a.rrb_url,
