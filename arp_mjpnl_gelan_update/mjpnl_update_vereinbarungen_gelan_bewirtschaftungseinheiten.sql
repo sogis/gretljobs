@@ -15,7 +15,10 @@ UPDATE
         ,'9999999')
      )
  WHERE
-  ST_IsValid(vbg.geometrie) = TRUE 
+  ST_IsValid(vbg.geometrie) = TRUE
+  AND 
+  -- ändere keine inaktive vereinbarungen
+  vbg.status_vereinbarung != 'inaktiv'
   AND
   -- nur wenn aktuelles Datum nicht zwischen dem 1. Dezember und dem 15. Januar liegt
   (date_part('month',now()) NOT IN (1,12) OR (date_part('month',now())=1 AND date_part('day',now())>15))
