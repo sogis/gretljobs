@@ -37,7 +37,7 @@ SELECT
 FROM
     arp_richtplan_v2.richtplankarte_ueberlagernde_flaeche AS f           
 JOIN
-    agi_hoheitsgrenzen_pub.gemeindegrenze AS g ON ST_Intersects(f.geometrie, g.geometrie)
+    agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS g ON ST_Intersects(f.geometrie, g.geometrie)
 LEFT JOIN
     arp_richtplan_v2.richtplankarte_anpassung AS a ON f.anpassung = a.t_id
 LEFT JOIN
