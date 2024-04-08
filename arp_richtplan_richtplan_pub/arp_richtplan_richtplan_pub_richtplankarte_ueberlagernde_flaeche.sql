@@ -13,7 +13,6 @@ dokumente AS (
 )
 
 SELECT
-    f.t_id,
     f.objektnummer,
     f.objekttyp,
     f.weitere_informationen,
@@ -43,7 +42,6 @@ LEFT JOIN
 LEFT JOIN
     dokumente AS d ON f.t_id = d.ueberlagernde_flaeche
 GROUP BY
-    f.t_id,
     f.objektnummer,
     f.objekttyp,
     f.weitere_informationen,
