@@ -53,7 +53,7 @@ task truncate_tables(type: SqlExecutor, dependsOn: make_staging_schema) {
 
 task make_naturgefahren_schema(type: Ili2pgImportSchema, dependsOn: truncate_tables){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    models = "SO_AFU_Naturgefahren_20230802"
+    models = "SO_AFU_Naturgefahren_20240501"
     dbschema = "afu_naturgefahren_v1"
     beautifyEnumDispName = true
     strokeArcs = true
@@ -83,7 +83,7 @@ task make_alte_dokumente_schema(type: Ili2pgImportSchema, dependsOn: make_naturg
 task export_natgef_daten(type: Ili2pgExport, dependsOn: make_alte_dokumente_schema) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "afu_naturgefahren_v1"
-    models = "SO_AFU_Naturgefahren_20230802"
+    models = "SO_AFU_Naturgefahren_20240501"
     disableValidation = true
     dataset = Auftragskennung
     dataFile = file(Paths.get(pathToTempFolder, Auftragskennung+".xtf"))
@@ -485,30 +485,30 @@ task dokumente_pro_gemeinde(type: SqlExecutor, dependsOn: copy_alte_dokumente) {
 
 // Kennwerte
 
-task kw_uebermurung_geschwindigkeit(type: SqlExecutor, dependsOn: dokumente_pro_gemeinde) {
+task kuebermurung_geschwindigkeit(type: SqlExecutor, dependsOn: dokumente_pro_gemeinde) {
     description = "Kopieren der Kennwerte Übermurung Geschwindigkeit"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['kw_uebermurung_geschwindigkeit.sql']
+    sqlFiles = ['kuebermurung_geschwindigkeit.sql']
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 
-task kw_uebermurung_hoehe(type: SqlExecutor, dependsOn: kw_uebermurung_geschwindigkeit) {
+task kuebermurung_hoehe(type: SqlExecutor, dependsOn: kuebermurung_geschwindigkeit) {
     description = "Kopieren der Kennwerte Übermurung Höhe"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['kw_uebermurung_hoehe.sql']
+    sqlFiles = ['kuebermurung_hoehe.sql']
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 
-task kw_ueberschwemmung_geschwindigkeit(type: SqlExecutor, dependsOn: kw_uebermurung_hoehe) {
+task kueberschwemmung_geschwindigkeit(type: SqlExecutor, dependsOn: kuebermurung_hoehe) {
     description = "Kopieren der Kennwerte Überschwemmung Geschwindigkeit"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['kw_ueberschwemmung_geschwindigkeit.sql']
+    sqlFiles = ['kueberschwemmung_geschwindigkeit.sql']
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 
 //Geometriebereinigung
 
-task clean_geometry(type: SqlExecutor, dependsOn: kw_ueberschwemmung_geschwindigkeit) {
+task clean_geometry(type: SqlExecutor, dependsOn: kueberschwemmung_geschwindigkeit) {
     description = "Bereinigung der Geometrien durch st_reducePrecision"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['geometrie_bereinigung.sql']

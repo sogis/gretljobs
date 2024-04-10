@@ -27,7 +27,7 @@ orig_basket as (
 
 teilprozess_ueberschwemmung_statisch_dynamisch as ( 
     select 
-       'w_ueberschwemmung' as teilprozess,
+       'ueberschwemmung' as teilprozess,
         case when 
              (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 'restgefaehrdung' 
              when
@@ -73,7 +73,7 @@ teilprozess_ueberschwemmung_statisch_dynamisch as (
     union all 
     
     select 
-       'w_ueberschwemmung' as teilprozess,
+       'ueberschwemmung' as teilprozess,
         case when 
              (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 'restgefaehrdung' 
              when

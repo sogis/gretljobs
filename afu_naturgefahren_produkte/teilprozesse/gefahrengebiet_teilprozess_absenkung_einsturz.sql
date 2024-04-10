@@ -27,7 +27,7 @@ orig_basket as (
 
 teilprozess_absenkung_einsturz as ( 
     select 
-       'ea_absenkung' as teilprozess,
+       'absenkung' as teilprozess,
         case when 
              (string_to_array(iwcode, '_'))[1] = 'gelb' then 'gering' 
              when
@@ -55,7 +55,7 @@ teilprozess_absenkung_einsturz as (
     union all
 
     select 
-       'ea_einsturz' as teilprozess,
+       'einsturz' as teilprozess,
         case when 
              (string_to_array(iwcode, '_'))[1] = 'gelb' then 'gering' 
              when

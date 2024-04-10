@@ -27,7 +27,7 @@ orig_basket as (
 
 teilprozess_hangmure as ( 
     select 
-       'r_plo_hangmure' as teilprozess,
+       'hangmure' as teilprozess,
         case when 
              (string_to_array(iwcode, '_'))[1] = 'gelb' then 'gering' 
              when

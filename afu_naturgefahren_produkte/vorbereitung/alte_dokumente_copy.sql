@@ -1,4 +1,27 @@
-with dokumente as (
+with 
+dokumente_pre_process as (
+    select 
+        st_union(st_multi(geometrie)) as geometrie,
+        dokument,
+        bool_or(ik_wasser) as ik_wasser,
+        bool_or(ik_sturz) as ik_sturz, 
+        bool_or(ik_abs_ein) as ik_abs_ein,
+        bool_or(ik_hangm) as ik_hangm,
+        bool_or(ik_ru_spon) as ik_ru_spon, 
+        bool_or(ik_ru_kont) as ik_ru_kont,
+        bool_or(gk_wasser) as gk_wasser,
+        bool_or(gk_sturz) as gk_sturz,
+        bool_or(gk_abs_ein) as gk_abs_ein,
+        bool_or(gk_hangm) as gk_hangm,
+        bool_or(gk_ru_spon) as gk_ru_spon,
+        bool_or(gk_ru_kont) as gk_ru_kont 
+    from 
+        afu_gefahrenkartierung_pub.gefahrenkartirung_perimeter_gefahrenkartierung_v
+    group by 
+        dokument
+),
+
+dokumente as (
     select 
         geometrie, 
         dokument as dokument_array,
@@ -21,7 +44,7 @@ with dokumente as (
         end as hauptprozess_rutschung, 
         left(right((json_array_elements(dokument::json) ->'name')::text,9),4) as jahr
     from 
-        afu_gefahrenkartierung_pub.gefahrenkartirung_perimeter_gefahrenkartierung_v
+        dokumente_pre_process
 ),
 
 gemeinden as (
@@ -50,3 +73,4 @@ left join
     gemeinden 
     on 
     st_dwithin(st_buffer(dokumente.geometrie,-1),gemeinden.geometrie,0)
+

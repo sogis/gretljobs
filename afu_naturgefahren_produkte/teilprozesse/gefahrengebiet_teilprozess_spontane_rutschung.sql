@@ -27,7 +27,7 @@ orig_basket as (
 
 teilprozess_spontanrutschung as ( 
     select 
-       'r_plo_spontane_rutschung' as teilprozess,
+       'spontane_rutschung' as teilprozess,
         case when 
              (string_to_array(iwcode, '_'))[1] = 'gelb' then 'gering' 
              when

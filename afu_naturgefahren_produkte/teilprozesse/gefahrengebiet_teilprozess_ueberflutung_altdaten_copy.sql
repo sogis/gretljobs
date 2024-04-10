@@ -9,7 +9,7 @@ basket as (
 attribute_mapping as (
     SELECT 
         prozessa,
-        'w_ueberschwemmung' as teilprozess, 
+        'ueberschwemmung' as teilprozess, 
         case 
             when gef_stufe = 'keine' then 'nicht_gefaehrdet'
     	    when gef_stufe = 'vorhanden' then 'restgefaehrdung'

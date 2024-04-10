@@ -27,7 +27,7 @@ orig_basket as (
 
 teilprozess_steinblockschlag as ( 
     select 
-       's_stein_block_schlag' as teilprozess,
+       'stein_blockschlag' as teilprozess,
         case when 
              (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 'restgefaehrdung' 
              when

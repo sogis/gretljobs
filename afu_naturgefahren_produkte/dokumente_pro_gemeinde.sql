@@ -45,7 +45,7 @@ berichte as (
         teilauftrag.t_id as teilauftrag_tid,
         auftrag.kennung as auftragskennung,
         auftrag.deklaration as auftragsdeklaration,
-        auftrag.abschlussjahr as jahr,
+        auftrag.abschlussjahr::text as jahr,
         teilauftrag.hauptprozess as hauptprozess,
         bericht.bericht as titel, 
         bericht.dateiname as dateiname,
@@ -229,4 +229,5 @@ GROUP by
     gemeinde_bfsnr,
     gemeinde_name,
     geometrie 
+
 

@@ -8,7 +8,7 @@ basket as (
 
 attribute_mapping as (
     SELECT 
-        's_stein_block_schlag' as teilprozess, 
+        'stein_blockschlag' as teilprozess, 
         case 
             when gef_stufe = 'keine' then 'nicht_gefaehrdet'
     	    when gef_stufe = 'vorhanden' then 'restgefaehrdung'

@@ -8,7 +8,7 @@ basket as (
 
 attribute_mapping as (
     SELECT 
-        'w_uebermurung' as teilprozess, 
+        'uebermurung' as teilprozess, 
         case 
             when gef_stufe = 'keine' then 'nicht_gefaehrdet'
     	    when gef_stufe = 'vorhanden' then 'restgefaehrdung'

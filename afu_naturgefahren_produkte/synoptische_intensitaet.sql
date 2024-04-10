@@ -27,7 +27,7 @@ orig_basket as (
 
 teilprozess_absenkung as ( 
     select 
-       'ea_absenkung' as teilprozess,
+       'absenkung' as teilprozess,
         '-1' as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
@@ -46,8 +46,8 @@ teilprozess_absenkung as (
         befund.t_basket in (select t_id from orig_basket)
     union all 
     SELECT
-        'ea_absenkung' as teilprozess,
-        '-1' as jaehrlichkeit,  --Bei diesem Teilprozess gibt es keine Jährlichkeit
+        'absenkung' as teilprozess,
+        null as jaehrlichkeit,  --Bei diesem Teilprozess gibt es keine Jährlichkeit
         'keine_einwirkung' as intensitaet,
         geometrie,
         0 as prio
@@ -84,7 +84,7 @@ teilprozess_absenkung_prio as (
 
 teilprozess_bergundfelssturz as ( 
     select 
-       's_fels_berg_sturz' as teilprozess,
+       'fels_bergsturz' as teilprozess,
         case when 
             (string_to_array(iwcode, '_'))[3] ~ '^[0-9\.]+$'
             then 
@@ -109,7 +109,7 @@ teilprozess_bergundfelssturz as (
         befund.t_basket in (select t_id from orig_basket)
     union all 
     SELECT
-        's_fels_berg_sturz' as teilprozess,
+        'fels_bergsturz' as teilprozess,
         '30' as jaehrlichkeit,
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -120,7 +120,7 @@ teilprozess_bergundfelssturz as (
         s_berg_felssturz != 'nicht_beurteilt'
     union all 
     SELECT
-        's_fels_berg_sturz' as teilprozess,
+        'fels_bergsturz' as teilprozess,
         '100' as jaehrlichkeit,
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -131,7 +131,7 @@ teilprozess_bergundfelssturz as (
         s_berg_felssturz != 'nicht_beurteilt'
     union all 
     SELECT
-        's_fels_berg_sturz' as teilprozess,
+        'fels_bergsturz' as teilprozess,
         '300' as jaehrlichkeit,
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -142,7 +142,7 @@ teilprozess_bergundfelssturz as (
         s_berg_felssturz != 'nicht_beurteilt'
     union all 
     SELECT
-        's_fels_berg_sturz' as teilprozess,
+        'fels_bergsturz' as teilprozess,
         '-1' as jaehrlichkeit, --für die Restgefährdung
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -180,7 +180,7 @@ teilprozess_bergundfelssturz_prio as (
 
 teilprozess_einsturz as ( 
     select 
-       'ea_einsturz' as teilprozess,
+       'einsturz' as teilprozess,
         '-1' as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie,
@@ -199,8 +199,8 @@ teilprozess_einsturz as (
         befund.t_basket in (select t_id from orig_basket)
     union all 
     SELECT
-        'ea_einsturz' as teilprozess,
-        '-1' as jaehrlichkeit, --Bei diesem Teilprozess gibt es keine Jährlichkeit
+        'einsturz' as teilprozess,
+        null as jaehrlichkeit, --Bei diesem Teilprozess gibt es keine Jährlichkeit
         'keine_einwirkung' as intensitaet,
         geometrie,
         0 as prio
@@ -237,7 +237,7 @@ teilprozess_einsturz_prio as (
 
 teilprozess_hangmure as ( 
     select 
-       'r_plo_hangmure' as teilprozess,
+       'hangmure' as teilprozess,
         case when 
             (string_to_array(iwcode, '_'))[3] ~ '^[0-9\.]+$'
             then 
@@ -262,7 +262,7 @@ teilprozess_hangmure as (
         befund.t_basket in (select t_id from orig_basket)
     union all 
     SELECT
-        'r_plo_hangmure' as teilprozess,
+        'hangmure' as teilprozess,
         '30' as jaehrlichkeit, 
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -273,7 +273,7 @@ teilprozess_hangmure as (
         r_hangmure != 'nicht_beurteilt'
     union all 
     SELECT
-        'r_plo_hangmure' as teilprozess,
+        'hangmure' as teilprozess,
         '100' as jaehrlichkeit, 
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -284,7 +284,7 @@ teilprozess_hangmure as (
         r_hangmure != 'nicht_beurteilt'
     union all 
     SELECT
-        'r_plo_hangmure' as teilprozess,
+        'hangmure' as teilprozess,
         '300' as jaehrlichkeit, 
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -322,7 +322,7 @@ teilprozess_hangmure_prio as (
 
 teilprozess_permanentrutschung as ( 
     select 
-       'r_permanente_rutschung' as teilprozess,
+       'permanente_rutschung' as teilprozess,
         '-1' as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
@@ -341,8 +341,8 @@ teilprozess_permanentrutschung as (
         befund.t_basket in (select t_id from orig_basket)
     union all 
     SELECT
-        'r_permanente_rutschung' as teilprozess,
-        '-1' as jaehrlichkeit, --Bei diesem Teilprozess gibt es keine Jährlichkeiten
+        'permanente_rutschung' as teilprozess,
+        null as jaehrlichkeit, --Bei diesem Teilprozess gibt es keine Jährlichkeiten
         'keine_einwirkung' as intensitaet,
         geometrie,
         0 as prio
@@ -379,7 +379,7 @@ teilprozess_permanentrutschung_prio as (
 
 teilprozess_spontanrutschung as ( 
     select 
-       'r_plo_spontane_rutschung' as teilprozess,
+       'spontane_rutschung' as teilprozess,
         case when 
             (string_to_array(iwcode, '_'))[3] ~ '^[0-9\.]+$'
             then 
@@ -408,7 +408,7 @@ teilprozess_spontanrutschung as (
         befund.t_basket in (select t_id from orig_basket)
     union all 
     SELECT
-        'r_plo_spontane_rutschung' as teilprozess,
+        'spontane_rutschung' as teilprozess,
         '30' as jaehrlichkeit, 
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -419,7 +419,7 @@ teilprozess_spontanrutschung as (
         r_spontane_rutschung != 'nicht_beurteilt'
     union all 
     SELECT
-        'r_plo_spontane_rutschung' as teilprozess,
+        'spontane_rutschung' as teilprozess,
         '100' as jaehrlichkeit, 
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -430,7 +430,7 @@ teilprozess_spontanrutschung as (
         r_spontane_rutschung != 'nicht_beurteilt'
     union all 
     SELECT
-        'r_plo_spontane_rutschung' as teilprozess,
+        'spontane_rutschung' as teilprozess,
         '300' as jaehrlichkeit, 
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -468,7 +468,7 @@ teilprozess_spontanrutschung_prio as (
 
 teilprozess_steinblockschlag as ( 
     select 
-       's_stein_block_schlag' as teilprozess,
+       'stein_blockschlag' as teilprozess,
         case when 
             (string_to_array(iwcode, '_'))[3] ~ '^[0-9\.]+$'
             then 
@@ -493,7 +493,7 @@ teilprozess_steinblockschlag as (
         befund.t_basket in (select t_id from orig_basket)
     union all 
     SELECT
-        's_stein_block_schlag' as teilprozess,
+        'stein_blockschlag' as teilprozess,
         '30' as jaehrlichkeit, 
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -504,7 +504,7 @@ teilprozess_steinblockschlag as (
         s_stein_blockschlag != 'nicht_beurteilt'
     union all 
     SELECT
-        's_stein_block_schlag' as teilprozess,
+        'stein_blockschlag' as teilprozess,
         '100' as jaehrlichkeit, 
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -515,7 +515,7 @@ teilprozess_steinblockschlag as (
         s_stein_blockschlag != 'nicht_beurteilt'
     union all 
     SELECT
-        's_stein_block_schlag' as teilprozess,
+        'stein_blockschlag' as teilprozess,
         '300' as jaehrlichkeit, 
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -526,7 +526,7 @@ teilprozess_steinblockschlag as (
         s_stein_blockschlag != 'nicht_beurteilt'
     union all 
     SELECT
-        's_stein_block_schlag' as teilprozess,
+        'stein_blockschlag' as teilprozess,
         '-1' as jaehrlichkeit, 
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -564,7 +564,7 @@ teilprozess_steinblockschlag_prio as (
 
 teilprozess_uebermurung as ( 
     select 
-       'w_uebermurung' as teilprozess,
+       'uebermurung' as teilprozess,
         case when 
             (string_to_array(iwcode, '_'))[3] ~ '^[0-9\.]+$'
             then 
@@ -589,7 +589,7 @@ teilprozess_uebermurung as (
         befund.t_basket in (select t_id from orig_basket)
     union all 
     SELECT
-        'w_uebermurung' as teilprozess,
+        'uebermurung' as teilprozess,
         '30' as jaehrlichkeit, 
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -600,7 +600,7 @@ teilprozess_uebermurung as (
         w_uebermurung != 'nicht_beurteilt'
     union all 
     SELECT
-        'w_uebermurung' as teilprozess,
+        'uebermurung' as teilprozess,
         '100' as jaehrlichkeit, 
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -611,7 +611,7 @@ teilprozess_uebermurung as (
         w_uebermurung != 'nicht_beurteilt'
     union all 
     SELECT
-        'w_uebermurung' as teilprozess,
+        'uebermurung' as teilprozess,
         '300' as jaehrlichkeit, 
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -622,7 +622,7 @@ teilprozess_uebermurung as (
         w_uebermurung != 'nicht_beurteilt'
     union all 
     SELECT
-        'w_uebermurung' as teilprozess,
+        'uebermurung' as teilprozess,
         '-1' as jaehrlichkeit, 
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -660,7 +660,7 @@ teilprozess_uebermurung_prio as (
 
 teilprozess_ueberschwemmung as ( 
     select 
-       'w_ueberschwemmung' as teilprozess,
+       'ueberschwemmung' as teilprozess,
         case when 
             (string_to_array(iwcode, '_'))[3] ~ '^[0-9\.]+$'
             then 
@@ -687,7 +687,7 @@ teilprozess_ueberschwemmung as (
     union all -- Dynamische und Statische Überschwemmungen werden zusammengefasst.
     
     select 
-       'w_ueberschwemmung' as teilprozess,
+       'ueberschwemmung' as teilprozess,
         case when 
             (string_to_array(iwcode, '_'))[3] ~ '^[0-9\.]+$'
             then 
@@ -712,7 +712,7 @@ teilprozess_ueberschwemmung as (
         befund.t_basket in (select t_id from orig_basket)
     union all 
     SELECT
-        'w_ueberschwemmung' as teilprozess,
+        'ueberschwemmung' as teilprozess,
         '30' as jaehrlichkeit, 
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -725,7 +725,7 @@ teilprozess_ueberschwemmung as (
         w_ueberschwemmung_dynamisch != 'nicht_beurteilt'
     union all 
     SELECT
-        'w_ueberschwemmung' as teilprozess,
+        'ueberschwemmung' as teilprozess,
         '100' as jaehrlichkeit, 
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -738,7 +738,7 @@ teilprozess_ueberschwemmung as (
         w_ueberschwemmung_dynamisch != 'nicht_beurteilt'
     union all 
     SELECT
-        'w_ueberschwemmung' as teilprozess,
+        'ueberschwemmung' as teilprozess,
         '300' as jaehrlichkeit, 
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -751,7 +751,7 @@ teilprozess_ueberschwemmung as (
         w_ueberschwemmung_dynamisch != 'nicht_beurteilt'
     union all 
     SELECT
-        'w_ueberschwemmung' as teilprozess,
+        'ueberschwemmung' as teilprozess,
         '-1' as jaehrlichkeit, 
         'keine_einwirkung' as intensitaet,
         geometrie,
@@ -839,6 +839,7 @@ from
     basket
 ;
    
+
 
 
 

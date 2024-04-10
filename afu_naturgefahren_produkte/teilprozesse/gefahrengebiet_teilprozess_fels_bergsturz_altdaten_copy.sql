@@ -8,7 +8,7 @@ basket as (
 
 attribute_mapping as (
     SELECT 
-        's_fels_berg_sturz' as teilprozess, 
+        'fels_bergsturz' as teilprozess, 
         case 
             when gef_stufe = 'keine' then 'nicht_gefaehrdet'
     	    when gef_stufe = 'vorhanden' then 'restgefaehrdung'

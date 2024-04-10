@@ -8,7 +8,7 @@ basket as (
 
 attribute_mapping_hangmure as (
     SELECT 
-        'r_plo_hangmure' as teilprozess, 
+        'hangmure' as teilprozess, 
         case 
             when gef_stufe = 'keine' then 'nicht_gefaehrdet'
     	    when gef_stufe = 'vorhanden' then 'restgefaehrdung'

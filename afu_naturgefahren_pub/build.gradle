@@ -36,3 +36,28 @@ task copy_alle_natgef_produkte(type: Db2Db) {
             new TransferSet('copy_to_pub/publish_ufererosion.sql','afu_naturgefahren_pub_v1.ufererosion', true)
     ];
 }
+
+/*
+task publishPub(type: Publisher, dependsOn: 'copy_alle_natgef_produkte'){
+    database = [dbUriPub,dbUserPub,dbPwdPub]
+    dataIdent = "ch.so.afu.gefahrenkartierung" // MUSS NOCH ANGEPASST WERDEN!!!!! 
+    dbSchema = "afu_naturgefahren_pub_v1"
+    modelsToPublish = "SO_AFU_Naturgefahren_Kernmodell_20231016"
+    userFormats = true
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+*/
+
+task NatGef2Mgdm(type: SqlExecutor, dependsOn: 'publishPub'){
+    description = "Transformiert die NatGef-Produkte ins MGDM-Modell"
+    database =  [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = [
+		'mgdm/assessment_area.sql',
+		'mgdm/hazard_area.sql',
+		'mgdm/synoptic_intensity.sql'
+	]       
+}

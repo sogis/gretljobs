@@ -8,7 +8,7 @@ basket as (
 
 attribute_mapping as (
     SELECT 
-        'r_permanente_rutschung' as teilprozess, 
+        'permanente_rutschung' as teilprozess, 
         case 
             when gef_stufe = 'keine' then 'nicht_gefaehrdet'
     	    when gef_stufe = 'vorhanden' then 'restgefaehrdung'

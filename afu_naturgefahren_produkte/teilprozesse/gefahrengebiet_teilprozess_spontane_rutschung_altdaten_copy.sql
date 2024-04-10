@@ -8,7 +8,7 @@ basket as (
 
 attribute_mapping_plo_rutschung as (
     SELECT 
-        'r_plo_spontane_rutschung' as teilprozess, 
+        'spontane_rutschung' as teilprozess, 
         case 
             when gef_stufe = 'keine' then 'nicht_gefaehrdet'
     	    when gef_stufe = 'vorhanden' then 'restgefaehrdung'

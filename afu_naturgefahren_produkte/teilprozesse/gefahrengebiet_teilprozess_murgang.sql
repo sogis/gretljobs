@@ -27,7 +27,7 @@ orig_basket as (
 
 teilprozess_murgang as ( 
     select 
-       'w_uebermurung' as teilprozess,
+       'uebermurung' as teilprozess,
         case when 
              (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 'restgefaehrdung' 
              when
