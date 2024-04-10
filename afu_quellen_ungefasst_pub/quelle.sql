@@ -24,6 +24,7 @@ SELECT
   gemeindename, 
   punkt, 
   bioerhebung, 
-  importdatum
+  importdatum,
+  dok_url
 FROM 
   ${dbSchema}.quelle_ungefasst;

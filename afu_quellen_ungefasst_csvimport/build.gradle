@@ -8,9 +8,10 @@ docker compose run --rm -u $UID gretl --project-dir=afu_quellen_ungefasst_csvimp
 */
 
 def schemaNameStage = "afu_quellen_ungefasst_staging_v1"
+def schemaNameEdit = "afu_quellen_ungefasst_v1"
 def iliModelName = "SO_AFU_Quellen_ungefasst_20240131"
 
-defaultTasks "appendToEditLayer"
+defaultTasks "copyToEditLayer"
 
 task deleteCsvTableRows(type: SqlExecutor){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -26,7 +27,7 @@ task importCsv(type: CsvImport, dependsOn: deleteCsvTableRows) {
     tableName = 'csv_import'
     firstLineIsHeader = true
     valueSeparator = ','
-    encoding = 'UTF-8'
+    encoding = 'Cp1252'
     dataFile = file("xyz.csv")
 }
 
@@ -34,11 +35,12 @@ task refineImport(type: SqlExecutor, dependsOn: importCsv){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [dbSchema:schemaNameStage]
     sqlFiles = [
-        'update_sql/defaults.sql',
-        'update_sql/dates.sql',
-        'update_sql/domain.sql',
-        'update_sql/geom_koord.sql',
-        'update_sql/gemeinde.sql'
+        'update_sql/defaults.sql'
+        ,'update_sql/dates.sql'
+        ,'update_sql/domain.sql'
+        ,'update_sql/geom_koord.sql'
+        ,'update_sql/gemeinde_stump.sql'
+        //,'update_sql/gemeinde.sql'
     ]
 }
 
@@ -49,11 +51,11 @@ task validate(type: Ili2pgValidate, dependsOn: refineImport) {
     dbschema = schemaNameStage
 }
 
-task appendToEditLayer(type: Db2Db, dependsOn: validate){
-    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlParameters = [dbSchema:schemaNameStage]
-    transferSets = [
-        new TransferSet('copy_to_layer.sql', 'afu_quellen_ungefasst_v1.quelle_ungefasst', false)
+task copyToEditLayer(type: SqlExecutor, dependsOn: validate){
+    description = 'Ersetzt bestehende Quellen und erstellt noch nicht vorkommende in der Edit-DB'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [stageSchema:schemaNameStage, editSchema:schemaNameEdit]
+    sqlFiles = [
+        'replace_quellen.sql'
     ]
 }
