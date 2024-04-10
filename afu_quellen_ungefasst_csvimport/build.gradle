@@ -39,8 +39,7 @@ task refineImport(type: SqlExecutor, dependsOn: importCsv){
         ,'update_sql/dates.sql'
         ,'update_sql/domain.sql'
         ,'update_sql/geom_koord.sql'
-        ,'update_sql/gemeinde_stump.sql'
-        //,'update_sql/gemeinde.sql'
+        ,'update_sql/gemeinde.sql'
     ]
 }
 
