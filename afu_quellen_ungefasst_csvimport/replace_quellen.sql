@@ -73,7 +73,7 @@ SELECT
     y_koordinate,
     bioerhebung,
     importdatum,
-    concat('https://afu.so.ch/', id_quelle, '.pdf') AS dok_url  
+    concat('https://geo.so.ch/docs/ch.so.afu.quellen_ungefasst.quellen/', id_quelle, '.pdf') AS dok_url  
 FROM 
     ${stageSchema}.csv_import
 ;
