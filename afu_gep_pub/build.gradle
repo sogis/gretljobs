@@ -10,7 +10,7 @@ defaultTasks 'transferData'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
-def dataSets = ['2471']
+def dataSets = ['2471', '2477', '2481', '2622']
 
 def DB_SCHEMA_EDIT = "afu_gep_v1"
 def DB_SCHEMA_PUB_STAGING = "afu_gep_pub_staging_v1"

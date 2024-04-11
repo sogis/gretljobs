@@ -10,16 +10,15 @@ defaultTasks 'removeFiles'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
-def pathToDataZip = Paths.get(pathToTempFolder, "ivs-nat_2056.xtf.zip")
-def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), 'IVS_V2_1_national_LV95.xtf')
-
+def pathToDataZip = Paths.get(pathToTempFolder, "ivs-reg_loc_2056.xtf.zip")
+def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), 'IVS_V2_1_regional_lokal_LV95.xtf')
 
 task download(type: Download){
     description = "Download ivs-data from geo.admin.ch"
     doLast {
         println "File downloaded to: " + pathToTempFolder
     }
-    src 'https://data.geo.admin.ch/ch.astra.ivs-nat/ivs-nat/ivs-nat_2056.xtf.zip'
+    src 'https://data.geo.admin.ch/ch.astra.ivs-reg_loc/ivs-reg_loc/ivs-reg_loc_2056.xtf.zip'
     dest pathToTempFolder
     overwrite true
 }
@@ -68,20 +67,3 @@ task removeFiles(type: Delete, dependsOn: 'dataTransfer') {
     }
     delete file(pathToUnzipFolder), file(pathToDataZip)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -5,6 +5,7 @@ WHERE
 ;
 
 INSERT INTO arp_richtplan_pub_v2.detailkarten_flaeche (
+    objekttyp,
     objektname,
     abstimmungskategorie,
     geometrie,
@@ -14,6 +15,14 @@ INSERT INTO arp_richtplan_pub_v2.detailkarten_flaeche (
     )
 
 SELECT
+    CASE 
+        WHEN rohstoffart = 'Kies'
+        THEN 'Abbaustelle.Kies'
+        WHEN rohstoffart = 'Kalkstein'
+        THEN 'Abbaustelle.Kalkstein'
+        WHEN rohstoffart = 'Ton'
+        THEN 'Abbaustelle.Ton'
+    END AS objekttyp, 
     bezeichnung AS objektname,
     'Ausgangslage' AS abstimmungskategorie,
     (St_Dump(mpoly)).geom AS geometrie,
