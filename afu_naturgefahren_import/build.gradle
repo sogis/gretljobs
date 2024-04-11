@@ -13,8 +13,8 @@ def Auftragskennung = 'Himmelried'
 def xtfFileName = Auftragskennung +'.xtf'
 def uploadFolder = 'upload/'
 def schemaName = 'afu_naturgefahren_v1'
-def modelName = 'SO_AFU_Naturgefahren_20230802'
-def verifikationsModelName = "SO_AFU_Naturgefahren_20230802_Validierung_20231128"
+def modelName = 'SO_AFU_Naturgefahren_20240501'
+def verifikationsModelName = "SO_AFU_Naturgefahren_20240501_Validierung_20240501"
 
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
 
@@ -42,9 +42,11 @@ task dbImport(type: Ili2pgReplace, dependsOn: 'validateData') {
     }
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "afu_naturgefahren_v1"
-    models = "SO_AFU_Naturgefahren_20230802"
+    models = modelName
     dataFile = file(uploadFolder+ xtfFileName)
     dataset = Auftragskennung
+    disableValidation = true
+    
 }
 
 task dbImport_empty_beurteilungsgebiet(type: Ili2pgReplace, dependsOn: 'dbImport') {
