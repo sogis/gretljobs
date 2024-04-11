@@ -9,6 +9,7 @@ defaultTasks 'transferSchutzbautenobjekte'
  * Sammle alle Objekte aus der Erfassungsdatenbank nach Geometrie und
  * Hauptprozess getrennt und schreibe diese ins Publikationsmodell.
  */
+
 task transferSchutzbautenobjekte(type: Db2Db){
     description = "Baue die Daten vom Erfassungsmodell ins Publikationsmodell um"
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
