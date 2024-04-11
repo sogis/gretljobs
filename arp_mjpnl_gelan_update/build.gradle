@@ -45,6 +45,7 @@ task importGELAN(type: Ili2pgReplace, dependsOn: downloadData) {
     description = 'Import resp. ersetzt täglich die GELAN-Daten (nur Topics: Betriebsdaten_Strukturdaten und BFF_Qualitaet) in der Erfassungsdatenbank, Schema arp_mjpnl_v1'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_mjpnl_v1"
+    disableValidation = true
     models = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426'
     topics = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426.Betriebsdaten_Strukturdaten;SO_ALW_Landwirtschaft_Tierhaltung_20210426.BFF_Qualitaet'
     dataFile = Paths.get(pathToTempFolder, 'Export_ais_agrardaten.xtf')
@@ -67,14 +68,14 @@ task BetriebZuBFFFlaechenZuweisen(type: SqlExecutor, dependsOn: GelanBezugsjahrB
 }
 
 task BetriebZuVereinbarungZuweisen(type: SqlExecutor,dependsOn: BetriebZuBFFFlaechenZuweisen) {
-    description = "Spatial join von Vereinbarung zu GELAN Bewirtschaftungseinheit herstellen und bewe_id_geprueft invalidieren"
+    description = "Spatial join von Vereinbarung zu GELAN Bewirtschaftungseinheit herstellen"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
     sqlFiles = ['mjpnl_update_vereinbarungen_gelan_bewirtschaftungseinheiten.sql']
 }
 
 task BewirtschafterZuVereinbarungZuweisen(type: SqlExecutor,dependsOn: BetriebZuVereinbarungZuweisen) {
-    description = "GELAN Bewirtschafter zuweisen sofern keine Übersteuerung aktiv"
+    description = "GELAN Bewirtschafter zuweisen sofern keine Übersteuerung aktiv und bewe_id_geprueft invalidieren"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL]
     sqlFiles = ['mjpnl_update_vereinbarungen_gelan_bewirtschafter.sql']

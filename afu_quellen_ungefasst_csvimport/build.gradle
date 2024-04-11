@@ -1,0 +1,60 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+/*
+docker compose run --rm -u $UID gretl --project-dir=afu_quellen_ungefasst_csvimport
+*/
+
+def schemaNameStage = "afu_quellen_ungefasst_staging_v1"
+def schemaNameEdit = "afu_quellen_ungefasst_v1"
+def iliModelName = "SO_AFU_Quellen_ungefasst_20240131"
+
+defaultTasks "copyToEditLayer"
+
+task deleteCsvTableRows(type: SqlExecutor){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [dbSchema:schemaNameStage]
+    sqlFiles = [
+        'del_csv.sql'
+    ]
+}
+
+task importCsv(type: CsvImport, dependsOn: deleteCsvTableRows) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = schemaNameStage
+    tableName = 'csv_import'
+    firstLineIsHeader = true
+    valueSeparator = ','
+    encoding = 'Cp1252'
+    dataFile = file("xyz.csv")
+}
+
+task refineImport(type: SqlExecutor, dependsOn: importCsv){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [dbSchema:schemaNameStage]
+    sqlFiles = [
+        'update_sql/defaults.sql'
+        ,'update_sql/dates.sql'
+        ,'update_sql/domain.sql'
+        ,'update_sql/geom_koord.sql'
+        ,'update_sql/gemeinde.sql'
+    ]
+}
+
+task validate(type: Ili2pgValidate, dependsOn: refineImport) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelName
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    dbschema = schemaNameStage
+}
+
+task copyToEditLayer(type: SqlExecutor, dependsOn: validate){
+    description = 'Ersetzt bestehende Quellen und erstellt noch nicht vorkommende in der Edit-DB'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [stageSchema:schemaNameStage, editSchema:schemaNameEdit]
+    sqlFiles = [
+        'replace_quellen.sql'
+    ]
+}

@@ -1,0 +1,1 @@
+GRETL-Job, um die Organisationen im alw_drainagen-Schema nachzuführen. Es wird ili2pgUpdate verwendet, da Fremdschlüssel auf die Organisationen zeigen und das Dataset nicht "replaced" werden kann. 

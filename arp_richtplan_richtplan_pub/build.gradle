@@ -1,0 +1,27 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'dataTransfer'
+
+task deleteData(type: SqlExecutor){
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['delete_data.sql']
+}
+
+task dataTransfer(type: Db2Db, dependsOn: deleteData){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('arp_richtplan_richtplan_pub_raumkonzept_flaeche.sql', 'arp_richtplan_pub_v2.raumkonzept_flaeche', false),
+            new TransferSet('arp_richtplan_richtplan_pub_raumkonzept_linie.sql', 'arp_richtplan_pub_v2.raumkonzept_linie', false),
+            new TransferSet('arp_richtplan_richtplan_pub_raumkonzept_punkt.sql', 'arp_richtplan_pub_v2.raumkonzept_punkt', false),
+            new TransferSet('arp_richtplan_richtplan_pub_richtplankarte_ueberlagernde_flaeche.sql', 'arp_richtplan_pub_v2.richtplankarte_ueberlagernde_flaeche', false),
+            new TransferSet('arp_richtplan_richtplan_pub_richtplankarte_ueberlagernde_linie.sql', 'arp_richtplan_pub_v2.richtplankarte_ueberlagernde_linie', false),
+            new TransferSet('arp_richtplan_richtplan_pub_richtplankarte_ueberlagernder_punkt.sql', 'arp_richtplan_pub_v2.richtplankarte_ueberlagernder_punkt', false),
+            new TransferSet('arp_richtplan_richtplan_pub_detailkarten_flaeche.sql', 'arp_richtplan_pub_v2.detailkarten_flaeche', false),
+            new TransferSet('arp_richtplan_richtplan_pub_detailkarten_linie.sql', 'arp_richtplan_pub_v2.detailkarten_linie', false),
+            new TransferSet('arp_richtplan_richtplan_pub_detailkarten_punkt.sql', 'arp_richtplan_pub_v2.detailkarten_punkt', false)
+    ];
+}

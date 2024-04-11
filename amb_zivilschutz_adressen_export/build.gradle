@@ -49,9 +49,12 @@ task replaceStatus(dependsOn: exportAdressenZivilschutz) {
 task deleteCsvFile(type: Delete){
     delete "${csvFileName}"
 }
- 
-task uploadCsvFile (dependsOn: replaceStatus){
-    description = "Upload file to FTP server"
+
+task uploadCsvFile(dependsOn: replaceStatus) {
+    description = "Upload file to FTP server; note that the upload is performed only in production environment"
+    onlyIf {
+        gretlEnvironment == 'production'
+    }
     doLast {
         ssh.settings {
             knownHosts = allowAnyHosts
@@ -65,4 +68,3 @@ task uploadCsvFile (dependsOn: replaceStatus){
     }
     finalizedBy deleteCsvFile
 }
-

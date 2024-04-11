@@ -40,7 +40,8 @@ SELECT
     aimport.importdate AS importdatum,
     nachfuehrung.gueltigereintrag AS nachfuehrung,
     hoheitsgrenzpunkt.geometrie,
-    pos.pos,
+    trim(to_char(ST_X(pos.pos), '9999999.000'))::NUMERIC AS posX,
+    trim(to_char(ST_Y(pos.pos), '9999999.000'))::NUMERIC AS posY,
     ${basket_tid} AS t_basket
 FROM
     agi_dm01avso24.gemeindegrenzen_hoheitsgrenzpunkt AS hoheitsgrenzpunkt
