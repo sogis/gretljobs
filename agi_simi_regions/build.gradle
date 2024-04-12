@@ -35,7 +35,7 @@ task copyEditDb(type: Db2Db, dependsOn: copyKanton){
             new TransferSet('copy_from/edit_db.sql', 'simi.simitheme_sub_area', false)
     ];
 }
-*/
+/*
 task postCopy(type: SqlExecutor, dependsOn: [copyKanton, copyEditDb]){
     database = [dbUriSimi, dbUserSimi, dbPwdSimi]
     sqlFiles = ['post_copy/refs_reset.sql']
