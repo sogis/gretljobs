@@ -81,19 +81,15 @@ teilprozesse as (
     union all 
     select 
         teilprozess_bergfelssturz.geometrie,
-        teilprozess_bergfelssturz.prozessquelle_r as prozessquelle_id 
+        teilprozess_bergfelssturz_pq.prozessquelle_r as prozessquelle_id 
     from 
         afu_naturgefahren_v1.befundbergfelssturz teilprozess_bergfelssturz
+    left join 
+        afu_naturgefahren_v1.pq_jaehrlichkeit_bergfelssturz teilprozess_bergfelssturz_pq 
+        on 
+        teilprozess_bergfelssturz.pq_jaehrlichkeit_bergfelssturz_r = teilprozess_bergfelssturz_pq.t_id
     where 
         teilprozess_bergfelssturz.t_basket in (select t_id from orig_basket)
-    union all 
-    select 
-        teilprozess_eisschlag.geometrie,
-        teilprozess_eisschlag.prozessquelle_r as prozessquelle_id 
-    from 
-        afu_naturgefahren_v1.befundeisschlag teilprozess_eisschlag
-    where 
-        teilprozess_eisschlag.t_basket in (select t_id from orig_basket)
     union all 
     select 
         teilprozess_hangmure.geometrie,
@@ -229,5 +225,6 @@ GROUP by
     gemeinde_bfsnr,
     gemeinde_name,
     geometrie 
+
 
 

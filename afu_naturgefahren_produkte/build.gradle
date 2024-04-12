@@ -16,7 +16,7 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'copy_alle_natgef_produkte'
 
 //NUR PROVISORISCH! 
-def Auftragskennung = 'main'
+def Auftragskennung = 'Himmelried'
 
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
 
@@ -96,6 +96,7 @@ task import_natgef_daten(type: Ili2pgReplace, dependsOn: export_natgef_daten){
     dbschema = "afu_naturgefahren_v1"
     dataset = Auftragskennung
     deleteData = true
+    disableValidation = true
 }
 
 task createDatasetAndBaskets(type: SqlExecutor, dependsOn: import_natgef_daten) {
@@ -488,21 +489,21 @@ task dokumente_pro_gemeinde(type: SqlExecutor, dependsOn: copy_alte_dokumente) {
 task kuebermurung_geschwindigkeit(type: SqlExecutor, dependsOn: dokumente_pro_gemeinde) {
     description = "Kopieren der Kennwerte Übermurung Geschwindigkeit"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['kuebermurung_geschwindigkeit.sql']
+    sqlFiles = ['kw_uebermurung_geschwindigkeit.sql']
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 
 task kuebermurung_hoehe(type: SqlExecutor, dependsOn: kuebermurung_geschwindigkeit) {
     description = "Kopieren der Kennwerte Übermurung Höhe"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['kuebermurung_hoehe.sql']
+    sqlFiles = ['kw_uebermurung_hoehe.sql']
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 
 task kueberschwemmung_geschwindigkeit(type: SqlExecutor, dependsOn: kuebermurung_hoehe) {
     description = "Kopieren der Kennwerte Überschwemmung Geschwindigkeit"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['kueberschwemmung_geschwindigkeit.sql']
+    sqlFiles = ['kw_ueberschwemmung_geschwindigkeit.sql']
     sqlParameters = [kennung: "'"+Auftragskennung+"'"]
 }
 

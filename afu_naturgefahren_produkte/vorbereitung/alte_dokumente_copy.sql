@@ -72,5 +72,6 @@ from
 left join 
     gemeinden 
     on 
-    st_dwithin(st_buffer(dokumente.geometrie,-1),gemeinden.geometrie,0)
+    st_dwithin(st_buffer(dokumente.geometrie,-10),gemeinden.geometrie,0)
+
 

@@ -809,13 +809,37 @@ alle_teilprozesse as (
     select * from teilprozess_ueberschwemmung_prio
 ),
 
- basket as (
-     select 
-         t_id,
-         attachmentkey
-     from 
-         afu_naturgefahren_staging_v1.t_ili2db_basket
- )
+alle_teilprozesse_union as (
+    select 
+        teilprozess,
+        jaehrlichkeit,
+        intensitaet,
+        st_union(geometrie) as geometrie
+    FROM 
+        alle_teilprozesse
+    GROUP BY 
+        teilprozess,
+        jaehrlichkeit,
+        intensitaet
+),
+
+alle_teilprozesse_dump as (
+    select 
+        teilprozess,
+        jaehrlichkeit,
+        intensitaet,
+        (st_dump(geometrie)).geom as geometrie
+    FROM 
+        alle_teilprozesse_union
+),
+
+basket as (
+    select 
+        t_id,
+        attachmentkey
+    from 
+        afu_naturgefahren_staging_v1.t_ili2db_basket
+)
 
 INSERT INTO afu_naturgefahren_staging_v1.synoptische_intensitaet (
     t_basket,
@@ -835,7 +859,7 @@ select
     'Neudaten' as datenherkunft,
     basket.attachmentkey as auftrag_neudaten
 from 
-    alle_teilprozesse, 
+    alle_teilprozesse_dump, 
     basket
 ;
    
