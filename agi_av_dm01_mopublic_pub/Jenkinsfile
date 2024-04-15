@@ -1,7 +1,7 @@
 pipeline {
     agent {
         kubernetes {
-            inheritFrom params.nodeLabel ?: 'gretl'
+            inheritFrom env.NODE_LABEL ?: 'gretl'
             yamlMergeStrategy merge()
             yaml '''
             spec:
