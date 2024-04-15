@@ -7,7 +7,7 @@ pipeline {
         stage('Import into staging schema') {
             agent {
                 kubernetes {
-                    inheritFrom params.nodeLabel ?: 'gretl'
+                    inheritFrom env.NODE_LABEL ?: 'gretl'
                     yamlMergeStrategy merge()
                     yaml """
                     spec:
@@ -50,7 +50,7 @@ pipeline {
         stage('Import into pub schema') {
             agent {
                 kubernetes {
-                    inheritFrom params.nodeLabel ?: 'gretl'
+                    inheritFrom env.NODE_LABEL ?: 'gretl'
                     yamlMergeStrategy merge()
                     yaml """
                     spec:

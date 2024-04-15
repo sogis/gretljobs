@@ -120,17 +120,16 @@ for (jobFile in jobFiles) {
         }
       }
     }
-    if (jobProperties.getProperty('nodeLabel') != null) {
-      parameters {
-        choiceParam('nodeLabel', [jobProperties.getProperty('nodeLabel')], 'Label of the node that must run the job')
-      }
-    }
 
     environmentVariables {
       // make the Git repository URL available on the Jenkins agent
       env('GIT_REPO_URL', GRETL_JOB_REPO_URL)
       // make the OpenShift project name available on the Jenkins agent
       env('OPENSHIFT_PROJECT_NAME', PROJECT_NAME)
+      // if nodeLabel property is set, make it available on the Jenkins agent
+      if (jobProperties.getProperty('nodeLabel') != null) {
+        env('NODE_LABEL', jobProperties.getProperty('nodeLabel'))
+      }
     }
 
     definition {
