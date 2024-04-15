@@ -56,7 +56,7 @@ task copyFromBelasteter_standort(type: Db2Db, dependsOn: copyFromGewaesserschutz
 
 // innerhalb tiefgründigen Rutschungen
 task copyFromRutschung_tief(type: Db2Db, dependsOn: copyFromBelasteter_standort){
-    description = 'Importiert die Attributdaten aus dem Schema awjf_naturgefahrenhinweiskarte_pub_v1'
+    description = 'Importiert die Attributdaten aus dem Schema afu_naturgefahrenhinweiskarte_pub_v1'
     sourceDb = pub
     targetDb = edit
     transferSets = [
