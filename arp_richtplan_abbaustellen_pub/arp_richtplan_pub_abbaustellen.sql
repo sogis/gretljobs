@@ -44,4 +44,6 @@ WHERE
     rohstoffart IN ('Kies', 'Kalkstein', 'Ton')
     AND
     stand IN ('InAbbau','Bewilligt','Richtplan','Inaktiv')
+    AND
+    richtplannummer IS NOT NULL
 ;
