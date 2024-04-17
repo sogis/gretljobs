@@ -11,6 +11,8 @@ WHERE
             agi_dm01avso24.bodenbedeckung_boflaeche AS bodenflaeche
         WHERE
             ST_Within(ST_PointOnSurface(stehendes_gewaesser.geometrie), bodenflaeche.geometrie)
+        AND
+            bodenflaeche.art = 'Gewaesser.stehendes'
     )
 AND
     av_geometrie IS TRUE
