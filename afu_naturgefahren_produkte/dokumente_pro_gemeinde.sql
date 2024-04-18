@@ -42,11 +42,11 @@ gemeinden as (
 
 berichte as (
     select 
-        teilauftrag.t_id as teilauftrag_tid,
+        array_agg(teilauftrag.t_id) as teilauftrag_tid,
         auftrag.kennung as auftragskennung,
         auftrag.deklaration as auftragsdeklaration,
         auftrag.abschlussjahr::text as jahr,
-        teilauftrag.hauptprozess as hauptprozess,
+        string_agg(DISTINCT hauptprozess.dispname, ', ') as hauptprozess,
         bericht.bericht as titel, 
         bericht.dateiname as dateiname,
         'https://irgendwas.ch/pfad/'||bericht.dateiname as link
@@ -60,6 +60,16 @@ berichte as (
         afu_naturgefahren_v1.teilauftrag teilauftrag 
         on 
         teilauftrag.auftrag_r = auftrag.t_id
+    left join 
+        afu_naturgefahren_v1.hauptprozess hauptprozess 
+        on 
+        teilauftrag.hauptprozess = hauptprozess.ilicode 
+    group by 
+        auftrag.kennung,
+        auftrag.deklaration,
+        auftrag.abschlussjahr::text,
+        bericht.bericht,
+        bericht.dateiname
 ),
 
 teilprozesse as (
@@ -184,7 +194,7 @@ left join
 left join 
     berichte 
     on 
-    berichte.teilauftrag_tid = prozessquelle.teilauftrag_r
+    prozessquelle.teilauftrag_r = ANY(berichte.teilauftrag_tid)
 left join 
     gemeinden 
     on 
@@ -225,6 +235,7 @@ GROUP by
     gemeinde_bfsnr,
     gemeinde_name,
     geometrie 
+
 
 
 

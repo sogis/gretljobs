@@ -52,7 +52,15 @@ task publishPub(type: Publisher, dependsOn: 'copy_alle_natgef_produkte'){
 }
 */
 
-task NatGef2Mgdm(type: SqlExecutor, dependsOn: 'publishPub'){
+task truncateMGDM(type: SqlExecutor, dependsOn: 'copy_alle_natgef_produkte'){
+    description = "Löscht die drei Tabellen im MGDM-Schema"
+    database =  [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = [
+		'mgdm/truncate_tables.sql',
+	]       
+}
+
+task NatGef2Mgdm(type: SqlExecutor, dependsOn: 'truncateMGDM'){
     description = "Transformiert die NatGef-Produkte ins MGDM-Modell"
     database =  [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = [

@@ -16,7 +16,7 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'copy_alle_natgef_produkte'
 
 //NUR PROVISORISCH! 
-def Auftragskennung = 'Himmelried'
+def Auftragskennung = 'main'
 
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
 

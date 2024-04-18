@@ -1,62 +1,55 @@
 SELECT 
 	geometrie AS impact_zone,
-	concat('_',t_ili_tid,'.so.ch')::varchar AS t_ili_tid,
 	'SO' AS data_responsibility,
-	bemerkung AS comments,
+	NULL AS comments,
 	CASE 
-		WHEN int_stufe = 'keine'
+		WHEN intensitaet = 'keine_einwirkung'
 			THEN 'no_impact'
-		WHEN int_stufe = 'vorhanden'
+		WHEN intensitaet = 'einwirkung_vorhanden'
 			THEN 'existing_impact'
-		WHEN int_stufe = 'schwach'
+		WHEN intensitaet = 'schwach'
 			THEN 'low'
-		WHEN int_stufe = 'mittel'
+		WHEN intensitaet = 'mittel'
 			THEN 'mean'
-		WHEN int_stufe = 'stark'
+		WHEN intensitaet = 'stark'
 			THEN 'high'
 		ELSE 'MAPPING_ERROR' --mapping error, case statement must not go in else block
 	END AS intensity_class,
-	bez_kanton AS process_cantonal_term,
+	teilprozess AS process_cantonal_term,
+    CASE 
+        WHEN jaehrlichkeit = -1 THEN NULL 
+        ELSE jaehrlichkeit
+    END AS return_period_in_years,
 	CASE
-		WHEN wkp = 'von_0_bis_30_Jahre'
-			THEN 30
-		WHEN wkp = 'von_30_bis_100_Jahre'
-			THEN 100
-		WHEN wkp = 'von_100_bis_300_Jahre'
-			THEN 300
-		WHEN wkp = 'groesser_300_Jahre'
-			THEN 500
-		WHEN wkp IS NULL
-			THEN NULL
-		ELSE -9999  --mapping error, case statement must not go in else block
-	END AS return_period_in_years,
-	CASE
-		WHEN wkp = 'groesser_300_Jahre'
+		WHEN jaehrlichkeit >= 300
 			THEN true
 		ELSE false
 	END AS extreme_scenario,
 	CASE
-		WHEN teilproz = 'Ufererosion'
+		WHEN teilprozess = 'ufererosion'
 			THEN 'w_bank_erosion'
-		WHEN teilproz = 'Ueberschwemmung'
+		WHEN teilprozess = 'ueberschwemmung'
 			THEN 'w_flooding'
-		WHEN teilproz = 'Uebermurung'
+		WHEN teilprozess = 'uebermurung'
 			THEN 'w_debris_flow'
-		WHEN teilproz = 'Steinschlag_Blockschlag'
+		WHEN teilprozess = 'stein_blockschlag'
 			THEN 'r_rock_fall'
-		WHEN teilproz = 'spontane_Rutschung'
+		WHEN teilprozess = 'spontane_rutschung'
 			THEN 'l_sud_spontaneous_landslide'
-		WHEN teilproz = 'permanente_Rutschung'
+		WHEN teilprozess = 'permanente_rutschung'
 			THEN 'l_permanent_landslide'
-		WHEN teilproz = 'Hangmure'
+		WHEN teilprozess = 'hangmure'
 			THEN 'l_sud_hillslope_debris_flow'
-		WHEN teilproz = 'Felssturz_Bergsturz'
+		WHEN teilprozess = 'fels_bergsturz'
 			THEN 'r_rock_slide_rock_avalanche'
-		WHEN teilproz = 'Einsturz_Absenkung'
+		WHEN (teilprozess = 'einsturz_absenkung') OR  (teilprozess = 'absenkung') OR  (teilprozess = 'einsturz')
 			THEN 'sinkhole_or_subsidence'
 		ELSE 'MAPPING_ERROR' --mapping error, case statement must not go in else block
 	END AS subproc_synoptic_intensity,
 	CAST('complete' AS VARCHAR) AS sources_in_subprocesses_compl
 FROM 
-	afu_gefahrenkartierung.gefahrenkartirung_ik_synoptisch_mgdm
-;   
+	afu_naturgefahren_staging_v1.synoptische_intensitaet
+; 
+
+--SELECT DISTINCT intensitaet FROM afu_naturgefahren_staging_v1.synoptische_intensitaet
+

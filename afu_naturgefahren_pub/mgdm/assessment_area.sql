@@ -1,65 +1,145 @@
-/* Erstellt das assessment_area aufgrund der Siedlungsgebiete in afu_gefahrenkartierung.erhebungsgebiet.
- * Die Gebiete zwischen den Siedlungsgebieten sind als Füllpolygone mit dem Bezeichner $OUTSIDE$ im
- * Feld bemerkung von afu_gefahrenkartierung.erhebungsgebiet enthalten.
- * */
-WITH
-	not_assessed_area AS (
-		SELECT 
-                        concat('_',t_ili_tid,'.so.ch')::text AS t_ili_tid,
-			geometrie AS area,
-		   	'SO'::text AS data_responsibility,			
-			'not_assessed'::text AS fl_state_flooding,
-			'not_assessed'::text AS df_state_debris_flow,
-			'not_assessed'::text AS be_state_bank_erosion,
-			'not_assessed'::text AS pl_state_permanent_landslide,
-			'not_assessed'::text AS sl_state_spontaneous_landslide,
-			'not_assessed'::text AS hd_state_hillslope_debris_flow,
-			'not_assessed'::text AS rf_state_rock_fall,
-			'not_assessed'::text AS rs_state_rock_slide_rock_aval,
-			'not_assessed'::text AS fa_state_flowing_avalanche,
-			'not_assessed'::text AS pa_state_powder_avalanche,
-			'not_assessed'::text AS gs_state_gliding_snow,
-			'not_assessed'::text AS su_state_subsidence,
-			'not_assessed'::text AS sh_state_sinkhole,
-			'not_assessed'::text AS if_state_ice_fall
-		FROM 
-			afu_gefahrenkartierung.gefahrenkartirung_erhebungsgebiet
-		WHERE 
-			bemerkung LIKE '%$OUTSIDE$%' 
-	),
-	assessed_area AS (
-		SELECT
-			concat('_',t_ili_tid,'.so.ch')::text AS t_ili_tid,
-			geometrie AS area,
-			'SO'::text AS data_responsibility,			
-			'assessed_and_complete'::text AS fl_state_flooding,
-			'assessed_and_complete'::text AS df_state_debris_flow,
-			'assessed_and_complete'::text AS be_state_bank_erosion,
-			'assessed_and_complete'::text AS pl_state_permanent_landslide,
-			'assessed_and_complete'::text AS sl_state_spontaneous_landslide,
-			'assessed_and_complete'::text AS hd_state_hillslope_debris_flow,
-			'assessed_and_complete'::text AS rf_state_rock_fall,
-			'assessed_and_complete'::text AS rs_state_rock_slide_rock_aval,
-			'assessed_and_complete'::text AS fa_state_flowing_avalanche,
-			'assessed_and_complete'::text AS pa_state_powder_avalanche,
-			'assessed_and_complete'::text AS gs_state_gliding_snow,
-			'assessed'::text AS su_state_subsidence,
-			'assessed'::text AS sh_state_sinkhole,
-			'assessed'::text AS if_state_ice_fall
-		FROM 
-			afu_gefahrenkartierung.gefahrenkartirung_erhebungsgebiet
-		WHERE bemerkung IS NULL		
-			OR bemerkung NOT LIKE '%$OUTSIDE$%'
-	)
-	
+with 
+lines as (
+  select 
+    st_union(st_boundary(geometrie)) as geometrie
+  from
+    afu_naturgefahren_staging_v1.erhebungsgebiet 
+)
 
-SELECT
-	*
-FROM 
-	not_assessed_area
-UNION ALL
-SELECT 
-	*
-FROM
-	assessed_area
-;
+,splited AS (
+  SELECT 
+    (st_dump(st_polygonize(geometrie))).geom AS geometrie
+  FROM
+    lines
+)
+
+,withpoint as (
+    select
+        ROW_NUMBER() OVER() as id, 
+        geometrie as poly,
+        ST_PointOnSurface(geometrie) as point
+    from 
+        splited
+    where 
+        st_area(geometrie) > 1
+)
+
+,erhebungsgebiet_mapped as (
+    select 
+        geometrie, 
+        case 
+        	when erhebungsstand = 'beurteilt'
+        	then 'assessed'
+        	when erhebungsstand = 'beurteilung_nicht_noetig'
+        	then 'assessment_not_necessary'
+        end as erhebungsstand,
+        teilprozess
+    from 
+        afu_naturgefahren_staging_v1.erhebungsgebiet
+)
+        
+
+,attribute_agg as (
+    select 
+        id, 
+        point,
+        poly,
+        string_agg(distinct absenkung.erhebungsstand,', ') as su_state_subsidence, 
+        string_agg(distinct einsturz.erhebungsstand,', ') as sh_state_sinkhole,
+        string_agg(distinct perm_rutschung.erhebungsstand,', ') as pl_state_permanent_landslide,
+        string_agg(distinct hangmure.erhebungsstand,', ') as hd_state_hillslope_debris_flow,
+        string_agg(distinct spont_rutschung.erhebungsstand,', ') as sl_state_spontaneous_landslide,
+        string_agg(distinct fels_bergsturz.erhebungsstand,', ') as rs_state_rock_slide_rock_aval,
+        string_agg(distinct stein_blockschlag.erhebungsstand,', ') as rf_state_rock_fall,
+        string_agg(distinct murgang.erhebungsstand,', ') as df_state_debris_flow,
+        string_agg(distinct ueberschwemmung.erhebungsstand,', ') as fl_state_flooding,
+        string_agg(distinct ufererosion.erhebungsstand,', ') as be_state_bank_erosion
+    from 
+        withpoint point
+    left join
+        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'ea_absenkung') absenkung 
+        on 
+        st_dwithin(absenkung.geometrie, point.point, 0)
+    left join
+        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'ea_einsturz') einsturz 
+        on 
+        st_dwithin(einsturz.geometrie, point.point, 0)     
+    left join
+        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'r_permanente_rutschung') perm_rutschung 
+        on 
+        st_dwithin(perm_rutschung.geometrie, point.point, 0)  
+    left join
+        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'r_plo_hangmure') hangmure 
+        on 
+        st_dwithin(hangmure.geometrie, point.point, 0)  
+    left join
+        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'r_plo_spontane_rutschung') spont_rutschung 
+        on 
+        st_dwithin(spont_rutschung.geometrie, point.point, 0)   
+    left join
+        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 's_fels_berg_sturz') fels_bergsturz 
+        on 
+        st_dwithin(fels_bergsturz.geometrie, point.point, 0) 
+    left join
+        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 's_stein_block_schlag') stein_blockschlag 
+        on 
+        st_dwithin(stein_blockschlag.geometrie, point.point, 0) 
+    left join
+        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'w_uebermurung') murgang 
+        on 
+        st_dwithin(murgang.geometrie, point.point, 0) 
+    left join
+        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'w_ueberschwemmung') ueberschwemmung 
+        on 
+        st_dwithin(ueberschwemmung.geometrie, point.point, 0) 
+    left join
+        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'w_ufererosion') ufererosion 
+        on 
+        st_dwithin(ufererosion.geometrie, point.point, 0) 
+    group by 
+        id, point,poly
+)
+
+INSERT INTO 
+    afu_naturgefahren_mgdm_v1.hazard_mapping_assessment_area (
+        area, 
+        data_responsibility, 
+        fl_state_flooding, 
+        df_state_debris_flow, 
+        be_state_bank_erosion, 
+        pl_state_permanent_landslide, 
+        sl_state_spontaneous_landslide, 
+        hd_state_hillslope_debris_flow, 
+        rf_state_rock_fall, 
+        rs_state_rock_slide_rock_aval, 
+        if_state_ice_fall, 
+        sh_state_sinkhole, 
+        su_state_subsidence, 
+        fa_state_flowing_avalanche, 
+        pa_state_powder_avalanche, 
+        gs_state_gliding_snow, 
+        "comments"
+)
+
+select 
+    poly AS area,
+    'SO' AS data_responsibility,
+    coalesce(fl_state_flooding, 'not_assessed') as fl_state_flooding,
+    coalesce(df_state_debris_flow, 'not_assessed') as df_state_debris_flow,
+    coalesce(be_state_bank_erosion, 'not_assessed') AS be_state_bank_erosion,
+    coalesce(pl_state_permanent_landslide, 'not_assessed') as pl_state_permanent_landslide,
+    coalesce(sl_state_spontaneous_landslide, 'not_assessed') as sl_state_spontaneous_landslide,
+    coalesce(hd_state_hillslope_debris_flow, 'not_assessed') as hd_state_hillslope_debris_flow,
+    coalesce(rf_state_rock_fall, 'not_assessed') as rf_state_rock_fall,
+    coalesce(rs_state_rock_slide_rock_aval, 'not_assessed') as rs_state_rock_slide_rock_aval,
+    'not_assessed' AS if_stat_ice_fall,
+    coalesce(sh_state_sinkhole, 'not_assessed') as sh_state_sinkhole,
+    coalesce(su_state_subsidence,'not_assessed') as su_state_subsidence,
+    'not_assessed' AS fa_state_flowing_avalanche,
+    'not_assessed' AS pa_state_powder_avalanche,
+    'not_assessed' AS gs_state_gliding_snow, 
+    NULL AS comments
+
+from 
+    attribute_agg 
+
