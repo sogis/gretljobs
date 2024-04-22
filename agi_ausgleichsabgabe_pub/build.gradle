@@ -9,6 +9,6 @@ task dataTransfer(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('agi_ausgleichsabgabe_pub.sql', 'agi_ausgleichsabgabe_pub_v1.', true)
+            new TransferSet('agi_ausgleichsabgabe_pub.sql', 'agi_ausgleichsabgabe_pub_v1.ausgleichsabgaben_anpassung', true)
     ];
 }
