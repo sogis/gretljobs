@@ -36,3 +36,4 @@ JOIN
     grundstueck ON ST_Contains(grundstueck.geometrie, ausgleichsabgabe.geometrie)
 WHERE 
     ausgleichsabgabe.geometrie IS NOT NULL
+;
