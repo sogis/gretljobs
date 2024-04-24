@@ -46,7 +46,7 @@ berichte as (
         auftrag.kennung as auftragskennung,
         auftrag.deklaration as auftragsdeklaration,
         auftrag.abschlussjahr::text as jahr,
-        string_agg(DISTINCT hauptprozess.dispname, ', ') as hauptprozess,
+        string_agg(DISTINCT teilauftrag.hauptprozess, ', ') AS hauptprozess,
         bericht.bericht as titel, 
         bericht.dateiname as dateiname,
         'https://irgendwas.ch/pfad/'||bericht.dateiname as link
@@ -60,10 +60,6 @@ berichte as (
         afu_naturgefahren_v1.teilauftrag teilauftrag 
         on 
         teilauftrag.auftrag_r = auftrag.t_id
-    left join 
-        afu_naturgefahren_v1.hauptprozess hauptprozess 
-        on 
-        teilauftrag.hauptprozess = hauptprozess.ilicode 
     group by 
         auftrag.kennung,
         auftrag.deklaration,
@@ -235,6 +231,7 @@ GROUP by
     gemeinde_bfsnr,
     gemeinde_name,
     geometrie 
+
 
 
 
