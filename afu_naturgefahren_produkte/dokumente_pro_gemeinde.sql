@@ -49,7 +49,7 @@ berichte as (
         string_agg(DISTINCT teilauftrag.hauptprozess, ', ') AS hauptprozess,
         bericht.bericht as titel, 
         bericht.dateiname as dateiname,
-        'https://irgendwas.ch/pfad/'||bericht.dateiname as link
+        'https://geo.so.ch/docs/ch.so.afu.naturgefahren/'||bericht.dateiname as link
     from 
         afu_naturgefahren_v1.auftrag auftrag 
     left join 

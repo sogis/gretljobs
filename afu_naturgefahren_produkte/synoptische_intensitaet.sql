@@ -28,7 +28,7 @@ orig_basket as (
 teilprozess_absenkung as ( 
     select 
        'absenkung' as teilprozess,
-        '-1' as jaehrlichkeit,
+        null as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie, 
         case when 
@@ -181,7 +181,7 @@ teilprozess_bergundfelssturz_prio as (
 teilprozess_einsturz as ( 
     select 
        'einsturz' as teilprozess,
-        '-1' as jaehrlichkeit,
+        null as jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] as intensitaet,
         geometrie,
         case when 

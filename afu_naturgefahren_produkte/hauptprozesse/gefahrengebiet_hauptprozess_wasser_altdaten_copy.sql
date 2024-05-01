@@ -68,6 +68,16 @@ hauptprozess_alt_wasser_union as (
         charakterisierung 
 )
 
+,hauptprozess_wasser_dump as (
+    select 
+        hauptprozess,
+        gefahrenstufe,
+        charakterisierung,
+        (st_dump(geometrie)).geom as geometrie
+    from 
+        hauptprozess_alt_wasser_union
+)
+
 INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser (
     t_basket,
     hauptprozess, 
@@ -87,7 +97,7 @@ SELECT
     'Altdaten' as datenherkunft, 
     null as auftrag_neudaten
 FROM 
-    hauptprozess_alt_wasser_union,
+    hauptprozess_wasser_dump,
     basket
 ;
 

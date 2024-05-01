@@ -141,24 +141,6 @@ task copy_alte_natgef_daten(type: Db2Db, dependsOn:  make_naturgefahren_alt_sche
             new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_ik_synoptisch_mgdm.sql','afu_gefahrenkartierung.gefahrenkartirung_ik_synoptisch_mgdm', true)
     ];
 }
-/*
-task export_alte_natgef_daten(type: Ili2pgExport, dependsOn: make_naturgefahren_alt_schema) {
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = "afu_gefahrenkartierung"
-    models = "SO_AfU_Gefahrenkartierung_20181129"
-    disableValidation = true
-    dataFile = file(Paths.get(pathToTempFolder, "natgef_alt.xtf"))
-    
-}
-
-task import_natgef_alt_daten(type: Ili2pgImport, dependsOn: export_alte_natgef_daten){
-    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    dataFile = file(Paths.get(pathToTempFolder, "natgef_alt.xtf"))
-    dbschema = "afu_gefahrenkartierung"
-    disableValidation = true
-    deleteData = true
-}
-*/
 
 task make_naturgefahren_beurteilungsgebiet_schema(type: Ili2pgImportSchema, dependsOn: copy_alte_natgef_daten){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]

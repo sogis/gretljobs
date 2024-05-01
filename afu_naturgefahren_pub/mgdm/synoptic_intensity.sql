@@ -1,5 +1,18 @@
+INSERT INTO 
+    afu_naturgefahren_mgdm_v1.hazard_mapping_synoptic_intensity (
+        impact_zone, 
+        data_responsibility, 
+        "comments",
+        intensity_class, 
+        process_cantonal_term, 
+        return_period_in_years, 
+        extreme_scenario, 
+        subproc_synoptic_intensity, 
+        sources_in_subprocesses_compl 
+    )
+
 SELECT 
-	geometrie AS impact_zone,
+	(st_dump(geometrie)).geom AS impact_zone,
 	'SO' AS data_responsibility,
 	NULL AS comments,
 	CASE 
@@ -50,6 +63,3 @@ SELECT
 FROM 
 	afu_naturgefahren_staging_v1.synoptische_intensitaet
 ; 
-
---SELECT DISTINCT intensitaet FROM afu_naturgefahren_staging_v1.synoptische_intensitaet
-
