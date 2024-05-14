@@ -28,7 +28,7 @@ WITH
             ST_ShortestLine(hausnummern.pos, strassen.geometrie) AS geometrie,
             hausnummern.gem_bfs,
             now() AS datum,
-            istoffiziellebezeichnung
+            gebaeudeadressen_gebaeudeeingang.istoffiziellebezeichnung
         FROM
             hausnummern
         LEFT JOIN agi_dm01avso24.gebaeudeadressen_gebaeudeeingang
