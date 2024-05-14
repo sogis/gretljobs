@@ -13,8 +13,7 @@ WITH
             t_id,
             hausnummerpos_von,
             pos,
-            CAST(t_datasetname AS INT) AS gem_bfs,
-            istoffiziellebezeichnung
+            CAST(t_datasetname AS INT) AS gem_bfs
         FROM
             agi_dm01avso24.gebaeudeadressen_hausnummerpos
     ),
@@ -37,7 +36,7 @@ WITH
             ON strassen.strassenstueck_von = gebaeudeadressen_gebaeudeeingang.gebaeudeeingang_von
         LEFT JOIN agi_dm01avso24.gebaeudeadressen_lokalisationsname
             ON gebaeudeadressen_lokalisationsname.benannte = gebaeudeadressen_gebaeudeeingang.gebaeudeeingang_von
-        WHERE istoffiziellebezeichnung = "ja"
+        WHERE gebaeudeadressen_gebaeudeeingang.istoffiziellebezeichnung = 'ja'
  )
     
 SELECT
