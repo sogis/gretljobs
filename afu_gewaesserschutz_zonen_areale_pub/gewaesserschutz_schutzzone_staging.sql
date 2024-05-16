@@ -18,7 +18,7 @@ with json_documents AS (
                 rechtsstatus AS "Rechtsstatus",
                 textimweb AS "TextimWeb",
                 art AS "Art",
-                'SO_AfU_Gewaesserschutz_Publikation_20220817.Gewaesserschutz.Dokument' AS "@type"
+                'SO_AFU_Gewaesserschutz_Publikation_20240501.Gewaesserschutz.Dokument' AS "@type"
         ) docs
     ))
   )::text AS json_dok,
@@ -54,10 +54,12 @@ SELECT
     status.rechtskraftdatum AS rechtskraftdatum,
     json_dokument_agg.dokumente::json AS dokumente,
     g.geometrie AS apolygon,
-    CASE status.rechtsstatus
-        WHEN 'inKraft' THEN status.rechtsstatus
-        ELSE 'AenderungOhneVorwirkung'
-        END AS rechtsstatus,
+    CASE
+        WHEN status.rechtsstatus ILIKE 'inKraft' THEN status.rechtsstatus
+        WHEN status.rechtsstatus ILIKE 'provisorisch' AND status.kantonalerstatus ILIKE 'AenderungOhneVorwirkung' THEN 'AenderungOhneVorwirkung'
+        WHEN status.rechtsstatus ILIKE 'provisorisch' AND status.kantonalerstatus ILIKE 'AenderungMitVorwirkung' THEN 'AenderungMitVorwirkung'
+        ELSE 'provisorisch'
+    END AS rechtsstatus,
     g.bemerkungen AS bemerkung
 FROM
     afu_gewaesserschutz_zonen_areale_v1.gwszonen_gwszone g

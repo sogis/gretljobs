@@ -7,4 +7,4 @@ SELECT
     g.rechtsstatus,
     g.bemerkung
 FROM
-    afu_gewaesserschutz_staging_v1.gewaesserschutz_schutzareal g
+    afu_gewaesserschutz_staging_v2.gewaesserschutz_schutzareal g
