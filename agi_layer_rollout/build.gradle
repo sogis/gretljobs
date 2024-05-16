@@ -22,10 +22,11 @@ def deferReadUri(dbUri) {
   return readUri
 }
 
-// Sicherstellung der Datenkonsistenz Integration <> Produktion (Db-Verbindungen, Gebietseinteilung und Themenbereitstellung)
-
 task assertValidConf(){
   doLast{
+      if(!gretlEnvironment.equals(simiEnv))
+        throw new RuntimeException("The entered intended target environment '" + simiEnv + "' can not differ from the gretlEnvironment '" + simiEnv + "'.")
+
       if(readUri.equals(writeUri))
         throw new RuntimeException("Read and write Db must be different.")
 
