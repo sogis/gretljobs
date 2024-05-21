@@ -15,27 +15,17 @@ def InterlisFile = 'PLZO_ITF_LV95.itf' // Heisst das Data-File wirklich immer so
 
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
-def pathToDataZip = Paths.get(pathToTempFolder, "uploadFile.zip")
+def pathToDataZip = Paths.get(pathToTempFolder, "uploadFile.itf")
 def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), InterlisFile)
 
 task copyZipFile(type: Copy) {
     from 'upload/'
     include('uploadFile')
     into pathToTempFolder
-    rename('uploadFile', 'uploadFile.zip')
+    rename('uploadFile', 'uploadFile.itf')
 }
 
-task unzipData(type: Copy, dependsOn: 'copyZipFile') {
-    description = "Unzip file."
-    doLast {
-        println "File unzipped to directory: " + pathToUnzipFolder
-    }
-    from zipTree(pathToDataZip)
-    into file(pathToUnzipFolder)
-    include "**/*.itf"
-}
-
-task dbImport(type: Ili2pgImport, dependsOn: 'unzipData'){
+task dbImport(type: Ili2pgImport, dependsOn: 'copyZipFile'){
     description = "Import plz_ortschaften-Data into Edit database"
     doLast {
         println "Data imported into db: " + dbUriEdit
@@ -44,7 +34,7 @@ task dbImport(type: Ili2pgImport, dependsOn: 'unzipData'){
     dbschema = "agi_plz_ortschaften"
     models = "PLZOCH1LV95D"
     disableValidation = false
-    dataFile = file(xtfFilePath)
+    dataFile = file(pathToDataZip)
     deleteData = true
     strokeArcs = true
 }
