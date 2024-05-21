@@ -30,10 +30,10 @@ Areal AS (
         'bestehend' AS astatus,
         'gewaesserschutz' AS datenquelle
     FROM
-        afu_gewaesserschutz_pub_v1.gewaesserschutz_schutzareal AS sa,
+        afu_gewaesserschutz_pub_v2.gewaesserschutz_schutzareal AS sa,
         agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS g
     WHERE
-        sa.rechtsstatus = 'inKraft'
+        sa.rechtsstatus IN ('inKraft', 'AenderungOhneVorwirkung', 'AenderungMitVorwirkung')
     AND
         ST_Intersects(sa.apolygon, g.geometrie) = TRUE
     AND
@@ -56,10 +56,10 @@ Zone AS(
         'bestehend' AS astatus,
         'gewaesserschutz' AS datenquelle
     FROM
-        afu_gewaesserschutz_pub_v1.gewaesserschutz_schutzzone AS sz,
+        afu_gewaesserschutz_pub_v2.gewaesserschutz_schutzzone AS sz,
         agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS g
     WHERE
-        sz.rechtsstatus = 'inKraft'
+        sz.rechtsstatus IN ('inKraft', 'AenderungOhneVorwirkung', 'AenderungMitVorwirkung')
     AND
         ST_Intersects(sz.apolygon, g.geometrie) = TRUE
     AND
