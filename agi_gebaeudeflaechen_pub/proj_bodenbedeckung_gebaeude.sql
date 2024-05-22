@@ -11,7 +11,7 @@ WHERE objektname.art_txt = 'Gebaeude' AND objektname.herkunft = 'BB'
 SELECT
     bodenbedeckung.bfs_nr,
     bodenbedeckung.geometrie,
-    gebaeudename.objektname,
+    gebaeudename.objektname AS gebaeudename,
     adresse.strassenname,
     adresse.hausnummer,
     adresse.egid,
