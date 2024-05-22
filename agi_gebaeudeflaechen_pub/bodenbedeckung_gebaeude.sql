@@ -24,4 +24,4 @@ SELECT
 FROM agi_mopublic_pub.mopublic_gebaeudeadresse adresse
     JOIN agi_mopublic_pub.mopublic_bodenbedeckung bodenbedeckung 
         ON ST_CONTAINS(bodenbedeckung.geometrie , adresse.lage)
-WHERE adresse.ist_offizielle_bezeichnung IS TRUE
+WHERE adresse.ist_offizielle_bezeichnung IS TRUE AND bodenbedeckung.art_txt = 'Gebaeude'
