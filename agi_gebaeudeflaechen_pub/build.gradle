@@ -1,0 +1,14 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+defaultTasks 'schnittBodenbGebaeude'
+
+task schnittBodenbGebaeude(type: Db2Db){
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('bodenbedeckung_gebaeude.sql',
+                    'agi_gebaeudeflaeche_pub_v1.gebaeude_gebaeude', true),
+            new TransferSet('proj_bodenbedeckung_gebaeude.sql', 'agi_gebaeudeflaeche_pub_v1.gebaeude_gebaeude_proj', true)
+    ];
+}
