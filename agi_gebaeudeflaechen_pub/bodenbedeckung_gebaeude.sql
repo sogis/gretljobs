@@ -8,6 +8,7 @@ SELECT
     adresse.plz,
     adresse.ortschaft,
     adresse.astatus,
+    adresse.ist_offizielle_bezeichnung,
     adresse.hoehenlage,
     adresse.gebaeudename,
     adresse.orientierung,
