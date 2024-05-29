@@ -11,10 +11,14 @@ WHERE objektname.art_txt = 'Gebaeude' AND objektname.herkunft = 'BB'
 SELECT
     bodenbedeckung.bfs_nr,
     bodenbedeckung.geometrie,
+    bodenbedeckung.egid,
     gebaeudename.objektname AS gebaeudename,
     adresse.strassenname,
-    adresse.hausnummer,
-    adresse.egid,
+    CASE
+    	WHEN adresse.ist_offizielle_bezeichnung IS TRUE
+    	    THEN adresse.hausnummer
+    	ELSE '0'
+    END AS hausnummer,
     adresse.edid,
     adresse.plz,
     adresse.ortschaft,
@@ -27,12 +31,12 @@ SELECT
     adresse.posx,
     adresse.posy,
     CASE
-        WHEN adresse.egid IS NOT NULL
-            THEN concat('https://www.housing-stat.ch/de/query/egid.html?egid=',adresse.egid::TEXT)
+        WHEN bodenbedeckung.egid IS NOT NULL
+            THEN concat('https://www.housing-stat.ch/de/query/egid.html?egid=',bodenbedeckung.egid::TEXT)
         ELSE 'https://www.housing-stat.ch/'
     END AS link_gwr
 FROM agi_mopublic_pub.mopublic_gebaeudeadresse adresse
     JOIN agi_mopublic_pub.mopublic_bodenbedeckung_proj AS bodenbedeckung
         ON ST_CONTAINS(bodenbedeckung.geometrie , adresse.lage)
     LEFT JOIN gebaeudename AS gebaeudename ON gebaeudename.t_id = bodenbedeckung.t_id 
-WHERE adresse.ist_offizielle_bezeichnung IS TRUE AND bodenbedeckung.art_txt = 'Gebaeude'
+WHERE bodenbedeckung.art_txt = 'Gebaeude'
