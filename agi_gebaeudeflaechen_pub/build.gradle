@@ -1,7 +1,7 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'schnittBodenbGebaeude'
+defaultTasks 'publishPub'
 
 task schnittBodenbGebaeude(type: Db2Db){
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
@@ -12,3 +12,17 @@ task schnittBodenbGebaeude(type: Db2Db){
             new TransferSet('proj_bodenbedeckung_gebaeude.sql', 'agi_gebaeudeflaeche_pub_v1.gebaeude_gebaeude_proj', true)
     ];
 }
+
+task publishPub(type: Publisher, dependsOn:'schnittBodenbGebaeude'){
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dataIdent = "ch.so.agi.av.gebaedeflaechen"
+    dbSchema = "agi_gebaeudeflaeche_pub_v1"
+    modelsToPublish = "SO_AGI_Gebaeudeflaechen_Publikation_20240521"
+    userFormats = true
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
