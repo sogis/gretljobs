@@ -40,8 +40,6 @@ Areal AS (
         st_multi(sa.apolygon) IS NOT NULL
     GROUP BY
         sa.rechtskraftdatum
-    ORDER BY
-        gemeindenamen
 
     UNION
 
@@ -53,7 +51,7 @@ Areal AS (
         'Festsetzung' AS abstimmungskategorie,
         'rechtsgueltig' AS planungsstand,
         'https://geo.so.ch/docs/ch.so.arp.richtplan/E-1_2.pdf' AS dokumente,
-        'geplant' AS astatus,
+        'neu' AS astatus,
         'gewaesserschutz' AS datenquelle
     FROM
         afu_gewaesserschutz_pub_v2.gewaesserschutz_schutzareal AS sa,
@@ -68,7 +66,6 @@ Areal AS (
         sa.rechtskraftdatum
     ORDER BY
         gemeindenamen
-
     ),
     
 Zone AS(
