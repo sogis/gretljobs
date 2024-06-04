@@ -33,7 +33,7 @@ Areal AS (
         afu_gewaesserschutz_pub_v2.gewaesserschutz_schutzareal AS sa,
         agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS g
     WHERE
-        sa.rechtsstatus LIKE 'inKraft'
+        sa.rechtsstatus IN ('inKraft', 'AenderungMitVorwirkung', 'AenderungOhneVorwirkung')
     AND
         ST_Intersects(sa.apolygon, g.geometrie) = TRUE
     AND
@@ -57,7 +57,7 @@ Areal AS (
         afu_gewaesserschutz_pub_v2.gewaesserschutz_schutzareal AS sa,
         agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS g
     WHERE
-        sa.rechtsstatus IN ('AenderungOhneVorwirkung', 'AenderungMitVorwirkung')
+        sa.rechtsstatus LIKE 'RichtplanFestsetzung'
     AND
         ST_Intersects(sa.apolygon, g.geometrie) = TRUE
     AND
