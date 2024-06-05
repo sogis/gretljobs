@@ -27,7 +27,7 @@ SELECT
     ausgleichsabgabe.datum_zahlung,
     ausgleichsabgabe.dokumente,
     ausgleichsabgabe.bemerkung,
-    ausgleichsabgabe.geometrie
+    ausgleichsabgabe.geometrie,
     hoheitsgrenzen.gemeindename AS gemeinde,
     grundstueck.grundbuchnummer,
     grundstueck.egrid
