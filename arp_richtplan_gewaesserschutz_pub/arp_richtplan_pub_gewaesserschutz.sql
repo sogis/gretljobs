@@ -30,7 +30,7 @@ Areal AS (
         'bestehend' AS astatus,
         'gewaesserschutz' AS datenquelle
     FROM
-        afu_gewaesserschutz_pub_v2.gewaesserschutz_schutzareal AS sa,
+        afu_gewaesserschutz_pub_v3.gewaesserschutz_schutzareal AS sa,
         agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS g
     WHERE
         sa.rechtsstatus IN ('inKraft', 'AenderungMitVorwirkung', 'AenderungOhneVorwirkung')
@@ -54,7 +54,7 @@ Areal AS (
         'neu' AS astatus,
         'gewaesserschutz' AS datenquelle
     FROM
-        afu_gewaesserschutz_pub_v2.gewaesserschutz_schutzareal AS sa,
+        afu_gewaesserschutz_pub_v3.gewaesserschutz_schutzareal AS sa,
         agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS g
     WHERE
         sa.rechtsstatus LIKE 'RichtplanFestsetzung'
@@ -80,7 +80,7 @@ Zone AS(
         'bestehend' AS astatus,
         'gewaesserschutz' AS datenquelle
     FROM
-        afu_gewaesserschutz_pub_v2.gewaesserschutz_schutzzone AS sz,
+        afu_gewaesserschutz_pub_v3.gewaesserschutz_schutzzone AS sz,
         agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS g
     WHERE
         sz.rechtsstatus IN ('inKraft', 'AenderungOhneVorwirkung', 'AenderungMitVorwirkung')
