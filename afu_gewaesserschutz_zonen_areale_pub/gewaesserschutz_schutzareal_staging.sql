@@ -18,7 +18,7 @@ with json_documents AS (
                 rechtsstatus AS "Rechtsstatus",
                 textimweb AS "TextimWeb",
                 art AS "Art",
-                'SO_AFU_Gewaesserschutz_Publikation_20240501.Gewaesserschutz.Dokument' AS "@type"
+                'SO_AFU_Gewaesserschutz_Publikation_20240606.Gewaesserschutz.Dokument' AS "@type"
         ) docs
     ))
   )::text AS json_dok,
@@ -55,9 +55,13 @@ SELECT
     json_dokument_agg.dokumente::json AS dokumente,
     g.geometrie AS apolygon,
     CASE
+        -- ist der Rechtsstatus 'inKraft', wird der kantonale Status nicht berücksichtigt
         WHEN status.rechtsstatus ILIKE 'inKraft' THEN status.rechtsstatus
-        WHEN status.rechtsstatus ILIKE 'provisorisch' AND status.kantonalerstatus ILIKE 'AenderungOhneVorwirkung' THEN 'AenderungOhneVorwirkung'
         WHEN status.rechtsstatus ILIKE 'provisorisch' AND status.kantonalerstatus ILIKE 'AenderungMitVorwirkung' THEN 'AenderungMitVorwirkung'
+        WHEN status.rechtsstatus ILIKE 'provisorisch' AND status.kantonalerstatus ILIKE 'AenderungOhneVorwirkung' THEN 'AenderungOhneVorwirkung'
+        WHEN status.rechtsstatus ILIKE 'provisorisch' AND status.kantonalerstatus ILIKE 'RichtplanFestsetzung' THEN 'RichtplanFestsetzung'
+        WHEN status.rechtsstatus ILIKE 'provisorisch' AND status.kantonalerstatus ILIKE 'sistiert' THEN 'sistiert'
+        -- alles Andere ohne bestimmten kantonalen Status wird provisorisch
         ELSE 'provisorisch'
     END AS rechtsstatus,
     g.bemerkungen AS bemerkung
