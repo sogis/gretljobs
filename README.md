@@ -486,7 +486,24 @@ Erläuterungen:
 
 ### Daten in die Entwicklungs-DBs importieren
 
-TODO
+Wenn der Schema-Job entsprechend konfiguriert ist,
+kann man unter bestimmten Bedingungen mit dem Task `importDevelopmentData`
+automatisiert Daten in die Entwicklungs-DBs importieren.
+
+Voraussetzungen:
+* Die Daten müssen online unter https://files.geo.so.ch als .xtf verfügbar sein
+* In der Datei `schema.properties` im Schema-Job
+  muss die Property `themeProvisionName` gesetzt sein
+  (z.B. `themeProvisionName=ch.so.arp.nutzungsplanung.kommunal`)
+* Falls es sich um ein Schema handelt, das Datasets enthält,
+  muss entweder in `schema.properties` auch die Property `dataSets` gesetzt sein
+  (z.B. `dataSets=2403,2405,2408`),
+  oder man muss beim Ausführen des Tasks `importDevelopmentData`
+  die Property `dataSets` übergeben, z.B. `-PdataSets=2403,2405,2408`.
+  Sowohl in `schema.properties` als auch bei der Übergabe als Property beim Ausführen des Tasks
+  ist auch der Wert `defaultDataSets` möglich (z.B. `-PdataSets=defaultDataSets`);
+  hinter `defaultDataSets`
+  sind die BFS-Nummern aller Gemeinden des Kantons Solothurn hinterlegt.
 
 ### Hinweise zu den DB-Containern
 #### Die Rollen (Benutzer und Gruppen) der produktiven DBs importieren
