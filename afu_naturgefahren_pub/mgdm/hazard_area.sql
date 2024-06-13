@@ -148,6 +148,7 @@ rockfall AS (
     
 INSERT INTO 
     afu_naturgefahren_mgdm_v1.hazard_mapping_hazard_area (
+        t_ili_tid,
         main_process, 
         hazard_level, 
         subprocesses_complete, 
@@ -157,6 +158,7 @@ INSERT INTO
         "comments"
     )
     SELECT 
+        uuid_generate_v4() AS t_ili_tid,
         main_process, 
         hazard_level, 
         subprocesses_complete, 
@@ -168,6 +170,7 @@ INSERT INTO
         rockfall 
     UNION ALL 
     SELECT 
+        uuid_generate_v4() AS t_ili_tid,
         main_process, 
         hazard_level, 
         subprocesses_complete, 
@@ -179,6 +182,7 @@ INSERT INTO
         landslide 
     UNION ALL 
     SELECT 
+        uuid_generate_v4() AS t_ili_tid,
         main_process, 
         hazard_level, 
         subprocesses_complete, 
@@ -188,3 +192,10 @@ INSERT INTO
         "comments" 
     FROM 
         water 
+;
+
+UPDATE 
+    afu_naturgefahren_mgdm_v1.hazard_mapping_hazard_area 
+SET 
+    t_ili_tid = concat('_',t_ili_tid,'.so.ch')::text
+;

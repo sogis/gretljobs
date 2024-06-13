@@ -1,10 +1,17 @@
 import ch.so.agi.gretl.api.TransferSet
 import ch.so.agi.gretl.tasks.*
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
 
 apply plugin: 'ch.so.agi.gretl'
 
-
 defaultTasks 'NatGef2Mgdm'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def exportFileName = 'naturgefahren.xtf'
+def exportFile = file(Paths.get(pathToTempFolder.toString(), exportFileName))
+def zipName = 'iliexport.zip'
 
 //In die Pub-DB kopieren
 
@@ -52,9 +59,28 @@ task publishPub(type: Publisher, dependsOn: 'copy_alle_natgef_produkte'){
 }
 */
 
-task truncateMGDM(type: SqlExecutor, dependsOn: 'copy_alle_natgef_produkte'){
+//, dependsOn: publishPub
+
+task make_mgdm_schema(type: Ili2pgImportSchema){
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    models = "Hazard_Mapping_LV95_V1_3"
+    dbschema = "afu_naturgefahren_mgdm_v1"
+    beautifyEnumDispName = true
+    strokeArcs = true
+    createEnumTabs = true
+    createNumChecks = true
+    createMetaInfo = true
+    createUnique = true
+    createTidCol = true
+    nameByTopic = true
+    createGeomIdx = true
+    createFk = true
+    createFkIdx = true
+}
+
+task truncateMGDM(type: SqlExecutor, dependsOn: 'make_mgdm_schema'){
     description = "Löscht die drei Tabellen im MGDM-Schema"
-    database =  [dbUriEdit, dbUserEdit, dbPwdEdit]
+    database =  [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = [
 		'mgdm/truncate_tables.sql',
 	]       
@@ -62,7 +88,7 @@ task truncateMGDM(type: SqlExecutor, dependsOn: 'copy_alle_natgef_produkte'){
 
 task NatGef2Mgdm(type: SqlExecutor, dependsOn: 'truncateMGDM'){
     description = "Transformiert die NatGef-Produkte ins MGDM-Modell"
-    database =  [dbUriEdit, dbUserEdit, dbPwdEdit]
+    database =  [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = [
 		'mgdm/assessment_area.sql',
 		'mgdm/hazard_area.sql',
@@ -70,3 +96,38 @@ task NatGef2Mgdm(type: SqlExecutor, dependsOn: 'truncateMGDM'){
 	]       
 }
 
+task exportNatGefMgdm(type: Ili2pgExport, dependsOn: 'NatGef2Mgdm') {
+    description = "Exportiert die ins Naturgefahren-MGDM umgebauten Daten in ein xtf-File."
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    dbschema = "afu_naturgefahren_mgdm_v1"
+    models = "Hazard_Mapping_LV95_V1_3"
+    dataFile = exportFile
+}
+
+task zipNatGefMgdm(type: Zip, dependsOn: 'exportNatGefMgdm'){
+    description = "Zipt das xtf-File mit den Naturgefahrendaten (MGDM vom Bund) für den Upload in die Aggregationsinfrastruktur."
+    from pathToTempFolder
+    include exportFileName
+    archiveName zipName
+	destinationDir(file(pathToTempFolder))
+}
+
+
+task uploadNatGefMgdm (dependsOn: zipNatGefMgdm) {
+    description = "Lädt die Naturgefahrendaten (MGDM vom Bund) in die Aggregationsinfrastruktur hoch."
+    def aiLogin = aiUser + ":" + aiPwd
+    def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
+    def zipFilePath = Paths.get(pathToTempFolder.toString(), zipName)
+
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=gefahrenkarten_v1_3", "-F",
+                        "lv95_file=@" + zipFilePath, "-F", "publish=true", serverUrl
+                        ].execute().text
+        println(response)
+    }
+}
+
+task removeTmpFiles(type: Delete, dependsOn: uploadNatGefMgdm){
+    description = "Entfernt während der Ausführung des Jobs erstellte Nutzungsplanungsdateien."
+	delete file(Paths.get(pathToTempFolder.toString(), zipName)), exportFile
+}

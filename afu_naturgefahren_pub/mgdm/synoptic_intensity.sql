@@ -1,5 +1,6 @@
 INSERT INTO 
     afu_naturgefahren_mgdm_v1.hazard_mapping_synoptic_intensity (
+        t_ili_tid,
         impact_zone, 
         data_responsibility, 
         "comments",
@@ -12,6 +13,7 @@ INSERT INTO
     )
 
 SELECT 
+    uuid_generate_v4() AS t_ili_tid,
 	(st_dump(geometrie)).geom AS impact_zone,
 	'SO' AS data_responsibility,
 	NULL AS comments,
@@ -63,3 +65,9 @@ SELECT
 FROM 
 	afu_naturgefahren_staging_v1.synoptische_intensitaet
 ; 
+
+UPDATE 
+    afu_naturgefahren_mgdm_v1.hazard_mapping_synoptic_intensity
+SET 
+    t_ili_tid = concat('_',t_ili_tid,'.so.ch')::text
+;

@@ -26,7 +26,8 @@ lines as (
 
 ,erhebungsgebiet_mapped as (
     select 
-        geometrie, 
+        geometrie,
+        concat('_',t_ili_tid,'.so.ch')::text AS t_ili_tid,
         case 
         	when erhebungsstand = 'beurteilt'
         	then 'assessed'
@@ -37,7 +38,6 @@ lines as (
     from 
         afu_naturgefahren_staging_v1.erhebungsgebiet
 )
-        
 
 ,attribute_agg as (
     select 
@@ -102,6 +102,7 @@ lines as (
 
 INSERT INTO 
     afu_naturgefahren_mgdm_v1.hazard_mapping_assessment_area (
+        t_ili_tid,
         area, 
         data_responsibility, 
         fl_state_flooding, 
@@ -122,6 +123,7 @@ INSERT INTO
 )
 
 select 
+    concat('_',uuid_generate_v4(),'.so.ch')::text AS t_ili_tid,
     poly AS area,
     'SO' AS data_responsibility,
     coalesce(fl_state_flooding, 'not_assessed') as fl_state_flooding,
@@ -142,4 +144,14 @@ select
 
 from 
     attribute_agg 
+;
+
+update afu_naturgefahren_mgdm_v1.hazard_mapping_assessment_area 
+set area = st_reducePrecision(area,0.001)
+;
+
+delete from afu_naturgefahren_mgdm_v1.hazard_mapping_assessment_area 
+where st_isempty(area) = true
+; 
+
 
