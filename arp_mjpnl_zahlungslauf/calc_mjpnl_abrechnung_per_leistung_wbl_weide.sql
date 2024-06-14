@@ -23,7 +23,7 @@ WITH alle_wbl_weide AS (
         wbl_weide.vereinbarung = vereinbarung.t_id
     WHERE
         wbl_weide.mit_bewirtschafter_besprochen IS TRUE
-        AND vereinbarung.status_vereinbarung = 'aktiv' AND vereinbarung.bewe_id_geprueft IS TRUE
+        AND vereinbarung.status_vereinbarung = 'aktiv' AND vereinbarung.bewe_id_geprueft IS TRUE AND vereinbarung.ist_nutzungsvereinbarung IS NOT TRUE
         -- und berücksichtige nur die neusten (sofern mehrere existieren)
         AND wbl_weide.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_wbl_weide b WHERE b.mit_bewirtschafter_besprochen IS TRUE AND b.vereinbarung = wbl_weide.vereinbarung)
 ),

@@ -24,7 +24,7 @@ WITH alle_alr_buntbrache AS (
         alr_buntbrache.vereinbarung = vereinbarung.t_id
     WHERE
         alr_buntbrache.mit_bewirtschafter_besprochen IS TRUE
-        AND vereinbarung.status_vereinbarung = 'aktiv' AND vereinbarung.bewe_id_geprueft IS TRUE
+        AND vereinbarung.status_vereinbarung = 'aktiv' AND vereinbarung.bewe_id_geprueft IS TRUE AND vereinbarung.ist_nutzungsvereinbarung IS NOT TRUE
         -- und berücksichtige nur die neusten (sofern mehrere existieren)
         AND alr_buntbrache.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_alr_buntbrache b WHERE b.mit_bewirtschafter_besprochen IS TRUE AND b.vereinbarung = alr_buntbrache.vereinbarung)
 ),
