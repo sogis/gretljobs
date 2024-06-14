@@ -91,7 +91,7 @@ SELECT
 
 SELECT 
     DISTINCT ON (plan.plan_t_id)
-    plan.plan_t_id AS t_id,
+    -- plan.plan_t_id AS t_id, automatisch beim Import
     'nutzungsplanung_kommunal' || '_' || ${bfsnr_param} AS t_datasetname,
     plan.planungsinstrument,
     plan.bezeichnung,
