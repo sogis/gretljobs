@@ -48,7 +48,7 @@ relevante_vereinbarungen AS (
   -- alle aktiven vereinbarungen mit nur unbesprochener oder gar keiner beurteilung
   SELECT * 
   FROM ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
-  WHERE vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE
+  WHERE vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE AND vbg.ist_nutzungsvereinbarung IS NOT TRUE
   AND vbg.t_id NOT IN (SELECT vereinbarung FROM alle_beurteilungen WHERE mit_bewirtschafter_besprochen IS TRUE)
 )
 -- alle letztjährigen leistungen der vereinbarungen mit nur unbesprochener oder gar keiner beurteilung
