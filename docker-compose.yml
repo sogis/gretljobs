@@ -66,6 +66,24 @@ services:
       - type: volume
         source: postgresql_data_pub
         target: /bitnami/postgresql
+  processing-db:
+    profiles: ["processing"]
+    image: sogis/postgis:16-3.4-bookworm
+    environment:
+      POSTGRES_DB: processing
+      POSTGRES_PASSWORD: secret
+      POSTGRESQL_USERNAME: ddluser
+      POSTGRESQL_PASSWORD: ddluser
+    ports:
+      - "54323:5432"
+    volumes:
+      - type: bind
+        source: ./dbusers.sh
+        target: /docker-entrypoint-initdb.d/dbusers.sh
+      - type: volume
+        source: postgresql_data_processing
+        target: /var/lib/postgresql/data
 volumes:
   postgresql_data_edit:
   postgresql_data_pub:
+  postgresql_data_processing:

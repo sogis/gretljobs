@@ -338,6 +338,18 @@ _Voraussetzung, damit dies funktioniert_:
 Die Ordner _gretljobs_ und _schema-jobs_
 müssen sich im gleichen übergeordneten Ordner befinden.
 
+##### GRETL-Jobs, die eine DB für das Processing von Daten benötigen:
+```
+docker compose --profile processing up -d
+```
+So wird zusätzlich zur *edit*-DB und zur *pub*-DB
+auch eine *processing*-DB gestartet
+für GRETL-Jobs, die eine solche benötigen.
+
+**Wichtig**: In diesem Fall müssen auch die nachfolgenden Compose-Befehle
+jeweils mit der Option `--profice processing` aufgerufen werden,
+damit sie auch die Processing-DB mit einschliessen.
+
 #### Entwicklungs-DBs stoppen
 ```
 docker compose stop
@@ -391,6 +403,13 @@ mit folgenden Verbindungsparametern erreichbar:
 * DB-Name: `pub`
 * Benutzer mit DDL-Rechten: `ddluser` (zum Anlegen von Schemen, Tabellen usw.)
 * Benutzer mit DML-Rechten: `dmluser` (für Lese- und Schreibzugriff)
+* Passwörter: lauten jeweils gleich wie der Benutzername
+
+*Processing-DB:*
+* Hostname: `localhost`
+* Port: `54323`
+* DB-Name: `processing`
+* Benutzer mit DDL-Rechten: `ddluser` (zum Anlegen von Schemen, Tabellen usw. und für Lese- und Schreibzugriff)
 * Passwörter: lauten jeweils gleich wie der Benutzername
 
 ### GRETL-Job ausführen
