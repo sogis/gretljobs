@@ -36,7 +36,7 @@ task copyFromMopublic_grundstueck(type: Db2Db, dependsOn: copyFromEwsabfrage2d){
 
 // innerhalb Grundwasserschutzzone oder -areal
 task copyFromGewaesserschutz(type: Db2Db, dependsOn: copyFromMopublic_grundstueck){
-    description = 'Importiert die Attributdaten aus dem Schema afu_gewaesserschutz_pub_v2'
+    description = 'Importiert die Attributdaten aus dem Schema afu_gewaesserschutz_pub_v3'
     sourceDb = pub
     targetDb = edit
     transferSets = [
