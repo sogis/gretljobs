@@ -409,8 +409,8 @@ mit folgenden Verbindungsparametern erreichbar:
 * Hostname: `localhost`
 * Port: `54323`
 * DB-Name: `processing`
-* Benutzer mit DDL-Rechten: `ddluser` (zum Anlegen von Schemen, Tabellen usw. und für Lese- und Schreibzugriff)
-* Passwörter: lauten jeweils gleich wie der Benutzername
+* Benutzer mit Superuser-Rechten: `processing`
+* Passwort: lautet gleich wie der Benutzername
 
 ### GRETL-Job ausführen
 ```
