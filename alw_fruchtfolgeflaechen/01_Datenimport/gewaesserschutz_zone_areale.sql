@@ -7,5 +7,5 @@ SELECT
     rechtsstatus, 
     bemerkung
 FROM 
-    afu_gewaesserschutz_pub_v2.gewaesserschutz_schutzzone
+    afu_gewaesserschutz_pub_v3.gewaesserschutz_schutzzone
 ;
