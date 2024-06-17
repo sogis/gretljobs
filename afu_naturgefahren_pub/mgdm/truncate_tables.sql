@@ -1,0 +1,3 @@
+DELETE FROM afu_naturgefahren_mgdm_v1.hazard_mapping_assessment_area;
+DELETE FROM afu_naturgefahren_mgdm_v1.hazard_mapping_hazard_area;
+DELETE FROM afu_naturgefahren_mgdm_v1.hazard_mapping_synoptic_intensity;
