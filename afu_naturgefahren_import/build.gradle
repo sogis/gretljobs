@@ -1,0 +1,62 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'dbImport_empty_beurteilungsgebiet'
+
+// NUR IN DER ENTWICKLUNGSPHASE ///
+// def Auftragskennung = 'Himmelried'
+///////////////////////////////////
+
+def xtfFileName = Auftragskennung +'.xtf'
+def uploadFolder = 'upload/'
+def schemaName = 'afu_naturgefahren_v2'
+def modelName = 'SO_AFU_Naturgefahren_20240515'
+def verifikationsModelName = "SO_AFU_Naturgefahren_20240515_Validierung_20240515"
+
+def pathToTempFolder = System.getProperty('java.io.tmpdir')
+
+task copyFile(type: Copy) {
+    from uploadFolder
+    include('uploadFile')
+    into uploadFolder
+    rename('uploadFile', xtfFileName)
+}
+
+
+task validateData(type: IliValidator, dependsOn: 'copyFile') {
+    description = "Validiert die Daten und überprüft insbesondere die Auftragskennung"
+    dataFiles = file(uploadFolder+ xtfFileName)
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    models = verifikationsModelName
+    allObjectsAccessible = true
+    failOnError = true
+}
+
+task dbImport(type: Ili2pgReplace, dependsOn: 'validateData') {
+    description = "Import Geodata Edit"
+    doLast {
+        println "Data imported into db: " + dbUriEdit
+    }
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "afu_naturgefahren_v2"
+    models = modelName
+    dataFile = file(uploadFolder+ xtfFileName)
+    dataset = Auftragskennung
+    disableValidation = true
+    
+}
+
+task dbImport_empty_beurteilungsgebiet(type: Ili2pgReplace, dependsOn: 'dbImport') {
+    description = "Import empty Beurteilungsgebiet Edit"
+    doLast {
+        println "Data imported into db: " + dbUriEdit
+    }
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "afu_naturgefahren_beurteilungsgebiet_v1"
+    models = "SO_AFU_Naturgefahren_Beurteilungsgebiet_20231127"
+    dataFile = file('beurteilungsgebiet_empty.xtf')
+    dataset = Auftragskennung
+}
