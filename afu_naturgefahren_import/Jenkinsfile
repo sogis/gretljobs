@@ -11,7 +11,7 @@ node('master') {
             message: 'Datei hochladen',
             parameters: [
                 file(name: "$uploadDirName/$uploadFileName", description: 'Hochzuladendes XTF auswählen'),
-                string(name: 'Auftragskennung', description: 'Name des Ziel-Dataset angeben (Bsp: 2022_Himmelried)')
+                string(name: 'ili2pgDataset', description: 'Name des Ziel-Dataset angeben (Bsp: 2022_Himmelried)')
             ]
         )
         dir(buildDir) {
