@@ -45,7 +45,9 @@ WITH dokumente AS (
     FROM
         arp_nutzungsplanung_kanton_v1.rechtsvorschrften_dokument
     WHERE
-        publiziertbis IS NULL
+        (publiziertbis IS NULL
+		OR
+			publiziertbis > now()::date)
 ),
 json_documents AS (
     SELECT
@@ -124,7 +126,9 @@ ueberlagernd_flaeche AS (
         LEFT JOIN arp_nutzungsplanung_kanton_v1.nutzungsplanung_typ_ueberlagernd_flaeche AS typ
         ON ueberlagernd_flaeche.typ_ueberlagernd_flaeche= typ.t_id
     WHERE
-        ueberlagernd_flaeche.publiziertbis IS NULL
+        (ueberlagernd_flaeche.publiziertbis IS NULL
+		OR
+			ueberlagernd_flaeche.publiziertbis > now()::date)
 )
 
 INSERT INTO arp_nutzungsplanung_transfer_pub_v1.nutzungsplanung_ueberlagernd_flaeche
