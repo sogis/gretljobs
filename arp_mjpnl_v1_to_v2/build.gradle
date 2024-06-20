@@ -1,0 +1,96 @@
+description = """\n
+Migration der MJPNL-Daten von der alten SOGIS-DB in das neue Applikationsschema arp_mjpnl_v1 (EDIT-DB)
+
+Fragen an: Andreas Neumann (AGI) und Odile Bruggisser (ARP)
+"""
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import java.nio.file.Paths
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'export_v1_data'
+
+def DB_Schema_MJPNL_v1 = "arp_mjpnl_v1"
+def DB_Schema_MJPNL_v2 = "arp_mjpnl_v2"
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def mjpnlDataFile = file(Paths.get(pathToTempFolder.toString(), 'mjpnldata.xtf'))
+def trafoFile = file(Paths.get(pathToTempFolder.toString(), 'mjpnltrafo.xslt'))
+def trafoFileContent = """<xsl:stylesheet
+        xmlns="http://www.interlis.ch/INTERLIS2.3"
+        xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+        xmlns:ili="http://www.interlis.ch/INTERLIS2.3"
+        exclude-result-prefixes="ili"
+        version="1.0">
+
+    <!-- generic template for all nodes -->
+    <xsl:template match="@*|node()">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:copy>
+    </xsl:template>
+
+    <!-- base model needs to be renamed -->
+    <xsl:template match="ili:MODEL">
+        <xsl:choose>
+            <xsl:when test="@NAME='SO_ARP_MJPNL_20201026'">
+                <MODEL NAME="SO_ARP_MJPNL_20240606" VERSION="2024-06-06" URI="{@URI}"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:copy-of select="."/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    
+    <!-- elements need to be renamed -->
+    <xsl:template match="*[starts-with(local-name(), 'SO_ARP_MJPNL_20201026')]">
+        <xsl:element name="SO_ARP_MJPNL_20240606{substring-after(local-name(), 'SO_ARP_MJPNL_20201026')}">
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:element>
+    </xsl:template>
+
+    <!-- BID values need to be changed -->   
+    <xsl:template match="ili:DATASECTION/*/@BID">
+        <xsl:attribute name="BID">
+            <xsl:value-of select="concat('SO_ARP_MJPNL_20240606', substring-after(., 'SO_ARP_MJPNL_20201026'))"/>            
+        </xsl:attribute>
+    </xsl:template>
+
+    <!-- Specific mandatory fields might be filled in future...
+    <xsl:template match="ili:Ortsplanung_V1_1.Konstruktionen.Gebaeude">
+        <Kantonale_Ortsplanung_V1_1.Konstruktionen.Gebaeude>
+            <xsl:apply-templates select="@*|node()"/>
+            <Referenzcode>xxxx-000</Referenzcode>
+        </Kantonale_Ortsplanung_V1_1.Konstruktionen.Gebaeude>
+    </xsl:template>
+    -->
+</xsl:stylesheet>
+"""
+
+writeTrafoFile { new File(trafoFile).write(trafoFileContent,'utf-8') }
+    
+
+task export_v1_data(type: Ili2pgExport) {
+    description = "Exportiert die MJPNL Daten aus v1"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = DB_Schema_MJPNL_v1
+    dataset = 'MJPNL'
+    dataFile = mjpnlDataFile
+}
+
+task transform_v1_to_v2(type: XslTransformer, dependsOn: importGELAN) {
+    description = "Transformiert die MJPNL Daten von v1 in v2 Format"
+    xslFile = file("xml2xtf.xsl")
+    xmlFile = mjpnlDataFile
+    outDirectory = file(mjpnlDataFile)
+}
+
+task importGELAN(type: Ili2pgReplace, dependsOn: transform_v1_to_v2) {
+    description = 'Importiert die MJPNL Daten in v2'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = DB_Schema_MJPNL_v2
+    dataFile = mjpnlDataFile
+    dataset = 'MJPNL'
+}
