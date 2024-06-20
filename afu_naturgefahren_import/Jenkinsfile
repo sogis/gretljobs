@@ -1,5 +1,5 @@
 pipeline {
-    agent { label params.nodeLabel ?: 'gretl' }
+    agent { label env.NODE_LABEL ?: 'gretl' }
     options {
         timeout(time: 6, unit: 'HOURS')
     }
@@ -9,10 +9,9 @@ pipeline {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
-                        dir('upload') {
-                            unstash name: 'uploadFile'
-                        }
-                        sh "gretl -Pili2pgDataset=${params.ili2pgDataset} transferData"
+                        unstash name: 'uploadFile'
+                        sh 'mv uploadFile $uploadFile_FILENAME'
+                        sh "gretl -PxtfFilename=${uploadFile_FILENAME}"
                     }
                 }
             }
@@ -28,3 +27,4 @@ pipeline {
         }
     }
 }
+
