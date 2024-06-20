@@ -10,7 +10,11 @@ defaultTasks 'dbImport_empty_beurteilungsgebiet'
 // def Auftragskennung = 'Himmelried'
 ///////////////////////////////////
 
-String split[] = xtfFilename.split(".")
+if (!xtfFilename || xtfFilename.isEmpty()) {
+    throw new IllegalArgumentException("xtfFilename is required and cannot be empty")
+}
+
+String[] split = xtfFilename.split("\\.")
 def auftragskennung = split[0]
 def uploadFolder = '.'
 def schemaName = 'afu_naturgefahren_v2'
