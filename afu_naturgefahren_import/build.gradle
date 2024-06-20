@@ -10,8 +10,8 @@ defaultTasks 'dbImport_empty_beurteilungsgebiet'
 // def Auftragskennung = 'Himmelried'
 ///////////////////////////////////
 
-String split = xtfFilename.split(".")[0]
-def auftragskennung = split
+String split[] = xtfFilename.split(".")
+def auftragskennung = split[0]
 def uploadFolder = '.'
 def schemaName = 'afu_naturgefahren_v2'
 def modelName = 'SO_AFU_Naturgefahren_20240515'
