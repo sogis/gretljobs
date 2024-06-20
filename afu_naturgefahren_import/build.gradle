@@ -10,7 +10,7 @@ defaultTasks 'dbImport_empty_beurteilungsgebiet'
 // def Auftragskennung = 'Himmelried'
 ///////////////////////////////////
 
-def string[] split = xtfFilename.split(".")
+def split = xtfFilename.split(".")
 
 def auftragskennung = split[0]
 def uploadFolder = '.'
