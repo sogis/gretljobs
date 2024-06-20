@@ -21,7 +21,7 @@ FROM
      pers.pid_gelan IS NOT NULL AND pers.iban IS NOT NULL
      AND (
         -- aktive und geprüfte Vereinbarungen
-        (vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE)
+        (vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE AND vbg.ist_nutzungsvereinbarung IS NOT TRUE)
         OR
         -- mind. eine diesjährige Leistung, die bereits ausbezahlt ist
         (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l WHERE l.status_abrechnung IN ('ausbezahlt','intern_verrechnet') AND l.vereinbarung = vbg.t_id AND l.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer) > 0 

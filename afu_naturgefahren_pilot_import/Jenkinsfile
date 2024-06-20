@@ -1,29 +1,5 @@
-// Start with a scripted pipeline part
-node('master') {
-    stage('Prepare') {
-        uploadDirName = 'upload'
-        uploadFileName = 'uploadFile'
-        // By default the uploaded file is stored in the following directory:
-        buildDir = "$JENKINS_HOME/jobs/$JOB_BASE_NAME/builds/$BUILD_NUMBER"
-        // Create a subdirectory for the uploaded file:
-        sh "mkdir $buildDir/$uploadDirName"
-        inputFile = input (
-            message: 'Datei hochladen',
-            parameters: [
-                file(name: "$uploadDirName/$uploadFileName", description: 'Hochzuladendes XTF auswählen'),
-                string(name: 'ili2pgDataset', description: 'Name des Ziel-Dataset angeben (Bsp: 2022_Himmelried)')
-            ]
-        )
-        dir(buildDir) {
-            stash name: 'uploadDir', includes: "upload/**"
-        }
-        sh "rm -r $buildDir/$uploadDirName"
-    }
-}
-
-// Declarative pipeline starts here
 pipeline {
-    agent { label params.nodeLabel ?: 'gretl' }
+    agent { label env.NODE_LABEL ?: 'gretl' }
     options {
         timeout(time: 6, unit: 'HOURS')
     }
@@ -33,8 +9,10 @@ pipeline {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
-                        unstash name: 'uploadDir'
-                        sh "gretl -Pili2pgDataset=$inputFile.ili2pgDataset"
+                        dir('upload') {
+                            unstash name: 'uploadFile'
+                        }
+                        sh "gretl -Pili2pgDataset=${params.ili2pgDataset}"
                     }
                 }
             }

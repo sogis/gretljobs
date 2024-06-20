@@ -5,7 +5,7 @@ import java.nio.file.Paths
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: "org.hidetake.ssh"
 
-defaultTasks 'transfer'
+defaultTasks 'update_manual_records'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def downloadFolder = Paths.get(pathToTempFolder, "download").toFile()
@@ -109,6 +109,33 @@ tasks.register('transfer', SqlExecutor) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['transfer_to_work.sql']
 }
+
+/*
+E-Mail an SGV, ob das korrekt ist, dass kein EGRID geschickt wird oder versehen.
+Vielleicht geht SQL eleganter (z.B. alles in transfer-Query). Bei mir (mit "OR-Bedingung")
+wird es brutal langsam.
+*/
+tasks.register('updateLage', SqlExecutor) {
+    dependsOn 'transfer'
+    description = 'Updated die Lage für Meldungen, die keinen EGRID haben und somit keine Lage.'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['update_lage.sql']
+}
+
+/*
+Default-Value geht nicht, weil es eine SOOID ist (mit "_" als Prefix). SOOID o.ä. muss es 
+sein, weil ich so die Message-Id verwenden kann. Aber, ob wirklich notwendig (message id),
+weiss ich nicht. Vielleicht auch premature of optimization is evil Moment, den ich 
+mitschleppe.
+*/
+tasks.register('update_manual_records', SqlExecutor) {
+    dependsOn 'updateLage'
+    description = 'Inserted eine OID in die t_ili_tid-Spalte und weitere leere Attribute für Punkte, die vom Geometer erfasst wurden.'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['update_manual_records.sql']
+}
+
+
 
 // Löschen der Daten auf dem FTP-Server.
 // Lokales Löschen nicht notwendig, da im Container.

@@ -1,19 +1,19 @@
 pipeline {
     agent {
         kubernetes {
-            inheritFrom params.nodeLabel ?: 'gretl'
+            inheritFrom env.NODE_LABEL ?: 'gretl'
             yamlMergeStrategy merge()
             yaml '''
             spec:
               containers:
-              - name: gretl
-                resources:
-                  requests:
-                    memory: 6.5Gi
-                    cpu: "1"
-                  limits:
-                    memory: 6.5Gi
-                    cpu: "8"
+                - name: gretl
+                  resources:
+                    requests:
+                      memory: 6.5Gi
+                      cpu: "1"
+                    limits:
+                      memory: 6.5Gi
+                      cpu: "8"
 '''
         }
     }

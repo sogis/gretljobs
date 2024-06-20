@@ -2,4 +2,4 @@ SELECT
     0 AS max_bohrtiefe,
     'GW_Schutzareal' AS grund_beschraenkung,
     ST_Multi(apolygon) AS mpoly
-FROM afu_gewaesserschutz_pub_v1.gewaesserschutz_schutzareal;
+FROM afu_gewaesserschutz_pub_v3.gewaesserschutz_schutzareal;

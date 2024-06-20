@@ -24,7 +24,7 @@ WITH alle_alr_buntbrache AS (
         alr_buntbrache.vereinbarung = vereinbarung.t_id
     WHERE
         alr_buntbrache.mit_bewirtschafter_besprochen IS TRUE
-        AND vereinbarung.status_vereinbarung = 'aktiv' AND vereinbarung.bewe_id_geprueft IS TRUE
+        AND vereinbarung.status_vereinbarung = 'aktiv' AND vereinbarung.bewe_id_geprueft IS TRUE AND vereinbarung.ist_nutzungsvereinbarung IS NOT TRUE
         -- und berücksichtige nur die neusten (sofern mehrere existieren)
         AND alr_buntbrache.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_alr_buntbrache b WHERE b.mit_bewirtschafter_besprochen IS TRUE AND b.vereinbarung = alr_buntbrache.vereinbarung)
 ),
@@ -52,7 +52,7 @@ united_alr_buntbrache_leistungen AS (
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
         'ALR Buntbrache: Faunabonus' AS leistung_beschrieb,
-        'per_stueck' AS abgeltungsart,
+        'pauschal' AS abgeltungsart,
         100 AS betrag_per_einheit,
         faunabonus_anzahl_arten AS anzahl_einheiten,
         faunabonus_artenvielfalt_abgeltung_pauschal AS betrag_total,

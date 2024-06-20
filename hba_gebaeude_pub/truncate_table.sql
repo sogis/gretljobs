@@ -1,1 +1,1 @@
-DELETE FROM hba_gebaeude_v1.gebaeude_gebaeude; 
+DELETE FROM hba_gebaeude_v2.gebaeude_gebaeude; 

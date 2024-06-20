@@ -6,33 +6,110 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: "de.undercouch.download"
 
-defaultTasks 'downloadData'
+defaultTasks 'transferData'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
-def dataSets = ['2471_gep']
+def dataSets = ['2471', '2477', '2481', '2622']
+
+def DB_SCHEMA_EDIT = "afu_gep_v1"
+def DB_SCHEMA_PUB_STAGING = "afu_gep_pub_staging_v1"
+def DB_SCHEMA_PUB = "afu_gep_pub_v1"
 
 dataSets.each { dataSet ->
 
-    def dataSetUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata-dev/"+dataSet+".xtf"
+    //def dataSetUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata-dev/"+dataSet+".xtf"
+    def dataSetUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.afu.gep/edit/"+dataSet+".xtf"
 
+    // Wird sich im Laufe der Zeit ändern.
     tasks.register("download_$dataSet", Download) {
         src dataSetUrl
         dest pathToTempFolder
         overwrite true
     }
 
-/*
+    tasks.register("transferDataToOldModel_$dataSet") {
+        dependsOn "download_$dataSet"
+        description = "Macht 'Datenumbau' vom 2020_1-Modell in das 2020-Modell. Danke SJB."
+        doLast {
+            ant.replace(
+                file: Paths.get(pathToTempFolder, dataSet + ".xtf").toFile(),
+                token: 'VSADSSMINI_2020_1_LV95',
+                value: 'VSADSSMINI_2020_LV95',
+                encoding: 'UTF-8'
+            )
+        }
+    }
+
     tasks.register("replace_$dataSet", Ili2pgReplace) {
-
+        dependsOn "transferDataToOldModel_$dataSet"
+        database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+        dbschema = DB_SCHEMA_EDIT
+        models = 'VSADSSMINI_2020_LV95'
+        dataset = dataSet
+        dataFile = Paths.get(pathToTempFolder, dataSet + ".xtf").toFile()
+        disableValidation = true // Weil gewisse Dinge herabgeschwächt werden in der Prüfung. Die ini-Datei ist noch in keinem Repo. Eventuell müsste man auch noch den Custom-Task anpassen, damit das überhaupt geht. Resp. geht es überhaupt mit ili2db?
     }
-*/
 }
 
-task downloadData() {
-    description = "Download all datasets."
+task replaceData() {
+    description = "Replace datasets."
     dependsOn {
-        tasks.findAll { task -> task.name.startsWith('download_') }
+        tasks.findAll { task -> task.name.startsWith('replace_') }
     }
 }
 
+// Achtung: Reihenfolge ist entscheidend!
+tasks.register('stageData', SqlExecutor) {
+    dependsOn "replaceData"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_SCHEMA_EDIT: DB_SCHEMA_EDIT, DB_SCHEMA_PUB_STAGING: DB_SCHEMA_PUB_STAGING]
+    sqlFiles = [
+        'sql/wk/delete.sql',
+        'sql/wk/vsadssmini_paa_beschriftung_l.sql',
+        'sql/wk/vsadssmini_paa_beschriftung_p.sql',
+        'sql/wk/vsadssmini_paa_bw.sql',
+        'sql/wk/vsadssmini_paa_leitung_dr.sql', 
+        'sql/wk/vsadssmini_paa_leitung_se.sql',
+        'sql/wk/vsadssmini_paa_sbw.sql',
+        'sql/wk/vsadssmini_paa_schacht_se.sql',
+        'sql/wk/vsadssmini_paa_schacht_dr.sql',
+
+        'sql/wk/vsadssmini_saa_bw.sql',
+        'sql/wk/vsadssmini_saa_leitung_dr.sql',
+        'sql/wk/vsadssmini_saa_leitung_se.sql',
+        'sql/wk/vsadssmini_saa_sbw.sql',
+        'sql/wk/vsadssmini_saa_schacht_se.sql',
+        'sql/wk/vsadssmini_saa_schacht_dr.sql',
+
+        'sql/wk/vsadssmini_mangel_knoten.sql',
+        'sql/wk/vsadssmini_mangel_leitung.sql'
+        ]
+}
+
+tasks.register("transferData", Db2Db) {
+    dependsOn "stageData"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('sql/wk/transfer_vsadssmini_paa_beschriftung_l.sql', DB_SCHEMA_PUB+".wk_paa_beschriftung_l", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_paa_beschriftung_p.sql', DB_SCHEMA_PUB+".wk_paa_beschriftung_p", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_paa_bw.sql', DB_SCHEMA_PUB+".wk_paa_bw", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_paa_leitung_dr.sql', DB_SCHEMA_PUB+".wk_paa_leitung_dr", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_paa_leitung_se.sql', DB_SCHEMA_PUB+".wk_paa_leitung_se", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_paa_sbw.sql', DB_SCHEMA_PUB+".wk_paa_sbw", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_paa_schacht_se.sql', DB_SCHEMA_PUB+".wk_paa_schacht_se", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_paa_schacht_dr.sql', DB_SCHEMA_PUB+".wk_paa_schacht_dr", true),
+
+            new TransferSet('sql/wk/transfer_vsadssmini_saa_bw.sql', DB_SCHEMA_PUB+".wk_saa_bw", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_saa_leitung_dr.sql', DB_SCHEMA_PUB+".wk_saa_leitung_dr", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_saa_leitung_se.sql', DB_SCHEMA_PUB+".wk_saa_leitung_se", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_saa_sbw.sql', DB_SCHEMA_PUB+".wk_saa_sbw", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_saa_schacht_se.sql', DB_SCHEMA_PUB+".wk_saa_schacht_se", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_saa_schacht_dr.sql', DB_SCHEMA_PUB+".wk_saa_schacht_dr", true),
+
+            new TransferSet('sql/wk/transfer_vsadssmini_mangel_knoten.sql', DB_SCHEMA_PUB+".wk_mangel_knoten", true),
+            new TransferSet('sql/wk/transfer_vsadssmini_mangel_leitung.sql', DB_SCHEMA_PUB+".wk_mangel_leitung", true)
+    ]
+    sqlParameters = [DB_SCHEMA:DB_SCHEMA_PUB_STAGING]
+} 

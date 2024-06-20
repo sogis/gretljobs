@@ -1,12 +1,11 @@
 pipeline {
     agent none
     options {
-        disableConcurrentBuilds()
         timeout(time: 7, unit: 'DAYS')
     }
     stages {
         stage('Import into staging schema') {
-            agent { label 'gretl' }
+            agent { label env.NODE_LABEL ?: 'gretl' }
             steps {
                 script { currentBuild.description = "${params.buildDescription}" }
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
@@ -31,7 +30,7 @@ pipeline {
             }
         }
         stage('Import into pub schema') {
-            agent { label 'gretl' }
+            agent { label env.NODE_LABEL ?: 'gretl' }
             steps {
                 unstash name: "gretljob"
                 container('gretl') {

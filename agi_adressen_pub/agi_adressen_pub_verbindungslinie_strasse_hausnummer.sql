@@ -16,23 +16,38 @@ WITH
             CAST(t_datasetname AS INT) AS gem_bfs
         FROM
             agi_dm01avso24.gebaeudeadressen_hausnummerpos
-    )
-
+    ),
+    strasse_hausnummer AS (
+        SELECT
+            gebaeudeadressen_lokalisationsname.atext AS strname,
+            gebaeudeadressen_gebaeudeeingang.hausnummer,
+            hausnummern.t_id AS hausnummerpos_tid,
+            gebaeudeadressen_gebaeudeeingang.t_id AS gebaeudeeingang_tid,
+            gebaeudeadressen_gebaeudeeingang.gebaeudeeingang_von AS lok_tid,
+            ST_ShortestLine(hausnummern.pos, strassen.geometrie) AS geometrie,
+            hausnummern.gem_bfs,
+            now() AS datum,
+            gebaeudeadressen_gebaeudeeingang.istoffiziellebezeichnung
+        FROM
+            hausnummern
+        LEFT JOIN agi_dm01avso24.gebaeudeadressen_gebaeudeeingang
+            ON gebaeudeadressen_gebaeudeeingang.t_id = hausnummern.hausnummerpos_von
+        LEFT JOIN strassen
+            ON strassen.strassenstueck_von = gebaeudeadressen_gebaeudeeingang.gebaeudeeingang_von
+        LEFT JOIN agi_dm01avso24.gebaeudeadressen_lokalisationsname
+            ON gebaeudeadressen_lokalisationsname.benannte = gebaeudeadressen_gebaeudeeingang.gebaeudeeingang_von
+        WHERE gebaeudeadressen_gebaeudeeingang.istoffiziellebezeichnung = 'ja'
+ )
+    
 SELECT
-    gebaeudeadressen_lokalisationsname.atext AS strname,
-    gebaeudeadressen_gebaeudeeingang.hausnummer,
-    hausnummern.t_id AS hausnummerpos_tid,
-    gebaeudeadressen_gebaeudeeingang.t_id AS gebaeudeeingang_tid,
-    gebaeudeadressen_gebaeudeeingang.gebaeudeeingang_von AS lok_tid,
-    ST_ShortestLine(hausnummern.pos, strassen.geometrie) AS geometrie,
-    hausnummern.gem_bfs,
-    now() AS datum
+    strname,
+    hausnummer,
+    hausnummerpos_tid,
+    gebaeudeeingang_tid,
+    lok_tid,
+    geometrie,
+    gem_bfs,
+    datum
 FROM
-    hausnummern
-    LEFT JOIN agi_dm01avso24.gebaeudeadressen_gebaeudeeingang
-        ON gebaeudeadressen_gebaeudeeingang.t_id = hausnummern.hausnummerpos_von
-    LEFT JOIN strassen
-        ON strassen.strassenstueck_von = gebaeudeadressen_gebaeudeeingang.gebaeudeeingang_von
-    LEFT JOIN agi_dm01avso24.gebaeudeadressen_lokalisationsname
-        ON gebaeudeadressen_lokalisationsname.benannte = gebaeudeadressen_gebaeudeeingang.gebaeudeeingang_von
+    strasse_hausnummer
 ;

@@ -23,7 +23,7 @@ WITH alle_hecke AS (
         hecke.vereinbarung = vereinbarung.t_id
     WHERE
         hecke.mit_bewirtschafter_besprochen IS TRUE
-        AND vereinbarung.status_vereinbarung = 'aktiv' AND vereinbarung.bewe_id_geprueft IS TRUE
+        AND vereinbarung.status_vereinbarung = 'aktiv' AND vereinbarung.bewe_id_geprueft IS TRUE AND vereinbarung.ist_nutzungsvereinbarung IS NOT TRUE
         -- und berücksichtige nur die neusten (sofern mehrere existieren)
         AND hecke.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_hecke b WHERE b.mit_bewirtschafter_besprochen IS TRUE AND b.vereinbarung = hecke.vereinbarung)
 ),
@@ -68,7 +68,7 @@ united_hecke_leistungen AS (
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
         'Hecke: Faunabonus' AS leistung_beschrieb,
-        'per_stueck' AS abgeltungsart,
+        'pauschal' AS abgeltungsart,
         100 AS betrag_per_einheit,
         faunabonus_anzahl_arten AS anzahl_einheiten,
         faunabonus_artenvielfalt_abgeltung_pauschal AS betrag_total,
@@ -137,8 +137,8 @@ united_hecke_leistungen AS (
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
-        'Hecke: Bewirtschaftung Lebhag pro Laufmeter' AS leistung_beschrieb,
-        'per_stueck' AS abgeltungsart,
+        'Hecke: Bewirtschaftung Lebhag pauschal' AS leistung_beschrieb,
+        'pauschal' AS abgeltungsart,
         1.50 AS betrag_per_einheit,
         bewirtschaftung_lebhag_laufmeter AS anzahl_einheiten,
         bewirtschaftung_lebhag_abgeltung_pauschal AS betrag_total,
@@ -154,13 +154,16 @@ united_hecke_leistungen AS (
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
-        left(('Hecke: Erschwernis (' ||
-            (SELECT CONCAT_WS(', ',
-                CASE WHEN erschwernis_massnahme1 THEN 'Massnahme 1: '||COALESCE(left(erschwernis_massnahme1_text,60),'') END,
-                CASE WHEN erschwernis_massnahme2 THEN 'Massnahme 2: '||COALESCE(left(erschwernis_massnahme2_text,60),'') END,
-                CASE WHEN erschwernis_massnahme3 THEN 'Massnahme 3: '||COALESCE(left(erschwernis_massnahme3_text,60),'') END
-            )) ||
-        ')'),255)
+        regexp_replace(
+            left(('Hecke: Erschwernis (' ||
+                (SELECT CONCAT_WS(', ',
+                    CASE WHEN erschwernis_massnahme1 THEN 'Massnahme 1: '||COALESCE(left(erschwernis_massnahme1_text,60),'') END,
+                    CASE WHEN erschwernis_massnahme2 THEN 'Massnahme 2: '||COALESCE(left(erschwernis_massnahme2_text,60),'') END,
+                    CASE WHEN erschwernis_massnahme3 THEN 'Massnahme 3: '||COALESCE(left(erschwernis_massnahme3_text,60),'') END
+                )) ||
+            ')'),255),
+            E'[\n\r]+', ' ', 'g' 
+        )
         AS leistung_beschrieb,
         'per_ha' AS abgeltungsart,
         erschwernis_abgeltung_ha AS betrag_per_einheit,

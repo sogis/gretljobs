@@ -23,7 +23,7 @@ WITH alle_alr_saum AS (
         alr_saum.vereinbarung = vereinbarung.t_id
     WHERE
         alr_saum.mit_bewirtschafter_besprochen IS TRUE
-        AND vereinbarung.status_vereinbarung = 'aktiv' AND vereinbarung.bewe_id_geprueft IS TRUE
+        AND vereinbarung.status_vereinbarung = 'aktiv' AND vereinbarung.bewe_id_geprueft IS TRUE AND vereinbarung.ist_nutzungsvereinbarung IS NOT TRUE
         -- und berücksichtige nur die neusten (sofern mehrere existieren)
         AND alr_saum.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_alr_saum b WHERE b.mit_bewirtschafter_besprochen IS TRUE AND b.vereinbarung = alr_saum.vereinbarung)
 ),
@@ -51,7 +51,7 @@ united_alr_saum_leistungen AS (
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
         'ALR Saum: Faunabonus' AS leistung_beschrieb,
-        'per_stueck' AS abgeltungsart,
+        'pauschal' AS abgeltungsart,
         100 AS betrag_per_einheit,
         faunabonus_anzahl_arten AS anzahl_einheiten,
         faunabonus_artenvielfalt_abgeltung_pauschal AS betrag_total,

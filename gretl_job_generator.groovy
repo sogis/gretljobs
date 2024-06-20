@@ -39,7 +39,7 @@ for (jobFile in jobFiles) {
   def jobProperties = new Properties([
     'authorization.permissions':'nobody',
     'logRotator.numToKeep':'15',
-    'parameters.fileParam':'none',
+    'parameters.stashedFile':'none',
     'parameters.stringParams':'none',
     'triggers.upstream':'none',
     'triggers.cron':''
@@ -54,14 +54,21 @@ for (jobFile in jobFiles) {
   def productionEnv = ("${PROJECT_NAME}" == 'agi-gretl-production')
 
   pipelineJob(jobName) {
+    properties {
+      disableConcurrentBuilds {}
+    }
     if (!productionEnv) { // we don't want the BRANCH parameter in production environment
       parameters {
         stringParam('BRANCH', 'main', 'Name of branch to check out')
       }
     }
-    if (jobProperties.getProperty('parameters.fileParam') != 'none') {
+    if (jobProperties.getProperty('parameters.stashedFile') != 'none') {
       parameters {
-        fileParam(jobProperties.getProperty('parameters.fileParam'), 'Select file to upload')
+        // must be defined using the "Dynamic DSL" approach (https://github.com/jenkinsci/job-dsl-plugin/wiki/Dynamic-DSL):
+        stashedFile {
+          name(jobProperties.getProperty('parameters.stashedFile'))
+          description('Hochzuladende Datei auswählen')
+        }
       }
     }
     if (jobProperties.getProperty('parameters.stringParams') != 'none') {
@@ -113,17 +120,16 @@ for (jobFile in jobFiles) {
         }
       }
     }
-    if (jobProperties.getProperty('nodeLabel') != null) {
-      parameters {
-        choiceParam('nodeLabel', [jobProperties.getProperty('nodeLabel')], 'Label of the node that must run the job')
-      }
-    }
 
     environmentVariables {
       // make the Git repository URL available on the Jenkins agent
       env('GIT_REPO_URL', GRETL_JOB_REPO_URL)
       // make the OpenShift project name available on the Jenkins agent
       env('OPENSHIFT_PROJECT_NAME', PROJECT_NAME)
+      // if nodeLabel property is set, make it available on the Jenkins agent
+      if (jobProperties.getProperty('nodeLabel') != null) {
+        env('NODE_LABEL', jobProperties.getProperty('nodeLabel'))
+      }
     }
 
     definition {

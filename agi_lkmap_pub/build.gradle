@@ -1,0 +1,72 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: "de.undercouch.download"
+
+defaultTasks 'transferData'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+// wawaag: Wasserversorgung Wasseramt AG (Verbandskataster)
+// Müsste halt auch vom Kanton geregelt werden: In Aeschi momentan doppelt.
+//def dataSets = ['2477_was', '2479_was', '2517_was', '2546_was', '2511_was', '2614_was', 'wawaag']
+def dataSets = ['2517_was', 'wawaag']
+
+def DB_SCHEMA_EDIT = "agi_lkmap_v1"
+def DB_SCHEMA_PUB = "agi_lkmap_pub_v1"
+
+dataSets.each { dataSet ->
+
+    def dataSetUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.lkmap/"+dataSet+".xtf"
+
+    // Wird sich im Laufe der Zeit ändern.
+    tasks.register("download_$dataSet", Download) {
+        src dataSetUrl
+        dest pathToTempFolder
+        overwrite true
+    }
+
+    tasks.register("replace_$dataSet", Ili2pgReplace) {
+        dependsOn "download_$dataSet"
+        database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+        dbschema = DB_SCHEMA_EDIT
+        models = 'SIA405_LKMap_2015_LV95'
+        dataset = dataSet
+        dataFile = Paths.get(pathToTempFolder, dataSet + ".xtf").toFile()
+        disableValidation = true
+    }
+
+    // Achtung: Transaktionsproblematik immer noch vorhanden!
+    tasks.register("deleteDataset_$dataSet", SqlExecutor) {
+        //dependsOn "download_$dataSet"
+        dependsOn "replace_$dataSet"        
+        database = [dbUriPub, dbUserPub, dbPwdPub]
+        sqlParameters = [DB_SCHEMA_PUB: DB_SCHEMA_PUB, DATASET: "'"+dataSet+"'"]
+        sqlFiles = [
+            'sql/wasser/delete.sql'
+            ]
+    }
+
+    tasks.register("transferData_$dataSet", Db2Db) {
+        dependsOn "deleteDataset_$dataSet"
+        sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+        targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+        transferSets = [
+                new TransferSet('sql/wasser/lkflaeche.sql', DB_SCHEMA_PUB+".wasser_lkflaeche", false),
+                new TransferSet('sql/wasser/lklinie.sql', DB_SCHEMA_PUB+".wasser_lklinie", false),
+                new TransferSet('sql/wasser/lkpunkt.sql', DB_SCHEMA_PUB+".wasser_lkpunkt", false)
+        ]
+        sqlParameters = [DB_SCHEMA_EDIT:DB_SCHEMA_EDIT, DATASET: "'"+dataSet+"'"]
+    } 
+
+}
+
+task transferData() {
+    description = "Transfer datasets."
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('transferData_') }
+    }
+}

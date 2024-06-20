@@ -1,0 +1,133 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'NatGef2Mgdm'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def exportFileName = 'naturgefahren.xtf'
+def exportFile = file(Paths.get(pathToTempFolder.toString(), exportFileName))
+def zipName = 'iliexport.zip'
+
+//In die Pub-DB kopieren
+
+task copy_alle_natgef_produkte(type: Db2Db) {
+    description = "Kopiert die nun gerechneten NatGef-Produkte in die Edit-DB"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('copy_to_pub/publish_dokumente.sql','afu_naturgefahren_pub_v1.dokumente_pro_gemeinde', true),
+            new TransferSet('copy_to_pub/publish_erhebungsgebiet.sql','afu_naturgefahren_pub_v1.erhebungsgebiet', true),
+            new TransferSet('copy_to_pub/publish_fliessrichtung.sql','afu_naturgefahren_pub_v1.fliessrichtung', true),
+            new TransferSet('copy_to_pub/publish_fliesstiefen.sql','afu_naturgefahren_pub_v1.fliesstiefen', true),
+            new TransferSet('copy_to_pub/publish_gk_hauptprozess_rutschung.sql','afu_naturgefahren_pub_v1.gefahrengebiet_hauptprozess_rutschung', true),
+            new TransferSet('copy_to_pub/publish_gk_hauptprozess_sturz.sql','afu_naturgefahren_pub_v1.gefahrengebiet_hauptprozess_sturz', true),
+            new TransferSet('copy_to_pub/publish_gk_hauptprozess_wasser.sql','afu_naturgefahren_pub_v1.gefahrengebiet_hauptprozess_wasser', true),
+            new TransferSet('copy_to_pub/publish_gk_teilprozess_absenkung_einsturz.sql','afu_naturgefahren_pub_v1.gefahrengebiet_teilprozess_absenkung_einsturz', true),
+            new TransferSet('copy_to_pub/publish_gk_teilprozess_fels_bergsturz.sql','afu_naturgefahren_pub_v1.gefahrengebiet_teilprozess_fels_bergsturz', true),
+            new TransferSet('copy_to_pub/publish_gk_teilprozess_hangmure.sql','afu_naturgefahren_pub_v1.gefahrengebiet_teilprozess_hangmure', true),
+            new TransferSet('copy_to_pub/publish_gk_teilprozess_murgang.sql','afu_naturgefahren_pub_v1.gefahrengebiet_teilprozess_murgang', true),
+            new TransferSet('copy_to_pub/publish_gk_teilprozess_permanente_rutschung.sql','afu_naturgefahren_pub_v1.gefahrengebiet_teilprozess_permanente_rutschung', true),
+            new TransferSet('copy_to_pub/publish_gk_teilprozess_spontane_rutschung.sql','afu_naturgefahren_pub_v1.gefahrengebiet_teilprozess_spontane_rutschung', true),
+            new TransferSet('copy_to_pub/publish_gk_teilprozess_stein_blockschlag.sql','afu_naturgefahren_pub_v1.gefahrengebiet_teilprozess_stein_blockschlag', true),
+            new TransferSet('copy_to_pub/publish_gk_teilprozess_ueberflutung.sql','afu_naturgefahren_pub_v1.gefahrengebiet_teilprozess_ueberflutung', true),
+            new TransferSet('copy_to_pub/publish_kennwert_uebermurung_geschwindigkeit.sql','afu_naturgefahren_pub_v1.kennwert_uebermurung_geschwindigkeit', true),
+            new TransferSet('copy_to_pub/publish_kennwert_uebermurung_hoehe.sql','afu_naturgefahren_pub_v1.kennwert_uebermurung_hoehe', true),
+            new TransferSet('copy_to_pub/publish_kennwert_ueberschwemmung_geschwindigkeit.sql','afu_naturgefahren_pub_v1.kennwert_ueberschwemmung_geschwindigkeit', true),
+            new TransferSet('copy_to_pub/publish_synoptische_intensitaet.sql','afu_naturgefahren_pub_v1.synoptische_intensitaet', true),
+            new TransferSet('copy_to_pub/publish_synoptisches_gefahrengebiet.sql','afu_naturgefahren_pub_v1.synoptisches_gefahrengebiet', true),
+            new TransferSet('copy_to_pub/publish_ufererosion.sql','afu_naturgefahren_pub_v1.ufererosion', true)
+    ];
+}
+
+/*
+task publishPub(type: Publisher, dependsOn: 'copy_alle_natgef_produkte'){
+    database = [dbUriPub,dbUserPub,dbPwdPub]
+    dataIdent = "ch.so.afu.gefahrenkartierung" // MUSS NOCH ANGEPASST WERDEN!!!!! 
+    dbSchema = "afu_naturgefahren_pub_v1"
+    modelsToPublish = "SO_AFU_Naturgefahren_Kernmodell_20231016"
+    userFormats = true
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+*/
+
+//, dependsOn: publishPub
+
+task make_mgdm_schema(type: Ili2pgImportSchema){
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    models = "Hazard_Mapping_LV95_V1_3"
+    dbschema = "afu_naturgefahren_mgdm_v1"
+    beautifyEnumDispName = true
+    strokeArcs = true
+    createEnumTabs = true
+    createNumChecks = true
+    createMetaInfo = true
+    createUnique = true
+    createTidCol = true
+    nameByTopic = true
+    createGeomIdx = true
+    createFk = true
+    createFkIdx = true
+}
+
+task truncateMGDM(type: SqlExecutor, dependsOn: 'make_mgdm_schema'){
+    description = "Löscht die drei Tabellen im MGDM-Schema"
+    database =  [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = [
+		'mgdm/truncate_tables.sql',
+	]       
+}
+
+task NatGef2Mgdm(type: SqlExecutor, dependsOn: 'truncateMGDM'){
+    description = "Transformiert die NatGef-Produkte ins MGDM-Modell"
+    database =  [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = [
+		'mgdm/assessment_area.sql',
+		'mgdm/hazard_area.sql',
+		'mgdm/synoptic_intensity.sql'
+	]       
+}
+
+task exportNatGefMgdm(type: Ili2pgExport, dependsOn: 'NatGef2Mgdm') {
+    description = "Exportiert die ins Naturgefahren-MGDM umgebauten Daten in ein xtf-File."
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    dbschema = "afu_naturgefahren_mgdm_v1"
+    models = "Hazard_Mapping_LV95_V1_3"
+    dataFile = exportFile
+}
+
+task zipNatGefMgdm(type: Zip, dependsOn: 'exportNatGefMgdm'){
+    description = "Zipt das xtf-File mit den Naturgefahrendaten (MGDM vom Bund) für den Upload in die Aggregationsinfrastruktur."
+    from pathToTempFolder
+    include exportFileName
+    archiveName zipName
+	destinationDir(file(pathToTempFolder))
+}
+
+
+task uploadNatGefMgdm (dependsOn: zipNatGefMgdm) {
+    description = "Lädt die Naturgefahrendaten (MGDM vom Bund) in die Aggregationsinfrastruktur hoch."
+    def aiLogin = aiUser + ":" + aiPwd
+    def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
+    def zipFilePath = Paths.get(pathToTempFolder.toString(), zipName)
+
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=gefahrenkarten_v1_3", "-F",
+                        "lv95_file=@" + zipFilePath, "-F", "publish=true", serverUrl
+                        ].execute().text
+        println(response)
+    }
+}
+
+task removeTmpFiles(type: Delete, dependsOn: uploadNatGefMgdm){
+    description = "Entfernt während der Ausführung des Jobs erstellte Nutzungsplanungsdateien."
+	delete file(Paths.get(pathToTempFolder.toString(), zipName)), exportFile
+}

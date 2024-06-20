@@ -45,15 +45,13 @@ WITH alle_beurteilungen AS (
   FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_wiese
 ),
 relevante_vereinbarungen AS (
-  -- alle aktiven vereinbarungen mit unbesprochener oder keiner beurteilung
+  -- alle aktiven vereinbarungen mit nur unbesprochener oder gar keiner beurteilung
   SELECT * 
   FROM ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
-  LEFT JOIN alle_beurteilungen be
-  ON be.vereinbarung = vbg.t_id
-  WHERE vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE
-  AND be.mit_bewirtschafter_besprochen IS NOT TRUE
+  WHERE vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE AND vbg.ist_nutzungsvereinbarung IS NOT TRUE
+  AND vbg.t_id NOT IN (SELECT vereinbarung FROM alle_beurteilungen WHERE mit_bewirtschafter_besprochen IS TRUE)
 )
--- alle letztjährigen leistungen der vereinbarungen mit unbesprochener oder keiner beurteilung
+-- alle letztjährigen leistungen der vereinbarungen mit nur unbesprochener oder gar keiner beurteilung
 SELECT 
     l.t_basket, 
     l.vereinbarung, 

@@ -36,7 +36,7 @@ task copyFromMopublic_grundstueck(type: Db2Db, dependsOn: copyFromEwsabfrage2d){
 
 // innerhalb Grundwasserschutzzone oder -areal
 task copyFromGewaesserschutz(type: Db2Db, dependsOn: copyFromMopublic_grundstueck){
-    description = 'Importiert die Attributdaten aus dem Schema afu_gewaesserschutz_pub_v1'
+    description = 'Importiert die Attributdaten aus dem Schema afu_gewaesserschutz_pub_v3'
     sourceDb = pub
     targetDb = edit
     transferSets = [
@@ -56,7 +56,7 @@ task copyFromBelasteter_standort(type: Db2Db, dependsOn: copyFromGewaesserschutz
 
 // innerhalb tiefgründigen Rutschungen
 task copyFromRutschung_tief(type: Db2Db, dependsOn: copyFromBelasteter_standort){
-    description = 'Importiert die Attributdaten aus dem Schema awjf_naturgefahrenhinweiskarte_pub_v1'
+    description = 'Importiert die Attributdaten aus dem Schema afu_naturgefahrenhinweiskarte_pub_v1'
     sourceDb = pub
     targetDb = edit
     transferSets = [
@@ -102,6 +102,7 @@ task copyToPub(type: Db2Db, dependsOn: copyFromBohrprofil){
         new TransferSet('./1_CopyToPub/abklaerung.sql', 'afu_ewsabfrage_2d_pub_v1.abklaerung', true),
         new TransferSet('./1_CopyToPub/grundstueck.sql', 'afu_ewsabfrage_2d_pub_v1.grundstueck', true),
         new TransferSet('./1_CopyToPub/hinweis.sql', 'afu_ewsabfrage_2d_pub_v1.hinweis', true),
-        new TransferSet('./1_CopyToPub/tiefenbeschraenkung.sql', 'afu_ewsabfrage_2d_pub_v1.tiefenbeschraenkung', true)
+        new TransferSet('./1_CopyToPub/tiefenbeschraenkung.sql', 'afu_ewsabfrage_2d_pub_v1.tiefenbeschraenkung', true),
+        new TransferSet('./1_CopyToPub/abfrageperimeter.sql', 'afu_ewsabfrage_2d_pub_v1.abfrageperimeter', true)
     ]
 }

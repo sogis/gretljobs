@@ -1,6 +1,6 @@
 services:
   gretl:
-    image: sogis/gretl:${GRETL_IMAGE_TAG:-2.2.414}
+    image: sogis/gretl:${GRETL_IMAGE_TAG:-2.2.494}
     profiles: ["app"]
     environment:
       ORG_GRADLE_PROJECT_gretlEnvironment: development
@@ -66,6 +66,19 @@ services:
       - type: volume
         source: postgresql_data_pub
         target: /bitnami/postgresql
+  processing-db:
+    profiles: ["processing"]
+    image: sogis/postgis:16-3.4-bookworm
+    environment:
+      POSTGRES_USER: processing
+      POSTGRES_PASSWORD: processing
+    ports:
+      - "54323:5432"
+    volumes:
+      - type: volume
+        source: postgresql_data_processing
+        target: /var/lib/postgresql/data
 volumes:
   postgresql_data_edit:
   postgresql_data_pub:
+  postgresql_data_processing:

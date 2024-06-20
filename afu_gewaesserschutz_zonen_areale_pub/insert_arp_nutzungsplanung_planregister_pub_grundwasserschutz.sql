@@ -11,7 +11,7 @@ WITH dokument_schutzzonenplan_gws AS(
             WHEN 'inKraft'
                 THEN 'in Kraft'
             WHEN 'laufendeAenderung'
-                THEN 'Änderung mit Vorwirkungt'
+                THEN 'Änderung mit Vorwirkung'
         END AS rechtsstatus,
         dokument.textimweb AS dokument_url,
         --Encoding von 'https://geo.so.ch/map?t=nutzungsplanung&hp=ch.so.agi.gemeindegrenzen&hf=[["gemeindename","=","' || gemeinde.gemeindename || '"]]'

@@ -1,19 +1,19 @@
 pipeline {
     agent {
         kubernetes {
-            inheritFrom params.nodeLabel ?: 'gretl'
+            inheritFrom env.NODE_LABEL ?: 'gretl'
             yamlMergeStrategy merge()
             yaml """
             spec:
               containers:
-              - name: gretl
-                volumeMounts:
-                - name: gretl-tmp-volume
-                  mountPath: /tmp
-                  subPath: gretl
+                - name: gretl
+                  volumeMounts:
+                    - name: gretl-tmp-volume
+                      mountPath: /tmp
+                      subPath: gretl/${env.JOB_BASE_NAME}
               volumes:
-              - name: gretl-tmp-volume
-                persistentVolumeClaim:
+                - name: gretl-tmp-volume
+                  persistentVolumeClaim:
                     claimName: ${env.OPENSHIFT_PROJECT_NAME}-lowback
 """
         }

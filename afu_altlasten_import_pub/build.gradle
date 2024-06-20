@@ -85,24 +85,7 @@ task refreshSolrKbsRestricted(type:Exec, dependsOn:'refreshSolrKbs') {
         commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte_geschuetzt'
 }
 
-task transferKbsToOldPubSchema(type: Db2Db, dependsOn: 'refreshSolrKbsRestricted') {
-    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
-    targetDb = sourceDb
-    transferSets = [
-            new TransferSet('afu_altlasten_pub_standorte.sql', 'afu_altlasten_pub.belastete_standorte', true),
-            new TransferSet('afu_altlasten_pub_standorte_altlast4web.sql', 'afu_altlasten_pub.belastete_standorte_altlast4web', true)
-    ];
-}
-
-task transferKbsToSogisDb(type: Db2Db, dependsOn: 'transferKbsToOldPubSchema') {
-    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
-    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    transferSets = [
-            new TransferSet('afu_altlasten_pub_sogis.sql', 'auszug_akt_altlasten17785.altlasten_belastete_standorte', true)
-    ];
-}
-
-task downloadMgdm(type: Download, dependsOn: 'transferKbsToSogisDb') {
+task downloadMgdm(type: Download, dependsOn: 'refreshSolrKbsRestricted') {
     src "https://altlast4web.verw.rootso.org/interlis_exports/mgdm/data.zip"
     dest pathToTempFolder
     overwrite true
@@ -127,7 +110,7 @@ task publishPub(type: Publisher, dependsOn: 'uploadMgdm'){
     database = [dbUriPub,dbUserPub,dbPwdPub]
     dbSchema = "afu_altlasten_pub_v2"
     modelsToPublish = "SO_AFU_KbS_Publikation__20230104"
-    target = ["sftp://$sftpServerSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")

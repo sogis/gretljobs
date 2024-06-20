@@ -1,0 +1,201 @@
+WITH 
+rockfall AS (
+    SELECT 
+        'rockfall' AS main_process,
+        CASE
+            WHEN gefahrenstufe = 'restgefaehrdung'
+                THEN 'residual_hazard'
+            WHEN gefahrenstufe = 'gering'
+                THEN 'slight'
+            WHEN gefahrenstufe = 'mittel'
+                THEN 'mean'
+            WHEN gefahrenstufe = 'erheblich'
+                THEN 'substantial'
+        END AS hazard_level,
+        'complete' AS subprocesses_complete,    
+        'complete' AS sources_complete, 
+        (st_dump(geometrie)).geom AS impact_zone,
+        CAST('SO' AS VARCHAR) AS data_responsibility,
+        NULL AS comments
+    FROM 
+        afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz
+    UNION ALL 
+    SELECT
+        'rockfall' AS main_process,
+        'not_in_danger' AS hazard_level,
+        case 
+            when erhebungsstand = 'beurteilt'
+            then 'assessed'
+            when erhebungsstand = 'beurteilung_nicht_noetig'
+            then 'assessment_not_necessary'
+        end as subprocesses_complete,
+        case 
+            when erhebungsstand = 'beurteilt'
+            then 'assessed'
+            when erhebungsstand = 'beurteilung_nicht_noetig'
+            then 'assessment_not_necessary'
+        end as sources_complete,
+        st_difference(erhebungsgebiet.geometrie,hauptprozess.geometrie) AS impact_zone,
+        CAST('SO' AS VARCHAR) AS data_responsibility,
+        NULL AS comments
+    FROM 
+        afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_sturz erhebungsgebiet, 
+        (
+            SELECT 
+                st_union(geometrie) AS geometrie 
+            FROM 
+                afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz
+        ) hauptprozess
+)
+
+,landslide AS (
+    SELECT 
+        'landslide' AS main_process,
+        CASE
+            WHEN gefahrenstufe = 'restgefaehrdung'
+                THEN 'residual_hazard'
+            WHEN gefahrenstufe = 'gering'
+                THEN 'slight'
+            WHEN gefahrenstufe = 'mittel'
+                THEN 'mean'
+            WHEN gefahrenstufe = 'erheblich'
+                THEN 'substantial'
+        END AS hazard_level,
+        'complete' AS subprocesses_complete,    
+        'complete' AS sources_complete, 
+        (st_dump(geometrie)).geom AS impact_zone,
+        CAST('SO' AS VARCHAR) AS data_responsibility,
+        NULL AS comments
+    FROM 
+        afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung
+    UNION ALL 
+    SELECT
+        'landslide' AS main_process,
+        'not_in_danger' AS hazard_level,
+        case 
+            when erhebungsstand = 'beurteilt'
+            then 'assessed'
+            when erhebungsstand = 'beurteilung_nicht_noetig'
+            then 'assessment_not_necessary'
+        end as subprocesses_complete,
+        case 
+            when erhebungsstand = 'beurteilt'
+            then 'assessed'
+            when erhebungsstand = 'beurteilung_nicht_noetig'
+            then 'assessment_not_necessary'
+        end as sources_complete,
+        st_difference(erhebungsgebiet.geometrie,hauptprozess.geometrie) AS impact_zone,
+        CAST('SO' AS VARCHAR) AS data_responsibility,
+        NULL AS comments
+    FROM 
+        afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_rutschung erhebungsgebiet, 
+        (
+            SELECT 
+                st_union(geometrie) AS geometrie 
+            FROM 
+                afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung
+        ) hauptprozess
+)
+
+,water AS ( 
+    SELECT 
+        'water' AS main_process,
+        CASE
+            WHEN gefahrenstufe = 'restgefaehrdung'
+                THEN 'residual_hazard'
+            WHEN gefahrenstufe = 'gering'
+                THEN 'slight'
+            WHEN gefahrenstufe = 'mittel'
+                THEN 'mean'
+            WHEN gefahrenstufe = 'erheblich'
+                THEN 'substantial'
+        END AS hazard_level,
+        'complete' AS subprocesses_complete,    
+        'complete' AS sources_complete, 
+        (st_dump(geometrie)).geom AS impact_zone,
+        CAST('SO' AS VARCHAR) AS data_responsibility,
+        NULL AS comments
+    FROM 
+        afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser 
+    UNION ALL 
+    SELECT
+        'water' AS main_process,
+        'not_in_danger' AS hazard_level,
+        case 
+            when erhebungsstand = 'beurteilt'
+            then 'assessed'
+            when erhebungsstand = 'beurteilung_nicht_noetig'
+            then 'assessment_not_necessary'
+        end as subprocesses_complete,
+        case 
+            when erhebungsstand = 'beurteilt'
+            then 'assessed'
+            when erhebungsstand = 'beurteilung_nicht_noetig'
+            then 'assessment_not_necessary'
+        end as sources_complete,
+        st_difference(erhebungsgebiet.geometrie,hauptprozess.geometrie) AS impact_zone,
+        CAST('SO' AS VARCHAR) AS data_responsibility,
+        NULL AS comments
+    FROM 
+        afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_wasser erhebungsgebiet, 
+        (
+            SELECT 
+                st_union(geometrie) AS geometrie 
+            FROM 
+                afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser
+        ) hauptprozess   
+)
+    
+INSERT INTO 
+    afu_naturgefahren_mgdm_v1.hazard_mapping_hazard_area (
+        t_ili_tid,
+        main_process, 
+        hazard_level, 
+        subprocesses_complete, 
+        sources_complete, 
+        impact_zone, 
+        data_responsibility, 
+        "comments"
+    )
+    SELECT 
+        uuid_generate_v4() AS t_ili_tid,
+        main_process, 
+        hazard_level, 
+        subprocesses_complete, 
+        sources_complete, 
+        (st_dump(impact_zone)).geom AS impact_zone, 
+        data_responsibility, 
+        "comments" 
+    FROM 
+        rockfall 
+    UNION ALL 
+    SELECT 
+        uuid_generate_v4() AS t_ili_tid,
+        main_process, 
+        hazard_level, 
+        subprocesses_complete, 
+        sources_complete, 
+        (st_dump(impact_zone)).geom AS impact_zone, 
+        data_responsibility, 
+        "comments" 
+    FROM 
+        landslide 
+    UNION ALL 
+    SELECT 
+        uuid_generate_v4() AS t_ili_tid,
+        main_process, 
+        hazard_level, 
+        subprocesses_complete, 
+        sources_complete, 
+        (st_dump(impact_zone)).geom AS impact_zone, 
+        data_responsibility, 
+        "comments" 
+    FROM 
+        water 
+;
+
+UPDATE 
+    afu_naturgefahren_mgdm_v1.hazard_mapping_hazard_area 
+SET 
+    t_ili_tid = concat('_',t_ili_tid,'.so.ch')::text
+;

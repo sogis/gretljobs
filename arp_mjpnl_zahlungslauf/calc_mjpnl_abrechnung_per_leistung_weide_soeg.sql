@@ -23,7 +23,7 @@ WITH alle_weide_soeg AS (
         weide_soeg.vereinbarung = vereinbarung.t_id
     WHERE
         weide_soeg.mit_bewirtschafter_besprochen IS TRUE
-        AND vereinbarung.status_vereinbarung = 'aktiv' AND vereinbarung.bewe_id_geprueft IS TRUE
+        AND vereinbarung.status_vereinbarung = 'aktiv' AND vereinbarung.bewe_id_geprueft IS TRUE AND vereinbarung.ist_nutzungsvereinbarung IS NOT TRUE
         -- und berücksichtige nur die neusten (sofern mehrere existieren)
         AND weide_soeg.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_weide_soeg b WHERE b.mit_bewirtschafter_besprochen IS TRUE AND b.vereinbarung = weide_soeg.vereinbarung)
 ),
@@ -68,7 +68,7 @@ united_weide_soeg_leistungen AS (
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
         'Weide SöG: Faunabonus' AS leistung_beschrieb,
-        'per_stueck' AS abgeltungsart,
+        'pauschal' AS abgeltungsart,
         50 AS betrag_per_einheit,
         einstufungbeurteilungistzustand_anzahl_fauna AS anzahl_einheiten,
         einstufungbeurteilungistzustand_abgeltung_faunaliste_paschal AS betrag_total,
@@ -84,9 +84,12 @@ united_weide_soeg_leistungen AS (
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
-        left(('Weide SöG: Einstufung / Beurteilung Ist-Zustand (' || einstufungbeurteilungistzustand_weidenkategorie ||
-            CASE WHEN einstufungbeurteilungistzustand_struktur_optimal_beibehalten THEN ' + Struktur optimal beibehalten' ELSE '' END ||
-        ')'),255)
+        regexp_replace(
+            left(('Weide SöG: Einstufung / Beurteilung Ist-Zustand (' || einstufungbeurteilungistzustand_weidenkategorie ||
+                CASE WHEN einstufungbeurteilungistzustand_struktur_optimal_beibehalten THEN ' + Struktur optimal beibehalten' ELSE '' END ||
+            ')'),255),
+            E'[\n\r]+', ' ', 'g' 
+        )
         AS leistung_beschrieb,
         'per_ha' AS abgeltungsart,
         einstufungbeurteilungistzustand_abgeltung_ha AS betrag_per_einheit,
@@ -104,13 +107,16 @@ united_weide_soeg_leistungen AS (
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
-        left(('Weide SöG: Erschwernis (' ||
-            (SELECT CONCAT_WS(', ',
-                CASE WHEN erschwernis_massnahme1 THEN 'Massnahme 1: '||COALESCE(left(erschwernis_massnahme1_text,60),'') END,
-                CASE WHEN erschwernis_massnahme2 THEN 'Massnahme 2: '||COALESCE(left(erschwernis_massnahme2_text,60),'') END,
-                CASE WHEN erschwernis_massnahme3 THEN 'Massnahme 3: '||COALESCE(left(erschwernis_massnahme3_text,60),'') END
-            )) ||
-        ')'),255)
+        regexp_replace(
+            left(('Weide SöG: Erschwernis (' ||
+                (SELECT CONCAT_WS(', ',
+                    CASE WHEN erschwernis_massnahme1 THEN 'Massnahme 1: '||COALESCE(left(erschwernis_massnahme1_text,60),'') END,
+                    CASE WHEN erschwernis_massnahme2 THEN 'Massnahme 2: '||COALESCE(left(erschwernis_massnahme2_text,60),'') END,
+                    CASE WHEN erschwernis_massnahme3 THEN 'Massnahme 3: '||COALESCE(left(erschwernis_massnahme3_text,60),'') END
+                )) ||
+            ')'),255),
+            E'[\n\r]+', ' ', 'g' 
+        )
         AS leistung_beschrieb,
         'per_ha' AS abgeltungsart,
         erschwernis_abgeltung_ha AS betrag_per_einheit,
@@ -128,13 +134,16 @@ united_weide_soeg_leistungen AS (
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
         /* Indiviuelle Werte */
-        left(('Weide SöG: Artenförderung (' ||
-            (SELECT CONCAT_WS(', ',
-                CASE WHEN artenfoerderung_ff_zielart1 IS NOT NULL THEN 'Massnahme für '||artenfoerderung_ff_zielart1||': '||COALESCE(left(artenfoerderung_ff_zielart1_massnahme,40),'') END,
-                CASE WHEN artenfoerderung_ff_zielart2 IS NOT NULL THEN 'Massnahme für '||artenfoerderung_ff_zielart2||': '||COALESCE(left(artenfoerderung_ff_zielart2_massnahme,40),'') END,
-                CASE WHEN artenfoerderung_ff_zielart3 IS NOT NULL THEN 'Massnahme für '||artenfoerderung_ff_zielart3||': '||COALESCE(left(artenfoerderung_ff_zielart3_massnahme,40),'') END
-            )) ||
-        ')'),255)
+        regexp_replace(
+            left(('Weide SöG: Artenförderung (' ||
+                (SELECT CONCAT_WS(', ',
+                    CASE WHEN artenfoerderung_ff_zielart1 IS NOT NULL THEN 'Massnahme für '||artenfoerderung_ff_zielart1||': '||COALESCE(left(artenfoerderung_ff_zielart1_massnahme,40),'') END,
+                    CASE WHEN artenfoerderung_ff_zielart2 IS NOT NULL THEN 'Massnahme für '||artenfoerderung_ff_zielart2||': '||COALESCE(left(artenfoerderung_ff_zielart2_massnahme,40),'') END,
+                    CASE WHEN artenfoerderung_ff_zielart3 IS NOT NULL THEN 'Massnahme für '||artenfoerderung_ff_zielart3||': '||COALESCE(left(artenfoerderung_ff_zielart3_massnahme,40),'') END
+                )) ||
+            ')'),255),
+            E'[\n\r]+', ' ', 'g' 
+        )
         AS leistung_beschrieb,
         artenfoerderung_abgeltungsart AS abgeltungsart,
         artenfoerderung_abgeltung_total AS betrag_per_einheit,

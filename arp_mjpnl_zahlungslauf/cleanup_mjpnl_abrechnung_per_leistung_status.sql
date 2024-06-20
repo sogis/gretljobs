@@ -6,8 +6,7 @@ FROM ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
 WHERE 
     l.vereinbarung = vbg.t_id
     AND NOT (
-        vbg.status_vereinbarung = 'aktiv'
-        AND vbg.bewe_id_geprueft IS TRUE
+        vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE AND vbg.ist_nutzungsvereinbarung IS NOT TRUE
     )
     AND l.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer
     AND l.status_abrechnung = 'freigegeben'

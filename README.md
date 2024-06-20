@@ -91,6 +91,7 @@ git checkout -b branchname
 * Pfade nicht im Unix Style, sondern im mittels Java-Methoden Betriebssystem unabhängig angeben: ```Paths.get("var","www","maps")``` oder ```Paths.get("var/www/maps")```.
 * Pro Tabelle sollte eine SQL-Datei verwendet werden.
 * Bitte an den AGI SQL-Richtlinien orientieren.
+* `t_id` in aller Regel nicht von einem Schema in das andere übertragen (Typicherweise Edit-DB -> Pub-DB), damit diese sauber über die Sequenz im Zielschema vergeben wird. 
 * Variablen mit `def` definieren und nicht mit `ext{}`
 * Für den Zugriff auf Datenbanken und andere Ressourcen folgende Variablen verwenden:
   * `dbUriEdit`, `dbUserEdit`, `dbPwdEdit`
@@ -170,7 +171,7 @@ Die Datei `job.properties` kann folgende Eigenschaften des GRETL-Jobs enthalten:
 ```java
 logRotator.numToKeep=30
 triggers.cron=H H(1-3) * * *
-parameters.fileParam=filename.xtf
+parameters.stashedFile=myfilename.xyz
 parameters.stringParams=parameterName;default value;parameter description
 triggers.upstream=other_job_name
 authorization.permissions=gretl-users-barpa
@@ -181,7 +182,10 @@ Falls man alle Ausführungen aufbewahren möchte, kann man hier den Wert `unlimi
 
 Mit `triggers.cron` kann eingestellt werden, zu welchem Zeitpunkt der Job automatisch gestartet werden soll. Im Beispiel `H H(1-3) * * *` wird der Job jeden Tag irgendwann zwischen 01:00 Uhr und 03:59 Uhr ausgeführt. (Dokumentation der Schreibweise siehe https://github.com/jenkinsci/jenkins/blob/master/core/src/main/resources/hudson/triggers/TimerTrigger/help-spec.jelly). Wenn man diese Einstellung weglässt, wird der Job nie automatisch gestartet, und er muss manuell gestartet werden.
 
-Mit `parameters.fileParam` kann erreicht werden, dass ein  Benutzer beim Starten des Jobs eine Datei hochladen muss, die dann vom GRETL-Job verarbeitet wird. Es wird ein Dateiname (z.B. `filename.xtf`) oder Pfad (z.B. `data/filename.xtf`) verlangt, mit welchem im GRETL-Job auf die Datei zugegriffen werden kann.
+Mit `parameters.stashedFile` kann konfiguriert werden,
+dass ein  Benutzer beim Starten des Jobs eine Datei hochladen muss.
+Man muss hier einen Dateinamen (z.B. `data.xtf`) angeben;
+unter diesem Dateinamen kann dann der GRETL-Job auf die Datei zugreifen.
 
 Mit `parameters.stringParams` können Parameter definiert werden,
 für welche der Benutzer beim manuellen Start des Jobs Werte übergeben kann.
@@ -225,11 +229,9 @@ Allerdings können auch diejenigen Benutzer oder Gruppen, welche durch globale B
 
 Zudem kann mit der Eigenschaft `nodeLabel` bestimmt werden,
 auf welchem Node der Job ausgeführt werden soll.
-Möglich ist hier der Wert `gretl-2.2`,
+Möglich ist hier der Wert `gretl-2.4`,
 damit der Job auf einem Jenkins Agent
-mit GRETL Version 2.2 ausgeführt wird.
-(Im Moment zeigt allerdings auch der normale Jenkins Agent
-auf Version 2.2; es gibt also keinen Unterschied.)
+mit GRETL Version 2.4 ausgeführt wird.
 Diese Property dient primär dazu,
 dass bei einem grösseren Versionssprung von GRETL
 nicht alle Jobs gleichzeitig umgestellt werden müssen.
@@ -307,29 +309,116 @@ simiTokenServicePwd=
 ilivalidatorModeldir=%ITF_DIR;https://geo.so.ch/models/;%JAR_DIR/ilimodels
 ```
 
-### Entwicklungs-DBs starten
+### Entwicklungs-DBs nutzen
+
+#### Entwicklungs-DBs starten
 ```
 docker compose up -d
+```
+bzw.
+```
+COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose up -d
 ```
 Mit diesem Befehl werden zwei DB-Container gestartet,
 von denen einer eine *edit*-DB, der andere eine *pub*-DB enthält.
 
-_Alternative_: Entwicklungs-DBs aus dem _schema-jobs_-Verzeichnis heraus starten:
-```
-docker compose -f ../gretljobs/docker-compose.yml up -d
-```
+Mit der ersten Variante des Befehls startet man die Entwicklungs-DBs,
+wenn man sich im _gretljobs_-Verzeichnis befindet.
+Mit der zweiten Variante startet man sie,
+wenn man sich im _schema-jobs_-Verzeichnis befindet.
 
-Erläuterungen:
-* Alle Compose-Befehle können wahlweise
-  auch aus dem _schema-jobs_-Verzeichnis heraus gestartet werden;
-  hierzu muss man mit der Option `-f`
-  auf die Datei `docker-compose.yml` des Verzeichnis _gretljobs_ verweisen.
-  _Voraussetzung_: Die Ordner _gretljobs_ und _schema-jobs_ müssen sich
-  im gleichen übergeordneten Ordner befinden.
+Auch die weiter unten in diesem Kapitel angegebenen Befehle
+lassen sich auf diese Art
+jeweils auch aus dem _schema-jobs_-Verzeichnis heraus ausführen.
+Man muss in diesem Fall also dem Befehl
+die Umgebungsvariable `COMPOSE_FILE` voranstellen
+und so auf die Datei `docker-compose.yml` des Verzeichnis _gretljobs_ verweisen.
+
+_Voraussetzung, damit dies funktioniert_:
+Die Ordner _gretljobs_ und _schema-jobs_
+müssen sich im gleichen übergeordneten Ordner befinden.
+
+##### GRETL-Jobs, die eine DB für das Processing von Daten benötigen:
+```
+docker compose --profile processing up -d
+```
+So wird zusätzlich zur *edit*-DB und zur *pub*-DB
+auch eine *processing*-DB gestartet
+für GRETL-Jobs, die eine solche benötigen.
+
+**Wichtig**: In diesem Fall müssen auch die nachfolgenden Compose-Befehle
+jeweils mit der Option `--profice processing` aufgerufen werden,
+damit sie auch die Processing-DB mit einschliessen.
+
+#### Entwicklungs-DBs stoppen
+```
+docker compose stop
+```
+bzw.
+```
+COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose stop
+```
+So werden die Entwicklungs-DB-Container gestoppt.
+Die Daten der DBs bleiben erhalten,
+da sie in Docker-Volumes gespeichert sind,
+die hierbei nicht gelöscht werden.
+
+#### Entwicklungs-DBs stoppen und DB-Container löschen
+```
+docker compose down
+```
+bzw.
+```
+COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose down
+```
+Die Entwicklungs-DB-Container werden gestoppt, die DB-Container gelöscht
+und zugleich auch das von Docker Compose angelegte Docker-Netzwerk gelöscht.
+Die Daten der DBs bleiben aber auch in diesem Fall erhalten,
+weil die Docker-Volumes nicht gelöscht werden.
+
+#### Daten der Entwicklungs-DB-Container löschen
+```
+docker volume rm gretljobs_postgresql_data_edit gretljobs_postgresql_data_pub
+```
+Mit diesem Befehl werden die Volumes der Entwicklungs-DB-Container
+und damit die Daten in den Entwicklungs-DBs gelöscht.
+(Die DB-Container müssen vorgängig mit dem Befehl `docker compose down`
+ebenfalls gelöscht werden.)
+
+#### Verbindungsparameter für die Entwicklungs-DBs
+Die Entwicklungs-DBs sind z.B. aus _DBeaver_ oder _psql_
+mit folgenden Verbindungsparametern erreichbar:
+
+*Edit-DB:*
+* Hostname: `localhost`
+* Port: `54321`
+* DB-Name: `edit`
+* Benutzer mit DDL-Rechten: `ddluser` (zum Anlegen von Schemen, Tabellen usw.)
+* Benutzer mit DML-Rechten: `dmluser` (für Lese- und Schreibzugriff)
+* Passwörter: lauten jeweils gleich wie der Benutzername
+
+*Publikations-DB:*
+* Hostname: `localhost`
+* Port: `54322`
+* DB-Name: `pub`
+* Benutzer mit DDL-Rechten: `ddluser` (zum Anlegen von Schemen, Tabellen usw.)
+* Benutzer mit DML-Rechten: `dmluser` (für Lese- und Schreibzugriff)
+* Passwörter: lauten jeweils gleich wie der Benutzername
+
+*Processing-DB:*
+* Hostname: `localhost`
+* Port: `54323`
+* DB-Name: `processing`
+* Benutzer mit Superuser-Rechten: `processing`
+* Passwort: lautet gleich wie der Benutzername
 
 ### GRETL-Job ausführen
 ```
 docker compose run --rm -u $UID gretl --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
+```
+bzw.
+```
+COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose run --rm -u $UID gretl --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
 ```
 Dieser Befehl startet den GRETL-Job `MY_JOB_NAME`.
 
@@ -365,7 +454,15 @@ Erläuterungen:
 docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
   gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
 ```
+bzw.
+```
+COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
+  gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
+```
 Dieser Befehl startet den Schema-Job im Ordner `MY_TOPIC_NAME\MY_SCHEMA_DIRECTORY_NAME`.
+
+_Voraussetzung_: Die Ordner _gretljobs_ und _schema-jobs_ müssen sich
+im gleichen übergeordneten Ordner befinden.
 
 Beispiel:
 ```
@@ -374,7 +471,7 @@ docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schem
 ```
 Beispiel für Start desselben Schema-Jobs aus dem _schema-jobs_-Verzeichnis heraus:
 ```
-docker compose -f ../gretljobs/docker-compose.yml run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
+COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
   gretl -PtopicName=agi_mopublic -PschemaDirName=schema_pub createSchema configureSchema
 ```
 
@@ -406,60 +503,9 @@ Erläuterungen:
     gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
   ```
 
-### Entwicklungs-DBs stoppen
-```
-docker compose stop
-```
-So werden die Entwicklungs-DB-Container gestoppt.
-Die Daten der DBs bleiben erhalten,
-da sie in Docker-Volumes gespeichert sind,
-die hierbei nicht gelöscht werden.
+### Daten in die Entwicklungs-DBs importieren
 
-### Entwicklungs-DBs stoppen und DB-Container löschen
-```
-docker compose down
-```
-Die Entwicklungs-DB-Container werden gestoppt, die DB-Container gelöscht
-und zugleich auch das von Docker Compose angelegte Docker-Netzwerk gelöscht.
-Die Daten der DBs bleiben aber auch in diesem Fall erhalten,
-Weil die Docker-Volumes nicht gelöscht werden.
-
-### Daten der Entwicklungs-DB-Container löschen
-```
-docker volume prune --all --filter 'label=com.docker.compose.project=gretljobs'
-```
-Mit diesem Befehl werden die Volumes der Entwicklungs-DB-Container
-und damit die Daten in den Entwicklungs-DBs gelöscht.
-(Die DB-Container müssen vorgängig mit dem Befehl `docker compose down`
-ebenfalls gelöscht werden.)
-
-Erläuterungen:
-
-* Der *Value* des Labels `com.docker.compose.project`
-  ist nicht zwingend immer `gretljobs`,
-  sondern er ist vom Verzeichnisnamen abhängig,
-  in welchem `docker-compose.yml` liegt;
-  man kann ihn durch `docker volume inspect VOLUMENAME` herausfinden.
-
-### Verbindungsparameter für die Entwicklungs-DBs
-Die Entwicklungs-DBs sind z.B. aus _DBeaver_ oder _psql_
-mit folgenden Verbindungsparametern erreichbar:
-
-*Edit-DB:*
-* Hostname: `localhost`
-* Port: `54321`
-* DB-Name: `edit`
-* Benutzer mit DDL-Rechten: `ddluser` (zum Anlegen von Schemen, Tabellen usw.)
-* Benutzer mit DML-Rechten: `dmluser` (für Lese- und Schreibzugriff)
-* Passwörter: lauten jeweils gleich wie der Benutzername
-
-*Publikations-DB:*
-* Hostname: `localhost`
-* Port: `54322`
-* DB-Name: `pub`
-* Benutzer mit DDL-Rechten: `ddluser` (zum Anlegen von Schemen, Tabellen usw.)
-* Benutzer mit DML-Rechten: `dmluser` (für Lese- und Schreibzugriff)
-* Passwörter: lauten jeweils gleich wie der Benutzername
+TODO
 
 ### Hinweise zu den DB-Containern
 #### Die Rollen (Benutzer und Gruppen) der produktiven DBs importieren
