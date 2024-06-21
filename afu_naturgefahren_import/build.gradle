@@ -30,7 +30,7 @@ task validateData(type: IliValidator) {
     dataFiles = file(uploadFolder+'/'+xtfFilename)
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     models = verifikationsModelName
-    configFile = SO_AFU_Naturgefahren_Verifikation.ini
+    configFile = 'SO_AFU_Naturgefahren_Verifikation.ini'
     allObjectsAccessible = true
     failOnError = true
 }
