@@ -10,19 +10,24 @@ defaultTasks 'dbImport_empty_beurteilungsgebiet'
 // def Auftragskennung = 'Himmelried'
 ///////////////////////////////////
 
-string[] split = xtfFilename.split(".")
+if (!xtfFilename || xtfFilename.isEmpty()) {
+    throw new IllegalArgumentException("xtfFilename is required and cannot be empty")
+}
+
+String[] split = xtfFilename.split("\\.")
 def auftragskennung = split[0]
 def uploadFolder = '.'
 def schemaName = 'afu_naturgefahren_v2'
 def modelName = 'SO_AFU_Naturgefahren_20240515'
-def verifikationsModelName = "SO_AFU_Naturgefahren_20240515_Validierung_20240515"
+def verifikationsModelName = "SO_AFU_Naturgefahren_Validierung_20240515"
 
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
 
+print auftragskennung;
 
 task validateData(type: IliValidator) {
     description = "Validiert die Daten und überprüft insbesondere die Auftragskennung"
-    dataFiles = file(uploadFolder+ xtfFilename)
+    dataFiles = file(uploadFolder+'/'+xtfFilename)
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     models = verifikationsModelName
     allObjectsAccessible = true
@@ -37,7 +42,7 @@ task dbImport(type: Ili2pgReplace, dependsOn: 'validateData') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "afu_naturgefahren_v2"
     models = modelName
-    dataFile = file(uploadFolder+ xtfFilename)
+    dataFile = file(uploadFolder+'/'+xtfFilename)
     dataset = auftragskennung
     disableValidation = true
     
