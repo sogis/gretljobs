@@ -53,7 +53,7 @@ task truncate_tables(type: SqlExecutor, dependsOn: make_staging_schema) {
 
 task make_naturgefahren_schema(type: Ili2pgImportSchema, dependsOn: truncate_tables){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    models = "SO_AFU_Naturgefahren_20240501"
+    models = "SO_AFU_Naturgefahren_20240515"
     dbschema = "afu_naturgefahren_v1"
     beautifyEnumDispName = true
     strokeArcs = true
@@ -83,7 +83,7 @@ task make_alte_dokumente_schema(type: Ili2pgImportSchema, dependsOn: make_naturg
 task export_natgef_daten(type: Ili2pgExport, dependsOn: make_alte_dokumente_schema) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "afu_naturgefahren_v1"
-    models = "SO_AFU_Naturgefahren_20240501"
+    models = "SO_AFU_Naturgefahren_20240515"
     disableValidation = true
     dataset = auftragskennung
     dataFile = file(Paths.get(pathToTempFolder, auftragskennung+".xtf"))
