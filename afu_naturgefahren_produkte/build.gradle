@@ -82,7 +82,7 @@ task make_alte_dokumente_schema(type: Ili2pgImportSchema, dependsOn: make_naturg
 
 task export_natgef_daten(type: Ili2pgExport, dependsOn: make_alte_dokumente_schema) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = "afu_naturgefahren_v1"
+    dbschema = "afu_naturgefahren_v2"
     models = "SO_AFU_Naturgefahren_20240515"
     disableValidation = true
     dataset = auftragskennung
