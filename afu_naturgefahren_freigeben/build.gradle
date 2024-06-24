@@ -6,11 +6,11 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'freigeben'
 
 // NUR IN DER ENTWICKLUNGSPHASE ///
-def Auftragskennung = 'Himmelried'
+// def auftragskennung = 'Himmelried'
 ///////////////////////////////////
 
 task freigeben(type: SqlExecutor) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlParameters = [kennung: "'"+Auftragskennung+"'"]
+    sqlParameters = [kennung: "'"+auftragskennung+"'"]
     sqlFiles = ['freigeben.sql']
 }

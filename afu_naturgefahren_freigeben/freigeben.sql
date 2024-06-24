@@ -3,7 +3,7 @@ with dataset_id as (
     select
         t_id 
     from 
-        afu_naturgefahren_v1.t_ili2db_dataset 
+        afu_naturgefahren_v2.t_ili2db_dataset 
     where 
         datasetname = ${kennung}
 ),
@@ -12,13 +12,13 @@ main_dataset as (
     select 
         t_id 
     from 
-        afu_naturgefahren_v1.t_ili2db_dataset
+        afu_naturgefahren_v2.t_ili2db_dataset
     where 
         datasetname = 'main'
 )
 
 update 
-    afu_naturgefahren_v1.t_ili2db_basket 
+    afu_naturgefahren_v2.t_ili2db_basket 
 set 
     dataset = main_dataset.t_id 
 from 
@@ -29,7 +29,7 @@ where
 ;
 
 delete from 
-    afu_naturgefahren_v1.t_ili2db_dataset
+    afu_naturgefahren_v2.t_ili2db_dataset
 where 
     datasetname = ${kennung}
 ;
