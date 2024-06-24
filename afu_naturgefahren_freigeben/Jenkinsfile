@@ -9,7 +9,7 @@ pipeline {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
-                        sh "gretl -Pbfsnr=${params.auftragskennung}"
+                        sh "gretl -Pauftragskennung=${params.auftragskennung}"
                     }
                 }
             }
