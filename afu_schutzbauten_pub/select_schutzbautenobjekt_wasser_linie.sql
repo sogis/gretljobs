@@ -19,7 +19,7 @@ WITH schutzbauten_doku_ds AS (
         sd.schutzbaute_wasser_eindolung,
         sd.schutzbaute_wasser_damm,
         sd.schutzbaute_wasser_andere_werksart_punkt,
-        sd.schutzbaute_wasser_uferdeckwerk_ufermauer_lebendverbau,
+        sd.schutzbaute_wasser_uferdeckwerk_ufermauer,
         sd.schutzbaute_wasser_furt,
         sd.schutzbaute_wasser_rueckhaltebauwerk,
         sd.schutzbaute_wasser_buhne,
@@ -467,7 +467,7 @@ SELECT
     wt.dispname AS wirksamkeit_txt,
     bemerkungen,
     t.dokumente_json AS dokumente
-FROM afu_schutzbauten_v1.wasser_uferdeckwerk_ufermauer_lebendverbau wuul
+FROM afu_schutzbauten_v1.wasser_uferdeckwerk_ufermauer wuul
 JOIN
     afu_schutzbauten_v1.baumaterial_typ bt
         ON bt.ilicode = wuul.material
@@ -483,7 +483,7 @@ JOIN
 LEFT JOIN
     (
         SELECT
-            sd.schutzbaute_wasser_uferdeckwerk_ufermauer_lebendverbau as schutzbaute_t_id,
+            sd.schutzbaute_wasser_uferdeckwerk_ufermauer as schutzbaute_t_id,
             array_to_json(
                 array_agg(
                     json_build_object(
@@ -496,7 +496,7 @@ LEFT JOIN
             )::jsonb AS dokumente_json
         FROM
             schutzbauten_doku_ds sd
-        WHERE sd.schutzbaute_wasser_uferdeckwerk_ufermauer_lebendverbau IS NOT NULL
+        WHERE sd.schutzbaute_wasser_uferdeckwerk_ufermauer IS NOT NULL
         GROUP BY schutzbaute_t_id
     ) AS t
         ON t.schutzbaute_t_id = wuul.t_id
@@ -544,7 +544,7 @@ SELECT
     wt.dispname AS wirksamkeit_txt,
     bemerkungen,
     t.dokumente_json AS dokumente
-FROM afu_schutzbauten_v1.wasser_uferdeckwerk_ufermauer_lebendverbau wuul
+FROM afu_schutzbauten_v1.wasser_uferdeckwerk_ufermauer wuul
 JOIN
     afu_schutzbauten_v1.baumaterial_typ bt
         ON bt.ilicode = wuul.material
@@ -560,7 +560,7 @@ JOIN
 LEFT JOIN
     (
         SELECT
-            sd.schutzbaute_wasser_uferdeckwerk_ufermauer_lebendverbau as schutzbaute_t_id,
+            sd.schutzbaute_wasser_uferdeckwerk_ufermauer as schutzbaute_t_id,
             array_to_json(
                 array_agg(
                     json_build_object(
@@ -573,89 +573,12 @@ LEFT JOIN
             )::jsonb AS dokumente_json
         FROM
             schutzbauten_doku_ds sd
-        WHERE sd.schutzbaute_wasser_uferdeckwerk_ufermauer_lebendverbau IS NOT NULL
+        WHERE sd.schutzbaute_wasser_uferdeckwerk_ufermauer IS NOT NULL
         GROUP BY schutzbaute_t_id
     ) AS t
         ON t.schutzbaute_t_id = wuul.t_id
 WHERE
     wuul.art = 'Ufermauer_Holzlaengsverbau'
-
-UNION
-
---------------------------------------------------------------------------------
---
--- Hauptprozess Wasser
--- Schutz vor Seitenerosion
--- Lebendverbau
---
---------------------------------------------------------------------------------
-SELECT
-    geometrie,
-    schutzbauten_id,
-    'Wasser' AS hauptprozess,
-    'Wasser' AS hauptprozess_txt,
-    false AS weiterer_prozess_wasser,
-    false AS weiterer_prozess_wasser_txt,
-    weiterer_prozess_rutschung,
-    weiterer_prozess_rutschung AS weiterer_prozess_rutschung_txt,
-    weiterer_prozess_sturz,
-    weiterer_prozess_sturz AS weiterer_prozess_sturz_txt,
-    'Wasser.Schutz_vor_Seitenerosion.Lebendverbau' AS werksart,
-    'Schutz vor Seitenerosion: Lebendverbau' AS werksart_txt,
-    material,
-    bt.dispname AS material_txt,
-    laenge,
-    NULL::NUMERIC AS breite, -- nicht vorhanden
-    hoehe,
-    NULL::NUMERIC AS hoehe_zum_umland, -- nicht vorhanden
-    NULL::NUMERIC AS flaeche, -- nicht vorhanden
-    NULL::NUMERIC AS rueckhaltevolumen, -- nicht vorhanden
-    erstellungsjahr,
-    erhaltungsverantwortung_kategorie,
-    kt.dispname AS erhaltungsverantwortung_kategorie_txt,
-    erhaltungsverantwortung_name,
-    zustand,    
-    zt.dispname AS zustand_txt,
-    zustandsbeurteilung_jahr,
-    wirksamkeit,
-    wt.dispname AS wirksamkeit_txt,
-    bemerkungen,
-    t.dokumente_json AS dokumente
-FROM afu_schutzbauten_v1.wasser_uferdeckwerk_ufermauer_lebendverbau wuul
-JOIN
-    afu_schutzbauten_v1.baumaterial_typ bt
-        ON bt.ilicode = wuul.material
-JOIN
-    afu_schutzbauten_v1.koerperschaft_typ kt
-        ON kt.ilicode = wuul.erhaltungsverantwortung_kategorie
-JOIN
-    afu_schutzbauten_v1.beurteilung_typ zt
-        ON zt.ilicode = wuul.zustand
-JOIN
-    afu_schutzbauten_v1.wirksamkeit_typ wt
-        ON wt.ilicode = wuul.wirksamkeit
-LEFT JOIN
-    (
-        SELECT
-            sd.schutzbaute_wasser_uferdeckwerk_ufermauer_lebendverbau as schutzbaute_t_id,
-            array_to_json(
-                array_agg(
-                    json_build_object(
-                        '@type', sd.ili_type,
-                        'Titel', sd.titel,
-                        'Beschrieb', sd.beschrieb,
-                        'DokumentImWeb', sd.dokumentimweb
-                    )
-                )
-            )::jsonb AS dokumente_json
-        FROM
-            schutzbauten_doku_ds sd
-        WHERE sd.schutzbaute_wasser_uferdeckwerk_ufermauer_lebendverbau IS NOT NULL
-        GROUP BY schutzbaute_t_id
-    ) AS t
-        ON t.schutzbaute_t_id = wuul.t_id
-WHERE
-    wuul.art = 'Lebendverbau'
 
 UNION
 

@@ -19,7 +19,7 @@ WITH schutzbauten_doku_ds AS (
         sd.schutzbaute_wasser_eindolung,
         sd.schutzbaute_wasser_damm,
         sd.schutzbaute_wasser_andere_werksart_punkt,
-        sd.schutzbaute_wasser_uferdeckwerk_ufermauer_lebendverbau,
+        sd.schutzbaute_wasser_uferdeckwerk_ufermauer,
         sd.schutzbaute_wasser_furt,
         sd.schutzbaute_wasser_rueckhaltebauwerk,
         sd.schutzbaute_wasser_buhne,
