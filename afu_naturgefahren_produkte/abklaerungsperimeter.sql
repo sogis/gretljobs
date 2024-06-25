@@ -19,7 +19,7 @@ INSERT INTO afu_naturgefahren_staging_v1.abklaerungsperimeter (
 )
 
 SELECT 
-    t_basket,
+    basket.t_id as t_basket,
     teilprozess, 
     erhebungsstand,
     geometrie, 
@@ -32,7 +32,7 @@ from
     union all 
     
 SELECT 
-    t_basket,
+    basket.t_id as t_basket,
     teilprozess, 
     erhebungsstand,
     geometrie, 
@@ -45,7 +45,7 @@ from
     union all 
     
 SELECT 
-    t_basket,
+    basket.t_id as t_basket,
     teilprozess, 
     erhebungsstand,
     geometrie, 

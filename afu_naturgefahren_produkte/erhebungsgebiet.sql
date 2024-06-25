@@ -123,7 +123,7 @@ INSERT INTO
         kommentar
 )
 select 
-    t_basket,
+    basket.t_id as t_basket,
     poly AS flaeche,
     'SO' AS datenherr,
     coalesce(status_ueberschwemmung, 'nicht_beurteilt') as fl_state_flooding,
