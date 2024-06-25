@@ -7,12 +7,12 @@ SELECT
     datenherkunft, 
     auftrag_neudaten
 FROM 
-    afu_naturgefahren_staging_v1.erhebungsgebiet erhebungsgebiet
+    afu_naturgefahren_staging_v1.abklaerungsperimeter abklaerungsperimeter
 left join 
     afu_naturgefahren_staging_v1.teilprozess_quellen quelle
     on 
-    erhebungsgebiet.teilprozess = quelle.ilicode 
+    abklaerungsperimeter.teilprozess = quelle.ilicode 
 left join 
     afu_naturgefahren_staging_v1.beurteilung_einfach_typ beurteilung 
     on 
-    erhebungsgebiet.erhebungsstand = beurteilung.ilicode
+    abklaerungsperimeter.erhebungsstand = beurteilung.ilicode
