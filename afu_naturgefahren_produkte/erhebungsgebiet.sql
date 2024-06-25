@@ -97,7 +97,6 @@ lines as (
 
 INSERT INTO 
     afu_naturgefahren_staging_v1.erhebungsgebiet (
-        t_ili_tid,
         flaeche, 
         datenherr, 
         status_ueberschwemmung, 
@@ -114,7 +113,6 @@ INSERT INTO
 )
 
 select 
-    concat('_',uuid_generate_v4(),'.so.ch')::text AS t_ili_tid,
     poly AS flaeche,
     'SO' AS datenherr,
     coalesce(status_ueberschwemmung, 'nicht_beurteilt') as fl_state_flooding,
