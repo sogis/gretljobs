@@ -108,6 +108,7 @@ basket as (
 
 INSERT INTO 
     afu_naturgefahren_staging_v1.erhebungsgebiet (
+        t_basket,
         flaeche, 
         datenherr, 
         status_ueberschwemmung, 
@@ -123,7 +124,7 @@ INSERT INTO
         kommentar
 )
 select 
---    basket.t_id as t_basket,
+    basket.t_id as t_basket,
     poly AS flaeche,
     'SO' AS datenherr,
     coalesce(status_ueberschwemmung, 'nicht_beurteilt') as fl_state_flooding,
@@ -139,7 +140,7 @@ select
     NULL AS kommentar
 from 
     attribute_agg
- --   ,t_basket
+    ,t_basket
 ;
 
 update afu_naturgefahren_staging_v1.erhebungsgebiet 
