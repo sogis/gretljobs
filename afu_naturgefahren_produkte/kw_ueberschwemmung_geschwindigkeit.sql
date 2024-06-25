@@ -24,10 +24,10 @@ INSERT INTO
 SELECT 
     basket.t_id as t_basket, 
     case 
-    	when geschwindigkeit.jaehrlichkeit = 'J_30' then 30
-    	when geschwindigkeit.jaehrlichkeit = 'J_100' then 100
-    	when geschwindigkeit.jaehrlichkeit = 'J_300' then 300
-    	when geschwindigkeit.jaehrlichkeit = 'Restgefaehrdung' then -1 
+    	when geschwindigkeit.jaehrlichkeit = 'j_30' then 30
+    	when geschwindigkeit.jaehrlichkeit = 'j_100' then 100
+    	when geschwindigkeit.jaehrlichkeit = 'j_300' then 300
+    	when geschwindigkeit.jaehrlichkeit = 'restgefaehrdung' then -1 
     end as jaehrlichkeit,
     geschwindigkeit.v as fliessgeschwindigkeit, 
     quelle.kennung as prozessquelle, 

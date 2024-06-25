@@ -53,7 +53,7 @@ task truncate_tables(type: SqlExecutor, dependsOn: make_staging_schema) {
 
 task make_naturgefahren_schema(type: Ili2pgImportSchema, dependsOn: truncate_tables){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    models = "SO_AFU_Naturgefahren_20240501"
+    models = "SO_AFU_Naturgefahren_20240515"
     dbschema = "afu_naturgefahren_v1"
     beautifyEnumDispName = true
     strokeArcs = true
@@ -82,8 +82,8 @@ task make_alte_dokumente_schema(type: Ili2pgImportSchema, dependsOn: make_naturg
 
 task export_natgef_daten(type: Ili2pgExport, dependsOn: make_alte_dokumente_schema) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = "afu_naturgefahren_v1"
-    models = "SO_AFU_Naturgefahren_20240501"
+    dbschema = "afu_naturgefahren_v2"
+    models = "SO_AFU_Naturgefahren_20240515"
     disableValidation = true
     dataset = auftragskennung
     dataFile = file(Paths.get(pathToTempFolder, auftragskennung+".xtf"))
@@ -431,21 +431,26 @@ task ufererosion(type: SqlExecutor, dependsOn: fliesstiefen_altdaten_copy) {
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
-// alte Ufererosionen nicht in diese Klasse. Sie sind in der GK Hauptprozess Wasser drin!
-//
-//task ufererosion_altdaten_copy(type: SqlExecutor, dependsOn: ufererosion) {
-//    description = "Kopieren der alten Daten der Ufererosion"
-//    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-//    sqlFiles = ['ufererosion_altdaten_copy.sql']
-//}
 
-// ERHEBUNGSGEBIET 
+task ufererosion_altdaten_copy(type: SqlExecutor, dependsOn: ufererosion) {
+    description = "Kopieren der alten Daten der Ufererosion"
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['ufererosion_altdaten_copy.sql']
+}
 
-task erhebungsgebiet(type: SqlExecutor, dependsOn: ufererosion) {
-    description = "Kopieren der Erhebungsgebiete"
+// Abklärungsperimeter und Erhebungsgebiet
+
+task abklaerungsperimeter(type: SqlExecutor, dependsOn: ufererosion_altdaten_copy) {
+    description = "Kopieren der Abklärungsperimeter"
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['abklaerungsperimeter.sql']
+    sqlParameters = [kennung: "'"+auftragskennung+"'"]
+}
+
+task erhebungsgebiet(type: SqlExecutor, dependsOn: abklaerungsperimeter) {
+    description = "Berechnen und kopieren der Erhebungsgebiete"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['erhebungsgebiet.sql']
-    sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
 // Dokumente pro Gemeinden 
@@ -511,6 +516,7 @@ task copy_alle_natgef_produkte(type: Db2Db, dependsOn:  truncate_edit_db_tables)
     transferSets = [
             new TransferSet('copy_to_edit/publish_dokumente.sql','afu_naturgefahren_staging_v1.dokumente_pro_gemeinde', true),
             new TransferSet('copy_to_edit/publish_erhebungsgebiet.sql','afu_naturgefahren_staging_v1.erhebungsgebiet', true),
+            new TransferSet('copy_to_edit/publish_abklaerungsperimeter.sql','afu_naturgefahren_staging_v1.abklaerungsperimeter', true),
             new TransferSet('copy_to_edit/publish_fliessrichtung.sql','afu_naturgefahren_staging_v1.fliessrichtung', true),
             new TransferSet('copy_to_edit/publish_fliesstiefen.sql','afu_naturgefahren_staging_v1.fliesstiefen', true),
             new TransferSet('copy_to_edit/publish_gk_hauptprozess_rutschung.sql','afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung', true),

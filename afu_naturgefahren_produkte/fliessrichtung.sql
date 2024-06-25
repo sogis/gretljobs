@@ -44,10 +44,10 @@ INSERT INTO afu_naturgefahren_staging_v1.fliessrichtung (
 SELECT 
     basket.t_id as t_basket, 
     case 
-    	when richtung.jaehrlichkeit = 'J_30' then '30'
-    	when richtung.jaehrlichkeit = 'J_100' then '100'
-    	when richtung.jaehrlichkeit = 'J_300' then '300'
-    	when richtung.jaehrlichkeit = 'Restgefaehrdung' then '-1' 
+    	when richtung.jaehrlichkeit = 'j_30' then '30'
+    	when richtung.jaehrlichkeit = 'j_100' then '100'
+    	when richtung.jaehrlichkeit = 'j_300' then '300'
+    	when richtung.jaehrlichkeit = 'restgefaehrdung' then '-1' 
     end as jaehrlichkeit, 
     richtung.azimuth as fliessrichtung, 
     prozessquelle.kennung as prozessquelle_neudaten, 
