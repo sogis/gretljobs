@@ -140,7 +140,7 @@ select
     NULL AS kommentar
 from 
     attribute_agg
-    ,t_basket
+    ,basket
 ;
 
 update afu_naturgefahren_staging_v1.erhebungsgebiet 
