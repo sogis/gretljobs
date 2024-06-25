@@ -431,21 +431,26 @@ task ufererosion(type: SqlExecutor, dependsOn: fliesstiefen_altdaten_copy) {
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
-// alte Ufererosionen nicht in diese Klasse. Sie sind in der GK Hauptprozess Wasser drin!
-//
-//task ufererosion_altdaten_copy(type: SqlExecutor, dependsOn: ufererosion) {
-//    description = "Kopieren der alten Daten der Ufererosion"
-//    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-//    sqlFiles = ['ufererosion_altdaten_copy.sql']
-//}
 
-// ERHEBUNGSGEBIET 
+task ufererosion_altdaten_copy(type: SqlExecutor, dependsOn: ufererosion) {
+    description = "Kopieren der alten Daten der Ufererosion"
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['ufererosion_altdaten_copy.sql']
+}
 
-task erhebungsgebiet(type: SqlExecutor, dependsOn: ufererosion) {
-    description = "Kopieren der Erhebungsgebiete"
+// Abklärungsperimeter und Erhebungsgebiet
+
+task abklaerungsperimeter(type: SqlExecutor, dependsOn: ufererosion_altdaten_copy) {
+    description = "Kopieren der Abklärungsperimeter"
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['abklaerungsperimeter.sql']
+    sqlParameters = [kennung: "'"+auftragskennung+"'"]
+}
+
+task erhebungsgebiet(type: SqlExecutor, dependsOn: abklaerungsperimeter) {
+    description = "Berechnen und kopieren der Erhebungsgebiete"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['erhebungsgebiet.sql']
-    sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
 // Dokumente pro Gemeinden 
