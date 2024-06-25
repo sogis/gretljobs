@@ -464,7 +464,7 @@ INSERT INTO
         zustand,
         zustandsbeurteilung_jahr
     FROM
-        afu_schutzbauten_v1.wasser_uferdeckwerk_ufermauer_lebendverbau t
+        afu_schutzbauten_v1.wasser_uferdeckwerk_ufermauer t
     JOIN
         (
             SELECT
@@ -473,7 +473,7 @@ INSERT INTO
                 (ST_Dump(geometrie)).path[1] AS geom_idx,
                 ST_NumGeometries(geometrie) AS geom_anzahl
             FROM
-                afu_schutzbauten_v1.wasser_uferdeckwerk_ufermauer_lebendverbau 
+                afu_schutzbauten_v1.wasser_uferdeckwerk_ufermauer 
         ) AS t_dump
         ON t.t_id = t_dump.t_id
     WHERE
@@ -521,7 +521,7 @@ INSERT INTO
         zustand,
         zustandsbeurteilung_jahr
     FROM
-        afu_schutzbauten_v1.wasser_uferdeckwerk_ufermauer_lebendverbau t
+        afu_schutzbauten_v1.wasser_uferdeckwerk_ufermauer t
     JOIN
         (
             SELECT
@@ -530,68 +530,11 @@ INSERT INTO
                 (ST_Dump(geometrie)).path[1] AS geom_idx,
                 ST_NumGeometries(geometrie) AS geom_anzahl
             FROM
-                afu_schutzbauten_v1.wasser_uferdeckwerk_ufermauer_lebendverbau 
+                afu_schutzbauten_v1.wasser_uferdeckwerk_ufermauer 
         ) AS t_dump
         ON t.t_id = t_dump.t_id
     WHERE
         t.art = 'Ufermauer_Holzlaengsverbau'
-
-    UNION
-
---------------------------------------------------------------------------------
---
--- Hauptprozess Wasser
--- Schutz vor Seitenerosion
--- Uferdeckwerk
---
---------------------------------------------------------------------------------
-    SELECT
-        NULL::geometry AS geometrie_punkt,
-        geometrie_linie,
-        NULL::geometry AS geometrie_polygon,
-        'Kantone.SO' AS datenherr,
-        CASE WHEN geom_anzahl > 1 THEN
-            schutzbauten_id || '-' || geom_idx
-        ELSE
-            schutzbauten_id
-        END AS schutzbauten_id,
-        'Einzelwerk' AS aggregierung,
-        'Wasser' AS hauptprozess,
-        false AS weiterer_prozess_wasser,
-        weiterer_prozess_rutschung,
-        weiterer_prozess_sturz,
-        false AS weiterer_prozess_lawine,
-        'Wasser.Schutz_vor_Seitenerosion.Lebendverbau' AS werksart,
-        material,
-        laenge,
-        NULL::NUMERIC AS breite,
-        hoehe,
-        NULL::NUMERIC AS hoehe_zum_umland, -- nicht vorhanden
-        NULL::NUMERIC AS flaeche, -- nicht vorhanden
-        NULL::NUMERIC AS rueckhaltevolumen, -- nicht vorhanden
-        NULL::NUMERIC AS anzahl,
-        NULL::NUMERIC AS gesamtlaenge,
-        NULL::NUMERIC AS gesamtflaeche,
-        erstellungsjahr,
-        erhaltungsverantwortung_kategorie,
-        erhaltungsverantwortung_name,
-        zustand,
-        zustandsbeurteilung_jahr
-    FROM
-        afu_schutzbauten_v1.wasser_uferdeckwerk_ufermauer_lebendverbau t
-    JOIN
-        (
-            SELECT
-                t_id,
-                (ST_Dump(geometrie)).geom AS geometrie_linie,
-                (ST_Dump(geometrie)).path[1] AS geom_idx,
-                ST_NumGeometries(geometrie) AS geom_anzahl
-            FROM
-                afu_schutzbauten_v1.wasser_uferdeckwerk_ufermauer_lebendverbau 
-        ) AS t_dump
-        ON t.t_id = t_dump.t_id
-    WHERE
-        t.art = 'Lebendverbau'
 
     UNION
 
