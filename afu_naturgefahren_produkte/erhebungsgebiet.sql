@@ -3,7 +3,7 @@ lines as (
   select 
     st_union(st_boundary(geometrie)) as geometrie
   from
-    afu_naturgefahren_staging_v1.erhebungsgebiet 
+    afu_naturgefahren_staging_v1.abklaerungsperimeter
 )
 
 ,splited AS (
@@ -31,7 +31,7 @@ lines as (
         erhebungsstand,
         teilprozess
     from 
-        afu_naturgefahren_staging_v1.erhebungsgebiet
+        afu_naturgefahren_staging_v1.abklaerungsperimeter
 )
 
 ,attribute_agg as (
@@ -134,11 +134,11 @@ from
 ;
 
 update afu_naturgefahren_staging_v1.erhebungsgebiet 
-set area = st_reducePrecision(area,0.001)
+set flaeche = st_reducePrecision(flaeche,0.001)
 ;
 
 delete from afu_naturgefahren_staging_v1.erhebungsgebiet 
-where st_isempty(area) = true
+where st_isempty(flaeche) = true
 ; 
 
 
