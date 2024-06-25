@@ -516,6 +516,7 @@ task copy_alle_natgef_produkte(type: Db2Db, dependsOn:  truncate_edit_db_tables)
     transferSets = [
             new TransferSet('copy_to_edit/publish_dokumente.sql','afu_naturgefahren_staging_v1.dokumente_pro_gemeinde', true),
             new TransferSet('copy_to_edit/publish_erhebungsgebiet.sql','afu_naturgefahren_staging_v1.erhebungsgebiet', true),
+            new TransferSet('copy_to_edit/publish_abklaerungsperimeter.sql','afu_naturgefahren_staging_v1.abklaerungsperimeter', true),
             new TransferSet('copy_to_edit/publish_fliessrichtung.sql','afu_naturgefahren_staging_v1.fliessrichtung', true),
             new TransferSet('copy_to_edit/publish_fliesstiefen.sql','afu_naturgefahren_staging_v1.fliesstiefen', true),
             new TransferSet('copy_to_edit/publish_gk_hauptprozess_rutschung.sql','afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung', true),
