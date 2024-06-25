@@ -1,3 +1,6 @@
+delete from afu_naturgefahren_staging_v1.erhebungsgebiet 
+;
+
 with 
 lines as (
   select 
@@ -93,6 +96,14 @@ lines as (
         st_dwithin(ufererosion.geometrie, point.point, 0) 
     group by 
         id, point,poly
+),
+
+basket as (
+     select 
+         t_id,
+         attachmentkey
+     from 
+         afu_naturgefahren_staging_v1.t_ili2db_basket
 )
 
 INSERT INTO 
@@ -111,8 +122,8 @@ INSERT INTO
         status_absenkung, 
         kommentar
 )
-
 select 
+    t_basket,
     poly AS flaeche,
     'SO' AS datenherr,
     coalesce(status_ueberschwemmung, 'nicht_beurteilt') as fl_state_flooding,
@@ -126,9 +137,9 @@ select
     coalesce(status_einsturz, 'nicht_beurteilt') as sh_state_sinkhole,
     coalesce(status_absenkung,'nicht_beurteilt') as su_state_subsidence,
     NULL AS kommentar
-
 from 
-    attribute_agg 
+    attribute_agg
+    ,t_basket
 ;
 
 update afu_naturgefahren_staging_v1.erhebungsgebiet 

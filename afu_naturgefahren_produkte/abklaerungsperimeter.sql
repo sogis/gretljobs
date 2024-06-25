@@ -1,7 +1,16 @@
 delete from afu_naturgefahren_staging_v1.abklaerungsperimeter
 ;
 
+with basket as (
+     select 
+         t_id,
+         attachmentkey
+     from 
+         afu_naturgefahren_staging_v1.t_ili2db_basket
+)
+ 
 INSERT INTO afu_naturgefahren_staging_v1.abklaerungsperimeter (
+    t_basket,
     teilprozess, 
     erhebungsstand, 
     geometrie, 
@@ -10,6 +19,7 @@ INSERT INTO afu_naturgefahren_staging_v1.abklaerungsperimeter (
 )
 
 SELECT 
+    t_basket,
     teilprozess, 
     erhebungsstand,
     geometrie, 
@@ -17,10 +27,12 @@ SELECT
     NULL as auftrag_neudaten
 from 
     afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_rutschung
+    ,basket
 
     union all 
     
 SELECT 
+    t_basket,
     teilprozess, 
     erhebungsstand,
     geometrie, 
@@ -28,10 +40,12 @@ SELECT
     NULL as auftrag_neudaten
 from 
     afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_sturz
+    ,basket
     
     union all 
     
 SELECT 
+    t_basket,
     teilprozess, 
     erhebungsstand,
     geometrie, 
@@ -39,5 +53,7 @@ SELECT
     NULL as auftrag_neudaten
 from 
     afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_wasser
+    ,basket
 ;
+
 
