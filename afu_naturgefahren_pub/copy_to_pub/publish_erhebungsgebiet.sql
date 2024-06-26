@@ -17,7 +17,7 @@ SELECT
     status_stein_block_schlag, 
     beurteilung_stein_block_schlag.dispname AS status_stein_block_schlag_txt, 
     status_fels_berg_sturz, 
-    beurteilung_fels_bergs_sturz.dispname AS status_fels_bergs_sturz_txt, 
+    beurteilung_fels_bergs_sturz.dispname AS status_fels_berg_sturz_txt, 
     status_einsturz, 
     beurteilung_einsturz.dispname AS status_einsturz_txt, 
     status_absenkung, 
