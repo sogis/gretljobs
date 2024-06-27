@@ -29,10 +29,12 @@ lines as (
         geometrie,
         concat('_',t_ili_tid,'.so.ch')::text AS t_ili_tid,
         case 
-        	when erhebungsstand = 'beurteilt'
-        	then 'assessed'
-        	when erhebungsstand = 'beurteilung_nicht_noetig'
-        	then 'assessment_not_necessary'
+            when erhebungsstand = 'beurteilt' AND teilprozess NOT IN ('einsturz','absenkung')
+            then 'assessed_and_complete'
+            when erhebungsstand = 'beurteilt' AND teilprozess IN ('einsturz','absenkung')
+            then 'assessed'
+            when erhebungsstand = 'beurteilung_nicht_noetig'
+            then 'assessment_not_necessary'
         end as erhebungsstand,
         teilprozess
     from 
