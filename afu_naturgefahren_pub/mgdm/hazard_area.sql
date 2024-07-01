@@ -1,5 +1,53 @@
 WITH 
-rockfall AS (
+beurteilungsgebiet_sturz AS (
+    SELECT 
+        erhebungsstand, 
+        geometrie
+    FROM 
+        afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_stein_block_schlag
+    UNION ALL 
+    SELECT 
+        erhebungsstand, 
+        geometrie
+    FROM 
+        afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_fels_berg_sturz
+)
+
+,beurteilungsgebiet_rutschung AS (
+    SELECT 
+        erhebungsstand, 
+        geometrie
+    FROM 
+        afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_permanente_rutschung
+    UNION ALL 
+    SELECT 
+        erhebungsstand, 
+        geometrie
+    FROM 
+        afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_spontane_rutschung
+    UNION ALL 
+    SELECT 
+        erhebungsstand, 
+        geometrie
+    FROM 
+        afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_hangmure
+)
+
+,beurteilungsgebiet_wasser AS (
+    SELECT 
+        erhebungsstand, 
+        geometrie
+    FROM 
+        afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_ueberschwemmung
+    UNION ALL 
+    SELECT 
+        erhebungsstand, 
+        geometrie
+    FROM 
+        afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_uebermurung
+)
+
+,rockfall AS (
     SELECT 
         'rockfall' AS main_process,
         CASE
@@ -23,23 +71,13 @@ rockfall AS (
     SELECT
         'rockfall' AS main_process,
         'not_in_danger' AS hazard_level,
-        case 
-            when erhebungsstand = 'beurteilt'
-            then 'assessed'
-            when erhebungsstand = 'beurteilung_nicht_noetig'
-            then 'assessment_not_necessary'
-        end as subprocesses_complete,
-        case 
-            when erhebungsstand = 'beurteilt'
-            then 'assessed'
-            when erhebungsstand = 'beurteilung_nicht_noetig'
-            then 'assessment_not_necessary'
-        end as sources_complete,
+        'complete' AS subprocesses_complete,    
+        'complete' AS sources_complete, 
         st_difference(erhebungsgebiet.geometrie,hauptprozess.geometrie) AS impact_zone,
         CAST('SO' AS VARCHAR) AS data_responsibility,
         NULL AS comments
     FROM 
-        afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_sturz erhebungsgebiet, 
+        beurteilungsgebiet_sturz erhebungsgebiet, 
         (
             SELECT 
                 st_union(geometrie) AS geometrie 
@@ -72,23 +110,13 @@ rockfall AS (
     SELECT
         'landslide' AS main_process,
         'not_in_danger' AS hazard_level,
-        case 
-            when erhebungsstand = 'beurteilt'
-            then 'assessed'
-            when erhebungsstand = 'beurteilung_nicht_noetig'
-            then 'assessment_not_necessary'
-        end as subprocesses_complete,
-        case 
-            when erhebungsstand = 'beurteilt'
-            then 'assessed'
-            when erhebungsstand = 'beurteilung_nicht_noetig'
-            then 'assessment_not_necessary'
-        end as sources_complete,
+        'complete' AS subprocesses_complete,    
+        'complete' AS sources_complete, 
         st_difference(erhebungsgebiet.geometrie,hauptprozess.geometrie) AS impact_zone,
         CAST('SO' AS VARCHAR) AS data_responsibility,
         NULL AS comments
     FROM 
-        afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_rutschung erhebungsgebiet, 
+        beurteilungsgebiet_rutschung erhebungsgebiet, 
         (
             SELECT 
                 st_union(geometrie) AS geometrie 
@@ -121,23 +149,13 @@ rockfall AS (
     SELECT
         'water' AS main_process,
         'not_in_danger' AS hazard_level,
-        case 
-            when erhebungsstand = 'beurteilt'
-            then 'assessed'
-            when erhebungsstand = 'beurteilung_nicht_noetig'
-            then 'assessment_not_necessary'
-        end as subprocesses_complete,
-        case 
-            when erhebungsstand = 'beurteilt'
-            then 'assessed'
-            when erhebungsstand = 'beurteilung_nicht_noetig'
-            then 'assessment_not_necessary'
-        end as sources_complete,
+        'complete' AS subprocesses_complete,    
+        'complete' AS sources_complete, 
         st_difference(erhebungsgebiet.geometrie,hauptprozess.geometrie) AS impact_zone,
         CAST('SO' AS VARCHAR) AS data_responsibility,
         NULL AS comments
     FROM 
-        afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_wasser erhebungsgebiet, 
+        beurteilungsgebiet_wasser erhebungsgebiet, 
         (
             SELECT 
                 st_union(geometrie) AS geometrie 
@@ -145,7 +163,7 @@ rockfall AS (
                 afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser
         ) hauptprozess   
 )
-    
+   
 INSERT INTO 
     afu_naturgefahren_mgdm_v1.hazard_mapping_hazard_area (
         t_ili_tid,
@@ -157,6 +175,7 @@ INSERT INTO
         data_responsibility, 
         "comments"
     )
+
     SELECT 
         uuid_generate_v4() AS t_ili_tid,
         main_process, 
@@ -199,3 +218,4 @@ UPDATE
 SET 
     t_ili_tid = concat('_',t_ili_tid,'.so.ch')::text
 ;
+
