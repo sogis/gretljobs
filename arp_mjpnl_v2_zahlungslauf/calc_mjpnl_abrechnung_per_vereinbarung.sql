@@ -3,7 +3,7 @@
 
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung 
   (t_basket, vereinbarungs_nr, gelan_pid_gelan, gelan_bewe_id, gb_nr, flurnamen, kultur_ids, gemeinde, vereinbarungs_nr_alt, flaeche, anzahl_baeume, 
-   betrag_flaeche, betrag_per_ha, betrag_baeume, betrag_pauschal_regulaer, betrag_pauschal_einmalig_ausbezahlt, betrag_pauschal_einmalig_freigegeben, gesamtbetrag,
+   betrag_flaeche, betrag_per_ha, betrag_baeume, betrag_pauschal_regulaer, betrag_pauschal_einmalig_ausbezahlt, betrag_pauschal_einmalig_freigegeben, betrag_pauschal_einmalig_an_dritte, gesamtbetrag,
    auszahlungsjahr, status_abrechnung, datum_abrechnung, 
    bewirtschaftabmachung_schnittzeitpunkt_1,
    bewirtschaftabmachung_messerbalkenmaehgeraet,
