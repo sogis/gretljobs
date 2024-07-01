@@ -1,7 +1,7 @@
 description = """\n
-Migration der MJPNL-Daten von der alten SOGIS-DB in das neue Applikationsschema arp_mjpnl_v1 (EDIT-DB)
+Migration der MJPNL-Daten von arp_mjpnl_v1 auf arp_mjpnl_v2 anhand XSL Tranformation.
 
-Fragen an: Andreas Neumann (AGI) und Odile Bruggisser (ARP)
+Fragen an: Odile Bruggisser (ARP)
 """
 
 import ch.so.agi.gretl.tasks.*
@@ -10,14 +10,13 @@ import java.nio.file.Paths
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'export_v1_data'
+defaultTasks 'importDataToV2'
 
-def DB_Schema_MJPNL_v1 = "arp_mjpnl_v1"
-def DB_Schema_MJPNL_v2 = "arp_mjpnl_v2"
+def dB_Schema_MJPNL_v1 = "arp_mjpnl_v1"
+def dB_Schema_MJPNL_v2 = "arp_mjpnl_v2"
 
-def pathToTempFolder = System.getProperty("java.io.tmpdir")
-def mjpnlDataFile = file(Paths.get(pathToTempFolder.toString(), 'mjpnldata.xtf'))
-def trafoFile = file(Paths.get(pathToTempFolder.toString(), 'mjpnltrafo.xslt'))
+def mjpnlDataFile = file('mjpnldata.xtf')
+def trafoFile = file('mjpnltrafo.xslt')
 def trafoFileContent = """<xsl:stylesheet
         xmlns="http://www.interlis.ch/INTERLIS2.3"
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -69,28 +68,33 @@ def trafoFileContent = """<xsl:stylesheet
 </xsl:stylesheet>
 """
 
-writeTrafoFile { new File(trafoFile).write(trafoFileContent,'utf-8') }
-    
+task writeTrafoFile () { 
+    trafoFile.write(trafoFileContent,'utf-8') 
+}
 
-task export_v1_data(type: Ili2pgExport) {
+task exportDataFromV1(type: Ili2pgExport, dependsOn: writeTrafoFile) {
     description = "Exportiert die MJPNL Daten aus v1"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = DB_Schema_MJPNL_v1
-    dataset = 'MJPNL'
+    dbschema = dB_Schema_MJPNL_v1
+    disableValidation = true
     dataFile = mjpnlDataFile
+    models = "SO_ARP_MJPNL_20201026"
 }
 
-task transform_v1_to_v2(type: XslTransformer, dependsOn: importGELAN) {
+task transformTheData(type: XslTransformer, dependsOn: exportDataFromV1) {
     description = "Transformiert die MJPNL Daten von v1 in v2 Format"
-    xslFile = file("xml2xtf.xsl")
+    xslFile = trafoFile
     xmlFile = mjpnlDataFile
-    outDirectory = file(mjpnlDataFile)
+    outDirectory = file(".")
 }
 
-task importGELAN(type: Ili2pgReplace, dependsOn: transform_v1_to_v2) {
+task importDataToV2(type: Ili2pgReplace, dependsOn: transformTheData) {
     description = 'Importiert die MJPNL Daten in v2'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = DB_Schema_MJPNL_v2
-    dataFile = mjpnlDataFile
+    dbschema = dB_Schema_MJPNL_v2
+    disableValidation = true
+    topics = 'SO_ARP_MJPNL_20240606.MJPNL'
     dataset = 'MJPNL'
+    dataFile = mjpnlDataFile
+    models = "SO_ARP_MJPNL_20240606"
 }
