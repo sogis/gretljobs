@@ -59,11 +59,11 @@ def trafoFileContent = """<xsl:stylesheet
     </xsl:template>
 
     <!-- Specific mandatory fields might be filled in future...
-    <xsl:template match="ili:Ortsplanung_V1_1.Konstruktionen.Gebaeude">
-        <Kantonale_Ortsplanung_V1_1.Konstruktionen.Gebaeude>
+    <xsl:template match="ili:SO_ARP_MJPNL_20201026.Konstruktionen.Gebaeude">
+        <SO_ARP_MJPNL_20240606.Konstruktionen.Gebaeude>
             <xsl:apply-templates select="@*|node()"/>
             <Referenzcode>xxxx-000</Referenzcode>
-        </Kantonale_Ortsplanung_V1_1.Konstruktionen.Gebaeude>
+        </SO_ARP_MJPNL_20240606.Konstruktionen.Gebaeude>
     </xsl:template>
     -->
 </xsl:stylesheet>
