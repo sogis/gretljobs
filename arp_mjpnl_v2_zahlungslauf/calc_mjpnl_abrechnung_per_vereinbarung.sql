@@ -44,11 +44,17 @@ SELECT
   COALESCE(SUM(lstg_pauschal_einmalig_freigeg.betrag_total),0) AS betrag_pauschal_einmalig_freigegeben,
   COALESCE(SUM(lstg.betrag_total),0) AS gesamtbetrag,
   lstg.auszahlungsjahr,
-  -- wenn es ein status_abrechnung "freigegeben" gibt, dann soll der status demensprechend gleich sein
   CASE 
+  -- wenn es ein status_abrechnung "freigegeben" gibt, dann soll der status demensprechend gleich sein
    WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l WHERE l.status_abrechnung = 'freigegeben' AND l.vereinbarung = vbg.t_id AND l.auszahlungsjahr = lstg.auszahlungsjahr) > 0 
    THEN 'freigegeben' 
-   -- ansonsten ist es für alle gleich ("ausbezahlt" oder "intern_verrechnet")
+   -- wenn es ein status_abrechnung "intern_verrechnet" gibt, dann soll der status demensprechend gleich sein
+   WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l WHERE l.status_abrechnung = 'intern_verrechnet' AND l.vereinbarung = vbg.t_id AND l.auszahlungsjahr = lstg.auszahlungsjahr) > 0 
+   THEN 'intern_verrechnet' 
+   -- wenn es ein status_abrechnung "ausbezahlt" gibt, dann soll der status demensprechend gleich sein
+   WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l WHERE l.status_abrechnung = 'ausbezahlt' AND l.vereinbarung = vbg.t_id AND l.auszahlungsjahr = lstg.auszahlungsjahr) > 0 
+   THEN 'ausbezahlt' 
+   -- ansonsten ist es nur noch 'ausbezahlt_an_dritte', dies wird mit Fallback abgefangen:
    ELSE MAX(lstg.status_abrechnung) 
   END AS status_abrechnung,
   -- wenn es ein status_abrechnung "freigegeben" gibt, dann soll es noch kein datum_abrechnung haben

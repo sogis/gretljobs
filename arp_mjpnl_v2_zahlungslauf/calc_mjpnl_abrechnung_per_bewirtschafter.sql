@@ -24,7 +24,7 @@ FROM
         (vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE AND vbg.ist_nutzungsvereinbarung IS NOT TRUE)
         OR
         -- mind. eine diesjährige Leistung, die bereits ausbezahlt ist
-        (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l WHERE l.status_abrechnung IN ('ausbezahlt','intern_verrechnet') AND l.vereinbarung = vbg.t_id AND l.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer) > 0 
+        (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung l WHERE l.status_abrechnung IN ('ausbezahlt','intern_verrechnet','ausbezahlt_an_dritte') AND l.vereinbarung = vbg.t_id AND l.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer) > 0 
      )
    ORDER BY pers.pid_gelan ASC
 )
@@ -37,12 +37,18 @@ SELECT
    pers.iban,
    SUM(abrg_vbg.gesamtbetrag) AS betrag_total, 
    '{"betrag_ausbezahlt_total":'|| SUM(abrg_vbg.betrag_pauschal_einmalig_ausbezahlt) ||'}' as bemerkung,
-   -- wenn es ein status_abrechnung "freigegeben" gibt, dann soll der status demensprechend gleich sein
    CASE 
-     WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung v WHERE v.status_abrechnung = 'freigegeben' AND v.gelan_pid_gelan = pers.pid_gelan AND v.auszahlungsjahr = abrg_vbg.auszahlungsjahr) > 0 
-     THEN 'freigegeben' 
-     -- ansonsten ist es für alle gleich ("ausbezahlt" oder "intern_verrechnet")
-     ELSE MAX(abrg_vbg.status_abrechnung) 
+      -- wenn es ein status_abrechnung "freigegeben" gibt, dann soll der status demensprechend gleich sein
+      WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung v WHERE v.status_abrechnung = 'freigegeben' AND v.gelan_pid_gelan = pers.pid_gelan AND v.auszahlungsjahr = abrg_vbg.auszahlungsjahr) > 0
+      THEN 'freigegeben' 
+      -- wenn es ein status_abrechnung "intern_verrechnet" gibt, dann soll der status demensprechend gleich sein
+      WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung v WHERE v.status_abrechnung = 'intern_verrechnet' AND v.gelan_pid_gelan = pers.pid_gelan AND v.auszahlungsjahr = abrg_vbg.auszahlungsjahr) > 0
+      THEN 'intern_verrechnet' 
+      -- wenn es ein status_abrechnung "ausbezahlt" gibt, dann soll der status demensprechend gleich sein
+      WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung v WHERE v.status_abrechnung = 'ausbezahlt' AND v.gelan_pid_gelan = pers.pid_gelan AND v.auszahlungsjahr = abrg_vbg.auszahlungsjahr) > 0
+      THEN 'ausbezahlt' 
+      -- ansonsten ist es nur noch 'ausbezahlt_an_dritte', dies wird mit Fallback abgefangen:
+      ELSE MAX(lstg.status_abrechnung) 
    END AS status_abrechnung,
    -- wenn es eine status_abrechnung "freigegeben" gibt, dann soll es noch kein datum_abrechnung haben
    CASE 
