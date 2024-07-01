@@ -62,11 +62,11 @@ LEFT JOIN
     ON 
     beurteilung_fels_bergs_sturz.ilicode = erhebungsgebiet.status_fels_berg_sturz 
 LEFT JOIN 
-    afu_naturgefahren_staging_v1.beurteilung_komplex_typ beurteilung_einsturz 
+    afu_naturgefahren_staging_v1.beurteilung_einfach_typ beurteilung_einsturz 
     ON 
     beurteilung_einsturz.ilicode = erhebungsgebiet.status_einsturz  
 LEFT JOIN 
-    afu_naturgefahren_staging_v1.beurteilung_komplex_typ beurteilung_absenkung 
+    afu_naturgefahren_staging_v1.beurteilung_einfach_typ beurteilung_absenkung 
     ON 
     beurteilung_absenkung.ilicode = erhebungsgebiet.status_absenkung  
 ;
