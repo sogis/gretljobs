@@ -47,6 +47,23 @@ united_alr_buntbrache_leistungen AS (
 
     UNION
 
+    SELECT -- ALR Buntbrache: Einstiegskriterien
+        beurteilung_t_basket AS t_basket,
+        beurteilung_vereinbarung AS vereinbarung,
+        /* Indiviuelle Werte */
+        'ALR Buntbrache: Einstiegskriterien' AS leistung_beschrieb,
+        'per_ha' AS abgeltungsart,
+        200 AS betrag_per_einheit,
+        flaeche AS anzahl_einheiten,
+        (flaeche * einstiegskriterium_abgeltung_ha) AS betrag_total,
+        kantonsintern
+    FROM
+        alle_alr_buntbrache
+    WHERE
+        flaeche > 0 AND einstiegskriterium_abgeltung_ha > 0
+
+    UNION
+
     SELECT -- ALR Buntbrache: Faunabonus
         beurteilung_t_basket AS t_basket,
         beurteilung_vereinbarung AS vereinbarung,
