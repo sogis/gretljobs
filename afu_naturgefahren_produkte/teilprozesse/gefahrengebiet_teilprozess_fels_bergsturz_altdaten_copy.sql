@@ -1,4 +1,4 @@
-with
+WITH
 basket AS (
      SELECT 
          t_id 
@@ -22,7 +22,7 @@ basket AS (
             THEN 'erheblich'
         END AS gefahrenstufe, 
         replace(aindex, '_', '') AS charakterisierung, 
-        ST_multi(geometrie) AS geometrie --Im neuen Modell sind Multi-Polygone
+        ST_Multi(geometrie) AS geometrie --Im neuen Modell sind Multi-Polygone
     FROM 
         afu_gefahrenkartierung.gefahrenkartirung_gk_sturz
     WHERE 
@@ -54,6 +54,3 @@ FROM
 WHERE 
     teilprozess is not null 
 ;
-
-
-

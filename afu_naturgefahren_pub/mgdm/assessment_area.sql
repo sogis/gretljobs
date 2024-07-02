@@ -1,48 +1,48 @@
-with 
+WITH
 lines as (
-  select 
-    st_union(st_boundary(geometrie)) as geometrie
-  from
-    afu_naturgefahren_staging_v1.abklaerungsperimeter 
+    SELECT 
+        ST_Union(st_boundary(geometrie)) as geometrie
+    FROM
+        afu_naturgefahren_staging_v1.abklaerungsperimeter 
 )
 
 ,splited AS (
-  SELECT 
-    (st_dump(st_polygonize(geometrie))).geom AS geometrie
-  FROM
-    lines
+    SELECT 
+        (ST_Dump(ST_Polygonize(geometrie))).geom AS geometrie
+    FROM
+        lines
 )
 
 ,withpoint as (
-    select
+    SELECT
         ROW_NUMBER() OVER() as id, 
         geometrie as poly,
         ST_PointOnSurface(geometrie) as point
-    from 
+    FROM 
         splited
-    where 
-        st_area(geometrie) > 1
+    WHERE 
+        ST_Area(geometrie) > 1
 )
 
 ,erhebungsgebiet_mapped as (
-    select 
+    SELECT 
         geometrie,
         concat('_',t_ili_tid,'.so.ch')::text AS t_ili_tid,
-        case 
-            when erhebungsstand = 'beurteilt' AND teilprozess NOT IN ('einsturz','absenkung')
-            then 'assessed_and_complete'
-            when erhebungsstand = 'beurteilt' AND teilprozess IN ('einsturz','absenkung')
-            then 'assessed'
-            when erhebungsstand = 'beurteilung_nicht_noetig'
-            then 'assessment_not_necessary'
-        end as erhebungsstand,
+        CASE 
+            WHEN erhebungsstand = 'beurteilt' AND teilprozess NOT IN ('einsturz','absenkung')
+            THEN 'assessed_and_complete'
+            WHEN erhebungsstand = 'beurteilt' AND teilprozess IN ('einsturz','absenkung')
+            THEN 'assessed'
+            WHEN erhebungsstand = 'beurteilung_nicht_noetig'
+            THEN 'assessment_not_necessary'
+        END as erhebungsstand,
         teilprozess
-    from 
+    FROM 
         afu_naturgefahren_staging_v1.abklaerungsperimeter
 )
 
 ,attribute_agg as (
-    select 
+    SELECT 
         id, 
         point,
         poly,
@@ -56,49 +56,49 @@ lines as (
         string_agg(distinct murgang.erhebungsstand,', ') as df_state_debris_flow,
         string_agg(distinct ueberschwemmung.erhebungsstand,', ') as fl_state_flooding,
         string_agg(distinct ufererosion.erhebungsstand,', ') as be_state_bank_erosion
-    from 
+    FROM 
         withpoint point
-    left join
-        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'absenkung') absenkung 
-        on 
+    LEFT JOIN
+        (SELECT geometrie, erhebungsstand FROM erhebungsgebiet_mapped WHERE teilprozess = 'absenkung') absenkung 
+        ON 
         st_dwithin(absenkung.geometrie, point.point, 0)
-    left join
-        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'einsturz') einsturz 
-        on 
+    LEFT JOIN
+        (SELECT geometrie, erhebungsstand FROM erhebungsgebiet_mapped WHERE teilprozess = 'einsturz') einsturz 
+        ON 
         st_dwithin(einsturz.geometrie, point.point, 0)     
-    left join
-        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'permanente_rutschung') perm_rutschung 
-        on 
+    LEFT JOIN
+        (SELECT geometrie, erhebungsstand FROM erhebungsgebiet_mapped WHERE teilprozess = 'permanente_rutschung') perm_rutschung 
+        ON 
         st_dwithin(perm_rutschung.geometrie, point.point, 0)  
-    left join
-        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'hangmure') hangmure 
-        on 
+    LEFT JOIN
+        (SELECT geometrie, erhebungsstand FROM erhebungsgebiet_mapped WHERE teilprozess = 'hangmure') hangmure 
+        ON 
         st_dwithin(hangmure.geometrie, point.point, 0)  
-    left join
-        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'spontane_rutschung') spont_rutschung 
-        on 
+    LEFT JOIN
+        (SELECT geometrie, erhebungsstand FROM erhebungsgebiet_mapped WHERE teilprozess = 'spontane_rutschung') spont_rutschung 
+        ON 
         st_dwithin(spont_rutschung.geometrie, point.point, 0)   
-    left join
-        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'fels_bergsturz') fels_bergsturz 
-        on 
+    LEFT JOIN
+        (SELECT geometrie, erhebungsstand FROM erhebungsgebiet_mapped WHERE teilprozess = 'fels_bergsturz') fels_bergsturz 
+        ON 
         st_dwithin(fels_bergsturz.geometrie, point.point, 0) 
-    left join
-        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'stein_blockschlag') stein_blockschlag 
-        on 
+    LEFT JOIN
+        (SELECT geometrie, erhebungsstand FROM erhebungsgebiet_mapped WHERE teilprozess = 'stein_blockschlag') stein_blockschlag 
+        ON 
         st_dwithin(stein_blockschlag.geometrie, point.point, 0) 
-    left join
-        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'uebermurung') murgang 
-        on 
+    LEFT JOIN
+        (SELECT geometrie, erhebungsstand FROM erhebungsgebiet_mapped WHERE teilprozess = 'uebermurung') murgang 
+        ON 
         st_dwithin(murgang.geometrie, point.point, 0) 
-    left join
-        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'ueberschwemmung') ueberschwemmung 
-        on 
+    LEFT JOIN
+        (SELECT geometrie, erhebungsstand FROM erhebungsgebiet_mapped WHERE teilprozess = 'ueberschwemmung') ueberschwemmung 
+        ON 
         st_dwithin(ueberschwemmung.geometrie, point.point, 0) 
-    left join
-        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'ufererosion') ufererosion 
-        on 
+    LEFT JOIN
+        (SELECT geometrie, erhebungsstand FROM erhebungsgebiet_mapped WHERE teilprozess = 'ufererosion') ufererosion 
+        ON 
         st_dwithin(ufererosion.geometrie, point.point, 0) 
-    group by 
+    GROUP BY 
         id, point,poly
 )
 
@@ -124,7 +124,7 @@ INSERT INTO
         "comments"
 )
 
-select 
+SELECT 
     concat('_',uuid_generate_v4(),'.so.ch')::text AS t_ili_tid,
     poly AS area,
     'SO' AS data_responsibility,
@@ -144,17 +144,14 @@ select
     'not_assessed' AS gs_state_gliding_snow, 
     NULL AS comments
 
-from 
+FROM 
     attribute_agg 
 ;
 
-update afu_naturgefahren_mgdm_v1.hazard_mapping_assessment_area 
-set area = st_reducePrecision(area,0.001)
+UPDATE afu_naturgefahren_mgdm_v1.hazard_mapping_assessment_area 
+SET area = ST_ReducePrecision(area,0.001)
 ;
 
-delete from afu_naturgefahren_mgdm_v1.hazard_mapping_assessment_area 
-where st_isempty(area) = true
+DELETE FROM afu_naturgefahren_mgdm_v1.hazard_mapping_assessment_area 
+WHERE ST_Isempty(area) = true
 ; 
-
-
-

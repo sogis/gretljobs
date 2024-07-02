@@ -7,3 +7,4 @@ SELECT
     auftrag_neudaten
 FROM 
     afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_fels_bergsturz
+;

@@ -44,7 +44,7 @@ hauptprozesse_clean as (
     FROM 
         hauptprozesse_clean
     WHERE 
-        st_isempty(geometrie) is not true
+        ST_Isempty(geometrie) is not true
 )
 
 INSERT INTO gk_poly (
@@ -57,7 +57,7 @@ SELECT
     prio,
     gefahrenstufe,
     charakterisierung,
-    (st_dump(geometrie)).geom as geometrie 
+    (ST_Dump(geometrie)).geom as geometrie 
 FROM 
     hauptprozesse_clean_prio
 ;

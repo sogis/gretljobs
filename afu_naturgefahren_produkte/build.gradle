@@ -15,9 +15,6 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'copy_alle_natgef_produkte'
 
-//NUR PROVISORISCH! 
-//def auftragskennung = 'main'
-
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
 
 // PROCESSING VORBEREITUNG UND IMPORT 
@@ -42,12 +39,6 @@ task make_staging_schema(type: Ili2pgImportSchema, dependsOn: prepare_db){
     createBasketCol = true
     createUnique = true
     smart2Inheritance = true 
-}
-//Nur lokal nötig, da im produktiven Betrieb jedes Mal eine neue DB hochgefahren wird (aber lokal nicht). 
-
-task truncate_tables(type: SqlExecutor, dependsOn: make_staging_schema) {
-    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['vorbereitung/truncate_table.sql']
 }
 
 

@@ -1,7 +1,3 @@
--- ACHTUNG: NEUES DATASET UND BASKET MÜSSEN ANGELEGT WORDEN SEIN!!! 
-DELETE FROM afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_fels_bergsturz 
-;
-
 WITH 
 orig_dataset AS (
     SELECT
@@ -101,12 +97,12 @@ orig_dataset AS (
         teilprozess,
         gefahrenstufe,
         charakterisierung,
-        st_union(geometrie) AS geometrie,
+        ST_Union(geometrie) AS geometrie,
         datenherkunft,
         auftrag_neudaten
     FROM 
         teilprozess_felsbergsturz_prio
-    group by 
+    GROUP BY 
         teilprozess,
         gefahrenstufe,
         charakterisierung,
@@ -119,7 +115,7 @@ orig_dataset AS (
         teilprozess,
         gefahrenstufe,
         charakterisierung,
-        st_multi((st_dump(geometrie)).geom) AS geometrie,
+        ST_Multi((st_dump(geometrie)).geom) AS geometrie,
         datenherkunft,
         auftrag_neudaten
     FROM 
@@ -159,5 +155,5 @@ FROM
     teilprozess_felsbergsturz_dump, 
     basket
 WHERE 
-    st_isempty(geometrie) is not true 
+    ST_Isempty(geometrie) is not true 
 ;

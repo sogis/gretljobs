@@ -1,6 +1,3 @@
-DELETE FROM afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz
-;
-
 WITH 
 basket AS (
      SELECT 

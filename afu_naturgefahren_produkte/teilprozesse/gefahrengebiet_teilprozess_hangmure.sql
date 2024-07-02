@@ -1,7 +1,3 @@
--- ACHTUNG: NEUES DATASET UND BASKET MÜSSEN ANGELEGT WORDEN SEIN!!! 
-DELETE FROM afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_hangmure
-;
-
 WITH
 orig_dataset AS (
     SELECT
@@ -114,7 +110,7 @@ teilprozess_hangmure AS (
         teilprozess,
         gefahrenstufe,
         charakterisierung,
-        st_union(geometrie) AS geometrie,
+        ST_Union(geometrie) AS geometrie,
         datenherkunft,
         auftrag_neudaten
     FROM 
@@ -132,7 +128,7 @@ teilprozess_hangmure AS (
         teilprozess,
         gefahrenstufe,
         charakterisierung,
-        st_multi((st_dump(geometrie)).geom) AS geometrie,
+        ST_Multi((ST_Dump(geometrie)).geom) AS geometrie,
         datenherkunft,
         auftrag_neudaten
     FROM 
@@ -168,10 +164,5 @@ FROM
     teilprozess_hangmure_dump, 
     basket
 WHERE 
-    ST_isempty(geometrie) is not true 
+    ST_Isempty(geometrie) is not true 
 ;
-
-
-
-
-

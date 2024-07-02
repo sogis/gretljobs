@@ -1,14 +1,14 @@
 WITH
 lines AS (
     SELECT   
-        st_union(st_boundary(geometrie)) as geometrie
+        ST_Union(ST_Boundary(geometrie)) as geometrie
     FROM
         gk_poly
 )
 
 ,splited AS (
   SELECT 
-    (st_dump(st_polygonize(geometrie))).geom AS geometrie
+    (ST_Dump(ST_Polygonize(geometrie))).geom AS geometrie
   FROM
     lines
 )

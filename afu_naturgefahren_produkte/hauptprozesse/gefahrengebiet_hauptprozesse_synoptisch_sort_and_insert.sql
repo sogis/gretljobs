@@ -1,6 +1,3 @@
-DELETE FROM afu_naturgefahren_staging_v1.synoptisches_gefahrengebiet
-;
-
 WITH
 splitted_attributes_mapping AS (
     select 
@@ -40,7 +37,7 @@ splitted_attributes_mapping AS (
     SELECT
         gefahrenstufe, 
         charakterisierung,
-        (st_dump(geometrie)).geom AS geometrie
+        (ST_Dump(geometrie)).geom AS geometrie
     FROM 
         hauptprozesse_charakterisierung_sort
 )
@@ -62,12 +59,12 @@ SELECT
     basket.t_id AS t_basket,
     gefahrenstufe,
     charakterisierung,
-    st_multi(geometrie) AS geometrie 
+    ST_Multi(geometrie) AS geometrie 
 FROM 
     basket,
     hauptprozesse_polygon_dump
 WHERE 
-    st_area(geometrie) > 0.001 
+    ST_Area(geometrie) > 0.001 
     AND 
     charakterisierung is not null 
 ;

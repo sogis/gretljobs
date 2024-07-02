@@ -1,4 +1,5 @@
-WITH basket as (
+WITH 
+basket AS (
     SELECT 
         t_id,
         attachmentkey
@@ -17,7 +18,7 @@ INSERT INTO afu_naturgefahren_staging_v1.ufererosion (
 SELECT 
     basket.t_id as t_basket, 
     'ufererosion' as teilprozess, 
-    st_multi(geometrie) as geometrie, 
+    ST_Multi(geometrie) as geometrie, 
     'Altdaten' as datenherkunft, 
     NULL as auftrag_neudaten
 FROM 

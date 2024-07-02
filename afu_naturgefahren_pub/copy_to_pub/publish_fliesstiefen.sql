@@ -8,7 +8,8 @@ SELECT
     auftrag_neudaten
 FROM 
     afu_naturgefahren_staging_v1.fliesstiefen fliesstiefen
-left join 
+LEFT JOIN 
     afu_naturgefahren_staging_v1.ueberflutungshoehe_wasser ueberflutungshoehe
-    on 
+    ON 
     fliesstiefen.ueberschwemmung_tiefe = ueberflutungshoehe.ilicode 
+;
