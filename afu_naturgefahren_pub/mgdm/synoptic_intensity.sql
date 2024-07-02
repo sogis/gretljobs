@@ -71,3 +71,15 @@ UPDATE
 SET 
     t_ili_tid = concat('_',t_ili_tid,'.so.ch')::text
 ;
+
+update 
+    afu_naturgefahren_mgdm_v1.hazard_mapping_synoptic_intensity 
+set 
+    impact_zone = st_reducePrecision(impact_zone,0.001)
+;
+
+delete from 
+    afu_naturgefahren_mgdm_v1.hazard_mapping_synoptic_intensity 
+where 
+    st_isempty(impact_zone) = true
+; 
