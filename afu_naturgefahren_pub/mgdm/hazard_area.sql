@@ -182,7 +182,7 @@ INSERT INTO
         hazard_level, 
         subprocesses_complete, 
         sources_complete, 
-        (st_dump(impact_zone)).geom AS impact_zone, 
+        (st_dump(st_reducePrecision(impact_zone,0.001))).geom AS impact_zone, 
         data_responsibility, 
         "comments" 
     FROM 
@@ -194,7 +194,7 @@ INSERT INTO
         hazard_level, 
         subprocesses_complete, 
         sources_complete, 
-        (st_dump(impact_zone)).geom AS impact_zone, 
+        (st_dump(st_reducePrecision(impact_zone,0.001))).geom AS impact_zone, 
         data_responsibility, 
         "comments" 
     FROM 
@@ -206,7 +206,7 @@ INSERT INTO
         hazard_level, 
         subprocesses_complete, 
         sources_complete, 
-        (st_dump(impact_zone)).geom AS impact_zone, 
+        (st_dump(st_reducePrecision(impact_zone,0.001))).geom AS impact_zone, 
         data_responsibility, 
         "comments" 
     FROM 
@@ -217,10 +217,6 @@ UPDATE
     afu_naturgefahren_mgdm_v1.hazard_mapping_hazard_area 
 SET 
     t_ili_tid = concat('_',t_ili_tid,'.so.ch')::text
-;
-
-update afu_naturgefahren_mgdm_v1.hazard_mapping_hazard_area 
-set impact_zone = st_reducePrecision(impact_zone,0.001)
 ;
 
 delete from afu_naturgefahren_mgdm_v1.hazard_mapping_hazard_area 
