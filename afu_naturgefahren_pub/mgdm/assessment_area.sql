@@ -3,7 +3,7 @@ lines as (
   select 
     st_union(st_boundary(geometrie)) as geometrie
   from
-    afu_naturgefahren_staging_v1.erhebungsgebiet 
+    afu_naturgefahren_staging_v1.abklaerungsperimeter 
 )
 
 ,splited AS (
@@ -29,14 +29,16 @@ lines as (
         geometrie,
         concat('_',t_ili_tid,'.so.ch')::text AS t_ili_tid,
         case 
-        	when erhebungsstand = 'beurteilt'
-        	then 'assessed'
-        	when erhebungsstand = 'beurteilung_nicht_noetig'
-        	then 'assessment_not_necessary'
+            when erhebungsstand = 'beurteilt' AND teilprozess NOT IN ('einsturz','absenkung')
+            then 'assessed_and_complete'
+            when erhebungsstand = 'beurteilt' AND teilprozess IN ('einsturz','absenkung')
+            then 'assessed'
+            when erhebungsstand = 'beurteilung_nicht_noetig'
+            then 'assessment_not_necessary'
         end as erhebungsstand,
         teilprozess
     from 
-        afu_naturgefahren_staging_v1.erhebungsgebiet
+        afu_naturgefahren_staging_v1.abklaerungsperimeter
 )
 
 ,attribute_agg as (
@@ -57,43 +59,43 @@ lines as (
     from 
         withpoint point
     left join
-        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'ea_absenkung') absenkung 
+        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'absenkung') absenkung 
         on 
         st_dwithin(absenkung.geometrie, point.point, 0)
     left join
-        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'ea_einsturz') einsturz 
+        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'einsturz') einsturz 
         on 
         st_dwithin(einsturz.geometrie, point.point, 0)     
     left join
-        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'r_permanente_rutschung') perm_rutschung 
+        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'permanente_rutschung') perm_rutschung 
         on 
         st_dwithin(perm_rutschung.geometrie, point.point, 0)  
     left join
-        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'r_plo_hangmure') hangmure 
+        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'hangmure') hangmure 
         on 
         st_dwithin(hangmure.geometrie, point.point, 0)  
     left join
-        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'r_plo_spontane_rutschung') spont_rutschung 
+        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'spontane_rutschung') spont_rutschung 
         on 
         st_dwithin(spont_rutschung.geometrie, point.point, 0)   
     left join
-        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 's_fels_berg_sturz') fels_bergsturz 
+        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'fels_bergsturz') fels_bergsturz 
         on 
         st_dwithin(fels_bergsturz.geometrie, point.point, 0) 
     left join
-        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 's_stein_block_schlag') stein_blockschlag 
+        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'stein_blockschlag') stein_blockschlag 
         on 
         st_dwithin(stein_blockschlag.geometrie, point.point, 0) 
     left join
-        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'w_uebermurung') murgang 
+        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'uebermurung') murgang 
         on 
         st_dwithin(murgang.geometrie, point.point, 0) 
     left join
-        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'w_ueberschwemmung') ueberschwemmung 
+        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'ueberschwemmung') ueberschwemmung 
         on 
         st_dwithin(ueberschwemmung.geometrie, point.point, 0) 
     left join
-        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'w_ufererosion') ufererosion 
+        (select geometrie, erhebungsstand from erhebungsgebiet_mapped where teilprozess = 'ufererosion') ufererosion 
         on 
         st_dwithin(ufererosion.geometrie, point.point, 0) 
     group by 
@@ -153,5 +155,6 @@ set area = st_reducePrecision(area,0.001)
 delete from afu_naturgefahren_mgdm_v1.hazard_mapping_assessment_area 
 where st_isempty(area) = true
 ; 
+
 
 

@@ -1,11 +1,11 @@
-delete from afu_naturgefahren_staging_v1.ufererosion
+DELETE FROM afu_naturgefahren_staging_v1.ufererosion
 ;
 
-with basket as (
-    select 
+WITH basket as (
+    SELECT 
         t_id,
         attachmentkey
-    from 
+    FROM 
         afu_naturgefahren_staging_v1.t_ili2db_basket
 )
 

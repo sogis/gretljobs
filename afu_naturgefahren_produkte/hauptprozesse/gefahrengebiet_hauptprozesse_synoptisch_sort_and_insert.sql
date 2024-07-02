@@ -1,35 +1,35 @@
-delete from afu_naturgefahren_staging_v1.synoptisches_gefahrengebiet
+DELETE FROM afu_naturgefahren_staging_v1.synoptisches_gefahrengebiet
 ;
 
-with 
-splitted_attributes_mapping as (
+WITH
+splitted_attributes_mapping AS (
     select 
         case 
-        	when gef_max = 0 then 'nicht_gefaehrdet'
-        	when gef_max = 1 then 'restgefaehrdung'
-        	when gef_max = 2 then 'gering' 
-        	when gef_max = 3 then 'mittel' 
-        	when gef_max = 4 then 'erheblich' 
+            when gef_max = 0 then 'nicht_gefaehrdet'
+            when gef_max = 1 then 'restgefaehrdung'
+            when gef_max = 2 then 'gering' 
+            when gef_max = 3 then 'mittel' 
+            when gef_max = 4 then 'erheblich' 
         end as gefahrenstufe,
         charakterisierung, 
-        poly as geometrie 
-    from 
+        poly AS geometrie 
+    FROM 
         splited        
 )
     
 -- Die Charakterisierungen müssen sortiert werden
-,hauptprozesse_charakterisierung_sort as (
-    select 
-       gefahrenstufe,
-       array_to_string(
-           array(
-               select distinct 
-                   unnest(
-                       string_to_array(charakterisierung,', ')
-                   ) as x 
-               order by x
-           ),', '
-       ) as charakterisierung,
+,hauptprozesse_charakterisierung_sort AS (
+    SELECT 
+        gefahrenstufe,
+        array_to_string(
+            array(
+                select distinct 
+                    unnest(
+                        string_to_array(charakterisierung,', ')
+                    ) AS x 
+                ORDER BY x
+            ),', '
+       ) AS charakterisierung,
 	   geometrie
 	FROM 
 	    splitted_attributes_mapping
@@ -37,18 +37,18 @@ splitted_attributes_mapping as (
 
 --Polygone die unzusammenhängend sinnd müssen wieder aufgetrennt werden. 
 ,hauptprozesse_polygon_dump as (
-    select
+    SELECT
         gefahrenstufe, 
         charakterisierung,
-        (st_dump(geometrie)).geom as geometrie
-    from 
+        (st_dump(geometrie)).geom AS geometrie
+    FROM 
         hauptprozesse_charakterisierung_sort
 )
 
 ,basket as (
-     select 
+     SELECT 
          t_id 
-     from 
+     FROM 
          afu_naturgefahren_staging_v1.t_ili2db_basket
  )
 
@@ -58,16 +58,16 @@ INSERT INTO afu_naturgefahren_staging_v1.synoptisches_gefahrengebiet (
     charakterisierung, 
     geometrie
 ) 
-select 
-    basket.t_id as t_basket,
+SELECT 
+    basket.t_id AS t_basket,
     gefahrenstufe,
     charakterisierung,
-    st_multi(geometrie) as geometrie 
-from 
+    st_multi(geometrie) AS geometrie 
+FROM 
     basket,
     hauptprozesse_polygon_dump
 WHERE 
     st_area(geometrie) > 0.001 
-    and 
+    AND 
     charakterisierung is not null 
 ;

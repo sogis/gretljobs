@@ -1,10 +1,9 @@
-with
-
-lines as (
-  select 
-    st_union(st_boundary(geometrie)) as geometrie
-  from
-    gk_poly
+WITH
+lines AS (
+    SELECT   
+        st_union(st_boundary(geometrie)) as geometrie
+    FROM
+        gk_poly
 )
 
 ,splited AS (
@@ -14,15 +13,25 @@ lines as (
     lines
 )
 
-,withpoint as (
-    select
+,withpoint AS (
+    SELECT
         ROW_NUMBER() OVER() as id, 
         geometrie as poly,
         ST_PointOnSurface(geometrie) as point
-    from 
+    FROM 
         splited
 )
 
-insert into splited(id, point, poly)
-select id, point, poly from withpoint
+INSERT INTO 
+    splited(
+        id, 
+        point, 
+        poly
+    )
+SELECT 
+    id, 
+    point, 
+    poly 
+FROM 
+    withpoint
 ;
