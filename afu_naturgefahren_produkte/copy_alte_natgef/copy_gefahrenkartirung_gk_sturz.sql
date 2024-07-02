@@ -10,6 +10,6 @@ SELECT
     ngkid
 FROM 
     afu_gefahrenkartierung.gefahrenkartirung_gk_sturz
-where 
+WHERE 
     aindex is not null 
 ;

@@ -1,27 +1,26 @@
-with
-
-multipoly as (
-	select
-		st_union(poly) as mpoly,
+WITH
+multipoly AS (
+	SELECT
+		st_union(poly) AS mpoly,
 		gef_max,
 		charakterisierung
-	from 
+	FROM 
 		splited
-	group by
+	GROUP BY
 		gef_max,
 		charakterisierung
 )
 
-,singlepoly as (
-	select 
-		(st_dump(mpoly)).geom as spoly,
+,singlepoly AS (
+	SELECT 
+		(st_dump(mpoly)).geom AS spoly,
 		gef_max,
 		charakterisierung
-	from 
+	FROM 
 		multipoly
 )
 
-,ins_merged as (
+,ins_merged AS (
 	insert into splited(
 		id, 
 		poly, 
@@ -29,19 +28,19 @@ multipoly as (
 		gef_max, 
 		charakterisierung
 	)
-	select 
-		-(row_number() over()) as new_id,
+	SELECT 
+		-(row_number() over()) AS new_id,
 		spoly,
 		st_pointonsurface(spoly),
 		gef_max,
 		charakterisierung
-	from 
+	FROM 
 		singlepoly
 )
 
 -- delete old polygons
-delete from 
+DELETE FROM 
 	splited
-where 
+WHERE 
 	id >= 0
 ;

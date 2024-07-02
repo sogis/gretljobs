@@ -1,66 +1,66 @@
-delete from afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser
+DELETE FROM afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser
 ;
 
-with 
-basket as (
-     select 
+WITH 
+basket AS (
+     SELECT 
          t_id,
          attachmentkey
      from 
          afu_naturgefahren_staging_v1.t_ili2db_basket
-), 
+) 
 
-hauptprozess_wasser as ( 
+,hauptprozess_wasser AS ( 
     SELECT
         gefahrenstufe, 
-	    charakterisierung, 
-	    (st_dump(geometrie)).geom as geometrie	
-	FROM 
-	    afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_murgang 
-	where 
-	    datenherkunft = 'Neudaten'
-    union all 
-    select 
-	    gefahrenstufe,
-	    charakterisierung, 
-	    (ST_Dump(geometrie)).geom as geometrie
-	from 
-	    afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_ueberflutung
-	where 
-	    datenherkunft = 'Neudaten'
-),
-
-hauptprozess_wasser_clean as (
+        charakterisierung, 
+        (st_dump(geometrie)).geom AS geometrie	
+    FROM 
+        afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_murgang 
+    WHERE 
+        datenherkunft = 'Neudaten'
+    UNION ALL 
     SELECT 
-	    gefahrenstufe, 
-		charakterisierung, 
-		geometrie 
-	FROM 
-	    hauptprozess_wasser 
-	WHERE 
-        st_area(geometrie) > 0.01
-),
+        gefahrenstufe,
+        charakterisierung, 
+        (ST_Dump(geometrie)).geom AS geometrie
+    FROM 
+        afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_ueberflutung
+    WHERE 
+        datenherkunft = 'Neudaten'
+)
 
-hauptprozess_wasser_clean_prio as (
+,hauptprozess_wasser_clean AS (
     SELECT 
-	    gefahrenstufe, 
-		charakterisierung, 
-		geometrie,
-		CASE 
-		    WHEN gefahrenstufe = 'restgefaehrdung' THEN 0 
-		    WHEN gefahrenstufe = 'gering' THEN 1 
-		    WHEN gefahrenstufe = 'mittel' THEN 2 
-		    WHEN gefahrenstufe = 'erheblich' THEN 3
-		END as prio 
-	FROM 
+        gefahrenstufe, 
+        charakterisierung, 
+        geometrie 
+    FROM 
+        hauptprozess_wasser 
+    WHERE 
+        ST_area(geometrie) > 0.01
+)
+
+,hauptprozess_wasser_clean_prio AS (
+    SELECT 
+        gefahrenstufe, 
+        charakterisierung, 
+        geometrie,
+        CASE 
+            WHEN gefahrenstufe = 'restgefaehrdung' THEN 0 
+            WHEN gefahrenstufe = 'gering' THEN 1 
+            WHEN gefahrenstufe = 'mittel' THEN 2 
+            WHEN gefahrenstufe = 'erheblich' THEN 3
+        END AS prio 
+    FROM 
         hauptprozess_wasser_clean
-),
+)
 
-hauptprozess_wasser_clean_prio_clip as (
+,hauptprozess_wasser_clean_prio_clip AS (
     SELECT 
-	    a.gefahrenstufe, 
-		a.charakterisierung, 
-		ST_Multi(COALESCE(
+        a.gefahrenstufe, 
+        a.charakterisierung, 
+        ST_Multi(COALESCE(
             ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
         )) AS geometrie
@@ -76,32 +76,32 @@ hauptprozess_wasser_clean_prio_clip as (
             and 
             a.prio < b.prio              
     ) AS blade		
-),
+)
 
-hauptprozess_wasser_boundary as (
-  select 
-    st_union(st_boundary(geometrie)) as geometrie
-  from
-    hauptprozess_wasser_clean_prio_clip
-),
+,hauptprozess_wasser_boundary AS (
+    SELECT 
+        ST_union(st_boundary(geometrie)) AS geometrie
+    FROM
+        hauptprozess_wasser_clean_prio_clip
+)
 
-hauptprozess_wasser_split_poly AS (
-  SELECT 
-    (st_dump(st_polygonize(geometrie))).geom AS geometrie
-  FROM
-    hauptprozess_wasser_boundary
-),
+,hauptprozess_wasser_split_poly AS (
+    SELECT 
+        (ST_dump(ST_polygonize(geometrie))).geom AS geometrie
+    FROM
+        hauptprozess_wasser_boundary
+)
 
-hauptprozess_wasser_split_poly_points AS (
-  SELECT 
-    ROW_NUMBER() OVER() AS id,
-    geometrie AS poly,
-    st_pointonsurface(geometrie) AS point
-  FROM
-    hauptprozess_wasser_split_poly
-),
+,hauptprozess_wasser_split_poly_points AS (
+    SELECT 
+        ROW_NUMBER() OVER() AS id,
+        geometrie AS poly,
+        ST_pointonsurface(geometrie) AS point
+    FROM
+        hauptprozess_wasser_split_poly
+)
 	
-hauptprozess_wasser_point_on_polygons as (
+,hauptprozess_wasser_point_on_polygons AS (
     SELECT 
         s.id,
         p.gefahrenstufe,
@@ -113,40 +113,40 @@ hauptprozess_wasser_point_on_polygons as (
     GROUP BY 
         s.id,
         p.gefahrenstufe
-),
+)
 
-hauptprozess_wasser_charakterisierung_agg as (
-    select 
+,hauptprozess_wasser_charakterisierung_agg AS (
+    SELECT 
         polygone.gefahrenstufe,
         polygone.charakterisierung,
-	    point.poly as geometrie
+        point.poly AS geometrie
     FROM 
-	    hauptprozess_wasser_split_poly_points point 
+        hauptprozess_wasser_split_poly_points point 
     LEFT JOIN 
-	    hauptprozess_wasser_point_on_polygons polygone 
+        hauptprozess_wasser_point_on_polygons polygone 
         ON 
-	    polygone.id = point.id
-),
+        polygone.id = point.id
+)
 
 -- Flächen mit gleicher Gefahrenstufe und gleicher Charakterisierung können zusammengefasst werden
-hauptprozess_wasser_union as (
-    select 
+,hauptprozess_wasser_union AS (
+    SELECT 
         gefahrenstufe,
         charakterisierung,
-        st_union(geometrie) as geometrie
-    from 
+        ST_union(geometrie) AS geometrie
+    FROM 
         hauptprozess_wasser_charakterisierung_agg
-    group by 
+    GROUP BY 
         gefahrenstufe,
         charakterisierung 
 )
 
-,hauptprozess_wasser_dump as (
-    select 
+,hauptprozess_wasser_dump AS (
+    SELECT 
         gefahrenstufe,
         charakterisierung,
-        (st_dump(geometrie)).geom as geometrie
-    from 
+        (ST_dump(geometrie)).geom AS geometrie
+    FROM 
         hauptprozess_wasser_union
 )
 
@@ -161,23 +161,19 @@ INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser (
     auftrag_neudaten
 )
 
-select 
-    basket.t_id as t_basket,
-    'wasser' as hauptprozess,
+SELECT 
+    basket.t_id AS t_basket,
+    'wasser' AS hauptprozess,
     gefahrenstufe,
     charakterisierung,
-    st_multi(geometrie) as geometrie, 
-    'Neudaten' as datenherkunft, 
-    basket.attachmentkey as auftrag_neudaten   
+    st_multi(geometrie) AS geometrie, 
+    'Neudaten' AS datenherkunft, 
+    basket.attachmentkey AS auftrag_neudaten   
 from 
     basket,
     hauptprozess_wasser_dump
 WHERE 
-    st_area(geometrie) > 0.01 
+    ST_area(geometrie) > 0.01 
     and 
     charakterisierung is not null 
 ;
-
-
-
-
