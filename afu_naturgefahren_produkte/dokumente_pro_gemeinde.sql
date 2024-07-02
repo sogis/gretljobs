@@ -1,62 +1,59 @@
-delete from afu_naturgefahren_staging_v1.dokumente_pro_gemeinde 
-;
-
-with 
-orig_dataset as (
-    select
-        t_id  as dataset  
-    from 
+WITH
+orig_dataset AS (
+    SELECT
+        t_id  AS dataset  
+    FROM 
         afu_naturgefahren_v1.t_ili2db_dataset
-    where 
+    WHERE 
         datasetname = ${kennung}
-),
+)
 
-orig_basket as (
-    select 
+,orig_basket AS (
+    SELECT 
         basket.t_id 
-    from 
+    FROM 
         afu_naturgefahren_v1.t_ili2db_basket basket,
         orig_dataset
-    where 
+    WHERE 
         basket.dataset = orig_dataset.dataset
-        and 
+        AND 
         topic like '%Befunde'
-),
+)
 
- basket as (
-     select 
-         t_id,
-         attachmentkey
-     from 
-         afu_naturgefahren_staging_v1.t_ili2db_basket
- ),
+,basket AS (
+    SELECT 
+        t_id,
+        attachmentkey
+    FROM 
+        afu_naturgefahren_staging_v1.t_ili2db_basket
+)
  
-gemeinden as (
-    select
+,gemeinden AS (
+    SELECT
         gemeindename,
         geometrie, 
         bfs_gemeindenummer
-    from 
+    FROM 
         agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze
-),
+)
 
-berichte as (
-    select 
-        array_agg(teilauftrag.t_id) as teilauftrag_tid,
-        auftrag.kennung as auftragskennung,
-        auftrag.deklaration as auftragsdeklaration,
-        auftrag.abschlussjahr::text as jahr,
+,berichte AS (
+    SELECT 
+        array_agg(teilauftrag.t_id) AS teilauftrag_tid,
+        auftrag.kennung AS auftragskennung,
+        auftrag.deklaration AS auftragsdeklaration,
+        auftrag.abschlussjahr::text AS jahr,
         string_agg(DISTINCT teilauftrag.hauptprozess, ', ') AS hauptprozess,
-        bericht.bericht as titel, 
-        bericht.dateiname as dateiname,
-        'https://geo.so.ch/docs/ch.so.afu.naturgefahren/'||bericht.dateiname as link
-    from 
+        bericht.bericht AS titel, 
+        bericht.dateiname AS dateiname,
+        'https://geo.so.ch/docs/ch.so.afu.naturgefahren/'||bericht.dateiname AS link
+    FROM 
         afu_naturgefahren_v1.auftrag auftrag 
-    left join 
+    LEFT JOIN 
         afu_naturgefahren_v1.bericht bericht
         on 
         bericht.auftrag_r = auftrag.t_id 
-    left join 
+    LEFT JOIN 
         afu_naturgefahren_v1.teilauftrag teilauftrag 
         on 
         teilauftrag.auftrag_r = auftrag.t_id
@@ -66,146 +63,146 @@ berichte as (
         auftrag.abschlussjahr::text,
         bericht.bericht,
         bericht.dateiname
-),
+)
 
-teilprozesse as (
-    select 
+,teilprozesse AS (
+    SELECT 
         teilprozess_einsturz.geometrie,
-        teilprozess_einsturz.prozessquelle_r as prozessquelle_id 
-    from 
+        teilprozess_einsturz.prozessquelle_r AS prozessquelle_id 
+    FROM 
         afu_naturgefahren_v1.befundeinsturz teilprozess_einsturz 
-    where 
-        teilprozess_einsturz.t_basket in (select t_id from orig_basket)
-    union all 
-    select 
+    WHERE 
+        teilprozess_einsturz.t_basket in (SELECT t_id FROM orig_basket)
+    UNION ALL 
+    SELECT 
         teilprozess_absenkung.geometrie,
-        teilprozess_absenkung.prozessquelle_r as prozessquelle_id 
-    from 
+        teilprozess_absenkung.prozessquelle_r AS prozessquelle_id 
+    FROM 
         afu_naturgefahren_v1.befundabsenkung teilprozess_absenkung
-    where 
-        teilprozess_absenkung.t_basket in (select t_id from orig_basket)
-    union all 
-    select 
+    WHERE 
+        teilprozess_absenkung.t_basket in (SELECT t_id FROM orig_basket)
+    UNION ALL 
+    SELECT 
         teilprozess_bergfelssturz.geometrie,
-        teilprozess_bergfelssturz_pq.prozessquelle_r as prozessquelle_id 
-    from 
+        teilprozess_bergfelssturz_pq.prozessquelle_r AS prozessquelle_id 
+    FROM 
         afu_naturgefahren_v1.befundbergfelssturz teilprozess_bergfelssturz
-    left join 
+    LEFT JOIN 
         afu_naturgefahren_v1.pq_jaehrlichkeit_bergfelssturz teilprozess_bergfelssturz_pq 
         on 
         teilprozess_bergfelssturz.pq_jaehrlichkeit_bergfelssturz_r = teilprozess_bergfelssturz_pq.t_id
-    where 
-        teilprozess_bergfelssturz.t_basket in (select t_id from orig_basket)
-    union all 
-    select 
+    WHERE 
+        teilprozess_bergfelssturz.t_basket in (SELECT t_id FROM orig_basket)
+    UNION ALL 
+    SELECT 
         teilprozess_hangmure.geometrie,
-        teilprozess_hangmure_pq.prozessquelle_r as prozessquelle_id 
-    from 
+        teilprozess_hangmure_pq.prozessquelle_r AS prozessquelle_id 
+    FROM 
         afu_naturgefahren_v1.befundhangmure teilprozess_hangmure
-    left join 
+    LEFT JOIN 
         afu_naturgefahren_v1.pq_jaehrlichkeit_hangmure teilprozess_hangmure_pq 
         on 
         teilprozess_hangmure.pq_jaehrlichkeit_hangmure_r = teilprozess_hangmure_pq.t_id
-    where 
-        teilprozess_hangmure.t_basket in (select t_id from orig_basket)
-    union all 
-    select 
+    WHERE 
+        teilprozess_hangmure.t_basket in (SELECT t_id FROM orig_basket)
+    UNION ALL 
+    SELECT 
         teilprozess_permanentrutschung.geometrie,
-        teilprozess_permanentrutschung.prozessquelle_r as prozessquelle_id 
-    from 
+        teilprozess_permanentrutschung.prozessquelle_r AS prozessquelle_id 
+    FROM 
         afu_naturgefahren_v1.befundpermanenterutschung teilprozess_permanentrutschung
-    where 
-        teilprozess_permanentrutschung.t_basket in (select t_id from orig_basket)
-    union all 
-    select 
+    WHERE 
+        teilprozess_permanentrutschung.t_basket in (SELECT t_id FROM orig_basket)
+    UNION ALL 
+    SELECT 
         teilprozess_spontanerutschung.geometrie,
-        teilprozess_spontanerutschung_pq.prozessquelle_r as prozessquelle_id 
-    from 
+        teilprozess_spontanerutschung_pq.prozessquelle_r AS prozessquelle_id 
+    FROM 
         afu_naturgefahren_v1.befundspontanerutschung teilprozess_spontanerutschung
-    left join 
+    LEFT JOIN 
         afu_naturgefahren_v1.pq_jaehrlichkeit_spontanerutschung teilprozess_spontanerutschung_pq 
         on 
         teilprozess_spontanerutschung.pq_jaehrlichkeit_spontanerutschung_r = teilprozess_spontanerutschung_pq.t_id
-    where 
-        teilprozess_spontanerutschung.t_basket in (select t_id from orig_basket)
-    union all 
-    select 
+    WHERE 
+        teilprozess_spontanerutschung.t_basket in (SELECT t_id FROM orig_basket)
+    UNION ALL 
+    SELECT 
         teilprozess_steinblockschlag.geometrie,
-        teilprozess_steinblockschlag_pq.prozessquelle_r as prozessquelle_id 
-    from 
+        teilprozess_steinblockschlag_pq.prozessquelle_r AS prozessquelle_id 
+    FROM 
         afu_naturgefahren_v1.befundsteinblockschlag teilprozess_steinblockschlag
-    left join 
+    LEFT JOIN 
         afu_naturgefahren_v1.pq_jaehrlichkeit_steinblockschlag teilprozess_steinblockschlag_pq 
         on 
         teilprozess_steinblockschlag.pq_jaehrlichkeit_steinblockschlag_r = teilprozess_steinblockschlag_pq.t_id 
-    where 
-        teilprozess_steinblockschlag.t_basket in (select t_id from orig_basket)
-    union all 
-    select 
+    WHERE 
+        teilprozess_steinblockschlag.t_basket in (SELECT t_id FROM orig_basket)
+    UNION ALL 
+    SELECT 
         teilprozess_uebermurung.geometrie,
-        teilprozess_uebermurung.prozessquelle_r as prozessquelle_id 
-    from 
+        teilprozess_uebermurung.prozessquelle_r AS prozessquelle_id 
+    FROM 
         afu_naturgefahren_v1.befunduebermurung teilprozess_uebermurung
-    where 
-        teilprozess_uebermurung.t_basket in (select t_id from orig_basket)
-    union all 
-    select 
+    WHERE 
+        teilprozess_uebermurung.t_basket in (SELECT t_id FROM orig_basket)
+    UNION ALL 
+    SELECT 
         teilprozess_ueberschwemmungdynamisch.geometrie,
-        teilprozess_ueberschwemmungdynamisch.prozessquelle_r as prozessquelle_id 
-    from 
+        teilprozess_ueberschwemmungdynamisch.prozessquelle_r AS prozessquelle_id 
+    FROM 
         afu_naturgefahren_v1.befundueberschwemmungdynamisch teilprozess_ueberschwemmungdynamisch 
-    where 
-        teilprozess_ueberschwemmungdynamisch.t_basket in (select t_id from orig_basket)
-    union all 
-    select 
+    WHERE 
+        teilprozess_ueberschwemmungdynamisch.t_basket in (SELECT t_id FROM orig_basket)
+    UNION ALL 
+    SELECT 
         teilprozess_ueberschwemmungstatisch.geometrie,
-        teilprozess_ueberschwemmungstatisch.prozessquelle_r as prozessquelle_id 
-    from 
+        teilprozess_ueberschwemmungstatisch.prozessquelle_r AS prozessquelle_id 
+    FROM 
         afu_naturgefahren_v1.befundueberschwemmungstatisch teilprozess_ueberschwemmungstatisch
-    where 
-        teilprozess_ueberschwemmungstatisch.t_basket in (select t_id from orig_basket)
+    WHERE 
+        teilprozess_ueberschwemmungstatisch.t_basket in (SELECT t_id FROM orig_basket)
 ),
 
-dokumente_union as (
-select distinct 
-    basket.t_id as t_basket, 
-    gemeinden.bfs_gemeindenummer as gemeinde_bfsnr, 
-    gemeinden.gemeindename as gemeinde_name,
+dokumente_union AS (
+SELECT distinct 
+    basket.t_id AS t_basket, 
+    gemeinden.bfs_gemeindenummer AS gemeinde_bfsnr, 
+    gemeinden.gemeindename AS gemeinde_name,
     jsonb_build_object('@type', 'SO_AFU_Naturgefahren_Kernmodell_20231016.Naturgefahren.Dokument',
                       'Titel', berichte.titel, 
                       'Dateiname', berichte.dateiname, 
                       'Link', berichte.link, 
                       'Hauptprozesse', berichte.hauptprozess, 
                       'Jahr', berichte.jahr
-                      ) as dokumente,
+                      ) AS dokumente,
     gemeinden.geometrie,
-    berichte.jahr::text as jahr
-from 
+    berichte.jahr::text AS jahr
+FROM 
     basket,
     teilprozesse befund
-left join 
+LEFT JOIN 
     afu_naturgefahren_v1.prozessquelle prozessquelle 
     on 
     befund.prozessquelle_id = prozessquelle.t_id
-left join 
+LEFT JOIN 
     berichte 
     on 
     prozessquelle.teilauftrag_r = ANY(berichte.teilauftrag_tid)
-left join 
+LEFT JOIN 
     gemeinden 
     on 
     st_dwithin(befund.geometrie,gemeinden.geometrie,0)
     
-union all 
+UNION ALL 
 
-select distinct 
-    basket.t_id as t_basket,
+SELECT DISTINCT 
+    basket.t_id AS t_basket,
     alte_dokumente.gemeinde_bfsnr,
     alte_dokumente.gemeinde_name,
-    alte_dokumente.dokument as dokumente,
+    alte_dokumente.dokument AS dokumente,
     alte_dokumente.geometrie,
-    alte_dokumente.dokument ->> 'Jahr' as jahr
-from 
+    alte_dokumente.dokument ->> 'Jahr' AS jahr
+FROM 
     basket,
     afu_naturgefahren_alte_dokumente_v1.alte_dokumente alte_dokumente
 )
@@ -218,21 +215,17 @@ INSERT INTO afu_naturgefahren_staging_v1.dokumente_pro_gemeinde (
     geometrie
 )
 
-select 
+SELECT 
     t_basket,
     gemeinde_bfsnr, 
     gemeinde_name,
-    json_agg(dokumente order by jahr) as dokumente,
+    json_agg(dokumente order by jahr) AS dokumente,
     geometrie
-from 
+FROM 
     dokumente_union
 GROUP by 
     t_basket,
     gemeinde_bfsnr,
     gemeinde_name,
     geometrie 
-
-
-
-
-
+;

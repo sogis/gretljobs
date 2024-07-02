@@ -1,28 +1,33 @@
-with
-basket as (
-     select 
+WITH
+basket AS (
+     SELECT 
          t_id 
-     from 
+     FROM 
          afu_naturgefahren_staging_v1.t_ili2db_basket
-), 
+) 
 
-attribute_mapping as (
+,attribute_mapping AS (
     SELECT 
         'stein_blockschlag' as teilprozess, 
-        case 
-            when gef_stufe = 'keine' then 'nicht_gefaehrdet'
-    	    when gef_stufe = 'vorhanden' then 'restgefaehrdung'
-            when gef_stufe = 'gering' then 'gering'
-            when gef_stufe = 'mittel' then 'mittel' 
-            when gef_stufe = 'erheblich' then 'erheblich'
-        end as gefahrenstufe, 
+        CASE 
+            WHEN gef_stufe = 'keine' 
+            THEN 'nicht_gefaehrdet'
+    	    WHEN gef_stufe = 'vorhanden' 
+            THEN 'restgefaehrdung'
+            WHEN gef_stufe = 'gering' 
+            THEN 'gering'
+            WHEN gef_stufe = 'mittel' 
+            THEN 'mittel' 
+            WHEN gef_stufe = 'erheblich'
+            THEN 'erheblich'
+        END AS gefahrenstufe, 
         replace(aindex, '_', '') as charakterisierung, 
-        st_multi(geometrie) as geometrie --Im neuen Modell sind Multi-Polygone
+        ST_Multi(geometrie) as geometrie --Im neuen Modell sind Multi-Polygone
     FROM 
         afu_gefahrenkartierung.gefahrenkartirung_gk_sturz
-    where 
+    WHERE 
         prozessa = 'Stein_Blockschlag'
-        and 
+        AND 
         publiziert is true
 )
 
@@ -35,7 +40,7 @@ INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_stein_blocks
     datenherkunft, 
     auftrag_neudaten
 )
- select
+ SELECT
     basket.t_id as t_basket, 
     teilprozess,
     gefahrenstufe,
@@ -43,12 +48,9 @@ INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_stein_blocks
     geometrie, 
     'Altdaten' as datenherkunft,
     null as auftrag_neudaten
-from 
+FROM 
     attribute_mapping,
     basket basket
-where 
+WHERE 
     teilprozess is not null 
 ;
-
-
-

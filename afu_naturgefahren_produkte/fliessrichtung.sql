@@ -1,33 +1,30 @@
-delete from afu_naturgefahren_staging_v1.fliessrichtung 
-;
-
-with 
-orig_dataset as (
-    select
-        t_id  as dataset  
-    from 
+WITH
+orig_dataset AS (
+    SELECT
+        t_id  AS dataset  
+    FROM 
         afu_naturgefahren_v1.t_ili2db_dataset
-    where 
+    WHERE 
         datasetname = ${kennung}
-),
+)
 
-orig_basket as (
-    select 
+,orig_basket AS (
+    SELECT 
         basket.t_id 
-    from 
+    FROM 
         afu_naturgefahren_v1.t_ili2db_basket basket,
         orig_dataset
-    where 
+    WHERE 
         basket.dataset = orig_dataset.dataset
-        and 
+        AND 
         topic like '%Befunde'
-),
+)
 
-basket as (
-    select 
+,basket AS (
+    SELECT 
         t_id,
         attachmentkey
-    from 
+    FROM 
         afu_naturgefahren_staging_v1.t_ili2db_basket
 )
 
@@ -42,25 +39,29 @@ INSERT INTO afu_naturgefahren_staging_v1.fliessrichtung (
 )
 
 SELECT 
-    basket.t_id as t_basket, 
-    case 
-    	when richtung.jaehrlichkeit = 'j_30' then '30'
-    	when richtung.jaehrlichkeit = 'j_100' then '100'
-    	when richtung.jaehrlichkeit = 'j_300' then '300'
-    	when richtung.jaehrlichkeit = 'restgefaehrdung' then '-1' 
-    end as jaehrlichkeit, 
-    richtung.azimuth as fliessrichtung, 
-    prozessquelle.kennung as prozessquelle_neudaten, 
+    basket.t_id AS t_basket, 
+    CASE 
+    	WHEN richtung.jaehrlichkeit = 'j_30' 
+        THEN '30'
+    	WHEN richtung.jaehrlichkeit = 'j_100' 
+        THEN '100'
+    	WHEN richtung.jaehrlichkeit = 'j_300' 
+        THEN '300'
+    	WHEN richtung.jaehrlichkeit = 'restgefaehrdung' 
+        THEN '-1' 
+    END AS jaehrlichkeit, 
+    richtung.azimuth AS fliessrichtung, 
+    prozessquelle.kennung AS prozessquelle_neudaten, 
     geometrie, 
-    'Neudaten' as datenherkunft,
-    basket.attachmentkey as auftrag_neudaten
+    'Neudaten' AS datenherkunft,
+    basket.attachmentkey AS auftrag_neudaten
 FROM 
     basket,
     afu_naturgefahren_v1.fliessrichtungspfeil richtung
-left join 
+LEFT JOIN  
     afu_naturgefahren_v1.prozessquelle prozessquelle 
     on 
     richtung.prozessquelle_r = prozessquelle.t_id
-where 
-    richtung.t_basket in (select t_id from orig_basket)
+WHERE 
+    richtung.t_basket in (SELECT t_id FROM orig_basket)
 ;

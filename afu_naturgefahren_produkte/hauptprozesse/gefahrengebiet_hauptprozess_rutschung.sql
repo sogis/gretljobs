@@ -1,6 +1,3 @@
-DELETE FROM afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung
-;
-
 WITH
 basket AS (
      SELECT 

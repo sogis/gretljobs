@@ -1,33 +1,30 @@
-delete from afu_naturgefahren_staging_v1.fliesstiefen 
-;
-
-with 
-orig_dataset as (
-    select
-        t_id  as dataset  
-    from 
+WITH 
+orig_dataset AS (
+    SELECT
+        t_id  AS dataset  
+    FROM 
         afu_naturgefahren_v1.t_ili2db_dataset
-    where 
+    WHERE 
         datasetname = ${kennung}
-),
+)
 
-orig_basket as (
-    select 
+,orig_basket AS (
+    SELECT 
         basket.t_id 
-    from 
+    FROM 
         afu_naturgefahren_v1.t_ili2db_basket basket,
         orig_dataset
-    where 
+    WHERE 
         basket.dataset = orig_dataset.dataset
-        and 
+        AND 
         topic like '%Befunde'
-),
+)
 
- basket as (
-    select 
+,basket AS (
+    SELECT 
         t_id,
         attachmentkey
-    from 
+    FROM 
         afu_naturgefahren_staging_v1.t_ili2db_basket
 )
 
@@ -42,37 +39,51 @@ INSERT INTO afu_naturgefahren_staging_v1.fliesstiefen (
 )
 
 SELECT 
-    basket.t_id as t_basket,
-    case 
-    	when tiefe.jaehrlichkeit = 'j_30' then '30'
-    	when tiefe.jaehrlichkeit = 'j_100' then '100'
-    	when tiefe.jaehrlichkeit = 'j_300' then '300'
-    	when tiefe.jaehrlichkeit = 'restgefaehrdung' then '-1' 
-    end as jaehrlichkeit,  
-    case 
-    	when h = 'von_0_bis_25_cm' then 'von_0_bis_25cm'
-    	when h = 'von_25_bis_50_cm' then 'von_25_bis_50cm' 
-    	when h = 'von_50_bis_75_cm' then 'von_50_bis_75cm' 
-    	when h = 'von_75_bis_100_cm' then 'von_75_bis_100cm'
-    	when h = 'von_100_bis_125_cm' then 'von_100_bis_200cm'
-    	when h = 'von_125_bis_150_cm' then 'von_100_bis_200cm'
-    	when h = 'von_150_bis_175_cm' then 'von_100_bis_200cm'
-    	when h = 'von_175_bis_200_cm' then 'von_100_bis_200cm'
-    	when h = 'von_200_bis_300_cm' then 'groesser_200cm'
-    	when h = 'von_300_bis_400_cm' then 'groesser_200cm'
-    	else 'BERECHNUNGSFEHLER' 
-    end as ueberschwemmung_tiefe, 
-    prozessquelle.kennung as prozessquelle_neudaten, 
-    st_multi(geometrie) as geometrie, 
-    'Neudaten' as datenherkunft,
-    basket.attachmentkey as auftrag_neudaten
+    basket.t_id AS t_basket,
+    CASE 
+    	WHEN tiefe.jaehrlichkeit = 'j_30' 
+        THEN '30'
+    	WHEN tiefe.jaehrlichkeit = 'j_100' 
+        THEN '100'
+    	WHEN tiefe.jaehrlichkeit = 'j_300' 
+        THEN '300'
+    	WHEN tiefe.jaehrlichkeit = 'restgefaehrdung' 
+        THEN '-1' 
+    END AS jaehrlichkeit,  
+    CASE 
+    	WHEN h = 'von_0_bis_25_cm' 
+        THEN 'von_0_bis_25cm'
+    	WHEN h = 'von_25_bis_50_cm' 
+        THEN 'von_25_bis_50cm' 
+    	WHEN h = 'von_50_bis_75_cm' 
+        THEN 'von_50_bis_75cm' 
+    	WHEN h = 'von_75_bis_100_cm' 
+        THEN 'von_75_bis_100cm'
+    	WHEN h = 'von_100_bis_125_cm' 
+        THEN 'von_100_bis_200cm'
+    	WHEN h = 'von_125_bis_150_cm' 
+        THEN 'von_100_bis_200cm'
+    	WHEN h = 'von_150_bis_175_cm' 
+        THEN 'von_100_bis_200cm'
+    	WHEN h = 'von_175_bis_200_cm' 
+        THEN 'von_100_bis_200cm'
+    	WHEN h = 'von_200_bis_300_cm' 
+        THEN 'groesser_200cm'
+    	WHEN h = 'von_300_bis_400_cm' 
+        THEN 'groesser_200cm'
+    	ELSE 'BERECHNUNGSFEHLER' 
+    END AS ueberschwemmung_tiefe, 
+    prozessquelle.kennung AS prozessquelle_neudaten, 
+    ST_Multi(geometrie) AS geometrie, 
+    'Neudaten' AS datenherkunft,
+    basket.attachmentkey AS auftrag_neudaten
 FROM 
     basket,
     afu_naturgefahren_v1.kennwertueberschwemmungfliesstiefe tiefe
-left join 
+LEFT JOIN 
     afu_naturgefahren_v1.prozessquelle prozessquelle 
-    on 
+    ON 
     tiefe.prozessquelle_r = prozessquelle.t_id
-where 
-    tiefe.t_basket in (select t_id from orig_basket)
+WHERE 
+    tiefe.t_basket in (SELECT t_id FROM orig_basket)
 ;

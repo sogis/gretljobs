@@ -9,8 +9,8 @@ SELECT
     auftrag_neudaten
 FROM 
     afu_naturgefahren_staging_v1.kennwert_ueberschwemmung_geschwindigkeit kennwert
-left join 
+LEFT JOIN
     afu_naturgefahren_staging_v1.ue_fliessgeschwindigkeit_typ fliessgesch_typ 
-    on 
+    ON
     kennwert.fliessgeschwindigkeit = fliessgesch_typ.ilicode 
 ;

@@ -213,12 +213,10 @@ INSERT INTO
         water 
 ;
 
-UPDATE 
-    afu_naturgefahren_mgdm_v1.hazard_mapping_hazard_area 
-SET 
-    t_ili_tid = concat('_',t_ili_tid,'.so.ch')::text
+UPDATE afu_naturgefahren_mgdm_v1.hazard_mapping_hazard_area 
+SET t_ili_tid = concat('_',t_ili_tid,'.so.ch')::text
 ;
 
-delete from afu_naturgefahren_mgdm_v1.hazard_mapping_hazard_area 
-where st_isempty(impact_zone) = true
+DELETE FROM afu_naturgefahren_mgdm_v1.hazard_mapping_hazard_area 
+WHERE ST_Isempty(impact_zone) = true
 ; 

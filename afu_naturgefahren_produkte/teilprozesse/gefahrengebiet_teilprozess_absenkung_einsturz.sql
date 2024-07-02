@@ -1,7 +1,3 @@
--- ACHTUNG: NEUES DATASET UND BASKET MÜSSEN ANGELEGT WORDEN SEIN!!! 
-DELETE FROM afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_absenkung_einsturz
-;
-
 WITH
 orig_dataset AS (
     SELECT
@@ -169,6 +165,3 @@ FROM
 WHERE 
     ST_isempty(geometrie) is not true 
 ;
-
-
-
