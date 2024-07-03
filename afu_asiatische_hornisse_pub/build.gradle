@@ -6,7 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 description = "GRETL-Job für Datenübernahme der Asiatischen Hornisse innerhalb der edit-DB, ins pub-Schema (pub-DB, edit-DB)"
 
 
-defaultTasks 'publipub'
+defaultTasks 'transferAfuAsiatischeHornissePub'
 
 
 task transferAfuAsiatischeHornissePub(type: Db2Db) {
