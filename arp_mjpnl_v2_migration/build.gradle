@@ -15,8 +15,7 @@ defaultTasks 'importDataToV2'
 def dB_Schema_MJPNL_v1 = "arp_mjpnl_v1"
 def dB_Schema_MJPNL_v2 = "arp_mjpnl_v2"
 
-def mjpnlV1DataFile = file('mjpnldata.xml')
-def mjpnlV2DataFile = file('mjpnldata.xtf')
+def mjpnlDataFile = file('mjpnldata.xtf')
 def trafoFile = file('mjpnltrafo.xslt')
 def trafoFileContent = """<xsl:stylesheet
         xmlns="http://www.interlis.ch/INTERLIS2.3"
@@ -69,14 +68,14 @@ task exportDataFromV1(type: Ili2pgExport, dependsOn: writeTrafoFile) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = dB_Schema_MJPNL_v1
     disableValidation = true
-    dataFile = mjpnlV1DataFile
+    dataFile = mjpnlDataFile
     models = "SO_ARP_MJPNL_20201026"
 }
 
 task transformTheData(type: XslTransformer, dependsOn: exportDataFromV1) {
     description = "Transformiert die MJPNL Daten von v1 in v2 Format"
     xslFile = trafoFile
-    xmlFile = mjpnlV1DataFile
+    xmlFile = mjpnlDataFile
     outDirectory = file(".")
 }
 
@@ -87,6 +86,6 @@ task importDataToV2(type: Ili2pgReplace, dependsOn: transformTheData) {
     disableValidation = true
     topics = 'SO_ARP_MJPNL_20240606.MJPNL'
     dataset = 'MJPNL'
-    dataFile = mjpnlV2DataFile
+    dataFile = mjpnlDataFile
     models = "SO_ARP_MJPNL_20240606"
 }
