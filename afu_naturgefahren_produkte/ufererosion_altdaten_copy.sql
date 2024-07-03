@@ -26,4 +26,6 @@ FROM
     ,basket 
 WHERE 
     ufererosion.prozessa = 'Ufererosion'
+    AND
+    publiziert is true
 ;
