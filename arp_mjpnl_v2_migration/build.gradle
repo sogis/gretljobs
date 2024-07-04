@@ -92,6 +92,6 @@ task importDataToV2(type: Ili2pgReplace, dependsOn: transformTheData) {
     disableValidation = true
     topics = 'SO_ARP_MJPNL_20240606.MJPNL'
     dataset = 'MJPNL'
-    dataFile = file("upload/testdata.xtf)
+    dataFile = file("upload/testdata.xtf")
     models = "SO_ARP_MJPNL_20240606"
 }
