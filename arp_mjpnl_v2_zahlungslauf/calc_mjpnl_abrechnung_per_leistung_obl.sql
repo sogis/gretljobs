@@ -67,7 +67,7 @@ united_obl_leistungen AS (
         beurteilung_vereinbarung AS vereinbarung,
         'OBL: BaumAb40cmDurchmesser' AS leistung_beschrieb,
         'per_stueck' AS abgeltungsart,
-        15 AS betrag_per_einheit,
+        40 AS betrag_per_einheit,
         beitrag_baumab40cmdurchmesser_anzahl AS anzahl_einheiten,
         beitrag_baumab40cmdurchmesser_total AS betrag_total,
         kantonsintern
