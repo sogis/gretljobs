@@ -547,8 +547,8 @@ INSERT INTO
 --------------------------------------------------------------------------------
     SELECT
         NULL::geometry AS geometrie_punkt,
-        geometrie_linie,
-        NULL::geometry AS geometrie_polygon,
+        NULL::geometry AS geometrie_linie,
+        geometrie_polygon,
         'Kantone.SO' AS datenherr,
         CASE WHEN geom_anzahl > 1 THEN
             schutzbauten_id || '-' || geom_idx
@@ -563,7 +563,7 @@ INSERT INTO
         false AS weiterer_prozess_lawine,
         'Wasser.Rueckhalt.Hochwasserrueckhaltebauwerk' AS werksart,
         material,
-        NULL::NUMERIC AS laenge, -- nicht vorhanden
+        laenge,
         breite, 
         hoehe, 
         NULL::NUMERIC AS hoehe_zum_umland, -- nicht vorhanden
@@ -578,16 +578,16 @@ INSERT INTO
         zustand,
         zustandsbeurteilung_jahr
     FROM
-        afu_schutzbauten_v1.wasser_rueckhaltebauwerk t
+        afu_schutzbauten_v1.wasser_hochwasser_geschiebe_rueckhaltebauwerk t
     JOIN
         (
             SELECT
                 t_id,
-                (ST_Dump(geometrie)).geom AS geometrie_linie,
+                (ST_Dump(geometrie)).geom AS geometrie_polygon,
                 (ST_Dump(geometrie)).path[1] AS geom_idx,
                 ST_NumGeometries(geometrie) AS geom_anzahl
             FROM
-                afu_schutzbauten_v1.wasser_rueckhaltebauwerk
+                afu_schutzbauten_v1.wasser_hochwasser_geschiebe_rueckhaltebauwerk
         ) AS t_dump
         ON t.t_id = t_dump.t_id
     WHERE
@@ -604,8 +604,8 @@ INSERT INTO
 --------------------------------------------------------------------------------
     SELECT
         NULL::geometry AS geometrie_punkt,
-        geometrie_linie,
-        NULL::geometry AS geometrie_polygon,
+        NULL::geometry AS geometrie_linie,
+        geometrie_polygon,
         'Kantone.SO' AS datenherr,
         CASE WHEN geom_anzahl > 1 THEN
             schutzbauten_id || '-' || geom_idx
@@ -620,7 +620,7 @@ INSERT INTO
         false AS weiterer_prozess_lawine,
         'Wasser.Rueckhalt.Geschiebe_oder_Murgangrueckhaltebauwerk' AS werksart,
         material,
-        NULL::NUMERIC AS laenge, -- nicht vorhanden
+        laenge,
         breite, 
         hoehe, 
         NULL::NUMERIC AS hoehe_zum_umland, -- nicht vorhanden
@@ -635,16 +635,16 @@ INSERT INTO
         zustand,
         zustandsbeurteilung_jahr
     FROM
-        afu_schutzbauten_v1.wasser_rueckhaltebauwerk t
+        afu_schutzbauten_v1.wasser_hochwasser_geschiebe_rueckhaltebauwerk t
     JOIN
         (
             SELECT
                 t_id,
-                (ST_Dump(geometrie)).geom AS geometrie_linie,
+                (ST_Dump(geometrie)).geom AS geometrie_polygon,
                 (ST_Dump(geometrie)).path[1] AS geom_idx,
                 ST_NumGeometries(geometrie) AS geom_anzahl
             FROM
-                afu_schutzbauten_v1.wasser_rueckhaltebauwerk
+                afu_schutzbauten_v1.wasser_hochwasser_geschiebe_rueckhaltebauwerk
         ) AS t_dump
         ON t.t_id = t_dump.t_id
     WHERE
@@ -692,7 +692,7 @@ INSERT INTO
         zustand,
         zustandsbeurteilung_jahr
     FROM
-        afu_schutzbauten_v1.wasser_rueckhaltebauwerk t
+        afu_schutzbauten_v1.wasser_schwemmholz_eis_rueckhaltebauwerk t
     JOIN
         (
             SELECT
@@ -701,7 +701,7 @@ INSERT INTO
                 (ST_Dump(geometrie)).path[1] AS geom_idx,
                 ST_NumGeometries(geometrie) AS geom_anzahl
             FROM
-                afu_schutzbauten_v1.wasser_rueckhaltebauwerk
+                afu_schutzbauten_v1.wasser_schwemmholz_eis_rueckhaltebauwerk
         ) AS t_dump
         ON t.t_id = t_dump.t_id
     WHERE
@@ -713,7 +713,7 @@ INSERT INTO
 --
 -- Hauptprozess Wasser
 -- Rückhalt
--- Schwemmholzrückhaltebauwerk
+-- Eisrückhaltebauwerk
 --
 --------------------------------------------------------------------------------
     SELECT
@@ -749,7 +749,7 @@ INSERT INTO
         zustand,
         zustandsbeurteilung_jahr
     FROM
-        afu_schutzbauten_v1.wasser_rueckhaltebauwerk t
+        afu_schutzbauten_v1.wasser_schwemmholz_eis_rueckhaltebauwerk t
     JOIN
         (
             SELECT
@@ -758,7 +758,7 @@ INSERT INTO
                 (ST_Dump(geometrie)).path[1] AS geom_idx,
                 ST_NumGeometries(geometrie) AS geom_anzahl
             FROM
-                afu_schutzbauten_v1.wasser_rueckhaltebauwerk
+                afu_schutzbauten_v1.wasser_schwemmholz_eis_rueckhaltebauwerk
         ) AS t_dump
         ON t.t_id = t_dump.t_id
     WHERE
@@ -770,7 +770,7 @@ INSERT INTO
 --
 -- Hauptprozess Wasser
 -- Rückhalt
--- Schwemmholzrückhaltebauwerk
+-- bewirtschafteter Geschiebeablagerungsplatz
 --
 --------------------------------------------------------------------------------
     SELECT
