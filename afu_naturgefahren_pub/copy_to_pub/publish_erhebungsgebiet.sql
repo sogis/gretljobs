@@ -1,7 +1,5 @@
 SELECT 
     flaeche, 
-    datenherr, 
-    kantone.dispname AS datenherr_txt, 
     status_ueberschwemmung, 
     beurteilung_ueberschwemmung.dispname AS status_ueberschwemmung_txt, 
     status_uebermurung, 
@@ -25,10 +23,6 @@ SELECT
     kommentar
 FROM 
     afu_naturgefahren_staging_v1.erhebungsgebiet erhebungsgebiet
-LEFT JOIN 
-    afu_naturgefahren_staging_v1.chcantoncode kantone 
-    ON 
-    kantone.ilicode = erhebungsgebiet.datenherr 
 LEFT JOIN 
     afu_naturgefahren_staging_v1.beurteilung_komplex_typ beurteilung_ueberschwemmung 
     ON 

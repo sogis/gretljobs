@@ -107,7 +107,6 @@ INSERT INTO
     afu_naturgefahren_staging_v1.erhebungsgebiet (
         t_basket,
         flaeche, 
-        datenherr, 
         status_ueberschwemmung, 
         status_uebermurung, 
         status_ufererosion, 
@@ -123,7 +122,6 @@ INSERT INTO
 SELECT 
     basket.t_id AS t_basket,
     poly AS flaeche,
-    'SO' AS datenherr,
     coalesce(status_ueberschwemmung, 'nicht_beurteilt') AS fl_state_flooding,
     coalesce(status_uebermurung, 'nicht_beurteilt') AS df_state_debris_flow,
     coalesce(status_ufererosion, 'nicht_beurteilt') AS be_state_bank_erosion,

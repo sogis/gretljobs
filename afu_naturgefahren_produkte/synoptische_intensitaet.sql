@@ -20,6 +20,12 @@ orig_dataset AS (
         topic like '%Befunde'
 )
 
+/*
+Die Flächen des Teilprozesses werden priorisiert gemäss dem zweiten Wert im IWCode (Farbe)
+Zusätzlich werden noch die Flächen hinzugefügt, welche beurteilt wurden, aber keine Einwirkung aufweisen. 
+Diese erhalten natürlich die niedrigste Prio. 
+*/
+
 ,teilprozess_absenkung AS ( 
     SELECT 
        'absenkung' AS teilprozess,
@@ -51,6 +57,10 @@ orig_dataset AS (
     WHERE 
         ea_absenkung != 'nicht_beurteilt'
 )
+
+/* 
+Die Flächen werden nun gemäss ihrer Priorisierung verschnitten. Die Fläche mit der hüheren Priorisierung gewinnt. 
+*/
 
 ,teilprozess_absenkung_prio AS (
     SELECT 
@@ -784,6 +794,10 @@ orig_dataset AS (
     ) AS blade
 )
 
+/* 
+Nun werden alle Teilprozesse zusammengefügt.
+*/
+
 ,alle_teilprozesse AS (
     SELECT * FROM teilprozess_absenkung_prio
     UNION ALL 
@@ -803,6 +817,10 @@ orig_dataset AS (
     UNION ALL 
     SELECT * FROM teilprozess_ueberschwemmung_prio
 )
+
+/* 
+Union und dump sorgen dafür, dass Flächen gleicher Teilprozesse, Intensität und Jährlichkeit zusammengefügt werden, aber nicht in einem riesigen Multipolygon enden. 
+*/
 
 ,alle_teilprozesse_union AS (
     SELECT 
