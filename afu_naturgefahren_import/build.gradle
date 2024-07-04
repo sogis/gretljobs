@@ -6,9 +6,11 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'dbImport_empty_beurteilungsgebiet'
 
-// NUR IN DER ENTWICKLUNGSPHASE ///
-// def Auftragskennung = 'Himmelried'
-///////////////////////////////////
+/*
+Der Job AfU_Naturgefahren_Import importiert neue Naturgefahren-Daten. 
+Zuerst wird das hochgeladene XTF-File verifiziert. Dies geschieht mit Hilfe eines Validierungsmodells, welches auch überprüft, ob der File-Name der Auftragskennung in den Daten entspricht. 
+Danach werden die Daten importiert. Am Ende wird noch ein leeres xtf ins Schema Beurteilungsgebiete importiert, da hier auch ein Dataset / Basket mit dieser Auftragskennung angelegt werden muss. 
+*/
 
 if (!xtfFilename || xtfFilename.isEmpty()) {
     throw new IllegalArgumentException("xtfFilename is required and cannot be empty")
