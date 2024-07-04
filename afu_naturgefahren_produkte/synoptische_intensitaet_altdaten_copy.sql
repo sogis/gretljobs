@@ -53,7 +53,7 @@ basket AS (
             WHEN teilproz = 'Felssturz_Bergsturz'
             THEN 'fels_bergsturz'
             WHEN teilproz = 'Einsturz_Absenkung'
-            THEN 'einsturz_absenk+ung'
+            THEN 'einsturz_absenkung'
 	END AS teilproz
     FROM 
         afu_gefahrenkartierung.gefahrenkartirung_ik_synoptisch_mgdm
