@@ -74,6 +74,7 @@ task exportDataFromV1(type: Ili2pgExport, dependsOn: writeTrafoFile) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = dB_Schema_MJPNL_v1
     disableValidation = true
+    dataset = 'MJPNL'
     dataFile = mjpnlDataFile
     models = "SO_ARP_MJPNL_20201026"
 }
@@ -92,6 +93,6 @@ task importDataToV2(type: Ili2pgReplace, dependsOn: transformTheData) {
     disableValidation = true
     topics = 'SO_ARP_MJPNL_20240606.MJPNL'
     dataset = 'MJPNL'
-    dataFile = file("upload/testdata.xtf")
+    dataFile = mjpnlDataFile
     models = "SO_ARP_MJPNL_20240606"
 }
