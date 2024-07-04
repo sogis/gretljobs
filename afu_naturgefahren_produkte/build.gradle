@@ -11,7 +11,7 @@ import java.util.List
 
 
 apply plugin: 'ch.so.agi.gretl'
-defaultTasks 'copy_alle_natgef_produkte
+defaultTasks 'copy_alle_natgef_produkte'
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
 
 /*
