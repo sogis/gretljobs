@@ -1,6 +1,5 @@
 SELECT 
     flaeche, 
-    datenherr, 
     status_ueberschwemmung, 
     status_uebermurung, 
     status_ufererosion, 
