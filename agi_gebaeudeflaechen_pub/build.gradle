@@ -24,7 +24,7 @@ tasks.register('schnittBodenbGebaeude', SqlExecutor) {
 //     database = [dbUriPub, dbUserPub, dbPwdPub]
 //     dataIdent = "ch.so.agi.av.gebaedeflaechen"
 //     dbSchema = dbSchemaNamePub
-//     modelsToPublish = "SO_AGI_Gebaeudeflaechen_Publikation_20240521"
+//     modelsToPublish = "SO_AGI_Gebaeudeflaechen_Publikation_20240705"
 //     userFormats = true
 //     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
 //     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
