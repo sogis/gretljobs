@@ -2,7 +2,7 @@
 /* Entspricht arp_mjpnl_migration/mjpnl_postprocessing_abrechnung_per_bewirtschafter.sql muss allerdings nur die diesjährigen Leistungen berücksichtigen - somit stimmt auch die Historisierung, weil es den aktuellen Bewirtschafter nimmt. */
 
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_bewirtschafter 
-(t_basket, gelan_pid_gelan, gelan_person, gelan_ortschaft, gelan_iban, betrag_total, betrag_ausbezahlt_total, betrag_ausbezahlt_an_dritte_total, bemerkung, status_abrechnung,
+(t_basket, gelan_pid_gelan, gelan_person, gelan_ortschaft, gelan_iban, betrag_total, betrag_ausbezahlt_total, betrag_ausbezahlt_an_dritte_total, status_abrechnung,
  datum_abrechnung, auszahlungsjahr, dateipfad_oder_url, erstellungsdatum, operator_erstellung, migriert)
 
 WITH gelan_persons AS (
@@ -49,7 +49,7 @@ SELECT
       WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung v WHERE v.status_abrechnung = 'ausbezahlt' AND v.gelan_pid_gelan = pers.pid_gelan AND v.auszahlungsjahr = abrg_vbg.auszahlungsjahr) > 0
       THEN 'ausbezahlt' 
       -- ansonsten ist es nur noch 'ausbezahlt_an_dritte', dies wird mit Fallback abgefangen:
-      ELSE MAX(lstg.status_abrechnung) 
+      ELSE MAX(abrg_vbg.status_abrechnung) 
    END AS status_abrechnung,
    -- wenn es eine status_abrechnung "freigegeben" gibt, dann soll es noch kein datum_abrechnung haben
    CASE 
