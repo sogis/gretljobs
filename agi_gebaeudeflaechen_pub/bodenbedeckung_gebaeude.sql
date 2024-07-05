@@ -2,6 +2,9 @@ DELETE FROM
     ${DB_SCHEMA}.gebaeude_gebaeude
 ;
 
+-- Könnte man auch mit einer Query machen.
+-- Vieles ist nun doppelt.
+
 WITH gebaeudename AS (
     SELECT 
         objektname.objektname,
@@ -19,7 +22,8 @@ INSERT INTO
         egid,
         gebaeudename,
         gebaeudeeingang,
-        link_gwr
+        link_gwr,
+        astatus
     )
 (
     SELECT
@@ -74,7 +78,8 @@ INSERT INTO
         egid,
         gebaeudename,
         gebaeudeeingang,
-        link_gwr
+        link_gwr,
+        astatus
     )
 (
     SELECT
