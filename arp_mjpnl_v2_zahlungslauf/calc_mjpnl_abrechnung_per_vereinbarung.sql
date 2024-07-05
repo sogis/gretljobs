@@ -3,7 +3,7 @@
 
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung 
   (t_basket, vereinbarungs_nr, gelan_pid_gelan, gelan_bewe_id, gb_nr, flurnamen, kultur_ids, gemeinde, vereinbarungs_nr_alt, flaeche, anzahl_baeume, 
-   betrag_flaeche, betrag_per_ha, betrag_baeume, betrag_pauschal_regulaer, betrag_pauschal_einmalig_ausbezahlt, betrag_pauschal_einmalig_freigegeben, betrag_pauschal_einmalig_an_dritte, gesamtbetrag,
+   betrag_flaeche, betrag_per_ha, betrag_baeume, betrag_pauschal_regulaer, betrag_pauschal_einmalig_ausbezahlt, betrag_pauschal_einmalig_freigegeben, betrag_pauschal_einmalig_ausbezahlt_an_dritte, gesamtbetrag,
    auszahlungsjahr, status_abrechnung, datum_abrechnung, 
    bewirtschaftabmachung_schnittzeitpunkt_1,
    bewirtschaftabmachung_messerbalkenmaehgeraet,
@@ -13,12 +13,13 @@ INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung
    bewirtschaftabmachung_herbstschnitt,
    bewirtschaftabmachung_herbstweide,
    anzahl_baeume_baumab40cmdurchmesser,
+   anzahl_baeume_erntepflicht,
    anzahl_baeume_oekoplus,
    anzahl_baeume_oekomaxi,
    laufmeter,
    vereinbarung, migriert)
-WITH beurteilungs_metainfo_wiesen AS (
-
+WITH 
+beurteilungs_metainfo_wiesen AS (
 	SELECT vereinbarung, beurteilungsdatum,
    bewirtschaftabmachung_schnittzeitpunkt_1,
    bewirtschaftabmachung_messerbalkenmaehgeraet, 
@@ -38,15 +39,14 @@ WITH beurteilungs_metainfo_wiesen AS (
    bewirtschaftabmachung_herbstschnitt,
    bewirtschaftabmachung_herbstweide 
    FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_wbl_wiese
-)
-WITH beurteilungs_metainfo_baeume AS (
-
+),
+beurteilungs_metainfo_baeume AS (
 	SELECT vereinbarung, beurteilungsdatum,
    -- grundbeitrag_baum_anzahl,
    beitrag_baumab40cmdurchmesser_anzahl,
    beitrag_erntepflicht_anzahl,
    beitrag_oekoplus_anzahl,
-   beitrag_oekomaxi_anzahl,
+   beitrag_oekomaxi_anzahl
    FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_hostet
 	UNION 
 	SELECT vereinbarung, beurteilungsdatum, 
@@ -54,10 +54,10 @@ WITH beurteilungs_metainfo_baeume AS (
    beitrag_baumab40cmdurchmesser_anzahl,
    beitrag_erntepflicht_anzahl,
    beitrag_oekoplus_anzahl,
-   beitrag_oekomaxi_anzahl,
+   beitrag_oekomaxi_anzahl
    FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_obl
-)
-WITH beurteilungs_metainfo_hecke AS (
+),
+beurteilungs_metainfo_hecke AS (
 	SELECT vereinbarung, beurteilungsdatum,
    bewirtschaftung_lebhag_laufmeter
    FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_hecke
@@ -96,7 +96,7 @@ SELECT
   COALESCE(SUM(lstg_pauschal_reg.betrag_total),0) AS betrag_pauschal_regulaer,
   COALESCE(SUM(lstg_pauschal_einmalig_ausbez.betrag_total),0) AS betrag_pauschal_einmalig_ausbezahlt,
   COALESCE(SUM(lstg_pauschal_einmalig_freigeg.betrag_total),0) AS betrag_pauschal_einmalig_freigegeben,
-  COALESCE(SUM(lstg_pauschal_einmalig_an_dritte.betrag_total),0) AS betrag_pauschal_einmalig_an_dritte,
+  COALESCE(SUM(lstg_pauschal_einmalig_an_dritte.betrag_total),0) AS betrag_pauschal_einmalig_ausbezahlt_an_dritte,
   COALESCE(SUM(lstg.betrag_total),0) AS gesamtbetrag,
   lstg.auszahlungsjahr,
   CASE 
@@ -123,7 +123,7 @@ SELECT
   COALESCE(bw.bewirtschaftabmachung_messerbalkenmaehgeraet, FALSE) as bewirtschaftabmachung_messerbalkenmaehgeraet,
   COALESCE(bw.bewirtschaftabmachung_emdenbodenheu, FALSE) as bewirtschaftabmachung_emdenbodenheu,
   COALESCE(bw.bewirtschaftabmachung_emdenbodenheu_nachbedarf, FALSE) as bewirtschaftabmachung_emdenbodenheu_nachbedarf,
-  COALESCE(bw.bewirtschaftabmachung_rueckzugstreifen, FALSE) as bewirtschafbewirtschaftabmachung_rueckzugstreifentabmachung_messerbalkenmaehgeraet,
+  COALESCE(bw.bewirtschaftabmachung_rueckzugstreifen, FALSE) as bewirtschafbewirtschaftabmachung_rueckzugstreifen,
   COALESCE(bw.bewirtschaftabmachung_herbstschnitt, FALSE) as bewirtschaftabmachung_herbstschnitt,
   COALESCE(bw.bewirtschaftabmachung_herbstweide, FALSE) as bewirtschaftabmachung_herbstweide,
   COALESCE(bae.beitrag_baumab40cmdurchmesser_anzahl, 0) as anzahl_baeume_baumab40cmdurchmesser,
