@@ -17,7 +17,7 @@ def dbSchemaNamePub = "agi_gebaeudeflaeche_pub_v2"
 tasks.register('schnittBodenbGebaeude', SqlExecutor) {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlParameters = [DB_SCHEMA: dbSchemaNamePub]
-    sqlFiles = ['bodenbedeckung_gebaeude.sql']
+    sqlFiles = ['bodenbedeckung_gebaeude.sql', 'proj_bodenbedeckung_gebaeude.sql']
 }
 
 // task publishPub(type: Publisher, dependsOn:'schnittBodenbGebaeude'){
