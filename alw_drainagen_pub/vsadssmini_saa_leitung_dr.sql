@@ -98,9 +98,11 @@ FROM
 WHERE 
     astatus LIKE 'in_Betrieb%'
     AND 
-        funktionhierarchisch LIKE 'SAA.%'
+        funktionhierarchisch LIKE 'SAA.andere'
     AND 
-        funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung')
+        funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung', 'Pumpendruckleitung')
+    AND 
+        nutzungsart_ist LIKE 'Reinabwasser'
     AND 
         stilid IS NOT NULL
 ;
