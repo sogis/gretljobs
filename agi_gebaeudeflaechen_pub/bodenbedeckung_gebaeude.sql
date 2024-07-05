@@ -1,5 +1,5 @@
 DELETE FROM 
-    ${DB_SCHEMA}.gebaeude_gebaeude_real
+    '${DB_SCHEMA}'.gebaeude_gebaeude_real
 ;
 
 WITH gebaeudename AS (
@@ -29,7 +29,7 @@ INSERT INTO
         gebaeudename.objektname AS gebaeudename,
         --json_agg(adresse.strassenname),
         json_agg(json_build_object(
-            '@type', 'SO_AGI_Gebaeudeflaechen_Publikation_20240705.Gebaeudeeingang',
+            '@type', 'SO_AGI_Gebaeudeflaechen_Publikation_20240705.Gebaeude.Gebaeudeeingang',
             'Strassenname', adresse.strassenname, 
             'Hausnummer', adresse.hausnummer,
             'PLZ', adresse.plz,
