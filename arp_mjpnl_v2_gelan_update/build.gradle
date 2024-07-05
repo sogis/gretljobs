@@ -43,7 +43,7 @@ task downloadData() {
 }
 
 task importGELAN(type: Ili2pgReplace, dependsOn: downloadData) {
-    description = 'Import resp. ersetzt täglich die GELAN-Daten (nur Topics: Betriebsdaten_Strukturdaten und BFF_Qualitaet) in der Erfassungsdatenbank, Schema arp_mjpnl_v1'
+    description = 'Import resp. ersetzt täglich die GELAN-Daten (nur Topics: Betriebsdaten_Strukturdaten und BFF_Qualitaet) in der Erfassungsdatenbank, Schema arp_mjpnl_v2'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_mjpnl_v2"
     disableValidation = true
