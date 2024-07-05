@@ -12,7 +12,7 @@ WITH gebaeudename AS (
     WHERE objektname.art_txt = 'Gebaeude' AND objektname.herkunft = 'BB'
 )
 INSERT INTO 
-    ${DB_SCHEMA}.gebaeude_gebaeude_real
+    ${DB_SCHEMA}.gebaeude_gebaeude_proj
     (
         bfs_nr,
         geometrie,
