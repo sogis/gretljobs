@@ -1,5 +1,5 @@
 DELETE FROM 
-    ${DB_SCHEMA}.gebaeude_gebaeude_real
+    ${DB_SCHEMA}.gebaeude_gebaeude_proj
 ;
 
 WITH gebaeudename AS (
