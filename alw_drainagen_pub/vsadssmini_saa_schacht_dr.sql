@@ -43,6 +43,8 @@ WITH schaechte AS (
         k.sohlenkote,
         k.zustandserhebung_jahr,
         l.funktionhydraulisch AS leitung_funktionhydraulisch,
+        l.funktionhierarchisch AS leitung_funktionhierarchisch,
+        l.nutzungsart_ist AS leitung_nutzungsart_ist,
         eig.organisationstyp AS eigentuemer_organisationstyp,
         eig.bezeichnung AS eigentuemer_bezeichnung,
         betr.organisationstyp AS betreiber_organisationstyp,
@@ -91,7 +93,11 @@ WHERE
     AND 
         funktionhierarchisch = 'SAA'
     AND 
-        leitung_funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung')
+        leitung_funktionhierarchisch LIKE 'SAA.andere'
     AND 
-    stilid IS NOT NULL
+        leitung_funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung', 'Pumpendruckleitung')
+    AND 
+        leitung_nutzungsart_ist LIKE 'Reinabwasser'
+    AND 
+        stilid IS NOT NULL
 ;
