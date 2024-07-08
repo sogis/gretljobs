@@ -493,15 +493,15 @@ automatisiert Daten in die Entwicklungs-DBs importieren.
 Voraussetzungen:
 * Die Daten müssen online unter https://files.geo.so.ch als .xtf verfügbar sein
 * In der Datei `schema.properties` im Schema-Job
-  muss die Property `dev.themePublicationName` gesetzt sein
-  (z.B. `dev.themePublicationName = ch.so.arp.nutzungsplanung.kommunal`)
+  muss die Property `data.themePublicationName` gesetzt sein
+  (z.B. `data.themePublicationName = ch.so.arp.nutzungsplanung.kommunal`)
 * Falls es sich um ein Schema handelt, das Datasets enthält,
-  muss entweder in `schema.properties` auch die Property `dev.dataSets` gesetzt sein
-  (z.B. `dev.dataSets = 2403,2405,2408`),
+  muss entweder in `schema.properties` auch die Property `data.dataSets` gesetzt sein
+  (z.B. `data.dataSets = 2403,2405,2408`),
   oder man muss beim Ausführen des Tasks `importDevelopmentData`
-  die Property `dev.dataSets` übergeben, z.B. `-Pdev.dataSets=2403,2405,2408`.
+  die Property `data.dataSets` übergeben, z.B. `-Pdata.dataSets=2403,2405,2408`.
   Sowohl in `schema.properties` als auch bei der Übergabe als Property beim Ausführen des Tasks
-  ist auch der Wert `defaultDataSets` möglich (z.B. `-Pdev.dataSets=defaultDataSets`);
+  ist auch der Wert `defaultDataSets` möglich (z.B. `-Pdata.dataSets=defaultDataSets`);
   hinter `defaultDataSets`
   sind die BFS-Nummern aller Gemeinden des Kantons Solothurn hinterlegt.
 
