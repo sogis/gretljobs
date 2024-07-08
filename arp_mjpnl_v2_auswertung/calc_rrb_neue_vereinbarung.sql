@@ -10,7 +10,7 @@ INSERT INTO ${DB_Schema_MJPNL}.rrb_neue_vereinbarung,
     flaeche,
     betrag_total
 SELECT 
-    (SELECT t_id FROM arp_mjpnl_v1.t_ili2db_basket WHERE topic = 'SO_ARP_MJPNL_20240606.Auswertung' LIMIT 1) as t_basket,
+    (SELECT t_id FROM ${DB_Schema_MJPNL}.t_ili2db_basket WHERE topic = 'SO_ARP_MJPNL_20240606.Auswertung' LIMIT 1) as t_basket,
     ${AUSZAHLUNGSJAHR}::integer as jahr,
     vbg.vereinbarungsart as vereinbarungsart,
     array_to_string(vbg.gemeinde, ',') as gemeinde, 
