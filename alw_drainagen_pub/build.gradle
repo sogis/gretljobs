@@ -10,6 +10,8 @@ task transferAlwDrainagePub(type: Db2Db) {
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
      transferSets = [
             new TransferSet('vsadssmini_saa_leitung_dr.sql', 'alw_drainagen_pub_v1.wk_saa_leitung_dr', true),
-            new TransferSet('vsadssmini_saa_schacht_dr.sql', 'alw_drainagen_pub_v1.wk_saa_schacht_dr', true)
+			new TransferSet('vsadssmini_saa_leitung_dr.sql', 'alw_drainagen_pub_v1.wk_saa_leitung_dr', true),
+			new TransferSet('vsadssmini_wk_mangel_knoten.sql', 'alw_drainagen_pub_v1.wk_mangel_knoten', true),
+            new TransferSet('vsadssmini_wk_mangel_leitung.sql', 'alw_drainagen_pub_v1.wk_mangel_leitung', true)
     ];
 }
