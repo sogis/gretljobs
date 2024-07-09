@@ -49,11 +49,7 @@ WITH schaechte AS (
         eig.bezeichnung AS eigentuemer_bezeichnung,
         betr.organisationstyp AS betreiber_organisationstyp,
         betr.bezeichnung AS betreiber_bezeichnung,
-        CASE
-            WHEN k.finanzierung = 'oeffentlich' AND k.nutzungsart_ist = 'Reinabwasser' THEN 'P_RA'
-            WHEN k.finanzierung != 'oeffentlich' AND eig.organisationstyp = 'Privat' AND k.nutzungsart_ist = 'Reinabwasser' THEN 'P_RA_LE'
-            WHEN k.finanzierung != 'oeffentlich' AND eig.organisationstyp != 'Privat' AND k.nutzungsart_ist = 'Reinabwasser' THEN 'P_RA_dr'
-        END AS stilid
+        'P_RA_dr' AS stilid
     FROM 
         alw_drainagen_v1.vsadssmini_knoten k
         LEFT JOIN alw_drainagen_v1.vsadssmini_leitung l ON l.knoten_vonref = k.t_id
@@ -89,9 +85,7 @@ SELECT DISTINCT
 FROM 
     schaechte
 WHERE 
-    astatus LIKE 'in_Betrieb%'
-    AND 
-        funktionhierarchisch = 'SAA'
+    (astatus LIKE 'in_Betrieb%' OR funktion LIKE 'Leitungsknoten')
     AND 
         leitung_funktionhierarchisch LIKE 'SAA.andere'
     AND 
