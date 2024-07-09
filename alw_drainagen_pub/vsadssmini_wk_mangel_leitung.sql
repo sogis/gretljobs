@@ -1,3 +1,4 @@
+-- Alle restlichen Leitungen die nicht als Draingen attribuiert sind. Die werden für die Darstellung im Web GIS Client benötigt
 WITH leitungen AS (
     SELECT
         l.t_id,
@@ -57,7 +58,7 @@ WITH leitungen AS (
         eig.organisationstyp AS eigentuemer_organisationstyp,
         eig.bezeichnung AS eigentuemer_bezeichnung,
         CASE
-            WHEN l.funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung', 'Pumpendruckleitung') THEN 'L_Drainage'
+            WHEN l.funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung', 'Pumpendruckleitung' ) THEN 'L_Drainage'
         END AS stilid
     FROM
         alw_drainagen_v1.vsadssmini_leitung l
@@ -68,41 +69,27 @@ WITH leitungen AS (
 
 SELECT
     NULL AS t_ili_tid, -- t_ili_tid ist keine UUID im edit-Modell 
-    baujahr,
-    baulicherzustand,
-    bezeichnung,
-    dataset,
-    eigentuemer_bezeichnung,
-    eigentuemer_organisationstyp,
-    finanzierung,
-    funktionhierarchisch,
-    funktionhydraulisch,
-    istneuesteversion,
-    laengeeffektiv,
-    lagebestimmung,
-    leckschutz,
-    lichte_breite,
-    lichte_hoehe,
-    material,
-    nutzungsart_geplant,
-    nutzungsart_ist,
-    oid_dss,
-    profiltyp,
-    reliner_art,
-    astatus,
-    stilid,
-    verlauf,    
-    zustandserhebung_jahr
+    verlauf,
+	'Keine Drainage' AS beschreibung,
+	dataset,
+	TRUE AS istneuesteversion,
+	oid_dss,
+	'L_Mangel' AS stilid
+
 FROM 
     leitungen
 WHERE 
-    astatus LIKE 'in_Betrieb%'
+    (astatus != 'in_Betrieb'
     AND 
-        funktionhierarchisch LIKE 'SAA.andere'
+        funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung', 'Pumpendruckleitung'))
+    OR 
+        (funktionhierarchisch !='SAA.andere'
     AND 
-        funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung', 'Pumpendruckleitung')
+        funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung', 'Pumpendruckleitung'))
+    OR 
+        (nutzungsart_ist != 'Reinabwasser'
     AND 
-        nutzungsart_ist LIKE 'Reinabwasser'
-    AND 
-        stilid IS NOT NULL
+        funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung', 'Pumpendruckleitung'))
+    OR 
+        stilid IS NULL
 ;
