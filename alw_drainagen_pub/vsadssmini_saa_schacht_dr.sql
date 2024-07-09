@@ -85,9 +85,7 @@ SELECT DISTINCT
 FROM 
     schaechte
 WHERE 
-    astatus LIKE 'in_Betrieb%'
-    AND 
-        funktionhierarchisch = 'SAA'
+    (astatus LIKE 'in_Betrieb%' OR funktion LIKE 'Leitungsknoten')
     AND 
         leitung_funktionhierarchisch LIKE 'SAA.andere'
     AND 
