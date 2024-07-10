@@ -1,7 +1,7 @@
 description = """\n
-Migration der MJPNL-Daten von der alten SOGIS-DB in das neue Applikationsschema arp_mjpnl_v1 (EDIT-DB)
+Migration der MJPNL-Daten von arp_mjpnl_v1 auf arp_mjpnl_v2 anhand XSL Tranformation.
 
-Fragen an: Andreas Neumann (AGI) und Odile Bruggisser (ARP)
+Fragen an: Odile Bruggisser (ARP)
 """
 
 import ch.so.agi.gretl.tasks.*
@@ -10,14 +10,13 @@ import java.nio.file.Paths
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'export_v1_data'
+defaultTasks 'importDataToV2'
 
-def DB_Schema_MJPNL_v1 = "arp_mjpnl_v1"
-def DB_Schema_MJPNL_v2 = "arp_mjpnl_v2"
+def dB_Schema_MJPNL_v1 = "arp_mjpnl_v1"
+def dB_Schema_MJPNL_v2 = "arp_mjpnl_v2"
 
-def pathToTempFolder = System.getProperty("java.io.tmpdir")
-def mjpnlDataFile = file(Paths.get(pathToTempFolder.toString(), 'mjpnldata.xtf'))
-def trafoFile = file(Paths.get(pathToTempFolder.toString(), 'mjpnltrafo.xslt'))
+def mjpnlDataFile = file('mjpnldata.xtf')
+def trafoFile = file('mjpnltrafo.xslt')
 def trafoFileContent = """<xsl:stylesheet
         xmlns="http://www.interlis.ch/INTERLIS2.3"
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -32,7 +31,7 @@ def trafoFileContent = """<xsl:stylesheet
         </xsl:copy>
     </xsl:template>
 
-    <!-- base model needs to be renamed -->
+    <!-- model needs to be renamed in MODEL -->
     <xsl:template match="ili:MODEL">
         <xsl:choose>
             <xsl:when test="@NAME='SO_ARP_MJPNL_20201026'">
@@ -43,12 +42,34 @@ def trafoFileContent = """<xsl:stylesheet
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    
-    <!-- elements need to be renamed -->
+
+    <!-- elements need to be renamed with new model name -->
     <xsl:template match="*[starts-with(local-name(), 'SO_ARP_MJPNL_20201026')]">
-        <xsl:element name="SO_ARP_MJPNL_20240606{substring-after(local-name(), 'SO_ARP_MJPNL_20201026')}">
-            <xsl:apply-templates select="@*|node()"/>
-        </xsl:element>
+        <xsl:choose>
+            <!-- Beurteilung_ALR_Saum and Beurteilung_ALR_Buntbrache it should receive a child with a default value (since this is mandatory in the new model) -->
+            <xsl:when test="local-name()='SO_ARP_MJPNL_20201026.MJPNL.Beurteilung_ALR_Saum' or local-name()='SO_ARP_MJPNL_20201026.MJPNL.Beurteilung_ALR_Buntbrache'">
+                <xsl:choose>
+                    <xsl:when test="local-name()='SO_ARP_MJPNL_20201026.MJPNL.Beurteilung_ALR_Saum'">
+                        <SO_ARP_MJPNL_20240606.MJPNL.Beurteilung_ALR_Saum>
+                            <xsl:apply-templates select="@*|node()"/>
+                            <Einstiegskriterium_Abgeltung_ha>0.00</Einstiegskriterium_Abgeltung_ha>
+                        </SO_ARP_MJPNL_20240606.MJPNL.Beurteilung_ALR_Saum>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <SO_ARP_MJPNL_20240606.MJPNL.Beurteilung_ALR_Buntbrache>
+                            <xsl:apply-templates select="@*|node()"/>
+                            <Einstiegskriterium_Abgeltung_ha>0.00</Einstiegskriterium_Abgeltung_ha>
+                        </SO_ARP_MJPNL_20240606.MJPNL.Beurteilung_ALR_Buntbrache>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:when>
+            <!-- otherwise just rename-->
+            <xsl:otherwise>
+                <xsl:element name="SO_ARP_MJPNL_20240606{substring-after(local-name(), 'SO_ARP_MJPNL_20201026')}">
+                    <xsl:apply-templates select="@*|node()"/>
+                </xsl:element>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <!-- BID values need to be changed -->   
@@ -58,39 +79,38 @@ def trafoFileContent = """<xsl:stylesheet
         </xsl:attribute>
     </xsl:template>
 
-    <!-- Specific mandatory fields might be filled in future...
-    <xsl:template match="ili:SO_ARP_MJPNL_20201026.Konstruktionen.Gebaeude">
-        <SO_ARP_MJPNL_20240606.Konstruktionen.Gebaeude>
-            <xsl:apply-templates select="@*|node()"/>
-            <Referenzcode>xxxx-000</Referenzcode>
-        </SO_ARP_MJPNL_20240606.Konstruktionen.Gebaeude>
-    </xsl:template>
-    -->
 </xsl:stylesheet>
 """
 
-writeTrafoFile { new File(trafoFile).write(trafoFileContent,'utf-8') }
-    
+task writeTrafoFile () {
+    trafoFile.write(trafoFileContent,'utf-8') 
+}
 
-task export_v1_data(type: Ili2pgExport) {
+task exportDataFromV1(type: Ili2pgExport, dependsOn: writeTrafoFile) {
     description = "Exportiert die MJPNL Daten aus v1"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = DB_Schema_MJPNL_v1
+    dbschema = dB_Schema_MJPNL_v1
+    disableValidation = true
+    topics = "SO_ARP_MJPNL_20240606.MJPNL"
     dataset = 'MJPNL'
     dataFile = mjpnlDataFile
+    models = "SO_ARP_MJPNL_20201026"
 }
 
-task transform_v1_to_v2(type: XslTransformer, dependsOn: importGELAN) {
+task transformTheData(type: XslTransformer, dependsOn: exportDataFromV1) {
     description = "Transformiert die MJPNL Daten von v1 in v2 Format"
-    xslFile = file("xml2xtf.xsl")
+    xslFile = trafoFile
     xmlFile = mjpnlDataFile
-    outDirectory = file(mjpnlDataFile)
+    outDirectory = file(".")
 }
 
-task importGELAN(type: Ili2pgReplace, dependsOn: transform_v1_to_v2) {
+task importDataToV2(type: Ili2pgReplace, dependsOn: transformTheData) {
     description = 'Importiert die MJPNL Daten in v2'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = DB_Schema_MJPNL_v2
+    dbschema = dB_Schema_MJPNL_v2
+    disableValidation = true
+    topics = "SO_ARP_MJPNL_20240606.MJPNL"
+    dataset = "MJPNL"
     dataFile = mjpnlDataFile
-    dataset = 'MJPNL'
+    models = "SO_ARP_MJPNL_20240606"
 }

@@ -1,55 +1,54 @@
 /*
- * - Spatial join
+ * - Spatial JOIN
  * - Höchste Gefahrenstufe pro Splitter berechnen
  * - Aus den Ausgangs-Polygonen der höchsten Stufe die Teilprozess-IDs auf Splitter gruppieren
  */
-with 
-
+WITH
 joined as (
-	select 
+	SELECT 
 		s.id,
 		gk.*
-	from
+	FROM
 		gk_poly gk
-	join
+	JOIN
 		splited s on st_within(s.point, gk.geometrie)
 )
 
 ,splited_maxstufe as (
-	select 
+	SELECT 
 		max(prio) as gef_max,
 		id
-	from
+	FROM
 		joined
-	group by
+	GROUP BY
 		id
 )
 
 ,splited_attr as (
-	select 
+	SELECT 
 		sm.id,
 		sm.gef_max,
 		string_agg(distinct charakterisierung,', ' order by charakterisierung)::text as charakterisierung
-	from 
+	FROM 
 		splited_maxstufe sm
-	join
+	JOIN
 		joined j 
 		on 
 		sm.id = j.id 
 		and 
 		sm.gef_max = j.prio
-	group by 
+	GROUP BY 
 		sm.id,
 		sm.gef_max		
 )
 
-update 
+UPDATE
 	splited
-set 
+SET 
 	gef_max = a.gef_max,
 	charakterisierung = a.charakterisierung
-from 
+FROM 
 	splited_attr a
-where 
+WHERE 
 	splited.id = a.id
 ;

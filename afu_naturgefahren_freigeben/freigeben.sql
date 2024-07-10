@@ -1,71 +1,72 @@
--- Naturgefahren
-with dataset_id as (
-    select
+WITH 
+dataset_id AS (
+    SELECT
         t_id 
-    from 
+    FROM 
         afu_naturgefahren_v2.t_ili2db_dataset 
-    where 
+    WHERE 
         datasetname = ${kennung}
 ),
 
-main_dataset as (
-    select 
+main_dataset AS (
+    SELECT 
         t_id 
-    from 
+    FROM 
         afu_naturgefahren_v2.t_ili2db_dataset
-    where 
+    WHERE 
         datasetname = 'main'
 )
 
-update 
+UPDATE 
     afu_naturgefahren_v2.t_ili2db_basket 
-set 
+SET 
     dataset = main_dataset.t_id 
-from 
+FROM 
     dataset_id, 
     main_dataset 
-where 
+WHERE 
     dataset = dataset_id.t_id
 ;
 
-delete from 
+DELETE FROM 
     afu_naturgefahren_v2.t_ili2db_dataset
-where 
+WHERE 
     datasetname = ${kennung}
 ;
 
 --Beurteilungsgebiet
-with dataset_id as (
-    select
+WITH 
+dataset_id AS (
+    SELECT
         t_id 
-    from 
+    FROM 
         afu_naturgefahren_beurteilungsgebiet_v1.t_ili2db_dataset 
-    where 
+    WHERE 
         datasetname = ${kennung}
 ),
 
-main_dataset as (
-    select 
+main_dataset AS (
+    SELECT 
         t_id 
-    from 
+    FROM 
         afu_naturgefahren_beurteilungsgebiet_v1.t_ili2db_dataset
-    where 
+    WHERE 
         datasetname = 'main'
 )
 
-update 
+UPDATE 
     afu_naturgefahren_beurteilungsgebiet_v1.t_ili2db_basket 
-set 
+SET 
     dataset = main_dataset.t_id 
-from 
+FROM 
     dataset_id, 
     main_dataset 
-where 
+WHERE 
     dataset = dataset_id.t_id
 ;
 
-delete from 
+DELETE FROM 
     afu_naturgefahren_beurteilungsgebiet_v1.t_ili2db_dataset
-where 
+WHERE 
     datasetname = ${kennung}
 ;

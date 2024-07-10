@@ -43,15 +43,13 @@ WITH schaechte AS (
         k.sohlenkote,
         k.zustandserhebung_jahr,
         l.funktionhydraulisch AS leitung_funktionhydraulisch,
+        l.funktionhierarchisch AS leitung_funktionhierarchisch,
+        l.nutzungsart_ist AS leitung_nutzungsart_ist,
         eig.organisationstyp AS eigentuemer_organisationstyp,
         eig.bezeichnung AS eigentuemer_bezeichnung,
         betr.organisationstyp AS betreiber_organisationstyp,
         betr.bezeichnung AS betreiber_bezeichnung,
-        CASE
-            WHEN k.finanzierung = 'oeffentlich' AND k.nutzungsart_ist = 'Reinabwasser' THEN 'P_RA'
-            WHEN k.finanzierung != 'oeffentlich' AND eig.organisationstyp = 'Privat' AND k.nutzungsart_ist = 'Reinabwasser' THEN 'P_RA_LE'
-            WHEN k.finanzierung != 'oeffentlich' AND eig.organisationstyp != 'Privat' AND k.nutzungsart_ist = 'Reinabwasser' THEN 'P_RA_dr'
-        END AS stilid
+        'P_RA_dr' AS stilid
     FROM 
         alw_drainagen_v1.vsadssmini_knoten k
         LEFT JOIN alw_drainagen_v1.vsadssmini_leitung l ON l.knoten_vonref = k.t_id
@@ -87,11 +85,13 @@ SELECT DISTINCT
 FROM 
     schaechte
 WHERE 
-    astatus LIKE 'in_Betrieb%'
+    (astatus LIKE 'in_Betrieb%' OR funktion LIKE 'Leitungsknoten')
     AND 
-        funktionhierarchisch = 'SAA'
+        leitung_funktionhierarchisch LIKE 'SAA.andere'
     AND 
-        leitung_funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung')
+        leitung_funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung', 'Pumpendruckleitung')
     AND 
-    stilid IS NOT NULL
+        leitung_nutzungsart_ist LIKE 'Reinabwasser'
+    AND 
+        stilid IS NOT NULL
 ;

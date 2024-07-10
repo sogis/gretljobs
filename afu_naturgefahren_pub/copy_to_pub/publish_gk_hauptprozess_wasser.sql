@@ -9,11 +9,12 @@ SELECT
     auftrag_neudaten
 FROM 
     afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser prozess
-left join 
+LEFT JOIN
     afu_naturgefahren_staging_v1.hauptprozess haupt_typ
-    on 
+    ON 
     prozess.hauptprozess = haupt_typ.ilicode 
-left join 
+LEFT JOIN
     afu_naturgefahren_staging_v1.gefahrenstufe_typ gef_typ 
-    on 
+    ON 
     prozess.gefahrenstufe = gef_typ.ilicode 
+;

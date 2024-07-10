@@ -1,12 +1,9 @@
-delete from afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung
-;
-
-with 
-basket as (
-     select 
+WITH
+basket AS (
+     SELECT 
          t_id,
          attachmentkey 
-     from 
+     FROM 
          afu_naturgefahren_staging_v1.t_ili2db_basket
 ), 
 
@@ -14,49 +11,52 @@ basket as (
 -- Grund: Beide haben den Charakterisierungs-Buchstaben H. Es darf in einer Fläche aber kein H1 und H2 (als Beispiel) geben. 
 -- Deshalb werden die Polygone gemäss ihrer Charakterisierung (= Priorisierung) miteinander verschnitten. 
  
-teilprozesse_spont_rutsch_und_hangmuren as (
-    select 
-	    gefahrenstufe,
-	    charakterisierung, 
-	    (ST_Dump(geometrie)).geom as geometrie
-	from 
-	    afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_spontane_rutschung 
-	where 
-	    datenherkunft = 'Neudaten'
-    union all 
-    select 
-	    gefahrenstufe,
-	    charakterisierung, 
-	    (ST_Dump(geometrie)).geom as geometrie
-	from 
-	    afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_hangmure 
-	where 
-	    datenherkunft = 'Neudaten'
-),
+teilprozesse_spont_rutsch_und_hangmuren AS (
+    SELECT 
+        gefahrenstufe,
+        charakterisierung, 
+        (ST_Dump(geometrie)).geom AS geometrie
+    FROM 
+        afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_spontane_rutschung 
+    WHERE 
+        datenherkunft = 'Neudaten'
+    UNION ALL 
+    SELECT 
+        gefahrenstufe,
+        charakterisierung, 
+        (ST_Dump(geometrie)).geom AS geometrie
+    FROM 
+        afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_hangmure 
+    WHERE 
+        datenherkunft = 'Neudaten'
+)
 
 -- Der erste Verschnitt erfolgt gemäss den Gefahrenstufen. Dies ist wichtig, weil bei diesen Prozessen ein H2 "mittel" 
 -- und ein H4 "gering" sein kann (geteilte Kästchen).
 
-teilprozesse_spont_rutsch_und_hangmuren_prio as (
+,teilprozesse_spont_rutsch_und_hangmuren_prio AS (
     SELECT 
-	    gefahrenstufe, 
-		charakterisierung, 
-		geometrie,
-		CASE 
-		    WHEN gefahrenstufe = 'restgefaehrdung' THEN 0 
-		    WHEN gefahrenstufe = 'gering' THEN 1 
-		    WHEN gefahrenstufe = 'mittel' THEN 2 
-		    WHEN gefahrenstufe = 'erheblich' THEN 3
-		END as prio  
-	FROM 
+        gefahrenstufe, 
+        charakterisierung, 
+        geometrie,
+        CASE 
+            WHEN gefahrenstufe = 'restgefaehrdung' 
+            THEN 0 
+            WHEN gefahrenstufe = 'gering' 
+            THEN 1 
+            WHEN gefahrenstufe = 'mittel' 
+            THEN 2 
+            WHEN gefahrenstufe = 'erheblich' THEN 3
+        END AS prio  
+    FROM 
         teilprozesse_spont_rutsch_und_hangmuren
-),
+)
 
-teilprozesse_spont_rutsch_und_hangmuren_prio_clip as (
+,teilprozesse_spont_rutsch_und_hangmuren_prio_clip AS (
     SELECT 
-	    a.gefahrenstufe, 
-		a.charakterisierung, 
-		ST_Multi(COALESCE(
+        a.gefahrenstufe, 
+        a.charakterisierung, 
+        ST_Multi(COALESCE(
             ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
         )) AS geometrie
@@ -69,29 +69,29 @@ teilprozesse_spont_rutsch_und_hangmuren_prio_clip as (
             teilprozesse_spont_rutsch_und_hangmuren_prio AS b
         WHERE 
             a.geometrie && b.geometrie 
-            and 
+            AND 
             a.prio < b.prio              
     ) AS blade		
-),
+)
 
 -- Dann werden die Gebiete noch gemäss ihrer Charakteristik verschnitten, damit sichergestellt ist, dass wirklich nur noch 
 -- eine H - Fläche übrig ist (bei anderen Hauptprozessen ist dies nicht nötig, weil unterschiedliche Buchstaben)
 
-teilprozesse_spont_rutsch_und_hangmuren_2_prio as (
+,teilprozesse_spont_rutsch_und_hangmuren_2_prio AS (
     SELECT 
-	    gefahrenstufe, 
-		charakterisierung, 
-		geometrie,
-		substring(charakterisierung from 2 for 1) as prio 
-	FROM 
+        gefahrenstufe, 
+        charakterisierung, 
+        geometrie,
+        substring(charakterisierung FROM 2 FOR 1) AS prio 
+    FROM 
         teilprozesse_spont_rutsch_und_hangmuren_prio_clip
-),
+)
 
-teilprozesse_spont_rutsch_und_hangmuren_2_prio_clip as (
+,teilprozesse_spont_rutsch_und_hangmuren_2_prio_clip AS (
     SELECT 
-	    a.gefahrenstufe, 
-		a.charakterisierung, 
-		ST_Multi(COALESCE(
+        a.gefahrenstufe, 
+        a.charakterisierung, 
+        ST_Multi(COALESCE(
             ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
         )) AS geometrie
@@ -104,60 +104,60 @@ teilprozesse_spont_rutsch_und_hangmuren_2_prio_clip as (
             teilprozesse_spont_rutsch_und_hangmuren_2_prio AS b
         WHERE 
             a.geometrie && b.geometrie 
-            and 
+            AND 
             a.prio < b.prio              
     ) AS blade		
-),
+)
 
-hauptprozess_rutschung as ( 
+,hauptprozess_rutschung AS ( 
     SELECT
         gefahrenstufe, 
-	    charakterisierung, 
-	    (st_dump(geometrie)).geom as geometrie	
-	FROM 
-	    afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_permanente_rutschung
-	where 
-	    datenherkunft = 'Neudaten'
-    union all 
-    select 
-	    gefahrenstufe,
-	    charakterisierung, 
-	    (ST_Dump(geometrie)).geom as geometrie
-	from 
-	    teilprozesse_spont_rutsch_und_hangmuren_2_prio_clip
-),
-
-hauptprozess_rutschung_clean as (
+        charakterisierung, 
+        (st_dump(geometrie)).geom AS geometrie	
+    FROM 
+        afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_permanente_rutschung
+    WHERE 
+        datenherkunft = 'Neudaten'
+    UNION ALL 
     SELECT 
-	    gefahrenstufe, 
-		charakterisierung, 
-		geometrie 
-	FROM 
-	    hauptprozess_rutschung 
-	WHERE 
+        gefahrenstufe,
+        charakterisierung, 
+        (ST_Dump(geometrie)).geom AS geometrie
+    FROM 
+        teilprozesse_spont_rutsch_und_hangmuren_2_prio_clip
+)
+
+,hauptprozess_rutschung_clean AS (
+    SELECT 
+        gefahrenstufe, 
+        charakterisierung, 
+        geometrie 
+    FROM 
+        hauptprozess_rutschung 
+    WHERE 
         st_area(geometrie) > 0.001
-),
+)
 
-hauptprozess_rutschung_clean_prio as (
+,hauptprozess_rutschung_clean_prio AS (
     SELECT 
-	    gefahrenstufe, 
-		charakterisierung, 
-		geometrie,
-		CASE 
-		    WHEN gefahrenstufe = 'restgefaehrdung' THEN 0 
-		    WHEN gefahrenstufe = 'gering' THEN 1 
-		    WHEN gefahrenstufe = 'mittel' THEN 2 
-		    WHEN gefahrenstufe = 'erheblich' THEN 3
-		END as prio 
-	FROM 
+        gefahrenstufe, 
+        charakterisierung, 
+        geometrie,
+        CASE 
+            WHEN gefahrenstufe = 'restgefaehrdung' THEN 0 
+            WHEN gefahrenstufe = 'gering' THEN 1 
+            WHEN gefahrenstufe = 'mittel' THEN 2 
+            WHEN gefahrenstufe = 'erheblich' THEN 3
+        END AS prio 
+    FROM 
         hauptprozess_rutschung_clean
-),
+)
 
-hauptprozess_rutschung_clean_prio_clip as (
+,hauptprozess_rutschung_clean_prio_clip AS (
     SELECT 
-	    a.gefahrenstufe, 
-		a.charakterisierung, 
-		ST_Multi(COALESCE(
+        a.gefahrenstufe, 
+        a.charakterisierung, 
+        ST_Multi(COALESCE(
             ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
         )) AS geometrie
@@ -170,35 +170,35 @@ hauptprozess_rutschung_clean_prio_clip as (
             hauptprozess_rutschung_clean_prio AS b
         WHERE 
             a.geometrie && b.geometrie 
-            and 
+            AND 
             a.prio < b.prio              
     ) AS blade		
-),
+)
 
-hauptprozess_rutschung_boundary as (
-  select 
-    st_union(st_boundary(geometrie)) as geometrie
-  from
-    hauptprozess_rutschung_clean_prio_clip
-),
+,hauptprozess_rutschung_boundary AS (
+    SELECT 
+        ST_Union(ST_boundary(geometrie)) AS geometrie
+    FROM
+        hauptprozess_rutschung_clean_prio_clip
+)
 
-hauptprozess_rutschung_split_poly AS (
-  SELECT 
-    (st_dump(st_polygonize(geometrie))).geom AS geometrie
-  FROM
-    hauptprozess_rutschung_boundary
-),
+,hauptprozess_rutschung_split_poly AS (
+    SELECT 
+        (ST_dump(ST_polygonize(geometrie))).geom AS geometrie
+    FROM
+        hauptprozess_rutschung_boundary
+)
 
-hauptprozess_rutschung_split_poly_points AS (
-  SELECT 
-    ROW_NUMBER() OVER() AS id,
-    geometrie AS poly,
-    st_pointonsurface(geometrie) AS point
-  FROM
-    hauptprozess_rutschung_split_poly
-),
+,hauptprozess_rutschung_split_poly_points AS (
+    SELECT 
+        ROW_NUMBER() OVER() AS id,
+        geometrie AS poly,
+        ST_pointonsurface(geometrie) AS point
+    FROM
+        hauptprozess_rutschung_split_poly
+)
 	
-hauptprozess_rutschung_point_on_polygons as (
+,hauptprozess_rutschung_point_on_polygons AS (
     SELECT 
         s.id,
         p.gefahrenstufe,
@@ -210,28 +210,29 @@ hauptprozess_rutschung_point_on_polygons as (
     GROUP BY 
         s.id,
         p.gefahrenstufe
-),
+)
 
-hauptprozess_rutschung_charakterisierung_agg as (
-    select 
+,hauptprozess_rutschung_charakterisierung_agg AS (
+    SELECT 
         polygone.gefahrenstufe,
         polygone.charakterisierung,
-	    point.poly as geometrie
+        point.poly AS geometrie
     FROM 
-	    hauptprozess_rutschung_split_poly_points point 
+        hauptprozess_rutschung_split_poly_points point 
     LEFT JOIN 
-	    hauptprozess_rutschung_point_on_polygons polygone 
+        hauptprozess_rutschung_point_on_polygons polygone 
         ON 
-	    polygone.id = point.id
-),
+        polygone.id = point.id
+)
 
 -- Flächen mit gleicher Gefahrenstufe und gleicher Charakterisierung können zusammengefasst werden
-hauptprozess_rutschung_union as (
-    select 
+
+,hauptprozess_rutschung_union AS (
+    SELECT 
         gefahrenstufe,
         charakterisierung,
-        st_union(geometrie) as geometrie
-    from 
+        st_union(geometrie) AS geometrie
+    FROM 
         hauptprozess_rutschung_charakterisierung_agg
     group by 
         gefahrenstufe,
@@ -239,12 +240,13 @@ hauptprozess_rutschung_union as (
 )
 
 --Die Flächen müssen wieder getrennt werden.
-,hauptprozess_rutschung_dump as (
-    select 
+
+,hauptprozess_rutschung_dump AS (
+    SELECT 
         gefahrenstufe,
         charakterisierung,
-        (st_dump(geometrie)).geom as geometrie
-    from 
+        (st_dump(geometrie)).geom AS geometrie
+    FROM 
         hauptprozess_rutschung_union
 )
 
@@ -258,15 +260,15 @@ INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung (
     auftrag_neudaten
 )
 
-select 
-    basket.t_id as t_basket,
-    'rutschung' as hauptprozess,
+SELECT 
+    basket.t_id AS t_basket,
+    'rutschung' AS hauptprozess,
     gefahrenstufe,
     charakterisierung,
-    st_multi(geometrie) as geometrie,
-    'Neudaten' as datenherkunft, 
-    basket.attachmentkey as auftrag_neudaten   
-from 
+    st_multi(geometrie) AS geometrie,
+    'Neudaten' AS datenherkunft, 
+    basket.attachmentkey AS auftrag_neudaten   
+FROM 
     basket,
     hauptprozess_rutschung_dump
 WHERE 
@@ -274,7 +276,3 @@ WHERE
     and 
     charakterisierung is not null 
 ;
-
-
-
-

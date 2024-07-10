@@ -1,86 +1,102 @@
-with
-attribute_mapping_hangmure as (
+WITH
+attribute_mapping_hangmure AS (
     SELECT 
-        case 
-        	when gef_stufe = 'vorhanden' then 'restgefaehrdung'
-        	when gef_stufe = 'gering' then 'gering'
-        	when gef_stufe = 'mittel' then 'mittel' 
-        	when gef_stufe = 'erheblich' then 'erheblich'
-        end as gefahrenstufe, 
-        replace(aindex, '_', '') as charakterisierung, 
-        st_multi(geometrie) as geometrie --Im neuen Modell sind Multi-Polygone
+        CASE 
+            WHEN gef_stufe = 'vorhanden' 
+            THEN 'restgefaehrdung'
+            WHEN gef_stufe = 'gering' 
+            THEN 'gering'
+            WHEN gef_stufe = 'mittel' 
+            THEN 'mittel' 
+            WHEN gef_stufe = 'erheblich' 
+            THEN 'erheblich'
+        END AS gefahrenstufe, 
+        replace(aindex, '_', '') AS charakterisierung, 
+        ST_multi(geometrie) AS geometrie --Im neuen Modell sind Multi-Polygone
     FROM 
         afu_gefahrenkartierung.gefahrenkartirung_gk_hangmure
-    where 
+    WHERE 
         publiziert = true 
-        and 
+        AND 
         gef_stufe != 'keine'
-), 
+) 
 
-attribute_mapping_plo_rutschung as (
+,attribute_mapping_plo_rutschung AS (
     SELECT 
-        case 
-        	when gef_stufe = 'vorhanden' then 'restgefaehrdung'
-        	when gef_stufe = 'gering' then 'gering'
-        	when gef_stufe = 'mittel' then 'mittel' 
-        	when gef_stufe = 'erheblich' then 'erheblich'
-        end as gefahrenstufe, 
-        replace(aindex, '_', '') as charakterisierung, 
-        st_multi(geometrie) as geometrie --Im neuen Modell sind Multi-Polygone
+        CASE 
+            WHEN gef_stufe = 'vorhanden' 
+            THEN 'restgefaehrdung'
+            WHEN gef_stufe = 'gering' 
+            THEN 'gering'
+            WHEN gef_stufe = 'mittel' 
+            THEN 'mittel' 
+            WHEN gef_stufe = 'erheblich' 
+            THEN 'erheblich'
+        END AS gefahrenstufe, 
+        replace(aindex, '_', '') AS charakterisierung, 
+        ST_multi(geometrie) AS geometrie --Im neuen Modell sind Multi-Polygone
     FROM 
         afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_spontan
-    where 
+    WHERE 
         publiziert = true 
-        and 
+        AND 
         gef_stufe != 'keine'
-),
+)
 
-attribute_mapping_perm_rutschung as (
+,attribute_mapping_perm_rutschung AS (
     SELECT 
-        case 
-        	when gef_stufe = 'vorhanden' then 'restgefaehrdung'
-        	when gef_stufe = 'gering' then 'gering'
-        	when gef_stufe = 'mittel' then 'mittel' 
-        	when gef_stufe = 'erheblich' then 'erheblich'
-        end as gefahrenstufe, 
-        replace(aindex, '_', '') as charakterisierung, 
-        st_multi(geometrie) as geometrie --Im neuen Modell sind Multi-Polygone
+        CASE 
+            WHEN gef_stufe = 'vorhanden' 
+            THEN 'restgefaehrdung'
+            WHEN gef_stufe = 'gering' 
+            THEN 'gering'
+            WHEN gef_stufe = 'mittel' 
+            THEN 'mittel' 
+            WHEN gef_stufe = 'erheblich' 
+            THEN 'erheblich'
+        END AS gefahrenstufe, 
+        replace(aindex, '_', '') AS charakterisierung, 
+        ST_multi(geometrie) AS geometrie --Im neuen Modell sind Multi-Polygone
     FROM 
         afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_kont_sackung
-    where 
+    WHERE 
         publiziert = true 
-        and 
+        AND 
         gef_stufe != 'keine'
 )
 
-,rutschungen_union as (
-    select * from attribute_mapping_hangmure
-    union all 
-    select * from attribute_mapping_plo_rutschung
-    union all 
-    select * from attribute_mapping_perm_rutschung
+,rutschungen_union AS (
+    SELECT * FROM attribute_mapping_hangmure
+    UNION ALL 
+    SELECT * FROM attribute_mapping_plo_rutschung
+    UNION ALL 
+    SELECT * FROM attribute_mapping_perm_rutschung
 )
 
-,rutschung_prio as (
-    select 
+,rutschung_prio AS (
+    SELECT 
         gefahrenstufe, 
         charakterisierung,
         geometrie,
-        case
-        	when gefahrenstufe = 'restgefaehrdung' then 0
-        	when gefahrenstufe = 'gering' then 1 
-        	when gefahrenstufe = 'mittel' then 2 
-        	when gefahrenstufe = 'erheblich' then 3
-        end as prio 
-    from 
+        CASE
+            WHEN gefahrenstufe = 'restgefaehrdung' 
+            THEN 0
+            WHEN gefahrenstufe = 'gering' 
+            THEN 1 
+            WHEN gefahrenstufe = 'mittel' 
+            THEN 2 
+            WHEN gefahrenstufe = 'erheblich' 
+            THEN 3
+        end AS prio 
+    FROM 
         rutschungen_union
 )
         
-,rutschung_prio_clip as (
+,rutschung_prio_clip AS (
     SELECT 
-	    a.gefahrenstufe, 
-		a.charakterisierung, 
-		ST_Multi(COALESCE(
+        a.gefahrenstufe, 
+        a.charakterisierung, 
+        ST_Multi(COALESCE(
             ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
         )) AS geometrie
@@ -93,21 +109,21 @@ attribute_mapping_perm_rutschung as (
             rutschung_prio AS b
         WHERE 
             a.geometrie && b.geometrie 
-            and 
+            AND 
             a.prio < b.prio              
     ) AS blade		
 )
 
-,rutschung_boundary as (
-  select 
-    st_union(st_boundary(geometrie)) as geometrie
-  from
+,rutschung_boundary AS (
+  SELECT 
+    ST_union(ST_boundary(geometrie)) AS geometrie
+  FROM
     rutschung_prio_clip
 )
 
 ,rutschung_split_poly AS (
   SELECT 
-    (st_dump(st_polygonize(geometrie))).geom AS geometrie
+    (ST_dump(ST_polygonize(geometrie))).geom AS geometrie
   FROM
     rutschung_boundary
 )
@@ -116,12 +132,12 @@ attribute_mapping_perm_rutschung as (
   SELECT 
     ROW_NUMBER() OVER() AS id,
     geometrie AS poly,
-    st_pointonsurface(geometrie) AS point
+    ST_pointonsurface(geometrie) AS point
   FROM
     rutschung_split_poly
 )
 	
-,rutschung_point_on_polygons as (
+,rutschung_point_on_polygons AS (
     SELECT 
         s.id,
         p.gefahrenstufe,
@@ -129,29 +145,29 @@ attribute_mapping_perm_rutschung as (
     FROM
         rutschung_split_poly_points s
     JOIN
-        rutschung_prio_clip p ON st_within(s.point, p.geometrie)
+        rutschung_prio_clip p ON ST_within(s.point, p.geometrie)
     GROUP BY 
         s.id,
         p.gefahrenstufe
 ),
 
-rutschung_charakterisierung_agg as (
-    select 
+rutschung_charakterisierung_agg AS (
+    SELECT 
         polygone.gefahrenstufe,
         polygone.charakterisierung,
-	    point.poly as geometrie
+        point.poly AS geometrie
     FROM 
-	    rutschung_split_poly_points point 
+        rutschung_split_poly_points point 
     LEFT JOIN 
-	    rutschung_point_on_polygons polygone 
+        rutschung_point_on_polygons polygone 
         ON 
-	    polygone.id = point.id
+        polygone.id = point.id
 )
 
-,basket as (
-     select 
+,basket AS (
+     SELECT 
          t_id 
-     from 
+     FROM 
          afu_naturgefahren_staging_v1.t_ili2db_basket
 )
 
@@ -165,25 +181,20 @@ INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung (
     auftrag_neudaten
 )
 
-select 
-    basket.t_id as t_basket,
-    'rutschung' as hauptprozess, 
+SELECT 
+    basket.t_id AS t_basket,
+    'rutschung' AS hauptprozess, 
     gefahrenstufe,
     charakterisierung,
     geometrie,
-    'Altdaten' as datenherkunft, 
-    null as auftrag_neudaten
+    'Altdaten' AS datenherkunft, 
+    null AS auftrag_neudaten
     
-from 
+FROM 
     rutschung_charakterisierung_agg,
     basket
-where 
+WHERE 
     gefahrenstufe is not null --Kommt vor wegen neu polygonierung 
-    and 
+    AND 
     charakterisierung is not null 
-
-
-
-
-
-
+;

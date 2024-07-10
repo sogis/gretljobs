@@ -9,6 +9,6 @@ SELECT
     ngkid
 FROM 
     afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_spontan
-where 
+WHERE 
     aindex is not null 
 ;

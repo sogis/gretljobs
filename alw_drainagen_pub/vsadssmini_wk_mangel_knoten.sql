@@ -1,3 +1,4 @@
+-- Alle restlichen Schächte die nicht als Draingen attribuiert sind. Die werden für die Darstellung im Web GIS Client benötigt
 WITH schaechte AS (
     SELECT
         k.t_id,
@@ -43,6 +44,8 @@ WITH schaechte AS (
         k.sohlenkote,
         k.zustandserhebung_jahr,
         l.funktionhydraulisch AS leitung_funktionhydraulisch,
+        l.funktionhierarchisch AS leitung_funktionhierarchisch,
+        l.nutzungsart_ist AS leitung_nutzungsart_ist,
         eig.organisationstyp AS eigentuemer_organisationstyp,
         eig.bezeichnung AS eigentuemer_bezeichnung,
         betr.organisationstyp AS betreiber_organisationstyp,
@@ -53,7 +56,7 @@ WITH schaechte AS (
             WHEN k.finanzierung != 'oeffentlich' AND eig.organisationstyp != 'Privat' AND k.nutzungsart_ist = 'Reinabwasser' THEN 'P_RA_dr'
         END AS stilid
     FROM 
-    alw_drainagen_v1.vsadssmini_knoten k
+        alw_drainagen_v1.vsadssmini_knoten k
         LEFT JOIN alw_drainagen_v1.vsadssmini_leitung l ON l.knoten_vonref = k.t_id
         LEFT JOIN alw_drainagen_v1.administration_organisation eig ON k.eigentuemerref = eig.t_id
         LEFT JOIN alw_drainagen_v1.administration_organisation betr ON k.betreiberref = betr.t_id
@@ -61,37 +64,29 @@ WITH schaechte AS (
         k.lage IS NOT NULL
 )
 
-SELECT
-    NULL AS t_ili_tid, -- t_ili_tid ist keine UUID im edit-Modell    
-    baujahr,
-    baulicherzustand,
-    betreiber_bezeichnung,
-    betreiber_organisationstyp,
-    bezeichnung,
-    dataset,
-    deckelkote,
-    eigentuemer_bezeichnung,
-    eigentuemer_organisationstyp,
-    finanzierung,
-    funktion,
-    funktionhierarchisch,
-    istneuesteversion,
+SELECT DISTINCT
+    NULL AS t_ili_tid, -- t_ili_tid ist keine UUID im edit-Modell 
     lage,
-    nutzungsart_ist,
-    nutzungsart_geplant,
-    oid_dss,
-    sohlenkote,
-    astatus,
-    stilid,
-    zustandserhebung_jahr
+	'Keine Drainage' AS beschreibung,
+	dataset,
+	TRUE AS istneuesteversion,
+	oid_dss,
+	'L_Mangel' AS stilid
+
 FROM 
     schaechte
 WHERE 
-    astatus LIKE 'in_Betrieb%'
+    (astatus != 'in_Betrieb'
     AND 
-    funktionhierarchisch = 'PAA'
+        leitung_funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung', 'Pumpendruckleitung'))
+    OR 
+        (leitung_funktionhierarchisch !='SAA.andere'
     AND 
-    leitung_funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung')
+        leitung_funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung', 'Pumpendruckleitung'))
+    OR 
+        ( leitung_nutzungsart_ist != 'Reinabwasser'
     AND 
-    stilid IS NOT NULL
+        leitung_funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung', 'Pumpendruckleitung'))
+    OR 
+        stilid IS NULL
 ;

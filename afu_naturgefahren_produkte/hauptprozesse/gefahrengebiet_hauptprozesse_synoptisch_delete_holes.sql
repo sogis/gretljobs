@@ -1,5 +1,5 @@
-delete from 
+DELETE FROM 
 	splited
-where 
+WHERE 
 	gef_max is null
 ;

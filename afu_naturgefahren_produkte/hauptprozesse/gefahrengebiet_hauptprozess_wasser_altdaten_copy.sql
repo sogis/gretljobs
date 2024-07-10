@@ -1,42 +1,50 @@
-with
-basket as (
-     select 
+WITH
+basket AS (
+     SELECT 
          t_id 
-     from 
+     FROM 
          afu_naturgefahren_staging_v1.t_ili2db_basket
-),
+)
 
-hauptprozess_alt_wasser_prio as (
+,hauptprozess_alt_wasser_prio AS (
     SELECT 
-	    'wasser' as hauptprozess, 
-        case 
-    	    when gef_stufe = 'vorhanden' then 'restgefaehrdung'
-            when gef_stufe = 'gering' then 'gering'
-            when gef_stufe = 'mittel' then 'mittel' 
-            when gef_stufe = 'erheblich' then 'erheblich'
-        end as gefahrenstufe, 
-		replace(aindex, '_', '') as charakterisierung, 
-		geometrie,
-		CASE 
-		    WHEN gef_stufe = 'vorhanden' then 0 
-		    WHEN gef_stufe = 'gering' then 1 
-		    WHEN gef_stufe = 'mittel' then 2 
-		    WHEN gef_stufe = 'erheblich' then 3
-		end || regexp_replace(aindex, '\D','','g') as prio --Die Prio setzt sich zusammen aus gef_stufe und Nummer der Charakterisierung. Grund: Geteilte Kästchen! 
-	FROM 
+        'wasser' AS hauptprozess, 
+        CASE 
+            WHEN gef_stufe = 'vorhanden' 
+            THEN 'restgefaehrdung'
+            WHEN gef_stufe = 'gering' 
+            THEN 'gering'
+            WHEN gef_stufe = 'mittel' 
+            THEN 'mittel' 
+            WHEN gef_stufe = 'erheblich' 
+            THEN 'erheblich'
+        END AS gefahrenstufe, 
+        replace(aindex, '_', '') AS charakterisierung, 
+        geometrie,
+        CASE 
+            WHEN gef_stufe = 'vorhanden' 
+            THEN 0 
+            WHEN gef_stufe = 'gering' 
+            THEN 1 
+            WHEN gef_stufe = 'mittel' 
+            THEN 2 
+            WHEN gef_stufe = 'erheblich' 
+            THEN 3
+        END || regexp_replace(aindex, '\D','','g') AS prio --Die Prio setzt sich zusammen aus gef_stufe und Nummer der Charakterisierung. Grund: Geteilte Kästchen! 
+    FROM 
         afu_gefahrenkartierung.gefahrenkartirung_gk_wasser
-    where 
+    WHERE 
         publiziert is true
-        and 
+        AND 
         gef_stufe != 'keine'
-),
+)
 
-hauptprozess_alt_wasser_prio_clip as (
+,hauptprozess_alt_wasser_prio_clip AS (
     SELECT 
-	    a.hauptprozess,
-	    a.gefahrenstufe,
-		a.charakterisierung, 
-		ST_Multi(COALESCE(
+        a.hauptprozess,
+        a.gefahrenstufe,
+        a.charakterisierung, 
+        ST_Multi(COALESCE(
             ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
         )) AS geometrie
@@ -49,32 +57,32 @@ hauptprozess_alt_wasser_prio_clip as (
             hauptprozess_alt_wasser_prio AS b
         WHERE 
             a.geometrie && b.geometrie 
-            and 
+            AND 
             a.prio < b.prio              
     ) AS blade		
-),
+)
 
-hauptprozess_alt_wasser_union as (
-    select 
+,hauptprozess_alt_wasser_union AS (
+    SELECT 
         hauptprozess,
         gefahrenstufe,
         charakterisierung,
-        st_union(geometrie) as geometrie
-    from 
+        ST_union(geometrie) AS geometrie
+    FROM 
         hauptprozess_alt_wasser_prio_clip
-    group by 
+    GROUP BY 
         hauptprozess,
         gefahrenstufe,
         charakterisierung 
 )
 
-,hauptprozess_wasser_dump as (
-    select 
+,hauptprozess_wasser_dump AS (
+    SELECT 
         hauptprozess,
         gefahrenstufe,
         charakterisierung,
-        (st_dump(geometrie)).geom as geometrie
-    from 
+        (ST_dump(geometrie)).geom AS geometrie
+    FROM 
         hauptprozess_alt_wasser_union
 )
 
@@ -89,19 +97,14 @@ INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser (
 )
 
 SELECT 
-    basket.t_id as t_basket,
+    basket.t_id AS t_basket,
     hauptprozess,
     gefahrenstufe, 
     charakterisierung, 
-    st_multi(geometrie) as geometrie, --Im neuen Modell sind Multi-Polygone
-    'Altdaten' as datenherkunft, 
-    null as auftrag_neudaten
+    ST_multi(geometrie) AS geometrie, --Im neuen Modell sind Multi-Polygone
+    'Altdaten' AS datenherkunft, 
+    null AS auftrag_neudaten
 FROM 
     hauptprozess_wasser_dump,
     basket
 ;
-
-
-
-
-

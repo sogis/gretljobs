@@ -1,61 +1,56 @@
--- ACHTUNG: NEUES DATASET UND BASKET MÜSSEN ANGELEGT WORDEN SEIN!!! 
-
-delete from afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_permanente_rutschung 
-;
-
-with 
-orig_dataset as (
-    select
-        t_id  as dataset  
-    from 
+WITH
+orig_dataset AS (
+    SELECT
+        t_id  AS dataset  
+    FROM 
         afu_naturgefahren_v1.t_ili2db_dataset
-    where 
+    WHERE 
         datasetname = ${kennung}
 ),
 
-orig_basket as (
-    select 
+orig_basket AS (
+    SELECT 
         basket.t_id 
-    from 
+    FROM 
         afu_naturgefahren_v1.t_ili2db_basket basket,
         orig_dataset
-    where 
+    WHERE 
         basket.dataset = orig_dataset.dataset
         and 
         topic like '%Befunde'
 ),
 
-teilprozess_permanentrutschung as ( 
-    select 
-       'permanente_rutschung' as teilprozess,
-        case when 
-             (string_to_array(iwcode, '_'))[1] = 'gelb' then 'gering' 
-             when
-             (string_to_array(iwcode, '_'))[1] = 'blau' then 'mittel' 
-             when
-             (string_to_array(iwcode, '_'))[1] = 'rot' then 'erheblich'
-        end as gefahrenstufe,
-        case when 
-             (string_to_array(iwcode, '_'))[2] = 'schwach' then 2
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'mittel'  then 5
-             when 
-             (string_to_array(iwcode, '_'))[2] = 'stark' then 8 
-        end as charakterisierung,
+teilprozess_permanentrutschung AS ( 
+    SELECT 
+       'permanente_rutschung' AS teilprozess,
+        CASE WHEN 
+             (string_to_array(iwcode, '_'))[1] = 'gelb' THEN 'gering' 
+             WHEN
+             (string_to_array(iwcode, '_'))[1] = 'blau' THEN 'mittel' 
+             WHEN
+             (string_to_array(iwcode, '_'))[1] = 'rot' THEN 'erheblich'
+        END AS gefahrenstufe,
+        CASE WHEN 
+             (string_to_array(iwcode, '_'))[2] = 'schwach' THEN 2
+             WHEN 
+             (string_to_array(iwcode, '_'))[2] = 'mittel'  THEN 5
+             WHEN 
+             (string_to_array(iwcode, '_'))[2] = 'stark' THEN 8 
+        END AS charakterisierung,
         geometrie, 
-        'Neudaten' as datenherkunft,
-        basket.attachmentkey as auftrag_neudaten
-    from 
+        'Neudaten' AS datenherkunft,
+        basket.attachmentkey AS auftrag_neudaten
+    FROM 
         afu_naturgefahren_v1.befundpermanenterutschung befund
-    left join
+    LEFT JOIN
         afu_naturgefahren_v1.t_ili2db_basket basket
-        on 
+        ON 
         befund.t_basket = basket.t_id 
-    where 
-        befund.t_basket in (select t_id from orig_basket)
+    WHERE 
+        befund.t_basket in (SELECT t_id FROM orig_basket)
 ),
 
-teilprozess_permanentrutschung_prio as (
+teilprozess_permanentrutschung_prio AS (
     SELECT 
         a.teilprozess,
         a.gefahrenstufe,
@@ -80,15 +75,15 @@ teilprozess_permanentrutschung_prio as (
     ) AS blade
 ),
 
-teilprozess_permanentrutschung_union as (
-    select 
+teilprozess_permanentrutschung_union AS (
+    SELECT 
         teilprozess,
         gefahrenstufe,
         charakterisierung,
-        st_union(geometrie) as geometrie,
+        st_union(geometrie) AS geometrie,
         datenherkunft,
         auftrag_neudaten
-    from 
+    FROM 
         teilprozess_permanentrutschung_prio
     group by 
         teilprozess,
@@ -98,21 +93,21 @@ teilprozess_permanentrutschung_union as (
         auftrag_neudaten
 ),
 
-teilprozess_permanentrutschung_dump as (
-    select 
+teilprozess_permanentrutschung_dump AS (
+    SELECT 
         teilprozess,
         gefahrenstufe,
         charakterisierung,
-        st_multi((st_dump(geometrie)).geom) as geometrie,
+        ST_Multi((st_dump(geometrie)).geom) AS geometrie,
         datenherkunft,
         auftrag_neudaten
-    from 
+    FROM 
         teilprozess_permanentrutschung_union
 ), 
- basket as (
-     select 
+ basket AS (
+     SELECT 
          t_id 
-     from 
+     FROM 
          afu_naturgefahren_staging_v1.t_ili2db_basket
  )
 
@@ -126,19 +121,17 @@ INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_permanente_r
     auftrag_neudaten
 )
 
-select
-    basket.t_id as t_basket, 
+SELECT
+    basket.t_id AS t_basket, 
     teilprozess,
     gefahrenstufe,
-    'R'||charakterisierung as charakterisierung,
+    'R'||charakterisierung AS charakterisierung,
     geometrie, 
     datenherkunft,
     auftrag_neudaten
-from 
+FROM 
     teilprozess_permanentrutschung_dump, 
     basket
-where 
-    st_isempty(geometrie) is not true 
+WHERE 
+    ST_Isempty(geometrie) is not true 
 ;
-
-

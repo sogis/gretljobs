@@ -6,4 +6,5 @@ SELECT
     datenherkunft, 
     auftrag_neudaten
 FROM 
-    afu_naturgefahren_staging_v1.fliesstiefen;
+    afu_naturgefahren_staging_v1.fliesstiefen
+;

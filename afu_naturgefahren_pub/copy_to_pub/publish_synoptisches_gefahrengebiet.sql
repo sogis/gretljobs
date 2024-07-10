@@ -5,8 +5,8 @@ SELECT
     geometrie
 FROM 
     afu_naturgefahren_staging_v1.synoptisches_gefahrengebiet syn_gef
-left join 
+LEFT JOIN
     afu_naturgefahren_staging_v1.gefahrenstufe_typ gef_typ 
-    on 
+    ON 
     syn_gef.gefahrenstufe = gef_typ.ilicode 
 ;
