@@ -15,6 +15,6 @@ task dataTransfer(type: Db2Db){
 
 task profilblatt(type: SqlExecutor, dependsOn: dataTransfer){
     description = 'Update Link zum Profilblatt'
-    database = pub
+    database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ['profilblatt.sql']
 }
