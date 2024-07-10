@@ -45,14 +45,14 @@ task "calculate_jahresbericht"(type: SqlExecutor,dependsOn: "cleanup_jahresberic
     sqlFiles = ['calc_jahresbericht_abgeltungen.sql']
 }
 
-task "cleanup_snapshot"(type: SqlExecutor,dependsOn: "cleanup_jahresbericht") {
+task "cleanup_snapshots"(type: SqlExecutor,dependsOn: "cleanup_jahresbericht") {
     description = "Löscht alle diesjährigen Leistungen aus Snapshot_Wiese, Snapshot_WBL_Wiese, Snapshot_Weide, Snapshot_WBL_Weide"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
     sqlFiles = ['cleanup_snapshot_wiese.sql', 'cleanup_snapshot_wbl_wiese.sql', 'cleanup_snapshot_weide.sql', 'cleanup_snapshot_wbl_weide.sql']
 }
 
-task "calculate_snapshot"(type: SqlExecutor,dependsOn: "cleanup_snapshots") {
+task "calculate_snapshots"(type: SqlExecutor,dependsOn: "cleanup_snapshots") {
     description = "Kalkuliert Snapshot_Wiese, Snapshot_WBL_Wiese, Snapshot_Weide, Snapshot_WBL_Weide"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
