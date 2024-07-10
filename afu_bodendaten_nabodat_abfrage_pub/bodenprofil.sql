@@ -71,6 +71,11 @@ standorteigenschaften AS (
 
 ausgangsmaterial AS (
     SELECT
+        CASE 
+            WHEN standort_ausgangsmaterial_unten.codeid IS NOT NULL 
+                THEN coalesce(standort_ausgangsmaterial_oben.codeid,'') || coalesce(standort_eiszeit_oben.codeid,'') || '/' 
+                ELSE coalesce(standort_ausgangsmaterial_oben.codeid,'') || coalesce(standort_eiszeit_oben.codeid,'')
+        END ||
         coalesce(standort_ausgangsmaterial_unten.codeid,'') || coalesce(standort_eiszeit_unten.codeid,'') AS ausgangsmaterial_alle,
         standort_ausgangsmaterial_oben.codeid AS ausgangsmaterial_oben,
         standort_ausgangsmaterial_oben.codetext_de AS ausgangsmaterial_oben_text,
@@ -285,6 +290,7 @@ profildaten AS (
     -- Pflanzengründigkeitswert
     LEFT JOIN afu_bodendaten_nabodat_v1.codelistnprfldten_pflanzennutzbaregruendigkeit AS pflanzengruendigkeit
         ON profil.pflanzennutzbaregruendigkeit = pflanzengruendigkeit.t_id
+    -- Bodenuntertyp
     LEFT JOIN (
         SELECT
             punktdaten_untertyp.profil,
@@ -486,6 +492,8 @@ SELECT
     profildaten.bodenwasserhaushaltsgruppe_text,
     profildaten.pflanzengruendigkeitswert,
     profildaten.pflanzengruendigkeitswert_text,
+    profildaten.boden_untertyp,
+    profildaten.boden_untertyp_text,
     profilbeurteilung.bodenpunktezahl,
     profilbeurteilung.fruchtbarkeitsstufe,
     profilbeurteilung.fruchtbarkeitsstufe_text,
