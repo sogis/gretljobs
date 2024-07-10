@@ -1,12 +1,12 @@
 INSERT INTO ${DB_Schema_MJPNL}.auswertung_jahresbericht_abgeltungen
-    t_basket,
+(   t_basket,
     jahr,
     vereinbarungsart,
     bezirksnummer,
-    bezirksname,
+    bezirk,
     anzahl_vereinbarungen,
     flaeche_total,
-    laufmeter,
+    laufmeter_total,
     baeume_total,
 	baeume_baumab40cmdurchmesser_total,
 	baeume_erntepflicht_total,
@@ -14,6 +14,7 @@ INSERT INTO ${DB_Schema_MJPNL}.auswertung_jahresbericht_abgeltungen
 	baeume_oekomaxi_total,
 	betrag_total,
 	anzahl_gemeinden
+)
 WITH beurteilungs_metainfo_baeume AS (
    SELECT vereinbarung, beurteilungsdatum,
    grundbeitrag_baum_anzahl,
@@ -40,8 +41,8 @@ SELECT
     (SELECT t_id FROM ${DB_Schema_MJPNL}.t_ili2db_basket WHERE topic = 'SO_ARP_MJPNL_20240606.Auswertung' LIMIT 1) as t_basket,
     ${AUSZAHLUNGSJAHR}::integer as jahr,
     vbg.vereinbarungsart as vereinbarungsart,
-	bezirk.bezirksnummer,
-	bezirk.bezirksname,
+	COALESCE(bezirk.bezirksnummer,0),
+	COALESCE(bezirk.bezirksname,'unbekannt'),
 	COUNT(vbg.vereinbarungs_nr) anzahl_vereinbarungen,
 	SUM(vbg.flaeche) as flaeche_total,
     SUM(COALESCE(hk.bewirtschaftung_lebhag_laufmeter, 0)) as laufmeter,
@@ -67,7 +68,7 @@ ON vbg.t_id = hk.vereinbarung
 AND hk.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM beurteilungs_metainfo_hecke he WHERE he.vereinbarung = vbg.t_id)
 -- wir holen den totalbetrag aus den leistungen, da auch einmalige miteinbezogen werden sollen
 LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg
-ON lstg.vereinbarung = vbg.t_id AND lstg.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer 
+ON lstg.vereinbarung = vbg.t_id AND lstg.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer
 WHERE vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE AND vbg.ist_nutzungsvereinbarung IS NOT TRUE
 GROUP BY bezirk.bezirksnummer, bezirk.bezirksname, vbg.vereinbarungsart
 ORDER BY vbg.vereinbarungsart, bezirk.bezirksnummer

@@ -1,5 +1,5 @@
 INSERT INTO ${DB_Schema_MJPNL}.auswertung_snapshot_weide
-    t_basket,
+(   t_basket,
     jahr,
     vereinbarungs_nr,
     anzahl_flora_naehrstoffzeiger,
@@ -11,6 +11,7 @@ INSERT INTO ${DB_Schema_MJPNL}.auswertung_snapshot_weide
     artenfoerderung_zielarten,
     -- spezifisch für snapshot_weide
     kategorie
+)
 WITH beurteilungs_metainfo_weide AS (
     SELECT vereinbarung, beurteilungsdatum,
     einstufungbeurteilungistzustand_flora_naehrstoffzeiger,
@@ -23,7 +24,20 @@ WITH beurteilungs_metainfo_weide AS (
     artenfoerderung_ff_zielart3,
     -- spezifisch für snapshot_weide
     einstufungbeurteilungistzustand_weidenkategorie
-    FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_weide
+    FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_weide_soeg
+    UNION
+    SELECT vereinbarung, beurteilungsdatum,
+    einstufungbeurteilungistzustand_flora_naehrstoffzeiger,
+    einstufungbeurteilungistzustand_flora_typische_arten,
+    einstufungbeurteilungistzustand_flora_bes_typ_arten, 
+    einstufungbeurteilungistzustand_flora_seltene_arten,
+    einstufungbeurteilungistzustand_anzahl_fauna,
+    artenfoerderung_ff_zielart1,
+    artenfoerderung_ff_zielart2,
+    artenfoerderung_ff_zielart3,
+    -- spezifisch für snapshot_weide
+    einstufungbeurteilungistzustand_weidenkategorie
+    FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_weide_ln
 )
 SELECT 
     (SELECT t_id FROM ${DB_Schema_MJPNL}.t_ili2db_basket WHERE topic = 'SO_ARP_MJPNL_20240606.Auswertung' LIMIT 1) as t_basket,
@@ -50,4 +64,4 @@ LEFT JOIN beurteilungs_metainfo_weide bw
     -- berücksichtige nur die neusten (sofern mehrere existieren)
     AND bw.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM beurteilungs_metainfo_weide be WHERE be.vereinbarung = vbg.t_id)
 WHERE vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE AND vbg.ist_nutzungsvereinbarung IS NOT TRUE
-AND vbg.vereinbarungsart = 'Weide'
+AND vbg.vereinbarungsart IN ('Weide_SOEG','Weide_LN')

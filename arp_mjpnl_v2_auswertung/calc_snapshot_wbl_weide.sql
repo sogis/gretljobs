@@ -1,4 +1,5 @@
 INSERT INTO ${DB_Schema_MJPNL}.auswertung_snapshot_wbl_weide
+(
     t_basket,
     jahr,
     vereinbarungs_nr,
@@ -11,6 +12,7 @@ INSERT INTO ${DB_Schema_MJPNL}.auswertung_snapshot_wbl_weide
     artenfoerderung_zielarten,
     -- spezifisch für snapshot_wbl_weide
     kategorie
+)
 WITH beurteilungs_metainfo_wbl_weide AS (
     SELECT vereinbarung, beurteilungsdatum,
     einstufungbeurteilungistzustand_flora_naehrstoffzeiger,

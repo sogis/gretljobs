@@ -1,14 +1,15 @@
-INSERT INTO ${DB_Schema_MJPNL}.rrb_neue_vereinbarung,
-    t_basket,
+INSERT INTO ${DB_Schema_MJPNL}.auswertung_rrb_neue_vereinbarung
+(   t_basket,
     jahr,
     vereinbarungsart,
     gemeinde,
     vereinbarungs_nr,
-    vereinbarungs_nr_alt
+    vereinbarungs_nr_alt,
     gelan_pid_gelan,
     gelan_person,
     flaeche,
     betrag_total
+)
 SELECT 
     (SELECT t_id FROM ${DB_Schema_MJPNL}.t_ili2db_basket WHERE topic = 'SO_ARP_MJPNL_20240606.Auswertung' LIMIT 1) as t_basket,
     ${AUSZAHLUNGSJAHR}::integer as jahr,
@@ -19,7 +20,8 @@ SELECT
     vbg.gelan_pid_gelan as gelan_pid_gelan,
     gp.name_vorname as gelan_person,
 	vbg.flaeche as flaeche,
-	abr_vbg.gesamtbetrag as betrag_total
+    -- ist nur NULL falls keine beurteilung gemacht
+	COALESCE(abr_vbg.gesamtbetrag, 0) as betrag_total
 FROM ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
 JOIN ${DB_Schema_MJPNL}.betrbsdttrktrdten_gelan_person gp
 ON gp.pid_gelan = vbg.gelan_pid_gelan 
