@@ -1,77 +1,77 @@
-with 
-dokumente_pre_process as (
-    select 
-        st_union(st_multi(geometrie)) as geometrie,
+WITH
+dokumente_pre_process AS (
+    SELECT 
+        ST_Union(st_multi(geometrie)) AS geometrie,
         dokument,
-        bool_or(ik_wasser) as ik_wasser,
-        bool_or(ik_sturz) as ik_sturz, 
-        bool_or(ik_abs_ein) as ik_abs_ein,
-        bool_or(ik_hangm) as ik_hangm,
-        bool_or(ik_ru_spon) as ik_ru_spon, 
-        bool_or(ik_ru_kont) as ik_ru_kont,
-        bool_or(gk_wasser) as gk_wasser,
-        bool_or(gk_sturz) as gk_sturz,
-        bool_or(gk_abs_ein) as gk_abs_ein,
-        bool_or(gk_hangm) as gk_hangm,
-        bool_or(gk_ru_spon) as gk_ru_spon,
-        bool_or(gk_ru_kont) as gk_ru_kont 
-    from 
+        bool_or(ik_wasser) AS ik_wasser,
+        bool_or(ik_sturz) AS ik_sturz, 
+        bool_or(ik_abs_ein) AS ik_abs_ein,
+        bool_or(ik_hangm) AS ik_hangm,
+        bool_or(ik_ru_spon) AS ik_ru_spon, 
+        bool_or(ik_ru_kont) AS ik_ru_kont,
+        bool_or(gk_wasser) AS gk_wasser,
+        bool_or(gk_sturz) AS gk_sturz,
+        bool_or(gk_abs_ein) AS gk_abs_ein,
+        bool_or(gk_hangm) AS gk_hangm,
+        bool_or(gk_ru_spon) AS gk_ru_spon,
+        bool_or(gk_ru_kont) AS gk_ru_kont 
+    FROM 
         afu_gefahrenkartierung_pub.gefahrenkartirung_perimeter_gefahrenkartierung_v
-    group by 
+    GROUP BY 
         dokument
-),
+)
 
-dokumente as (
-    select 
+,dokumente AS (
+    SELECT 
         geometrie, 
-        dokument as dokument_array,
-        json_array_elements(dokument::json) as dokument,
-        case
-        	when (ik_wasser = true) or (ik_hangm = true) or (gk_wasser = true) or (gk_hangm = true) 
-        	then 'Wasser' 
-        end as hauptprozess_wasser, 
-        case 
-        	when (ik_sturz = true) or (gk_sturz = true) 
-        	then 'Sturz' 
-        end as hauptprozess_sturz,
-        case 
-        	when (ik_abs_ein = true) or (gk_abs_ein = true)
-        	then 'Absenkung/Einsturz' 
-        end as hauptprozess_absenkung_einsturz,
-        case 
-        	when (ik_ru_spon = true) or (ik_ru_kont = true) or (gk_ru_spon = true) or (gk_ru_kont = true) 
-        	then 'Rutschung' 
-        end as hauptprozess_rutschung, 
-        left(right((json_array_elements(dokument::json) ->'name')::text,9),4) as jahr
-    from 
+        dokument AS dokument_array,
+        json_array_elements(dokument::json) AS dokument,
+        CASE
+            WHEN (ik_wasser = true) or (ik_hangm = true) or (gk_wasser = true) or (gk_hangm = true) 
+            THEN 'Wasser' 
+        END AS hauptprozess_wasser, 
+        CASE 
+            WHEN (ik_sturz = true) or (gk_sturz = true) 
+            THEN 'Sturz' 
+        END AS hauptprozess_sturz,
+        CASE 
+            WHEN (ik_abs_ein = true) or (gk_abs_ein = true)
+            THEN 'Absenkung/Einsturz' 
+        END AS hauptprozess_absenkung_einsturz,
+        CASE 
+            WHEN (ik_ru_spon = true) or (ik_ru_kont = true) or (gk_ru_spon = true) or (gk_ru_kont = true) 
+            THEN 'Rutschung' 
+        END AS hauptprozess_rutschung, 
+        left(right((json_array_elements(dokument::json) ->'name')::text,9),4) AS jahr
+    FROM 
         dokumente_pre_process
-),
+)
 
-gemeinden as (
-    select
+,gemeinden AS (
+    SELECT
         gemeindename,
         geometrie, 
         bfs_gemeindenummer
-    from 
+    FROM 
         agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze
 )
 
-select 
-    gemeinden.bfs_gemeindenummer as gemeinde_bfsnr, 
-    gemeinden.gemeindename as gemeinde_name,
+SELECT 
+    gemeinden.bfs_gemeindenummer AS gemeinde_bfsnr, 
+    gemeinden.gemeindename AS gemeinde_name,
     json_build_object('@type', 'SO_AFU_Naturgefahren_Kernmodell_20231016.Naturgefahren.Dokument',
                       'Titel', dokument->'name', 
                       'Dateiname', dokument->'name', 
                       'Link', dokument->'url',
                       'Hauptprozesse', concat_ws(', ', hauptprozess_wasser, hauptprozess_sturz, hauptprozess_absenkung_einsturz, hauptprozess_rutschung),
                       'Jahr', jahr
-                      ) as dokument,
-   gemeinden.geometrie as geometrie
-from 
+                      ) AS dokument,
+   gemeinden.geometrie AS geometrie
+FROM 
     dokumente 
-left join 
+LEFT JOIN
     gemeinden 
-    on 
-    st_dwithin(st_buffer(dokumente.geometrie,-10),gemeinden.geometrie,0)
+    ON 
+    ST_Dwithin(ST_Buffer(dokumente.geometrie,-10),gemeinden.geometrie,0)
 
 

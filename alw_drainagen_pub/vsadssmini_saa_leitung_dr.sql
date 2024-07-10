@@ -57,7 +57,7 @@ WITH leitungen AS (
         eig.organisationstyp AS eigentuemer_organisationstyp,
         eig.bezeichnung AS eigentuemer_bezeichnung,
         CASE
-            WHEN l.funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung') THEN 'L_Drainage'
+            WHEN l.funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung', 'Pumpendruckleitung') THEN 'L_Drainage'
         END AS stilid
     FROM
         alw_drainagen_v1.vsadssmini_leitung l
@@ -98,9 +98,11 @@ FROM
 WHERE 
     astatus LIKE 'in_Betrieb%'
     AND 
-        funktionhierarchisch LIKE 'SAA.%'
+        funktionhierarchisch LIKE 'SAA.andere'
     AND 
-        funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung')
+        funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung', 'Pumpendruckleitung')
+    AND 
+        nutzungsart_ist LIKE 'Reinabwasser'
     AND 
         stilid IS NOT NULL
 ;

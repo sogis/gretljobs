@@ -5,6 +5,6 @@ SELECT
     aindex
 FROM 
     afu_gefahrenkartierung.gefahrenkartirung_gk_synoptisch_generiert
-where 
+WHERE 
     aindex is not null 
 ;

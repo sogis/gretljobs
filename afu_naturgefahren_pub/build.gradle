@@ -6,7 +6,7 @@ import java.io.File
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'NatGef2Mgdm'
+defaultTasks 'removeTmpFiles'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def exportFileName = 'naturgefahren.xtf'
@@ -22,6 +22,7 @@ task copy_alle_natgef_produkte(type: Db2Db) {
     transferSets = [
             new TransferSet('copy_to_pub/publish_dokumente.sql','afu_naturgefahren_pub_v1.dokumente_pro_gemeinde', true),
             new TransferSet('copy_to_pub/publish_erhebungsgebiet.sql','afu_naturgefahren_pub_v1.erhebungsgebiet', true),
+            new TransferSet('copy_to_pub/publish_abklaerungsperimeter.sql','afu_naturgefahren_pub_v1.abklaerungsperimeter', true),
             new TransferSet('copy_to_pub/publish_fliessrichtung.sql','afu_naturgefahren_pub_v1.fliessrichtung', true),
             new TransferSet('copy_to_pub/publish_fliesstiefen.sql','afu_naturgefahren_pub_v1.fliesstiefen', true),
             new TransferSet('copy_to_pub/publish_gk_hauptprozess_rutschung.sql','afu_naturgefahren_pub_v1.gefahrengebiet_hauptprozess_rutschung', true),
@@ -61,26 +62,9 @@ task publishPub(type: Publisher, dependsOn: 'copy_alle_natgef_produkte'){
 
 //, dependsOn: publishPub
 
-task make_mgdm_schema(type: Ili2pgImportSchema){
-    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    models = "Hazard_Mapping_LV95_V1_3"
-    dbschema = "afu_naturgefahren_mgdm_v1"
-    beautifyEnumDispName = true
-    strokeArcs = true
-    createEnumTabs = true
-    createNumChecks = true
-    createMetaInfo = true
-    createUnique = true
-    createTidCol = true
-    nameByTopic = true
-    createGeomIdx = true
-    createFk = true
-    createFkIdx = true
-}
-
-task truncateMGDM(type: SqlExecutor, dependsOn: 'make_mgdm_schema'){
+task truncateMGDM(type: SqlExecutor, dependsOn: 'copy_alle_natgef_produkte'){
     description = "Löscht die drei Tabellen im MGDM-Schema"
-    database =  [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    database =  [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = [
 		'mgdm/truncate_tables.sql',
 	]       
@@ -88,7 +72,7 @@ task truncateMGDM(type: SqlExecutor, dependsOn: 'make_mgdm_schema'){
 
 task NatGef2Mgdm(type: SqlExecutor, dependsOn: 'truncateMGDM'){
     description = "Transformiert die NatGef-Produkte ins MGDM-Modell"
-    database =  [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    database =  [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = [
 		'mgdm/assessment_area.sql',
 		'mgdm/hazard_area.sql',
@@ -98,7 +82,7 @@ task NatGef2Mgdm(type: SqlExecutor, dependsOn: 'truncateMGDM'){
 
 task exportNatGefMgdm(type: Ili2pgExport, dependsOn: 'NatGef2Mgdm') {
     description = "Exportiert die ins Naturgefahren-MGDM umgebauten Daten in ein xtf-File."
-    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "afu_naturgefahren_mgdm_v1"
     models = "Hazard_Mapping_LV95_V1_3"
     dataFile = exportFile

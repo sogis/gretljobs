@@ -6,8 +6,8 @@ SELECT
     auftrag_neudaten
 FROM 
     afu_naturgefahren_staging_v1.ufererosion ufererosion
-left join 
+LEFT JOIN
     afu_naturgefahren_staging_v1.teilprozess_quellen teilprozess_quellen 
-    on 
+    ON 
     ufererosion.teilprozess = teilprozess_quellen.ilicode 
 ;

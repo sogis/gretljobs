@@ -1,8 +1,9 @@
-with  basket as (
-    select 
+WITH 
+basket AS (
+    SELECT 
         t_id,
         attachmentkey
-    from 
+    FROM 
         afu_naturgefahren_staging_v1.t_ili2db_basket
 )
 
@@ -18,19 +19,22 @@ INSERT INTO afu_naturgefahren_staging_v1.fliessrichtung (
 
 SELECT 
     basket.t_id as t_basket, 
-    case 
-    	when wkp = 'von_0_bis_30_Jahre' then '30' 
-    	when wkp = 'von_30_bis_100_Jahre' then '100' 
-    	when wkp = 'von_100_bis_300_Jahre' then '300' 
-    end as jaehrlichkeit, 
-    fliessr as fliessrichtung, 
-    null as prozessquelle_neudaten, 
+    CASE 
+    	WHEN wkp = 'von_0_bis_30_Jahre' 
+        THEN '30' 
+    	WHEN wkp = 'von_30_bis_100_Jahre' 
+        THEN '100' 
+    	WHEN wkp = 'von_100_bis_300_Jahre' 
+        THEN '300' 
+    END AS jaehrlichkeit, 
+    fliessr AS fliessrichtung, 
+    null AS prozessquelle_neudaten, 
     geometrie, 
-    'Altdaten' as datenherkunft,
-    basket.attachmentkey as auftrag_neudaten
+    'Altdaten' AS datenherkunft,
+    basket.attachmentkey AS auftrag_neudaten
 FROM 
     afu_gefahrenkartierung.gefahrenkartirung_punktsignatur signatur,
     basket 
-where 
+WHERE 
     art = 'Fliessrichtung'
 ;

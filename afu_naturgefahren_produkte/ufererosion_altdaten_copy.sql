@@ -1,8 +1,9 @@
-with basket as (
-    select 
+WITH 
+basket AS (
+    SELECT 
         t_id,
         attachmentkey
-    from 
+    FROM 
         afu_naturgefahren_staging_v1.t_ili2db_basket
 )
 
@@ -17,7 +18,7 @@ INSERT INTO afu_naturgefahren_staging_v1.ufererosion (
 SELECT 
     basket.t_id as t_basket, 
     'ufererosion' as teilprozess, 
-    st_multi(geometrie) as geometrie, 
+    ST_Multi(geometrie) as geometrie, 
     'Altdaten' as datenherkunft, 
     NULL as auftrag_neudaten
 FROM 
@@ -25,4 +26,6 @@ FROM
     ,basket 
 WHERE 
     ufererosion.prozessa = 'Ufererosion'
+    AND
+    publiziert is true
 ;
