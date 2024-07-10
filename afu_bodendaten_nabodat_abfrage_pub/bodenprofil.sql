@@ -492,8 +492,6 @@ SELECT
     profildaten.bodenwasserhaushaltsgruppe_text,
     profildaten.pflanzengruendigkeitswert,
     profildaten.pflanzengruendigkeitswert_text,
-    profildaten.boden_untertyp,
-    profildaten.boden_untertyp_text,
     profilbeurteilung.bodenpunktezahl,
     profilbeurteilung.fruchtbarkeitsstufe,
     profilbeurteilung.fruchtbarkeitsstufe_text,
