@@ -70,13 +70,13 @@ standorteigenschaften AS (
 ),
 
 ausgangsmaterial AS (
-    SELECT
+    SELECT      
         CASE 
             WHEN standort_ausgangsmaterial_unten.codeid IS NOT NULL 
                 THEN coalesce(standort_ausgangsmaterial_oben.codeid,'') || coalesce(standort_eiszeit_oben.codeid,'') || '/' 
                 ELSE coalesce(standort_ausgangsmaterial_oben.codeid,'') || coalesce(standort_eiszeit_oben.codeid,'')
         END ||
-        coalesce(standort_ausgangsmaterial_unten.codeid,'') || coalesce(standort_eiszeit_unten.codeid,'') AS ausgangsmaterial_alle,
+        coalesce(standort_ausgangsmaterial_unten.codeid,'') || coalesce(standort_eiszeit_unten.codeid,'') AS ausgangsmaterial_alle,     
         standort_ausgangsmaterial_oben.codeid AS ausgangsmaterial_oben,
         standort_ausgangsmaterial_oben.codetext_de AS ausgangsmaterial_oben_text,
         standort_ausgangsmaterial_unten.codeid AS ausgangsmaterial_unten,
@@ -438,7 +438,12 @@ SELECT
     standorteigenschaften.vegetation_text,
     standorteigenschaften.kleinrelief,
     standorteigenschaften.kleinrelief_text,
-    ausgangsmaterial.ausgangsmaterial_alle,
+    CASE 
+        WHEN coalesce(ausgangsmaterial.ausgangsmaterial_alle,'') = ''
+            THEN NULL
+            ELSE ausgangsmaterial_alle
+    END AS ausgangsmaterial_alle,
+    --ausgangsmaterial.ausgangsmaterial_alle,
     ausgangsmaterial.ausgangsmaterial_oben,
     ausgangsmaterial.ausgangsmaterial_oben_text,
     ausgangsmaterial.ausgangsmaterial_unten,
