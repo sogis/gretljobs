@@ -30,7 +30,7 @@ INSERT INTO
         bodenbedeckung.bfs_nr,
         bodenbedeckung.geometrie,
         bodenbedeckung.egid,
-        gebaeudename.objektname AS gebaeudename,
+        string_agg(gebaeudename.objektname, ', ') AS gebaeudename,
         json_agg(json_build_object(
             '@type', 'SO_AGI_Gebaeudeflaechen_Publikation_20240705.Gebaeude.Gebaeudeeingang',
             'Strassenname', adresse.strassenname, 
@@ -57,7 +57,7 @@ INSERT INTO
     WHERE 
         bodenbedeckung.art_txt = 'Gebaeude'
     GROUP BY 
-        bodenbedeckung.egid, bodenbedeckung.bfs_nr, bodenbedeckung.geometrie, gebaeudename.objektname
+        bodenbedeckung.egid, bodenbedeckung.bfs_nr, bodenbedeckung.geometrie
 )
 ;
 
@@ -86,7 +86,7 @@ INSERT INTO
         bodenbedeckung.bfs_nr,
         bodenbedeckung.geometrie,
         bodenbedeckung.egid,
-        gebaeudename.objektname AS gebaeudename,
+        string_agg(gebaeudename.objektname, ', ') AS gebaeudename,
         json_agg(json_build_object(
             '@type', 'SO_AGI_Gebaeudeflaechen_Publikation_20240705.Gebaeude.Gebaeudeeingang',
             'Strassenname', adresse.strassenname, 
@@ -113,6 +113,6 @@ INSERT INTO
     WHERE 
         bodenbedeckung.art_txt = 'Gebaeude'
     GROUP BY 
-        bodenbedeckung.egid, bodenbedeckung.bfs_nr, bodenbedeckung.geometrie, gebaeudename.objektname
+        bodenbedeckung.egid, bodenbedeckung.bfs_nr, bodenbedeckung.geometrie
 )
 ;
