@@ -31,7 +31,7 @@ INSERT INTO
         bodenbedeckung.geometrie,
         bodenbedeckung.egid,
         string_agg(gebaeudename.objektname, ', ') AS gebaeudename,
-        json_agg(json_build_object(
+        COALESCE(json_agg(json_build_object(
             '@type', 'SO_AGI_Gebaeudeflaechen_Publikation_20240705.Gebaeude.Gebaeudeeingang',
             'Strassenname', adresse.strassenname, 
             'Hausnummer', adresse.hausnummer,
@@ -41,7 +41,7 @@ INSERT INTO
             'ist_offizielle_Bezeichung', adresse.ist_offizielle_bezeichnung,
             'Hoehenlage', adresse.hoehenlage,
             'Status', adresse.astatus
-        )) AS gebaeudeeingang,
+        )) FILTER (WHERE adresse.hausnummer IS NOT NULL), NULL) AS gebaeudeeingang,
         CASE
             WHEN bodenbedeckung.egid IS NOT NULL
                 THEN concat('https://www.housing-stat.ch/de/query/egid.html?egid=',bodenbedeckung.egid::TEXT)
@@ -87,7 +87,7 @@ INSERT INTO
         bodenbedeckung.geometrie,
         bodenbedeckung.egid,
         string_agg(gebaeudename.objektname, ', ') AS gebaeudename,
-        json_agg(json_build_object(
+        COALESCE(json_agg(json_build_object(
             '@type', 'SO_AGI_Gebaeudeflaechen_Publikation_20240705.Gebaeude.Gebaeudeeingang',
             'Strassenname', adresse.strassenname, 
             'Hausnummer', adresse.hausnummer,
@@ -97,7 +97,7 @@ INSERT INTO
             'ist_offizielle_Bezeichung', adresse.ist_offizielle_bezeichnung,
             'Hoehenlage', adresse.hoehenlage,
             'Status', adresse.astatus
-        )) AS gebaeudeeingang,
+        )) FILTER (WHERE adresse.hausnummer IS NOT NULL), NULL) AS gebaeudeeingang,
         CASE
             WHEN bodenbedeckung.egid IS NOT NULL
                 THEN concat('https://www.housing-stat.ch/de/query/egid.html?egid=',bodenbedeckung.egid::TEXT)
