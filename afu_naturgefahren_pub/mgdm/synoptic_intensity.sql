@@ -36,7 +36,7 @@ SELECT
         ELSE jaehrlichkeit
     END AS return_period_in_years,
     CASE
-        WHEN jaehrlichkeit >= 300
+        WHEN jaehrlichkeit = -1
         THEN true
         ELSE false
     END AS extreme_scenario,
