@@ -29,6 +29,8 @@ orig_dataset AS (
              (string_to_array(iwcode, '_'))[1] = 'blau' THEN 'mittel' 
              WHEN
              (string_to_array(iwcode, '_'))[1] = 'rot' THEN 'erheblich'
+             when
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 'restgefaehrdung'
         END AS gefahrenstufe,
         CASE WHEN 
              (string_to_array(iwcode, '_'))[2] = 'schwach' AND (string_to_array(iwcode, '_'))[3] = '30' THEN 3
@@ -48,6 +50,8 @@ orig_dataset AS (
              (string_to_array(iwcode, '_'))[2] = 'stark' AND (string_to_array(iwcode, '_'))[3] = '100' THEN 8
              WHEN 
              (string_to_array(iwcode, '_'))[2] = 'stark' AND (string_to_array(iwcode, '_'))[3] = '300' THEN 7  
+             WHEN 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' THEN 0 --Restgefährdung hat immer die niedrigste Prio 
         END AS charakterisierung,
         geometrie, 
         'Neudaten' AS datenherkunft,
