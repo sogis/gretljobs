@@ -9,4 +9,4 @@ FROM
     LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
         ON grundstueckpos.t_basket = basket.t_id    
 WHERE grundstueckpos.hilfslinie IS NOT NULL 
-:
+;
