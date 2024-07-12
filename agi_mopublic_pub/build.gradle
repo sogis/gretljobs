@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'refreshSolr_XXX'  !! "Extra Fehler eingebaut: Dieser Gretljob ist nur zur erstmaligen übernahme der AV-Daten in das leere Schema agi_mopublic_pub zu gebrauchen ! In allen anderen Fällen VERBOTEN !!"
+defaultTasks 'refreshSolr'  !! "Extra Fehler eingebaut: Dieser Gretljob ist nur zur erstmaligen übernahme der AV-Daten in das leere Schema agi_mopublic_pub zu gebrauchen ! In allen anderen Fällen VERBOTEN !!"
 
 def schemaNamePub = 'agi_mopublic_pub'
 
