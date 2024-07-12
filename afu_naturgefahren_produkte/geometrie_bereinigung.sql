@@ -127,9 +127,9 @@ where st_isempty(geometrie) = true
 ; 
 
 update afu_naturgefahren_staging_v1.erhebungsgebiet
-set geometrie = st_reducePrecision(geometrie,0.001)
+set geometrie = st_reducePrecision(flaeche,0.001)
 ;
 
 delete from afu_naturgefahren_staging_v1.erhebungsgebiet
-where st_isempty(geometrie) = true
+where st_isempty(flaeche) = true
 ; 
