@@ -144,3 +144,11 @@ FROM
     afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_ufererosion
     ,basket
 ;
+
+UPDATE afu_naturgefahren_staging_v1.abklaerungsperimeter
+SET geometrie = st_reducePrecision(geometrie,0.001)
+;
+
+DELETE FROM afu_naturgefahren_staging_v1.abklaerungsperimeter
+WHERE st_isempty(geometrie) = true
+; 
