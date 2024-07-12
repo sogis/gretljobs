@@ -1,5 +1,7 @@
 description = """\n
-Kalkulation der  arp_mjpnl_v2 (EDIT-DB)
+Kalkulation der Zahlungslaufdaten wie auch der Auswertungsdaten
+
+arp_mjpnl_v2 (EDIT-DB)
 
 Fragen an: Odile Bruggisser (ARP)
 """
@@ -10,12 +12,13 @@ import java.util.Date
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'calculate_abrechnung_per_bewirtschafter'
+defaultTasks 'calculate_snapshots'
 
 def DB_Schema_MJPNL = "arp_mjpnl_v2"
 /* Falls kein auszahlungsjahr übergeben wird, nimmt es bei aktuellem Datum kleiner 15. Januar noch das Vorjahr und sonst das aktuelle Jahr */
 def AUSZAHLUNGSJAHR = Integer.valueOf(new SimpleDateFormat("MM").format(new Date())) == 1 && Integer.valueOf(new SimpleDateFormat("DD").format(new Date())) < 15 ? String.valueOf( Integer.valueOf(new SimpleDateFormat("yyyy").format(new Date()))-1 ) : new SimpleDateFormat("yyyy").format(new Date())
 
+/* Kalkulation der Zahlungslaufdaten */
 
 task "cleanup_abrechnung_per_leistung"(type: SqlExecutor) {
     description = "Löscht alle diesjährigen Leistungen (die nicht einmalig oder migriert sind) und setzt FKs auf NULL"
@@ -79,4 +82,48 @@ task "calculate_abrechnung_per_bewirtschafter"(type: SqlExecutor,dependsOn: "cal
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
     sqlFiles = ['calc_mjpnl_abrechnung_per_bewirtschafter.sql']
+}
+
+/* Kalkulation der Auswertungstabellen */
+
+task "cleanup_rrb"(type: SqlExecutor,dependsOn: "calculate_abrechnung_per_bewirtschafter") {
+    description = "Löscht alle diesjährigen einträge von RRB_Neue_Vereinbarung und RRB_Bewirtschafterwechsel"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
+    sqlFiles = ['auswertung_cleanup_rrb_neue_vereinbarung.sql', 'auswertung_cleanup_rrb_bewirtschafterwechsel.sql']
+}
+
+task "calculate_rrb"(type: SqlExecutor,dependsOn: "cleanup_rrb") {
+    description = "Kalkuliert RRB_Neue_Vereinbarung und RRB_Bewirtschafterwechsel"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
+    sqlFiles = ['auswertung_calc_rrb_neue_vereinbarung.sql', 'auswertung_calc_rrb_bewirtschafterwechsel.sql']
+}
+
+task "cleanup_jahresbericht"(type: SqlExecutor,dependsOn: "calculate_rrb") {
+    description = "Löscht alle diesjährigen Leistungen aus Jahresbericht_Abgeltungen"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
+    sqlFiles = ['auswertung_cleanup_jahresbericht_abgeltungen.sql']
+}
+
+task "calculate_jahresbericht"(type: SqlExecutor,dependsOn: "cleanup_jahresbericht") {
+    description = "Kalkuliert Jahresbericht_Abgeltungen"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
+    sqlFiles = ['auswertung_calc_jahresbericht_abgeltungen.sql']
+}
+
+task "cleanup_snapshots"(type: SqlExecutor,dependsOn: "calculate_jahresbericht") {
+    description = "Löscht alle diesjährigen Leistungen aus Snapshot_Wiese, Snapshot_WBL_Wiese, Snapshot_Weide, Snapshot_WBL_Weide"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
+    sqlFiles = ['auswertung_cleanup_snapshot_wiese.sql', 'auswertung_cleanup_snapshot_wbl_wiese.sql', 'auswertung_cleanup_snapshot_weide.sql', 'auswertung_cleanup_snapshot_wbl_weide.sql']
+}
+
+task "calculate_snapshots"(type: SqlExecutor,dependsOn: "cleanup_snapshots") {
+    description = "Kalkuliert Snapshot_Wiese, Snapshot_WBL_Wiese, Snapshot_Weide, Snapshot_WBL_Weide"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
+    sqlFiles = ['auswertung_calc_snapshot_wiese.sql', 'auswertung_calc_snapshot_wbl_wiese.sql', 'auswertung_calc_snapshot_weide.sql', 'auswertung_calc_snapshot_wbl_weide.sql']
 }
