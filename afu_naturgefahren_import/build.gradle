@@ -24,7 +24,7 @@ def verifikationsModelName = "SO_AFU_Naturgefahren_Validierung_20240515"
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
 
 print auftragskennung;
-
+/*
 task validateData(type: IliValidator) {
     description = "Validiert die Daten und überprüft insbesondere die Auftragskennung"
     dataFiles = file(uploadFolder+'/'+xtfFilename)
@@ -34,8 +34,8 @@ task validateData(type: IliValidator) {
     allObjectsAccessible = true
     failOnError = true
 }
-
-task dbImport(type: Ili2pgReplace, dependsOn: 'validateData') {
+*/
+task dbImport(type: Ili2pgReplace) {
     description = "Import Geodata Edit"
     doLast {
         println "Data imported into db: " + dbUriEdit
