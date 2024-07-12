@@ -1,5 +1,5 @@
  SELECT
-    ${basket_tid} AS t_basket.
+    ${basket_tid} AS t_basket,
     grundstueck.nummer,
     grundstueckpos.hilfslinie
 FROM
