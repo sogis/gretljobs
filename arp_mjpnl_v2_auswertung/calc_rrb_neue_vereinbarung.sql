@@ -12,7 +12,7 @@ INSERT INTO ${DB_Schema_MJPNL}.auswertung_rrb_neue_vereinbarung
 )
 SELECT 
     (SELECT t_id FROM ${DB_Schema_MJPNL}.t_ili2db_basket WHERE topic = 'SO_ARP_MJPNL_20240606.Auswertung' LIMIT 1) as t_basket,
-    ${AUSZAHLUNGSJAHR}::integer as jahr,
+    date_part('year', vbg.rrb_publiziert_ab)::integer as jahr,
     vbg.vereinbarungsart as vereinbarungsart,
     array_to_string(vbg.gemeinde, ',') as gemeinde, 
     vbg.vereinbarungs_nr as vereinbarungs_nr,
@@ -27,5 +27,10 @@ JOIN ${DB_Schema_MJPNL}.betrbsdttrktrdten_gelan_person gp
 ON gp.pid_gelan = vbg.gelan_pid_gelan 
 LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung abr_vbg
 ON abr_vbg.vereinbarung = vbg.t_id 
--- das ist vermutlich falsch und wird noch besprochen
-WHERE vbg.rrb_nr = ${AUSZAHLUNGSJAHR}::varchar and vbg.status_vereinbarung = 'aktiv'
+-- wir kalkulieren alle "aktuellen", heisst die ohne oder mit diesjährigem publikationsjahr
+WHERE vbg.status_vereinbarung = 'aktiv'
+AND ( 
+    date_part('year', vbg.rrb_publiziert_ab)::integer = ${AUSZAHLUNGSJAHR}
+    OR
+    vbg.rrb_publiziert_ab IS NULL
+)
