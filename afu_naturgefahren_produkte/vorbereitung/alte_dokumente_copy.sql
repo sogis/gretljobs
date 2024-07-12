@@ -59,7 +59,7 @@ dokumente_pre_process AS (
 SELECT 
     gemeinden.bfs_gemeindenummer AS gemeinde_bfsnr, 
     gemeinden.gemeindename AS gemeinde_name,
-    json_build_object('@type', 'SO_AFU_Naturgefahren_Kernmodell_20231016.Naturgefahren.Dokument',
+    json_build_object('@type', 'SO_AFU_Naturgefahren_Publikation_20240704.Naturgefahren.Dokument',
                       'Titel', dokument->'name', 
                       'Dateiname', dokument->'name', 
                       'Link', dokument->'url',

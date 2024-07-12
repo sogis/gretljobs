@@ -168,7 +168,7 @@ SELECT distinct
     basket.t_id AS t_basket, 
     gemeinden.bfs_gemeindenummer AS gemeinde_bfsnr, 
     gemeinden.gemeindename AS gemeinde_name,
-    jsonb_build_object('@type', 'SO_AFU_Naturgefahren_Kernmodell_20231016.Naturgefahren.Dokument',
+    jsonb_build_object('@type', 'SO_AFU_Naturgefahren_Publikation_20240704.Naturgefahren.Dokument',
                       'Titel', berichte.titel, 
                       'Dateiname', berichte.dateiname, 
                       'Link', berichte.link, 
