@@ -1,5 +1,6 @@
  SELECT
     ${basket_tid} AS t_basket,
+    CAST(grundstueckpos.t_datasetname AS INT) AS bfs_nr,    
     grundstueck.nummer,
     grundstueckpos.hilfslinie
 FROM
