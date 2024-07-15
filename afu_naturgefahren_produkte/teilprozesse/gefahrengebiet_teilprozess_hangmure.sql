@@ -29,6 +29,8 @@ teilprozess_hangmure AS (
              (string_to_array(iwcode, '_'))[1] = 'blau' then 'mittel' 
              when
              (string_to_array(iwcode, '_'))[1] = 'rot' then 'erheblich'
+             when
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 'restgefaehrdung'
         end AS gefahrenstufe,
         case when 
              (string_to_array(iwcode, '_'))[2] = 'schwach' AND (string_to_array(iwcode, '_'))[3] = '30' then 3
@@ -47,7 +49,9 @@ teilprozess_hangmure AS (
              when 
              (string_to_array(iwcode, '_'))[2] = 'stark' AND (string_to_array(iwcode, '_'))[3] = '100' then 8
              when 
-             (string_to_array(iwcode, '_'))[2] = 'stark' AND (string_to_array(iwcode, '_'))[3] = '300' then 7    
+             (string_to_array(iwcode, '_'))[2] = 'stark' AND (string_to_array(iwcode, '_'))[3] = '300' then 7   
+             WHEN 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' THEN 0 --Restgefährdung hat immer die niedrigste Prio 
         end AS charakterisierung,
         geometrie, 
         'Neudaten' AS datenherkunft,
@@ -71,6 +75,7 @@ teilprozess_hangmure AS (
         datenherkunft,
         auftrag_neudaten,
         CASE 
+            WHEN gefahrenstufe = 'restgefaehrdung' then 0 
             WHEN gefahrenstufe = 'gering' then 10 
             WHEN gefahrenstufe = 'mittel' then 20 
             WHEN gefahrenstufe = 'erheblich' then 30
