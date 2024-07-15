@@ -35,4 +35,6 @@ SELECT
 FROM 
     basket,
     afu_gefahrenkartierung.gefahrenkartirung_ueberflutungskarte tiefe
+WHERE 
+    ueberfl_hb != 'keine_Ueberflutung'
 ;
