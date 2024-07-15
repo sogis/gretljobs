@@ -39,7 +39,7 @@ horizont AS (
         horizont.t_id,
         horizont.tiefevon,
         horizont.tiefebis,
-        horizont.horizontnr,
+        horizont.horizontnr AS horizontnummer,
         horizont.HorizontbezeichungAusgangsinfo AS horizontbezeichnung,
         horizont.humusgehaltfeld AS zustand_org_substanz,
         horizont.TonFeld AS tongehalt,
