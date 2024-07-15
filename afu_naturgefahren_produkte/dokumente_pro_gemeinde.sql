@@ -219,7 +219,15 @@ SELECT
     t_basket,
     gemeinde_bfsnr, 
     gemeinde_name,
-    json_agg(dokumente order by jahr) AS dokumente,
+    json_agg(dokumente order by jahr)::jsonb ||      
+    jsonb_build_object('@type', 'SO_AFU_Naturgefahren_Publikation_20240704.Naturgefahren.Dokument',
+                      'Titel', 'Lesehilfe', 
+                      'Dateiname', 'B_Lesehilfe_Gefahrenkarte_PLANAT_120309.pdf', 
+                      'Link', 'https://geo.so.ch/docs/ch.so.afu.naturgefahren/B_Lesehilfe_Gefahrenkarte_PLANAT_120309.pdf', 
+                      'Hauptprozesse', '-', 
+                      'Jahr', '-'
+                      )
+                      AS dokumente,
     geometrie
 FROM 
     dokumente_union
