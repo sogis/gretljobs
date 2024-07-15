@@ -29,6 +29,8 @@ teilprozess_permanentrutschung AS (
              (string_to_array(iwcode, '_'))[1] = 'blau' THEN 'mittel' 
              WHEN
              (string_to_array(iwcode, '_'))[1] = 'rot' THEN 'erheblich'
+             when
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' then 'restgefaehrdung'
         END AS gefahrenstufe,
         CASE WHEN 
              (string_to_array(iwcode, '_'))[2] = 'schwach' THEN 2
@@ -36,6 +38,8 @@ teilprozess_permanentrutschung AS (
              (string_to_array(iwcode, '_'))[2] = 'mittel'  THEN 5
              WHEN 
              (string_to_array(iwcode, '_'))[2] = 'stark' THEN 8 
+             WHEN 
+             (string_to_array(iwcode, '_'))[1] = 'restgefaehrdung' THEN 0 --Restgefährdung hat immer die niedrigste Prio 
         END AS charakterisierung,
         geometrie, 
         'Neudaten' AS datenherkunft,
