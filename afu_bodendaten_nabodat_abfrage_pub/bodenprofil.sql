@@ -27,7 +27,8 @@ standort AS (
         ON standort.t_id = projektstandort.standort
     LEFT JOIN afu_bodendaten_nabodat_v1.punktdaten_projekt AS projekt
         ON projektstandort.projekt = projekt.t_id
-    WHERE projekt.aname = 'Bodenkartierung Kt. SO'
+    WHERE
+        projekt.aname = 'Bodenkartierung Kt. SO'
 ),
 
 standorteigenschaften AS (
@@ -213,7 +214,8 @@ erhebungsdaten AS (
         afu_bodendaten_nabodat_v1.punktdaten_erhebung AS erhebung
     LEFT JOIN afu_bodendaten_nabodat_v1.codlstnpktstndort_erhebungsart AS erhebungsart
         ON erhebung.erhebungsart = erhebungsart.t_id
-    WHERE erhebungsart.codeid != 'PN'
+    WHERE
+        erhebungsart.codeid != 'PN'
     GROUP BY
         erhebung.standort,
         erhebung.erhebungsdatum,
@@ -354,11 +356,13 @@ dokumente AS (
                     afu_bodendaten_nabodat_v1.punktdaten_dokument AS dokument
                 LEFT JOIN afu_bodendaten_nabodat_v1.codlstnpktstndort_dokumenttyp AS dokumenttyp
                     ON dokument.dokumenttyp = dokumenttyp.t_id
-                WHERE dokumenttyp.codeid = 'FotoProfil'
-                    ) profilfoto           
+                WHERE
+                    dokumenttyp.codeid = 'FotoProfil'
+                    ) AS profilfoto           
                 ON profildokument.profildokument = profilfoto.t_id
-            WHERE profilfoto.originaldokumentname IS NOT NULL
-            ) profilfoto_dokument
+            WHERE
+                profilfoto.originaldokumentname IS NOT NULL
+            ) AS profilfoto_dokument
         ON profildaten.t_id = profilfoto_dokument.profil
     -- Profilskizze
     LEFT JOIN (
@@ -375,11 +379,13 @@ dokumente AS (
                     afu_bodendaten_nabodat_v1.punktdaten_dokument AS dokument
                 LEFT JOIN afu_bodendaten_nabodat_v1.codlstnpktstndort_dokumenttyp AS dokumenttyp
                     ON dokument.dokumenttyp = dokumenttyp.t_id
-                WHERE dokumenttyp.codeid = 'ScanProfilSkizze'
-                    ) profilskizze           
+                WHERE
+                    dokumenttyp.codeid = 'ScanProfilSkizze'
+                    ) AS profilskizze           
                 ON profildokument.profildokument = profilskizze.t_id
-            WHERE profilskizze.originaldokumentname IS NOT NULL
-            ) profilskizze_dokument
+            WHERE
+                profilskizze.originaldokumentname IS NOT NULL
+            ) AS profilskizze_dokument
         ON profildaten.t_id = profilskizze_dokument.profil
     -- Topografieskizze
     LEFT JOIN (
@@ -396,11 +402,13 @@ dokumente AS (
                     afu_bodendaten_nabodat_v1.punktdaten_dokument AS dokument
                 LEFT JOIN afu_bodendaten_nabodat_v1.codlstnpktstndort_dokumenttyp AS dokumenttyp
                     ON dokument.dokumenttyp = dokumenttyp.t_id
-                WHERE dokumenttyp.codeid = 'ScanProfilTopografie'
-                    ) topografieskizze           
+                WHERE
+                    dokumenttyp.codeid = 'ScanProfilTopografie'
+                    ) AS topografieskizze           
                 ON profildokument.profildokument = topografieskizze.t_id
-            WHERE topografieskizze.originaldokumentname IS NOT NULL
-            ) topografieskizze_dokument
+            WHERE
+                topografieskizze.originaldokumentname IS NOT NULL
+            ) AS topografieskizze_dokument
         ON profildaten.t_id = topografieskizze_dokument.profil      
 )
 

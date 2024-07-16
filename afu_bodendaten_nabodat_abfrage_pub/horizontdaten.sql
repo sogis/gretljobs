@@ -41,7 +41,7 @@ horizont AS (
         horizont.tiefebis,
         horizont.horizontnr AS horizontnummer,
         horizont.HorizontbezeichungAusgangsinfo AS horizontbezeichnung,
-        horizont.humusgehaltfeld AS zustand_org_substanz,
+        horizont.humusgehaltfeld AS zustand_organische_substanz,
         horizont.TonFeld AS tongehalt,
         horizont.SchluffFeld AS schluffgehalt,
         horizont.SandFeld AS sandgehalt,
@@ -61,10 +61,11 @@ horizont AS (
 
 gefuege AS (
     SELECT
-        horizont.t_id AS horizont_id,
+        horizont.t_id AS horizont_id, --Für Join mit punktdaten_horizont
         gefuege.horizont,
         string_agg(gefuegeform.codeid || coalesce(gefuegegroesse.codeid,''),', ') AS gefuege
-    FROM horizont 
+    FROM
+        horizont 
     LEFT JOIN afu_bodendaten_nabodat_v1.punktdaten_gefuege AS gefuege
         ON horizont.t_id = gefuege.horizont
     LEFT JOIN afu_bodendaten_nabodat_v1.codelistnprfldten_form AS gefuegeform
@@ -78,7 +79,7 @@ gefuege AS (
 
 farbe AS (
     SELECT 
-        horizont.t_id AS horizont_id,
+        horizont.t_id AS horizont_id, --für Join mit punktdaten_horizont
         bodenfarbe.horizont,
         string_agg(farbtonzahl.codeid || ' ' || farbtontext.codetext_de || ' ' || farbtonhelligkeit.codeid || '/' || farbtonintensitaet.codeid,', ') AS farbe
     FROM 
@@ -100,7 +101,7 @@ farbe AS (
 
 messungen AS (
     SELECT
-        horizont.t_id AS horizont_id,
+        horizont.t_id AS horizont_id, --Für Join mit punktdaten_horizont
         (messung.messwerte) ->> 'Bodenkennwerte // Organische Substanz'::text AS zustand_organische_substanz_labor,
         (messung.messwerte) ->> 'Bodenkennwerte // Tongehalt (< 0.002 mm)'::text AS tongehalt_labor,
         (messung.messwerte) ->> 'Bodenkennwerte // Schluffgehalt (0.002 - 0.05 mm)'::text AS schluffgehalt_labor,
@@ -109,20 +110,25 @@ messungen AS (
         (messung.messwerte) ->> 'Bodenkennwerte // pH-Wert'::text AS cacl2_wert,
         (messung.messwerte) ->> 'Bodenkennwerte // Potentielle Kationenaustauschkapazität'::text AS kak_pot,
         (messung.messwerte) ->> 'Bodenkennwerte // Effektive Kationenaustauschkapazität'::text AS kak_eff
-    FROM afu_bodendaten_nabodat_v1.punktdaten_profil profil
+    FROM
+        afu_bodendaten_nabodat_v1.punktdaten_profil profil
     LEFT JOIN afu_bodendaten_nabodat_v1.punktdaten_horizont AS horizont
         ON horizont.profil = profil.t_id
-    LEFT JOIN afu_bodendaten_nabodat_v1.erhebung_probe_profil_v AS hilfsview
+    LEFT JOIN afu_bodendaten_nabodat_v1.erhebung_probe_profil_v AS hilfsview --View
         ON hilfsview.erhebung_profil = profil.erhebung
     LEFT JOIN afu_bodendaten_nabodat_v1.punktdaten_probe AS probe
-        ON hilfsview.erhebung_probe = probe.erhebung
-        AND probe.tiefevon = horizont.tiefevon
+        ON
+            hilfsview.erhebung_probe = probe.erhebung
+            AND
+            probe.tiefevon = horizont.tiefevon
     LEFT JOIN (
         SELECT
             json_object_agg(analyseparameter.parametertext_de, messung_1.messwert) AS messwerte,
             messung_1.probe
-        FROM afu_bodendaten_nabodat_v1.punktdaten_messung messung_1
-        LEFT JOIN afu_bodendaten_nabodat_v1.codelistnnlysdten_analyseparameter analyseparameter ON messung_1.analyseparameter = analyseparameter.t_id
+        FROM
+            afu_bodendaten_nabodat_v1.punktdaten_messung messung_1
+        LEFT JOIN afu_bodendaten_nabodat_v1.codelistnnlysdten_analyseparameter analyseparameter
+            ON messung_1.analyseparameter = analyseparameter.t_id
         GROUP BY
             messung_1.probe
     ) AS messung
@@ -145,7 +151,7 @@ SELECT
     horizont.tiefevon,
     horizont.tiefebis,
     horizont.horizontbezeichnung,
-    horizont.zustand_org_substanz,
+    horizont.zustand_organische_substanz,
     messungen.zustand_organische_substanz_labor,
     horizont.tongehalt,
     messungen.tongehalt_labor,
