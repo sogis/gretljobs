@@ -147,28 +147,28 @@ messungen AS (
 
 SELECT
     horizont.profilnummer,
-    horizont.horizontnummer,
+    CAST(horizont.horizontnummer AS INTEGER),
     horizont.tiefevon,
     horizont.tiefebis,
     horizont.horizontbezeichnung,
-    horizont.zustand_organische_substanz,
-    messungen.zustand_organische_substanz_labor,
+    CAST(horizont.zustand_organische_substanz AS DOUBLE PRECISION),
+    CAST(messungen.zustand_organische_substanz_labor AS DOUBLE PRECISION),
     horizont.tongehalt,
-    messungen.tongehalt_labor,
+    CAST(messungen.tongehalt_labor AS DOUBLE PRECISION),
     horizont.schluffgehalt,
-    messungen.schluffgehalt_labor,
+    CAST(messungen.schluffgehalt_labor AS DOUBLE PRECISION),
     horizont.sandgehalt,
-    messungen.sandgehalt_labor,
+    CAST(messungen.sandgehalt_labor AS DOUBLE PRECISION),
     horizont.kiesanteil,
     horizont.steinanteil,
-    horizont.ph_wert,
-    horizont.kalkgehalt,
-    messungen.kalkgehalt_labor,
+    CAST(horizont.ph_wert AS DOUBLE PRECISION),
+    CAST(horizont.kalkgehalt AS INTEGER),
+    CAST(messungen.kalkgehalt_labor AS DOUBLE PRECISION),
     gefuege.gefuege,
     farbe.farbe,
-    messungen.cacl2_wert,
-    messungen.kak_pot,
-    messungen.kak_eff
+    CAST(messungen.cacl2_wert AS DOUBLE PRECISION),
+    CAST(messungen.kak_pot AS DOUBLE PRECISION),
+    CAST(messungen.kak_eff AS DOUBLE PRECISION)
 FROM 
     horizont
 LEFT JOIN gefuege 
