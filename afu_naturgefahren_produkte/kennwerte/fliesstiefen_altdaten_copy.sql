@@ -28,13 +28,17 @@ SELECT
         THEN '300'
     END AS jaehrlichkeit,  
     tiefe.ueberfl_hb AS ueberschwemmung_tiefe, 
-    null AS prozessquelle_neudaten, 
+    prozessquelle.bez_prozq AS prozessquelle_neudaten, 
     ST_Multi(tiefe.geometrie) AS geometrie, 
     'Altdaten' AS datenherkunft,
     null AS auftrag_neudaten
 FROM 
     basket,
     afu_gefahrenkartierung.gefahrenkartirung_ueberflutungskarte tiefe
+left join 
+    afu_gefahrenkartierung.gefahrenkartirung_prozessquelle_wasser prozessquelle 
+    on 
+    tiefe.prozessq = prozessquelle.id
 WHERE 
     ueberfl_hb != 'keine_Ueberflutung'
 ;
