@@ -1,0 +1,20 @@
+SELECT
+    geometrie,
+    bebaut,
+    potenzial,
+    in_planung,
+    unternutzte_arbeitszone,
+    mietobjekt,
+    gebunden,
+    zonierung_kontrollieren,
+    bemerkung,
+    watchlist,
+    watchlist_grund,
+    watchlist_objekttyp,
+    publizieren_oeffentlich,
+    dossier,
+    mietflaeche,
+    erweiterbar_nachbargrundstueck,
+    flaeche_erweiterbar
+FROM
+    arp_arbeitszonenbewirtschaftung_v1.bewertung_bewertung bb;
