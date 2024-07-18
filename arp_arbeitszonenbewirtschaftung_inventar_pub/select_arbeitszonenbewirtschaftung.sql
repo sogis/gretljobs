@@ -1,4 +1,30 @@
-WITH relevante_grundstuecke AS (
+-- Definiere eine Minimalfläche wie gross die Überlappung eines Grundstücks
+-- mit einer Arbeitszone ist. Dies dient dazu, dass Grundstücke bzw. Arbeitszonen
+-- mit geometrischen Ungenauigkeiten fälschlicherweise berücksichtigt werden.
+WITH minimumoverlap AS (
+    SELECT 1.0
+),
+-- Liste mit Codes der Arbeitszonen
+arbeitszonen AS (
+    SELECT
+        *
+    FROM
+    (
+        VALUES
+        ( 120 ),
+        ( 121 ),
+        ( 122 ),
+        ( 130 ),
+        ( 131 ),
+        ( 132 ),
+        ( 133 ),
+        ( 134 )
+    )
+    AS t ( typ_code_kt )
+),
+-- Relevant sind alle Grundstücke, welche entweder eine Bewertung haben oder
+-- innerhalb einer Arbeitszone liegen
+relevante_grundstuecke AS (
     SELECT
         mg.t_id,
         mg.geometrie,
@@ -39,7 +65,11 @@ WITH relevante_grundstuecke AS (
     ON
         NOT ST_Within(bb.geometrie, mg.geometrie)
     WHERE
-        ng.typ_code_kt in (120, 121, 122, 130, 131, 132, 133, 134)
+        ng.typ_code_kt in ( SELECT typ_code_kt FROM arbeitszonen )
+    -- Füge nachfolgende Bedingung noch dazu, um mit dieser CTE die Anzahl der
+    -- relevanten Grundstücke im DBeaver zu prüfen
+    -- AND
+    -- ST_Area(ST_Intersection(mg.geometrie, ng.geometrie)) >= (SELECT * FROM minimumoverlap)
 ),
 nutzungsplanungs_dokumente AS (
     SELECT
@@ -150,19 +180,22 @@ befestigte_flaechen AS (
         agi_mopublic_pub.mopublic_bodenbedeckung mb 
     WHERE
         mb.art_txt IN
-        ('Gebaeude',
-        'Strasse_Weg',
-        'Trottoir',
-        'Verkehrsinsel',
-        'Bahn',
-        'Flugplatz',
-        'Wasserbecken',
-        'Sportanlage_befestigt',
-        'Lagerplatz',
-        'Boeschungsbauwerk',
-        'Gebaeudeerschliessung',
-        'Parkplatz',
-        'uebrige_befestigte')
+        -- Liste der Bodenbedeckungsarten, welche als befestigt gelten
+        (
+            'Gebaeude',
+            'Strasse_Weg',
+            'Trottoir',
+            'Verkehrsinsel',
+            'Bahn',
+            'Flugplatz',
+            'Wasserbecken',
+            'Sportanlage_befestigt',
+            'Lagerplatz',
+            'Boeschungsbauwerk',
+            'Gebaeudeerschliessung',
+            'Parkplatz',
+            'uebrige_befestigte'
+        )
 ),
 -- Verschneide die relevanten Grundstücke mit den befestigten Flächen und
 -- bestimme den Nutzungsgrad
@@ -251,8 +284,8 @@ grundstuecke_mit_bewertung AS (
     ON
         ST_Intersects(mg.geometrie, ng.geometrie)
     WHERE
-        ng.typ_code_kt in (120, 121, 122, 130, 131, 132, 133, 134) AND
-        ST_Area(ST_Intersection(mg.geometrie, ng.geometrie)) >= 1.0
+        ng.typ_code_kt in ( SELECT typ_code_kt FROM arbeitszonen ) AND
+        ST_Area(ST_Intersection(mg.geometrie, ng.geometrie)) >= ( SELECT * FROM minimumoverlap )
     GROUP BY
         mg.geometrie,
         bewertung_bebaut,
@@ -328,8 +361,10 @@ grundstuecke_mit_bewertung AS (
     ON
         ST_Intersects(mg.geometrie, ng.geometrie)
     WHERE
-        ng.typ_code_kt in (120, 121, 122, 130, 131, 132, 133, 134) AND
-        ST_Area(ST_Intersection(mg.geometrie, ng.geometrie)) >= 1.0 AND
+        ng.typ_code_kt in ( SELECT typ_code_kt FROM arbeitszonen )
+    AND
+        ST_Area(ST_Intersection(mg.geometrie, ng.geometrie)) >= (SELECT * FROM minimumoverlap)
+    AND
         mg.t_id NOT IN
         (
             SELECT
@@ -369,57 +404,9 @@ grundstuecke_mit_bewertung AS (
         bewertung_mietflaeche,
         bewertung_flaeche_erweiterbar,
         bewertung_vorhanden
-),
--- Füge die Region dazu
-grundstuecke_bewertung_region AS (
-    SELECT
-        gmb.geometrie,
-        gmb.bewertung_bebaut,
-        gmb.bewertung_potenzial,
-        gmb.bewertung_in_planung,
-        gmb.bewertung_unternutzte_arbeitszone,
-        gmb.bewertung_mietobjekt,
-        gmb.bewertung_erweiterbar_nachbargrundstueck,
-        gmb.bewertung_gebunden,
-        gmb.bewertung_zonierung_kontrollieren,
-        gmb.bewertung_bemerkung,
-        gmb.bewertung_watchlist,
-        gmb.bewertung_watchlist_grund,
-        gmb.bewertung_watchlist_objekttyp,
-        gmb.bewertung_publizieren_oeffentlich,
-        gmb.bewertung_dossier,
-        gmb.grundstuecknummer,
-        gmb.grundbuch,
-        gmb.bfs_nr,
-        gmb.gemeinde,
-        gmb.egrid,
-        gmb.grundstueckflaeche,
-        gmb.eigentuemer,
-        rr.aname AS region,
-        gmb.nutzungsgrad,
-        gmb.grundnutzung,
-        gmb.bewertung_mietflaeche,
-        gmb.bewertung_flaeche_erweiterbar,
-        gmb.bewertung_vorhanden
-    FROM
-        grundstuecke_mit_bewertung gmb
-    JOIN
-        (
-            SELECT
-                aname,
-                typ,
-                ST_Collect(geometrie) AS geometrie
-            FROM
-                arp_arbeitszonenbewirtschaftung_staging_v1.regionen_region
-            GROUP BY
-                aname,
-                typ
-        ) AS rr
-    ON
-        ST_Within(ST_PointOnSurface(gmb.geometrie), rr.geometrie)
 )
--- Füge das Zonenreglement, Gestaltungspläne, Bauzonenstatistik und Baureglement
--- dazu
+-- Füge das Zonenreglement, Gestaltungspläne, Bauzonenstatistik, Baureglement
+-- und die Region dazu
 SELECT
     gbr.geometrie,
     gbr.bewertung_bebaut,
@@ -442,7 +429,7 @@ SELECT
     gbr.egrid,
     gbr.grundstueckflaeche,
     gbr.eigentuemer,
-    gbr.region,
+    rr.aname AS region,
     gbr.nutzungsgrad,
     zr.textimweb AS zonenreglement,
     STRING_AGG(gp.textimweb, ' ') AS gestaltungsplan,
@@ -468,24 +455,40 @@ SELECT
     gbr.bewertung_flaeche_erweiterbar,
     gbr.bewertung_vorhanden
 FROM
-    grundstuecke_bewertung_region gbr
+    grundstuecke_mit_bewertung gbr
+-- Verknüpfe die Bauzonenstatistik
 LEFT JOIN
     arp_auswertung_nutzungsplanung_pub_v1.bauzonenstatistik_liegenschaft_nach_bebauungsstand lnb
 ON
     ST_Within(ST_PointOnSurface(gbr.geometrie), lnb.geometrie)
+-- Verknüpfe die Baureglemente
 LEFT JOIN
     baureglemente br
 ON
     br.bfs_nr::INTEGER = gbr.bfs_nr::INTEGER
+-- Verknüpfe die Zonenreglmente
 LEFT JOIN
     zonenreglemente zr
 ON
     zr.bfs_nr::INTEGER = gbr.bfs_nr::INTEGER
+-- Verknüpfe die Gestaltungspläne
 LEFT JOIN
     gestaltungsplaene gp
 ON
     ST_Within(ST_PointOnSurface(gbr.geometrie), gp.geometrie)
-
+-- Verknüpfe die Region mit dem Grundstück
+LEFT JOIN
+    (
+        SELECT
+            aname,
+            ST_Collect(geometrie) AS geometrie
+        FROM
+            arp_arbeitszonenbewirtschaftung_staging_v1.regionen_region
+        GROUP BY
+            aname
+    ) AS rr
+ON
+    ST_Within(ST_PointOnSurface(gbr.geometrie), rr.geometrie)
 GROUP BY
     gbr.geometrie,
     gbr.bewertung_bebaut,
@@ -508,7 +511,7 @@ GROUP BY
     gbr.egrid,
     gbr.grundstueckflaeche,
     gbr.eigentuemer,
-    gbr.region,
+    region,
     gbr.nutzungsgrad,
     zonenreglement,
     gestaltungsplanpflicht,
