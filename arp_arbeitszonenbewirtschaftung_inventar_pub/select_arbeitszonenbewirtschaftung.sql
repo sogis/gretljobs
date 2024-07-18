@@ -209,9 +209,10 @@ grundstuecke_mit_nutzungsgrad AS (
         rg.gemeinde, -- Gemeindename
         rg.egrid
 ),
+ -- Sammle alle Grundstücke mit einer Bewertung
 grundstuecke_mit_bewertung AS (
-    -- Sammle alle Grundstücke mit einer Bewertung
     SELECT
+        mg.t_id,
         mg.geometrie AS geometrie,
         bb.bebaut AS bewertung_bebaut,
         bb.potenzial AS bewertung_potenzial,
@@ -266,6 +267,7 @@ grundstuecke_mit_bewertung AS (
         -- mit geometrischen Ungenauigkeiten fälschlicherweise berücksichtigt werden.
         ST_Area(ST_Intersection(mg.geometrie, ng.geometrie)) >= 1.0
     GROUP BY
+        mg.t_id,
         mg.geometrie,
         bewertung_bebaut,
         bewertung_potenzial,
@@ -292,6 +294,39 @@ grundstuecke_mit_bewertung AS (
         bewertung_mietflaeche,
         bewertung_flaeche_erweiterbar,
         bewertung_vorhanden
+),
+-- Fasse die Grundstücke mit Bewertung mit denjenigen ohne Bewertung zusammen
+grundstuecke_zusammengefasst AS (
+    SELECT
+        geometrie,
+        bewertung_bebaut,
+        bewertung_potenzial,
+        bewertung_in_planung,
+        bewertung_unternutzte_arbeitszone,
+        bewertung_mietobjekt,
+        bewertung_erweiterbar_nachbargrundstueck,
+        bewertung_gebunden,
+        bewertung_zonierung_kontrollieren,
+        bewertung_bemerkung,
+        bewertung_watchlist,
+        bewertung_watchlist_grund,
+        bewertung_watchlist_objekttyp,
+        bewertung_publizieren_oeffentlich,
+        bewertung_dossier,
+        grundstuecknummer,
+        bfs_nr,
+        grundbuch,
+        gemeinde,
+        egrid,
+        grundstueckflaeche,
+        eigentuemer,
+        nutzungsgrad,
+        grundnutzung,
+        bewertung_mietflaeche,
+        bewertung_flaeche_erweiterbar,
+        bewertung_vorhanden
+    FROM
+        grundstuecke_mit_bewertung
 
     UNION
 
@@ -349,14 +384,7 @@ grundstuecke_mit_bewertung AS (
     AND
         mg.t_id NOT IN
         (
-            SELECT
-                mg.t_id
-            FROM
-                grundstuecke_mit_nutzungsgrad mg
-            JOIN
-                arp_arbeitszonenbewirtschaftung_staging_v1.bewertung_bewertung bb 
-            ON
-                ST_Within(bb.geometrie, mg.geometrie)
+            SELECT t_id FROM grundstuecke_mit_bewertung
         )
 
     GROUP BY
@@ -437,7 +465,7 @@ SELECT
     gbr.bewertung_flaeche_erweiterbar,
     gbr.bewertung_vorhanden
 FROM
-    grundstuecke_mit_bewertung gbr
+    grundstuecke_zusammengefasst gbr
 -- Verknüpfe die Bauzonenstatistik
 LEFT JOIN
     arp_auswertung_nutzungsplanung_pub_v1.bauzonenstatistik_liegenschaft_nach_bebauungsstand lnb
