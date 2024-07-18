@@ -1,30 +1,6 @@
--- Definiere eine Minimalfläche wie gross die Überlappung eines Grundstücks
--- mit einer Arbeitszone ist. Dies dient dazu, dass Grundstücke bzw. Arbeitszonen
--- mit geometrischen Ungenauigkeiten fälschlicherweise berücksichtigt werden.
-WITH minimumoverlap AS (
-    SELECT 1.0
-),
--- Liste mit Codes der Arbeitszonen
-arbeitszonen AS (
-    SELECT
-        *
-    FROM
-    (
-        VALUES
-        ( 120 ),
-        ( 121 ),
-        ( 122 ),
-        ( 130 ),
-        ( 131 ),
-        ( 132 ),
-        ( 133 ),
-        ( 134 )
-    )
-    AS t ( typ_code_kt )
-),
 -- Relevant sind alle Grundstücke, welche entweder eine Bewertung haben oder
 -- innerhalb einer Arbeitszone liegen
-relevante_grundstuecke AS (
+WITH relevante_grundstuecke AS (
     SELECT
         mg.t_id,
         mg.geometrie,
@@ -58,18 +34,17 @@ relevante_grundstuecke AS (
     JOIN
        arp_nutzungsplanung_pub_v1.nutzungsplanung_grundnutzung ng 
     ON
-        ST_Overlaps(mg.geometrie, ng.geometrie) OR
-        ST_Within(mg.geometrie, ng.geometrie)
+        ST_Intersects(mg.geometrie, ng.geometrie)
     JOIN
         arp_arbeitszonenbewirtschaftung_staging_v1.bewertung_bewertung bb 
     ON
         NOT ST_Within(bb.geometrie, mg.geometrie)
     WHERE
-        ng.typ_code_kt in ( SELECT typ_code_kt FROM arbeitszonen )
+        ng.typ_code_kt in ( 120, 121, 122, 130, 131, 132, 133, 134 )
     -- Füge nachfolgende Bedingung noch dazu, um mit dieser CTE die Anzahl der
     -- relevanten Grundstücke im DBeaver zu prüfen
     -- AND
-    -- ST_Area(ST_Intersection(mg.geometrie, ng.geometrie)) >= (SELECT * FROM minimumoverlap)
+    -- ST_Area(ST_Intersection(mg.geometrie, ng.geometrie)) >= 1.0
 ),
 nutzungsplanungs_dokumente AS (
     SELECT
@@ -284,8 +259,12 @@ grundstuecke_mit_bewertung AS (
     ON
         ST_Intersects(mg.geometrie, ng.geometrie)
     WHERE
-        ng.typ_code_kt in ( SELECT typ_code_kt FROM arbeitszonen ) AND
-        ST_Area(ST_Intersection(mg.geometrie, ng.geometrie)) >= ( SELECT * FROM minimumoverlap )
+        ng.typ_code_kt in ( 120, 121, 122, 130, 131, 132, 133, 134 )
+    AND
+        -- Definiere eine Minimalfläche wie gross die Überlappung eines Grundstücks
+        -- mit einer Arbeitszone ist. Dies dient dazu, dass Grundstücke bzw. Arbeitszonen
+        -- mit geometrischen Ungenauigkeiten fälschlicherweise berücksichtigt werden.
+        ST_Area(ST_Intersection(mg.geometrie, ng.geometrie)) >= 1.0
     GROUP BY
         mg.geometrie,
         bewertung_bebaut,
@@ -361,9 +340,12 @@ grundstuecke_mit_bewertung AS (
     ON
         ST_Intersects(mg.geometrie, ng.geometrie)
     WHERE
-        ng.typ_code_kt in ( SELECT typ_code_kt FROM arbeitszonen )
+        ng.typ_code_kt in ( 120, 121, 122, 130, 131, 132, 133, 134 )
     AND
-        ST_Area(ST_Intersection(mg.geometrie, ng.geometrie)) >= (SELECT * FROM minimumoverlap)
+        -- Definiere eine Minimalfläche wie gross die Überlappung eines Grundstücks
+        -- mit einer Arbeitszone ist. Dies dient dazu, dass Grundstücke bzw. Arbeitszonen
+        -- mit geometrischen Ungenauigkeiten fälschlicherweise berücksichtigt werden.
+        ST_Area(ST_Intersection(mg.geometrie, ng.geometrie)) >= 1.0
     AND
         mg.t_id NOT IN
         (
