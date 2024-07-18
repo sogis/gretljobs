@@ -15,6 +15,7 @@ task datatransfer(type: Db2Db){
     ];
 }
 
+/**
 task datenumbau(type: Db2Db) {
     dependsOn datatransfer
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
@@ -23,3 +24,4 @@ task datenumbau(type: Db2Db) {
         new TransferSet('select_arbeitszonenbewirtschaftung.sql', 'arp_arbeitszonenbewirtschaftung_pub_v1.arbtsznnng_nvntar_arbeitszonenbewirtschaftung_inventar', true)
     ];
 }
+**/
