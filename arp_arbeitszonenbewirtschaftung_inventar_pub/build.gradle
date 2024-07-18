@@ -1,0 +1,25 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'datenumbau'
+
+task datatransfer(type: Db2Db){
+    description "Übertrage die erfassten Daten aus der Edit-DB in die Pub-DB"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+        new TransferSet('select_bewertung.sql', 'arp_arbeitszonenbewirtschaftung_staging_v1.bewertung_bewertung', true),
+        new TransferSet('select_region.sql', 'arp_arbeitszonenbewirtschaftung_staging_v1.regionen_region', true),
+    ];
+}
+
+task datenumbau(type: Db2Db) {
+    dependsOn datatransfer
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+        new TransferSet('select_arbeitszonenbewirtschaftung.sql', 'arp_arbeitszonenbewirtschaftung_pub_v1.arbtsznnng_nvntar_arbeitszonenbewirtschaftung_inventar', true)
+    ];
+}
