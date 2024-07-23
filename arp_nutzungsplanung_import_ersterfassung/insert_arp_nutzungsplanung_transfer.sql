@@ -1385,3 +1385,53 @@ WHERE
     typ.typ_kt= 'N686_keine_Empfindlichkeitsstufe'
 ;
 
+/*
+ * Beziehung Dokument Empfindlichkeitsstufen. Auflösung Verknüpfung Dokument zu Dokument
+ * Es werden von der Zwischentabelle nur diejenigen Verknüpfungen kopiert,
+ * deren Typ tatsächlich auch im Zielschema bei den Typen vorhanden ist.
+ * Das hilft zwar bei Typen, die zum Kantons-Basket gehören würden und
+ * so nicht fälschlicherweise der Gemeinde zugewiesen werden. Es führt
+ * aber dazu, dass eventuell Dokumente kopiert wurden, die dann mit nix
+ * verküpft sind.
+ *
+ */
+
+INSERT INTO 
+    arp_nutzungsplanung_transfer_v1.laermmpfhktsstfen_typ_empfindlichkeitsstufe_dokument
+(
+    t_id,
+    t_basket,
+    t_datasetname,
+    typ_empfindlichkeitsstufen,
+    dokument
+)
+
+SELECT
+    ueberlagernd_flaeche_dokument.t_id,
+--  Neuer Basket für Lärmempfindlichkeitsstufen Basket
+    (
+        SELECT
+            t_id
+        FROM
+            arp_nutzungsplanung_transfer_v1.t_ili2db_basket
+        WHERE  
+            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Laermempfindlichkeitsstufen'
+    ) AS t_basket,
+    ueberlagernd_flaeche_dokument.t_datasetname,
+    ueberlagernd_flaeche_dokument.typ_ueberlagernd_flaeche,
+    ueberlagernd_flaeche_dokument.dokument
+
+FROM
+    arp_nutzungsplanung_import_v1.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS ueberlagernd_flaeche_dokument
+    LEFT JOIN arp_nutzungsplanung_import_v1.nutzungsplanung_typ_ueberlagernd_flaeche AS typ
+    ON typ.t_id = ueberlagernd_flaeche_dokument.typ_ueberlagernd_flaeche
+WHERE 
+    typ_ueberlagernd_flaeche IN 
+    (
+        SELECT  
+            t_id 
+        FROM 
+            arp_nutzungsplanung_transfer_v1.laermmpfhktsstfen_typ_empfindlichkeitsstufe
+    )
+;    
+
