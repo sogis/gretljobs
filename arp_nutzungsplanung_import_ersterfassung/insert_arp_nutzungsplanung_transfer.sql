@@ -1337,3 +1337,51 @@ WHERE
     OR
     typ_kt= 'N686_keine_Empfindlichkeitsstufe'
 ;
+
+INSERT INTO arp_nutzungsplanung_transfer_v1.laermmpfhktsstfen_empfindlichkeitsstufe
+SELECT
+    ueberlagernd_flaeche.t_id,
+--  Neuer Basket für Lärmempfindlichkeitsstufen Basket
+    (
+        SELECT
+            t_id
+        FROM
+            arp_nutzungsplanung_transfer_v1.t_ili2db_basket
+        WHERE  
+            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Laermempfindlichkeitsstufen'
+    ) AS t_basket,
+    ueberlagernd_flaeche.t_datasetname,
+    ueberlagernd_flaeche.t_ili_tid,
+    ueberlagernd_flaeche.geometrie,
+    ueberlagernd_flaeche.name_nummer AS geschaefts_nummer,
+    CASE ueberlagernd_flaeche.rechtsstatus
+        WHEN 'laufendeAenderung'
+            THEN 'AenderungMitVorwirkung'
+        ELSE 'inKraft'
+    END AS rechtsstatus,
+    ueberlagernd_flaeche.publiziertab,
+    ueberlagernd_flaeche.bemerkungen,
+    ueberlagernd_flaeche.erfasser,
+    ueberlagernd_flaeche.datum,
+    NULL AS publiziertbis,
+    ueberlagernd_flaeche.typ_ueberlagernd_flaeche AS typ_empfindlichkeitsstufen
+FROM
+    arp_nutzungsplanung_import_v1.nutzungsplanung_ueberlagernd_flaeche AS ueberlagernd_flaeche
+    LEFT JOIN arp_nutzungsplanung_import_v1.nutzungsplanung_typ_ueberlagernd_flaeche AS typ
+    ON typ.t_id = ueberlagernd_flaeche.typ_ueberlagernd_flaeche
+WHERE
+    typ.typ_kt= 'N680_Empfindlichkeitsstufe_I'
+    OR
+    typ.typ_kt= 'N681_Empfindlichkeitsstufe_II'
+    OR
+    typ.typ_kt= 'N682_Empfindlichkeitsstufe_II_aufgestuft'
+    OR
+    typ.typ_kt= 'N683_Empfindlichkeitsstufe_III'
+    OR
+    typ.typ_kt= 'N684_Empfindlichkeitsstufe_III_aufgestuft'
+    OR
+    typ.typ_kt= 'N685_Empfindlichkeitsstufe_IV'
+    OR
+    typ.typ_kt= 'N686_keine_Empfindlichkeitsstufe'
+;
+
