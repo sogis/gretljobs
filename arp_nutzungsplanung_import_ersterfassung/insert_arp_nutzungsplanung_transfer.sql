@@ -1299,3 +1299,41 @@ INSERT INTO
         AND
         typ_erschliessung_punktobjekt_dokument.typ_erschliessung_punktobjekt IS NOT NULL
 ;
+
+- Lärmempfindlichkeitsstufen
+INSERT INTO arp_nutzungsplanung_transfer_v1.laermmpfhktsstfen_typ_empfindlichkeitsstufe
+SELECT
+    t_id,
+--  Neuer Basket für Lärmempfindlichkeitsstufen Basket
+    (
+        SELECT
+            t_id
+        FROM
+            arp_nutzungsplanung_transfer_v1.t_ili2db_basket
+        WHERE  
+            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Laermempfindlichkeitsstufen'
+    ) AS t_basket,
+    t_datasetname,
+    t_ili_tid,
+    typ_kt,
+    bezeichnung,
+    abkuerzung,
+    verbindlichkeit,
+    bemerkungen
+FROM
+    arp_nutzungsplanung_import_v1.nutzungsplanung_typ_ueberlagernd_flaeche
+WHERE
+    typ_kt= 'N680_Empfindlichkeitsstufe_I'
+    OR
+    typ_kt= 'N681_Empfindlichkeitsstufe_II'
+    OR
+    typ_kt= 'N682_Empfindlichkeitsstufe_II_aufgestuft'
+    OR
+    typ_kt= 'N683_Empfindlichkeitsstufe_III'
+    OR
+    typ_kt= 'N684_Empfindlichkeitsstufe_III_aufgestuft'
+    OR
+    typ_kt= 'N685_Empfindlichkeitsstufe_IV'
+    OR
+    typ_kt= 'N686_keine_Empfindlichkeitsstufe'
+;
