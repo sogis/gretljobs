@@ -1300,7 +1300,7 @@ INSERT INTO
         typ_erschliessung_punktobjekt_dokument.typ_erschliessung_punktobjekt IS NOT NULL
 ;
 
-- Lärmempfindlichkeitsstufen
+-- Lärmempfindlichkeitsstufen
 INSERT INTO arp_nutzungsplanung_transfer_v1.laermmpfhktsstfen_typ_empfindlichkeitsstufe
 SELECT
     t_id,
