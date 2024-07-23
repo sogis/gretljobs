@@ -1519,3 +1519,52 @@ INSERT INTO
         AND
         typ_empfindlichkeitsstufe_dokument.typ_empfindlichkeitsstufen IS NOT NULL
 ;
+
+-- Update Geometrie MakeValid
+UPDATE
+    arp_nutzungsplanung_transfer_v1.nutzungsplanung_grundnutzung
+SET
+    geometrie = ST_MakeValid(geometrie)
+WHERE
+    ST_IsValid(geometrie) = False
+;
+
+UPDATE
+    arp_nutzungsplanung_transfer_v1.nutzungsplanung_ueberlagernd_linie
+SET
+    geometrie = ST_MakeValid(geometrie)
+WHERE
+    ST_IsValid(geometrie) = False
+;
+
+UPDATE
+    arp_nutzungsplanung_transfer_v1.nutzungsplanung_ueberlagernd_flaeche
+SET
+    geometrie = ST_MakeValid(geometrie)
+WHERE
+    ST_IsValid(geometrie) = False
+;
+
+UPDATE
+    arp_nutzungsplanung_transfer_v1.erschlssngsplnung_erschliessung_flaechenobjekt
+SET
+    geometrie = ST_MakeValid(geometrie)
+WHERE
+    ST_IsValid(geometrie) = False
+;
+
+UPDATE
+    arp_nutzungsplanung_transfer_v1.erschlssngsplnung_erschliessung_linienobjekt
+SET
+    geometrie = ST_MakeValid(geometrie)
+WHERE
+    ST_IsValid(geometrie) = False
+;
+
+UPDATE
+    arp_nutzungsplanung_transfer_v1.erschlssngsplnung_erschliessung_linienobjekt
+SET
+    geometrie = ST_MakeValid(geometrie)
+WHERE
+    ST_IsValid(geometrie) = False
+;
