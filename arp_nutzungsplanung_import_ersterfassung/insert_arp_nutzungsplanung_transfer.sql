@@ -1435,3 +1435,87 @@ WHERE
     )
 ;    
 
+WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS 
+(
+    SELECT 
+        ursprung, 
+        hinweis, 
+        ARRAY[ursprung] AS parents, 
+        ursprung AS last_ursprung, 
+        0 AS "depth" 
+    FROM 
+        arp_nutzungsplanung_import_v1.rechtsvorschrften_hinweisweiteredokumente
+    WHERE
+        ursprung != hinweis
+    -- Hier könnte zusätzlich nach Basket gefilter werden.
+    -- Dann müssen aber die bereits kopierten Dokumente
+    -- korrekt zugewiesen sein, was momentan nicht ist.
+
+    UNION ALL
+
+    SELECT 
+        x.ursprung, 
+        x.hinweis, 
+        parents||t1.hinweis, 
+        t1.hinweis AS last_ursprung, 
+        x."depth" + 1
+    FROM 
+        x 
+        INNER JOIN arp_nutzungsplanung_import_v1.rechtsvorschrften_hinweisweiteredokumente t1 
+        ON (last_ursprung = t1.ursprung)
+    WHERE 
+        t1.hinweis IS NOT NULL
+    -- Dito. Siehe oben.
+)
+,
+zusaetzliche_dokumente AS 
+(
+    SELECT 
+        DISTINCT ON (x.last_ursprung, x.ursprung)
+        x.ursprung AS top_level_dokument,
+        x.last_ursprung AS t_id
+    FROM 
+        x
+)
+INSERT INTO 
+    arp_nutzungsplanung_transfer_v1.laermmpfhktsstfen_typ_empfindlichkeitsstufe_dokument
+    (
+        t_basket,
+        t_datasetname,
+        typ_empfindlichkeitsstufen,
+        dokument 
+    )
+    SELECT 
+        DISTINCT 
+       --  Neuer Basket für Lärmempfindlichkeitsstufen Basket
+       (
+        SELECT
+            t_id
+        FROM
+            arp_nutzungsplanung_transfer_v1.t_ili2db_basket
+        WHERE  
+            topic ='SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.Laermempfindlichkeitsstufen'
+        ) AS t_basket,
+        typ_empfindlichkeitsstufe_dokument.t_datasetname,
+        typ_empfindlichkeitsstufe_dokument.typ_empfindlichkeitsstufen,
+        zusaetzliche_dokumente.t_id AS vorschrift_vorschriften_dokument
+    FROM 
+        zusaetzliche_dokumente
+        LEFT JOIN arp_nutzungsplanung_transfer_v1.laermmpfhktsstfen_typ_empfindlichkeitsstufe_dokument AS typ_empfindlichkeitsstufe_dokument
+        ON typ_empfindlichkeitsstufe_dokument.dokument = zusaetzliche_dokumente.top_level_dokument
+    WHERE
+        NOT EXISTS 
+        (
+            SELECT 
+                typ_empfindlichkeitsstufen,
+                dokument
+            FROM 
+                arp_nutzungsplanung_transfer_v1.laermmpfhktsstfen_typ_empfindlichkeitsstufe_dokument
+            WHERE 
+                typ_empfindlichkeitsstufen = laermmpfhktsstfen_typ_empfindlichkeitsstufe_dokument.typ_empfindlichkeitsstufen
+                AND
+                dokument = zusaetzliche_dokumente.t_id
+        )
+        AND
+        typ_empfindlichkeitsstufe_dokument.typ_empfindlichkeitsstufen IS NOT NULL
+;
