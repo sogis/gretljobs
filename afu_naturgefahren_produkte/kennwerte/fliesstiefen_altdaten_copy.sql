@@ -20,21 +20,25 @@ INSERT INTO afu_naturgefahren_staging_v1.fliesstiefen (
 SELECT 
     basket.t_id AS t_basket,
     CASE 
-    	WHEN tiefe.wkp = 'von_0_bis_30_Jahre' 
+        WHEN tiefe.wkp = 'von_0_bis_30_Jahre' 
         THEN '30'
-    	WHEN tiefe.wkp = 'von_30_bis_100_Jahre' 
+        WHEN tiefe.wkp = 'von_30_bis_100_Jahre' 
         THEN '100'
-    	WHEN tiefe.wkp = 'von_100_bis_300_Jahre'
+        WHEN tiefe.wkp = 'von_100_bis_300_Jahre'
         THEN '300'
     END AS jaehrlichkeit,  
     tiefe.ueberfl_hb AS ueberschwemmung_tiefe, 
-    null AS prozessquelle_neudaten, 
+    prozessquelle.bez_prozq AS prozessquelle_neudaten, 
     ST_Multi(tiefe.geometrie) AS geometrie, 
     'Altdaten' AS datenherkunft,
     null AS auftrag_neudaten
 FROM 
     basket,
     afu_gefahrenkartierung.gefahrenkartirung_ueberflutungskarte tiefe
+left join afu_gefahrenkartierung.gefahrenkartirung_prozessquelle_wasser prozessquelle 
+    ON  tiefe.prozessq = prozessquelle.id
+        AND 
+        tiefe.ngkid = prozessquelle.ngkid 
 WHERE 
     ueberfl_hb != 'keine_Ueberflutung'
 ;
