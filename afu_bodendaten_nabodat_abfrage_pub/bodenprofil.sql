@@ -120,7 +120,7 @@ ausgangsmaterial AS (
 wald AS (
     SELECT
         wald.t_id, -- Für Join mit punktdaten_standort
-        wald.waldproduktionspunkte AS produktionsfahigkeit_punkte,
+        wald.waldproduktionspunkte AS produktionsfaehigkeit_punkte,
         produktionsfaehigkeitwald.codeid AS produktionsfaehigkeitsstufe,
         produktionsfaehigkeitwald.codetext_de AS produktionsfaehigkeitsstufe_text,
         humusform.codeid AS humusform,
@@ -468,7 +468,7 @@ SELECT
     ausgangsmaterial.eiszeit_unterboden_text,
     wald.produktionsfaehigkeitsstufe,
     wald.produktionsfaehigkeitsstufe_text,
-    wald.produktionsfahigkeit_punkte,
+    wald.produktionsfaehigkeit_punkte,
     wald.humusform,
     wald.humusform_text,
     melioration_empfohlen.melioration_empfohlen,
