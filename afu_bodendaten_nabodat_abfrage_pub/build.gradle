@@ -9,8 +9,8 @@ task dataTransfer(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('bodenprofil.sql', 'afu_bodendaten_nabodat_abfrage_pub_v1.bodenprofil', true),
-            new TransferSet('horizontdaten.sql', 'afu_bodendaten_nabodat_abfrage_pub_v1.horizont', true)
+            new TransferSet('bodenprofil.sql', 'afu_bodendaten_nabodat_abfrage_pub_v1.bodenprofilbfrage_bodenprofil', true),
+            new TransferSet('horizontdaten.sql', 'afu_bodendaten_nabodat_abfrage_pub_v1.bodenprofilbfrage_horizont', true)
     ]
 }
 
