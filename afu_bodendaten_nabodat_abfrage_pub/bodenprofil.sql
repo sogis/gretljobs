@@ -27,14 +27,8 @@ standort AS (
         ON standort.t_id = projektstandort.standort
     LEFT JOIN afu_bodendaten_nabodat_v1.punktdaten_projekt AS projekt
         ON projektstandort.projekt = projekt.t_id
-    LEFT JOIN afu_bodendaten_nabodat_v1.punktdaten_erhebung AS erhebung
-        ON standort.t_id = erhebung.standort
-    LEFT JOIN afu_bodendaten_nabodat_v1.codlstnpktstndort_erhebungsart AS erhebungsart
-        ON erhebung.erhebungsart = erhebungsart.t_id
     WHERE
         projekt.aname = 'Bodenkartierung Kt. SO'
-    AND 
-        erhebungsart.codeid != 'PN'
 ),
 
 standorteigenschaften AS (
