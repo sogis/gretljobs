@@ -9,7 +9,7 @@ pubschema AS (
 )
 
 UPDATE 
-    afu_bodendaten_nabodat_abfrage_pub_v1.bodenprofil AS abfrageschema
+    afu_bodendaten_nabodat_abfrage_pub_v1.bodenprofilbfrage_bodenprofil AS abfrageschema
 SET 
     profilblatt = pubschema.profilblatt
 FROM 
