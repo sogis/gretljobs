@@ -1,5 +1,5 @@
 UPDATE 
-    afu_bodendaten_nabodat_abfrage_pub_v1.bodenprofilbfrage_horizont AS horizont 
+    afu_bodendaten_nabodat_abfrage_pub_v1.horizont AS horizont 
 SET 
     bfs_nummer_erfassung = bodenprofil.bfs_nummer_erfassung,
     bfs_nummer = bodenprofil.bfs_nummer,
@@ -90,6 +90,6 @@ SET
     topografieskizze = bodenprofil.topografieskizze,
     profilblatt = bodenprofil.profilblatt
 FROM 
-    afu_bodendaten_nabodat_abfrage_pub_v1.bodenprofilbfrage_bodenprofil AS bodenprofil
+    afu_bodendaten_nabodat_abfrage_pub_v1.bodenprofil AS bodenprofil
 WHERE 
     horizont.profilnummer = bodenprofil.profilnummer
