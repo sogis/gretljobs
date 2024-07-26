@@ -30,7 +30,7 @@ INSERT INTO
         bodenbedeckung.bfs_nr,
         bodenbedeckung.geometrie,
         bodenbedeckung.egid,
-        string_agg(gebaeudename.objektname, ', ') AS gebaeudename,
+        string_agg(DISTINCT gebaeudename.objektname, ', ') AS gebaeudename,
         COALESCE(json_agg(json_build_object(
             '@type', 'SO_AGI_Gebaeudeflaechen_Publikation_20240705.Gebaeude.Gebaeudeeingang',
             'Strassenname', adresse.strassenname, 
