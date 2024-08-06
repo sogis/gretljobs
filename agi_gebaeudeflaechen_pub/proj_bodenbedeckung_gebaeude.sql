@@ -3,8 +3,8 @@ SELECT
     objektname.objektname,
     bodenbedeckung.t_id
 FROM agi_mopublic_pub.mopublic_objektname_pos AS objektname
-    JOIN agi_mopublic_pub.mopublic_bodenbedeckung AS bodenbedeckung
-    ON ST_CONTAINS(bodenbedeckung.geometrie , objektname.pos)
+    JOIN agi_mopublic_pub.mopublic_bodenbedeckung_proj AS bodenbedeckung
+        ON ST_CONTAINS(bodenbedeckung.geometrie , objektname.pos)
 WHERE objektname.art_txt = 'Gebaeude' AND objektname.herkunft = 'BB'
 )
 
@@ -36,8 +36,7 @@ SELECT
         ELSE 'https://www.housing-stat.ch/'
     END AS link_gwr
 FROM agi_mopublic_pub.mopublic_gebaeudeadresse adresse
-    JOIN agi_mopublic_pub.mopublic_bodenbedeckung AS bodenbedeckung
-    ON ST_CONTAINS(bodenbedeckung.geometrie , adresse.lage)
-    LEFT JOIN gebaeudename AS gebaeudename 
-    ON gebaeudename.t_id = bodenbedeckung.t_id 
+    JOIN agi_mopublic_pub.mopublic_bodenbedeckung_proj AS bodenbedeckung
+        ON ST_CONTAINS(bodenbedeckung.geometrie , adresse.lage)
+    LEFT JOIN gebaeudename AS gebaeudename ON gebaeudename.t_id = bodenbedeckung.t_id 
 WHERE bodenbedeckung.art_txt = 'Gebaeude'
