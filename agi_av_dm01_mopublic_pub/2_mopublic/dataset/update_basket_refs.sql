@@ -131,7 +131,27 @@ WHERE
 ;
 
 UPDATE 
+    mopublic_grundstueck_linie t
+SET 
+    t_basket = b.t_id
+FROM 
+    t_ili2db_basket b
+WHERE 
+    t.bfs_nr = b.t_ili_tid::int
+;
+
+UPDATE 
     mopublic_grundstueck_proj t
+SET 
+    t_basket = b.t_id
+FROM 
+    t_ili2db_basket b
+WHERE 
+    t.bfs_nr = b.t_ili_tid::int
+;
+
+UPDATE 
+    mopublic_grundstueck_proj_linie t
 SET 
     t_basket = b.t_id
 FROM 
