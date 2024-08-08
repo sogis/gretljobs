@@ -151,3 +151,28 @@ SELECT
 FROM 
     arp_nutzungsplanung_pub_v1.nutzungsplanung_erschliessung_punktobjekt   
 ;
+
+INSERT INTO 
+    dsbjd_ebauso_rahmenmodell_stage_v1.fachthemen_fachthema_polygon
+    (
+        geometrie,
+        artcode,
+        beschreibung,
+        thema,
+        rechtsstatus,
+        rechtsstatus_txt
+    )    
+SELECT 
+    ST_Multi(geometrie),
+    typ_kt AS artcode,
+    typ_bezeichnung AS beschreibung,
+    'ch.SO.NutzungsplanungErschliessung' AS thema,
+    rechtsstatus,
+    CASE 
+        WHEN rechtsstatus = 'inKraft' THEN 'in Kraft'
+        WHEN rechtsstatus = 'AenderungMitVorwirkung' THEN 'Änderung mit Vorwirkung'
+        WHEN rechtsstatus = 'AenderungOhneVorwirkung' THEN 'Änderung ohne Vorwirkung'
+    END AS rechtsstatus_txt
+FROM 
+    arp_nutzungsplanung_pub_v1.nutzungsplanung_erschliessung_flaechenobjekt   
+;
