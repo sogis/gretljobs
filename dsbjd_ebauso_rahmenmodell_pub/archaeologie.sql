@@ -12,7 +12,7 @@ SELECT
     amultipolygon AS geometrie,
     fundstellen_nummer AS artcode,
     fundstellen_art AS beschreibung,
-    'ch.SO.archaeologie' AS thema,
+    'ch.SO.Archaeologie' AS thema,
     NULL::TEXT AS rechtsstatus,
     NULL::TEXT AS rechtsstatus_txt
 FROM 
@@ -33,7 +33,7 @@ SELECT
     ST_Multi(punkt) AS geometrie,
     fundstellen_nummer AS artcode,
     fundstellen_art AS beschreibung,
-    'ch.SO.archaeologie' AS thema,
+    'ch.SO.Archaeologie' AS thema,
     NULL::TEXT AS rechtsstatus,
     NULL::TEXT AS rechtsstatus_txt
 FROM 

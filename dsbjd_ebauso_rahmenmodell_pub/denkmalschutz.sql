@@ -12,7 +12,7 @@ SELECT
     mpoly AS geometrie,
     schutzstufe_code AS artcode,
     objektname AS beschreibung,
-    'ch.SO.denkmalschutz' AS thema,
+    'ch.SO.Denkmalschutz' AS thema,
     NULL::TEXT AS rechtsstatus,
     NULL::TEXT AS rechtsstatus_txt
 FROM 
@@ -33,7 +33,7 @@ SELECT
     mpunkt AS geometrie,
     schutzstufe_code AS artcode,
     objektname AS beschreibung,
-    'ch.SO.denkmalschutz' AS thema,
+    'ch.SO.Denkmalschutz' AS thema,
     NULL::TEXT AS rechtsstatus,
     NULL::TEXT AS rechtsstatus_txt
 FROM 

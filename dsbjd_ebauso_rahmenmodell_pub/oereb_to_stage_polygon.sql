@@ -2,7 +2,7 @@ SELECT
     ST_Multi(g.flaeche) AS geometrie,
     l.artcode,
     l.legendetext_de AS beschreibung,
-    'ch.BelasteteStandorte' AS thema,
+    l.thema,
     e.rechtsstatus,
     CASE 
         WHEN e.rechtsstatus = 'inKraft' THEN 'in Kraft'

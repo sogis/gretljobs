@@ -12,7 +12,7 @@ SELECT
     geometrie,
     gefahrenstufe_txt AS artcode,
     charakterisierung AS beschreibung,
-    'ch.SO.naturgefahren' AS thema,
+    'ch.SO.GefahrengebietSynoptisch' AS thema,
     NULL::TEXT AS rechtsstatus,
     NULL::TEXT AS rechtsstatus_txt
 FROM 

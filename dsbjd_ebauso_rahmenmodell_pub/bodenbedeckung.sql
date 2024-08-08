@@ -12,7 +12,7 @@ SELECT
     ST_Multi(geometrie),
     art_txt AS artcode,
     art_txt AS beschreibung,
-    'ch.SO.bodenbedeckung' AS thema,
+    'ch.SO.Bodenbedeckung' AS thema,
     NULL::TEXT AS rechtsstatus,
     NULL::TEXT AS rechtsstatus_txt    
 FROM    

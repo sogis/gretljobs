@@ -12,7 +12,7 @@ SELECT
     ST_Multi(geometrie) AS geometrie,
     bezeichnung AS artcode, 
     NULL::TEXT AS beschreibung,
-    'ch.SO.fruchtfolgeflaechen',
+    'ch.SO.Fruchtfolgeflaechen',
     NULL::TEXT AS rechtsstatus,
     NULL::TEXT AS rechtsstatus_txt
 FROM 
