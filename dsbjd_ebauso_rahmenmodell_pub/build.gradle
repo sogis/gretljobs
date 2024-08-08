@@ -1,7 +1,7 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'transferNonOerebToStage'
+defaultTasks 'transferStageToProd'
 
 // Das Löschen der Daten passiert in der jeweiligen SQL-Datei.
 tasks.register('transferLokalisation', SqlExecutor) {
@@ -19,25 +19,30 @@ tasks.register('deleteStageFachthemen', SqlExecutor) {
     sqlFiles = ['delete_stage_fachthemen.sql']
 }
 
-/*
 tasks.register('transferOerebToStagePolygon', Db2Db) {
-    dependsOn 'transferLokalisation'
+    dependsOn 'deleteStageFachthemen'
     sourceDb = [dbUriOereb, dbUserOereb, dbPwdOereb]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('oereb_to_stage_polygon.sql', 'dsbjd_ebauso_rahmenmodell_stage_v1.fachthemen_fachthema_polygon', true)
+            new TransferSet('oereb_to_stage_polygon.sql', 'dsbjd_ebauso_rahmenmodell_stage_v1.fachthemen_fachthema_polygon', false)
     ];
 }
-
-tasks.register('transferOerebToProd', SqlExecutor) {
-    dependsOn 'transferOerebToStagePolygon' //, '', ''
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlFiles = ['oereb_to_prod_polygon.sql'] //, 'lokalisation_gebaeudeeingang.sql']
-}
-*/
 
 tasks.register('transferNonOerebToStage', SqlExecutor) {
     dependsOn 'deleteStageFachthemen'
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlFiles = ['denkmalschutz.sql', 'archaeologie.sql', 'fruchtfolgeflaechen.sql', 'naturgefahren.sql', 'bodenbedeckung.sql'] 
+    sqlFiles = [
+        'denkmalschutz.sql', 
+        'archaeologie.sql', 
+        'fruchtfolgeflaechen.sql', 
+        'naturgefahren.sql', 
+        'bodenbedeckung.sql',
+        'nutzungsplanung.sql',
+        'richtplan_juraschutzzone.sql'] 
+}
+
+tasks.register('transferStageToProd', SqlExecutor) {
+    dependsOn 'transferNonOerebToStage', 'transferOerebToStagePolygon'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['transfer_stage_to_prod.sql']
 }
