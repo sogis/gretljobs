@@ -106,7 +106,7 @@ INSERT INTO
         'projektiert' AS astatus
     FROM 
         agi_mopublic_pub.mopublic_bodenbedeckung AS bodenbedeckung
-        LEFT JOIN agi_mopublic_pub.mopublic_gebaeudeadresse AS adresse 
+        LEFT JOIN agi_mopublic_pub.mopublic_bodenbedeckung_proj AS adresse 
         ON ST_Contains(bodenbedeckung.geometrie, adresse.lage)
         LEFT JOIN gebaeudename
         ON gebaeudename.t_id = bodenbedeckung.t_id
