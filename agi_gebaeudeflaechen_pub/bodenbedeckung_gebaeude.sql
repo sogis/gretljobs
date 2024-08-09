@@ -49,11 +49,11 @@ INSERT INTO
         END AS link_gwr,
         'real' AS astatus
     FROM 
-        agi_mopublic_pub.mopublic_gebaeudeadresse AS adresse
-        JOIN agi_mopublic_pub.mopublic_bodenbedeckung AS bodenbedeckung
+        agi_mopublic_pub.mopublic_bodenbedeckung AS bodenbedeckung
+        LEFT JOIN agi_mopublic_pub.mopublic_gebaeudeadresse AS adresse 
         ON ST_Contains(bodenbedeckung.geometrie, adresse.lage)
-        LEFT JOIN gebaeudename AS gebaeudename 
-        ON gebaeudename.t_id = bodenbedeckung.t_id 
+        LEFT JOIN gebaeudename
+        ON gebaeudename.t_id = bodenbedeckung.t_id
     WHERE 
         bodenbedeckung.art_txt = 'Gebaeude'
     GROUP BY 
@@ -105,11 +105,11 @@ INSERT INTO
         END AS link_gwr,
         'projektiert' AS astatus
     FROM 
-        agi_mopublic_pub.mopublic_gebaeudeadresse AS adresse
-        JOIN agi_mopublic_pub.mopublic_bodenbedeckung_proj AS bodenbedeckung
+        agi_mopublic_pub.mopublic_bodenbedeckung AS bodenbedeckung
+        LEFT JOIN agi_mopublic_pub.mopublic_gebaeudeadresse AS adresse 
         ON ST_Contains(bodenbedeckung.geometrie, adresse.lage)
-        LEFT JOIN gebaeudename AS gebaeudename 
-        ON gebaeudename.t_id = bodenbedeckung.t_id 
+        LEFT JOIN gebaeudename
+        ON gebaeudename.t_id = bodenbedeckung.t_id
     WHERE 
         bodenbedeckung.art_txt = 'Gebaeude'
     GROUP BY 
