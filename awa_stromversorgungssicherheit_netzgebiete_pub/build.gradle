@@ -28,7 +28,7 @@ task publipub(type: Publisher, dependsOn:'transferNetzgebiete'){
   userFormats = true
   database = [dbUriPub,dbUserPub,dbPwdPub]
   dbSchema = "awa_stromversorgungssicherheit_pub_v1"
-  modelsToPublish = "SO_AWA_Stromversorgungssicherheit_Publikation_20210629"
+  modelsToPublish = "SO_AWA_Stromversorgungssicherheit_Publikation_20240812"
 
   target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
