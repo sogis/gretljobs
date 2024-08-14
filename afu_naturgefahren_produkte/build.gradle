@@ -452,7 +452,7 @@ task erhebungsgebiet(type: SqlExecutor, dependsOn: abklaerungsperimeter) {
 
 task copy_alte_dokumente(type: Db2Db, dependsOn: erhebungsgebiet) {
     description = "Kopiert die alten Dokumente von der Pub-DB in die Edit-DB"
-    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     transferSets = [
             new TransferSet('vorbereitung/alte_dokumente_copy.sql','afu_naturgefahren_alte_dokumente_v1.alte_dokumente', true)
