@@ -5,7 +5,15 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'datenumbau'
 
+task validate(type: Ili2pgValidate) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = "SO_ARP_Arbeitszonenbewirtschaftung_20240517"
+    dbschema = "arp_arbeitszonenbewirtschaftung_v1"
+    failOnException = false
+}
+
 task datatransfer(type: Db2Db){
+    dependsOn validate
     description "Übertrage die erfassten Daten aus der Edit-DB in die Pub-DB"
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
