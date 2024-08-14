@@ -45,12 +45,11 @@ task copy_alle_natgef_produkte(type: Db2Db) {
     ];
 }
 
-/*
 task publishPub(type: Publisher, dependsOn: 'copy_alle_natgef_produkte'){
     database = [dbUriPub,dbUserPub,dbPwdPub]
-    dataIdent = "ch.so.afu.gefahrenkartierung" // MUSS NOCH ANGEPASST WERDEN!!!!! 
+    dataIdent = "ch.so.afu.naturgefahren" 
     dbSchema = "afu_naturgefahren_pub_v1"
-    modelsToPublish = "SO_AFU_Naturgefahren_Kernmodell_20231016"
+    modelsToPublish = "SO_AFU_Naturgefahren_Publikation_20240704"
     userFormats = true
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
@@ -58,11 +57,8 @@ task publishPub(type: Publisher, dependsOn: 'copy_alle_natgef_produkte'){
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
-*/
 
-//, dependsOn: publishPub
-
-task truncateMGDM(type: SqlExecutor, dependsOn: 'copy_alle_natgef_produkte'){
+task truncateMGDM(type: SqlExecutor, dependsOn: 'publishPub'){
     description = "Löscht die drei Tabellen im MGDM-Schema"
     database =  [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = [

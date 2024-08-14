@@ -43,7 +43,7 @@ orig_dataset AS (
         auftrag.kennung AS auftragskennung,
         auftrag.deklaration AS auftragsdeklaration,
         auftrag.abschlussjahr::text AS jahr,
-        string_agg(DISTINCT teilauftrag.hauptprozess, ', ') AS hauptprozess,
+        'obsolet' AS hauptprozess,
         bericht.bericht AS titel, 
         bericht.dateiname AS dateiname,
         'https://geo.so.ch/docs/ch.so.afu.naturgefahren/'||bericht.dateiname AS link
