@@ -454,6 +454,7 @@ SELECT
                     FROM
                         arp_nutzungsplanung_pub_v1.nutzungsplanung_ueberlagernd_flaeche
                     WHERE
+                        -- Sind das die richtigen Codes?
                         typ_code_kt IN (611, 620)
                 )
             )
