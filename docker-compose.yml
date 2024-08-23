@@ -19,53 +19,47 @@ services:
         source: ${TMP:-/tmp}
         target: /gretl-share
   edit-db:
-    image: bitnami/postgresql:14.8.0-debian-11-r74
+    image: postgis/postgis:16-3.4
     environment:
-      POSTGRESQL_DATABASE: edit
-      POSTGRESQL_USERNAME: ddluser
-      POSTGRESQL_PASSWORD: ddluser
-      POSTGRESQL_USERNAME_2: dmluser
-      POSTGRESQL_PASSWORD_2: dmluser
-      POSTGRESQL_POSTGRES_PASSWORD: secret
-      POSTGRESQL_INITSCRIPTS_USERNAME: postgres
-      POSTGRESQL_INITSCRIPTS_PASSWORD: secret
-      #POSTGRESQL_INITDB_ARGS: --locale=de_CH.UTF-8
+      POSTGRES_DB: edit
+      POSTGRES_PASSWORD: secret
+      POSTGRES_INITDB_ARGS: "-c include_dir=/opt/postgresql/conf.d/"
     ports:
       - "54321:5432"
     volumes:
       - type: bind
-        source: ./docker-compose/preinitdb.d
-        target: /docker-entrypoint-preinitdb.d
+        source: ./docker-compose/initdb.sh
+        target: /docker-entrypoint-initdb.d/initdb.sh
       - type: bind
-        source: ./docker-compose/initdb.d
-        target: /docker-entrypoint-initdb.d
+        source: ./docker-compose/initdb.sql
+        target: /docker-entrypoint-initdb.d/initdb.sql
+      - type: bind
+        source: ./docker-compose/postgresql-custom.conf
+        target: /opt/postgresql/conf.d/postgresql-custom.conf
       - type: volume
-        source: postgresql_data_edit
-        target: /bitnami/postgresql
+        source: pgdata_edit
+        target: /var/lib/postgresql/data
   pub-db:
-    image: bitnami/postgresql:14.8.0-debian-11-r74
+    image: postgis/postgis:16-3.4
     environment:
-      POSTGRESQL_DATABASE: pub
-      POSTGRESQL_USERNAME: ddluser
-      POSTGRESQL_PASSWORD: ddluser
-      POSTGRESQL_USERNAME_2: dmluser
-      POSTGRESQL_PASSWORD_2: dmluser
-      POSTGRESQL_POSTGRES_PASSWORD: secret
-      POSTGRESQL_INITSCRIPTS_USERNAME: postgres
-      POSTGRESQL_INITSCRIPTS_PASSWORD: secret
-      #POSTGRESQL_INITDB_ARGS: --locale=de_CH.UTF-8
+      POSTGRES_DB: pub
+      POSTGRES_PASSWORD: secret
+      POSTGRES_INITDB_ARGS: "-c include_dir=/opt/postgresql/conf.d/"
     ports:
       - "54322:5432"
     volumes:
       - type: bind
-        source: ./docker-compose/preinitdb.d
-        target: /docker-entrypoint-preinitdb.d
+        source: ./docker-compose/initdb.sh
+        target: /docker-entrypoint-initdb.d/initdb.sh
       - type: bind
-        source: ./docker-compose/initdb.d
-        target: /docker-entrypoint-initdb.d
+        source: ./docker-compose/initdb.sql
+        target: /docker-entrypoint-initdb.d/initdb.sql
+      - type: bind
+        source: ./docker-compose/postgresql-custom.conf
+        target: /opt/postgresql/conf.d/postgresql-custom.conf
       - type: volume
-        source: postgresql_data_pub
-        target: /bitnami/postgresql
+        source: pgdata_pub
+        target: /var/lib/postgresql/data
   processing-db:
     profiles: ["processing"]
     image: sogis/postgis:16-3.4-bookworm
@@ -76,9 +70,9 @@ services:
       - "54323:5432"
     volumes:
       - type: volume
-        source: postgresql_data_processing
+        source: pgdata_processing
         target: /var/lib/postgresql/data
 volumes:
-  postgresql_data_edit:
-  postgresql_data_pub:
-  postgresql_data_processing:
+  pgdata_edit:
+  pgdata_pub:
+  pgdata_processing:
