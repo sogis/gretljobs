@@ -34,6 +34,7 @@ SET
     eiszeit_unterboden_text = bodenprofil.eiszeit_unterboden_text,
     produktionsfaehigkeitsstufe = bodenprofil.produktionsfaehigkeitsstufe,
     produktionsfaehigkeitsstufe_text = bodenprofil.produktionsfaehigkeitsstufe_text,
+    produktionsfaehigkeit_punkte = bodenprofil.produktionsfaehigkeit_punkte,
     humusform = bodenprofil.humusform,
     humusform_text = bodenprofil.humusform_text,
     melioration_empfohlen = bodenprofil.melioration_empfohlen,
@@ -46,8 +47,8 @@ SET
     krumenzustand_text = bodenprofil.krumenzustand_text,
     duengereinsatz_fest = bodenprofil.duengereinsatz_fest,
     duengereinsatz_fest_text = bodenprofil.duengereinsatz_fest_text,
-    duengerrisiko_fluessig = bodenprofil.duengerrisiko_fluessig,
-    duengerrisiko_fluessig_text = bodenprofil.duengerrisiko_fluessig_text,
+    duengereinsatz_fluessig = bodenprofil.duengereinsatz_fluessig,
+    duengereinsatz_fluessig_text = bodenprofil.duengereinsatz_fluessig_text,
     limitierungen = bodenprofil.limitierungen,
     limitierungen_text = bodenprofil.limitierungen_text,
     probenehmer = bodenprofil.probenehmer,
@@ -86,7 +87,8 @@ SET
     eignungsklasse_text = bodenprofil.eignungsklasse_text,
     profilfoto = bodenprofil.profilfoto,
     profilskizze = bodenprofil.profilskizze,
-    topografieskizze = bodenprofil.topografieskizze
+    topografieskizze = bodenprofil.topografieskizze,
+    profilblatt = bodenprofil.profilblatt
 FROM 
     afu_bodendaten_nabodat_abfrage_pub_v1.bodenprofil AS bodenprofil
 WHERE 

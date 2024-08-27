@@ -8,6 +8,8 @@ SET kultur_id=(
         AND
         ST_Intersects(kf.geometrie,vbg.geometrie)
         AND
+        ST_Area(ST_Intersection(kf.geometrie,vbg.geometrie))>1
+        AND
         (ST_MaximumInscribedCircle(ST_Intersection(kf.geometrie,vbg.geometrie))).radius > 1
     )
 WHERE

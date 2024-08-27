@@ -105,6 +105,8 @@ SELECT
     'Altdaten' AS datenherkunft, 
     null AS auftrag_neudaten
 FROM 
-    hauptprozess_wasser_dump,
-    basket
+    hauptprozess_wasser_dump
+    ,basket
+WHERE 
+    st_geometrytype(geometrie) = 'ST_Polygon' 
 ;

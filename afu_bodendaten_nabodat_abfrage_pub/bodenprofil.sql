@@ -114,7 +114,7 @@ ausgangsmaterial AS (
 wald AS (
     SELECT
         wald.t_id, -- Für Join mit punktdaten_standort
-        wald.waldproduktionspunkte AS produktionsfahigkeit_punkte,
+        wald.waldproduktionspunkte AS produktionsfaehigkeit_punkte,
         produktionsfaehigkeitwald.codeid AS produktionsfaehigkeitsstufe,
         produktionsfaehigkeitwald.codetext_de AS produktionsfaehigkeitsstufe_text,
         humusform.codeid AS humusform,
@@ -175,8 +175,8 @@ standortbeurteilung AS (
         krumenzustand.codetext_de AS krumenzustand_text,
         einsatzduengerfest.codeid AS duengereinsatz_fest,
         einsatzduengerfest.codetext_de AS duengereinsatz_fest_text,
-        risikoduengerfluess.codeid AS duengerrisiko_fluessig,
-        risikoduengerfluess.codetext_de AS duengerrisiko_fluessig_text
+        risikoduengerfluess.codeid AS duengereinsatz_fluessig,
+        risikoduengerfluess.codetext_de AS duengereinsatz_fluessig_text
     FROM afu_bodendaten_nabodat_v1.punktdaten_standortbeurteilung AS standortbeurteilung
     -- Krumenzustand
     LEFT JOIN afu_bodendaten_nabodat_v1.codlstnpktstndort_krumenzustand AS krumenzustand
@@ -184,7 +184,7 @@ standortbeurteilung AS (
     -- Duengereinsatz flüssig
     LEFT JOIN afu_bodendaten_nabodat_v1.codlstnpktstndort_einsatzduengerfest AS einsatzduengerfest
         ON standortbeurteilung.einsatzduengerfest = einsatzduengerfest.t_id
-    -- Duengerrisiko flüssig
+    -- Duengereinsatz flüssig
     LEFT JOIN afu_bodendaten_nabodat_v1.codlstnpktstndort_risikoduengerfluess AS risikoduengerfluess
         ON standortbeurteilung.risikoduengerfluess = risikoduengerfluess.t_id
 ),
@@ -462,6 +462,7 @@ SELECT
     ausgangsmaterial.eiszeit_unterboden_text,
     wald.produktionsfaehigkeitsstufe,
     wald.produktionsfaehigkeitsstufe_text,
+    wald.produktionsfaehigkeit_punkte,
     wald.humusform,
     wald.humusform_text,
     melioration_empfohlen.melioration_empfohlen,
@@ -474,8 +475,8 @@ SELECT
     standortbeurteilung.krumenzustand_text,
     standortbeurteilung.duengereinsatz_fest,
     standortbeurteilung.duengereinsatz_fest_text,
-    standortbeurteilung.duengerrisiko_fluessig,
-    standortbeurteilung.duengerrisiko_fluessig_text,
+    standortbeurteilung.duengereinsatz_fluessig,
+    standortbeurteilung.duengereinsatz_fluessig_text,
     limitierungen.limitierungen,
     limitierungen.limitierungen_text,
     erhebungsdaten.probenehmer,

@@ -1,0 +1,48 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+defaultTasks 'transferStageToProd'
+
+// Das Löschen der Daten passiert in der jeweiligen SQL-Datei.
+tasks.register('transferLokalisation', SqlExecutor) {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['lokalisation_grundstueck.sql', 'lokalisation_gebaeudeeingang.sql']
+}
+
+// Tabellen in Stage für Fachthemen löschen und
+// anschliessend aus verschiedenen Quellen befüllen.
+// Erst wenn das befüllen geklappt hat, werden
+// die Daten in das Live-Schema kopiert.
+tasks.register('deleteStageFachthemen', SqlExecutor) {
+    dependsOn 'transferLokalisation'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['delete_stage_fachthemen.sql']
+}
+
+tasks.register('transferOerebToStagePolygon', Db2Db) {
+    dependsOn 'deleteStageFachthemen'
+    sourceDb = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('oereb_to_stage_polygon.sql', 'dsbjd_ebauso_rahmenmodell_stage_v1.fachthemen_fachthema_polygon', false)
+    ];
+}
+
+tasks.register('transferNonOerebToStage', SqlExecutor) {
+    dependsOn 'deleteStageFachthemen'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = [
+        'denkmalschutz.sql', 
+        'archaeologie.sql', 
+        'fruchtfolgeflaechen.sql', 
+        'naturgefahren.sql', 
+        'bodenbedeckung.sql',
+        'nutzungsplanung.sql',
+        'richtplan_juraschutzzone.sql'] 
+}
+
+tasks.register('transferStageToProd', SqlExecutor) {
+    dependsOn 'transferNonOerebToStage', 'transferOerebToStagePolygon'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['transfer_stage_to_prod.sql']
+}
