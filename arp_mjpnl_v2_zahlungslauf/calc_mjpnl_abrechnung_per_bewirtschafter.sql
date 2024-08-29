@@ -2,7 +2,7 @@
 /* Entspricht arp_mjpnl_migration/mjpnl_postprocessing_abrechnung_per_bewirtschafter.sql muss allerdings nur die diesjährigen Leistungen berücksichtigen - somit stimmt auch die Historisierung, weil es den aktuellen Bewirtschafter nimmt. */
 
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_bewirtschafter 
-(t_basket, gelan_pid_gelan, gelan_person, gelan_ortschaft, gelan_iban, betrag_total, betrag_ausbezahlt_total, betrag_ausbezahlt_an_dritte_total, status_abrechnung,
+(t_basket, gelan_pid_gelan, gelan_person, gelan_ortschaft, gelan_iban, betrag_total, betrag_ausbezahlt_total, betrag_ausbezahlt_an_dritte_total, betrag_abgeltungslos_total, status_abrechnung,
  datum_abrechnung, auszahlungsjahr, dateipfad_oder_url, erstellungsdatum, operator_erstellung, migriert)
 
 WITH gelan_persons AS (
@@ -38,6 +38,7 @@ SELECT
    SUM(abrg_vbg.gesamtbetrag) AS betrag_total, 
    SUM(abrg_vbg.betrag_pauschal_einmalig_ausbezahlt) as betrag_ausbezahlt_total,
    SUM(abrg_vbg.betrag_pauschal_einmalig_ausbezahlt_an_dritte) as betrag_ausbezahlt_an_dritte_total,
+   SUM(abrg_vbg.betrag_abgeltungslos) as betrag_abgeltungslos_total,
    CASE 
       -- wenn es ein status_abrechnung "freigegeben" gibt, dann soll der status demensprechend gleich sein
       WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung v WHERE v.status_abrechnung = 'freigegeben' AND v.gelan_pid_gelan = pers.pid_gelan AND v.auszahlungsjahr = abrg_vbg.auszahlungsjahr) > 0
