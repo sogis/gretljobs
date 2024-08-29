@@ -3,7 +3,7 @@
 
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung 
   (t_basket, vereinbarungs_nr, gelan_pid_gelan, gelan_bewe_id, gb_nr, flurnamen, kultur_ids, gemeinde, vereinbarungs_nr_alt, flaeche, anzahl_baeume, 
-   betrag_flaeche, betrag_per_ha, betrag_baeume, betrag_pauschal_regulaer, betrag_pauschal_einmalig_ausbezahlt, betrag_pauschal_einmalig_freigegeben, betrag_pauschal_einmalig_ausbezahlt_an_dritte, gesamtbetrag,
+   betrag_flaeche, betrag_per_ha, betrag_baeume, betrag_pauschal_regulaer, betrag_pauschal_einmalig_ausbezahlt, betrag_pauschal_einmalig_freigegeben, betrag_pauschal_einmalig_ausbezahlt_an_dritte, betrag_abgeltungslos, gesamtbetrag,
    auszahlungsjahr, status_abrechnung, datum_abrechnung, 
    bewirtschaftabmachung_schnittzeitpunkt_1,
    bewirtschaftabmachung_messerbalkenmaehgeraet,
@@ -97,6 +97,7 @@ SELECT
   COALESCE(SUM(lstg_pauschal_einmalig_ausbez.betrag_total),0) AS betrag_pauschal_einmalig_ausbezahlt,
   COALESCE(SUM(lstg_pauschal_einmalig_freigeg.betrag_total),0) AS betrag_pauschal_einmalig_freigegeben,
   COALESCE(SUM(lstg_pauschal_einmalig_an_dritte.betrag_total),0) AS betrag_pauschal_einmalig_ausbezahlt_an_dritte,
+  0 AS betrag_abgeltungslos, -- dies soll künftig aus abgeltungslosen Leistungen kalkuliert werden
   COALESCE(SUM(lstg.betrag_total),0) AS gesamtbetrag,
   lstg.auszahlungsjahr,
   CASE 
