@@ -113,3 +113,11 @@ Setzt man also im GUI das Häkchen, liefert der `input`-Step `true` zurück,
 und die `waitUntil`-Schleife wird deshalb verlassen.
 Doku: https://www.jenkins.io/doc/pipeline/steps/pipeline-input-step/ und
 https://www.jenkins.io/doc/pipeline/steps/workflow-basic-steps/#waituntil-wait-for-condition)
+
+## Im Pod ein PVC einbinden
+
+Vorlage: [arp_nutzungsplanung_pub/Jenkinsfile](arp_nutzungsplanung_pub/Jenkinsfile)
+
+Mit diesem Jenkinsfile wird im Jenkins-Agent-Pod zusätzlich ein PVC gemountet.
+
+
