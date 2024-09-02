@@ -120,4 +120,5 @@ Vorlage: [arp_nutzungsplanung_pub/Jenkinsfile](arp_nutzungsplanung_pub/Jenkinsfi
 
 Mit diesem Jenkinsfile wird im Jenkins-Agent-Pod zusätzlich ein PVC gemountet.
 
+Für lokale Entwicklung mit GRELT ohne Jenkins funktioniert das nicht. Hier muss das [Docker Compose](https://github.com/sogis/gretljobs/blob/main/docker-compose.yml) entsprechend um ein Volume ergänzt werden.
 
