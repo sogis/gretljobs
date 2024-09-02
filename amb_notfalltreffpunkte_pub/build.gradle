@@ -28,7 +28,7 @@ task transferAmbNotfalltreffpunkte(type: Db2Db, dependsOn: 'publiedit'){
 
 task importFromImdas() {
   doLast {
-  	Thread.sleep(60000*60)
+  	Thread.sleep(80000*60)
   }
 }
 

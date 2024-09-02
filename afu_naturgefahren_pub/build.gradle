@@ -50,7 +50,7 @@ task publishPub(type: Publisher, dependsOn: 'copy_alle_natgef_produkte'){
     dataIdent = "ch.so.afu.naturgefahren" 
     dbSchema = "afu_naturgefahren_pub_v1"
     modelsToPublish = "SO_AFU_Naturgefahren_Publikation_20240704"
-    userFormats = true
+    userFormats = false
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
