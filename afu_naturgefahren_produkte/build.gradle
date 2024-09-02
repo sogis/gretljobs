@@ -132,7 +132,8 @@ task copy_alte_natgef_daten(type: Db2Db, dependsOn:  make_naturgefahren_alt_sche
             new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_gk_wasser.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_wasser', true),
             new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_punktsignatur.sql','afu_gefahrenkartierung.gefahrenkartirung_punktsignatur', true),
             new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_ueberflutungskarte.sql','afu_gefahrenkartierung.gefahrenkartirung_ueberflutungskarte', true),
-            new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_ik_synoptisch_mgdm.sql','afu_gefahrenkartierung.gefahrenkartirung_ik_synoptisch_mgdm', true)
+            new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_ik_synoptisch_mgdm.sql','afu_gefahrenkartierung.gefahrenkartirung_ik_synoptisch_mgdm', true),
+            new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_perimeter.sql','afu_gefahrenkartierung.gefahrenkartirung_perimeter_gefahrenkartierung', true)
     ];
 }
 
