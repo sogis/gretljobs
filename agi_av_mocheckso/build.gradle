@@ -31,6 +31,7 @@ task downloadCsv(type: FtpDownload){
 task validateCsv(type: CsvValidator, dependsOn: 'downloadCsv') {
     description = "Validiert die heruntergeladene CSV-Datei (Tabs ersetzt mit Semikolon)"
     models = "SO_AGI_MOCheckSO_20200715"
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     firstLineIsHeader = true
     valueDelimiter = null
     valueSeparator = ';'
