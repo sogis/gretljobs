@@ -26,13 +26,7 @@ task transferAmbNotfalltreffpunkte(type: Db2Db, dependsOn: 'publiedit'){
     ];
 }
 
-task importFromImdas() {
-  doLast {
-  	Thread.sleep(80000*60)
-  }
-}
-
-task publipub(type: Publisher, dependsOn:'importFromImdas'){
+task publipub(type: Publisher, dependsOn:'transferAmbNotfalltreffpunkte'){
   dataIdent = "ch.so.amb.notfalltreffpunkte"
   userFormats = true
   database = [dbUriPub,dbUserPub,dbPwdPub]
