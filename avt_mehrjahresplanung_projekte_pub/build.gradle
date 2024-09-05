@@ -1,0 +1,72 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferData'
+
+task validateInputFile(type: CsvValidator) {
+    models = "SO_AVT_Mehrjahresplanung_20240911"
+    modeldir = rootProject.projectDir.toString() + ";http://models.interlis.ch"
+    dataFiles = [ csvFilename ]
+    valueSeparator = ';'
+    firstLineIsHeader = true
+    encoding = "Windows-1252"
+}
+
+task emptyTable(type: SqlExecutor) {
+    dependsOn validateInputFile
+    description = "Leere die Datenbanktabelle"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['delete_projekte.sql']
+}
+
+task importFile(type: CsvImport) {
+    dependsOn emptyTable
+    description = "Importiere die CSV-Datei"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = "avt_mehrjahresplanung_v1"
+    tableName = "projekte_projekt"
+    valueSeparator = ';'
+    //encoding = 'UTF-8'
+    dataFile = csvFilename
+    encoding = "Windows-1252"
+}
+
+task updateProjektIdentifikation(type: SqlExecutor) {
+    dependsOn importFile
+    description = "Fülle die Projekt Identifikation ab"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['update_projektidentifikation.sql']
+}
+
+task validateData(type: Ili2pgValidate) {
+    dependsOn updateProjektIdentifikation
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    models = "SO_AVT_Mehrjahresplanung_20240911"
+    modeldir = rootProject.projectDir.toString() + ";http://models.interlis.ch"
+    dbschema = "avt_mehrjahresplanung_pub_v1"
+    failOnException = false
+}
+
+task copyKantonsstrassenData(type: Db2Db) {
+    dependsOn validateData
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+        new TransferSet('select_achsen.sql', 'avt_mehrjahresplanung_v1.kantonsstrassen_achse', true),
+        new TransferSet('select_bezugspunkte.sql', 'avt_mehrjahresplanung_v1.kantonsstrassen_bezugspunkt', true)
+    ]
+}
+
+task transferData(type: Db2Db) {
+    dependsOn copyKantonsstrassenData
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+        new TransferSet('select_projekte_und_geometrie.sql', 'avt_mehrjahresplanung_pub_v1.projekt', true),
+    ]
+}
+
+// task Obsolet Datum setzen fehlt noch 
+// task Obsolet Datum älter als sechs Monate => Geometrie löschen fehlt noch
