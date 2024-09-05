@@ -44,6 +44,8 @@ SELECT
     ausgleichsabgabe.datum_faelligkeit,
     ausgleichsabgabe.datum_rechnung,
     ausgleichsabgabe.datum_zahlung,
+    ausgleichsabgabe.datum_rechnung_abbruch,
+    ausgleichsabgabe.datum_zahlung_abbruch,
     ausgleichsabgabe.bemerkung,
     ausgleichsabgabe.geometrie,
     hoheitsgrenzen.gemeindename AS gemeinde,

@@ -1,9 +1,0 @@
-SELECT
-	t_ili_tid, 
-	art, 
-	fliessr, 
-	wkp, 
-	ngkid, 
-	geometrie
-FROM 
-	afu_gefahrenkartierung.gefahrenkartirung_punktsignatur;

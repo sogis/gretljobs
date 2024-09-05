@@ -12,15 +12,15 @@ defaultTasks 'transferToPub'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
-def pathToDataZip = Paths.get(pathToTempFolder, "ch.swisstopo.amtliches-gebaeudeadressverzeichnis.zip")
-def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), 'pure_adr.xtf')
+def pathToDataZip = Paths.get(pathToTempFolder, "amtliches-gebaeudeadressverzeichnis_ch_2056.xtf.zip")
+def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), 'amtliches-gebaeudeadressverzeichnis_ch_2056.xtf')
 
 task download(type: Download){
     description = "Download official index of addresses from swisstopo"
     doLast {
         println "File downloaded to: " + pathToTempFolder
     }
-    src 'https://data.geo.admin.ch/ch.swisstopo.amtliches-gebaeudeadressverzeichnis/xtf/2056/ch.swisstopo.amtliches-gebaeudeadressverzeichnis.zip'
+    src 'https://data.geo.admin.ch/ch.swisstopo.amtliches-gebaeudeadressverzeichnis/amtliches-gebaeudeadressverzeichnis_ch/amtliches-gebaeudeadressverzeichnis_ch_2056.xtf.zip'
     dest pathToTempFolder
     overwrite true
 }

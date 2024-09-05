@@ -17,9 +17,9 @@ task transferNetzgebiete(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('awa_stromversorgungssicherheit_pub_ebene_3.sql', 'awa_stromversorgungssicherheit_pub.netzbetreiber_ebene_3', true),
-            new TransferSet('awa_stromversorgungssicherheit_pub_ebene_5.sql', 'awa_stromversorgungssicherheit_pub.netzbetreiber_ebene_5', true),
-            new TransferSet('awa_stromversorgungssicherheit_pub_ebene_7.sql', 'awa_stromversorgungssicherheit_pub.netzbetreiber_ebene_7', true)
+            new TransferSet('awa_stromversorgungssicherheit_pub_ebene_3.sql', 'awa_stromversorgungssicherheit_pub_v1.netzbetreiber_ebene_3', true),
+            new TransferSet('awa_stromversorgungssicherheit_pub_ebene_5.sql', 'awa_stromversorgungssicherheit_pub_v1.netzbetreiber_ebene_5', true),
+            new TransferSet('awa_stromversorgungssicherheit_pub_ebene_7.sql', 'awa_stromversorgungssicherheit_pub_v1.netzbetreiber_ebene_7', true)
     ];
 }
 
@@ -27,8 +27,8 @@ task publipub(type: Publisher, dependsOn:'transferNetzgebiete'){
   dataIdent = "ch.so.awa.netzgebiete"
   userFormats = true
   database = [dbUriPub,dbUserPub,dbPwdPub]
-  dbSchema = "awa_stromversorgungssicherheit_pub"
-  modelsToPublish = "SO_AWA_Stromversorgungssicherheit_Publikation_20210629"
+  dbSchema = "awa_stromversorgungssicherheit_pub_v1"
+  modelsToPublish = "SO_AWA_Stromversorgungssicherheit_Publikation_20240812"
 
   target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
