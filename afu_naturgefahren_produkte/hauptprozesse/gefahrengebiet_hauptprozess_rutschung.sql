@@ -83,8 +83,8 @@ teilprozesse_spont_rutsch_und_hangmuren AS (
         charakterisierung, 
         geometrie,
         CASE 
-            WHEN charakterisierung = 'H10' THEN 0 
-            ELSE substring(charakterisierung FROM 2 FOR 1) 
+            WHEN charakterisierung = 'H10' THEN 0::integer 
+            ELSE substring(charakterisierung FROM 2 FOR 1)::integer 
         END AS prio 
     FROM 
         teilprozesse_spont_rutsch_und_hangmuren_prio_clip
