@@ -208,7 +208,7 @@ SELECT
     gefahrenstufe,
     CASE 
     	WHEN gefahrenstufe = 'restgefaehrdung'
-    	THEN 'EHQ' 
+    	THEN 'U10' 
     	else 'U'||charakterisierung
     END AS charakterisierung,
     geometrie, 

@@ -145,7 +145,7 @@ SELECT
     gefahrenstufe AS gefahrenstufe,
     CASE 
     	WHEN gefahrenstufe = 'restgefaehrdung'
-    	THEN 'RG' 
+    	THEN 'S10' 
     	else 'S'||charakterisierung
     END AS charakterisierung,
     geometrie, 

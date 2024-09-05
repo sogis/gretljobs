@@ -82,7 +82,10 @@ teilprozesse_spont_rutsch_und_hangmuren AS (
         gefahrenstufe, 
         charakterisierung, 
         geometrie,
-        substring(charakterisierung FROM 2 FOR 1) AS prio 
+        CASE 
+            WHEN charakterisierung = 'H10' THEN 0 
+            ELSE substring(charakterisierung FROM 2 FOR 1) 
+        END AS prio 
     FROM 
         teilprozesse_spont_rutsch_und_hangmuren_prio_clip
 )
