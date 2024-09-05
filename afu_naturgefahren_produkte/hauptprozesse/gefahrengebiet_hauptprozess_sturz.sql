@@ -49,8 +49,8 @@ hauptprozess_sturz AS (
         charakterisierung, 
         geometrie,
         CASE 
-            WHEN charakterisierung = 'S10' THEN 0
-            ELSE substring(charakterisierung FROM 2 for 1) 
+            WHEN charakterisierung = 'S10' THEN 0::integer
+            ELSE substring(charakterisierung FROM 2 for 1)::integer 
     END AS prio  
     FROM 
         hauptprozess_sturz_clean
