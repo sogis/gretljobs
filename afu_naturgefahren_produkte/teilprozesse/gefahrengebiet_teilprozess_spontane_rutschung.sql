@@ -160,7 +160,11 @@ SELECT
     basket.t_id AS t_basket, 
     teilprozess,
     gefahrenstufe AS gefahrenstufe,
-    'H'||charakterisierung AS charakterisierung,
+    CASE 
+    	WHEN gefahrenstufe = 'restgefaehrdung'
+    	THEN 'H10' 
+    	else 'H'||charakterisierung 
+    END AS charakterisierung,
     geometrie, 
     datenherkunft,
     auftrag_neudaten
