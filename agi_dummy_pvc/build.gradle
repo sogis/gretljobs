@@ -14,7 +14,7 @@ tasks.register('fubar', Exec) {
         println "Hello from fubar"
     }
 
-    workingDir "/datahub"
+    workingDir "/work/upload"
     commandLine 'ls', '-la'
 }
 
