@@ -9,8 +9,12 @@ apply plugin: 'ch.so.agi.gretl'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
-tasks.register('fubar') {
+tasks.register('fubar', Exec) {
     doLast {
         println "Hello from fubar"
     }
+
+    workingDir "/tmp"
+    commandLine 'ls -la'
 }
+

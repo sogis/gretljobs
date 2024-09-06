@@ -35,12 +35,14 @@ pipeline {
                 }
             }
         }
+        /*
         stage('Validation') {
             agent { label 'master' }
             steps {
                 input message: "Fortfahren und die Daten publizieren?", ok: "OK"
             }
         }
+        */
     }
     /*
     post {
