@@ -14,7 +14,21 @@ tasks.register('fubar', Exec) {
         println "Hello from fubar"
     }
 
-    workingDir "/work/datahub"
+    workingDir '/work/datahub'
     commandLine 'ls', '-la'
 }
 
+tasks.register('copyFiles', Copy) {
+    dependsOn 'fubar'
+
+    from('/work/datahub')
+    into('.')
+    include('*.xtf')
+} 
+
+tasks.register('listFiles', Exec) {
+    dependsOn 'copyFiles'
+
+    workingDir '.'
+    commandLine 'ls', '-la'
+}
