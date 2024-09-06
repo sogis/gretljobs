@@ -15,6 +15,6 @@ tasks.register('fubar', Exec) {
     }
 
     workingDir "/tmp"
-    commandLine 'ls -la'
+    commandLine 'ls', '-la'
 }
 
