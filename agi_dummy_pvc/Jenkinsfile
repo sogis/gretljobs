@@ -15,7 +15,7 @@ pipeline {
                         - name: gretl
                           volumeMounts:
                             - name: datahub-workdir-volume
-                              mountPath: /work
+                              mountPath: /datahub
                               subPath: datahub
                       volumes:
                         - name: datahub-workdir-volume
