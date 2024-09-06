@@ -9,6 +9,12 @@ apply plugin: 'ch.so.agi.gretl'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
+/* Dummy-Task zum Zeigen wie man ein Volume mounted (Jenkinsfile)
+und wie man Daten vom Volume kopiert. 
+Achtung: Der GRETL-Job ist verantwortlich, ob am Ursprungsort 
+(im Volume) die Daten gelöscht werden. Das passiert nicht
+automatisch. */
+
 tasks.register('fubar', Exec) {
     doLast {
         println "Hello from fubar"
@@ -32,3 +38,4 @@ tasks.register('listFiles', Exec) {
     workingDir '.'
     commandLine 'ls', '-la'
 }
+
