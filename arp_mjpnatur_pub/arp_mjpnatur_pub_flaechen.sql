@@ -51,7 +51,8 @@ SELECT
     bewirtschaftabmachung_herbstweide AS herbstweide,
     bewirtschaftabmachung_rueckzugstreifen AS rueckzugsstreifen,
     NULL AS letzter_unterhalt,
-    NULL AS datum_beurteilung
+    NULL AS datum_beurteilung,
+    vereinbarung.status_vereinbarung AS status
 FROM 
     arp_mjpnl_v2.mjpnl_vereinbarung vereinbarung
 LEFT JOIN arp_mjpnl_v2.betrbsdttrktrdten_gelan_person person 
@@ -68,9 +69,6 @@ LEFT JOIN beurteilungs_metainfo_wiesen bw
                                      b.vereinbarung = vereinbarung.t_id
                                 )
 WHERE 
-    -- nur die "gültigen" Vereinbarungen
-    vereinbarung.status_vereinbarung = 'aktiv' 
-    AND 
     vereinbarung.bewe_id_geprueft IS TRUE 
     AND 
     vereinbarung.ist_nutzungsvereinbarung IS NOT TRUE
