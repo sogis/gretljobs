@@ -14,14 +14,14 @@ tasks.register('fubar', Exec) {
         println "Hello from fubar"
     }
 
-    workingDir '/work/datahub'
+    workingDir '/work/datahub/DMAV_HoheitsgrenzenAV_V1_0'
     commandLine 'ls', '-la'
 }
 
 tasks.register('copyFiles', Copy) {
     dependsOn 'fubar'
 
-    from('/work/datahub')
+    from('/work/datahub/DMAV_HoheitsgrenzenAV_V1_0')
     into('.')
     include('*.xtf')
 } 
