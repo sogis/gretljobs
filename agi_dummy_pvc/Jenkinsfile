@@ -15,8 +15,8 @@ pipeline {
                         - name: gretl
                           volumeMounts:
                             - name: gretl--workdir-volume
-                              mountPath: /work
-                              subPath: gretl/${env.JOB_BASE_NAME}
+                              mountPath: /datahub
+                              subPath: datahub
                       volumes:
                         - name: gretl--workdir-volume
                           persistentVolumeClaim:
@@ -29,20 +29,11 @@ pipeline {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
-                        //sh "gretl -Pbfsnr=${params.bfsnr} importXTF_stage"
                         sh "gretl fubar"
                     }
                 }
             }
         }
-        /*
-        stage('Validation') {
-            agent { label 'master' }
-            steps {
-                input message: "Fortfahren und die Daten publizieren?", ok: "OK"
-            }
-        }
-        */
     }
     /*
     post {
