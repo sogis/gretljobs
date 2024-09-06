@@ -52,7 +52,7 @@ SELECT
     bewirtschaftabmachung_rueckzugstreifen AS rueckzugsstreifen,
     NULL AS letzter_unterhalt,
     NULL AS datum_beurteilung,
-    vereinbarung.status_vereinbarung AS status
+    vereinbarung.status_vereinbarung AS astatus
 FROM 
     arp_mjpnl_v2.mjpnl_vereinbarung vereinbarung
 LEFT JOIN arp_mjpnl_v2.betrbsdttrktrdten_gelan_person person 
