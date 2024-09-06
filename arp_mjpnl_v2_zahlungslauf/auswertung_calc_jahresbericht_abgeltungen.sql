@@ -43,7 +43,7 @@ SELECT
     vbg.vereinbarungsart as vereinbarungsart,
 	COALESCE(bezirk.bezirksnummer,0),
 	COALESCE(bezirk.bezirksname,'unbekannt'),
-	COUNT(vbg.vereinbarungs_nr) anzahl_vereinbarungen,
+	COUNT(DISTINCT vbg.vereinbarungs_nr) anzahl_vereinbarungen,
 	SUM(vbg.flaeche) as flaeche_total,
     SUM(COALESCE(hk.bewirtschaftung_lebhag_laufmeter, 0)) as laufmeter,
 	SUM(COALESCE(bae.grundbeitrag_baum_anzahl, 0)) as baeume_total,
