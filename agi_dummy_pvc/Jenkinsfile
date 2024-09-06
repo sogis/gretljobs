@@ -14,11 +14,11 @@ pipeline {
                       containers:
                         - name: gretl
                           volumeMounts:
-                            - name: gretl--workdir-volume
+                            - name: gretl-workdir-volume
                               mountPath: /datahub
                               subPath: datahub
                       volumes:
-                        - name: gretl--workdir-volume
+                        - name: gretl-workdir-volume
                           persistentVolumeClaim:
                             claimName: ${env.OPENSHIFT_PROJECT_NAME}-lowback
 """
