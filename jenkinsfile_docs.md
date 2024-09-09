@@ -131,11 +131,11 @@ Beispiel für den Mount des `datahub`-Subpath vom Projekt-lowback-PVC:
                       containers:
                         - name: gretl                         # oder 'gretl-2.4' für GRETL Version 2.4
                           volumeMounts:
-                            - name: datahub--workdir-volume
+                            - name: datahub-workdir-volume
                               mountPath: /datahub             # Pfad im Pod, wo das PVC gemountet wird
                               subPath: datahub
                       volumes:
-                        - name: datahub--workdir-volume
+                        - name: datahub-workdir-volume
                           persistentVolumeClaim:
                             claimName: ${env.OPENSHIFT_PROJECT_NAME}-lowback  #sollte in Jenkins automatisch aufgelöst werden
 """
