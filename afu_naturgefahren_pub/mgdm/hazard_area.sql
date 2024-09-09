@@ -67,23 +67,23 @@ beurteilungsgebiet_sturz AS (
         NULL AS comments
     FROM 
         afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz
-    UNION ALL 
-    SELECT
-        'rockfall' AS main_process,
-        'not_in_danger' AS hazard_level,
-        'complete' AS subprocesses_complete,    
-        'complete' AS sources_complete, 
-        st_difference(erhebungsgebiet.geometrie,hauptprozess.geometrie) AS impact_zone,
-        CAST('SO' AS VARCHAR) AS data_responsibility,
-        NULL AS comments
-    FROM 
-        beurteilungsgebiet_sturz erhebungsgebiet, 
-        (
-            SELECT 
-                st_union(geometrie) AS geometrie 
-            FROM 
-                afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz
-        ) hauptprozess
+--    UNION ALL 
+--    SELECT
+--        'rockfall' AS main_process,
+--        'not_in_danger' AS hazard_level,
+--        'complete' AS subprocesses_complete,    
+--        'complete' AS sources_complete, 
+--        st_difference(erhebungsgebiet.geometrie,hauptprozess.geometrie) AS impact_zone,
+--        CAST('SO' AS VARCHAR) AS data_responsibility,
+--        NULL AS comments
+--    FROM 
+--        beurteilungsgebiet_sturz erhebungsgebiet, 
+--        (
+--            SELECT 
+--                st_union(geometrie) AS geometrie 
+--            FROM 
+--                afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz
+--        ) hauptprozess
 )
 
 ,landslide AS (
@@ -106,23 +106,23 @@ beurteilungsgebiet_sturz AS (
         NULL AS comments
     FROM 
         afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung
-    UNION ALL 
-    SELECT
-        'landslide' AS main_process,
-        'not_in_danger' AS hazard_level,
-        'complete' AS subprocesses_complete,    
-        'complete' AS sources_complete, 
-        st_difference(erhebungsgebiet.geometrie,hauptprozess.geometrie) AS impact_zone,
-        CAST('SO' AS VARCHAR) AS data_responsibility,
-        NULL AS comments
-    FROM 
-        beurteilungsgebiet_rutschung erhebungsgebiet, 
-        (
-            SELECT 
-                st_union(geometrie) AS geometrie 
-            FROM 
-                afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung
-        ) hauptprozess
+--    UNION ALL 
+--    SELECT
+--        'landslide' AS main_process,
+--        'not_in_danger' AS hazard_level,
+--        'complete' AS subprocesses_complete,    
+--        'complete' AS sources_complete, 
+--        st_difference(erhebungsgebiet.geometrie,hauptprozess.geometrie) AS impact_zone,
+--        CAST('SO' AS VARCHAR) AS data_responsibility,
+--        NULL AS comments
+--    FROM 
+--        beurteilungsgebiet_rutschung erhebungsgebiet, 
+--        (
+--            SELECT 
+--                st_union(geometrie) AS geometrie 
+--            FROM 
+--                afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung
+--        ) hauptprozess
 )
 
 ,water AS ( 
@@ -145,23 +145,23 @@ beurteilungsgebiet_sturz AS (
         NULL AS comments
     FROM 
         afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser 
-    UNION ALL 
-    SELECT
-        'water' AS main_process,
-        'not_in_danger' AS hazard_level,
-        'complete' AS subprocesses_complete,    
-        'complete' AS sources_complete, 
-        st_difference(erhebungsgebiet.geometrie,hauptprozess.geometrie) AS impact_zone,
-        CAST('SO' AS VARCHAR) AS data_responsibility,
-        NULL AS comments
-    FROM 
-        beurteilungsgebiet_wasser erhebungsgebiet, 
-        (
-            SELECT 
-                st_union(geometrie) AS geometrie 
-            FROM 
-                afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser
-        ) hauptprozess   
+--    UNION ALL 
+--    SELECT
+--        'water' AS main_process,
+--        'not_in_danger' AS hazard_level,
+--        'complete' AS subprocesses_complete,    
+--        'complete' AS sources_complete, 
+--        st_difference(erhebungsgebiet.geometrie,hauptprozess.geometrie) AS impact_zone,
+--        CAST('SO' AS VARCHAR) AS data_responsibility,
+--        NULL AS comments
+--    FROM 
+--        beurteilungsgebiet_wasser erhebungsgebiet, 
+--        (
+--            SELECT 
+--                st_union(geometrie) AS geometrie 
+--            FROM 
+--                afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser
+--        ) hauptprozess   
 )
    
 INSERT INTO 

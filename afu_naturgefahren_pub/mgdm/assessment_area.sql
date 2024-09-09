@@ -35,6 +35,12 @@ lines as (
             THEN 'assessed'
             WHEN erhebungsstand = 'beurteilung_nicht_noetig'
             THEN 'assessment_not_necessary'
+            WHEN erhebungsstand = 'beurteilt_und_nicht_bestimmbar' 
+            THEN 'assessed_and_not_recognizable' 
+            WHEN erhebungsstand = 'beurteilt_und_nicht_vollstdg' 
+            THEN 'assessed_and_not_complete' 
+            WHEN erhebungsstand = 'beurteilt_und_in_abklaerung' 
+            THEN 'assessed_and_to_be_clarifed'
         END as erhebungsstand,
         teilprozess
     FROM 
