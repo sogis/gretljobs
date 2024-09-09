@@ -20,4 +20,5 @@ task updateData(type: SqlExecutor, dependsOn: dataTransfer){
     sqlFiles = ['profilblatt.sql',
                 'update_horizont.sql'
             ]
+    sqlParameters = [hostname:"'"+geoservicesHostName+"'"]
 }
