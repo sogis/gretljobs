@@ -132,7 +132,8 @@ task copy_alte_natgef_daten(type: Db2Db, dependsOn:  make_naturgefahren_alt_sche
             new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_gk_wasser.sql','afu_gefahrenkartierung.gefahrenkartirung_gk_wasser', true),
             new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_punktsignatur.sql','afu_gefahrenkartierung.gefahrenkartirung_punktsignatur', true),
             new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_ueberflutungskarte.sql','afu_gefahrenkartierung.gefahrenkartirung_ueberflutungskarte', true),
-            new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_ik_synoptisch_mgdm.sql','afu_gefahrenkartierung.gefahrenkartirung_ik_synoptisch_mgdm', true)
+            new TransferSet('copy_alte_natgef/copy_gefahrenkartirung_ik_synoptisch_mgdm.sql','afu_gefahrenkartierung.gefahrenkartirung_ik_synoptisch_mgdm', true),
+            new TransferSet('copy_alte_natgef/copy_gefahrenkartierung_perimeter.sql','afu_gefahrenkartierung.gefahrenkartirung_perimeter_gefahrenkartierung', true)
     ];
 }
 
@@ -452,7 +453,7 @@ task erhebungsgebiet(type: SqlExecutor, dependsOn: abklaerungsperimeter) {
 
 task copy_alte_dokumente(type: Db2Db, dependsOn: erhebungsgebiet) {
     description = "Kopiert die alten Dokumente von der Pub-DB in die Edit-DB"
-    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     transferSets = [
             new TransferSet('vorbereitung/alte_dokumente_copy.sql','afu_naturgefahren_alte_dokumente_v1.alte_dokumente', true)

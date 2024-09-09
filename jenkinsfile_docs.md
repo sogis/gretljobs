@@ -113,3 +113,34 @@ Setzt man also im GUI das Häkchen, liefert der `input`-Step `true` zurück,
 und die `waitUntil`-Schleife wird deshalb verlassen.
 Doku: https://www.jenkins.io/doc/pipeline/steps/pipeline-input-step/ und
 https://www.jenkins.io/doc/pipeline/steps/workflow-basic-steps/#waituntil-wait-for-condition)
+
+## Im Pod ein PVC einbinden
+
+Vorlage: [arp_nutzungsplanung_pub/Jenkinsfile](arp_nutzungsplanung_pub/Jenkinsfile)
+
+In diesem Jenkinsfile wird im Jenkins-Agent-Pod zusätzlich ein PVC gemountet.
+
+Beispiel für den Mount des `datahub`-Subpath vom Projekt-lowback-PVC:
+```yaml
+              agent {
+                kubernetes {
+                    inheritFrom env.NODE_LABEL ?: 'gretl'
+                    yamlMergeStrategy merge()
+                    yaml """
+                    spec:
+                      containers:
+                        - name: gretl                         # oder 'gretl-2.4' für GRETL Version 2.4
+                          volumeMounts:
+                            - name: datahub-workdir-volume
+                              mountPath: /datahub             # Pfad im Pod, wo das PVC gemountet wird
+                              subPath: datahub
+                      volumes:
+                        - name: datahub-workdir-volume
+                          persistentVolumeClaim:
+                            claimName: ${env.OPENSHIFT_PROJECT_NAME}-lowback  #sollte in Jenkins automatisch aufgelöst werden
+"""
+                }
+```
+
+Für lokale Entwicklung mit GRELT ohne Jenkins funktioniert das nicht. Hier muss das [Docker Compose](https://github.com/sogis/gretljobs/blob/main/docker-compose.yml) entsprechend um ein Volume ergänzt werden.
+

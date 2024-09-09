@@ -2,7 +2,7 @@
 /* Entspricht arp_mjpnl_migration/mjpnl_postprocessing_abrechnung_per_bewirtschafter.sql muss allerdings nur die diesjährigen Leistungen berücksichtigen - somit stimmt auch die Historisierung, weil es den aktuellen Bewirtschafter nimmt. */
 
 INSERT INTO ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_bewirtschafter 
-(t_basket, gelan_pid_gelan, gelan_person, gelan_ortschaft, gelan_iban, betrag_total, betrag_ausbezahlt_total, betrag_ausbezahlt_an_dritte_total, status_abrechnung,
+(t_basket, gelan_pid_gelan, gelan_person, gelan_ortschaft, gelan_iban, gelan_kreditor, betrag_total, betrag_ausbezahlt_total, betrag_ausbezahlt_an_dritte_total, betrag_abgeltungslos_total, status_abrechnung,
  datum_abrechnung, auszahlungsjahr, dateipfad_oder_url, erstellungsdatum, operator_erstellung, migriert)
 
 WITH gelan_persons AS (
@@ -12,7 +12,8 @@ SELECT
       pers.pid_gelan,
       pers.name_vorname,
       pers.ortschaft,
-      pers.iban
+      pers.iban,
+      pers.kreditor_afin_solothurn
 FROM
     ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
     LEFT JOIN ${DB_Schema_MJPNL}.betrbsdttrktrdten_gelan_person pers
@@ -35,9 +36,11 @@ SELECT
    pers.name_vorname AS gelan_person,
    pers.ortschaft AS gelan_ortschaft,
    pers.iban,
+   pers.kreditor_afin_solothurn,
    SUM(abrg_vbg.gesamtbetrag) AS betrag_total, 
    SUM(abrg_vbg.betrag_pauschal_einmalig_ausbezahlt) as betrag_ausbezahlt_total,
    SUM(abrg_vbg.betrag_pauschal_einmalig_ausbezahlt_an_dritte) as betrag_ausbezahlt_an_dritte_total,
+   SUM(abrg_vbg.betrag_abgeltungslos) as betrag_abgeltungslos_total,
    CASE 
       -- wenn es ein status_abrechnung "freigegeben" gibt, dann soll der status demensprechend gleich sein
       WHEN (SELECT COUNT(*) FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung v WHERE v.status_abrechnung = 'freigegeben' AND v.gelan_pid_gelan = pers.pid_gelan AND v.auszahlungsjahr = abrg_vbg.auszahlungsjahr) > 0
@@ -73,7 +76,7 @@ FROM
     abrg_vbg.gesamtbetrag IS NOT NULL
     -- berücksichtige nur diesjährige Leistungen
     AND abrg_vbg.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer
-  GROUP BY pers.pid_gelan, pers.iban, pers.name_vorname, pers.ortschaft, abrg_vbg.auszahlungsjahr
+  GROUP BY pers.pid_gelan, pers.iban, pers.kreditor_afin_solothurn, pers.name_vorname, pers.ortschaft, abrg_vbg.auszahlungsjahr
   ORDER BY pers.pid_gelan ASC;
 
 /* Abrechnung per Vereinbarung aktualisieren mit Fremdschlüsseln zur Abrechnung per Bewirtschafter */

@@ -1,0 +1,22 @@
+import java.nio.file.Paths
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'de.undercouch.download'
+
+defaultTasks 'exportTiff'
+
+tasks.register('fubar') {
+    doLast {
+        println 'Hallo Welt.'
+    }
+}
+
+// Since it's a dummy gretl job the host is only working on macos.
+tasks.register('exportTiff', PostgisRasterExport) {
+    database = ["jdbc:postgresql://docker.for.mac.host.internal:54322/pub", "postgres", "secret"]
+    sqlFile = "raster.sql"
+    dataFile = "export.tif"
+}
