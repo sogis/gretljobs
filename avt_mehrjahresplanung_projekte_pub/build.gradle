@@ -21,8 +21,32 @@ task emptyTable(type: SqlExecutor) {
     sqlFiles = ['delete_projekte.sql']
 }
 
-task importFile(type: CsvImport) {
+task replaceStartHeader(){
     dependsOn emptyTable
+    description = "Ersetzt start zu astart."
+    doLast {
+        ant.replace(
+            file: csvFilename,
+            token: "start",
+            value: "astart",
+            encoding: "Windows-1252")
+    }
+}
+
+task replacePhaseHeader(){
+    dependsOn replaceStartHeader
+    description = "Ersetzt phase zu aphase."
+    doLast {
+        ant.replace(
+            file: csvFilename,
+            token: "phase",
+            value: "aphase",
+            encoding: "Windows-1252")
+    }
+}
+
+task importFile(type: CsvImport) {
+    dependsOn replacePhaseHeader
     description = "Importiere die CSV-Datei"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = "avt_mehrjahresplanung_v1"
@@ -33,15 +57,15 @@ task importFile(type: CsvImport) {
     encoding = "Windows-1252"
 }
 
-task updateProjektIdentifikation(type: SqlExecutor) {
+task handleObsoleteGeometries(type: SqlExecutor) {
     dependsOn importFile
-    description = "Fülle die Projekt Identifikation ab"
+    description = "Setze ein Obsolet-Datum und lösche Geometrie älter als sechs Monate"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ['update_projektidentifikation.sql']
+    sqlFiles = ['update_projektgeometrie.sql']
 }
 
 task validateData(type: Ili2pgValidate) {
-    dependsOn updateProjektIdentifikation
+    dependsOn handleObsoleteGeometries
     database = [dbUriPub, dbUserPub, dbPwdPub]
     models = "SO_AVT_Mehrjahresplanung_20240911"
     modeldir = rootProject.projectDir.toString() + ";http://models.interlis.ch"
@@ -67,6 +91,3 @@ task transferData(type: Db2Db) {
         new TransferSet('select_projekte_und_geometrie.sql', 'avt_mehrjahresplanung_pub_v1.projekt', true),
     ]
 }
-
-// task Obsolet Datum setzen fehlt noch 
-// task Obsolet Datum älter als sechs Monate => Geometrie löschen fehlt noch

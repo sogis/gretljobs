@@ -29,7 +29,10 @@ WITH tabelle_projekte AS (
         END AS bpende_km,
         bemerkungen,
         projektsuffix,
-        projektidentifikation
+        CASE
+            WHEN projektsuffix IS NULL THEN projektnr
+            ELSE projektnr || '.' || projektsuffix
+        END AS projektidentifikation
     FROM
         avt_mehrjahresplanung_v1.projekte_projekt
 ),
@@ -287,7 +290,8 @@ SELECT
     bemerkungen,
     projektsuffix,
     geometrie
-FROM projekte_mit_manuell_erfasster_geometrie
+FROM
+    projekte_mit_manuell_erfasster_geometrie
 UNION
 SELECT
     t_id,
@@ -310,7 +314,8 @@ SELECT
     bemerkungen,
     projektsuffix,
     geometrie
-FROM projekte_an_einer_achse
+FROM
+    projekte_an_einer_achse
 UNION
 SELECT
     t_id,
@@ -333,7 +338,8 @@ SELECT
     bemerkungen,
     projektsuffix,
     geometrie
-FROM projekte_an_mehreren_achsen
+FROM
+    projekte_an_mehreren_achsen
 UNION
 SELECT
     t_id,
@@ -356,4 +362,6 @@ SELECT
     bemerkungen,
     projektsuffix,
     geometrie
-FROM projekte_mit_direkter_linie
+FROM
+    projekte_mit_direkter_linie
+;
