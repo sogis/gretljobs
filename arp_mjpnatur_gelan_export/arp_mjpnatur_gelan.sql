@@ -1,3 +1,6 @@
+DELETE FROM arp_mjpnl_gelan_v1.mehrjahresprgramm_vereinbarungensflaechen
+;
+
 INSERT INTO arp_mjpnl_gelan_v1.mehrjahresprgramm_vereinbarungensflaechen (
     geometrie, 
     artcode, 
@@ -38,3 +41,4 @@ WHERE
     AND 
     vereinbarung.ist_nutzungsvereinbarung IS NOT TRUE
 ;
+
