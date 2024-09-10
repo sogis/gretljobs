@@ -1,0 +1,58 @@
+/* Dieser Job schickt die Daten aus dem MJPNatur an GELAN
+*/
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
+defaultTasks 'uploadData'
+
+
+task transformMJPNL2GELAN(type: Db2Db){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+		new TransferSet('arp_mjpnatur_gelan.sql', 'arp_mjpnl_gelan_v1.mehrjahresprgramm_vereinbarungensflaechen', true)
+	];        
+}
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def exportFileName = 'Import_ais_mjpnl.xtf'
+def exportFile = file(Paths.get(pathToTempFolder.toString(), exportFileName))
+
+task exportMJPNL(type: Ili2pgExport, dependsOn: 'transformMJPNL2GELAN') {
+    description = "Exportiert die MJPNatur-Vereinbarungsflächen ins GELAN-Modell umgebauten Daten in ein xtf-File."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "arp_mjpnl_gelan_v1"
+    models = "SO_ARP_Mehrjahresprogramm_Landwirtschaft_20240807"
+    dataFile = exportFile
+}
+
+remotes {
+    sftpServer {
+        host = "${sftpServerGelan}"
+        user = "${sftpUserGelan}"
+        password = "${sftpPwdGelan}"
+    }
+}
+
+task uploadData (dependsOn: 'exportMJPNL') {
+    description = "Upload file to SFTP server"
+    doLast {
+        ssh.settings {
+            knownHosts = allowAnyHosts
+        }
+        ssh.run {
+            session(remotes.sftpServer) {
+                put from: exportFile, into: "Prod/Import_ais_mjpnl.xtf"
+            }
+        }
+        println "File uploaded to SFTP server"
+    }
+}
