@@ -18,21 +18,7 @@ SELECT
         WHEN vereinbarungsart IN ('ALR_Saum', 'ALR_Buntbrache') THEN 42050 --Unbestimmt
     END AS artcode,
     CASE 
-        WHEN EXISTS (
-            SELECT 1 
-            FROM 
-                arp_mjpnl_v2.mjpnl_vereinbarung vereinbarungsgeometrie 
-            WHERE 
-                vereinbarung.t_id <> vereinbarungsgeometrie.t_id 
-                AND 
-                ST_Overlaps(vereinbarung.geometrie, vereinbarungsgeometrie.geometrie)
-                AND 
-                vereinbarung.status_vereinbarung = 'aktiv' 
-                AND 
-                vereinbarung.bewe_id_geprueft IS TRUE 
-                AND 
-                vereinbarung.ist_nutzungsvereinbarung IS NOT TRUE
-           ) THEN TRUE 
+        WHEN vereinbarungsart IN ('OBL', 'Hostet') THEN TRUE 
         ELSE FALSE 
     END AS ueberlappungueberlagernd,
     vereinbarung.startdatum AS vereinbarungsstart,
