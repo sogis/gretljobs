@@ -1,8 +1,9 @@
 import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'validateData'
+defaultTasks 'transferData'
 
 task emptyTable(type: SqlExecutor) {
     description = "Leere die Datenbanktabelle"
@@ -14,7 +15,7 @@ task importFile(type: ShpImport) {
     dependsOn emptyTable
     description = "Importiere das Shapefile"
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    schemaName = "avt_mehrjahresplanung_pub_v1"
+    schemaName = "avt_strassenzustand_staging_v1"
     tableName = "strassenzustand"
     dataFile = shpFilename 
 }
@@ -29,18 +30,15 @@ task fixData(type: SqlExecutor) {
 task validateData(type: Ili2pgValidate) {
     dependsOn fixData
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    models = "SO_AVT_Mehrjahresplanung_Publikation_20240911"
-    modeldir = rootProject.projectDir.toString() + ";http://models.interlis.ch"
-    dbschema = "avt_mehrjahresplanung_pub_v1"
-    failOnException = false
+    models = "SO_AVT_Strassenzustand_Publikation_20240911"
+    dbschema = "avt_strassenzustand_staging_v1"
 }
 
-/**
-task validateImportFile(type: ShpValidator) {
-//description = "Validiere die Import Datei"
-models = "SO_AVT_Mehrjahresplanung_Strassenzustand_Publikation_20240911"
-modeldir = "avt_mehrjahresplanung_strassenzustand_pub;https://geo.so.ch/models/"
-dataFiles = [ shpFilename ]
-encoding = "UTF-8"
+task transferData(type: Db2Db) {
+    dependsOn validateData
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+        new TransferSet('select_strassenzustand.sql', 'avt_strassenzustand_pub_v1.strassenzustand', true)
+    ]
 }
- **/

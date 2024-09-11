@@ -18,12 +18,12 @@ WITH tabelle_projekte AS (
         aphase,
         achsnr,
         bpanfang,
-        split_part(bpanfang, '+', 1) as bpanfang_bezeichnung,
+        split_part(bpanfang, '+', 1) AS bpanfang_bezeichnung,
         CASE WHEN split_part(bpanfang, '+', 2) ILIKE '' THEN NULL
         ELSE split_part(bpanfang, '+', 2)
         END AS bpanfang_km,
         bpende,
-        split_part(bpende, '+', 1) as bpende_bezeichnung,
+        split_part(bpende, '+', 1) AS bpende_bezeichnung,
         CASE WHEN split_part(bpende, '+', 2) ILIKE '' THEN NULL
         ELSE split_part(bpende, '+', 2)
         END AS bpende_km,
@@ -32,7 +32,9 @@ WITH tabelle_projekte AS (
         CASE
             WHEN projektsuffix IS NULL THEN projektnr
             ELSE projektnr || '.' || projektsuffix
-        END AS projektidentifikation
+        END AS projektidentifikation,
+        ranfangsbezugspunkt,
+        rendbezugspunkt
     FROM
         avt_mehrjahresplanung_v1.projekte_projekt
 ),
@@ -61,6 +63,8 @@ projekte_mit_manuell_erfasster_geometrie AS (
         pp.bemerkungen,
         pp.projektsuffix,
         pp.projektidentifikation,
+        pp.ranfangsbezugspunkt,
+        pp.rendbezugspunkt,
         pp2.geometrie,
         'manuell_erfasst' AS fall
     FROM
@@ -76,7 +80,10 @@ projekte_mit_manuell_erfasster_geometrie AS (
 -- Wähle in zweiter Priorität Projekte welche an einer Achse (=Linestring) liegen
 bppunkte_achsen AS (
     SELECT
-        kb.*,
+        kb.t_id,
+        kb.bezeichnung,
+        kb.achsenummer,
+        kb.geometrie,
         ka.geometrie AS linegeometrie,
         ka.t_id AS achsen_tid
     FROM
@@ -88,22 +95,45 @@ bppunkte_achsen AS (
 ),
 projekte_mit_achsen AS (
     select
-        pp.*,
+        pp.t_id,
+        pp.abteilung,
+        pp.kreis,
+        pp.projektleiter,
+        pp.gemeinde,
+        pp.strasse,
+        pp.projekt,
+        pp.projektnr,
+        pp.kreditjahr_p,
+        pp.kreditjahr_a,
+        pp.astart,
+        pp.ende,
+        pp.klasse,
+        pp.aphase,
+        pp.achsnr,
+        pp.bpanfang,
+        pp.bpanfang_bezeichnung,
+        pp.bpanfang_km,
+        bpende,
+        pp.bpende_bezeichnung,
+        pp.bpende_km,
+        pp.bemerkungen,
+        pp.projektsuffix,
+        pp.projektidentifikation,
+        pp.ranfangsbezugspunkt,
+        pp.rendbezugspunkt,
         bpa.geometrie AS bpanfang_geometrie,
         bpe.geometrie AS bpende_geometrie,
-        --bpa.achsen_tid,
-        --bpe.achsen_tid,
         bpa.linegeometrie AS achsengeometrie
     from 
         tabelle_projekte pp
     join
         bppunkte_achsen bpa
     on
-        pp.bpanfang_bezeichnung = bpa.bezeichnung and pp.achsnr = bpa.achsenummer::INTEGER
+        pp.ranfangsbezugspunkt = bpa.t_id
     join
         bppunkte_achsen bpe
     on
-        pp.bpende_bezeichnung = bpe.bezeichnung and pp.achsnr = bpe.achsenummer::INTEGER
+        pp.rendbezugspunkt = bpe.t_id
     where
         bpa.achsen_tid = bpe.achsen_tid
 ),
@@ -129,6 +159,8 @@ projekte_an_einer_achse AS (
         pma.bemerkungen,
         pma.projektsuffix,
         pma.projektidentifikation,
+        pma.ranfangsbezugspunkt,
+        pma.rendbezugspunkt,
         ST_Multi(ST_LineSubstring(
             pma.achsengeometrie,
             CASE WHEN pma.bpanfang_km IS NOT NULL THEN
@@ -190,6 +222,8 @@ projekte_an_mehreren_achsen AS (
         pp.bemerkungen,
         pp.projektsuffix,
         pp.projektidentifikation,
+        pp.ranfangsbezugspunkt,
+        pp.rendbezugspunkt,
         ST_Multi(ST_LineSubstring(
             ka.geometrie,
             CASE WHEN pp.bpanfang_km IS NOT NULL THEN
@@ -213,11 +247,11 @@ projekte_an_mehreren_achsen AS (
     JOIN 
         avt_mehrjahresplanung_v1.kantonsstrassen_bezugspunkt kb 
     ON
-        pp.bpanfang_bezeichnung = kb.bezeichnung AND pp.achsnr = kb.achsenummer::integer
+        pp.ranfangsbezugspunkt = kb.t_id
     JOIN 
         avt_mehrjahresplanung_v1.kantonsstrassen_bezugspunkt kc 
     ON
-        pp.bpende_bezeichnung = kc.bezeichnung AND pp.achsnr = kc.achsenummer::integer
+        pp.rendbezugspunkt = kc.t_id
     WHERE
         pp.t_id NOT IN (SELECT t_id FROM projekte_mit_manuell_erfasster_geometrie)
     AND
@@ -249,6 +283,8 @@ projekte_mit_direkter_linie AS (
         pp.bemerkungen,
         pp.projektsuffix,
         pp.projektidentifikation,
+        pp.ranfangsbezugspunkt,
+        pp.rendbezugspunkt,
         ST_Multi(ST_MakeLine(kb.geometrie, kb2.geometrie)) as geometrie,
         'direkte_linie' AS fall
     FROM 
@@ -256,11 +292,11 @@ projekte_mit_direkter_linie AS (
     JOIN
         avt_mehrjahresplanung_v1.kantonsstrassen_bezugspunkt kb 
     ON
-        pp.bpanfang_bezeichnung = kb.bezeichnung AND pp.achsnr = kb.achsenummer::INTEGER
+        pp.ranfangsbezugspunkt = kb.t_id
     JOIN
         avt_mehrjahresplanung_v1.kantonsstrassen_bezugspunkt kb2 
     ON
-        pp.bpende_bezeichnung = kb2.bezeichnung AND pp.achsnr = kb2.achsenummer::INTEGER
+        pp.rendbezugspunkt = kb2.t_id
     WHERE
         pp.t_id NOT IN (SELECT t_id FROM projekte_mit_manuell_erfasster_geometrie)
     AND
