@@ -33,6 +33,8 @@ lines as (
             THEN 'assessed_and_complete'
             WHEN erhebungsstand = 'beurteilt' AND teilprozess IN ('einsturz','absenkung')
             THEN 'assessed'
+            WHEN erhebungsstand = 'beurteilt_und_vollstaendig' 
+            THEN 'assessed_and_complete'
             WHEN erhebungsstand = 'beurteilung_nicht_noetig'
             THEN 'assessment_not_necessary'
             WHEN erhebungsstand = 'beurteilt_und_nicht_bestimmbar' 
