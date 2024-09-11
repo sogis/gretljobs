@@ -20,5 +20,4 @@ task transferAfuAsiatischeHornissePub(type: Db2Db) {
 
 task refreshSolr(type:Exec, dependsOn:'transferAfuAsiatischeHornissePub') {
         commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.asiatische_hornisse'
-'
 }
