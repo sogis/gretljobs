@@ -12,17 +12,11 @@ task validateInputFile(type: CsvValidator) {
     valueSeparator = ';'
     firstLineIsHeader = true
     encoding = "Windows-1252"
-}
-
-task emptyTable(type: SqlExecutor) {
-    dependsOn validateInputFile
-    description = "Leere die Datenbanktabelle"
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ['delete_projekte.sql']
+    configFile = "csv_file_validation.ini"
 }
 
 task replaceStartHeader(){
-    dependsOn emptyTable
+    dependsOn validateInputFile
     description = "Ersetzt start zu astart."
     doLast {
         ant.replace(
@@ -34,7 +28,7 @@ task replaceStartHeader(){
 }
 
 task replacePhaseHeader(){
-    dependsOn replaceStartHeader
+    dependsOn validateInputFile
     description = "Ersetzt phase zu aphase."
     doLast {
         ant.replace(
@@ -45,36 +39,26 @@ task replacePhaseHeader(){
     }
 }
 
+task emptyTable(type: SqlExecutor) {
+    dependsOn replaceStartHeader, replacePhaseHeader
+    description = "Leere die Datenbanktabelle"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['delete_projekte.sql']
+}
+
 task importFile(type: CsvImport) {
-    dependsOn replacePhaseHeader
+    dependsOn emptyTable
     description = "Importiere die CSV-Datei"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = "avt_mehrjahresplanung_v1"
     tableName = "projekte_projekt"
     valueSeparator = ';'
-    //encoding = 'UTF-8'
     dataFile = csvFilename
     encoding = "Windows-1252"
 }
 
-task handleObsoleteGeometries(type: SqlExecutor) {
-    dependsOn importFile
-    description = "Setze ein Obsolet-Datum und lösche Geometrie älter als sechs Monate"
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ['update_projektgeometrie.sql']
-}
-
-task validateData(type: Ili2pgValidate) {
-    dependsOn handleObsoleteGeometries
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    models = "SO_AVT_Mehrjahresplanung_20240911"
-    modeldir = rootProject.projectDir.toString() + ";http://models.interlis.ch"
-    dbschema = "avt_mehrjahresplanung_pub_v1"
-    failOnException = false
-}
-
 task copyKantonsstrassenData(type: Db2Db) {
-    dependsOn validateData
+    dependsOn importFile
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
@@ -83,11 +67,32 @@ task copyKantonsstrassenData(type: Db2Db) {
     ]
 }
 
-task transferData(type: Db2Db) {
+task setAssociations(type: SqlExecutor) {
     dependsOn copyKantonsstrassenData
+    description = "Füge die Beziehungen von Projekte zu den Bezugspunkten"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['update_projekt.sql']
+}
+
+task handleObsoleteGeometries(type: SqlExecutor) {
+    dependsOn setAssociations
+    description = "Setze ein Obsolet-Datum und lösche Geometrie älter als sechs Monate"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['update_projektgeometrie.sql']
+}
+
+task validateData(type: Ili2pgValidate) {
+    dependsOn handleObsoleteGeometries
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = "SO_AVT_Mehrjahresplanung_20240911"
+    dbschema = "avt_mehrjahresplanung_v1"
+}
+
+task transferData(type: Db2Db) {
+    dependsOn validateData
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-        new TransferSet('select_projekte_und_geometrie.sql', 'avt_mehrjahresplanung_pub_v1.projekt', true),
+        new TransferSet('select_projekte_und_geometrie.sql', 'avt_mehrjahresplanung_pub_v1.projekt', true)
     ]
 }
