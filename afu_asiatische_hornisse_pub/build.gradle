@@ -6,7 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 description = "GRETL-Job für Datenübernahme der Asiatischen Hornisse innerhalb der edit-DB, ins pub-Schema (pub-DB, edit-DB)"
 
 
-defaultTasks 'transferAfuAsiatischeHornissePub'
+defaultTasks 'refreshSolr'
 
 
 task transferAfuAsiatischeHornissePub(type: Db2Db) {
@@ -18,3 +18,7 @@ task transferAfuAsiatischeHornissePub(type: Db2Db) {
     ]
 }
 
+task refreshSolr(type:Exec, dependsOn:'transferAfuAsiatischeHornissePub') {
+        commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.asiatische_hornisse
+'
+}
