@@ -1,0 +1,1 @@
+Zwecks Import der PLZ/Ortschaften im neuen Modell. Die drei PLZ/Ortschafts-Jobs müssen kurz über lang vereinigt werden.

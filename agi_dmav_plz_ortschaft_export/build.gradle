@@ -1,0 +1,83 @@
+apply plugin: "ch.so.agi.gretl"
+
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+defaultTasks 'exportAllData'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def pathToExportFolder = Paths.get(pathToTempFolder, 'export')
+
+def iliModelExport = "DMAV_PLZ_Ortschaft_V1_0"
+def dbSchemaExport = "agi_dmav_plz_ortschaften_export_v1"
+def emptyTransferFile = "DMAV_PLZ_Ortschaft_V1_0_empty.xtf"
+
+
+def bucketSuffix = '-undefined'
+if ( gretlEnvironment == 'production' ) {
+    bucketSuffix = ''
+} else if ( gretlEnvironment == 'integration' || gretlEnvironment == 'development' ) {
+    bucketSuffix = '-' + gretlEnvironment.substring(0, 3)
+} else {
+    bucketSuffix = '-' + gretlEnvironment
+}
+def s3Bucket = "ch.so.agi.dmav.plzortschaft$bucketSuffix"
+
+def gemeinden = [2401,2402,2403,2404,2405,2406,2407,2408,2421,2422,2424,2425,2426,2427,2428,2430,2445,2455,2457,2461,2463,2464,2465,2471,2472,2473,2474,2475,2476,2477,2478,2479,2480,2481,2491,2492,2493,2495,2497,2499,2500,2501,2502,2503,2511,2513,2514,2516,2517,2518,2519,2520,2523,2524,2525,2526,2527,2528,2529,2530,2532,2534,2535,2541,2542,2543,2544,2545,2546,2547,2548,2549,2550,2551,2553,2554,2555,2556,2571,2572,2573,2574,2575,2576,2578,2579,2580,2581,2582,2583,2584,2585,2586,2601,2611,2612,2613,2614,2615,2616,2617,2618,2619,2620,2621,2622]
+//def gemeinden = [2401,2402,2403,2404]
+
+gemeinden.each { gemeinde ->
+    tasks.register("deleteFromExportSchema_$gemeinde", SqlExecutor) {
+        description = "Löscht die Daten aus dem Exportschema."
+        database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+        sqlFiles = ["delete_data.sql"]
+    }
+
+    tasks.register("importEmptyTransferToExportSchema_$gemeinde", Ili2pgImport) {
+        dependsOn "deleteFromExportSchema_$gemeinde"
+        description = "Import eines leeren PLZ/Ortschafts-Basket damit notwendige Datasets- und Basketrecords für Transferdaten in der DB erstellt werden."
+        database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+        models = iliModelExport
+        dbschema = dbSchemaExport
+        dataFile = file(emptyTransferFile)
+    }
+
+    tasks.register("transferData_$gemeinde", SqlExecutor) {
+        dependsOn "importEmptyTransferToExportSchema_$gemeinde"
+        description = "Führt den Datenumbau in das Exportschema durch."
+        database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+        sqlFiles = ["insert_data.sql"]
+        sqlParameters = [bfsnr: gemeinde as String]
+    }
+
+    tasks.register("exportData_$gemeinde", Ili2pgExport) {
+        dependsOn "transferData_$gemeinde"
+        description = "Exportiert die Daten nach INTERLIS."
+        database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+        models = iliModelExport
+        dbschema = dbSchemaExport
+        dataFile = file(Paths.get(pathToExportFolder.toString(), "DMAV_PLZ_Ortschaft_V1_0."+gemeinde+".xtf"))
+        disableValidation = false
+    } 
+
+    tasks.register("uploadXtfToS3_$gemeinde", S3Upload) {
+        dependsOn "exportData_$gemeinde"
+        description = "XTF-File nach S3 hochladen."
+        accessKey = awsAccessKeyAgi
+        secretKey = awsSecretAccessKeyAgi
+        sourceFile = file(Paths.get(pathToExportFolder.toString(), "DMAV_PLZ_Ortschaft_V1_0."+gemeinde+".xtf"))
+        endPoint = "https://s3.eu-central-1.amazonaws.com"
+        region = "eu-central-1"
+        bucketName = s3Bucket
+        acl = "public-read"
+    }
+}
+
+task exportAllData() {
+    description = "Aggregation task."
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('uploadXtfToS3_') }
+    }
+}
