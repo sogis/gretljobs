@@ -1,5 +1,5 @@
 SELECT
-    ST_Force2D(ageometry) AS geometrie,
+    ST_Force2D(ST_RemoveRepeatedPoints(ageometry,0.001)) AS geometrie,
     surface.aname_de AS oberflaeche,
     hiking_segment_type.aname_de AS wanderweg_typ
 FROM
