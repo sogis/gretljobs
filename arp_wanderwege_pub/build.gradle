@@ -24,7 +24,7 @@ task updateStandortLink(type: SqlExecutor, dependsOn: transferArpWanderwege){
     ]
 }
 
-*/
+/*
 task publishPub (type: Publisher, dependsOn: updateStandortLink){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.arp.wanderwege"
