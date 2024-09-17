@@ -69,7 +69,7 @@ SELECT
     routes.technische_routennummer,
     routes.astart,
     routes.ziel,
-    @ AS routenstandorte,
+    '@' AS routenstandorte,
     routes.signalisationsrichtung,
     routes.beschreibung,
     routes.letzte_aktualisierung,
