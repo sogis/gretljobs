@@ -69,7 +69,6 @@ SELECT
     routes.technische_routennummer,
     routes.astart,
     routes.ziel,
-    --    string_agg(location_categories.location_category, E'\r\, ') AS routenstandorte,
     @ AS routenstandorte,
     routes.signalisationsrichtung,
     routes.beschreibung,
