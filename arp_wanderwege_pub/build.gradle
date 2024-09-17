@@ -28,7 +28,7 @@ task publishPub (type: Publisher, dependsOn: updateStandortLink){
     dataIdent = "ch.so.arp.wanderwege"
     dbSchema = "arp_wanderwege_pub_v1"
     modelsToPublish = "SO_ARP_Wanderwege_Publikation_230123"
-    userFormats = true
+    userFormats = false
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
