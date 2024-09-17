@@ -38,7 +38,7 @@ routes AS (
         route.starting_point AS astart,
         route.destination AS ziel,
         catalogues_direction.aname_de AS signalisationsrichtung,
-        route.route_description AS beschreibung,
+        regexp_replace(route.route_description, E'[\\n\\r]+', ' ', 'g' ) AS beschreibung,
         substr(metadata.last_updated, 1, 4)||'-'||substr(metadata.last_updated, 5, 2)||'-'||substr(metadata.last_updated, 7, 2) AS letzte_aktualisierung,
         '<a href="https://www.solothurner-wanderwege.ch/de/kontakt" target="_blank">Solothurner Wanderwege</a>' AS kontakt
     FROM
