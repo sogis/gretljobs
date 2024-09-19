@@ -25,9 +25,9 @@ task moveConvertedDataToPubDb(type: Db2Db, dependsOn: convertData){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('agi_av_kaso_abgleich_pub_differenzen.sql', 'agi_av_kaso_abgleich_pub.differenzen', true),
+            new TransferSet('agi_av_kaso_abgleich_pub_differenzen.sql', 'agi_av_kaso_abgleich_pub_v1.differenzen', true),
             new TransferSet('agi_av_kaso_abgleich_pub_uebersicht_des_vergleichs.sql',
-                    'agi_av_kaso_abgleich_pub.uebersicht_des_vergleichs', true)
+                    'agi_av_kaso_abgleich_pub_v1.uebersicht_des_vergleichs', true)
     ]
 }
 
