@@ -29,7 +29,7 @@ print auftragskennung;
 
 task validateData(type: IliValidator) {
     description = "Validiert die Daten und überprüft insbesondere die Auftragskennung"
-    dataFiles = file(uploadFolder+'/'+xtfFilename)
+    dataFiles = [file(uploadFolder+'/'+xtfFilename)]
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     models = verifikationsModelName
     configFile = file('SO_AFU_Naturgefahren_Verifikation.ini')
