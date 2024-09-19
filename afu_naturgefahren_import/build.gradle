@@ -25,13 +25,10 @@ def verifikationsModelName = "SO_AFU_Naturgefahren_Validierung_20240515"
 
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
 
-print auftragskennung;
-print uploadFolder+'/'+xtfFilename;
-print xtfFilename;
 
 task validateData(type: IliValidator) {
     description = "Validiert die Daten und überprüft insbesondere die Auftragskennung"
-    dataFiles = [uploadFolder+'/'+xtfFilename]
+    dataFiles = [ file(xtfFilename) ]
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     models = verifikationsModelName
     configFile = file('SO_AFU_Naturgefahren_Verifikation.ini')
