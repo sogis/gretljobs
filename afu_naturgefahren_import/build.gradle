@@ -4,7 +4,8 @@ import java.nio.file.Paths
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'dbImport_empty_beurteilungsgebiet'
+//defaultTasks 'dbImport_empty_beurteilungsgebiet'
+defaultTasks 'validateData'
 
 /*
 Der Job AfU_Naturgefahren_Import importiert neue Naturgefahren-Daten. 
