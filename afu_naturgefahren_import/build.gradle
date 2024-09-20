@@ -44,7 +44,7 @@ task dbImport(type: Ili2pgReplace, dependsOn: 'validateData') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "afu_naturgefahren_v2"
     models = modelName
-    dataFile = file(uploadFolder+'/'+xtfFilename)
+    dataFile = file(xtfFilename)
     dataset = auftragskennung
     disableValidation = true
     
