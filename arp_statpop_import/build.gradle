@@ -47,7 +47,7 @@ task transferStatpop(type: Db2Db, dependsOn: importStatpop){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
-            new TransferSet('transfer_staging_edit.sql', 'arp_statpop_statent_2022_v1.statpop', true), 
+            new TransferSet('transfer_staging_edit.sql', 'arp_statpop_statent_2023_v1.statpop', true), 
             new TransferSet('transfer_staging_edit.sql', 'arp_statpop_statent_v1.statpop', true)
     ];
 }
