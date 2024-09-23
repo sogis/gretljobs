@@ -76,13 +76,6 @@ task validateData(type: IliValidator, dependsOn: 'exportData') {
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     failOnError = true
 }
-/*
-task deleteData_staging_pub (type: SqlExecutor) {
-    description = "Löscht/leert die Daten aus dem Schema awjf_statische_waldgrenze_staging"
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlFiles = ["delete_awjf_statische_waldgrenze_staging.sql"]
-}
-*/
 
 task importXTF_pub(type: Ili2pgImport) {
     description = 'Import der umgebaute INTERLIS-Datei in das Schema awjf_statische_waldgrenze_pub.'
@@ -92,7 +85,6 @@ task importXTF_pub(type: Ili2pgImport) {
     dataFile = file(FileNamePub)
     deleteData = true
     disableValidation = true
-//    finalizedBy deleteData_staging_pub
 }
 
 task publishPub(type: Publisher, dependsOn: 'importXTF_pub'){
@@ -107,51 +99,5 @@ task publishPub(type: Publisher, dependsOn: 'importXTF_pub'){
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
-// EXPORT Typo3
-// Datenumbau für Planregister (Nur Daten aus Schema "awjf_statische_waldgrenze" werden ersetzt) und an Typo3 senden
 
-
-task deleteData_planregister_pub (type: SqlExecutor, dependsOn: publishPub ) {
-    description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_planregister_pub"
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlFiles = ["delete_arp_nutzungsplanung_planregister_pub_statische_waldgrenze.sql"]
-}
-
-task transfer_planregister_pub(type: Db2Db, dependsOn: 'deleteData_planregister_pub') {
-    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
-    transferSets = [
-            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_waldgrenze.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', false),            
-    ];
-}
-
-task deleteData_doppelte_dokumente (type: SqlExecutor, dependsOn:transfer_planregister_pub) {
-    description = "Löscht die doppelten Dokumente aus dem Schema arp_nutzungsplanung_planregister_pub" 
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlFiles = ["delete_arp_nutzungsplanung_planregister_pub_doppelte_dokumente.sql"]
-}
-
-task exportPlanregisterPub(type: Ili2pgExport, dependsOn: 'deleteData_doppelte_dokumente') {
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    models = iliModelPlanregister
-    dbschema = dbSchemaPlanregister
-    dataFile = file(Paths.get(pathToTempFolder, planregisterXtfFileName))
-    disableValidation = true
-    // Kein Dataset, weil alle Daten enthalten sein sollen. 
-}
-
-task zipPlanregister(type: Gzip, dependsOn: 'exportPlanregisterPub') {
-    dataFile = file(Paths.get(pathToTempFolder, planregisterXtfFileName)) 
-    gzipFile = file(Paths.get(pathToTempFolder, planregisterZipFileName)) 
-}
-
-task uploadPlanregister(type: Curl, dependsOn: 'zipPlanregister') {
-    serverUrl = digiplanUrl
-    method = MethodType.POST
-    headers = ["Content-Type": "application/xml", "Content-Encoding": "gzip"]
-    dataBinary = file(Paths.get(pathToTempFolder, planregisterZipFileName))
-    user = digiplanUser
-    password = digiplanPwd
-    expectedStatusCode = 202
-}
 
