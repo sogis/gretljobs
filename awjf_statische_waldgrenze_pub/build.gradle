@@ -8,7 +8,9 @@ import java.io.File
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'validateData', 'uploadPlanregister'
+//defaultTasks 'validateData', 'uploadPlanregister'
+defaultTasks 'validateData', 'publishPub'
+
 
 def FileName = "awjf_statische_waldgrenze.xtf"
 def FileNamePub = "awjf_statische_waldgrenze_pub.xtf"
@@ -74,13 +76,13 @@ task validateData(type: IliValidator, dependsOn: 'exportData') {
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     failOnError = true
 }
-
+/*
 task deleteData_staging_pub (type: SqlExecutor) {
     description = "Löscht/leert die Daten aus dem Schema awjf_statische_waldgrenze_staging"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ["delete_awjf_statische_waldgrenze_staging.sql"]
 }
-
+*/
 
 task importXTF_pub(type: Ili2pgImport) {
     description = 'Import der umgebaute INTERLIS-Datei in das Schema awjf_statische_waldgrenze_pub.'
@@ -90,7 +92,7 @@ task importXTF_pub(type: Ili2pgImport) {
     dataFile = file(FileNamePub)
     deleteData = true
     disableValidation = true
-    finalizedBy deleteData_staging_pub
+//    finalizedBy deleteData_staging_pub
 }
 
 task publishPub(type: Publisher, dependsOn: 'importXTF_pub'){
