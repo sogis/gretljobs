@@ -35,7 +35,7 @@ pipeline {
                 unstash name: "gretljob"
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
-                        sh "gretl importXTF_pub deleteData_planregister_pub uploadPlanregister"
+                        sh "gretl importXTF_pub"
                     }
                 }
             }
