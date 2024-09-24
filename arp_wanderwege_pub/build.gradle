@@ -27,7 +27,7 @@ task updateStandortLink(type: SqlExecutor, dependsOn: transferArpWanderwege){
 task publishPub (type: Publisher, dependsOn: updateStandortLink){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.arp.wanderwege"
-    dbSchema = "arp_wanderwege_pub_v1"
+    dbSchema = "arp_wanderwege_pub_v2"
     modelsToPublish = "SO_ARP_Wanderwege_Publikation_20240924"
     userFormats = true
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
