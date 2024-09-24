@@ -19,7 +19,7 @@ if (!xtfFilename || xtfFilename.isEmpty()) {
 
 String[] split = xtfFilename.split("\\.")
 def auftragskennung = split[0]
-def uploadFolder = '.'
+def uploadFolder = './'
 def schemaName = 'afu_naturgefahren_v2'
 def modelName = 'SO_AFU_Naturgefahren_20240515'
 def verifikationsModelName = 'SO_AFU_Naturgefahren_Validierung_20240515'
@@ -30,7 +30,7 @@ print xtfFilename;
 
 task validateData(type: IliValidator) {
     description = "Validiert die Daten und überprüft insbesondere die Auftragskennung"
-    dataFiles = file(xtfFilename)
+    dataFiles = file(uploadfolder+xtfFilename)
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     models = verifikationsModelName
     // configFile = file('SO_AFU_Naturgefahren_Verifikation.ini')
