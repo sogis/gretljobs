@@ -3,8 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'updateStandortLink'
-/*defaultTasks 'publishPub'*/
+defaultTasks 'publishPub'
 
 task transferArpWanderwege(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -24,7 +23,7 @@ task updateStandortLink(type: SqlExecutor, dependsOn: transferArpWanderwege){
     ]
 }
 
-/*
+
 task publishPub (type: Publisher, dependsOn: updateStandortLink){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.arp.wanderwege"
@@ -37,4 +36,4 @@ task publishPub (type: Publisher, dependsOn: updateStandortLink){
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
-*/
+
