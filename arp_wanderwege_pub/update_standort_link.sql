@@ -1,5 +1,5 @@
 UPDATE
-    arp_wanderwege_pub_v1.wanderwege_signalisation
+    arp_wanderwege_pub_v2.wanderwege_signalisation
 SET
     dokument = 'https://geo.so.ch/docs/ch.so.arp.wanderwege/standorttafeln/'||standortname||'.pdf' 
 WHERE
