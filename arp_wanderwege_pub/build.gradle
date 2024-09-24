@@ -10,9 +10,9 @@ task transferArpWanderwege(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('arp_wanderwege_pub_route.sql', 'arp_wanderwege_pub_v1.wanderwege_route', true),
-            new TransferSet('arp_wanderwege_pub_wanderweg.sql', 'arp_wanderwege_pub_v1.wanderwege_wanderweg', true),
-            new TransferSet('arp_wanderwege_pub_signalisation.sql', 'arp_wanderwege_pub_v1.wanderwege_signalisation', true)
+            new TransferSet('arp_wanderwege_pub_route.sql', 'arp_wanderwege_pub_v2.wanderwege_route', true),
+            new TransferSet('arp_wanderwege_pub_wanderweg.sql', 'arp_wanderwege_pub_v2.wanderwege_wanderweg', true),
+            new TransferSet('arp_wanderwege_pub_signalisation.sql', 'arp_wanderwege_pub_v2.wanderwege_signalisation', true)
     ];
 }
 
@@ -29,7 +29,7 @@ task publishPub (type: Publisher, dependsOn: updateStandortLink){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.arp.wanderwege"
     dbSchema = "arp_wanderwege_pub_v1"
-    modelsToPublish = "SO_ARP_Wanderwege_Publikation_230123"
+    modelsToPublish = "SO_ARP_Wanderwege_Publikation_20240924"
     userFormats = true
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
