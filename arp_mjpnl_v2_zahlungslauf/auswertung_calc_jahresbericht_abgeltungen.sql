@@ -15,7 +15,13 @@ INSERT INTO ${DB_Schema_MJPNL}.auswertung_jahresbericht_abgeltungen
 	betrag_total,
 	anzahl_gemeinden
 )
-WITH beurteilungs_metainfo_baeume AS (
+WITH leistungen_per_vereinbarung AS (
+    SELECT vereinbarung, SUM(betrag_total) as betrag_total
+    FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung
+    WHERE auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer
+    GROUP BY vereinbarung
+),
+beurteilungs_metainfo_baeume AS (
    SELECT vereinbarung, beurteilungsdatum,
    grundbeitrag_baum_anzahl,
    beitrag_baumab40cmdurchmesser_anzahl,
@@ -43,7 +49,7 @@ SELECT
     vbg.vereinbarungsart as vereinbarungsart,
 	COALESCE(bezirk.bezirksnummer,0),
 	COALESCE(bezirk.bezirksname,'unbekannt'),
-	COUNT(DISTINCT vbg.vereinbarungs_nr) anzahl_vereinbarungen,
+	COUNT(vbg.vereinbarungs_nr) anzahl_vereinbarungen,
 	SUM(vbg.flaeche) as flaeche_total,
     SUM(COALESCE(hk.bewirtschaftung_lebhag_laufmeter, 0)) as laufmeter,
 	SUM(COALESCE(bae.grundbeitrag_baum_anzahl, 0)) as baeume_total,
@@ -67,8 +73,8 @@ ON vbg.t_id = hk.vereinbarung
 -- berücksichtige nur die neusten (sofern mehrere existieren)
 AND hk.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM beurteilungs_metainfo_hecke he WHERE he.vereinbarung = vbg.t_id)
 -- wir holen den totalbetrag aus den leistungen, da auch einmalige miteinbezogen werden sollen
-LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung lstg
-ON lstg.vereinbarung = vbg.t_id AND lstg.auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer
+LEFT JOIN leistungen_per_vereinbarung lstg
+ON lstg.vereinbarung = vbg.t_id
 WHERE vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE AND vbg.ist_nutzungsvereinbarung IS NOT TRUE
 GROUP BY bezirk.bezirksnummer, bezirk.bezirksname, vbg.vereinbarungsart
 ORDER BY vbg.vereinbarungsart, bezirk.bezirksnummer
