@@ -1,157 +1,92 @@
-import ch.so.agi.gretl.api.TransferSet
-import ch.so.agi.gretl.tasks.*
-import java.nio.file.Paths
-import java.nio.file.Files
-import de.undercouch.gradle.tasks.download.Download
+import java.util.Base64
 import groovy.json.JsonSlurper
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.ArrayList
-import java.util.Iterator
-import java.util.List
-import java.util.zip.GZIPInputStream
+import java.net.http.HttpRequest
+import java.net.http.HttpClient
+import java.net.http.HttpResponse
 
+/*
+plugins {
+    id "de.undercouch.download" version "5.6.0"
+}
 
-apply plugin: "de.undercouch.download"
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.tasks.Curl.MethodType
+
 apply plugin: 'ch.so.agi.gretl'
+*/
 
+defaultTasks 'download_json'
 
-defaultTasks 'transferAfUInfofloraPub'
+String clientId = "fuu";
+String clientSecret = "bar";
 
-def pathToTempFolder = System.getProperty("java.io.tmpdir")
-def pathToUnzipFolder = Paths.get(pathToTempFolder)
-def pathToDataZip = Paths.get(pathToTempFolder, 'neophyten.gz')
-def csvFilePath = Paths.get(pathToUnzipFolder.toString(), 'data', 'data.csv')
+def token = ""
 
+task getToken(){
+    description = "gets the access token based on client id and secret"
+    doLast{
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(new URI("https://auth.infoflora.ch/oauth2/token"))
+            .header("Content-Type", "application/x-www-form-urlencoded")
+            .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes()))
+            .POST(HttpRequest.BodyPublishers.ofString("grant_type=client_credentials&client_id=" + clientId))
+            .build();
 
-ext.filepath = 'foo'
-ext.filename = 'bar'
-ext.fileid = new ArrayList<String>()
+        HttpClient client = HttpClient.newHttpClient();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()); 
 
+        def body = response.body()    
 
-task download_json(type: Download){
+        def slurper = new JsonSlurper();
+        def slurped = slurper.parseText(body)
+
+        if (slurped.access_token != null)
+            token = slurped.access_token 
+
+        if(token.length() == 0)
+            throw new GradleException("Failed to retrieve access token")
+
+        println "Length of access token is: " + token.length()
+    }
+}
+
+task download_json(dependsOn: getToken){
     description = "Download Json with filename"
-    doLast {
-        def inputFile = new File(pathToTempFolder + "/filenames.json")
-        def json = new JsonSlurper().parseText(inputFile.text)
-        def sortedJson = json.data.sort {a, b -> b.last_modified_when <=> a.last_modified_when}
 
-        /*Hier wird festgelegt, welches file auf dem Server gelöscht wird! */        
-        SimpleDateFormat sdfo = new SimpleDateFormat("yyyy-MM-dd")
-        Date date = new Date()
-        Date todayDate = sdfo.parse(sdfo.format(date)) 
-        sortedJson.each {
-			if (it.last_modified_when == null) {
-                project.fileid.add(it.id)
-            }
-            else {
-                Date fileDate = sdfo.parse(it.last_modified_when)
-                if ((todayDate - fileDate) > 2) {
-                    project.fileid.add(it.id)
-                }
-            }
-            /* Falls Gewünscht, dass nur das aktuelle file (0 Tage alt) importiert wird. Andersfalls wird einfach das neuste importiert.
-            if ((todayDate - fileDate) == 0) {
-                project.filename = it.file_name 
-                project.filepath = it.folder_name    
-                println "Filename = " + filename
-            }
-        */
-        }
-        project.filename = sortedJson.file_name[0]
-        project.filepath = sortedJson.folder_name[0]
+    doLast{
+        println token
 
-        if (project.filename == 'bar') {
-            throw new GradleException("Kein file auf dem Server!")
-        }
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(new URI("https://obs.infoflora.ch/rest/v4/docs.json?projects=83505"))
+            .header("Authorization", "Bearer " + token)
+            .GET()
+            .build();
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()); 
+
+        println response.body()
     }
-    src 'https://obs.infoflora.ch/rest/v4/docs.json?projects=83505'
-    username infofloraUser
-    password infofloraPwd
-    dest new File(pathToTempFolder, 'filenames.json')
-    overwrite true
-}
+} 
 
-task download_file(dependsOn: download_json){
-    description = "Download Zip file"
+/*
+Funktioniert irgendwie nicht - liefert HTTP 400 "bad request" zurück.
+Auch mit username password versucht anstelle explizitem basicHeader.
 
-    def localFileName = 'foo' 
-    def localPath = '/bar'
-    def url = 'https://obs.infoflora.ch/'
+Body der 400er response:
+{"error":"unsupported_grant_type","error_description":"The authorization grant type is not supported by the authorization server.","hint":"Check that all required parameters have been provided","message":"The authorization grant type is not supported by the authorization server."}
 
-    doFirst {
-        localFileName = project.filename
-        localPath = project.filepath
-        url = 'https://obs.infoflora.ch' + localPath + '/' + localFileName 
-    }
-    doLast {
-        download {
-            src url
-            dest file(pathToDataZip)
-            overwrite true
-        }
-        println "FileSize = " + file(pathToDataZip).size()
-    }
-}
+def basicHeader = "Basic " + Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes())
 
-task unpackFiles(dependsOn: download_file){ 
-    doLast {
-        GZIPInputStream gis = new GZIPInputStream(
-            new FileInputStream(pathToDataZip.toFile())
-        )
-        Files.copy(gis, Paths.get(pathToUnzipFolder.toString()+'/neophyten'))
-    }
-}
-
-
-task truncateTable(type: SqlExecutor, dependsOn:unpackFiles) {
-    description = "Leert die Tabelle afu_infoflora.neophyten_neophytenstandorte"
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = [
-            'truncate_table.sql'
+task getToken2(type: Curl) {
+    serverUrl = "https://auth.infoflora.ch/oauth2/token"
+    method = MethodType.POST
+    outputFile = file("./token.json")
+    expectedStatusCode = 200
+    formData = ["grant_type": "client_credentials", "client_id": clientId]
+    headers = [
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": basicHeader
     ]
 }
-
-task csvimport(type: CsvImport, dependsOn: truncateTable){
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    schemaName = "afu_infoflora"
-    tableName = "neophyten_neophytenstandorte"
-    firstLineIsHeader=true
-    valueSeparator = ";"
-    encoding = "UTF-8"
-    println "Importiere folgendes file: "+pathToUnzipFolder.toString()+'/neophyten'
-    dataFile = file(pathToUnzipFolder.toString()+'/neophyten')
-}
-
-task makeGeometry(type: SqlExecutor, dependsOn:csvimport){
-    description = "Macht aus x und y Koordinate eine Geometrie"
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = [
-            'makegeometry.sql'
-    ]
-}
-
-task deleteFileOnServer(dependsOn: makeGeometry){
-    doLast {
-        if (project.fileid.isEmpty()) {
-            println "No file will be deleted!"
-        }
-        else {
-            for (String localFileid : project.fileid) {
-                exec {
-                    workingDir '/tmp'
-                    commandLine 'curl', '-i', '--http1.1', '-u', infofloraUser + ':' + infofloraPwd, '-k', '-X', 'DELETE', '--header', 'Content-Type:application/json', 'https://obs.infoflora.ch/rest/v4/docs/'+localFileid+'.json'
-                    println "Deleted file ID: " + localFileid + " from Server"
-                }
-            }
-        }    
-    }
-}
-
-task transferAfUInfofloraPub(type: Db2Db, dependsOn: deleteFileOnServer){
-    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
-    transferSets = [
-            new TransferSet('afu_infoflora_pub.sql', 'afu_infoflora_pub.neophyten_neophytenstandorte', true)
-    ];
-}
+*/
