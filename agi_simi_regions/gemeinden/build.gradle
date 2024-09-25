@@ -18,6 +18,6 @@ task insertGemeindeRegion(type: Db2Db, dependsOn: deleteGemeindeRegion){
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [tid: gemTid]
     transferSets = [
-            new TransferSet('insert_gem_reg.sql', 'agi_metadaten_datenabdeckung_v1.abdeckung_teilgebiet', false)
+            new TransferSet('insert_gem_reg.sql', 'agi_metadaten_datenabdeckung_v2.abdeckung_teilgebiet', false)
     ];
 }
