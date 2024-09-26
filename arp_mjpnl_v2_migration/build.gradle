@@ -47,7 +47,7 @@ def trafoFileContent = """<xsl:stylesheet
     <xsl:template match="*[starts-with(local-name(), 'SO_ARP_MJPNL_20201026')]">
         <xsl:choose>
             <!-- Beurteilung_ALR_Saum and Beurteilung_ALR_Buntbrache it should receive a child with a default value (since this is mandatory in the new model) -->
-            <xsl:when test="local-name()='SO_ARP_MJPNL_20201026.MJPNL.Beurteilung_ALR_Saum' or local-name()='SO_ARP_MJPNL_20201026.MJPNL.Beurteilung_ALR_Buntbrache'">
+            <xsl:when test="local-name()='SO_ARP_MJPNL_20201026.MJPNL.Beurteilung_ALR_Saum' or local-name()='SO_ARP_MJPNL_20201026.MJPNL.Beurteilung_ALR_Buntbrache' or local-name()='SO_ARP_MJPNL_20201026.MJPNL.Beurteilung_Hecke'">
                 <xsl:choose>
                     <xsl:when test="local-name()='SO_ARP_MJPNL_20201026.MJPNL.Beurteilung_ALR_Saum'">
                         <SO_ARP_MJPNL_20240606.MJPNL.Beurteilung_ALR_Saum>
@@ -55,11 +55,18 @@ def trafoFileContent = """<xsl:stylesheet
                             <Einstiegskriterium_Abgeltung_ha>0.00</Einstiegskriterium_Abgeltung_ha>
                         </SO_ARP_MJPNL_20240606.MJPNL.Beurteilung_ALR_Saum>
                     </xsl:when>
-                    <xsl:otherwise>
+                    <xsl:when test="local-name()='SO_ARP_MJPNL_20201026.MJPNL.Beurteilung_ALR_Buntbrache'">
                         <SO_ARP_MJPNL_20240606.MJPNL.Beurteilung_ALR_Buntbrache>
                             <xsl:apply-templates select="@*|node()"/>
                             <Einstiegskriterium_Abgeltung_ha>0.00</Einstiegskriterium_Abgeltung_ha>
                         </SO_ARP_MJPNL_20240606.MJPNL.Beurteilung_ALR_Buntbrache>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <SO_ARP_MJPNL_20240606.MJPNL.Beurteilung_Hecke>
+                            <xsl:apply-templates select="@*|node()"/>
+                            <Bewirtschaftung_Lebhag_Geschnitten>false</Bewirtschaftung_Lebhag_Geschnitten>
+                            <Bewirtschaftung_Lebhag_Grenzhag>false</Bewirtschaftung_Lebhag_Grenzhag>
+                        </SO_ARP_MJPNL_20240606.MJPNL.Beurteilung_Hecke>
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:when>
