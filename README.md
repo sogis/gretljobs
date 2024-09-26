@@ -347,7 +347,7 @@ auch eine *processing*-DB gestartet
 für GRETL-Jobs, die eine solche benötigen.
 
 **Wichtig**: In diesem Fall müssen auch die nachfolgenden Compose-Befehle
-jeweils mit der Option `--profice processing` aufgerufen werden,
+jeweils mit der Option `--profile processing` aufgerufen werden,
 damit sie auch die Processing-DB mit einschliessen.
 
 #### Entwicklungs-DBs stoppen
