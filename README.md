@@ -380,6 +380,10 @@ weil die Docker-Volumes nicht gelöscht werden.
 ```
 docker volume rm gretljobs_pgdata_edit gretljobs_pgdata_pub
 ```
+bzw. für die Processing-DB
+```
+docker volume rm gretljobs_pgdata_processing
+```
 Mit diesem Befehl werden die Volumes der Entwicklungs-DB-Container
 und damit die Daten in den Entwicklungs-DBs gelöscht.
 (Die DB-Container müssen vorgängig mit dem Befehl `docker compose down`
