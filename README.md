@@ -378,7 +378,7 @@ weil die Docker-Volumes nicht gelöscht werden.
 
 #### Daten der Entwicklungs-DB-Container löschen
 ```
-docker volume rm gretljobs_postgresql_data_edit gretljobs_postgresql_data_pub
+docker volume rm gretljobs_pgdata_edit gretljobs_pgdata_pub
 ```
 Mit diesem Befehl werden die Volumes der Entwicklungs-DB-Container
 und damit die Daten in den Entwicklungs-DBs gelöscht.
