@@ -11,22 +11,6 @@ def appXtfPath = tmpDir + "/appdata.xtf"
 def gisXtfPath = tmpDir + "/geodata.xtf"
 def schemaNameEdit = "afu_abbaustellen_v1"
 
-/*
-task publiedit(type: Publisher){
-  dataIdent = "ch.so.afu.abbaustellen.relational"
-  database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-  dbSchema = "afu_abbaustellen_v1"
-  modelsToPublish = "SO_AFU_ABBAUSTELLEN_20210630"
-
-  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
-  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
-  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-}
-*/
-
-//task downloadAppXtf(type: Download, dependsOn: publiedit){
 task downloadAppXtf(type: Download){
     description "Download transferfile from afu webapp 'abbaustellen'"
     src afuAbbaustellenAppXtfUrl
@@ -61,7 +45,20 @@ task importAppData(type: Ili2pgImport, dependsOn: validateJoined){
     dataFile = appXtfPath
 }
 
-task writeToPub(type: Db2Db, dependsOn: importAppData){ 
+task publiedit(type: Publisher, dependsOn: importAppData){
+  dataIdent = "ch.so.afu.abbaustellen.relational"
+  database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+  dbSchema = "afu_abbaustellen_v1"
+  modelsToPublish = "SO_AFU_ABBAUSTELLEN_20210630"
+
+  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+task writeToPub(type: Db2Db, dependsOn: publiedit){ 
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
