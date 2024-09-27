@@ -9,7 +9,7 @@ import java.nio.file.Paths
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'importWaldportal', 'importWaldportalPub'
+defaultTasks 'importWaldportal'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 ext.filename = 'bar'
@@ -60,9 +60,10 @@ task importWaldportal(type: Ili2pgImport, dependsOn: unpackFile) {
     dbschema = "awjf_waldportal_v1"
     models = 'SO_AWJF_Waldportal_20230719'
     dataFile = Paths.get(pathToTempFolder, xtfFileName)
+    disableValidation = true
     deleteData = true
 }
-
+/*
 task publish (type: Publisher, dependsOn: importWaldportal){
     dataIdent = "ch.so.awjf.waldmassnahmen_objekte"
 
@@ -85,3 +86,4 @@ task importWaldportalPub(type: Ili2pgImport, dependsOn: publish) {
     dataFile = Paths.get(pathToTempFolder, xtfFileName)
     deleteData = true
 }
+*/
