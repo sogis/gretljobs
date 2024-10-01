@@ -1,16 +1,19 @@
-WITH
-
-http_dokument AS (
+WITH http_dokument AS (
     SELECT
+    	t_id,
+    	titel,
+    	dokument_beschreibung,
+    	typ,
+    	datum,
         concat(
-            'https://geo.so.ch/docs/ch.so.afu.grundwasserschutz/', 
+            'https://geo.so.ch/docs/ch.so.afu.wasserversorgung/', 
             split_part(
                 dateiname, 
-                'ch.so.afu.grundwasserschutz\', 
+                'ch.so.afu.wasserversorgung\', 
                 2
             )
-        ) AS url,
-        t_id
+        ) AS dokumentimweb,
+        'SO_AFU_Wasserbewirtschaftung_Publikation_20241001.Wasserbewirtschaftung.Dokument' as ili_type
     FROM 
         afu_grundwasserschutz_obj_v1.dokument d    
 ),
@@ -18,7 +21,18 @@ http_dokument AS (
 dokumente_baggerschlitz AS (
     SELECT
         bd.baggerschlitz_r,   
-        json_agg(d.url ORDER BY url) AS dokumente
+        array_to_json(
+            array_agg(
+                json_build_object(
+                    '@type', d.ili_type,
+                    'Titel', d.titel,
+                    'Dokument_Beschreibung', d.dokument_beschreibung,
+                    'Typ', d.typ,
+                    'Datum', d.datum,
+                    'DokumentImWeb', d.dokumentimweb
+                )
+            )
+        )::jsonb AS dokumente
     FROM 
         http_dokument d
     JOIN
@@ -30,7 +44,18 @@ dokumente_baggerschlitz AS (
 dokumente_bohrung AS (
     SELECT
         bd.bohrung_r,   
-        json_agg(d.url ORDER BY url) AS dokumente
+        array_to_json(
+            array_agg(
+                json_build_object(
+                    '@type', d.ili_type,
+                    'Titel', d.titel,
+                    'Dokument_Beschreibung', d.dokument_beschreibung,
+                    'Typ', d.typ,
+                    'Datum', d.datum,
+                    'DokumentImWeb', d.dokumentimweb
+                )
+            )
+        )::jsonb AS dokumente
     FROM 
         http_dokument d
     JOIN
@@ -42,7 +67,18 @@ dokumente_bohrung AS (
 dokumente_einbaute AS (
     SELECT
         ed.einbaute_r,   
-        json_agg(d.url ORDER BY url) AS dokumente
+        array_to_json(
+            array_agg(
+                json_build_object(
+                    '@type', d.ili_type,
+                    'Titel', d.titel,
+                    'Dokument_Beschreibung', d.dokument_beschreibung,
+                    'Typ', d.typ,
+                    'Datum', d.datum,
+                    'DokumentImWeb', d.dokumentimweb
+                )
+            )
+        )::jsonb AS dokumente
     FROM 
         http_dokument d
     JOIN
@@ -54,7 +90,18 @@ dokumente_einbaute AS (
 dokumente_grundwasserwaermepumpe AS (
     SELECT
         gd.grundwasserwaermepumpe_r,   
-        json_agg(d.url ORDER BY url) AS dokumente
+        array_to_json(
+            array_agg(
+                json_build_object(
+                    '@type', d.ili_type,
+                    'Titel', d.titel,
+                    'Dokument_Beschreibung', d.dokument_beschreibung,
+                    'Typ', d.typ,
+                    'Datum', d.datum,
+                    'DokumentImWeb', d.dokumentimweb
+                )
+            )
+        )::jsonb AS dokumente
     FROM 
         http_dokument d
     JOIN
@@ -66,7 +113,18 @@ dokumente_grundwasserwaermepumpe AS (
 dokumente_piezometer AS (
     SELECT
         pd.piezometer_gerammt_r,   
-        json_agg(d.url ORDER BY url) AS dokumente
+        array_to_json(
+            array_agg(
+                json_build_object(
+                    '@type', d.ili_type,
+                    'Titel', d.titel,
+                    'Dokument_Beschreibung', d.dokument_beschreibung,
+                    'Typ', d.typ,
+                    'Datum', d.datum,
+                    'DokumentImWeb', d.dokumentimweb
+                )
+            )
+        )::jsonb AS dokumente
     FROM 
         http_dokument d
     JOIN
@@ -78,6 +136,7 @@ dokumente_piezometer AS (
 baggerschlitz AS (
     SELECT 
         'Grundwasserbeobachtung.Sondierung.Baggerschlitz' AS objektart,
+        baugk_geschaeft,
         'Sondierungsbaggerschlitz' AS objekttyp_anzeige,
         bezeichnung AS objektname,
         objekt_id AS objektnummer,
@@ -94,6 +153,7 @@ baggerschlitz AS (
 sondierungsbohrung AS (
     SELECT 
         'Grundwasserbeobachtung.Sondierung.Bohrung' AS objektart,
+        baugk_geschaeft,
         'Sondierungsbohrung' AS objekttyp_anzeige,
         bezeichnung AS objektname,
         objekt_id AS objektnummer,
@@ -112,6 +172,7 @@ sondierungsbohrung AS (
 piezometerbohrung AS (
     SELECT 
         'Grundwasserbeobachtung.Piezometer.Bohrung' AS objektart,
+        baugk_geschaeft,
         'Bohrung mit Piezometer' AS objekttyp_anzeige,
         bezeichnung AS objektname,
         objekt_id AS objektnummer,
@@ -130,6 +191,7 @@ piezometerbohrung AS (
 einbaute AS (
     SELECT 
         'weitere_Einbauten' AS objektart,
+        baugk_geschaeft,
         'Weitere Einbauten' AS objekttyp_anzeige,
         bezeichnung AS objektname,
         objekt_id AS objektnummer,
@@ -146,6 +208,7 @@ einbaute AS (
 versickerungsschacht AS (
     SELECT 
         'Versickerungsschacht' AS objektart,
+        baugk_geschaeft,
         'Versickerungsschacht' AS objekttyp_anzeige,
         bezeichnung AS objektname,
         objekt_id AS objektnummer,
@@ -164,6 +227,8 @@ versickerungsschacht AS (
 piezometer_gerammt AS (
     SELECT 
         'Grundwasserbeobachtung.Piezometer.Gerammt' AS objektart,
+        -- Fuer Piezometer gerammt gibt es keine BauGK Geschäftsnummer
+        NULL AS baugk_geschaeft,
         'Piezometer gerammt' AS objekttyp_anzeige,
         bezeichnung AS objektname,
         objekt_id AS objektnummer,
@@ -179,6 +244,7 @@ piezometer_gerammt AS (
 
 SELECT
     objektart,
+    baugk_geschaeft,
     objekttyp_anzeige,
     objektname,
     objektnummer,
@@ -193,6 +259,7 @@ UNION ALL
 
 SELECT
     objektart,
+    baugk_geschaeft,
     objekttyp_anzeige,
     objektname,
     objektnummer,
@@ -207,6 +274,7 @@ UNION ALL
     
 SELECT
     objektart,
+    baugk_geschaeft,
     objekttyp_anzeige,
     objektname,
     objektnummer,
@@ -221,6 +289,7 @@ UNION ALL
 
 SELECT
     objektart,
+    baugk_geschaeft,
     objekttyp_anzeige,
     objektname,
     objektnummer,
@@ -235,6 +304,7 @@ UNION ALL
 
 SELECT
     objektart,
+    baugk_geschaeft,
     objekttyp_anzeige,
     objektname,
     objektnummer,
@@ -249,6 +319,7 @@ UNION ALL
 
 SELECT
     objektart,
+    baugk_geschaeft,
     objekttyp_anzeige,
     objektname,
     objektnummer,

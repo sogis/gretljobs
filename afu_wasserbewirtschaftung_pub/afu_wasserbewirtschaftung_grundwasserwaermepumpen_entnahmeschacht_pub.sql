@@ -1,16 +1,19 @@
-WITH
-
-http_dokument AS (
+WITH http_dokument AS (
     SELECT
+    	t_id,
+    	titel,
+    	dokument_beschreibung,
+    	typ,
+    	datum,
         concat(
-            'https://geo.so.ch/docs/ch.so.afu.grundwasserschutz/', 
+            'https://geo.so.ch/docs/ch.so.afu.wasserversorgung/', 
             split_part(
                 dateiname, 
-                'ch.so.afu.grundwasserschutz\', 
+                'ch.so.afu.wasserversorgung\', 
                 2
             )
-        ) AS url,
-        t_id
+        ) AS dokumentimweb,
+        'SO_AFU_Wasserbewirtschaftung_Publikation_20241001.Wasserbewirtschaftung.Dokument' as ili_type
     FROM 
         afu_grundwasserschutz_obj_v1.dokument d    
 ),
@@ -18,7 +21,18 @@ http_dokument AS (
 dokumente_grundwasserwaermepumpe AS(
     SELECT
         gd.grundwasserwaermepumpe_r, 
-        json_agg(d.url ORDER BY url) AS dokumente
+        array_to_json(
+            array_agg(
+                json_build_object(
+                    '@type', d.ili_type,
+                    'Titel', d.titel,
+                    'Dokument_Beschreibung', d.dokument_beschreibung,
+                    'Typ', d.typ,
+                    'Datum', d.datum,
+                    'DokumentImWeb', d.dokumentimweb
+                )
+            )
+        )::jsonb AS dokumente
     FROM 
         http_dokument d
     JOIN
