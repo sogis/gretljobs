@@ -37,7 +37,7 @@ with json_documents AS (
 typ_waldgrenze_json_dokument_agg AS (
     SELECT
         festlegung_t_id,
-        '[' || dokumente::varchar || ']' AS dokumente
+        '[{}]' AS dokumente
     FROM
     (
         SELECT
