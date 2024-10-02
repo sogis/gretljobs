@@ -6,9 +6,9 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferArpMJPNatur'
 
 task transferArpMJPNatur(type: Db2Db){
-    sourceDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('arp_mjpnatur_pub_flaechen.sql', 'arp_mjpnatur_pub.flaechen', true)
+            new TransferSet('arp_mjpnatur_pub_flaechen.sql', 'arp_mjpnl_pub_v1.mehrjahresprgramm_vereinbarungensflaechen', true)
     ];
 }
