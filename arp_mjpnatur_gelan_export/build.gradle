@@ -14,12 +14,10 @@ apply plugin: 'org.hidetake.ssh'
 defaultTasks 'uploadData'
 
 
-task transformMJPNL2GELAN(type: Db2Db){
-    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    transferSets = [
-		new TransferSet('arp_mjpnatur_gelan.sql', 'arp_mjpnl_gelan_v1.mehrjahresprgramm_vereinbarungensflaechen', true)
-	];        
+task transformMJPNL2GELAN(type: SqlExecutor){
+    description = "Baut die Daten aus dem MJPNatur um ins MJPNatur-GELAN-Schema"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['arp_mjpnatur_gelan.sql']        
 }
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
