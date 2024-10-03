@@ -6,7 +6,7 @@ WITH http_dokument AS (
     	typ,
     	datum,
         concat(
-            'https://geo.so.ch/docs/ch.so.afu.wasserversorgung/', 
+            'https://geo.so.ch/docs/ch.so.afu.wasserversorgung/',
             split_part(
                 dateiname, 
                 'ch.so.afu.wasserversorgung\', 
@@ -24,10 +24,10 @@ WITH http_dokument AS (
     	typ,
     	datum,
         concat(
-            'https://geo.so.ch/docs/ch.so.afu.wasserversorgung/', 
+            'https://geo.so.ch/docs/ch.so.afu.grundwasserschutz/',
             split_part(
                 dateiname, 
-                'ch.so.afu.wasserversorgung\', 
+                'ch.so.afu.grundwasserschutz\', 
                 2
             )
         ) AS dokumentimweb,
