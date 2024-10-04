@@ -169,7 +169,11 @@ projekte_an_einer_achse AS (
                 ST_LineLocatePoint(pma.achsengeometrie, bpanfang_geometrie)
             END,
             CASE WHEN pma.bpende_km IS NOT NULL THEN
-                (ST_LineLocatePoint(pma.achsengeometrie, bpende_geometrie) + (pma.bpende_km::INTEGER / ST_Length(pma.achsengeometrie)))
+                CASE WHEN (ST_LineLocatePoint(pma.achsengeometrie, bpende_geometrie) + (pma.bpende_km::INTEGER / ST_Length(pma.achsengeometrie))) <= 1.0 THEN
+                    (ST_LineLocatePoint(pma.achsengeometrie, bpende_geometrie) + (pma.bpende_km::INTEGER / ST_Length(pma.achsengeometrie)))
+                ELSE
+                    1.0
+                END
             ELSE
                 ST_LineLocatePoint(pma.achsengeometrie, bpende_geometrie)
             END
