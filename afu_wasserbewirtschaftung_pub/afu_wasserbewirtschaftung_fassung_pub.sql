@@ -1,7 +1,10 @@
-WITH
-
-http_dokument AS (
+WITH http_dokument AS (
     SELECT
+    	t_id,
+    	titel,
+    	dokument_beschreibung,
+    	typ,
+    	datum,
         concat(
             'https://geo.so.ch/docs/ch.so.afu.wasserversorgung/',
             split_part(
@@ -9,21 +12,26 @@ http_dokument AS (
                 'ch.so.afu.wasserversorgung\', 
                 2
             )
-        ) AS url,
-        t_id
+        ) AS dokumentimweb,
+        'SO_AFU_Wasserbewirtschaftung_Publikation_20241001.Wasserbewirtschaftung.Dokument' as ili_type
     FROM 
         afu_wasserversorg_obj_v1.dokument d
     UNION ALL
     SELECT
+    	t_id,
+    	titel,
+    	dokument_beschreibung,
+    	typ,
+    	datum,
         concat(
-            'https://geo.so.ch/docs/ch.so.afu.grundwasserschutz/', 
+            'https://geo.so.ch/docs/ch.so.afu.grundwasserschutz/',
             split_part(
                 dateiname, 
                 'ch.so.afu.grundwasserschutz\', 
                 2
             )
-        ) AS url,
-        t_id
+        ) AS dokumentimweb,
+        'SO_AFU_Wasserbewirtschaftung_Publikation_20241001.Wasserbewirtschaftung.Dokument' as ili_type
     FROM 
         afu_grundwasserschutz_obj_v1.dokument d    
 ),
@@ -31,7 +39,18 @@ http_dokument AS (
 dokumente_sodbrunnen AS (
     SELECT
         sd.sodbrunnen_r,   
-        json_agg(d.url ORDER BY url) AS dokumente
+        array_to_json(
+            array_agg(
+                json_build_object(
+                    '@type', d.ili_type,
+                    'Titel', d.titel,
+                    'Dokument_Beschreibung', d.dokument_beschreibung,
+                    'Typ', d.typ,
+                    'Datum', d.datum,
+                    'DokumentImWeb', d.dokumentimweb
+                )
+            )
+        )::jsonb AS dokumente
     FROM 
         http_dokument d
     JOIN
@@ -43,7 +62,18 @@ dokumente_sodbrunnen AS (
 dokumente_filterbrunnen AS (
     SELECT
         fd.filterbrunnen_r,   
-        json_agg(d.url ORDER BY url) AS dokumente
+        array_to_json(
+            array_agg(
+                json_build_object(
+                    '@type', d.ili_type,
+                    'Titel', d.titel,
+                    'Dokument_Beschreibung', d.dokument_beschreibung,
+                    'Typ', d.typ,
+                    'Datum', d.datum,
+                    'DokumentImWeb', d.dokumentimweb
+                )
+            )
+        )::jsonb AS dokumente
     FROM 
         http_dokument d
     JOIN
@@ -154,10 +184,13 @@ vertikalfilterbrunnen AS (
 
 SELECT
     fassungstyp,
+    fassungstyp AS fassungstyp_txt,
     konzessionsmenge,
     schutzzone,
+    schutzzone AS schutzzone_txt,
     nutzungstyp,
     verwendungszweck,
+    verwendungszweck AS verwendungszweck_txt,
     objekttyp_anzeige,
     objektname,
     objektnummer,
@@ -172,10 +205,13 @@ UNION ALL
 
 SELECT
     fassungstyp,
+    fassungstyp AS fassungstyp_txt,
     konzessionsmenge,
     schutzzone,
+    schutzzone AS schutzzone_txt,
     nutzungstyp,
     verwendungszweck,
+    verwendungszweck AS verwendungszweck_txt,
     objekttyp_anzeige,
     objektname,
     objektnummer,
@@ -190,10 +226,13 @@ UNION ALL
 
 SELECT
     fassungstyp,
+    fassungstyp AS fassungstyp_txt,
     konzessionsmenge,
     schutzzone,
+    schutzzone AS schutzzone_txt,
     nutzungstyp,
     verwendungszweck,
+    verwendungszweck AS verwendungszweck_txt,
     objekttyp_anzeige,
     objektname,
     objektnummer,
