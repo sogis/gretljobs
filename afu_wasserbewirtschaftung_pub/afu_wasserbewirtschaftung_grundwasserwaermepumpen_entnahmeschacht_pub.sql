@@ -53,6 +53,16 @@ SELECT
         ELSE 
             'unbekannter_Verfahrensstand'
     END AS verfahrensstand,
+    CASE
+        WHEN aufnahmedatum >= current_date - INTERVAL '5 years' AND zustand = 'Voranfrage'
+            THEN 'neue Voranfrage'
+        WHEN aufnahmedatum < current_date - INTERVAL '5 years' AND zustand = 'Voranfrage'
+            THEN 'alte Voranfrage'
+        WHEN schachttyp != 'Rueckgabe' AND zustand != 'Voranfrage'
+            THEN 'bewilligt'
+        ELSE 
+            'unbekannter Verfahrensstand'
+    END AS verfahrensstand_txt,
     'Grundwasserwärmepumpen Entnahmeschacht' AS objekttyp_anzeige,
     bezeichnung AS objektname,
     objekt_id AS objektnummer,

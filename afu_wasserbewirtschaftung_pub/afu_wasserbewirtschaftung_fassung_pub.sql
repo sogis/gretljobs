@@ -184,10 +184,13 @@ vertikalfilterbrunnen AS (
 
 SELECT
     fassungstyp,
+    fassungstyp AS fassungstyp_txt,
     konzessionsmenge,
     schutzzone,
+    schutzzone AS schutzzone_txt,
     nutzungstyp,
     verwendungszweck,
+    verwendungszweck AS verwendungszweck_txt,
     objekttyp_anzeige,
     objektname,
     objektnummer,
@@ -202,10 +205,13 @@ UNION ALL
 
 SELECT
     fassungstyp,
+    fassungstyp AS fassungstyp_txt,
     konzessionsmenge,
     schutzzone,
+    schutzzone AS schutzzone_txt,
     nutzungstyp,
     verwendungszweck,
+    verwendungszweck AS verwendungszweck_txt,
     objekttyp_anzeige,
     objektname,
     objektnummer,
@@ -220,10 +226,13 @@ UNION ALL
 
 SELECT
     fassungstyp,
+    fassungstyp AS fassungstyp_txt,
     konzessionsmenge,
     schutzzone,
+    schutzzone AS schutzzone_txt,
     nutzungstyp,
     verwendungszweck,
+    verwendungszweck AS verwendungszweck_txt,
     objekttyp_anzeige,
     objektname,
     objektnummer,

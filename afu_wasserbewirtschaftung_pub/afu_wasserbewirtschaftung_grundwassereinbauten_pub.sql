@@ -244,6 +244,7 @@ piezometer_gerammt AS (
 
 SELECT
     objektart,
+    objektart AS objektart_txt,
     baugk_geschaeft,
     objekttyp_anzeige,
     objektname,
@@ -259,6 +260,7 @@ UNION ALL
 
 SELECT
     objektart,
+    objektart AS objektart_txt,
     baugk_geschaeft,
     objekttyp_anzeige,
     objektname,
@@ -274,6 +276,7 @@ UNION ALL
     
 SELECT
     objektart,
+    objektart AS objektart_txt,
     baugk_geschaeft,
     objekttyp_anzeige,
     objektname,
@@ -289,6 +292,7 @@ UNION ALL
 
 SELECT
     objektart,
+    objektart AS objektart_txt,
     baugk_geschaeft,
     objekttyp_anzeige,
     objektname,
@@ -304,6 +308,7 @@ UNION ALL
 
 SELECT
     objektart,
+    objektart AS objektart_txt,
     baugk_geschaeft,
     objekttyp_anzeige,
     objektname,
@@ -319,6 +324,7 @@ UNION ALL
 
 SELECT
     objektart,
+    objektart AS objektart_txt,
     baugk_geschaeft,
     objekttyp_anzeige,
     objektname,
