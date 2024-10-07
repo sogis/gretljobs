@@ -4,13 +4,12 @@ import java.nio.file.Paths
 
 apply plugin: 'ch.so.agi.gretl'
 
-//defaultTasks 'dbImport_empty_beurteilungsgebiet'
-defaultTasks 'validateData'
+defaultTasks 'dbImport'
 
 /*
 Der Job AfU_Naturgefahren_Import importiert neue Naturgefahren-Daten. 
 Zuerst wird das hochgeladene XTF-File verifiziert. Dies geschieht mit Hilfe eines Validierungsmodells, welches auch überprüft, ob der File-Name der Auftragskennung in den Daten entspricht. 
-Danach werden die Daten importiert. Am Ende wird noch ein leeres xtf ins Schema Beurteilungsgebiete importiert, da hier auch ein Dataset / Basket mit dieser Auftragskennung angelegt werden muss. 
+Danach werden die Daten importiert.
 */
 
 if (!xtfFilename || xtfFilename.isEmpty()) {
@@ -22,7 +21,6 @@ def auftragskennung = split[0]
 def uploadFolder = './'
 def schemaName = 'afu_naturgefahren_v2'
 def modelName = 'SO_AFU_Naturgefahren_20240515'
-def verifikationsModelName = 'SO_AFU_Naturgefahren_Validierung_20240515'
 
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
 
@@ -32,8 +30,8 @@ task validateData(type: IliValidator) {
     description = "Validiert die Daten und überprüft insbesondere die Auftragskennung"
     dataFiles = file(uploadfolder+xtfFilename)
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-    models = verifikationsModelName
-    // configFile = file('SO_AFU_Naturgefahren_Verifikation.ini')
+    models = modelName
+    configFile = file('SO_AFU_Naturgefahren_Verifikation.ini')
     allObjectsAccessible = true
     failOnError = true
 }
@@ -50,16 +48,4 @@ task dbImport(type: Ili2pgReplace, dependsOn: 'validateData') {
     dataset = auftragskennung
     disableValidation = true
     
-}
-
-task dbImport_empty_beurteilungsgebiet(type: Ili2pgReplace, dependsOn: 'dbImport') {
-    description = "Import empty Beurteilungsgebiet Edit"
-    doLast {
-        println "Data imported into db: " + dbUriEdit
-    }
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = "afu_naturgefahren_beurteilungsgebiet_v1"
-    models = "SO_AFU_Naturgefahren_Beurteilungsgebiet_20231127"
-    dataFile = file('beurteilungsgebiet_empty.xtf')
-    dataset = auftragskennung
 }
