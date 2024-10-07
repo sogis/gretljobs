@@ -139,7 +139,7 @@ task copy_alte_natgef_daten(type: Db2Db, dependsOn:  make_naturgefahren_alt_sche
 
 task make_naturgefahren_beurteilungsgebiet_schema(type: Ili2pgImportSchema, dependsOn: copy_alte_natgef_daten){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    models = "SO_AFU_Naturgefahren_Beurteilungsgebiet_20231127"
+    models = "SO_AFU_Naturgefahren_Beurteilungsgebiet_20240927"
     dbschema = "afu_naturgefahren_beurteilungsgebiet_v1"
     beautifyEnumDispName = true
     strokeArcs = true
@@ -149,15 +149,14 @@ task make_naturgefahren_beurteilungsgebiet_schema(type: Ili2pgImportSchema, depe
     createFkIdx = true
     createGeomIdx = true
     createMetaInfo = true
-    createBasketCol = true
     createUnique = true
     smart2Inheritance = true
 }
 
 task export_beurteilungsgebiet(type: Ili2pgExport, dependsOn: make_naturgefahren_beurteilungsgebiet_schema) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = "afu_naturgefahren_beurteilungsgebiet_v1"
-    models = "SO_AFU_Naturgefahren_Beurteilungsgebiet_20231127"
+    dbschema = "afu_naturgefahren_beurteilungsgebiet_v2"
+    models = "SO_AFU_Naturgefahren_Beurteilungsgebiet_20240927"
     disableValidation = true
     dataFile = file(Paths.get(pathToTempFolder, "natgef_beurteilungsgebiet.xtf"))
     
