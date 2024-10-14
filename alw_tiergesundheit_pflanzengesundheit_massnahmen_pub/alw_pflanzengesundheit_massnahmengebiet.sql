@@ -1,7 +1,7 @@
 SELECT
     geometrie,
     jahr,
-    seuchenart,
+    schadorganismus,
     verwendungszweck,
     datum_installation,
     aktiv,
