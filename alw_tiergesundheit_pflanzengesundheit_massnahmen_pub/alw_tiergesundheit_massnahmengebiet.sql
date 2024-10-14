@@ -11,7 +11,7 @@ SELECT
     darstellung,
     apublic
 FROM
-    alw_tiergesundheit_pflanzengesundheit_massnahmen_v1.massnhmnrgsndheit_tiergesundheit_massnahmengebiet
+    alw_tiergesundheit_pflanzengesundheit_massnahmen_v1.massnhmnngsndheit_tiergesundheit_massnahmengebiet
 WHERE
     aktiv = true
     AND 

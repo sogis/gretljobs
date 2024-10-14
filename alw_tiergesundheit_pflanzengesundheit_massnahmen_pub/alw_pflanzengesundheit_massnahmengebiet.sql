@@ -1,7 +1,7 @@
 SELECT
     geometrie,
     jahr,
-    seuchenart,
+    schadorganismus,
     verwendungszweck,
     datum_installation,
     aktiv,
@@ -11,7 +11,7 @@ SELECT
     darstellung,
     apublic
 FROM
-    alw_tiergesundheit_pflanzengesundheit_massnahmen_v1.massnhmnrgsndheit_pflanzengesundheit_massnahmengebiet
+    alw_tiergesundheit_pflanzengesundheit_massnahmen_v1.massnhmnngsndheit_pflanzengesundheit_schadorganismen
 WHERE
     aktiv = true
     AND 
