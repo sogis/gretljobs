@@ -1,6 +1,34 @@
 -- Erstelle zuerst eine Zwischentabelle wo gewisse Felder aufgetrennt worden
 -- sind
-WITH tabelle_projekte AS (
+WITH tabelle_projekte_projektnr_aufgetrennt AS (
+    SELECT
+        t_id,
+        abteilung,
+        kreis,
+        projektleiter,
+        gemeinde,
+        strasse,
+        projekt,
+        -- Trenne mehrzeilige Projektnummer in einzelne Einträge auf, damit diese
+        -- mit manuell erfassten Geometrien verknüpft werden können.
+        regexp_split_to_table ( projektnr, '\n') AS projektnr,
+        kreditjahr_p,
+        kreditjahr_a,
+        astart,
+        ende,
+        klasse,
+        aphase,
+        achsnr,
+        bpanfang,
+        bpende,
+        bemerkungen,
+        projektsuffix,
+        ranfangsbezugspunkt,
+        rendbezugspunkt
+    FROM
+        avt_mehrjahresplanung_v1.projekte_projekt
+),
+tabelle_projekte AS (
     SELECT
         t_id,
         abteilung,
@@ -36,7 +64,7 @@ WITH tabelle_projekte AS (
         ranfangsbezugspunkt,
         rendbezugspunkt
     FROM
-        avt_mehrjahresplanung_v1.projekte_projekt
+        tabelle_projekte_projektnr_aufgetrennt
 ),
 
 
@@ -164,7 +192,11 @@ projekte_an_einer_achse AS (
         ST_Multi(ST_LineSubstring(
             pma.achsengeometrie,
             CASE WHEN pma.bpanfang_km IS NOT NULL THEN
-                (ST_LineLocatePoint(pma.achsengeometrie, bpanfang_geometrie) + (pma.bpanfang_km::INTEGER / ST_Length(pma.achsengeometrie)))
+                CASE WHEN (ST_LineLocatePoint(pma.achsengeometrie, bpanfang_geometrie) + (pma.bpanfang_km::INTEGER / ST_Length(pma.achsengeometrie))) <= 1.0 THEN
+                    (ST_LineLocatePoint(pma.achsengeometrie, bpanfang_geometrie) + (pma.bpanfang_km::INTEGER / ST_Length(pma.achsengeometrie)))
+                ELSE
+                    1.0
+                END
             ELSE
                 ST_LineLocatePoint(pma.achsengeometrie, bpanfang_geometrie)
             END,
@@ -182,7 +214,7 @@ projekte_an_einer_achse AS (
     FROM 
         projekte_mit_achsen pma
     WHERE
-        pma.t_id NOT IN (SELECT t_id FROM projekte_mit_manuell_erfasster_geometrie)
+        pma.projektidentifikation NOT IN (SELECT projektidentifikation FROM projekte_mit_manuell_erfasster_geometrie)
 ),
 
 
@@ -231,12 +263,20 @@ projekte_an_mehreren_achsen AS (
         ST_Multi(ST_LineSubstring(
             ka.geometrie,
             CASE WHEN pp.bpanfang_km IS NOT NULL THEN
-                (ST_LineLocatePoint(ka.geometrie, kb.geometrie) + (pp.bpanfang_km::INTEGER / ST_Length(ka.geometrie)))
+                CASE WHEN (ST_LineLocatePoint(ka.geometrie, kb.geometrie) + (pp.bpanfang_km::INTEGER / ST_Length(ka.geometrie))) <= 1.0 THEN
+                    (ST_LineLocatePoint(ka.geometrie, kb.geometrie) + (pp.bpanfang_km::INTEGER / ST_Length(ka.geometrie)))
+                ELSE
+                    1.0
+                END
             ELSE
                 ST_LineLocatePoint(ka.geometrie, kb.geometrie)
             END,
             CASE WHEN pp.bpende_km IS NOT NULL THEN
-                (ST_LineLocatePoint(ka.geometrie, kc.geometrie) + (pp.bpende_km::INTEGER / ST_Length(ka.geometrie)))
+                CASE WHEN (ST_LineLocatePoint(ka.geometrie, kc.geometrie) + (pp.bpende_km::INTEGER / ST_Length(ka.geometrie))) <= 1.0 THEN
+                    (ST_LineLocatePoint(ka.geometrie, kc.geometrie) + (pp.bpende_km::INTEGER / ST_Length(ka.geometrie)))
+                ELSE
+                    1.0
+                END
             ELSE
                 ST_LineLocatePoint(ka.geometrie, kc.geometrie)
             END
@@ -257,9 +297,9 @@ projekte_an_mehreren_achsen AS (
     ON
         pp.rendbezugspunkt = kc.t_id
     WHERE
-        pp.t_id NOT IN (SELECT t_id FROM projekte_mit_manuell_erfasster_geometrie)
+        pp.projektidentifikation NOT IN (SELECT projektidentifikation FROM projekte_mit_manuell_erfasster_geometrie)
     AND
-        pp.t_id NOT IN (SELECT t_id FROM projekte_an_einer_achse)
+        pp.projektidentifikation NOT IN (SELECT projektidentifikation FROM projekte_an_einer_achse)
 ),
 
 
@@ -302,15 +342,14 @@ projekte_mit_direkter_linie AS (
     ON
         pp.rendbezugspunkt = kb2.t_id
     WHERE
-        pp.t_id NOT IN (SELECT t_id FROM projekte_mit_manuell_erfasster_geometrie)
+        pp.projektidentifikation NOT IN (SELECT projektidentifikation FROM projekte_mit_manuell_erfasster_geometrie)
     AND
-        pp.t_id NOT IN (SELECT t_id FROM projekte_an_einer_achse)
+        pp.projektidentifikation NOT IN (SELECT projektidentifikation FROM projekte_an_einer_achse)
     AND
-        pp.t_id NOT IN (SELECT t_id FROM projekte_an_mehreren_achsen)
+        pp.projektidentifikation NOT IN (SELECT projektidentifikation FROM projekte_an_mehreren_achsen)
 )
 
 SELECT
-    t_id,
     abteilung,
     kreis,
     projektleiter,
@@ -334,7 +373,6 @@ FROM
     projekte_mit_manuell_erfasster_geometrie
 UNION
 SELECT
-    t_id,
     abteilung,
     kreis,
     projektleiter,
@@ -358,7 +396,6 @@ FROM
     projekte_an_einer_achse
 UNION
 SELECT
-    t_id,
     abteilung,
     kreis,
     projektleiter,
@@ -382,7 +419,6 @@ FROM
     projekte_an_mehreren_achsen
 UNION
 SELECT
-    t_id,
     abteilung,
     kreis,
     projektleiter,

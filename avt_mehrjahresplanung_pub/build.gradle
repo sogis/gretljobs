@@ -12,8 +12,7 @@ task replaceEnumBetriebs(){
         ant.replace(
             file: csvFilename,
             token: "Betriebs- und Gestaltungskonzept",
-            value: "Betriebs_und_Gestaltungskonzept",
-            encoding: "Windows-1252")
+            value: "Betriebs_und_Gestaltungskonzept")
     }
 }
 
@@ -24,7 +23,7 @@ task validateInputFile(type: CsvValidator) {
     dataFiles = [ csvFilename ]
     valueSeparator = ';'
     firstLineIsHeader = true
-    encoding = "Windows-1252"
+    encoding = "UTF-8"
     configFile = "csv_file_validation.ini"
 }
 
@@ -36,8 +35,7 @@ task replaceStartHeader(){
             // nur einmal ersetzt wird
             file: csvFilename,
             match: "start",
-            replace: "astart",
-            encoding: "Windows-1252")
+            replace: "astart")
     }
 }
 
@@ -48,8 +46,7 @@ task replacePhaseHeader(){
         ant.replaceregexp(
             file: csvFilename,
             match: "phase",
-            replace: "aphase",
-            encoding: "Windows-1252")
+            replace: "aphase")
     }
 }
 
@@ -68,7 +65,7 @@ task importFile(type: CsvImport) {
     tableName = "projekte_projekt"
     valueSeparator = ';'
     dataFile = csvFilename
-    encoding = "Windows-1252"
+    encoding = "UTF-8"
 }
 
 task copyKantonsstrassenData(type: Db2Db) {
