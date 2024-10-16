@@ -1,7 +1,7 @@
 SELECT
     geometrie,
     jahr,
-    seuchenart,
+    typ_sperre,
     verwendungszweck,
     datum_installation,
     aktiv,
@@ -11,9 +11,7 @@ SELECT
     darstellung,
     apublic
 FROM
-    alw_tiergesundheit_pflanzengesundheit_massnahmen_v1.massnhmnngsndheit_tiergesundheit_massnahmengebiet
+    alw_tiergesundheit_pflanzengesundheit_massnahmen_v1.massnhmnngsndheit_bienensperrgebiet
 WHERE
     aktiv = true
-    AND 
-    apublic = true
 ;
