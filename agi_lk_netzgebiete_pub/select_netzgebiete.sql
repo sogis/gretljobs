@@ -48,3 +48,4 @@ LEFT JOIN
 JOIN
     agi_lk_netzgebiete_v1.amedium med
         ON nfe.amedium = med.ilicode
+;

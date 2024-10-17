@@ -3,7 +3,12 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferData'
+defaultTasks 'transferData', 'zipMgdmNetzgebiete'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+def mgdmNetzgebieteXtfFileName = "ch.so.awa.stromversorgungssicherheit_netzgebiete.mgdm.xtf"
+def mgdmNetzgebieteZipFileName = "ch.so.awa.stromversorgungssicherheit_netzgebiete.mgdm.zip"
 
 /**
  * Validiere vorgängig die Daten in der Erfassungs-Datenbank. Da die Daten
@@ -27,14 +32,14 @@ task transferData(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-        new TransferSet('select_transfer_data.sql',
+        new TransferSet('select_netzgebiete.sql',
                         'agi_lk_netzgebiete_pub_v1.netzgebiet',
                         true)
     ];
 }
 
 /**
- * Publiziere die Daten.
+ * Publiziere die Daten auf unserer Datenabgabe
  */
 task publishData(type: Publisher){
     dependsOn "transferData"
@@ -48,4 +53,55 @@ task publishData(type: Publisher){
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+/**
+ * Baue die Daten zusätzlich ins MGDM um und schicke die Daten an geodienste.ch
+ */
+task transferDataToMgdm(type: SqlExecutor) {
+    dependsOn "transferData"
+    description "Datenumbau ins MGDM"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['insert_into_mgdm.sql']
+}
+
+
+task exportMgdmNetzgebiete(type: Ili2pgExport) {
+    dependsOn "transferDataToMgdm"
+    description "Exportiere die Daten in eine INTERLIS Datei ohne Validierung"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = "SupplySecurity_RuledAreas_V1_2"
+    dbschema = "awa_stromversorgungssicherheit_mgdm_v1"
+    dataFile = file(mgdmNetzgebieteXtfFileName)
+    disableValidation = true
+}
+
+task validateMgdmNetzgebiete(type: IliValidator) {
+    dependsOn "exportMgdmNetzgebiete"
+    dataFiles = [file(mgdmNetzgebieteXtfFileName)]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    logFile = "ilivalidator.log"
+    failOnError = true
+}
+
+task zipMgdmNetzgebiete(type: Zip, ){
+    dependsOn "validateMgdmNetzgebiete"
+    from pathToTempFolder
+    from "."
+    include mgdmNetzgebieteXtfFileName
+    archiveName mgdmNetzgebieteZipFileName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadMgdmNetzgebiete() {
+    dependsOn "zipMgdmNetzgebiete"
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=stromversorgungssicherheit_netzgebiete_v1_2", "-F",
+                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), mgdmNetzgebieteZipFileName), "-F", "publish=true",
+                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
 }
