@@ -7,15 +7,17 @@ SELECT
         WHEN kontaktperson IS NOT NULL AND kontaktmail IS NULL AND homepage IS NULL
             THEN CONCAT('Kontaktname: ' ,kontaktperson)
         WHEN kontaktperson IS NULL AND kontaktmail IS NOT NULL AND homepage IS NULL
-            THEN CONCAT('Mailadresse: ' ,kontaktmail)
+            THEN CONCAT('Mailadresse: <p><a href="mailto:' ,kontaktmail, '">', kontaktmail, '</a></p> ')
         WHEN kontaktperson IS NULL AND kontaktmail IS NULL AND homepage IS NOT NULL
             THEN CONCAT('Homepage: ' ,homepage)
         WHEN kontaktperson IS NOT NULL AND kontaktmail IS NOT NULL AND homepage IS NULL
-            THEN CONCAT('Kontaktname: ' ,kontaktperson, ' | Mailadresse: ' ,kontaktmail)
+            THEN CONCAT('Kontaktname: ' ,kontaktperson, ' | Mailadresse: <p><a href="mailto:' ,kontaktmail, '">', kontaktmail, '</a></p> ')
         WHEN kontaktperson IS NOT NULL AND kontaktmail IS NULL AND homepage IS NOT NULL
             THEN CONCAT('Kontaktname: ' ,kontaktperson, ' | Homepage: ' ,homepage)
         WHEN kontaktperson IS NULL AND kontaktmail IS NOT NULL AND homepage IS NOT NULL
-            THEN CONCAT('Mailadresse: ' ,kontaktmail, ' | Homepage: ' ,homepage)
+            THEN CONCAT('Mailadresse: <p><a href="mailto:' ,kontaktmail, '">', kontaktmail, '</a></p> | Homepage: ' ,homepage)
+        WHEN kontaktperson IS NOT NULL AND kontaktmail IS NOT NULL AND homepage IS NOT NULL
+            THEN CONCAT('Kontaktname: ' ,kontaktperson, ' | Mailadresse: <p><a href="mailto:' ,kontaktmail, '">', kontaktmail, '</a></p> | Homepage: ' ,homepage)
        ELSE ''
     END AS bemerkungen,
     tradition.aname AS religioese_tradition
