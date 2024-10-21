@@ -5,68 +5,32 @@ pipeline {
     agent {
         kubernetes {
             inheritFrom env.NODE_LABEL ?: 'gretl'
+            yamlMergeStrategy merge()
             yaml '''
             spec:
-              securityContext:
-                supplementalGroups: [26]
               containers:
-                - name: jnlp
-                  resources:
-                    requests:
-                      cpu: 200m
-                      memory: 256Mi
-                    limits:
-                      cpu: "1"
-                      memory: 512Mi
-                - name: gretl
-                  resources:
-                    requests:
-                      cpu: 200m
-                      memory: 1Gi
-                    limits:
-                      cpu: "1"
-                      memory: 3.5Gi
-                  envFrom:
-                    - configMapRef:
-                        name: gretl-resources
-                  volumeMounts:
-                    - name: gretl-secrets-volume
-                      mountPath: /home/gradle/.gradle/gradle.properties
-                      subPath: gradle.properties
                 - name: processing-db
-                  image: crunchydata/crunchy-postgres-gis:centos8-13.3-3.1-4.6.3
+                  image: sogis/postgis:16-3.4-bookworm
                   resources:
                     requests:
-                      cpu: 600m
-                      memory: "4Gi"
+                      cpu: 300m
+                      memory: "2Gi"
                     limits:
                       cpu: "2"
                       memory: "8Gi"
                   env:
-                    - name: MODE
-                      value: postgres
-                    - name: PG_DATABASE
+                    - name: POSTGRES_USER
                       value: processing
-                    - name: PG_LOCALE
-                      value: en_US.UTF-8
-                    - name: PG_PRIMARY_PORT
-                      value: 5432
-                    - name: PG_MODE
-                      value: primary
-                    - name: PG_USER
-                      value: user
-                    - name: PG_PASSWORD
-                      value: pass
-                    - name: PG_PRIMARY_USER
-                      value: repl
-                    - name: PG_PRIMARY_PASSWORD
-                      value: repl
-                    - name: PG_ROOT_PASSWORD
-                      value: secret
+                    - name: POSTGRES_PASSWORD
+                      value: processing
+                    - name: PGDATA
+                      value: /var/lib/postgresql/data/pgdata
+                  volumeMounts:
+                    - name: postgresql-data-volume
+                      mountPath: /var/lib/postgresql/data
               volumes:
-                - name: gretl-secrets-volume
-                  secret:
-                    secretName: gretl-secrets
+                - name: postgresql-data-volume
+                  emptyDir: {}
 '''
         }
     }
@@ -74,8 +38,8 @@ pipeline {
         stage('Run GRETL job') {
             environment {
                 ORG_GRADLE_PROJECT_dbUriProcessing = 'jdbc:postgresql://127.0.0.1/processing'
-                ORG_GRADLE_PROJECT_dbUserProcessing = 'user'
-                ORG_GRADLE_PROJECT_dbPwdProcessing = 'pass'
+                ORG_GRADLE_PROJECT_dbUserProcessing = 'processing'
+                ORG_GRADLE_PROJECT_dbPwdProcessing = 'processing'
             }
             steps {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
