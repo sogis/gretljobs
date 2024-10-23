@@ -19,7 +19,6 @@ task replaceEnumBetriebs(){
 task validateInputFile(type: CsvValidator) {
     dependsOn replaceEnumBetriebs
     models = "SO_AVT_Mehrjahresplanung_20240911"
-    modeldir = rootProject.projectDir.toString() + ";http://models.interlis.ch"
     dataFiles = [ csvFilename ]
     valueSeparator = ';'
     firstLineIsHeader = true
@@ -70,6 +69,7 @@ task importFile(type: CsvImport) {
 
 task copyKantonsstrassenData(type: Db2Db) {
     dependsOn importFile
+    description = "Kopiere die Daten der Kantonsstrassen aus der Publikationsdatenbank ins Erfassungsschema"
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
@@ -87,13 +87,14 @@ task setAssociations(type: SqlExecutor) {
 
 task handleObsoleteGeometries(type: SqlExecutor) {
     dependsOn setAssociations
-    description = "Setze ein Obsolet-Datum und lösche Geometrie älter als sechs Monate"
+    description = "Setze ein Obsolet-Datum und lösche Geometrien älter als sechs Monate"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['update_projektgeometrie.sql']
 }
 
 task validateData(type: Ili2pgValidate) {
     dependsOn handleObsoleteGeometries
+    description = "Validiere die Erfassungsdaten"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = "SO_AVT_Mehrjahresplanung_20240911"
     dbschema = "avt_mehrjahresplanung_v1"
@@ -101,6 +102,7 @@ task validateData(type: Ili2pgValidate) {
 
 task transferData(type: Db2Db) {
     dependsOn validateData
+    description = "Baue die Daten in das Publikationsmodell um"
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
