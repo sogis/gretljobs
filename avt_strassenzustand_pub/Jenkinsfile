@@ -11,7 +11,7 @@ pipeline {
                     dir(env.JOB_BASE_NAME) {
                         unstash name: 'uploadFile'
                         sh 'mv uploadFile $uploadFile_FILENAME'
-                        sh "gretl -PshpFilename=${uploadFile_FILENAME}"
+                        sh "gretl -PzipFilename=${uploadFile_FILENAME}"
                     }
                 }
             }
