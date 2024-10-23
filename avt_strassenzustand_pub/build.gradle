@@ -1,0 +1,62 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+import java.nio.file.Files
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferData'
+
+def pathToShpFiles = Paths.get(System.getProperty("java.io.tmpdir"))
+
+// Voraussetzung: das Shapefile wird in einem ZIP Archiv hochgeladen mit
+// demselben Namen, d.h. als Beispiel ein Shapefile I1.shp, I1.dbf, I1.shx etc.
+// muss in einem ZIP Archiv namens I1.zip oder I1.shz hochgeladen werden.
+def suffix = ~/\.[sz][hi][zp]$/  // Regex für .zip oder .shz am Ende
+def filename = zipFilename - suffix
+
+task emptyTable(type: SqlExecutor) {
+    description = "Leere vorgängig die Datenbanktabelle im Staging Schema"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['delete_strassenzustand.sql']
+}
+
+// Extrahiere die Daten aus dem ZIP Archiv
+task unzipFile(type: Copy) {
+    dependsOn emptyTable
+    description = "Extrahiere ZIP Archiv"
+    from zipTree(zipFilename) 
+    into pathToShpFiles 
+}
+
+task importFile(type: ShpImport) {
+    dependsOn unzipFile
+    description = "Importiere das Shapefile"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    schemaName = "avt_strassenzustand_staging_v1"
+    tableName = "strassenzustand"
+    dataFile = file(pathToShpFiles.toString() + '/' + filename + '.shp') 
+}
+
+task fixData(type: SqlExecutor) {
+    dependsOn importFile
+    description = "Bereinige die Daten"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['update_strassenzustand.sql']
+}
+
+task validateData(type: Ili2pgValidate) {
+    dependsOn fixData
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    models = "SO_AVT_Strassenzustand_Publikation_20240911"
+    dbschema = "avt_strassenzustand_staging_v1"
+}
+
+task transferData(type: Db2Db) {
+    dependsOn validateData
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+        new TransferSet('select_strassenzustand.sql', 'avt_strassenzustand_pub_v1.strassenzustand', true)
+    ]
+}
