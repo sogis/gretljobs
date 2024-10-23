@@ -1,23 +1,41 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+import java.nio.file.Files
 
 apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferData'
 
+def pathToShpFiles = Paths.get(System.getProperty("java.io.tmpdir"))
+
+// Voraussetzung: das Shapefile wird in einem ZIP Archiv hochgeladen mit
+// demselben Namen, d.h. als Beispiel ein Shapefile I1.shp, I1.dbf, I1.shx etc.
+// muss in einem ZIP Archiv namens I1.zip oder I1.shz hochgeladen werden.
+def suffix = ~/\.[sz][hi][zp]$/  // Regex für .zip oder .shz am Ende
+def filename = zipFilename - suffix
+
 task emptyTable(type: SqlExecutor) {
-    description = "Leere die Datenbanktabelle"
+    description = "Leere vorgängig die Datenbanktabelle im Staging Schema"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ['delete_strassenzustand.sql']
 }
 
-task importFile(type: ShpImport) {
+// Extrahiere die Daten aus dem ZIP Archiv
+task unzipFile(type: Copy) {
     dependsOn emptyTable
+    description = "Extrahiere ZIP Archiv"
+    from zipTree(zipFilename) 
+    into pathToShpFiles 
+}
+
+task importFile(type: ShpImport) {
+    dependsOn unzipFile
     description = "Importiere das Shapefile"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     schemaName = "avt_strassenzustand_staging_v1"
     tableName = "strassenzustand"
-    dataFile = shpFilename 
+    dataFile = file(pathToShpFiles.toString() + '/' + filename + '.shp') 
 }
 
 task fixData(type: SqlExecutor) {
