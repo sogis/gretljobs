@@ -10,6 +10,8 @@ def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def mgdmNetzgebieteXtfFileName = "ch.so.awa.stromversorgungssicherheit_netzgebiete.mgdm.xtf"
 def mgdmNetzgebieteZipFileName = "ch.so.awa.stromversorgungssicherheit_netzgebiete.mgdm.zip"
 
+def aiLogin = aiUser + ":" + aiPwd
+
 /**
  * Validiere vorgängig die Daten in der Erfassungs-Datenbank. Da die Daten
  * direkt in der Erfassungs-Datenbank bearbeitet werden, muss geprüft werden,
