@@ -48,7 +48,7 @@ UPDATE
 SET 
 	gef_max = a.gef_max,
 	charakterisierung = a.charakterisierung,
-        hauptprozess = hauptprozess
+        hauptprozess = a.hauptprozess
 FROM 
 	splited_attr a
 WHERE 
