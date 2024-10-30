@@ -1,96 +1,169 @@
-WITH
+WITH 
 basket AS (
      SELECT 
-         t_id 
-     FROM 
+         t_id,
+         attachmentkey
+     from 
          afu_naturgefahren_staging_v1.t_ili2db_basket
+) 
+
+,hauptprozess_wasser AS ( 
+    SELECT
+        gefahrenstufe, 
+        charakterisierung, 
+        'uebermurung' AS teilprozess,
+        (st_dump(geometrie)).geom AS geometrie  
+    FROM 
+        afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_murgang 
+    WHERE 
+        datenherkunft = 'Neudaten'
+    UNION ALL 
+    SELECT 
+        gefahrenstufe,
+        charakterisierung, 
+        'ueberschwemmung' AS teilprozess,
+        (ST_Dump(geometrie)).geom AS geometrie
+    FROM 
+        afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_ueberflutung
+    WHERE 
+        datenherkunft = 'Neudaten'
 )
 
-,hauptprozess_alt_wasser_prio AS (
+,hauptprozess_wasser_clean AS (
     SELECT 
-        'wasser' AS hauptprozess, 
-        CASE 
-            WHEN gef_stufe = 'vorhanden' 
-            THEN 'restgefaehrdung'
-            WHEN gef_stufe = 'gering' 
-            THEN 'gering'
-            WHEN gef_stufe = 'mittel' 
-            THEN 'mittel' 
-            WHEN gef_stufe = 'erheblich' 
-            THEN 'erheblich'
-        END AS gefahrenstufe, 
-        replace(aindex, '_', '') AS charakterisierung, 
+        gefahrenstufe, 
+        charakterisierung, 
+        teilprozess,
+        geometrie 
+    FROM 
+        hauptprozess_wasser 
+    WHERE 
+        ST_area(geometrie) > 0.01
+)
+
+,hauptprozess_wasser_clean_prio AS (
+    SELECT 
+        gefahrenstufe, 
+        charakterisierung, 
+        teilprozess,
         geometrie,
         CASE 
-            WHEN gef_stufe = 'vorhanden' 
-            THEN 0 
-            WHEN gef_stufe = 'gering' 
-            THEN 1 
-            WHEN gef_stufe = 'mittel' 
-            THEN 2 
-            WHEN gef_stufe = 'erheblich' 
-            THEN 3
-        END || regexp_replace(aindex, '\D','','g') AS prio --Die Prio setzt sich zusammen aus gef_stufe und Nummer der Charakterisierung. Grund: Geteilte Kästchen! 
+            WHEN gefahrenstufe = 'restgefaehrdung' THEN 0 
+            WHEN gefahrenstufe = 'gering' THEN 1 
+            WHEN gefahrenstufe = 'mittel' THEN 2 
+            WHEN gefahrenstufe = 'erheblich' THEN 3
+        END AS prio 
     FROM 
-        afu_gefahrenkartierung.gefahrenkartirung_gk_wasser
-    WHERE 
-        publiziert is true
-        AND 
-        gef_stufe != 'keine'
+        hauptprozess_wasser_clean
 )
 
-,hauptprozess_alt_wasser_prio_clip AS (
+,hauptprozess_wasser_clean_prio_clip AS (
     SELECT 
-        a.hauptprozess,
-        a.gefahrenstufe,
+        a.gefahrenstufe, 
         a.charakterisierung, 
+        a.teilprozess,
         ST_Multi(COALESCE(
             ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
         )) AS geometrie
     FROM  
-        hauptprozess_alt_wasser_prio AS a
+        hauptprozess_wasser_clean_prio AS a
     CROSS JOIN LATERAL (
         SELECT 
             ST_Union(geometrie) AS geometrie
         FROM   
-            hauptprozess_alt_wasser_prio AS b
+            hauptprozess_wasser_clean_prio AS b
         WHERE 
             a.geometrie && b.geometrie 
-            AND 
+            and 
             a.prio < b.prio              
-    ) AS blade		
+    ) AS blade      
 )
 
-,hauptprozess_alt_wasser_union AS (
+,hauptprozess_wasser_boundary AS (
     SELECT 
-        hauptprozess,
+        ST_union(st_boundary(geometrie)) AS geometrie
+    FROM
+        hauptprozess_wasser_clean_prio_clip
+)
+
+,hauptprozess_wasser_split_poly AS (
+    SELECT 
+        (ST_dump(ST_polygonize(geometrie))).geom AS geometrie
+    FROM
+        hauptprozess_wasser_boundary
+)
+
+,hauptprozess_wasser_split_poly_points AS (
+    SELECT 
+        ROW_NUMBER() OVER() AS id,
+        geometrie AS poly,
+        ST_pointonsurface(geometrie) AS point
+    FROM
+        hauptprozess_wasser_split_poly
+)
+    
+,hauptprozess_wasser_point_on_polygons AS (
+    SELECT 
+        s.id,
+        p.gefahrenstufe,
+        string_agg(p.charakterisierung,', ') AS charakterisierung,
+        string_agg(p.teilprozess,', ') AS teilprozess
+    FROM
+        hauptprozess_wasser_split_poly_points s
+    JOIN
+        hauptprozess_wasser_clean_prio_clip p ON st_within(s.point, p.geometrie)
+    GROUP BY 
+        s.id,
+        p.gefahrenstufe
+)
+
+,hauptprozess_wasser_charakterisierung_agg AS (
+    SELECT 
+        polygone.gefahrenstufe,
+        polygone.charakterisierung,
+        polygone.teilprozess,
+        point.poly AS geometrie
+    FROM 
+        hauptprozess_wasser_split_poly_points point 
+    LEFT JOIN 
+        hauptprozess_wasser_point_on_polygons polygone 
+        ON 
+        polygone.id = point.id
+)
+
+-- Flächen mit gleicher Gefahrenstufe und gleicher Charakterisierung können zusammengefasst werden
+,hauptprozess_wasser_union AS (
+    SELECT 
         gefahrenstufe,
         charakterisierung,
+        teilprozess,
         ST_union(geometrie) AS geometrie
     FROM 
-        hauptprozess_alt_wasser_prio_clip
+        hauptprozess_wasser_charakterisierung_agg
     GROUP BY 
-        hauptprozess,
         gefahrenstufe,
-        charakterisierung 
+        charakterisierung,
+        teilprozess
 )
 
 ,hauptprozess_wasser_dump AS (
     SELECT 
-        hauptprozess,
         gefahrenstufe,
         charakterisierung,
+        teilprozess,
         (ST_dump(geometrie)).geom AS geometrie
     FROM 
-        hauptprozess_alt_wasser_union
+        hauptprozess_wasser_union
 )
+
 
 INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser (
     t_basket,
     hauptprozess, 
     gefahrenstufe, 
     charakterisierung, 
+    teilprozess,
     geometrie, 
     datenherkunft, 
     auftrag_neudaten
@@ -98,20 +171,18 @@ INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser (
 
 SELECT 
     basket.t_id AS t_basket,
-    hauptprozess,
-    gefahrenstufe, 
-    charakterisierung, 
-    ST_multi(geometrie) AS geometrie, --Im neuen Modell sind Multi-Polygone
-    'Altdaten' AS datenherkunft, 
-    null AS auftrag_neudaten
-FROM 
+    'wasser' AS hauptprozess,
+    gefahrenstufe,
+    charakterisierung,
+    teilprozess,
+    st_multi(geometrie) AS geometrie, 
+    'Neudaten' AS datenherkunft, 
+    basket.attachmentkey AS auftrag_neudaten   
+from 
+    basket,
     hauptprozess_wasser_dump
-    ,basket
 WHERE 
-    st_geometrytype(geometrie) = 'ST_Polygon' 
+    ST_area(geometrie) > 0.01 
+    and 
+    charakterisierung is not null 
 ;
-
-SELECT DISTINCT prozessa FROM afu_gefahrenkartierung.gefahrenkartirung_gk_wasser
-
-SELECT * FROM afu_gefahrenkartierung.gefahrenkartirung_gk_wasser
-WHERE prozessa = 'nicht_rekonstruierbar'
