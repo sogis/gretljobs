@@ -28,7 +28,8 @@ joined as (
 	SELECT 
 		sm.id,
 		sm.gef_max,
-		string_agg(distinct charakterisierung,', ' order by charakterisierung)::text as charakterisierung
+		string_agg(distinct charakterisierung,', ' order by charakterisierung)::text as charakterisierung,
+                string_agg(distinct hauptprozess,', ' order by hauptprozess)::text as hauptprozess
 	FROM 
 		splited_maxstufe sm
 	JOIN
@@ -46,7 +47,8 @@ UPDATE
 	splited
 SET 
 	gef_max = a.gef_max,
-	charakterisierung = a.charakterisierung
+	charakterisierung = a.charakterisierung,
+        hauptprozess = hauptprozess
 FROM 
 	splited_attr a
 WHERE 

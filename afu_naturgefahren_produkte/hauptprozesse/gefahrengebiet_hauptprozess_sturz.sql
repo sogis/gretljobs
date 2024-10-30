@@ -11,6 +11,7 @@ hauptprozess_sturz AS (
     SELECT
         gefahrenstufe, 
         charakterisierung, 
+        teilprozess,
         (ST_dump(geometrie)).geom AS geometrie	
     FROM 
         afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_stein_blockschlag  
@@ -20,6 +21,7 @@ hauptprozess_sturz AS (
     SELECT
         gefahrenstufe, 
         charakterisierung, 
+        teilprozess,
         (ST_dump(geometrie)).geom AS geometrie	
     FROM 
         afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_fels_bergsturz 
@@ -31,6 +33,7 @@ hauptprozess_sturz AS (
     SELECT 
         gefahrenstufe, 
         charakterisierung, 
+        teilprozess,
         geometrie 
     FROM 
         hauptprozess_sturz 
@@ -47,6 +50,7 @@ hauptprozess_sturz AS (
     SELECT 
         gefahrenstufe, 
         charakterisierung, 
+        teilprozess,
         geometrie,
         CASE 
             WHEN charakterisierung = 'S10' THEN 0::integer
@@ -60,6 +64,7 @@ hauptprozess_sturz AS (
     SELECT 
         a.gefahrenstufe, 
         a.charakterisierung, 
+        teilprozess,
         ST_Multi(COALESCE(
             ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
@@ -83,18 +88,21 @@ hauptprozess_sturz AS (
     SELECT 
         gefahrenstufe,
         charakterisierung,
+        teilprozess,
         st_union(geometrie) AS geometrie
     FROM 
         hauptprozess_sturz_clean_prio_clip
     GROUP BY 
         gefahrenstufe,
-        charakterisierung 
+        charakterisierung,
+        teilprozess
 )
 
 ,hauptprozess_sturz_dump AS (
     SELECT 
         gefahrenstufe,
         charakterisierung,
+        teilprozess,
         (st_dump(geometrie)).geom AS geometrie
     FROM 
         hauptprozess_sturz_union
@@ -106,6 +114,7 @@ INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz (
     hauptprozess, 
     gefahrenstufe, 
     charakterisierung, 
+    teilprozess,
     geometrie, 
     datenherkunft, 
     auftrag_neudaten
@@ -116,8 +125,9 @@ SELECT
     'sturz' AS hauptprozess,
     gefahrenstufe,
     charakterisierung,
+    teilprozess,
     st_multi(geometrie) AS geometrie,
-    'Neudaten' AS datenherkunft, 
+    'Neudaten' AS datenherkunft
     basket.attachmentkey AS auftrag_neudaten   
 FROM 
     basket,
@@ -126,6 +136,7 @@ WHERE
     ST_area(geometrie) > 0.001 
     and 
     charakterisierung is not null 
+
 
 
 

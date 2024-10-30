@@ -8,7 +8,8 @@ splitted_attributes_mapping AS (
             when gef_max = 3 then 'mittel' 
             when gef_max = 4 then 'erheblich' 
         end as gefahrenstufe,
-        charakterisierung, 
+        charakterisierung,
+        hauptprozess, 
         poly AS geometrie 
     FROM 
         splited        
@@ -26,10 +27,11 @@ splitted_attributes_mapping AS (
                     ) AS x 
                 ORDER BY x
             ),', '
-       ) AS charakterisierung,
-	   geometrie
-	FROM 
-	    splitted_attributes_mapping
+        ) AS charakterisierung,
+        hauptprozess,
+	geometrie
+    FROM 
+	splitted_attributes_mapping
 )
 
 --Polygone die unzusammenhängend sinnd müssen wieder aufgetrennt werden. 
@@ -37,6 +39,7 @@ splitted_attributes_mapping AS (
     SELECT
         gefahrenstufe, 
         charakterisierung,
+        hauptprozess,
         (ST_Dump(geometrie)).geom AS geometrie
     FROM 
         hauptprozesse_charakterisierung_sort
@@ -52,13 +55,15 @@ splitted_attributes_mapping AS (
 INSERT INTO afu_naturgefahren_staging_v1.synoptisches_gefahrengebiet (
     t_basket, 
     gefahrenstufe, 
-    charakterisierung, 
+    charakterisierung,
+    hauptprozess, 
     geometrie
 ) 
 SELECT 
     basket.t_id AS t_basket,
     gefahrenstufe,
     charakterisierung,
+    hauptprozess,
     ST_Multi(geometrie) AS geometrie 
 FROM 
     basket,
