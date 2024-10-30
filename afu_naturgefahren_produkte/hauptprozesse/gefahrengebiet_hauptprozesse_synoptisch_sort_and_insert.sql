@@ -28,7 +28,15 @@ splitted_attributes_mapping AS (
                 ORDER BY x
             ),', '
         ) AS charakterisierung,
-        hauptprozess,
+        array_to_string(
+            array(
+                select distinct 
+                    unnest(
+                        string_to_array(hauptprozess,', ')
+                    ) AS x 
+                ORDER BY x
+            ),', '
+        ) AS hauptprozess,
 	geometrie
     FROM 
 	splitted_attributes_mapping
