@@ -127,7 +127,7 @@ SELECT
     charakterisierung,
     teilprozess,
     st_multi(geometrie) AS geometrie,
-    'Neudaten' AS datenherkunft
+    'Neudaten' AS datenherkunft,
     basket.attachmentkey AS auftrag_neudaten   
 FROM 
     basket,
@@ -136,7 +136,3 @@ WHERE
     ST_area(geometrie) > 0.001 
     and 
     charakterisierung is not null 
-
-
-
-
