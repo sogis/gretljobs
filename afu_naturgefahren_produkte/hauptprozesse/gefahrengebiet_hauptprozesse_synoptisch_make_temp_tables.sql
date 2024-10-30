@@ -19,7 +19,7 @@ CREATE TABLE splited (
     point geometry(point, 2056) NOT NULL,
     gef_max int4 NULL,
     charakterisierung varchar(255) NULL,
-    hauptprozess varchar(30) NOT NULL
+    hauptprozess varchar(30) NULL
 );
 
 DROP INDEX IF EXISTS splited_point;
