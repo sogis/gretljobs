@@ -6,8 +6,8 @@ import java.io.File
 
 apply plugin: 'ch.so.agi.gretl'
 
-//defaultTasks 'removeTmpFiles'
-defaultTasks 'copy_alle_natgef_produkte'
+defaultTasks 'removeTmpFiles'
+//defaultTasks 'copy_alle_natgef_produkte'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def exportFileName = 'naturgefahren.xtf'
