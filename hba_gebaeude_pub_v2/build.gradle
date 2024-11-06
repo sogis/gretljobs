@@ -1,0 +1,70 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'publishPub'
+
+def iliModelName = "SO_HBA_Gebaeude_20240111"
+def fileName = "20231127_Gebaeude.csv"
+
+def dbSchemaNameEdit = "hba_gebaeude_v2"
+def dbSchemaNamePub = "hba_immobilienportfolio_pub_v1"
+
+// Achtung: Es dürfen keine leere Zeilen (resp. Zeilen mit nur Semikolons) im 
+// in der Datei vorhanden sein.
+// Achtung: In der Headerzeile muss allenfalls das letzte Semikolon gelöscht werden.
+// Bei den Zeilen mit den Werten spielt es keine Rolle. -> Melden
+task validateCsv(type: CsvValidator) {
+    description = "Validiert die CSV-Datei"
+    models = iliModelName
+    firstLineIsHeader = true
+    encoding = "ISO-8859-1"
+    valueSeparator = ";"
+    valueDelimiter = null
+    dataFiles = [fileName]
+}
+
+task truncateTable(type: SqlExecutor, dependsOn: 'validateCsv') {
+    description = "Leert die Tabelle gebaeude_gebaeude"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = [
+        'truncate_table.sql'
+    ]
+}
+
+task importCsv(type: CsvImport, dependsOn: 'truncateTable') {
+    description = "Import die CVS-Datei in die Datenbank"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = dbSchemaNameEdit
+    tableName = "gebaeude_gebaeude"
+    firstLineIsHeader=true
+    encoding = "ISO-8859-1"
+    valueSeparator = ";"
+    valueDelimiter = null
+    dataFile = fileName
+}
+
+task transferToPub(type: Db2Db, dependsOn: 'importCsv') {
+    description = "Publiziert in die Pub-DB"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('transfer_gebaeude.sql', dbSchemaNamePub+'.gebaeude_gebaeude', true)
+    ];
+}
+
+task publishPub(type: Publisher, dependsOn:'transferToPub') {
+    dataIdent = "ch.so.hba.immobilienportfolio"
+    userFormats = true
+    database = [dbUriPub,dbUserPub,dbPwdPub]
+    dbSchema = dbSchemaNamePub
+    modelsToPublish = "SO_HBA_Immobilienportfolio_Publikation_20240319"
+
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    //target = ["/tmp/gretl-share"]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
