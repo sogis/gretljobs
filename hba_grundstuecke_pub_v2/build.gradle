@@ -11,7 +11,7 @@ def dbSchemaNameEdit = "hba_grundstuecke_v2"
 def dbSchemaNamePub = "hba_immobilienportfolio_pub_v1"
 
 task copyFile(type: Copy){
-    from "$projectDir/uploadFile"
+    from "$projectDir/xyz.csv"
     into "$buildDir/grundstuecke.csv"
     if(inputs.sourceFiles.empty) throw new StopExecutionException("No files found")
 }

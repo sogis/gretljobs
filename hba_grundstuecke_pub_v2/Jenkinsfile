@@ -9,9 +9,8 @@ pipeline {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
-                        unstash name: 'uploadFile'
-                        sh 'mv uploadFile $uploadFile_FILENAME'
-                        sh "gretl -PxtfFilename=${uploadFile_FILENAME}"
+                        unstash name: 'xyz.csv'
+                        sh "gretl"
                     }
                 }
             }
