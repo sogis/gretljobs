@@ -1,0 +1,67 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferPubData'
+
+// CSV IMPORT
+
+task renameFile(type: Copy) {
+    from 'upload/data'    
+    into 'upload/'              
+    rename { data -> 'data.csv' }  
+}
+
+task validate(type: CsvValidator, dependsOn: renameFile){
+    models = "SO_SK_Plakatstandorte_20241106"
+    firstLineIsHeader=true
+    valueSeparator=";"
+    dataFiles = ["upload/data.csv"]
+}
+
+task deleteData_transfer (type: SqlExecutor, dependsOn: validate) {
+    description = "Löscht/leert die Daten aus dem Schema sk_plakatstandorte_staging_v1 und sk_plakatstandorte_v1"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["delete_sk_plakatstandorte_standorte.sql"]
+}
+
+task csvimport(type: CsvImport, dependsOn: deleteData_transfer){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = "sk_plakatstandorte_v1"
+    tableName = "standorte"
+    firstLineIsHeader=true
+    valueSeparator = ";"
+    encoding = "UTF-8"
+    dataFile = file('upload/data.csv')
+}
+
+// ADD GEOMETRY AND VALIDATE
+
+task addGeometrie(type: SqlExecutor, dependsOn: csvimport) {
+    description = "Verknüpft die Daten des CSV-Imports mit den Geometrien der Gemeindegrenzen"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["addgeometrie.sql"]
+}
+
+tasks.register('validateWithGeometry', Ili2pgValidate) {
+    dependsOn addGeometrie
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = "SO_SK_Plakatstandorte_Publikation_20241106"
+    modeldir = rootProject.projectDir.toString() + ";http://models.interlis.ch"
+    dbschema = "sk_plakatstandorte_staging_v1"
+}
+
+// PUBLISH
+
+task transferPubData(type: Db2Db, dependsOn: validateWithGeometry){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('standorte_pub.sql', 'sk_plakatstandorte_pub_v1.standorte', true)
+    ]
+}
+
