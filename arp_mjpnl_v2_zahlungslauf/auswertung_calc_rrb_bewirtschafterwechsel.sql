@@ -10,7 +10,7 @@ INSERT INTO ${DB_Schema_MJPNL}.auswertung_rrb_bewirtschafterwechsel
 SELECT 
     (SELECT t_id FROM ${DB_Schema_MJPNL}.t_ili2db_basket WHERE topic = 'SO_ARP_MJPNL_20240606.Auswertung' LIMIT 1) as t_basket,
     ${AUSZAHLUNGSJAHR}::integer as jahr,
-    array_to_string(vbg.gemeinde, ',') as gemeinde, 
+    left(array_to_string(vbg.gemeinde, ','),254) as gemeinde, 
     vbg.vereinbarungs_nr as vereinbarungs_nr,
     vbg.vereinbarungs_nr_alt as vereinbarungs_nr_alt,
     vbg.gelan_pid_gelan as gelan_pid_gelan,
