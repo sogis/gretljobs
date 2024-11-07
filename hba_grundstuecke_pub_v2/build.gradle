@@ -3,12 +3,18 @@ import ch.so.agi.gretl.api.*
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPub'
+defaultTasks 'copyFile'
 
 def iliModelName = "SO_HBA_Grundstuecke_20240111"
 def fileName = "20240408_Grundstuecke.csv"
 def dbSchemaNameEdit = "hba_grundstuecke_v2"
 def dbSchemaNamePub = "hba_immobilienportfolio_pub_v1"
+
+task copyFile(type: Copy){
+    from "$projectDir/uploadFile"
+    into "$buildDir/grundstuecke.csv"
+    if(inputs.sourceFiles.empty) throw new StopExecutionException("No files found")
+}
 
 // Achtung: Es dürfen keine leere Zeilen (resp. Zeilen mit nur Semikolons) im 
 // in der Datei vorhanden sein.
