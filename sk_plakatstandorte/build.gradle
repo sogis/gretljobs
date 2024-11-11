@@ -3,12 +3,13 @@ import ch.so.agi.gretl.api.TransferSet
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.io.File
+import java.nio.file.StandardOpenOption
 
 apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferPubData'
 
-// CSV IMPORT
+// CSV VALIDATE AND IMPORT
 
 task renameFile(type: Copy) {
     from 'upload/data'    
@@ -16,7 +17,41 @@ task renameFile(type: Copy) {
     rename { data -> 'data.csv' }  
 }
 
-task validate(type: CsvValidator, dependsOn: renameFile){
+task formatCsvFile {
+    dependsOn renameFile
+    def inputFile = file('upload/data.csv') // Pfad zur CSV-Datei
+    def outputFile = file('upload/data.csv') // Pfad zur Ausgabe-Datei
+
+    doLast {
+        def bufferedReader = inputFile.newReader()
+        def formattedLines = []
+        def currentLine = ""
+
+        bufferedReader.eachLine { line ->
+            currentLine += line
+
+            // Prüfen, ob die Anzahl der doppelten Anführungszeichen gerade ist
+            if (currentLine.count('"') % 2 == 0) {
+                // Entferne alle vorhandenen Anführungszeichen
+                currentLine = currentLine.replaceAll('"', '')
+                // Füge Anführungszeichen an Anfang, Ende und um jedes Semikolon
+                currentLine = '"' + currentLine.replaceAll(';', '";"') + '"'
+                
+                formattedLines << currentLine
+                currentLine = "" // Setze den Puffer für die nächste Zeile zurück
+            } else {
+                // Falls die Zeile unvollständig ist (innerhalb eines Feldes), füge einen Zeilenumbruch hinzu
+                currentLine += "\n"
+            }
+        }
+
+        // Schreibe das Ergebnis in die neue Datei
+        Files.write(outputFile.toPath(), formattedLines.join("\n").getBytes(), StandardOpenOption.CREATE)
+        println "CSV-Datei erfolgreich formatiert und gespeichert unter: ${outputFile}"
+    }
+}
+
+task validate(type: CsvValidator, dependsOn: formatCsvFile){
     models = "SO_SK_Plakatstandorte_20241106"
     firstLineIsHeader=true
     valueSeparator=";"
