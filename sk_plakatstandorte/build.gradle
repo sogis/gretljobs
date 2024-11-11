@@ -7,7 +7,7 @@ import java.nio.file.StandardOpenOption
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferPubData'
+defaultTasks 'publishPub'
 
 // CSV VALIDATE AND IMPORT
 
@@ -100,3 +100,15 @@ task transferPubData(type: Db2Db, dependsOn: validateWithGeometry){
     ]
 }
 
+task publishPub(type: Publisher, dependsOn: transferPubData) {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dataIdent = "ch.so.sk.plakatstandorte"
+    dbSchema = "sk_plakatstandorte_pub_v1"
+    modelsToPublish = "SO_SK_Plakatstandorte_Publikation_20241106"
+    userFormats = true
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
