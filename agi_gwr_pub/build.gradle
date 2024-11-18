@@ -6,7 +6,7 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'de.undercouch.download'
 
-defaultTasks 'transferData'
+defaultTasks 'importData'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def zipFileName = "so.zip"
@@ -42,17 +42,17 @@ tasks.register('importData', Db2Db) {
     sourceDb = [dbUriGwr]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
-        new TransferSet('importData.sql', 'agi_gwr_v1.gwr_gebaeude', true)
+        new TransferSet('import_data.sql', 'agi_gwr_v1.gwr_gebaeude', true)
     ];
 }
 
-tasks.register('transferData', Db2Db) {
-    dependsOn 'importData'
-    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
-    transferSets = [
-        new TransferSet('transfer_gebaeude_punkt.sql', 'agi_gwr_pub_v1.gwr_gebaeude_punkt', true),
-        new TransferSet('transfer_gebaeude_flaeche.sql', 'agi_gwr_pub_v1.gwr_gebaeude', true)
-    ];
-}
+// tasks.register('transferData', Db2Db) {
+//     dependsOn 'importData'
+//     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+//     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+//     transferSets = [
+//         new TransferSet('transfer_gebaeude_punkt.sql', 'agi_gwr_pub_v1.gwr_gebaeude_punkt', true),
+//         new TransferSet('transfer_gebaeude_flaeche.sql', 'agi_gwr_pub_v1.gwr_gebaeude', true)
+//     ];
+// }
 
