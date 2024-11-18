@@ -17,8 +17,38 @@ task renameFile(type: Copy) {
     rename { data -> 'data.csv' }  
 }
 
-task formatCsvFile {
+// Task zur Überprüfung der UTF-8-Kodierung
+task validateCsvEncoding {
     dependsOn renameFile
+    doLast {
+        def inputFile = file('upload/data.csv') // Pfad zur umbenannten Datei
+        if (!inputFile.exists()) {
+            throw new GradleException("Datei ${inputFile} existiert nicht!")
+        }
+
+        def content = Files.readAllBytes(Paths.get(inputFile.toURI()))
+        def utf8Charset = Charset.forName("UTF-8")
+        
+        if (!isUtf8Encoded(content, utf8Charset)) {
+            throw new GradleException("Die Datei ${inputFile} ist nicht UTF-8 kodiert!")
+        } else {
+            println "Die Datei ${inputFile} ist korrekt UTF-8 kodiert."
+        }
+    }
+}
+
+// Hilfsfunktion zur UTF-8-Prüfung
+boolean isUtf8Encoded(byte[] bytes, Charset charset) {
+    try {
+        charset.newDecoder().decode(ByteBuffer.wrap(bytes))
+        return true
+    } catch (CharacterCodingException e) {
+        return false
+    }
+}
+
+task formatCsvFile {
+    dependsOn validateCsvEncoding
     def inputFile = file('upload/data.csv') // Pfad zur CSV-Datei
     def outputFile = file('upload/data.csv') // Pfad zur Ausgabe-Datei
 
