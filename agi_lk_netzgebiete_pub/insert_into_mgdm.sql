@@ -32,7 +32,7 @@ netzgebiete AS (
         p.geometrie AS ageometry,
         p.bezeichnung AS aname,
         'SO' AS canton,
-        FALSE AS legalforce,
+        TRUE AS legalforce,
         org2.t_id AS operator
     FROM
         agi_lk_netzgebiete_v1.netzgebiet n 
