@@ -490,16 +490,16 @@ task kueberschwemmung_geschwindigkeit(type: SqlExecutor, dependsOn: kuebermurung
 }
 
 //Geometriebereinigung
-
+/*
 task clean_geometry(type: SqlExecutor, dependsOn: kueberschwemmung_geschwindigkeit) {
     description = "Bereinigung der Geometrien durch st_reducePrecision"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['geometrie_bereinigung.sql']
 }
-
+*/
 //In die Edit-DB kopieren
 
-task truncate_edit_db_tables(type: SqlExecutor, dependsOn: clean_geometry) {
+task truncate_edit_db_tables(type: SqlExecutor, dependsOn: kueberschwemmung_geschwindigkeit) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['vorbereitung/truncate_table.sql']
 }
