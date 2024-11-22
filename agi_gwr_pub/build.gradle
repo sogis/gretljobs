@@ -49,12 +49,12 @@ tasks.register('importData', Db2Db) {
 }
 
 tasks.register('transferData', Db2Db) {
-    //dependsOn 'importData'
+    dependsOn 'importData'
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
         new TransferSet('transfer_gebaeude.sql', 'agi_gwr_pub_v1.gwr_gebaeude', true),
-        //new TransferSet('transfer_wohnung.sql', 'agi_gwr_pub_v1.gwr_wohnung', true)
+        new TransferSet('transfer_wohnung.sql', 'agi_gwr_pub_v1.gwr_wohnung', true)
     ];
 }
 
