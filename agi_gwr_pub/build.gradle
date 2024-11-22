@@ -58,3 +58,6 @@ tasks.register('transferData', Db2Db) {
     ];
 }
 
+// TODO
+// Publisher. ili2pg-Export und Validierung ging je circa 1 Minute und fehlerfrei.
+
