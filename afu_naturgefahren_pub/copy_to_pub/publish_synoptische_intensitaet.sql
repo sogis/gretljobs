@@ -8,13 +8,13 @@ SELECT
     datenherkunft, 
     auftrag_neudaten
 FROM 
-    afu_naturgefahren_staging_v1.synoptische_intensitaet syn_intens 
+    afu_naturgefahren_staging_v2.synoptische_intensitaet syn_intens 
 LEFT JOIN
-    afu_naturgefahren_staging_v1.teilprozess_synoptisch syn_typ 
+    afu_naturgefahren_staging_v2.teilprozess_synoptisch syn_typ 
     ON 
     syn_intens.teilprozess = syn_typ.ilicode 
 LEFT JOIN
-    afu_naturgefahren_staging_v1.intensitaet_typ int_typ
+    afu_naturgefahren_staging_v2.intensitaet_typ int_typ
     ON
     syn_intens.intensitaet = int_typ.ilicode 
 ;

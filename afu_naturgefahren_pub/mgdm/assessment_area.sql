@@ -3,7 +3,7 @@ lines as (
     SELECT 
         ST_Union(st_boundary(geometrie)) as geometrie
     FROM
-        afu_naturgefahren_staging_v1.abklaerungsperimeter 
+        afu_naturgefahren_staging_v2.abklaerungsperimeter 
 )
 
 ,splited AS (
@@ -46,7 +46,7 @@ lines as (
         END as erhebungsstand,
         teilprozess
     FROM 
-        afu_naturgefahren_staging_v1.abklaerungsperimeter
+        afu_naturgefahren_staging_v2.abklaerungsperimeter
 )
 
 ,attribute_agg as (
