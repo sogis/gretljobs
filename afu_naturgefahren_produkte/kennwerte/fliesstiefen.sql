@@ -71,6 +71,8 @@ SELECT
         THEN 'groesser_200cm'
     	WHEN h = 'von_300_bis_400_cm' 
         THEN 'groesser_200cm'
+    	WHEN h = 'mehr_als_400_cm' 
+        THEN 'groesser_200cm'
     	ELSE 'BERECHNUNGSFEHLER' 
     END AS ueberschwemmung_tiefe, 
     prozessquelle.kennung AS prozessquelle_neudaten, 
