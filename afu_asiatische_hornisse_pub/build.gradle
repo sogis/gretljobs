@@ -1,13 +1,25 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
+import de.undercouch.gradle.tasks.download.Download
 
+apply plugin: "de.undercouch.download"
 apply plugin: 'ch.so.agi.gretl'
 
 description = "GRETL-Job für Datenübernahme der Asiatischen Hornisse innerhalb der edit-DB, ins pub-Schema (pub-DB, edit-DB)"
 
+defaultTasks 'downloadFeatures'
 
-defaultTasks 'refreshSolr'
+task downloadFeatures(type: Download){
+    description = "Download der Features vom WFS. BEACHTEN: WFS-Version darf nicht höher 1.1.0 sein, da Download-Task kein Paging kann."
+    src 'https://geoserver.infofauna.ch/geoserver/wfs?outputFormat=application/json&SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=neovelutina:individuals&SRSNAME=urn:ogc:def:crs:EPSG::2056&BBOX=2588267,1209761,2646278,1275041'
+    dest "$buildDir/resp.json"
+    overwrite true
+    username 'geoNeophytes'
+    password '7LQgX.dMcwJC79L-7bHc3'
+}
 
+/*
+docker compose run --rm -u $UID gretl --project-dir=afu_asiatische_hornisse_pub
 
 task transferAfuAsiatischeHornissePub(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -21,3 +33,4 @@ task transferAfuAsiatischeHornissePub(type: Db2Db) {
 task refreshSolr(type:Exec, dependsOn:'transferAfuAsiatischeHornissePub') {
         commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.asiatische_hornisse'
 }
+*/
