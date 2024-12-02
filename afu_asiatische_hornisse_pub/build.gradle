@@ -15,7 +15,7 @@ task downloadFeatures(type: Download){
     dest "$buildDir/resp.json"
     overwrite true
     username 'geoNeophytes'
-    password '7LQgX.dMcwJC79L-7bHc3'
+    password 'xxx'
 }
 
 /*
