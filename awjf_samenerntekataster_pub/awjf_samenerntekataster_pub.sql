@@ -18,13 +18,13 @@ SELECT
     sek.bemerkung
 FROM
     awjf_samenerntekataster_v1.flaeche AS sek          
-JOIN agi_hoheitsgrenzen_pub.gemeindegrenze AS gemeinde
+JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS gemeinde
     ON ST_Intersects(sek.geometrie, gemeinde.geometrie)
-JOIN awjf_forstreviere.forstreviergeometrie AS forstgeometrie
+JOIN awjf_forstreviere.forstreviere_forstreviergeometrie AS forstgeometrie
     ON ST_Intersects(sek.geometrie, forstgeometrie.geometrie)
-LEFT JOIN awjf_forstreviere.forstkreis AS forstkreis
+LEFT JOIN awjf_forstreviere.forstreviere_forstkreis AS forstkreis
     ON forstgeometrie.forstkreis = forstkreis.t_id
-LEFT JOIN awjf_forstreviere.forstrevier AS forstrevier
+LEFT JOIN awjf_forstreviere.forstreviere_forstrevier AS forstrevier
     ON forstgeometrie.forstrevier = forstrevier.t_id
 GROUP BY 
     sek.oecd,
