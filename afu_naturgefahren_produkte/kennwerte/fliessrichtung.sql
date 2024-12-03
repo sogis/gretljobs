@@ -50,7 +50,7 @@ SELECT
     	WHEN richtung.jaehrlichkeit = 'restgefaehrdung' 
         THEN '-1' 
     END AS jaehrlichkeit, 
-    richtung.azimuth AS fliessrichtung, 
+    richtung.azimuth::integer AS fliessrichtung, 
     prozessquelle.kennung AS prozessquelle_neudaten, 
     geometrie, 
     'Neudaten' AS datenherkunft,

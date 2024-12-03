@@ -3,19 +3,22 @@ multipoly AS (
     SELECT
         ST_Union(poly) AS mpoly,
         gef_max,
-        charakterisierung
+        charakterisierung,
+        hauptprozess
     FROM 
         splited
     GROUP BY
         gef_max,
-        charakterisierung
+        charakterisierung,
+        hauptprozess
 )
 
 ,singlepoly AS (
     SELECT 
         (ST_Dump(mpoly)).geom AS spoly,
         gef_max,
-        charakterisierung
+        charakterisierung, 
+        hauptprozess
     FROM 
         multipoly
 )
@@ -26,14 +29,16 @@ multipoly AS (
         poly, 
         point, 
         gef_max, 
-        charakterisierung
+        charakterisierung,
+        hauptprozess
     )
     SELECT 
         -(row_number() over()) AS new_id,
         spoly,
         st_pointonsurface(spoly),
         gef_max,
-        charakterisierung
+        charakterisierung, 
+        hauptprozess
     FROM 
         singlepoly
 )

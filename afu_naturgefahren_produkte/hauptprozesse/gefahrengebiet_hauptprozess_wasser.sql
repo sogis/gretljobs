@@ -11,7 +11,8 @@ basket AS (
     SELECT
         gefahrenstufe, 
         charakterisierung, 
-        (st_dump(geometrie)).geom AS geometrie	
+        'uebermurung' AS teilprozess,
+        (st_dump(geometrie)).geom AS geometrie  
     FROM 
         afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_murgang 
     WHERE 
@@ -20,6 +21,7 @@ basket AS (
     SELECT 
         gefahrenstufe,
         charakterisierung, 
+        'ueberschwemmung' AS teilprozess,
         (ST_Dump(geometrie)).geom AS geometrie
     FROM 
         afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_ueberflutung
@@ -31,6 +33,7 @@ basket AS (
     SELECT 
         gefahrenstufe, 
         charakterisierung, 
+        teilprozess,
         geometrie 
     FROM 
         hauptprozess_wasser 
@@ -42,6 +45,7 @@ basket AS (
     SELECT 
         gefahrenstufe, 
         charakterisierung, 
+        teilprozess,
         geometrie,
         CASE 
             WHEN gefahrenstufe = 'restgefaehrdung' THEN 0 
@@ -57,6 +61,7 @@ basket AS (
     SELECT 
         a.gefahrenstufe, 
         a.charakterisierung, 
+        a.teilprozess,
         ST_Multi(COALESCE(
             ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
@@ -72,7 +77,7 @@ basket AS (
             a.geometrie && b.geometrie 
             and 
             a.prio < b.prio              
-    ) AS blade		
+    ) AS blade      
 )
 
 ,hauptprozess_wasser_boundary AS (
@@ -97,12 +102,13 @@ basket AS (
     FROM
         hauptprozess_wasser_split_poly
 )
-	
+    
 ,hauptprozess_wasser_point_on_polygons AS (
     SELECT 
         s.id,
         p.gefahrenstufe,
-        string_agg(p.charakterisierung,', ') AS charakterisierung
+        string_agg(p.charakterisierung,', ') AS charakterisierung,
+        string_agg(p.teilprozess,', ') AS teilprozess
     FROM
         hauptprozess_wasser_split_poly_points s
     JOIN
@@ -116,6 +122,7 @@ basket AS (
     SELECT 
         polygone.gefahrenstufe,
         polygone.charakterisierung,
+        polygone.teilprozess,
         point.poly AS geometrie
     FROM 
         hauptprozess_wasser_split_poly_points point 
@@ -130,18 +137,21 @@ basket AS (
     SELECT 
         gefahrenstufe,
         charakterisierung,
+        teilprozess,
         ST_union(geometrie) AS geometrie
     FROM 
         hauptprozess_wasser_charakterisierung_agg
     GROUP BY 
         gefahrenstufe,
-        charakterisierung 
+        charakterisierung,
+        teilprozess
 )
 
 ,hauptprozess_wasser_dump AS (
     SELECT 
         gefahrenstufe,
         charakterisierung,
+        teilprozess,
         (ST_dump(geometrie)).geom AS geometrie
     FROM 
         hauptprozess_wasser_union
@@ -153,6 +163,7 @@ INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser (
     hauptprozess, 
     gefahrenstufe, 
     charakterisierung, 
+    teilprozess,
     geometrie, 
     datenherkunft, 
     auftrag_neudaten
@@ -163,6 +174,7 @@ SELECT
     'wasser' AS hauptprozess,
     gefahrenstufe,
     charakterisierung,
+    teilprozess,
     st_multi(geometrie) AS geometrie, 
     'Neudaten' AS datenherkunft, 
     basket.attachmentkey AS auftrag_neudaten   

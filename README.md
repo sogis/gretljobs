@@ -220,6 +220,7 @@ Folgende GRETL-spezifischen Benutzergruppen stehen im Moment zur Verfügung:
 
 * gretl-users-barpa (ARP)
 * gretl-users-bdafu (AfU)
+* gretl-users-bdhba (HBA)
 * gretl-users-bvtaa (AVT)
 * gretl-users-edden (ADA)
 * gretl-users-vkfaa (AWJF)

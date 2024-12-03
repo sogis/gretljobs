@@ -1,0 +1,15 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'dataTransfer'
+
+task dataTransfer(type: Db2Db){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('awjf_rodung_rodungsersatz_flaeche.sql', 'awjf_rodung_rodungsersatz_pub_v1.flaeche', true),
+            new TransferSet('awjf_rodung_rodungsersatz_punkt.sql', 'awjf_rodung_rodungsersatz_pub_v1.punkt', true)
+    ];
+}

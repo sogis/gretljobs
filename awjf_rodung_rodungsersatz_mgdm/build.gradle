@@ -1,0 +1,18 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'dataTransfer'
+
+task dataTransfer(type: SqlExecutor){
+    description = 'Transfer Daten auf MGDM'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['rodungsbewilligung.sql',
+                'ersatzmassnahmennl.sql',
+                'ersatzverzicht.sql',
+                'massnahmenltyp.sql',
+                'objekt.sql'
+            ]
+    sqlParameters = [hostname:"'"+geoservicesHostName+"'"]
+}

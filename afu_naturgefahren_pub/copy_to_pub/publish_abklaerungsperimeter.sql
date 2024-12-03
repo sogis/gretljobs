@@ -6,9 +6,9 @@ SELECT
     datenherkunft, 
     auftrag_neudaten
 FROM 
-    afu_naturgefahren_staging_v1.abklaerungsperimeter abklaerungsperimeter
+    afu_naturgefahren_staging_v2.abklaerungsperimeter abklaerungsperimeter
 LEFT JOIN
-    afu_naturgefahren_staging_v1.teilprozess_quellen quelle
+    afu_naturgefahren_staging_v2.teilprozess_quellen quelle
     ON 
     abklaerungsperimeter.teilprozess = quelle.ilicode 
 ;
