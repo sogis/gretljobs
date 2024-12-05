@@ -376,11 +376,11 @@ SELECT
     CASE 
         WHEN datum_abschluss_rodung IS NOT NULL
         AND ersatzverzicht = 'Nein'
-            THEN 'Ja: Rodung und Rodungsersatz realisiert'
+            THEN 'S1' --Ja: Rodung und Rodungsersatz realisiert
         WHEN datum_abschluss_rodung IS NOT NULL 
         AND ersatzverzicht != 'Nein'
-            THEN 'Ja: Nichtgebrauch der Rodungsbewilligung (Rodungsersatz entfällt)'
-        ELSE 'Nein, noch nicht abgeschlossen'
+            THEN 'S2' --Ja: Nichtgebrauch der Rodungsbewilligung (Rodungsersatz entfällt)
+        ELSE 'S3' --Nein, noch nicht abgeschlossen
     END AS Stand_Abgeschlossen,
     datum_abschluss_rodung AS datum_abgeschlossen,
     datum_entscheid AS Verfuegung_Datum,
