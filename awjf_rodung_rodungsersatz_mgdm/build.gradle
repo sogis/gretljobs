@@ -1,11 +1,22 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'dataTransfer'
+defaultTasks 'zipXtf'
 
-task dataTransfer(type: SqlExecutor){
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def fileName = "awjf_rodung_rodungsersatz_mgdm.xtf"
+def exportFile = file(Paths.get(pathToTempFolder.toString(), fileName))
+def fileNameZip = "awjf_rodung_rodungsersatz_mgdm.zip"
+
+/**
+ * Datentransfer in MGDM-Schema
+ */
+task dataTransferMGDM(type: SqlExecutor){
     description = 'Transfer Daten auf MGDM'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['rodungsbewilligung.sql',
@@ -15,4 +26,56 @@ task dataTransfer(type: SqlExecutor){
                 'objekt.sql'
             ]
     sqlParameters = [hostname:"'"+geoservicesHostName+"'"]
+}
+
+/**
+ * Exportiere hier die Daten aus der Erfassungs-DB im MGDM. Diese Daten werden
+ * anschliessend im Task zipXtf gezippt und an geodienste.ch weitergeleitet.
+ */
+task exportDataEdit (type: Ili2pgExport, dependsOn: 'dataTransferMGDM') {
+    description = "Exportiert die Daten aus dem Schema awjf_rodung_rodungsersatz_mgdm_v1 in eine INTERLIS-Datei."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'awjf_rodung_rodungsersatz_mgdm_v1'
+    models = 'Rodungen_V1_1'
+    dataFile = exportFile
+    disableValidation = true
+}
+
+/**
+ * Validiere die exportierten Daten aus der Erfassungs-DB. Wir können hier nicht
+ * Ili2pgValidate, da die Daten sowieso exportiert werden müssen.
+ */
+task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
+    description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
+    dataFiles = exportFile
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    failOnError = true
+}
+
+task zipXtf(type: Zip, dependsOn: 'validateDataEdit') {
+    from pathToTempFolder
+    include fileName
+    archiveName fileNameZip
+    destinationDir(file(pathToTempFolder))
+}
+
+/* Falls man auf geodienste.ch alles löschen will/muss (siehe zweiter Abschnitt), muss man
+* einmalig replace_all=true setzen. Curl-Befehl kann natürlich auch lokal
+* ausgeführt werden.
+*
+* Achtung: Die Dateinamen müssen immer gleich sein. Diese werden als 
+* dataset-Name verwendet. Will man die Namen ändern, siehe erster Abschnitt
+* des Kommentars.
+*/
+task uploadXtf() {
+    dependsOn zipXtf
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=rodung_und_rodungsersatz_V1_1", "-F",
+                        "lv95_file=@" + Paths.get(".", fileNameZip), "-F", "publish=true", "-F", "replace_all=false",
+                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
 }
