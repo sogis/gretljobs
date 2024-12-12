@@ -3,21 +3,46 @@ WITH
 -- Selektion Attribute aus Tabelle Flaeche --
 flaeche AS (
     SELECT
-        t_id,
-        ersatzmassnahmennl,
-        massnahmennl_typ,
-        frist,
-        frist_bemerkung,
-        frist_verlaengerung,
-        frist_verlaengerung_bemerkung,
-        datum_abnahme,
-        geometrie,
-        ausgleichsabgabe_r,
-        rodung_r,
-        objekttyp,
-        bemerkung AS bemerkung_geometrie
+        flaeche.t_id,
+        flaeche.ersatzmassnahmennl,
+        flaeche.massnahmennl_typ,
+        flaeche.frist,
+        flaeche.frist_bemerkung,
+        flaeche.frist_verlaengerung,
+        flaeche.frist_verlaengerung_bemerkung,
+        flaeche.datum_abnahme,
+        flaeche.geometrie,
+        flaeche.ausgleichsabgabe_r,
+        flaeche.rodung_r,
+        flaeche.objekttyp,
+        flaeche.bemerkung AS bemerkung_geometrie,
+        string_agg(DISTINCT gemeinde.gemeindename, ', ') AS gemeindenamen,
+        string_agg(DISTINCT forstkreis.aname, ', ') AS forstkreis,
+        string_agg(DISTINCT forstrevier.aname, ', ') AS forstrevier
     FROM 
-        awjf_rodung_rodungsersatz_v1.flaeche
+        awjf_rodung_rodungsersatz_v1.flaeche AS flaeche
+    LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS gemeinde
+        ON ST_Intersects(flaeche.geometrie, gemeinde.geometrie)
+    LEFT JOIN awjf_forstreviere.forstreviere_forstreviergeometrie AS forstgeometrie
+        ON ST_Intersects(flaeche.geometrie, forstgeometrie.geometrie)
+    LEFT JOIN awjf_forstreviere.forstreviere_forstkreis AS forstkreis
+        ON forstgeometrie.forstkreis = forstkreis.t_id
+    LEFT JOIN awjf_forstreviere.forstreviere_forstrevier AS forstrevier
+        ON forstgeometrie.forstrevier = forstrevier.t_id
+    GROUP BY
+        flaeche.t_id,
+        flaeche.ersatzmassnahmennl,
+        flaeche.massnahmennl_typ,
+        flaeche.frist,
+        flaeche.frist_bemerkung,
+        flaeche.frist_verlaengerung,
+        flaeche.frist_verlaengerung_bemerkung,
+        flaeche.datum_abnahme,
+        flaeche.geometrie,
+        flaeche.ausgleichsabgabe_r,
+        flaeche.rodung_r,
+        flaeche.objekttyp,
+        flaeche.bemerkung
 ),
 
 -- Selektion Attribute aus Tabelle Rodung --
@@ -137,6 +162,9 @@ SELECT
     flaeche.datum_abnahme,
     flaeche.massnahmennl_typ,
     flaeche.bemerkung_geometrie,
+    flaeche.gemeindenamen,
+    flaeche.forstkreis,
+    flaeche.forstrevier,
     rodung.nr_kanton,
     rodung.nr_bund,
     rodung.vorhaben,
