@@ -12,7 +12,6 @@ buildscript {
 import ch.so.agi.gretl.api.Connector
 
 def dbEdit = [dbUriEdit, dbUserEdit, dbPwdEdit]
-//def dbSogis = [dbUriSogis, dbUserSogis, dbPwdSogis]
 def dbPub = [dbUriPub, dbUserPub, dbPwdPub]
 
 class Dataset {
@@ -158,9 +157,6 @@ ext.datasets = []
 // datasets.add(new Dataset("SO_KSTA_Landwert_20210202", "ksta_landwerte", dbEdit, "ch.so.ksta.landwerte_edit")) // Identisch mit Pub-Modell und -Inhalt.
 // datasets.add(new Dataset("SO_SGV_Erschliessung_ausserhalb_Bauzone_20190611", "sgv_erschliessungen", dbEdit, "ch.so.sgv.erschliessungen_edit")) 
 
-
-// SOGIS-DB
-// Die paar Modelle scheinen nicht auf die Schnelle exportierbar zu sein. Macht uns zu einem späteren Zeitpunkt vielleicht noch Bauchweh.
 
 // Pub-DB
 // Nicht exportiert werden:
