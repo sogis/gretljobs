@@ -1,6 +1,6 @@
 SELECT
     sek.oecd,
-    sek.baumart,
+    REPLACE(REPLACE(REPLACE(sek.baumart, '{', ''), '}', ''), ',', ', ') AS baumart,
     sek.herkunft,
     CASE 
         WHEN sek.hoehe_untergrenze IS NOT NULL OR sek.hoehe_obergrenze IS NOT NULL
