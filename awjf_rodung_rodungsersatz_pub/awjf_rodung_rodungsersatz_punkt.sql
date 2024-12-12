@@ -3,13 +3,30 @@ WITH
 -- Selektion Attribute aus Tabelle Punkt --
 punkt AS (
     SELECT
-        t_id,
-        geometrie,
-        rodung_r,
-        objekttyp,
-        bemerkung AS bemerkung_geometrie
+        punkt.t_id,
+        punkt.geometrie,
+        punkt.rodung_r,
+        punkt.objekttyp,
+        punkt.bemerkung AS bemerkung_geometrie,
+        string_agg(DISTINCT gemeinde.gemeindename, ', ') AS gemeindenamen,
+        string_agg(DISTINCT forstkreis.aname, ', ') AS forstkreis,
+        string_agg(DISTINCT forstrevier.aname, ', ') AS forstrevier
     FROM 
-        awjf_rodung_rodungsersatz_v1.punkt
+        awjf_rodung_rodungsersatz_v1.punkt AS punkt
+    LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS gemeinde
+        ON ST_Intersects(punkt.geometrie, gemeinde.geometrie)
+    LEFT JOIN awjf_forstreviere.forstreviere_forstreviergeometrie AS forstgeometrie
+        ON ST_Intersects(punkt.geometrie, forstgeometrie.geometrie)
+    LEFT JOIN awjf_forstreviere.forstreviere_forstkreis AS forstkreis
+        ON forstgeometrie.forstkreis = forstkreis.t_id
+    LEFT JOIN awjf_forstreviere.forstreviere_forstrevier AS forstrevier
+        ON forstgeometrie.forstrevier = forstrevier.t_id
+    GROUP BY 
+        punkt.t_id,
+        punkt.geometrie,
+        punkt.rodung_r,
+        punkt.objekttyp,
+        punkt.bemerkung
 ),
 
 -- Selektion Attribute aus Tabelle Rodung --
@@ -110,6 +127,9 @@ SELECT
     punkt.objekttyp,
     punkt.geometrie,
     punkt.bemerkung_geometrie,
+    punkt.gemeindenamen,
+    punkt.forstkreis,
+    punkt.forstrevier,
     rodung.nr_kanton,
     rodung.nr_bund,
     rodung.vorhaben,
