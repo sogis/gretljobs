@@ -66,43 +66,7 @@ task convertDataEdit(type: SqlExecutor, dependsOn: 'dbImport'){
     ]
 }
 
-task copyDataPubSogis(type: Db2Db, dependsOn: 'convertDataEdit'){
-    description = "Copy plz_ortschaften-Data to Sogis Pub Schema"
-    doLast {
-        println "plz_ortschaften-Data are copied to Sogis Pub Schema."
-    }
-    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    transferSets = [
-        new TransferSet('plzortschaften_ortschaft_sogis.sql', 'agi_plz_ortschaften_pub.plzortschaften_ortschaft', true),
-        new TransferSet('plzortschaften_postleitzahl_sogis.sql', 'agi_plz_ortschaften_pub.plzortschaften_postleitzahl', true)
-    ];
-}
-
-
-task copyDataSogis(type: Db2Db, dependsOn: 'copyDataPubSogis'){
-    description = "Copy plz_ortschaften-Data to Sogis Schema"
-    doLast {
-        println "plz_ortschaften-Data are copied to Sogis Schema."
-    }
-    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    targetDb = [dbUriSogis, dbUserSogis, dbPwdSogis]
-    transferSets = [
-        new TransferSet('nummerierngsbrche_nbgeometrie.sql', 'agi_plz_ortschaften.nummerierngsbrche_nbgeometrie', true),
-        new TransferSet('nummerierngsbrche_nummerierungsbereich.sql', 'agi_plz_ortschaften.nummerierngsbrche_nummerierungsbereich', true),
-        new TransferSet('nummerierngsbrche_nummerierungsbereichpos.sql', 'agi_plz_ortschaften.nummerierngsbrche_nummerierungsbereichpos', true),
-        new TransferSet('plzortschaft_ortschaft.sql', 'agi_plz_ortschaften.plzortschaft_ortschaft', true),
-        new TransferSet('plzortschaft_ortschaftsname.sql', 'agi_plz_ortschaften.plzortschaft_ortschaftsname', true),
-        new TransferSet('plzortschaft_ortschaftsname_pos.sql', 'agi_plz_ortschaften.plzortschaft_ortschaftsname_pos', true),
-        new TransferSet('plzortschaft_ortschaftsverbund.sql', 'agi_plz_ortschaften.plzortschaft_ortschaftsverbund', true),
-        new TransferSet('plzortschaft_ortschaftsverbundtext.sql', 'agi_plz_ortschaften.plzortschaft_ortschaftsverbundtext', true),
-        new TransferSet('plzortschaft_osnachfuehrung.sql', 'agi_plz_ortschaften.plzortschaft_osnachfuehrung', true),
-        new TransferSet('plzortschaft_plz6.sql', 'agi_plz_ortschaften.plzortschaft_plz6', true),
-        new TransferSet('plzortschaft_plz6nachfuehrung.sql', 'agi_plz_ortschaften.plzortschaft_plz6nachfuehrung', true)
-    ];
-}
-
-task copyDataPub(type: Db2Db, dependsOn: 'copyDataSogis'){
+task copyDataPub(type: Db2Db, dependsOn: 'convertDataEdit'){
     description = "Copy plz_ortschaften-Data to Pub Schema"
     doLast {
         println "plz_ortschaften-Data are copied to Pub Schema."
