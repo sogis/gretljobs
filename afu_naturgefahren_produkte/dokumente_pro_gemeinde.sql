@@ -168,7 +168,7 @@ SELECT distinct
     basket.t_id AS t_basket, 
     gemeinden.bfs_gemeindenummer AS gemeinde_bfsnr, 
     gemeinden.gemeindename AS gemeinde_name,
-    jsonb_build_object('@type', 'SO_AFU_Naturgefahren_Publikation_20240704.Naturgefahren.Dokument',
+    jsonb_build_object('@type', 'SO_AFU_Naturgefahren_Publikation_20241025.Naturgefahren.Dokument',
                       'Titel', berichte.titel, 
                       'Dateiname', berichte.dateiname, 
                       'Link', berichte.link, 
@@ -220,7 +220,7 @@ SELECT
     gemeinde_bfsnr, 
     gemeinde_name,
     json_agg(dokumente order by jahr)::jsonb ||      
-    jsonb_build_object('@type', 'SO_AFU_Naturgefahren_Publikation_20240704.Naturgefahren.Dokument',
+    jsonb_build_object('@type', 'SO_AFU_Naturgefahren_Publikation_20241025.Naturgefahren.Dokument',
                       'Titel', 'Lesehilfe', 
                       'Dateiname', 'B_Lesehilfe_Gefahrenkarte_PLANAT_120309.pdf', 
                       'Link', 'https://geo.so.ch/docs/ch.so.afu.naturgefahren/B_Lesehilfe_Gefahrenkarte_PLANAT_120309.pdf', 

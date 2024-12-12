@@ -10,4 +10,4 @@ SET
 WHERE 
     auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer
     AND 
-    status_abrechnung = 'freigegeben'
+    ( status_abrechnung = 'freigegeben' OR status_abrechnung = 'intern_verrechnet' )

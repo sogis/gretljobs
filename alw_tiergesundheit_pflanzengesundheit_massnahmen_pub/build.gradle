@@ -3,14 +3,15 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferTiergesundheitMassnahmen'
+defaultTasks 'transferMassnahmen'
 
-task transferTiergesundheitMassnahmen(type: Db2Db) {
+task transferMassnahmen(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('alw_tiergesundheit_massnahmengebiet.sql', 'alw_tiergesundheit_pflanzengesundheit_massnahmen_pub_v1.massnhmnngsndheit_tiergesundheit_massnahmengebiet', true),
-            new TransferSet('alw_pflanzengesundheit_massnahmengebiet.sql', 'alw_tiergesundheit_pflanzengesundheit_massnahmen_pub_v1.massnhmnngsndheit_pflanzengesundheit_schadorganismen', true)
+            new TransferSet('alw_pflanzengesundheit_massnahmengebiet.sql', 'alw_tiergesundheit_pflanzengesundheit_massnahmen_pub_v1.massnhmnngsndheit_pflanzengesundheit_schadorganismen', true),
+            new TransferSet('alw_bienen_sperrgebiete.sql', 'alw_tiergesundheit_pflanzengesundheit_massnahmen_pub_v1.massnhmnngsndheit_bienensperrgebiet', true)
     ];
 }
 

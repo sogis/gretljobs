@@ -24,7 +24,15 @@ SELECT
         THEN 'Abbaustelle.Ton'
     END AS objekttyp, 
     bezeichnung AS objektname,
-    'Ausgangslage' AS abstimmungskategorie,
+    CASE 
+        WHEN art LIKE '%Ausgangslage%'
+            THEN 'Ausgangslage'
+        WHEN art LIKE '%Vororientierung%'
+            THEN 'Vororientierung'
+        WHEN art LIKE '%Zwischenergebnis%'
+            THEN 'Zwischenergebnis'
+        ELSE 'Ausgangslage'
+    END AS abstimmungskategorie,
     (St_Dump(mpoly)).geom AS geometrie,
     gemeinde_name  AS gemeindenamen,
     'abbaustellen' AS datenquelle,
