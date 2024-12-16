@@ -6,7 +6,7 @@ import java.io.File
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'zipXtf'
+defaultTasks 'validateDataEdit'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def fileName = "awjf_rodung_rodungsersatz_mgdm.xtf"
@@ -42,8 +42,7 @@ task exportDataEdit (type: Ili2pgExport, dependsOn: 'dataTransferMGDM') {
 }
 
 /**
- * Validiere die exportierten Daten aus der Erfassungs-DB. Wir können hier nicht
- * Ili2pgValidate, da die Daten sowieso exportiert werden müssen.
+ * Validiere die exportierten Daten aus der Erfassungs-DB.
  */
 task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
@@ -52,6 +51,9 @@ task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
     failOnError = true
 }
 
+/**
+ * XTF-Datei zippen
+ */
 task zipXtf(type: Zip, dependsOn: 'validateDataEdit') {
     from pathToTempFolder
     include fileName
@@ -62,10 +64,6 @@ task zipXtf(type: Zip, dependsOn: 'validateDataEdit') {
 /* Falls man auf geodienste.ch alles löschen will/muss (siehe zweiter Abschnitt), muss man
 * einmalig replace_all=true setzen. Curl-Befehl kann natürlich auch lokal
 * ausgeführt werden.
-*
-* Achtung: Die Dateinamen müssen immer gleich sein. Diese werden als 
-* dataset-Name verwendet. Will man die Namen ändern, siehe erster Abschnitt
-* des Kommentars.
 */
 task uploadXtf() {
     dependsOn zipXtf
