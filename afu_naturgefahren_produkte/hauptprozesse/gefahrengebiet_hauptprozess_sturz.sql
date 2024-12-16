@@ -35,8 +35,6 @@ hauptprozess_sturz AS (
         geometrie 
     FROM 
         hauptprozess_sturz 
-    WHERE 
-        ST_area(geometrie) > 0.001
 )
 -- Die Priorisierung wird hier gleich von der Charakterisierung übernommen. Alle Sturz-Prozesse weisen die Charakterisierung SX auf und gemäss
 -- Prozessmatrix ist die Zahl auch gleichbedeutend mit "Höherrangig". Es gibt keine geteilten Kästchen.  
@@ -124,6 +122,4 @@ FROM
     basket,
     hauptprozess_sturz_dump
 WHERE 
-    ST_area(geometrie) > 0.001 
-    and 
     charakterisierung is not null 
