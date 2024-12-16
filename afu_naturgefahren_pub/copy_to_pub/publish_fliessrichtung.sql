@@ -6,5 +6,5 @@ SELECT
     datenherkunft, 
     auftrag_neudaten
 FROM 
-    afu_naturgefahren_staging_v1.fliessrichtung
+    afu_naturgefahren_staging_v2.fliessrichtung
 ;

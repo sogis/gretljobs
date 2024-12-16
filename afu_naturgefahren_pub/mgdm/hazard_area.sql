@@ -4,13 +4,13 @@ beurteilungsgebiet_sturz AS (
         erhebungsstand, 
         geometrie
     FROM 
-        afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_stein_block_schlag
+        afu_naturgefahren_beurteilungsgebiet_v2.erhebungsgebiet_stein_block_schlag
     UNION ALL 
     SELECT 
         erhebungsstand, 
         geometrie
     FROM 
-        afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_fels_berg_sturz
+        afu_naturgefahren_beurteilungsgebiet_v2.erhebungsgebiet_fels_berg_sturz
 )
 
 ,beurteilungsgebiet_rutschung AS (
@@ -18,19 +18,19 @@ beurteilungsgebiet_sturz AS (
         erhebungsstand, 
         geometrie
     FROM 
-        afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_permanente_rutschung
+        afu_naturgefahren_beurteilungsgebiet_v2.erhebungsgebiet_permanente_rutschung
     UNION ALL 
     SELECT 
         erhebungsstand, 
         geometrie
     FROM 
-        afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_spontane_rutschung
+        afu_naturgefahren_beurteilungsgebiet_v2.erhebungsgebiet_spontane_rutschung
     UNION ALL 
     SELECT 
         erhebungsstand, 
         geometrie
     FROM 
-        afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_hangmure
+        afu_naturgefahren_beurteilungsgebiet_v2.erhebungsgebiet_hangmure
 )
 
 ,beurteilungsgebiet_wasser AS (
@@ -38,13 +38,13 @@ beurteilungsgebiet_sturz AS (
         erhebungsstand, 
         geometrie
     FROM 
-        afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_ueberschwemmung
+        afu_naturgefahren_beurteilungsgebiet_v2.erhebungsgebiet_ueberschwemmung
     UNION ALL 
     SELECT 
         erhebungsstand, 
         geometrie
     FROM 
-        afu_naturgefahren_beurteilungsgebiet_v1.erhebungsgebiet_uebermurung
+        afu_naturgefahren_beurteilungsgebiet_v2.erhebungsgebiet_uebermurung
 )
 
 ,rockfall AS (
@@ -66,7 +66,7 @@ beurteilungsgebiet_sturz AS (
         CAST('SO' AS VARCHAR) AS data_responsibility,
         NULL AS comments
     FROM 
-        afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz
+        afu_naturgefahren_staging_v2.gefahrengebiet_hauptprozess_sturz
 --    UNION ALL 
 --    SELECT
 --        'rockfall' AS main_process,
@@ -82,7 +82,7 @@ beurteilungsgebiet_sturz AS (
 --            SELECT 
 --                st_union(geometrie) AS geometrie 
 --            FROM 
---                afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz
+--                afu_naturgefahren_staging_v2.gefahrengebiet_hauptprozess_sturz
 --        ) hauptprozess
 )
 
@@ -105,7 +105,7 @@ beurteilungsgebiet_sturz AS (
         CAST('SO' AS VARCHAR) AS data_responsibility,
         NULL AS comments
     FROM 
-        afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung
+        afu_naturgefahren_staging_v2.gefahrengebiet_hauptprozess_rutschung
 --    UNION ALL 
 --    SELECT
 --        'landslide' AS main_process,
@@ -121,7 +121,7 @@ beurteilungsgebiet_sturz AS (
 --            SELECT 
 --                st_union(geometrie) AS geometrie 
 --            FROM 
---                afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung
+--                afu_naturgefahren_staging_v2.gefahrengebiet_hauptprozess_rutschung
 --        ) hauptprozess
 )
 
@@ -144,7 +144,7 @@ beurteilungsgebiet_sturz AS (
         CAST('SO' AS VARCHAR) AS data_responsibility,
         NULL AS comments
     FROM 
-        afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser 
+        afu_naturgefahren_staging_v2.gefahrengebiet_hauptprozess_wasser 
 --    UNION ALL 
 --    SELECT
 --        'water' AS main_process,
@@ -160,7 +160,7 @@ beurteilungsgebiet_sturz AS (
 --            SELECT 
 --                st_union(geometrie) AS geometrie 
 --            FROM 
---                afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser
+--                afu_naturgefahren_staging_v2.gefahrengebiet_hauptprozess_wasser
 --        ) hauptprozess   
 )
    

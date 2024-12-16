@@ -42,7 +42,9 @@ tasks.register('importData', Db2Db) {
     sourceDb = [dbUriGwr]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
-        new TransferSet('importData.sql', 'agi_gwr_v1.gwr_gebaeude', true)
+        new TransferSet('import_data_buildings.sql', 'agi_gwr_v1.gwr_gebaeude', true),
+        new TransferSet('import_data_dwellings.sql', 'agi_gwr_v1.gwr_wohnung', true),
+        new TransferSet('import_data_codes.sql', 'agi_gwr_v1.gwr_codes', true)
     ];
 }
 
@@ -51,8 +53,11 @@ tasks.register('transferData', Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-        new TransferSet('transfer_gebaeude_punkt.sql', 'agi_gwr_pub_v1.gwr_gebaeude_punkt', true),
-        new TransferSet('transfer_gebaeude_flaeche.sql', 'agi_gwr_pub_v1.gwr_gebaeude', true)
+        new TransferSet('transfer_gebaeude.sql', 'agi_gwr_pub_v1.gwr_gebaeude', true),
+        new TransferSet('transfer_wohnung.sql', 'agi_gwr_pub_v1.gwr_wohnung', true)
     ];
 }
+
+// TODO
+// Publisher. ili2pg-Export und Validierung ging je circa 1 Minute und fehlerfrei.
 
