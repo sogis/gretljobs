@@ -146,8 +146,6 @@ teilprozesse_spont_rutsch_und_hangmuren AS (
         geometrie 
     FROM 
         hauptprozess_rutschung 
-    WHERE 
-        st_area(geometrie) > 0.001
 )
 
 ,hauptprozess_rutschung_clean_prio AS (
@@ -293,7 +291,5 @@ FROM
     basket,
     hauptprozess_rutschung_dump
 WHERE 
-    st_area(geometrie) > 0.001 
-    and 
     charakterisierung is not null 
 ;

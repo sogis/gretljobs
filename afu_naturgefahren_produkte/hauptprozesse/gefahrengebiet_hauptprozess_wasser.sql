@@ -37,8 +37,6 @@ basket AS (
         geometrie 
     FROM 
         hauptprozess_wasser 
-    WHERE 
-        ST_area(geometrie) > 0.01
 )
 
 ,hauptprozess_wasser_clean_prio AS (
@@ -182,7 +180,5 @@ from
     basket,
     hauptprozess_wasser_dump
 WHERE 
-    ST_area(geometrie) > 0.01 
-    and 
     charakterisierung is not null 
 ;
