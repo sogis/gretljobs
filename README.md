@@ -222,6 +222,7 @@ Folgende GRETL-spezifischen Benutzergruppen stehen im Moment zur Verfügung:
 * gretl-users-bdhba (HBA)
 * gretl-users-bvtaa (AVT)
 * gretl-users-edden (ADA)
+* gretl-users-skkan (Staatskanzlei)
 * gretl-users-vkfaa (AWJF)
 * gretl-users-vlwaa (ALW)
 
