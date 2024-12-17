@@ -65,11 +65,16 @@ task zipXtf(type: Zip, dependsOn: 'validateDataEdit') {
 */
 task uploadXtf(dependsOn: 'zipXtf') {
     description = "Lädt die XTF-Zip-Datei auf geodienste.ch hoch." 
-    doLast {
-        def response = ["curl", "-u", aiLogin, "-F", "topic=rodung_und_rodungsersatz_V1_1", "-F",
-                        "lv95_file=@" + Paths.get(".", fileNameZip), "-F", "publish=true", "-F", "replace_all=false",
-                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+    def aiLogin = aiUser + ":" + aiPwd
+    def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
+    def zipFilePath = Paths.get(pathToTempFolder, fileNameZip)
+
+    doLast {   
+        def response = ["curl", "-u", aiLogin, "-F", "topic=rodung_und_rodungsersatz_V1_1",
+                        "-F", "lv95_file=@" + zipFilePath, "-F", "publish=true", serverUrl
+                       ].execute().text
         println(response)
+        
         if (response.contains("false") || response == null || response.trim().isEmpty()) {
             throw new GradleException()
         }
