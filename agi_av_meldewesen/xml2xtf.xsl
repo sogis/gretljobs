@@ -99,7 +99,14 @@
                     </NBIdent>
 
                     <Baujahr xmlns="http://www.interlis.ch/INTERLIS2.3">
-                        <xsl:value-of select="eCH-0132:buildingInformation[1]/eCH-0132:building[1]/eCH-0129:dateOfConstruction/eCH-0129:year" />
+                        <xsl:choose>
+                            <xsl:when test="eCH-0132:buildingInformation[1]/eCH-0132:building[1]/eCH-0129:dateOfConstruction/eCH-0129:year &lt; 1582">
+                                <xsl:text>1582</xsl:text>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of select="eCH-0132:buildingInformation[1]/eCH-0132:building[1]/eCH-0129:dateOfConstruction/eCH-0129:year" />
+                            </xsl:otherwise>
+                        </xsl:choose>
                     </Baujahr>
 
                     <Gebaeudebezeichnung xmlns="http://www.interlis.ch/INTERLIS2.3">

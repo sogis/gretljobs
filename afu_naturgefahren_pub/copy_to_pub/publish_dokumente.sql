@@ -4,4 +4,4 @@ SELECT
     dokumente, 
     geometrie
 FROM 
-    afu_naturgefahren_staging_v1.dokumente_pro_gemeinde;
+    afu_naturgefahren_staging_v2.dokumente_pro_gemeinde;

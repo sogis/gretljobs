@@ -69,22 +69,22 @@ SELECT
   vbg.gelan_bewe_id,
   CASE
    WHEN array_length(vbg.gb_nr,1) IS NOT NULL 
-   THEN array_to_string(vbg.gb_nr,',') 
+   THEN left(array_to_string(vbg.gb_nr,','),999) 
    ELSE 'unbekannt'
   END AS gb_nr,
   CASE
    WHEN array_length(vbg.flurname,1) IS NOT NULL 
-   THEN array_to_string(vbg.flurname,',') 
+   THEN left(array_to_string(vbg.flurname,','),254) 
    ELSE 'unbekannt'
   END AS flurnamen,
   CASE
    WHEN array_length(vbg.kultur_id,1) IS NOT NULL 
-   THEN array_to_string(vbg.kultur_id,',') 
+   THEN left(array_to_string(vbg.kultur_id,','),254)
    ELSE 'unbekannt'
   END AS kultur_ids,
   CASE
    WHEN array_length(vbg.gemeinde,1) IS NOT NULL 
-   THEN array_to_string(vbg.gemeinde,',') 
+   THEN left(array_to_string(vbg.gemeinde,','),254)
    ELSE 'unbekannt'
   END AS gemeinde,
   vbg.vereinbarungs_nr_alt,

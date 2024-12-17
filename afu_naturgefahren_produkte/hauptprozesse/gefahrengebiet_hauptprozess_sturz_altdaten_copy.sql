@@ -11,6 +11,7 @@ INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz (
     hauptprozess, 
     gefahrenstufe, 
     charakterisierung, 
+    teilprozess,
     geometrie, 
     datenherkunft, 
     auftrag_neudaten
@@ -26,6 +27,10 @@ SELECT
     	WHEN gef_stufe = 'erheblich' THEN 'erheblich'
     end as gefahrenstufe, 
     replace(aindex, '_', '') as charakterisierung, 
+    CASE 
+        WHEN prozessa = 'Stein_Blockschlag' THEN 'stein_blockschlag'
+        WHEN prozessa = 'Felssturz' THEN 'fels_bergsturz'
+    END AS teilprozess,    
     ST_multi(geometrie) as geometrie, --Im neuen Modell sind Multi-Polygone
     'Altdaten' as datenherkunft, 
     null as auftrag_neudaten
