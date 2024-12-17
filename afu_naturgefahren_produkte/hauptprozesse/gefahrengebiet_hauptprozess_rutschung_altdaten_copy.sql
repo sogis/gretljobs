@@ -12,6 +12,7 @@ attribute_mapping_hangmure AS (
             THEN 'erheblich'
         END AS gefahrenstufe, 
         replace(aindex, '_', '') AS charakterisierung, 
+        'hangmure' as teilprozess,
         ST_multi(geometrie) AS geometrie --Im neuen Modell sind Multi-Polygone
     FROM 
         afu_gefahrenkartierung.gefahrenkartirung_gk_hangmure
@@ -34,6 +35,7 @@ attribute_mapping_hangmure AS (
             THEN 'erheblich'
         END AS gefahrenstufe, 
         replace(aindex, '_', '') AS charakterisierung, 
+        'spontane_rutschung' AS teilprozess,
         ST_multi(geometrie) AS geometrie --Im neuen Modell sind Multi-Polygone
     FROM 
         afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_spontan
@@ -56,6 +58,7 @@ attribute_mapping_hangmure AS (
             THEN 'erheblich'
         END AS gefahrenstufe, 
         replace(aindex, '_', '') AS charakterisierung, 
+        'permanente_rutschung' AS teilprozess,
         ST_multi(geometrie) AS geometrie --Im neuen Modell sind Multi-Polygone
     FROM 
         afu_gefahrenkartierung.gefahrenkartirung_gk_rutsch_kont_sackung
@@ -77,6 +80,7 @@ attribute_mapping_hangmure AS (
     SELECT 
         gefahrenstufe, 
         charakterisierung,
+        teilprozess,
         geometrie,
         CASE
             WHEN gefahrenstufe = 'restgefaehrdung' 
@@ -96,6 +100,7 @@ attribute_mapping_hangmure AS (
     SELECT 
         a.gefahrenstufe, 
         a.charakterisierung, 
+        teilprozess,
         ST_Multi(COALESCE(
             ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
@@ -141,7 +146,8 @@ attribute_mapping_hangmure AS (
     SELECT 
         s.id,
         p.gefahrenstufe,
-        string_agg(p.charakterisierung,', ') AS charakterisierung
+        string_agg(p.charakterisierung,', ') AS charakterisierung,
+        string_agg(p.teilprozess,', ') AS teilprozess
     FROM
         rutschung_split_poly_points s
     JOIN
@@ -155,6 +161,7 @@ rutschung_charakterisierung_agg AS (
     SELECT 
         polygone.gefahrenstufe,
         polygone.charakterisierung,
+        polygone.teilprozess,
         point.poly AS geometrie
     FROM 
         rutschung_split_poly_points point 
@@ -175,7 +182,8 @@ INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung (
     t_basket, 
     hauptprozess, 
     gefahrenstufe, 
-    charakterisierung, 
+    charakterisierung,
+    teilprozess, 
     geometrie, 
     datenherkunft, 
     auftrag_neudaten
@@ -186,10 +194,10 @@ SELECT
     'rutschung' AS hauptprozess, 
     gefahrenstufe,
     charakterisierung,
+    teilprozess,
     geometrie,
     'Altdaten' AS datenherkunft, 
-    null AS auftrag_neudaten
-    
+    null AS auftrag_neudaten   
 FROM 
     rutschung_charakterisierung_agg,
     basket

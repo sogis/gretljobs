@@ -20,6 +20,12 @@ basket AS (
             THEN 'erheblich'
         END AS gefahrenstufe, 
         replace(aindex, '_', '') AS charakterisierung, 
+        CASE 
+            WHEN prozessa = 'Murgang' THEN 'uebermurung'
+            WHEN prozessa = 'Ufererosion' THEN 'ufererosion'
+            WHEN prozessa = 'Ueberflutung' THEN 'ueberschwemmung'
+            WHEN prozessa = 'Uebersarung' THEN 'ueberschwemmung'
+        END AS teilprozess,        
         geometrie,
         CASE 
             WHEN gef_stufe = 'vorhanden' 
@@ -37,6 +43,8 @@ basket AS (
         publiziert is true
         AND 
         gef_stufe != 'keine'
+        AND 
+        prozessa != 'nicht_rekonstruierbar'
 )
 
 ,hauptprozess_alt_wasser_prio_clip AS (
@@ -44,6 +52,7 @@ basket AS (
         a.hauptprozess,
         a.gefahrenstufe,
         a.charakterisierung, 
+        a.teilprozess,
         ST_Multi(COALESCE(
             ST_Difference(a.geometrie, blade.geometrie),
             a.geometrie
@@ -67,13 +76,15 @@ basket AS (
         hauptprozess,
         gefahrenstufe,
         charakterisierung,
+        teilprozess,
         ST_union(geometrie) AS geometrie
     FROM 
         hauptprozess_alt_wasser_prio_clip
     GROUP BY 
         hauptprozess,
         gefahrenstufe,
-        charakterisierung 
+        charakterisierung,
+        teilprozess
 )
 
 ,hauptprozess_wasser_dump AS (
@@ -81,6 +92,7 @@ basket AS (
         hauptprozess,
         gefahrenstufe,
         charakterisierung,
+        teilprozess,
         (ST_dump(geometrie)).geom AS geometrie
     FROM 
         hauptprozess_alt_wasser_union
@@ -91,6 +103,7 @@ INSERT INTO afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser (
     hauptprozess, 
     gefahrenstufe, 
     charakterisierung, 
+    teilprozess,
     geometrie, 
     datenherkunft, 
     auftrag_neudaten
@@ -101,6 +114,7 @@ SELECT
     hauptprozess,
     gefahrenstufe, 
     charakterisierung, 
+    teilprozess,
     ST_multi(geometrie) AS geometrie, --Im neuen Modell sind Multi-Polygone
     'Altdaten' AS datenherkunft, 
     null AS auftrag_neudaten

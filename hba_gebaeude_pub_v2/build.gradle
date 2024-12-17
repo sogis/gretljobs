@@ -1,0 +1,29 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'validateCsv'
+
+def iliModelName = "SO_HBA_Gebaeude_20241106"
+def fileName = "xyz.csv"
+
+task copyToBuildDir(type: Copy){
+    from "$projectDir"
+    into "$buildDir"
+    include fileName
+}
+
+task validateCsv(type: CsvValidator, dependsOn: copyToBuildDir) {
+    description = "Validiert die CSV-Datei"
+    models = iliModelName
+    modeldir = "$projectDir;http://models.interlis.ch/"
+    firstLineIsHeader = true
+    valueSeparator = ";"
+    valueDelimiter = null
+    dataFiles = ["$buildDir/" + fileName]
+}
+
+/*
+docker compose run --rm -u $UID gretl --project-dir=hba_gebaeude_pub_v2
+*/

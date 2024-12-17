@@ -8,13 +8,13 @@ SELECT
     datenherkunft, 
     auftrag_neudaten
 FROM 
-    afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_stein_blockschlag prozess
+    afu_naturgefahren_staging_v2.gefahrengebiet_teilprozess_stein_blockschlag prozess
 LEFT JOIN
-    afu_naturgefahren_staging_v1.gefahrenstufe_typ gef_typ 
+    afu_naturgefahren_staging_v2.gefahrenstufe_typ gef_typ 
     ON 
     prozess.gefahrenstufe = gef_typ.ilicode 
 LEFT JOIN
-    afu_naturgefahren_staging_v1.teilprozess_quellen proz_quelle 
+    afu_naturgefahren_staging_v2.teilprozess_quellen proz_quelle 
     ON 
     prozess.teilprozess = proz_quelle.ilicode 
 ;

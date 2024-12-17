@@ -8,5 +8,6 @@ SELECT
     st_x(st_transform(geometrie, 4326)) AS  koordinate_lon,
     geometrie,
     kanton,
-    massnahmenstatus
+    massnahmenstatus,
+    sichtungsdetails
 FROM afu_asiatische_hornisse_v1.asia_hornisse_ash

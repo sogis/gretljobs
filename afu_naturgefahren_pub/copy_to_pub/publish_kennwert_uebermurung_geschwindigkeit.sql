@@ -8,9 +8,9 @@ SELECT
     datenherkunft, 
     auftrag_neudaten
 FROM 
-    afu_naturgefahren_staging_v1.kennwert_uebermurung_geschwindigkeit kennwert
+    afu_naturgefahren_staging_v2.kennwert_uebermurung_geschwindigkeit kennwert
 LEFT JOIN
-    afu_naturgefahren_staging_v1.m_geschwindigkeit_typ gesch_typ 
+    afu_naturgefahren_staging_v2.m_geschwindigkeit_typ gesch_typ 
     ON 
     kennwert.fliessgeschwindigkeit = gesch_typ.ilicode 
 ;
