@@ -70,7 +70,7 @@ task uploadXtf(dependsOn: 'zipXtf') {
     def zipFilePath = Paths.get(pathToTempFolder, fileNameZip)
 
     doLast {   
-        def response = ["curl", "-u", aiLogin, "-F", "topic=rodung_und_rodungsersatz_V1_1",
+        def response = ["curl", "-u", aiLogin, "-F", "topic=rodungen_und_rodungsersatz_v1_1",
                         "-F", "lv95_file=@" + zipFilePath, "-F", "publish=true", serverUrl
                        ].execute().text
         println(response)
