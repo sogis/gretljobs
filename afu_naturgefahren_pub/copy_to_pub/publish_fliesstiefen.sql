@@ -7,9 +7,9 @@ SELECT
     datenherkunft, 
     auftrag_neudaten
 FROM 
-    afu_naturgefahren_staging_v1.fliesstiefen fliesstiefen
+    afu_naturgefahren_staging_v2.fliesstiefen fliesstiefen
 LEFT JOIN 
-    afu_naturgefahren_staging_v1.ueberflutungshoehe_wasser ueberflutungshoehe
+    afu_naturgefahren_staging_v2.ueberflutungshoehe_wasser ueberflutungshoehe
     ON 
     fliesstiefen.ueberschwemmung_tiefe = ueberflutungshoehe.ilicode 
 ;

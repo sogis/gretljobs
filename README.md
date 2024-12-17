@@ -99,7 +99,6 @@ git checkout -b branchname
   * `dbUriOerebV2`, `dbUserOerebV2`, `dbPwdOerebV2`
   * `dbUriSimi`, `dbUserSimi`, `dbPwdSimi`
   * `dbUriIsboden`, `dbUserIsboden`, `dbPwdIsboden`
-  * `dbUriSogis`, `dbUserSogis`, `dbPwdSogis`
   * `dbUriVerisoNplso`, `dbUserVerisoNplso`, `dbPwdVerisoNplso`
   * `dbUriAltlast4web`, `dbUserAltlast4web`, `PdbPwdAltlast4web`
   * `dbUriKaso`, `dbUserKaso`, `dbPwdKaso`
@@ -220,8 +219,10 @@ Folgende GRETL-spezifischen Benutzergruppen stehen im Moment zur Verfügung:
 
 * gretl-users-barpa (ARP)
 * gretl-users-bdafu (AfU)
+* gretl-users-bdhba (HBA)
 * gretl-users-bvtaa (AVT)
 * gretl-users-edden (ADA)
+* gretl-users-skkan (Staatskanzlei)
 * gretl-users-vkfaa (AWJF)
 * gretl-users-vlwaa (ALW)
 

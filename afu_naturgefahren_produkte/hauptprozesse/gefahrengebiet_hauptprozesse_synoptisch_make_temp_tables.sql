@@ -4,7 +4,8 @@ CREATE TABLE gk_poly (
     prio int4 NOT NULL,
     gefahrenstufe varchar(255) NOT NULL,
     geometrie geometry(polygon, 2056) NOT NULL,
-    charakterisierung varchar(10) NOT NULL
+    charakterisierung varchar(10) NOT NULL,
+    hauptprozess varchar(30) NOT NULL
 );
 
 DROP INDEX IF EXISTS gk_poly_geometrie;
@@ -17,7 +18,8 @@ CREATE TABLE splited (
     poly geometry(polygon, 2056) NOT NULL,
     point geometry(point, 2056) NOT NULL,
     gef_max int4 NULL,
-    charakterisierung varchar(255) NULL
+    charakterisierung varchar(255) NULL,
+    hauptprozess varchar(255) NULL
 );
 
 DROP INDEX IF EXISTS splited_point;
