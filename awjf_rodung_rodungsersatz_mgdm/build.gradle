@@ -6,7 +6,7 @@ import java.io.File
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'validateDataEdit'
+defaultTasks 'uploadXtf'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def fileName = "awjf_rodung_rodungsersatz_mgdm.xtf"
@@ -29,8 +29,7 @@ task dataTransferMGDM(type: SqlExecutor){
 }
 
 /**
- * Exportiere hier die Daten aus der Erfassungs-DB im MGDM. Diese Daten werden
- * anschliessend im Task zipXtf gezippt und an geodienste.ch weitergeleitet.
+ * Exportiere Daten aus MGDM-Schema
  */
 task exportDataEdit (type: Ili2pgExport, dependsOn: 'dataTransferMGDM') {
     description = "Exportiert die Daten aus dem Schema awjf_rodung_rodungsersatz_mgdm_v1 in eine INTERLIS-Datei."
@@ -61,12 +60,11 @@ task zipXtf(type: Zip, dependsOn: 'validateDataEdit') {
     destinationDir(file(pathToTempFolder))
 }
 
-/* Falls man auf geodienste.ch alles löschen will/muss (siehe zweiter Abschnitt), muss man
-* einmalig replace_all=true setzen. Curl-Befehl kann natürlich auch lokal
-* ausgeführt werden.
+/*
+* Zip-Datei hochladen auf geodienste.ch
 */
-task uploadXtf() {
-    dependsOn zipXtf
+task uploadXtf(dependsOn: 'zipXtf') {
+    description = "Lädt die XTF-Zip-Datei auf geodienste.ch hoch." 
     doLast {
         def response = ["curl", "-u", aiLogin, "-F", "topic=rodung_und_rodungsersatz_V1_1", "-F",
                         "lv95_file=@" + Paths.get(".", fileNameZip), "-F", "publish=true", "-F", "replace_all=false",
