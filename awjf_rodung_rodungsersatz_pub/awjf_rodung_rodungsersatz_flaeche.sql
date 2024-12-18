@@ -5,7 +5,9 @@ flaeche AS (
     SELECT
         flaeche.t_id,
         flaeche.ersatzmassnahmennl,
+        ersatz_typ.dispname AS ersatzmassnahmennl_txt,
         flaeche.massnahmennl_typ,
+        massnahmennl_typ.dispname AS massnahmennl_typ_txt,
         flaeche.frist,
         flaeche.frist_bemerkung,
         flaeche.frist_verlaengerung,
@@ -15,12 +17,19 @@ flaeche AS (
         flaeche.ausgleichsabgabe_r,
         flaeche.rodung_r,
         flaeche.objekttyp,
+        geometrie_typ.dispname AS objekttyp_txt,
         flaeche.bemerkung AS bemerkung_geometrie,
         string_agg(DISTINCT gemeinde.gemeindename, ', ') AS gemeindenamen,
         string_agg(DISTINCT forstkreis.aname, ', ') AS forstkreis,
         string_agg(DISTINCT forstrevier.aname, ', ') AS forstrevier
     FROM 
         awjf_rodung_rodungsersatz_v1.flaeche AS flaeche
+    LEFT JOIN awjf_rodung_rodungsersatz_v1.geometrie_objekttyp AS geometrie_typ
+        ON flaeche.objekttyp = geometrie_typ.ilicode
+    LEFT JOIN awjf_rodung_rodungsersatz_v1.flaeche_ersatzmassnahmennl AS ersatz_typ
+        ON flaeche.ersatzmassnahmennl = ersatz_typ.ilicode  
+    LEFT JOIN awjf_rodung_rodungsersatz_v1.flaeche_massnahmennl_typ AS massnahmennl_typ
+        ON flaeche.massnahmennl_typ = massnahmennl_typ.ilicode    
     LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS gemeinde
         ON ST_Intersects(flaeche.geometrie, gemeinde.geometrie)
     LEFT JOIN awjf_forstreviere.forstreviere_forstreviergeometrie AS forstgeometrie
@@ -42,7 +51,10 @@ flaeche AS (
         flaeche.ausgleichsabgabe_r,
         flaeche.rodung_r,
         flaeche.objekttyp,
-        flaeche.bemerkung
+        flaeche.bemerkung,
+        geometrie_typ.dispname,
+        ersatz_typ.dispname,
+        massnahmennl_typ.dispname
 ),
 
 -- Selektion Attribute aus Tabelle Rodung --
@@ -53,10 +65,13 @@ rodung AS (
         nr_bund,
         vorhaben,
         astatus,
+        typ_status.dispname AS astatus_txt,
         zustaendigkeit,
         rodungszweck,
+        typ_rodungszweck.dispname AS rodungszweck_txt,
         rodungszweck_bemerkung,
         art_bewilligungsverfahren,
+        art_bewilligung.dispname AS art_bewilligungsverfahren_txt,
         datum_amtsblatt_gesuch,
         datum_amtsblatt_bewilligung,
         auflagestart,
@@ -72,6 +87,12 @@ rodung AS (
         beschwerde,
         massnahmenl_pool,    
         ersatzverzicht,
+        CASE
+            WHEN ersatzverzicht ILIKE '%Hochwasserschutz_Revitalisierung%'
+                THEN REPLACE(ersatzverzicht, 'Hochwasserschutz_Revitalisierung', 'Hochwasserschutz/Gewässerrevitalisierung')
+            ELSE
+                ersatzverzicht       
+        END AS ersatzverzicht_txt,
         art_sicherung,
         anmerkung_grundbuch,
         lieferung_bafu,
@@ -87,6 +108,12 @@ rodung AS (
         bemerkung AS bemerkung_rodung
     FROM 
         awjf_rodung_rodungsersatz_v1.rodungsdaten
+    LEFT JOIN awjf_rodung_rodungsersatz_v1.rodungsdaten_art_bewilligungsverfahren AS art_bewilligung
+        ON rodungsdaten.art_bewilligungsverfahren = art_bewilligung.ilicode
+    LEFT JOIN awjf_rodung_rodungsersatz_v1.rodungsdaten_rodungszweck AS typ_rodungszweck
+        ON rodungsdaten.rodungszweck = typ_rodungszweck.ilicode
+    LEFT JOIN awjf_rodung_rodungsersatz_v1.verfahrensstatus AS typ_status
+        ON rodungsdaten.astatus = typ_status.ilicode
 ),
 
 -- Selektion Attribute aus Tabelle Ausgleichsabgabe --
@@ -153,7 +180,9 @@ dokumente_json AS (
 
 SELECT
     flaeche.objekttyp,
+    flaeche.objekttyp_txt,
     flaeche.ersatzmassnahmennl,
+    flaeche.ersatzmassnahmennl_txt,
     flaeche.geometrie,
     flaeche.frist,
     flaeche.frist_bemerkung,
@@ -161,6 +190,7 @@ SELECT
     flaeche.frist_verlaengerung_bemerkung,
     flaeche.datum_abnahme,
     flaeche.massnahmennl_typ,
+    flaeche.massnahmennl_typ_txt,
     flaeche.bemerkung_geometrie,
     flaeche.gemeindenamen,
     flaeche.forstkreis,
@@ -169,10 +199,13 @@ SELECT
     rodung.nr_bund,
     rodung.vorhaben,
     rodung.astatus,
+    rodung.astatus_txt,
     rodung.zustaendigkeit,
     rodung.rodungszweck,
+    rodung.rodungszweck_txt,
     rodung.rodungszweck_bemerkung,
     rodung.art_bewilligungsverfahren,
+    rodung.art_bewilligungsverfahren_txt,
     rodung.datum_amtsblatt_gesuch,
     rodung.datum_amtsblatt_bewilligung,
     rodung.auflagestart,
@@ -188,6 +221,7 @@ SELECT
     rodung.beschwerde,
     rodung.massnahmenl_pool,    
     rodung.ersatzverzicht,
+    rodung.ersatzverzicht_txt,
     rodung.art_sicherung,
     rodung.anmerkung_grundbuch,
     rodung.lieferung_bafu,

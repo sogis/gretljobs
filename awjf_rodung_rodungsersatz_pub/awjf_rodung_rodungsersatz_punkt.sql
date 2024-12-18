@@ -7,12 +7,15 @@ punkt AS (
         punkt.geometrie,
         punkt.rodung_r,
         punkt.objekttyp,
+        geometrie_typ.dispname AS objekttyp_txt,
         punkt.bemerkung AS bemerkung_geometrie,
         string_agg(DISTINCT gemeinde.gemeindename, ', ') AS gemeindenamen,
         string_agg(DISTINCT forstkreis.aname, ', ') AS forstkreis,
         string_agg(DISTINCT forstrevier.aname, ', ') AS forstrevier
     FROM 
         awjf_rodung_rodungsersatz_v1.punkt AS punkt
+    LEFT JOIN awjf_rodung_rodungsersatz_v1.geometrie_objekttyp AS geometrie_typ
+        ON punkt.objekttyp = geometrie_typ.ilicode
     LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS gemeinde
         ON ST_Intersects(punkt.geometrie, gemeinde.geometrie)
     LEFT JOIN awjf_forstreviere.forstreviere_forstreviergeometrie AS forstgeometrie
@@ -26,7 +29,8 @@ punkt AS (
         punkt.geometrie,
         punkt.rodung_r,
         punkt.objekttyp,
-        punkt.bemerkung
+        punkt.bemerkung,
+        geometrie_typ.dispname
 ),
 
 -- Selektion Attribute aus Tabelle Rodung --
@@ -37,10 +41,13 @@ rodung AS (
         nr_bund,
         vorhaben,
         astatus,
+        typ_status.dispname AS astatus_txt,
         zustaendigkeit,
         rodungszweck,
+        typ_rodungszweck.dispname AS rodungszweck_txt,
         rodungszweck_bemerkung,
         art_bewilligungsverfahren,
+        art_bewilligung.dispname AS art_bewilligungsverfahren_txt,
         datum_amtsblatt_gesuch,
         datum_amtsblatt_bewilligung,
         auflagestart,
@@ -56,6 +63,12 @@ rodung AS (
         beschwerde,
         massnahmenl_pool,    
         ersatzverzicht,
+        CASE
+            WHEN ersatzverzicht ILIKE '%Hochwasserschutz_Revitalisierung%'
+                THEN REPLACE(ersatzverzicht, 'Hochwasserschutz_Revitalisierung', 'Hochwasserschutz/Gewässerrevitalisierung')
+            ELSE
+                ersatzverzicht       
+        END AS ersatzverzicht_txt,
         art_sicherung,
         anmerkung_grundbuch,
         lieferung_bafu,
@@ -71,6 +84,12 @@ rodung AS (
         bemerkung AS bemerkung_rodung
     FROM 
         awjf_rodung_rodungsersatz_v1.rodungsdaten
+    LEFT JOIN awjf_rodung_rodungsersatz_v1.rodungsdaten_art_bewilligungsverfahren AS art_bewilligung
+        ON rodungsdaten.art_bewilligungsverfahren = art_bewilligung.ilicode
+    LEFT JOIN awjf_rodung_rodungsersatz_v1.rodungsdaten_rodungszweck AS typ_rodungszweck
+        ON rodungsdaten.rodungszweck = typ_rodungszweck.ilicode
+    LEFT JOIN awjf_rodung_rodungsersatz_v1.verfahrensstatus AS typ_status
+        ON rodungsdaten.astatus = typ_status.ilicode
 ),
 
 -- Selektion Attribute aus Tabelle Dokument --
@@ -125,6 +144,7 @@ dokumente_json AS (
 
 SELECT
     punkt.objekttyp,
+    punkt.objekttyp_txt,
     punkt.geometrie,
     punkt.bemerkung_geometrie,
     punkt.gemeindenamen,
@@ -134,10 +154,13 @@ SELECT
     rodung.nr_bund,
     rodung.vorhaben,
     rodung.astatus,
+    rodung.astatus_txt,
     rodung.zustaendigkeit,
     rodung.rodungszweck,
+    rodung.rodungszweck_txt,
     rodung.rodungszweck_bemerkung,
     rodung.art_bewilligungsverfahren,
+    rodung.art_bewilligungsverfahren_txt,
     rodung.datum_amtsblatt_gesuch,
     rodung.datum_amtsblatt_bewilligung,
     rodung.auflagestart,
