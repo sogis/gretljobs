@@ -3,28 +3,32 @@ hauptprozesse_clean as (
     SELECT 
         gefahrenstufe, 
         charakterisierung, 
-        geometrie 
+        geometrie, 
+        'Wasser' as hauptprozess
     FROM 
         afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser 
     UNION ALL 
     SELECT 
         gefahrenstufe, 
         charakterisierung, 
-        geometrie  
+        geometrie, 
+        'Rutschung' as hauptprozess 
     FROM 
         afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung 
     UNION ALL 
     SELECT 
         gefahrenstufe, 
         charakterisierung, 
-	geometrie 
+	geometrie, 
+        'Sturz' as hauptprozess
     FROM 
         afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz 
     UNION ALL 
     SELECT 
         gefahrenstufe,
         charakterisierung, 
-        geometrie
+        geometrie,
+        'Absenkung/Einsturz' as hauptprozess
     FROM 
         afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_absenkung_einsturz   
 )
@@ -34,6 +38,7 @@ hauptprozesse_clean as (
         gefahrenstufe, 
         charakterisierung, 
         geometrie,
+        hauptprozess,
             CASE 
                 when gefahrenstufe = 'nicht_gefaehrdet' then 0
                 WHEN gefahrenstufe = 'restgefaehrdung' THEN 1 
@@ -50,13 +55,15 @@ hauptprozesse_clean as (
 INSERT INTO gk_poly (
     prio, 
     gefahrenstufe, 
-    charakterisierung, 
+    charakterisierung,
+    hauptprozess, 
     geometrie
 ) 
 SELECT
     prio,
     gefahrenstufe,
     charakterisierung,
+    hauptprozess,
     (ST_Dump(geometrie)).geom as geometrie 
 FROM 
     hauptprozesse_clean_prio

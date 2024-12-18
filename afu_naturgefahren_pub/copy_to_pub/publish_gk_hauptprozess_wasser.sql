@@ -1,20 +1,25 @@
 SELECT 
-    hauptprozess, 
-    haupt_typ.dispname as hauptprozess_txt,
-    gefahrenstufe, 
-    gef_typ.dispname as gefahrenstufe_txt,
-    charakterisierung, 
-    geometrie, 
-    datenherkunft, 
-    auftrag_neudaten
+    prozess.hauptprozess, 
+    haupt_typ.dispname AS hauptprozess_txt,
+    teilprozess_txt_agg.beschreibungen AS teilprozess,    
+    prozess.gefahrenstufe, 
+    gef_typ.dispname AS gefahrenstufe_txt,
+    prozess.charakterisierung, 
+    prozess.geometrie, 
+    prozess.datenherkunft, 
+    prozess.auftrag_neudaten
 FROM 
-    afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser prozess
-LEFT JOIN
-    afu_naturgefahren_staging_v1.hauptprozess haupt_typ
-    ON 
-    prozess.hauptprozess = haupt_typ.ilicode 
-LEFT JOIN
-    afu_naturgefahren_staging_v1.gefahrenstufe_typ gef_typ 
-    ON 
-    prozess.gefahrenstufe = gef_typ.ilicode 
-;
+    afu_naturgefahren_staging_v2.gefahrengebiet_hauptprozess_wasser AS prozess
+LEFT JOIN 
+    afu_naturgefahren_staging_v2.hauptprozess AS haupt_typ
+    ON prozess.hauptprozess = haupt_typ.ilicode 
+LEFT JOIN 
+    afu_naturgefahren_staging_v2.gefahrenstufe_typ AS gef_typ 
+    ON prozess.gefahrenstufe = gef_typ.ilicode 
+LEFT JOIN 
+    LATERAL (
+        SELECT STRING_AGG(proz_quelle.dispname, ', ') AS beschreibungen
+        FROM UNNEST(STRING_TO_ARRAY(prozess.teilprozess, ', ')) AS wert
+        LEFT JOIN afu_naturgefahren_staging_v2.teilprozess_quellen AS proz_quelle 
+        ON wert = proz_quelle.ilicode
+    ) AS teilprozess_txt_agg ON TRUE;

@@ -8,16 +8,16 @@ damit die Rechenlast nicht auf einer produktiven DB anfällt.
 
 ## Beschreibung des Jenkinsfiles
 
-Der wichtigste Unterschied zum Default-Jenkinsfile ist ab Zeile 14:
+Der wichtigste Unterschied zum Default-Jenkinsfile ist ab Zeile 7:
 Anstatt dass einfach der Default Agent *gretl* gestartet wird,
 wird zwar das Pod Template dieses Agents referenziert (`inheritFrom 'gretl'`).
 Zusätzlich wird unter `yaml` aber ein weiterer Container
-mit Name `processing-db` und einem DB-Image von Crunchy Data definiert,
+mit Name `processing-db` und einem DB-Image von bookworm definiert,
 der in diesem Pod ebenfalls gestartet werden soll.
 Mit den Umgebungsvariablen wird auch der DB-Name (`processing`)
-und der zu verwendende DB-User (`user`) und sein Passwort definiert.
+und der zu verwendende DB-User (`processing`) und sein Passwort definiert.
 
-Ein weiterer Unterschied ist, dass ab Zeile 65 zusätzliche Umgebungsvariablen
+Ein weiterer Unterschied ist, dass ab Zeile 40 zusätzliche Umgebungsvariablen
 für den Job definiert werden,
 mit denen dann in *build.gradle* auf die DB zugegriffen werden kann.
 (In der DB-URI steht `127.0.0.1`, weil man so vom GRETL-Container aus
@@ -49,19 +49,7 @@ https://www.jenkins.io/doc/pipeline/steps/workflow-basic-steps/#waituntil-wait-f
 
 In diesem Fall müssen die Entwicklungs-DBs
 mit einem leicht anderen Befehl gestartet werden
-(wobei die Option `--build` auch hier grundsätzlich weggelassen werden kann);
-der Befehl muss aus der obersten Verzeichnisebene
-des Git-Repositories ausgeführt werden:
-
-```
-COMPOSE_FILE=docker-compose.yml:alw_fruchtfolgeflaechen/docker-compose.override.yml docker-compose up --build
-```
-
-Das Stoppen der Entwicklungs-DBs funktioniert analog:
-
-```
-COMPOSE_FILE=docker-compose.yml:alw_fruchtfolgeflaechen/docker-compose.override.yml docker-compose down
-```
+Dies wird hier beschrieben: https://github.com/sogis/gretljobs/blob/main/README.md#gretl-jobs-die-eine-db-f%C3%BCr-das-processing-von-daten-ben%C3%B6tigen
 
 
 ## GRETL-Job lokal ausführen
@@ -70,7 +58,7 @@ In diesem Fall müssen vor dem Ausführen des GRETL-Wrapperskripts
 zusätzlich folgende Umgebungsvariablen gesetzt werden:
 
 ```
-export ORG_GRADLE_PROJECT_dbUriProcessing=jdbc:postgresql://processing-db/processing
-export ORG_GRADLE_PROJECT_dbUserProcessing=user
-export ORG_GRADLE_PROJECT_dbPwdProcessing=pass
+export ORG_GRADLE_PROJECT_dbUriProcessing=jdbc:postgresql://processing
+export ORG_GRADLE_PROJECT_dbUserProcessing=processing
+export ORG_GRADLE_PROJECT_dbPwdProcessing=processing
 ```

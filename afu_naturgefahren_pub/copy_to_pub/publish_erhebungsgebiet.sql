@@ -22,45 +22,45 @@ SELECT
     beurteilung_absenkung.dispname AS status_absenkung_txt, 
     kommentar
 FROM 
-    afu_naturgefahren_staging_v1.erhebungsgebiet erhebungsgebiet
+    afu_naturgefahren_staging_v2.erhebungsgebiet erhebungsgebiet
 LEFT JOIN 
-    afu_naturgefahren_staging_v1.beurteilung_komplex_typ beurteilung_ueberschwemmung 
+    afu_naturgefahren_staging_v2.beurteilung_komplex_typ beurteilung_ueberschwemmung 
     ON 
     beurteilung_ueberschwemmung.ilicode = split_part(erhebungsgebiet.status_ueberschwemmung,',',1) 
 LEFT JOIN 
-    afu_naturgefahren_staging_v1.beurteilung_komplex_typ beurteilung_uebermurung 
+    afu_naturgefahren_staging_v2.beurteilung_komplex_typ beurteilung_uebermurung 
     ON 
     beurteilung_uebermurung.ilicode = split_part(erhebungsgebiet.status_uebermurung,',',1)
 LEFT JOIN 
-    afu_naturgefahren_staging_v1.beurteilung_komplex_typ beurteilung_ufererosion 
+    afu_naturgefahren_staging_v2.beurteilung_komplex_typ beurteilung_ufererosion 
     ON 
     beurteilung_ufererosion.ilicode = split_part(erhebungsgebiet.status_ufererosion,',',1) 
 LEFT JOIN 
-    afu_naturgefahren_staging_v1.beurteilung_komplex_typ beurteilung_permanente_rutschung 
+    afu_naturgefahren_staging_v2.beurteilung_komplex_typ beurteilung_permanente_rutschung 
     ON 
     beurteilung_permanente_rutschung.ilicode = split_part(erhebungsgebiet.status_permanente_rutschung,',',1) 
 LEFT JOIN 
-    afu_naturgefahren_staging_v1.beurteilung_komplex_typ beurteilung_spontane_rutschung 
+    afu_naturgefahren_staging_v2.beurteilung_komplex_typ beurteilung_spontane_rutschung 
     ON 
     beurteilung_spontane_rutschung.ilicode = split_part(erhebungsgebiet.status_spontane_rutschung,',',1) 
 LEFT JOIN 
-    afu_naturgefahren_staging_v1.beurteilung_komplex_typ beurteilung_hangmure 
+    afu_naturgefahren_staging_v2.beurteilung_komplex_typ beurteilung_hangmure 
     ON 
     beurteilung_hangmure.ilicode = split_part(erhebungsgebiet.status_hangmure,',',1)  
 LEFT JOIN 
-    afu_naturgefahren_staging_v1.beurteilung_komplex_typ beurteilung_stein_block_schlag 
+    afu_naturgefahren_staging_v2.beurteilung_komplex_typ beurteilung_stein_block_schlag 
     ON 
     beurteilung_stein_block_schlag.ilicode = split_part(erhebungsgebiet.status_stein_block_schlag,',',1)
 LEFT JOIN 
-    afu_naturgefahren_staging_v1.beurteilung_komplex_typ beurteilung_fels_bergs_sturz 
+    afu_naturgefahren_staging_v2.beurteilung_komplex_typ beurteilung_fels_bergs_sturz 
     ON 
     beurteilung_fels_bergs_sturz.ilicode = split_part(erhebungsgebiet.status_fels_berg_sturz,',',1) 
 LEFT JOIN 
-    afu_naturgefahren_staging_v1.beurteilung_einfach_typ beurteilung_einsturz 
+    afu_naturgefahren_staging_v2.beurteilung_einfach_typ beurteilung_einsturz 
     ON 
     beurteilung_einsturz.ilicode = split_part(erhebungsgebiet.status_einsturz,',',1)  
 LEFT JOIN 
-    afu_naturgefahren_staging_v1.beurteilung_einfach_typ beurteilung_absenkung 
+    afu_naturgefahren_staging_v2.beurteilung_einfach_typ beurteilung_absenkung 
     ON 
     beurteilung_absenkung.ilicode = split_part(erhebungsgebiet.status_absenkung,',',1)  
 ;

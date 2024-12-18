@@ -1,0 +1,146 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.StandardOpenOption
+import java.nio.charset.Charset
+import java.nio.charset.CharacterCodingException
+import java.nio.ByteBuffer
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'publishPub'
+
+// CSV VALIDATE AND IMPORT
+
+task renameFile(type: Copy) {
+    from 'upload/data'    
+    into 'upload/'              
+    rename { data -> 'data.csv' }  
+}
+
+// Task zur Überprüfung der UTF-8-Kodierung
+task validateCsvEncoding {
+    dependsOn renameFile
+    doLast {
+        def inputFile = file('upload/data.csv') // Pfad zur umbenannten Datei
+        if (!inputFile.exists()) {
+            throw new GradleException("Datei ${inputFile} existiert nicht!")
+        }
+
+        def content = Files.readAllBytes(Paths.get(inputFile.toURI()))
+        def utf8Charset = Charset.forName("UTF-8")
+        
+        if (!isUtf8Encoded(content, utf8Charset)) {
+            throw new GradleException("Die Datei ${inputFile} ist nicht UTF-8 kodiert!")
+        } else {
+            println "Die Datei ${inputFile} ist korrekt UTF-8 kodiert."
+        }
+    }
+}
+
+// Hilfsfunktion zur UTF-8-Prüfung
+boolean isUtf8Encoded(byte[] bytes, Charset charset) {
+    try {
+        charset.newDecoder().decode(ByteBuffer.wrap(bytes))
+        return true
+    } catch (CharacterCodingException e) {
+        return false
+    }
+}
+
+task formatCsvFile {
+    dependsOn validateCsvEncoding
+    def inputFile = file('upload/data.csv') // Pfad zur CSV-Datei
+    def outputFile = file('upload/data.csv') // Pfad zur Ausgabe-Datei
+
+    doLast {
+        def bufferedReader = inputFile.newReader()
+        def formattedLines = []
+        def currentLine = ""
+
+        bufferedReader.eachLine { line ->
+            currentLine += line
+
+            // Prüfen, ob die Anzahl der doppelten Anführungszeichen gerade ist
+            if (currentLine.count('"') % 2 == 0) {
+                // Entferne alle vorhandenen Anführungszeichen
+                currentLine = currentLine.replaceAll('"', '')
+                // Füge Anführungszeichen an Anfang, Ende und um jedes Semikolon
+                currentLine = '"' + currentLine.replaceAll(';', '";"') + '"'
+                
+                formattedLines << currentLine
+                currentLine = "" // Setze den Puffer für die nächste Zeile zurück
+            } else {
+                // Falls die Zeile unvollständig ist (innerhalb eines Feldes), füge einen Zeilenumbruch hinzu
+                currentLine += "\n"
+            }
+        }
+
+        // Schreibe das Ergebnis in die neue Datei
+        Files.write(outputFile.toPath(), formattedLines.join("\n").getBytes(), StandardOpenOption.CREATE)
+        println "CSV-Datei erfolgreich formatiert und gespeichert unter: ${outputFile}"
+    }
+}
+
+task validate(type: CsvValidator, dependsOn: formatCsvFile){
+    models = "SO_SK_Plakatstandorte_20241106"
+    firstLineIsHeader=true
+    valueSeparator=";"
+    dataFiles = ["upload/data.csv"]
+}
+
+task deleteData_transfer (type: SqlExecutor, dependsOn: validate) {
+    description = "Löscht/leert die Daten aus dem Schema sk_plakatstandorte_staging_v1 und sk_plakatstandorte_v1"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["delete_sk_plakatstandorte_standorte.sql"]
+}
+
+task csvimport(type: CsvImport, dependsOn: deleteData_transfer){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = "sk_plakatstandorte_v1"
+    tableName = "standorte"
+    firstLineIsHeader=true
+    valueSeparator = ";"
+    encoding = "UTF-8"
+    dataFile = file('upload/data.csv')
+}
+
+// ADD GEOMETRY AND VALIDATE
+
+task addGeometrie(type: SqlExecutor, dependsOn: csvimport) {
+    description = "Verknüpft die Daten des CSV-Imports mit den Geometrien der Gemeindegrenzen"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["addgeometrie.sql"]
+}
+
+tasks.register('validateWithGeometry', Ili2pgValidate) {
+    dependsOn addGeometrie
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = "SO_SK_Plakatstandorte_Publikation_20241106"
+    modeldir = rootProject.projectDir.toString() + ";http://models.interlis.ch"
+    dbschema = "sk_plakatstandorte_staging_v1"
+}
+
+// PUBLISH
+
+task transferPubData(type: Db2Db, dependsOn: validateWithGeometry){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('standorte_pub.sql', 'sk_plakatstandorte_pub_v1.standorte', true)
+    ]
+}
+
+task publishPub(type: Publisher, dependsOn: transferPubData) {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dataIdent = "ch.so.sk.plakatstandorte"
+    dbSchema = "sk_plakatstandorte_pub_v1"
+    modelsToPublish = "SO_SK_Plakatstandorte_Publikation_20241106"
+    userFormats = true
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}

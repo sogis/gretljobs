@@ -1,0 +1,82 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'uploadXtf'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def fileName = "awjf_rodung_rodungsersatz_mgdm.xtf"
+def exportFile = file(Paths.get(pathToTempFolder.toString(), fileName))
+def fileNameZip = "awjf_rodung_rodungsersatz_mgdm.zip"
+
+/**
+ * Datentransfer in MGDM-Schema
+ */
+task dataTransferMGDM(type: SqlExecutor){
+    description = 'Transfer Daten auf MGDM'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['rodungsbewilligung.sql',
+                'ersatzmassnahmennl.sql',
+                'ersatzverzicht.sql',
+                'massnahmenltyp.sql',
+                'objekt.sql'
+            ]
+    sqlParameters = [hostname:"'"+geoservicesHostName+"'"]
+}
+
+/**
+ * Exportiere Daten aus MGDM-Schema
+ */
+task exportDataEdit (type: Ili2pgExport, dependsOn: 'dataTransferMGDM') {
+    description = "Exportiert die Daten aus dem Schema awjf_rodung_rodungsersatz_mgdm_v1 in eine INTERLIS-Datei."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'awjf_rodung_rodungsersatz_mgdm_v1'
+    models = 'Rodungen_V1_1'
+    dataFile = exportFile
+    disableValidation = true
+}
+
+/**
+ * Validiere die exportierten Daten aus der Erfassungs-DB.
+ */
+task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
+    description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
+    dataFiles = exportFile
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    failOnError = true
+}
+
+/**
+ * XTF-Datei zippen
+ */
+task zipXtf(type: Zip, dependsOn: 'validateDataEdit') {
+    from pathToTempFolder
+    include fileName
+    archiveName fileNameZip
+    destinationDir(file(pathToTempFolder))
+}
+
+/*
+* Zip-Datei hochladen auf geodienste.ch
+*/
+task uploadXtf(dependsOn: 'zipXtf') {
+    description = "Lädt die XTF-Zip-Datei auf geodienste.ch hoch." 
+    def aiLogin = aiUser + ":" + aiPwd
+    def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
+    def zipFilePath = Paths.get(pathToTempFolder, fileNameZip)
+
+    doLast {   
+        def response = ["curl", "-u", aiLogin, "-F", "topic=rodungen_und_rodungsersatz_v1_1",
+                        "-F", "lv95_file=@" + zipFilePath, "-F", "publish=true", serverUrl
+                       ].execute().text
+        println(response)
+        
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
+}
