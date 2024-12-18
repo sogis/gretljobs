@@ -34,7 +34,5 @@ GROUP BY
     sek.hoehe_obergrenze,
     sek.exposition,
     sek.geologie,
-    forstkreis.aname,
-    forstrevier.aname,
     sek.geometrie,
     sek.bemerkung
