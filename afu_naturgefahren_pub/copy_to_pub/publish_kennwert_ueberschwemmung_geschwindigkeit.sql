@@ -8,9 +8,9 @@ SELECT
     datenherkunft, 
     auftrag_neudaten
 FROM 
-    afu_naturgefahren_staging_v1.kennwert_ueberschwemmung_geschwindigkeit kennwert
+    afu_naturgefahren_staging_v2.kennwert_ueberschwemmung_geschwindigkeit kennwert
 LEFT JOIN
-    afu_naturgefahren_staging_v1.ue_fliessgeschwindigkeit_typ fliessgesch_typ 
+    afu_naturgefahren_staging_v2.ue_fliessgeschwindigkeit_typ fliessgesch_typ 
     ON
     kennwert.fliessgeschwindigkeit = fliessgesch_typ.ilicode 
 ;
