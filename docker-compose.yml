@@ -18,6 +18,11 @@ services:
       - type: bind
         source: ${TMP:-/tmp}
         target: /gretl-share
+      - type: bind
+        source: /tmp/gradlecaches
+        target: /home/gradle/.gradle/caches
+        bind:
+          create_host_path: true
   edit-db:
     image: postgis/postgis:16-3.4
     environment:
