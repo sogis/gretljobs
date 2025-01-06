@@ -72,7 +72,7 @@ Zone AS(
     SELECT
         'Grundwasserschutzzone_areal' AS objekttyp,
         'Zone' AS weitere_informationen,
-        st_multi(st_union(sz.apolygon)) AS geometrie,
+        st_multi(st_union(ST_Buffer(sz.apolygon, 0.1))) AS geometrie, --Buffer um Sylver-Polygone zu vermindern
         string_agg(g.gemeindename, ', ') AS gemeindenamen,
         'Ausgangslage' AS abstimmungskategorie,
         'rechtsgueltig' AS planungsstand,
