@@ -22,7 +22,14 @@ Areal AS (
     SELECT
         'Grundwasserschutzzone_areal' AS objekttyp,
         'Areal' AS weitere_informationen,
-        st_multi(st_union(sa.apolygon)) AS geometrie,
+        ST_RemoveRepeatedPoints(
+            ST_SnapToGrid(
+                ST_Multi(
+                    ST_Union(ST_MakeValid(sa.apolygon))
+                ),
+                0.01
+            )
+        ) AS geometrie,
         string_agg(g.gemeindename, ', ') AS gemeindenamen,
         'Festsetzung' AS abstimmungskategorie,
         'rechtsgueltig' AS planungsstand,
@@ -46,7 +53,14 @@ Areal AS (
     SELECT
         'Grundwasserschutzzone_areal' AS objekttyp,
         'Areal' AS weitere_informationen,
-        st_multi(st_union(sa.apolygon)) AS geometrie,
+        ST_RemoveRepeatedPoints(
+            ST_SnapToGrid(
+                ST_Multi(
+                    ST_Union(ST_MakeValid(sa.apolygon))
+                ),
+                0.01
+            )
+        ) AS geometrie,
         string_agg(g.gemeindename, ', ') AS gemeindenamen,
         'Festsetzung' AS abstimmungskategorie,
         'rechtsgueltig' AS planungsstand,
@@ -72,7 +86,14 @@ Zone AS(
     SELECT
         'Grundwasserschutzzone_areal' AS objekttyp,
         'Zone' AS weitere_informationen,
-        st_multi(st_union(sz.apolygon)) AS geometrie,
+        ST_RemoveRepeatedPoints(
+            ST_SnapToGrid(
+                ST_Multi(
+                    ST_Union(ST_MakeValid(sz.apolygon))
+                ),
+                0.01
+            )
+        ) AS geometrie,
         string_agg(g.gemeindename, ', ') AS gemeindenamen,
         'Ausgangslage' AS abstimmungskategorie,
         'rechtsgueltig' AS planungsstand,
