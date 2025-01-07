@@ -32,13 +32,22 @@ WITH kantonsgrenzenverschnitt AS (
         karst.maechtigkeit = maechtigkeit_text.ilicode
 )
 --Es soll nur das publiziert werden, was innerhalb 20Km um den Kanton herum ist. 
+,finale AS (
+    SELECT 
+        etm,
+        maechtigkeit,
+        maechtigkeit_txt,
+        st_intersection(karst.geometrie,st_buffer(kanton.geometrie,20000)) AS geometrie,
+        innerhalb_so,
+        innerhalb_so_txt
+    FROM 
+        addattributes karst, 
+        agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze kanton
+)
+
 SELECT 
-    etm,
-    maechtigkeit,
-    maechtigkeit_txt,
-    st_intersection(karst.geometrie,st_buffer(kanton.geometrie,20000)) AS geometrie,
-    innerhalb_so,
-    innerhalb_so_txt
+    *
 FROM 
-    addattributes karst, 
-    agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze kanton
+    finale
+WHERE 
+    st_area(geometrie) > 1 --Kleinstflächen fallen durch den area-checker
