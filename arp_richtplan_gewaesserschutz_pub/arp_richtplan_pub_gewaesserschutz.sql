@@ -1,7 +1,7 @@
 DELETE FROM 
     arp_richtplan_pub_v2.richtplankarte_ueberlagernde_flaeche
 WHERE
-    datenquelle = 'gewaesserschutz'o
+    datenquelle = 'gewaesserschutz'
 ;
 
 INSERT INTO arp_richtplan_pub_v2.richtplankarte_ueberlagernde_flaeche (
