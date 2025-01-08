@@ -13,3 +13,13 @@ task dataTransfer(type: Db2Db){
             new TransferSet('awjf_rodung_rodungsersatz_punkt.sql', 'awjf_rodung_rodungsersatz_pub_v1.punkt', true)
     ];
 }
+
+/**
+ * Sobald die Daten auf Edit-DB bereinigt wurden (Anfang Februar 2025), kann die Validierung aktiviert werden. 
+task validateData(type: Ili2pgValidate) {
+    dependsOn dataTransfer
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    models = "SO_AWJF_Rodung_Rodungsersatz_Publikation_20241031"
+    dbschema = "awjf_rodung_rodungsersatz_pub_v1"
+}
+*/
