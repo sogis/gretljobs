@@ -315,13 +315,10 @@ GROUP BY
     gbr.gemeinde,
     gbr.egrid,
     gbr.flaechenmass,
+    rr.aname,
     gbr.nutzungsgrad,
     zonenreglement,
     gestaltungsplanpflicht,
     bauzonenstatistik,
     gbr.grundnutzung,
     baureglement
-
-
-
-
