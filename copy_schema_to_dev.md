@@ -1,6 +1,6 @@
 # Schema in die lokale Entwicklungs-DBs kopieren
 
-## Bash in Entwicklungs-DB Image öffnen
+## Bash in Entwicklungs-DB Container öffnen
 
 In lokalem Ordner gretljobs/ ausführen, nachdem die Entwicklungs-DBs gestartet sind:
 
