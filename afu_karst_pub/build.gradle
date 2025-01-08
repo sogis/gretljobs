@@ -9,19 +9,43 @@ def iliModelName = "SO_AFU_Karst_Publikation_20241203"
 
 defaultTasks "pubFiles"
 
-task transferToPub(type: Db2Db){
+task transferToPubAllogen(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     sqlParameters = [dbSchema:schemaNameEdit]
     transferSets = [
-        new TransferSet('allogene_gebiete.sql', schemaNamePub + '.karst_allogene_gebiete', true),
-        new TransferSet('felsueberdeckung.sql', schemaNamePub + '.karst_felsueberdeckung', true),
-        new TransferSet('verkarstung.sql', schemaNamePub + '.karst_verkarstung', true),
+        new TransferSet('allogene_gebiete.sql', schemaNamePub + '.karst_allogene_gebiete', true)
+    ]
+}
+
+task transferToPubFels(type: Db2Db, dependsOn: transferToPubAllogen){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlParameters = [dbSchema:schemaNameEdit]
+    transferSets = [
+        new TransferSet('felsueberdeckung.sql', schemaNamePub + '.karst_felsueberdeckung', true)
+    ]
+}
+
+task transferToPubVerkarstung(type: Db2Db, dependsOn: transferToPubFels){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlParameters = [dbSchema:schemaNameEdit]
+    transferSets = [
+        new TransferSet('verkarstung.sql', schemaNamePub + '.karst_verkarstung', true)
+    ]
+}
+
+task transferToPubSubartesisch(type: Db2Db, dependsOn: transferToPubVerkarstung){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlParameters = [dbSchema:schemaNameEdit]
+    transferSets = [
         new TransferSet('subartesische_zone.sql', schemaNamePub + '.karst_subartesische_zone', true)
     ]
 }
 
-task pubFiles(type: Publisher, dependsOn: transferToPub){
+task pubFiles(type: Publisher, dependsOn: transferToPubSubartesisch){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.afu.karst"
     dbSchema = schemaNamePub

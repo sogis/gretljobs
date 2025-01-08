@@ -23,11 +23,19 @@ WITH kantonsgrenzenverschnitt AS (
         agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze kanton
 )
 --Es soll nur das publiziert werden, was innerhalb 20Km um den Kanton herum ist. 
-SELECT 
-    st_intersection(karst.geometrie,st_buffer(kanton.geometrie,20000)) AS geometrie,
-    innerhalb_so,
-    innerhalb_so_txt
-FROM 
-    addattributes karst, 
-    agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze kanton
+,finale AS (
+    SELECT 
+        st_intersection(karst.geometrie,st_buffer(kanton.geometrie,20000)) AS geometrie,
+        innerhalb_so,
+        innerhalb_so_txt
+    FROM 
+        addattributes karst, 
+        agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze kanton
+)
 
+SELECT 
+    *
+FROM 
+    finale
+WHERE 
+    st_area(geometrie) > 1 --Kleinstflächen fallen durch den area-checker
