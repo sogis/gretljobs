@@ -41,11 +41,11 @@ SELECT
     (CASE WHEN LENGTH(bw.artenfoerderung_ff_zielart1)>0 THEN 1 ELSE 0 END +
      CASE WHEN LENGTH(bw.artenfoerderung_ff_zielart2)>0 THEN 1 ELSE 0 END +
      CASE WHEN LENGTH(bw.artenfoerderung_ff_zielart3)>0 THEN 1 ELSE 0 END ) as anzahl_artenfoerderungen,
-     ARRAY_TO_STRING(ARRAY[
+     left(ARRAY_TO_STRING(ARRAY[
         bw.artenfoerderung_ff_zielart1,
         bw.artenfoerderung_ff_zielart2,
         bw.artenfoerderung_ff_zielart3
-     ]::varchar[], ',') as artenfoerderung_zielarten,
+     ]::varchar[], ','),999) as artenfoerderung_zielarten,
     -- spezifisch für snapshot_wbl_wiese
     bw.einstufungbeurteilungistzustand_wiesenkategorie as kategorie,
     bw.bewirtschaftabmachung_messerbalkenmaehgeraet as messerbalkenmaehgeraet
