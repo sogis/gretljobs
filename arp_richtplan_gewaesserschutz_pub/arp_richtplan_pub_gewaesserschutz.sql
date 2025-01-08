@@ -1,7 +1,7 @@
 DELETE FROM 
     arp_richtplan_pub_v2.richtplankarte_ueberlagernde_flaeche
 WHERE
-    datenquelle = 'gewaesserschutz'
+    datenquelle = 'gewaesserschutz'o
 ;
 
 INSERT INTO arp_richtplan_pub_v2.richtplankarte_ueberlagernde_flaeche (
@@ -22,13 +22,8 @@ Areal AS (
     SELECT
         'Grundwasserschutzzone_areal' AS objekttyp,
         'Areal' AS weitere_informationen,
-        ST_RemoveRepeatedPoints(
-            ST_SnapToGrid(
-                ST_Multi(
-                    ST_Union(ST_MakeValid(sa.apolygon))
-                ),
-                0.01
-            )
+        ST_ReducePrecision(
+            ST_Union(sa.apolygon), 0.001
         ) AS geometrie,
         string_agg(g.gemeindename, ', ') AS gemeindenamen,
         'Festsetzung' AS abstimmungskategorie,
@@ -53,13 +48,8 @@ Areal AS (
     SELECT
         'Grundwasserschutzzone_areal' AS objekttyp,
         'Areal' AS weitere_informationen,
-        ST_RemoveRepeatedPoints(
-            ST_SnapToGrid(
-                ST_Multi(
-                    ST_Union(ST_MakeValid(sa.apolygon))
-                ),
-                0.01
-            )
+        ST_ReducePrecision(
+            ST_Union(sa.apolygon), 0.001
         ) AS geometrie,
         string_agg(g.gemeindename, ', ') AS gemeindenamen,
         'Festsetzung' AS abstimmungskategorie,
@@ -86,13 +76,8 @@ Zone AS(
     SELECT
         'Grundwasserschutzzone_areal' AS objekttyp,
         'Zone' AS weitere_informationen,
-        ST_RemoveRepeatedPoints(
-            ST_SnapToGrid(
-                ST_Multi(
-                    ST_Union(ST_MakeValid(sz.apolygon))
-                ),
-                0.01
-            )
+        ST_ReducePrecision(
+            ST_Union(sz.apolygon), 0.001
         ) AS geometrie,
         string_agg(g.gemeindename, ', ') AS gemeindenamen,
         'Ausgangslage' AS abstimmungskategorie,
