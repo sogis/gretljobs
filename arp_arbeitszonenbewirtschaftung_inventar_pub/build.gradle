@@ -1,0 +1,33 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'datenumbau_pub'
+
+task validate(type: Ili2pgValidate) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = "SO_ARP_Arbeitszonenbewirtschaftung_20240517"
+    dbschema = "arp_arbeitszonenbewirtschaftung_v1"
+    failOnException = false
+}
+
+task datatransfer_staging(type: Db2Db){
+    dependsOn validate
+    description "Das Schema "arp_arbeitszonenbewirtschaftung_staging" wird von der Pub-DB befüllt. Dieses Staging-Schema braucht es für den View. Damit die Bewertungen im Web GIS Client live auf das Grundstück (Polygon) publiziert werden"
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+        new TransferSet('select_staging.sql', 'arp_arbeitszonenbewirtschaftung_staging_v1.arbtsznnng_nvntar_arbeitszonenbewirtschaftung_inventar', true)
+    ];
+}
+
+task datenumbau_pub(type: Db2Db, dependsOn: 'datatransfer_staging') {
+    dependsOn datatransfer_staging
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+        new TransferSet('select_region.sql', 'arp_arbeitszonenbewirtschaftung_pub_v1.region_region', true),
+        new TransferSet('select_inventar_flaeche.sql', 'arp_arbeitszonenbewirtschaftung_pub_v1.arbtsznnng_nvntar_arbeitszonenbewirtschaftung_inventar', true),
+    ];
+}
