@@ -14,7 +14,7 @@ task validate(type: Ili2pgValidate) {
 
 task datatransfer_staging(type: Db2Db){
     dependsOn validate
-    description "Das Schema "arp_arbeitszonenbewirtschaftung_staging" wird von der Pub-DB befüllt. Dieses Staging-Schema braucht es für den View. Damit die Bewertungen im Web GIS Client live auf das Grundstück (Polygon) publiziert werden"
+    description "Das Schema arp_arbeitszonenbewirtschaftung_staging wird von der Pub-DB befüllt. Dieses Staging-Schema braucht es für den View. Damit die Bewertungen im Web GIS Client live auf das Grundstück (Polygon) publiziert werden"
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
