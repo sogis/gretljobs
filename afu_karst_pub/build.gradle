@@ -45,6 +45,7 @@ task transferToPubSubartesisch(type: Db2Db, dependsOn: transferToPubVerkarstung)
     ]
 }
 
+
 task pubFiles(type: Publisher, dependsOn: transferToPubSubartesisch){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.afu.karst"
