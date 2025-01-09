@@ -1,41 +1,104 @@
 # Schema in die lokale Entwicklungs-DBs kopieren
 
-## Bash in Entwicklungs-DB Container öffnen
+## Schema-Dump erzeugen und in lokalem Linux speichern
+
+In GRETL-Jenkins den Job "agi_schema_dump" ausführen. Nach Ausführung steht der Dump als Build-Artefakt "schema.dump" zur Verfügung.
+
+Dieses herunterladen und im Verzeichnis /tmp des lokalen (WSL-)Linux speichern.
+
+## Schema-Berechtigungen anwenden
+
+Setzen der Schema-Berechtigungen für Benutzer dmluser und die Rollen \[Schemaname\]_read und \[Schemaname\]_write.
+
+Dazu in der ersten Zeile des folgenden Skripts "mySchema" mit dem Schemanamen ersetzen und das Skript im DBeaver auf die lokale Edit-DB oder Pub-DB anwenden.
+
+    @set dbSchema = mySchema
+
+    CREATE SCHEMA IF NOT EXISTS ${dbSchema};
+
+    DROP ROLE IF EXISTS ${dbSchema}_read;
+    CREATE ROLE ${dbSchema}_read;
+
+    DROP ROLE IF EXISTS ${dbSchema}_write;
+    CREATE ROLE ${dbSchema}_write;
+
+    /* Copied from schema-jobs/shared/recreate_role.sql with removal of param "roleSuffix" */
+
+    -- Drop role with read privilege
+    REVOKE ALL PRIVILEGES
+    ON SCHEMA ${dbSchema}
+    FROM ${dbSchema}_read;
+
+    REVOKE ALL PRIVILEGES
+    ON ALL TABLES IN SCHEMA ${dbSchema}
+    FROM ${dbSchema}_read;
+
+    DROP ROLE ${dbSchema}_read;
+
+    -- Drop role with write privilege
+    REVOKE ALL PRIVILEGES
+    ON SCHEMA ${dbSchema}
+    FROM ${dbSchema}_write;
+
+    REVOKE ALL PRIVILEGES
+    ON ALL TABLES IN SCHEMA ${dbSchema}
+    FROM ${dbSchema}_write;
+
+    REVOKE ALL PRIVILEGES
+    ON ALL SEQUENCES IN SCHEMA ${dbSchema}
+    FROM ${dbSchema}_write;
+
+    DROP ROLE ${dbSchema}_write;
+
+    -- Create role with read privilege
+    CREATE ROLE ${dbSchema}_read;
+
+    GRANT USAGE ON SCHEMA ${dbSchema} TO ${dbSchema}_read;
+
+    GRANT SELECT
+    ON ALL TABLES IN SCHEMA ${dbSchema}
+    TO ${dbSchema}_read;
+
+    -- Create role with write privilege
+    CREATE ROLE ${dbSchema}_write;
+
+    GRANT USAGE ON SCHEMA ${dbSchema} TO ${dbSchema}_write;
+
+    GRANT SELECT, INSERT, UPDATE, DELETE
+    ON ALL TABLES IN SCHEMA ${dbSchema}
+    TO ${dbSchema}_write;
+
+    GRANT USAGE
+    ON ALL SEQUENCES IN SCHEMA ${dbSchema}
+    TO ${dbSchema}_write;
+
+    /* Copied from schema-jobs/shared/development_tasks/grants_developmen.sql with removal of param "roleSuffix" */
+    GRANT ${dbSchema}_write TO dmluser;
+
+Skript-Fenster in DBeaver offen behalten, da das gleiche Skript nach dem Restore des Dumps ein zweites Mal ausgeführt wird.
+
+## Heruntgergeladenen Dump lokal restoren
+
+### Bash in Entwicklungs-DB Container öffnen
 
 In lokalem Ordner gretljobs/ ausführen, nachdem die Entwicklungs-DBs gestartet sind:
 
-    docker compose exec -it edit-db bash
+    docker compose run --rm db-tools bash
 
-Dies öffnet ein Bash-Terminal im laufenden Container "edit-db". Im Image des Containers sind die pg_dump und pg_restore Tools in der richtigen Version enthalten.
+Dies öffnet ein Bash-Terminal im laufenden Container "edit-db". Im Image des Containers sind die PG-Tools in der richtigen Version enthalten.
 
-## Dump von Schema erstellen
+### In der Container-Bash ausführen
 
-In der Container-Bash ausführen - Beispiel mit Schema agi_hoheitsgrenzen_pub:
+Template für Edit-DB:
 
-    pg_dump -O -x -Fc -h geodb.rootso.org -d pub -f /tmp/latest.dump -U mylogin -n agi_hoheitsgrenzen_pub
+    pg_restore -O -x -h edit-db -d edit -U ddluser -n mySchema /tmp/schema.dump
 
-**Keinesfalls** ohne Schemaangabe ausführen.  
-mylogin ersetzen mit dem eigenen Windows Benutzernamen.
+Template für Pub-DB:
 
-Der Befehl erstellt den Dump des Schemas in der Datei /tmp/latest.dump unter Weglassung der Berechtigungs und Tabellenowner-Informationen.
+    pg_restore -O -x -h pub-db -d pub -U ddluser -n mySchema /tmp/schema.dump
 
-### Frage: Permission Fehler bzgl. Sequenz
+Hinter -n "mySchema" mit dem effektiven Schemanamen ersetzen
 
-    pg_dump: error: query failed: ERROR:  permission denied for sequence t_ili2db_seq
-    pg_dump: detail: Query was: SELECT last_value, is_called FROM agi_hoheitsgrenzen_pub.t_ili2db_seq
+## Schema-Berechtigungen erneut anwenden
 
-### Frage: Dump nicht erstellen sondern ab Backup verwenden?
-
-Geht nur, falls auf die Dumps auch via VPN "einfach" zugegriffen werden kann.
-
-## Erstellten Dump lokal restoren
-
-In der Container-Bash ausführen - Beispiel mit Schema agi_hoheitsgrenzen_pub:
-
-    pg_restore -O -x -h pub-db -d pub -U ddluser -n agi_hoheitsgrenzen_pub /tmp/latest.dump
-
-### Fragen: 
-
-* Wie Schema erstellen? Restore funktioniert nur bei existierendem Schema.
-* Restore mittels ddluser OK?
-* Wie für korrekt gesetzte Berechtigungen für dmluser und ddluser (und weitere) sorgen? Für den dmluser existieren nach Restore beispielsweise die DML-Rechte noch nicht.
+Skript aus Kapitel "Schema-Berechtigungen anwenden" ein zweites Mal mittels DBeaver ausführen.
