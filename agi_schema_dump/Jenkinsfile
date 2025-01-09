@@ -1,7 +1,38 @@
 pipeline {
-    agent { label env.NODE_LABEL ?: 'gretl' }
     options {
         timeout(time: 6, unit: 'HOURS')
+    }
+    agent {
+        kubernetes {
+            inheritFrom env.NODE_LABEL ?: 'gretl'
+            yamlMergeStrategy merge()
+            yaml '''
+            spec:
+              containers:
+                - name: processing-db
+                  image: sogis/postgis:16-3.4-bookworm
+                  resources:
+                    requests:
+                      cpu: 300m
+                      memory: "2Gi"
+                    limits:
+                      cpu: "2"
+                      memory: "8Gi"
+                  env:
+                    - name: POSTGRES_USER
+                      value: processing
+                    - name: POSTGRES_PASSWORD
+                      value: processing
+                    - name: PGDATA
+                      value: /var/lib/postgresql/data/pgdata
+                  volumeMounts:
+                    - name: postgresql-data-volume
+                      mountPath: /var/lib/postgresql/data
+              volumes:
+                - name: postgresql-data-volume
+                  emptyDir: {}
+'''
+        }
     }
     stages {
         stage('Run GRETL job') {
@@ -12,6 +43,8 @@ pipeline {
                         sh 'gretl'
                     }
                 }
+
+                ${params.schemaname}
             }
         }
     }
