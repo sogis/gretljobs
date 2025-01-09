@@ -80,6 +80,8 @@ services:
   db-tools:
     profiles: ["tools"]
     image: postgis/postgis:16-3.4
+    environment:
+      PGPASSWORD: ddluser
     volumes:
       - type: bind
         source: /tmp
