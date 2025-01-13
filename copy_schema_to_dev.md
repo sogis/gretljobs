@@ -89,7 +89,7 @@ Dies öffnet ein Bash-Terminal im Container "db-tools". Im Image des Containers 
 
 ### In der Container-Bash ausführen
 
-Template für Edit-DB:
+Template für Restore in die Edit-DB:
 
     pg_restore -O -x -h edit-db -d edit -U ddluser -n mySchema /tmp/schema.dump
 
