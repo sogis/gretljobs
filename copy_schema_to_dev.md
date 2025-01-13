@@ -2,7 +2,7 @@
 
 ## Schema-Dump erzeugen und in lokalem Linux speichern
 
-In GRETL-Jenkins den Job "agi_schema_dump" ausführen. Nach Ausführung steht der Dump als Build-Artefakt "schema.dump" zur Verfügung.
+In GRETL-Jenkins den Job "agi_schema_dump" ausführen. Nach Ausführung steht der Dump als Build-Artefakt "schema.dmp" zur Verfügung.
 
 Dieses herunterladen und im Verzeichnis /tmp des lokalen (WSL-)Linux speichern.
 
@@ -14,7 +14,8 @@ Dazu in der ersten Zeile des folgenden Skripts "mySchema" mit dem Schemanamen er
 
     @set dbSchema = mySchema
 
-    CREATE SCHEMA IF NOT EXISTS ${dbSchema};
+    DROP SCHEMA IF EXISTS ${dbSchema};
+    CREATE SCHEMA ${dbSchema};
 
     DROP ROLE IF EXISTS ${dbSchema}_read;
     CREATE ROLE ${dbSchema}_read;
@@ -75,8 +76,6 @@ Dazu in der ersten Zeile des folgenden Skripts "mySchema" mit dem Schemanamen er
     /* Copied from schema-jobs/shared/development_tasks/grants_developmen.sql with removal of param "roleSuffix" */
     GRANT ${dbSchema}_write TO dmluser;
 
-Skript-Fenster in DBeaver offen behalten, da das gleiche Skript nach dem Restore des Dumps ein zweites Mal ausgeführt wird.
-
 ## Heruntgergeladenen Dump lokal restoren
 
 ### Bash in Entwicklungs-DB Container öffnen
@@ -91,14 +90,10 @@ Dies öffnet ein Bash-Terminal im Container "db-tools". Im Image des Containers 
 
 Template für Restore in die Edit-DB:
 
-    pg_restore -O -x -h edit-db -d edit -U ddluser -n mySchema /tmp/schema.dump
+    pg_restore -O -h edit-db -d edit -U ddluser -n mySchema /tmp/schema.dmp
 
-Template für Pub-DB:
+Template für Restore in die Pub-DB:
 
-    pg_restore -O -x -h pub-db -d pub -U ddluser -n mySchema /tmp/schema.dump
+    pg_restore -O -h pub-db -d pub -U ddluser -n mySchema /tmp/schema.dmp
 
-Hinter -n "mySchema" mit dem effektiven Schemanamen ersetzen
-
-## Schema-Berechtigungen erneut anwenden
-
-Skript aus Kapitel "Schema-Berechtigungen anwenden" ein zweites Mal mittels DBeaver ausführen.
+"mySchema" jeweils mit dem effektiven Schemanamen ersetzen
