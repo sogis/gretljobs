@@ -85,7 +85,7 @@ In lokalem Ordner gretljobs/ ausführen, nachdem die Entwicklungs-DBs gestartet 
 
     docker compose run --rm db-tools bash
 
-Dies öffnet ein Bash-Terminal im laufenden Container "edit-db". Im Image des Containers sind die PG-Tools in der richtigen Version enthalten.
+Dies öffnet ein Bash-Terminal im Container "db-tools". Im Image des Containers sind die PG-Tools in der richtigen Version enthalten.
 
 ### In der Container-Bash ausführen
 
