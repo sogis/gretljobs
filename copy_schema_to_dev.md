@@ -17,63 +17,27 @@ Dazu in der ersten Zeile des folgenden Skripts "mySchema" mit dem Schemanamen er
     DROP SCHEMA IF EXISTS ${dbSchema};
     CREATE SCHEMA ${dbSchema};
 
+    -- role _read with privileges
+
     DROP ROLE IF EXISTS ${dbSchema}_read;
-    CREATE ROLE ${dbSchema}_read;
-
-    DROP ROLE IF EXISTS ${dbSchema}_write;
-    CREATE ROLE ${dbSchema}_write;
-
-    /* Copied from schema-jobs/shared/recreate_role.sql with removal of param "roleSuffix" */
-
-    -- Drop role with read privilege
-    REVOKE ALL PRIVILEGES
-    ON SCHEMA ${dbSchema}
-    FROM ${dbSchema}_read;
-
-    REVOKE ALL PRIVILEGES
-    ON ALL TABLES IN SCHEMA ${dbSchema}
-    FROM ${dbSchema}_read;
-
-    DROP ROLE ${dbSchema}_read;
-
-    -- Drop role with write privilege
-    REVOKE ALL PRIVILEGES
-    ON SCHEMA ${dbSchema}
-    FROM ${dbSchema}_write;
-
-    REVOKE ALL PRIVILEGES
-    ON ALL TABLES IN SCHEMA ${dbSchema}
-    FROM ${dbSchema}_write;
-
-    REVOKE ALL PRIVILEGES
-    ON ALL SEQUENCES IN SCHEMA ${dbSchema}
-    FROM ${dbSchema}_write;
-
-    DROP ROLE ${dbSchema}_write;
-
-    -- Create role with read privilege
     CREATE ROLE ${dbSchema}_read;
 
     GRANT USAGE ON SCHEMA ${dbSchema} TO ${dbSchema}_read;
 
-    GRANT SELECT
-    ON ALL TABLES IN SCHEMA ${dbSchema}
-    TO ${dbSchema}_read;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA ${dbSchema} GRANT SELECT ON TABLES TO ${dbSchema}_read;
 
-    -- Create role with write privilege
+    -- role _write wih privileges
+
+    DROP ROLE IF EXISTS ${dbSchema}_write;
     CREATE ROLE ${dbSchema}_write;
 
     GRANT USAGE ON SCHEMA ${dbSchema} TO ${dbSchema}_write;
 
-    GRANT SELECT, INSERT, UPDATE, DELETE
-    ON ALL TABLES IN SCHEMA ${dbSchema}
-    TO ${dbSchema}_write;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA ${dbSchema} GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO ${dbSchema}_write;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA ${dbSchema} GRANT USAGE ON SEQUENCES TO ${dbSchema}_write;
 
-    GRANT USAGE
-    ON ALL SEQUENCES IN SCHEMA ${dbSchema}
-    TO ${dbSchema}_write;
+    -- grant for dmluser
 
-    /* Copied from schema-jobs/shared/development_tasks/grants_developmen.sql with removal of param "roleSuffix" */
     GRANT ${dbSchema}_write TO dmluser;
 
 ## Heruntgergeladenen Dump lokal restoren
@@ -97,3 +61,13 @@ Template für Restore in die Pub-DB:
     pg_restore -O -h pub-db -d pub -U ddluser -n mySchema /tmp/schema.dmp
 
 "mySchema" jeweils mit dem effektiven Schemanamen ersetzen
+
+Dumps von nicht mittels Schemajob erstellten Schemen enthalten direkte Grants von Benutzer(gruppen) auf Tabellen, ... des Schemas.
+Dies führt zu Fehlermeldungen im Stil von:
+
+    pg_restore: error: could not execute query: ERROR:  role "bjsvw" does not exist
+    Command was: GRANT SELECT ON TABLE agi_av_gb_abgleich_import.gb_daten TO bjsvw;
+    GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE agi_av_gb_abgleich_import.gb_daten TO gretl;
+
+Die Fehlermeldungen stören die lokale Nutzung des Schemas nicht (Daten werden trotzdem importiert)
+
