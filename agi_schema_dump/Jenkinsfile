@@ -40,14 +40,12 @@ pipeline {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('processing-db') {
                     sh "pg_dump -Fc -h geodb.rootso.org -d ${params.dbname} -f /tmp/schema.dump -U ${ORG_GRADLE_PROJECT_dbUserEdit} -n ${params.schemaname}"
+                    archiveArtifacts '/tmp/schema.dump'
                 }                
             }
         }
     }
     post {
-        always {
-            archiveArtifacts '/tmp/schema.dump'
-        }
         unsuccessful {
             emailext (
                 // If build was started by a user ("UserIdCause"), then set to user that started the build (the "requestor");
