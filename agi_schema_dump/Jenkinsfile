@@ -25,7 +25,13 @@ pipeline {
                       value: processing
                     - name: PGDATA
                       value: /var/lib/postgresql/data/pgdata
+                  envFrom:
+                    - configMapRef:
+                        name: "gretl-resources"
                   volumeMounts:
+                    - name: "gretl-secrets-volume"
+                      mountPath: "/home/gradle/.gradle/gradle.properties"
+                      subPath: "gradle.properties"
                     - name: postgresql-data-volume
                       mountPath: /var/lib/postgresql/data
               volumes:
