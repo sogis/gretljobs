@@ -45,9 +45,11 @@ pipeline {
             steps {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('processing-db') {
-                    sh "pg_dump -Fc -h geodb.rootso.org -d ${params.dbname} -f /tmp/schema.dump -U ${ORG_GRADLE_PROJECT_dbUserEdit} -n ${params.schemaname}"
-                    archiveArtifacts '/tmp/schema.dump'
-                }                
+                    dir(env.JOB_BASE_NAME) {
+                        sh "./create_dump.sh geodb.rootso.org ${params.dbname} ${params.schemaname}"
+                        archiveArtifacts 'schema.dump'
+                    }
+                }
             }
         }
     }
