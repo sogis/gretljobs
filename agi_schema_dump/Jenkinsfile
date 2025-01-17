@@ -36,12 +36,6 @@ pipeline {
     }
     stages {
         stage('Run job') {
-            environment {
-                ORG_GRADLE_PROJECT_dbUriProcessing = 'jdbc:postgresql://127.0.0.1/processing'
-                ORG_GRADLE_PROJECT_dbUserProcessing = 'processing'
-                ORG_GRADLE_PROJECT_dbPwdProcessing = 'processing'
-                PGPASSWORD = "${ORG_GRADLE_PROJECT_dbPwdEdit}"
-            }
             steps {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('processing-db') {
