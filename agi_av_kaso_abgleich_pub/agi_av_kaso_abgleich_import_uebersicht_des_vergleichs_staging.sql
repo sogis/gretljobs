@@ -1,4 +1,4 @@
-DELETE FROM agi_av_kaso_abgleich_import.uebersicht_des_vergleichs_staging
+DELETE FROM agi_av_kaso_abgleich_v1.uebersicht_des_vergleichs_staging
 ;
 
 WITH 
@@ -18,7 +18,7 @@ WITH
             av.av_gem_bfs, 
             count(av.av_gem_bfs) AS anzahl
         FROM 
-            agi_av_kaso_abgleich_import.differenzen_staging AS av
+            agi_av_kaso_abgleich_v1.differenzen_staging AS av
         WHERE 
             av.av_gem_bfs IS NOT NULL 
             AND 
@@ -31,7 +31,7 @@ WITH
             kaso.kaso_bfs_nr, 
             count(kaso.kaso_bfs_nr) AS anzahl
         FROM 
-            agi_av_kaso_abgleich_import.differenzen_staging AS kaso
+            agi_av_kaso_abgleich_v1.differenzen_staging AS kaso
         WHERE 
             kaso.kaso_bfs_nr IS NOT NULL 
             AND 
@@ -40,7 +40,7 @@ WITH
             kaso.kaso_bfs_nr
     )
     
-INSERT INTO agi_av_kaso_abgleich_import.uebersicht_des_vergleichs_staging (
+INSERT INTO agi_av_kaso_abgleich_v1.uebersicht_des_vergleichs_staging (
     t_id,
     geometrie,
     gem_bfs,

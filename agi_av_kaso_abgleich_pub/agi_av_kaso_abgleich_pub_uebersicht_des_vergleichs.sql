@@ -5,5 +5,5 @@ SELECT
     aname,
     anzahl_differenzen
 FROM
-    agi_av_kaso_abgleich_import.uebersicht_des_vergleichs_staging
+    agi_av_kaso_abgleich_v1.uebersicht_des_vergleichs_staging
 ;

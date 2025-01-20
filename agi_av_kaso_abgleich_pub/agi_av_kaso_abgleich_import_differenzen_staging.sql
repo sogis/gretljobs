@@ -1,4 +1,4 @@
-DELETE FROM agi_av_kaso_abgleich_import.differenzen_staging
+DELETE FROM agi_av_kaso_abgleich_v1.differenzen_staging
 ;
 
 WITH 
@@ -127,12 +127,12 @@ av_projektierte_grundstuecke AS (
             kaso.gb_flaeche AS kaso_flaeche,
             kaso.gb_gueltigbis AS kaso_historisiert
         FROM
-            agi_av_kaso_abgleich_import.kaso_daten AS kaso
+            agi_av_kaso_abgleich_v1.kaso_daten AS kaso
             JOIN grundbuchkreise AS grundbuchamt
                 ON grundbuchamt.gb_gemnr = kaso.geb_bfsnr::integer
       )
 
-INSERT INTO agi_av_kaso_abgleich_import.differenzen_staging (
+INSERT INTO agi_av_kaso_abgleich_v1.differenzen_staging (
     geometrie,
     av_lieferdatum,
     av_gem_bfs,
