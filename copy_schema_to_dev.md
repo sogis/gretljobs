@@ -2,7 +2,7 @@
 
 ## Schema-Dump erzeugen und in lokalem Linux speichern
 
-In GRETL-Jenkins den Job "agi_schema_dump" ausführen. Nach Ausführung steht der Dump als Build-Artefakt "schema.dmp" zur Verfügung.
+In GRETL-Jenkins den Job "agi_schema_dump" ausführen. Nach Ausführung steht der Dump als Build-Artefakt "schema.dump" zur Verfügung.
 
 Dieses herunterladen und im Verzeichnis /tmp des lokalen (WSL-)Linux speichern.
 
@@ -54,11 +54,11 @@ Dies öffnet ein Bash-Terminal im Container "db-tools". Im Image des Containers 
 
 Template für Restore in die Edit-DB:
 
-    pg_restore -O -h edit-db -d edit -U ddluser -n mySchema /tmp/schema.dmp
+    pg_restore -O -h edit-db -d edit -U ddluser -n mySchema /tmp/schema.dump
 
 Template für Restore in die Pub-DB:
 
-    pg_restore -O -h pub-db -d pub -U ddluser -n mySchema /tmp/schema.dmp
+    pg_restore -O -h pub-db -d pub -U ddluser -n mySchema /tmp/schema.dump
 
 "mySchema" jeweils mit dem effektiven Schemanamen ersetzen
 
@@ -70,4 +70,3 @@ Dies führt zu Fehlermeldungen im Stil von:
     GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE agi_av_gb_abgleich_import.gb_daten TO gretl;
 
 Die Fehlermeldungen stören die lokale Nutzung des Schemas nicht (Daten werden trotzdem importiert)
-
