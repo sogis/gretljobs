@@ -1,1 +1,1 @@
-// Leeres build.gradle, damit dieser Job vom Job "Sauger" auch aufgenommen wird.
+// This empty build.gradle file is necessary for gretl-job-generator to find this job in the repo and create it in Jenkins
