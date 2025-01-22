@@ -19,5 +19,5 @@ SELECT
     fehlerart,
     fehlerart_text
 FROM
-    agi_av_kaso_abgleich_import.differenzen_staging
+    agi_av_kaso_abgleich_v1.differenzen_staging
 ;

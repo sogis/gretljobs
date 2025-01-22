@@ -9,7 +9,7 @@ task transferKasoData(type: Db2Db){
     sourceDb = [dbUriKaso, dbUserKaso, dbPwdKaso]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
-            new TransferSet('agi_av_kaso_abgleich_import_kaso_daten.sql', 'agi_av_kaso_abgleich_import.kaso_daten', true)
+            new TransferSet('agi_av_kaso_abgleich_import_kaso_daten.sql', 'agi_av_kaso_abgleich_v1.kaso_daten', true)
     ];
 }
 
