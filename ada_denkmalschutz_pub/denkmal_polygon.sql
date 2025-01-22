@@ -12,7 +12,7 @@ SELECT
 	-- TODO: Das Buffern und Re-Buffern ist definitiv nicht optimal. Allerdings ist es der einzige funktionierende Weg, die kleinen Digitalisierungsfehler zu eliminieren. 
 	--       Evtl. findet man hier aber in Zukunft eine bessere Lösung! 
 FROM 
-		ada_denkmalschutz.gis_geometrie
+		ada_denkmalschutz_v1.gis_geometrie
 WHERE 
 		apolygon IS NOT NULL
 GROUP BY 
@@ -24,7 +24,7 @@ SELECT
 	denkmal_id AS denkmal_id,
 	json_agg(json_build_object('Titel', titel, 'Link', 'http://irgendwas.so.ch/dokumente/' || multimedia_id || '.pdf', 'Datum', datum, 'Nummer', nummer)) AS dokumente
 FROM
-	ada_denkmalschutz.fachapplikation_rechtsvorschrift_link
+	ada_denkmalschutz_v1.fachapplikation_rechtsvorschrift_link
 WHERE 
     multimedia_id IS NOT NULL 
 GROUP BY
@@ -53,7 +53,7 @@ SELECT
 	'https://irgendwas.so.ch/dokument/' || id || '.pdf' AS objektblatt, 
 	rechtsvorschriften.dokumente AS rechtsvorschriften
 FROM 
-	ada_denkmalschutz.fachapplikation_denkmal
+	ada_denkmalschutz_v1.fachapplikation_denkmal
 JOIN
 	mpoly 
 	ON 
@@ -63,5 +63,3 @@ LEFT JOIN
     ON 
     fachapplikation_denkmal.id = rechtsvorschriften.denkmal_id
 ;
-
-
