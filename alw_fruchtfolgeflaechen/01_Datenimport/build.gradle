@@ -75,7 +75,7 @@ task importAltlasten(type: Db2Db, dependsOn: makeSchemaAltlasten){
 
 task makeSchemaGewaesserschutz(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    models = "SO_AfU_Gewaesserschutz_Publikation_20220817"
+    models = "SO_AFU_Gewaesserschutz_Publikation_20240606"
     dbschema = "afu_gewaesserschutz_pub"
     strokeArcs = true
     beautifyEnumDispName = true
