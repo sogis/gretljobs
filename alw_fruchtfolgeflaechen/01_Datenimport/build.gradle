@@ -22,7 +22,7 @@ task prepare_db(type: SqlExecutor) {
 
 task makeSchemaMopublic(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    models = "SO_AGI_MOpublic_20201009"
+    models = "SO_AGI_MOpublic_20240711"
     dbschema = "agi_mopublic_pub"
     strokeArcs = true
     beautifyEnumDispName = true
