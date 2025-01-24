@@ -1,6 +1,4 @@
 -- Drop table
-CREATE SCHEMA IF NOT EXISTS afu_isboden_pub AUTHORIZATION "dmluser";
-
 DROP TABLE IF EXISTS afu_isboden_pub.bodeneinheit;
 
 CREATE TABLE 
