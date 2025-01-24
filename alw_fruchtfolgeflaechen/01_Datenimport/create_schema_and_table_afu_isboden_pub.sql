@@ -1,4 +1,6 @@
 -- Drop table
+CREATE SCHEMA IF NOT EXISTS afu_isboden_pub;
+
 DROP TABLE IF EXISTS afu_isboden_pub.bodeneinheit;
 
 CREATE TABLE 
