@@ -510,6 +510,12 @@ Erläuterungen:
 
 ### Daten in die Entwicklungs-DBs importieren
 
+#### Mittels dump restore
+
+Beschreibung des Ablaufs siehe: [copy_schema_to_dev.md](copy_schema_to_dev.md)
+
+#### Alternativ: Mittels Schema-Job Task importDevelopmentData
+
 Wenn der Schema-Job entsprechend konfiguriert ist,
 kann man unter bestimmten Bedingungen mit dem Task `importDevelopmentData`
 automatisiert Daten in die Entwicklungs-DBs importieren.

@@ -2,7 +2,7 @@
 
 ## Schema-Dump erzeugen und in lokalem Linux speichern
 
-In GRETL-Jenkins den Job "agi_schema_dump" ausführen. Nach Ausführung steht der Dump als Build-Artefakt "schema.dump" zur Verfügung.
+Im produktiven GRETL-Jenkins den Job "agi_schema_dump" ausführen. Nach Ausführung steht der Dump als Build-Artefakt "schema.dump" zur Verfügung.
 
 Dieses herunterladen und im Verzeichnis /tmp des lokalen (WSL-)Linux speichern.
 
