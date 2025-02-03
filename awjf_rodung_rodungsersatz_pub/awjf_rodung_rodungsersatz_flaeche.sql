@@ -82,17 +82,12 @@ rodung AS (
         datum_abschluss_rodung,
         ausgleichsabgabe_eingang,
         rodungsentscheid,
-        sobauid,
+        sobauid,       
         einsprache,
         beschwerde,
-        massnahmenl_pool,    
+        massnahmenl_pool,
         ersatzverzicht,
-        CASE
-            WHEN ersatzverzicht ILIKE '%Hochwasserschutz_Revitalisierung%'
-                THEN REPLACE(ersatzverzicht, 'Hochwasserschutz_Revitalisierung', 'Hochwasserschutz/Gewässerrevitalisierung')
-            ELSE
-                ersatzverzicht       
-        END AS ersatzverzicht_txt,
+        REPLACE(REPLACE(REPLACE(ersatzverzicht, '{"', ''), '"}', ''), ',', ', ') AS ersatzverzicht_txt,
         art_sicherung,
         anmerkung_grundbuch,
         lieferung_bafu,
@@ -219,9 +214,13 @@ SELECT
     rodung.sobauid,
     rodung.einsprache,
     rodung.beschwerde,
-    rodung.massnahmenl_pool,    
+    rodung.massnahmenl_pool,
     rodung.ersatzverzicht,
-    rodung.ersatzverzicht_txt,
+    CASE
+    	WHEN ersatzverzicht_txt ILIKE '%Hochwasserschutz_Revitalisierung%'
+        	THEN REPLACE(ersatzverzicht_txt, 'Hochwasserschutz_Revitalisierung', 'Hochwasserschutz/Gewässerrevitalisierung')
+            ELSE ersatzverzicht_txt       
+        END AS ersatzverzicht_txt,
     rodung.art_sicherung,
     rodung.anmerkung_grundbuch,
     rodung.lieferung_bafu,
