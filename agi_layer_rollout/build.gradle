@@ -26,6 +26,10 @@ def deferReadUri(dbUri) {
 
 task assertValidConf(){
   doLast{
+      println 'Environment: ' + simiEnv
+      if(!gretlEnvironment.equals(simiEnv))
+        throw new RuntimeException("The entered environment '" + simiEnv + "' is invalid.")
+
       if(readUri.equals(writeUri))
         throw new RuntimeException("Read and write Db must be different.")
 

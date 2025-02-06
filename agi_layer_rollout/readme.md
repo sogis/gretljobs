@@ -1,6 +1,10 @@
 # Rollout der Metadaten aus der Integration
 
-Kopiert die Metadaten von der Integration in die Zielumgebung.
+Kopiert die Metadaten von der Integration in die Ziel-Datenbank. Die Ziel-Datenbank wird bestimmt durch die Gretl-Jenkins Umgebung und bestätigt
+durch die Eingabe der simiEnv. Korrekte Ausführungen:
+  * Auf gretl-t.so.ch mit simiEnv "test"
+  * Auf gretl.so.ch mit simiEnv "production"
+
 Ausser der drei Tabellen simitheme_sub_area, simitheme_published_sub_area
 und simitheme_published_sub_area_helper werden alle Daten 1:1 kopiert.
 
