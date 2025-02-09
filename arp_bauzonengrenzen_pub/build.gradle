@@ -45,8 +45,3 @@ task publishPub(type: Publisher, dependsOn:'createAllData') {
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
-tasks.register('publishMetaFile', MetaPublisher) {
-    dependsOn 'publishPub'
-    metaConfigFile = file("meta.toml")
-    target =  [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
-}
