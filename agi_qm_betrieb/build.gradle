@@ -1,0 +1,48 @@
+import java.nio.file.Paths
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'doppelteSchemas'
+
+def dbUriDuckDB = 'jdbc:duckdb:./mytemp.duckdb'
+
+def dbHostPub = dbUriPub.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastIndexOf("/"))
+def dbDatabasePub = dbUriPub.substring(dbUriPub.lastIndexOf("/") + 1)
+def dbConnectionStringPub = "'dbname=$dbDatabasePub user=$dbUserPub password=$dbPwdPub host=$dbHostPub'"
+
+def dbHostEdit = dbUriEdit.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastIndexOf("/"))
+def dbDatabaseEdit = dbUriEdit.substring(dbUriPub.lastIndexOf("/") + 1)
+def dbConnectionStringEdit = "'dbname=$dbDatabaseEdit user=$dbUserEdit password=$dbPwdEdit host=$dbHostEdit'"
+
+/*
+tasks.register('gaga') {
+    doLast {
+        println("Hallo zum Ersten.")
+    }
+}
+
+tasks.register('fubar') {
+    dependsOn 'gaga'
+    doLast {
+        println("Hallo Welt.")
+        println dbUriPub
+
+        println dbHostPub
+        println dbDatabasePub
+
+        println "'dbname=$dbDatabasePub user=$dbUserPub password=$dbPwdPub host=$dbHostPub'"
+
+    }
+}
+*/
+
+tasks.register('doppelteSchemas', SqlExecutor) {
+    database = [dbUriDuckDB]
+    sqlFiles = ["doppelte_schemas.sql"]
+    sqlParameters = [
+        connectionStringPub : dbConnectionStringPub as String,
+        connectionStringEdit : dbConnectionStringEdit as String
+        ]
+}
