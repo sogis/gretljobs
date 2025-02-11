@@ -3,7 +3,7 @@ LOAD spatial;
 ATTACH ${connectionStringPub} AS pubdb (TYPE POSTGRES, READ_ONLY);
 ATTACH ${connectionStringEdit} AS editdb (TYPE POSTGRES, READ_ONLY);
 
-CREATE TEMP TABLE doppelteSchemasPub AS
+CREATE TEMP TABLE geoDoppelteSchemasPub AS
 SELECT 
     regexp_replace(schema_name, '_v[0-9]+$', '') AS schema_stamm,
     COUNT(*) AS version_anzahl,
@@ -36,5 +36,5 @@ ORDER BY
 ;
 
 -- Funktioniert ab V1.2 ohne GDAL.
-COPY doppelteSchemasPub TO 'doppelte_schemas.xlsx' WITH (FORMAT GDAL, DRIVER 'xlsx');
+COPY geoDoppelteSchemasPub TO 'geo_doppelte_schemas.xlsx' WITH (FORMAT GDAL, DRIVER 'xlsx');
 

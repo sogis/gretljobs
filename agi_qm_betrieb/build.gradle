@@ -3,8 +3,9 @@ import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.*
 
 apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'doppelteSchemas'
+defaultTasks 'geoDoppelteSchemas'
 
 def dbUriDuckDB = 'jdbc:duckdb:./mytemp.duckdb'
 
@@ -12,37 +13,123 @@ def dbHostPub = dbUriPub.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastInde
 def dbDatabasePub = dbUriPub.substring(dbUriPub.lastIndexOf("/") + 1)
 def dbConnectionStringPub = "'dbname=$dbDatabasePub user=$dbUserPub password=$dbPwdPub host=$dbHostPub'"
 
-def dbHostEdit = dbUriEdit.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastIndexOf("/"))
-def dbDatabaseEdit = dbUriEdit.substring(dbUriPub.lastIndexOf("/") + 1)
+def dbHostEdit = dbUriEdit.substring(dbUriPub.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
+def dbDatabaseEdit = dbUriEdit.substring(dbUriEdit.lastIndexOf("/") + 1)
 def dbConnectionStringEdit = "'dbname=$dbDatabaseEdit user=$dbUserEdit password=$dbPwdEdit host=$dbHostEdit'"
 
-/*
-tasks.register('gaga') {
-    doLast {
-        println("Hallo zum Ersten.")
+def dbHostSimi = dbUriSimi.substring(dbUriSimi.indexOf("//") + 2, dbUriSimi.lastIndexOf("/"))
+def dbDatabaseSimi = dbUriSimi.substring(dbUriSimi.lastIndexOf("/") + 1)
+def dbConnectionStringSimi = "'dbname=$dbDatabaseSimi user=$dbUserSimi password=$dbPwdSimi host=$dbHostSimi'"
+
+ssh.settings {
+    knownHosts = allowAnyHosts
+}
+
+remotes {
+    sftpServer {
+        host = sftpUrlSogis
+        user = sftpUserSogis
+        password = sftpPwdSogis
     }
 }
 
-tasks.register('fubar') {
-    dependsOn 'gaga'
-    doLast {
-        println("Hallo Welt.")
-        println dbUriPub
+//-----------
 
-        println dbHostPub
-        println dbDatabasePub
-
-        println "'dbname=$dbDatabasePub user=$dbUserPub password=$dbPwdPub host=$dbHostPub'"
-
-    }
-}
-*/
-
-tasks.register('doppelteSchemas', SqlExecutor) {
-    database = [dbUriDuckDB]
-    sqlFiles = ["doppelte_schemas.sql"]
+tasks.register('geoDoppelteSchemas', SqlExecutor) {
+    database = [dbUriDuckDB, "", ""] // mit GRETL 3.1 nicht mehr nötig.
+    sqlFiles = ["geo_doppelte_schemas.sql"]
     sqlParameters = [
         connectionStringPub : dbConnectionStringPub as String,
         connectionStringEdit : dbConnectionStringEdit as String
         ]
 }
+
+//-----------
+
+tasks.register('simiSchemaOhneTabelle', SqlExecutor) {
+    database = [dbUriDuckDB, "", ""]
+    sqlFiles = ["simi_schema_ohne_tabelle.sql"]
+    sqlParameters = [
+        connectionStringSimi : dbConnectionStringSimi as String
+        ]
+}
+
+//-----------
+
+tasks.register('simiRasterOhneDatesetView', SqlExecutor) {
+    database = [dbUriDuckDB, "", ""]
+    sqlFiles = ["simi_raster_ohne_datasetview.sql"]
+    sqlParameters = [
+        connectionStringSimi : dbConnectionStringSimi as String
+        ]
+}
+
+tasks.register('simiTableOhneTableView', SqlExecutor) {
+    database = [dbUriDuckDB, "", ""]
+    sqlFiles = ["simi_table_ohne_tableview.sql"]
+    sqlParameters = [
+        connectionStringSimi : dbConnectionStringSimi as String
+        ]
+}
+
+//-----------
+
+tasks.register('listSftpDirectories') {
+    doLast {
+        ssh.run {
+            session(remotes.sftpServer) {
+                sftp {
+                    def dirs = ls("./gretl")
+                        .findAll({ !(it.filename in ['.', '..']) 
+                            && !it.filename.startsWith('.') 
+                            && !it.filename.startsWith('robots')
+                            && !it.filename.startsWith('nutzungsbedingungen')})
+                        .collect({ it.filename }).sort()
+
+                    File lstFile = new File('/tmp/sftpDirectoriesList.csv')
+                    lstFile.withWriter{ out ->
+                        out.println('kennung')
+                        dirs.each {out.println it}
+                    }
+                    println "File listing saved to: ${lstFile.absolutePath}"
+                } 
+            }
+        }
+    }
+}
+
+tasks.register('diffKennungSimiDatenabgabe', SqlExecutor) {
+    dependsOn 'listSftpDirectories'
+    database = [dbUriDuckDB, "", ""]
+    sqlFiles = ["diff_kennung_simi_datenabgabe.sql"]
+    sqlParameters = [
+        connectionStringSimi : dbConnectionStringSimi as String
+        ]
+}
+
+//-----------
+
+tasks.register('relationalThemePublicationCsv', SqlExecutor) {
+    database = [dbUriDuckDB, "", ""]
+    sqlFiles = ["relational_theme_publication_csv.sql"]
+    sqlParameters = [
+        connectionStringSimi : dbConnectionStringSimi as String
+        ]
+}
+
+tasks.register('superflousPublicationFormats') {
+    dependsOn 'relationalThemePublicationCsv'
+    doLast {
+        def themePublications = new File('/tmp/relational_theme_publication_csv.csv').text.readLines()
+        println themePublications
+
+    }
+}
+
+
+
+
+//-----------
+
+
+
