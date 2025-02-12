@@ -24,7 +24,7 @@ wenn man DuckDB den absoluten Pfad als SqlParameter übergeben würde.
 def outputFolder = "/tmp/qmbetrieb/"
 def pathToOutputFolder = Files.createDirectories(Paths.get(outputFolder)).toFile().getAbsolutePath()
 
-def dbUriDuckDB = 'jdbc:duckdb:./mytemp.duckdb'
+def dbUriDuckDB = 'jdbc:duckdb:/tmp/mytemp.duckdb'
 
 def dbHostPub = dbUriPub.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastIndexOf("/"))
 def dbDatabasePub = dbUriPub.substring(dbUriPub.lastIndexOf("/") + 1)
