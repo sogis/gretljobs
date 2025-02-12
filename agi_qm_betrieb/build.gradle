@@ -1,4 +1,5 @@
 import java.nio.file.Paths
+import java.nio.file.Files
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.*
 
@@ -6,6 +7,22 @@ apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
 defaultTasks 'geoDoppelteSchemas'
+
+/*
+SFTP mit ssh-Plugin, siehe:
+- https://github.com/int128/groovy-ssh/blob/77ac597/core/src/main/groovy/org/hidetake/groovy/ssh/operation/SftpOperations.groovy
+- https://github.com/int128/groovy-ssh/blob/77ac597/core/src/main/groovy/org/hidetake/groovy/ssh/session/transfer/get/Sftp.groovy
+*/
+
+/*
+Mit den Verzeichnissen ist es so ne Sache. Erschwert durch Docker. Betrifft 
+die relativen Verzeichnisangaben. "." ist glaub in build.gradle was anderes als
+in DuckDB. Darum wohl eher absolute Pfade verwenden. Ganz robust wäre es,
+wenn man DuckDB den absoluten Pfad als SqlParameter übergeben würde.
+*/
+
+def outputFolder = "/tmp/qmbetrieb/"
+def pathToOutputFolder = Files.createDirectories(Paths.get(outputFolder)).toFile().getAbsolutePath()
 
 def dbUriDuckDB = 'jdbc:duckdb:./mytemp.duckdb'
 
@@ -110,6 +127,7 @@ tasks.register('diffKennungSimiDatenabgabe', SqlExecutor) {
 //-----------
 
 tasks.register('relationalThemePublicationCsv', SqlExecutor) {
+    description 'Schreibt all vorhandenen Edit-Modell-Themenpublikationen (aka relational) in eine CSV-Datei.'
     database = [dbUriDuckDB, "", ""]
     sqlFiles = ["relational_theme_publication_csv.sql"]
     sqlParameters = [
@@ -117,17 +135,53 @@ tasks.register('relationalThemePublicationCsv', SqlExecutor) {
         ]
 }
 
-tasks.register('superflousPublicationFormats') {
+tasks.register('superflousPublicationFormatsCsv') {
+    description 'Durchsucht anhand der CSV-Datei die Ordner nach shp, gpkg und dxf-Dateien und schreibt das Thema in eine CSV-Datei falls gefunden werden.'
     dependsOn 'relationalThemePublicationCsv'
     doLast {
         def themePublications = new File('/tmp/relational_theme_publication_csv.csv').text.readLines()
-        println themePublications
+        //println themePublications
 
+        ssh.run {
+            session(remotes.sftpServer) {
+                sftp {
+                    def themesWithSuperflousFormats = []
+                    themePublications.each { themeDir ->
+                        def files = ls("./gretl/$themeDir/aktuell")
+                            .findAll({ !(it.filename in ['.', '..', 'meta'])
+                                && (
+                                    it.filename.contains('xtf')
+                                    || it.filename.contains('shp')
+                                    || it.filename.contains('dxf')
+                                )
+                            })
+                            .collect({ it.filename }).sort()
+
+                        if (files.size() > 0) {
+                            themesWithSuperflousFormats.add(themeDir)
+                        }
+                    }
+                    File lstFile = new File('/tmp/superflous_publication_formats.csv')
+                    lstFile.withWriter{ out ->
+                        out.println('kennung')
+                        themesWithSuperflousFormats.each {out.println it}
+                    }
+                    println "File listing saved to: ${lstFile.absolutePath}"
+                } 
+            }
+        }
     }
 }
 
-
-
+tasks.register('relationalThemePublicationXlsx', Csv2Excel) {
+    description 'Wandelt CSV in eine Excel-Datei um.'
+    dependsOn 'superflousPublicationFormatsCsv'
+    csvFile = file("/tmp/superflous_publication_formats.csv")
+    firstLineIsHeader = true
+    valueDelimiter = null
+    valueSeparator = ";"
+    outputDir = file(outputFolder);
+}
 
 //-----------
 
