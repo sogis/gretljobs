@@ -150,7 +150,7 @@ tasks.register('superflousPublicationFormatsCsv') {
                         def files = ls("./gretl/$themeDir/aktuell")
                             .findAll({ !(it.filename in ['.', '..', 'meta'])
                                 && (
-                                    it.filename.contains('xtf')
+                                    it.filename.contains('gpkg')
                                     || it.filename.contains('shp')
                                     || it.filename.contains('dxf')
                                 )
@@ -185,5 +185,71 @@ tasks.register('relationalThemePublicationXlsx', Csv2Excel) {
 
 //-----------
 
+tasks.register('simpleThemePublicationCsv', SqlExecutor) {
+    description 'Schreibt all vorhandenen Pub-Modell-Themenpublikationen in eine CSV-Datei.'
+    database = [dbUriDuckDB, "", ""]
+    sqlFiles = ["simple_theme_publication_csv.sql"]
+    sqlParameters = [
+        connectionStringSimi : dbConnectionStringSimi as String
+        ]
+}
+
+tasks.register('countSimplePublicationFormatsCsv') {
+    description 'Durchsucht anhand der CSV-Datei die Ordner nach xtf, shp, gpkg und dxf-Dateien und schreibt die jeweilige Anzahl und das Thema in eine CSV-Datei. Es kann vorkommen, dass die Anzahl falsch ist, weil falsche Daten im Ordner liegen. Darum ist es mehr als bloss _missing formats_.'
+    dependsOn 'simpleThemePublicationCsv'
+    doLast {
+        def themePublications = new File('/tmp/count_simple_publication_formats.csv').text.readLines()
+        //println themePublications
+
+        ssh.run {
+            session(remotes.sftpServer) {
+                sftp {
+                    //def themesWithMissingFormats = []
+                    File lstFile = new File('/tmp/missing_publication_formats.csv')
+                    themePublications.each { themeDir ->
+                        println themeDir
+
+                        def xtfFiles = ls("./gretl/$themeDir/aktuell/*.xtf.zip")
+                        def gpkgFiles = ls("./gretl/$themeDir/aktuell/*.gpkg.zip")
+                        def shpFiles = ls("./gretl/$themeDir/aktuell/*.shp.zip")
+                        def dxfFiles = ls("./gretl/$themeDir/aktuell/*.dxf.zip")
 
 
+
+                        println xtfFiles.size()
+
+
+                        // Modulo 4 = 0
+                        // es muss ein gleiche Anzahl shp, gpkg, xtf, dxf geben.
+
+                        // def files = ls("./gretl/$themeDir/aktuell")
+                        //     .findAll({ !(it.filename in ['.', '..', 'meta'])
+                        //         && (
+                        //             it.filename.contains('gpkg')
+                        //             || it.filename.contains('shp')
+                        //             || it.filename.contains('dxf')
+                        //         )
+                        //     })
+                        //     .collect({ it.filename }).sort()
+
+                        // if (files.size() > 0) {
+                        //     themesWithSuperflousFormats.add(themeDir)
+                        // }
+                    }
+                    // File lstFile = new File('/tmp/superflous_publication_formats.csv')
+                    // lstFile.withWriter{ out ->
+                    //     out.println('kennung')
+                    //     themesWithSuperflousFormats.each {out.println it}
+                    // }
+                    // println "File listing saved to: ${lstFile.absolutePath}"
+                } 
+            }
+        }
+    }
+}
+
+
+
+
+// TODO:
+// - Schema ohne Themenpublikation?
