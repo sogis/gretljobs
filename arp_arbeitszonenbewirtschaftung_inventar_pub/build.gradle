@@ -22,8 +22,14 @@ task datatransfer_staging(type: Db2Db){
     ];
 }
 
-task datenumbau_pub(type: Db2Db, dependsOn: 'datatransfer_staging') {
-    dependsOn datatransfer_staging
+task update_staging(type: SqlExecutor, dependsOn: 'datatransfer_staging') {
+    description = "Befüllt die die Attribute die mit createEnumTxtCol angelegt werden"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["update_staging.sql"]
+}
+
+task datenumbau_pub(type: Db2Db, dependsOn: 'update_staging') {
+    dependsOn update_staging
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
