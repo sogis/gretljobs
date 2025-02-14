@@ -17,3 +17,6 @@ WHERE
 -- Funktioniert ab V1.2 ohne GDAL.
 COPY simiSchemaOhneTabelle TO '/tmp/qmbetrieb/simi_schema_ohne_tabelle.xlsx' WITH (FORMAT GDAL, DRIVER 'xlsx');
 
+COPY simiSchemaOhneTabelle TO '/tmp/qmbetrieb/simi_schema_ohne_tabelle.csv' (HEADER, DELIMITER ';');
+
+

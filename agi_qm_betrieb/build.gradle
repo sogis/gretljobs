@@ -6,7 +6,7 @@ import ch.so.agi.gretl.api.*
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'geoDoppelteSchemas'
+defaultTasks 'uploadToExoscale'
 
 /*
 SFTP mit ssh-Plugin, siehe:
@@ -25,6 +25,9 @@ def outputFolder = "/tmp/qmbetrieb/"
 def pathToOutputFolder = Files.createDirectories(Paths.get(outputFolder)).toFile().getAbsolutePath()
 
 def dbUriDuckDB = 'jdbc:duckdb:/tmp/mytemp.duckdb'
+
+def outputResultDB = Paths.get(outputFolder, "qmbetrieb.duckdb").toFile()
+def dbUriResultDB = "jdbc:duckdb:$outputResultDB"
 
 def dbHostPub = dbUriPub.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastIndexOf("/"))
 def dbDatabasePub = dbUriPub.substring(dbUriPub.lastIndexOf("/") + 1)
@@ -80,6 +83,8 @@ tasks.register('simiRasterOhneDatesetView', SqlExecutor) {
         connectionStringSimi : dbConnectionStringSimi as String
         ]
 }
+
+//-----------
 
 tasks.register('simiTableOhneTableView', SqlExecutor) {
     database = [dbUriDuckDB, "", ""]
@@ -150,7 +155,7 @@ tasks.register('superflousPublicationFormatsCsv') {
                         def files = ls("./gretl/$themeDir/aktuell")
                             .findAll({ !(it.filename in ['.', '..', 'meta'])
                                 && (
-                                    it.filename.contains('gpkg')
+                                    it.filename.contains('xtf') // TODO gpkg
                                     || it.filename.contains('shp')
                                     || it.filename.contains('dxf')
                                 )
@@ -161,7 +166,7 @@ tasks.register('superflousPublicationFormatsCsv') {
                             themesWithSuperflousFormats.add(themeDir)
                         }
                     }
-                    File lstFile = new File('/tmp/superflous_publication_formats.csv')
+                    File lstFile = new File('/tmp/qmbetrieb/superflous_publication_formats.csv')
                     lstFile.withWriter{ out ->
                         out.println('kennung')
                         themesWithSuperflousFormats.each {out.println it}
@@ -176,7 +181,7 @@ tasks.register('superflousPublicationFormatsCsv') {
 tasks.register('relationalThemePublicationXlsx', Csv2Excel) {
     description 'Wandelt CSV in eine Excel-Datei um.'
     dependsOn 'superflousPublicationFormatsCsv'
-    csvFile = file("/tmp/superflous_publication_formats.csv")
+    csvFile = file("/tmp/qmbetrieb/superflous_publication_formats.csv")
     firstLineIsHeader = true
     valueDelimiter = null
     valueSeparator = ";"
@@ -198,56 +203,86 @@ tasks.register('countSimplePublicationFormatsCsv') {
     description 'Durchsucht anhand der CSV-Datei die Ordner nach xtf, shp, gpkg und dxf-Dateien und schreibt die jeweilige Anzahl und das Thema in eine CSV-Datei. Es kann vorkommen, dass die Anzahl falsch ist, weil falsche Daten im Ordner liegen. Darum ist es mehr als bloss _missing formats_.'
     dependsOn 'simpleThemePublicationCsv'
     doLast {
-        def themePublications = new File('/tmp/count_simple_publication_formats.csv').text.readLines()
+        def themePublications = new File('/tmp/simple_theme_publication_csv.csv').text.readLines()
         //println themePublications
 
         ssh.run {
             session(remotes.sftpServer) {
                 sftp {
-                    //def themesWithMissingFormats = []
-                    File lstFile = new File('/tmp/missing_publication_formats.csv')
-                    themePublications.each { themeDir ->
-                        println themeDir
+                    File lstFile = new File('/tmp/qmbetrieb/count_simple_publication_formats.csv')
+                    lstFile.withWriter{ out ->
+                        out.print('kennung;xtf;gpkg;shp;dxf')
+                    }
 
+                    themePublications.each { themeDir ->
                         def xtfFiles = ls("./gretl/$themeDir/aktuell/*.xtf.zip")
                         def gpkgFiles = ls("./gretl/$themeDir/aktuell/*.gpkg.zip")
                         def shpFiles = ls("./gretl/$themeDir/aktuell/*.shp.zip")
                         def dxfFiles = ls("./gretl/$themeDir/aktuell/*.dxf.zip")
 
+                        lstFile << "\n" << "$themeDir;$xtfFiles.size;$gpkgFiles.size;$shpFiles.size;$dxfFiles.size"
 
-
-                        println xtfFiles.size()
-
-
-                        // Modulo 4 = 0
-                        // es muss ein gleiche Anzahl shp, gpkg, xtf, dxf geben.
-
-                        // def files = ls("./gretl/$themeDir/aktuell")
-                        //     .findAll({ !(it.filename in ['.', '..', 'meta'])
-                        //         && (
-                        //             it.filename.contains('gpkg')
-                        //             || it.filename.contains('shp')
-                        //             || it.filename.contains('dxf')
-                        //         )
-                        //     })
-                        //     .collect({ it.filename }).sort()
-
-                        // if (files.size() > 0) {
-                        //     themesWithSuperflousFormats.add(themeDir)
-                        // }
                     }
-                    // File lstFile = new File('/tmp/superflous_publication_formats.csv')
-                    // lstFile.withWriter{ out ->
-                    //     out.println('kennung')
-                    //     themesWithSuperflousFormats.each {out.println it}
-                    // }
-                    // println "File listing saved to: ${lstFile.absolutePath}"
+                    println "File listing saved to: ${lstFile.absolutePath}"
                 } 
             }
         }
     }
 }
 
+tasks.register('countSimplePublicationFormatsXlsx', Csv2Excel) {
+    description 'Wandelt CSV in eine Excel-Datei um.'
+    dependsOn 'countSimplePublicationFormatsCsv'
+    csvFile = file("/tmp/qmbetrieb/count_simple_publication_formats.csv")
+    firstLineIsHeader = true
+    valueDelimiter = null
+    valueSeparator = ";"
+    outputDir = file(outputFolder);
+}
+
+//-----------
+
+tasks.register('validationTasks') {
+    description 'Führt sämtliche Validierungstasks aus.'
+    dependsOn 'geoDoppelteSchemas',
+        'simiSchemaOhneTabelle',
+        'simiRasterOhneDatesetView',
+        'simiTableOhneTableView',
+        'diffKennungSimiDatenabgabe',
+        'relationalThemePublicationXlsx',
+        'countSimplePublicationFormatsXlsx'
+}
+
+//-----------
+
+tasks.register('zipXlsx', Zip) {
+    dependsOn 'validationTasks'
+    archiveFileName = "qmbetrieb.zip"
+    //destinationDirectory = file(outputFolder)
+    destinationDirectory = file(".")
+    
+    from(outputFolder) {
+        include("**/*.xlsx", "**/*.csv")
+    }
+}
+
+tasks.register('csv2duckdb', SqlExecutor) {
+    dependsOn zipXlsx
+    description 'Importiert alle CSV in eine neue DuckDB-Datenbank.'
+    database = [dbUriResultDB, "", ""]
+    sqlFiles = ["import_csv_to_duckdb.sql"]
+}
+
+tasks.register('uploadToExoscale', S3Upload) {
+    dependsOn 'csv2duckdb'
+    accessKey = exoAccessKeyAgi
+    secretKey = exoSecretAccessKeyAgi
+    sourceFile = outputResultDB
+    endPoint = "https://sos-ch-dk-2.exo.io"
+    region = "ch-dk-2"
+    bucketName = 'ch.so.agi.fubar1'
+    acl = "public-read"
+}
 
 
 

@@ -44,3 +44,4 @@ ORDER BY
 -- Funktioniert ab V1.2 ohne GDAL.
 COPY simiTableOhneTableView TO '/tmp/qmbetrieb/simi_table_ohne_tableview.xlsx' WITH (FORMAT GDAL, DRIVER 'xlsx');
 
+COPY simiTableOhneTableView TO '/tmp/qmbetrieb/simi_table_ohne_tableview.csv' (HEADER, DELIMITER ';');

@@ -38,3 +38,6 @@ ORDER BY
 -- Funktioniert ab V1.2 ohne GDAL.
 COPY geoDoppelteSchemasPub TO '/tmp/qmbetrieb/geo_doppelte_schemas.xlsx' WITH (FORMAT GDAL, DRIVER 'xlsx');
 
+COPY geoDoppelteSchemasPub TO '/tmp/qmbetrieb/geo_doppelte_schemas.csv' (HEADER, DELIMITER ';');
+
+
