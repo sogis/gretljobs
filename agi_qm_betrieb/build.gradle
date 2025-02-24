@@ -155,7 +155,7 @@ tasks.register('superflousPublicationFormatsCsv') {
                         def files = ls("./gretl/$themeDir/aktuell")
                             .findAll({ !(it.filename in ['.', '..', 'meta'])
                                 && (
-                                    it.filename.contains('xtf') // TODO gpkg
+                                    it.filename.contains('gpkg') 
                                     || it.filename.contains('shp')
                                     || it.filename.contains('dxf')
                                 )
@@ -280,11 +280,6 @@ tasks.register('uploadToExoscale', S3Upload) {
     sourceFile = outputResultDB
     endPoint = "https://sos-ch-dk-2.exo.io"
     region = "ch-dk-2"
-    bucketName = 'ch.so.agi.fubar1'
+    bucketName = 'ch.so.agi.betrieb.qm'
     acl = "public-read"
 }
-
-
-
-// TODO:
-// - Schema ohne Themenpublikation?
