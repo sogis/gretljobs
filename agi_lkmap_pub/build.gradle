@@ -12,9 +12,10 @@ def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
 // wawaag: Wasserversorgung Wasseramt AG (Verbandskataster)
 // Müsste halt auch vom Kanton geregelt werden: In Aeschi momentan doppelt.
-//def dataSets = ['2477_was', '2479_was', '2517_was', '2546_was', '2511_was', '2614_was', 'wawaag']
+//def dataSets = ['2471_was', '2477_was', '2479_was', '2517_was', '2546_was', '2511_was', '2601_was', '2614_was', 'wawaag']
 //def dataSets = ['2517_was', 'wawaag']
-def dataSets = ['2601_was']
+//def dataSets = ['2601_was']
+def dataSets = ['2471_was']
 
 def DB_SCHEMA_EDIT = "agi_lkmap_v1"
 def DB_SCHEMA_PUB = "agi_lkmap_pub_v1"
