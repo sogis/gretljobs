@@ -1,23 +1,13 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'publishPub'
+defaultTasks 'schnittBodenbGebaeude'
 
-def dbSchemaNamePub = "agi_gebaeudeflaeche_pub_v2"
-
-// task schnittBodenbGebaeude(type: Db2Db){
-//     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
-//     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
-//     transferSets = [
-//             new TransferSet('bodenbedeckung_gebaeude.sql', dbSchemaNamePub+'.gebaeude_gebaeude', true),
-//             new TransferSet('proj_bodenbedeckung_gebaeude.sql', dbSchemaNamePub+'.gebaeude_gebaeude_proj', true)
-//     ];
-// }
+def dbSchemaNamePub = "agi_gebaeudeflaeche_pub_v3"
 
 tasks.register('schnittBodenbGebaeude', SqlExecutor) {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlParameters = [DB_SCHEMA: dbSchemaNamePub]
-    //sqlFiles = ['bodenbedeckung_gebaeude.sql', 'proj_bodenbedeckung_gebaeude.sql']
     sqlFiles = ['bodenbedeckung_gebaeude.sql']
 }
 
@@ -25,7 +15,7 @@ task publishPub(type: Publisher, dependsOn:'schnittBodenbGebaeude'){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.agi.av.gebaedeflaechen"
     dbSchema = dbSchemaNamePub
-    modelsToPublish = "SO_AGI_Gebaeudeflaechen_Publikation_20240705"
+    modelsToPublish = "SO_AGI_Gebaeudeflaechen_Publikation_20250224"
     userFormats = true
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
