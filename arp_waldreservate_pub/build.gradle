@@ -3,10 +3,17 @@ import ch.so.agi.gretl.api.TransferSet
 
 import java.nio.file.Paths
 
-defaultTasks "publishPub"
+defaultTasks "uploadWaldreservateMgdm"
 
 def tmpDir = buildDir.toString()
 def xtfPath = tmpDir + "/data.xtf"
+/*
+Für MGDM-Export und AI-Upload
+*/
+def zipName = 'iliexport.zip'
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def exportFileName = 'waldreservate.xtf'
+def exportFile = file(Paths.get(pathToTempFolder.toString(), exportFileName))
 
 
 task writeToPub(type: Db2Db){ 
@@ -46,4 +53,56 @@ task publishPub(type: Publisher, dependsOn: validate){
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+
+task writeToMGDM(type: SqlExecutor, dependsOn: publishPub) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['write_to_mgdm.sql']
+}
+
+/*
+2. Create the *.xtf with the ili2pg GRETL task
+*/
+
+task exportWaldreservateMgdm(type: Ili2pgExport, dependsOn: 'writeToMGDM') {
+    description = "Exportiert die Waldreservate ins MGDM umgebauten Daten in ein xtf-File."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "arp_waldreservate_mgdm_v1"
+    models = "Waldreservate_LV95_V1_1"
+    exportTid = true
+    dataFile = exportFile
+}
+
+task validateMgdm(type: IliValidator, dependsOn: exportWaldreservateMgdm){
+    dataFiles = [exportFile]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+/*
+3. Package and upload to the KKGEO AI
+*/
+
+task zipWaldreservateMgdm(type: Zip, dependsOn: 'validateMgdm'){
+    description = "Zipt das xtf-File mit den Waldreservaten (MGDM vom Bund) für den Upload in die " +
+            "Aggregationsinfrastruktur."
+    from pathToTempFolder
+    include exportFileName
+    archiveName zipName
+	destinationDir(file(pathToTempFolder))
+}
+
+task uploadWaldreservateMgdm (dependsOn: zipWaldreservateMgdm) {
+    description = "Lädt die Waldreservate (MGDM vom Bund) in die Aggregationsinfrastruktur hoch."
+
+    def aiLogin = aiUser + ":" + aiPwd
+    def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
+    def zipFilePath = Paths.get(pathToTempFolder.toString(), zipName)
+
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=waldreservate", "-F",
+                        "lv95_file=@" + zipFilePath, "-F", "publish=true", serverUrl
+                        ].execute().text
+        println(response)
+    }
 }
