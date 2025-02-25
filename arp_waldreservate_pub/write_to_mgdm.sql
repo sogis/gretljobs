@@ -1,9 +1,9 @@
-DELETE FROM arp_waldreservate_mgdm_v1.waldreservate_waldreservat_teilobjekt 
+DELETE FROM arp_waldreservate_mgdm_v1.waldreservat_teilobjekt 
 ;
-DELETE FROM arp_waldreservate_mgdm_v1.waldreservate_waldreservat 
+DELETE FROM arp_waldreservate_mgdm_v1.waldreservat 
 ;
 
-INSERT INTO arp_waldreservate_mgdm_v1.waldreservate_waldreservat  (
+INSERT INTO arp_waldreservate_mgdm_v1.waldreservat  (
     t_id,
     objnummer,
     aname, 
@@ -21,7 +21,7 @@ FROM
 ;
 
 
-INSERT INTO arp_waldreservate_mgdm_v1.waldreservate_waldreservat_teilobjekt (
+INSERT INTO arp_waldreservate_mgdm_v1.waldreservat_teilobjekt (
     teilobj_nr, 
     mcpfe_class, 
     obj_gisteilobjekt, 
@@ -37,7 +37,7 @@ SELECT
 FROM 
     arp_waldreservate_v1.geobasisdaten_waldreservat_teilobjekt teilobjekt
 LEFT JOIN 
-    arp_waldreservate_mgdm_v1.codelisten_mcpfe_class_catalogue code 
+    arp_waldreservate_mgdm_v1.mcpfe_class_catalogue code 
     ON 
     replace(teilobjekt.mcpfe_code, '_', '.') = code.acode  
 ;
