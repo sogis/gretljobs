@@ -70,6 +70,7 @@ task exportWaldreservateMgdm(type: Ili2pgExport, dependsOn: 'writeToMGDM') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_waldreservate_mgdm_v1"
     models = "Waldreservate_LV95_V1_1"
+    exportTid = true 
     dataFile = exportFile
 }
 
