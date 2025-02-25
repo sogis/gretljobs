@@ -57,7 +57,7 @@ task publishPub(type: Publisher, dependsOn: validate){
 
 
 task writeToMGDM(type: SqlExecutor, dependsOn: publishPub) {
-    database = [dbUriPub, dbUserPub, dbPwdPub]
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['write_to_mgdm.sql']
 }
 
