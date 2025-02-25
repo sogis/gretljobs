@@ -100,7 +100,8 @@ INSERT INTO
         gebaeudename,
         gebaeudeeingang,
         link_gwr,
-        astatus
+        astatus,
+        gebaeudeflaeche_av
     )
 (
     SELECT
@@ -124,7 +125,8 @@ INSERT INTO
                 THEN concat('https://www.housing-stat.ch/de/query/egid.html?egid=',bodenbedeckung.egid::TEXT)
             ELSE 'https://www.housing-stat.ch/'
         END AS link_gwr,
-        'projektiert' AS astatus
+        'projektiert' AS astatus,
+        CAST(ST_Area(bodenbedeckung.geometrie) AS int) AS gebaeudeflaeche_av
     FROM 
         agi_mopublic_pub.mopublic_bodenbedeckung_proj AS bodenbedeckung
         LEFT JOIN agi_mopublic_pub.mopublic_gebaeudeadresse AS adresse 
@@ -134,6 +136,6 @@ INSERT INTO
     WHERE 
         bodenbedeckung.art_txt = 'Gebaeude'
     GROUP BY 
-        bodenbedeckung.egid, bodenbedeckung.bfs_nr, bodenbedeckung.geometrie
+        bodenbedeckung.egid, bodenbedeckung.bfs_nr, bodenbedeckung.geometrie, gebaeudeflaeche_av
 )
 ;
