@@ -2,7 +2,7 @@ SELECT
     typ, 
     '' AS typ_txt, 
     aname, 
-    gemeindegrenzen.gemeindename AS gemeinde, 
+    COALESCE(gemeindegrenzen.gemeindename,'ausserhalb Kanton SO') AS gemeinde, 
     stationsnummer, 
     st_x(messstation.geometrie) AS x, 
     st_y(messstation.geometrie) AS y, 
