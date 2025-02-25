@@ -73,11 +73,16 @@ task exportWaldreservateMgdm(type: Ili2pgExport, dependsOn: 'writeToMGDM') {
     dataFile = exportFile
 }
 
+task validateMgdm(type: IliValidator, dependsOn: exportWaldreservateMgdm){
+    dataFiles = [exportFile]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
 /*
 3. Package and upload to the KKGEO AI
 */
 
-task zipWaldreservateMgdm(type: Zip, dependsOn: 'exportWaldreservateMgdm'){
+task zipWaldreservateMgdm(type: Zip, dependsOn: 'validateMgdm'){
     description = "Zipt das xtf-File mit den Waldreservaten (MGDM vom Bund) für den Upload in die " +
             "Aggregationsinfrastruktur."
     from pathToTempFolder
