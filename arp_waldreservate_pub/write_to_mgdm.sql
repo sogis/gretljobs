@@ -4,14 +4,16 @@ DELETE FROM arp_waldreservate_mgdm_v1.waldreservat
 ;
 
 INSERT INTO arp_waldreservate_mgdm_v1.waldreservat  (
-    t_id,
+    t_id, 
+    t_ili_tid,
     objnummer,
     aname, 
     obj_gesflaeche, 
     obj_gisflaeche
 )
 SELECT 
-    t_id,
+    t_id, 
+    t_ili_tid,
     objnummer, 
     aname, 
     obj_gesflaeche, 
@@ -22,6 +24,8 @@ FROM
 
 
 INSERT INTO arp_waldreservate_mgdm_v1.waldreservat_teilobjekt (
+    t_id,
+    t_ili_tid,
     teilobj_nr, 
     mcpfe_class, 
     obj_gisteilobjekt, 
@@ -29,8 +33,10 @@ INSERT INTO arp_waldreservate_mgdm_v1.waldreservat_teilobjekt (
     wr
 )
 SELECT 
+    teilobjekt.t_id AS t_id,
+    teilobjekt.t_ili_tid AS t_ili_tid,
     teilobj_nr, 
-    code.t_id  AS mcpfe_code, 
+    code.t_id AS mcpfe_code, 
     obj_gisteilobjekt, 
     geo_obj, 
     wr
@@ -41,6 +47,7 @@ LEFT JOIN
     ON 
     replace(teilobjekt.mcpfe_code, '_', '.') = code.acode  
 ;
+
 
 
 
