@@ -69,7 +69,7 @@ task exportWaldreservateMgdm(type: Ili2pgExport, dependsOn: 'writeToMGDM') {
     description = "Exportiert die Waldreservate ins MGDM umgebauten Daten in ein xtf-File."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "arp_waldreservate_mgdm_v1"
-    models = ["Waldreservate_LV95_V1_1", "Waldreservate_Codelisten_V1_1"]
+    models = "Waldreservate_LV95_V1_1"; "Waldreservate_Codelisten_V1_1"
     dataFile = exportFile
 }
 
