@@ -1,5 +1,3 @@
-LOAD spatial;
-
 ATTACH ${connectionStringSimi} AS simidb (TYPE POSTGRES, READ_ONLY);
 
 CREATE TEMP TABLE simiRasterOhneDatasetView AS
@@ -13,9 +11,6 @@ FROM
 WHERE 
     srv.raster_ds_id IS NULL 
 ;
-
--- Funktioniert ab V1.2 ohne GDAL.
-COPY simiRasterOhneDatasetView TO '/tmp/qmbetrieb/simi_raster_ohne_datasetview.xlsx' WITH (FORMAT GDAL, DRIVER 'xlsx');
 
 COPY simiRasterOhneDatasetView TO '/tmp/qmbetrieb/simi_raster_ohne_datasetview.csv' (HEADER, DELIMITER ';');
 

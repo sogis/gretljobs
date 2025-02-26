@@ -6,7 +6,7 @@ import ch.so.agi.gretl.api.*
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'uploadToExoscale'
+defaultTasks 'copyXlsx'
 
 /*
 SFTP mit ssh-Plugin, siehe:
@@ -22,12 +22,11 @@ wenn man DuckDB den absoluten Pfad als SqlParameter übergeben würde.
 */
 
 def outputFolder = "/tmp/qmbetrieb/"
+def xlsxOutputFile = Paths.get(outputFolder, "qm-betrieb.xlsx").toFile()
+xlsxOutputFile.delete()
 def pathToOutputFolder = Files.createDirectories(Paths.get(outputFolder)).toFile().getAbsolutePath()
 
 def dbUriDuckDB = 'jdbc:duckdb:/tmp/mytemp.duckdb'
-
-def outputResultDB = Paths.get(outputFolder, "qmbetrieb.duckdb").toFile()
-def dbUriResultDB = "jdbc:duckdb:$outputResultDB"
 
 def dbHostPub = dbUriPub.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastIndexOf("/"))
 def dbDatabasePub = dbUriPub.substring(dbUriPub.lastIndexOf("/") + 1)
@@ -56,7 +55,7 @@ remotes {
 //-----------
 
 tasks.register('geoDoppelteSchemas', SqlExecutor) {
-    database = [dbUriDuckDB, "", ""] // mit GRETL 3.1 nicht mehr nötig.
+    database = [dbUriDuckDB] 
     sqlFiles = ["geo_doppelte_schemas.sql"]
     sqlParameters = [
         connectionStringPub : dbConnectionStringPub as String,
@@ -64,34 +63,75 @@ tasks.register('geoDoppelteSchemas', SqlExecutor) {
         ]
 }
 
+tasks.register('geoDoppelteSchemas2Excel', Csv2Excel) {
+    description 'Wandelt CSV in eine Excel-Datei um resp. fügt CSV einem neuen Sheet hinzu.'
+    dependsOn 'geoDoppelteSchemas'
+    csvFile = file("/tmp/qmbetrieb/geo_doppelte_schemas.csv")
+    firstLineIsHeader = true
+    valueDelimiter = null
+    valueSeparator = ";"
+    outputFile = xlsxOutputFile
+}
+
 //-----------
 
 tasks.register('simiSchemaOhneTabelle', SqlExecutor) {
-    database = [dbUriDuckDB, "", ""]
+    database = [dbUriDuckDB]
     sqlFiles = ["simi_schema_ohne_tabelle.sql"]
     sqlParameters = [
         connectionStringSimi : dbConnectionStringSimi as String
         ]
 }
 
+tasks.register('simiSchemaOhneTabelle2Excel', Csv2Excel) {
+    description 'Wandelt CSV in eine Excel-Datei um resp. fügt CSV einem neuen Sheet hinzu.'
+    dependsOn 'simiSchemaOhneTabelle'
+    csvFile = file("/tmp/qmbetrieb/simi_schema_ohne_tabelle.csv")
+    firstLineIsHeader = true
+    valueDelimiter = null
+    valueSeparator = ";"
+    outputFile = xlsxOutputFile
+}
+
 //-----------
 
 tasks.register('simiRasterOhneDatesetView', SqlExecutor) {
-    database = [dbUriDuckDB, "", ""]
+    database = [dbUriDuckDB]
     sqlFiles = ["simi_raster_ohne_datasetview.sql"]
     sqlParameters = [
         connectionStringSimi : dbConnectionStringSimi as String
         ]
 }
 
+tasks.register('simiRasterOhneDatesetView2Excel', Csv2Excel) {
+    description 'Wandelt CSV in eine Excel-Datei um resp. fügt CSV einem neuen Sheet hinzu.'
+    dependsOn 'simiRasterOhneDatesetView'
+    csvFile = file("/tmp/qmbetrieb/simi_raster_ohne_datasetview.csv")
+    firstLineIsHeader = true
+    valueDelimiter = null
+    valueSeparator = ";"
+    outputFile = xlsxOutputFile
+}
+
+
 //-----------
 
 tasks.register('simiTableOhneTableView', SqlExecutor) {
-    database = [dbUriDuckDB, "", ""]
+    database = [dbUriDuckDB]
     sqlFiles = ["simi_table_ohne_tableview.sql"]
     sqlParameters = [
         connectionStringSimi : dbConnectionStringSimi as String
         ]
+}
+
+tasks.register('simiTableOhneTableView2Excel', Csv2Excel) {
+    description 'Wandelt CSV in eine Excel-Datei um resp. fügt CSV einem neuen Sheet hinzu.'
+    dependsOn 'simiTableOhneTableView'
+    csvFile = file("/tmp/qmbetrieb/simi_table_ohne_tableview.csv")
+    firstLineIsHeader = true
+    valueDelimiter = null
+    valueSeparator = ";"
+    outputFile = xlsxOutputFile
 }
 
 //-----------
@@ -122,18 +162,28 @@ tasks.register('listSftpDirectories') {
 
 tasks.register('diffKennungSimiDatenabgabe', SqlExecutor) {
     dependsOn 'listSftpDirectories'
-    database = [dbUriDuckDB, "", ""]
+    database = [dbUriDuckDB]
     sqlFiles = ["diff_kennung_simi_datenabgabe.sql"]
     sqlParameters = [
         connectionStringSimi : dbConnectionStringSimi as String
         ]
 }
 
+tasks.register('diffKennungSimiDatenabgabe2Excel', Csv2Excel) {
+    description 'Wandelt CSV in eine Excel-Datei um resp. fügt CSV einem neuen Sheet hinzu.'
+    dependsOn 'diffKennungSimiDatenabgabe'
+    csvFile = file("/tmp/qmbetrieb/diff_kennung_simi_datenabgabe.csv")
+    firstLineIsHeader = true
+    valueDelimiter = null
+    valueSeparator = ";"
+    outputFile = xlsxOutputFile
+}
+
 //-----------
 
 tasks.register('relationalThemePublicationCsv', SqlExecutor) {
     description 'Schreibt all vorhandenen Edit-Modell-Themenpublikationen (aka relational) in eine CSV-Datei.'
-    database = [dbUriDuckDB, "", ""]
+    database = [dbUriDuckDB]
     sqlFiles = ["relational_theme_publication_csv.sql"]
     sqlParameters = [
         connectionStringSimi : dbConnectionStringSimi as String
@@ -178,21 +228,21 @@ tasks.register('superflousPublicationFormatsCsv') {
     }
 }
 
-tasks.register('relationalThemePublicationXlsx', Csv2Excel) {
+tasks.register('superflousPublicationFormatsCsv2Excel', Csv2Excel) {
     description 'Wandelt CSV in eine Excel-Datei um.'
     dependsOn 'superflousPublicationFormatsCsv'
     csvFile = file("/tmp/qmbetrieb/superflous_publication_formats.csv")
     firstLineIsHeader = true
     valueDelimiter = null
     valueSeparator = ";"
-    outputDir = file(outputFolder);
+    outputFile = xlsxOutputFile
 }
 
 //-----------
 
 tasks.register('simpleThemePublicationCsv', SqlExecutor) {
     description 'Schreibt all vorhandenen Pub-Modell-Themenpublikationen in eine CSV-Datei.'
-    database = [dbUriDuckDB, "", ""]
+    database = [dbUriDuckDB]
     sqlFiles = ["simple_theme_publication_csv.sql"]
     sqlParameters = [
         connectionStringSimi : dbConnectionStringSimi as String
@@ -230,56 +280,57 @@ tasks.register('countSimplePublicationFormatsCsv') {
     }
 }
 
-tasks.register('countSimplePublicationFormatsXlsx', Csv2Excel) {
+tasks.register('countSimplePublicationFormatsCsv2Excel', Csv2Excel) {
     description 'Wandelt CSV in eine Excel-Datei um.'
     dependsOn 'countSimplePublicationFormatsCsv'
     csvFile = file("/tmp/qmbetrieb/count_simple_publication_formats.csv")
     firstLineIsHeader = true
     valueDelimiter = null
     valueSeparator = ";"
-    outputDir = file(outputFolder);
+    outputFile = xlsxOutputFile
 }
+
+//-----------
+
+tasks.register('missingEbauLayer', SqlExecutor) {
+    database = [dbUriDuckDB]
+    sqlFiles = ["missing_ebau_layer.sql"]
+    sqlParameters = [
+        connectionStringSimi : dbConnectionStringSimi as String
+        ]
+}
+
+tasks.register('missingEbauLayer2Excel', Csv2Excel) {
+    description 'Wandelt CSV in eine Excel-Datei um.'
+    dependsOn 'missingEbauLayer'
+    csvFile = file("/tmp/qmbetrieb/missing_ebau_layer.csv")
+    firstLineIsHeader = true
+    valueDelimiter = null
+    valueSeparator = ";"
+    outputFile = xlsxOutputFile
+}
+
 
 //-----------
 
 tasks.register('validationTasks') {
     description 'Führt sämtliche Validierungstasks aus.'
-    dependsOn 'geoDoppelteSchemas',
-        'simiSchemaOhneTabelle',
-        'simiRasterOhneDatesetView',
-        'simiTableOhneTableView',
-        'diffKennungSimiDatenabgabe',
-        'relationalThemePublicationXlsx',
-        'countSimplePublicationFormatsXlsx'
+    dependsOn 'geoDoppelteSchemas2Excel',
+        'simiSchemaOhneTabelle2Excel',
+        'simiRasterOhneDatesetView2Excel',
+        'simiTableOhneTableView2Excel',
+        'diffKennungSimiDatenabgabe2Excel',
+        'superflousPublicationFormatsCsv2Excel',
+        'countSimplePublicationFormatsCsv2Excel',
+        'missingEbauLayer2Excel'
 }
 
 //-----------
 
-tasks.register('zipXlsx', Zip) {
+tasks.register('copyXlsx', Copy) {
     dependsOn 'validationTasks'
-    archiveFileName = "qmbetrieb.zip"
-    //destinationDirectory = file(outputFolder)
-    destinationDirectory = file(".")
-    
     from(outputFolder) {
-        include("**/*.xlsx", "**/*.csv")
+        include '*.xlsx'
     }
-}
-
-tasks.register('csv2duckdb', SqlExecutor) {
-    dependsOn zipXlsx
-    description 'Importiert alle CSV in eine neue DuckDB-Datenbank.'
-    database = [dbUriResultDB, "", ""]
-    sqlFiles = ["import_csv_to_duckdb.sql"]
-}
-
-tasks.register('uploadToExoscale', S3Upload) {
-    dependsOn 'csv2duckdb'
-    accessKey = exoAccessKeyAgi
-    secretKey = exoSecretAccessKeyAgi
-    sourceFile = outputResultDB
-    endPoint = "https://sos-ch-dk-2.exo.io"
-    region = "ch-dk-2"
-    bucketName = 'ch.so.agi.betrieb.qm'
-    acl = "public-read"
+    into file('.')
 }

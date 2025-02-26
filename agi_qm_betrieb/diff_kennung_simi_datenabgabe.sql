@@ -1,5 +1,3 @@
-LOAD spatial;
-
 ATTACH ${connectionStringSimi} AS simidb (TYPE POSTGRES, READ_ONLY);
 
 -- Publizierte Gebiete
@@ -98,8 +96,6 @@ UNION ALL
         '/tmp/sftpDirectoriesList.csv'
 )
 ;
-
-COPY (SELECT * FROM myresult_diff) TO '/tmp/qmbetrieb/diff_kennung_simi_datenabgabe.xlsx' WITH (FORMAT GDAL, DRIVER 'xlsx');
 
 COPY (SELECT * FROM myresult_diff) TO '/tmp/qmbetrieb/diff_kennung_simi_datenabgabe.csv' (HEADER, DELIMITER ';');
 

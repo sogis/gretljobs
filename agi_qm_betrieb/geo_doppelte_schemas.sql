@@ -1,5 +1,3 @@
-LOAD spatial;
-
 ATTACH ${connectionStringPub} AS pubdb (TYPE POSTGRES, READ_ONLY);
 ATTACH ${connectionStringEdit} AS editdb (TYPE POSTGRES, READ_ONLY);
 
@@ -34,9 +32,6 @@ HAVING
 ORDER BY 
     datenbank, schema_stamm
 ;
-
--- Funktioniert ab V1.2 ohne GDAL.
-COPY geoDoppelteSchemasPub TO '/tmp/qmbetrieb/geo_doppelte_schemas.xlsx' WITH (FORMAT GDAL, DRIVER 'xlsx');
 
 COPY geoDoppelteSchemasPub TO '/tmp/qmbetrieb/geo_doppelte_schemas.csv' (HEADER, DELIMITER ';');
 
