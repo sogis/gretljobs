@@ -37,8 +37,7 @@ tasks.register('transferNonOerebToStage', SqlExecutor) {
         'fruchtfolgeflaechen.sql', 
         'naturgefahren.sql', 
         'bodenbedeckung.sql',
-        'nutzungsplanung.sql',
-        'richtplan_juraschutzzone.sql'] 
+        'nutzungsplanung.sql'] 
 }
 
 tasks.register('transferStageToProd', SqlExecutor) {
