@@ -16,5 +16,5 @@ SELECT
     NULL::TEXT AS rechtsstatus,
     NULL::TEXT AS rechtsstatus_txt
 FROM 
-    afu_naturgefahren_pub_v1.synoptisches_gefahrengebiet
+    afu_naturgefahren_pub_v2.synoptisches_gefahrengebiet
 ;
