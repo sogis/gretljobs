@@ -35,12 +35,12 @@ task unzipData(type: Copy, dependsOn: 'download'){
 }
 
 task importData(type: Ili2pgImport, dependsOn: 'unzipData'){
-    description = 'Importiert die heruntergeladene INTERLIS-Datei von data.geo.admin.ch in das Schema agi_plz_ortschaften_v1.'
+    description = 'Importiert die heruntergeladene INTERLIS-Datei von data.geo.admin.ch in das Schema agi_dmav_plz_ortschaft_v1.'
     doLast {
         println "Data imported into db: " + dbUriEdit
     }
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = "agi_plz_ortschaften_v1"
+    dbschema = "agi_dmav_plz_ortschaft_v1"
     models = "OfficialIndexOfLocalities_V1_0"
     dataFile = file(xtfFilePath)
     deleteData = true

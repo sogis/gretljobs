@@ -14,7 +14,7 @@ defaultTasks 'importData'
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
 def pathToDataZip = Paths.get(pathToTempFolder, 'fixpunkte_v1_1_SO_lv95.zip')
-def XtfName = 'fixpunkte2_interlis_SO'
+def XtfName = 'fpds2'
 
 
 
