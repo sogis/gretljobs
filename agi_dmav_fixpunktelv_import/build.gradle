@@ -14,6 +14,7 @@ def pathToUnzipFolderLFP1 = Paths.get(pathToTempFolder, 'unzip_data_lfp')
 def DataZipHFP1 = Paths.get(pathToTempFolder, "fixpunkte-hfp1_2056_5728.xtf.zip")
 def DataZipLFP1 = Paths.get(pathToTempFolder, "fixpunkte-lfp1_2056_5728.xtf.zip")
 def xtfFilePathHFP1 = Paths.get(pathToUnzipFolderHFP1.toString(), 'FixpunkteLV_V1_0.xtf')
+def xtfFilePathLFP1 = Paths.get(pathToUnzipFolderLFP1.toString(), 'FixpunkteLV_V1_0.xtf')
 
 
 task downloadHFP1(type: Download){
