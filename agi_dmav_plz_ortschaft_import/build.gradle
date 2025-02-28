@@ -1,0 +1,50 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: "de.undercouch.download"
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'importData'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
+def pathToDataZip = Paths.get(pathToTempFolder, "ortschaftenverzeichnis_plz_2056.xtf.zip")
+def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), 'AMTOVZ_INTERLIS24', 'OfficialIndexOfLocalities_V1_0.xtf')
+
+
+task download(type: Download){
+    description = "Download plz_ortschaften from swisstopo"
+    doLast {
+        println "File downloaded to: " + pathToTempFolder
+    }
+    src 'https://data.geo.admin.ch/ch.swisstopo-vd.ortschaftenverzeichnis_plz/ortschaftenverzeichnis_plz/ortschaftenverzeichnis_plz_2056.xtf.zip'
+    dest pathToTempFolder
+    overwrite true
+}
+
+task unzipData(type: Copy, dependsOn: 'download'){
+    description = "Unzip Data.zip."
+    doLast {
+        println "File unzipped to directory: " + pathToUnzipFolder
+    }
+    from zipTree(pathToDataZip)
+    into file(pathToUnzipFolder)
+    include "**/*.xtf"
+}
+
+task importData(type: Ili2pgImport, dependsOn: 'unzipData'){
+    description = 'Importiert die heruntergeladene INTERLIS-Datei von data.geo.admin.ch in das Schema agi_plz_ortschaften_v1.'
+    doLast {
+        println "Data imported into db: " + dbUriEdit
+    }
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "agi_plz_ortschaften_v1"
+    models = "OfficialIndexOfLocalities_V1_0"
+    dataFile = file(xtfFilePath)
+    deleteData = true
+    strokeArcs = true
+}
+
+//Es muss kein Datenumbau ins DM01 gemacht werden, weil wir das bis anhin eh nicht hatten
