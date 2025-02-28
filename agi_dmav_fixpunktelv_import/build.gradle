@@ -6,7 +6,7 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: "de.undercouch.download"
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'importData'
+defaultTasks 'importDataLFP1'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolderHFP1 = Paths.get(pathToTempFolder, 'unzip_data_hfp')
