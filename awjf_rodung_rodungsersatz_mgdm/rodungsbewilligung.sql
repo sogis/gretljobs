@@ -391,10 +391,10 @@ WHERE
     rodungsentscheid = 'positiv'
 AND 
     datum_entscheid >= '2020-01-01' -- Nur Rodungen, welche ab 01.01.2020 bewilligt wurden, sollen geliefert werden
-AND (
+AND
+    datum_abschluss_rodung IS NOT NULL
+AND 
     datum_abschluss_rodung >= NOW() - INTERVAL '10 years' -- Nur Rodungen, welche vor weniger als 10 Jahren abgeschlossen wurden sollen geliefert werden
-    OR datum_abschluss_rodung IS NULL
-    )
 AND 
     geometrie IS NOT NULL
 GROUP BY
