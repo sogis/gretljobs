@@ -14,6 +14,16 @@ massnahmenltyp AS (
         awjf_rodung_rodungsersatz_v1.flaeche as flaeche
     LEFT JOIN awjf_rodung_rodungsersatz_v1.rodungsdaten AS rodungsdaten
         ON flaeche.rodung_r = rodungsdaten.t_id
+	WHERE 
+    	rodungsdaten.rodungsentscheid = 'positiv'
+	AND 
+    	rodungsdaten.datum_entscheid >= '2020-01-01' -- Nur Rodungen, welche ab 01.01.2020 bewilligt wurden, sollen geliefert werden
+	AND (
+    	rodungsdaten.datum_abschluss_rodung >= NOW() - INTERVAL '10 years' -- Nur Rodungen, welche vor weniger als 10 Jahren abgeschlossen wurden sollen geliefert werden
+    	OR rodungsdaten.datum_abschluss_rodung IS NULL
+    	)
+	AND 
+    	flaeche.geometrie IS NOT NULL
 ),
 
 -- Selektion Attribute aus Tabelle Rodungsbewilligung --
