@@ -12,7 +12,9 @@ ersatzverzicht AS (
         ersatzverzicht
     FROM 
         awjf_rodung_rodungsersatz_v1.rodungsdaten
-	WHERE 
+	WHERE
+		ersatzverzicht IS NOT NULL 
+	AND
     	rodungsentscheid = 'positiv'
 	AND 
     	datum_entscheid >= '2020-01-01' -- Nur Rodungen, welche ab 01.01.2020 bewilligt wurden, sollen geliefert werden
@@ -30,11 +32,13 @@ rodungsbewilligung AS (
     FROM awjf_rodung_rodungsersatz_mgdm_v1.rodungsbewilligung
 )
 
+/*
 -- Abfüllen der Tabelle Ersatzverzicht_ --
 INSERT INTO awjf_rodung_rodungsersatz_mgdm_v1.ersatzverzicht_ (
     avalue,
     rodungsbewilligung_ersatz_verzicht
 )
+*/
 
 SELECT
     DISTINCT
