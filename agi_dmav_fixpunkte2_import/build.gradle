@@ -1,0 +1,48 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'de.undercouch.download'
+apply plugin: 'ch.so.agi.gretl'
+
+
+
+defaultTasks 'importData'
+
+
+def pathToTempFolder = System.getProperty('java.io.tmpdir')
+def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
+def pathToDataZip = Paths.get(pathToTempFolder, 'fixpunkte_v1_1_SO_lv95.zip')
+def XtfName = 'fpds2'
+
+
+
+task downloadData(type: Download) {
+    src 'https://geodienste.ch/downloads/interlis/fixpunkte/SO/fixpunkte_v1_1_SO_lv95.zip'
+    dest pathToTempFolder
+}
+
+task unzipData(type: Copy, dependsOn: 'downloadData') {
+    from zipTree(pathToDataZip)
+    into file(pathToUnzipFolder)
+    include '**/*.xtf'
+    rename { String fileName ->
+        if (fileName.contains(XtfName)) {
+            return XtfName + '.xtf'
+        }
+        return fileName
+    }
+}
+
+task importData(type: Ili2pgReplace, dependsOn: 'unzipData') {
+    description = 'Importiert die heruntergeladene INTERLIS-Datei von geodienste.ch in das Schema agi_dmav_fixpunkte2_v1.'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'agi_dmav_fixpunkte2_v1'
+    models = 'KGKCGC_FPDS2_V1_1'
+    dataFile = file(Paths.get(pathToUnzipFolder.toString(), XtfName + '.xtf'))
+    dataset = XtfName
+    strokeArcs = true
+}
+
+// Datenubau ins DM01 fehlt hier noch. Es werden immer alle LFP2 im DM01 ersetzt. 

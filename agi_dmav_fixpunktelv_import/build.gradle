@@ -1,0 +1,86 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: "de.undercouch.download"
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'importDataLFP1'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def pathToUnzipFolderHFP1 = Paths.get(pathToTempFolder, 'unzip_data_hfp')
+def pathToUnzipFolderLFP1 = Paths.get(pathToTempFolder, 'unzip_data_lfp')
+def DataZipHFP1 = Paths.get(pathToTempFolder, "fixpunkte-hfp1_2056_5728.xtf.zip")
+def DataZipLFP1 = Paths.get(pathToTempFolder, "fixpunkte-lfp1_2056_5728.xtf.zip")
+def xtfFilePathHFP1 = Paths.get(pathToUnzipFolderHFP1.toString(), 'FixpunkteLV_V1_0.xtf')
+def xtfFilePathLFP1 = Paths.get(pathToUnzipFolderLFP1.toString(), 'FixpunkteLV_V1_0.xtf')
+
+
+task downloadHFP1(type: Download){
+    description = "Download HFP1 von map.geo.admin.ch"
+    doLast {
+        println "File downloaded to: " + pathToTempFolder
+    }
+    src 'https://data.geo.admin.ch/ch.swisstopo.fixpunkte-hfp1/fixpunkte-hfp1/fixpunkte-hfp1_2056_5728.xtf.zip'
+    dest pathToTempFolder
+    overwrite true
+}
+
+task downloadLFP1(type: Download, dependsOn: 'downloadHFP1'){
+    description = "Download LFP1 von map.geo.admin.ch"
+    doLast {
+        println "File downloaded to: " + pathToTempFolder
+    }
+    src 'https://data.geo.admin.ch/ch.swisstopo.fixpunkte-lfp1/fixpunkte-lfp1/fixpunkte-lfp1_2056_5728.xtf.zip'
+    dest pathToTempFolder
+    overwrite true
+}
+
+task unzipDataHFP1(type: Copy, dependsOn: 'downloadLFP1'){
+    description = "Unzip HFP1 Datei"
+    doLast {
+        println "File unzipped to directory: " + pathToUnzipFolderHFP1
+    }
+    from zipTree(DataZipHFP1)
+    into file(pathToUnzipFolderHFP1)
+    include "**/*.xtf"
+}
+
+task unzipDataLFP1(type: Copy, dependsOn: 'unzipDataHFP1'){
+    description = "Unzip LFP1 Datei"
+    doLast {
+        println "File unzipped to directory: " + pathToUnzipFolderLFP1
+    }
+    from zipTree(DataZipLFP1)
+    into file(pathToUnzipFolderLFP1)
+    include "**/*.xtf"
+}
+
+task importDataHFP1(type: Ili2pgImport, dependsOn: 'unzipDataLFP1'){
+    description = "Importiert HFP1 von Bund in die Edit-DB. Die Daten in der DB werden zuerst gelöscht"
+    doLast {
+        println "Data imported into db: " + dbUriEdit
+    }
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "agi_dmav_fixpunktelv_v1"
+    models = "FixpunkteLV_V1_0"
+    dataFile = file(xtfFilePathHFP1)
+    deleteData = true
+    strokeArcs = true
+}
+
+task importDataLFP1(type: Ili2pgImport, dependsOn: 'importDataHFP1'){
+    description = "Importiert HFP1 von Bund in die Edit-DB. Die Daten in der DB werden nicht gelöscht, sonst löscht es die HFP1"
+    doLast {
+        println "Data imported into db: " + dbUriEdit
+    }
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "agi_dmav_fixpunktelv_v1"
+    models = "FixpunkteLV_V1_0"
+    dataFile = file(xtfFilePathLFP1)
+    strokeArcs = true
+}
+
+//Datenumbau ins DM01 fehlt noch. Vieliehct geht es eleganter als zweimal die seilebn Tasks. 
+//Problem ist, dass die HFP1 und LFP1 in zwei Dateien angeboten wird.
