@@ -19,7 +19,7 @@ WITH relevante_grundstuecke AS (
     WHERE
         ng.typ_code_kt in ( 120, 121, 122, 130, 131, 132, 133, 134 )
         AND
-            ST_Area(ST_Intersection(mg.geometrie, ng.geometrie)) >= 1.0
+            ST_Area(ST_Intersection(mg.geometrie, ng.geometrie)) >= 5.0
 GROUP BY
         mg.t_id,
         mg.geometrie,
@@ -138,10 +138,10 @@ grundstueck_grundnutzung_bauzonenstatistik AS (
         gr.egrid,
         b.baureglement,
         CASE WHEN
-            CAST(bz.unbebaut_pro_grundstueck AS numeric) / CAST(bz.flaeche AS numeric) <= 0.1
+            CAST(bz.unbebaut_pro_grundstueck AS numeric) / CAST(bz.flaeche AS numeric) >= 0.9
                 THEN 'ungenutzt_weniger_10Prozent'
         WHEN
-             CAST(bz.unbebaut_pro_grundstueck AS numeric) / CAST(bz.flaeche AS numeric)  > 0.3
+             CAST(bz.unbebaut_pro_grundstueck AS numeric) / CAST(bz.flaeche AS numeric)  < 0.7
                 THEN 'genutzt_mehr_als_30Prozent'
         ELSE
             'teilgenutzt_zwischen_10_30Prozent'
