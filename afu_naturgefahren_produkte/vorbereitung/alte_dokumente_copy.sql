@@ -204,5 +204,3 @@ files_per_gemeinde AS (
 )
 
 SELECT * FROM files_per_gemeinde
-WHERE gemeinde_bfsnr != -99
-
