@@ -180,18 +180,15 @@ files_per_gemeinde_bfs AS (
     SELECT 
         gem_bfs,
         gem_name,
-        json_agg(json_build_object('@type', 'SO_AFU_Naturgefahren_Publikation_20241025.Naturgefahren.Dokument',
+        json_build_object('@type', 'SO_AFU_Naturgefahren_Publikation_20241025.Naturgefahren.Dokument',
                       'Titel', titel, 
                       'Dateiname', file_name, 
                       'Link', url,
                       'Hauptprozesse', 'obsolet',
                       'Jahr', jahr
-        )) AS dokument
+        ) AS dokument
     FROM 
         file_gemeinde
-    GROUP BY 
-        gem_bfs,
-        gem_name
 ),
 
 files_per_gemeinde AS (
