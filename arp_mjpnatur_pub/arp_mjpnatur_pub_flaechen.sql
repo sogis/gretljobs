@@ -1,11 +1,22 @@
 WITH 
+monate AS (
+    SELECT unnest(ARRAY[
+        'January', 'February', 'March', 'April', 'May', 'June', 
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ]) AS en,
+    unnest(ARRAY[
+        'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 
+        'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'
+    ]) AS de
+),
+
 beurteilungs_metainfo_wiesen AS (
     SELECT 
         vereinbarung, 
         beurteilungsdatum,
         einstufungbeurteilungistzustand_wiesenkategorie,
         bewirtschaftabmachung_emdenbodenheu, 
-        bewirtschaftabmachung_schnittzeitpunkt_1,
+        TO_CHAR(bewirtschaftabmachung_schnittzeitpunkt_1, 'DD.') || ' ' || monate.de AS bewirtschaftabmachung_schnittzeitpunkt_1,
         bewirtschaftabmachung_messerbalkenmaehgeraet, 
         -- ungenutzt, aber evtl. relevant: bewirtschaftabmachung_emdenbodenheu_nachbedarf, 
         -- ungenutzt, aber evtl. relevant: bewirtschaftabmachung_herbstschnitt,
@@ -16,13 +27,17 @@ beurteilungs_metainfo_wiesen AS (
         -- berücksichtige nur besprochene Beurteilungen => Wird nach Sandra Geiser (17.03.2025) nicht so benötigt. 
     --WHERE 
     --    mit_bewirtschafter_besprochen IS TRUE
+    LEFT JOIN 
+        monate 
+        ON 
+        monate.en = TRIM(TO_CHAR(bewirtschaftabmachung_schnittzeitpunkt_1, 'Month'))
     UNION 
     SELECT 
         vereinbarung, 
         beurteilungsdatum, 
         einstufungbeurteilungistzustand_wiesenkategorie,
         bewirtschaftabmachung_emdenbodenheu, 
-        bewirtschaftabmachung_schnittzeitpunkt_1, 
+        TO_CHAR(bewirtschaftabmachung_schnittzeitpunkt_1, 'DD.') || ' ' || monate.de AS bewirtschaftabmachung_schnittzeitpunkt_1,
         bewirtschaftabmachung_messerbalkenmaehgeraet, 
         -- ungenutzt, aber evtl. relevant: bewirtschaftabmachung_emdenbodenheu_nachbedarf, 
         -- ungenutzt, aber evtl. relevant: bewirtschaftabmachung_herbstschnitt,
@@ -33,6 +48,10 @@ beurteilungs_metainfo_wiesen AS (
          -- berücksichtige nur besprochene Beurteilungen => Wird nach Sandra Geiser (17.03.2025) nicht so benötigt. 
     --WHERE 
     --    mit_bewirtschafter_besprochen IS TRUE
+    LEFT JOIN 
+        monate 
+        ON 
+        monate.en = TRIM(TO_CHAR(bewirtschaftabmachung_schnittzeitpunkt_1, 'Month'))
 ),
 
 beurteilungen_datum AS (
