@@ -13,9 +13,9 @@ beurteilungs_metainfo_wiesen AS (
         bewirtschaftabmachung_rueckzugstreifen
     FROM 
         arp_mjpnl_v2.mjpnl_beurteilung_wiese
-        -- berücksichtige nur besprochene Beurteilungen
-    WHERE 
-        mit_bewirtschafter_besprochen IS TRUE
+        -- berücksichtige nur besprochene Beurteilungen => Wird nach Sandra Geiser (17.03.2025) nicht so benötigt. 
+    --WHERE 
+    --    mit_bewirtschafter_besprochen IS TRUE
     UNION 
     SELECT 
         vereinbarung, 
@@ -30,9 +30,9 @@ beurteilungs_metainfo_wiesen AS (
         bewirtschaftabmachung_rueckzugstreifen
     FROM 
         arp_mjpnl_v2.mjpnl_beurteilung_wbl_wiese
-         -- berücksichtige nur besprochene Beurteilungen
-    WHERE 
-        mit_bewirtschafter_besprochen IS TRUE
+         -- berücksichtige nur besprochene Beurteilungen => Wird nach Sandra Geiser (17.03.2025) nicht so benötigt. 
+    --WHERE 
+    --    mit_bewirtschafter_besprochen IS TRUE
 ),
 
 beurteilungen_datum AS (
