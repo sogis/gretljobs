@@ -35,7 +35,7 @@ task importXtfFile(type: Ili2pgReplace, dependsOn: 'validateXtfFile') {
     dataset = ili2pgDataset
     dataFile = "upload/${ili2pgDataset}.xtf"
     disableValidation = true // Weil nur Drainagen geprüft werden und die restlichen Daten werden nicht geprüft.
-    trace = true
+    //trace = true
 }
 
 task deleteXtfFile_upload(type: Delete, dependsOn: 'importXtfFile'){
