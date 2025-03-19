@@ -12,7 +12,7 @@ pipeline {
                         dir('upload') {
                             unstash name: 'uploadFile'
                         }
-                        sh "gretl -Pili2pgDataset=${params.ili2pgDataset} deleteXtfFile_upload"
+                        sh "gretl -i -Pili2pgDataset=${params.ili2pgDataset} deleteXtfFile_upload"
                     }
                 }
             }

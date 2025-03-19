@@ -20,8 +20,9 @@ task copyXtfFile(type: Copy) {
 task validateXtfFile(type: IliValidator, dependsOn: 'copyXtfFile') {
     description = "Validiert die hochgeladene Transferdatei gegen das Validierungsmodell."
     dataFiles = "upload/${ili2pgDataset}.xtf"
-    configFile = 'VSADSSMINI_2020_LV95_Drainage_20250311.ini'
-    allObjectsAccessible = false
+    //configFile = 'VSADSSMINI_2020_LV95_Drainage_20250311.ini'
+    //allObjectsAccessible = false
+    metaConfigFile = "ilidata:VSADSSMINI_2020_LV95_Drainage_20250311-meta"
     failOnError = true
 }
 
