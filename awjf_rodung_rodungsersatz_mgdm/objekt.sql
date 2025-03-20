@@ -20,10 +20,8 @@ objekt AS (
     	rodungsdaten.rodungsentscheid = 'positiv'
 	AND 
     	rodungsdaten.datum_entscheid >= '2020-01-01' -- Nur Rodungen, welche ab 01.01.2020 bewilligt wurden, sollen geliefert werden
-	AND (
-    	rodungsdaten.datum_abschluss_rodung >= NOW() - INTERVAL '10 years' -- Nur Rodungen, welche vor weniger als 10 Jahren abgeschlossen wurden sollen geliefert werden
-    	OR rodungsdaten.datum_abschluss_rodung IS NULL
-    	)
+ 	AND 
+ 		flaeche.frist >= CURRENT_DATE - INTERVAL '10 years'
 	AND 
     	flaeche.geometrie IS NOT NULL
 ),
@@ -35,7 +33,6 @@ rodungsbewilligung AS (
         nr_kanton
     FROM awjf_rodung_rodungsersatz_mgdm_v1.rodungsbewilligung
 )
-
 
 -- Abfüllen der Tabelle Massnahmenltyp_ --
 INSERT INTO awjf_rodung_rodungsersatz_mgdm_v1.objekt (
