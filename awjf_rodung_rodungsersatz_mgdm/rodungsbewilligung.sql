@@ -1,4 +1,20 @@
--- Löschung bisheriger Daten --
+-- Löschung bisheriger Daten (inkl. Abhängigkeiten) --
+
+DELETE FROM
+	awjf_rodung_rodungsersatz_mgdm_v1.ersatzmassnahmennl_
+;
+DELETE FROM 
+	awjf_rodung_rodungsersatz_mgdm_v1.massnahmenltyp_
+;
+DELETE FROM 
+	awjf_rodung_rodungsersatz_mgdm_v1.ersatzverzicht_
+;
+DELETE FROM 
+	awjf_rodung_rodungsersatz_mgdm_v1.objekt
+;
+DELETE FROM 
+	awjf_rodung_rodungsersatz_mgdm_v1.uri_
+;
 DELETE FROM
     awjf_rodung_rodungsersatz_mgdm_v1.rodungsbewilligung
 ;
@@ -366,8 +382,8 @@ SELECT
             THEN 'R20'
     END AS rodungszweck,
     rodungszweck_bemerkungen,
-    MAX(frist_rodung) AS frist_rodung,
-    MAX(frist_ersatz) AS frist_ersatz,
+    frist_rodung,
+    frist_ersatz,
     CASE 
         WHEN ausgleichsabgabe IS NOT NULL
             THEN TRUE 
@@ -391,10 +407,8 @@ WHERE
     rodungsentscheid = 'positiv'
 AND 
     datum_entscheid >= '2020-01-01' -- Nur Rodungen, welche ab 01.01.2020 bewilligt wurden, sollen geliefert werden
-AND
-    datum_abschluss_rodung IS NOT NULL
 AND 
-    datum_abschluss_rodung >= NOW() - INTERVAL '10 years' -- Nur Rodungen, welche vor weniger als 10 Jahren abgeschlossen wurden sollen geliefert werden
+    frist_ersatz >= NOW() - INTERVAL '10 years' -- Nur Rodungen deren Rodungsersatz vor weniger als 10 Jahren abgeschlossen wurden sollen geliefert werden
 AND 
     geometrie IS NOT NULL
 GROUP BY
@@ -411,6 +425,8 @@ GROUP BY
     massnahmenl_pool,
     rodungszweck,
     rodungszweck_bemerkungen,
+    frist_rodung,
+    frist_ersatz,
     ausgleichsabgabe,
     datum_abschluss_rodung,
     datum_entscheid,
