@@ -408,7 +408,7 @@ WHERE
 AND 
     datum_entscheid >= '2020-01-01' -- Nur Rodungen, welche ab 01.01.2020 bewilligt wurden, sollen geliefert werden
 AND 
-    frist_ersatz >= NOW() - INTERVAL '10 years' -- Nur Rodungen deren Rodungsersatz vor weniger als 10 Jahren abgeschlossen wurden sollen geliefert werden
+    frist_ersatz >= CURRENT_DATE - INTERVAL '10 years' -- Nur Rodungen deren Rodungsersatz vor weniger als 10 Jahren abgeschlossen wurden sollen geliefert werden
 AND 
     geometrie IS NOT NULL
 GROUP BY

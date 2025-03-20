@@ -1,11 +1,22 @@
 WITH 
+monate AS (
+    SELECT unnest(ARRAY[
+        'January', 'February', 'March', 'April', 'May', 'June', 
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ]) AS en,
+    unnest(ARRAY[
+        'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 
+        'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'
+    ]) AS de
+),
+
 beurteilungs_metainfo_wiesen AS (
     SELECT 
         vereinbarung, 
         beurteilungsdatum,
         einstufungbeurteilungistzustand_wiesenkategorie,
         bewirtschaftabmachung_emdenbodenheu, 
-        bewirtschaftabmachung_schnittzeitpunkt_1,
+        TO_CHAR(bewirtschaftabmachung_schnittzeitpunkt_1, 'DD.') || ' ' || monate.de AS bewirtschaftabmachung_schnittzeitpunkt_1,
         bewirtschaftabmachung_messerbalkenmaehgeraet, 
         -- ungenutzt, aber evtl. relevant: bewirtschaftabmachung_emdenbodenheu_nachbedarf, 
         -- ungenutzt, aber evtl. relevant: bewirtschaftabmachung_herbstschnitt,
@@ -13,16 +24,20 @@ beurteilungs_metainfo_wiesen AS (
         bewirtschaftabmachung_rueckzugstreifen
     FROM 
         arp_mjpnl_v2.mjpnl_beurteilung_wiese
-        -- berücksichtige nur besprochene Beurteilungen
-    WHERE 
-        mit_bewirtschafter_besprochen IS TRUE
+        -- berücksichtige nur besprochene Beurteilungen => Wird nach Sandra Geiser (17.03.2025) nicht so benötigt. 
+    --WHERE 
+    --    mit_bewirtschafter_besprochen IS TRUE
+    LEFT JOIN 
+        monate 
+        ON 
+        monate.en = TRIM(TO_CHAR(bewirtschaftabmachung_schnittzeitpunkt_1, 'Month'))
     UNION 
     SELECT 
         vereinbarung, 
         beurteilungsdatum, 
         einstufungbeurteilungistzustand_wiesenkategorie,
         bewirtschaftabmachung_emdenbodenheu, 
-        bewirtschaftabmachung_schnittzeitpunkt_1, 
+        TO_CHAR(bewirtschaftabmachung_schnittzeitpunkt_1, 'DD.') || ' ' || monate.de AS bewirtschaftabmachung_schnittzeitpunkt_1,
         bewirtschaftabmachung_messerbalkenmaehgeraet, 
         -- ungenutzt, aber evtl. relevant: bewirtschaftabmachung_emdenbodenheu_nachbedarf, 
         -- ungenutzt, aber evtl. relevant: bewirtschaftabmachung_herbstschnitt,
@@ -30,9 +45,13 @@ beurteilungs_metainfo_wiesen AS (
         bewirtschaftabmachung_rueckzugstreifen
     FROM 
         arp_mjpnl_v2.mjpnl_beurteilung_wbl_wiese
-         -- berücksichtige nur besprochene Beurteilungen
-    WHERE 
-        mit_bewirtschafter_besprochen IS TRUE
+         -- berücksichtige nur besprochene Beurteilungen => Wird nach Sandra Geiser (17.03.2025) nicht so benötigt. 
+    --WHERE 
+    --    mit_bewirtschafter_besprochen IS TRUE
+    LEFT JOIN 
+        monate 
+        ON 
+        monate.en = TRIM(TO_CHAR(bewirtschaftabmachung_schnittzeitpunkt_1, 'Month'))
 ),
 
 beurteilungen_datum AS (
@@ -171,8 +190,8 @@ LEFT JOIN
     laufmeter.vereinbarung = vereinbarung.t_id 
         
 WHERE 
-    vereinbarung.bewe_id_geprueft IS TRUE 
-    AND 
+    --vereinbarung.bewe_id_geprueft IS TRUE  soll laut Sandra Geiser (05.03.2025) nicht mehr Filterkriterium sein.
+    --AND 
     vereinbarung.ist_nutzungsvereinbarung IS NOT TRUE
     AND 
     person.name_vorname IS NOT NULL
