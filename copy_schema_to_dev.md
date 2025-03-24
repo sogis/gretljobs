@@ -58,7 +58,7 @@ Template für Restore in die Edit-DB:
 
 Template für Restore in die Oereb-Edit-DB:
 
-    pg_restore -O -h [IP-ADRESSE] -p 54321 -d edit -U ddluser -n [SCHEMA-NAME] /tmp/schema.dump
+    pg_restore -O -h [IP-ADRESSE] -p 54321 -d edit -U ddluser -n mySchema /tmp/schema.dump
 
 Template für Restore in die Pub-DB:
 
