@@ -80,7 +80,7 @@ pipeline {
                                     }
                                 }
                             } else {
-                                echo "❌ Task '${taskToRun}' nicht gefunden in ${projectDir}"
+                                //echo "❌ Task '${taskToRun}' nicht gefunden in ${projectDir}"
                             }
                         } catch (Exception e) {
                             echo "⚠️ Fehler beim Lesen oder Verarbeiten der build.gradle in ${projectDir}: ${e.message}"
