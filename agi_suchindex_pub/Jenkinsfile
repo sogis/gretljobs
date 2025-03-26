@@ -1,0 +1,100 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'TASK_NAME', defaultValue: 'refreshSolr', description: 'Name des auszuführenden Gradle-Tasks')
+    }
+
+    stages {
+        stage('Find and Execute Task in Sibling Directories') {
+            steps {
+                script {
+                    // Das aktuelle Task-Ziel aus den Parametern holen
+                    def taskToRun = params.TASK_NAME
+                    echo "Suche nach Gradle-Projekten mit Task: ${taskToRun}"
+
+                    // Aktuelles Arbeitsverzeichnis der Pipeline ermitteln
+                    def currentDir = pwd()
+                    echo "Aktuelles Verzeichnis: ${currentDir}"
+
+                    // Ein Verzeichnis nach oben navigieren (zum Elternverzeichnis)
+                    def parentDir = currentDir + "/.."
+                    echo "Navigiere zu Elternverzeichnis: ${parentDir}"
+
+                    // In das Elternverzeichnis wechseln
+                    dir(parentDir) {
+                        echo "Jetzt in Elternverzeichnis: ${pwd()}"
+
+                        // Alle build.gradle Dateien in Geschwister-Verzeichnissen finden
+                        def gradleProjects = findFiles(glob: "**/build.gradle")
+                        echo "Gefundene Gradle-Projekte: ${gradleProjects.size()}"
+
+                        // Statistik
+                        def tasksFound = 0
+                        def tasksExecuted = 0
+
+                        // Jedes Gradle-Projekt verarbeiten
+                        gradleProjects.each { project ->
+                            def projectPath = project.path
+                            def projectDir = projectPath.substring(0, projectPath.lastIndexOf('/'))
+
+                            echo "Prüfe Gradle-Projekt in: ${projectDir}"
+
+                            dir(projectDir) {
+                                try {
+                                    // Prüfe, ob der angeforderte Task im Projekt existiert
+                                    def taskOutput = ""
+
+                                    // Gradle-Tasks auflisten mit der Jenkins Gradle-Integration
+                                    withGradle {
+                                        taskOutput = gradle(tasks: 'tasks --all',
+                                                           switches: '--console=plain',
+                                                           returnStdout: true)
+                                    }
+
+                                    // Prüfen, ob der spezifizierte Task vorhanden ist
+                                    if (taskOutput.contains(taskToRun)) {
+                                        tasksFound++
+                                        echo "✅ Task '${taskToRun}' in ${projectDir} gefunden"
+
+                                        /* chb
+                                        // Den Task ausführen
+                                        withGradle {
+                                            gradle tasks: taskToRun,
+                                                   switches: '--console=plain'
+                                        }
+                                        */
+
+                                        tasksExecuted++
+                                        echo "✅ Task '${taskToRun}' in ${projectDir} erfolgreich ausgeführt"
+                                    } else {
+                                        echo "❌ Task '${taskToRun}' nicht gefunden in ${projectDir}"
+                                    }
+                                } catch (Exception e) {
+                                    echo "⚠️ Fehler bei der Verarbeitung von ${projectDir}: ${e.message}"
+                                }
+                            }
+                        }
+
+                        // Zusammenfassung ausgeben
+                        echo "======= Zusammenfassung ======="
+                        echo "Task-Name: ${taskToRun}"
+                        echo "Gefundene Gradle-Projekte: ${gradleProjects.size()}"
+                        echo "Projekte mit Task '${taskToRun}': ${tasksFound}"
+                        echo "Erfolgreich ausgeführte Tasks: ${tasksExecuted}"
+                        echo "============================"
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Alle '${params.TASK_NAME}'-Tasks wurden erfolgreich geprüft/ausgeführt"
+        }
+        failure {
+            echo "Es traten Fehler während der Pipeline-Ausführung auf"
+        }
+    }
+}
