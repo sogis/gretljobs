@@ -10,7 +10,7 @@ pipeline {
             steps {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
-                    def taskToRun = params.TASK_NAME
+                    def taskToRun = ${params.TASK_NAME}
                     echo "Suche nach Gradle-Projekten mit Task: ${taskToRun}"
 
                     // Alle build.gradle Dateien finden
