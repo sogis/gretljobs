@@ -2,7 +2,7 @@ pipeline {
     agent { label env.NODE_LABEL ?: 'gretl' }
 
     parameters {
-        string(name: 'TASK_NAME', defaultValue: 'refreshSolr', description: 'Name des zu suchenden Gradle-Tasks')
+        string(name: 'TASK_NAME', defaultValue: 'createSearchIndex', description: 'Name des zu startenden GRETL-Tasks')
     }
 
     stages {
@@ -10,71 +10,66 @@ pipeline {
             steps {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
-                    def taskToRun = ${params.TASK_NAME}
-                    echo "Suche nach Gradle-Projekten mit Task: ${taskToRun}"
+                    script {
+                        def taskToRun = params.TASK_NAME
+                        def gradleCommand = 'gretl'         //gradle command in der GRETL-Umgebung
 
-                    // Alle build.gradle Dateien finden
-                    def gradleProjects = findFiles(glob: "**/build.gradle")
-                    echo "Gefundene Gradle-Projekte: ${gradleProjects.size()}"
+                        // Alle build.gradle Dateien finden
+                        echo "Suche nach GRETL-Jobs mit Task: ${taskToRun}"
+                        def gradleProjects = findFiles(glob: "**/build.gradle")
+                        echo "Gefundene GRETL-Jobs: ${gradleProjects.size()}"
 
-                    // Statistik
-                    def tasksFound = 0
-                    def tasksExecuted = 0
+                        // Statistik
+                        def tasksFound = 0
+                        def tasksExecuted = 0
 
-                    // Jedes Gradle-Projekt verarbeiten
-                    gradleProjects.each { project ->
-                        def projectPath = project.path
-                        def projectDir = projectPath.substring(0, projectPath.lastIndexOf('/'))
+                        // Jeden GRETL-Job verarbeiten
+                        gradleProjects.each { project ->
+                            def projectPath = project.path
+                            def projectDir = projectPath.substring(0, projectPath.lastIndexOf('/'))
 
-                        echo "Prüfe Gradle-Projekt in: ${projectDir}"
+                            echo "Prüfe GRETL-Job in: ${projectDir}"
 
-                        try {
-                            // Inhalt der build.gradle Datei lesen
-                            def buildFileContent = readFile(file: projectPath)
+                            try {
+                                // Inhalt der build.gradle Datei lesen
+                                def buildFileContent = readFile(file: projectPath)
 
-                            // Verschiedene Muster für Task-Definitionen suchen
-                            def containsTask = buildFileContent.contains("task ${taskToRun}") ||
-                                              buildFileContent.contains("task '${taskToRun}'") ||
-                                              buildFileContent.contains("task \"${taskToRun}\"")
+                                // Verschiedene Muster für Task-Definitionen suchen
+                                def containsTask = (buildFileContent =~ /(?i)task\s+\$\{taskToRun\}/).find()
 
+                                if (containsTask) {
+                                    tasksFound++
+                                    echo "✅ Task '${taskToRun}' in ${projectDir} gefunden"
 
-                            if (containsTask) {
-                                tasksFound++
-                                echo "✅ Task '${taskToRun}' in ${projectDir} gefunden (Dateianalyse)"
+                                    // In das Projekt-Verzeichnis wechseln
+                                    dir(projectDir) {
+                                        // Den Task ausführen
+                                        try {
+                                            sh "${gradleCommand} ${taskToRun} --console=plain"
+                                            //echo "${gradleCommand} ${taskToRun} --console=plain"
 
-                                // In das Projekt-Verzeichnis wechseln
-                                dir(projectDir) {
-
-                                    def gradleCommand = 'gretl'
-
-                                    // Den Task ausführen
-                                    try {
-
-                                        //sh "${gradleCommand} ${taskToRun} --console=plain"
-                                        echo "${gradleCommand} ${taskToRun} --console=plain"
-
-                                        tasksExecuted++
-                                        echo "✅ Task '${taskToRun}' in ${projectDir} erfolgreich ausgeführt"
-                                    } catch (Exception e) {
-                                        echo "⚠️ Fehler beim Ausführen von '${taskToRun}' in ${projectDir}: ${e.message}"
-                                        // Optional: Trotz Fehler weitermachen, falls nur ein Projekt fehlschlägt
+                                            tasksExecuted++
+                                            echo "✅ Task '${taskToRun}' in ${projectDir} erfolgreich ausgeführt"
+                                        } catch (Exception e) {
+                                            echo "⚠️ Fehler beim Ausführen von '${taskToRun}' in ${projectDir}: ${e.message}"
+                                        }
                                     }
+                                } else {
+                                    //echo "❌ Task '${taskToRun}' nicht gefunden in ${projectDir}"
                                 }
-                            } else {
-                                //echo "❌ Task '${taskToRun}' nicht gefunden in ${projectDir}"
+                            } catch (Exception e) {
+                                echo "⚠️ Fehler beim Lesen oder Verarbeiten der build.gradle in ${projectDir}: ${e.message}"
                             }
-                        } catch (Exception e) {
-                            echo "⚠️ Fehler beim Lesen oder Verarbeiten der build.gradle in ${projectDir}: ${e.message}"
                         }
-                    }
 
-                    // Zusammenfassung ausgeben
-                    echo "======= Zusammenfassung ======="
-                    echo "Task-Name: ${taskToRun}"
-                    echo "Gefundene Gradle-Projekte: ${gradleProjects.size()}"
-                    echo "Projekte mit Task '${taskToRun}': ${tasksFound}"
-                    echo "Erfolgreich ausgeführte Tasks: ${tasksExecuted}"
-                    echo "============================"
+                        // Zusammenfassung ausgeben
+                        echo "======= Zusammenfassung ======="
+                        echo "Task-Name: ${taskToRun}"
+                        echo "Gefundene GRETL-Jobs: ${gradleProjects.size()}"
+                        echo "GRETL-Jobs mit Task '${taskToRun}': ${tasksFound}"
+                        echo "Erfolgreich ausgeführte Tasks: ${tasksExecuted}"
+                        echo "============================"
+                    }
                 }
             }
         }

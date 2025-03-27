@@ -6,7 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 description = "GRETL-Job für Datenübernahme der Asiatischen Hornisse innerhalb der edit-DB, ins pub-Schema (pub-DB, edit-DB)"
 
 
-defaultTasks 'refreshSolr'
+defaultTasks 'transferAfuAsiatischeHornissePub','refreshSolr','createSearchIndex'
 
 
 task transferAfuAsiatischeHornissePub(type: Db2Db) {
@@ -18,6 +18,21 @@ task transferAfuAsiatischeHornissePub(type: Db2Db) {
     ]
 }
 
-task refreshSolr(type:Exec, dependsOn:'transferAfuAsiatischeHornissePub') {
+task refreshSolr(type:Exec) {
         commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.asiatische_hornisse'
+}
+
+task createSearchIndex(type: SqlExecutor){
+        database = [dbUriPub, dbUserPub, dbPwdPub]
+        def layerNamen = 'ch.so.afu.asiatische_hornisse'
+        def dbSearchSchema = 'agi_suchindex_pub_v1'
+
+        String layerNameString = "'${layerNamen}'"
+        sqlParameters = [
+                [layername: layerNameString, db_schema: dbSearchSchema]
+        ]
+        sqlFiles = [
+                '../suchindex_deleteFeatures.sql',
+                layerNamen + '.sql'
+        ]
 }
