@@ -35,18 +35,20 @@ pipeline {
                                 def buildFileContent = readFile(file: projectPath)
 
                                 // Verschiedene Muster für Task-Definitionen suchen
-                                def containsTask = (buildFileContent =~ /(?i)task\s+\$\{taskToRun\}/).find()
+                                def containsTask = (buildFileContent =~ /(?i)task\s+${taskToRun}/).find()
 
                                 if (containsTask) {
                                     tasksFound++
-                                    echo "✅ Task '${taskToRun}' in ${projectDir} gefunden"
+                                    echo "🔎 Task '${taskToRun}' in ${projectDir} gefunden"
 
                                     // In das Projekt-Verzeichnis wechseln
                                     dir(projectDir) {
                                         // Den Task ausführen
                                         try {
-                                            sh "${gradleCommand} ${taskToRun} --console=plain"
                                             //echo "${gradleCommand} ${taskToRun} --console=plain"
+
+                                            def gradleOutput = sh(script: "${gradleCommand} ${taskToRun} --console=plain", returnStdout: true).trim()
+                                            echo gradleOutput
 
                                             tasksExecuted++
                                             echo "✅ Task '${taskToRun}' in ${projectDir} erfolgreich ausgeführt"
