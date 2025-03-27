@@ -7,7 +7,11 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferData'
 
-tasks.register('transferData', SqlExecutor) {
-    database = [dbUriSimi, dbUserSimi, dbPwdSimi]
-    sqlFiles = ["transfer_data.sql"]
+tasks.register('transferData', Db2Db) {
+    sourceDb = [dbUriSimi, dbUserSimi, dbPwdSimi]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('transfer_data.sql',
+                    'agi_kartenkatalog_pub_v1.kartenkatalog_produkt_mutter_kind', true)
+                ]
 }
