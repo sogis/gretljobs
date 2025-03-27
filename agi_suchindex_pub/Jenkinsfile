@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { label env.NODE_LABEL ?: 'gretl' }
 
     parameters {
         string(name: 'TASK_NAME', defaultValue: 'refreshSolr', description: 'Name des zu suchenden Gradle-Tasks')
@@ -8,7 +8,8 @@ pipeline {
     stages {
         stage('Find and Execute Task') {
             steps {
-                script {
+                git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
+                container('gretl') {
                     def taskToRun = params.TASK_NAME
                     echo "Suche nach Gradle-Projekten mit Task: ${taskToRun}"
 
@@ -43,35 +44,15 @@ pipeline {
 
                                 // In das Projekt-Verzeichnis wechseln
                                 dir(projectDir) {
-                                    // Bestimmen, ob der Gradle Wrapper verfügbar ist
-                                    def hasWrapper = fileExists('gradlew') || fileExists('gradlew.bat')
-                                    def gradleCommand = ''
 
-                                    // Plattformspezifisches Gradle-Kommando vorbereiten
-                                    if (isUnix()) {
-                                        if (hasWrapper) {
-                                            sh 'chmod +x ./gradlew'
-                                            gradleCommand = './gradlew'
-                                        } else {
-                                            gradleCommand = 'gradle'
-                                        }
-                                    } else { // Windows
-                                        if (hasWrapper) {
-                                            gradleCommand = 'gradlew.bat'
-                                        } else {
-                                            gradleCommand = 'gradle'
-                                        }
-                                    }
+                                    def gradleCommand = 'gretl'
 
                                     // Den Task ausführen
                                     try {
-                                        if (isUnix()) {
-                                            //CHB sh "${gradleCommand} ${taskToRun} --console=plain"
-                                            echo "${gradleCommand} ${taskToRun} --console=plain"
-                                        } else {
-                                            //CHB bat "${gradleCommand} ${taskToRun} --console=plain"
-                                            echo "${gradleCommand} ${taskToRun} --console=plain"
-                                        }
+
+                                        //sh "${gradleCommand} ${taskToRun} --console=plain"
+                                        echo "${gradleCommand} ${taskToRun} --console=plain"
+
                                         tasksExecuted++
                                         echo "✅ Task '${taskToRun}' in ${projectDir} erfolgreich ausgeführt"
                                     } catch (Exception e) {
