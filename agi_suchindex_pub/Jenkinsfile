@@ -66,11 +66,11 @@ pipeline {
                                     // Den Task ausführen
                                     try {
                                         if (isUnix()) {
-                                            //CHB sh "${gradleCommand} ${taskToRun} --console=plain"
-                                            echo "${gradleCommand} ${taskToRun} --console=plain"
+                                            sh "${gradleCommand} ${taskToRun} --console=plain"
+                                            //CHB echo "${gradleCommand} ${taskToRun} --console=plain"
                                         } else {
-                                            //CHB bat "${gradleCommand} ${taskToRun} --console=plain"
-                                            echo "${gradleCommand} ${taskToRun} --console=plain"
+                                            bat "${gradleCommand} ${taskToRun} --console=plain"
+                                            //CHB echo "${gradleCommand} ${taskToRun} --console=plain"
                                         }
                                         tasksExecuted++
                                         echo "✅ Task '${taskToRun}' in ${projectDir} erfolgreich ausgeführt"
