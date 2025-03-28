@@ -1,0 +1,65 @@
+import java.nio.file.Paths
+import java.nio.file.Files
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'de.undercouch.download'
+
+defaultTasks 'transferData'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+tasks.register('downloadCsv', Download) {
+    src 'https://data.geo.admin.ch/ch.bfs.gebaeude_wohnungs_register/address/SO/SO_bdg.csv'
+    dest pathToTempFolder
+    overwrite true
+}
+
+tasks.register('validateCsv',  CsvValidator) {
+    dependsOn 'downloadCsv'
+    models = "SO_AGI_AV_GWR_Abgleich_20241216"
+    modeldir = "$projectDir/ili;https://models.interlis.ch;https://models.geo.admin.ch" // Modelle können temporär nicht deployed werden.
+    firstLineIsHeader = true
+    valueSeparator = ';'
+    valueDelimiter = null
+    dataFiles = [Paths.get(pathToTempFolder, "SO_bdg.csv").toString()]
+}
+
+tasks.register('truncateImportTable', SqlExecutor) {
+    dependsOn 'validateCsv'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = [
+            'truncate_table.sql'
+        ]
+}
+
+tasks.register('importCsv',  CsvImport) {
+    dependsOn 'truncateImportTable'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = "agi_av_gwr_abgleich_import_v1"
+    tableName = "av_gwr_differnzen_av_gwr_differenzen"
+    firstLineIsHeader = true
+    valueSeparator = ';'
+    valueDelimiter = null
+    dataFile = Paths.get(pathToTempFolder, "SO_bdg.csv").toString()
+}
+
+tasks.register('upsertWorkTable', SqlExecutor) {
+    dependsOn 'importCsv'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = [
+            'upsert_data.sql'
+        ]
+}
+
+tasks.register('transferData', Db2Db) {
+    dependsOn 'upsertWorkTable'
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('transfer_data.sql',
+                    'agi_av_gwr_abgleich_pub_v1.av_gwr_differnzen_av_gwr_differenzen', true)
+                ]
+}

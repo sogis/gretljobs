@@ -1,0 +1,83 @@
+INTERLIS 2.3;
+
+/** !!------------------------------------------------------------------------------
+ *  !! Version    | wer | Änderung
+ *  !!------------------------------------------------------------------------------
+ *  !! 2024-12-16 | ru  | Ersterfassung
+ *  !!==============================================================================
+ */
+!!@ technicalContact=mailto:agi@bd.so.ch
+!!@ shortDescription="Für Import von AV-GWR-Differenzen vom CheckCH (infoGrips)"
+!!@ furtherInformation=https://geo.so.ch/models/AGI/SO_AGI_AV_GWR_Abgleich_20241216.uml
+!!@ title=AV-GWR-Differenzen
+MODEL SO_AGI_AV_GWR_Abgleich_20241216 (de)
+AT "http://www.geo.so.ch/models/AGI"
+VERSION "2024-12-16"  =
+  IMPORTS CHAdminCodes_V1,GeometryCHLV95_V1;
+
+  TOPIC AV_GWR_Differenzen =
+
+    /** GWR-Differenzen. Import aus CSV-Datei.
+     */
+    CLASS AV_GWR_Differenzen =
+      /** BFS-Gemeindenummer
+       */
+      COM_FOSNR : CHAdminCodes_V1.CHMunicipalityCode;
+      /** Eidgenössischer Gebäudeidentifikator
+       */
+      BDG_EGID : 1 .. 999999999;
+      /** Geometrieursprung/-quelle
+       */
+      BDG_GEOMSRC : TEXT*11;
+      /** Gebäudekategorie
+       */
+      BDG_CATEGORY : TEXT*50;
+      /** Gebäudeklasse
+       */
+      BDG_GKLAS : 1000 .. 9999;
+      /** Gebäudestatus
+       */
+      BDG_GSTAT : TEXT*50;
+      /** Herkunft
+       */
+      AV_SOURCE : TEXT*50;
+      /** Gebäudetyp
+       */
+      AV_TYPE : TEXT*50;
+      /** Fehlerbeschreibung
+       */
+      ISSUE : TEXT*500;
+      /** Fehlerkategorie
+       */
+      ISSUE_CATEGORY : TEXT*100;
+      /** Ostkoordinate
+       */
+      BDG_E : 2400000.000 .. 2900000.000;
+      /** Nordkoordinate
+       */
+      BDG_N : 1000000.000 .. 1400000.000;
+      /** Link zu map.geo.admin.ch
+       */
+      LINK : INTERLIS.URI;
+      /** Einordnung des AGI
+       */
+      AGI_KLASSE : TEXT*50;
+      /** Kommentar des AGI zur Differenz
+       */
+      AGI_TEXT : TEXT*500;
+      /** Fehler des gleichen Ursprung oder Folgefehler gruppieren
+       */
+      AGI_INDEX : TEXT*50;
+      /** Eindeutiger Schlüssel zusammengesetzt aus BDG_EGID und ISSUE_CATEGORY
+       */
+      AGI_ID : TEXT*100;
+      /** Lage der Differenz
+       */
+      Geometrie : GeometryCHLV95_V1.Coord2;
+      UNIQUE BDG_EGID, ISSUE_CATEGORY;
+      UNIQUE AGI_ID;
+    END AV_GWR_Differenzen;
+
+  END AV_GWR_Differenzen;
+
+END SO_AGI_AV_GWR_Abgleich_20241216.
