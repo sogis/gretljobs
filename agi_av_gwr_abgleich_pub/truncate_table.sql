@@ -1,0 +1,1 @@
+DELETE FROM agi_av_gwr_abgleich_import_v1.av_gwr_differnzen_av_gwr_differenzen; 
