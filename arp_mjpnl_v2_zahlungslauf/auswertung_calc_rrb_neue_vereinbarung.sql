@@ -31,10 +31,9 @@ JOIN ${DB_Schema_MJPNL}.betrbsdttrktrdten_gelan_person gp
 ON gp.pid_gelan = vbg.gelan_pid_gelan 
 LEFT JOIN ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_vereinbarung abr_vbg
 ON abr_vbg.vereinbarung = vbg.t_id and abr_vbg.auszahlungsjahr = ${AUSZAHLUNGSJAHR}
--- wir kalkulieren alle "aktuellen", heisst die ohne oder mit diesjährigem publikationsjahr
+-- wir kalkulieren alle "aktuellen", heisst die mit diesjährigem startdatum, die noch nicht publiziert sind 
+-- und falls doch, dann nur wenn die publikation später als der start erfolgte 
+-- (heisst keine, die neu sind aufgrund von Bewirtschafterwechsel)
 WHERE vbg.status_vereinbarung = 'aktiv'
-AND ( 
-    date_part('year', vbg.rrb_publiziert_ab)::integer = ${AUSZAHLUNGSJAHR}
-    OR
-    vbg.rrb_publiziert_ab IS NULL
-)
+AND date_part('year', vbg.startdatum)::integer = ${AUSZAHLUNGSJAHR}
+AND (vbg.rrb_publiziert_ab IS NULL OR vbg.rrb_publiziert_ab > vbg.startdatum)
