@@ -37,11 +37,6 @@ beurteilungs_metainfo_baeume AS (
    beitrag_oekoplus_anzahl,
    beitrag_oekomaxi_anzahl
    FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_obl
-),
-beurteilungs_metainfo_hecke AS (
-   SELECT vereinbarung, beurteilungsdatum,
-   bewirtschaftung_lebhag_laufmeter
-   FROM ${DB_Schema_MJPNL}.mjpnl_beurteilung_hecke
 )
 SELECT 
     (SELECT t_id FROM ${DB_Schema_MJPNL}.t_ili2db_basket WHERE topic = 'SO_ARP_MJPNL_20240606.Auswertung' LIMIT 1) as t_basket,
@@ -51,7 +46,15 @@ SELECT
 	COALESCE(bezirk.bezirksname,'unbekannt'),
 	COUNT(vbg.vereinbarungs_nr) anzahl_vereinbarungen,
 	SUM(vbg.flaeche) as flaeche_total,
-    SUM(COALESCE(hk.bewirtschaftung_lebhag_laufmeter, 0)) as laufmeter,
+    SUM(
+    case when (string_to_array(vbg.bemerkung,'***'))[2] is json and json_typeof((string_to_array(vbg.bemerkung,'***'))[2]::json) = 'object' 
+    then ((string_to_array(vbg.bemerkung,'***'))[2]::jsonb->>'meter')::integer /
+        case when ((string_to_array(vbg.bemerkung,'***'))[2]::jsonb->>'grenze')::boolean is true
+        then 2
+        else 1
+        end
+    else 0
+    end) as laufmeter,
 	SUM(COALESCE(bae.grundbeitrag_baum_anzahl, 0)) as baeume_total,
 	SUM(COALESCE(bae.beitrag_baumab40cmdurchmesser_anzahl, 0)) as baeume_baumab40cmdurchmesser_total,
 	SUM(COALESCE(bae.beitrag_erntepflicht_anzahl, 0)) as baeume_erntepflicht_total,
@@ -68,10 +71,6 @@ LEFT JOIN beurteilungs_metainfo_baeume bae
 ON vbg.t_id = bae.vereinbarung
 -- berücksichtige nur die neusten (sofern mehrere existieren)
 AND bae.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM beurteilungs_metainfo_baeume be WHERE be.vereinbarung = vbg.t_id)
-LEFT JOIN beurteilungs_metainfo_hecke hk
-ON vbg.t_id = hk.vereinbarung
--- berücksichtige nur die neusten (sofern mehrere existieren)
-AND hk.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM beurteilungs_metainfo_hecke he WHERE he.vereinbarung = vbg.t_id)
 -- wir holen den totalbetrag aus den leistungen, da auch einmalige miteinbezogen werden sollen
 LEFT JOIN leistungen_per_vereinbarung lstg
 ON lstg.vereinbarung = vbg.t_id
