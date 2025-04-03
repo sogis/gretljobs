@@ -26,7 +26,7 @@ def remoteDirectory = "sgv-gemdat/sgv/ech0132-test/*"
 def bucketSuffix = '-undefined'
     if ( gretlEnvironment == 'production' ) { 
         bucketSuffix = ''
-        remoteDirectory = "sgv-gemdat/sgv/ech0132/*"
+        remoteDirectory = "sgv-gemdat/sgv/ech0132/."
     } else if ( gretlEnvironment == 'integration' || gretlEnvironment == 'development' ) { 
         bucketSuffix = '-' + gretlEnvironment.substring(0, 3)
     } else {
