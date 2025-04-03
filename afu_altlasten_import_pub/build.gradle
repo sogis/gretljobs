@@ -22,6 +22,10 @@ task downloadKbsData(type: Download) {
     dest pathToTempFolder
     overwrite true
     acceptAnyCertificate true
+
+    doLast {
+        println("********"+simiMetadataServiceUrl+"*********")
+    }
 }
 
 task unzipKbsData(type: Copy, dependsOn: 'downloadKbsData') {
