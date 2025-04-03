@@ -22,7 +22,7 @@ if (!transformFolder.exists()) {
     transformFolder.mkdirs()
 }
 
-def remoteDirectory = "sgv-gemdat/sgv/ech0132-test/*"
+def remoteDirectory = "sgv-gemdat/sgv/ech0132-test/."
 def bucketSuffix = '-undefined'
     if ( gretlEnvironment == 'production' ) { 
         bucketSuffix = ''
