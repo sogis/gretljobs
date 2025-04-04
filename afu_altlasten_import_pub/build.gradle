@@ -108,7 +108,7 @@ task uploadMgdm(dependsOn: 'downloadMgdm') {
 }
 
 task publishPub(type: Publisher, dependsOn: 'uploadMgdm') {
-    dataIdent = "ch.so.afu.belastete_standorte"
+    dataIdent = "XXXXXXXXXXX"
     userFormats = true
     database = [dbUriPub,dbUserPub,dbPwdPub]
     dbSchema = "afu_altlasten_pub_v2"

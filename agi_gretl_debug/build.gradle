@@ -6,13 +6,45 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: 'de.undercouch.download'
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'foo'
+defaultTasks 'getToken'
 
 tasks.register('foo') {
     doLast {
         println 'foo'
     }
 } 
+
+import groovy.json.JsonSlurper
+
+def basicHeader = "Basic " + Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes())
+def token = ""
+
+tasks.register('getToken', Curl) {
+    serverUrl = "https://auth.example.ch/oauth2/token"
+    method = MethodType.POST
+    outputFile = file("./token.json")
+    expectedStatusCode = 200
+    data = "grant_type=client_credentials&client_id=$clientId"
+    headers = [
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": basicHeader
+    ]
+
+    doLast {
+        def slurper = new JsonSlurper();
+        def slurped = slurper.parseText(outputFile.text)
+
+        if (slurped.access_token != null)
+            token = slurped.access_token
+
+        if(token.length() == 0)
+            throw new GradleException("Failed to retrieve access token")
+
+        println "Length of access token is: " + token.length()
+    }
+}
+
+
 
 
 // task downloadKbsData(type: Download) {
