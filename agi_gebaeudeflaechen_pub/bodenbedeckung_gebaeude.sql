@@ -32,7 +32,7 @@ INSERT INTO
         bodenbedeckung.egid,
         string_agg(DISTINCT gebaeudename.objektname, ', ') AS gebaeudename,
         COALESCE(json_agg(DISTINCT jsonb_build_object(
-            '@type', 'SO_AGI_Gebaeudeinformationen_Publikation_20250224.Gebaeude.Gebaeudeeingang',
+            '@type', 'SO_AGI_Gebaeudeflaechen_Publikation_20240705.Gebaeude.Gebaeudeeingang',
             'Strassenname', adresse.strassenname, 
             'Hausnummer', adresse.hausnummer,
             'PLZ', adresse.plz,
@@ -88,7 +88,7 @@ INSERT INTO
         bodenbedeckung.egid,
         string_agg(gebaeudename.objektname, ', ') AS gebaeudename,
         COALESCE(json_agg(DISTINCT jsonb_build_object(
-            '@type', 'SO_AGI_Gebaeudeinformationen_Publikation_20250224.Gebaeude.Gebaeudeeingang',
+            '@type', 'SO_AGI_Gebaeudeflaechen_Publikation_20240705.Gebaeude.Gebaeudeeingang',
             'Strassenname', adresse.strassenname, 
             'Hausnummer', adresse.hausnummer,
             'PLZ', adresse.plz,
