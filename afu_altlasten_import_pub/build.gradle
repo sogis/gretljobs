@@ -17,9 +17,6 @@ def kbsDataRestricted = 'SO_AFU_KbS_Publikation_restricted'
 
 def aiLogin = aiUser + ":" + aiPwd
 
-
-def simiMetadataServiceUrl = "http://simi.gdi-integration.svc/app/rest"
-
 task downloadKbsData(type: Download) {
     src 'https://altlast4web.verw.rootso.org/interlis_exports/so_pub/data.zip'
     dest pathToTempFolder
@@ -97,13 +94,16 @@ task downloadMgdm(type: Download, dependsOn: 'refreshSolrKbsRestricted') {
 
 task uploadMgdm(dependsOn: 'downloadMgdm') {
     doLast {
-        def response = ["curl", "-u", aiLogin, "-F", "topic=kataster_belasteter_standorte_v1_4", "-F",
-                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), 'data.zip'), "-F", "publish=true",
-                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        // def response = ["curl", "-u", aiLogin, "-F", "topic=kataster_belasteter_standorte_v1_4", "-F",
+        //                 "lv95_file=@" + Paths.get(pathToTempFolder.toString(), 'data.zip'), "-F", "publish=true",
+        //                 "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        // println(response)
+        // if (response.contains("false") || response == null || response.trim().isEmpty()) {
+        //     throw new GradleException()
+        // }
+        def response = ["curl", "-X", "GET", "-H", "Content-Type: text/html", 
+                        "http://simi.gdi-test.svc/app/rest/doc?dataident=ch.so.afu.belastete_standorte&published=2025-04-04T05:44:27.238"].execute().text
         println(response)
-        if (response.contains("false") || response == null || response.trim().isEmpty()) {
-            throw new GradleException()
-        }
     }
 }
 
