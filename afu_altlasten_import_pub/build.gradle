@@ -17,6 +17,9 @@ def kbsDataRestricted = 'SO_AFU_KbS_Publikation_restricted'
 
 def aiLogin = aiUser + ":" + aiPwd
 
+
+def simiMetadataServiceUrl = "http://simi.gdi-integration.svc/app/rest"
+
 task downloadKbsData(type: Download) {
     src 'https://altlast4web.verw.rootso.org/interlis_exports/so_pub/data.zip'
     dest pathToTempFolder
