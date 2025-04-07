@@ -6,9 +6,10 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'createLayerSearchIndex'
 
 task createLayerSearchIndex(type: Db2Db){
-    def dbSearchSchema = 'agi_suchindex_pub_v1'
     sourceDb = [dbUriSimi, dbUserSimi, dbPwdSimi]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = 'agi_suchindex_pub_v1'
+
     transferSets = [
             new TransferSet('layerSearchIndex.sql', dbSearchSchema + '.ebene', true)
     ];

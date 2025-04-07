@@ -5,6 +5,10 @@ pipeline {
         timeout(time: 6, unit: 'HOURS')
     }
     parameters {
+        booleanParam(defaultValue: true,
+                description: 'Update layer search index: rebuild of the layer search index',
+                name: 'UPDATE_LAYERS'
+        )
         booleanParam(defaultValue: false,
                 description: 'Update entire feature search index: complete rebuild of the feature search index',
                 name: 'UPDATE_FEATURES'
@@ -13,15 +17,15 @@ pipeline {
     }
 
     stages {
-        stage('UPDATE LAYERS: Run GRETL job') {
+        stage('git checkout'){
             steps {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
+            }
+        }
+        stage('UPDATE LAYERS: Run GRETL job') {
+            when { expression { params.UPDATE_LAYERS } }
+            steps {
                 container('gretl') {
-                    /*
-                    script {
-                        echo "HELLO FROM GRETL JOB"
-                    }
-                    */
                     dir(env.JOB_BASE_NAME) {
                         sh 'gretl'
                     }
@@ -31,7 +35,6 @@ pipeline {
         stage('UPDATE FEATURES: Find and Execute Tasks') {
             when { expression { params.UPDATE_FEATURES } }
             steps {
-                git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
                     script {
                         def taskToRun = params.TASK_NAME
