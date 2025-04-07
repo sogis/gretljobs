@@ -24,15 +24,15 @@ task refreshSolr(type:Exec) {
 
 task createSearchIndex(type: SqlExecutor){
         database = [dbUriPub, dbUserPub, dbPwdPub]
-        def layerNamen = 'ch.so.afu.asiatische_hornisse'
+        def layerName = 'ch.so.afu.asiatische_hornisse'
         def dbSearchSchema = 'agi_suchindex_pub_v1'
 
-        String layerNameString = "'${layerNamen}'"
+        String layerNameString = "'${layerName}'"
         sqlParameters = [
                 [layername: layerNameString, db_schema: dbSearchSchema]
         ]
         sqlFiles = [
                 '../suchindex_deleteFeatures.sql',
-                layerNamen + '.sql'
+                layerName + '.sql'
         ]
 }

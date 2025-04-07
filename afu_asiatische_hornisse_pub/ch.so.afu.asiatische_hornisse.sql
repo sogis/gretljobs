@@ -1,3 +1,5 @@
+-- TRIGRAMM SUCHINDEX: UPDATE FEATURES
+
 INSERT INTO ${db_schema}.feature (
     anzeige,            -- Anzeigetext
     suchbegriffe,       -- Suchbegriffe für den Index
