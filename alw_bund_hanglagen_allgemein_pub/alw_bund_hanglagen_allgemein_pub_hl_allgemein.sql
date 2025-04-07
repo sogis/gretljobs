@@ -1,5 +1,6 @@
 SELECT 
     lknr,
+    wkb_geometry,
     CASE 
         WHEN hl_klasse = 'hang_18'
             THEN 'A1'
