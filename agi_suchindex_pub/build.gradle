@@ -10,6 +10,6 @@ task createLayerSearchIndex(type: Db2Db){
     sourceDb = [dbUriSimi, dbUserSimi, dbPwdSimi]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('layerSearchIndex.sql', dbSearchSchema + 'ebene', true)
+            new TransferSet('layerSearchIndex.sql', dbSearchSchema + '.ebene', true)
     ];
 }
