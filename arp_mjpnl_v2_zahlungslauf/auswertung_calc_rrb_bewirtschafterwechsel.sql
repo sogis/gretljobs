@@ -7,7 +7,7 @@ INSERT INTO ${DB_Schema_MJPNL}.auswertung_rrb_bewirtschafterwechsel
     gelan_pid_gelan,
     gelan_person
 )
-SELECT 
+SELECT DISTINCT
     (SELECT t_id FROM ${DB_Schema_MJPNL}.t_ili2db_basket WHERE topic = 'SO_ARP_MJPNL_20240606.Auswertung' LIMIT 1) as t_basket,
     ${AUSZAHLUNGSJAHR}::integer as jahr,
     left(array_to_string(vbg.gemeinde, ','),254) as gemeinde, 
