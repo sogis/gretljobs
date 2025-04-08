@@ -9,7 +9,7 @@ task transferDenkmal(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('denkmal_punkt.sql', 'ada_denkmalschutz_pub.denkmal_punkt', true),
-            new TransferSet('denkmal_polygon.sql', 'ada_denkmalschutz_pub.denkmal_polygon', true),
+            new TransferSet('denkmal_punkt.sql', 'ada_denkmalschutz_pub_v1.denkmal_punkt', true),
+            new TransferSet('denkmal_polygon.sql', 'ada_denkmalschutz_pub_v1.denkmal_polygon', true),
     ];
 }
