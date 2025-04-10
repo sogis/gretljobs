@@ -18,7 +18,7 @@ task exportWaldpflegeKontrolle(type: Ili2pgExport) {
     dataFile = file(Paths.get(pathToTempFolder, 'waldpflege.xtf'))
 }
 task validateWaldpflegeKontrolle(type: IliValidator, dependsOn: 'exportWaldpflegeKontrolle') {
-    dataFiles = [Paths.get(pathToTempFolder, 'waldpflege.xtf')]
+    dataFiles = [Paths.get(pathToTempFolder, 'waldpflege.xtf').toFile()]
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
