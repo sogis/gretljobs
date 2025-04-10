@@ -89,7 +89,7 @@ task importGELAN(type: Ili2pgReplace, dependsOn: downloadData) {
     dbschema = "arp_mjpnl_v1"
     models = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426'
     topics = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426.Betriebsdaten_Strukturdaten;SO_ALW_Landwirtschaft_Tierhaltung_20210426.BFF_Qualitaet'
-    dataFile = Paths.get(pathToTempFolder, 'Export_ais_agrardaten.xtf')
+    dataFile = Paths.get(pathToTempFolder, 'Export_ais_agrardaten.xtf').toFile()
     dataset = 'GELAN'
 }
 
