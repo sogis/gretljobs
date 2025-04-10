@@ -23,7 +23,7 @@ tasks.register('validateCsv',  CsvValidator) {
     firstLineIsHeader = true
     valueSeparator = ';'
     valueDelimiter = null
-    dataFiles = [Paths.get(pathToTempFolder, "SO_bdg.csv").toString()]
+    dataFiles = [Paths.get(pathToTempFolder, "SO_bdg.csv").toFile()]
 }
 
 tasks.register('truncateImportTable', SqlExecutor) {
@@ -42,7 +42,7 @@ tasks.register('importCsv',  CsvImport) {
     firstLineIsHeader = true
     valueSeparator = ';'
     valueDelimiter = null
-    dataFile = Paths.get(pathToTempFolder, "SO_bdg.csv").toString()
+    dataFile = Paths.get(pathToTempFolder, "SO_bdg.csv").toFile()
 }
 
 tasks.register('upsertWorkTable', SqlExecutor) {
