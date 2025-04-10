@@ -17,12 +17,12 @@ task unpackShapes(type: Copy) {
 
 task validate_achsen(type: ShpValidator, dependsOn: unpackShapes){
     models = "SO_AVT_Kantonsstrassen_Publikation_20200707"
-    dataFiles = [Paths.get(pathToShpFolder, shpNameAchsen)]
+    dataFiles = [Paths.get(pathToShpFolder, shpNameAchsen).toFile()]
 } 
 
 task validate_punkte(type: ShpValidator, dependsOn: validate_achsen){
     models = "SO_AVT_Kantonsstrassen_Publikation_20200707"
-    dataFiles = [Paths.get(pathToShpFolder, shpNamePunkte)]
+    dataFiles = [Paths.get(pathToShpFolder, shpNamePunkte).toFile()]
 } 
 
 task deleteAllFeatures(type: SqlExecutor, dependsOn: validate_punkte){
@@ -34,7 +34,7 @@ task importAchsen(type: ShpImport, dependsOn: deleteAllFeatures){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     schemaName = "avt_kantonsstrassen_pub"
     tableName = "achse"
-    dataFile = Paths.get(pathToShpFolder, shpNameAchsen) 
+    dataFile = Paths.get(pathToShpFolder, shpNameAchsen).toFile()
     encoding = "UTF-8"
 }
 
@@ -42,7 +42,7 @@ task importPunkte(type: ShpImport, dependsOn: importAchsen){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     schemaName = "avt_kantonsstrassen_pub"
     tableName = "bezugspunkt"
-    dataFile = Paths.get(pathToShpFolder, shpNamePunkte) 
+    dataFile = Paths.get(pathToShpFolder, shpNamePunkte).toFile()
     encoding = "UTF-8"
 }
 task publipub(type: Publisher, dependsOn: 'importPunkte'){
@@ -63,4 +63,3 @@ task publipub(type: Publisher, dependsOn: 'importPunkte'){
 task refreshSolr(type:Exec, dependsOn:'publipub') {
         commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.avt.kantonsstrassen_achsen,ch.so.avt.kantonsstrassen_bezugspunkte'
 }
-
