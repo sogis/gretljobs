@@ -86,8 +86,8 @@ datasets.each { dataset ->
     }
 
     task "validateData_$datasetId"(type: IliValidator, dependsOn: "exportDataset_$datasetId") {
-        //dataFiles = [Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf")]
-        dataFiles = [Paths.get(pathToTempFolder, datasetId + ".xtf")]
+        //dataFiles = [Paths.get(pathToTempFolder, datasetId + "_" + todaysDate + ".xtf").toFile()]
+        dataFiles = [Paths.get(pathToTempFolder, datasetId + ".xtf").toFile()]
         if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
         logFile = file(Paths.get(pathToTempFolder, datasetId + "_validation.log"))
         xtflogFile = file(Paths.get(pathToTempFolder, datasetId + "_validation.xtf"))
@@ -436,5 +436,3 @@ task uploadLogZipFileLatest(type: S3Upload, dependsOn: "uploadLogZipFileDate") {
 //         tasks.findAll { task -> task.name.startsWith('uploadDatasetDxf_') }
 //     }
 // }
-
-
