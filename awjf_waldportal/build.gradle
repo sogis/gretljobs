@@ -59,7 +59,7 @@ task importWaldportal(type: Ili2pgImport, dependsOn: unpackFile) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "awjf_waldportal_v1"
     models = 'SO_AWJF_Waldportal_20230719'
-    dataFile = Paths.get(pathToTempFolder, xtfFileName)
+    dataFile = Paths.get(pathToTempFolder, xtfFileName).toFile()
     deleteData = true
 }
 
@@ -82,6 +82,6 @@ task importWaldportalPub(type: Ili2pgImport, dependsOn: publish) {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = "awjf_waldportal_pub_v1"
     models = 'SO_AWJF_Waldportal_20230719'
-    dataFile = Paths.get(pathToTempFolder, xtfFileName)
+    dataFile = Paths.get(pathToTempFolder, xtfFileName).toFile()
     deleteData = true
 }
