@@ -22,6 +22,7 @@ pipeline {
 
     stages {
         stage('git checkout'){
+            when { expression { params.UPDATE_LAYERS || params.UPDATE_FEATURES } }
             steps {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
             }
