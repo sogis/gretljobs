@@ -1,7 +1,7 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'register'
+defaultTasks 'schnittBodenbGebaeude'
 
 def dbSchemaNamePub = "agi_gebaeudeflaeche_pub_v2"
 
