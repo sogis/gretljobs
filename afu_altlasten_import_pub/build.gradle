@@ -90,7 +90,7 @@ task downloadMgdm(type: Download, dependsOn: 'refreshSolrKbsRestricted') {
 
 task uploadMgdm(dependsOn: 'downloadMgdm') {
     doLast {
-        def response = ["curl", "-u", aiLogin, "-F", "topic=kataster_belasteter_standorte_v1_4", "-F",
+        def response = ["curl", "-u", aiLogin, "-F", "topic=KbS_LV95_V1_4", "-F",
                         "lv95_file=@" + Paths.get(pathToTempFolder.toString(), 'data.zip'), "-F", "publish=true",
                         "https://" + aiServer + "/data_agg/interlis/import"].execute().text
         println(response)
