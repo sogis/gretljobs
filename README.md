@@ -230,9 +230,9 @@ Allerdings können auch diejenigen Benutzer oder Gruppen, welche durch globale B
 
 Zudem kann mit der Eigenschaft `nodeLabel` bestimmt werden,
 auf welchem Node der Job ausgeführt werden soll.
-Möglich ist hier der Wert `gretl-2.4`,
+Möglich ist hier der Wert `gretl-3.0`,
 damit der Job auf einem Jenkins Agent
-mit GRETL Version 2.4 ausgeführt wird.
+mit GRETL Version 3.0 ausgeführt wird.
 Diese Property dient primär dazu,
 dass bei einem grösseren Versionssprung von GRETL
 nicht alle Jobs gleichzeitig umgestellt werden müssen.
