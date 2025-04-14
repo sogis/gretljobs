@@ -18,11 +18,14 @@ task transferAfuAsiatischeHornissePub(type: Db2Db) {
     ]
 }
 
-task refreshSolr(type:Exec, mustRunAfter: 'transferAfuAsiatischeHornissePub') {
+task refreshSolr(type:Exec) {
+        mustRunAfter 'transferAfuAsiatischeHornissePub'
         commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.asiatische_hornisse'
 }
 
-task createSearchIndex(type: SqlExecutor, mustRunAfter: 'transferAfuAsiatischeHornissePub'){
+task createSearchIndex(type: SqlExecutor){
+        mustRunAfter 'transferAfuAsiatischeHornissePub'
+
         database = [dbUriPub, dbUserPub, dbPwdPub]
         def layerName = 'ch.so.afu.asiatische_hornisse'
         def dbSearchSchema = 'agi_suchindex_pub_v1'
