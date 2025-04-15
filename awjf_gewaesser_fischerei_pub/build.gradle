@@ -43,7 +43,7 @@ task createSearchIndex(type: SqlExecutor){
                 [layername: layerNameString, db_schema: dbSearchSchema]
         ]
         sqlFiles = [
-                '../suchindex_deleteFeatures.sql',
+                '../searchindex_deleteFeatures.sql',
                 'searchindex_' + layerName + '.sql'
         ]
 }
