@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPub','refreshSolr','createSearchIndex'
+defaultTasks 'publishPub','refreshSolr','updateSearchIndex'
 
 
 task transferAfugewaessereigenschaften(type: Db2Db){
@@ -39,8 +39,7 @@ task refreshSolr(type:Exec){
             commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=cch.so.afu.fliessgewaesser.netz'
 }
 
-
-task createSearchIndex(type: SqlExecutor){
+task updateSearchIndex(type: SqlExecutor){
         mustRunAfter 'publishPub'
 
         database = [dbUriPub, dbUserPub, dbPwdPub]

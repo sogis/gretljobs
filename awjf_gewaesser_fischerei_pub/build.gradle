@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPub', 'refreshSolr', 'createSearchIndex'
+defaultTasks 'publishPub', 'refreshSolr', 'updateSearchIndex'
 
 task transferAwjfFischerei(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -31,7 +31,7 @@ task refreshSolr(type:Exec) {
 	    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.gewaesser.fischereireviere'
 }
 
-task createSearchIndex(type: SqlExecutor){
+task updateSearchIndex(type: SqlExecutor){
         mustRunAfter 'publishPub'
 
         database = [dbUriPub, dbUserPub, dbPwdPub]

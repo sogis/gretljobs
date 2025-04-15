@@ -1,3 +1,7 @@
+-- TRIGRAMM SUCHINDEX: UPDATE FEATURES
+
+SET search_path to awjf_gewaesser_fischerei_pub_v1, public;
+
 INSERT INTO ${db_schema}.feature (
     anzeige,            -- Anzeigetext
     suchbegriffe,       -- Suchbegriffe für den Index
@@ -17,7 +21,7 @@ index_base AS (
         'Fischereinutzung Fischereireviere ID'::text AS part_3,
         (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
-        awjf_gewaesser_fischerei_pub_v1.fischrevier
+        fischrevier
     WHERE
         revierid IS NOT NULL
 )

@@ -17,7 +17,7 @@ pipeline {
         // TODO: Parameter needed for toggling DELETION of the entire feature search index
         // choice(name: 'UPDATE_FEATURES', choices: ['NO', 'UPDATE', 'DELETE_UPDATE'], description: 'Update entire feature search index: complete rebuild of the feature search index')
 
-        string(name: 'TASK_NAME', defaultValue: 'createSearchIndex', description: 'Name of the GRETL task to be started to rebuild the feature search index')
+        string(name: 'TASK_NAME', defaultValue: 'updateSearchIndex', description: 'Name of the GRETL task to be started to rebuild the feature search index')
     }
 
     stages {

@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 import java.nio.file.Paths
 import de.undercouch.gradle.tasks.download.Download
 
-defaultTasks 'publipub','createSearchIndex','refreshSolr'
+defaultTasks 'publipub','updateSearchIndex','refreshSolr'
 
 def tmpDir = buildDir.toString()
 def appXtfPath = tmpDir + "/appdata.xtf"
@@ -58,7 +58,7 @@ task publiedit(type: Publisher, dependsOn: importAppData){
   if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
-task writeToPub(type: Db2Db, dependsOn: publiedit){ 
+task writeToPub(type: Db2Db, dependsOn: publiedit){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -83,10 +83,10 @@ task publipub(type: Publisher, dependsOn:'writeToPub'){
 task refreshSolr(type:Exec) {
     mustRunAfter 'publipub'
 
-	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.abbaustellen' 
+	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.abbaustellen'
 }
 
-task createSearchIndex(type: SqlExecutor){
+task updateSearchIndex(type: SqlExecutor){
     mustRunAfter 'publipub'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
