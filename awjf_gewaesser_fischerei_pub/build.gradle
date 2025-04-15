@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPub'
+defaultTasks 'publishPub', 'refreshSolr', 'createSearchIndex'
 
 task transferAwjfFischerei(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -13,11 +13,7 @@ task transferAwjfFischerei(type: Db2Db){
     ];
 }
 
-task refreshSolr(type:Exec, dependsOn: 'transferAwjfFischerei') {
-	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.gewaesser.fischereireviere'
-}
-
-task publishPub(type: Publisher, dependsOn: 'refreshSolr'){
+task publishPub(type: Publisher, dependsOn: 'transferAwjfFischerei'){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.awjf.gewaesser.fischerei"
     dbSchema = "awjf_gewaesser_fischerei_pub_v1"
@@ -28,4 +24,26 @@ task publishPub(type: Publisher, dependsOn: 'refreshSolr'){
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+task refreshSolr(type:Exec) {
+        mustRunAfter 'publishPub'
+	    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.gewaesser.fischereireviere'
+}
+
+task createSearchIndex(type: SqlExecutor){
+        mustRunAfter 'publishPub'
+
+        database = [dbUriPub, dbUserPub, dbPwdPub]
+        def layerName = 'ch.so.awjf.gewaesser.fischereireviere'
+        def dbSearchSchema = 'agi_suchindex_pub_v1'
+
+        String layerNameString = "'${layerName}'"
+        sqlParameters = [
+                [layername: layerNameString, db_schema: dbSearchSchema]
+        ]
+        sqlFiles = [
+                '../suchindex_deleteFeatures.sql',
+                'searchindex_' + layerName + '.sql'
+        ]
 }
