@@ -1,4 +1,4 @@
-SET search_path to afu_abbaustellen_pub_v2;
+SET search_path TO afu_abbaustellen_pub_v2,public;
     
 INSERT INTO ${db_schema}.feature (
     anzeige,            -- Anzeigetext
