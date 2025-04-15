@@ -1,6 +1,6 @@
 -- TRIGRAMM SUCHINDEX: UPDATE FEATURES
 
--- SET search_path to afu_asiatische_hornisse_pub_v1, public;
+SET search_path to afu_asiatische_hornisse_pub_v1, public;
 
 INSERT INTO ${db_schema}.feature (
     anzeige,            -- Anzeigetext
