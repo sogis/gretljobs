@@ -1,5 +1,3 @@
-SET search_path to afu_gewaesser_gewaessereigenschaften_pub_v1;
-
 INSERT INTO ${db_schema}.feature (
     anzeige,            -- Anzeigetext
     suchbegriffe,       -- Suchbegriffe für den Index
@@ -20,7 +18,7 @@ index_base AS (
         'Fliessgewässer Name Nr'::text AS part_3,
         (st_asgeojson(st_envelope(st_collect(geometrie)), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
-        gewaessereigenschaften
+        afu_gewaesser_gewaessereigenschaften_pub_v1.gewaessereigenschaften
     WHERE
         aname IS NOT NULL
     GROUP BY
