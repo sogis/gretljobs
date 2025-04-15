@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPub'
+defaultTasks 'publishPub','refreshSolr','createSearchIndex'
 
 
 task transferAfugewaessereigenschaften(type: Db2Db){
@@ -20,11 +20,7 @@ task updateTxtCols(type: SqlExecutor, dependsOn:transferAfugewaessereigenschafte
     sqlFiles = ['updateTxtCols.sql']
 }
 
-task refreshSolr(type:Exec, dependsOn:updateTxtCols){
-    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.gewaesser.fischereireviere,ch.so.afu.fliessgewaesser.netz'
-}
-
-task publishPub(type: Publisher, dependsOn:refreshSolr){
+task publishPub(type: Publisher, dependsOn:updateTxtCols){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.afu.gewaesser.gewaessereigenschaften"
     dbSchema = "afu_gewaesser_gewaessereigenschaften_pub_v1"
@@ -36,3 +32,28 @@ task publishPub(type: Publisher, dependsOn:refreshSolr){
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
+
+
+task refreshSolr(type:Exec){
+        mustRunAfter 'publishPub'
+            commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=cch.so.afu.fliessgewaesser.netz'
+}
+
+
+task createSearchIndex(type: SqlExecutor){
+        mustRunAfter 'publishPub'
+
+        database = [dbUriPub, dbUserPub, dbPwdPub]
+        def layerName = 'ch.so.afu.fliessgewaesser.netz'
+        def dbSearchSchema = 'agi_suchindex_pub_v1'
+
+        String layerNameString = "'${layerName}'"
+        sqlParameters = [
+                [layername: layerNameString, db_schema: dbSearchSchema]
+        ]
+        sqlFiles = [
+                '../searchindex_deleteFeatures.sql',
+                'searchindex_' + layerName + '.sql'
+        ]
+}
+
