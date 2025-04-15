@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 import java.nio.file.Paths
 import de.undercouch.gradle.tasks.download.Download
 
-defaultTasks "publipub"
+defaultTasks "publipub, createSearchIndex, refreshSolr"
 
 def tmpDir = buildDir.toString()
 def appXtfPath = tmpDir + "/appdata.xtf"
@@ -78,6 +78,30 @@ task publipub(type: Publisher, dependsOn:'writeToPub'){
   kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
   if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+
+task refreshSolr(type:Exec, dependsOn:'publishPub') {
+    mustRunAfter 'publipub'
+
+	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.abbaustellen' 
+}
+
+task createSearchIndex(type: SqlExecutor){
+    mustRunAfter 'publipub'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def layerName = 'ch.so.afu.abbaustellen'
+    def dbSearchSchema = 'agi_suchindex_pub_v1'
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+        [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+        '../searchindex_deleteFeatures.sql',
+        'searchindex_' + layerName + '.sql'
+    ]
 }
 
 
