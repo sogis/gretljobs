@@ -80,7 +80,7 @@ task publipub(type: Publisher, dependsOn:'writeToPub'){
   if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
-task refreshSolr(type:Exec, dependsOn:'publishPub') {
+task refreshSolr(type:Exec) {
     mustRunAfter 'publipub'
 
 	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.abbaustellen' 
