@@ -3,9 +3,9 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'createLayerSearchIndex'
+defaultTasks 'updateLayerSearchIndex'
 
-task createLayerSearchIndex(type: Db2Db){
+task updateLayerSearchIndex(type: Db2Db){
     sourceDb = [dbUriSimi, dbUserSimi, dbPwdSimi]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     def dbSearchSchema = 'agi_suchindex_pub_v1'
