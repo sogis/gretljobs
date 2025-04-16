@@ -88,19 +88,21 @@ task downloadMgdm(type: Download, dependsOn: 'refreshSolrKbsRestricted') {
     acceptAnyCertificate true
 }
 
-task uploadMgdm(dependsOn: 'downloadMgdm') {
-    doLast {
-        def response = ["curl", "-u", aiLogin, "-F", "topic=kataster_belasteter_standorte_v1_4", "-F",
-                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), 'data.zip'), "-F", "publish=true",
-                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
-        println(response)
-        if (response.contains("false") || response == null || response.trim().isEmpty()) {
-            throw new GradleException()
-        }
-    }
-}
+// Geodienste verlangt Version 1.5.
+// task uploadMgdm(dependsOn: 'downloadMgdm') {
+//     doLast {
+//         def response = ["curl", "-u", aiLogin, "-F", "topic=kataster_belasteter_standorte_v1_4", "-F",
+//                         "lv95_file=@" + Paths.get(pathToTempFolder.toString(), 'data.zip'), "-F", "publish=true",
+//                         "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+//         println(response)
+//         if (response.contains("false") || response == null || response.trim().isEmpty()) {
+//             throw new GradleException()
+//         }
+//     }
+// }
 
-task publishPub(type: Publisher, dependsOn: 'uploadMgdm') {
+//task publishPub(type: Publisher, dependsOn: 'uploadMgdm') {
+task publishPub(type: Publisher, dependsOn: 'downloadMgdm') {
     dataIdent = "ch.so.afu.belastete_standorte"
     userFormats = true
     database = [dbUriPub,dbUserPub,dbPwdPub]
