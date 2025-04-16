@@ -11,16 +11,17 @@ tasks.register('schnittBodenbGebaeude', SqlExecutor) {
     sqlFiles = ['bodenbedeckung_gebaeude.sql']
 }
 
-// task publishPub(type: Publisher, dependsOn:'schnittBodenbGebaeude'){
-//     database = [dbUriPub, dbUserPub, dbPwdPub]
-//     dataIdent = "ch.so.agi.av.gebaeudeinformationen"
-//     dbSchema = dbSchemaNamePub
-//     modelsToPublish = "SO_AGI_Gebaeudeinformationen_Publikation_20250224"
-//     userFormats = true
-//     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
-//     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-//     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-//     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
-//     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-// }
+tasks.register('publishPub', Publisher) {
+    dependsOn 'schnittBodenbGebaeude'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dataIdent = "ch.so.agi.gebaeudeinformationen"
+    dbSchema = dbSchemaNamePub
+    modelsToPublish = "SO_AGI_Gebaeudeinformationen_Publikation_20250224"
+    userFormats = true
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
 
