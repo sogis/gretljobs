@@ -127,6 +127,7 @@ git checkout -b branchname
   * `simiTokenServiceUrl`, `simiTokenServiceUser`, `simiTokenServicePwd`
   * `solrIndexupdaterBaseUrl` (die interne Basis-URL zum Indexupdater für Solr)
   * `gretlEnvironment` (der Wert dieser Variable ist je nach Umgebung `test`, `integration` oder `production`)
+  * `dbSearchSchemaPub` 
 
   Die Anleitung, wie man solche Ressourcen (z.B. DB-Verbindungen)
   in Jenkins definiert oder bestehende Ressourcen bearbeitet,
