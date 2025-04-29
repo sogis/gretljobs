@@ -8,7 +8,7 @@ defaultTasks 'updateLayerSearchIndex'
 task updateLayerSearchIndex(type: Db2Db){
     sourceDb = [dbUriSimi, dbUserSimi, dbPwdSimi]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
-    def dbSearchSchema = 'agi_suchindex_pub_v1'
+    def dbSearchSchema = dbSearchSchemaPub
 
     transferSets = [
             new TransferSet('layerSearchIndex.sql', dbSearchSchema + '.ebene', true)
