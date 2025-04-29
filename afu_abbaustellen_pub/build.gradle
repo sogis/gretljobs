@@ -28,7 +28,7 @@ task exportGisXtf(type: Ili2pgExport, dependsOn: deleteAppData){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = schemaNameEdit
     disableValidation = true
-    dataFile = files(gisXtfPath)
+    dataFile = gisXtfPath
     models = 'SO_AFU_ABBAUSTELLEN_20210630'
 }
 

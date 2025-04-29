@@ -59,7 +59,7 @@ pipeline {
                             def projectPath = project.path
                             def projectDir = projectPath.substring(0, projectPath.lastIndexOf('/'))
 
-                            echo "Prüfe GRETL-Job in: ${projectDir}"
+                            //echo "Prüfe GRETL-Job in: ${projectDir}"
 
                             try {
                                 // Inhalt der build.gradle Datei lesen
@@ -113,7 +113,7 @@ pipeline {
             echo "✅ GRETL-Job ${JOB_NAME} (${BUILD_DISPLAY_NAME}) abgeschlossen"
             script {
                 if (params.UPDATE_FEATURES) {
-                    echo "✅ Alle gefundenen '${params.TASK_NAME}'-Tasks wurden erfolgreich ausgeführt"
+                    echo "✅ Alle gefundenen '${params.TASK_NAME}'-Tasks wurden erfolgreich gestartet."
                 }
             }
         }
