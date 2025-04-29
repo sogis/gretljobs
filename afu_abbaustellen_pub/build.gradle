@@ -90,8 +90,8 @@ task updateSearchIndex(type: SqlExecutor){
     mustRunAfter 'publipub'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
     def layerName = 'ch.so.afu.abbaustellen'
-    def dbSearchSchema = 'agi_suchindex_pub_v1'
 
     String layerNameString = "'${layerName}'"
     sqlParameters = [

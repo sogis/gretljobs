@@ -27,8 +27,8 @@ task updateSearchIndex(type: SqlExecutor){
         mustRunAfter 'transferAfuAsiatischeHornissePub'
 
         database = [dbUriPub, dbUserPub, dbPwdPub]
+        def dbSearchSchema = dbSearchSchemaPub
         def layerName = 'ch.so.afu.asiatische_hornisse'
-        def dbSearchSchema = 'agi_suchindex_pub_v1'
 
         String layerNameString = "'${layerName}'"
         sqlParameters = [
