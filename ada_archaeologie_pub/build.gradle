@@ -90,16 +90,23 @@ task updateSearchIndex(type: SqlExecutor){
 
         database = [dbUriPub, dbUserPub, dbPwdPub]
         def dbSearchSchema = dbSearchSchemaPub
-
         def layerNames = [
             'ch.so.ada.archaeologie.punktfundstellen',
             'ch.so.ada.archaeologie.punktfundstellen_geschuetzt',
             'ch.so.ada.archaeologie.flaechenfundstellen',
             'so.ada.archaeologie.flaechenfundstellen_geschuetzt'
         ]
+        sqlParameters = []
+        sqlFiles = []
+
         layerNames.each { layerName ->
             String layerNameString = "'${layerName}'"
-            sqlParameters.add([layername: layerNameString, db_schema: dbSearchSchema])
-            sqlFiles.add(['../searchindex_deleteFeatures.sql', 'searchindex_' + layerName + '.sql'])
+            sqlParameters.add([
+                layername: layerNameString, db_schema: dbSearchSchema
+            ])
+            sqlFiles.add([
+                '../searchindex_deleteFeatures.sql',
+                'searchindex_' + layerName + '.sql'
+            ])
         }
 }
