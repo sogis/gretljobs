@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'refreshSolr'
+defaultTasks 'publishPub', 'refreshSolr', 'updateSearchIndex'
 
 def edit = [dbUriEdit, dbUserEdit, dbPwdEdit]
 def pub = [dbUriPub, dbUserPub, dbPwdPub]
@@ -23,7 +23,7 @@ task updateRelationTids(type: SqlExecutor, dependsOn: importFromImdas){
     description = 'Aktualisiert die t_id Beziehungsspalten aufgrund der Fst-Nummer / RRB-Nummer'
     database = edit
     sqlFiles = [
-            'update_relation/attr_geo.sql', 
+            'update_relation/attr_geo.sql',
             'update_relation/fst_rrb.sql',
             'update_relation/unlink_geomless_rrb.sql',
             'update_relation/delete_unlinked_rrb.sql',
@@ -54,7 +54,7 @@ task publicInSiedlung(type: SqlExecutor, dependsOn: copyToPubDb){
     description = 'Kopiert alle Fundstellen im Siedlungsgebiet in die öffentlichen Tabellen'
     database = pub
     sqlFiles = [
-        'public/flaeche_delete.sql', 
+        'public/flaeche_delete.sql',
         'public/flaeche_insert.sql',
         'public/punkt_delete.sql',
         'public/punkt_insert.sql'
@@ -80,6 +80,26 @@ task publishPub(type: Publisher, dependsOn: 'setEnumTxt') {
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
-task refreshSolr(type:Exec, dependsOn:'publishPub') {
-	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.ada.archaeologie.flaechenfundstellen,ch.so.ada.archaeologie.flaechenfundstellen_geschuetzt,ch.so.ada.archaeologie.punktfundstellen,ch.so.ada.archaeologie.punktfundstellen_geschuetzt' 
+task refreshSolr(type:Exec) {
+    mustRunAfter 'publishPub'
+	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.ada.archaeologie.flaechenfundstellen,ch.so.ada.archaeologie.flaechenfundstellen_geschuetzt,ch.so.ada.archaeologie.punktfundstellen,ch.so.ada.archaeologie.punktfundstellen_geschuetzt'
+}
+
+task updateSearchIndex(type: SqlExecutor){
+        mustRunAfter 'publishPub'
+
+        database = [dbUriPub, dbUserPub, dbPwdPub]
+        def dbSearchSchema = dbSearchSchemaPub
+
+        def layerNames = [
+            'ch.so.ada.archaeologie.punktfundstellen',
+            'ch.so.ada.archaeologie.punktfundstellen_geschuetzt',
+            'ch.so.ada.archaeologie.flaechenfundstellen',
+            'so.ada.archaeologie.flaechenfundstellen_geschuetzt'
+        ]
+        layerNames.each { layerName ->
+            String layerNameString = "'${layerName}'"
+            sqlParameters.add([layername: layerNameString, db_schema: dbSearchSchema])
+            sqlFiles.add(['../searchindex_deleteFeatures.sql', 'searchindex_' + layerName + '.sql'])
+        }
 }

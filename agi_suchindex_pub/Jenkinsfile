@@ -18,6 +18,13 @@ pipeline {
         // choice(name: 'UPDATE_FEATURES', choices: ['NO', 'UPDATE', 'DELETE_UPDATE'], description: 'Update entire feature search index: complete rebuild of the feature search index')
 
         string(name: 'TASK_NAME', defaultValue: 'updateSearchIndex', description: 'Name of the GRETL task to be started to rebuild the feature search index')
+
+        booleanParam(defaultValue: false,
+                description: 'Update only feature search index for one job: partial rebuild of the feature search index',
+                name: 'ONE_JOB_ONLY'
+        )
+
+        string(name: 'JOB_NAME', defaultValue: '', description: 'Name of the only GRETL job to be started to rebuild the feature search index')
     }
 
     stages {
@@ -44,11 +51,20 @@ pipeline {
                     script {
                         def taskToRun = params.TASK_NAME
                         def gradleCommand = 'gretl'         //gradle command in der GRETL-Umgebung
+                        def gradleProjects = []
 
-                        // Alle build.gradle Dateien finden
                         echo "Suche nach GRETL-Jobs mit Task: ${taskToRun}"
-                        def gradleProjects = findFiles(glob: "**/build.gradle")
-                        echo "Gefundene GRETL-Jobs: ${gradleProjects.size()}"
+                        if (params.ONE_JOB_ONLY){
+                            echo "Suche in GRETL-Job mit Namen: ${params.JOB_NAME}"
+                            gradleProjects = findFiles(glob: "${params.JOB_NAME}/**/build.gradle")
+                            echo "Gefundener GRETL-Job: ${gradleProjects.size()}"
+                        }
+                        else {
+                            // Alle build.gradle Dateien finden
+                            echo "Suche in allen GRETL-Jobs"
+                            gradleProjects = findFiles(glob: "**/build.gradle")
+                            echo "Gefundene GRETL-Jobs: ${gradleProjects.size()}"
+                        }
 
                         // Statistik
                         def tasksFound = 0
@@ -84,14 +100,16 @@ pipeline {
                                             tasksExecuted++
                                             echo "✅ Task '${taskToRun}' in ${projectDir} erfolgreich ausgeführt"
                                         } catch (Exception e) {
-                                            echo "⚠️ Fehler beim Ausführen von '${taskToRun}' in ${projectDir}: ${e.message}"
+                                            echo "❌ Fehler beim Ausführen von '${taskToRun}' in ${projectDir}: ${e.message}"
+                                            currentBuild.result = 'FAILED'
                                         }
                                     }
                                 } else {
                                     //echo "❌ Task '${taskToRun}' nicht gefunden in ${projectDir}"
                                 }
                             } catch (Exception e) {
-                                echo "⚠️ Fehler beim Lesen oder Verarbeiten der build.gradle in ${projectDir}: ${e.message}"
+                                echo "❌ Fehler beim Lesen oder Verarbeiten der build.gradle in ${projectDir}: ${e.message}"
+                                currentBuild.result = 'FAILED'
                             }
                         }
 
