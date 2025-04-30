@@ -1,7 +1,7 @@
 
 # Ablauf zum Arbeiten mit image und deamon:
 # 1. Docker compose mit compose-deamon.yml hochfahren. Fährt auch gretl container durch command "sleep xxx" hoch.:: docker compose -f compose-deamon.yml up
-# 2. Interaktive bash in gretl container öffnen:: docker compose exec -u $UID gretl bash
+# 2. Interaktive bash in gretl container öffnen:: 
 # 3. In "container bash" in das entsprechende Jobverzeichnis wechseln und Job starten mit:: gradle -I /home/gradle/init.gradle
 #
 # Beenden mit:: docker compose -f compose-deamon.yml down
@@ -13,10 +13,10 @@
 # Resultat: Zügigeres Arbeiten, da der gradle deamon erhalten bleibt.
 services:
   gretl:
-    image: sogis/gretl:${GRETL_IMAGE_TAG:-2.2.617}
+    image: sogis/gretl:3 #${GRETL_IMAGE_TAG:-2.2.617}
     environment:
       ORG_GRADLE_PROJECT_gretlEnvironment: development
-    command: "sleep 10" # 72000 = 20h
+    command: "sleep 72000" # 72000 = 20h
     init: true # Damit SIGTERM bei "docker compose down" berücksichtigt wird, und nicht SIGKILL abgewartet wird
     volumes:
       - type: bind
