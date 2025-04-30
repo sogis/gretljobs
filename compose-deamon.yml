@@ -1,14 +1,14 @@
 
 # Ablauf zum Arbeiten mit image und deamon:
 # 1. Docker compose mit compose-deamon.yml hochfahren. Fährt auch gretl container durch command "sleep xxx" hoch.:: docker compose -f compose-deamon.yml up
-# 2. Interaktive bash in gretl container öffnen:: 
+# 2. Interaktive bash in gretl container öffnen:: docker compose exec -u $UID gretl bash
 # 3. In "container bash" in das entsprechende Jobverzeichnis wechseln und Job starten mit:: gradle -I /home/gradle/init.gradle
 #
 # Beenden mit:: docker compose -f compose-deamon.yml down
 #
 # Vergleich mit bisheriger Startmethode
 # a. docker compose up
-# b. Job starten:: docker compose run --rm -u $UID gretl --project-dir=agi_run_deamon
+# b. Job starten:: docker compose run --rm -u $UID gretl --project-dir=afu_neophyten
 #
 # Resultat: Zügigeres Arbeiten, da der gradle deamon erhalten bleibt.
 services:
