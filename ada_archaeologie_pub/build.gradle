@@ -92,7 +92,7 @@ def layerNames = [
     'ch.so.ada.archaeologie.flaechenfundstellen',
     'so.ada.archaeologie.flaechenfundstellen_geschuetzt'
 ]
-layerNames.each { layerNamen ->
+layerNames.each { layerName ->
 
     def updateSearchIndexTask = task "updateSearchIndex_${layerNamen}"(type: SqlExecutor){
         mustRunAfter 'publishPub'
