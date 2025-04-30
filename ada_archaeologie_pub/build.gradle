@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPub', 'refreshSolr', 'updateSearchIndex'
+//defaultTasks 'publishPub', 'refreshSolr', 'updateSearchIndex'
 
 def edit = [dbUriEdit, dbUserEdit, dbPwdEdit]
 def pub = [dbUriPub, dbUserPub, dbPwdPub]
@@ -85,28 +85,33 @@ task refreshSolr(type:Exec) {
 	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.ada.archaeologie.flaechenfundstellen,ch.so.ada.archaeologie.flaechenfundstellen_geschuetzt,ch.so.ada.archaeologie.punktfundstellen,ch.so.ada.archaeologie.punktfundstellen_geschuetzt'
 }
 
-task updateSearchIndex(type: SqlExecutor){
+def updateSearchIndexTasks = []
+def layerNames = [
+    'ch.so.ada.archaeologie.punktfundstellen',
+    'ch.so.ada.archaeologie.punktfundstellen_geschuetzt',
+    'ch.so.ada.archaeologie.flaechenfundstellen',
+    'so.ada.archaeologie.flaechenfundstellen_geschuetzt'
+]
+layerNames.each { layerNamen ->
+
+    def updateSearchIndexTask = task "updateSearchIndex_${layerNamen}"(type: SqlExecutor){
         mustRunAfter 'publishPub'
 
         database = [dbUriPub, dbUserPub, dbPwdPub]
         def dbSearchSchema = dbSearchSchemaPub
-        def layerNames = [
-            'ch.so.ada.archaeologie.punktfundstellen',
-            'ch.so.ada.archaeologie.punktfundstellen_geschuetzt',
-            'ch.so.ada.archaeologie.flaechenfundstellen',
-            'so.ada.archaeologie.flaechenfundstellen_geschuetzt'
-        ]
-        sqlParameters = []
-        sqlFiles = []
 
-        layerNames.each { layerName ->
-            String layerNameString = "'${layerName}'"
-            sqlParameters.add([
-                layername: layerNameString, db_schema: dbSearchSchema
-            ])
-            sqlFiles.add([
+        String layerNameString = "'${layerName}'"
+        sqlParameters = [
+                [layername: layerNameString, db_schema: dbSearchSchema]
+        ]
+        sqlFiles = [
                 '../searchindex_deleteFeatures.sql',
                 'searchindex_' + layerName + '.sql'
-            ])
-        }
+        ]
+    }
+
+    updateSearchIndexTasks << updateSearchIndexTask
+
 }
+defaultTasks (*(['publishPub', 'refreshSolr'] + updateSearchIndexTasks.collect { it.name }))
+
