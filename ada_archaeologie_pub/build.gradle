@@ -94,7 +94,7 @@ def layerNames = [
 ]
 layerNames.each { layerName ->
 
-    def updateSearchIndexTask = task "updateSearchIndex_${layerNamen}"(type: SqlExecutor){
+    def updateSearchIndexTask = task "updateSearchIndex_${layerName}"(type: SqlExecutor){
         mustRunAfter 'publishPub'
 
         database = [dbUriPub, dbUserPub, dbPwdPub]
