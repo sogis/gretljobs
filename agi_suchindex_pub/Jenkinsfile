@@ -78,6 +78,14 @@ pipeline {
                             //echo "Prüfe GRETL-Job in: ${projectDir}"
 
                             try {
+
+                                dir(projectDir){
+                                    def gradleOutput1 = sh(script: "${gradleCommand} tasks --console=plain", returnStdout: true).trim()
+                                    echo gradleOutput1
+                                }
+                                echo '__________________________________________________________'
+                                echo '__________________________________________________________'
+
                                 // Inhalt der build.gradle Datei lesen
                                 def buildFileContent = readFile(file: projectPath)
 
