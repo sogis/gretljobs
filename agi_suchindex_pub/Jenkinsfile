@@ -49,14 +49,14 @@ pipeline {
             steps {
                 container('gretl') {
                     script {
-                        def taskToRun = params.TASK_NAME
+                        def taskToRun = params.TASK_NAME.trim()
                         def gradleCommand = 'gretl'         //gradle command in der GRETL-Umgebung
                         def gradleProjects = []
 
                         echo "Suche nach GRETL-Jobs mit Task: ${taskToRun}"
                         if (params.ONE_JOB_ONLY){
                             echo "Suche in GRETL-Job mit Namen: ${params.ONE_JOB_NAME}"
-                            gradleProjects = findFiles(glob: "${params.ONE_JOB_NAME}/**/build.gradle")
+                            gradleProjects = findFiles(glob: "${params.ONE_JOB_NAME.trim()}/**/build.gradle")
                             echo "Gefundener GRETL-Job: ${gradleProjects.size()}"
                         }
                         else {
@@ -114,6 +114,11 @@ pipeline {
                                     def tasksString = defaultTaskLine.replace("Default tasks:", "").trim()
                                     // Teile den String an Kommas
                                     defaultTasks = tasksString.split(",").collect { it.trim() }
+                                }
+                                else{
+                                    echo "❌ Default-Tasks nicht verfügbar in ${projectDir}"
+                                    currentBuild.result = 'FAILED'
+                                    return
                                 }
                                 //echo "Gefundene Default-Tasks: ${defaultTasks.join(', ')}"
 
