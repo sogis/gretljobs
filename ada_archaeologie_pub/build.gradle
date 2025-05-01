@@ -90,7 +90,7 @@ def layerNames = [
     'ch.so.ada.archaeologie.punktfundstellen',
     'ch.so.ada.archaeologie.punktfundstellen_geschuetzt',
     'ch.so.ada.archaeologie.flaechenfundstellen',
-    'so.ada.archaeologie.flaechenfundstellen_geschuetzt'
+    'ch.so.ada.archaeologie.flaechenfundstellen_geschuetzt'
 ]
 layerNames.each { layerName ->
 
