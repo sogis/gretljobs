@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-//defaultTasks 'publishPub', 'refreshSolr', 'updateSearchIndex'
+defaultTasks 'publishPub', 'refreshSolr', 'updateSearchIndex_1','updateSearchIndex_2','updateSearchIndex_3','updateSearchIndex_4'
 
 def edit = [dbUriEdit, dbUserEdit, dbPwdEdit]
 def pub = [dbUriPub, dbUserPub, dbPwdPub]
@@ -85,6 +85,7 @@ task refreshSolr(type:Exec) {
 	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.ada.archaeologie.flaechenfundstellen,ch.so.ada.archaeologie.flaechenfundstellen_geschuetzt,ch.so.ada.archaeologie.punktfundstellen,ch.so.ada.archaeologie.punktfundstellen_geschuetzt'
 }
 
+/*
 def updateSearchIndexTasks = []
 def layerNames = [
     'ch.so.ada.archaeologie.punktfundstellen',
@@ -109,9 +110,75 @@ layerNames.each { layerName ->
                 'searchindex_' + layerName + '.sql'
         ]
     }
-
     updateSearchIndexTasks << updateSearchIndexTask
-
 }
 defaultTasks (*(['publishPub', 'refreshSolr'] + updateSearchIndexTasks.collect { it.name }))
+*/
 
+task updateSearchIndex_1(type: SqlExecutor){
+        mustRunAfter 'publishPub'
+
+        database = [dbUriPub, dbUserPub, dbPwdPub]
+        def dbSearchSchema = dbSearchSchemaPub
+        def layerName = 'ch.so.ada.archaeologie.punktfundstellen'
+
+        String layerNameString = "'${layerName}'"
+        sqlParameters = [
+                [layername: layerNameString, db_schema: dbSearchSchema]
+        ]
+        sqlFiles = [
+                '../searchindex_deleteFeatures.sql',
+                'searchindex_' + layerName + '.sql'
+        ]
+}
+
+task updateSearchIndex_2(type: SqlExecutor){
+        mustRunAfter 'publishPub'
+
+        database = [dbUriPub, dbUserPub, dbPwdPub]
+        def dbSearchSchema = dbSearchSchemaPub
+        def layerName = 'ch.so.ada.archaeologie.punktfundstellen_geschuetzt'
+
+        String layerNameString = "'${layerName}'"
+        sqlParameters = [
+                [layername: layerNameString, db_schema: dbSearchSchema]
+        ]
+        sqlFiles = [
+                '../searchindex_deleteFeatures.sql',
+                'searchindex_' + layerName + '.sql'
+        ]
+}
+
+task updateSearchIndex_3(type: SqlExecutor){
+        mustRunAfter 'publishPub'
+
+        database = [dbUriPub, dbUserPub, dbPwdPub]
+        def dbSearchSchema = dbSearchSchemaPub
+        def layerName = 'ch.so.ada.archaeologie.flaechenfundstellen'
+
+        String layerNameString = "'${layerName}'"
+        sqlParameters = [
+                [layername: layerNameString, db_schema: dbSearchSchema]
+        ]
+        sqlFiles = [
+                '../searchindex_deleteFeatures.sql',
+                'searchindex_' + layerName + '.sql'
+        ]
+}
+
+task updateSearchIndex_4(type: SqlExecutor){
+        mustRunAfter 'publishPub'
+
+        database = [dbUriPub, dbUserPub, dbPwdPub]
+        def dbSearchSchema = dbSearchSchemaPub
+        def layerName = 'ch.so.ada.archaeologie.flaechenfundstellen_geschuetzt'
+
+        String layerNameString = "'${layerName}'"
+        sqlParameters = [
+                [layername: layerNameString, db_schema: dbSearchSchema]
+        ]
+        sqlFiles = [
+                '../searchindex_deleteFeatures.sql',
+                'searchindex_' + layerName + '.sql'
+        ]
+}
