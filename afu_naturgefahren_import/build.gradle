@@ -28,7 +28,7 @@ print xtfFilename;
 
 task validateData(type: IliValidator) {
     description = "Validiert die Daten und überprüft insbesondere die Auftragskennung"
-    dataFiles = file(xtfFilename)
+    dataFiles = files(xtfFilename)
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     models = modelName
     configFile = file('SO_AFU_Naturgefahren_Verifikation.ini')
@@ -44,8 +44,7 @@ task dbImport(type: Ili2pgReplace, dependsOn: 'validateData') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "afu_naturgefahren_v2"
     models = modelName
-    dataFile = file(xtfFilename)
+    dataFile = files(xtfFilename)
     dataset = auftragskennung
     disableValidation = true
-    
 }
