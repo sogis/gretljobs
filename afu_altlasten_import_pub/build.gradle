@@ -6,7 +6,7 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: 'de.undercouch.download'
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPub', 'refreshSolrKbs'
+defaultTasks 'publishPub', 'refreshSolrKbs', 'updateSearchIndex_1', 'updateSearchIndex_2'
 
 // Download-Verzeichnis
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
@@ -134,7 +134,7 @@ task updateSearchIndex_1(type: SqlExecutor){
         ]
 }
 
-task updateSearchIndex_1(type: SqlExecutor){
+task updateSearchIndex_2(type: SqlExecutor){
         mustRunAfter 'publipub'
         def layerName = 'ch.so.afu.altlasten.standorte_geschuetzt'
 
