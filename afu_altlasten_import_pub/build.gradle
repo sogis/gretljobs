@@ -108,45 +108,45 @@ task publishPub(type: Publisher, dependsOn: 'downloadMgdm') {
 }
 
 task refreshSolrKbs(type:Exec) {
-    mustRunAfter 'publipub'
+    mustRunAfter 'publishPub'
     commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte'
 }
 
 task refreshSolrKbsRestricted(type:Exec, dependsOn:'refreshSolrKbs') {
-    mustRunAfter 'publipub'
+    mustRunAfter 'publishPub'
     commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte_geschuetzt'
 }
 
 task updateSearchIndex_1(type: SqlExecutor){
-        mustRunAfter 'publipub'
-        def layerName = 'ch.so.afu.altlasten.standorte'
+    mustRunAfter 'publishPub'
+    def layerName = 'ch.so.afu.altlasten.standorte'
 
-        database = [dbUriPub, dbUserPub, dbPwdPub]
-        def dbSearchSchema = dbSearchSchemaPub
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
 
-        String layerNameString = "'${layerName}'"
-        sqlParameters = [
-                [layername: layerNameString, db_schema: dbSearchSchema]
-        ]
-        sqlFiles = [
-                '../searchindex_deleteFeatures.sql',
-                'searchindex_' + layerName + '.sql'
-        ]
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
 }
 
 task updateSearchIndex_2(type: SqlExecutor){
-        mustRunAfter 'publipub'
-        def layerName = 'ch.so.afu.altlasten.standorte_geschuetzt'
+    mustRunAfter 'publishPub'
+    def layerName = 'ch.so.afu.altlasten.standorte_geschuetzt'
 
-        database = [dbUriPub, dbUserPub, dbPwdPub]
-        def dbSearchSchema = dbSearchSchemaPub
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
 
-        String layerNameString = "'${layerName}'"
-        sqlParameters = [
-                [layername: layerNameString, db_schema: dbSearchSchema]
-        ]
-        sqlFiles = [
-                '../searchindex_deleteFeatures.sql',
-                'searchindex_' + layerName + '.sql'
-        ]
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
 }

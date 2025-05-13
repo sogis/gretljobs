@@ -19,24 +19,24 @@ task transferAfuAsiatischeHornissePub(type: Db2Db) {
 }
 
 task refreshSolr(type:Exec) {
-        mustRunAfter 'transferAfuAsiatischeHornissePub'
-        commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.asiatische_hornisse'
+    mustRunAfter 'transferAfuAsiatischeHornissePub'
+    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.asiatische_hornisse'
 }
 
 task updateSearchIndex(type: SqlExecutor){
-        mustRunAfter 'transferAfuAsiatischeHornissePub'
-        def layerName = 'ch.so.afu.asiatische_hornisse'
+    mustRunAfter 'transferAfuAsiatischeHornissePub'
+    def layerName = 'ch.so.afu.asiatische_hornisse'
 
-        database = [dbUriPub, dbUserPub, dbPwdPub]
-        def dbSearchSchema = dbSearchSchemaPub
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
 
-        String layerNameString = "'${layerName}'"
-        sqlParameters = [
-                [layername: layerNameString, db_schema: dbSearchSchema]
-        ]
-        sqlFiles = [
-                '../searchindex_deleteFeatures.sql',
-                'searchindex_' + layerName + '.sql'
-        ]
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
 }
 
