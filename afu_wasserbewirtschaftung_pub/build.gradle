@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'refreshSolr'
+defaultTasks 'updateEnums', 'refreshSolr', 'updateSearchIndex_1', 'updateSearchIndex_2'
 
 task transferAfuWasserbewirtschaftung(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -18,13 +18,64 @@ task transferAfuWasserbewirtschaftung(type: Db2Db){
 }
 
 task updateEnums(type: SqlExecutor){
-    dependsOn transferAfuWasserbewirtschaftung
+    dependsOn 'transferAfuWasserbewirtschaftung'
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ['update_enums.sql']
 }
 
-
 task refreshSolr(type:Exec) {
-    dependsOn updateEnums
-    commandLine 'curl', '-i', '--max-time', '20', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.gewaesserschutz.quellen,ch.so.afu.wasserbewirtschaftung.quellen,ch.so.afu.gewaesserschutz.fassungen,ch.so.afu.wasserbewirtschaftung.fassung,ch.so.afu.wasserbewirtschaftung.sondierung,ch.so.afu.wasserbewirtschaftung.versickerungsschacht,ch.so.afu.wasserbewirtschaftung.grundwasserwaermenutzung,ch.so.afu.wasserbewirtschaftung.trinkwasserversorgung_geschuetzt,ch.so.afu.wasserbewirtschaftung.weitere_einbauten_geschuetzt,ch.so.afu.wasserbewirtschaftung.quellen_geschuetzt,ch.so.afu.wasserbewirtschaftung.sondierung_geschuetzt,ch.so.afu.wasserbewirtschaftung.fassung_geschuetzt,ch.so.afu.wasserbewirtschaftung.versickerungsschacht_geschuetzt,ch.so.afu.wasserbewirtschaftung.grundwasserwaermenutzung_geschuetzt'
+    mustRunAfter 'updateEnums'
+    commandLine 'curl', '-i', '--max-time', '20', solrIndexupdaterBaseUrl +
+        '/queue?ds=ch.so.afu.gewaesserschutz.quellen,ch.so.afu.wasserbewirtschaftung.quellen,ch.so.afu.gewaesserschutz.fassungen,ch.so.afu.wasserbewirtschaftung.fassung,ch.so.afu.wasserbewirtschaftung.sondierung,ch.so.afu.wasserbewirtschaftung.versickerungsschacht,ch.so.afu.wasserbewirtschaftung.grundwasserwaermenutzung,ch.so.afu.wasserbewirtschaftung.trinkwasserversorgung_geschuetzt,ch.so.afu.wasserbewirtschaftung.weitere_einbauten_geschuetzt,ch.so.afu.wasserbewirtschaftung.quellen_geschuetzt,ch.so.afu.wasserbewirtschaftung.sondierung_geschuetzt,ch.so.afu.wasserbewirtschaftung.fassung_geschuetzt,ch.so.afu.wasserbewirtschaftung.versickerungsschacht_geschuetzt,ch.so.afu.wasserbewirtschaftung.grundwasserwaermenutzung_geschuetzt'
+}
+
+task updateSearchIndex_1(type: SqlExecutor){
+    mustRunAfter 'updateEnums'
+    def layerName = 'ch.so.afu.gewaesserschutz.quellen'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+}
+
+task updateSearchIndex_2(type: SqlExecutor){
+    mustRunAfter 'updateEnums'
+    def layerName = 'ch.so.afu.wasserbewirtschaftung.quellen'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+}
+
+task updateSearchIndex_3(type: SqlExecutor){
+    mustRunAfter 'updateEnums'
+    def layerName = 'ch.so.afu.gewaesserschutz.fassungen' //gibt es noch nicht als sql. Kopie von ch.so.afu.wasserbewirtschaftung.fassung
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
 }

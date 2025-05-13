@@ -35,24 +35,24 @@ task publishPub(type: Publisher, dependsOn:updateTxtCols){
 
 
 task refreshSolr(type:Exec){
-        mustRunAfter 'publishPub'
-            commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=cch.so.afu.fliessgewaesser.netz'
+    mustRunAfter 'publishPub'
+    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=cch.so.afu.fliessgewaesser.netz'
 }
 
 task updateSearchIndex(type: SqlExecutor){
-        mustRunAfter 'publishPub'
+    mustRunAfter 'publishPub'
+    def layerName = 'ch.so.afu.fliessgewaesser.netz'
 
-        database = [dbUriPub, dbUserPub, dbPwdPub]
-        def dbSearchSchema = dbSearchSchemaPub
-        def layerName = 'ch.so.afu.fliessgewaesser.netz'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
 
-        String layerNameString = "'${layerName}'"
-        sqlParameters = [
-                [layername: layerNameString, db_schema: dbSearchSchema]
-        ]
-        sqlFiles = [
-                '../searchindex_deleteFeatures.sql',
-                'searchindex_' + layerName + '.sql'
-        ]
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
 }
 
