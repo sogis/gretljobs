@@ -1,3 +1,5 @@
+SET search_path to ada_archaeologie_pub_v1, public;
+
 INSERT INTO ${db_schema}.feature (
     anzeige,            -- Anzeigetext
     suchbegriffe,       -- Suchbegriffe für den Index
@@ -17,7 +19,7 @@ index_base AS (
         'Punktfundstelle Nr'::text AS part_3,
         (st_asgeojson(st_envelope(punkt), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
-        ada_archaeologie_pub_v1.public_punktfundstelle_siedlungsgebiet
+        public_punktfundstelle_siedlungsgebiet
 )
 SELECT
     displaytext AS anzeige,

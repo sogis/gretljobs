@@ -1,3 +1,5 @@
+SET search_path to afu_geotope_pub, public;
+
 INSERT INTO ${db_schema}.feature (
     anzeige,            -- Anzeigetext
     suchbegriffe,       -- Suchbegriffe für den Index
@@ -17,7 +19,7 @@ index_base AS (
         'Geotope Landschaftsform Name'::text AS part_3,
         (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
-        afu_geotope_pub.landschaftsform_v
+        landschaftsform_v
     WHERE
         objektname IS NOT NULL
 )

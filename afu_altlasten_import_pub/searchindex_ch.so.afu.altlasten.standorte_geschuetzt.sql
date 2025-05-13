@@ -1,3 +1,5 @@
+SET search_path to afu_altlasten_restricted_pub_v1, public;
+
 INSERT INTO ${db_schema}.feature (
     anzeige,            -- Anzeigetext
     suchbegriffe,       -- Suchbegriffe für den Index
@@ -17,7 +19,7 @@ index_base AS (
         'Belasteter Standort altlast4web ID'::text AS part_3,
         (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
-        afu_altlasten_restricted_pub_v1.belasteter_standort
+        .belasteter_standort
     WHERE
         geometrie IS NOT NULL AND standortnummer IS NOT NULL
 )

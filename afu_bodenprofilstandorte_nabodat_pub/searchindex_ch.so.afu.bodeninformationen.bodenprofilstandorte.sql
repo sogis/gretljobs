@@ -1,3 +1,5 @@
+SET search_path to afu_bodendaten_nabodat_pub, public;
+
 INSERT INTO ${db_schema}.feature (
     anzeige,            -- Anzeigetext
     suchbegriffe,       -- Suchbegriffe für den Index
@@ -17,7 +19,7 @@ index_base AS (
         'Boden Profil Nr'::text AS part_3,
         (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
-        afu_bodendaten_nabodat_pub.bodenproflstndrte_bodenprofilstandort
+        bodenproflstndrte_bodenprofilstandort
     WHERE
         profilnummer IS NOT NULL
 )
