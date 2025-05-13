@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'refreshSolr'
+defaultTasks 'transferbodenprofilstandorte', 'refreshSolr', 'updateSearchIndex'
 
 task transferbodenprofilstandorte(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -13,6 +13,25 @@ task transferbodenprofilstandorte(type: Db2Db){
     ];
 }
 
-task refreshSolr(type:Exec, dependsOn:'transferbodenprofilstandorte') {
-        commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.bodeninformationen.bodenprofilstandorte'
+task refreshSolr(type:Exec) {
+    mustRunAfter 'transferbodenprofilstandorte'
+    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl +
+        '/queue?ds=ch.so.afu.bodeninformationen.bodenprofilstandorte'
+}
+
+task updateSearchIndex(type: SqlExecutor){
+    mustRunAfter 'transferbodenprofilstandorte'
+    def layerName = 'ch.so.afu.bodeninformationen.bodenprofilstandorte'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
 }
