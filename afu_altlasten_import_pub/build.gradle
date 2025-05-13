@@ -6,7 +6,7 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: 'de.undercouch.download'
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPub'
+defaultTasks 'publishPub', 'refreshSolrKbs'
 
 // Download-Verzeichnis
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
@@ -73,15 +73,7 @@ task importKbsRestrictedData(type: Ili2pgImport, dependsOn: 'unzipKbsRestrictedD
     strokeArcs = true
 }
 
-task refreshSolrKbs(type:Exec, dependsOn: 'importKbsRestrictedData') {
-    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte'
-}
-
-task refreshSolrKbsRestricted(type:Exec, dependsOn:'refreshSolrKbs') {
-        commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte_geschuetzt'
-}
-
-task downloadMgdm(type: Download, dependsOn: 'refreshSolrKbsRestricted') {
+task downloadMgdm(type: Download, dependsOn: 'importKbsRestrictedData') {
     src "https://altlast4web.verw.rootso.org/interlis_exports/mgdm/data.zip"
     dest pathToTempFolder
     overwrite true
@@ -113,4 +105,48 @@ task publishPub(type: Publisher, dependsOn: 'downloadMgdm') {
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+task refreshSolrKbs(type:Exec) {
+    mustRunAfter 'publipub'
+    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte'
+}
+
+task refreshSolrKbsRestricted(type:Exec, dependsOn:'refreshSolrKbs') {
+    mustRunAfter 'publipub'
+    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte_geschuetzt'
+}
+
+task updateSearchIndex_1(type: SqlExecutor){
+        mustRunAfter 'publipub'
+        def layerName = 'ch.so.afu.altlasten.standorte'
+
+        database = [dbUriPub, dbUserPub, dbPwdPub]
+        def dbSearchSchema = dbSearchSchemaPub
+
+        String layerNameString = "'${layerName}'"
+        sqlParameters = [
+                [layername: layerNameString, db_schema: dbSearchSchema]
+        ]
+        sqlFiles = [
+                '../searchindex_deleteFeatures.sql',
+                'searchindex_' + layerName + '.sql'
+        ]
+}
+
+task updateSearchIndex_1(type: SqlExecutor){
+        mustRunAfter 'publipub'
+        def layerName = 'ch.so.afu.altlasten.standorte_geschuetzt'
+
+        database = [dbUriPub, dbUserPub, dbPwdPub]
+        def dbSearchSchema = dbSearchSchemaPub
+
+        String layerNameString = "'${layerName}'"
+        sqlParameters = [
+                [layername: layerNameString, db_schema: dbSearchSchema]
+        ]
+        sqlFiles = [
+                '../searchindex_deleteFeatures.sql',
+                'searchindex_' + layerName + '.sql'
+        ]
 }

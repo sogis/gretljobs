@@ -25,10 +25,10 @@ task refreshSolr(type:Exec) {
 
 task updateSearchIndex(type: SqlExecutor){
         mustRunAfter 'transferAfuAsiatischeHornissePub'
+        def layerName = 'ch.so.afu.asiatische_hornisse'
 
         database = [dbUriPub, dbUserPub, dbPwdPub]
         def dbSearchSchema = dbSearchSchemaPub
-        def layerName = 'ch.so.afu.asiatische_hornisse'
 
         String layerNameString = "'${layerName}'"
         sqlParameters = [

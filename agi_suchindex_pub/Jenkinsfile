@@ -87,7 +87,7 @@ pipeline {
 
                                 if (containsTask) {
                                     echo '__________________________________________________________'
-                                    echo "🔎 Task(s) '${taskToRun}' in ${projectDir} gefunden"
+                                    echo "🔎 Task(s) vom Typ '${taskToRun}' in ${projectDir} gefunden"
                                 }
                                 else{
                                     // Überspringen des Projects, wenn kein Task gefunden werden kann

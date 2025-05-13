@@ -88,10 +88,10 @@ task refreshSolr(type:Exec) {
 
 task updateSearchIndex(type: SqlExecutor){
     mustRunAfter 'publipub'
+    def layerName = 'ch.so.afu.abbaustellen'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
     def dbSearchSchema = dbSearchSchemaPub
-    def layerName = 'ch.so.afu.abbaustellen'
 
     String layerNameString = "'${layerName}'"
     sqlParameters = [
