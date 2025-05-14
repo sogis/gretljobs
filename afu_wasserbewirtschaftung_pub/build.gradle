@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'updateEnums', 'refreshSolr', 'updateSearchIndex_1', 'updateSearchIndex_2'
+defaultTasks 'updateEnums', 'refreshSolr', 'updateSearchIndex_1', 'updateSearchIndex_2', 'updateSearchIndex_3'
 
 task transferAfuWasserbewirtschaftung(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -65,7 +65,7 @@ task updateSearchIndex_2(type: SqlExecutor){
 
 task updateSearchIndex_3(type: SqlExecutor){
     mustRunAfter 'updateEnums'
-    def layerName = 'ch.so.afu.gewaesserschutz.fassungen' //gibt es noch nicht als sql. Kopie von ch.so.afu.wasserbewirtschaftung.fassung
+    def layerName = 'ch.so.afu.gewaesserschutz.fassungen'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
     def dbSearchSchema = dbSearchSchemaPub
