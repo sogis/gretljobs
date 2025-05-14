@@ -20,7 +20,7 @@ SELECT
     bebauungsstand,
     bebauungsstand_txt,
     baureglement,
-    grundnutzung_typ_kt,
+    grundnutzung_typ_kt AS grundnutzung,
     flaeche_beschnitten,
 	flaeche_unbebaut,
     unbebaut,
