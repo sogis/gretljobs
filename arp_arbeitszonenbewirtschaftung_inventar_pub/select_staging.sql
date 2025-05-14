@@ -241,7 +241,7 @@ region AS (
 
 --alles zusammengefügt
 SELECT
-    DISTINCT (gbr.geometrie),
+    DISTINCT ON (gbr.geometrie)
     gbr.geometrie,
     gbr.nummer AS grundstuecknummer,
     gbr.grundbuch,
