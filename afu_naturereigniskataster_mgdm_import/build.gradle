@@ -8,7 +8,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 
 
-defaultTasks 'refreshSolrNaturereigniskataster'
+defaultTasks 'transferSammelereignisPub', 'refreshSolrNaturereigniskataster', 'updateSearchIndex_1', 'updateSearchIndex_2', 'updateSearchIndex_3'
 
 
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
@@ -108,9 +108,61 @@ task transferSammelereignisPub(type: Db2Db, dependsOn: 'transferProzessraumWasse
     ];
 }
 
-task refreshSolrNaturereigniskataster(type:Exec, dependsOn: 'transferSammelereignisPub') {
+task refreshSolrNaturereigniskataster(type:Exec) {
+    mustRunAfter 'transferSammelereignisPub'
     commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.naturereigniskataster.basisinformation,ch.so.afu.naturereigniskataster.prozessraum.sturz,ch.so.afu.naturereigniskataster.prozessraum.wasser'
 }
 
+task updateSearchIndex_1(type: SqlExecutor){
+    mustRunAfter 'transferSammelereignisPub'
+    def layerName = 'ch.so.afu.naturereigniskataster.basisinformation'
 
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+}
+
+//todo: Probleme mit ch.(so.)afu... Namensraum
+
+task updateSearchIndex_2(type: SqlExecutor){
+    mustRunAfter 'transferSammelereignisPub'
+    def layerName = 'ch.so.afu.naturereigniskataster.prozessraum.sturz'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+}
+
+task updateSearchIndex_3(type: SqlExecutor){
+    mustRunAfter 'transferSammelereignisPub'
+    def layerName = 'ch.so.afu.naturereigniskataster.prozessraum.wasser'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+}
 
