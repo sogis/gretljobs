@@ -17,10 +17,12 @@ SELECT
             THEN 'ja'
         ELSE 'nein'
     END AS gestaltungsplanpflicht_txt,
-    bauzonenstatistik,
-    bauzonenstatistik_txt,
+    bebauungsstand,
+    bebauungsstand_txt,
     baureglement,
-    grundnutzung,
+    grundnutzung_typ_kt,
+    flaeche_beschnitten,
+	flaeche_unbebaut,
     unbebaut,
     CASE
         WHEN unbebaut=TRUE

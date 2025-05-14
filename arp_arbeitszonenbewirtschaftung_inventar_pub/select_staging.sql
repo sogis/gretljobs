@@ -1,35 +1,38 @@
--- Relevant sind alle Grundstücke, die innerhalb einer Arbeitszone liegen mit Angabe zu Nutzungsplanung
-WITH relevante_grundstuecke AS (
+-- Relevant sind alle Grundstücke, die innerhalb einer Arbeitszone liegen mit Angabe zu Nutzungsplanung. Quelle Bauzonenstatistik
+WITH relevante_grundstuecke_bauzonenstatistik AS (
     SELECT
-        DISTINCT ON (mg.egrid)
-        mg.t_id,
-        mg.geometrie,
-        mg.nummer,
+        st.t_id,
+        st.geometrie,
+        st.nummer,
+        CASE WHEN
+            st.bebauungsstand = 'unbebaut'
+                THEN 'unbebaut'
+        WHEN
+            st.bebauungsstand ILIKE  '%teilweise_bebaut%'
+                THEN 'teilweise_bebaut'
+        ELSE
+            'bebaut'
+        END AS bebauungsstand,
+        NULL AS nutzungsgrad,
+        st.grundnutzung_typ_kt,
+        st.flaeche_beschnitten,
+        st.flaeche_unbebaut,
         mg.flaechenmass,
         mg.grundbuch,
         mg.bfs_nr, -- BFS Nummer
         mg.gemeinde, -- Gemeindename
         mg.egrid      
     FROM
-       agi_mopublic_pub.mopublic_grundstueck mg
+       arp_auswertung_nutzungsplanung_pub_v1.bauzonenstatistik_liegenschaft_nach_bebauungsstand st
+    -- Wegen Attribut Grundbuch und Fläche mit AV noch verknüpfen
     JOIN
-       arp_nutzungsplanung_pub_v1.nutzungsplanung_grundnutzung ng 
+        agi_mopublic_pub.mopublic_grundstueck mg
     ON
-        ST_Intersects(mg.geometrie, ng.geometrie)
+        mg.egrid = st.egris_egrid 
     WHERE
-        ng.typ_code_kt in ( 120, 121, 122, 130, 131, 132, 133, 134 )
-        AND
-            ST_Area(ST_Intersection(mg.geometrie, ng.geometrie)) >= 5.0
-GROUP BY
-        mg.t_id,
-        mg.geometrie,
-        mg.nummer,
-        mg.grundbuch,
-        mg.flaechenmass,
-        mg.bfs_nr,
-        mg.gemeinde,
-        mg.egrid
+        substring(st.grundnutzung_typ_kt from 1 for 4) in ( 'N120', 'N121', 'N122', 'N130', 'N131', 'N132', 'N133', 'N134')
 ),
+
 -- Baureglement werden über die BFS-Nr zugewiesen. Achtung bei Fusionen gibt es theoretisch mehrere ZR und BR
 baureglement AS (
     SELECT
@@ -112,96 +115,6 @@ zonenreglement AS (
         t.bfs_nr
 ),
 
---Berechung von Bauzonenstatistik kann übernommen werden       
-bauzonenstatistik AS (
-    SELECT
-        st.egris_egrid AS egrid,
-        st.flaeche,
-        sum(st.flaeche_unbebaut) AS unbebaut_pro_grundstueck, -- Aggregieren der Aussage auf ein Grundstück. Die Grundstücke sind geschnitten
-        STRING_AGG(st.bebauungsstand, ', ') AS agg_bebauungsstand
-    FROM
-        arp_auswertung_nutzungsplanung_pub_v1.bauzonenstatistik_liegenschaft_nach_bebauungsstand st
-    GROUP BY
-    st.egris_egrid,
-    st.flaeche
-),
-
---Verschnitt mit Grundnutzung für Teilflächen und join mit Bauzonenstatistik 
-grundstueck_grundnutzung_bauzonenstatistik AS (
-    SELECT
-        gr.geometrie,
-        gr.nummer,
-        gr.flaechenmass, -- siehe oben
-        gr.grundbuch,
-        gr.bfs_nr, -- BFS Nummer
-        gr.gemeinde, -- Gemeindename
-        gr.egrid,
-        b.baureglement,
-        CASE WHEN
-            CAST(bz.unbebaut_pro_grundstueck AS numeric) / CAST(bz.flaeche AS numeric) >= 0.9
-                THEN 'ungenutzt_weniger_10Prozent'
-        WHEN
-             CAST(bz.unbebaut_pro_grundstueck AS numeric) / CAST(bz.flaeche AS numeric)  < 0.7
-                THEN 'genutzt_mehr_als_30Prozent'
-        ELSE
-            'teilgenutzt_zwischen_10_30Prozent'
-        END AS nutzungsgrad,
-        CASE WHEN
-            bz.agg_bebauungsstand = 'unbebaut'
-                THEN 'unbebaut'
-        WHEN
-            bz.agg_bebauungsstand ILIKE  '%teilweise_bebaut%'
-                THEN 'teilweise_bebaut'
-        ELSE
-            'bebaut'
-        END AS bebauungsstand,        
-        z.zonenreglement,
-         array_to_json(
-            array_agg(
-                json_build_object(
-                    '@type', 'SO_ARP_Arbeitszonenbewirtschaftung_Inventar_Staging_20241115.Arbeitszonenbewirtschaftung_Inventar.Grundnutzung',
-                    'Bezeichnung_Kanton', ng.typ_kt,
-                    'Flaeche', ROUND(ST_Area(ST_Intersection(gr.geometrie,ng.geometrie))),
-                    'Bezeichnung_Gemeinde', ng.typ_bezeichnung
-                )
-            )
-        )::jsonb AS grundnutzung
-    FROM
-        relevante_grundstuecke gr
-    LEFT JOIN
-       arp_nutzungsplanung_pub_v1.nutzungsplanung_grundnutzung ng 
-    ON
-        ST_Intersects(gr.geometrie, ng.geometrie)
-    LEFT JOIN
-    bauzonenstatistik bz
-    ON  gr.egrid=bz.egrid
-    LEFT JOIN
-        baureglement b
-    ON
-        b.bfs_nr=gr.bfs_nr::TEXT
-    LEFT JOIN
-        zonenreglement z
-    ON
-        z.bfs_nr=gr.bfs_nr::TEXT
-    WHERE
-        ST_Area(ST_Intersection(gr.geometrie, ng.geometrie)) >= 1.0
-    GROUP BY
-        gr.t_id,
-        gr.geometrie,
-        gr.nummer,
-        gr.grundbuch,
-        gr.flaechenmass,
-        gr.bfs_nr,
-        gr.gemeinde,
-        gr.egrid,
-        b.baureglement,
-        z.zonenreglement,
-        bz.unbebaut_pro_grundstueck,
-        bz.flaeche,
-        bz.agg_bebauungsstand
-        
-),
-
 -- Sammle alle Gestaltungspläne
 gestaltungsplaene AS (
     SELECT
@@ -249,6 +162,72 @@ gestaltungsplaene AS (
         t.titel
 ),
 
+relevante_grundstueck_reglement AS (
+    SELECT
+        gr.geometrie,
+        gr.nummer,
+        gr.flaechenmass, -- Grundstücksfläche
+        gr.bfs_nr, -- BFS Nummer
+        gr.gemeinde, -- Gemeindename
+        gr.grundbuch,
+        gr.egrid,
+        gr.bebauungsstand, 
+        gr.nutzungsgrad,
+        gr.grundnutzung_typ_kt,
+        gr.flaeche_beschnitten, -- von Bauzonenstatistik
+        gr.flaeche_unbebaut, -- von Bauzonenstatistik
+        b.baureglement, 
+        z.zonenreglement,
+        STRING_AGG(gp.textimweb, ' ') AS gestaltungsplan,
+        (
+            SELECT
+                ST_Within
+                (
+                    ST_PointOnSurface(gr.geometrie),
+                    (
+                        SELECT
+                            ST_Collect(geometrie)
+                        FROM
+                            arp_nutzungsplanung_pub_v1.nutzungsplanung_ueberlagernd_flaeche
+                        WHERE
+                            typ_code_kt = 620)
+                    )
+                ) AS gestaltungsplanpflicht
+    FROM
+        relevante_grundstuecke_bauzonenstatistik gr
+    -- Verknüpfe die Baureglemente pro Gemeinde Achtung bei Fusionen nicht immer korrekt 
+    LEFT JOIN
+        baureglement b
+    ON
+        b.bfs_nr=gr.bfs_nr::TEXT
+    -- Verknüpfe die Zonenreglemente pro Gemeinde Achtung bei Fusionen nicht immer korrekt 
+    LEFT JOIN
+        zonenreglement z
+    ON
+        z.bfs_nr=gr.bfs_nr::TEXT
+    -- Verknüpfe die Gestaltungspläne
+    LEFT JOIN
+        gestaltungsplaene gp
+    ON
+        ST_Within(ST_PointOnSurface(gr.geometrie), gp.geometrie)
+    GROUP BY
+        gr.t_id,
+        gr.geometrie,
+        gr.nummer,
+        gr.grundbuch,
+        gr.flaechenmass,
+        gr.bfs_nr,
+        gr.gemeinde,
+        gr.bebauungsstand, 
+        gr.nutzungsgrad,
+        gr.egrid,
+        b.baureglement,
+        z.zonenreglement,
+        gr.grundnutzung_typ_kt,
+        gr.flaeche_beschnitten,
+        gr.flaeche_unbebaut 
+),
+
 region AS (
     SELECT
         r.geometrie,
@@ -262,6 +241,7 @@ region AS (
 
 --alles zusammengefügt
 SELECT
+    DISTINCT (gbr.geometrie),
     gbr.geometrie,
     gbr.nummer AS grundstuecknummer,
     gbr.grundbuch,
@@ -271,38 +251,16 @@ SELECT
     'https://geo.so.ch/map/?property_egrid=' || gbr.egrid as eigentuemer,
     rr.aname AS region,
     gbr.nutzungsgrad,
-    gbr.bebauungsstand AS bauzonenstatistik,
     gbr.zonenreglement,
+    gbr.gestaltungsplan,
+    gbr.gestaltungsplanpflicht,
+    gbr.bebauungsstand,
     gbr.baureglement,
-    gbr.grundnutzung,
-    STRING_AGG(gp.textimweb, ' ') AS gestaltungsplan,
-    (
-        SELECT
-            ST_Within
-            (
-                ST_PointOnSurface(gbr.geometrie),
-                (
-                    SELECT
-                        ST_Collect(geometrie)
-                    FROM
-                        arp_nutzungsplanung_pub_v1.nutzungsplanung_ueberlagernd_flaeche
-                    WHERE
-                        typ_code_kt = 620)
-                )
-            ) AS gestaltungsplanpflicht
-   
+    gbr.grundnutzung_typ_kt,
+    gbr.flaeche_beschnitten,
+    gbr.flaeche_unbebaut
 FROM
-    grundstueck_grundnutzung_bauzonenstatistik gbr
--- Verknüpfe die Bauzonenstatistik
-LEFT JOIN
-    bauzonenstatistik lnb
-ON
-    gbr.egrid=lnb.egrid
--- Verknüpfe die Gestaltungspläne
-LEFT JOIN
-    gestaltungsplaene gp
-ON
-    ST_Within(ST_PointOnSurface(gbr.geometrie), gp.geometrie)
+    relevante_grundstueck_reglement gbr
 -- Verknüpfe die Region mit dem Grundstück
 LEFT JOIN
     region rr
@@ -312,13 +270,17 @@ GROUP BY
     gbr.geometrie,
     gbr.nummer,
     gbr.grundbuch,
-    gbr.gemeinde,
-    gbr.egrid,
     gbr.flaechenmass,
-    rr.aname,
+    gbr.bfs_nr,
+    gbr.gemeinde,
+    gbr.bebauungsstand,
     gbr.nutzungsgrad,
-    zonenreglement,
-    gestaltungsplanpflicht,
-    bauzonenstatistik,
-    gbr.grundnutzung,
-    baureglement
+    gbr.egrid,
+    gbr.baureglement,
+    gbr.zonenreglement,
+    gbr.grundnutzung_typ_kt,
+    gbr.flaeche_beschnitten,
+    gbr.flaeche_unbebaut,
+    gbr.gestaltungsplan,
+    gbr.gestaltungsplanpflicht,
+    rr.aname
