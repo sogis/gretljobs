@@ -23,15 +23,13 @@ tasks.register('validateCsv',  CsvValidator) {
     firstLineIsHeader = true
     valueSeparator = ';'
     valueDelimiter = null
-    dataFiles = [Paths.get(pathToTempFolder, "SO_bdg.csv").toFile()]
+    dataFiles = files(Paths.get(pathToTempFolder, "SO_bdg.csv"))
 }
 
 tasks.register('truncateImportTable', SqlExecutor) {
     dependsOn 'validateCsv'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = [
-            'truncate_table.sql'
-        ]
+    sqlFiles = files('truncate_table.sql')
 }
 
 tasks.register('importCsv',  CsvImport) {
@@ -42,15 +40,13 @@ tasks.register('importCsv',  CsvImport) {
     firstLineIsHeader = true
     valueSeparator = ';'
     valueDelimiter = null
-    dataFile = Paths.get(pathToTempFolder, "SO_bdg.csv").toFile()
+    dataFile = file(Paths.get(pathToTempFolder, "SO_bdg.csv"))
 }
 
 tasks.register('upsertWorkTable', SqlExecutor) {
     dependsOn 'importCsv'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = [
-            'upsert_data.sql'
-        ]
+    sqlFiles = files('upsert_data.sql')
 }
 
 tasks.register('transferData', Db2Db) {
