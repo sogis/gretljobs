@@ -130,8 +130,6 @@ task updateSearchIndex_1(type: SqlExecutor){
     ]
 }
 
-//todo: Probleme mit ch.(so.)afu... Namensraum
-
 task updateSearchIndex_2(type: SqlExecutor){
     mustRunAfter 'transferSammelereignisPub'
     def layerName = 'ch.so.afu.naturereigniskataster.prozessraum.sturz'
