@@ -121,7 +121,7 @@ task deleteFtpFiles(type: FtpDelete, dependsOn: execAllPubTasks) {
 task execAllProjAllTasks(dependsOn: deleteFtpFiles){}
 
 
-// für Aufruf der Defaulttasks in ../2_mopublic/build.gradle
+// Aufruf der entkoppelten Defaulttasks in ../2_mopublic/build.gradle
 task refreshSolr(){
     dependsOn ':2_mopublic:refreshSolr'
 }

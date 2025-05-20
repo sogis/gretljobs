@@ -114,7 +114,7 @@ pipeline {
                                     // Fallback für Multi-Project-Builds mit gruppierten Tasks
                                     //   Tasks müssen mit folgender Zeile erweitert werden:     group = 'search'
                                     if (line.trim().startsWith("Search tasks")) {
-                                        echo "Fallback: Suche nach gruppierten Search Tasks aktiviert."
+                                        echo "! Fallback: Suche nach gruppierten Search Tasks aktiviert."
                                         inSearchSection = true
                                     }
                                     else if (inSearchSection && line.trim() == "") {
