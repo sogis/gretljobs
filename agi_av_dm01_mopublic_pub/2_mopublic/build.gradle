@@ -65,7 +65,6 @@ task refreshSolr(type:Exec) {
 
 task updateSearchIndex_1(type: SqlExecutor){
     mustRunAfter 'placeInDatasets'
-    group = 'search'
     def layerName = 'ch.so.agi.av.bodenbedeckung'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
@@ -83,7 +82,6 @@ task updateSearchIndex_1(type: SqlExecutor){
 
 task updateSearchIndex_2(type: SqlExecutor){
     mustRunAfter 'placeInDatasets'
-    group = 'search'
     def layerName = 'ch.so.agi.av.gebaeudeadressen.gebaeudeeingaenge'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
@@ -101,7 +99,6 @@ task updateSearchIndex_2(type: SqlExecutor){
 
 task updateSearchIndex_3(type: SqlExecutor){
     mustRunAfter 'placeInDatasets'
-    group = 'search'
     def layerName = 'ch.so.agi.av.grundstuecke.rechtskraeftig'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
@@ -119,7 +116,6 @@ task updateSearchIndex_3(type: SqlExecutor){
 
 task updateSearchIndex_4(type: SqlExecutor){
     mustRunAfter 'placeInDatasets'
-    group = 'search'
     def layerName = 'ch.so.agi.av.grundstuecke.projektierte'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
@@ -137,7 +133,6 @@ task updateSearchIndex_4(type: SqlExecutor){
 
 task updateSearchIndex_5(type: SqlExecutor){
     mustRunAfter 'placeInDatasets'
-    group = 'search'
     def layerName = 'ch.so.agi.av.nomenklatur.flurnamen'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
@@ -155,7 +150,6 @@ task updateSearchIndex_5(type: SqlExecutor){
 
 task updateSearchIndex_6(type: SqlExecutor){
     mustRunAfter 'placeInDatasets'
-    group = 'search'
     def layerName = 'ch.so.agi.av.nomenklatur.gelaendenamen'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]

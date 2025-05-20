@@ -1,6 +1,6 @@
 import ch.so.agi.gretl.tasks.*
 
-rootProject.defaultTasks 'execAllProjAllTasks','refreshSolr', 'updateSearchIndex_1', 'updateSearchIndex_2', 'updateSearchIndex_3', 'updateSearchIndex_4', 'updateSearchIndex_5', 'updateSearchIndex_6'
+rootProject.defaultTasks 'execAllProjAllTasks','refreshSolr', 'updateSearchIndex_all'
 
 rootProject.ext.dm01SoDir = file("$buildDir/dm01_so/") // referenced from subprojects
 
@@ -120,12 +120,15 @@ task deleteFtpFiles(type: FtpDelete, dependsOn: execAllPubTasks) {
 
 task execAllProjAllTasks(dependsOn: deleteFtpFiles){}
 
-/*
-task refreshSolr(){}
-task updateSearchIndex_1(){}
-task updateSearchIndex_2(){}
-task updateSearchIndex_3(){}
-task updateSearchIndex_4(){}
-task updateSearchIndex_5(){}
-task updateSearchIndex_6(){}
-*/
+
+// für Aufruf der Defaulttasks in ../2_mopublic/build.gradle
+task refreshSolr(){
+    dependsOn ':2_mopublic:refreshSolr'
+}
+task updateSearchIndex_all(){
+    dependsOn ':2_mopublic:updateSearchIndex_1', ':2_mopublic:updateSearchIndex_2',':2_mopublic:updateSearchIndex_3',':2_mopublic:updateSearchIndex_4',':2_mopublic:updateSearchIndex_5',':2_mopublic:updateSearchIndex_6'
+
+    group = 'search'
+}
+
+
