@@ -1,4 +1,4 @@
-SET search_path to afu_wasserbewirtschaftung_pub_v2, public;
+SET search_path to agi_mopublic_pub, public;
 
 INSERT INTO ${db_schema}.feature (
     anzeige,            -- Anzeigetext
@@ -12,14 +12,16 @@ INSERT INTO ${db_schema}.feature (
 WITH
 index_base AS (
     SELECT
-        'ch.so.afu.gewaesserschutz.quellen'::text AS subclass,
+        'ch.so.agi.av.bodenbedeckung'::text AS subclass,
         t_id AS id_in_class,
-        concat('Nr: ', objektnummer, ' (VEGAS Quelle)')  AS displaytext,
-        objektnummer AS part_1,
-        'Objekt Nr Quelle'::text AS part_3,
+        concat('EGID: ', egid, ' (Gebäude)') AS displaytext,
+        egid AS part_1,
+        'Gebäude EGID Nr'::text AS part_3,
         (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
-        wassrbwrtschftung_quelle
+        mopublic_bodenbedeckung
+    WHERE
+        egid IS NOT NULL
 )
 SELECT
     displaytext AS anzeige,

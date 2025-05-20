@@ -41,13 +41,7 @@ task placeInDatasets(type: SqlExecutor, dependsOn: transferAgiMopublic){
     sqlFiles = ['dataset/create_bfs_dsets.sql', 'dataset/update_basket_refs.sql']
 }
 
-//task refreshSolr(dependsOn:placeInDatasets){}
-
-task refreshSolr(type:Exec, dependsOn:placeInDatasets) {
-    commandLine 'curl', '-i', '--max-time', '20', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.agi.av.bodenbedeckung,ch.so.agi.av.gebaeudeadressen.gebaeudeeingaenge,ch.so.agi.av.grundstuecke.rechtskraeftig,ch.so.agi.av.grundstuecke.projektierte,ch.so.agi.av.nomenklatur.flurnamen,ch.so.agi.av.nomenklatur.gelaendenamen'
-}
-
-task publish(type: Publisher, dependsOn: refreshSolr){
+task publish(type: Publisher, dependsOn: placeInDatasets){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbSchema = schemaNamePub
     dataIdent = 'ch.so.agi.av.mopublic'
@@ -63,3 +57,110 @@ task publish(type: Publisher, dependsOn: refreshSolr){
 }
 
 task execProjPubTasks(dependsOn: publish){}
+
+task refreshSolr(type:Exec) {
+    mustRunAfter 'placeInDatasets'
+    commandLine 'curl', '-i', '--max-time', '20', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.agi.av.bodenbedeckung,ch.so.agi.av.gebaeudeadressen.gebaeudeeingaenge,ch.so.agi.av.grundstuecke.rechtskraeftig,ch.so.agi.av.grundstuecke.projektierte,ch.so.agi.av.nomenklatur.flurnamen,ch.so.agi.av.nomenklatur.gelaendenamen'
+}
+
+task updateSearchIndex_1(type: SqlExecutor){
+    mustRunAfter 'placeInDatasets'
+    def layerName = 'ch.so.agi.av.bodenbedeckung'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+}
+
+task updateSearchIndex_2(type: SqlExecutor){
+    mustRunAfter 'placeInDatasets'
+    def layerName = 'ch.so.agi.av.gebaeudeadressen.gebaeudeeingaenge'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+}
+
+task updateSearchIndex_3(type: SqlExecutor){
+    mustRunAfter 'placeInDatasets'
+    def layerName = 'ch.so.agi.av.grundstuecke.rechtskraeftig'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+}
+
+task updateSearchIndex_4(type: SqlExecutor){
+    mustRunAfter 'placeInDatasets'
+    def layerName = 'ch.so.agi.av.grundstuecke.projektierte'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+}
+
+task updateSearchIndex_5(type: SqlExecutor){
+    mustRunAfter 'placeInDatasets'
+    def layerName = 'ch.so.agi.av.nomenklatur.flurnamen'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+}
+
+task updateSearchIndex_6(type: SqlExecutor){
+    mustRunAfter 'placeInDatasets'
+    def layerName = 'ch.so.agi.av.nomenklatur.gelaendenamen'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+}

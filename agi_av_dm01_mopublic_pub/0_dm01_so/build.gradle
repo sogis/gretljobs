@@ -1,6 +1,6 @@
 import ch.so.agi.gretl.tasks.*
 
-rootProject.defaultTasks 'execAllProjAllTasks'
+rootProject.defaultTasks 'execAllProjAllTasks','refreshSolr', 'updateSearchIndex_1', 'updateSearchIndex_2', 'updateSearchIndex_3', 'updateSearchIndex_4', 'updateSearchIndex_5', 'updateSearchIndex_6'
 
 rootProject.ext.dm01SoDir = file("$buildDir/dm01_so/") // referenced from subprojects
 
@@ -37,8 +37,8 @@ task downloadFiles(type: FtpDownload) {
                     if(!task.equals(it)) // it = this task
                         task.onlyIf(falseClosure)
                 }
-            }                
-        }          
+            }
+        }
     }
 }
 

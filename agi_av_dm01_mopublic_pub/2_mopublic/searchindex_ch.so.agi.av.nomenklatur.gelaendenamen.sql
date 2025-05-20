@@ -1,4 +1,4 @@
-SET search_path to afu_wasserbewirtschaftung_pub_v2, public;
+SET search_path to agi_mopublic_pub, public;
 
 INSERT INTO ${db_schema}.feature (
     anzeige,            -- Anzeigetext
@@ -12,14 +12,14 @@ INSERT INTO ${db_schema}.feature (
 WITH
 index_base AS (
     SELECT
-        'ch.so.afu.gewaesserschutz.fassungen'::text AS subclass,
+        'ch.so.agi.av.nomenklatur.gelaendenamen'::text AS subclass,
         t_id AS id_in_class,
-        concat('Nr: ', objektnummer, ' (VEGAS Fassung)')  AS displaytext,
-        objektnummer AS part_1,
-        'Objekt Nr Fassung'::text AS part_3,
-        (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
+        concat(gelaendename, ', ', gemeinde, ' (Geländename)') AS displaytext,
+        gelaendename AS part_1,
+        concat(gemeinde, ' Geländename') AS part_3,
+        (st_asgeojson(st_envelope(pos), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
-        wassrbwrtschftung_fassung
+        mopublic_gelaendename
 )
 SELECT
     displaytext AS anzeige,
