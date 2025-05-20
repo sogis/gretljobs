@@ -119,3 +119,11 @@ task deleteFtpFiles(type: FtpDelete, dependsOn: execAllPubTasks) {
 }
 
 task execAllProjAllTasks(dependsOn: deleteFtpFiles){}
+
+task refreshSolr(){}
+task updateSearchIndex_1(){}
+task updateSearchIndex_2(){}
+task updateSearchIndex_3(){}
+task updateSearchIndex_4(){}
+task updateSearchIndex_5(){}
+task updateSearchIndex_6(){}
