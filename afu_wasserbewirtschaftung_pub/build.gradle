@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'updateEnums', 'refreshSolr', 'updateSearchIndex_2', 'updateSearchIndex_3', 'updateSearchIndex_5', 'updateSearchIndex_6', 'updateSearchIndex_7', 'updateSearchIndex_8', 'updateSearchIndex_9', 'updateSearchIndex_10', 'updateSearchIndex_11', 'updateSearchIndex_12', 'updateSearchIndex_13', 'updateSearchIndex_14'
+defaultTasks 'updateEnums', 'refreshSolr', 'updateSearchIndex_2', 'updateSearchIndex_4', 'updateSearchIndex_5', 'updateSearchIndex_6', 'updateSearchIndex_7', 'updateSearchIndex_8', 'updateSearchIndex_9', 'updateSearchIndex_10', 'updateSearchIndex_11', 'updateSearchIndex_12', 'updateSearchIndex_13', 'updateSearchIndex_14'
 
 task transferAfuWasserbewirtschaftung(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
