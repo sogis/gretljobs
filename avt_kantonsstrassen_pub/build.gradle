@@ -8,10 +8,15 @@ defaultTasks 'refreshSolr'
 def shpNameAchsen = 'achsen.shp'
 def shpNamePunkte = 'bezugspunkte.shp'
 def pathToShpFolder = Paths.get(System.getProperty("java.io.tmpdir"), "avt_achsen").toString() 
-def uploadFile = 'upload/uploadFile'
+def zipFile = file("$buildDir/xyz.zip")
 
 task unpackShapes(type: Copy) {
-    from zipTree(uploadFile)
+    from zipTree(zipFile)
+    into pathToShpFolder
+}
+
+task unpackShapes(type: Copy, dependsOn: deleteAllFeatures) {
+    from zipTree(zipFile)
     into pathToShpFolder
 }
 
