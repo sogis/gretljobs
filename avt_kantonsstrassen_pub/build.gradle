@@ -11,13 +11,6 @@ def punkteFile = file("$buildDir/shapes/bezugspunkte.shp")
 def geschwFile = file("$buildDir/shapes/signalisierte_geschwindigkeit.shp")
 def zipFile = file("$buildDir/xyz.zip")
 
-/*
-docker compose run --rm -u $UID gretl --project-dir=avt_kantonsstrassen_pub importGeschwindigkeiten
-
-COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
-  gretl -PtopicName=avt_kantonsstrassen -PschemaDirName=schema_pub dropSchema createSchema configureSchema
-*/
-
 task deleteAllFeatures(type: SqlExecutor){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['delete_all_tables_all_rows.sql']
@@ -41,19 +34,6 @@ task importGeschwindigkeiten(type: ShpImport, dependsOn: validateGeschwindigkeit
     encoding = "UTF-8"
 }
 
-task validateAchsen(dependsOn: unpackShapes){
-} 
-
-task importAchsen(dependsOn: validateAchsen){
-}
-
-task validatePunkte(dependsOn: unpackShapes){
-} 
-
-task importPunkte(dependsOn: validatePunkte){
-}
-
-/*
 task validateAchsen(type: ShpValidator, dependsOn: unpackShapes){
     models = "SO_AVT_Kantonsstrassen_Publikation_20250521"
     dataFiles = [achsenFile]
@@ -76,10 +56,9 @@ task importPunkte(type: ShpImport, dependsOn: validatePunkte){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = "avt_kantonsstrassen_staging_v1"
     tableName = "bezugspunkt"
-    dataFile = punktefile
+    dataFile = punkteFile
     encoding = "UTF-8"
 }
-*/
 
 task publishFiles(type: Publisher){
     dependsOn "importGeschwindigkeiten", "importAchsen", "importPunkte"
@@ -90,15 +69,11 @@ task publishFiles(type: Publisher){
     dbSchema = "avt_kantonsstrassen_staging_v1"
     modelsToPublish = "SO_AVT_Kantonsstrassen_Publikation_20250521"
 
-    target = ["$buildDir"]
-
-/*
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-*/
 }
 
 task transferToPub(type: Db2Db, dependsOn: publishFiles){    
