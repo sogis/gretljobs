@@ -27,7 +27,7 @@ task unzipData(type: Copy, dependsOn: copyZipFile) {
 
 task filetransform(type: XslTransformer, dependsOn: unzipData) {
     description = "Kürzt die 'touristic_route_number' auf 10 Zeichen"
-    xslFile = 'touristicroutenumbertrafo.xslt'
+    xslFile = "touristicroutenumbertrafo.xslt"
     xmlFile = dataFile
     outDirectory = file("./upload/")
 }
