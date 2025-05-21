@@ -29,7 +29,7 @@ task filetransform(type: XslTransformer, dependsOn: unzipData) {
     description = "Kürzt die 'touristic_route_number' auf 10 Zeichen"
     xslFile = 'touristicroutenumbertrafo.xslt'
     xmlFile = dataFile
-    outDirectory = file(".")
+    outDirectory = file("./upload/")
 }
 
 task deleteFromWanderwegeTables(type: SqlExecutor, dependsOn: filetransform) {
