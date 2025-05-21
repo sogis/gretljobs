@@ -15,11 +15,6 @@ task unpackShapes(type: Copy) {
     into pathToShpFolder
 }
 
-task unpackShapes(type: Copy, dependsOn: deleteAllFeatures) {
-    from zipTree(zipFile)
-    into pathToShpFolder
-}
-
 task validate_achsen(type: ShpValidator, dependsOn: unpackShapes){
     models = "SO_AVT_Kantonsstrassen_Publikation_20200707"
     dataFiles = [Paths.get(pathToShpFolder, shpNameAchsen).toFile()]
