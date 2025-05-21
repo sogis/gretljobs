@@ -1,0 +1,3 @@
+DELETE FROM avt_kantonsstrassen_staging_v1.achse;
+DELETE FROM avt_kantonsstrassen_staging_v1.bezugspunkt;
+DELETE FROM avt_kantonsstrassen_staging_v1.signalisierte_geschwindigkeit;
