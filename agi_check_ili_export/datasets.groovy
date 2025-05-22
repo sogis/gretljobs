@@ -237,7 +237,7 @@ datasets.add(new Dataset("SO_ARP_Nutzungsvereinbarung_Publikation_20170223", "ar
 // datasets.add(new Dataset("SO_ARP_Richtplan_Publikation_20220630", "arp_richtplan_pub_v1", dbPub, "ch.so.arp.richtplan", true)) 
 
 datasets.add(new Dataset("SO_AVT_Groblaermkataster_20190709", "avt_groblaermkataster_pub", dbPub, "ch.so.avt.groblaermkataster", true)) 
-datasets.add(new Dataset("SO_AVT_Kantonsstrassen_Publikation_20200707", "avt_kantonsstrassen_pub", dbPub, "ch.so.avt.kantonsstrassen", true)) 
+datasets.add(new Dataset("SO_AVT_Kantonsstrassen_Publikation_20250521", "avt_kantonsstrassen_pub_v1", dbPub, "ch.so.avt.kantonsstrassen", true))
 datasets.add(new Dataset("SO_AVT_Kunstbauten_Publikation_20220207", "avt_kunstbauten_pub_v1", dbPub, "ch.so.avt.kunstbauten", true)) 
 datasets.add(new Dataset("SO_AVT_Oeffentlicher_Verkehr_20210205", "avt_oeffentlicher_verkehr_pub", dbPub, "ch.so.avt.oeffentlicher_verkehr", true)) 
 datasets.add(new Dataset("SO_AVT_Oev_Gueteklassen_20220120", "avt_oev_gueteklassen_pub_v1", dbPub, "ch.so.avt.oev_gueteklassen", true)) 

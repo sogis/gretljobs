@@ -3,5 +3,5 @@ SELECT
     bp.achsenumme AS achsenummer,
     bp.geometrie
 FROM
-    avt_kantonsstrassen_pub.bezugspunkt bp
+    avt_kantonsstrassen_pub_v1.bezugspunkt bp
 ;
