@@ -127,8 +127,6 @@ task refreshSolr(){
 }
 task updateSearchIndex_all(){
     dependsOn ':2_mopublic:updateSearchIndex_1', ':2_mopublic:updateSearchIndex_2',':2_mopublic:updateSearchIndex_3',':2_mopublic:updateSearchIndex_4',':2_mopublic:updateSearchIndex_5',':2_mopublic:updateSearchIndex_6'
-
-    group = 'search'
 }
 
 

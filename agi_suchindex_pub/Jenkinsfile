@@ -56,13 +56,13 @@ pipeline {
                         echo "Suche nach GRETL-Jobs mit Task: ${taskToRun}"
                         if (params.ONE_JOB_ONLY){
                             echo "Suche in GRETL-Job mit Namen: ${params.ONE_JOB_NAME}"
-                            gradleProjects = findFiles(glob: "${params.ONE_JOB_NAME.trim()}/**/build.gradle")
+                            gradleProjects = findFiles(glob: "${params.ONE_JOB_NAME.trim()}/*/*.gradle")
                             echo "Gefundener GRETL-Job: ${gradleProjects.size()}"
                         }
                         else {
                             // Alle build.gradle Dateien finden
                             echo "Suche in allen GRETL-Jobs"
-                            gradleProjects = findFiles(glob: "**/build.gradle")
+                            gradleProjects = findFiles(glob: "*/*.gradle")
                             echo "Gefundene GRETL-Jobs: ${gradleProjects.size()}"
                         }
 
@@ -105,12 +105,13 @@ pipeline {
                                     taskOutput = sh(script: "${gradleCommand} tasks --all", returnStdout: true).trim()
                                 }
 
-                                def inSearchSection = false
+                                //def inSearchSection = false
                                 taskOutput.readLines().each { line ->
                                     if (line.trim().startsWith("Default tasks:")) {
                                         defaultTaskLine = line.trim()
                                     }
 
+/*
                                     // Fallback für Multi-Project-Builds mit gruppierten Tasks
                                     //   Tasks müssen mit folgender Zeile erweitert werden:     group = 'search'
                                     if (line.trim().startsWith("Search tasks")) {
@@ -124,6 +125,7 @@ pipeline {
                                         // Task-Name extrahieren
                                         def taskName = line.trim().split(' ')[0]
                                         defaultTaskLine = defaultTaskLine ? "${defaultTaskLine},${taskName}" : taskName
+*/
                                     }
                                 }
 
