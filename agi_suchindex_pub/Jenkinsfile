@@ -56,18 +56,19 @@ pipeline {
                         echo "Suche nach GRETL-Jobs mit Task: ${taskToRun}"
                         if (params.ONE_JOB_ONLY){
                             echo "Suche in GRETL-Job mit Namen: ${params.ONE_JOB_NAME}"
-                            gradleProjects = findFiles(glob: "${params.ONE_JOB_NAME.trim()}/*/*.gradle")
-                            echo "Gefundener GRETL-Job: ${gradleProjects.size()}"
+                            gradleProjects = findFiles(glob: "${params.ONE_JOB_NAME.trim()}/*.gradle")
+                            echo "  Gefundene GRETL-Jobs: ${gradleProjects.size()}"
                         }
                         else {
                             // Alle build.gradle Dateien finden
                             echo "Suche in allen GRETL-Jobs"
                             gradleProjects = findFiles(glob: "*/*.gradle")
-                            echo "Gefundene GRETL-Jobs: ${gradleProjects.size()}"
+                            echo "  Gefundene GRETL-Jobs: ${gradleProjects.size()}"
                         }
 
                         // Statistik
                         def jobsFound = 0
+                        def jobsErrors = 0
                         def tasksFound = 0
                         def tasksExecuted = 0
 
@@ -75,6 +76,8 @@ pipeline {
                         gradleProjects.each { project ->
                             def projectPath = project.path
                             def projectDir = projectPath.substring(0, projectPath.lastIndexOf('/'))
+
+                            def isSettingsGradle = projectPath.contains("settings.gradle")
 
                             //echo "Prüfe GRETL-Job in: ${projectDir}"
 
@@ -85,9 +88,14 @@ pipeline {
                                 // Verschiedene Muster für Task-Definitionen suchen
                                 def containsTask = (buildFileContent =~ /${taskToRun}/).find()
 
+
                                 if (containsTask) {
                                     echo '__________________________________________________________'
                                     echo "🔎 Task(s) vom Typ '${taskToRun}' in ${projectDir} gefunden"
+                                }
+                                else if (isSettingsGradle){
+                                    echo '__________________________________________________________'
+                                    echo "🔎 Prüfe Multi-Project-Build in ${projectDir}"
                                 }
                                 else{
                                     // Überspringen des Projects, wenn kein Task gefunden werden kann
@@ -105,7 +113,7 @@ pipeline {
                                     taskOutput = sh(script: "${gradleCommand} tasks --all", returnStdout: true).trim()
                                 }
 
-                                //def inSearchSection = false
+
                                 taskOutput.readLines().each { line ->
                                     if (line.trim().startsWith("Default tasks:")) {
                                         defaultTaskLine = line.trim()
@@ -125,8 +133,8 @@ pipeline {
                                         // Task-Name extrahieren
                                         def taskName = line.trim().split(' ')[0]
                                         defaultTaskLine = defaultTaskLine ? "${defaultTaskLine},${taskName}" : taskName
-*/
                                     }
+*/
                                 }
 
                                 if (defaultTaskLine) {
@@ -194,7 +202,10 @@ pipeline {
 
                             } catch (Exception e) {
                                 echo "❌ Fehler beim Lesen oder Verarbeiten der build.gradle in ${projectDir}: ${e.message}"
-                                currentBuild.result = 'FAILED'
+                                jobsErrors++;
+                                if (!isSettingsGradle){
+                                    currentBuild.result = 'FAILED'
+                                }
                             }
                         }
 
@@ -203,6 +214,7 @@ pipeline {
                         echo "Task-Name: ${taskToRun}"
                         echo "Gefundene GRETL-Jobs: ${gradleProjects.size()}"
                         echo "GRETL-Jobs mit Task '${taskToRun}': ${jobsFound}"
+                        echo "  davon fehlerhafte GRETL-Jobs: ${jobsErrors}"
                         echo "Geplante auszuführende Tasks:  ${tasksFound}"
                         echo "Erfolgreich ausgeführte Tasks: ${tasksExecuted}"
                         echo "===================================================="
