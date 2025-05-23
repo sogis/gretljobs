@@ -12,7 +12,13 @@ task transferAvGbAdminEinteilungen(type: Db2Db){
     ];
 }
 
-task publipub(type: Publisher, dependsOn:'transferAvGbAdminEinteilungen'){
+task transferDMAV(type: SqlExecutor, ependsOn:'transferAvGbAdminEinteilungen') {
+    description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_transfer."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["dmav_transfer.sql"]
+}
+
+task publipub(type: Publisher, dependsOn:'transferDMAV'){
   dataIdent = "ch.so.agi.av.administrative_einteilung"
   userFormats = true
   database = [dbUriPub,dbUserPub,dbPwdPub]
