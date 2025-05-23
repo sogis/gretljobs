@@ -12,7 +12,7 @@ task transferAvGbAdminEinteilungen(type: Db2Db){
     ];
 }
 
-task transferDMAV(type: SqlExecutor, ependsOn:'transferAvGbAdminEinteilungen') {
+task transferDMAV(type: SqlExecutor, dependsOn:'transferAvGbAdminEinteilungen') {
     description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_transfer."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ["dmav_transfer.sql"]
