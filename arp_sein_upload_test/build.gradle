@@ -1,0 +1,38 @@
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+import java.nio.file.Files
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
+defaultTasks 'upload'
+
+remotes {
+    ftpServer {
+        host = "${sftpServerSEinApp}" 
+        user = "${sftpUserSEinApp}"
+    }
+}
+
+
+tasks.register('upload') {
+    description = "Upload file to FTP server; note that the upload is performed only in production environment."
+    // onlyIf {
+    //     gretlEnvironment == 'production'
+    // }
+
+    doLast {
+        ssh.settings {
+            knownHosts = allowAnyHosts
+        }
+        ssh.run {
+            session(remotes.ftpServer) {
+                put from: "fubar.xml", into: "." ///opt/daten/gis_arp_raumdaten/test ??
+            }
+        }
+        println "File uploaded to FTP server"
+    }
+}
+
