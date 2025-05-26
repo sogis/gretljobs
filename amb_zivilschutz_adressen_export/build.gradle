@@ -6,10 +6,10 @@ apply plugin: 'org.hidetake.ssh'
 
 
 remotes {
-    ftpServer {
-        host = "${ftpServerZivilschutz}"
-        user = "${ftpUserZivilschutz}"
-        password = "${ftpPwdZivilschutz}"
+    sftpServer {
+        host = "${sftpServerZivilschutz}"
+        user = "${sftpUserZivilschutz}"
+        password = "${sftpPwdZivilschutz}"
     }
 }
 
@@ -51,7 +51,7 @@ task deleteCsvFile(type: Delete){
 }
 
 task uploadCsvFile(dependsOn: replaceStatus) {
-    description = "Upload file to FTP server; note that the upload is performed only in production environment"
+    description = "Upload file to SFTP server; note that the upload is performed only in production environment"
     onlyIf {
         gretlEnvironment == 'production'
     }
@@ -60,11 +60,11 @@ task uploadCsvFile(dependsOn: replaceStatus) {
             knownHosts = allowAnyHosts
         }
         ssh.run {
-            session(remotes.ftpServer) {
+            session(remotes.sftpServer) {
                 put from: "${csvFileName}", into: "."
             }
         }
-        println "File uploaded to FTP server"
+        println "File uploaded to SFTP server"
     }
     finalizedBy deleteCsvFile
 }
