@@ -111,11 +111,11 @@ git checkout -b branchname
   * `ftpServerFledermaus`, `ftpUserFledermaus`, `ftpPwdFledermaus`
   * `ftpServerInfogrips`, `ftpUserInfogrips`, `ftpPwdInfogrips`
   * `ftpServerWaldportal`, `ftpUserWaldportal`, `ftpPwdWaldportal`
-  * `ftpServerZivilschutz`, `ftpUserZivilschutz`, `ftpPwdZivilschutz`
   * `sftpServerGelan`, `sftpUserGelan`, `sftpPwdGelan`
   * `sftpServerSEinApp`, `sftpUserSEinApp`
   * `sftpUrlSogis`, `sftpUserSogis`, `sftpPwdSogis`
   * für Datentransfer Gemdat: `host = sftpServerSogis`, `user = sftpUserSogisGemdat`, `identity = file('/home/gradle/.sshkeys/id_rsa')`
+  * `sftpServerZivilschutz`, `sftpUserZivilschutz`, `sftpPwdZivilschutz`
   * `aiServer`, `aiUser`, `aiPwd`
   * `infofloraUser`, `infofloraPwd`
   * `igelToken`
