@@ -82,7 +82,10 @@ task transferToPub(type: Db2Db, dependsOn: publishFiles){
     transferSets = [
         new TransferSet('bezugspunkt.sql', 'avt_kantonsstrassen_pub_v1.bezugspunkt', true),
         new TransferSet('achse.sql', 'avt_kantonsstrassen_pub_v1.achse', true),
-        new TransferSet('signalisierte_geschwindigkeit.sql', 'avt_kantonsstrassen_pub_v1.signalisierte_geschwindigkeit', true)
+        new TransferSet('signalisierte_geschwindigkeit.sql', 'avt_kantonsstrassen_pub_v1.signalisierte_geschwindigkeit', true),
+        // temporärer Transfer in altes Schema. Im Verlauf des Juni abräumen.
+        new TransferSet('bezugspunkt.sql', 'avt_kantonsstrassen_pub.bezugspunkt', true),
+        new TransferSet('achse.sql', 'avt_kantonsstrassen_pub.achse', true),
     ];
 }
 
