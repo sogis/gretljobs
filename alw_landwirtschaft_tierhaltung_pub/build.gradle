@@ -111,7 +111,7 @@ task updateSearchIndex_2(type: SqlExecutor){
 
 task updateSearchIndex_3(type: SqlExecutor){
     mustRunAfter 'transferALWAgrardaten'
-    def layerName = 'searchindex_ch.so.alw.landwirtschaft_tierhaltung.kulturflaechen_bff_qualitaetsstufe_I'
+    def layerName = 'ch.so.alw.landwirtschaft_tierhaltung.kulturflaechen_bff_qualitaetsstufe_I'
     def sqlFileName = 'searchindex_' + layerName.replace('_geschuetzt', '') + '.sql'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
@@ -132,7 +132,7 @@ task updateSearchIndex_3(type: SqlExecutor){
 
 task updateSearchIndex_4(type: SqlExecutor){
     mustRunAfter 'transferALWAgrardaten'
-    def layerName = 'searchindex_ch.so.alw.landwirtschaft_tierhaltung.kulturflaechen_bff_qualitaetsstufe_I_geschuetzt'
+    def layerName = 'ch.so.alw.landwirtschaft_tierhaltung.kulturflaechen_bff_qualitaetsstufe_I_geschuetzt'
     def sqlFileName = 'searchindex_' + layerName.replace('_geschuetzt', '') + '.sql'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
