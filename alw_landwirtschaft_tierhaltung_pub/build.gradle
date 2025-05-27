@@ -85,7 +85,7 @@ task updateSearchIndex_1(type: SqlExecutor){
             sqlFileName
     ]
     doLast {
-        println '   used file: ' + sqlFileName
+        println '   updated layer: ' + layerName
     }
 }
 
@@ -108,7 +108,7 @@ task updateSearchIndex_2(type: SqlExecutor){
             sqlFileName
     ]
     doLast {
-        println '   used file: ' + sqlFileName
+        println '   updated layer: ' + layerName
     }
 }
 
