@@ -85,7 +85,7 @@ task updateSearchIndex_1(type: SqlExecutor){
 
 task updateSearchIndex_2(type: SqlExecutor){
     mustRunAfter 'transferALWAgrardaten'
-    def layerName = 'ch.so.alw.landwirtschaft_tierhaltung.kulturflaechen_hauptkategorie'
+    def layerName = 'ch.so.alw.landwirtschaft_tierhaltung.kulturflaechen_hauptkategorien'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
     def dbSearchSchema = dbSearchSchemaPub
