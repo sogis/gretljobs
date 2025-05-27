@@ -9,7 +9,7 @@ import java.nio.file.Paths
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks "refreshSolr"
+defaultTasks 'transferALWAgrardaten', 'refreshSolr', 'updateSearchIndex_1', 'updateSearchIndex_2', 'updateSearchIndex_3'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
@@ -61,6 +61,58 @@ task transferALWAgrardaten(type: Db2Db, dependsOn: importGELAN){
     ];
 }
 
-task refreshSolr(type:Exec, dependsOn:'transferALWAgrardaten') {
+task refreshSolr(type:Exec) {
+    mustRunAfter 'transferALWAgrardaten'
 	commandLine 'curl', '-i', '--max-time', '20', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.alw.bienenstandorte_und_sperrgebiete.bienenstandorte,ch.so.alw.bienenstandorte_und_sperrgebiete.bienenstandorte_geschuetzt,ch.so.alw.landwirtschaft_tierhaltung.kulturflaechen_bff_qualitaetsstufe_I,ch.so.alw.landwirtschaft_tierhaltung.kulturflaechen_bff_qualitaetsstufe_I_geschuetzt,ch.so.alw.landwirtschaft_tierhaltung.kulturflaechen_hauptkategorien,ch.so.alw.landwirtschaft_tierhaltung.kulturflaechen_hauptkategorien_geschuetzt,ch.so.alw.landwirtschaft_tierhaltung.kultur_punktelement_bff_qualitaetsstufe_I,ch.so.alw.landwirtschaft_tierhaltung.kultur_punktelement_bff_qualitaetsstufe_I_geschuetzt'
+}
+
+task updateSearchIndex_1(type: SqlExecutor){
+    mustRunAfter 'transferALWAgrardaten'
+    def layerName = 'ch.so.alw.bienenstandorte_und_sperrgebiete.bienenstandorte'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+}
+
+task updateSearchIndex_2(type: SqlExecutor){
+    mustRunAfter 'transferALWAgrardaten'
+    def layerName = 'ch.so.alw.landwirtschaft_tierhaltung.kulturflaechen_hauptkategorie'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+}
+
+task updateSearchIndex_3(type: SqlExecutor){
+    mustRunAfter 'transferALWAgrardaten'
+    def layerName = 'ch.so.alw.landwirtschaft_tierhaltung.kultur_punktelement_bff_qualitaetsstufe_I'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
 }
