@@ -9,7 +9,7 @@ import java.nio.file.Paths
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'transferALWAgrardaten', 'refreshSolr', 'updateSearchIndex_1', 'updateSearchIndex_2', 'updateSearchIndex_3'
+defaultTasks 'transferALWAgrardaten', 'refreshSolr', 'updateSearchIndex_1', 'updateSearchIndex_2', 'updateSearchIndex_3', 'updateSearchIndex_4'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
@@ -85,7 +85,7 @@ task updateSearchIndex_1(type: SqlExecutor){
 
 task updateSearchIndex_2(type: SqlExecutor){
     mustRunAfter 'transferALWAgrardaten'
-    def layerName = 'ch.so.alw.landwirtschaft_tierhaltung.kulturflaechen_hauptkategorien'
+    def layerName = 'ch.so.alw.bienenstandorte_und_sperrgebiete.bienenstandorte_geschuetzt'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
     def dbSearchSchema = dbSearchSchemaPub
@@ -101,6 +101,23 @@ task updateSearchIndex_2(type: SqlExecutor){
 }
 
 task updateSearchIndex_3(type: SqlExecutor){
+    mustRunAfter 'transferALWAgrardaten'
+    def layerName = 'ch.so.alw.landwirtschaft_tierhaltung.kulturflaechen_hauptkategorien'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+}
+
+task updateSearchIndex_4(type: SqlExecutor){
     mustRunAfter 'transferALWAgrardaten'
     def layerName = 'ch.so.alw.landwirtschaft_tierhaltung.kultur_punktelement_bff_qualitaetsstufe_I'
 

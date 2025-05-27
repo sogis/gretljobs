@@ -12,7 +12,7 @@ INSERT INTO ${db_schema}.feature (
 WITH
 index_base AS (
     SELECT
-        'ch.so.alw.bienenstandorte_und_sperrgebiete.bienenstandorte'::text AS subclass,
+        ${layername}::text AS subclass,
         t_id AS id_in_class,
         concat('Nr: ', bienenstand_nummer, ' (Bienenstandort)') AS displaytext,
         bienenstand_nummer AS part_1,
