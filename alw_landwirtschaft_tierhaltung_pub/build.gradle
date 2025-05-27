@@ -96,7 +96,7 @@ task updateSearchIndex_2(type: SqlExecutor){
     ]
     sqlFiles = [
             '../searchindex_deleteFeatures.sql',
-            'searchindex_' + layerName + '.sql'
+            'searchindex_ch.so.alw.bienenstandorte_und_sperrgebiete.bienenstandorte.sql'
     ]
 }
 
