@@ -12,7 +12,7 @@ INSERT INTO ${db_schema}.feature (
 WITH
 index_base AS (
     SELECT
-        'ch.so.alw.landwirtschaft_tierhaltung.kultur_punktelement_bff_qualitaetsstufe_I'::text AS subclass,
+        ${layername}::text AS subclass,
         t_id AS id_in_class,
         concat('GeoID: ', kultur_id, ' (Kultur)') AS displaytext,
         kultur_id AS part_1,
