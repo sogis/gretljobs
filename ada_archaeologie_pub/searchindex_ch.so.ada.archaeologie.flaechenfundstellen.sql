@@ -12,7 +12,7 @@ INSERT INTO ${db_schema}.feature (
 WITH
 index_base AS (
     SELECT
-        'ch.so.ada.archaeologie.flaechenfundstellen'::text AS subclass,
+        ${layername}::text AS subclass,
         t_id AS id_in_class,
         concat('Nr: ',fundstellen_nummer,' (Flächenfundstelle)') AS displaytext,
         concat(' ',fundstellen_nummer)  AS part_1,

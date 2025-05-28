@@ -14,7 +14,7 @@ INSERT INTO ${db_schema}.feature (
 WITH
 index_base AS (
     SELECT
-        'ch.so.afu.abbaustellen'::text AS subclass,
+        ${layername}::text AS subclass,
         t_id AS id_in_class,
         concat('Nr: ',bezeichnung,' (Abbaustelle)') AS displaytext,
         concat(' ',bezeichnung)  AS part_1,

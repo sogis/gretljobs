@@ -101,6 +101,9 @@ task updateSearchIndex(type: SqlExecutor){
         '../searchindex_deleteFeatures.sql',
         'searchindex_' + layerName + '.sql'
     ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
 }
 
 

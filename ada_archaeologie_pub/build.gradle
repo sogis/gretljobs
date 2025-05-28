@@ -86,69 +86,81 @@ task refreshSolr(type:Exec) {
 }
 
 task updateSearchIndex_1(type: SqlExecutor){
-        mustRunAfter 'publishPub'
-        def layerName = 'ch.so.ada.archaeologie.punktfundstellen'
+    mustRunAfter 'publishPub'
+    def layerName = 'ch.so.ada.archaeologie.punktfundstellen'
 
-        database = [dbUriPub, dbUserPub, dbPwdPub]
-        def dbSearchSchema = dbSearchSchemaPub
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
 
-        String layerNameString = "'${layerName}'"
-        sqlParameters = [
-                [layername: layerNameString, db_schema: dbSearchSchema]
-        ]
-        sqlFiles = [
-                '../searchindex_deleteFeatures.sql',
-                'searchindex_' + layerName + '.sql'
-        ]
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
 }
 
 task updateSearchIndex_2(type: SqlExecutor){
-        mustRunAfter 'publishPub'
-        def layerName = 'ch.so.ada.archaeologie.punktfundstellen_geschuetzt'
+    mustRunAfter 'publishPub'
+    def layerName = 'ch.so.ada.archaeologie.punktfundstellen_geschuetzt'
 
-        database = [dbUriPub, dbUserPub, dbPwdPub]
-        def dbSearchSchema = dbSearchSchemaPub
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
 
-        String layerNameString = "'${layerName}'"
-        sqlParameters = [
-                [layername: layerNameString, db_schema: dbSearchSchema]
-        ]
-        sqlFiles = [
-                '../searchindex_deleteFeatures.sql',
-                'searchindex_' + layerName + '.sql'
-        ]
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
 }
 
 task updateSearchIndex_3(type: SqlExecutor){
-        mustRunAfter 'publishPub'
-        def layerName = 'ch.so.ada.archaeologie.flaechenfundstellen'
+    mustRunAfter 'publishPub'
+    def layerName = 'ch.so.ada.archaeologie.flaechenfundstellen'
 
-        database = [dbUriPub, dbUserPub, dbPwdPub]
-        def dbSearchSchema = dbSearchSchemaPub
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
 
-        String layerNameString = "'${layerName}'"
-        sqlParameters = [
-                [layername: layerNameString, db_schema: dbSearchSchema]
-        ]
-        sqlFiles = [
-                '../searchindex_deleteFeatures.sql',
-                'searchindex_' + layerName + '.sql'
-        ]
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
 }
 
 task updateSearchIndex_4(type: SqlExecutor){
-        mustRunAfter 'publishPub'
-        def layerName = 'ch.so.ada.archaeologie.flaechenfundstellen_geschuetzt'
+    mustRunAfter 'publishPub'
+    def layerName = 'ch.so.ada.archaeologie.flaechenfundstellen_geschuetzt'
 
-        database = [dbUriPub, dbUserPub, dbPwdPub]
-        def dbSearchSchema = dbSearchSchemaPub
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
 
-        String layerNameString = "'${layerName}'"
-        sqlParameters = [
-                [layername: layerNameString, db_schema: dbSearchSchema]
-        ]
-        sqlFiles = [
-                '../searchindex_deleteFeatures.sql',
-                'searchindex_' + layerName + '.sql'
-        ]
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
 }
