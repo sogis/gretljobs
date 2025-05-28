@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'publishPub'
+defaultTasks 'publishPub', 'refreshSolr', 'updateSearchIndex_1', 'updateSearchIndex_2', 'updateSearchIndex_3', 'updateSearchIndex_4'
 
 
 task transferAwjfWaldplanUebersichtPub(type: Db2Db) {
@@ -11,7 +11,7 @@ task transferAwjfWaldplanUebersichtPub(type: Db2Db) {
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
              new TransferSet('awjf_waldplan_bestandeskarte_uebersicht_pub.sql', 'awjf_waldplan_bestandeskarte_pub_v1.waldplan_uebersicht', true)
-    ];        
+    ];
 }
 
 task transferAwjfWaldplanPub(type: Db2Db, dependsOn: transferAwjfWaldplanUebersichtPub) {
@@ -19,14 +19,10 @@ task transferAwjfWaldplanPub(type: Db2Db, dependsOn: transferAwjfWaldplanUebersi
     targetDb = sourceDb
     transferSets = [
             new TransferSet('awjf_waldplan_bestandeskarte_pub.sql', 'awjf_waldplan_bestandeskarte_pub_v1.waldplan_bestandeskarte', true)
-    ];        
+    ];
 }
 
-task refreshSolr(type: Exec, dependsOn: transferAwjfWaldplanPub) {
-    commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.bestandeskarte_wald_flaechen,ch.so.awjf.waldplan.waldeigentum,ch.so.awjf.waldplan.waldfunktion,ch.so.awjf.waldplan.waldplantyp'
-}
-
-task publishPub(type: Publisher, dependsOn: 'refreshSolr') {
+task publishPub(type: Publisher, dependsOn: 'transferAwjfWaldplanPub') {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.awjf.waldplan_bestandeskarte"
     dbSchema = "awjf_waldplan_bestandeskarte_pub_v1"
@@ -38,4 +34,93 @@ task publishPub(type: Publisher, dependsOn: 'refreshSolr') {
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+task refreshSolr(type: Exec) {
+    mustRunAfter 'publishPub'
+    commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.bestandeskarte_wald_flaechen,ch.so.awjf.waldplan.waldeigentum,ch.so.awjf.waldplan.waldfunktion,ch.so.awjf.waldplan.waldplantyp'
+}
+
+task updateSearchIndex_1(type: SqlExecutor){
+    mustRunAfter 'publishPub'
+    def layerName = 'ch.so.awjf.bestandeskarte_wald_flaechen'
+    def sqlFileName = 'searchindex_' + layerName + '.sql'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
+
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+task updateSearchIndex_2(type: SqlExecutor){
+    mustRunAfter 'publishPub'
+    def layerName = 'ch.so.awjf.waldplan.waldeigentum'
+    def sqlFileName = 'searchindex_' + layerName + '.sql'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
+
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+task updateSearchIndex_3(type: SqlExecutor){
+    mustRunAfter 'publishPub'
+    def layerName = 'ch.so.awjf.waldplan.waldfunktion'
+    def sqlFileName = 'searchindex_' + layerName + '.sql'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
+
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+task updateSearchIndex_4(type: SqlExecutor){
+    mustRunAfter 'publishPub'
+    def layerName = 'ch.so.awjf.waldplan.waldplantyp'
+    def sqlFileName = 'searchindex_' + layerName + '.sql'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
+
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
 }
