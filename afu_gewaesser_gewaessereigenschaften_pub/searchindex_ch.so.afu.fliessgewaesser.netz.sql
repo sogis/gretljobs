@@ -14,7 +14,7 @@ INSERT INTO ${db_schema}.feature (
 WITH
 index_base AS (
     SELECT
-        'ch.so.afu.fliessgewaesser.netz'::text AS subclass,
+        ${layername}::text AS subclass,
         gnrso AS id_in_class,
         aname AS name_in_class,
         concat(aname, ' |  Nr. ', gnrso, ' (Fliessgewässer)')  AS displaytext,

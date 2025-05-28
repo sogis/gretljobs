@@ -14,7 +14,7 @@ INSERT INTO ${db_schema}.feature (
 WITH
 index_base AS (
     SELECT
-        'ch.so.afu.asiatische_hornisse'::text AS subclass,
+        ${layername}::text AS subclass,
         t_id AS id_in_class,
         concat('Nr: ',nummer,' (Sichtungsmeldung)') AS displaytext,
         concat(' ',nummer)  AS part_1,

@@ -12,7 +12,7 @@ INSERT INTO ${db_schema}.feature (
 WITH
 index_base AS (
     SELECT
-        'ch.so.afu.geotope.aufschluss'::text AS subclass,
+        ${layername}::text AS subclass,
         t_id AS id_in_class,
         concat('Name: ', objektname, ' (Geotope Aufschluss)') AS displaytext,
         objektname  AS part_1,

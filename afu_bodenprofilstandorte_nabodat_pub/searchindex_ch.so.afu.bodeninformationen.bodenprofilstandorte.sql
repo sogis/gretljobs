@@ -12,7 +12,7 @@ INSERT INTO ${db_schema}.feature (
 WITH
 index_base AS (
     SELECT
-        'ch.so.afu.bodeninformationen.bodenprofilstandorte'::text AS subclass,
+        ${layername}::text AS subclass,
         t_id AS id_in_class,
         concat('Nr: ', (profilnummer::text || ' '::text) || flurname::text, ' (Bodenprofil)') AS displaytext,
         (profilnummer::text || ' '::text) || flurname::text  AS part_1,

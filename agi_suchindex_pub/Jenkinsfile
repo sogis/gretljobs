@@ -24,7 +24,7 @@ pipeline {
                 name: 'ONE_JOB_ONLY'
         )
 
-        string(name: 'ONE_JOB_NAME', defaultValue: 'ada_archaeologie_pub', description: 'Name of the only GRETL job to be started to rebuild the feature search index')
+        string(name: 'ONE_JOB_NAME', defaultValue: 'ada_archaeologie_pub', description: 'Name of the only GRETL job to be started to rebuild the feature search index. It is possible to provide wildcards, like afu_*')
     }
 
     stages {
@@ -55,15 +55,19 @@ pipeline {
 
                         echo "Suche nach GRETL-Jobs mit Task: ${taskToRun}"
                         if (params.ONE_JOB_ONLY){
-                            echo "Suche in GRETL-Job mit Namen: ${params.ONE_JOB_NAME}"
-                            gradleProjects = findFiles(glob: "${params.ONE_JOB_NAME.trim()}/*.gradle")
+                            def rawName = params.ONE_JOB_NAME.trim()
+                            //verhindere Path Traversal
+                            def cleanedName = rawName.replaceAll(/^([.]{1,2}\/)+|^\/+/, "")
+
+                            echo "Suche in GRETL-Job mit Namen: ${cleanedName}"
+                            gradleProjects = findFiles(glob: "${cleanedName}/*.gradle")
                             echo "  Gefundene GRETL-Jobs: ${gradleProjects.size()}"
                         }
                         else {
                             // Alle build.gradle Dateien finden
                             echo "Suche in allen GRETL-Jobs"
                             gradleProjects = findFiles(glob: "*/*.gradle")
-                            echo "  Gefundene GRETL-Jobs: ${gradleProjects.size()}"
+                            echo "  Gefundene potentielle GRETL-Jobs: ${gradleProjects.size()}"
                         }
 
                         // Statistik
@@ -212,6 +216,12 @@ pipeline {
                         // Zusammenfassung ausgeben
                         echo "======= Zusammenfassung ============================"
                         echo "Task-Name: ${taskToRun}"
+                        if (params.ONE_JOB_ONLY){
+                            def rawName = params.ONE_JOB_NAME.trim()
+                            //verhindere Path Traversal
+                            def cleanedName = rawName.replaceAll(/^([.]{1,2}\/)+|^\/+/, "")
+                            echo "Suche nur GRETL-Jobs mit Namen: ${cleanedName}"
+                        }
                         echo "Gefundene GRETL-Jobs: ${gradleProjects.size()}"
                         echo "GRETL-Jobs mit Task '${taskToRun}': ${jobsFound}"
                         echo "  davon fehlerhafte GRETL-Jobs: ${jobsErrors}"
