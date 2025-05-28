@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPub', 'refreshSolr', 'updateSearchIndex'
+defaultTasks 'publishPub', 'refreshSolr', 'updateSearchIndex_1', 'updateSearchIndex_2'
 
 task transferAwjfFischerei(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -27,23 +27,48 @@ task publishPub(type: Publisher, dependsOn: 'transferAwjfFischerei'){
 }
 
 task refreshSolr(type:Exec) {
-        mustRunAfter 'publishPub'
-	    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.gewaesser.fischereireviere'
+    mustRunAfter 'publishPub'
+	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.gewaesser.fischereireviere'
 }
 
-task updateSearchIndex(type: SqlExecutor){
-        mustRunAfter 'publishPub'
+task updateSearchIndex_1(type: SqlExecutor){
+    mustRunAfter 'publishPub'
+    def layerName = 'ch.so.awjf.gewaesser.fischereireviere'
+    def sqlFileName = 'searchindex_' + layerName + '.sql'
 
-        database = [dbUriPub, dbUserPub, dbPwdPub]
-        def dbSearchSchema = dbSearchSchemaPub
-        def layerName = 'ch.so.awjf.gewaesser.fischereireviere'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
 
-        String layerNameString = "'${layerName}'"
-        sqlParameters = [
-                [layername: layerNameString, db_schema: dbSearchSchema]
-        ]
-        sqlFiles = [
-                '../searchindex_deleteFeatures.sql',
-                'searchindex_' + layerName + '.sql'
-        ]
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+task updateSearchIndex_2(type: SqlExecutor){
+    mustRunAfter 'publishPub'
+    def layerName = 'ch.so.awjf.gewaesser.patentgewaesser'
+    def sqlFileName = 'searchindex_ch.so.awjf.gewaesser.fischereireviere.sql' //<<<< speziell
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
+
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
 }

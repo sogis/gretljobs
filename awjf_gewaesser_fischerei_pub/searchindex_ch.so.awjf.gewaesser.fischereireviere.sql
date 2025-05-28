@@ -14,7 +14,7 @@ INSERT INTO ${db_schema}.feature (
 WITH
 index_base AS (
     SELECT
-        'ch.so.awjf.gewaesser.fischereireviere'::text AS subclass,
+        ${layername}::text AS subclass,
         t_id AS id_in_class,
         concat('ID: ', revierid, ' (Fischerei)') AS displaytext,
         revierid AS part_1,
