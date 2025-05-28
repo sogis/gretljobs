@@ -49,8 +49,14 @@ tasks.register('upsertWorkTable', SqlExecutor) {
     sqlFiles = files('upsert_data.sql')
 }
 
-tasks.register('transferData', Db2Db) {
+tasks.register('deleteWorkTable', SqlExecutor) {
     dependsOn 'upsertWorkTable'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = files('delete_data.sql')
+}
+
+tasks.register('transferData', Db2Db) {
+    dependsOn 'deleteWorkTable'
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
