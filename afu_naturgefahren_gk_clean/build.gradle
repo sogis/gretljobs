@@ -15,6 +15,21 @@ task exportResults(type: Copy){
 }
 
 /*
+task exportResults(type: GpkgExport) {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    schemaName = "afu_neophyten_pub_v1"
+    srcTableName = ["t_ili2db_attrname","t_ili2db_attrname"]
+    dataFile = file("data.gpkg")
+    dstTableName = ["t_ili2db_attrname","t2_ili2db_attrname"]
+
+    doLast {
+        logger.lifecycle('cleanMaxArea: ' + cleanMaxArea)
+        logger.lifecycle('cleanMaxDiameter: ' + cleanMaxDiameter)
+    }
+}
+*/
+
+/*
 Tmp Notizen
 
 docker compose --profile processing up
