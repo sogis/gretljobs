@@ -32,11 +32,11 @@ task publipub(type: Publisher, dependsOn:'transferDMAV'){
   if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
-task publipubDMAVSUP(type: Publisher, dependsOn:'publipub'){
+task publieditDMAVSUP(type: Publisher, dependsOn:'publipub'){
   dataIdent = "ch.so.agi.av.administrative_einteilung.DMAVSUP"
   userFormats = false
   database = [dbUriPub,dbUserPub,dbPwdPub]
-  dbSchema = "agi_av_gb_admin_einteilung_pub"
+  dbSchema = "agi_dmav_untereinheit_grundbuch_v1"
   modelsToPublish = "DMAVSUP_UntereinheitGrundbuch_V1_0"
 
   target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
