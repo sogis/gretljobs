@@ -34,7 +34,7 @@ task publipub(type: Publisher, dependsOn:'transferDMAV'){
 
 task publipubDMAVSUP(type: Publisher, dependsOn:'publipub'){
   dataIdent = "ch.so.agi.av.administrative_einteilung.DMAVSUP"
-  userFormats = true
+  userFormats = false
   database = [dbUriPub,dbUserPub,dbPwdPub]
   dbSchema = "agi_av_gb_admin_einteilung_pub"
   modelsToPublish = "DMAVSUP_UntereinheitGrundbuch_V1_0"
