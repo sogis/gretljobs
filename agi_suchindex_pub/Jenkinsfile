@@ -86,7 +86,7 @@ pipeline {
                             //echo "Prüfe GRETL-Job in: ${projectDir}"
 
                             //listen to build abort signals while looping
-                            sleep(time: 100, unit: 'MILLISECONDS')
+                            sleep(time: 10, unit: 'MILLISECONDS')
 
                             try {
                                 // Inhalt der build.gradle Datei lesen
@@ -121,7 +121,7 @@ pipeline {
                                 }
 
                                 //listen to build abort signals while looping
-                                sleep(time: 100, unit: 'MILLISECONDS')
+                                sleep(time: 10, unit: 'MILLISECONDS')
 
                                 taskOutput.readLines().each { line ->
                                     if (line.trim().startsWith("Default tasks:")) {
