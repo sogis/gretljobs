@@ -20,11 +20,11 @@ pipeline {
         string(name: 'TASK_NAME', defaultValue: 'updateSearchIndex', description: 'Name of the GRETL task to be started to rebuild the feature search index')
 
         booleanParam(defaultValue: false,
-                description: 'Update only feature search index for one job: partial rebuild of the feature search index',
-                name: 'ONE_JOB_ONLY'
+                description: 'Update only feature search index for filtered job: partial rebuild of the feature search index',
+                name: 'JOB_FILTER'
         )
 
-        string(name: 'ONE_JOB_NAME', defaultValue: 'ada_archaeologie_pub', description: 'Name of the only GRETL job to be started to rebuild the feature search index. It is possible to provide wildcards, like afu_*')
+        string(name: 'JOB_FILTER_NAME', defaultValue: 'ada_archaeologie_pub', description: 'Name of the GRETL job(s) to be started to rebuild the feature search index. It is possible to provide wildcards, like afu_*')
     }
 
     stages {
@@ -54,8 +54,8 @@ pipeline {
                         def gradleProjects = []
 
                         echo "Suche nach GRETL-Jobs mit Task: ${taskToRun}"
-                        if (params.ONE_JOB_ONLY){
-                            def rawName = params.ONE_JOB_NAME.trim()
+                        if (params.JOB_FILTER){
+                            def rawName = params.JOB_FILTER_NAME.trim()
                             //verhindere Path Traversal
                             def cleanedName = rawName.replaceAll(/^([.]{1,2}\/)+|^\/+/, "")
 
@@ -84,6 +84,9 @@ pipeline {
                             def isSettingsGradle = projectPath.contains("settings.gradle")
 
                             //echo "Prüfe GRETL-Job in: ${projectDir}"
+
+                            //listen to build abort signals while looping
+                            checkForAbort() // throws exception
 
                             try {
                                 // Inhalt der build.gradle Datei lesen
@@ -117,28 +120,13 @@ pipeline {
                                     taskOutput = sh(script: "${gradleCommand} tasks --all", returnStdout: true).trim()
                                 }
 
+                                //listen to build abort signals while looping
+                                checkForAbort() // throws exception
 
                                 taskOutput.readLines().each { line ->
                                     if (line.trim().startsWith("Default tasks:")) {
                                         defaultTaskLine = line.trim()
                                     }
-
-/*
-                                    // Fallback für Multi-Project-Builds mit gruppierten Tasks
-                                    //   Tasks müssen mit folgender Zeile erweitert werden:     group = 'search'
-                                    if (line.trim().startsWith("Search tasks")) {
-                                        echo "! Fallback: Suche nach gruppierten Search Tasks aktiviert."
-                                        inSearchSection = true
-                                    }
-                                    else if (inSearchSection && line.trim() == "") {
-                                        inSearchSection = false
-                                    }
-                                    else if (inSearchSection) {
-                                        // Task-Name extrahieren
-                                        def taskName = line.trim().split(' ')[0]
-                                        defaultTaskLine = defaultTaskLine ? "${defaultTaskLine},${taskName}" : taskName
-                                    }
-*/
                                 }
 
                                 if (defaultTaskLine) {
@@ -183,28 +171,13 @@ pipeline {
                                         echo "❌ Fehler beim Ausführen von Task(s) in ${projectDir}: ${e.message}"
                                         currentBuild.result = 'FAILED'
                                     }
-
-                                    /* Einzelstart der Tasks --> benötigt zuviel Zeit
-                                    matchingTasks.each { task ->
-                                        echo "Führe Task '${task}' aus"
-                                        tasksFound++
-                                        try {
-                                            dir(projectDir){
-                                                def gradleOutput = sh "${gradleCommand} ${task} --console=plain"
-                                                echo gradleOutput
-                                            }
-                                            tasksExecuted++
-                                            echo "✅ Job '${JOB_NAME}' in ${projectDir} erfolgreich ausgeführt"
-                                        } catch (Exception e) {
-                                            echo "❌ Fehler beim Ausführen von '${JOB_NAME}' in ${projectDir}: ${e.message}"
-                                            currentBuild.result = 'FAILED'
-                                        }
-                                    }
-                                    */
-
                                 }
 
                             } catch (Exception e) {
+                                if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                                    echo "❌ Build was cancelled: ${e.message}"
+                                    throw e  // Re-throw
+                                }
                                 echo "❌ Fehler beim Lesen oder Verarbeiten der build.gradle in ${projectDir}: ${e.message}"
                                 jobsErrors++;
                                 if (!isSettingsGradle){
@@ -216,8 +189,8 @@ pipeline {
                         // Zusammenfassung ausgeben
                         echo "======= Zusammenfassung ============================"
                         echo "Task-Name: ${taskToRun}"
-                        if (params.ONE_JOB_ONLY){
-                            def rawName = params.ONE_JOB_NAME.trim()
+                        if (params.JOB_FILTER){
+                            def rawName = params.JOB_FILTER_NAME.trim()
                             //verhindere Path Traversal
                             def cleanedName = rawName.replaceAll(/^([.]{1,2}\/)+|^\/+/, "")
                             echo "Suche nur GRETL-Jobs mit Namen: ${cleanedName}"
