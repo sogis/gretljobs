@@ -12,7 +12,7 @@ INSERT INTO ${db_schema}.feature (
 WITH
 index_base AS (
     SELECT
-        'ch.so.afu.naturereigniskataster.prozessraum.sturz'::text AS subclass,
+        ${layername}::text AS subclass,
         t_id AS id_in_class,
         concat('StorMe-Nummer: ', storme_nr, ' (Naturgefahren Prozessraum Sturz)')  AS displaytext,
         storme_nr AS part_1,
