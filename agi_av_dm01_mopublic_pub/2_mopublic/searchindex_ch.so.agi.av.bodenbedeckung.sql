@@ -12,7 +12,7 @@ INSERT INTO ${db_schema}.feature (
 WITH
 index_base AS (
     SELECT
-        'ch.so.agi.av.bodenbedeckung'::text AS subclass,
+        ${layername}::text AS subclass,
         t_id AS id_in_class,
         concat('EGID: ', egid, ' (Gebäude)') AS displaytext,
         egid AS part_1,

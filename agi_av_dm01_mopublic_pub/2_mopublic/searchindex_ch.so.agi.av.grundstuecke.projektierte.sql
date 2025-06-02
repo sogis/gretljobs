@@ -11,7 +11,7 @@ INSERT INTO ${db_schema}.feature (
 )
 WITH
 index_base AS (
-    SELECT 'ch.so.agi.av.grundstuecke.projektierte'::text AS subclass,
+    SELECT ${layername}::text AS subclass,
     grundsteuck_proj.t_id AS id_in_class,
     grundsteuck_proj.nummer AS name_in_class,
         CASE
@@ -40,7 +40,7 @@ index_base AS (
         END AS part_3
     FROM mopublic_grundstueck_proj grundsteuck_proj
     UNION ALL
-    SELECT 'ch.so.agi.av.grundstuecke.projektierte'::text AS subclass,
+    SELECT ${layername}::text AS subclass,
     grundsteuck_proj.t_id AS id_in_class,
     grundsteuck_proj.egrid AS name_in_class,
         CASE

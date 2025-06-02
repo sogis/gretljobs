@@ -12,7 +12,7 @@ INSERT INTO ${db_schema}.feature (
 WITH
 index_base AS (
     SELECT
-        'ch.so.agi.av.nomenklatur.flurnamen'::text AS subclass,
+        ${layername}::text AS subclass,
         t_id AS id_in_class,
         concat(flurname, ', ', gemeinde, ' (Flurname)') AS displaytext,
         flurname AS part_1,
