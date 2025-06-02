@@ -93,65 +93,132 @@ git checkout -b branchname
 * Bitte an den AGI SQL-Richtlinien orientieren.
 * `t_id` in aller Regel nicht von einem Schema in das andere übertragen (Typicherweise Edit-DB -> Pub-DB), damit diese sauber über die Sequenz im Zielschema vergeben wird. 
 * Variablen mit `def` definieren und nicht mit `ext{}`
-* Für den Zugriff auf Datenbanken und andere Ressourcen folgende Variablen verwenden:
-  * `dbUriEdit`, `dbUserEdit`, `dbPwdEdit`
-  * `dbUriPub`, `dbUserPub`, `dbPwdPub`
-  * `dbUriOerebV2`, `dbUserOerebV2`, `dbPwdOerebV2`
-  * `dbUriSimi`, `dbUserSimi`, `dbPwdSimi`
-  * `dbUriIsboden`, `dbUserIsboden`, `dbPwdIsboden`
-  * `dbUriVerisoNplso`, `dbUserVerisoNplso`, `dbPwdVerisoNplso`
-  * `dbUriAltlast4web`, `dbUserAltlast4web`, `PdbPwdAltlast4web`
-  * `dbUriKaso`, `dbUserKaso`, `dbPwdKaso`
-  * `dbUriCapitastra`, `dbUserCapitastra`, `dbPwdCapitastra`
-  * `dbUriEws`, `dbUserEws`, `dbPwdEws`
-  * `dbUriImdaspro`, `dbUserImdaspro`, `dbPwdImdaspro`
-  * `digiplanUrl`, `digiplanUser`, `digiplanPwd`
-  * `efjServicesUrl`
-  * `ftpUserEmapis`, `ftpPwdEmapis`
-  * `ftpServerFledermaus`, `ftpUserFledermaus`, `ftpPwdFledermaus`
-  * `ftpServerInfogrips`, `ftpUserInfogrips`, `ftpPwdInfogrips`
-  * `ftpServerWaldportal`, `ftpUserWaldportal`, `ftpPwdWaldportal`
-  * `sftpServerGelan`, `sftpUserGelan`, `sftpPwdGelan`
-  * `sftpServerSEinApp`, `sftpUserSEinApp`
-  * `sftpUrlSogis`, `sftpUserSogis`, `sftpPwdSogis`
-  * für Datentransfer Gemdat: `host = sftpServerSogis`, `user = sftpUserSogisGemdat`, `identity = file('/home/gradle/.sshkeys/id_rsa')`
-  * `sftpServerZivilschutz`, `sftpUserZivilschutz`, `sftpPwdZivilschutz`
-  * `aiServer`, `aiUser`, `aiPwd`
-  * `infofloraUser`, `infofloraPwd`
-  * `igelToken`
-  * `afuAbbaustellenAppXtfUrl` (die komplette URL zum XTF-Dokument, inkl. Token)
-  * `awsAccessKeyAda`, `awsSecretAccessKeyAda`
-  * `awsAccessKeyAfu`, `awsSecretAccessKeyAfu`
-  * `awsAccessKeyAgi`, `awsSecretAccessKeyAgi`
-  * `geoservicesHostName` (der Wert dieser Variable ist je nach Umgebung `geo-t.so.ch`, `geo-i.so.ch` oder `geo.so.ch`)
-  * `simiMetadataServiceUrl`, `simiMetadataServiceUser`, `simiMetadataServicePwd`
-  * `simiTokenServiceUrl`, `simiTokenServiceUser`, `simiTokenServicePwd`
-  * `solrIndexupdaterBaseUrl` (die interne Basis-URL zum Indexupdater für Solr)
-  * `gretlEnvironment` (der Wert dieser Variable ist je nach Umgebung `test`, `integration` oder `production`)
-  * `dbSearchSchemaPub` 
 
-  Die Anleitung, wie man solche Ressourcen (z.B. DB-Verbindungen)
-  in Jenkins definiert oder bestehende Ressourcen bearbeitet,
-  ist unter
-  https://github.com/sogis/gretl/tree/master/openshift#create-or-update-resources-to-be-used-by-gretl.
-  Die Anleitung, wie man neue Credentials anlegt oder bestehende bearbeitet,
-  ist unter
-  https://github.com/sogis/gretl/tree/master/openshift#create-or-update-secrets-to-be-used-by-gretl.
-* Bei _IliValidator_-Tasks und _Ili2gpkgImport_-Tasks die folgende Option setzen,
-  damit in den Betriebs-Umgebungen für den Download der benötigten Modelle
-  die Anzahl abzufragender INTERLIS-Repositories reduziert wird:
+#### Zugriff auf Ressourcen
 
-  `if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir`
+Für den Zugriff auf Datenbanken und andere Ressourcen sollen die Variablen gemäss der folgenden Auflistung verwendet werden. (Die Variablenwerte, die in dieser Auflistung angegeben sind, dienen für die Entwicklung von GRETL-Jobs auf der lokalen Maschine mit Docker Compose.)
+```properties
+dbUriEdit=jdbc:postgresql://edit-db/edit
+dbUserEdit=dmluser
+dbPwdEdit=dmluser
+dbUriPub=jdbc:postgresql://pub-db/pub
+dbUserPub=dmluser
+dbPwdPub=dmluser
+dbUriOerebV2=
+dbUserOerebV2=
+dbPwdOerebV2=
+dbUriSimi=
+dbUserSimi=
+dbPwdSimi=
+dbUriIsboden=
+dbUserIsboden=
+dbPwdIsboden=
+dbUriVerisoNplso=
+dbUserVerisoNplso=
+dbPwdVerisoNplso=
+dbUriAltlast4web=
+dbUserAltlast4web=
+PdbPwdAltlast4web=
+dbUriKaso=
+dbUserKaso=
+dbPwdKaso=
+dbUriCapitastra=
+dbUserCapitastra=
+dbPwdCapitastra=
+dbUriEws=
+dbUserEws=
+dbPwdEws=
+dbUriImdaspro=
+dbUserImdaspro=
+dbPwdImdaspro=
+digiplanUrl=
+digiplanUser=
+digiplanPwd=
+efjServicesUrl=
+ftpUserEmapis=
+ftpPwdEmapis=
+ftpServerFledermaus=
+ftpUserFledermaus=
+ftpPwdFledermaus=
+ftpServerInfogrips=
+ftpUserInfogrips=
+ftpPwdInfogrips=
+ftpServerWaldportal=
+ftpUserWaldportal=
+ftpPwdWaldportal=
+sftpServerGelan=
+sftpUserGelan=
+sftpPwdGelan=
+sftpServerSEinApp=
+sftpUserSEinApp=
+# sftpPwdSEinApp gibt es nicht, dafür einen SSH-Key unter /home/gradle/.sshkeys/id_rsa; siehe Hinweis unterhalb dieser Auflistung
+sftpServerSogis=
+sftpUrlSogis=build
+sftpUserSogis=
+sftpPwdSogis=
+sftpUserSogisGemdat=
+# sftpPwdSogisGemdat gibt es nicht, dafür einen SSH-Key unter /home/gradle/.sshkeys/id_rsa; siehe Hinweis unterhalb dieser Auflistung
+sftpServerZivilschutz=
+sftpUserZivilschutz=
+sftpPwdZivilschutz=
+aiServer=
+aiUser=
+aiPwd=
+infofloraUser=
+infofloraPwd=
+igelToken=
+afuAbbaustellenAppXtfUrl=
+awsAccessKeyAda=
+awsSecretAccessKeyAda=
+awsAccessKeyAfu=
+awsSecretAccessKeyAfu=
+awsAccessKeyAgi=
+awsSecretAccessKeyAgi=
+# Der Wert von geoservicesHostName ist je nach Umgebung "geo-t.so.ch", "geo-i.so.ch" oder "geo.so.ch":
+geoservicesHostName=
+simiMetadataServiceUrl=
+simiMetadataServiceUser=
+simiMetadataServicePwd=
+simiTokenServiceUrl=
+simiTokenServiceUser=
+simiTokenServicePwd=
+# Der Wert von solrIndexupdaterBaseUrl ist die interne Basis-URL zum Indexupdater für Solr:
+solrIndexupdaterBaseUrl=
+# Der Wert von gretlEnvironment ist je nach Umgebung "test", "integration" oder "production":
+gretlEnvironment=
+dbSearchSchemaPub=
+ilivalidatorModeldir=%ITF_DIR;https://geo.so.ch/models/;%JAR_DIR/ilimodels
 
-  (Falls das Modell durch einen vorgängigen Schema-Import (`--schemaimport`)
-  allerdings bereits in der GeoPackage-Datei enthalten sein sollte,
-  muss die `modeldir`-Option nicht gesetzt werden,
-  weil _ili2gpkgImport_ dann das Modell im GeoPackage findet
-  und also nicht online danach suchen muss.)
+# Folgende Variablen dürfen in GRETL-Jobs nicht verwendet werden.
+# Sie werden aber lokal benötigt, damit dort auch die Schema-Jobs funktionieren.
+dbUserEditDdl=ddluser
+dbPwdEditDdl=ddluser
+dbUserPubDdl=ddluser
+dbPwdPubDdl=ddluser
+```
+Hinweise:
+* Für den *Datentransfer SEinApp* muss man verwenden: `host = sftpServerSEinApp`, `user = sftpUserSEinApp`, `identity = file('/home/gradle/.sshkeys/id_rsa')`
+* Für den *Datentransfer Gemdat* muss man verwenden: `host = sftpServerSogis`, `user = sftpUserSogisGemdat`, `identity = file('/home/gradle/.sshkeys/id_rsa')`
+* Die Anleitung, wie man solche Ressourcen (z.B. DB-Verbindungen) in Jenkins definiert oder bestehende Ressourcen bearbeitet, ist unter https://github.com/sogis/openshift-templates/blob/master/gretl/README.md#create-configmap
+* Die Anleitung, wie man neue Credentials anlegt oder bestehende bearbeitet, ist unter https://github.com/sogis/openshift-templates/blob/master/gretl/README.md#create-secret
 
-  Beispiele:
-  https://github.com/sogis/gretljobs/blob/eb6f40ffb9c9ec3e41c2d46220780636a65db7e0/agi_mopublic_pub_export/build.gradle#L62,
-  https://github.com/sogis/gretljobs/blob/eb6f40ffb9c9ec3e41c2d46220780636a65db7e0/agi_mopublic_pub_export/build.gradle#L79
+#### Verwendung der Variablen *ilivalidatorModeldir*
+
+Bei _IliValidator_-Tasks und _Ili2gpkgImport_-Tasks soll die folgende Option gesetzt werden,
+damit in den Betriebs-Umgebungen für den Download der benötigten Modelle
+die Anzahl abzufragender INTERLIS-Repositories reduziert wird:
+
+`if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir`
+
+(Falls das Modell durch einen vorgängigen Schema-Import (`--schemaimport`)
+allerdings bereits in der GeoPackage-Datei enthalten sein sollte,
+muss die `modeldir`-Option nicht gesetzt werden,
+weil _ili2gpkgImport_ dann das Modell im GeoPackage findet
+und also nicht online danach suchen muss.)
+
+Beispiele:
+https://github.com/sogis/gretljobs/blob/eb6f40ffb9c9ec3e41c2d46220780636a65db7e0/agi_mopublic_pub_export/build.gradle#L62,
+https://github.com/sogis/gretljobs/blob/eb6f40ffb9c9ec3e41c2d46220780636a65db7e0/agi_mopublic_pub_export/build.gradle#L79
 
 ### Files
 
@@ -281,36 +348,9 @@ kann GRETL mit `docker compose` als Docker-Container gestartet werden.
 
 ### Voraussetzungen
 
-Hierfür müssen zunächst die Verbindungsparameter zu den DBs
-und andere benötigte Variablen konfiguriert werden.
-Diese platziert man in einer Datei `gretljobs.properties`
-in seinem Home-Verzeichnis.
-Der Inhalt der Datei sieht z.B. so aus:
-
-```
-dbUriEdit=jdbc:postgresql://edit-db/edit
-dbUserEdit=dmluser
-dbPwdEdit=dmluser
-dbUserEditDdl=ddluser
-dbPwdEditDdl=ddluser
-dbUriPub=jdbc:postgresql://pub-db/pub
-dbUserPub=dmluser
-dbPwdPub=dmluser
-dbUserPubDdl=ddluser
-dbPwdPubDdl=ddluser
-
-sftpUrlSogis=build
-sftpUserSogis=
-sftpPwdSogis=
-simiMetadataServiceUrl=
-simiMetadataServiceUser=
-simiMetadataServicePwd=
-simiTokenServiceUrl=
-simiTokenServiceUser=
-simiTokenServicePwd=
-
-ilivalidatorModeldir=%ITF_DIR;https://geo.so.ch/models/;%JAR_DIR/ilimodels
-```
+Damit die GRETL-Jobs auch lokal funktionieren, muss im lokalen Home-Verzeichnis die Datei `gretljobs.properties` vorhanden sein.
+Sie enthält die verschiedenen Verbindungsparameter zu den lokalen Entwicklungs-DBs und andere benötigte Variablen.
+Was in dieser Datei drinstehen muss, ist im Abschnitt [Zugriff auf Ressourcen](#zugriff-auf-ressourcen) ersichtlich (man kann diese Liste direkt kopieren).
 
 ### Entwicklungs-DBs nutzen
 
