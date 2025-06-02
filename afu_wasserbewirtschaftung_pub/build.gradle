@@ -183,11 +183,11 @@ task updateSearchIndex_8(type: SqlExecutor){
     ]
     sqlFiles = [
             '../searchindex_deleteFeatures.sql',
-
+            'searchindex_' + layerName + '.sql'
+    ]
     doFirst {
         println 'layer name: ' + layerName
-    } 'searchindex_' + layerName + '.sql'
-    ]
+    }
 }
 
 task updateSearchIndex_9(type: SqlExecutor){
