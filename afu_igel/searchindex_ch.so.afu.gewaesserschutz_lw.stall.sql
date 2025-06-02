@@ -12,7 +12,7 @@ INSERT INTO ${db_schema}.feature (
 WITH
 index_base AS (
     SELECT
-        'ch.so.afu.gewaesserschutz_lw.stall'::text AS subclass,
+        ${layername}::text AS subclass,
         id AS id_in_class,
         concat(aname, ' | Stall-ID: ', id, ', Stao-ID: ', standort_id, ' (Stall)') AS part_1,
         concat('Name Bewirtschafter ', stao_name_bewirtschafter) AS part_3,
