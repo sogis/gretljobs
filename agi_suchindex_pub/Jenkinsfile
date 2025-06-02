@@ -86,7 +86,7 @@ pipeline {
                             //echo "Prüfe GRETL-Job in: ${projectDir}"
 
                             //listen to build abort signals while looping
-                            checkForAbort() // throws exception
+                            sleep(time: 100, unit: 'MILLISECONDS')
 
                             try {
                                 // Inhalt der build.gradle Datei lesen
@@ -121,7 +121,7 @@ pipeline {
                                 }
 
                                 //listen to build abort signals while looping
-                                checkForAbort() // throws exception
+                                sleep(time: 100, unit: 'MILLISECONDS')
 
                                 taskOutput.readLines().each { line ->
                                     if (line.trim().startsWith("Default tasks:")) {
@@ -174,9 +174,10 @@ pipeline {
                                 }
 
                             } catch (Exception e) {
+                                // catch build abort signals
                                 if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
                                     echo "❌ Build was cancelled: ${e.message}"
-                                    throw e  // Re-throw
+                                    throw e  // Re-throw to abort
                                 }
                                 echo "❌ Fehler beim Lesen oder Verarbeiten der build.gradle in ${projectDir}: ${e.message}"
                                 jobsErrors++;
