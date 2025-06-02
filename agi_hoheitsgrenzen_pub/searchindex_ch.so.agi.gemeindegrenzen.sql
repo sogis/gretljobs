@@ -13,7 +13,7 @@ INSERT INTO ${db_schema}.feature (
 WITH
 index_base AS (
     SELECT
-        'ch.so.agi.gemeindegrenzen'::text AS subclass,
+        ${layername}::text AS subclass,
         t_id AS id_in_class,
         concat(gemeindename, ' | ', bfs_gemeindenummer, ' (Gemeinde)') AS displaytext,
         concat(gemeindename, ' ', bfs_gemeindenummer) AS part_1,
