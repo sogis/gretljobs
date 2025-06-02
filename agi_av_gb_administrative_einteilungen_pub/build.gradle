@@ -1,7 +1,7 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'publieditDMAVSUP'
+defaultTasks 'publiedit'
 
 task transferAvGbAdminEinteilungen(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -32,15 +32,15 @@ task publipub(type: Publisher, dependsOn:'transferDMAV'){
   if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
-task publieditDMAVSUP(type: Publisher, dependsOn:'publipub'){
-  dataIdent = "ch.so.agi.av.administrative_einteilung.DMAVSUP"
-  database = [dbUriEdit,dbUserEdit,dbPwdEdit]
-  dbSchema = "agi_dmav_untereinheit_grundbuch_v1"
-  modelsToPublish = "DMAVSUP_UntereinheitGrundbuch_V1_0"
+task publiedit(type: Publisher, dependsOn:'publipub'){
+    dataIdent = "ch.so.agi.av.administrative_einteilung.relational.dmavsup"
+    database = [dbUriEdit,dbUserEdit,dbPwdEdit]
+    dbSchema = "agi_dmav_untereinheit_grundbuch_v1"
+    modelsToPublish = "DMAVSUP_UntereinheitGrundbuch_V1_0"
 
-  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
-  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
-  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
