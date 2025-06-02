@@ -56,6 +56,9 @@ task updateSearchIndex_1(type: SqlExecutor){
             '../searchindex_deleteFeatures.sql',
             'searchindex_' + layerName + '.sql'
     ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
 }
 
 task updateSearchIndex_2(type: SqlExecutor){
@@ -73,4 +76,7 @@ task updateSearchIndex_2(type: SqlExecutor){
             '../searchindex_deleteFeatures.sql',
             'searchindex_' + layerName + '.sql'
     ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
 }

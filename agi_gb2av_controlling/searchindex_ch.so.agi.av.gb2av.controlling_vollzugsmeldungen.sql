@@ -12,7 +12,7 @@ INSERT INTO ${db_schema}.feature (
 WITH
 index_base AS (
     SELECT
-        'ch.so.agi.av.gb2av.controlling_vollzugsmeldungen'::text AS subclass,
+        ${layername}::text AS subclass,
         t_id AS id_in_class,
         concat(mutationsnummer, ' / ', nbident, ' (Mut.-Nr. Vollzugsmeldung)') AS displaytext,
         concat(mutationsnummer, ' ', nbident) AS part_1,
