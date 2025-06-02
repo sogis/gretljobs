@@ -44,3 +44,4 @@ task publiedit(type: Publisher, dependsOn:'publipub'){
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
+
