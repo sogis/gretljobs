@@ -12,7 +12,7 @@ INSERT INTO ${db_schema}.feature (
 WITH
 index_base AS (
     SELECT
-        'ch.so.afu.wasserbewirtschaftung.trinkwasserversorgung_geschuetzt'::text AS subclass,
+        ${layername}::text AS subclass,
         t_id AS id_in_class,
         concat('Nr: ', objektnummer, ' (VEGAS Trinkwasser)')  AS displaytext,
         objektnummer AS part_1,
