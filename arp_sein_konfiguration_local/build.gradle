@@ -1,0 +1,199 @@
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+import java.nio.file.Files
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
+defaultTasks 'ili2duckdbexport'
+
+def tempDir = buildDir.toString()
+def dbPath = tempDir +"/sein.duckdb"
+if (new File(dbPath).exists()) {
+    new File(dbPath).delete()
+}
+def dbUriDuckDB = "jdbc:duckdb:$dbPath"
+
+def xtfPath_IVS = tempDir + "/IVS_V2_1_regional_lokal_LV95.xtf"
+def xtfPath_Export = tempDir + "/arp_sein_konfiguraton_auswertung_uc1.xtf"
+def DownloadLocation = tempDir + "/downloads/"
+def ZipLocation = tempDir + "/unzipped/"
+
+// Create DB-variables for sql-files
+def dbHostEdit = dbUriEdit.substring(dbUriEdit.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
+def dbDatabaseEdit = dbUriEdit.substring(dbUriEdit.lastIndexOf("/") + 1)
+def dbConnectionStringEdit = "'dbname=$dbDatabaseEdit user=$dbUserEdit password=$dbPwdEdit host=$dbHostEdit'"
+
+def dbHostPub = dbUriPub.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastIndexOf("/"))
+def dbDatabasePub = dbUriPub.substring(dbUriPub.lastIndexOf("/") + 1)
+def dbConnectionStringPub = "'dbname=$dbDatabasePub user=$dbUserPub password=$dbPwdPub host=$dbHostPub'"
+
+ssh.settings {
+    knownHosts = allowAnyHosts
+}
+
+// download-links for shapefiles
+def downloadShapeFiles = [
+    [ url: 'https://data.geo.admin.ch/ch.bafu.bundesinventare-amphibien/data.zip', name: 'bundesinventar_amphibien.zip' ],
+    [ url: 'https://data.geo.admin.ch/ch.bafu.bundesinventare-hochmoore/data.zip', name: 'bundesinventar_hochmoore.zip' ],
+    [ url: 'https://data.geo.admin.ch/ch.bafu.bundesinventare-flachmoore/data.zip', name: 'bundesinventar_flachmoore.zip']
+]
+
+def importShapeJobs = [
+    [name: "amphibien_laichgebiete", sqlFile: "bundesinventar_amphibien_laichgebiete_import_shp.sql", subdir: "bundesinventar_amphibien/Amphibien_LV95", file: "amphibLaichgebiet.shp"],
+    [name: "amphibien_wanderobjekte", sqlFile: "bundesinventar_amphibien_wanderobjekte_import_shp.sql", subdir: "bundesinventar_amphibien/Amphibien_LV95", file: "amphibWanderobjekt.shp"],
+    [name: "hochmoore", sqlFile: "bundesinventar_hochmoore_import_shp.sql", subdir: "bundesinventar_hochmoore/Hochmoor_LV95", file: "hochmoor.shp"],
+    [name: "flachmoore", sqlFile: "bundesinventar_flachmmore_import_shp.sql", subdir: "bundesinventar_flachmoore/Flachmoor_LV95", file: "flachmoor_20210701.shp"]
+]
+
+// download shapefiles
+task downloadMultipleShp {
+    dependsOn downloadShapeFiles.collect { entry ->
+        def taskName = "download_" + entry.name.replaceAll(/\W+/, "_")
+        tasks.register(taskName, Download) {
+            src entry.url
+            dest new File(DownloadLocation, entry.name)
+            overwrite true
+        }
+    }
+}
+
+// unzip downloaded shapefiles
+task unzipAllData(dependsOn: downloadMultipleShp) {
+    description = "Entpackt jede ZIP-Datei in ein eigenes Unterverzeichnis"
+
+    doLast {
+        downloadShapeFiles.each { entry ->
+            def zipFile = new File(DownloadLocation, entry.name)
+            def targetFolderName = entry.name.replaceAll(/\.shp\.zip$/, '').replaceAll(/\.zip$/, '')
+            def targetDir = new File(ZipLocation, targetFolderName)
+
+            println "unzip ${entry.name} to ${targetDir}"
+
+            copy {
+                from zipTree(zipFile).matching {
+                    include '**/*.shp', '**/*.dbf', '**/*.shx', '**/*.prj'
+                }
+                into targetDir
+            }
+        }
+    }
+}
+
+// import postgis-schema
+tasks.register("ili2duckdbschemaimport", Ili2duckdbImportSchema) {
+    dbfile = file("build/sein.duckdb")
+    models = "SO_ARP_SEin_Konfiguration_20250115"
+    dbschema = "arp_sein_konfiguration_grundlagen_v2"
+    smart2Inheritance = true
+}
+
+
+// create table and transfer data from postgis to duckdb
+task prepareDuckDB(type: SqlExecutor){
+    dependsOn "ili2duckdbschemaimport"
+    database = [dbUriDuckDB]
+    sqlFiles = ['create_table_duckdb.sql',
+                'load_extensions.sql',
+                'attach_editdb.sql',
+                'transfer_grundlagen.sql'
+            ]
+    sqlParameters = [
+        connectionStringEdit : dbConnectionStringEdit as String
+        ]
+}
+
+
+// import data from edit-schema
+task importDataeditdb(type: SqlExecutor){
+    dependsOn "prepareDuckDB"
+    database = [dbUriDuckDB]
+    sqlFiles = ['objektinfos_grundlagen_import_postgis.sql'
+            ]
+}
+
+// import data from postgis
+task importPostgisData(type: SqlExecutor){
+    dependsOn "prepareDuckDB"
+    database = [dbUriDuckDB]
+    sqlFiles = ['load_extensions.sql',
+                'attach_pubdb.sql',
+                'postgis_agglo_massnahmen_gen1_import.sql',
+                'postgis_agglo_massnahmen_gen2_import.sql',
+                'postgis_agglo_massnahmen_gen3_import.sql'/*,
+                'postgis_agglo_massnahmen_gen4_import.sql'*/ // Wenn die 4. Generation inbegriffen wird, kann das xtf nicht validiert werden, da einige Attribute aus der Quelle nicht Modellkonform sind (Zeilenumbrüche usw.)
+            ]
+    sqlParameters = [
+        connectionStringPub : dbConnectionStringPub as String
+        ]
+}
+
+// import shapefiles directly
+task importShpData(type: SqlExecutor){
+    dependsOn "prepareDuckDB"
+    database = [dbUriDuckDB]
+    sqlFiles = ['load_extensions.sql',
+                'bundesinventar_bln_import_shp.sql',
+                'bundesinventar_auen_import_shp.sql',
+                'bundesinventar_trockenwiesen_trockenweiden_import_shp.sql',
+                'bundesinventar_vogelreservate_import_shp.sql'
+            ]
+}
+
+// import loop for downloaded shapefiles
+def importTasks = []
+
+importShapeJobs.each { job ->
+    def shapefilePath = new File("$buildDir/unzipped/${job.subdir}/${job.file}").absolutePath.replace("\\", "/")
+
+    def taskProvider = tasks.register("import_${job.name}_toTbl", SqlExecutor) {
+        dependsOn "unzipAllData"
+        dependsOn "prepareDuckDB"
+        description = "Importiert ${job.name} in die Datenbank"
+        database = [dbUriDuckDB]
+        sqlParameters = [shp_path: "'${shapefilePath}'".toString()]
+        sqlFiles = [job.sqlFile]
+        outputs.cacheIf { false }
+    }
+
+    importTasks << taskProvider
+}
+
+// summary task for all shapefile import tasks
+tasks.register("importDownloadedShapeData") {
+    dependsOn importTasks
+}
+
+
+// transfer data from custom table to "auswertung_gemeinde" table 
+task datenaggregation(type: SqlExecutor){
+    dependsOn "importShpData"
+    dependsOn "importDataeditdb"
+    dependsOn "importDownloadedShapeData"
+    dependsOn "importPostgisData"
+    database = [dbUriDuckDB]
+    sqlFiles = ['load_extensions.sql',
+                'update_thema_gruppe.sql',
+                'datenaggregation.sql'
+            ]
+}
+
+// clear data from not necessary tables for export
+task prepareExport(type: SqlExecutor){
+    dependsOn "datenaggregation"
+    database = [dbUriDuckDB]
+    sqlFiles = ['clean_tables.sql'
+            ]
+}
+
+// export xtf from duckdb 
+tasks.register("ili2duckdbexport", Ili2duckdbExport) {
+    dependsOn "prepareExport"
+    models = "SO_ARP_SEin_Konfiguration_20250115"
+    dbschema = "arp_sein_konfiguration_grundlagen_v2"
+    dataFile = files(xtfPath_Export)
+    dbfile = file("build/sein.duckdb")
+}

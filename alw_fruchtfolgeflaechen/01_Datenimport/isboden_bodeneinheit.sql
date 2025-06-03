@@ -81,5 +81,5 @@ SELECT
     untertyp, 
     gemnr_aktuell
 FROM 
-    afu_isboden_pub.bodeneinheit
+    afu_isboden_fff_pub.bodeneinheit
 ;

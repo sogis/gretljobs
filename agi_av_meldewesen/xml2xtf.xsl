@@ -109,8 +109,21 @@
                         </xsl:choose>
                     </Baujahr>
 
+                    <xsl:if test="eCH-0132:buildingInformation[1]/eCH-0132:building[1]/eCH-0129:EGID">
+                        <EGID xmlns="http://www.interlis.ch/INTERLIS2.3">
+                            <xsl:value-of select="eCH-0132:buildingInformation[1]/eCH-0132:building[1]/eCH-0129:EGID" />
+                        </EGID>
+                    </xsl:if>
+
                     <Gebaeudebezeichnung xmlns="http://www.interlis.ch/INTERLIS2.3">
-                        <xsl:value-of select="key('myns:lookup-eventType', eCH-0132:buildingInformation[1]/eCH-0132:building[1]/eCH-0129:buildingCategory, $myns:buildingCategoryType-lookup)/@value"/>
+                        <xsl:choose>
+                            <xsl:when test="eCH-0132:buildingInformation[1]/eCH-0132:building[1]/eCH-0129:name">                            
+                                <xsl:value-of select="eCH-0132:buildingInformation[1]/eCH-0132:building[1]/eCH-0129:name" />
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of select="key('myns:lookup-eventType', eCH-0132:buildingInformation[1]/eCH-0132:building[1]/eCH-0129:buildingCategory, $myns:buildingCategoryType-lookup)/@value"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
                     </Gebaeudebezeichnung>
 
                     <Gebaeudeadresse xmlns="http://www.interlis.ch/INTERLIS2.3">
