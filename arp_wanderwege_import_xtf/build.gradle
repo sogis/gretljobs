@@ -10,23 +10,29 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'importWanderwegeEdit'
 
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
+def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
+def pathToDataZip = Paths.get(pathToTempFolder, "uploadFile.zip")
+def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), InterlisFile)
 
 task copyZipFile(type: Copy) {
     from 'upload/'
-    into 'upload/'
     include('uploadFile')
+    into pathToTempFolder
     rename('uploadFile', 'uploadFile.zip')
 }
 
 task unzipData(type: Copy, dependsOn: copyZipFile) {
-    from zipTree(file('upload/uploadFile.zip'))
-    into file('upload')
+    doLast {
+        println "File unzipped to directory: " + pathToUnzipFolder
+    }
+    from zipTree(pathToDataZip)
+    into file(pathToUnzipFolder)
 }
 
 task filetransform(type: XslTransformer, dependsOn: unzipData) {
     description = "Kürzt die 'touristic_route_number' auf 10 Zeichen"
     xslFile = "touristicroutenumbertrafo.xsl"
-    xmlFile = files("upload/LV_Hpm_Network_V1.xtf")
+    xmlFile = file(xtfFilePath)
     outDirectory = file(".")
 }
 
@@ -35,7 +41,7 @@ task importKataloge(type: Ili2pgReplace, dependsOn: filetransform) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_wanderwege_v1'
     models = 'hpm_network_V1'
-    dataFile = 'upload/Hpm_Network_V1.ili'
+    dataFile = file(xtfFilePath)
     dataset = 'Hpm_Catalogues_V1.xml'
     importTid = true
     importBid = true
