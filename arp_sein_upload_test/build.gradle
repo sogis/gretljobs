@@ -30,7 +30,7 @@ tasks.register('upload') {
         }
         ssh.run {
             session(remotes.ftpServer) {
-                put from: "fubar.xml", into: "." ///opt/daten/gis_arp_raumdaten/test ??
+                put from: "fubar.xml", into: "/opt/daten/gis_arp_raumdaten/test/" ///opt/daten/gis_arp_raumdaten/test ??
             }
         }
         println "File uploaded to FTP server"
