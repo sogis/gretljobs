@@ -23,14 +23,7 @@ task unzipData(type: Copy, dependsOn: copyZipFile) {
     into file('upload')
 }
 
-task filetransform(type: XslTransformer, dependsOn: unzipData) {
-    description = "Kürzt die 'touristic_route_number' auf 10 Zeichen"
-    xslFile = "touristicroutenumbertrafo.xsl"
-    xmlFile = files("upload/LV_Hpm_Network_V1.xtf")
-    outDirectory = file(".")
-}
-
-task importKataloge(type: Ili2pgReplace, dependsOn: filetransform) {
+task importKataloge(type: Ili2pgReplace, dependsOn: unzipData) {
     description = 'Import der Kataloge'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_wanderwege_v1'
