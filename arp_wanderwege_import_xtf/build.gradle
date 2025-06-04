@@ -17,6 +17,7 @@ def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
 def pathToDataZip = Paths.get(pathToTempFolder, "uploadFile.zip")
 def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), InterlisFile)
 def xmlFilePath = Paths.get(pathToUnzipFolder.toString(), KatalogFile)
+def transformFolder = Paths.get(pathToTempFolder, "transform").toFile()
 
 task copyZipFile(type: Copy) {
     from 'upload/'
@@ -37,7 +38,7 @@ task filetransform(type: XslTransformer, dependsOn: unzipData) {
     description = "Kürzt die 'touristic_route_number' auf 10 Zeichen"
     xslFile = file("./touristicroutenumbertrafo.xsl")
     xmlFile = file(xtfFilePath)
-    outDirectory = file(".")
+    outDirectory = file(transformFolder)
 }
 
 task importKataloge(type: Ili2pgReplace, dependsOn: filetransform) {
@@ -56,7 +57,7 @@ task importWanderwegeEdit(type: Ili2pgReplace, dependsOn: importKataloge) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_wanderwege_v1'
     models = 'hpm_network_V1'
-    dataFile = file(xtfFilePath)
+    dataFile = fileTree(dir: transformFolder, include: '*.xtf')
     dataset = 'LV_Hpm_Network_V1.xtf'
     importTid = true
     importBid = true
