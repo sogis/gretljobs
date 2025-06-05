@@ -24,7 +24,7 @@ In einem letzten Schritt werden die Daten noch gesäubert und auf die Edit-DB ko
 
 task prepare_db(type: SqlExecutor) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('vorbereitung/prepare_db.sql')
+    sqlFiles = ['vorbereitung/prepare_db.sql']
 }
 
 task make_staging_schema(type: Ili2pgImportSchema, dependsOn: prepare_db){
@@ -80,12 +80,13 @@ task export_natgef_daten(type: Ili2pgExport, dependsOn: make_alte_dokumente_sche
     models = "SO_AFU_Naturgefahren_20240515"
     disableValidation = true
     dataset = auftragskennung
-    dataFile = files(Paths.get(pathToTempFolder, auftragskennung+".xtf"))
+    dataFile = file(Paths.get(pathToTempFolder, auftragskennung+".xtf"))
+    
 }
 
 task import_natgef_daten(type: Ili2pgReplace, dependsOn: export_natgef_daten){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    dataFile = files(Paths.get(pathToTempFolder, auftragskennung+".xtf"))
+    dataFile = file(Paths.get(pathToTempFolder, auftragskennung+".xtf"))
     dbschema = "afu_naturgefahren_v1"
     dataset = auftragskennung
     deleteData = true
@@ -95,7 +96,7 @@ task import_natgef_daten(type: Ili2pgReplace, dependsOn: export_natgef_daten){
 task createDatasetAndBaskets(type: SqlExecutor, dependsOn: import_natgef_daten) {
     description = "Macht die Baskets bereit"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('vorbereitung/createbaskets.sql')
+    sqlFiles = ['vorbereitung/createbaskets.sql']
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
@@ -157,12 +158,13 @@ task export_beurteilungsgebiet(type: Ili2pgExport, dependsOn: make_naturgefahren
     dbschema = "afu_naturgefahren_beurteilungsgebiet_v2"
     models = "SO_AFU_Naturgefahren_Beurteilungsgebiet_20240927"
     disableValidation = true
-    dataFile = files(Paths.get(pathToTempFolder, "natgef_beurteilungsgebiet.xtf"))
+    dataFile = file(Paths.get(pathToTempFolder, "natgef_beurteilungsgebiet.xtf"))
+    
 }
 
 task import_beurteilungsgebiet(type: Ili2pgImport, dependsOn: export_beurteilungsgebiet){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    dataFile = files(Paths.get(pathToTempFolder, "natgef_beurteilungsgebiet.xtf"))
+    dataFile = file(Paths.get(pathToTempFolder, "natgef_beurteilungsgebiet.xtf"))
     dbschema = "afu_naturgefahren_beurteilungsgebiet_v1"
     disableValidation = true
     deleteData = true
@@ -184,6 +186,7 @@ task make_hoheitsgrenzen_schema(type: Ili2pgImportSchema, dependsOn: import_beur
     createBasketCol = true
     createUnique = true
     smart2Inheritance = true
+    
 }
 
 task export_hoheitsgrenzen(type: Ili2pgExport, dependsOn: make_hoheitsgrenzen_schema) {
@@ -191,12 +194,13 @@ task export_hoheitsgrenzen(type: Ili2pgExport, dependsOn: make_hoheitsgrenzen_sc
     dbschema = "agi_hoheitsgrenzen_pub"
     models = "SO_Hoheitsgrenzen_Publikation_20170626"
     disableValidation = true
-    dataFile = files(Paths.get(pathToTempFolder, "hoheitsgrenzen.xtf"))
+    dataFile = file(Paths.get(pathToTempFolder, "hoheitsgrenzen.xtf"))
+    
 }
 
 task import_hoheitsgrenzen(type: Ili2pgImport, dependsOn: export_hoheitsgrenzen){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    dataFile = files(Paths.get(pathToTempFolder, "hoheitsgrenzen.xtf"))
+    dataFile = file(Paths.get(pathToTempFolder, "hoheitsgrenzen.xtf"))
     dbschema = "agi_hoheitsgrenzen_pub"
     disableValidation = true
     deleteData = true
@@ -208,14 +212,14 @@ task import_hoheitsgrenzen(type: Ili2pgImport, dependsOn: export_hoheitsgrenzen)
 task synoptische_intensitaet(type: SqlExecutor, dependsOn: import_hoheitsgrenzen) {
     description = "Berechnung der synoptischen Intensität mit den neuen Daten"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('synoptische_intensitaet.sql')
+    sqlFiles = ['synoptische_intensitaet.sql']
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
 task synoptische_intensitaet_altdaten_copy(type: SqlExecutor, dependsOn: synoptische_intensitaet) {
     description = "Kopieren der alten Daten der synoptischen Intensität"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('synoptische_intensitaet_altdaten_copy.sql')
+    sqlFiles = ['synoptische_intensitaet_altdaten_copy.sql']
 }
 
 // GEFAHRENGEBIET TEILPROZESSE 
@@ -223,7 +227,7 @@ task synoptische_intensitaet_altdaten_copy(type: SqlExecutor, dependsOn: synopti
 task gefahrengebiet_teilprozess_absenkung_einsturz(type: SqlExecutor, dependsOn: synoptische_intensitaet_altdaten_copy) {
     description = "Berechnung der Gefahrengebiete des Teilprozesses Absenkung und Einsturz"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('teilprozesse/gefahrengebiet_teilprozess_absenkung_einsturz.sql')
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_absenkung_einsturz.sql']
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
@@ -233,86 +237,86 @@ task gefahrengebiet_teilprozess_absenkung_einsturz(type: SqlExecutor, dependsOn:
 task gefahrengebiet_teilprozess_hangmure(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_absenkung_einsturz) {
     description = "Berechnung der Gefahrengebiete des Teilprozesses Hangmure"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('teilprozesse/gefahrengebiet_teilprozess_hangmure.sql')
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_hangmure.sql']
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
 task gefahrengebiet_teilprozess_hangmure_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_hangmure) {
     description = "Kopieren der alten Daten der Gefahrengebiete des Teilprozesses Hangmure"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('teilprozesse/gefahrengebiet_teilprozess_hangmure_altdaten_copy.sql')
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_hangmure_altdaten_copy.sql']
 }
 
 task gefahrengebiet_teilprozess_spontane_rutschung(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_hangmure_altdaten_copy) {
     description = "Berechnung der Gefahrengebiete des Teilprozesses spontane Rutschungen"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('teilprozesse/gefahrengebiet_teilprozess_spontane_rutschung.sql')
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_spontane_rutschung.sql']
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
 task gefahrengebiet_teilprozess_spontane_rutschung_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_spontane_rutschung) {
     description = "Kopieren der alten Daten der Gefahrengebiete des Teilprozesses spontane Rutschungen"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('teilprozesse/gefahrengebiet_teilprozess_spontane_rutschung_altdaten_copy.sql')
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_spontane_rutschung_altdaten_copy.sql']
 }
 
 task gefahrengebiet_teilprozess_murgang(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_spontane_rutschung_altdaten_copy) {
     description = "Berechnung der Gefahrengebiete des Teilprozesses Murgang"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('teilprozesse/gefahrengebiet_teilprozess_murgang.sql')
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_murgang.sql']
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
 task gefahrengebiet_teilprozess_murgang_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_murgang) {
     description = "Kopieren der alten Daten der Gefahrengebiete des Teilprozesses Murgang"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('teilprozesse/gefahrengebiet_teilprozess_murgang_altdaten_copy.sql')
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_murgang_altdaten_copy.sql']
 }
 
 task gefahrengebiet_teilprozess_permanente_rutschung(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_murgang_altdaten_copy) {
     description = "Berechnung der Gefahrengebiete des Teilprozesses permanente Rutschung"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('teilprozesse/gefahrengebiet_teilprozess_permanente_rutschung.sql')
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_permanente_rutschung.sql']
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
 task gefahrengebiet_teilprozess_permanente_rutschung_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_permanente_rutschung) {
     description = "Kopieren der alten Daten der Gefahrengebiete des Teilprozesses permanente Rutschung"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('teilprozesse/gefahrengebiet_teilprozess_permanente_rutschung_altdaten_copy.sql')
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_permanente_rutschung_altdaten_copy.sql']
 }
 
 task gefahrengebiet_teilprozess_fels_bergsturz(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_permanente_rutschung_altdaten_copy) {
     description = "Berechnung der Gefahrengebiete des Teilprozesses Fels-/Bergsturz"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('teilprozesse/gefahrengebiet_teilprozess_fels_bergsturz.sql')
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_fels_bergsturz.sql']
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
 task gefahrengebiet_teilprozess_fels_bergsturz_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_fels_bergsturz) {
     description = "Kopieren der alten Daten der Gefahrengebiete des Teilprozesses Fels-/Bergsturz"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('teilprozesse/gefahrengebiet_teilprozess_fels_bergsturz_altdaten_copy.sql')
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_fels_bergsturz_altdaten_copy.sql']
 }
 
 task gefahrengebiet_teilprozess_stein_blockschlag(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_fels_bergsturz_altdaten_copy) {
     description = "Berechnung der Gefahrengebiete des Teilprozesses Stein- Blockschlag"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('teilprozesse/gefahrengebiet_teilprozess_stein_blockschlag.sql')
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_stein_blockschlag.sql']
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
 task gefahrengebiet_teilprozess_stein_blockschlag_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_stein_blockschlag) {
     description = "Kopieren der alten Daten der Gefahrengebiete des Teilprozesses Stein- Blockschlag"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('teilprozesse/gefahrengebiet_teilprozess_stein_blockschlag_altdaten_copy.sql')
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_stein_blockschlag_altdaten_copy.sql']
 }
 
 
 task gefahrengebiet_teilprozess_ueberflutung(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_stein_blockschlag_altdaten_copy) {
     description = "Berechnung der Gefahrengebiete des Teilprozesses Überflutung"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('teilprozesse/gefahrengebiet_teilprozess_ueberflutung.sql')
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_ueberflutung.sql']
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
@@ -320,7 +324,7 @@ task gefahrengebiet_teilprozess_ueberflutung(type: SqlExecutor, dependsOn: gefah
 task gefahrengebiet_teilprozess_ueberflutung_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_ueberflutung) {
     description = "Kopieren der alten Daten der Gefahrengebiete des Teilprozesses Überflutung"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('teilprozesse/gefahrengebiet_teilprozess_ueberflutung_altdaten_copy.sql')
+    sqlFiles = ['teilprozesse/gefahrengebiet_teilprozess_ueberflutung_altdaten_copy.sql']
 }
 
 //HAUPTPROZESSE
@@ -328,21 +332,21 @@ task gefahrengebiet_teilprozess_ueberflutung_altdaten_copy(type: SqlExecutor, de
 task gefahrengebiet_hauptprozess_wasser(type: SqlExecutor, dependsOn: gefahrengebiet_teilprozess_ueberflutung_altdaten_copy) {
     description = "Berechnung der Gefahrengebiete des Hauptprozess Wasser"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('hauptprozesse/gefahrengebiet_hauptprozess_wasser.sql')
+    sqlFiles = ['hauptprozesse/gefahrengebiet_hauptprozess_wasser.sql']
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
 task gefahrengebiet_hauptprozess_wasser_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozess_wasser) {
     description = "Kopieren der alten Daten der Gefahrengebiete des Hauptprozesses Wasser"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('hauptprozesse/gefahrengebiet_hauptprozess_wasser_altdaten_copy.sql')
+    sqlFiles = ['hauptprozesse/gefahrengebiet_hauptprozess_wasser_altdaten_copy.sql']
 
 }
 
 task gefahrengebiet_hauptprozess_rutschung(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozess_wasser_altdaten_copy) {
     description = "Berechnung der Gefahrengebiete des Hauptprozess Rutschung"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('hauptprozesse/gefahrengebiet_hauptprozess_rutschung.sql')
+    sqlFiles = ['hauptprozesse/gefahrengebiet_hauptprozess_rutschung.sql']
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
@@ -350,20 +354,20 @@ task gefahrengebiet_hauptprozess_rutschung(type: SqlExecutor, dependsOn: gefahre
 task gefahrengebiet_hauptprozess_rutschung_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozess_rutschung) {
     description = "Kopieren der alten Daten der Gefahrengebiete des Hauptprozesses Rutschung"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('hauptprozesse/gefahrengebiet_hauptprozess_rutschung_altdaten_copy.sql')
+    sqlFiles = ['hauptprozesse/gefahrengebiet_hauptprozess_rutschung_altdaten_copy.sql']
 }
 
 task gefahrengebiet_hauptprozess_sturz(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozess_rutschung_altdaten_copy) {
     description = "Berechnung der Gefahrengebiete des Hauptprozess Sturz"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('hauptprozesse/gefahrengebiet_hauptprozess_sturz.sql')
+    sqlFiles = ['hauptprozesse/gefahrengebiet_hauptprozess_sturz.sql']
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
 task gefahrengebiet_hauptprozess_sturz_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozess_sturz) {
     description = "Kopieren der alten Daten der Gefahrengebiete des Hauptprozesses Sturz"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('hauptprozesse/gefahrengebiet_hauptprozess_sturz_altdaten_copy.sql')
+    sqlFiles = ['hauptprozesse/gefahrengebiet_hauptprozess_sturz_altdaten_copy.sql']
 }
 
 // HAUPTPROZESSE SYNOPTISCH
@@ -372,7 +376,7 @@ task gefahrengebiet_hauptprozess_sturz_altdaten_copy(type: SqlExecutor, dependsO
 task gefahrengebiet_hauptprozesse_synoptisch(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozess_sturz_altdaten_copy) {
     description = "Berechnung der synoptischen Hauptprozess - Gefahrengebiete"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files(
+    sqlFiles = [
                 'hauptprozesse/gefahrengebiet_hauptprozesse_synoptisch_make_temp_tables.sql',
                 'hauptprozesse/gefahrengebiet_hauptprozesse_synoptisch_copy_all_to_temptables.sql',
                 'hauptprozesse/gefahrengebiet_hauptprozesse_synoptisch_create_split_poly.sql',
@@ -380,7 +384,7 @@ task gefahrengebiet_hauptprozesse_synoptisch(type: SqlExecutor, dependsOn: gefah
                 'hauptprozesse/gefahrengebiet_hauptprozesse_synoptisch_delete_holes.sql',
                 'hauptprozesse/gefahrengebiet_hauptprozesse_synoptisch_union.sql',
                 'hauptprozesse/gefahrengebiet_hauptprozesse_synoptisch_sort_and_insert.sql'
-    )
+    ]
 }
 
 // FLIESSRICHTUNG
@@ -388,14 +392,14 @@ task gefahrengebiet_hauptprozesse_synoptisch(type: SqlExecutor, dependsOn: gefah
 task fliessrichtung(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozesse_synoptisch) {
     description = "Kopieren der Fliessrichtungen"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('kennwerte/fliessrichtung.sql')
+    sqlFiles = ['kennwerte/fliessrichtung.sql']
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
 task fliessrichtung_altdaten_copy(type: SqlExecutor, dependsOn: fliessrichtung) {
     description = "Kopieren der alten Daten der fliessrichtung"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('kennwerte/fliessrichtung_altdaten_copy.sql')
+    sqlFiles = ['kennwerte/fliessrichtung_altdaten_copy.sql']
 }
 
 // FLIESSTIEFEN
@@ -403,14 +407,14 @@ task fliessrichtung_altdaten_copy(type: SqlExecutor, dependsOn: fliessrichtung) 
 task fliesstiefen(type: SqlExecutor, dependsOn: fliessrichtung_altdaten_copy) {
     description = "Kopieren der Fliesstiefen"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('kennwerte/fliesstiefen.sql')
+    sqlFiles = ['kennwerte/fliesstiefen.sql']
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
 task fliesstiefen_altdaten_copy(type: SqlExecutor, dependsOn: fliesstiefen) {
     description = "Kopieren der alten Daten der fliesstiefen"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('kennwerte/fliesstiefen_altdaten_copy.sql')
+    sqlFiles = ['kennwerte/fliesstiefen_altdaten_copy.sql']
 }
 
 // UFEREROSION
@@ -418,7 +422,7 @@ task fliesstiefen_altdaten_copy(type: SqlExecutor, dependsOn: fliesstiefen) {
 task ufererosion(type: SqlExecutor, dependsOn: fliesstiefen_altdaten_copy) {
     description = "Kopieren der Ufererosion"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('ufererosion.sql')
+    sqlFiles = ['ufererosion.sql']
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
@@ -426,7 +430,7 @@ task ufererosion(type: SqlExecutor, dependsOn: fliesstiefen_altdaten_copy) {
 task ufererosion_altdaten_copy(type: SqlExecutor, dependsOn: ufererosion) {
     description = "Kopieren der alten Daten der Ufererosion"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('ufererosion_altdaten_copy.sql')
+    sqlFiles = ['ufererosion_altdaten_copy.sql']
 }
 
 // Abklärungsperimeter und Erhebungsgebiet
@@ -434,14 +438,14 @@ task ufererosion_altdaten_copy(type: SqlExecutor, dependsOn: ufererosion) {
 task abklaerungsperimeter(type: SqlExecutor, dependsOn: ufererosion_altdaten_copy) {
     description = "Kopieren der Abklärungsperimeter"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('abklaerungsperimeter.sql')
+    sqlFiles = ['abklaerungsperimeter.sql']
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
 task erhebungsgebiet(type: SqlExecutor, dependsOn: abklaerungsperimeter) {
     description = "Berechnen und kopieren der Erhebungsgebiete"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('erhebungsgebiet.sql')
+    sqlFiles = ['erhebungsgebiet.sql']
 }
 
 // Dokumente pro Gemeinden 
@@ -458,7 +462,7 @@ task copy_alte_dokumente(type: Db2Db, dependsOn: erhebungsgebiet) {
 task dokumente_pro_gemeinde(type: SqlExecutor, dependsOn: copy_alte_dokumente) {
     description = "Teilt jedes Dokument einer Gemeinde mit entsprechendem Gemeindepolygon zu."
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('dokumente_pro_gemeinde.sql')
+    sqlFiles = ['dokumente_pro_gemeinde.sql']
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
@@ -467,21 +471,21 @@ task dokumente_pro_gemeinde(type: SqlExecutor, dependsOn: copy_alte_dokumente) {
 task kuebermurung_geschwindigkeit(type: SqlExecutor, dependsOn: dokumente_pro_gemeinde) {
     description = "Kopieren der Kennwerte Übermurung Geschwindigkeit"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('kennwerte/kw_uebermurung_geschwindigkeit.sql')
+    sqlFiles = ['kennwerte/kw_uebermurung_geschwindigkeit.sql']
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
 task kuebermurung_hoehe(type: SqlExecutor, dependsOn: kuebermurung_geschwindigkeit) {
     description = "Kopieren der Kennwerte Übermurung Höhe"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('kennwerte/kw_uebermurung_hoehe.sql')
+    sqlFiles = ['kennwerte/kw_uebermurung_hoehe.sql']
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
 task kueberschwemmung_geschwindigkeit(type: SqlExecutor, dependsOn: kuebermurung_hoehe) {
     description = "Kopieren der Kennwerte Überschwemmung Geschwindigkeit"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('kennwerte/kw_ueberschwemmung_geschwindigkeit.sql')
+    sqlFiles = ['kennwerte/kw_ueberschwemmung_geschwindigkeit.sql']
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
 }
 
@@ -490,14 +494,14 @@ task kueberschwemmung_geschwindigkeit(type: SqlExecutor, dependsOn: kuebermurung
 task clean_geometry(type: SqlExecutor, dependsOn: kueberschwemmung_geschwindigkeit) {
     description = "Bereinigung der Geometrien durch st_reducePrecision"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('geometrie_bereinigung.sql')
+    sqlFiles = ['geometrie_bereinigung.sql']
 }
 
 //In die Edit-DB kopieren
 
 task truncate_edit_db_tables(type: SqlExecutor, dependsOn: clean_geometry) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = files('vorbereitung/truncate_table.sql')
+    sqlFiles = ['vorbereitung/truncate_table.sql']
 }
 
 task copy_alle_natgef_produkte(type: Db2Db, dependsOn:  truncate_edit_db_tables) {

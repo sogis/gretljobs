@@ -91,7 +91,7 @@ git checkout -b branchname
 * Pfade nicht im Unix Style, sondern im mittels Java-Methoden Betriebssystem unabhängig angeben: ```Paths.get("var","www","maps")``` oder ```Paths.get("var/www/maps")```.
 * Pro Tabelle sollte eine SQL-Datei verwendet werden.
 * Bitte an den AGI SQL-Richtlinien orientieren.
-* `t_id` in aller Regel nicht von einem Schema in das andere übertragen (Typicherweise Edit-DB -> Pub-DB), damit diese sauber über die Sequenz im Zielschema vergeben wird.
+* `t_id` in aller Regel nicht von einem Schema in das andere übertragen (Typicherweise Edit-DB -> Pub-DB), damit diese sauber über die Sequenz im Zielschema vergeben wird. 
 * Variablen mit `def` definieren und nicht mit `ext{}`
 * Für den Zugriff auf Datenbanken und andere Ressourcen folgende Variablen verwenden:
   * `dbUriEdit`, `dbUserEdit`, `dbPwdEdit`
@@ -111,11 +111,10 @@ git checkout -b branchname
   * `ftpServerFledermaus`, `ftpUserFledermaus`, `ftpPwdFledermaus`
   * `ftpServerInfogrips`, `ftpUserInfogrips`, `ftpPwdInfogrips`
   * `ftpServerWaldportal`, `ftpUserWaldportal`, `ftpPwdWaldportal`
+  * `ftpServerZivilschutz`, `ftpUserZivilschutz`, `ftpPwdZivilschutz`
   * `sftpServerGelan`, `sftpUserGelan`, `sftpPwdGelan`
-  * `sftpServerSEinApp`, `sftpUserSEinApp`
   * `sftpUrlSogis`, `sftpUserSogis`, `sftpPwdSogis`
   * für Datentransfer Gemdat: `host = sftpServerSogis`, `user = sftpUserSogisGemdat`, `identity = file('/home/gradle/.sshkeys/id_rsa')`
-  * `sftpServerZivilschutz`, `sftpUserZivilschutz`, `sftpPwdZivilschutz`
   * `aiServer`, `aiUser`, `aiPwd`
   * `infofloraUser`, `infofloraPwd`
   * `igelToken`
@@ -128,7 +127,7 @@ git checkout -b branchname
   * `simiTokenServiceUrl`, `simiTokenServiceUser`, `simiTokenServicePwd`
   * `solrIndexupdaterBaseUrl` (die interne Basis-URL zum Indexupdater für Solr)
   * `gretlEnvironment` (der Wert dieser Variable ist je nach Umgebung `test`, `integration` oder `production`)
-  * `dbSearchSchemaPub`
+  * `dbSearchSchemaPub` 
 
   Die Anleitung, wie man solche Ressourcen (z.B. DB-Verbindungen)
   in Jenkins definiert oder bestehende Ressourcen bearbeitet,
@@ -232,9 +231,9 @@ Allerdings können auch diejenigen Benutzer oder Gruppen, welche durch globale B
 
 Zudem kann mit der Eigenschaft `nodeLabel` bestimmt werden,
 auf welchem Node der Job ausgeführt werden soll.
-Möglich ist hier der Wert `gretl-3.1`,
+Möglich ist hier der Wert `gretl-3.0`,
 damit der Job auf einem Jenkins Agent
-mit GRETL Version 3.1 ausgeführt wird.
+mit GRETL Version 3.0 ausgeführt wird.
 Diese Property dient primär dazu,
 dass bei einem grösseren Versionssprung von GRETL
 nicht alle Jobs gleichzeitig umgestellt werden müssen.

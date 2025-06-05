@@ -12,5 +12,5 @@ defaultTasks 'freigeben'
 task freigeben(type: SqlExecutor) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [kennung: "'"+auftragskennung+"'"]
-    sqlFiles = files('freigeben.sql')
+    sqlFiles = ['freigeben.sql']
 }

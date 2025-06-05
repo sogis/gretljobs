@@ -41,8 +41,6 @@ LEFT JOIN
     arp_richtplan_v2.richtplankarte_anpassung AS a ON f.anpassung = a.t_id
 LEFT JOIN
     dokumente AS d ON f.t_id = d.ueberlagernde_flaeche
-WHERE
-	a.stand = 'rechtsgueltig'
 GROUP BY
     f.objektnummer,
     f.objekttyp,

@@ -128,6 +128,7 @@ pipeline {
                                         defaultTaskLine = line.trim()
                                     }
                                 }
+
                                 if (defaultTaskLine) {
                                     // Entferne "Default tasks: " vom Beginn der Zeile
                                     def tasksString = defaultTaskLine.replace("Default tasks:", "").trim()

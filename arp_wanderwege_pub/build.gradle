@@ -18,7 +18,9 @@ task transferArpWanderwege(type: Db2Db){
 task updateStandortLink(type: SqlExecutor, dependsOn: transferArpWanderwege){
     description = 'Generiert die Links zu den Dokumenten aus dem Attribut standortname. Achtung: im SQL sind Ausnahmen definiert'
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlFiles = files('update_standort_link.sql')
+    sqlFiles = [
+            'update_standort_link.sql'
+    ]
 }
 
 
