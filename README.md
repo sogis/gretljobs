@@ -91,7 +91,7 @@ git checkout -b branchname
 * Pfade nicht im Unix Style, sondern im mittels Java-Methoden Betriebssystem unabhängig angeben: ```Paths.get("var","www","maps")``` oder ```Paths.get("var/www/maps")```.
 * Pro Tabelle sollte eine SQL-Datei verwendet werden.
 * Bitte an den AGI SQL-Richtlinien orientieren.
-* `t_id` in aller Regel nicht von einem Schema in das andere übertragen (Typicherweise Edit-DB -> Pub-DB), damit diese sauber über die Sequenz im Zielschema vergeben wird. 
+* `t_id` in aller Regel nicht von einem Schema in das andere übertragen (Typicherweise Edit-DB -> Pub-DB), damit diese sauber über die Sequenz im Zielschema vergeben wird.
 * Variablen mit `def` definieren und nicht mit `ext{}`
 * Für den Zugriff auf Datenbanken und andere Ressourcen folgende Variablen verwenden:
   * `dbUriEdit`, `dbUserEdit`, `dbPwdEdit`
@@ -128,7 +128,7 @@ git checkout -b branchname
   * `simiTokenServiceUrl`, `simiTokenServiceUser`, `simiTokenServicePwd`
   * `solrIndexupdaterBaseUrl` (die interne Basis-URL zum Indexupdater für Solr)
   * `gretlEnvironment` (der Wert dieser Variable ist je nach Umgebung `test`, `integration` oder `production`)
-  * `dbSearchSchemaPub` 
+  * `dbSearchSchemaPub`
 
   Die Anleitung, wie man solche Ressourcen (z.B. DB-Verbindungen)
   in Jenkins definiert oder bestehende Ressourcen bearbeitet,

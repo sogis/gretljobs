@@ -6,7 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 description = "GRETL-Job für Datenumbau der Hoheitsgrenzen innerhalb der edit-DB, ins pub-Schema (pub-DB, edit-DB), am Ende ins pub-Schema der sogis-DB"
 
 
-defaultTasks 'publishPub'
+defaultTasks 'publishPub', 'refreshSolr', 'updateSearchIndex_1', 'updateSearchIndex_2'
 
 
 task transferAgiHoheitsgrenzen(type: Db2Db) {
@@ -39,7 +39,7 @@ task createGeometriesAgiHoheitsgrenzen(type: SqlExecutor, dependsOn:'transferAgi
             'agi_hoheitsgrenzen_edit_pub_bezirksgrenze_generalisiert.sql',
             'agi_hoheitsgrenzen_edit_pub_kantonsgrenze_generalisiert.sql'
     ]
-    
+
     finalizedBy 'fixGeometries'
 }
 
@@ -79,11 +79,7 @@ task transferAgiHoheitsgrenzenToPubDb(type: Db2Db, dependsOn:'createGeometriesAg
     ]
 }
 
-task refreshSolr(type:Exec, dependsOn:'transferAgiHoheitsgrenzenToPubDb') {
-    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.agi.gemeindegrenzen,ch.so.agi.bezirksgrenzen'
-}
-
-task publishPub(type: Publisher, dependsOn:'refreshSolr'){
+task publishPub(type: Publisher, dependsOn:'transferAgiHoheitsgrenzenToPubDb'){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.agi.av.hoheitsgrenzen"
     dbSchema = "agi_hoheitsgrenzen_pub"
@@ -96,3 +92,47 @@ task publishPub(type: Publisher, dependsOn:'refreshSolr'){
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
+task refreshSolr(type:Exec) {
+    mustRunAfter 'publishPub'
+    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.agi.gemeindegrenzen,ch.so.agi.bezirksgrenzen'
+}
+
+task updateSearchIndex_1(type: SqlExecutor){
+    mustRunAfter 'publishPub'
+    def layerName = 'ch.so.agi.gemeindegrenzen'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+task updateSearchIndex_2(type: SqlExecutor){
+    mustRunAfter 'publishPub'
+    def layerName = 'ch.so.agi.bezirksgrenzen'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}

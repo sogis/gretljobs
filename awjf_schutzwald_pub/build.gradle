@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'refreshSolr'
+defaultTasks 'updateTxtColsSchutzwald', 'refreshSolr', 'updateSearchIndex_1', 'updateSearchIndex_2'
 
 task transferAwjfSchutzwaldPub(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -12,8 +12,8 @@ task transferAwjfSchutzwaldPub(type: Db2Db) {
             new TransferSet('awjf_schutzwald_pub_beh_flaeche.sql', 'awjf_schutzwald_pub_v1.behandelte_flaeche', true),
             new TransferSet('awjf_schutzwald_pub_dokument.sql', 'awjf_schutzwald_pub_v1.dokument', true),
             new TransferSet('awjf_schutzwald_pub_info.sql', 'awjf_schutzwald_pub_v1.schutzwald_info', true),
-            new TransferSet('awjf_schutzwald_pub_schutzwald.sql', 'awjf_schutzwald_pub_v1.schutzwald', true) 
-    ];        
+            new TransferSet('awjf_schutzwald_pub_schutzwald.sql', 'awjf_schutzwald_pub_v1.schutzwald', true)
+    ];
 }
 
 task updateTxtColsSchutzwald(type: SqlExecutor, dependsOn:transferAwjfSchutzwaldPub){
@@ -22,6 +22,49 @@ task updateTxtColsSchutzwald(type: SqlExecutor, dependsOn:transferAwjfSchutzwald
     sqlFiles = ['updateTxtColsSchutzwald.sql']
 }
 
-task refreshSolr(type:Exec, dependsOn:'updateTxtColsSchutzwald') {
+task refreshSolr(type:Exec) {
+    mustRunAfter 'updateTxtColsSchutzwald'
 	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.schutzwaldausscheidung,ch.so.awjf.schutzwald_hauptgefahrenpotentiale'
+}
+
+task updateSearchIndex_1(type: SqlExecutor){
+    mustRunAfter 'updateTxtColsSchutzwald'
+    def layerName = 'ch.so.awjf.schutzwaldausscheidung'
+    def sqlFileName = 'searchindex_' + layerName + '.sql'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
+
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+task updateSearchIndex_2(type: SqlExecutor){
+    mustRunAfter 'updateTxtColsSchutzwald'
+    def layerName = 'ch.so.awjf.schutzwald_hauptgefahrenpotentiale'
+    def sqlFileName = 'searchindex_' + layerName + '.sql'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
+
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
 }

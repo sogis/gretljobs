@@ -7,7 +7,7 @@ import java.io.File
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'validateData', 'uploadPlanregister'
+defaultTasks 'validateData', 'uploadPlanregister', 'refreshSolr', 'updateSearchIndex'
 
 def FileName = "arp_naturreservate.xtf"
 def FileNamePub = "arp_naturreservate_pub.xtf"
@@ -72,10 +72,6 @@ task deleteData_staging_pub (type: SqlExecutor) {
     sqlFiles = ["delete_arp_naturreservate_staging.sql"]
 }
 
-task refreshSolr(type:Exec, dependsOn:'transferArpNaturreservate') {
-    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.arp.naturreservate.reservate'
-}
-
 task importXTF_pub(type: Ili2pgImport) {
     description = 'Import der umgebaute INTERLIS-Datei in das Schema arp_naturreservate_pub.'
     database = [dbUriPub, dbUserPub, dbPwdPub]
@@ -84,7 +80,7 @@ task importXTF_pub(type: Ili2pgImport) {
     dataFile = file(FileNamePub)
     deleteData = true
     disableValidation = true
-    finalizedBy deleteData_staging_pub, refreshSolr
+    finalizedBy deleteData_staging_pub
 }
 // EXPORT Typo3
 // Datenumbau für Planregister (Nur Daten aus Schema "arp_naturreservate" werden ersetzt) und an Typo3 senden
@@ -100,12 +96,12 @@ task transfer_planregister_pub(type: Db2Db, dependsOn: 'deleteData_planregister_
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_naturreservate.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', false),            
+            new TransferSet('insert_arp_nutzungsplanung_planregister_pub_naturreservate.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', false),
     ];
 }
 
 task deleteData_doppelte_dokumente (type: SqlExecutor, dependsOn:transfer_planregister_pub) {
-    description = "Löscht die doppelten Dokumente aus dem Schema arp_nutzungsplanung_planregister_pub" 
+    description = "Löscht die doppelten Dokumente aus dem Schema arp_nutzungsplanung_planregister_pub"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ["delete_arp_nutzungsplanung_planregister_pub_doppelte_dokumente.sql"]
 }
@@ -116,12 +112,12 @@ task exportPlanregisterPub(type: Ili2pgExport, dependsOn: 'deleteData_doppelte_d
     dbschema = dbSchemaPlanregister
     dataFile = file(Paths.get(pathToTempFolder, planregisterXtfFileName))
     disableValidation = true
-    // Kein Dataset, weil alle Daten enthalten sein sollen. 
+    // Kein Dataset, weil alle Daten enthalten sein sollen.
 }
 
 task zipPlanregister(type: Gzip, dependsOn: 'exportPlanregisterPub') {
-    dataFile = file(Paths.get(pathToTempFolder, planregisterXtfFileName)) 
-    gzipFile = file(Paths.get(pathToTempFolder, planregisterZipFileName)) 
+    dataFile = file(Paths.get(pathToTempFolder, planregisterXtfFileName))
+    gzipFile = file(Paths.get(pathToTempFolder, planregisterZipFileName))
 }
 
 task uploadPlanregister(type: Curl, dependsOn: 'zipPlanregister') {
@@ -132,4 +128,30 @@ task uploadPlanregister(type: Curl, dependsOn: 'zipPlanregister') {
     user = digiplanUser
     password = digiplanPwd
     expectedStatusCode = 202
+}
+
+task refreshSolr(type:Exec) {
+    mustRunAfter 'uploadPlanregister'
+    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.arp.naturreservate.reservate'
+}
+
+task updateSearchIndex(type: SqlExecutor){
+    mustRunAfter 'uploadPlanregister'
+    def layerName = 'ch.so.arp.naturreservate.reservate'
+    def sqlFileName = 'searchindex_' + layerName + '.sql'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
+
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
 }

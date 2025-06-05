@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'refreshSolr'
+defaultTasks 'publipub', 'refreshSolr', 'updateSearchIndex'
 
 task publiedit(type: Publisher){
     dataIdent = "ch.so.avt.verkehrszaehlstellen.relational"
@@ -42,7 +42,28 @@ task publipub(type: Publisher, dependsOn: 'transferAvtVerkehrszaehlstellen'){
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
-task refreshSolr(type:Exec, dependsOn:'publipub') {
+task refreshSolr(type:Exec) {
+    mustRunAfter 'publipub'
 	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.avt.verkehrszaehlstellen'
 }
 
+task updateSearchIndex(type: SqlExecutor){
+    mustRunAfter 'publipub'
+    def layerName = 'ch.so.avt.verkehrszaehlstellen'
+    def sqlFileName = 'searchindex_' + layerName + '.sql'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
+
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}

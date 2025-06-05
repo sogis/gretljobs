@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'refreshSolr'
+defaultTasks 'transferAfuGeotope', 'refreshSolr', 'updateSearchIndex_1', 'updateSearchIndex_2', 'updateSearchIndex_3', 'updateSearchIndex_4', 'updateSearchIndex_5', 'updateSearchIndex_6'
 
 task transferAfuGeotope(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -18,6 +18,129 @@ task transferAfuGeotope(type: Db2Db){
     ]
 }
 
-task refreshSolr(type:Exec, dependsOn:'transferAfuGeotope') {
-	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.geotope.aufschluss,ch.so.afu.geotope.erratiker,ch.so.afu.geotope.fundstelle_grabung_geschuetzt,ch.so.afu.geotope.hoehle,ch.so.afu.geotope.landschaftsform,ch.so.afu.geotope.quelle'
+task refreshSolr(type:Exec) {
+    mustRunAfter 'transferAfuGeotope'
+	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl +
+        '/queue?ds=ch.so.afu.geotope.aufschluss,ch.so.afu.geotope.erratiker,ch.so.afu.geotope.fundstelle_grabung_geschuetzt,ch.so.afu.geotope.hoehle,ch.so.afu.geotope.landschaftsform,ch.so.afu.geotope.quelle'
 }
+
+task updateSearchIndex_1(type: SqlExecutor){
+    mustRunAfter 'transferAfuGeotope'
+    def layerName = 'ch.so.afu.geotope.aufschluss'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+task updateSearchIndex_2(type: SqlExecutor){
+    mustRunAfter 'transferAfuGeotope'
+    def layerName = 'ch.so.afu.geotope.erratiker'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+task updateSearchIndex_3(type: SqlExecutor){
+    mustRunAfter 'transferAfuGeotope'
+    def layerName = 'ch.so.afu.geotope.fundstelle_grabung_geschuetzt'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+task updateSearchIndex_4(type: SqlExecutor){
+    mustRunAfter 'transferAfuGeotope'
+    def layerName = 'ch.so.afu.geotope.hoehle'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+task updateSearchIndex_5(type: SqlExecutor){
+    mustRunAfter 'transferAfuGeotope'
+    def layerName = 'ch.so.afu.geotope.landschaftsform'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+task updateSearchIndex_6(type: SqlExecutor){
+    mustRunAfter 'transferAfuGeotope'
+    def layerName = 'ch.so.afu.geotope.quelle'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+

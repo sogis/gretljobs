@@ -1,5 +1,5 @@
 INSERT INTO
-    agi_av_gwr_abgleich_v1.av_gwr_differnzen_av_gwr_differenzen 
+    agi_av_gwr_abgleich_v1.av_gwr_differnzen_av_gwr_differenzen
     (
         agi_id,
         com_fosnr,
@@ -16,9 +16,9 @@ INSERT INTO
         bdg_n,
         link,
         agi_klasse,
-        geometrie    
+        geometrie
     )
-SELECT 
+SELECT
     bdg_egid || '-' || issue_category AS agi_id,
     com_fosnr,
     bdg_egid,
@@ -33,7 +33,7 @@ SELECT
     bdg_e,
     bdg_n,
     link,
-CASE 
+CASE
     WHEN issue_category = 'Only in GWR, under construction'
         THEN 'Korrektur Geometer'
     WHEN issue_category = 'Different EGID in AV and GWR'
@@ -45,7 +45,7 @@ CASE
     ELSE 'Neu'
 END AS agi_klasse,
     ST_SetSRID(ST_MakePoint(bdg_e, bdg_n), 2056) AS geometrie
-FROM 
+FROM
     agi_av_gwr_abgleich_import_v1.av_gwr_differnzen_av_gwr_differenzen
 ON CONFLICT (agi_id) DO NOTHING
 ;

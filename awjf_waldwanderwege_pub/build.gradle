@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'refreshSolr'
+defaultTasks 'transferWaldwanderwege', 'refreshSolr', 'updateSearchIndex'
 
 task publishEdit (type: Publisher){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -24,9 +24,32 @@ task transferWaldwanderwege(type: Db2Db, dependsOn: 'publishEdit'){
     transferSets = [
             new TransferSet('waldwanderwege_posten.sql', 'awjf_waldwanderwege_pub.waldwanderwege_posten', true),
             new TransferSet('waldwanderwege_wanderwege.sql', 'awjf_waldwanderwege_pub.waldwanderwege_wanderwege', true)
-    ];        
+    ];
 }
 
-task refreshSolr(type:Exec, dependsOn:'transferWaldwanderwege') {
+task refreshSolr(type:Exec) {
+    mustRunAfter 'transferWaldwanderwege'
 	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.waldwanderwege_posten'
 }
+
+task updateSearchIndex(type: SqlExecutor){
+    mustRunAfter 'transferWaldwanderwege'
+    def layerName = 'ch.so.awjf.waldwanderwege_posten'
+    def sqlFileName = 'searchindex_' + layerName + '.sql'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
+
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+

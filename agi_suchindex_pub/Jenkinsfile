@@ -20,11 +20,11 @@ pipeline {
         string(name: 'TASK_NAME', defaultValue: 'updateSearchIndex', description: 'Name of the GRETL task to be started to rebuild the feature search index')
 
         booleanParam(defaultValue: false,
-                description: 'Update only feature search index for one job: partial rebuild of the feature search index',
-                name: 'ONE_JOB_ONLY'
+                description: 'Update only feature search index for filtered job: partial rebuild of the feature search index',
+                name: 'JOB_FILTER'
         )
 
-        string(name: 'ONE_JOB_NAME', defaultValue: 'ada_archaeologie_pub', description: 'Name of the only GRETL job to be started to rebuild the feature search index')
+        string(name: 'JOB_FILTER_NAME', defaultValue: 'ada_archaeologie_pub', description: 'Name of the GRETL job(s) to be started to rebuild the feature search index. It is possible to provide wildcards, like afu_*')
     }
 
     stages {
@@ -49,25 +49,30 @@ pipeline {
             steps {
                 container('gretl') {
                     script {
-                        def taskToRun = params.TASK_NAME
+                        def taskToRun = params.TASK_NAME.trim()
                         def gradleCommand = 'gretl'         //gradle command in der GRETL-Umgebung
                         def gradleProjects = []
 
                         echo "Suche nach GRETL-Jobs mit Task: ${taskToRun}"
-                        if (params.ONE_JOB_ONLY){
-                            echo "Suche in GRETL-Job mit Namen: ${params.ONE_JOB_NAME}"
-                            gradleProjects = findFiles(glob: "${params.ONE_JOB_NAME}/**/build.gradle")
-                            echo "Gefundener GRETL-Job: ${gradleProjects.size()}"
+                        if (params.JOB_FILTER){
+                            def rawName = params.JOB_FILTER_NAME.trim()
+                            //verhindere Path Traversal
+                            def cleanedName = rawName.replaceAll(/^([.]{1,2}\/)+|^\/+/, "")
+
+                            echo "Suche in GRETL-Job mit Namen: ${cleanedName}"
+                            gradleProjects = findFiles(glob: "${cleanedName}/*.gradle")
+                            echo "  Gefundene GRETL-Jobs: ${gradleProjects.size()}"
                         }
                         else {
                             // Alle build.gradle Dateien finden
                             echo "Suche in allen GRETL-Jobs"
-                            gradleProjects = findFiles(glob: "**/build.gradle")
-                            echo "Gefundene GRETL-Jobs: ${gradleProjects.size()}"
+                            gradleProjects = findFiles(glob: "*/*.gradle")
+                            echo "  Gefundene potentielle GRETL-Jobs: ${gradleProjects.size()}"
                         }
 
                         // Statistik
                         def jobsFound = 0
+                        def jobsErrors = 0
                         def tasksFound = 0
                         def tasksExecuted = 0
 
@@ -76,7 +81,12 @@ pipeline {
                             def projectPath = project.path
                             def projectDir = projectPath.substring(0, projectPath.lastIndexOf('/'))
 
+                            def isSettingsGradle = projectPath.contains("settings.gradle")
+
                             //echo "Prüfe GRETL-Job in: ${projectDir}"
+
+                            //listen to build abort signals while looping
+                            sleep(time: 10, unit: 'MILLISECONDS')
 
                             try {
                                 // Inhalt der build.gradle Datei lesen
@@ -85,9 +95,14 @@ pipeline {
                                 // Verschiedene Muster für Task-Definitionen suchen
                                 def containsTask = (buildFileContent =~ /${taskToRun}/).find()
 
+
                                 if (containsTask) {
                                     echo '__________________________________________________________'
-                                    echo "🔎 Task(s) '${taskToRun}' in ${projectDir} gefunden"
+                                    echo "🔎 Task(s) vom Typ '${taskToRun}' in ${projectDir} gefunden"
+                                }
+                                else if (isSettingsGradle){
+                                    echo '__________________________________________________________'
+                                    echo "🔎 Prüfe Multi-Project-Build in ${projectDir}"
                                 }
                                 else{
                                     // Überspringen des Projects, wenn kein Task gefunden werden kann
@@ -104,6 +119,10 @@ pipeline {
                                     // Führt 'gretl tasks' aus und speichert die Ausgabe
                                     taskOutput = sh(script: "${gradleCommand} tasks --all", returnStdout: true).trim()
                                 }
+
+                                //listen to build abort signals while looping
+                                sleep(time: 10, unit: 'MILLISECONDS')
+
                                 taskOutput.readLines().each { line ->
                                     if (line.trim().startsWith("Default tasks:")) {
                                         defaultTaskLine = line.trim()
@@ -115,7 +134,12 @@ pipeline {
                                     // Teile den String an Kommas
                                     defaultTasks = tasksString.split(",").collect { it.trim() }
                                 }
-                                //echo "Gefundene Default-Tasks: ${defaultTasks.join(', ')}"
+                                else{
+                                    echo "❌ Default-Tasks nicht verfügbar in ${projectDir}"
+                                    currentBuild.result = 'FAILED'
+                                    return
+                                }
+                                echo "Gefundene Default-Tasks: ${defaultTasks.join(', ')}"
 
                                 // Parameter für den zu suchenden Task-Namen
                                 def targetTaskName = params.TASK_NAME ?: ""
@@ -146,38 +170,34 @@ pipeline {
                                         echo "❌ Fehler beim Ausführen von Task(s) in ${projectDir}: ${e.message}"
                                         currentBuild.result = 'FAILED'
                                     }
-
-                                    /* Einzelstart der Tasks --> benötigt zuviel Zeit
-                                    matchingTasks.each { task ->
-                                        echo "Führe Task '${task}' aus"
-                                        tasksFound++
-                                        try {
-                                            dir(projectDir){
-                                                def gradleOutput = sh "${gradleCommand} ${task} --console=plain"
-                                                echo gradleOutput
-                                            }
-                                            tasksExecuted++
-                                            echo "✅ Job '${JOB_NAME}' in ${projectDir} erfolgreich ausgeführt"
-                                        } catch (Exception e) {
-                                            echo "❌ Fehler beim Ausführen von '${JOB_NAME}' in ${projectDir}: ${e.message}"
-                                            currentBuild.result = 'FAILED'
-                                        }
-                                    }
-                                    */
-
                                 }
 
                             } catch (Exception e) {
+                                // catch build abort signals
+                                if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                                    echo "❌ Build was cancelled: ${e.message}"
+                                    throw e  // Re-throw to abort
+                                }
                                 echo "❌ Fehler beim Lesen oder Verarbeiten der build.gradle in ${projectDir}: ${e.message}"
-                                currentBuild.result = 'FAILED'
+                                jobsErrors++;
+                                if (!isSettingsGradle){
+                                    currentBuild.result = 'FAILED'
+                                }
                             }
                         }
 
                         // Zusammenfassung ausgeben
                         echo "======= Zusammenfassung ============================"
                         echo "Task-Name: ${taskToRun}"
+                        if (params.JOB_FILTER){
+                            def rawName = params.JOB_FILTER_NAME.trim()
+                            //verhindere Path Traversal
+                            def cleanedName = rawName.replaceAll(/^([.]{1,2}\/)+|^\/+/, "")
+                            echo "Suche nur GRETL-Jobs mit Namen: ${cleanedName}"
+                        }
                         echo "Gefundene GRETL-Jobs: ${gradleProjects.size()}"
                         echo "GRETL-Jobs mit Task '${taskToRun}': ${jobsFound}"
+                        echo "  davon fehlerhafte GRETL-Jobs: ${jobsErrors}"
                         echo "Geplante auszuführende Tasks:  ${tasksFound}"
                         echo "Erfolgreich ausgeführte Tasks: ${tasksExecuted}"
                         echo "===================================================="

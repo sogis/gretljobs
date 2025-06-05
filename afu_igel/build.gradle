@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 import java.nio.file.Paths
 import de.undercouch.gradle.tasks.download.Download
 
-defaultTasks "refreshSolr"
+defaultTasks 'transformAndPub', 'refreshSolr', 'updateSearchIndex_1', 'updateSearchIndex_2', 'updateSearchIndex_3'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def igelTypes = ["standort", "stall"]
@@ -34,8 +34,8 @@ task dbImport() {
     description = "Aggregation task."
     dependsOn {
         tasks.findAll { task -> task.name.startsWith('import_') }
-    }    
-    
+    }
+
     doLast {
         println "Data import into db finished."
     }
@@ -50,6 +50,68 @@ task transformAndPub(type: Db2Db, dependsOn: dbImport){
     ];
 }
 
-task refreshSolr(type:Exec, dependsOn:'transformAndPub') {
-	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.gewaesserschutz_lw.stall,ch.so.afu.gewaesserschutz_lw.standort_mit_erhebung,ch.so.afu.gewaesserschutz_lw.standort_ohne_erhebung'
+task refreshSolr(type:Exec) {
+    mustRunAfter 'transformAndPub'
+	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl +
+        '/queue?ds=ch.so.afu.gewaesserschutz_lw.stall,ch.so.afu.gewaesserschutz_lw.standort_mit_erhebung,ch.so.afu.gewaesserschutz_lw.standort_ohne_erhebung'
+}
+
+task updateSearchIndex_1(type: SqlExecutor){
+    mustRunAfter 'transformAndPub'
+    def layerName = 'ch.so.afu.gewaesserschutz_lw.stall'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+task updateSearchIndex_2(type: SqlExecutor){
+    mustRunAfter 'transformAndPub'
+    def layerName = 'ch.so.afu.gewaesserschutz_lw.standort_mit_erhebung'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+task updateSearchIndex_3(type: SqlExecutor){
+    mustRunAfter 'transformAndPub'
+    def layerName = 'ch.so.afu.gewaesserschutz_lw.standort_ohne_erhebung'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
 }
