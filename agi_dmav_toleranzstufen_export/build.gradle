@@ -13,7 +13,7 @@ defaultTasks 'publiedit'
 task publiedit(type: Publisher){
   dataIdent = "ch.so.agi.dmav.relational.toleranzstufen"
 
-  database = [dbUriPub,dbUserPub,dbPwdPub]
+  database = [dbUriEdit,dbUserEdit,dbPwdEdit]
   dbSchema = "agi_dmav_toleranzstufen_v1"
   modelsToPublish = "DMAV_Toleranzstufen_V1_0"
 
