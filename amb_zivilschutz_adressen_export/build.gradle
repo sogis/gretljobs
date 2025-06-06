@@ -10,6 +10,10 @@ remotes {
         host = "${sftpServerZivilschutz}"
         user = "${sftpUserZivilschutz}"
         password = "${sftpPwdZivilschutz}"
+        // Skip host key checking outside the following environments:
+        if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) { // uses the Groovy membership operator
+            knownHosts = allowAnyHosts
+        }
     }
 }
 
@@ -56,9 +60,6 @@ task uploadCsvFile(dependsOn: replaceStatus) {
         gretlEnvironment == 'production'
     }
     doLast {
-        ssh.settings {
-            knownHosts = allowAnyHosts
-        }
         ssh.run {
             session(remotes.sftpServer) {
                 put from: "${csvFileName}", into: "."
