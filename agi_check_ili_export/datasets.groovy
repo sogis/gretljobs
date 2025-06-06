@@ -90,7 +90,7 @@ ext.datasets = []
 // datasets.add(new Dataset("SO_AGEM_Fila_20190318", "agem_fila", dbEdit, "ch.so.agem.fila_edit"))
 // datasets.add(new Dataset("DM08BaulinienSOLV95", "agi_av_baulinien_ng", dbEdit, "ch.so.agi.av_baulinien_edit"))
 // datasets.add(new Dataset("SO_AGI_AVGB_abgleich_import_20210429", "agi_av_gb_abgleich_import", dbEdit, "ch.so.agi.av_gb_abgleich_edit"))
-// datasets.add(new Dataset("SO_AGI_AV_GB_Administrative_Einteilungen_20180613", "agi_av_gb_admin_einteilung", dbEdit, "ch.so.agi.av_gb_admin_einteilung_edit"))
+// datasets.add(new Dataset("SO_AGI_AV_GB_Administrative_Einteilungen_20180613", "agi_av_gb_administrative_einteilungen_v2", dbEdit, "ch.so.agi.av_gb_admin_einteilung_edit"))
 // datasets.add(new Dataset("SO_AGI_AV_KASO_abgleich_import_20210429", "agi_av_kaso_abgleich_import", dbEdit, "ch.so.agi.av_kaso_abgleich_edit"))
 // datasets.add(new Dataset("SO_AGI_MOCheckSO_20200715", "agi_av_mocheckso", dbEdit, "ch.so.agi.av_mocheckso_edit"))
 // datasets.add(new Dataset("GB2AV", "agi_gb2av", dbEdit, "ch.so.agi.gb2av_edit"))
