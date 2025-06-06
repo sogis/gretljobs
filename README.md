@@ -495,6 +495,11 @@ Erläuterungen:
   ```
   GRETL_IMAGE_TAG=latest docker compose run --rm -u $UID gretl --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
   ```
+* Falls ein bestimmter Job Zugriff auf Daten in einem *Persistent Volume Claim* (PVC) benötigt, lässt sich dies lokal abbilden, indem man den Befehl mit einem *Volume Mount* (Option `-v ...`) gemäss folgendem Beispiel ergänzt:
+  ```
+  docker compose run --rm -u $UID -v /local/path:/work/datahub/DMAV_FixpunkteAVKategorie3_V1_0 gretl --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
+  ```
+  (Mit Vorteil erstellt man das zu mountende lokale Verzeichnis (im Beispiel `/local/path`) bereits vor dem Ausführen des Befehls; andernfalls wird es zwar von Docker Compose automatisch angelegt, allerdings mit Schreibberechtigung nur für den User *root*.)
 
 ### Schema-Job ausführen
 ```
