@@ -2,24 +2,76 @@ import ch.so.agi.gretl.api.TransferSet
 import ch.so.agi.gretl.tasks.*
 
 apply plugin: 'ch.so.agi.gretl'
-defaultTasks 'exportResults'
+defaultTasks '_exportGpkg'
 
-task exportResults(type: Copy){
-    from "build.gradle"
-    into "$buildDir/"
-    rename ('build.gradle', 'clean_results.gpkg')
+task _createTempTables(type: SqlExecutor){
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlParameters = [sourcetable:'public.gk_mocklayer']
+    sqlFiles = [
+        '_tmp/_create_gk_mocklayer.sql'
+    ]
+}
 
-    doLast {
-        logger.lifecycle('cleanMaxArea: ' + cleanMaxArea)
-        logger.lifecycle('cleanMaxDiameter: ' + cleanMaxDiameter)
-    }
+task _copyGK(type: Db2Db, dependsOn: _createTempTables){
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlParameters = [
+        'sourcetable':sourceTableName,
+    ]
+    transferSets = [
+        new TransferSet('_tmp/_copy_into_mocklayer.sql', 'public.gk_mocklayer', true)
+    ];
+}
+
+task mergeSmallPoly(type: SqlExecutor, dependsOn: _copyGK){
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlParameters = [
+        'sourcetable':'public.gk_mocklayer',
+        'clean_max_area':cleanMaxArea,
+        'clean_max_diameter':cleanMaxDiameter
+    ]
+    sqlFiles = [
+        'smallpoly/create_cleanup_layer.sql',
+        'smallpoly/copy_from_sourcetable.sql',
+        'smallpoly/map_small_to_big.sql',
+        'smallpoly/merge_geometries.sql',
+        'smallpoly/update_sourcetable_geom.sql',
+        'smallpoly/delete_sourcetable_smallpoly.sql'
+    ]
+}
+
+task logModifications(type: SqlExecutor, dependsOn: mergeSmallPoly){
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['smallpoly/log_modifications.sql']
+}
+
+task _createVerificationTable(type: SqlExecutor, dependsOn: logModifications){
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['_tmp/_create_verification_table.sql']
+}
+
+task _exportGpkg(type: GpkgExport, dependsOn: _createVerificationTable) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    schemaName = "public"
+    srcTableName = ["poly_cleanup", "verification"]
+    dataFile = file("$buildDir/clean_results.gpkg")
+    dstTableName = ["poly_cleanup", "verification"]
 }
 
 /*
-Tmp Notizen
+Überführung in produktiven Job:
+Alle nur temporär wichtigen Dateien und Tasks beginnen mit Underline. 
+Sprich alle Dateien und Tasks ohne Underline sind zu übernehmen.
 
+Implementation geht davon aus, dass in der Processing-DB bereits Quelltabellen
+existieren, welche gleichbenannte Attribute wie in _create_gk_mocklayer.sql 
+enthalten.
+Falls nein muss copy_from_sourcetable.sql und update_sourcetable_geom.sql 
+noch angepasst werden.
+
+Lokale Befehle:
 docker compose --profile processing up
 docker compose --profile processing down
 
-GRETL_IMAGE_TAG=3.1 docker compose run --rm -u $UID gretl --project-dir=afu_naturgefahren_gk_clean -PcleanMaxArea=10 -PcleanMaxDiameter=0.5
+GRETL_IMAGE_TAG=3.1 docker compose run --rm -u $UID gretl --project-dir=afu_naturgefahren_gk_clean -PcleanMaxArea=10 -PcleanMaxDiameter=0.5 -PsourceTableName=gefahrengebiet_hauptprozess_sturz
 */
