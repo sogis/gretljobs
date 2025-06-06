@@ -98,6 +98,7 @@ git checkout -b branchname
 
 Für den Zugriff auf Datenbanken und andere Ressourcen sollen die Variablen gemäss der folgenden Auflistung verwendet werden. (Die Variablenwerte, die in dieser Auflistung angegeben sind, dienen für die Entwicklung von GRETL-Jobs auf der lokalen Maschine mit Docker Compose.)
 ```properties
+# DBs
 dbUriEdit=jdbc:postgresql://edit-db/edit
 dbUserEdit=dmluser
 dbPwdEdit=dmluser
@@ -131,10 +132,8 @@ dbPwdEws=
 dbUriImdaspro=
 dbUserImdaspro=
 dbPwdImdaspro=
-digiplanUrl=
-digiplanUser=
-digiplanPwd=
-efjServicesUrl=
+
+# FTP- und SFTP-Server
 ftpUserEmapis=
 ftpPwdEmapis=
 ftpServerFledermaus=
@@ -161,21 +160,25 @@ sftpUserSogisGemdat=
 sftpServerZivilschutz=
 sftpUserZivilschutz=
 sftpPwdZivilschutz=
+
+# Andere Ressourcen
+afuAbbaustellenAppXtfUrl=
 aiServer=
 aiUser=
 aiPwd=
-infofloraUser=
-infofloraPwd=
-igelToken=
-afuAbbaustellenAppXtfUrl=
 awsAccessKeyAda=
 awsSecretAccessKeyAda=
 awsAccessKeyAfu=
 awsSecretAccessKeyAfu=
 awsAccessKeyAgi=
 awsSecretAccessKeyAgi=
-# Der Wert von geoservicesHostName ist je nach Umgebung "geo-t.so.ch", "geo-i.so.ch" oder "geo.so.ch":
-geoservicesHostName=geo-t.so.ch
+digiplanUrl=
+digiplanUser=
+digiplanPwd=
+efjServicesUrl=
+igelToken=
+infofloraUser=
+infofloraPwd=
 simiMetadataServiceUrl=
 simiMetadataServiceUser=
 simiMetadataServicePwd=
@@ -184,9 +187,13 @@ simiTokenServiceUser=
 simiTokenServicePwd=
 # Der Wert von solrIndexupdaterBaseUrl ist die interne Basis-URL zum Indexupdater für Solr:
 solrIndexupdaterBaseUrl=
+
+# Diverse Variablen
+dbSearchSchemaPub=
+# Der Wert von geoservicesHostName ist je nach Umgebung "geo-t.so.ch", "geo-i.so.ch" oder "geo.so.ch":
+geoservicesHostName=geo-t.so.ch
 # Der Wert von gretlEnvironment ist je nach Umgebung "test", "integration" oder "production":
 gretlEnvironment=
-dbSearchSchemaPub=
 ilivalidatorModeldir=%ITF_DIR;https://geo.so.ch/models/;%JAR_DIR/ilimodels
 
 # Folgende Variablen dürfen in GRETL-Jobs nicht verwendet werden.
