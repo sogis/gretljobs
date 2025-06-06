@@ -11,7 +11,7 @@ grundbuchkreise AS (
       kreis.grundbuchkreis_bfsnr AS gb_gemnr,
       kreis.bfsnr AS gem_bfs
     FROM
-      agi_av_gb_admin_einteilung.grundbuchkreise_grundbuchkreis AS kreis  
+      agi_av_gb_administrative_einteilungen_v2.grundbuchkreise_grundbuchkreis AS kreis  
 ),
 av_projektierte_grundstuecke AS (
         SELECT
