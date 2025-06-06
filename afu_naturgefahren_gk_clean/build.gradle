@@ -6,7 +6,8 @@ defaultTasks 'exportResults'
 
 task exportResults(type: Copy){
     from "build.gradle"
-    into "$buildDir/cleanResults.gpkg"
+    into "$buildDir/"
+    rename ('build.gradle', 'clean_results.gpkg')
 
     doLast {
         logger.lifecycle('cleanMaxArea: ' + cleanMaxArea)
