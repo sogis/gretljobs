@@ -104,9 +104,9 @@ dbPwdEdit=dmluser
 dbUriPub=jdbc:postgresql://pub-db/pub
 dbUserPub=dmluser
 dbPwdPub=dmluser
-dbUriOerebV2=
-dbUserOerebV2=
-dbPwdOerebV2=
+dbUriOerebV2=jdbc:postgresql://oereb_v2-db/oereb_v2
+dbUserOerebV2=dmluser
+dbPwdOerebV2=dmluser
 dbUriSimi=
 dbUserSimi=
 dbPwdSimi=
@@ -175,7 +175,7 @@ awsSecretAccessKeyAfu=
 awsAccessKeyAgi=
 awsSecretAccessKeyAgi=
 # Der Wert von geoservicesHostName ist je nach Umgebung "geo-t.so.ch", "geo-i.so.ch" oder "geo.so.ch":
-geoservicesHostName=
+geoservicesHostName=geo-t.so.ch
 simiMetadataServiceUrl=
 simiMetadataServiceUser=
 simiMetadataServicePwd=
@@ -195,6 +195,8 @@ dbUserEditDdl=ddluser
 dbPwdEditDdl=ddluser
 dbUserPubDdl=ddluser
 dbPwdPubDdl=ddluser
+dbUserOerebV2Ddl=ddluser
+dbPwdOerebV2Ddl=ddluser
 ```
 Hinweise:
 * Für den *Datentransfer SEinApp* muss man verwenden: `host = sftpServerSEinApp`, `user = sftpUserSEinApp`, `identity = file('/home/gradle/.sshkeys/id_rsa')`
