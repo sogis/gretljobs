@@ -7,9 +7,10 @@ defaultTasks '_exportGpkg'
 task _createTempTables(type: SqlExecutor){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlParameters = [sourcetable:'public.gk_mocklayer']
-    sqlFiles = [
+    sqlFiles = files(
+        '_tmp/_create_gk_mocklayer.sql',
         '_tmp/_create_gk_mocklayer.sql'
-    ]
+    )
 }
 
 task _copyGK(type: Db2Db, dependsOn: _createTempTables){
@@ -30,24 +31,24 @@ task mergeSmallPoly(type: SqlExecutor, dependsOn: _copyGK){
         'clean_max_area':cleanMaxArea,
         'clean_max_diameter':cleanMaxDiameter
     ]
-    sqlFiles = [
+    sqlFiles = files(
         'smallpoly/create_cleanup_layer.sql',
         'smallpoly/copy_from_sourcetable.sql',
         'smallpoly/map_small_to_big.sql',
         'smallpoly/merge_geometries.sql',
         'smallpoly/update_sourcetable_geom.sql',
         'smallpoly/delete_sourcetable_smallpoly.sql'
-    ]
+    )
 }
 
 task logModifications(type: SqlExecutor, dependsOn: mergeSmallPoly){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['smallpoly/log_modifications.sql']
+    sqlFiles = files('smallpoly/log_modifications.sql')
 }
 
 task _createVerificationTable(type: SqlExecutor, dependsOn: logModifications){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['_tmp/_create_verification_table.sql']
+    sqlFiles = files('_tmp/_create_verification_table.sql')
 }
 
 task _exportGpkg(type: GpkgExport, dependsOn: _createVerificationTable) {
