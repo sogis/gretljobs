@@ -8,26 +8,37 @@ apply plugin: 'ch.so.agi.gretl'
 
 
 defaultTasks 'importWanderwegeEdit'
+def InterlisFile = 'LV_Hpm_Network_V1.xtf' 
+def KatalogFile = 'Hpm_Catalogues_V1.xml'
+def TrafoFile = file('touristicroutenumbertrafo.xsl')
 
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
+def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
+def pathToDataZip = Paths.get(pathToTempFolder, "uploadFile.zip")
+def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), InterlisFile)
+def xmlFilePath = Paths.get(pathToUnzipFolder.toString(), KatalogFile)
+def transformFolder = Paths.get(pathToTempFolder, "transform").toFile()
 
 task copyZipFile(type: Copy) {
     from 'upload/'
-    into 'upload/'
     include('uploadFile')
+    into pathToTempFolder
     rename('uploadFile', 'uploadFile.zip')
 }
 
 task unzipData(type: Copy, dependsOn: copyZipFile) {
-    from zipTree(file('upload/uploadFile.zip'))
-    into file('upload')
+    doLast {
+        println "File unzipped to directory: " + pathToUnzipFolder
+    }
+    from zipTree(pathToDataZip)
+    into file(pathToUnzipFolder)
 }
 
 task filetransform(type: XslTransformer, dependsOn: unzipData) {
     description = "Kürzt die 'touristic_route_number' auf 10 Zeichen"
-    xslFile = "touristicroutenumbertrafo.xsl"
-    xmlFile = files("upload/LV_Hpm_Network_V1.xtf")
-    outDirectory = file(".")
+    xslFile = file("./touristicroutenumbertrafo.xsl")
+    xmlFile = file(xtfFilePath)
+    outDirectory = file(transformFolder)
 }
 
 task importKataloge(type: Ili2pgReplace, dependsOn: filetransform) {
@@ -35,7 +46,7 @@ task importKataloge(type: Ili2pgReplace, dependsOn: filetransform) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_wanderwege_v1'
     models = 'hpm_network_V1'
-    dataFile = 'upload/Hpm_Network_V1.ili'
+    dataFile = file(xmlFilePath)
     dataset = 'Hpm_Catalogues_V1.xml'
     importTid = true
     importBid = true
@@ -46,7 +57,7 @@ task importWanderwegeEdit(type: Ili2pgReplace, dependsOn: importKataloge) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_wanderwege_v1'
     models = 'hpm_network_V1'
-    dataFile = 'upload/LV_Hpm_Network_V1.xtf'
+    dataFile = fileTree(dir: transformFolder, include: '*.xtf')
     dataset = 'LV_Hpm_Network_V1.xtf'
     importTid = true
     importBid = true

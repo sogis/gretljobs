@@ -1,0 +1,25 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'de.undercouch.download'
+apply plugin: 'ch.so.agi.gretl'
+
+
+defaultTasks 'publiedit'
+
+
+task publiedit(type: Publisher){
+  dataIdent = "ch.so.agi.dmav.relational.toleranzstufen"
+
+  database = [dbUriEdit,dbUserEdit,dbPwdEdit]
+  dbSchema = "agi_dmav_toleranzstufen_v1"
+  modelsToPublish = "DMAV_Toleranzstufen_V1_0"
+
+  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
