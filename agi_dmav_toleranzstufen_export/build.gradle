@@ -41,7 +41,7 @@ task exportDataEdit (type: Ili2pgExport) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'agi_dmav_toleranzstufen_v1'
     models = 'DMAV_Toleranzstufen_V1_0'
-    dataset = bfsnr
+    dataset = '2556'
     dataFile = file("kommunal_edit/" + bfsnr + ".xtf")
     disableValidation = true
 }
