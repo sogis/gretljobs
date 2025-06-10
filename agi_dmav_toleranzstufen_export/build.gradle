@@ -19,8 +19,6 @@ task publiedit(type: Publisher){
   region = '.*'
 
   target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
-  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
   if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
