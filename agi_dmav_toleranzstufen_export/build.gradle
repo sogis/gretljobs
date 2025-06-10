@@ -8,9 +8,9 @@ import java.io.File
 apply plugin: 'de.undercouch.download'
 apply plugin: 'ch.so.agi.gretl'
 
-
 defaultTasks 'publishEdit'
 
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def exportFileName = '2556.xtf'
 def exportFile = file(Paths.get(pathToTempFolder.toString(), exportFileName))
 
