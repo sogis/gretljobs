@@ -11,7 +11,8 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'publishEdit'
 
-def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def exportFileName = '2556.xtf'
+def exportFile = file(Paths.get(pathToTempFolder.toString(), exportFileName))
 
 def bfsnr = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
              2421, 2422, 2424, 2425, 2426, 2427, 2428, 2430,
@@ -42,13 +43,13 @@ task exportDataEdit (type: Ili2pgExport) {
     dbschema = 'agi_dmav_toleranzstufen_v1'
     models = 'DMAV_Toleranzstufen_V1_0'
     dataset = '2556'
-    dataFile = file("kommunal_edit/" + "2556" + ".xtf")
+    dataFile = exportFile
     disableValidation = true
 }
 
 task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
-    dataFiles = file("kommunal_edit/" + "2556" + ".xtf")
+    dataFiles = exportFile
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     allObjectsAccessible = true
     failOnError = true
@@ -58,7 +59,7 @@ task publishEdit(type: Publisher, dependsOn: validateDataEdit){
     dataIdent = 'ch.so.agi.dmav.relational.toleranzstufen'
     modelsToPublish = 'DMAV_Toleranzstufen_V1_0'
     region = '2556'
-    sourcePath = file("kommunal_edit/" + "2556" + ".xtf")
+    sourcePath = exportFile
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
