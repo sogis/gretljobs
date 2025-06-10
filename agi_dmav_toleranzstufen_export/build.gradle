@@ -10,9 +10,8 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'publishEdit'
 
-def pathToTempFolder = System.getProperty("java.io.tmpdir")
-def exportFileName = '2556.xtf'
-def exportFile = file(Paths.get(pathToTempFolder.toString(), exportFileName))
+def pathToTempFolder = buildDir.toString()
+def exportFile = pathToTempFolder + "/2556.xtf"
 
 def bfsnr = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
              2421, 2422, 2424, 2425, 2426, 2427, 2428, 2430,
