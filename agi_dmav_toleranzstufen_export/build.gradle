@@ -1,67 +1,15 @@
 import ch.so.agi.gretl.tasks.*
-import ch.so.agi.gretl.tasks.Curl.MethodType
 import ch.so.agi.gretl.api.TransferSet
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.io.File
 
-apply plugin: 'de.undercouch.download'
 apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'publishEdit'
 
-def pathToTempFolder = buildDir.toString()
-def exportFile = pathToTempFolder + "/2556.xtf"
-
-def bfsnr = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
-             2421, 2422, 2424, 2425, 2426, 2427, 2428, 2430,
-             2445,
-             2455, 2457,
-             2461,
-             2463, 2464, 2465,
-             2471, 2472, 2473, 2474, 2475, 2476, 2477, 2478, 2479, 2480, 2481,
-             2491, 2492, 2493, 2495,
-             2497, 2499, 2500, 2501, 2502, 2503,
-             2511,
-             2513, 2514,
-             2516, 2517, 2518, 2519, 2520,
-             2523, 2524, 2525, 2526, 2527, 2528, 2529, 2530,
-             2532, 2534, 2535,
-             2541, 2542, 2543, 2544, 2545, 2546, 2547, 2548, 2549,
-             2550, 2551, 2553, 2554, 2555, 2556,
-             2571, 2572, 2573, 2574, 2575, 2576, 2578, 2579,
-             2580, 2581, 2582, 2583, 2584, 2585, 2586,
-             2601,
-             2611, 2612, 2613, 2614, 2615, 2616, 2617, 2618, 2619,
-            2620, 2621, 2622
-]
-
-task exportDataEdit (type: Ili2pgExport) {
-    description = "Exportiert die Daten mit DataSet= BFSNr aus dem Schema agi_dmav_toleranzstufen_v1 in ein INTERLIS-Datei."
+task publishEdit(type: Publisher){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = 'agi_dmav_toleranzstufen_v1'
-    models = 'DMAV_Toleranzstufen_V1_0'
-    dataset = '2556'
-    dataFile = exportFile
-    disableValidation = true
-}
-
-task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
-    description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
-    dataFiles = exportFile
-    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-    allObjectsAccessible = true
-    failOnError = true
-}
-
-task publishEdit(type: Publisher, dependsOn: validateDataEdit){
-    dataIdent = 'ch.so.agi.dmav.relational.toleranzstufen'
-    modelsToPublish = 'DMAV_Toleranzstufen_V1_0'
-    region = '2556'
-    sourcePath = exportFile
-    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    dataIdent = "ch.so.agi.dmav.relational.toleranzstufen"
+    dbSchema = "agi_dmav_toleranzstufen_v1"
+    region = ".*" // Wähle alle datasets aus
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
-    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
