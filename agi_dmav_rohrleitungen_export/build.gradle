@@ -11,11 +11,10 @@ defaultTasks 'publiedit'
 
 
 task publiedit(type: Publisher){
-  dataIdent = "ch.so.agi.dmav.relational.rohrleitungen"
-
   database = [dbUriEdit,dbUserEdit,dbPwdEdit]
+  dataIdent = "ch.so.agi.dmav.relational.rohrleitungen"
   dbSchema = "agi_dmav_rohrleitungen_v1"
-  modelsToPublish = "DMAV_Rohrleitungen_V1_0"
+  region = ".*" // Wähle alle datasets aus
 
   target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
