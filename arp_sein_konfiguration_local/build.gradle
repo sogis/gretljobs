@@ -35,11 +35,12 @@ ssh.settings {
     knownHosts = allowAnyHosts
 }
 
-// download-links for shapefiles
-def downloadShapeFiles = [
+// download-links for internet-files
+def downloadFiles = [
     [ url: 'https://data.geo.admin.ch/ch.bafu.bundesinventare-amphibien/data.zip', name: 'bundesinventar_amphibien.zip' ],
     [ url: 'https://data.geo.admin.ch/ch.bafu.bundesinventare-hochmoore/data.zip', name: 'bundesinventar_hochmoore.zip' ],
-    [ url: 'https://data.geo.admin.ch/ch.bafu.bundesinventare-flachmoore/data.zip', name: 'bundesinventar_flachmoore.zip']
+    [ url: 'https://data.geo.admin.ch/ch.bafu.bundesinventare-flachmoore/data.zip', name: 'bundesinventar_flachmoore.zip'],
+    [ url: 'https://data.geo.admin.ch/ch.astra.ivs-reg_loc/ivs-reg_loc/ivs-reg_loc_2056.xtf.zip', name: 'bundesinventar_ivs_lokal_regional.zip' ]
 ]
 
 def importShapeJobs = [
@@ -49,9 +50,9 @@ def importShapeJobs = [
     [name: "flachmoore", sqlFile: "bundesinventar_flachmmore_import_shp.sql", subdir: "bundesinventar_flachmoore/Flachmoor_LV95", file: "flachmoor_20210701.shp"]
 ]
 
-// download shapefiles
-task downloadMultipleShp {
-    dependsOn downloadShapeFiles.collect { entry ->
+// download internet-files
+task downloadMultipleFiles {
+    dependsOn downloadFiles.collect { entry ->
         def taskName = "download_" + entry.name.replaceAll(/\W+/, "_")
         tasks.register(taskName, Download) {
             src entry.url
@@ -61,22 +62,20 @@ task downloadMultipleShp {
     }
 }
 
-// unzip downloaded shapefiles
-task unzipAllData(dependsOn: downloadMultipleShp) {
+// unzip downloaded files
+task unzipAllData(dependsOn: downloadMultipleFiles) {
     description = "Entpackt jede ZIP-Datei in ein eigenes Unterverzeichnis"
 
     doLast {
-        downloadShapeFiles.each { entry ->
+        downloadFiles.each { entry ->
             def zipFile = new File(DownloadLocation, entry.name)
-            def targetFolderName = entry.name.replaceAll(/\.shp\.zip$/, '').replaceAll(/\.zip$/, '')
+            def targetFolderName = entry.name.replaceAll(/\.zip$/, '')
             def targetDir = new File(ZipLocation, targetFolderName)
 
-            println "unzip ${entry.name} to ${targetDir}"
+            println "Unzip ${entry.name} to ${targetDir}"
 
             copy {
-                from zipTree(zipFile).matching {
-                    include '**/*.shp', '**/*.dbf', '**/*.shx', '**/*.prj'
-                }
+                from zipTree(zipFile)
                 into targetDir
             }
         }
