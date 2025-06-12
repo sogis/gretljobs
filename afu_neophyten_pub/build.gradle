@@ -115,7 +115,7 @@ task validateCsv(type: CsvValidator, dependsOn: unpackData){
     firstLineIsHeader = true
     encoding = 'UTF-8'
     valueSeparator = ';'
-    dataFiles = ["$buildDir/data.csv"]
+    dataFiles = files("$buildDir/data.csv")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
@@ -123,7 +123,7 @@ task importToTbl(type:SqlExecutor, dependsOn: validateCsv){
     description = 'Liest die Daten aus CSV in eine DuckDb Tabelle ein'
     database = ["jdbc:duckdb:$buildDir/duck.db",'','']
     sqlParameters = [csv_dir_quoted: "'$buildDir'".toString()]
-    sqlFiles = ['csv_to_tbl.sql']
+    sqlFiles = files('csv_to_tbl.sql')
     outputs.cacheIf { false }
 }
 
