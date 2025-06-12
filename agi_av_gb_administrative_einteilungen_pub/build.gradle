@@ -8,7 +8,7 @@ task exportDataEdit (type: Ili2pgExport) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'agi_dmav_untereinheit_grundbuch_v1'
     models = 'DMAVSUP_UntereinheitGrundbuch_V1_0'
-    dataFile = file("ch.so.agi.dmav.relational.untereinheitgrundbuchp.xtf")
+    dataFile = file("ch.so.agi.dmav.relational.untereinheitgrundbuch.xtf")
     disableValidation = true
 }
 
