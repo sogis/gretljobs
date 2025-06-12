@@ -17,10 +17,12 @@ SELECT
             THEN 'ja'
         ELSE 'nein'
     END AS gestaltungsplanpflicht_txt,
-    bauzonenstatistik,
-    bauzonenstatistik_txt,
+    bebauungsstand,
+    bebauungsstand_txt,
     baureglement,
-    grundnutzung,
+    grundnutzung_typ_kt AS grundnutzung,
+    flaeche_beschnitten,
+	flaeche_unbebaut,
     unbebaut,
     CASE
         WHEN unbebaut=TRUE
@@ -86,8 +88,16 @@ SELECT
             THEN 'nein'
         ELSE NULL
     END AS watchlist_txt,
-    watchlist_grund,
-    watchlist_objekttyp,
+    CASE
+        WHEN watchlist_grund = ''
+            THEN NULL
+        ELSE watchlist_grund
+    END AS watchlist_grund,
+    CASE
+        WHEN watchlist_objekttyp = ''
+            THEN NULL
+        ELSE watchlist_objekttyp
+    END AS watchlist_objekttyp,
     publizieren_oeffentlich,
     CASE
         WHEN publizieren_oeffentlich=TRUE

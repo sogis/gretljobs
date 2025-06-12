@@ -16,7 +16,7 @@ SELECT
     NULL::TEXT AS rechtsstatus,
     NULL::TEXT AS rechtsstatus_txt
 FROM 
-    ada_denkmalschutz_pub.denkmal_polygon 
+    ada_denkmalschutz_pub_v1.denkmal_polygon 
 ;
 
 INSERT INTO 
@@ -37,5 +37,5 @@ SELECT
     NULL::TEXT AS rechtsstatus,
     NULL::TEXT AS rechtsstatus_txt
 FROM 
-    ada_denkmalschutz_pub.denkmal_punkt 
+    ada_denkmalschutz_pub_v1.denkmal_punkt 
 ;

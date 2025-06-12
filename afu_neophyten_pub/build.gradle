@@ -1,0 +1,137 @@
+/*
+Liest die Informationen zu den Neophyten aus infoflora aus und publiziert diese.
+Infoflora stellt jede Nacht einen kompletten "Tabellen-Dump" als in *.gz gepacktes CSV bereit.
+Wie das aktuelle *.gz heisst, steht in einem Json-Katalog, welcher mittels Access-Token
+ausgelesen werden muss.
+*/
+
+import java.nio.file.Files
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.tasks.Curl.MethodType
+import ch.so.agi.gretl.api.*
+import de.undercouch.gradle.tasks.download.Download
+import groovy.json.JsonSlurper
+import java.text.SimpleDateFormat
+import java.util.zip.GZIPInputStream
+
+apply plugin: "de.undercouch.download"
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferNeophyten'
+
+def clientId = neophytenClientId
+def clientSecret = neophytenClientSecret
+def basicHeader = "Basic " + Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes())
+
+def token = ""
+def csvList = null // Enthält maps mit den beiden Elementen date und url. Sotiert nach date - jüngste Datei zuerst.
+
+task removeBuildDir(type: Delete){
+    description 'Löscht das Build-Verzeichnis mit allen Inhalten'
+    delete "$buildDir"
+}
+
+task getToken(type: Curl, dependsOn: removeBuildDir) {
+    description 'Löst ein Token zwecks Authentifizierung der folgenden Aufrufe des infoflora rest API'
+    serverUrl 'https://auth.infoflora.ch/oauth2/token'
+    method MethodType.POST
+    outputFile file("$buildDir/token.json")
+    expectedStatusCode 200
+    data "grant_type=client_credentials&client_id=$clientId"
+    headers = [
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': basicHeader
+    ]
+
+    doLast {
+        def slurper = new JsonSlurper();
+        def slurped = slurper.parseText(outputFile.text)
+
+        if (slurped.access_token != null)
+            token = slurped.access_token
+
+        if(token.length() == 0)
+            throw new GradleException('Failed to retrieve access token')
+
+        logger.info('Length of access token is: ' + token.length())
+    }
+}
+
+task downloadCatalog(type: Curl, dependsOn: getToken) {
+    description 'Lädt den Katalog der verfügbaren CSV-Dateien herunter'
+    serverUrl 'https://obs.infoflora.ch/rest/v4/docs.json?projects=83505'
+    method MethodType.GET
+    outputFile file("$buildDir/catalog.json")
+    expectedStatusCode 200
+    headers.put('Authorization', providers.provider { 'Bearer ' + token })
+} 
+
+task parseCsvList(dependsOn: downloadCatalog){
+    description 'Extrahiert Datum und Datei-URL aus catalog.json und schreibt diese in csvList'
+    doLast{
+        def inputFile = file("$buildDir/catalog.json")
+        def json = new JsonSlurper().parseText(inputFile.text).data
+        SimpleDateFormat sdfo = new SimpleDateFormat('yyyy-MM-dd')
+
+        def list = []
+        json.each {
+            def map = [date: sdfo.parse(it.last_modified_when), url: it.file_url]
+            list.add(map)
+        }
+        list.sort{a, b -> a.date <=> b.date}
+
+        csvList = list
+        logger.info('csvList: ' + csvList)
+    }
+}
+
+task downloadData(dependsOn: parseCsvList) { 
+    description 'Lädt die jüngste Datendatei als data.gz herunter'   
+    // über doLast{}, da csvList in der Konfigurationsphase noch nicht gesetzt ist, 
+    // und darum herkömliche Task-Konfiguration nicht verwendet werden kann
+    doLast{
+        logger.info('Downloading data from: ' + csvList[0].toString())
+
+        download.run {
+            src csvList[0].url
+            dest file("$buildDir/data.gz")
+            overwrite true
+        }
+    }
+}
+
+task unpackData(dependsOn: downloadData){ 
+    description 'Extrahiert data.csv aus data.gz'
+    doLast {
+        GZIPInputStream gis = new GZIPInputStream(
+            new FileInputStream(file("$buildDir/data.gz"))
+        )
+        Files.copy(gis, file("$buildDir/data.csv").toPath())
+    }
+}
+
+task validateCsv(type: CsvValidator, dependsOn: unpackData){
+    models = "SO_AFU_Neophyten_20250429"
+    firstLineIsHeader = true
+    encoding = 'UTF-8'
+    valueSeparator = ';'
+    dataFiles = ["$buildDir/data.csv"]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+task importToTbl(type:SqlExecutor, dependsOn: validateCsv){
+    description = 'Liest die Daten aus CSV in eine DuckDb Tabelle ein'
+    database = ["jdbc:duckdb:$buildDir/duck.db",'','']
+    sqlParameters = [csv_dir_quoted: "'$buildDir'".toString()]
+    sqlFiles = ['csv_to_tbl.sql']
+    outputs.cacheIf { false }
+}
+
+task transferNeophyten(type: Db2Db, dependsOn: importToTbl){
+    description = 'Transferiert die Daten aus der DuckDb in die Pub-DB'
+    sourceDb = ["jdbc:duckdb:$buildDir/duck.db",'','']
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('publish.sql', 'afu_neophyten_pub_v1.neophytenstandorte', true, (String[])['geometrie:wkt:2056'])
+    ];
+}

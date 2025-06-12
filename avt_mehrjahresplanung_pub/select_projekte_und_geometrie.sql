@@ -231,6 +231,8 @@ merged_ktstrassen AS (
             ST_LineMerge(ST_Union(geometrie)) AS geometrie
         FROM
             avt_mehrjahresplanung_v1.kantonsstrASsen_achse ka 
+        WHERE 
+            achsenummer ~ '^[0-9]+$' --Evtl. muss das noch angepasst werden, da nicht ganz klar ist, wieso die Achsennummer nicht IMMER eine Zahl ist. 
         GROUP BY
             achsenummer
     ) AS t
