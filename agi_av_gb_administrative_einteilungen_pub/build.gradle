@@ -1,9 +1,38 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'publiedit'
+defaultTasks 'publipub'
 
-task transferAvGbAdminEinteilungen(type: Db2Db){
+task exportDataEdit (type: Ili2pgExport) {
+    description = "Exportiert die Daten dem Schema agi_dmav_untereinheit_grundbuch_v1 in eine INTERLIS-Datei."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'agi_dmav_untereinheit_grundbuch_v1'
+    models = 'DMAVSUP_UntereinheitGrundbuch_V1_0'
+    dataFile = file("ch.so.agi.dmav.relational.untereinheitgrundbuchp.xtf")
+    disableValidation = true
+}
+
+task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
+    description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
+    dataFiles = file("ch.so.agi.dmav.relational.untereinheitgrundbuch.xtf")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    allObjectsAccessible = true
+    failOnError = true
+}
+
+task publiedit(type: Publisher, dependsOn:'validateDataEdit'){
+    dataIdent = "ch.so.agi.dmav.relational.untereinheitgrundbuch"
+    modelsToPublish = "DMAVSUP_UntereinheitGrundbuch_V1_0"
+
+    sourcePath = file("ch.so.agi.dmav.relational.untereinheitgrundbuch.xtf")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+}
+
+task transferAvGbAdminEinteilungen(type: Db2Db, dependsOn:'publiedit'){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -32,16 +61,4 @@ task publipub(type: Publisher, dependsOn:'transferDMAV'){
   if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
-task publiedit(type: Publisher, dependsOn:'publipub'){
-    dataIdent = "ch.so.agi.av.administrative_einteilung.relational.dmavsup"
-    database = [dbUriEdit,dbUserEdit,dbPwdEdit]
-    dbSchema = "agi_dmav_untereinheit_grundbuch_v1"
-    modelsToPublish = "DMAVSUP_UntereinheitGrundbuch_V1_0"
-
-    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
-    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
-    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-}
 
