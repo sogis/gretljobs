@@ -6,7 +6,6 @@ import ch.so.agi.gretl.api.*
 import de.undercouch.gradle.tasks.download.Download
 
 apply plugin: 'ch.so.agi.gretl'
-apply plugin: 'org.hidetake.ssh'
 
 defaultTasks 'ili2duckdbexport'
 
@@ -31,9 +30,6 @@ def dbHostPub = dbUriPub.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastInde
 def dbDatabasePub = dbUriPub.substring(dbUriPub.lastIndexOf("/") + 1)
 def dbConnectionStringPub = "'dbname=$dbDatabasePub user=$dbUserPub password=$dbPwdPub host=$dbHostPub'"
 
-ssh.settings {
-    knownHosts = allowAnyHosts
-}
 
 // download-links for internet-files (data.geo.admin.ch)
 def downloadFiles = [
