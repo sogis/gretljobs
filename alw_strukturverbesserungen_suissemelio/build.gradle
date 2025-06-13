@@ -13,6 +13,7 @@ remotes {
         user = "${ftpUserEmapis}"
         password = "${ftpPwdEmapis}"
         port = 22
+        knownHosts = allowAnyHosts
     }
 }
 
@@ -65,9 +66,6 @@ task deleteXtfFile(type: Delete){
 task uploadXtfFile (dependsOn: validateSVGIS_Suissemelio){
     description = "Upload XtfFile to FTP server"
     doLast {
-        ssh.settings {
-            knownHosts = allowAnyHosts
-        }
         ssh.run {
             session(remotes.ftpServer) {
                 put from: "${SVGIS_SuissemelioXtfFileName}", into: "."
