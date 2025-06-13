@@ -18,15 +18,16 @@ remotes {
         host = "${sftpServerGelan}"
         user = "${sftpUserGelan}"
         password = "${sftpPwdGelan}"
+        // Skip host key checking outside the following environments:
+        if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) { // uses the Groovy membership operator
+            knownHosts = allowAnyHosts
+        }
     }
 }
 
 task downloadData () {
     description = "Download file from SFTP server"
     doLast {
-        ssh.settings {
-            knownHosts = allowAnyHosts
-        }
         ssh.run {
             session(remotes.sftpServer) {
                 get from: "Prod/Export_ais_agrardaten.xtf", into: pathToTempFolder
