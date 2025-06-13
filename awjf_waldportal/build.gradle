@@ -27,6 +27,10 @@ remotes {
         host = ftpServerWaldportal
         user = ftpUserWaldportal
         password = ftpPwdWaldportal
+        // Skip host key checking outside the following environments:
+        if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) { // uses the Groovy membership operator
+            knownHosts = allowAnyHosts
+        }
     }
 }
 
@@ -34,9 +38,6 @@ remotes {
 task download () {
     description = "Download file from SFTP server"
     doLast {
-        ssh.settings {
-            knownHosts = allowAnyHosts
-        }
         ssh.run {
             session(remotes.sftpServer) {
                 get from: umgebung+zipFileName, into: pathToTempFolder
