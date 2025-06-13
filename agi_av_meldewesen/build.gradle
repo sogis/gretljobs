@@ -41,16 +41,16 @@ remotes {
         user = "${sftpUserSogisGemdat}"
         //identity = file('/Users/stefan/keys/sgv/id_rsa')
         identity = file('/home/gradle/.sshkeys/id_rsa')
+        // Skip host key checking outside the following environments:
+        if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) { // uses the Groovy membership operator
+            knownHosts = allowAnyHosts
+        }
     }
 }
 
 tasks.register('downloadFromSgv') {
     description = "Download files from SFTP server"
     doLast {
-        ssh.settings {
-            knownHosts = allowAnyHosts
-        }
-
         ssh.run {
             session(remotes.sftpServer) {
                 get from: remoteDirectory, into: downloadFolder, filter: { it.name.toLowerCase().endsWith("xml") }
@@ -142,9 +142,6 @@ tasks.register('update_manual_records', SqlExecutor) {
 tasks.register('deleteDataOnFtp') {
     description = "Delete files on SFTP server"
     doLast {
-        ssh.settings {
-            knownHosts = allowAnyHosts
-        }
         ssh.run {
             session(remotes.sftpServer) {
                 fileTree(downloadFolder).matching {
