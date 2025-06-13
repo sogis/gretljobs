@@ -8,7 +8,7 @@ apply plugin: 'org.hidetake.ssh'
 defaultTasks 'uploadXtfFile'
 
 remotes {
-    ftpServer {
+    sftpServer {
         host = "${ftpServerInfogrips}"
         user = "${ftpUserEmapis}"
         password = "${ftpPwdEmapis}"
@@ -67,7 +67,7 @@ task uploadXtfFile (dependsOn: validateSVGIS_Suissemelio){
     description = "Upload XtfFile to FTP server"
     doLast {
         ssh.run {
-            session(remotes.ftpServer) {
+            session(remotes.sftpServer) {
                 put from: "${SVGIS_SuissemelioXtfFileName}", into: "."
             }
         }
