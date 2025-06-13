@@ -17,7 +17,7 @@ defaultTasks 'uploadData'
 task transformMJPNL2GELAN(type: SqlExecutor){
     description = "Baut die Daten aus dem MJPNatur um ins MJPNatur-GELAN-Schema"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ['arp_mjpnatur_gelan.sql']        
+    sqlFiles = ['arp_mjpnatur_gelan.sql']
 }
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
