@@ -4,7 +4,6 @@ map_perimeter_file AS (
     SELECT * FROM (VALUES
  ('0edb061d-6516-4808-a028-2690327ceba2','119_Seewen_Sturz_Gauggema_2020.pdf')
 ,('0123de4d-3a74-4f22-bdfb-38286414814c','097_Wangen_Duennern_2015.pdf')
-,('0123de4d-3a74-4f22-bdfb-38286414814c','097_Wangen_Wasser_2007.pdf')
 ,('1aebf943-7a71-4bb1-95ef-0311a27678ce','105_Rohr_Wasser_2021.pdf')
 ,('198c30af-5ada-45da-a67f-91b79aac991b','121_Baerschwil_Steinschlag_2012.pdf')
 ,('198c30af-5ada-45da-a67f-91b79aac991b','121_Baerschwil_Wasser_2021.pdf')

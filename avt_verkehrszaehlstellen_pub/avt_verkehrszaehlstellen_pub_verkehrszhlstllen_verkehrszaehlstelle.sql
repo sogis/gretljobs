@@ -7,6 +7,7 @@ WITH documents AS (
                     'link', link,
                     'jahr', jahr
                 )
+                ORDER BY jahr
             )
         )::text AS dokumente, 
         verkehrszaehlstelle

@@ -1,0 +1,33 @@
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+import java.nio.file.Files
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
+defaultTasks 'upload'
+
+remotes {
+    ftpServer {
+        host = "${sftpServerSEinApp}" 
+        user = "${sftpUserSEinApp}"
+        identity = file('/home/gradle/.sshkeys/id_rsa')
+    }
+}
+
+tasks.register('upload') {
+    doLast {
+        ssh.settings {
+            knownHosts = allowAnyHosts
+        }
+        ssh.run {
+            session(remotes.ftpServer) {
+                put from: "fubar.xml", into: "/opt/daten/gis_arp_raumdaten/test/"
+            }
+        }
+        println "File uploaded to FTP server"
+    }
+}
+
