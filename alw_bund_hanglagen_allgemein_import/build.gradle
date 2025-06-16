@@ -1,0 +1,75 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'unzipData'
+
+def pathToTempFolder = System.getProperty('java.io.tmpdir')
+def pathToUnzipFolder = Paths.get(pathToTempFolder, 'upload')
+
+def gpkLocation1 = Paths.get(pathToUnzipFolder.toString(), "hang_steillagen_26_2056.gpkg")
+def gpkLocation2 = Paths.get(pathToUnzipFolder.toString(), "hang_steillagen_27_2056.gpkg")
+def gpkLocation3 = Paths.get(pathToUnzipFolder.toString(), "hang_steillagen_31_2056.gpkg")
+def gpkLocation4 = Paths.get(pathToUnzipFolder.toString(), "hang_steillagen_32_2056.gpkg")
+
+
+def editDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+def stageSchema = "alw_bund_hanglagen_allgemein_v1"
+
+
+task unzipData(type: Copy){
+    description = "hang_steillagen.zip."
+    doLast {
+        println "File unzipped to directory: " + pathToUnzipFolder
+    }
+    from "upload/uploadFile"
+    into 'upload/'              
+    include "**/*.gpkg"
+}
+/*
+task deleteRows(type: SqlExecutor, dependsOn: unzipData){
+    description = 'Leert die Tabellem im Schema edit alw_bund_hanglagen_allgemein_v1*'
+    database = editDb
+    sqlFiles = [
+        'hl_allgemein.sql',
+    ]
+}
+
+task importHanglagen1(type: GpkgImport, dependsOn: deleteRows){
+    description = 'Importiert die Hanglagen"'
+    database = editDb
+    schemaName = stageSchema
+    srcTableName = "hl_allgemein"
+    dstTableName = "hl_allgemein"
+    dataFile = "upload/hang_steillagen_26_2056.gpkg"
+}
+
+task importHanglagen2(type: GpkgImport, dependsOn: importHanglagen1){
+    description = 'Importiert die Hanglagen"'
+    database = editDb
+    schemaName = stageSchema
+    srcTableName = "hl_allgemein"
+    dstTableName = "hl_allgemein"
+    dataFile = gpkLocation2
+}
+
+task importHanglagen3(type: GpkgImport, dependsOn: importHanglagen2){
+    description = 'Importiert die Hanglagen"'
+    database = editDb
+    schemaName = stageSchema
+    srcTableName = "hl_allgemein"
+    dstTableName = "hl_allgemein"
+    dataFile = gpkLocation3
+}
+
+task importHanglagen4(type: GpkgImport, dependsOn: importHanglagen3){
+    description = 'Importiert die Hanglagen"'
+    database = editDb
+    schemaName = stageSchema
+    srcTableName = "hl_allgemein"
+    dstTableName = "hl_allgemein"
+    dataFile = gpkLocation4
+}
+*/
