@@ -1,33 +1,5 @@
--- Erstelle zuerst eine Zwischentabelle wo gewisse Felder aufgetrennt worden
--- sind
-WITH tabelle_projekte_projektnr_aufgetrennt AS (
-    SELECT
-        t_id,
-        abteilung,
-        kreis,
-        projektleiter,
-        gemeinde,
-        strasse,
-        projekt,
-        -- Trenne mehrzeilige Projektnummer in einzelne Einträge auf, damit diese
-        -- mit manuell erfassten Geometrien verknüpft werden können.
-        regexp_split_to_table ( projektnr, '\n') AS projektnr,
-        kreditjahr_p,
-        kreditjahr_a,
-        astart,
-        ende,
-        klasse,
-        aphase,
-        achsnr,
-        bpanfang,
-        bpende,
-        bemerkungen,
-        projektsuffix,
-        ranfangsbezugspunkt,
-        rendbezugspunkt
-    FROM
-        avt_mehrjahresplanung_v1.projekte_projekt
-),
+WITH
+
 tabelle_projekte AS (
     SELECT
         t_id,
@@ -64,9 +36,8 @@ tabelle_projekte AS (
         ranfangsbezugspunkt,
         rendbezugspunkt
     FROM
-        tabelle_projekte_projektnr_aufgetrennt
+        avt_mehrjahresplanung_v2.projekte_projekt
 ),
-
 
 -- Wähle in höchster Priorität Projekte mit manueller erfasster Geometrie
 projekte_mit_manuell_erfasster_geometrie AS (
@@ -98,7 +69,7 @@ projekte_mit_manuell_erfasster_geometrie AS (
     FROM
         tabelle_projekte pp 
     JOIN
-        avt_mehrjahresplanung_v1.projekte_projektgeometrie pp2 
+        avt_mehrjahresplanung_v2.projekte_projektgeometrie pp2 
     ON
         pp.projektidentifikation = pp2.projektidentifikation
 ),
@@ -115,9 +86,9 @@ bppunkte_achsen AS (
         ka.geometrie AS linegeometrie,
         ka.t_id AS achsen_tid
     FROM
-      avt_mehrjahresplanung_v1.kantonsstrassen_bezugspunkt kb 
+      avt_mehrjahresplanung_v2.kantonsstrassen_bezugspunkt kb 
     LEFT JOIN
-       avt_mehrjahresplanung_v1.kantonsstrassen_achse ka 
+       avt_mehrjahresplanung_v2.kantonsstrassen_achse ka 
     ON
         st_intersects(st_buffer(kb.geometrie,0.1), ka.geometrie) and kb.achsenummer like ka.achsenummer 
 ),
@@ -227,12 +198,10 @@ merged_ktstrassen AS (
         geometrie
     FROM (
         SELECT
-            achsenummer::INTEGER,
+            achsenummer,
             ST_LineMerge(ST_Union(geometrie)) AS geometrie
         FROM
-            avt_mehrjahresplanung_v1.kantonsstrASsen_achse ka 
-        WHERE 
-            achsenummer ~ '^[0-9]+$' --Evtl. muss das noch angepasst werden, da nicht ganz klar ist, wieso die Achsennummer nicht IMMER eine Zahl ist. 
+            avt_mehrjahresplanung_v2.kantonsstrassen_achse ka 
         GROUP BY
             achsenummer
     ) AS t
@@ -291,11 +260,11 @@ projekte_an_mehreren_achsen AS (
     ON
         pp.achsnr = ka.achsenummer
     JOIN 
-        avt_mehrjahresplanung_v1.kantonsstrassen_bezugspunkt kb 
+        avt_mehrjahresplanung_v2.kantonsstrassen_bezugspunkt kb 
     ON
         pp.ranfangsbezugspunkt = kb.t_id
     JOIN 
-        avt_mehrjahresplanung_v1.kantonsstrassen_bezugspunkt kc 
+        avt_mehrjahresplanung_v2.kantonsstrassen_bezugspunkt kc 
     ON
         pp.rendbezugspunkt = kc.t_id
     WHERE
@@ -336,11 +305,11 @@ projekte_mit_direkter_linie AS (
     FROM 
         tabelle_projekte pp 
     JOIN
-        avt_mehrjahresplanung_v1.kantonsstrassen_bezugspunkt kb 
+        avt_mehrjahresplanung_v2.kantonsstrassen_bezugspunkt kb 
     ON
         pp.ranfangsbezugspunkt = kb.t_id
     JOIN
-        avt_mehrjahresplanung_v1.kantonsstrassen_bezugspunkt kb2 
+        avt_mehrjahresplanung_v2.kantonsstrassen_bezugspunkt kb2 
     ON
         pp.rendbezugspunkt = kb2.t_id
     WHERE

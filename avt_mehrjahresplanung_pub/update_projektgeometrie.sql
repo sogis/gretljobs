@@ -7,10 +7,10 @@ WITH projekte AS (
             ELSE projektnr || '.' || projektsuffix
         END AS projektidentifikation
     FROM
-        avt_mehrjahresplanung_v1.projekte_projekt
+        avt_mehrjahresplanung_v2.projekte_projekt
 )
 UPDATE
-    avt_mehrjahresplanung_v1.projekte_projektgeometrie pg
+    avt_mehrjahresplanung_v2.projekte_projektgeometrie pg
 SET
     obsolet = NOW()
 WHERE
@@ -21,7 +21,7 @@ AND
 -- Lösche alle manuell erfassten Geometrien, deren Obsolet-Datum länger als
 -- sechs Monate zurückliegt
 DELETE FROM
-    avt_mehrjahresplanung_v1.projekte_projektgeometrie pg
+    avt_mehrjahresplanung_v2.projekte_projektgeometrie pg
 WHERE 
     obsolet IS NOT NULL
 AND
