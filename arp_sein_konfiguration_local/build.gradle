@@ -17,10 +17,10 @@ if (new File(dbPath).exists()) {
 }
 def dbUriDuckDB = "jdbc:duckdb:$dbPath"
 
-def xtfPath_IVS = tempDir + "/IVS_V2_1_regional_lokal_LV95.xtf"
 def xtfPath_Export = tempDir + "/arp_sein_konfiguraton_auswertung_uc1.xtf"
 def DownloadLocation = tempDir + "/downloads/"
 def ZipLocation = tempDir + "/unzipped/"
+def xtfPath_IVS = ZipLocation + "bundesinventar_ivs_regional_lokal/IVS_V2_1_regional_lokal_LV95.xtf"
 
 // Create DB-variables for sql-files
 def dbHostEdit = dbUriEdit.substring(dbUriEdit.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
@@ -35,14 +35,15 @@ ssh.settings {
     knownHosts = allowAnyHosts
 }
 
-// download-links for internet-files
+// download-links for internet-files (data.geo.admin.ch)
 def downloadFiles = [
     [ url: 'https://data.geo.admin.ch/ch.bafu.bundesinventare-amphibien/data.zip', name: 'bundesinventar_amphibien.zip' ],
     [ url: 'https://data.geo.admin.ch/ch.bafu.bundesinventare-hochmoore/data.zip', name: 'bundesinventar_hochmoore.zip' ],
     [ url: 'https://data.geo.admin.ch/ch.bafu.bundesinventare-flachmoore/data.zip', name: 'bundesinventar_flachmoore.zip'],
-    [ url: 'https://data.geo.admin.ch/ch.astra.ivs-reg_loc/ivs-reg_loc/ivs-reg_loc_2056.xtf.zip', name: 'bundesinventar_ivs_lokal_regional.zip' ]
+    [ url: 'https://data.geo.admin.ch/ch.astra.ivs-reg_loc/ivs-reg_loc/ivs-reg_loc_2056.xtf.zip', name: 'bundesinventar_ivs_regional_lokal.zip' ]
 ]
 
+// task list for downloaded shapefiles
 def importShapeJobs = [
     [name: "amphibien_laichgebiete", sqlFile: "bundesinventar_amphibien_laichgebiete_import_shp.sql", subdir: "bundesinventar_amphibien/Amphibien_LV95", file: "amphibLaichgebiet.shp"],
     [name: "amphibien_wanderobjekte", sqlFile: "bundesinventar_amphibien_wanderobjekte_import_shp.sql", subdir: "bundesinventar_amphibien/Amphibien_LV95", file: "amphibWanderobjekt.shp"],
@@ -82,18 +83,27 @@ task unzipAllData(dependsOn: downloadMultipleFiles) {
     }
 }
 
-// import postgis-schema
-tasks.register("ili2duckdbschemaimport", Ili2duckdbImportSchema) {
-    dbfile = file("build/sein.duckdb")
+// create postgis-schema arp_sein in duckdb
+tasks.register("ili2duckdb_sein", Ili2duckdbImportSchema) {
+    dependsOn "unzipAllData"
+    dbfile = file(dbPath)
+    /*dbfile = file("build/sein.duckdb")*/
     models = "SO_ARP_SEin_Konfiguration_20250115"
     dbschema = "arp_sein_konfiguration_grundlagen_v2"
     smart2Inheritance = true
 }
 
+// create postgis-schema for ivs-data in duckdb
+tasks.register("ili2duckdb_ivs", Ili2duckdbImportSchema) {
+    dependsOn "ili2duckdb_sein"
+    dbfile = file(dbPath)
+    models = "IVS_V2_1"
+    dbschema = "bundesinventar_ivs_reg_lok"
+}
 
 // create table and transfer data from postgis to duckdb
 task prepareDuckDB(type: SqlExecutor){
-    dependsOn "ili2duckdbschemaimport"
+    dependsOn "ili2duckdb_ivs"
     database = [dbUriDuckDB]
     sqlFiles = ['create_table_duckdb.sql',
                 'load_extensions.sql',
@@ -105,7 +115,6 @@ task prepareDuckDB(type: SqlExecutor){
         ]
 }
 
-
 // import data from edit-schema
 task importDataeditdb(type: SqlExecutor){
     dependsOn "prepareDuckDB"
@@ -114,7 +123,7 @@ task importDataeditdb(type: SqlExecutor){
             ]
 }
 
-// import data from postgis
+// import data from postgis (PubDB)
 task importPostgisData(type: SqlExecutor){
     dependsOn "prepareDuckDB"
     database = [dbUriDuckDB]
@@ -166,6 +175,15 @@ tasks.register("importDownloadedShapeData") {
     dependsOn importTasks
 }
 
+// import downloaded xtf-file
+// Import dauert recht lange!!! (ca. 9 Minuten)
+tasks.register("ili2duckdbimport_ivs", Ili2duckdbImport) {
+    dependsOn "ili2duckdb_ivs"
+    models = "IVS_V2_1"
+    dbschema = "bundesinventar_ivs_reg_lok"
+    dataFile = files(xtfPath_IVS)
+    dbfile = file(dbPath)
+}
 
 // transfer data from custom table to "auswertung_gemeinde" table 
 task datenaggregation(type: SqlExecutor){
@@ -173,6 +191,7 @@ task datenaggregation(type: SqlExecutor){
     dependsOn "importDataeditdb"
     dependsOn "importDownloadedShapeData"
     dependsOn "importPostgisData"
+    dependsOn "ili2duckdbimport_ivs"
     database = [dbUriDuckDB]
     sqlFiles = ['load_extensions.sql',
                 'update_thema_gruppe.sql',
