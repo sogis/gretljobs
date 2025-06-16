@@ -9,7 +9,7 @@ grundbuchkreise AS (
       kreis.bfsnr AS gem_bfs,
       gemeinde.aname AS gemeinde
     FROM
-      agi_av_gb_admin_einteilung.grundbuchkreise_grundbuchkreis AS kreis  
+      agi_av_gb_administrative_einteilungen_v2.grundbuchkreise_grundbuchkreis AS kreis  
       LEFT JOIN agi_dm01avso24.gemeindegrenzen_gemeinde AS gemeinde 
       ON gemeinde.bfsnr = kreis.bfsnr
 ),
