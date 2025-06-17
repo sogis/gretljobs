@@ -1,0 +1,18 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'publishEdit'
+
+task publishEdit(type: Publisher){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dataIdent = "ch.so.agi.dmav.relational.toleranzstufen"
+    dbSchema = "agi_dmav_toleranzstufen_v1"
+    region = ".*" // Wähle alle datasets aus
+    
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}

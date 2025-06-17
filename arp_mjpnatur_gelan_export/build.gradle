@@ -17,7 +17,7 @@ defaultTasks 'uploadData'
 task transformMJPNL2GELAN(type: SqlExecutor){
     description = "Baut die Daten aus dem MJPNatur um ins MJPNatur-GELAN-Schema"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ['arp_mjpnatur_gelan.sql']        
+    sqlFiles = ['arp_mjpnatur_gelan.sql']
 }
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
@@ -37,15 +37,16 @@ remotes {
         host = "${sftpServerGelan}"
         user = "${sftpUserGelan}"
         password = "${sftpPwdGelan}"
+        // Skip host key checking outside the following environments:
+        if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) { // uses the Groovy membership operator
+            knownHosts = allowAnyHosts
+        }
     }
 }
 
 task uploadData (dependsOn: 'exportMJPNL') {
     description = "Upload file to SFTP server"
     doLast {
-        ssh.settings {
-            knownHosts = allowAnyHosts
-        }
         ssh.run {
             session(remotes.sftpServer) {
                 put from: exportFile, into: "Prod/Import_ais_mjpnl.xtf"

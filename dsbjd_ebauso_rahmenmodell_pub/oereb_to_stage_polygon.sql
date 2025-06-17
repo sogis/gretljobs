@@ -15,10 +15,14 @@ FROM
     ON e.legende = l.t_id
     LEFT JOIN live.oerbkrmfr_v2_0transferstruktur_geometrie AS g 
     ON g.eigentumsbeschraenkung = e.t_id 
-WHERE 
+WHERE
+(
     l.thema = 'ch.BelasteteStandorte'
     OR 
     l.thema = 'ch.Grundwasserschutzzonen'
     OR 
     l.thema = 'ch.Grundwasserschutzareale'
+) 
+AND 
+    e.rechtsstatus = 'inKraft'
 ;

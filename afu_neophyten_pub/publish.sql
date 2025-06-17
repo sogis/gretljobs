@@ -3,6 +3,7 @@ SELECT
     project_name AS datenquelle, 
     x, 
     y, 
+    'POINT(' || round(x, 1) || ' ' || round(y, 1) || ')' AS geometrie,
     xy_precision AS kreisradius, 
     locality_descript AS fundortbeschreibung, 
     CASE   
@@ -106,13 +107,13 @@ SELECT
             THEN 'Verkehrswege'
         WHEN typo_ch LIKE '9.4%' 
             THEN 'Versiegelter Sportplatz, Parkplatz etc.'
-        ELSE typo_ch 
+        ELSE 'Infoflora csv Spalte typo_ch: ' || typo_ch
     END AS lebensraum,  
     taxon_id AS schweizerflora_id, 
     taxon AS artenname_latein, 
     name_de AS artenname_deutsch, 
     list_type AS listentyp, 
-    array_to_json(ARRAY[doc_1_path, doc_2_path, doc_3_path]) AS fotos, 
+    (array_to_json(ARRAY[doc_1_path, doc_2_path, doc_3_path]))::varchar AS fotos, 
     obs_date AS beobachtungsdatum, 
     presence_descript AS auftreten, 
     releve_type_descript AS erfassungsmethode, 
@@ -121,8 +122,8 @@ SELECT
     cover_code_descript AS deckung, 
     CASE  
         WHEN count_unit_descript = 'Fläche [m²]' 
-        THEN abundance_code_descript||' m2' 
-        ELSE abundance_code_descript||' '||coalesce(count_unit_descript,'')  
+        THEN abundance_code_descript || ' m2' 
+        ELSE abundance_code_descript || ' ' || coalesce(count_unit_descript,'')  
     END AS abundanz, 
     obs_type_descript AS meldungstyp, 
     vitality_codes_descript entwicklung, 
@@ -133,9 +134,7 @@ SELECT
             THEN v_observers 
         ELSE '(nicht publiziert)' 
     END AS beobachter, 
-    remarks AS bemerkungen, 
-    geometrie
-FROM afu_infoflora.neophyten_neophytenstandorte
-WHERE presence IN (681, 686); 
-
-
+    remarks AS bemerkungen
+FROM 
+	neophyten
+;
