@@ -21,7 +21,7 @@ task importXtfFile(type: Ili2pgReplace) {
 }
 
 task publish(type: Publisher, dependsOn: importXtfFile){
-    dataIdent = ch.so.agi.dmav.relational.fixpunkteavkategorie3'
+    dataIdent = 'ch.so.agi.dmav.relational.fixpunkteavkategorie3'
     modelsToPublish = 'DMAV_FixpunkteAVKategorie3_V1_0'
     region = '.*'
     sourcePath = fileTree(dir: '/work/datahub/DMAV_FixpunkteAVKategorie3_V1_0', include: '*.xtf')
