@@ -4,7 +4,7 @@ import java.io.File
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'refreshSolr'
+defaultTasks 'transferToPub', 'refreshSolr', 'updateSearchIndex_1', 'updateSearchIndex_2'
  
 def achsenFile = file("$buildDir/shapes/achsen.shp")
 def punkteFile = file("$buildDir/shapes/bezugspunkte.shp")
@@ -86,6 +86,49 @@ task transferToPub(type: Db2Db, dependsOn: publishFiles){
     ];
 }
 
-task refreshSolr(type: Exec, dependsOn: transferToPub) {
-        commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.avt.kantonsstrassen_achsen,ch.so.avt.kantonsstrassen_bezugspunkte'
+task refreshSolr(type:Exec) {
+    mustRunAfter 'transferToPub'
+    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.avt.kantonsstrassen_achsen,ch.so.avt.kantonsstrassen_bezugspunkte'
+}
+
+task updateSearchIndex_1(type: SqlExecutor){
+    mustRunAfter 'transferToPub'
+    def layerName = 'ch.so.avt.kantonsstrassen_achsen'
+    def sqlFileName = 'searchindex_' + layerName + '.sql'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
+
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+task updateSearchIndex_2(type: SqlExecutor){
+    mustRunAfter 'transferToPub'
+    def layerName = 'ch.so.avt.kantonsstrassen_bezugspunkte'
+    def sqlFileName = 'searchindex_' + layerName + '.sql'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
+
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
 }
