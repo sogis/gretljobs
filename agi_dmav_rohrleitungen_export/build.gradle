@@ -9,6 +9,7 @@ task publiedit(type: Publisher){
   database = [dbUriEdit,dbUserEdit,dbPwdEdit]
   dataIdent = "ch.so.agi.dmav.relational.rohrleitungen"
   dbSchema = "agi_dmav_rohrleitungen_v1"
+  userFormats = false
   region = ".*" // Wähle alle datasets aus
 
   target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
