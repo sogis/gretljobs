@@ -9,6 +9,7 @@ task publishEdit(type: Publisher){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dataIdent = "ch.so.agi.dmav.relational.toleranzstufen"
     dbSchema = "agi_dmav_toleranzstufen_v1"
+    userFormats = true
     region = ".*" // Wähle alle datasets aus
     
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
