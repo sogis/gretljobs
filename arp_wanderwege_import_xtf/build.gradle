@@ -41,7 +41,13 @@ task filetransform(type: XslTransformer, dependsOn: unzipData) {
     outDirectory = file(transformFolder)
 }
 
-task importKataloge(type: Ili2pgReplace, dependsOn: filetransform) {
+task deleteFromWanderwegeTables(type: SqlExecutor, dependsOn: filetransform) {
+    description = 'Löscht die Daten aus dem Schema.'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['delete_arp_wanderwege_tables.sql']
+}
+
+task importKataloge(type: Ili2pgReplace, dependsOn: deleteFromWanderwegeTables) {
     description = 'Import der Kataloge'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'arp_wanderwege_v1'

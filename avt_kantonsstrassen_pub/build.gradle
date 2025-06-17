@@ -2,56 +2,72 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.io.File
 import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'publipub', 'refreshSolr', 'updateSearchIndex_1', 'updateSearchIndex_2'
-
-def shpNameAchsen = 'achsen.shp'
-def shpNamePunkte = 'bezugspunkte.shp'
-def pathToShpFolder = Paths.get(System.getProperty("java.io.tmpdir"), "avt_achsen").toString()
+defaultTasks 'transferToPub', 'refreshSolr', 'updateSearchIndex_1', 'updateSearchIndex_2'
+ 
+def achsenFile = file("$buildDir/shapes/achsen.shp")
+def punkteFile = file("$buildDir/shapes/bezugspunkte.shp")
+def geschwFile = file("$buildDir/shapes/signalisierte_geschwindigkeit.shp")
 def zipFile = file("$buildDir/xyz.zip")
 
-task unpackShapes(type: Copy) {
+task deleteAllFeatures(type: SqlExecutor){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['delete_all_tables_all_rows.sql']
+}
+
+task unpackShapes(type: Copy, dependsOn: deleteAllFeatures) {
     from zipTree(zipFile)
-    into pathToShpFolder
+    into "$buildDir/shapes"
 }
 
-task validate_achsen(type: ShpValidator, dependsOn: unpackShapes){
-    models = "SO_AVT_Kantonsstrassen_Publikation_20200707"
-    dataFiles = [Paths.get(pathToShpFolder, shpNameAchsen).toFile()]
+task validateGeschwindigkeiten(type: ShpValidator, dependsOn: unpackShapes){
+    models = "SO_AVT_Kantonsstrassen_Publikation_20250521"
+    dataFiles = [geschwFile]
+} 
+
+task importGeschwindigkeiten(type: ShpImport, dependsOn: validateGeschwindigkeiten){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = "avt_kantonsstrassen_staging_v1"
+    tableName = "signalisierte_geschwindigkeit"
+    dataFile = geschwFile
+    encoding = "UTF-8"
 }
 
-task validate_punkte(type: ShpValidator, dependsOn: validate_achsen){
-    models = "SO_AVT_Kantonsstrassen_Publikation_20200707"
-    dataFiles = [Paths.get(pathToShpFolder, shpNamePunkte).toFile()]
-}
+task validateAchsen(type: ShpValidator, dependsOn: unpackShapes){
+    models = "SO_AVT_Kantonsstrassen_Publikation_20250521"
+    dataFiles = [achsenFile]
+} 
 
-task deleteAllFeatures(type: SqlExecutor, dependsOn: validate_punkte){
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlFiles = ['delete_achsen_u_punkte.sql']
-}
-
-task importAchsen(type: ShpImport, dependsOn: deleteAllFeatures){
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    schemaName = "avt_kantonsstrassen_pub"
+task importAchsen(type: ShpImport, dependsOn: validateAchsen){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = "avt_kantonsstrassen_staging_v1"
     tableName = "achse"
-    dataFile = Paths.get(pathToShpFolder, shpNameAchsen).toFile()
+    dataFile = achsenFile
     encoding = "UTF-8"
 }
 
-task importPunkte(type: ShpImport, dependsOn: importAchsen){
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    schemaName = "avt_kantonsstrassen_pub"
+task validatePunkte(type: ShpValidator, dependsOn: unpackShapes){
+    models = "SO_AVT_Kantonsstrassen_Publikation_20250521"
+    dataFiles = [punkteFile]
+} 
+
+task importPunkte(type: ShpImport, dependsOn: validatePunkte){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = "avt_kantonsstrassen_staging_v1"
     tableName = "bezugspunkt"
-    dataFile = Paths.get(pathToShpFolder, shpNamePunkte).toFile()
+    dataFile = punkteFile
     encoding = "UTF-8"
 }
-task publipub(type: Publisher, dependsOn: 'importPunkte'){
+
+task publishFiles(type: Publisher){
+    dependsOn "importGeschwindigkeiten", "importAchsen", "importPunkte"
     dataIdent = "ch.so.avt.kantonsstrassen"
     userFormats = true
 
-    database = [dbUriPub,dbUserPub,dbPwdPub]
-    dbSchema = "avt_kantonsstrassen_pub"
-    modelsToPublish = "SO_AVT_Kantonsstrassen_Publikation_20200707"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbSchema = "avt_kantonsstrassen_staging_v1"
+    modelsToPublish = "SO_AVT_Kantonsstrassen_Publikation_20250521"
 
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
@@ -60,13 +76,23 @@ task publipub(type: Publisher, dependsOn: 'importPunkte'){
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
+task transferToPub(type: Db2Db, dependsOn: publishFiles){    
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+        new TransferSet('bezugspunkt.sql', 'avt_kantonsstrassen_pub_v1.bezugspunkt', true),
+        new TransferSet('achse.sql', 'avt_kantonsstrassen_pub_v1.achse', true),
+        new TransferSet('signalisierte_geschwindigkeit.sql', 'avt_kantonsstrassen_pub_v1.signalisierte_geschwindigkeit', true),
+    ];
+}
+
 task refreshSolr(type:Exec) {
-    mustRunAfter 'publipub'
+    mustRunAfter 'transferToPub'
     commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.avt.kantonsstrassen_achsen,ch.so.avt.kantonsstrassen_bezugspunkte'
 }
 
 task updateSearchIndex_1(type: SqlExecutor){
-    mustRunAfter 'publipub'
+    mustRunAfter 'transferToPub'
     def layerName = 'ch.so.avt.kantonsstrassen_achsen'
     def sqlFileName = 'searchindex_' + layerName + '.sql'
 
@@ -87,7 +113,7 @@ task updateSearchIndex_1(type: SqlExecutor){
 }
 
 task updateSearchIndex_2(type: SqlExecutor){
-    mustRunAfter 'publipub'
+    mustRunAfter 'transferToPub'
     def layerName = 'ch.so.avt.kantonsstrassen_bezugspunkte'
     def sqlFileName = 'searchindex_' + layerName + '.sql'
 

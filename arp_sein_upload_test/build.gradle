@@ -10,24 +10,24 @@ apply plugin: 'org.hidetake.ssh'
 defaultTasks 'upload'
 
 remotes {
-    ftpServer {
+    sftpServer {
         host = "${sftpServerSEinApp}" 
         user = "${sftpUserSEinApp}"
         identity = file('/home/gradle/.sshkeys/id_rsa')
+        // Skip host key checking outside the following environments:
+        if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) { // uses the Groovy membership operator
+            knownHosts = allowAnyHosts
+        }
     }
 }
 
 tasks.register('upload') {
     doLast {
-        ssh.settings {
-            knownHosts = allowAnyHosts
-        }
         ssh.run {
-            session(remotes.ftpServer) {
+            session(remotes.sftpServer) {
                 put from: "fubar.xml", into: "/opt/daten/gis_arp_raumdaten/test/"
             }
         }
         println "File uploaded to FTP server"
     }
 }
-

@@ -18,7 +18,7 @@ task replaceEnumBetriebs(){
 
 task validateInputFile(type: CsvValidator) {
     dependsOn replaceEnumBetriebs
-    models = "SO_AVT_Mehrjahresplanung_20240911"
+    models = "SO_AVT_Mehrjahresplanung_20250616"
     dataFiles = [ csvFilename ]
     valueSeparator = ';'
     firstLineIsHeader = true
@@ -60,7 +60,7 @@ task importFile(type: CsvImport) {
     dependsOn emptyTable
     description = "Importiere die CSV-Datei"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    schemaName = "avt_mehrjahresplanung_v1"
+    schemaName = "avt_mehrjahresplanung_v2"
     tableName = "projekte_projekt"
     valueSeparator = ';'
     dataFile = csvFilename
@@ -73,8 +73,8 @@ task copyKantonsstrassenData(type: Db2Db) {
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
-        new TransferSet('select_achsen.sql', 'avt_mehrjahresplanung_v1.kantonsstrassen_achse', true),
-        new TransferSet('select_bezugspunkte.sql', 'avt_mehrjahresplanung_v1.kantonsstrassen_bezugspunkt', true)
+        new TransferSet('select_achsen.sql', 'avt_mehrjahresplanung_v2.kantonsstrassen_achse', true),
+        new TransferSet('select_bezugspunkte.sql', 'avt_mehrjahresplanung_v2.kantonsstrassen_bezugspunkt', true)
     ]
 }
 
@@ -96,8 +96,8 @@ task validateData(type: Ili2pgValidate) {
     dependsOn handleObsoleteGeometries
     description = "Validiere die Erfassungsdaten"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    models = "SO_AVT_Mehrjahresplanung_20240911"
-    dbschema = "avt_mehrjahresplanung_v1"
+    models = "SO_AVT_Mehrjahresplanung_20250616"
+    dbschema = "avt_mehrjahresplanung_v2"
 }
 
 task transferData(type: Db2Db) {
@@ -106,6 +106,6 @@ task transferData(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-        new TransferSet('select_projekte_und_geometrie.sql', 'avt_mehrjahresplanung_pub_v1.projekt', true)
+        new TransferSet('select_projekte_und_geometrie.sql', 'avt_mehrjahresplanung_pub_v2.projekt', true)
     ]
 }
