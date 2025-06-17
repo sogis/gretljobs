@@ -150,13 +150,13 @@ sftpUserGelan=
 sftpPwdGelan=
 sftpServerSEinApp=
 sftpUserSEinApp=
-# sftpPwdSEinApp gibt es nicht, dafür einen SSH-Key unter /home/gradle/.sshkeys/id_rsa; siehe Hinweis unterhalb dieser Auflistung
+# sftpPwdSEinApp gibt es nicht, dafür einen SSH-Key unter /home/gradle/.ssh/id_rsa; siehe Hinweis unterhalb dieser Auflistung
 sftpServerSogis=
 sftpUrlSogis=build
 sftpUserSogis=
 sftpPwdSogis=
 sftpUserSogisGemdat=
-# sftpPwdSogisGemdat gibt es nicht, dafür einen SSH-Key unter /home/gradle/.sshkeys/id_rsa; siehe Hinweis unterhalb dieser Auflistung
+# sftpPwdSogisGemdat gibt es nicht, dafür einen SSH-Key unter /home/gradle/.ssh/id_rsa; siehe Hinweis unterhalb dieser Auflistung
 sftpServerZivilschutz=
 sftpUserZivilschutz=
 sftpPwdZivilschutz=
@@ -206,8 +206,8 @@ dbUserOerebV2Ddl=ddluser
 dbPwdOerebV2Ddl=ddluser
 ```
 Hinweise:
-* Für den *Datentransfer SEinApp* muss man verwenden: `host = sftpServerSEinApp`, `user = sftpUserSEinApp`, `identity = file('/home/gradle/.sshkeys/id_rsa')`
-* Für den *Datentransfer Gemdat* muss man verwenden: `host = sftpServerSogis`, `user = sftpUserSogisGemdat`, `identity = file('/home/gradle/.sshkeys/id_rsa')`
+* Für den *Datentransfer SEinApp* muss man verwenden: `host = sftpServerSEinApp`, `user = sftpUserSEinApp`, `identity = file('/home/gradle/.ssh/id_rsa')`; der SSH-Key kann im Docker Container verfügbar gemacht werden, indem man den Befehl `docker compose run` (s. weiter unten) mit der Option `-v /local/path/to/id_rsa:/home/gradle/.ssh/id_rsa` ergänzt
+* Für den *Datentransfer Gemdat* muss man verwenden: `host = sftpServerSogis`, `user = sftpUserSogisGemdat`, `identity = file('/home/gradle/.ssh/id_rsa')`; der SSH-Key kann im Docker Container verfügbar gemacht werden, indem man den Befehl `docker compose run` (s. weiter unten) mit der Option `-v /local/path/to/id_rsa:/home/gradle/.ssh/id_rsa` ergänzt
 * Die Anleitung, wie man solche Ressourcen (z.B. DB-Verbindungen) in Jenkins definiert oder bestehende Ressourcen bearbeitet, ist unter https://github.com/sogis/openshift-templates/blob/master/gretl/README.md#create-configmap
 * Die Anleitung, wie man neue Credentials anlegt oder bestehende bearbeitet, ist unter https://github.com/sogis/openshift-templates/blob/master/gretl/README.md#create-secret
 
