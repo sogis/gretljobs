@@ -7,7 +7,7 @@ apply plugin: 'de.undercouch.download'
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'publiedit'
+defaultTasks 'publishEdit'
 
 
 task publishEdit(type: Publisher){
