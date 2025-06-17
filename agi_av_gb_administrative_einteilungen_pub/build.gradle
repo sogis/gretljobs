@@ -23,6 +23,7 @@ task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
 task publiedit(type: Publisher, dependsOn:'validateDataEdit'){
     dataIdent = "ch.so.agi.dmav.relational.untereinheitgrundbuch"
     modelsToPublish = "DMAVSUP_UntereinheitGrundbuch_V1_0"
+    userFormats = false
 
     sourcePath = file("ch.so.agi.dmav.relational.untereinheitgrundbuch.xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
