@@ -6,6 +6,7 @@ import ch.so.agi.gretl.api.*
 import de.undercouch.gradle.tasks.download.Download
 
 apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
 
 defaultTasks 'ili2duckdbexport'
 
@@ -30,8 +31,15 @@ def dbHostPub = dbUriPub.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastInde
 def dbDatabasePub = dbUriPub.substring(dbUriPub.lastIndexOf("/") + 1)
 def dbConnectionStringPub = "'dbname=$dbDatabasePub user=$dbUserPub password=$dbPwdPub host=$dbHostPub'"
 
+ssh.settings {
+    knownHosts = allowAnyHosts
+}
 
-// download-links for internet-files (data.geo.admin.ch)
+/* ---------------------------------------------------------------------------------------
+* download & unzip files from data.geo.admin.ch
+--------------------------------------------------------------------------------------- */
+
+// download-links
 def downloadFiles = [
     [ url: 'https://data.geo.admin.ch/ch.bafu.bundesinventare-amphibien/data.zip', name: 'bundesinventar_amphibien.zip' ],
     [ url: 'https://data.geo.admin.ch/ch.bafu.bundesinventare-hochmoore/data.zip', name: 'bundesinventar_hochmoore.zip' ],
@@ -47,7 +55,7 @@ def importShapeJobs = [
     [name: "flachmoore", sqlFile: "bundesinventar_flachmmore_import_shp.sql", subdir: "bundesinventar_flachmoore/Flachmoor_LV95", file: "flachmoor_20210701.shp"]
 ]
 
-// download internet-files
+// download files
 task downloadMultipleFiles {
     dependsOn downloadFiles.collect { entry ->
         def taskName = "download_" + entry.name.replaceAll(/\W+/, "_")
@@ -79,7 +87,11 @@ task unzipAllData(dependsOn: downloadMultipleFiles) {
     }
 }
 
-// create postgis-schema arp_sein in duckdb
+/* ---------------------------------------------------------------------------------------
+* set up DuckDB
+--------------------------------------------------------------------------------------- */
+
+// create schema for arp sein data
 tasks.register("ili2duckdb_sein", Ili2duckdbImportSchema) {
     dependsOn "unzipAllData"
     dbfile = file(dbPath)
@@ -89,7 +101,7 @@ tasks.register("ili2duckdb_sein", Ili2duckdbImportSchema) {
     smart2Inheritance = true
 }
 
-// create postgis-schema for ivs-data in duckdb
+// create schema for ivs regional lokal data
 tasks.register("ili2duckdb_ivs", Ili2duckdbImportSchema) {
     dependsOn "ili2duckdb_sein"
     dbfile = file(dbPath)
@@ -97,7 +109,7 @@ tasks.register("ili2duckdb_ivs", Ili2duckdbImportSchema) {
     dbschema = "bundesinventar_ivs_reg_lok"
 }
 
-// create table and transfer data from postgis to duckdb
+// create Sammeltabelle and transfer sein-data from EditDB to sein schema
 task prepareDuckDB(type: SqlExecutor){
     dependsOn "ili2duckdb_ivs"
     database = [dbUriDuckDB]
@@ -111,7 +123,11 @@ task prepareDuckDB(type: SqlExecutor){
         ]
 }
 
-// import data from edit-schema
+/* ---------------------------------------------------------------------------------------
+* import data from PostGIS to Sammeltabelle
+--------------------------------------------------------------------------------------- */
+
+// data from arp sein (collected by arp)
 task importDataeditdb(type: SqlExecutor){
     dependsOn "prepareDuckDB"
     database = [dbUriDuckDB]
@@ -119,7 +135,7 @@ task importDataeditdb(type: SqlExecutor){
             ]
 }
 
-// import data from postgis (PubDB)
+// data from PubDB
 task importPostgisData(type: SqlExecutor){
     dependsOn "prepareDuckDB"
     database = [dbUriDuckDB]
@@ -135,7 +151,11 @@ task importPostgisData(type: SqlExecutor){
         ]
 }
 
-// import shapefiles directly
+/* ---------------------------------------------------------------------------------------
+* import shapefile data to Sammeltabelle
+--------------------------------------------------------------------------------------- */
+
+// import shapefiles directly (no previous download necessary)
 task importShpData(type: SqlExecutor){
     dependsOn "prepareDuckDB"
     database = [dbUriDuckDB]
@@ -171,9 +191,13 @@ tasks.register("importDownloadedShapeData") {
     dependsOn importTasks
 }
 
-// import downloaded xtf-file
+/* ---------------------------------------------------------------------------------------
+* import xtf-files to Sammeltabelle
+--------------------------------------------------------------------------------------- */
+
+// ivs regional lokal
 // Import dauert recht lange!!! (ca. 9 Minuten)
-tasks.register("ili2duckdbimport_ivs", Ili2duckdbImport) {
+tasks.register("ili2duckdbimport_ivs_reg_lok", Ili2duckdbImport) {
     dependsOn "ili2duckdb_ivs"
     models = "IVS_V2_1"
     dbschema = "bundesinventar_ivs_reg_lok"
@@ -181,13 +205,26 @@ tasks.register("ili2duckdbimport_ivs", Ili2duckdbImport) {
     dbfile = file(dbPath)
 }
 
-// transfer data from custom table to "auswertung_gemeinde" table 
+// import xtf-data to Sammeltabelle
+task importXTFData(type: SqlExecutor){
+    dependsOn "ili2duckdbimport_ivs_reg_lok"
+    database = [dbUriDuckDB]
+    sqlFiles = ['load_extensions.sql',
+                'bundesinventar_ivs_regional_lokal_import_xtf.sql'
+            ]
+}
+
+/* ---------------------------------------------------------------------------------------
+* transfer collected data and export it to xtf
+--------------------------------------------------------------------------------------- */
+
+// transfer data from Sammeltabelle table to "auswertung_gemeinde"
 task datenaggregation(type: SqlExecutor){
     dependsOn "importShpData"
     dependsOn "importDataeditdb"
     dependsOn "importDownloadedShapeData"
     dependsOn "importPostgisData"
-    dependsOn "ili2duckdbimport_ivs"
+    dependsOn "importXTFData"
     database = [dbUriDuckDB]
     sqlFiles = ['load_extensions.sql',
                 'update_thema_gruppe.sql',
