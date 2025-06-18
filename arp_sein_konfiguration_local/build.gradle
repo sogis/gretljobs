@@ -1,3 +1,17 @@
+/*
+Übergeordnete Organisation: Nach Daten oder nach "Schritt"
+Aufgrund Nachvollziehbarkeit, Entwicklungsfortschritt, Performance: Besser auf Daten.
+
+Konsequent modularisieren, am Ende bewusst zusammenführen.
+
+Zusammen Überblick der Themen gewinnen
+- X Themen von Pub
+- X Themen von Edit (selbst erfasste)
+- X Themen Shapefiles
+- X Themen Interlis
+*/
+
+
 import ch.so.agi.gretl.api.TransferSet
 import java.nio.file.Paths
 import java.nio.file.Files
@@ -10,7 +24,7 @@ apply plugin: 'org.hidetake.ssh'
 
 defaultTasks 'ili2duckdbexport'
 
-def tempDir = buildDir.toString()
+def tempDir = buildDir.toString() //buildDir verwenden, ist transparenter
 def dbPath = tempDir +"/sein.duckdb"
 if (new File(dbPath).exists()) {
     new File(dbPath).delete()
@@ -18,10 +32,11 @@ if (new File(dbPath).exists()) {
 def dbUriDuckDB = "jdbc:duckdb:$dbPath"
 
 def xtfPath_Export = tempDir + "/arp_sein_konfiguraton_auswertung_uc1.xtf"
-def DownloadLocation = tempDir + "/downloads/"
-def ZipLocation = tempDir + "/unzipped/"
+def DownloadLocation = tempDir + "/downloads/" // CamelCase
+def ZipLocation = tempDir + "/unzipped/" // CamelCase
 def xtfPath_IVS = ZipLocation + "bundesinventar_ivs_regional_lokal/IVS_V2_1_regional_lokal_LV95.xtf"
 
+// Da müssen wir noch mit dem Betrieb schauen, wie wir das lösen wollen - Ist für attach, oder?
 // Create DB-variables for sql-files
 def dbHostEdit = dbUriEdit.substring(dbUriEdit.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
 def dbDatabaseEdit = dbUriEdit.substring(dbUriEdit.lastIndexOf("/") + 1)
@@ -101,6 +116,7 @@ tasks.register("ili2duckdb_sein", Ili2duckdbImportSchema) {
     smart2Inheritance = true
 }
 
+// Ist das themenübergreifend oder nur für ein Thema?
 // create schema for ivs regional lokal data
 tasks.register("ili2duckdb_ivs", Ili2duckdbImportSchema) {
     dependsOn "ili2duckdb_sein"
