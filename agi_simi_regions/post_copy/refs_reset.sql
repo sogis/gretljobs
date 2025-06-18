@@ -12,4 +12,6 @@ WHERE
     p.theme_publication_id = t.id
   AND 
     s.coverage_ident = t.coverage_ident 
+  AND   
+    s.coverage_ident = 'dmav_pilot_2025'
 ;
