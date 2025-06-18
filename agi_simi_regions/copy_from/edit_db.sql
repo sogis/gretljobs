@@ -11,3 +11,4 @@ LEFT JOIN
     agi_metadaten_datenabdeckung_v2.abdeckung_datenabdeckung abdeckung
     ON 
     abdeckung.t_id = teilgebiet.rdatenabdeckung 
+WHERE abdeckung.identifier = 'dmav_pilot_2025'
