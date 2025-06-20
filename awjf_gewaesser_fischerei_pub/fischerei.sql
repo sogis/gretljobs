@@ -9,7 +9,7 @@ SELECT
         ELSE NULL
     END AS fischbestand, 
     fischerei, 
-    ST_Multi(ST_RemoveRepeatedPoints(ST_Union(geometrie), 0.003)) AS geometrie
+    ST_Multi(ST_RemoveRepeatedPoints(ST_Union(geometrie), 0.001)) AS geometrie
 FROM 
     afu_gewaesser_v1.fischrevierabschnitt_v
 GROUP BY 
