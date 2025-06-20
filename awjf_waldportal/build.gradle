@@ -24,9 +24,9 @@ def umgebung = "prod/"
 // Credentials für den SFTP-Server
 remotes {
     sftpServer {
-        host = ftpServerWaldportal
-        user = ftpUserWaldportal
-        password = ftpPwdWaldportal
+        host = sftpServerWaldportal
+        user = sftpUserWaldportal
+        password = sftpPwdWaldportal
         // Skip host key checking outside the following environments:
         if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) { // uses the Groovy membership operator
             knownHosts = allowAnyHosts
