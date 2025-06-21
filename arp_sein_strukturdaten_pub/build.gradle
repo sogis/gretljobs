@@ -1,0 +1,108 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks "exportXtf"
+
+def tmpDir = buildDir.toString()
+def xtfPath = tmpDir + "/data.xtf"
+
+// Extension aktivieren
+task createExtension(type: SqlExecutor){
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['create_extension.sql']
+}
+
+// Schema für Quelldaten in processing DB anlegen
+task createImportSchema(type: Ili2pgImportSchema, dependsOn: createExtension){
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    models = "SO_AGI_MOpublic_20240711;SO_AGI_GWR_Publikation_20241118;SO_ARP_STATPOP_STATENT_20221114;SO_ARP_Auswertungen_Nutzungsplanung_Publikation_20210126;SO_ARP_Nutzungsplanung_Publikation_20201005"
+    dbschema = "import"
+    nameByTopic = true
+    beautifyEnumDispName = true
+    strokeArcs = true
+    createEnumTabs = false
+    createNumChecks = true
+    createFk = true
+    createFkIdx = true
+    createGeomIdx = true
+    createMetaInfo = true
+    createBasketCol = false
+    createUnique = true
+    smart2Inheritance = true
+}
+
+// Schema für Ausgabedaten in processing DB anlegen
+task createExportSchema(type: Ili2pgImportSchema, dependsOn: createImportSchema){
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    models = "SO_ARP_SEin_Strukturdaten_Publikation_20250407"
+    dbschema = "export"
+    nameByTopic = true
+    beautifyEnumDispName = true
+    strokeArcs = true
+    createEnumTabs = false
+    createNumChecks = true
+    createFk = true
+    createFkIdx = true
+    createGeomIdx = true
+    createMetaInfo = true
+    createBasketCol = false
+    createUnique = true
+    smart2Inheritance = true
+}
+
+// Quelldaten tabellenweise aus Pub nach Processing kopieren
+task copyDataFromPub(type: Db2Db, dependsOn: createExportSchema){ 
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    transferSets = [
+        new TransferSet('bauzonenstatistik_liegenschaft_nach_bebauungsstand.sql', 'import.bauzonenstatistik_liegenschaft_nach_bebauungsstand', true),
+        new TransferSet('nutzungsplanung_grundnutzung.sql', 'import.nutzungsplanung_grundnutzung', true),
+        new TransferSet('mopublic_bodenbedeckung.sql', 'import.mopublic_bodenbedeckung', true),
+        new TransferSet('gwr_gebaeude.sql', 'import.gwr_gebaeude', true),
+        new TransferSet('gwr_wohnung.sql', 'import.gwr_wohnung', true)
+    ];
+}
+
+// Quelldaten tabellenweise aus Edit nach Processing kopieren
+task copyDataFromEdit(type: Db2Db, dependsOn: copyDataFromPub){ 
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    transferSets = [
+        new TransferSet('statpop.sql', 'import.statpop_statent_statpop', true),
+        new TransferSet('statent.sql', 'import.statpop_statent_statent', true)
+    ];
+}
+
+// Führe Berechnungen durch, 4 SQL Dateien, 1 pro Raumeinheit (tbd: in vier Tasks aufteilen)
+task processParzellen(type: SqlExecutor, dependsOn: copyDataFromEdit) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['parzelle.sql']
+}
+
+// Führe Berechnungen durch, 4 SQL Dateien, 1 pro Raumeinheit (tbd: in vier Tasks aufteilen)
+task processZonentypen(type: SqlExecutor, dependsOn: processParzellen) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = ['zonentyp.sql']
+}
+
+// Ergebnis tabellenweise in Zielschema kopieren (persistieren)
+task copyDataFromProcessing(type: Db2Db, dependsOn: processZonentypen){
+    sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+        new TransferSet('export_parzelle.sql', 'arp_sein_strukturdaten_pub_v1.parzelle', true),
+        new TransferSet('export_zonentyp.sql', 'arp_sein_strukturdaten_pub_v1.zonentyp', true)
+    ];
+}
+
+// Ergebnis exportieren
+task exportXtf(type: Ili2pgExport, dependsOn: copyDataFromProcessing){
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = "arp_sein_strukturdaten_pub_v1"
+    disableValidation = false
+    dataFile = xtfPath
+    models = "SO_ARP_SEin_Strukturdaten_Publikation_20250407"
+}

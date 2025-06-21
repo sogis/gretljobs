@@ -1,0 +1,3 @@
+SELECT
+    t_id, egid, gdekt, ggdenr, ggdename, egrid, lparz, lgbkr, lparzsx, ltyp, ltyp_txt, gebnr, gbez, gksce, gksce_txt, gstat, gstat_txt, gkat, gkat_txt, gklas, gklas_txt, gbauj, gbaum, gbaup, gbaup_txt, gabbj, garea, gvol, gvolnorm, gvolnorm_txt, gvolsce, gvolsce_txt, gastw, ganzwhg, gazzi, gschutzr, gschutzr_txt, gebf, gwaerzh1, gwaerzh1_txt, genh1, genh1_txt, gwaersceh1, gwaersceh1_txt, gwaerdath1, gwaerzh2, gwaerzh2_txt, genh2, genh2_txt, gwaersceh2, gwaersceh2_txt, gwaerdath2, gwaerzw1, gwaerzw1_txt, genw1, genw1_txt, gwaerscew1, gwaerscew1_txt, gwaerdatw1, gwaerzw2, gwaerzw2_txt, genw2, genw2_txt, gwaerscew2, gwaerscew2_txt, gwaerdatw2, gexpdat, whng, lage
+FROM agi_gwr_pub_v1.gwr_gebaeude;
