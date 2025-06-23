@@ -1,53 +1,61 @@
 -- tbd Kommentar
 
 -- Zonentyp
-drop table if exists export.zonentyp_basis cascade;
-create table export.zonentyp_basis as
+drop table if exists export.zonenschild_dump cascade;
+create table export.zonenschild_dump as
 	select
-		-- Workaround um duplicate coord Validierungsfehler zu vermeiden
-		ST_SimplifyPreserveTopology(  -- oder ST_RemoveRepeatedPoints?
-			-- Workaround um self intersect Validierungsfehler zu vermeiden (Einschnitte heilen)
-        	st_buffer(
-        		st_buffer(
-        			st_union(geometrie, 0.001), 0.15, 'join=mitre'  -- Buffer ist um 5 cm grösser als MaxInscribedCircle Radius
-        		), -0.15, 'join=mitre'
-        	), 0.01
-        ) as geometrie,
-	    null::int as bfs_nr,  -- alternativ: Array -> Modelländerung
+		uuid_generate_v4() as schild_uuid,
 	    typ_kt,
-	    substring(typ_kt, 2, 2) as typ_bund,
+	    typ_bund,
+		(ST_Dump(geometrie)).geom as geometrie
+	from export.zonentyp_basis
+	;
+
+create index on export.zonenschild_dump using gist (geometrie);
+
+drop table if exists export.zonenschild_basis cascade;
+create table export.zonenschild_basis as
+	select
+		z.schild_uuid,
+		z.geometrie,
+	    null::int as bfs_nr,  -- alternativ: Array -> Modelländerung
+	    z.typ_kt,
+	    z.typ_bund,
 	    null::text as bebauungsstand,  -- alternativ: Array -> Modelländerung
-	    st_area(st_union(geometrie)) as flaeche,
-	    coalesce(sum(st_area(geometrie)) filter (where bebauungsstand = 'bebaut'), 0) as flaeche_bebaut,
-	    coalesce(sum(st_area(geometrie)) filter (where bebauungsstand = 'unbebaut'), 0) as flaeche_unbebaut,
-	    coalesce(sum(st_area(geometrie)) filter (where bebauungsstand = 'teilweise_bebaut'), 0) as flaeche_teilweise_bebaut
-	from export.parzellen_basis
-	group by typ_kt
+	    sum(flaeche) as flaeche,
+	    coalesce(sum(flaeche) filter (where bebauungsstand = 'bebaut'), 0) as flaeche_bebaut,
+	    coalesce(sum(flaeche) filter (where bebauungsstand = 'unbebaut'), 0) as flaeche_unbebaut,
+	    coalesce(sum(flaeche) filter (where bebauungsstand = 'teilweise_bebaut'), 0) as flaeche_teilweise_bebaut
+	from export.zonenschild_dump z
+	join export.parzellen_basis p on st_within(p.pip, z.geometrie)
+	-- tbd: ACHTUNG - Parzellen können MultiPolys sein!!??! -> wir verlieren hier Teile
+	group by z.schild_uuid, z.geometrie, z.typ_kt, z.typ_bund
 	;
 
-create index on export.zonentyp_basis using gist (geometrie);
-create index on export.zonentyp_basis (typ_kt);
+create index on export.zonenschild_basis using gist (geometrie);
+create index on export.zonenschild_basis (typ_kt);
 
--- Zonentyp x Bodenbedeckung
-drop table if exists export.zonentyp_bodenbedeckung cascade;
-create table export.zonentyp_bodenbedeckung as
+-- Zonenschild x Bodenbedeckung
+drop table if exists export.zonenschild_bodenbedeckung cascade;
+create table export.zonenschild_bodenbedeckung as
 	select
 	    null::int as bfs_nr,  -- alternativ: Array -> Modelländerung
-	    typ_kt,
-	    kategorie_text,
-	    sum(flaeche) as flaeche
-	from export.parzellen_bodenbedeckung
-	group by typ_kt, kategorie_text
+	    z.schild_uuid,
+	    b.kategorie_text,
+	    sum(b.flaeche) as flaeche
+	from export.zonenschild_basis z
+	join export.parzellen_basis p on st_within(p.pip, z.geometrie)
+	join export.parzellen_bodenbedeckung b using (t_ili_tid)
+	group by z.schild_uuid, b.kategorie_text
 	;
 
-create index on export.zonentyp_bodenbedeckung (typ_kt);
-create index on export.zonentyp_bodenbedeckung (kategorie_text);
+create index on export.zonenschild_bodenbedeckung (kategorie_text);
 
--- GRUNDNUTZUNG: Aggregiert auf Zonentyp-Ebene (Array)
-drop table if exists export.zonentyp_grundnutzungen_array cascade;
-create table export.zonentyp_grundnutzungen_array as
+-- GRUNDNUTZUNG: Aggregiert auf Zonenschild-Ebene (Array) (faktisch kein Aggregieren nötig)
+drop table if exists export.zonenschild_grundnutzungen_array cascade;
+create table export.zonenschild_grundnutzungen_array as
 	select
-		typ_kt,
+		schild_uuid,
 	    jsonb_build_array(jsonb_BUILD_OBJECT(
 	    	'@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Grundnutzung_Kanton',
 	    	'Kategorie_Text', typ_kt,
@@ -58,28 +66,47 @@ create table export.zonentyp_grundnutzungen_array as
 	        'Kategorie_Text', typ_bund,
 	        'Flaeche', round(flaeche::numeric, 2)
 	    )) as grundnutzungen_bund
-	FROM export.zonentyp_basis
+	FROM export.zonenschild_basis
 	;
 
--- BODENBEDECKUNG: Aggregiert auf Zonentyp-Ebene (Array)
-drop table if exists export.zonentyp_bodenbedeckungen_array cascade;
-create table export.zonentyp_bodenbedeckungen_array as
+-- BODENBEDECKUNG: Aggregiert auf Zonenschild-Ebene (Array)
+drop table if exists export.zonenschild_bodenbedeckungen_array cascade;
+create table export.zonenschild_bodenbedeckungen_array as
 	select
-		typ_kt,
+		schild_uuid,
 		jsonb_agg(jsonb_build_object(
 			'@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Bodenbedeckung',
 			'Kategorie_Text', kategorie_text,
 			'Flaeche', round(flaeche::numeric, 2)
 		)) as bodenbedeckungen
-	from export.zonentyp_bodenbedeckung
-	group by typ_kt
+	from export.zonenschild_bodenbedeckung
+	group by schild_uuid
 	;
 
--- GWR: Gebäudedaten aggregiert auf Zonentyp-Ebene (Arrays)
-drop table if exists export.zonentyp_gwr_array cascade;
-create table export.zonentyp_gwr_array as
+-- GWR Daten mit Zonenschild-ID anreichern
+drop table if exists export.zonenschild_basis_geb cascade;
+create table export.zonenschild_basis_geb as
+	select g.*, z.schild_uuid
+	from export.gebaeude g
+	join export.zonenschild_basis z on st_within(g.geometrie, z.geometrie)
+	;
+create index on export.zonenschild_basis_geb using gist (geometrie);
+CREATE INDEX ON export.zonenschild_basis_geb(schild_uuid);
+
+drop table if exists export.zonenschild_basis_wohn cascade;
+create table export.zonenschild_basis_wohn as
+	select w.*, z.schild_uuid
+	from export.wohnung w
+	join export.zonenschild_basis z on st_within(w.geometrie, z.geometrie)
+	;
+create index on export.zonenschild_basis_wohn using gist (geometrie);
+CREATE INDEX ON export.zonenschild_basis_wohn(schild_uuid);
+
+-- GWR: Gebäudedaten aggregiert auf Zonenschild-Ebene (Arrays)
+drop table if exists export.zonenschild_gwr_array cascade;
+create table export.zonenschild_gwr_array as
 	select
-	    typ_kt,
+	    schild_uuid,
 	    (
 	        SELECT jsonb_agg(jsonb_build_object(
 	            '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Gebaeudekategorie',
@@ -89,8 +116,8 @@ create table export.zonentyp_gwr_array as
 	        ))
 	        FROM (
 	            SELECT gkat, gkat_txt, COUNT(*) as anzahl
-	            FROM export.gebaeude g2
-	            WHERE g2.typ_kt = g1.typ_kt
+	            FROM export.zonenschild_basis_geb g2
+	            WHERE g2.schild_uuid = g1.schild_uuid
 	            and gkat is not null
 	            GROUP BY gkat, gkat_txt
 	        ) gkat_group
@@ -104,8 +131,8 @@ create table export.zonentyp_gwr_array as
 	        ))
 	        FROM (
 	            SELECT left(gklas::text,3)::int as gklas_10, 'tbd' as gklas_10_txt, COUNT(*) as anzahl
-	            FROM export.gebaeude g2
-	            WHERE g2.typ_kt = g1.typ_kt
+	            FROM export.zonenschild_basis_geb g2
+	            WHERE g2.schild_uuid = g1.schild_uuid
 	            and gklas is not null
 	            GROUP BY left(gklas::text,3)
 	        ) gklas_group
@@ -119,8 +146,8 @@ create table export.zonentyp_gwr_array as
 	        ))
 	        FROM (
 	            SELECT gbaup, gbaup_txt, COUNT(*) as anzahl
-	            FROM export.gebaeude g2
-	            WHERE g2.typ_kt = g1.typ_kt
+	            FROM export.zonenschild_basis_geb g2
+	            WHERE g2.schild_uuid = g1.schild_uuid
 	            and gbaup is not null
 	            GROUP BY gbaup, gbaup_txt
 	        ) gbaup_group
@@ -136,35 +163,35 @@ create table export.zonentyp_gwr_array as
 	            SELECT 
 	            	case when wazim >= 6 then 6 else wazim end as wazim_cat,
 	            	COUNT(*) as anzahl
-	            FROM export.wohnung w
-	            WHERE w.typ_kt = g1.typ_kt
+	            FROM export.zonenschild_basis_wohn w
+	            WHERE w.schild_uuid = g1.schild_uuid
 	            and wazim is not null
 	            GROUP by case when wazim >= 6 then 6 else wazim end
 	        ) wazim_group
 	    ) verteilung_anzahl_zimmer
-    FROM export.zonentyp_basis g1
+    FROM export.zonenschild_basis g1
 	;
 
--- GWR: Gebäudedaten aggregiert auf Zonentyp-Ebene (Summen und Anzahlen)
-drop table if exists export.zonentyp_gwr_geb_agg cascade;
-create table export.zonentyp_gwr_geb_agg as
+-- GWR: Gebäudedaten aggregiert auf Zonenschild-Ebene (Summen und Anzahlen)
+drop table if exists export.zonenschild_gwr_geb_agg cascade;
+create table export.zonenschild_gwr_geb_agg as
     SELECT
-        typ_kt,
+        schild_uuid,
         COUNT(egid) AS total_gebaeude,
         sum(garea) as flaeche_gebaeude,
         COUNT(*) FILTER (WHERE garea IS NULL) AS flaeche_gebaeude_anz_null,
         SUM(gastw) AS total_geschosse,
         round(AVG(gastw),2) AS anzahl_geschosse_avg,
         COUNT(*) FILTER (WHERE gastw IS NULL) AS anzahl_geschosse_anz_null
-    FROM export.gebaeude
-    GROUP BY typ_kt
+    FROM export.zonenschild_basis_geb
+    GROUP BY schild_uuid
     ;
 
  -- GWR: Wohnungsdaten aggregiert auf Zonentyp-Ebene (Summen und Anzahlen)
-drop table if exists export.zonentyp_gwr_wohn_agg cascade;
-create table export.zonentyp_gwr_wohn_agg as
+drop table if exists export.zonenschild_gwr_wohn_agg cascade;
+create table export.zonenschild_gwr_wohn_agg as
 	select
-		typ_kt,
+		schild_uuid,
 		COUNT(ewid) as total_wohnungen,
         CASE 
             WHEN COUNT(DISTINCT egid) = 0 THEN 0 
@@ -176,12 +203,12 @@ create table export.zonentyp_gwr_wohn_agg as
 		sum(wazim) as total_zimmer,
 		round(avg(wazim),2) as anzahl_zimmer_avg,
 		count(*) filter (where wazim is null) anzahl_zimmer_anz_null
-	from export.wohnung
-	group by typ_kt
+	from export.zonenschild_basis_wohn
+	group by schild_uuid
 	;
 
-delete from export.strukturdaten_zonentyp;
-insert into export.strukturdaten_zonentyp (geometrie, 
+delete from export.strukturdaten_zonenschild;
+insert into export.strukturdaten_zonenschild (geometrie, 
 	flaeche, flaeche_bebaut, flaeche_unbebaut, flaeche_teilweise_bebaut, flaeche_gebaeude, flaeche_wohnungen, 
 	handlungsraum, gemeindename, gemeindenummer,
 	altersklassen_5j, beschaeftigte_fte, raumnutzendendichte, flaechendichte,
@@ -232,9 +259,9 @@ select
 	coalesce(e.flaeche_wohnung_anz_null,0) as flaeche_wohnung_anz_null,
 	coalesce(d.flaeche_gebaeude_anz_null,0) as flaeche_gebaeude_anz_null,
 	bodenbedeckungen
-from export.zonentyp_basis a
-left join export.zonentyp_bodenbedeckungen_array b using (typ_kt)
-left join export.zonentyp_gwr_array c using (typ_kt)
-left join export.zonentyp_gwr_geb_agg d using (typ_kt)
-left join export.zonentyp_gwr_wohn_agg e using (typ_kt)
-left join export.zonentyp_grundnutzungen_array f using (typ_kt);
+from export.zonenschild_basis a
+left join export.zonenschild_bodenbedeckungen_array b using (schild_uuid)
+left join export.zonenschild_gwr_array c using (schild_uuid)
+left join export.zonenschild_gwr_geb_agg d using (schild_uuid)
+left join export.zonenschild_gwr_wohn_agg e using (schild_uuid)
+left join export.zonenschild_grundnutzungen_array f using (schild_uuid);

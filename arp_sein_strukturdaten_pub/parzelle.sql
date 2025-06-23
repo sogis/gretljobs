@@ -7,7 +7,7 @@ drop table if exists export.parzellen_basis cascade;
 create table export.parzellen_basis as
 	select 
 	    t_ili_tid,
-	    geometrie,
+	    ST_ReducePrecision(geometrie, 0.001) as geometrie,
 	    bfs_nr,
 	    typ_kt,
 	    substring(typ_kt, 2, 2) as typ_bund,
@@ -15,22 +15,24 @@ create table export.parzellen_basis as
 	    st_area(geometrie) as flaeche,
 	    case when bebauungsstand = 'bebaut' then st_area(geometrie) else 0 end as flaeche_bebaut,
 	    case when bebauungsstand = 'unbebaut' then st_area(geometrie) else 0 end as flaeche_unbebaut,
-	    case when bebauungsstand = 'teilweise_bebaut' then st_area(geometrie) else 0 end as flaeche_teilweise_bebaut
+	    case when bebauungsstand = 'teilweise_bebaut' then st_area(geometrie) else 0 end as flaeche_teilweise_bebaut,
+		st_pointonsurface(geometrie) as pip
 	from (
 	    select t_ili_tid, bfs_nr, geometrie, grundnutzung_typ_kt as typ_kt, bebauungsstand
 	    from import.bauzonenstatistik_liegenschaft_nach_bebauungsstand
 	    -- eindeutige Verschnittfehler (Sliver Polygons) eliminieren:
 	    where nummer::int < 90000  -- Strassen und Gewässer ausschliessen
-	    -- and (ST_MaximumInscribedCircle(geometrie)).radius > 0.15  -- Innendurchmesser > 30 cm
+	    and (ST_MaximumInscribedCircle(geometrie)).radius > 0.1  -- Innendurchmesser > 20 cm
 	    
 	    union
 	    
 	    select t_ili_tid, bfs_nr, geometrie, typ_kt, null::text as bebauungsstand  -- tbd: unbebaut oder null oder neuer Wert?
 	    from import.nutzungsplanung_grundnutzung
-	    where left(typ_kt, 4) in ('N430', 'N439')  -- Reservezonen
+	    where typ_code_kt in (430, 439)  -- Reservezonen
 	);
 
 create index on export.parzellen_basis using gist (geometrie);
+create index on export.parzellen_basis using gist (pip);
 create index on export.parzellen_basis (t_ili_tid);
 create index on export.parzellen_basis (bfs_nr);
 create index on export.parzellen_basis (typ_kt);
@@ -43,7 +45,7 @@ create table export.parzellen_bodenbedeckung as
 	    p.bfs_nr,
 	    p.typ_kt,
 	    mo.art_txt as kategorie_text,
-	    sum(st_area(st_intersection(p.geometrie, mo.geometrie))) as flaeche
+	    sum(st_area(st_intersection(p.geometrie, mo.geometrie, 0.001))) as flaeche
 	from export.parzellen_basis p
 	join import.mopublic_bodenbedeckung mo on st_intersects(p.geometrie, mo.geometrie)
 	group by p.t_ili_tid, p.bfs_nr, p.typ_kt, mo.art_txt;
@@ -69,12 +71,14 @@ create table export.gebaeude as
 	    geb.gbaup,     -- Gebäudebauperiode
 	    geb.gbaup_txt,
 	    geb.garea,     -- Gebäudefläche
-	    geb.gastw     -- Anzahl Geschosse
+	    geb.gastw,     -- Anzahl Geschosse
+		geb.lage as geometrie
 	from export.parzellen_basis p
 	join import.gwr_gebaeude geb on st_within(geb.lage, p.geometrie)
 	where geb.gstat = 1004  -- nur existierende
 	;
 
+CREATE INDEX ON export.gebaeude using gist (geometrie);
 CREATE INDEX ON export.gebaeude(t_ili_tid);
 CREATE INDEX ON export.gebaeude(typ_kt);
 CREATE INDEX ON export.gebaeude(bfs_nr);
@@ -87,6 +91,7 @@ create table export.wohnung as
 	    g.typ_kt,
 	    g.bfs_nr,
 	    g.egid,
+		g.geometrie,
 	    w.ewid,
 	    w.warea,       -- Wohnungsfläche
 	    w.wazim        -- Anzahl Zimmer
@@ -94,9 +99,10 @@ create table export.wohnung as
 	left join import.gwr_wohnung w using (egid)
 	;
 
+CREATE INDEX ON export.wohnung using gist (geometrie);
 CREATE INDEX ON export.wohnung(t_ili_tid);
-CREATE INDEX ON export.gebaeude(typ_kt);
-CREATE INDEX ON export.gebaeude(bfs_nr);
+CREATE INDEX ON export.wohnung(typ_kt);
+CREATE INDEX ON export.wohnung(bfs_nr);
 
 -- AGGREGATIONEN -------------------------------------------------------------------------
 -- GRUNDNUTZUNG: Aggregiert auf Parzellen-Ebene (Array) (faktisch keine Aggregation nötig)
