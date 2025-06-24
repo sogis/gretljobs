@@ -10,12 +10,12 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'publish'
 
 task importXtfFile(type: Ili2pgReplace) {
-    description = 'Import die heruntergeladene INTERLIS-Datei einer Gemeinde (BFS-Nr.) in das Schema agi_dmav_fixpunkte3_v1.'
+    description = 'Importiert die heruntergeladenen INTERLIS-Datei einer Gemeinde (BFS-Nr.) in das Schema agi_dmav_fixpunkte3_v1.'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'agi_dmav_fixpunkte3_v1'
     models = 'DMAV_FixpunkteAVKategorie3_V1_0'
     dataset = dataFile
-    datasetSubstring = (0..4).toList()
+    datasetSubstring = 0..4
     dataFile = fileTree(dir: '/work/datahub/DMAV_FixpunkteAVKategorie3_V1_0', include: '*.xtf')
     disableValidation = true
 }
