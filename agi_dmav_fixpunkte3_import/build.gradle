@@ -25,11 +25,11 @@ task importXtfFile(type: Ili2pgReplace) {
 task publishEdit(type: Publisher, dependsOn: importXtfFile){
     dataIdent = 'ch.so.agi.dmav.relational.fixpunkteavkategorie3'
     modelsToPublish = 'DMAV_FixpunkteAVKategorie3_V1_0'
-    userFormats = false
-    region = ".*" // Wähle alle datasets aus
-    
+    region = '.*'
+    sourcePath = file('/work/datahub/DMAV_FixpunkteAVKategorie3_V1_0/dummy.xtf')
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
