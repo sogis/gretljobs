@@ -15,7 +15,7 @@ task importXtfFile(type: Ili2pgReplace) {
     dbschema = 'agi_dmav_fixpunkte3_v1'
     models = 'DMAV_FixpunkteAVKategorie3_V1_0'
     dataset = dataFile
-    datasetSubstring = 0..4.toList()
+    datasetSubstring = (0..4).toList()
     dataFile = fileTree(dir: '/work/datahub/DMAV_FixpunkteAVKategorie3_V1_0', include: '*.xtf')
     disableValidation = true
 }
