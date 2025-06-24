@@ -60,13 +60,13 @@ pipeline {
                             def cleanedName = rawName.replaceAll(/^([.]{1,2}\/)+|^\/+/, "")
 
                             echo "Suche in GRETL-Job mit Namen: ${cleanedName}"
-                            gradleProjects = findFiles(glob: "${cleanedName}/*.gradle")
-                            echo "  Gefundene GRETL-Jobs: ${gradleProjects.size()}"
+                            gradleProjects = findFiles(glob: "${cleanedName}/*.gradle").toList().unique()
+                            echo "  Gefundene potentielle GRETL-Jobs: ${gradleProjects.size()}"
                         }
                         else {
                             // Alle build.gradle Dateien finden
                             echo "Suche in allen GRETL-Jobs"
-                            gradleProjects = findFiles(glob: "*/*.gradle")
+                            gradleProjects = findFiles(glob: "*/*.gradle").toList().unique()
                             echo "  Gefundene potentielle GRETL-Jobs: ${gradleProjects.size()}"
                         }
 
@@ -89,24 +89,26 @@ pipeline {
                             sleep(time: 10, unit: 'MILLISECONDS')
 
                             try {
-                                // Inhalt der build.gradle Datei lesen
-                                def buildFileContent = readFile(file: projectPath)
 
-                                // Verschiedene Muster für Task-Definitionen suchen
-                                def containsTask = (buildFileContent =~ /${taskToRun}/).find()
-
-
-                                if (containsTask) {
-                                    echo '__________________________________________________________'
-                                    echo "🔎 Task(s) vom Typ '${taskToRun}' in ${projectDir} gefunden"
-                                }
-                                else if (isSettingsGradle){
+                                if (isSettingsGradle){
                                     echo '__________________________________________________________'
                                     echo "🔎 Prüfe Multi-Project-Build in ${projectDir}"
                                 }
                                 else{
-                                    // Überspringen des Projects, wenn kein Task gefunden werden kann
-                                    return
+                                    // Inhalt der build.gradle Datei lesen
+                                    def buildFileContent = readFile(file: projectPath)
+
+                                    // Textsuche nach Task-Definitionen
+                                    def containsTask = (buildFileContent =~ /${taskToRun}/).find()
+
+                                    if (containsTask) {
+                                        echo '__________________________________________________________'
+                                        echo "🔎 Task(s) vom Typ '${taskToRun}' in ${projectDir} gefunden"
+                                    }
+                                    else{
+                                        // Überspringen des Projects, wenn kein Task gefunden werden kann
+                                        return
+                                    }
                                 }
 
                                 // Extrahieren der Default-Tasks
@@ -117,7 +119,7 @@ pipeline {
                                 dir(projectDir){
                                     echo "🗺️ Default-Tasks abfragen"
                                     // Führt 'gretl tasks' aus und speichert die Ausgabe
-                                    taskOutput = sh(script: "${gradleCommand} tasks --all", returnStdout: true).trim()
+                                    taskOutput = sh(script: "${gradleCommand} tasks", returnStdout: true).trim()
                                 }
 
                                 //listen to build abort signals while looping
