@@ -13,7 +13,7 @@ create table export.zonentyp_basis as
         		), -0.15, 'join=mitre'
         	), 0.01
         ) as geometrie,
-	    null::int as bfs_nr,  -- alternativ: Array -> Modelländerung
+	    bfs_nr,
 	    typ_kt,
 	    substring(typ_kt, 2, 2) as typ_bund,
 	    null::text as bebauungsstand,  -- alternativ: Array -> Modelländerung
@@ -22,25 +22,27 @@ create table export.zonentyp_basis as
 	    coalesce(sum(st_area(geometrie)) filter (where bebauungsstand = 'unbebaut'), 0) as flaeche_unbebaut,
 	    coalesce(sum(st_area(geometrie)) filter (where bebauungsstand = 'teilweise_bebaut'), 0) as flaeche_teilweise_bebaut
 	from export.parzellen_basis
-	group by typ_kt
+	group by typ_kt, bfs_nr
 	;
 
 create index on export.zonentyp_basis using gist (geometrie);
 create index on export.zonentyp_basis (typ_kt);
+create index on export.zonentyp_basis (bfs_nr);
 
 -- Zonentyp x Bodenbedeckung
 drop table if exists export.zonentyp_bodenbedeckung cascade;
 create table export.zonentyp_bodenbedeckung as
 	select
-	    null::int as bfs_nr,  -- alternativ: Array -> Modelländerung
+	    bfs_nr,
 	    typ_kt,
 	    kategorie_text,
-	    sum(flaeche) as flaeche
+	    sum(flaeche_agg) as flaeche_agg
 	from export.parzellen_bodenbedeckung
-	group by typ_kt, kategorie_text
+	group by typ_kt, bfs_nr, kategorie_text
 	;
 
 create index on export.zonentyp_bodenbedeckung (typ_kt);
+create index on export.zonentyp_bodenbedeckung (bfs_nr);
 create index on export.zonentyp_bodenbedeckung (kategorie_text);
 
 -- GRUNDNUTZUNG: Aggregiert auf Zonentyp-Ebene (Array)
@@ -48,6 +50,7 @@ drop table if exists export.zonentyp_grundnutzungen_array cascade;
 create table export.zonentyp_grundnutzungen_array as
 	select
 		typ_kt,
+		bfs_nr,
 	    jsonb_build_array(jsonb_BUILD_OBJECT(
 	    	'@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Grundnutzung_Kanton',
 	    	'Kategorie_Text', typ_kt,
@@ -66,13 +69,15 @@ drop table if exists export.zonentyp_bodenbedeckungen_array cascade;
 create table export.zonentyp_bodenbedeckungen_array as
 	select
 		typ_kt,
+		bfs_nr,
 		jsonb_agg(jsonb_build_object(
 			'@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Bodenbedeckung',
 			'Kategorie_Text', kategorie_text,
-			'Flaeche', round(flaeche::numeric, 2)
+			'Flaeche', round(flaeche_agg::numeric, 2)
 		)) as bodenbedeckungen
 	from export.zonentyp_bodenbedeckung
-	group by typ_kt
+	where round(flaeche_agg::numeric, 2) > 0
+	group by typ_kt, bfs_nr
 	;
 
 -- GWR: Gebäudedaten aggregiert auf Zonentyp-Ebene (Arrays)
@@ -80,6 +85,7 @@ drop table if exists export.zonentyp_gwr_array cascade;
 create table export.zonentyp_gwr_array as
 	select
 	    typ_kt,
+		bfs_nr,
 	    (
 	        SELECT jsonb_agg(jsonb_build_object(
 	            '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Gebaeudekategorie',
@@ -150,6 +156,7 @@ drop table if exists export.zonentyp_gwr_geb_agg cascade;
 create table export.zonentyp_gwr_geb_agg as
     SELECT
         typ_kt,
+		bfs_nr,
         COUNT(egid) AS total_gebaeude,
         sum(garea) as flaeche_gebaeude,
         COUNT(*) FILTER (WHERE garea IS NULL) AS flaeche_gebaeude_anz_null,
@@ -157,7 +164,7 @@ create table export.zonentyp_gwr_geb_agg as
         round(AVG(gastw),2) AS anzahl_geschosse_avg,
         COUNT(*) FILTER (WHERE gastw IS NULL) AS anzahl_geschosse_anz_null
     FROM export.gebaeude
-    GROUP BY typ_kt
+    GROUP BY typ_kt, bfs_nr
     ;
 
  -- GWR: Wohnungsdaten aggregiert auf Zonentyp-Ebene (Summen und Anzahlen)
@@ -165,6 +172,7 @@ drop table if exists export.zonentyp_gwr_wohn_agg cascade;
 create table export.zonentyp_gwr_wohn_agg as
 	select
 		typ_kt,
+		bfs_nr,
 		COUNT(ewid) as total_wohnungen,
         CASE 
             WHEN COUNT(DISTINCT egid) = 0 THEN 0 
@@ -177,7 +185,7 @@ create table export.zonentyp_gwr_wohn_agg as
 		round(avg(wazim),2) as anzahl_zimmer_avg,
 		count(*) filter (where wazim is null) anzahl_zimmer_anz_null
 	from export.wohnung
-	group by typ_kt
+	group by typ_kt, bfs_nr
 	;
 
 delete from export.strukturdaten_zonentyp;
@@ -202,7 +210,7 @@ select
 	coalesce(e.flaeche_wohnungen,0) as flaeche_wohnungen,  -- dito
 	'urban' as handlungsraum,  -- tbd, dummy value
 	'tbd' as gemeindename,  -- tbd, dummy value
-	99 as gemeindenummer,  -- tbd, dummy value: Modelländerung nötig (null Value zulassen oder Array)
+	a.bfs_nr as gemeindenummer,
     jsonb_build_array(jsonb_build_object(
 	        '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Altersklasse_5j',
 	        'Kategorie_Id', 99,
@@ -231,10 +239,10 @@ select
 	coalesce(e.flaeche_wohnung_avg,0) as flaeche_wohnung_avg,
 	coalesce(e.flaeche_wohnung_anz_null,0) as flaeche_wohnung_anz_null,
 	coalesce(d.flaeche_gebaeude_anz_null,0) as flaeche_gebaeude_anz_null,
-	bodenbedeckungen
+	b.bodenbedeckungen
 from export.zonentyp_basis a
-left join export.zonentyp_bodenbedeckungen_array b using (typ_kt)
-left join export.zonentyp_gwr_array c using (typ_kt)
-left join export.zonentyp_gwr_geb_agg d using (typ_kt)
-left join export.zonentyp_gwr_wohn_agg e using (typ_kt)
-left join export.zonentyp_grundnutzungen_array f using (typ_kt);
+left join export.zonentyp_bodenbedeckungen_array b using (typ_kt, bfs_nr)
+left join export.zonentyp_gwr_array c using (typ_kt, bfs_nr)
+left join export.zonentyp_gwr_geb_agg d using (typ_kt, bfs_nr)
+left join export.zonentyp_gwr_wohn_agg e using (typ_kt, bfs_nr)
+left join export.zonentyp_grundnutzungen_array f using (typ_kt, bfs_nr);

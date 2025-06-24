@@ -26,7 +26,7 @@ create table export.parzellen_basis as
 	    
 	    union
 	    
-	    select t_ili_tid, bfs_nr, geometrie, typ_kt, null::text as bebauungsstand  -- tbd: unbebaut oder null oder neuer Wert?
+	    select t_ili_tid, bfs_nr, geometrie, typ_kt, null::text as bebauungsstand  -- tbd: unbebaut oder null oder neuer Wert? wird in outer query zu '0'
 	    from import.nutzungsplanung_grundnutzung
 	    where typ_code_kt in (430, 439)  -- Reservezonen
 	);
@@ -45,7 +45,7 @@ create table export.parzellen_bodenbedeckung as
 	    p.bfs_nr,
 	    p.typ_kt,
 	    mo.art_txt as kategorie_text,
-	    sum(st_area(st_intersection(p.geometrie, mo.geometrie, 0.001))) as flaeche
+	    sum(st_area(st_intersection(p.geometrie, mo.geometrie, 0.001))) as flaeche_agg
 	from export.parzellen_basis p
 	join import.mopublic_bodenbedeckung mo on st_intersects(p.geometrie, mo.geometrie)
 	group by p.t_ili_tid, p.bfs_nr, p.typ_kt, mo.art_txt;
@@ -131,9 +131,10 @@ create table export.parzellen_bodenbedeckungen_array as
 		jsonb_agg(jsonb_build_object(
 			'@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Bodenbedeckung',
 			'Kategorie_Text', kategorie_text,
-			'Flaeche', round(flaeche::numeric, 2)
+			'Flaeche', round(flaeche_agg::numeric, 2)
 		)) as bodenbedeckungen
 	from export.parzellen_bodenbedeckung
+	where round(flaeche_agg::numeric, 2) > 0
 	group by t_ili_tid
 	;
 
@@ -294,7 +295,7 @@ select
 	coalesce(e.flaeche_wohnung_avg,0) as flaeche_wohnung_avg,
 	coalesce(e.flaeche_wohnung_anz_null,0) as flaeche_wohnung_anz_null,
 	coalesce(d.flaeche_gebaeude_anz_null,0) as flaeche_gebaeude_anz_null,
-	bodenbedeckungen
+	coalesce(b.bodenbedeckungen, '[]'::jsonb) as bodenbedeckungen  -- eigentlich ein Workaround; sollte nie NULL sein, aber Verschnittfehler in den Ausgangsdaten führen zu Kleinst-Bodenbedeckungen, die wegfallen
 from export.parzellen_basis a
 left join export.parzellen_bodenbedeckungen_array b using (t_ili_tid)
 left join export.parzellen_gwr_array c using (t_ili_tid)

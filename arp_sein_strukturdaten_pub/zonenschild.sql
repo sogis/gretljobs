@@ -7,6 +7,7 @@ create table export.zonenschild_dump as
 		uuid_generate_v4() as schild_uuid,
 	    typ_kt,
 	    typ_bund,
+	    bfs_nr,
 		(ST_Dump(geometrie)).geom as geometrie
 	from export.zonentyp_basis
 	;
@@ -18,10 +19,10 @@ create table export.zonenschild_basis as
 	select
 		z.schild_uuid,
 		z.geometrie,
-	    null::int as bfs_nr,  -- alternativ: Array -> Modelländerung
 	    z.typ_kt,
 	    z.typ_bund,
-	    null::text as bebauungsstand,  -- alternativ: Array -> Modelländerung
+	    z.bfs_nr,
+	    null::text as bebauungsstand,  -- alternativ: Array -> Modelländerung -> tbd entfernen, nicht benötit!
 	    sum(flaeche) as flaeche,
 	    coalesce(sum(flaeche) filter (where bebauungsstand = 'bebaut'), 0) as flaeche_bebaut,
 	    coalesce(sum(flaeche) filter (where bebauungsstand = 'unbebaut'), 0) as flaeche_unbebaut,
@@ -29,20 +30,19 @@ create table export.zonenschild_basis as
 	from export.zonenschild_dump z
 	join export.parzellen_basis p on st_within(p.pip, z.geometrie)
 	-- tbd: ACHTUNG - Parzellen können MultiPolys sein!!??! -> wir verlieren hier Teile
-	group by z.schild_uuid, z.geometrie, z.typ_kt, z.typ_bund
+	group by z.schild_uuid, z.geometrie, z.typ_kt, z.typ_bund, z.bfs_nr
 	;
 
 create index on export.zonenschild_basis using gist (geometrie);
-create index on export.zonenschild_basis (typ_kt);
 
 -- Zonenschild x Bodenbedeckung
 drop table if exists export.zonenschild_bodenbedeckung cascade;
 create table export.zonenschild_bodenbedeckung as
 	select
-	    null::int as bfs_nr,  -- alternativ: Array -> Modelländerung
+	    --z.bfs_nr,  --tbd: wozu war das hier?
 	    z.schild_uuid,
 	    b.kategorie_text,
-	    sum(b.flaeche) as flaeche
+	    sum(b.flaeche_agg) as flaeche_agg
 	from export.zonenschild_basis z
 	join export.parzellen_basis p on st_within(p.pip, z.geometrie)
 	join export.parzellen_bodenbedeckung b using (t_ili_tid)
@@ -77,9 +77,10 @@ create table export.zonenschild_bodenbedeckungen_array as
 		jsonb_agg(jsonb_build_object(
 			'@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Bodenbedeckung',
 			'Kategorie_Text', kategorie_text,
-			'Flaeche', round(flaeche::numeric, 2)
+			'Flaeche', round(flaeche_agg::numeric, 2)
 		)) as bodenbedeckungen
 	from export.zonenschild_bodenbedeckung
+	where round(flaeche_agg::numeric, 2) > 0
 	group by schild_uuid
 	;
 
@@ -229,7 +230,7 @@ select
 	coalesce(e.flaeche_wohnungen,0) as flaeche_wohnungen,  -- dito
 	'urban' as handlungsraum,  -- tbd, dummy value
 	'tbd' as gemeindename,  -- tbd, dummy value
-	99 as gemeindenummer,  -- tbd, dummy value: Modelländerung nötig (null Value zulassen oder Array)
+	a.bfs_nr as gemeindenummer,
     jsonb_build_array(jsonb_build_object(
 	        '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Altersklasse_5j',
 	        'Kategorie_Id', 99,
@@ -258,7 +259,7 @@ select
 	coalesce(e.flaeche_wohnung_avg,0) as flaeche_wohnung_avg,
 	coalesce(e.flaeche_wohnung_anz_null,0) as flaeche_wohnung_anz_null,
 	coalesce(d.flaeche_gebaeude_anz_null,0) as flaeche_gebaeude_anz_null,
-	bodenbedeckungen
+	b.bodenbedeckungen
 from export.zonenschild_basis a
 left join export.zonenschild_bodenbedeckungen_array b using (schild_uuid)
 left join export.zonenschild_gwr_array c using (schild_uuid)
