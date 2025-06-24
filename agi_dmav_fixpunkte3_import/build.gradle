@@ -7,7 +7,7 @@ import java.io.File
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publish'
+defaultTasks 'publishEdit'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
@@ -22,14 +22,14 @@ task importXtfFile(type: Ili2pgReplace) {
     disableValidation = true
 }
 
-task publish(type: Publisher, dependsOn: importXtfFile){
+task publishEdit(type: Publisher, dependsOn: importXtfFile){
     dataIdent = 'ch.so.agi.dmav.relational.fixpunkteavkategorie3'
     modelsToPublish = 'DMAV_FixpunkteAVKategorie3_V1_0'
-    region = '.*'
-    sourcePath = file('/work/datahub/DMAV_FixpunkteAVKategorie3_V1_0/dummy.xtf')
-    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    userFormats = false
+    region = ".*" // Wähle alle datasets aus
+    
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
