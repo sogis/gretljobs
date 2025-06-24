@@ -9,6 +9,8 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'publish'
 
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
 task importXtfFile(type: Ili2pgReplace) {
     description = 'Importiert die heruntergeladenen INTERLIS-Datei einer Gemeinde (BFS-Nr.) in das Schema agi_dmav_fixpunkte3_v1.'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
