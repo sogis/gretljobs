@@ -2,34 +2,74 @@
 -- Diese Daten sind wiederum Grundlage für ... tbd
 
 -- GRUNDLAGEN -------------------------------------------------------------------------
--- Alle Parzellen von Interesse
+-- Alle Ausgangspolygone aus der Bauzonenstatistik (= Parzelle x Zone abzüglich Strassen etc.) plus Reservezonen
 drop table if exists export.parzellen_basis cascade;
 create table export.parzellen_basis as
+	with bauzonenstatistik_cleaned as (
+		select 
+			t_ili_tid,
+			bfs_nr,
+			grundnutzung_typ_kt,
+			bebauungsstand,
+			ST_Area(ST_Collect(part)) as flaeche,
+			ST_Collect(part) as geometrie,
+			ST_Collect(pip) as pip
+		from (
+			select 
+				t_ili_tid,
+				bfs_nr,
+				grundnutzung_typ_kt,
+				bebauungsstand,
+				ST_ReducePrecision((ST_Dump(geometrie)).geom, 0.001) as part,
+				ST_PointOnSurface((ST_Dump(geometrie)).geom) as pip  -- MultiPoint aus MultiPolygon erstellen; benötigt für Zonenschild-Aggregation
+			from import.bauzonenstatistik_liegenschaft_nach_bebauungsstand
+			--where bfs_nr in ('2584','2542')  -- tbd remove
+		) dump
+		-- Kleinst-Teilpolygone eliminieren
+		where (ST_MaximumInscribedCircle(part)).radius > 0.2
+		and ST_Area(part) > 0.5
+		group by t_ili_tid, bfs_nr, grundnutzung_typ_kt, bebauungsstand
+	),
+	polys as (
+	    select 
+			t_ili_tid, 
+			bfs_nr, 
+			geometrie, 
+			grundnutzung_typ_kt as typ_kt, 
+			bebauungsstand, 
+			flaeche, 
+			pip
+	    from bauzonenstatistik_cleaned
+	    
+	    union
+	    
+	    select 
+			t_ili_tid, 
+			bfs_nr, 
+			ST_ReducePrecision(geometrie, 0.001) as geometrie, 
+			typ_kt, 
+			null::text as bebauungsstand, 
+			st_area(geometrie) as flaeche, 
+			ST_PointOnSurface(geometrie) as pip
+	    from import.nutzungsplanung_grundnutzung
+	    where typ_code_kt in (430, 439)  -- Reservezonen
+		and (ST_MaximumInscribedCircle(geometrie)).radius > 0.2
+		and ST_Area(geometrie) > 0.5
+		--and bfs_nr in ('2584','2542')  -- tbd remove
+	)
 	select 
 	    t_ili_tid,
-	    ST_ReducePrecision(geometrie, 0.001) as geometrie,
+	    geometrie,
 	    bfs_nr,
 	    typ_kt,
 	    substring(typ_kt, 2, 2) as typ_bund,
 	    bebauungsstand,
-	    st_area(geometrie) as flaeche,
-	    case when bebauungsstand = 'bebaut' then st_area(geometrie) else 0 end as flaeche_bebaut,
-	    case when bebauungsstand = 'unbebaut' then st_area(geometrie) else 0 end as flaeche_unbebaut,
-	    case when bebauungsstand = 'teilweise_bebaut' then st_area(geometrie) else 0 end as flaeche_teilweise_bebaut,
-		st_pointonsurface(geometrie) as pip
-	from (
-	    select t_ili_tid, bfs_nr, geometrie, grundnutzung_typ_kt as typ_kt, bebauungsstand
-	    from import.bauzonenstatistik_liegenschaft_nach_bebauungsstand
-	    -- eindeutige Verschnittfehler (Sliver Polygons) eliminieren:
-	    where nummer::int < 90000  -- Strassen und Gewässer ausschliessen
-	    and (ST_MaximumInscribedCircle(geometrie)).radius > 0.1  -- Innendurchmesser > 20 cm
-	    
-	    union
-	    
-	    select t_ili_tid, bfs_nr, geometrie, typ_kt, null::text as bebauungsstand  -- tbd: unbebaut oder null oder neuer Wert? wird in outer query zu '0'
-	    from import.nutzungsplanung_grundnutzung
-	    where typ_code_kt in (430, 439)  -- Reservezonen
-	);
+	    flaeche,
+	    case when bebauungsstand = 'bebaut' then flaeche else 0 end as flaeche_bebaut,
+	    case when bebauungsstand = 'unbebaut' then flaeche else 0 end as flaeche_unbebaut,
+	    case when bebauungsstand = 'teilweise_bebaut' then flaeche else 0 end as flaeche_teilweise_bebaut,
+		pip
+	from polys;
 
 create index on export.parzellen_basis using gist (geometrie);
 create index on export.parzellen_basis using gist (pip);

@@ -1,6 +1,6 @@
 -- tbd Kommentar
 
--- Zonentyp
+-- Zonenschild aus Zonentyp ableiten (ST_Dump)
 drop table if exists export.zonenschild_dump cascade;
 create table export.zonenschild_dump as
 	select
@@ -14,6 +14,7 @@ create table export.zonenschild_dump as
 
 create index on export.zonenschild_dump using gist (geometrie);
 
+-- Zonenschild-Flächenattribute aus Parzellen ableiten
 drop table if exists export.zonenschild_basis cascade;
 create table export.zonenschild_basis as
 	select
@@ -22,14 +23,12 @@ create table export.zonenschild_basis as
 	    z.typ_kt,
 	    z.typ_bund,
 	    z.bfs_nr,
-	    null::text as bebauungsstand,  -- alternativ: Array -> Modelländerung -> tbd entfernen, nicht benötit!
 	    sum(flaeche) as flaeche,
 	    coalesce(sum(flaeche) filter (where bebauungsstand = 'bebaut'), 0) as flaeche_bebaut,
 	    coalesce(sum(flaeche) filter (where bebauungsstand = 'unbebaut'), 0) as flaeche_unbebaut,
 	    coalesce(sum(flaeche) filter (where bebauungsstand = 'teilweise_bebaut'), 0) as flaeche_teilweise_bebaut
 	from export.zonenschild_dump z
-	join export.parzellen_basis p on st_within(p.pip, z.geometrie)
-	-- tbd: ACHTUNG - Parzellen können MultiPolys sein!!??! -> wir verlieren hier Teile
+	join export.parzellen_basis p on st_intersects(p.pip, z.geometrie)  -- tbd Denkfehler: ein Zonenschild kann kleiner sein als Parzelle, ich darf nicht die ganze Parzelle joinen!
 	group by z.schild_uuid, z.geometrie, z.typ_kt, z.typ_bund, z.bfs_nr
 	;
 
@@ -39,12 +38,12 @@ create index on export.zonenschild_basis using gist (geometrie);
 drop table if exists export.zonenschild_bodenbedeckung cascade;
 create table export.zonenschild_bodenbedeckung as
 	select
-	    --z.bfs_nr,  --tbd: wozu war das hier?
+	    --z.bfs_nr,  --tbd: wozu war das hier? evtl. für Aggregation auf Gemeindebene?
 	    z.schild_uuid,
 	    b.kategorie_text,
 	    sum(b.flaeche_agg) as flaeche_agg
 	from export.zonenschild_basis z
-	join export.parzellen_basis p on st_within(p.pip, z.geometrie)
+	join export.parzellen_basis p on st_intersects(p.pip, z.geometrie)  -- tbd Denkfehler: ein Zonenschild kann kleiner sein als Parzelle, ich darf nicht die ganze Parzelle joinen!
 	join export.parzellen_bodenbedeckung b using (t_ili_tid)
 	group by z.schild_uuid, b.kategorie_text
 	;
@@ -259,7 +258,7 @@ select
 	coalesce(e.flaeche_wohnung_avg,0) as flaeche_wohnung_avg,
 	coalesce(e.flaeche_wohnung_anz_null,0) as flaeche_wohnung_anz_null,
 	coalesce(d.flaeche_gebaeude_anz_null,0) as flaeche_gebaeude_anz_null,
-	b.bodenbedeckungen
+	coalesce(b.bodenbedeckungen, '[]'::jsonb) as bodenbedeckungen  -- eigentlich ein Workaround; sollte nie NULL sein, aber Verschnittfehler in den Ausgangsdaten führen zu Kleinst-Bodenbedeckungen, die wegfallen
 from export.zonenschild_basis a
 left join export.zonenschild_bodenbedeckungen_array b using (schild_uuid)
 left join export.zonenschild_gwr_array c using (schild_uuid)

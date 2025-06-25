@@ -4,14 +4,16 @@
 drop table if exists export.zonentyp_basis cascade;
 create table export.zonentyp_basis as
 	select
-		-- Workaround um duplicate coord Validierungsfehler zu vermeiden
-		ST_SimplifyPreserveTopology(  -- oder ST_RemoveRepeatedPoints?
-			-- Workaround um self intersect Validierungsfehler zu vermeiden (Einschnitte heilen)
-        	st_buffer(
-        		st_buffer(
-        			st_union(geometrie, 0.001), 0.15, 'join=mitre'  -- Buffer ist um 5 cm grösser als MaxInscribedCircle Radius
-        		), -0.15, 'join=mitre'
-        	), 0.01
+		st_union(
+			st_makevalid(
+				ST_ReducePrecision(
+		        	st_buffer(
+		        		st_buffer(
+		        			geometrie, 0.25, 'join=mitre'
+		        		), -0.25, 'join=mitre'
+		        	), 0.001
+		        ), 'method=structure'
+	        ), 0.001
         ) as geometrie,
 	    bfs_nr,
 	    typ_kt,
@@ -239,7 +241,7 @@ select
 	coalesce(e.flaeche_wohnung_avg,0) as flaeche_wohnung_avg,
 	coalesce(e.flaeche_wohnung_anz_null,0) as flaeche_wohnung_anz_null,
 	coalesce(d.flaeche_gebaeude_anz_null,0) as flaeche_gebaeude_anz_null,
-	b.bodenbedeckungen
+	coalesce(b.bodenbedeckungen, '[]'::jsonb) as bodenbedeckungen  -- eigentlich ein Workaround; sollte nie NULL sein, aber Verschnittfehler in den Ausgangsdaten führen zu Kleinst-Bodenbedeckungen, die wegfallen
 from export.zonentyp_basis a
 left join export.zonentyp_bodenbedeckungen_array b using (typ_kt, bfs_nr)
 left join export.zonentyp_gwr_array c using (typ_kt, bfs_nr)
