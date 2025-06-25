@@ -3,7 +3,22 @@ import ch.so.agi.gretl.api.TransferSet
 
 defaultTasks 'publipub'
 
-task exportDataEdit (type: Ili2pgExport) {
+task transferAvGbAdminEinteilungen(type: Db2Db){
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet("transform_nachfuehrngskrise_gemeinde.sql", 'agi_av_gb_admin_einteilung_pub.nachfuehrngskrise_gemeinde', true),
+            new TransferSet("transform_grundbuchkreise_grundbuchkreis.sql", 'agi_av_gb_admin_einteilung_pub.grundbuchkreise_grundbuchkreis', true)
+    ];
+}
+
+task transferDMAV(type: SqlExecutor, dependsOn:'transferAvGbAdminEinteilungen') {
+    description = "baut die Daten in das Schema agi_dmav_untereinheit_grundbuch_v1 um."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["dmav_transfer.sql"]
+}
+
+task exportDataEdit (type: Ili2pgExport, dependsOn:'transferDMAV') {
     description = "Exportiert die Daten dem Schema agi_dmav_untereinheit_grundbuch_v1 in eine INTERLIS-Datei."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'agi_dmav_untereinheit_grundbuch_v1'
@@ -12,7 +27,7 @@ task exportDataEdit (type: Ili2pgExport) {
     disableValidation = true
 }
 
-task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
+task validateDataEdit(type: IliValidator, dependsOn:'exportDataEdit') {
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
     dataFiles = file("ch.so.agi.dmav.relational.untereinheitgrundbuch.xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
@@ -24,7 +39,6 @@ task publiedit(type: Publisher, dependsOn:'validateDataEdit'){
     dataIdent = "ch.so.agi.dmav.relational.untereinheitgrundbuch"
     modelsToPublish = "DMAVSUP_UntereinheitGrundbuch_V1_0"
     userFormats = false
-
     sourcePath = file("ch.so.agi.dmav.relational.untereinheitgrundbuch.xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
@@ -33,22 +47,7 @@ task publiedit(type: Publisher, dependsOn:'validateDataEdit'){
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
 
-task transferAvGbAdminEinteilungen(type: Db2Db, dependsOn:'publiedit'){
-    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
-    transferSets = [
-            new TransferSet("transform_nachfuehrngskrise_gemeinde.sql", 'agi_av_gb_admin_einteilung_pub.nachfuehrngskrise_gemeinde', true),
-            new TransferSet("transform_grundbuchkreise_grundbuchkreis.sql", 'agi_av_gb_admin_einteilung_pub.grundbuchkreise_grundbuchkreis', true)
-    ];
-}
-
-task transferDMAV(type: SqlExecutor, dependsOn:'transferAvGbAdminEinteilungen') {
-    description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_transfer."
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ["dmav_transfer.sql"]
-}
-
-task publipub(type: Publisher, dependsOn:'transferDMAV'){
+task publipub(type: Publisher, dependsOn:'publiedit'){
   dataIdent = "ch.so.agi.av.administrative_einteilung"
   userFormats = true
   database = [dbUriPub,dbUserPub,dbPwdPub]
@@ -61,5 +60,3 @@ task publipub(type: Publisher, dependsOn:'transferDMAV'){
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
   if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
-
-
