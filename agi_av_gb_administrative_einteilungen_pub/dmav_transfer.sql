@@ -6,7 +6,6 @@ DELETE
         agi_dmav_untereinheit_grundbuch_v1.t_ili2db_basket
 ;
 
-
 DELETE
     FROM
         agi_dmav_untereinheit_grundbuch_v1.t_ili2db_dataset
