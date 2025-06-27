@@ -9,17 +9,17 @@ defaultTasks 'unzipData'
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'upload')
 
-def gpkLocation1 = Paths.get(pathToUnzipFolder.toString(), "hang_steillagen_26_2056.gpkg")
-def gpkLocation2 = Paths.get(pathToUnzipFolder.toString(), "hang_steillagen_27_2056.gpkg")
-def gpkLocation3 = Paths.get(pathToUnzipFolder.toString(), "hang_steillagen_31_2056.gpkg")
-def gpkLocation4 = Paths.get(pathToUnzipFolder.toString(), "hang_steillagen_32_2056.gpkg")
+def gpkLocation26 = Paths.get(pathToUnzipFolder.toString(), "hang_steillagen_26_2056.gpkg")
+def gpkLocation27 = Paths.get(pathToUnzipFolder.toString(), "hang_steillagen_27_2056.gpkg")
+def gpkLocation31 = Paths.get(pathToUnzipFolder.toString(), "hang_steillagen_31_2056.gpkg")
+def gpkLocation32 = Paths.get(pathToUnzipFolder.toString(), "hang_steillagen_32_2056.gpkg")
 
 
 def editDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-def stageSchema = "alw_bund_hanglagen_allgemein_v1"
+def stageSchema = "alw_bund_hanglagen_allgemein_v2"
 
 
-task unzipData(type: Copy){
+tasks.register("unzipData", Copy) {
     description = "hang_steillagen.zip."
     doLast {
         println "File unzipped to directory: " + pathToUnzipFolder
@@ -28,48 +28,50 @@ task unzipData(type: Copy){
     into 'upload/'              
     include "**/*.gpkg"
 }
-/*
-task deleteRows(type: SqlExecutor, dependsOn: unzipData){
+
+tasks.register("deleteRows", SqlExecutor) {
+    dependsOn 'unzipData'
     description = 'Leert die Tabellem im Schema edit alw_bund_hanglagen_allgemein_v1*'
     database = editDb
-    sqlFiles = [
-        'hl_allgemein.sql',
-    ]
+    sqlFiles = files('hl_allgemein.sql')
 }
 
-task importHanglagen1(type: GpkgImport, dependsOn: deleteRows){
+tasks.register("importHanglagen26", GpkgImport) {
+    dependsOn 'deleteRows'
     description = 'Importiert die Hanglagen"'
     database = editDb
     schemaName = stageSchema
     srcTableName = "hl_allgemein"
     dstTableName = "hl_allgemein"
-    dataFile = "upload/hang_steillagen_26_2056.gpkg"
+    dataFile = file(gpkLocation26)
 }
 
-task importHanglagen2(type: GpkgImport, dependsOn: importHanglagen1){
+tasks.register("importHanglagen27", GpkgImport) {
+    dependsOn 'importHanglagen26'
     description = 'Importiert die Hanglagen"'
     database = editDb
     schemaName = stageSchema
     srcTableName = "hl_allgemein"
     dstTableName = "hl_allgemein"
-    dataFile = gpkLocation2
+    dataFile = file(gpkLocation27)
 }
 
-task importHanglagen3(type: GpkgImport, dependsOn: importHanglagen2){
+tasks.register("importHanglagen31", GpkgImport) {
+    dependsOn 'importHanglagen27'
     description = 'Importiert die Hanglagen"'
     database = editDb
     schemaName = stageSchema
     srcTableName = "hl_allgemein"
     dstTableName = "hl_allgemein"
-    dataFile = gpkLocation3
+    dataFile = file(gpkLocation31)
 }
 
-task importHanglagen4(type: GpkgImport, dependsOn: importHanglagen3){
+tasks.register("importHanglagen32", GpkgImport) {
+    dependsOn 'importHanglagen32'
     description = 'Importiert die Hanglagen"'
     database = editDb
     schemaName = stageSchema
     srcTableName = "hl_allgemein"
     dstTableName = "hl_allgemein"
-    dataFile = gpkLocation4
+    dataFile = file(gpkLocation32)
 }
-*/
