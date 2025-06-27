@@ -9,10 +9,10 @@ defaultTasks 'unzipData'
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'upload')
 
-def gpkLocation26 = Paths.get(pathToUnzipFolder.toString(), "hang_steillagen_26_2056.gpkg")
-def gpkLocation27 = Paths.get(pathToUnzipFolder.toString(), "hang_steillagen_27_2056.gpkg")
-def gpkLocation31 = Paths.get(pathToUnzipFolder.toString(), "hang_steillagen_31_2056.gpkg")
-def gpkLocation32 = Paths.get(pathToUnzipFolder.toString(), "hang_steillagen_32_2056.gpkg")
+def gpkLocation26 = Paths.get(pathToUnzipFolder.toString(), "hl_allgemein_26_2056.gpkg")
+def gpkLocation27 = Paths.get(pathToUnzipFolder.toString(), "hl_allgemein_27_2056.gpkg")
+def gpkLocation31 = Paths.get(pathToUnzipFolder.toString(), "hl_allgemein_31_2056.gpkg")
+def gpkLocation32 = Paths.get(pathToUnzipFolder.toString(), "hl_allgemein_32_2056.gpkg")
 
 
 def editDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -41,7 +41,7 @@ tasks.register("importHanglagen26", GpkgImport) {
     description = 'Importiert die Hanglagen"'
     database = editDb
     schemaName = stageSchema
-    srcTableName = "hl_allgemein"
+    srcTableName = "hl_allgemein_26_2056"
     dstTableName = "hl_allgemein"
     dataFile = file(gpkLocation26)
 }
@@ -51,7 +51,7 @@ tasks.register("importHanglagen27", GpkgImport) {
     description = 'Importiert die Hanglagen"'
     database = editDb
     schemaName = stageSchema
-    srcTableName = "hl_allgemein"
+    srcTableName = "hl_allgemein_27_2056"
     dstTableName = "hl_allgemein"
     dataFile = file(gpkLocation27)
 }
@@ -61,7 +61,7 @@ tasks.register("importHanglagen31", GpkgImport) {
     description = 'Importiert die Hanglagen"'
     database = editDb
     schemaName = stageSchema
-    srcTableName = "hl_allgemein"
+    srcTableName = "hl_allgemein_31_2056"
     dstTableName = "hl_allgemein"
     dataFile = file(gpkLocation31)
 }
@@ -71,7 +71,7 @@ tasks.register("importHanglagen32", GpkgImport) {
     description = 'Importiert die Hanglagen"'
     database = editDb
     schemaName = stageSchema
-    srcTableName = "hl_allgemein"
+    srcTableName = "hl_allgemein_32_2056"
     dstTableName = "hl_allgemein"
     dataFile = file(gpkLocation32)
 }
