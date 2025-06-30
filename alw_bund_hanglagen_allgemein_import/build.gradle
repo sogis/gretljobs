@@ -24,8 +24,8 @@ tasks.register("unzipData", Copy) {
     doLast {
         println "File unzipped to directory: " + pathToUnzipFolder
     }
-    from "upload/uploadFile"
-    into 'upload/'              
+    from 'upload/'
+    into pathToUnzipFolder
     include "**/*.gpkg"
 }
 
