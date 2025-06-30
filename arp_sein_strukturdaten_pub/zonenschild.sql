@@ -227,8 +227,8 @@ select
 	a.flaeche_teilweise_bebaut,
 	coalesce(d.flaeche_gebaeude,0) as flaeche_gebaeude,  -- wenn Attr alle NULL oder kein Gebäude gejoined: 0
 	coalesce(e.flaeche_wohnungen,0) as flaeche_wohnungen,  -- dito
-	'urban' as handlungsraum,  -- tbd, dummy value
-	'tbd' as gemeindename,  -- tbd, dummy value
+	g2.handlungsraum,
+	g1.gemeindename,
 	a.bfs_nr as gemeindenummer,
     jsonb_build_array(jsonb_build_object(
 	        '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Altersklasse_5j',
@@ -264,4 +264,6 @@ left join export.zonenschild_bodenbedeckungen_array b using (schild_uuid)
 left join export.zonenschild_gwr_array c using (schild_uuid)
 left join export.zonenschild_gwr_geb_agg d using (schild_uuid)
 left join export.zonenschild_gwr_wohn_agg e using (schild_uuid)
-left join export.zonenschild_grundnutzungen_array f using (schild_uuid);
+left join export.zonenschild_grundnutzungen_array f using (schild_uuid)
+left join import.hoheitsgrenzen_gemeindegrenze g1 on a.bfs_nr = g1.bfs_gemeindenummer
+left join import.grundlagen_gemeinde g2 on a.bfs_nr = g2.bfsnr;
