@@ -52,9 +52,9 @@ create table export.parzellen_basis as
 			st_area(geometrie) as flaeche, 
 			ST_PointOnSurface(geometrie) as pip
 	    from import.nutzungsplanung_grundnutzung
-	    where typ_code_kt between 430 and 439  -- Reservezonen
-		and (ST_MaximumInscribedCircle(geometrie)).radius > 0.2
+	    where (ST_MaximumInscribedCircle(geometrie)).radius > 0.2
 		and ST_Area(geometrie) > 0.5
+		--and typ_code_kt between 430 and 439  -- Reservezonen; wird bereits bei Import gefiltert
 		--and bfs_nr in ('2584','2542')  -- tbd remove
 	)
 	select 

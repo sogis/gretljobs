@@ -9,13 +9,13 @@ defaultTasks "exportXtf"
 def tmpDir = buildDir.toString()
 def xtfPath = tmpDir + "/data.xtf"
 
-// Extension aktivieren
+// Extension für die UUID-Erstellung aktivieren (uuid-ossp)
 task createExtension(type: SqlExecutor){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['create_extension.sql']
 }
 
-// Schema für Quelldaten in processing DB anlegen
+// Schema "import" für Quelldaten in processing DB anlegen
 task createImportSchema(type: Ili2pgImportSchema, dependsOn: createExtension){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_AGI_MOpublic_20240711;SO_AGI_GWR_Publikation_20241118;SO_ARP_STATPOP_STATENT_20221114;SO_ARP_Auswertungen_Nutzungsplanung_Publikation_20210126;SO_ARP_Nutzungsplanung_Publikation_20201005;SO_Hoheitsgrenzen_Publikation_20170626;SO_ARP_SEin_Konfiguration_20250115"
@@ -34,7 +34,7 @@ task createImportSchema(type: Ili2pgImportSchema, dependsOn: createExtension){
     smart2Inheritance = true
 }
 
-// Schema für Ausgabedaten in processing DB anlegen
+// Schema "export" für Ausgabedaten in processing DB anlegen
 task createExportSchema(type: Ili2pgImportSchema, dependsOn: createImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_ARP_SEin_Strukturdaten_Publikation_20250407"
@@ -58,13 +58,13 @@ task copyDataFromPub(type: Db2Db, dependsOn: createExportSchema){
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     transferSets = [
-        new TransferSet('bauzonenstatistik_liegenschaft_nach_bebauungsstand.sql', 'import.bauzonenstatistik_liegenschaft_nach_bebauungsstand', true),
-        new TransferSet('nutzungsplanung_grundnutzung.sql', 'import.nutzungsplanung_grundnutzung', true),
-        new TransferSet('mopublic_bodenbedeckung.sql', 'import.mopublic_bodenbedeckung', true),
-        new TransferSet('mopublic_grundstueck.sql', 'import.mopublic_grundstueck', true),
-        new TransferSet('gwr_gebaeude.sql', 'import.gwr_gebaeude', true),
-        new TransferSet('gwr_wohnung.sql', 'import.gwr_wohnung', true),
-        new TransferSet('hoheitsgrenzen_gemeindegrenze.sql', 'import.hoheitsgrenzen_gemeindegrenze', true)
+        new TransferSet('import_to_processing/import_bauzonenstatistik_liegenschaft_nach_bebauungsstand.sql', 'import.bauzonenstatistik_liegenschaft_nach_bebauungsstand', true),
+        new TransferSet('import_to_processing/import_nutzungsplanung_grundnutzung.sql', 'import.nutzungsplanung_grundnutzung', true),
+        new TransferSet('import_to_processing/import_mopublic_bodenbedeckung.sql', 'import.mopublic_bodenbedeckung', true),
+        new TransferSet('import_to_processing/import_mopublic_grundstueck.sql', 'import.mopublic_grundstueck', true),
+        new TransferSet('import_to_processing/import_gwr_gebaeude.sql', 'import.gwr_gebaeude', true),
+        new TransferSet('import_to_processing/import_gwr_wohnung.sql', 'import.gwr_wohnung', true),
+        new TransferSet('import_to_processing/import_hoheitsgrenzen_gemeindegrenze.sql', 'import.hoheitsgrenzen_gemeindegrenze', true)
     ];
 }
 
@@ -73,31 +73,31 @@ task copyDataFromEdit(type: Db2Db, dependsOn: copyDataFromPub){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     transferSets = [
-        new TransferSet('statpop.sql', 'import.statpop_statent_statpop', true),
-        new TransferSet('statent.sql', 'import.statpop_statent_statent', true),
-        new TransferSet('copy_grundlagen_gemeinde.sql', 'import.grundlagen_gemeinde', true)
+        new TransferSet('import_to_processing/import_statpop.sql', 'import.statpop_statent_statpop', true),
+        new TransferSet('import_to_processing/import_statent.sql', 'import.statpop_statent_statent', true),
+        new TransferSet('import_to_processing/import_grundlagen_gemeinde.sql', 'import.grundlagen_gemeinde', true)
     ];
 }
 
-// Führe Berechnungen durch, 4 SQL Dateien, 1 pro Raumeinheit (tbd: in vier Tasks aufteilen)
+// Raumeinheit Parzelle aufbereiten
 task processParzellen(type: SqlExecutor, dependsOn: copyDataFromEdit) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['parzelle.sql']
 }
 
-// Führe Berechnungen durch, 4 SQL Dateien, 1 pro Raumeinheit (tbd: in vier Tasks aufteilen)
+// Raumeinheit Zonentyp aufbereiten
 task processZonentypen(type: SqlExecutor, dependsOn: processParzellen) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['zonentyp.sql']
 }
 
-// Führe Berechnungen durch, 4 SQL Dateien, 1 pro Raumeinheit (tbd: in vier Tasks aufteilen)
+// Raumeinheit Zonenschild aufbereiten
 task processZonenschilde(type: SqlExecutor, dependsOn: processZonentypen) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['zonenschild.sql']
 }
 
-// Führe Berechnungen durch, 4 SQL Dateien, 1 pro Raumeinheit (tbd: in vier Tasks aufteilen)
+// Raumeinheit Gemeinde aufbereiten
 task processGemeinden(type: SqlExecutor, dependsOn: processZonenschilde) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['gemeinde.sql']
@@ -108,14 +108,14 @@ task copyDataFromProcessing(type: Db2Db, dependsOn: processGemeinden){
     sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-        new TransferSet('export_parzelle.sql', 'arp_sein_strukturdaten_pub_v1.parzelle', true),
-        new TransferSet('export_zonentyp.sql', 'arp_sein_strukturdaten_pub_v1.zonentyp', true),
-        new TransferSet('export_zonenschild.sql', 'arp_sein_strukturdaten_pub_v1.zonenschild', true),
-        new TransferSet('export_gemeinde.sql', 'arp_sein_strukturdaten_pub_v1.gemeinde', true)
+        new TransferSet('export_to_pub/export_parzelle.sql', 'arp_sein_strukturdaten_pub_v1.parzelle', true),
+        new TransferSet('export_to_pub/export_zonentyp.sql', 'arp_sein_strukturdaten_pub_v1.zonentyp', true),
+        new TransferSet('export_to_pub/export_zonenschild.sql', 'arp_sein_strukturdaten_pub_v1.zonenschild', true),
+        new TransferSet('export_to_pub/export_gemeinde.sql', 'arp_sein_strukturdaten_pub_v1.gemeinde', true)
     ];
 }
 
-// Ergebnis exportieren
+// Ergebnis als XTF-Datei exportieren
 task exportXtf(type: Ili2pgExport, dependsOn: copyDataFromProcessing){
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = "arp_sein_strukturdaten_pub_v1"
