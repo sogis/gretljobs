@@ -14,7 +14,7 @@ def stageSchema = "alw_bund_hanglagen_allgemein_v2"
 
 
 tasks.register('deleteRows', SqlExecutor) {
-    description = 'Leert die Tabellem im Schema edit alw_bund_hanglagen_allgemein_v1*'
+    description = 'Leert die Tabellem im Schema edit alw_bund_hanglagen_allgemein_v2*'
     database = editDb
     sqlFiles = files('hl_allgemein.sql')
 }
