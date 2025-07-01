@@ -144,6 +144,37 @@ CREATE INDEX ON export.wohnung(t_ili_tid);
 CREATE INDEX ON export.wohnung(typ_kt);
 CREATE INDEX ON export.wohnung(bfs_nr);
 
+-- Join Parzelle x STATPOP
+drop table if exists export.statpop cascade;
+create table export.statpop as
+	select
+	    p.t_ili_tid,
+	    p.typ_kt,
+	    p.bfs_nr,
+	    pop.classagefiveyears
+	from export.parzellen_basis p
+	join import.statpop_statent_statpop pop on st_within(pop.geometrie, p.geometrie)
+	;
+
+CREATE INDEX ON export.statpop(t_ili_tid);
+CREATE INDEX ON export.statpop(typ_kt);
+CREATE INDEX ON export.statpop(bfs_nr);
+
+drop table if exists export.statent cascade;
+create table export.statent as
+	select
+	    p.t_ili_tid,
+	    p.typ_kt,
+	    p.bfs_nr,
+	    ent.empfte
+	from export.parzellen_basis p
+	join import.statpop_statent_statent ent on st_within(ent.geometrie, p.geometrie)
+	;
+
+CREATE INDEX ON export.statent(t_ili_tid);
+CREATE INDEX ON export.statent(typ_kt);
+CREATE INDEX ON export.statent(bfs_nr);
+
 -- AGGREGATIONEN -------------------------------------------------------------------------
 -- GRUNDNUTZUNG: Aggregiert auf Parzellen-Ebene (Array) (faktisch keine Aggregation nötig)
 drop table if exists export.parzellen_grundnutzungen_array cascade;
@@ -283,6 +314,35 @@ create table export.parzellen_gwr_wohn_agg as
 	group by t_ili_tid
 	;
 
+-- STATPOP: Aggregiert auf Parzellen-Ebene (Array)
+drop table if exists export.parzellen_statpop_array cascade;
+create table export.parzellen_statpop_array as
+    SELECT 
+    	t_ili_tid,
+    	sum(anzahl) as popcount,
+    	jsonb_agg(jsonb_build_object(
+	        '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Gebaeudekategorie',
+	        'Kategorie_Id', classagefiveyears,
+	        'Anzahl', anzahl
+		)) altersklassen_5j
+    FROM (
+        SELECT t_ili_tid, classagefiveyears, COUNT(*) as anzahl
+        FROM export.statpop
+        where classagefiveyears is not null
+        GROUP BY t_ili_tid, classagefiveyears
+    ) agg
+   group by t_ili_tid;
+
+ -- STATENT: Aggregiert auf Parzellen-Ebene (Summe)
+drop table if exists export.parzellen_statent_agg cascade;
+create table export.parzellen_statent_agg as
+	select
+		t_ili_tid,
+		sum(empfte) as beschaeftigte_fte
+	from export.statent
+	group by t_ili_tid
+	;
+
 -- FINALE TABELLE BEFÜLLEN (wird in nachgelagertem Task in die pub-db kopiert)
 delete from export.strukturdaten_parzelle;
 insert into export.strukturdaten_parzelle (geometrie, 
@@ -307,16 +367,10 @@ select
 	g2.handlungsraum,
 	g1.gemeindename,
 	a.bfs_nr as gemeindenummer,
-    jsonb_build_array(jsonb_build_object(
-	        '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Altersklasse_5j',
-	        'Kategorie_Id', 99,
-	        'Kategorie_Text', 'tbd',
-	    	'Anzahl', 99
-    	)
-    ) altersklassen_5j,  -- tbd, dummy json object
-	99.99 as beschaeftigte_fte,  -- tbd, dummy value
-	99.99 as raumnutzendendichte,  -- tbd, dummy value
-	99.99 as flaechendichte,  -- tbd, dummy value
+    h.altersklassen_5j,
+	coalesce(i.beschaeftigte_fte,0) as beschaeftigte_fte,
+	coalesce(a.flaeche / (h.popcount + i.beschaeftigte_fte), 0) as raumnutzendendichte,
+	coalesce((h.popcount + i.beschaeftigte_fte) / a.flaeche * 10000, 0) as flaechendichte,
 	grundnutzungen_kanton,
 	grundnutzungen_bund,
 	c.gebaeudekategorien,
@@ -342,5 +396,8 @@ left join export.parzellen_gwr_array c using (t_ili_tid)
 left join export.parzellen_gwr_geb_agg d using (t_ili_tid)
 left join export.parzellen_gwr_wohn_agg e using (t_ili_tid)
 left join export.parzellen_grundnutzungen_array f using (t_ili_tid)
+left join export.parzellen_statpop_array h using (t_ili_tid)
+left join export.parzellen_statent_agg i using (t_ili_tid)
 left join import.hoheitsgrenzen_gemeindegrenze g1 on a.bfs_nr = g1.bfs_gemeindenummer
-left join import.grundlagen_gemeinde g2 on a.bfs_nr = g2.bfsnr;
+left join import.grundlagen_gemeinde g2 on a.bfs_nr = g2.bfsnr
+;
