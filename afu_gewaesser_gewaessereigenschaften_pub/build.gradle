@@ -36,7 +36,7 @@ task publishPub(type: Publisher, dependsOn:updateTxtCols){
 
 task refreshSolr(type:Exec){
     mustRunAfter 'publishPub'
-    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=cch.so.afu.fliessgewaesser.netz'
+    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.fliessgewaesser.netz'
 }
 
 task updateSearchIndex(type: SqlExecutor){
