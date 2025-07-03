@@ -16,7 +16,7 @@ WITH
 small_center AS (
     SELECT 
         root_id as big_id,
-        ST_PointOnSurface(geom) AS centerpoint
+        ST_PointOnSurface(singlepoly) AS centerpoint
     FROM
         public.poly_cleanup 
     WHERE 
@@ -27,11 +27,11 @@ small_center AS (
 ,big_center AS (
     SELECT 
         id AS big_id,
-        ST_PointOnSurface(geom) AS centerpoint
+        ST_PointOnSurface(singlepoly) AS centerpoint
     FROM
         public.poly_cleanup p
     WHERE
-        geom_updated IS TRUE
+        singlepoly_updated IS TRUE
 )
 
 ,big_centermarker AS (
@@ -43,7 +43,7 @@ small_center AS (
                 0.25,
                 1
             )        
-        )).geom AS centerpoint 
+        )).singlepoly AS centerpoint 
     FROM 
         big_center
 )

@@ -6,7 +6,9 @@ WITH
 merged AS ( -- Gemergte neue Fläche der Root-Polygone, in welche andere Polygone aufgelöst werden
     SELECT 
         root_id,
-        ST_Multi(ST_Union(geom)) AS merged_geom
+        ST_Multi(
+            ST_Union(singlepoly) 
+        ) AS merged_poly
     FROM 
         public.poly_cleanup
     WHERE
@@ -15,21 +17,12 @@ merged AS ( -- Gemergte neue Fläche der Root-Polygone, in welche andere Polygon
         root_id
 )
 
-,merged_unary AS ( -- Auflösen interner aneinandergrenzender Parts in den Multipolygonen
-    SELECT 
-        root_id,
-        ST_UnaryUnion(merged_geom) AS merged_geom
-    FROM 
-        merged
-) 
-
-UPDATE -- Aktualisierung der Root-Polygon Geometrie mit der neuen gemergten Geometrie
+UPDATE
     public.poly_cleanup p
 SET 
-    geom = m.merged_geom,
-    geom_updated = TRUE
+    root_merged_poly = m.merged_poly
 FROM 
-    merged_unary m
+    merged m
 WHERE 
     p.id = m.root_id
 ;

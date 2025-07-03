@@ -4,7 +4,7 @@ import ch.so.agi.gretl.tasks.*
 //$td Begriffsharmonisierung Grosspolygone -> Root-Polygon Kleinpolygon -> Gürtel-Polygon/Agglo-Polygon
 
 apply plugin: 'ch.so.agi.gretl'
-defaultTasks '_exportGpkg'
+defaultTasks 'mergeSmallPoly'
 
 task _createTempTables(type: SqlExecutor){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -56,8 +56,9 @@ task mergeSmallPoly(type: SqlExecutor, dependsOn: uniquePathForIdenticalFile){
         'clean_max_diameter':cleanMaxDiameter
     ]
     sqlFiles = files(
-        'smallpoly/create_cleanup_layer.sql'
+        'smallpoly/create_processing_tables.sql'
         ,'smallpoly/copy_from_sourcetable.sql'
+        ,'smallpoly/convert_to_singlepolygon.sql'
         ,'smallpoly/calc_max_diameter.sql'
         ,'smallpoly/set_bigpoly_attr.sql'
         ,"$buildDir/link1/link_to_neighbour.sql"
@@ -67,7 +68,9 @@ task mergeSmallPoly(type: SqlExecutor, dependsOn: uniquePathForIdenticalFile){
         ,'smallpoly/reset_parent_for_root_nodes.sql'
         ,'smallpoly/set_root_id.sql'
         ,'smallpoly/merge_geometries.sql'
-        /* $td
+        ,'smallpoly/res_update_center_polys.sql'
+        ,'smallpoly/res_update_agglo_polys.sql'
+        /*
         ,'smallpoly/update_sourcetable_geom.sql'
         ,'smallpoly/delete_sourcetable_smallpoly.sql'
         */
@@ -96,11 +99,11 @@ task _exportGpkg(type: GpkgExport, dependsOn: _createVerificationTable) {
 
 SELECT 
     c.id, 
-    ST_NumGeometries(c.geom) AS merged_partcount,
+    ST_NumGeometries(c.singlepoly) AS merged_partcount,
     ST_NumGeometries(m.geometrie) AS orig_partcount
 FROM public.poly_cleanup c
 JOIN public.gk_mocklayer m ON c.id = m.t_id 
-WHERE c.geom_updated IS TRUE 
+WHERE c.singlepoly_updated IS TRUE 
 
 ;
 */

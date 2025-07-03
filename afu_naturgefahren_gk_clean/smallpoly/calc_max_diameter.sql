@@ -4,7 +4,7 @@ SET
     g_max_diameter = max_diameter
 FROM (
     SELECT 
-        (ST_MaximumInscribedCircle(geom)).radius * 2 AS max_diameter,
+        (ST_MaximumInscribedCircle(singlepoly)).radius * 2 AS max_diameter,
         id
     FROM 
         public.poly_cleanup

@@ -33,7 +33,7 @@ intersecting AS (
             parent_id IS NOT NULL 
     ) AS linked
     WHERE 
-            ST_Intersects(unlinked.geom, linked.geom)
+            ST_Intersects(unlinked.singlepoly, linked.singlepoly)
         AND 
             unlinked.hazard_level <= linked.hazard_level
 )
