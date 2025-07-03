@@ -84,8 +84,6 @@ map_perimeter_file AS (
 ,('622ed030-ee81-4dea-bbde-7898ee263186','076_Kestenholz_Duennern_2015.pdf')
 ,('933099e2-b62e-4608-bf62-1c3b8ab80924','068_Herbetswil_Duennern_2015.pdf')
 ,('2f67a104-4e87-4ab4-9449-b9a93ee01951','084_Dulliken_Wasser_2022.pdf')
-,('2f67a104-4e87-4ab4-9449-b9a93ee01951','084_Dulliken_Rutsch_2_2006.pdf')
-,('2f67a104-4e87-4ab4-9449-b9a93ee01951','084_Dulliken_Rutsch_1_2006.pdf')
 ,('dce873a7-4713-48cc-9a91-62736ec2065a','106_Stuesslingen_Rutsch_Stein_2009.pdf')
 ,('e376c922-32dc-49ce-82c8-d980ccfd18da','124_Büsserach_Wasser_2005.pdf')
 ,('7e2239e3-329c-45bb-99b6-104f83fcd49c','087_Gretzenbach_Wasser_Rutsch_2021.pdf')
