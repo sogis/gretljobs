@@ -1,5 +1,5 @@
 /*
-Delete der Kleinpolygone, deren Geometrie in ein Grosspolygon aufgelöst wurde
+Delete der Polygone, deren Geometrie in ein Root-Polygon aufgelöst wurde
 */
 DELETE FROM  
     ${sourcetable} o
@@ -11,5 +11,5 @@ IN (
     FROM 
         public.poly_cleanup 
     WHERE 
-        merge_big_id IS NOT NULL 
+        root_id IS NOT NULL 
 );

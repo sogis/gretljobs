@@ -4,11 +4,11 @@ SELECT -- Ausgabe der Zusammenfassung der resultierenden Anzahl merges and "skip
 FROM (
     SELECT 
         id, 
-        CASE WHEN merge_big_id IS NOT NULL THEN 'Merged small polygons:' ELSE 'Skipped small polygons:' END AS operation
+        CASE WHEN parent_id IS NOT NULL THEN 'Merged small polygons:' ELSE 'Skipped small polygons:' END AS operation
     FROM 
        public.poly_cleanup
     WHERE 
-        is_small IS TRUE
+        is_big IS FALSE
 )
 GROUP BY 
     operation

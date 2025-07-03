@@ -1,6 +1,8 @@
 import ch.so.agi.gretl.api.TransferSet
 import ch.so.agi.gretl.tasks.*
 
+//$td Begriffsharmonisierung Grosspolygone -> Root-Polygon Kleinpolygon -> Gürtel-Polygon/Agglo-Polygon
+
 apply plugin: 'ch.so.agi.gretl'
 defaultTasks '_exportGpkg'
 
@@ -8,7 +10,6 @@ task _createTempTables(type: SqlExecutor){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlParameters = [sourcetable:'public.gk_mocklayer']
     sqlFiles = files(
-        '_tmp/_create_gk_mocklayer.sql',
         '_tmp/_create_gk_mocklayer.sql'
     )
 }
@@ -24,7 +25,30 @@ task _copyGK(type: Db2Db, dependsOn: _createTempTables){
     ];
 }
 
-task mergeSmallPoly(type: SqlExecutor, dependsOn: _copyGK){
+// Workaround: Sql-Dateien müssen unterschiedlichen Pfad haben, damit der 
+// SqlExecutor sie ausführt.
+task uniquePathForIdenticalFile(dependsOn: _copyGK) {
+    doLast {
+        copy {
+            from 'smallpoly/link_to_neighbour.sql'
+            into "$buildDir/link1"
+        }
+        copy {
+            from 'smallpoly/link_to_neighbour.sql'
+            into "$buildDir/link2"
+        }
+        copy {
+            from 'smallpoly/link_to_neighbour.sql'
+            into "$buildDir/link3"
+        }
+        copy {
+            from 'smallpoly/link_to_neighbour.sql'
+            into "$buildDir/link4"
+        }
+    }
+}
+
+task mergeSmallPoly(type: SqlExecutor, dependsOn: uniquePathForIdenticalFile){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlParameters = [
         'sourcetable':'public.gk_mocklayer',
@@ -32,12 +56,21 @@ task mergeSmallPoly(type: SqlExecutor, dependsOn: _copyGK){
         'clean_max_diameter':cleanMaxDiameter
     ]
     sqlFiles = files(
-        'smallpoly/create_cleanup_layer.sql',
-        'smallpoly/copy_from_sourcetable.sql',
-        'smallpoly/map_small_to_big.sql',
-        'smallpoly/merge_geometries.sql',
-        'smallpoly/update_sourcetable_geom.sql',
-        'smallpoly/delete_sourcetable_smallpoly.sql'
+        'smallpoly/create_cleanup_layer.sql'
+        ,'smallpoly/copy_from_sourcetable.sql'
+        ,'smallpoly/calc_max_diameter.sql'
+        ,'smallpoly/set_bigpoly_attr.sql'
+        ,"$buildDir/link1/link_to_neighbour.sql"
+        ,"$buildDir/link2/link_to_neighbour.sql"
+        ,"$buildDir/link3/link_to_neighbour.sql"
+        ,"$buildDir/link4/link_to_neighbour.sql"
+        ,'smallpoly/reset_parent_for_root_nodes.sql'
+        ,'smallpoly/set_root_id.sql'
+        ,'smallpoly/merge_geometries.sql'
+        /* $td
+        ,'smallpoly/update_sourcetable_geom.sql'
+        ,'smallpoly/delete_sourcetable_smallpoly.sql'
+        */
     )
 }
 
@@ -60,6 +93,19 @@ task _exportGpkg(type: GpkgExport, dependsOn: _createVerificationTable) {
 }
 
 /*
+
+SELECT 
+    c.id, 
+    ST_NumGeometries(c.geom) AS merged_partcount,
+    ST_NumGeometries(m.geometrie) AS orig_partcount
+FROM public.poly_cleanup c
+JOIN public.gk_mocklayer m ON c.id = m.t_id 
+WHERE c.geom_updated IS TRUE 
+
+;
+*/
+
+/*
 Überführung in produktiven Job:
 Alle nur temporär wichtigen Dateien und Tasks beginnen mit Underline. 
 Sprich alle Dateien und Tasks ohne Underline sind zu übernehmen.
@@ -74,5 +120,5 @@ Lokale Befehle:
 docker compose --profile processing up
 docker compose --profile processing down
 
-GRETL_IMAGE_TAG=3.1 docker compose run --rm -u $UID gretl --project-dir=afu_naturgefahren_gk_clean -PcleanMaxArea=10 -PcleanMaxDiameter=0.5 -PsourceTableName=gefahrengebiet_hauptprozess_sturz
+GRETL_IMAGE_TAG=3.1 docker compose run --rm -u $UID gretl --project-dir=afu_naturgefahren_gk_clean -PcleanMaxArea=10 -PcleanMaxDiameter=0.5 -PsourceTableName=gefahrengebiet_hauptprozess_wasser
 */

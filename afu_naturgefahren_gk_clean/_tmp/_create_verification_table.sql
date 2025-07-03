@@ -12,33 +12,26 @@ CREATE INDEX sidx_verification_geometrie ON public.verification USING gist (geom
 
 WITH 
 
+-- Zentrumspunkt der verschmolzenen Polygone
 small_center AS (
     SELECT 
-        merge_big_id AS big_id,
+        root_id as big_id,
         ST_PointOnSurface(geom) AS centerpoint
     FROM
         public.poly_cleanup 
     WHERE 
-        merge_big_id IS NOT NULL 
+        root_id IS NOT NULL 
 )
 
-,big_center_id AS (
-    SELECT 
-        merge_big_id
-    FROM 
-        public.poly_cleanup 
-    GROUP BY
-        merge_big_id
-)
-
+-- Zentrumspunkt der empfangenden Grosspolygone
 ,big_center AS (
     SELECT 
         id AS big_id,
         ST_PointOnSurface(geom) AS centerpoint
     FROM
         public.poly_cleanup p
-    JOIN
-        big_center_id c ON p.id = c.merge_big_id
+    WHERE
+        geom_updated IS TRUE
 )
 
 ,big_centermarker AS (

@@ -37,5 +37,5 @@ INSERT INTO -- Insert aus Quelle in Verarbeitungstabelle
         ${sourcetable} p
     LEFT JOIN 
         hazard_level_map m ON p.gefahrenstufe = m.l_string 
-    --LIMIT 1000
+    -- LIMIT 1000
 ;
