@@ -16,7 +16,7 @@ index_base AS (
     SELECT
         ${layername}::text AS subclass,
         t_id AS id_in_class,
-        concat('Nr: ',bezeichnung,' (Abbaustelle)') AS displaytext,
+        concat('Name: ',bezeichnung,' (Abbaustelle)') AS displaytext,
         concat(' ',bezeichnung)  AS part_1,
         'Abbaustelle Nr'::text AS part_3,
         (st_asgeojson(st_envelope(mpoly), 0, 1)::json -> 'bbox'::text)::text AS bbox
