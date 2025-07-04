@@ -15,7 +15,7 @@ mpoint AS (
 ,rechtsvorschriften AS (
 SELECT
 	denkmal_id AS denkmal_id,
-	json_agg(json_build_object('Titel', titel, 'Link', dok_download_url, 'Datum', datum, 'Nummer', nummer)) AS dokumente
+	json_agg(json_build_object('Titel', titel, 'Link', dok_download_url, 'Datum', datum, 'Nummer', rrb_jahr_nummer)) AS dokumente
 FROM
 	ada_denkmalschutz_v1.oereb_doclink_v
 GROUP BY
