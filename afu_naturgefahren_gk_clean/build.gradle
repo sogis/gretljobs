@@ -4,7 +4,7 @@ import ch.so.agi.gretl.tasks.*
 //$td Begriffsharmonisierung Grosspolygone -> Root-Polygon Kleinpolygon -> Gürtel-Polygon/Agglo-Polygon
 
 apply plugin: 'ch.so.agi.gretl'
-defaultTasks 'mergeSmallPoly'
+defaultTasks '_exportGpkg'
 
 task _createTempTables(type: SqlExecutor){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -30,19 +30,19 @@ task _copyGK(type: Db2Db, dependsOn: _createTempTables){
 task uniquePathForIdenticalFile(dependsOn: _copyGK) {
     doLast {
         copy {
-            from 'smallpoly/link_to_neighbour.sql'
+            from 'clean/2_merge/link_to_neighbour.sql'
             into "$buildDir/link1"
         }
         copy {
-            from 'smallpoly/link_to_neighbour.sql'
+            from 'clean/2_merge/link_to_neighbour.sql'
             into "$buildDir/link2"
         }
         copy {
-            from 'smallpoly/link_to_neighbour.sql'
+            from 'clean/2_merge/link_to_neighbour.sql'
             into "$buildDir/link3"
         }
         copy {
-            from 'smallpoly/link_to_neighbour.sql'
+            from 'clean/2_merge/link_to_neighbour.sql'
             into "$buildDir/link4"
         }
     }
@@ -56,30 +56,27 @@ task mergeSmallPoly(type: SqlExecutor, dependsOn: uniquePathForIdenticalFile){
         'clean_max_diameter':cleanMaxDiameter
     ]
     sqlFiles = files(
-        'smallpoly/create_processing_tables.sql'
-        ,'smallpoly/copy_from_sourcetable.sql'
-        ,'smallpoly/convert_to_singlepolygon.sql'
-        ,'smallpoly/calc_max_diameter.sql'
-        ,'smallpoly/set_bigpoly_attr.sql'
+        'clean/1_prep/create_processing_tables.sql'
+        ,'clean/1_prep/copy_from_sourcetable.sql'
+        ,'clean/1_prep/convert_to_singlepolygon.sql'
+        ,'clean/1_prep/calc_max_diameter.sql'
+        ,'clean/1_prep/set_bigpoly_attr.sql'
         ,"$buildDir/link1/link_to_neighbour.sql"
         ,"$buildDir/link2/link_to_neighbour.sql"
         ,"$buildDir/link3/link_to_neighbour.sql"
         ,"$buildDir/link4/link_to_neighbour.sql"
-        ,'smallpoly/reset_parent_for_root_nodes.sql'
-        ,'smallpoly/set_root_id.sql'
-        ,'smallpoly/merge_geometries.sql'
-        ,'smallpoly/res_update_center_polys.sql'
-        ,'smallpoly/res_update_agglo_polys.sql'
-        /*
-        ,'smallpoly/update_sourcetable_geom.sql'
-        ,'smallpoly/delete_sourcetable_smallpoly.sql'
-        */
+        ,'clean/2_merge/reset_parent_for_root_nodes.sql'
+        ,'clean/2_merge/set_root_id.sql'
+        ,'clean/2_merge/merge_geometries.sql'
+        ,'clean/3_post/res_update_center_polys.sql'
+        ,'clean/3_post/res_update_small_polys.sql'
+        ,'clean/3_post/apply_clean_to_sourcetable.sql'
     )
 }
 
 task logModifications(type: SqlExecutor, dependsOn: mergeSmallPoly){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('smallpoly/log_modifications.sql')
+    sqlFiles = files('clean/3_post/log_modifications.sql')
 }
 
 task _createVerificationTable(type: SqlExecutor, dependsOn: logModifications){
@@ -87,15 +84,16 @@ task _createVerificationTable(type: SqlExecutor, dependsOn: logModifications){
     sqlFiles = files('_tmp/_create_verification_table.sql')
 }
 
+task _exportGpkg(dependsOn: _createVerificationTable) {}
+
+/*
 task _exportGpkg(type: GpkgExport, dependsOn: _createVerificationTable) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     schemaName = "public"
-    srcTableName = ["poly_cleanup", "verification"]
     dataFile = file("$buildDir/clean_results.gpkg")
+    srcTableName = ["poly_cleanup", "verification"]
     dstTableName = ["poly_cleanup", "verification"]
 }
-
-/*
 
 SELECT 
     c.id, 
@@ -125,3 +123,5 @@ docker compose --profile processing down
 
 GRETL_IMAGE_TAG=3.1 docker compose run --rm -u $UID gretl --project-dir=afu_naturgefahren_gk_clean -PcleanMaxArea=10 -PcleanMaxDiameter=0.5 -PsourceTableName=gefahrengebiet_hauptprozess_wasser
 */
+
+//2:35

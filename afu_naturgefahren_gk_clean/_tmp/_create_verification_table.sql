@@ -15,23 +15,23 @@ WITH
 -- Zentrumspunkt der verschmolzenen Polygone
 small_center AS (
     SELECT 
-        root_id as big_id,
-        ST_PointOnSurface(singlepoly) AS centerpoint
+        id as big_id,
+        ST_PointOnSurface(geometrie) AS centerpoint
     FROM
-        public.poly_cleanup 
+        public.interface_table  
     WHERE 
-        root_id IS NOT NULL 
+        out_small_clean_result = 'complete'
 )
 
 -- Zentrumspunkt der empfangenden Grosspolygone
 ,big_center AS (
     SELECT 
         id AS big_id,
-        ST_PointOnSurface(singlepoly) AS centerpoint
+        ST_PointOnSurface(out_center_geom) AS centerpoint
     FROM
-        public.poly_cleanup p
+        public.interface_table  p
     WHERE
-        singlepoly_updated IS TRUE
+        out_center_geom IS NOT NULL
 )
 
 ,big_centermarker AS (
@@ -43,7 +43,7 @@ small_center AS (
                 0.25,
                 1
             )        
-        )).singlepoly AS centerpoint 
+        )).geom AS centerpoint 
     FROM 
         big_center
 )

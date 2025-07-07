@@ -5,16 +5,16 @@ das Mapping Kleinpolygon -> Kleinpolygon -> Grosspolygon und das Geometrieupdate
 entsprechenden Grosspolygone stattfindet.
 */
 CREATE TABLE public.poly_cleanup (
-    id int4 NOT NULL, -- Generierte ID des Teil-Polygons
-    multipoly_id int4 NOT NULL, -- ID des FEatures in der Quelltabelle. Ueblicherweise die t_id.
+    id int4 NOT NULL, -- Generierte ID des singlepart Polygon
+    multipoly_id_ref int4 NOT NULL, -- Referenz auf ID des Features in der Quelltabelle. Ueblicherweise die t_id.
     singlepoly public.geometry(polygon, 2056) NOT NULL, -- Geometrie des Teil-Polygons nach der Kleinstflaechenbereinigung
     hazard_level int4 NOT NULL, -- Gemappte Gefahrenstufe. Siehe Insert-Sql bezüglich der Mapping-Systematik
     g_area float8 NOT NULL, -- Flaeche des Polygons
     g_max_diameter float8 NULL, -- Durchmesser des groessten in das Polygon einpassbaren Kreises. Wird wegen Performanz nur fuer Polygone mit kleiner Flaeche berechnet.
     is_big bool NOT NULL DEFAULT false, -- Unterscheidung zwischen Gross- und Kleinpolygonen. Berechnet aus g_max_diameter.
-    parent_id int4 NULL, -- Id des unmittelbaren Nachbarpolygons. NULL für Root-Polygone und Klein-Polygone, für die kein Nachbar gefunden wurde.
-    parent_level_diff int4 NULL, -- Unterschied in Gefahrenstufe zum Nachbarpolygon (parent_id). Zwecks Information / Debugging
-    root_id int4 NULL, -- Id des referenzierten Root-Polygon, in welches dieses Kleinpolygon aufgelöst wird. NULL für Root-Polygone und Klein-Polygone, für die kein Merge-Nachbar gefunden wurde.
+    parent_id_ref int4 NULL, -- Id des unmittelbaren Nachbarpolygons. NULL für Root-Polygone und Klein-Polygone, für die kein Nachbar gefunden wurde.
+    parent_level_diff int4 NULL, -- Unterschied in Gefahrenstufe zum Nachbarpolygon (parent_id_ref). Zwecks Information / Debugging
+    root_id_ref int4 NULL, -- Id des referenzierten Root-Polygon, in welches dieses Kleinpolygon aufgelöst wird. NULL für Root-Polygone und Klein-Polygone, für die kein Merge-Nachbar gefunden wurde.
     root_merged_poly public.geometry(multipolygon, 2056) NULL, -- Aus merge mit Kleinstflächen resultierende neue Geometrie der Root-Polygone
     CONSTRAINT poly_cleanup_pkey PRIMARY KEY (id)
 );
@@ -31,8 +31,8 @@ CREATE TABLE public.interface_table (
     id int4 NOT NULL, -- Original-ID. Ueblicherweise die t_id.
     geometrie public.geometry(multipolygon, 2056) NOT NULL, 
     gefahrenstufe varchar(255) NOT NULL,
-    out_center_geom public.geometry(multipolygon, 2056) NULL, 
-    out_agglo_geom public.geometry(multipolygon, 2056) NULL,
-    out_agglo_delete bool NOT NULL DEFAULT FALSE, -- Count der verbleibenden Kleinpolygon-Parts nach dem Merge. Negativer Wert bedeutet: Kein Kleinpolygon
+    out_center_geom public.geometry(multipolygon, 2056) NULL,
+    out_small_clean_result varchar(50) NULL, -- Angabe für Kleinpolygone, ob vollständig (=complete), teilweise (=partial), oder nicht (=not_cleaned) gemerged wurde.
+    out_small_agglo_geom public.geometry(multipolygon, 2056) NULL, -- Neue Kleinspolygon Geometrie bei teilweisem Merge.
     CONSTRAINT multipoly_pkey PRIMARY KEY (id)
 );

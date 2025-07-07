@@ -5,16 +5,18 @@ WITH
 
 merged AS ( -- Gemergte neue Fläche der Root-Polygone, in welche andere Polygone aufgelöst werden
     SELECT 
-        root_id,
+        root_id_ref,
         ST_Multi(
-            ST_Union(singlepoly) 
+            ST_UnaryUnion(
+                    ST_Union(singlepoly)
+            ) 
         ) AS merged_poly
     FROM 
         public.poly_cleanup
     WHERE
-        root_id IS NOT NULL
+        root_id_ref IS NOT NULL
     GROUP BY
-        root_id
+        root_id_ref
 )
 
 UPDATE
@@ -24,5 +26,5 @@ SET
 FROM 
     merged m
 WHERE 
-    p.id = m.root_id
+    p.id = m.root_id_ref
 ;

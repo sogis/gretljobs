@@ -27,7 +27,7 @@ hazard_level_map AS ( -- Zuordnung der gefahrenstufen auf Ganzzahlen. Grössere 
 ,exploded AS (
     SELECT 
         (ST_Dump(geometrie)).geom AS singlepoly,
-        id AS multipoly_id,
+        id AS multipoly_id_ref,
         hazard_level
     FROM 
         mapped 
@@ -36,14 +36,14 @@ hazard_level_map AS ( -- Zuordnung der gefahrenstufen auf Ganzzahlen. Grössere 
 INSERT INTO
     public.poly_cleanup(
         id,
-        multipoly_id,
+        multipoly_id_ref,
         singlepoly,        
         g_area,
         hazard_level
     )
 SELECT
     ROW_NUMBER() OVER() AS id,
-    multipoly_id,
+    multipoly_id_ref,
     singlepoly,
     ST_Area(singlepoly) AS g_area,
     hazard_level

@@ -13,7 +13,7 @@ UPDATE -- Setzen der Attribute der big polygone
     public.poly_cleanup t
 SET 
     is_big = TRUE,
-    parent_id = t.id
+    parent_id_ref = t.id
 FROM
     big_ids b
 WHERE 

@@ -2,27 +2,29 @@ WITH
 
 modified_source__id AS (
     SELECT 
-        multipoly_id
+        multipoly_id_ref
     FROM 
         poly_cleanup 
     WHERE 
         root_merged_poly IS NOT NULL
     GROUP BY 
-        multipoly_id 
+        multipoly_id_ref 
 )
 
 ,merged AS (
     SELECT 
         ST_Multi(
-            ST_Union(p.root_merged_poly)
+            ST_UnaryUnion(
+                ST_Union(p.root_merged_poly)
+            )
         ) AS merged_geom,
-        p.multipoly_id
+        p.multipoly_id_ref
     FROM 
         public.poly_cleanup p
     JOIN 
-        modified_source__id s ON p.multipoly_id = s.multipoly_id
+        modified_source__id s ON p.multipoly_id_ref = s.multipoly_id_ref
     GROUP BY 
-        p.multipoly_id 
+        p.multipoly_id_ref 
 )
 
 UPDATE 
@@ -32,5 +34,5 @@ SET
 FROM 
     merged m 
 WHERE 
-    i.id = m.multipoly_id
+    i.id = m.multipoly_id_ref
 ;
