@@ -56,20 +56,20 @@ task mergeSmallPoly(type: SqlExecutor, dependsOn: uniquePathForIdenticalFile){
         'clean_max_diameter':cleanMaxDiameter
     ]
     sqlFiles = files(
-        'smallpoly/create_cleanup_layer.sql'
-        ,'smallpoly/copy_from_sourcetable.sql'
-        ,'smallpoly/calc_max_diameter.sql'
-        ,'smallpoly/set_bigpoly_attr.sql'
+        'clean/1_prep/create_cleanup_layer.sql'
+        ,'clean/1_prep/copy_from_sourcetable.sql'
+        ,'clean/1_prep/calc_max_diameter.sql'
+        ,'clean/1_prep/set_bigpoly_attr.sql'
         ,"$buildDir/link1/link_to_neighbour.sql"
         ,"$buildDir/link2/link_to_neighbour.sql"
         ,"$buildDir/link3/link_to_neighbour.sql"
         ,"$buildDir/link4/link_to_neighbour.sql"
-        ,'smallpoly/reset_parent_for_root_nodes.sql'
-        ,'smallpoly/set_root_id.sql'
-        ,'smallpoly/merge_geometries.sql'
+        ,'clean/2_merge/reset_parent_for_root_nodes.sql'
+        ,'clean/2_merge/set_root_id.sql'
+        ,'clean/2_merge/merge_geometries.sql'
         /* $td
-        ,'smallpoly/update_sourcetable_geom.sql'
-        ,'smallpoly/delete_sourcetable_smallpoly.sql'
+        ,'clean/3_post/update_sourcetable_geom.sql'
+        ,'clean/3_post/delete_sourcetable_smallpoly.sql'
         */
     )
 }
