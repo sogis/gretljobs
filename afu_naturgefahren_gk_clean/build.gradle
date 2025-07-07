@@ -4,7 +4,7 @@ import ch.so.agi.gretl.tasks.*
 //$td Begriffsharmonisierung Grosspolygone -> Root-Polygon Kleinpolygon -> Gürtel-Polygon/Agglo-Polygon
 
 apply plugin: 'ch.so.agi.gretl'
-defaultTasks '_last' //$td
+defaultTasks '_exportGpkg'
 
 task _createTempTables(type: SqlExecutor){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -60,24 +60,19 @@ task mergeSmallPoly(type: SqlExecutor, dependsOn: uniquePathForIdenticalFile){
         ,'clean/1_prep/copy_from_sourcetable.sql'
         ,'clean/1_prep/calc_haz_level.sql'
         ,'clean/1_prep/calc_isbig.sql'
-        ,'clean/1_prep/set_bigpoly_parent.sql'
-        /*
+        ,'clean/1_prep/set_bigpolys_as_roots.sql'
         ,"$buildDir/link1/link_to_neighbour.sql"
+        /*
         ,"$buildDir/link2/link_to_neighbour.sql"
         ,"$buildDir/link3/link_to_neighbour.sql"
         ,"$buildDir/link4/link_to_neighbour.sql"
-        ,'clean/2_merge/reset_parent_for_root_nodes.sql'
+        */
         ,'clean/2_merge/set_root_id.sql'
         ,'clean/2_merge/merge_geometries.sql'
-        */
-        /* $td
         ,'clean/3_post/update_sourcetable_geom.sql'
         ,'clean/3_post/delete_sourcetable_smallpoly.sql'
-        */
     )
 }
-
-task _last(dependsOn: mergeSmallPoly){}
 
 task logModifications(type: SqlExecutor, dependsOn: mergeSmallPoly){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -95,23 +90,10 @@ task _exportGpkg(type: GpkgExport, dependsOn: _createVerificationTable) {
     }
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     schemaName = "public"
-    srcTableName = ["poly_cleanup", "verification"]
+    srcTableName = ["poly_cleanup_v", "verification"]
     dataFile = file("$buildDir/clean_results.gpkg")
     dstTableName = ["poly_cleanup", "verification"]
 }
-
-/*
-
-SELECT 
-    c.id, 
-    ST_NumGeometries(c.geom) AS merged_partcount,
-    ST_NumGeometries(m.geometrie) AS orig_partcount
-FROM public.poly_cleanup c
-JOIN public.gk_mocklayer m ON c.id = m.t_id 
-WHERE c.geom_updated IS TRUE 
-
-;
-*/
 
 /*
 Überführung in produktiven Job:

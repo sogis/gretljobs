@@ -1,4 +1,4 @@
-DELETE FROM ${sourcetable}
+DELETE FROM public.poly_cleanup
 ;
 
 INSERT INTO -- Insert aus Quelle in Verarbeitungstabelle
@@ -13,5 +13,5 @@ INSERT INTO -- Insert aus Quelle in Verarbeitungstabelle
         geometrie
     FROM 
         ${sourcetable}
-    LIMIT 1000 -- $td
+    --LIMIT 1000 -- $td
 ;

@@ -11,5 +11,7 @@ IN (
     FROM 
         public.poly_cleanup 
     WHERE 
-        _root_id_ref IS NOT NULL 
+            _is_big IS FALSE
+        AND
+            _parent_id_ref IS NOT NULL 
 );

@@ -1,3 +1,4 @@
+DROP VIEW IF EXISTS public.poly_cleanup_v;
 DROP TABLE IF EXISTS public.poly_cleanup;
 /* 
 Zentrale Bearbeitungstabelle, in welcher die Unterscheidung Gross-Kleinpolgon, 
@@ -16,11 +17,24 @@ CREATE TABLE public.poly_cleanup (
     _parent_level_diff int4 NULL, -- Unterschied in Gefahrenstufe zum Nachbarpolygon (_parent_id_ref). Zwecks Information / Debugging
     _root_id_ref int4 NULL, -- Id des referenzierten Root-Polygon, in welches dieses Kleinpolygon aufgelöst wird. NULL für Root-Polygone und Klein-Polygone, für die kein Merge-Nachbar gefunden wurde.
     --_root_level_diff int4 NULL, -- Unterschied in Gefahrenstufe zum Root-Polygon. Zwecks Information / Debugging
+    _node_position int4 NULL, -- Ab den Root-Nodes hochzählender Identifikator der Node-Generation.
     
     CONSTRAINT poly_cleanup_pkey PRIMARY KEY (id)
 );
 CREATE INDEX sidx_poly_cleanup_geom ON public.poly_cleanup USING gist (geometrie);
 
-DROP VIEW IF EXISTS public.poly_cleanup_v;
-
---CREATE VIEW public.poly_cleanup_v AS
+CREATE VIEW public.poly_cleanup_v AS
+SELECT 
+    id, 
+    COALESCE(_center_geom, geometrie) AS geometrie,
+    (_center_geom IS NOT NULL) AS geometrie_aktualisiert,
+    gefahrenstufe, 
+    _hazard_level,
+    _is_big,
+    _parent_id_ref,
+    _parent_level_diff,
+    _root_id_ref,
+    _node_position
+FROM 
+    public.poly_cleanup
+;

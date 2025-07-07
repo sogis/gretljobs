@@ -20,18 +20,18 @@ small_center AS (
     FROM
         public.poly_cleanup 
     WHERE 
-        _root_id_ref IS NOT NULL 
+        _is_big IS FALSE AND _parent_id_ref IS NOT NULL
 )
 
 -- Zentrumspunkt der empfangenden Grosspolygone
 ,big_center AS (
     SELECT 
         id AS big_id,
-        ST_PointOnSurface(geometrie) AS centerpoint
+        ST_PointOnSurface(_center_geom) AS centerpoint
     FROM
         public.poly_cleanup p
     WHERE
-        _center_geom IS NOT NULL
+        _is_big IS TRUE AND _center_geom IS NOT NULL
 )
 
 ,big_centermarker AS (
@@ -43,7 +43,7 @@ small_center AS (
                 0.25,
                 1
             )        
-        )).geometrie AS centerpoint 
+        )).geom AS centerpoint 
     FROM 
         big_center
 )

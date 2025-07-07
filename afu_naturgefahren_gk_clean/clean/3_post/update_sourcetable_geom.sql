@@ -4,7 +4,7 @@ Update der Geometrie der Grosspolygone in der Quelltabelle, sofern in sie Kleinp
 UPDATE 
     ${sourcetable} o
 SET 
-    geometrie = c.geometrie
+    geometrie = c._center_geom
 FROM
     public.poly_cleanup c
 WHERE 
