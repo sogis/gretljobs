@@ -76,7 +76,7 @@ task mergeSmallPoly(type: SqlExecutor, dependsOn: uniquePathForIdenticalFile){
 
 task logModifications(type: SqlExecutor, dependsOn: mergeSmallPoly){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('smallpoly/log_modifications.sql')
+    sqlFiles = files('clean/3_post/log_modifications.sql')
 }
 
 task _createVerificationTable(type: SqlExecutor, dependsOn: logModifications){
@@ -85,6 +85,9 @@ task _createVerificationTable(type: SqlExecutor, dependsOn: logModifications){
 }
 
 task _exportGpkg(type: GpkgExport, dependsOn: _createVerificationTable) {
+    doFirst{
+        delete(file("$buildDir/clean_results.gpkg"))
+    }
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     schemaName = "public"
     srcTableName = ["poly_cleanup", "verification"]
