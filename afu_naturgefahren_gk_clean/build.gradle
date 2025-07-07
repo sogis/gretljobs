@@ -4,7 +4,7 @@ import ch.so.agi.gretl.tasks.*
 //$td Begriffsharmonisierung Grosspolygone -> Root-Polygon Kleinpolygon -> Gürtel-Polygon/Agglo-Polygon
 
 apply plugin: 'ch.so.agi.gretl'
-defaultTasks '_exportGpkg'
+defaultTasks '_last' //$td
 
 task _createTempTables(type: SqlExecutor){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -30,19 +30,19 @@ task _copyGK(type: Db2Db, dependsOn: _createTempTables){
 task uniquePathForIdenticalFile(dependsOn: _copyGK) {
     doLast {
         copy {
-            from 'smallpoly/link_to_neighbour.sql'
+            from 'clean/2_merge/link_to_neighbour.sql'
             into "$buildDir/link1"
         }
         copy {
-            from 'smallpoly/link_to_neighbour.sql'
+            from 'clean/2_merge/link_to_neighbour.sql'
             into "$buildDir/link2"
         }
         copy {
-            from 'smallpoly/link_to_neighbour.sql'
+            from 'clean/2_merge/link_to_neighbour.sql'
             into "$buildDir/link3"
         }
         copy {
-            from 'smallpoly/link_to_neighbour.sql'
+            from 'clean/2_merge/link_to_neighbour.sql'
             into "$buildDir/link4"
         }
     }
@@ -58,8 +58,10 @@ task mergeSmallPoly(type: SqlExecutor, dependsOn: uniquePathForIdenticalFile){
     sqlFiles = files(
         'clean/1_prep/create_cleanup_layer.sql'
         ,'clean/1_prep/copy_from_sourcetable.sql'
-        ,'clean/1_prep/calc_max_diameter.sql'
-        ,'clean/1_prep/set_bigpoly_attr.sql'
+        ,'clean/1_prep/calc_haz_level.sql'
+        ,'clean/1_prep/calc_isbig.sql'
+        ,'clean/1_prep/set_bigpoly_parent.sql'
+        /*
         ,"$buildDir/link1/link_to_neighbour.sql"
         ,"$buildDir/link2/link_to_neighbour.sql"
         ,"$buildDir/link3/link_to_neighbour.sql"
@@ -67,12 +69,15 @@ task mergeSmallPoly(type: SqlExecutor, dependsOn: uniquePathForIdenticalFile){
         ,'clean/2_merge/reset_parent_for_root_nodes.sql'
         ,'clean/2_merge/set_root_id.sql'
         ,'clean/2_merge/merge_geometries.sql'
+        */
         /* $td
         ,'clean/3_post/update_sourcetable_geom.sql'
         ,'clean/3_post/delete_sourcetable_smallpoly.sql'
         */
     )
 }
+
+task _last(dependsOn: mergeSmallPoly){}
 
 task logModifications(type: SqlExecutor, dependsOn: mergeSmallPoly){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]

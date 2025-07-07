@@ -11,5 +11,5 @@ IN (
     FROM 
         public.poly_cleanup 
     WHERE 
-        root_id IS NOT NULL 
+        _root_id_ref IS NOT NULL 
 );

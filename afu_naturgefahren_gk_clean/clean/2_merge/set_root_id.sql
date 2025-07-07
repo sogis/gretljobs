@@ -1,43 +1,43 @@
 /*
-Über parent_id und id ist der Bezug eines leafnodes-polygon auf das unmittelbare 
+Über _parent_id_ref und id ist der Bezug eines leafnodes-polygon auf das unmittelbare 
 parentnode-polygon gegeben.
-Dieses Query setzt für alle nodes inkl. der root nodes die root_id
+Dieses Query setzt für alle nodes inkl. der root nodes die _root_id_ref
 */
 
 -- Gibt für jeden node die id des root-nodes aus. 
--- Für die root-nodes ist parent_id NULL
+-- Für die root-nodes ist _parent_id_ref NULL
 WITH 
 
 RECURSIVE node_parent_root_map AS (
     SELECT
         id,
-        parent_id,
-        id AS root_id
+        _parent_id_ref,
+        id AS _root_id_ref
     FROM 
         poly_cleanup
     WHERE 
-        parent_id IS NULL  -- Root nodes
+        _parent_id_ref IS NULL  -- Root nodes
 
     UNION ALL
 
     SELECT
         n.id,
-        n.parent_id,
-        r.root_id
+        n._parent_id_ref,
+        r._root_id_ref
     FROM 
         poly_cleanup n
     JOIN 
-        node_parent_root_map r ON n.parent_id = r.id
+        node_parent_root_map r ON n._parent_id_ref = r.id
 )
 
 UPDATE 
     poly_cleanup p
 SET 
-    root_id = r.root_id
+    _root_id_ref = r._root_id_ref
 FROM 
     node_parent_root_map r
 WHERE 
         p.id = r.id
     AND
-        p.parent_id IS NOT NULL
+        p._parent_id_ref IS NOT NULL
 ;

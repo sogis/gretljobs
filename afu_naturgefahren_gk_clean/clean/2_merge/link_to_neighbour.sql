@@ -1,20 +1,20 @@
 /*
-Verknüpft alle Polygone ohne parent_id mit Nachbarn mit parent_id.
-Vorbedingung der ersten Ausführung dieses SQL ist, dass für die Grosspolygone die parent_id gesetzt (<> NULL) ist
+Verknüpft alle Polygone ohne _parent_id_ref mit Nachbarn mit _parent_id_ref.
+Vorbedingung der ersten Ausführung dieses SQL ist, dass für die Grosspolygone die _parent_id_ref gesetzt (<> NULL) ist
 Das sql kann mehr als einmal ausgeführt werden, um schrittweise auch weiter von den Grosspolygonen entfernte Kleinpolygone
 zu verknüpfen.
 */
 
 WITH 
 intersecting AS ( 
-    -- INTERSECT aller Polygone ohne parent_id mit allen Polygonen mit parent_id.
+    -- INTERSECT aller Polygone ohne _parent_id_ref mit allen Polygonen mit _parent_id_ref.
     -- Berücksichtigt die zulässigen Gefahrenstufen-Unterschiede (Auflösen in kleinere Gefahrenstufe verboten).
     -- merge_rank ist klein bei kleinem Unterschied der Gefahrenstufen unlinked - linked
     SELECT 
         unlinked.id AS unlinked_id,
         linked.id AS linked_id,
-        linked.hazard_level - unlinked.hazard_level AS parent_level_diff,
-        ROW_NUMBER() OVER (PARTITION BY unlinked.id ORDER BY linked.hazard_level - unlinked.hazard_level ASC) AS merge_rank
+        linked._hazard_level - unlinked._hazard_level AS _parent_level_diff,
+        ROW_NUMBER() OVER (PARTITION BY unlinked.id ORDER BY linked._hazard_level - unlinked._hazard_level ASC) AS merge_rank
     FROM 
     (
         SELECT 
@@ -22,7 +22,7 @@ intersecting AS (
         FROM 
             public.poly_cleanup 
         WHERE
-            parent_id IS NULL 
+            _parent_id_ref IS NULL 
     ) AS unlinked
     ,(
         SELECT 
@@ -30,19 +30,19 @@ intersecting AS (
         FROM 
             public.poly_cleanup 
         WHERE
-            parent_id IS NOT NULL 
+            _parent_id_ref IS NOT NULL 
     ) AS linked
     WHERE 
-            ST_Intersects(unlinked.geom, linked.geom)
+            ST_Intersects(unlinked.geometrie, linked.geometrie)
         AND 
-            unlinked.hazard_level <= linked.hazard_level
+            unlinked._hazard_level <= linked._hazard_level
 )
 
-UPDATE -- Setzen der parent_id für die bisher "unlinked" Polygone
+UPDATE -- Setzen der _parent_id_ref für die bisher "unlinked" Polygone
     public.poly_cleanup t
 SET 
-    parent_id = i.linked_id,
-    parent_level_diff = i.parent_level_diff
+    _parent_id_ref = i.linked_id,
+    _parent_level_diff = i._parent_level_diff
 FROM 
     intersecting i
 WHERE 

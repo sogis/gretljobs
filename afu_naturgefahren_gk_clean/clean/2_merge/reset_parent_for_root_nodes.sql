@@ -3,7 +3,7 @@
 UPDATE 
     poly_cleanup 
 SET 
-    parent_id = NULL 
+    _parent_id_ref = NULL 
 WHERE 
-    parent_id = id
+    _parent_id_ref = id
 ;
