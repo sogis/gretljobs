@@ -328,7 +328,7 @@ Die Flächen werden nun gemäss ihrer Priorisierung verschnitten. Die Fläche mi
 ,teilprozess_permanentrutschung AS ( 
     SELECT 
        'permanente_rutschung' AS teilprozess,
-        '-1' AS jaehrlichkeit,
+        null AS jaehrlichkeit,
         (string_to_array(iwcode, '_'))[2] AS intensitaet,
         geometrie, 
         CASE WHEN 
