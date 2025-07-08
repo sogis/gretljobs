@@ -314,14 +314,14 @@ create table export.parzellen_gwr_wohn_agg as
 	group by t_ili_tid
 	;
 
--- STATPOP: Aggregiert auf Parzellen-Ebene (Array)
+-- STATPOP: Aggregiert auf Parzellen-Ebene (Arrays)
 drop table if exists export.parzellen_statpop_array cascade;
 create table export.parzellen_statpop_array as
     SELECT 
     	t_ili_tid,
     	sum(anzahl) as popcount,
     	jsonb_agg(jsonb_build_object(
-	        '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Gebaeudekategorie',
+	        '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Altersklasse_5j',
 	        'Kategorie_Id', classagefiveyears,
 	        'Anzahl', anzahl
 		)) altersklassen_5j
@@ -333,7 +333,7 @@ create table export.parzellen_statpop_array as
     ) agg
    group by t_ili_tid;
 
- -- STATENT: Aggregiert auf Parzellen-Ebene (Summe)
+ -- STATENT: Aggregiert auf Parzellen-Ebene (Summen und Anzahlen)
 drop table if exists export.parzellen_statent_agg cascade;
 create table export.parzellen_statent_agg as
 	select
