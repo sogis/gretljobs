@@ -1,6 +1,8 @@
 import ch.so.agi.gretl.api.TransferSet
 import ch.so.agi.gretl.tasks.*
 
+//$td Begriffsharmonisierung Grosspolygone -> Root-Polygon Kleinpolygon -> Gürtel-Polygon/Agglo-Polygon
+
 apply plugin: 'ch.so.agi.gretl'
 defaultTasks '_exportGpkg'
 
@@ -8,7 +10,6 @@ task _createTempTables(type: SqlExecutor){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlParameters = [sourcetable:'public.gk_mocklayer']
     sqlFiles = files(
-        '_tmp/_create_gk_mocklayer.sql',
         '_tmp/_create_gk_mocklayer.sql'
     )
 }
@@ -24,7 +25,30 @@ task _copyGK(type: Db2Db, dependsOn: _createTempTables){
     ];
 }
 
-task mergeSmallPoly(type: SqlExecutor, dependsOn: _copyGK){
+// Workaround: Sql-Dateien müssen unterschiedlichen Pfad haben, damit der 
+// SqlExecutor sie ausführt.
+task uniquePathForIdenticalFile(dependsOn: _copyGK) {
+    doLast {
+        copy {
+            from 'clean/2_merge/link_to_neighbour.sql'
+            into "$buildDir/link1"
+        }
+        copy {
+            from 'clean/2_merge/link_to_neighbour.sql'
+            into "$buildDir/link2"
+        }
+        copy {
+            from 'clean/2_merge/link_to_neighbour.sql'
+            into "$buildDir/link3"
+        }
+        copy {
+            from 'clean/2_merge/link_to_neighbour.sql'
+            into "$buildDir/link4"
+        }
+    }
+}
+
+task mergeSmallPoly(type: SqlExecutor, dependsOn: uniquePathForIdenticalFile){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlParameters = [
         'sourcetable':'public.gk_mocklayer',
@@ -32,18 +56,25 @@ task mergeSmallPoly(type: SqlExecutor, dependsOn: _copyGK){
         'clean_max_diameter':cleanMaxDiameter
     ]
     sqlFiles = files(
-        'smallpoly/create_cleanup_layer.sql',
-        'smallpoly/copy_from_sourcetable.sql',
-        'smallpoly/map_small_to_big.sql',
-        'smallpoly/merge_geometries.sql',
-        'smallpoly/update_sourcetable_geom.sql',
-        'smallpoly/delete_sourcetable_smallpoly.sql'
+        'clean/1_prep/create_cleanup_layer.sql'
+        ,'clean/1_prep/copy_from_sourcetable.sql'
+        ,'clean/1_prep/calc_haz_level.sql'
+        ,'clean/1_prep/calc_isbig.sql'
+        ,'clean/1_prep/set_bigpolys_as_roots.sql'
+        ,"$buildDir/link1/link_to_neighbour.sql"
+        ,"$buildDir/link2/link_to_neighbour.sql"
+        ,"$buildDir/link3/link_to_neighbour.sql"
+        ,"$buildDir/link4/link_to_neighbour.sql"
+        ,'clean/2_merge/set_root_id.sql'
+        ,'clean/2_merge/merge_geometries.sql'
+        ,'clean/3_post/update_sourcetable_geom.sql'
+        ,'clean/3_post/delete_sourcetable_smallpoly.sql'
     )
 }
 
 task logModifications(type: SqlExecutor, dependsOn: mergeSmallPoly){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('smallpoly/log_modifications.sql')
+    sqlFiles = files('clean/3_post/log_modifications.sql')
 }
 
 task _createVerificationTable(type: SqlExecutor, dependsOn: logModifications){
@@ -52,9 +83,12 @@ task _createVerificationTable(type: SqlExecutor, dependsOn: logModifications){
 }
 
 task _exportGpkg(type: GpkgExport, dependsOn: _createVerificationTable) {
+    doFirst{
+        delete(file("$buildDir/clean_results.gpkg"))
+    }
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     schemaName = "public"
-    srcTableName = ["poly_cleanup", "verification"]
+    srcTableName = ["poly_cleanup_v", "verification"]
     dataFile = file("$buildDir/clean_results.gpkg")
     dstTableName = ["poly_cleanup", "verification"]
 }
@@ -74,5 +108,5 @@ Lokale Befehle:
 docker compose --profile processing up
 docker compose --profile processing down
 
-GRETL_IMAGE_TAG=3.1 docker compose run --rm -u $UID gretl --project-dir=afu_naturgefahren_gk_clean -PcleanMaxArea=10 -PcleanMaxDiameter=0.5 -PsourceTableName=gefahrengebiet_hauptprozess_sturz
+GRETL_IMAGE_TAG=3.1 docker compose run --rm -u $UID gretl --project-dir=afu_naturgefahren_gk_clean -PcleanMaxArea=10 -PcleanMaxDiameter=0.5 -PsourceTableName=gefahrengebiet_hauptprozess_wasser
 */
