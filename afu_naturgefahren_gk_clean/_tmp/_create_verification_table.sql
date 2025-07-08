@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS public.verification
 CREATE TABLE public.verification (
     source_t_id int4 NOT NULL,
     geometrie public.geometry(multipoint, 2056) NOT NULL,
+    num_merged_smallpolys int4 NOT NULL,
     CONSTRAINT verification_pk PRIMARY KEY (source_t_id)
 )
 ;
@@ -50,11 +51,13 @@ small_center AS (
 
 INSERT INTO public.verification(
    source_t_id,
-   geometrie
+   geometrie,
+   num_merged_smallpolys
 )
 SELECT
     big_id AS source_t_id,
-    ST_COLLECT(centerpoint) AS geometrie
+    ST_COLLECT(centerpoint) AS geometrie,
+    count(*) - 5 AS num_merged_smallpolys
 FROM (
     SELECT big_id, centerpoint FROM small_center
     UNION ALL 
