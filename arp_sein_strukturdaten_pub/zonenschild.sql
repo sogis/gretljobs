@@ -207,6 +207,61 @@ create table export.zonenschild_gwr_wohn_agg as
 	group by schild_uuid
 	;
 
+-- STATPOP/STATENT Daten mit Zonenschild-ID anreichern
+drop table if exists export.zonenschild_basis_statpop cascade;
+create table export.zonenschild_basis_statpop as
+	select pop.*, z.schild_uuid
+	from export.statpop pop
+	join export.zonenschild_basis z on st_within(pop.geometrie, z.geometrie)
+	;
+create index on export.zonenschild_basis_statpop using gist (geometrie);
+CREATE INDEX ON export.zonenschild_basis_statpop(schild_uuid);
+
+drop table if exists export.zonenschild_basis_statent cascade;
+create table export.zonenschild_basis_statent as
+	select ent.*, z.schild_uuid
+	from export.statent ent
+	join export.zonenschild_basis z on st_within(ent.geometrie, z.geometrie)
+	;
+create index on export.zonenschild_basis_statent using gist (geometrie);
+CREATE INDEX ON export.zonenschild_basis_statent(schild_uuid);
+
+-- STATPOP: Aggregiert auf Zonenschild-Ebene (Arrays)
+drop table if exists export.zonenschild_statpop_array cascade;
+create table export.zonenschild_statpop_array as
+    SELECT 
+		schild_uuid,
+    	sum(anzahl) as popcount,
+    	jsonb_agg(jsonb_build_object(
+	        '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Altersklasse_5j',
+	        'Kategorie_Id', classagefiveyears,
+			'Kategorie_Text', 
+				case 
+					when classagefiveyears between 0 and 110 then concat(classagefiveyears, '-', classagefiveyears + 4, ' Jahre')
+					when classagefiveyears = 115 then '115+ Jahre'
+				end
+			,
+	        'Anzahl', anzahl
+		)) altersklassen_5j
+    FROM (
+        SELECT schild_uuid, classagefiveyears, COUNT(*) as anzahl
+        FROM export.zonenschild_basis_statpop
+        where classagefiveyears is not null
+        GROUP BY schild_uuid, classagefiveyears
+    ) agg
+    GROUP BY schild_uuid
+    ;
+
+-- STATENT: Aggregiert auf Zonenschild-Ebene (Summen und Anzahlen)
+drop table if exists export.zonenschild_statent_agg cascade;
+create table export.zonenschild_statent_agg as
+	select
+		schild_uuid,
+		sum(empfte) as beschaeftigte_fte
+	from export.zonenschild_basis_statent
+	GROUP BY schild_uuid
+	;
+
 delete from export.strukturdaten_zonenschild;
 insert into export.strukturdaten_zonenschild (geometrie, 
 	flaeche, flaeche_bebaut, flaeche_unbebaut, flaeche_teilweise_bebaut, flaeche_gebaeude, flaeche_wohnungen, 
@@ -230,16 +285,10 @@ select
 	g2.handlungsraum,
 	g1.gemeindename,
 	a.bfs_nr as gemeindenummer,
-    jsonb_build_array(jsonb_build_object(
-	        '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Altersklasse_5j',
-	        'Kategorie_Id', 99,
-	        'Kategorie_Text', 'tbd',
-	    	'Anzahl', 99
-    	)
-    ) altersklassen_5j,  -- tbd, dummy json object
-	99.99 as beschaeftigte_fte,  -- tbd, dummy value
-	99.99 as raumnutzendendichte,  -- tbd, dummy value
-	99.99 as flaechendichte,  -- tbd, dummy value
+    h.altersklassen_5j,
+	coalesce(i.beschaeftigte_fte,0) as beschaeftigte_fte,
+	coalesce(a.flaeche / (h.popcount + i.beschaeftigte_fte), 0) as raumnutzendendichte,
+	coalesce((h.popcount + i.beschaeftigte_fte) / a.flaeche * 10000, 0) as flaechendichte,
 	grundnutzungen_kanton,
 	grundnutzungen_bund,
 	c.gebaeudekategorien,
@@ -265,5 +314,8 @@ left join export.zonenschild_gwr_array c using (schild_uuid)
 left join export.zonenschild_gwr_geb_agg d using (schild_uuid)
 left join export.zonenschild_gwr_wohn_agg e using (schild_uuid)
 left join export.zonenschild_grundnutzungen_array f using (schild_uuid)
+left join export.zonenschild_statpop_array h using (schild_uuid)
+left join export.zonenschild_statent_agg i using (schild_uuid)
 left join import.hoheitsgrenzen_gemeindegrenze g1 on a.bfs_nr = g1.bfs_gemeindenummer
-left join import.grundlagen_gemeinde g2 on a.bfs_nr = g2.bfsnr;
+left join import.grundlagen_gemeinde g2 on a.bfs_nr = g2.bfsnr
+;

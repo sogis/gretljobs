@@ -190,6 +190,44 @@ create table export.zonentyp_gwr_wohn_agg as
 	group by typ_kt, bfs_nr
 	;
 
+-- STATPOP: Aggregiert auf Zonentyp-Ebene (Arrays)
+drop table if exists export.zonentyp_statpop_array cascade;
+create table export.zonentyp_statpop_array as
+    SELECT 
+		typ_kt,
+		bfs_nr,
+    	sum(anzahl) as popcount,
+    	jsonb_agg(jsonb_build_object(
+	        '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Altersklasse_5j',
+	        'Kategorie_Id', classagefiveyears,
+			'Kategorie_Text', 
+				case 
+					when classagefiveyears between 0 and 110 then concat(classagefiveyears, '-', classagefiveyears + 4, ' Jahre')
+					when classagefiveyears = 115 then '115+ Jahre'
+				end
+			,
+	        'Anzahl', anzahl
+		)) altersklassen_5j
+    FROM (
+        SELECT typ_kt, bfs_nr, classagefiveyears, COUNT(*) as anzahl
+        FROM export.statpop
+        where classagefiveyears is not null
+        GROUP BY typ_kt, bfs_nr, classagefiveyears
+    ) agg
+    GROUP BY typ_kt, bfs_nr
+    ;
+
+-- STATENT: Aggregiert auf Zonentyp-Ebene (Summen und Anzahlen)
+drop table if exists export.zonentyp_statent_agg cascade;
+create table export.zonentyp_statent_agg as
+	select
+		typ_kt,
+		bfs_nr,
+		sum(empfte) as beschaeftigte_fte
+	from export.statent
+	GROUP BY typ_kt, bfs_nr
+	;
+
 delete from export.strukturdaten_zonentyp;
 insert into export.strukturdaten_zonentyp (geometrie, 
 	flaeche, flaeche_bebaut, flaeche_unbebaut, flaeche_teilweise_bebaut, flaeche_gebaeude, flaeche_wohnungen, 
@@ -213,16 +251,10 @@ select
 	g2.handlungsraum,
 	g1.gemeindename,
 	a.bfs_nr as gemeindenummer,
-    jsonb_build_array(jsonb_build_object(
-	        '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Altersklasse_5j',
-	        'Kategorie_Id', 99,
-	        'Kategorie_Text', 'tbd',
-	    	'Anzahl', 99
-    	)
-    ) altersklassen_5j,  -- tbd, dummy json object
-	99.99 as beschaeftigte_fte,  -- tbd, dummy value
-	99.99 as raumnutzendendichte,  -- tbd, dummy value
-	99.99 as flaechendichte,  -- tbd, dummy value
+    h.altersklassen_5j,
+	coalesce(i.beschaeftigte_fte,0) as beschaeftigte_fte,
+	coalesce(a.flaeche / (h.popcount + i.beschaeftigte_fte), 0) as raumnutzendendichte,
+	coalesce((h.popcount + i.beschaeftigte_fte) / a.flaeche * 10000, 0) as flaechendichte,
 	grundnutzungen_kanton,
 	grundnutzungen_bund,
 	c.gebaeudekategorien,
@@ -248,5 +280,8 @@ left join export.zonentyp_gwr_array c using (typ_kt, bfs_nr)
 left join export.zonentyp_gwr_geb_agg d using (typ_kt, bfs_nr)
 left join export.zonentyp_gwr_wohn_agg e using (typ_kt, bfs_nr)
 left join export.zonentyp_grundnutzungen_array f using (typ_kt, bfs_nr)
+left join export.zonentyp_statpop_array h using (typ_kt, bfs_nr)
+left join export.zonentyp_statent_agg i using (typ_kt, bfs_nr)
 left join import.hoheitsgrenzen_gemeindegrenze g1 on a.bfs_nr = g1.bfs_gemeindenummer
-left join import.grundlagen_gemeinde g2 on a.bfs_nr = g2.bfsnr;
+left join import.grundlagen_gemeinde g2 on a.bfs_nr = g2.bfsnr
+;

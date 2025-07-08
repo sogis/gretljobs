@@ -180,6 +180,42 @@ create table export.gemeinde_gwr_wohn_agg as
 	group by bfs_nr
 	;
 
+-- STATPOP: Aggregiert auf Gemeinde-Ebene (Arrays)
+drop table if exists export.gemeinde_statpop_array cascade;
+create table export.gemeinde_statpop_array as
+    SELECT 
+		bfs_nr,
+    	sum(anzahl) as popcount,
+    	jsonb_agg(jsonb_build_object(
+	        '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Altersklasse_5j',
+	        'Kategorie_Id', classagefiveyears,
+			'Kategorie_Text', 
+				case 
+					when classagefiveyears between 0 and 110 then concat(classagefiveyears, '-', classagefiveyears + 4, ' Jahre')
+					when classagefiveyears = 115 then '115+ Jahre'
+				end
+			,
+	        'Anzahl', anzahl
+		)) altersklassen_5j
+    FROM (
+        SELECT bfs_nr, classagefiveyears, COUNT(*) as anzahl
+        FROM export.statpop
+        where classagefiveyears is not null
+        GROUP BY bfs_nr, classagefiveyears
+    ) agg
+    GROUP BY bfs_nr
+    ;
+
+-- STATENT: Aggregiert auf Gemeinde-Ebene (Summen und Anzahlen)
+drop table if exists export.gemeinde_statent_agg cascade;
+create table export.gemeinde_statent_agg as
+	select
+		bfs_nr,
+		sum(empfte) as beschaeftigte_fte
+	from export.statent
+	GROUP BY bfs_nr
+	;
+
 delete from export.strukturdaten_gemeinde;
 insert into export.strukturdaten_gemeinde (geometrie, 
 	flaeche, flaeche_bebaut, flaeche_unbebaut, flaeche_teilweise_bebaut, flaeche_gebaeude, flaeche_wohnungen, 
@@ -203,16 +239,10 @@ select
 	g.handlungsraum,
 	a.gemeindename,
 	a.bfs_nr as gemeindenummer,
-    jsonb_build_array(jsonb_build_object(
-	        '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Altersklasse_5j',
-	        'Kategorie_Id', 99,
-	        'Kategorie_Text', 'tbd',
-	    	'Anzahl', 99
-    	)
-    ) altersklassen_5j,  -- tbd, dummy json object
-	99.99 as beschaeftigte_fte,  -- tbd, dummy value
-	99.99 as raumnutzendendichte,  -- tbd, dummy value
-	99.99 as flaechendichte,  -- tbd, dummy value
+    h.altersklassen_5j,
+	coalesce(i.beschaeftigte_fte,0) as beschaeftigte_fte,
+	coalesce(a.flaeche / (h.popcount + i.beschaeftigte_fte), 0) as raumnutzendendichte,
+	coalesce((h.popcount + i.beschaeftigte_fte) / a.flaeche * 10000, 0) as flaechendichte,
 	grundnutzungen_kanton,
 	grundnutzungen_bund,
 	c.gebaeudekategorien,
@@ -238,4 +268,7 @@ left join export.gemeinde_gwr_array c using (bfs_nr)
 left join export.gemeinde_gwr_geb_agg d using (bfs_nr)
 left join export.gemeinde_gwr_wohn_agg e using (bfs_nr)
 left join export.gemeinde_grundnutzungen_array f using (bfs_nr)
-left join import.grundlagen_gemeinde g on a.bfs_nr = g.bfsnr;
+left join export.gemeinde_statpop_array h using (bfs_nr)
+left join export.gemeinde_statent_agg i using (bfs_nr)
+left join import.grundlagen_gemeinde g on a.bfs_nr = g.bfsnr
+;

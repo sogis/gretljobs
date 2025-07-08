@@ -151,6 +151,7 @@ create table export.statpop as
 	    p.t_ili_tid,
 	    p.typ_kt,
 	    p.bfs_nr,
+		p.geometrie,
 	    pop.classagefiveyears
 	from export.parzellen_basis p
 	join import.statpop_statent_statpop pop on st_within(pop.geometrie, p.geometrie)
@@ -160,12 +161,14 @@ CREATE INDEX ON export.statpop(t_ili_tid);
 CREATE INDEX ON export.statpop(typ_kt);
 CREATE INDEX ON export.statpop(bfs_nr);
 
+-- Join Parzelle x STATENT
 drop table if exists export.statent cascade;
 create table export.statent as
 	select
 	    p.t_ili_tid,
 	    p.typ_kt,
 	    p.bfs_nr,
+		p.geometrie,
 	    ent.empfte
 	from export.parzellen_basis p
 	join import.statpop_statent_statent ent on st_within(ent.geometrie, p.geometrie)
@@ -323,6 +326,12 @@ create table export.parzellen_statpop_array as
     	jsonb_agg(jsonb_build_object(
 	        '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Altersklasse_5j',
 	        'Kategorie_Id', classagefiveyears,
+			'Kategorie_Text', 
+				case 
+					when classagefiveyears between 0 and 110 then concat(classagefiveyears, '-', classagefiveyears + 4, ' Jahre')
+					when classagefiveyears = 115 then '115+ Jahre'
+				end
+			,
 	        'Anzahl', anzahl
 		)) altersklassen_5j
     FROM (
