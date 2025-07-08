@@ -1,6 +1,6 @@
--- tbd Kommentar
+-- Dieses SQL File enthält SQL Querys, um Strukturdaten auf Ebene Zonenschild aufzubereiten.
 
--- Zonenschild aus Zonentyp ableiten (ST_Dump)
+-- Zonenschild aus Zonentyp ableiten
 drop table if exists export.zonenschild_dump cascade;
 create table export.zonenschild_dump as
 	select
@@ -38,7 +38,6 @@ create index on export.zonenschild_basis using gist (geometrie);
 drop table if exists export.zonenschild_bodenbedeckung cascade;
 create table export.zonenschild_bodenbedeckung as
 	select
-	    --z.bfs_nr,  --tbd: wozu war das hier? evtl. für Aggregation auf Gemeindebene?
 	    z.schild_uuid,
 	    b.kategorie_text,
 	    sum(b.flaeche_agg) as flaeche_agg
@@ -226,7 +225,7 @@ create table export.zonenschild_basis_statent as
 create index on export.zonenschild_basis_statent using gist (geometrie);
 CREATE INDEX ON export.zonenschild_basis_statent(schild_uuid);
 
--- STATPOP: Aggregiert auf Zonenschild-Ebene (Arrays)
+-- STATPOP: Aggregiert auf Zonenschild-Ebene
 drop table if exists export.zonenschild_statpop_array cascade;
 create table export.zonenschild_statpop_array as
     SELECT 
@@ -252,7 +251,7 @@ create table export.zonenschild_statpop_array as
     GROUP BY schild_uuid
     ;
 
--- STATENT: Aggregiert auf Zonenschild-Ebene (Summen und Anzahlen)
+-- STATENT: Aggregiert auf Zonenschild-Ebene
 drop table if exists export.zonenschild_statent_agg cascade;
 create table export.zonenschild_statent_agg as
 	select
@@ -275,18 +274,19 @@ insert into export.strukturdaten_zonenschild (geometrie,
 	bodenbedeckungen
 	)
 select
+    -- "coalesce" wird angewendet, um NULL Werte zu vemeiden, wenn kein Objekt gejoined ist (Gebäude, Wohnung, Person, Firma)
 	a.geometrie,
 	a.flaeche,
 	a.flaeche_bebaut,
 	a.flaeche_unbebaut,
 	a.flaeche_teilweise_bebaut,
-	coalesce(d.flaeche_gebaeude,0) as flaeche_gebaeude,  -- wenn Attr alle NULL oder kein Gebäude gejoined: 0
-	coalesce(e.flaeche_wohnungen,0) as flaeche_wohnungen,  -- dito
+	coalesce(d.flaeche_gebaeude, 0) as flaeche_gebaeude,
+	coalesce(e.flaeche_wohnungen, 0) as flaeche_wohnungen,
 	g2.handlungsraum,
 	g1.gemeindename,
 	a.bfs_nr as gemeindenummer,
     h.altersklassen_5j,
-	coalesce(i.beschaeftigte_fte,0) as beschaeftigte_fte,
+	coalesce(i.beschaeftigte_fte, 0) as beschaeftigte_fte,
 	coalesce(a.flaeche / (h.popcount + i.beschaeftigte_fte), 0) as raumnutzendendichte,
 	coalesce((h.popcount + i.beschaeftigte_fte) / a.flaeche * 10000, 0) as flaechendichte,
 	grundnutzungen_kanton,
@@ -294,20 +294,20 @@ select
 	c.gebaeudekategorien,
 	c.gebaeudeklassen_10,
 	c.gebaeudebauperioden,
-	coalesce(d.total_gebaeude,0) as total_gebaeude,  -- wenn kein Gebäude gejoined: 0
-	coalesce(d.total_geschosse,0) as total_geschosse,  -- dito (attr od join)
-	coalesce(e.total_wohnungen,0) as total_wohnungen,  -- wenn keine Wohnung gejoined: 0
-	coalesce(e.total_zimmer,0) as total_zimmer,  -- dito attr od join
+	coalesce(d.total_gebaeude, 0) as total_gebaeude,
+	coalesce(d.total_geschosse, 0) as total_geschosse,
+	coalesce(e.total_wohnungen, 0) as total_wohnungen,
+	coalesce(e.total_zimmer, 0) as total_zimmer,
 	c.verteilung_anzahl_zimmer,
-	coalesce(e.anzahl_wohnungen_avg,0) as anzahl_wohnungen_avg,  -- dito
-	coalesce(d.anzahl_geschosse_avg,0) as anzahl_geschosse_avg,  -- dito
-	coalesce(d.anzahl_geschosse_anz_null,0) as anzahl_geschosse_anz_null,  --dito
-	coalesce(e.anzahl_zimmer_avg,0) as anzahl_zimmer_avg,
-	coalesce(e.anzahl_zimmer_anz_null,0) as anzahl_zimmer_anz_null,
-	coalesce(e.flaeche_wohnung_avg,0) as flaeche_wohnung_avg,
-	coalesce(e.flaeche_wohnung_anz_null,0) as flaeche_wohnung_anz_null,
-	coalesce(d.flaeche_gebaeude_anz_null,0) as flaeche_gebaeude_anz_null,
-	coalesce(b.bodenbedeckungen, '[]'::jsonb) as bodenbedeckungen  -- eigentlich ein Workaround; sollte nie NULL sein, aber Verschnittfehler in den Ausgangsdaten führen zu Kleinst-Bodenbedeckungen, die wegfallen
+	coalesce(e.anzahl_wohnungen_avg, 0) as anzahl_wohnungen_avg,
+	coalesce(d.anzahl_geschosse_avg, 0) as anzahl_geschosse_avg,
+	coalesce(d.anzahl_geschosse_anz_null, 0) as anzahl_geschosse_anz_null,
+	coalesce(e.anzahl_zimmer_avg, 0) as anzahl_zimmer_avg,
+	coalesce(e.anzahl_zimmer_anz_null, 0) as anzahl_zimmer_anz_null,
+	coalesce(e.flaeche_wohnung_avg, 0) as flaeche_wohnung_avg,
+	coalesce(e.flaeche_wohnung_anz_null, 0) as flaeche_wohnung_anz_null,
+	coalesce(d.flaeche_gebaeude_anz_null, 0) as flaeche_gebaeude_anz_null,
+	b.bodenbedeckungen
 from export.zonenschild_basis a
 left join export.zonenschild_bodenbedeckungen_array b using (schild_uuid)
 left join export.zonenschild_gwr_array c using (schild_uuid)

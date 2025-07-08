@@ -1,13 +1,13 @@
--- Gemeinde tbd Erklärung
+-- Dieses SQL File enthält SQL Querys, um Strukturdaten auf Ebene Gemeinde aufzubereiten.
 
--- Gemeinde-Flächenattribute aus Parzellen ableiten  -- tbd könnte man auch Zonentypen ableiten?
+-- Gemeinde-Flächenattribute aus Parzellen ableiten
 drop table if exists export.gemeinde_basis cascade;
 create table export.gemeinde_basis as
 	select
 		g.geometrie,
 	    g.gemeindename,
 	    g.bfs_gemeindenummer as bfs_nr,
-	    sum(flaeche) as flaeche,  -- tbd Gemeindegebiet oder (aktuell) Summe der Bauzonen?
+	    sum(flaeche) as flaeche,
 	    coalesce(sum(flaeche) filter (where bebauungsstand = 'bebaut'), 0) as flaeche_bebaut,
 	    coalesce(sum(flaeche) filter (where bebauungsstand = 'unbebaut'), 0) as flaeche_unbebaut,
 	    coalesce(sum(flaeche) filter (where bebauungsstand = 'teilweise_bebaut'), 0) as flaeche_teilweise_bebaut
@@ -19,7 +19,7 @@ create table export.gemeinde_basis as
 create index on export.gemeinde_basis using gist (geometrie);
 create index on export.gemeinde_basis (bfs_nr);
 
--- Gemeinde x Bodenbedeckung  -- tbd könnte man auch aus Zonentypen ableiten?
+-- Gemeinde x Bodenbedeckung
 drop table if exists export.gemeinde_bodenbedeckung cascade;
 create table export.gemeinde_bodenbedeckung as
 	select
@@ -180,7 +180,7 @@ create table export.gemeinde_gwr_wohn_agg as
 	group by bfs_nr
 	;
 
--- STATPOP: Aggregiert auf Gemeinde-Ebene (Arrays)
+-- STATPOP: Aggregiert auf Gemeinde-Ebene
 drop table if exists export.gemeinde_statpop_array cascade;
 create table export.gemeinde_statpop_array as
     SELECT 
@@ -206,7 +206,7 @@ create table export.gemeinde_statpop_array as
     GROUP BY bfs_nr
     ;
 
--- STATENT: Aggregiert auf Gemeinde-Ebene (Summen und Anzahlen)
+-- STATENT: Aggregiert auf Gemeinde-Ebene
 drop table if exists export.gemeinde_statent_agg cascade;
 create table export.gemeinde_statent_agg as
 	select
@@ -229,18 +229,19 @@ insert into export.strukturdaten_gemeinde (geometrie,
 	bodenbedeckungen
 	)
 select
+    -- "coalesce" wird angewendet, um NULL Werte zu vemeiden, wenn kein Objekt gejoined ist (Gebäude, Wohnung, Person, Firma)
 	a.geometrie,
 	a.flaeche,
 	a.flaeche_bebaut,
 	a.flaeche_unbebaut,
 	a.flaeche_teilweise_bebaut,
-	coalesce(d.flaeche_gebaeude,0) as flaeche_gebaeude,  -- wenn Attr alle NULL oder kein Gebäude gejoined: 0
-	coalesce(e.flaeche_wohnungen,0) as flaeche_wohnungen,  -- dito
+	coalesce(d.flaeche_gebaeude, 0) as flaeche_gebaeude,
+	coalesce(e.flaeche_wohnungen, 0) as flaeche_wohnungen,
 	g.handlungsraum,
 	a.gemeindename,
 	a.bfs_nr as gemeindenummer,
     h.altersklassen_5j,
-	coalesce(i.beschaeftigte_fte,0) as beschaeftigte_fte,
+	coalesce(i.beschaeftigte_fte, 0) as beschaeftigte_fte,
 	coalesce(a.flaeche / (h.popcount + i.beschaeftigte_fte), 0) as raumnutzendendichte,
 	coalesce((h.popcount + i.beschaeftigte_fte) / a.flaeche * 10000, 0) as flaechendichte,
 	grundnutzungen_kanton,
@@ -248,20 +249,20 @@ select
 	c.gebaeudekategorien,
 	c.gebaeudeklassen_10,
 	c.gebaeudebauperioden,
-	coalesce(d.total_gebaeude,0) as total_gebaeude,  -- wenn kein Gebäude gejoined: 0
-	coalesce(d.total_geschosse,0) as total_geschosse,  -- dito (attr od join)
-	coalesce(e.total_wohnungen,0) as total_wohnungen,  -- wenn keine Wohnung gejoined: 0
-	coalesce(e.total_zimmer,0) as total_zimmer,  -- dito attr od join
+	coalesce(d.total_gebaeude, 0) as total_gebaeude,
+	coalesce(d.total_geschosse, 0) as total_geschosse,
+	coalesce(e.total_wohnungen, 0) as total_wohnungen,
+	coalesce(e.total_zimmer, 0) as total_zimmer,
 	c.verteilung_anzahl_zimmer,
-	coalesce(e.anzahl_wohnungen_avg,0) as anzahl_wohnungen_avg,  -- dito
-	coalesce(d.anzahl_geschosse_avg,0) as anzahl_geschosse_avg,  -- dito
-	coalesce(d.anzahl_geschosse_anz_null,0) as anzahl_geschosse_anz_null,  --dito
-	coalesce(e.anzahl_zimmer_avg,0) as anzahl_zimmer_avg,
-	coalesce(e.anzahl_zimmer_anz_null,0) as anzahl_zimmer_anz_null,
-	coalesce(e.flaeche_wohnung_avg,0) as flaeche_wohnung_avg,
-	coalesce(e.flaeche_wohnung_anz_null,0) as flaeche_wohnung_anz_null,
-	coalesce(d.flaeche_gebaeude_anz_null,0) as flaeche_gebaeude_anz_null,
-	coalesce(b.bodenbedeckungen, '[]'::jsonb) as bodenbedeckungen  -- eigentlich ein Workaround; sollte nie NULL sein, aber Verschnittfehler in den Ausgangsdaten führen zu Kleinst-Bodenbedeckungen, die wegfallen
+	coalesce(e.anzahl_wohnungen_avg, 0) as anzahl_wohnungen_avg,
+	coalesce(d.anzahl_geschosse_avg, 0) as anzahl_geschosse_avg,
+	coalesce(d.anzahl_geschosse_anz_null, 0) as anzahl_geschosse_anz_null,
+	coalesce(e.anzahl_zimmer_avg, 0) as anzahl_zimmer_avg,
+	coalesce(e.anzahl_zimmer_anz_null, 0) as anzahl_zimmer_anz_null,
+	coalesce(e.flaeche_wohnung_avg, 0) as flaeche_wohnung_avg,
+	coalesce(e.flaeche_wohnung_anz_null, 0) as flaeche_wohnung_anz_null,
+	coalesce(d.flaeche_gebaeude_anz_null, 0) as flaeche_gebaeude_anz_null,
+	b.bodenbedeckungen
 from export.gemeinde_basis a
 left join export.gemeinde_bodenbedeckungen_array b using (bfs_nr)
 left join export.gemeinde_gwr_array c using (bfs_nr)
