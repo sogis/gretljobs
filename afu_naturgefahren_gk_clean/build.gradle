@@ -62,11 +62,9 @@ task mergeSmallPoly(type: SqlExecutor, dependsOn: uniquePathForIdenticalFile){
         ,'clean/1_prep/calc_isbig.sql'
         ,'clean/1_prep/set_bigpolys_as_roots.sql'
         ,"$buildDir/link1/link_to_neighbour.sql"
-        /*
         ,"$buildDir/link2/link_to_neighbour.sql"
         ,"$buildDir/link3/link_to_neighbour.sql"
         ,"$buildDir/link4/link_to_neighbour.sql"
-        */
         ,'clean/2_merge/set_root_id.sql'
         ,'clean/2_merge/merge_geometries.sql'
         ,'clean/3_post/update_sourcetable_geom.sql'
