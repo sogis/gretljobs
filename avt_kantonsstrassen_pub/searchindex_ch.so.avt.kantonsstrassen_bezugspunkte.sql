@@ -1,4 +1,4 @@
-SET search_path to avt_kantonsstrassen_pub, public;
+SET search_path to avt_kantonsstrassen_pub_v1, public;
 
 INSERT INTO ${db_schema}.feature (
     anzeige,            -- Anzeigetext
