@@ -2,6 +2,23 @@
 -- Diese Daten sind auch Grundlage für die Datenebenen Zonentyp, Zonenschild und Gemeinde.
 
 -- GRUNDLAGEN -------------------------------------------------------------------------
+-- Mapping von GWR-Gebäudeklassen-Codes und -Beschreibungen
+drop table if exists export.gklas_10_map cascade;
+CREATE TABLE export.gklas_10_map AS
+SELECT * FROM (
+    VALUES 
+    (111, 'Wohnbauten'),
+    (112, 'Gebäude mit zwei oder mehr Wohnungen'),
+    (113, 'Wohngebäude für Gemeinschaften'),
+    (121, 'Hotels und ähnliche Gebäude'),
+    (122, 'Bürogebäude'),
+    (123, 'Gross- und Einzelhandelsgebäude'),
+    (124, 'Gebäude des Verkehrs- und Nachrichtenwesens'),
+    (125, 'Industrie- und Lagergebäude'),
+    (126, 'Gebäude für Kultur- und Freizeitzwecke sowie das Bildungs- und Gesundheitswesen'),
+    (127, 'Sonstige Nichtwohngebäude')
+) AS tbl(gklas_10, gklas_10_txt);
+
 -- Alle Ausgangspolygone aus der Bauzonenstatistik (= Grundstück x Zone abzüglich Strassen etc.) plus Reservezonen
 drop table if exists export.parzellen_basis cascade;
 create table export.parzellen_basis as
@@ -104,17 +121,18 @@ create table export.gebaeude as
 	    p.typ_kt,
 	    p.bfs_nr,
 	    geb.egid,
-	    geb.gkat,      -- Gebäudekategorie
+	    geb.gkat,        -- Gebäudekategorie
 	    geb.gkat_txt,
-	    geb.gklas,     -- Gebäudeklasse
-	    geb.gklas_txt,
-	    geb.gbaup,     -- Gebäudebauperiode
+	    g.gklas_10,      -- Gebäudeklasse dreistellig
+	    g.gklas_10_txt,
+	    geb.gbaup,       -- Gebäudebauperiode
 	    geb.gbaup_txt,
-	    geb.garea,     -- Gebäudefläche
-	    geb.gastw,     -- Anzahl Geschosse
+	    geb.garea,       -- Gebäudefläche
+	    geb.gastw,       -- Anzahl Geschosse
 		geb.lage as geometrie
 	from export.parzellen_basis p
 	join import.gwr_gebaeude geb on st_within(geb.lage, p.geometrie)
+	left join export.gklas_10_map g on left(geb.gklas::text,3)::int = g.gklas_10
 	where geb.gstat = 1004  -- nur existierende
 	;
 
@@ -240,11 +258,11 @@ create table export.parzellen_gwr_array as
 	            'Anzahl', gklas_group.anzahl
 	        ))
 	        FROM (
-	            SELECT left(gklas::text,3)::int as gklas_10, 'tbd' as gklas_10_txt, COUNT(*) as anzahl
+	            SELECT gklas_10, gklas_10_txt, COUNT(*) as anzahl
 	            FROM export.gebaeude g2
 	            WHERE g2.t_ili_tid = g1.t_ili_tid
-	            and gklas is not null
-	            GROUP BY left(gklas::text,3)
+	            and gklas_10 is not null
+	            GROUP BY gklas_10, gklas_10_txt
 	        ) gklas_group
 	    ) gebaeudeklassen_10,
 	    (

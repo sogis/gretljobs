@@ -112,11 +112,11 @@ create table export.zonentyp_gwr_array as
 	            'Anzahl', gklas_group.anzahl
 	        ))
 	        FROM (
-	            SELECT left(gklas::text,3)::int as gklas_10, 'tbd' as gklas_10_txt, COUNT(*) as anzahl
+	            SELECT gklas_10, gklas_10_txt, COUNT(*) as anzahl
 	            FROM export.gebaeude g2
 	            WHERE g2.typ_kt = g1.typ_kt
-	            and gklas is not null
-	            GROUP BY left(gklas::text,3)
+	            and gklas_10 is not null
+	            GROUP BY gklas_10, gklas_10_txt
 	        ) gklas_group
 	    ) gebaeudeklassen_10,
 	    (
