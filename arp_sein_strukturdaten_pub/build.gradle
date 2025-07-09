@@ -2,11 +2,26 @@ import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
 
-defaultTasks "exportXtf"
+defaultTasks "upload"
 
+// Definition von Variablen
 def tmpDir = buildDir.toString()
-def xtfPath = tmpDir + "/data.xtf"
+def xtfPath = tmpDir + "/sein_strukturdaten.xtf"
+
+// Definition des SFTP-Server für den Datenupload
+remotes {
+    sftpServer {
+        host = "${sftpServerSEinApp}"
+        user = "${sftpUserSEinApp}"
+        identity = file('/home/gradle/.ssh/id_rsa')
+        // Skip host key checking outside the following environments:
+        if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) {  // uses the Groovy membership operator
+            knownHosts = allowAnyHosts
+        }
+    }
+}
 
 // Extension für die UUID-Erstellung aktivieren (uuid-ossp)
 task createExtension(type: SqlExecutor){
@@ -97,12 +112,14 @@ task processZonenschilde(type: SqlExecutor, dependsOn: processZonentypen) {
 }
 
 // Raumeinheit Gemeinde aufbereiten
+// tbd: eigentlich abhängig von Parzellen
 task processGemeinden(type: SqlExecutor, dependsOn: processZonenschilde) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['gemeinde.sql']
 }
 
 // Ergebnis tabellenweise in Zielschema kopieren (persistieren)
+// tbd: falls Gemeinden parallel möglich, ist dieser Task abhängig von Gemeinden und Zonenschilden
 task copyDataFromProcessing(type: Db2Db, dependsOn: processGemeinden){
     sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
@@ -121,4 +138,17 @@ task exportXtf(type: Ili2pgExport, dependsOn: copyDataFromProcessing){
     disableValidation = false
     dataFile = xtfPath
     models = "SO_ARP_SEin_Strukturdaten_Publikation_20250407"
+}
+
+// XTF-Datei auf den SFTP-Server hochladen
+tasks.register('upload') {
+    dependsOn 'exportXtf'
+    doLast {
+        ssh.run {
+            session(remotes.sftpServer) {
+                put from: xtfPath, into: "/opt/daten/gis_arp_raumdaten/test/"
+            }
+        }
+        println "File uploaded to FTP server"
+    }
 }
