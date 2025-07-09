@@ -1,4 +1,7 @@
 pipeline {
+    options {
+        timeout(time: 1, unit: 'HOURS')
+    }
     agent {
         kubernetes {
             inheritFrom env.NODE_LABEL ?: 'gretl'
@@ -7,7 +10,7 @@ pipeline {
             spec:
               containers:
                 - name: processing-db
-                  image: sogis/postgis:16-3.4-bookworm
+                  image: postgis/postgis:17-3.5-alpine
                   resources:
                     requests:
                       cpu: 300m
@@ -31,9 +34,6 @@ pipeline {
 '''
         }
     }
-    options {
-        timeout(time: 6, unit: 'HOURS')
-    }
     stages {
         stage('Run GRETL job') {
             environment {
@@ -44,9 +44,7 @@ pipeline {
             steps {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
-                    dir(env.JOB_BASE_NAME) {
-                        sh "gretl -Pauftragskennung=${params.auftragskennung}"
-                    }
+                    sh "gretl --project-dir=${env.JOB_BASE_NAME} upload"
                 }
             }
         }
