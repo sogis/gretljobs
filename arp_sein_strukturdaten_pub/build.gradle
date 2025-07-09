@@ -10,7 +10,7 @@ defaultTasks "upload"
 def tmpDir = buildDir.toString()
 def xtfPath = tmpDir + "/sein_strukturdaten.xtf"
 
-// Definition des SFTP-Server für den Datenupload
+// Definition des SFTP-Servers für den Datenupload
 remotes {
     sftpServer {
         host = "${sftpServerSEinApp}"
@@ -53,7 +53,6 @@ task createExportSchema(type: Ili2pgImportSchema, dependsOn: createImportSchema)
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_ARP_SEin_Strukturdaten_Publikation_20250407"
     dbschema = "export"
-    nameByTopic = true
     beautifyEnumDispName = true
     strokeArcs = true
     createEnumTabs = false
@@ -99,28 +98,26 @@ task processParzellen(type: SqlExecutor, dependsOn: copyDataFromEdit) {
     sqlFiles = ['parzelle.sql']
 }
 
-// Raumeinheit Zonentyp aufbereiten
+// Raumeinheit Zonentyp aufbereiten (bedingt parzelle.sql)
 task processZonentypen(type: SqlExecutor, dependsOn: processParzellen) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['zonentyp.sql']
 }
 
-// Raumeinheit Zonenschild aufbereiten
+// Raumeinheit Zonenschild aufbereiten (bedingt zonentyp.sql und somit parzelle.sql)
 task processZonenschilde(type: SqlExecutor, dependsOn: processZonentypen) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['zonenschild.sql']
 }
 
-// Raumeinheit Gemeinde aufbereiten
-// tbd: eigentlich abhängig von Parzellen
-task processGemeinden(type: SqlExecutor, dependsOn: processZonenschilde) {
+// Raumeinheit Gemeinde aufbereiten (bedingt zonentyp.sql und somit parzelle.sql)
+task processGemeinden(type: SqlExecutor, dependsOn: processZonentypen) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['gemeinde.sql']
 }
 
 // Ergebnis tabellenweise in Zielschema kopieren (persistieren)
-// tbd: falls Gemeinden parallel möglich, ist dieser Task abhängig von Gemeinden und Zonenschilden
-task copyDataFromProcessing(type: Db2Db, dependsOn: processGemeinden){
+task copyDataFromProcessing(type: Db2Db, dependsOn: [processZonenschilde, processGemeinden]){
     sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
