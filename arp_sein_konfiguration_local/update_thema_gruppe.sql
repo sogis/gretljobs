@@ -3,7 +3,7 @@
  * Wo kein Match durchgeführt werden kann, bleibt NULL bestehen
  */
 
-UPDATE sein.main.objektinfos_sein_sammeltabelle
+UPDATE sein.main.sein_sammeltabelle_filtered
 SET
 	thema = NULL,
 	gruppe = NULL
@@ -13,7 +13,7 @@ SET
  * Um die korrekten Gruppen- und Themenbezeichnungen zu verwenden, werden diese
  * über die Beziehungen bzw. Namensabgleich rausgelesen.
  */
-UPDATE sein.main.objektinfos_sein_sammeltabelle
+UPDATE sein.main.sein_sammeltabelle_filtered
 SET
 	thema = gt.aname,
 	gruppe = gg.aname
@@ -23,3 +23,4 @@ LEFT JOIN sein.arp_sein_konfiguration_grundlagen_v2.so_rp_s0250115grundlagen_gru
 	ON gt.gruppe_r = gg.T_Id
 WHERE 
 	gt.aname = thema_sql
+;
