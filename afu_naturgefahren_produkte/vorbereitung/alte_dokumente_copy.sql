@@ -4,7 +4,6 @@ map_perimeter_file AS (
     SELECT * FROM (VALUES
  ('0edb061d-6516-4808-a028-2690327ceba2','119_Seewen_Sturz_Gauggema_2020.pdf')
 ,('0123de4d-3a74-4f22-bdfb-38286414814c','097_Wangen_Duennern_2015.pdf')
-,('0123de4d-3a74-4f22-bdfb-38286414814c','097_Wangen_Wasser_2007.pdf')
 ,('1aebf943-7a71-4bb1-95ef-0311a27678ce','105_Rohr_Wasser_2021.pdf')
 ,('198c30af-5ada-45da-a67f-91b79aac991b','121_Baerschwil_Steinschlag_2012.pdf')
 ,('198c30af-5ada-45da-a67f-91b79aac991b','121_Baerschwil_Wasser_2021.pdf')
@@ -85,8 +84,6 @@ map_perimeter_file AS (
 ,('622ed030-ee81-4dea-bbde-7898ee263186','076_Kestenholz_Duennern_2015.pdf')
 ,('933099e2-b62e-4608-bf62-1c3b8ab80924','068_Herbetswil_Duennern_2015.pdf')
 ,('2f67a104-4e87-4ab4-9449-b9a93ee01951','084_Dulliken_Wasser_2022.pdf')
-,('2f67a104-4e87-4ab4-9449-b9a93ee01951','084_Dulliken_Rutsch_2_2006.pdf')
-,('2f67a104-4e87-4ab4-9449-b9a93ee01951','084_Dulliken_Rutsch_1_2006.pdf')
 ,('dce873a7-4713-48cc-9a91-62736ec2065a','106_Stuesslingen_Rutsch_Stein_2009.pdf')
 ,('e376c922-32dc-49ce-82c8-d980ccfd18da','124_Büsserach_Wasser_2005.pdf')
 ,('7e2239e3-329c-45bb-99b6-104f83fcd49c','087_Gretzenbach_Wasser_Rutsch_2021.pdf')

@@ -1,0 +1,60 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.api.*
+import java.nio.file.Paths
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'importHanglagen32'
+
+def pathToTempFolder = System.getProperty('java.io.tmpdir')
+
+def editDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+def stageSchema = "alw_bund_hanglagen_allgemein_v2"
+
+
+tasks.register('deleteRows', SqlExecutor) {
+    description = 'Leert die Tabellem im Schema edit alw_bund_hanglagen_allgemein_v2*'
+    database = editDb
+    sqlFiles = files('hl_allgemein.sql')
+}
+
+tasks.register('importHanglagen26', GpkgImport) {
+    dependsOn 'deleteRows'
+    description = 'Importiert die Hanglagen"'
+    database = editDb
+    schemaName = stageSchema
+    srcTableName = "hl_allgemein_26_2056"
+    dstTableName = "hl_allgemein"
+    dataFile = file("upload/hl_allgemein_26_2056.gpkg")
+}
+
+tasks.register('importHanglagen27', GpkgImport) {
+    dependsOn 'importHanglagen26'
+    description = 'Importiert die Hanglagen"'
+    database = editDb
+    schemaName = stageSchema
+    srcTableName = "hl_allgemein_27_2056"
+    dstTableName = "hl_allgemein"
+    dataFile = file("upload/hl_allgemein_27_2056.gpkg")
+}
+
+tasks.register('importHanglagen31', GpkgImport) {
+    dependsOn 'importHanglagen27'
+    description = 'Importiert die Hanglagen"'
+    database = editDb
+    schemaName = stageSchema
+    srcTableName = "hl_allgemein_31_2056"
+    dstTableName = "hl_allgemein"
+    dataFile = file("upload/hl_allgemein_31_2056.gpkg")
+}
+
+tasks.register('importHanglagen32', GpkgImport) {
+    dependsOn 'importHanglagen31'
+    description = 'Importiert die Hanglagen"'
+    database = editDb
+    schemaName = stageSchema
+    srcTableName = "hl_allgemein_32_2056"
+    dstTableName = "hl_allgemein"
+    dataFile = file("upload/hl_allgemein_32_2056.gpkg")
+}
