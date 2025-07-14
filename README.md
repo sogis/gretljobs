@@ -68,6 +68,10 @@ Nun wird der Job in GRETL-Jenkins der Testumgebung aufgelistet,
 und man kann wie gewohnt nach dem Start den Branch auswählen,
 in welchem man den neuen Job entwickelt hat.
 
+Falls der Job ein vom Default abweichendes Jenkinsfile benötigt,
+muss dieses - nicht leer, sondern funktionsfähig - ebenfalls
+im _main_-Branch vorliegen.
+
 ## Best Practice für das Erstellen von Jobs
 
 * Für jeden neuen Job oder für jede Änderung an einem Job muss ein neuer Entwicklungsbranch erstellt werden:
