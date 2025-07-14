@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks "upload"
+defaultTasks "copyDataFromProcessing" // upload
 
 // Definition von Variablen
 def tmpDir = buildDir.toString()
@@ -53,6 +53,7 @@ task createExportSchema(type: Ili2pgImportSchema, dependsOn: createImportSchema)
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_ARP_SEin_Strukturdaten_Publikation_20250407"
     dbschema = "export"
+    nameByTopic = true
     beautifyEnumDispName = true
     strokeArcs = true
     createEnumTabs = false
