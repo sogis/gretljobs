@@ -1,5 +1,5 @@
 -- Dieses SQL File enthält SQL Querys, um Strukturdaten auf Ebene Zonentyp aufzubereiten.
--- Diese Daten sind auch Grundlage für die Datenebene Zonenschild (= Dump von Zonentyp).
+-- Diese Daten sind auch Grundlage für die Datenebene Zonenschild (= Dump von Zonentyp) und Gemeinde.
 
 -- Zonentyp
 drop table if exists export.zonentyp_basis cascade;
