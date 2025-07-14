@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks "copyDataFromProcessing" // upload
+defaultTasks "upload"
 
 // Definition von Variablen
 def tmpDir = buildDir.toString()
