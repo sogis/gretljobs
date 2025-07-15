@@ -25,13 +25,11 @@ ext {
     // Create DB-variables for sql-files
     dbHostEdit = dbUriEdit.substring(dbUriEdit.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
     dbDatabaseEdit = dbUriEdit.substring(dbUriEdit.lastIndexOf("/") + 1)
-    //dbConnectionStringEdit = "'dbname=$dbDatabaseEdit user=$dbUserEdit password=$dbPwdEdit host=$dbHostEdit'"
-    dbConnectionStringEdit = "'dbname=edit user=bjsvwbur password=Hogwarts2013A? host=geodb.rootso.org'"
+    dbConnectionStringEdit = "'dbname=$dbDatabaseEdit user=$dbUserEdit password=$dbPwdEdit host=$dbHostEdit'"
 
     dbHostPub = dbUriPub.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastIndexOf("/"))
     dbDatabasePub = dbUriPub.substring(dbUriPub.lastIndexOf("/") + 1)
-    //dbConnectionStringPub = "'dbname=$dbDatabasePub user=$dbUserPub password=$dbPwdPub host=$dbHostPub'"
-    dbConnectionStringPub = "'dbname=pub user=bjsvwbur password=Hogwarts2013A? host=geodb.rootso.org'"
+    dbConnectionStringPub = "'dbname=$dbDatabasePub user=$dbUserPub password=$dbPwdPub host=$dbHostPub'"
 }
 
 ssh.settings {
