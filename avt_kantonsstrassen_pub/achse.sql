@@ -1,0 +1,9 @@
+SELECT 
+    achsenumme, 
+    achsename, 
+    achstyp, 
+    achstypnam, 
+    geometrie
+FROM 
+    avt_kantonsstrassen_staging_v1.achse
+;

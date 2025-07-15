@@ -1,0 +1,24 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'de.undercouch.download'
+apply plugin: 'ch.so.agi.gretl'
+
+
+defaultTasks 'publishEdit'
+
+
+task publishEdit(type: Publisher){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dataIdent = "ch.so.agi.dmav.relational.dauerndebodenverschiebungen"
+    dbSchema = "agi_dmav_dauerndebodenverschiebungen_v1"
+    userFormats = false
+    region = ".*" // Wähle alle datasets aus
+    
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
