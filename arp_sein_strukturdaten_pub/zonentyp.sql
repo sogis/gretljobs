@@ -242,7 +242,7 @@ create table export.zonentyp_statpop_array as
     select 
 		typ_kt,
 		bfs_nr,
-    	sum(anzahl) as popcount,
+    	sum(anzahl)::integer as popcount,
     	jsonb_agg(jsonb_build_object(
 	        '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Altersklasse_5j',
 	        'Kategorie_Id', classagefiveyears,
