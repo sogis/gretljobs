@@ -44,7 +44,7 @@ mutationen AS
             ELSE TO_DATE(mutation.endetechnbereit, 'YYYY-MM-DD')
         END AS endetechnbereit,
         mutation.istprojektmutation,
-        ST_Collect(ST_MakeValid(ST_CurveToLine(projliegenschaft.geometrie, 6, 0, 1))) AS geometrie    
+        ST_CollectionExtract(ST_Collect(ST_MakeValid(projliegenschaft.geometrie)), 3) AS geometrie    
     FROM 
         agi_dm01avso24.liegenschaften_lsnachfuehrung AS nf
         LEFT JOIN agi_dm01avso24.liegenschaften_projgrundstueck AS projgrundstueck

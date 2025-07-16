@@ -1,3 +1,3 @@
 DELETE FROM
-    avt_mehrjahresplanung_v1.projekte_projekt
+    avt_mehrjahresplanung_v2.projekte_projekt
 ;

@@ -1,0 +1,1 @@
+DELETE FROM alw_bund_hanglagen_allgemein_v2.hl_allgemein;

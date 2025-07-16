@@ -46,8 +46,8 @@ geometer AS
         nfgemeinde.bfsnr,
         standort.firma
     FROM
-        agi_av_gb_admin_einteilung.nachfuehrngskrise_gemeinde AS nfgemeinde
-        LEFT JOIN agi_av_gb_admin_einteilung.nachfuehrngskrise_standort AS standort
+        agi_av_gb_administrative_einteilungen_v2.nachfuehrngskrise_gemeinde AS nfgemeinde
+        LEFT JOIN agi_av_gb_administrative_einteilungen_v2.nachfuehrngskrise_standort AS standort
         ON nfgemeinde.r_standort = standort.t_id      
 ),
 controlling AS 

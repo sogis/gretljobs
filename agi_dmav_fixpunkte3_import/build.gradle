@@ -1,0 +1,35 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.tasks.Curl.MethodType
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'publishEdit'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+task importXtfFile(type: Ili2pgReplace) {
+    description = 'Importiert die heruntergeladenen INTERLIS-Datei einer Gemeinde (BFS-Nr.) in das Schema agi_dmav_fixpunkte3_v1.'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'agi_dmav_fixpunkte3_v1'
+    models = 'DMAV_FixpunkteAVKategorie3_V1_0'
+    dataset = dataFile
+    datasetSubstring = 0..4
+    dataFile = fileTree(dir: '/work/datahub/DMAV_FixpunkteAVKategorie3_V1_0', include: '*.xtf')
+    disableValidation = true
+}
+
+task publishEdit(type: Publisher, dependsOn: importXtfFile){
+    dataIdent = 'ch.so.agi.dmav.relational.fixpunkteavkategorie3'
+    modelsToPublish = 'DMAV_FixpunkteAVKategorie3_V1_0'
+    region = '.*'
+    sourcePath = file('/work/datahub/DMAV_FixpunkteAVKategorie3_V1_0/dummy.xtf')
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+}

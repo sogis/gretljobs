@@ -90,7 +90,7 @@ ext.datasets = []
 // datasets.add(new Dataset("SO_AGEM_Fila_20190318", "agem_fila", dbEdit, "ch.so.agem.fila_edit"))
 // datasets.add(new Dataset("DM08BaulinienSOLV95", "agi_av_baulinien_ng", dbEdit, "ch.so.agi.av_baulinien_edit"))
 // datasets.add(new Dataset("SO_AGI_AVGB_abgleich_import_20210429", "agi_av_gb_abgleich_import", dbEdit, "ch.so.agi.av_gb_abgleich_edit"))
-// datasets.add(new Dataset("SO_AGI_AV_GB_Administrative_Einteilungen_20180613", "agi_av_gb_admin_einteilung", dbEdit, "ch.so.agi.av_gb_admin_einteilung_edit"))
+// datasets.add(new Dataset("SO_AGI_AV_GB_Administrative_Einteilungen_20180613", "agi_av_gb_administrative_einteilungen_v2", dbEdit, "ch.so.agi.av_gb_admin_einteilung_edit"))
 // datasets.add(new Dataset("SO_AGI_AV_KASO_abgleich_import_20210429", "agi_av_kaso_abgleich_import", dbEdit, "ch.so.agi.av_kaso_abgleich_edit"))
 // datasets.add(new Dataset("SO_AGI_MOCheckSO_20200715", "agi_av_mocheckso", dbEdit, "ch.so.agi.av_mocheckso_edit"))
 // datasets.add(new Dataset("GB2AV", "agi_gb2av", dbEdit, "ch.so.agi.gb2av_edit"))
@@ -237,7 +237,7 @@ datasets.add(new Dataset("SO_ARP_Nutzungsvereinbarung_Publikation_20170223", "ar
 // datasets.add(new Dataset("SO_ARP_Richtplan_Publikation_20220630", "arp_richtplan_pub_v1", dbPub, "ch.so.arp.richtplan", true)) 
 
 datasets.add(new Dataset("SO_AVT_Groblaermkataster_20190709", "avt_groblaermkataster_pub", dbPub, "ch.so.avt.groblaermkataster", true)) 
-datasets.add(new Dataset("SO_AVT_Kantonsstrassen_Publikation_20200707", "avt_kantonsstrassen_pub", dbPub, "ch.so.avt.kantonsstrassen", true)) 
+datasets.add(new Dataset("SO_AVT_Kantonsstrassen_Publikation_20250521", "avt_kantonsstrassen_pub_v1", dbPub, "ch.so.avt.kantonsstrassen", true))
 datasets.add(new Dataset("SO_AVT_Kunstbauten_Publikation_20220207", "avt_kunstbauten_pub_v1", dbPub, "ch.so.avt.kunstbauten", true)) 
 datasets.add(new Dataset("SO_AVT_Oeffentlicher_Verkehr_20210205", "avt_oeffentlicher_verkehr_pub", dbPub, "ch.so.avt.oeffentlicher_verkehr", true)) 
 datasets.add(new Dataset("SO_AVT_Oev_Gueteklassen_20220120", "avt_oev_gueteklassen_pub_v1", dbPub, "ch.so.avt.oev_gueteklassen", true)) 
