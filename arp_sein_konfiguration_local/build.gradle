@@ -36,12 +36,16 @@ ssh.settings {
     knownHosts = allowAnyHosts
 }
 
-// task-list for testing
+// $$ task-list for testing - delete when job is finished
 def TestRun1 = [
+    ':03_collect_data:last'
+]
+
+def TestRun2 = [
     ':04_processing_data:last'
 ]
 
-// task to run (see defaultTask)
+// $$ task to run (see defaultTask) - delete when job is finished
 task standardRun(){
-    dependsOn TestRun1
+    dependsOn TestRun2
 }
