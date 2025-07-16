@@ -2,7 +2,18 @@
 
 -- Gemeinde-Flächenattribute aus Parzellen ableiten
 drop table if exists export.gemeinde_basis cascade;
-create table export.gemeinde_basis as
+
+create table export.gemeinde_basis (
+	geometrie					public.geometry(MultiPolygon, 2056),
+	gemeindename				text,
+	bfs_nr						integer,
+	flaeche						numeric,
+	flaeche_bebaut				numeric,
+	flaeche_unbebaut			numeric,
+	flaeche_teilweise_bebaut	numeric
+);
+
+insert into export.gemeinde_basis
 	select
 		g.geometrie,
 	    g.gemeindename,
@@ -14,21 +25,28 @@ create table export.gemeinde_basis as
 	from import.hoheitsgrenzen_gemeindegrenze g
 	join export.parzellen_basis p on g.bfs_gemeindenummer = p.bfs_nr
 	group by g.geometrie, g.gemeindename, g.bfs_gemeindenummer
-	;
+;
 
 create index on export.gemeinde_basis using gist (geometrie);
 create index on export.gemeinde_basis (bfs_nr);
 
 -- Gemeinde x Bodenbedeckung
 drop table if exists export.gemeinde_bodenbedeckung cascade;
-create table export.gemeinde_bodenbedeckung as
+
+create table export.gemeinde_bodenbedeckung (
+    bfs_nr			integer,
+    kategorie_text	text,
+    flaeche_agg		numeric
+);
+
+insert into export.gemeinde_bodenbedeckung
 	select
 	    bfs_nr,
 	    kategorie_text,
 	    sum(flaeche_agg) as flaeche_agg
 	from export.parzellen_bodenbedeckung
 	group by bfs_nr, kategorie_text
-	;
+;
 
 create index on export.gemeinde_bodenbedeckung (bfs_nr);
 
@@ -36,31 +54,31 @@ create index on export.gemeinde_bodenbedeckung (bfs_nr);
 drop table if exists export.gemeinde_grundnutzungen_array cascade;
 create table export.gemeinde_grundnutzungen_array as
 	with zonentyp_basis_agg as (
-	    SELECT
+	    select
 	        bfs_nr,
 	        typ_kt,
 	        typ_bund,
             flaeche,
-	        SUM(flaeche) OVER (PARTITION BY bfs_nr, typ_bund) AS flaeche_bund_agg
-	    FROM export.zonentyp_basis
+	        sum(flaeche) over (partition by bfs_nr, typ_bund) as flaeche_bund_agg
+	    from export.zonentyp_basis
 	)
 	select
 		bfs_nr,
-	    jsonb_agg(jsonb_BUILD_OBJECT(
+	    jsonb_agg(jsonb_build_object(
 	    	'@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Grundnutzung_Kanton',
 	    	'Kategorie_Text', typ_kt,
 	    	'Flaeche', round(flaeche::numeric, 2)
 	    )) as grundnutzungen_kanton,
-	    jsonb_agg(distinct jsonb_BUILD_OBJECT(
+	    jsonb_agg(distinct jsonb_build_object(
 	        '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Grundnutzung_Bund',
 	        'Kategorie_Text', typ_bund,
 	        'Flaeche', round(flaeche_bund_agg::numeric, 2)
 	    )) as grundnutzungen_bund
-	FROM zonentyp_basis_agg
+	from zonentyp_basis_agg
 	group by bfs_nr
-	;
+;
 
--- BODENBEDECKUNG: Aggregiert auf Gemeinde-Ebene (Array)
+-- bodenbedeckung: aggregiert auf gemeinde-ebene (array)
 drop table if exists export.gemeinde_bodenbedeckungen_array cascade;
 create table export.gemeinde_bodenbedeckungen_array as
 	select
@@ -73,7 +91,7 @@ create table export.gemeinde_bodenbedeckungen_array as
 	from export.gemeinde_bodenbedeckung
 	where round(flaeche_agg::numeric, 2) > 0
 	group by bfs_nr
-	;
+;
 
 -- GWR: Gebäudedaten aggregiert auf Gemeinde-Ebene (Arrays)
 drop table if exists export.gemeinde_gwr_array cascade;
@@ -81,95 +99,119 @@ create table export.gemeinde_gwr_array as
 	select
 	    bfs_nr,
 	    (
-	        SELECT jsonb_agg(jsonb_build_object(
+	        select jsonb_agg(jsonb_build_object(
 	            '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Gebaeudekategorie',
 	            'Kategorie_Id', gkat_group.gkat,
 	            'Kategorie_Text', gkat_group.gkat_txt,
 	            'Anzahl', gkat_group.anzahl
 	        ))
-	        FROM (
-	            SELECT gkat, gkat_txt, COUNT(*) as anzahl
-	            FROM export.gebaeude g2
-	            WHERE g2.bfs_nr = g1.bfs_nr
+	        from (
+	            select gkat, gkat_txt, count(*) as anzahl
+	            from export.gebaeude g2
+	            where g2.bfs_nr = g1.bfs_nr
 	            and gkat is not null
-	            GROUP BY gkat, gkat_txt
+	            group by gkat, gkat_txt
 	        ) gkat_group
 	    ) gebaeudekategorien,
 	    (
-	        SELECT jsonb_agg(jsonb_build_object(
+	        select jsonb_agg(jsonb_build_object(
 	            '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Gebaeudeklasse_10',
 	            'Kategorie_Id', gklas_group.gklas_10,
 	            'Kategorie_Text', gklas_group.gklas_10_txt,
 	            'Anzahl', gklas_group.anzahl
 	        ))
-	        FROM (
-	            SELECT gklas_10, gklas_10_txt, COUNT(*) as anzahl
-	            FROM export.gebaeude g2
-	            WHERE g2.bfs_nr = g1.bfs_nr
+	        from (
+	            select gklas_10, gklas_10_txt, count(*) as anzahl
+	            from export.gebaeude g2
+	            where g2.bfs_nr = g1.bfs_nr
 	            and gklas_10 is not null
-	            GROUP BY gklas_10, gklas_10_txt
+	            group by gklas_10, gklas_10_txt
 	        ) gklas_group
 	    ) gebaeudeklassen_10,
 	    (
-	        SELECT jsonb_agg(jsonb_build_object(
+	        select jsonb_agg(jsonb_build_object(
 	            '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Gebaeudebauperiode',
 	            'Kategorie_Id', gbaup_group.gbaup,
 	            'Kategorie_Text', gbaup_group.gbaup_txt,
 	            'Anzahl', gbaup_group.anzahl
 	        ))
-	        FROM (
-	            SELECT gbaup, gbaup_txt, COUNT(*) as anzahl
-	            FROM export.gebaeude g2
-	            WHERE g2.bfs_nr = g1.bfs_nr
+	        from (
+	            select gbaup, gbaup_txt, count(*) as anzahl
+	            from export.gebaeude g2
+	            where g2.bfs_nr = g1.bfs_nr
 	            and gbaup is not null
-	            GROUP BY gbaup, gbaup_txt
+	            group by gbaup, gbaup_txt
 	        ) gbaup_group
 	    ) gebaeudebauperioden,
 	    (
-	        SELECT jsonb_agg(jsonb_build_object(
+	        select jsonb_agg(jsonb_build_object(
 	            '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Anzahl_Zimmer',
 	            'Kategorie_Id', wazim_group.wazim_cat,
 	            'Kategorie_Text', case when wazim_cat >= 6 then '6+ Zimmer' else concat(wazim_cat, ' Zimmer') end,
 	            'Anzahl', wazim_group.anzahl
 	        ))
-	        FROM (
-	            SELECT 
+	        from (
+	            select 
 	            	case when wazim >= 6 then 6 else wazim end as wazim_cat,
-	            	COUNT(*) as anzahl
-	            FROM export.wohnung w
-	            WHERE w.bfs_nr = g1.bfs_nr
+	            	count(*) as anzahl
+	            from export.wohnung w
+	            where w.bfs_nr = g1.bfs_nr
 	            and wazim is not null
-	            GROUP by case when wazim >= 6 then 6 else wazim end
+	            group by case when wazim >= 6 then 6 else wazim end
 	        ) wazim_group
 	    ) verteilung_anzahl_zimmer
-    FROM export.gemeinde_basis g1
-	;
+    from export.gemeinde_basis g1
+;
 
 -- GWR: Gebäudedaten aggregiert auf Zonenschild-Ebene (Summen und Anzahlen)
 drop table if exists export.gemeinde_gwr_geb_agg cascade;
-create table export.gemeinde_gwr_geb_agg as
-    SELECT
+
+create table export.gemeinde_gwr_geb_agg (
+    bfs_nr						integer,
+    total_gebaeude				integer,
+    flaeche_gebaeude			numeric,
+    flaeche_gebaeude_anz_null	integer,
+    total_geschosse				integer,
+    anzahl_geschosse_avg		numeric,
+    anzahl_geschosse_anz_null	integer   
+);
+
+insert into export.gemeinde_gwr_geb_agg
+    select
         bfs_nr,
-        COUNT(egid) AS total_gebaeude,
+        count(egid) as total_gebaeude,
         sum(garea) as flaeche_gebaeude,
-        COUNT(*) FILTER (WHERE garea IS NULL) AS flaeche_gebaeude_anz_null,
-        SUM(gastw) AS total_geschosse,
-        round(AVG(gastw),2) AS anzahl_geschosse_avg,
-        COUNT(*) FILTER (WHERE gastw IS NULL) AS anzahl_geschosse_anz_null
-    FROM export.gebaeude
-    GROUP BY bfs_nr
+        count(*) filter (where garea is null) as flaeche_gebaeude_anz_null,
+        sum(gastw) as total_geschosse,
+        round(avg(gastw),2) as anzahl_geschosse_avg,
+        count(*) filter (where gastw is null) as anzahl_geschosse_anz_null
+    from export.gebaeude
+    group by bfs_nr
     ;
 
  -- GWR: Wohnungsdaten aggregiert auf Zonentyp-Ebene (Summen und Anzahlen)
 drop table if exists export.gemeinde_gwr_wohn_agg cascade;
-create table export.gemeinde_gwr_wohn_agg as
+
+create table export.gemeinde_gwr_wohn_agg (
+    bfs_nr						integer,
+	total_wohnungen				integer,
+    anzahl_wohnungen_avg		numeric,
+	flaeche_wohnungen			numeric,
+	flaeche_wohnung_avg			numeric,
+	flaeche_wohnung_anz_null	integer,
+	total_zimmer				integer,
+	anzahl_zimmer_avg			numeric,
+	anzahl_zimmer_anz_null		integer
+);
+
+insert into export.gemeinde_gwr_wohn_agg
 	select
 		bfs_nr,
-		COUNT(ewid) as total_wohnungen,
-        CASE 
-            WHEN COUNT(DISTINCT egid) = 0 THEN 0 
-            ELSE round((COUNT(DISTINCT ewid) / COUNT(DISTINCT egid)),2)
-        END AS anzahl_wohnungen_avg,
+		count(ewid) as total_wohnungen,
+        case 
+            when count(distinct egid) = 0 then 0 
+            else round((count(distinct ewid) / count(distinct egid)),2)
+        end as anzahl_wohnungen_avg,
 		sum(warea) as flaeche_wohnungen,
 		round(avg(warea),2) as flaeche_wohnung_avg,
 		count(*) filter (where warea is null) flaeche_wohnung_anz_null,
@@ -178,12 +220,12 @@ create table export.gemeinde_gwr_wohn_agg as
 		count(*) filter (where wazim is null) anzahl_zimmer_anz_null
 	from export.wohnung
 	group by bfs_nr
-	;
+;
 
 -- STATPOP: Aggregiert auf Gemeinde-Ebene
 drop table if exists export.gemeinde_statpop_array cascade;
 create table export.gemeinde_statpop_array as
-    SELECT 
+    select 
 		bfs_nr,
     	sum(anzahl) as popcount,
     	jsonb_agg(jsonb_build_object(
@@ -197,13 +239,13 @@ create table export.gemeinde_statpop_array as
 			,
 	        'Anzahl', anzahl
 		)) altersklassen_5j
-    FROM (
-        SELECT bfs_nr, classagefiveyears, COUNT(*) as anzahl
-        FROM export.statpop
+    from (
+        select bfs_nr, classagefiveyears, count(*) as anzahl
+        from export.statpop
         where classagefiveyears is not null
-        GROUP BY bfs_nr, classagefiveyears
+        group by bfs_nr, classagefiveyears
     ) agg
-    GROUP BY bfs_nr
+    group by bfs_nr
     ;
 
 -- STATENT: Aggregiert auf Gemeinde-Ebene
@@ -213,8 +255,8 @@ create table export.gemeinde_statent_agg as
 		bfs_nr,
 		sum(empfte) as beschaeftigte_fte
 	from export.statent
-	GROUP BY bfs_nr
-	;
+	group by bfs_nr
+;
 
 delete from export.strukturdaten_gemeinde;
 insert into export.strukturdaten_gemeinde (geometrie, 
@@ -242,8 +284,10 @@ select
 	a.bfs_nr as gemeindenummer,
     h.altersklassen_5j,
 	coalesce(i.beschaeftigte_fte, 0) as beschaeftigte_fte,
-	coalesce(a.flaeche / (h.popcount + i.beschaeftigte_fte), 0) as raumnutzendendichte,
-	coalesce((h.popcount + i.beschaeftigte_fte) / a.flaeche * 10000, 0) as flaechendichte,
+	-- Raumnutzendendichte: division by zero vermeiden mit NULLIF
+	a.flaeche / nullif(coalesce(h.popcount, 0) + coalesce(i.beschaeftigte_fte, 0), 0) as raumnutzendendichte,
+	-- Flächendichte: Umrechnung von m2 auf ha = Faktor 10'000
+	(coalesce(h.popcount, 0) + coalesce(i.beschaeftigte_fte, 0)) / a.flaeche * 10000 as flaechendichte,
 	grundnutzungen_kanton,
 	grundnutzungen_bund,
 	c.gebaeudekategorien,
