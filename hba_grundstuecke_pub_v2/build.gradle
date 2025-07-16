@@ -26,4 +26,7 @@ task validateCsv(type: CsvValidator, dependsOn: copyToBuildDir) {
 
 /*
 docker compose run --rm -u $UID gretl --project-dir=hba_grundstuecke_pub_v2
+
+COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
+  gretl -PtopicName=hba_grundstuecke -PschemaDirName=schema createSchema configureSchema
 */
