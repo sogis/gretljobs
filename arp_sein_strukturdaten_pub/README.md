@@ -17,8 +17,13 @@ Datenebene notwendig sind, müssen jedoch in der festgelegten Reihenfolge ausgef
 da Zwischenresultate wiederverwendet werden. Beispielsweise wird der Verschnitt der Bauzonenstatistik mit der 
 Bodenbedeckung nur einmal auf Parzellen-Ebene ausgeführt und das Ergebnis hochaggregiert.
 
+$td Geteilte Zwischenergebnisse auslagern, da sie zu mehreren SQL-Dateien gehören?
+
 ## Schedule
 
 Ausführung jedes Monatsende anschliessend an den Job `arp_auswertung_nutzungsplanung_pub`, welcher die 
 Bauzonenstatistik aktualisiert. Diese Abhängigkeit ist in der Datei `job.properties` über den Parameter 
 `triggers.upstream` abgebildet.
+
+$td Info: triggers.upstream ist eine "Wackel-Abhängigkeit". Wäre Multiproject-Build "näher bei" 
+arp_auswertung_nutzungsplanung_pub eine Variante?

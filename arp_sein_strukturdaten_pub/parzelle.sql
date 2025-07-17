@@ -3,6 +3,9 @@
 
 -- GRUNDLAGEN -------------------------------------------------------------------------
 -- Mapping von GWR-Gebäudeklassen-Codes und -Beschreibungen
+-- $td Richtlinien durchschauen und anpassen. Beispielsweise Keywords UPPERCASE
+-- $td Allgemein: Versuchen, klare und darum nicht zu kurze namen für die CTE's zu finden
+-- $td Datei ist deutlich zu gross. Auseinanderdividieren, beispielsweise eine Datei pro Temp-Tabelle. Dateinahmen wohlüberlegt wählen.
 drop table if exists export.gklas_10_map cascade;
 
 create table export.gklas_10_map (
@@ -53,7 +56,7 @@ insert into export.parzellen_basis
 			-- MultiPoint zusammensetzen (benötigt in der Zonenschild-Berechnung)
 			ST_Collect(pip) as pip
 		from (
-			select 
+			select -- $td Auslagern in CTE und bewusst benennen
 				t_ili_tid,
 				bfs_nr,
 				grundnutzung_typ_kt,
@@ -79,7 +82,7 @@ insert into export.parzellen_basis
 			flaeche, 
 			pip
 	    from baustat
-	    union
+	    union -- $td union all ... und falls nicht bekannt: union funktioniert bei Position, und nicht name
 	    select
 			t_ili_tid, 
 			bfs_nr, 
@@ -100,7 +103,11 @@ insert into export.parzellen_basis
 	    substring(typ_kt, 2, 2) as typ_bund,
 	    bebauungsstand,
 	    flaeche,
-	    case when bebauungsstand = 'bebaut' then flaeche else 0 end as flaeche_bebaut,
+		-- $td formatierung wie unten folgend
+	    case 
+			when bebauungsstand = 'bebaut' then flaeche 
+			else 0 
+		end as flaeche_bebaut,
 	    case when bebauungsstand = 'unbebaut' then flaeche else 0 end as flaeche_unbebaut,
 	    case when bebauungsstand = 'teilweise_bebaut' then flaeche else 0 end as flaeche_teilweise_bebaut,
 		pip
@@ -211,7 +218,7 @@ insert into export.wohnung
 	    w.warea,       -- Wohnungsfläche
 	    w.wazim        -- Anzahl Zimmer
 	from export.gebaeude g
-	left join import.gwr_wohnung w using (egid)
+	left join import.gwr_wohnung w using (egid) -- $td "using" nicht so gebräuchlich - ist std sql?
 ;
 
 create index on export.wohnung using gist (geometrie);
@@ -308,7 +315,9 @@ create table export.parzellen_bodenbedeckungen_array as
 -- GWR GEBÄUDE: Aggregiert auf Parzellen-Ebene (Arrays)
 drop table if exists export.parzellen_gwr_array cascade;
 create table export.parzellen_gwr_array as
-	select
+-- $td Deutlich zu tiefe Schachtelung von select statements. CTE einsetzen
+-- $td Zusammen brainstormen, wie dies umgeschrieben werden kann
+	select 
 	    t_ili_tid,
 	    (
 	        select jsonb_agg(jsonb_build_object(
@@ -318,11 +327,26 @@ create table export.parzellen_gwr_array as
 	            'Anzahl', gkat_group.anzahl
 	        ))
 	        from (
+				-- $td attribute, tabellen immer auf neue zeile
+				/*
 	            select gkat, gkat_txt, count(*) as anzahl
 	            from export.gebaeude g2
 	            where g2.t_ili_tid = g1.t_ili_tid
 	            and gkat is not null
 	            group by gkat, gkat_txt
+				*/
+				select 
+					gkat, 
+					gkat_txt, 
+					count(*) as anzahl
+	            from 
+					export.gebaeude g2
+	            where 
+					g2.t_ili_tid = g1.t_ili_tid
+	            and 
+					gkat is not null
+	            group by 
+					gkat, gkat_txt
 	        ) gkat_group
 	    ) gebaeudekategorien,
 	    (
@@ -481,7 +505,7 @@ insert into export.strukturdaten_parzelle (geometrie,
 	bodenbedeckungen
 	)
 select
-    -- "coalesce" wird angewendet, um NULL Werte zu vemeiden, wenn kein Objekt gejoined ist (Gebäude, Wohnung, Person, Firma)
+    -- "coalesce" wird angewendet, um NULL Werte zu vermeiden, wenn kein Objekt gejoined ist (Gebäude, Wohnung, Person, Firma)
 	a.geometrie,
 	a.flaeche,
 	a.flaeche_bebaut,

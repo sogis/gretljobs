@@ -29,6 +29,7 @@ task createExtension(type: SqlExecutor){
     sqlFiles = ['create_extension.sql']
 }
 
+// $td models zeilenumbruch
 // Schema "import" für Quelldaten in processing DB anlegen
 task createImportSchema(type: Ili2pgImportSchema, dependsOn: createExtension){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -93,6 +94,7 @@ task copyDataFromEdit(type: Db2Db, dependsOn: copyDataFromPub){
     ];
 }
 
+// $td Zusammenfassen in einen Executor, da es immer um Raumeinheit geht?
 // Raumeinheit Parzelle aufbereiten
 task processParzellen(type: SqlExecutor, dependsOn: copyDataFromEdit) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -117,6 +119,7 @@ task processGemeinden(type: SqlExecutor, dependsOn: processZonentypen) {
     sqlFiles = ['gemeinde.sql']
 }
 
+// $td Gut: Gruppierung der zusammengehörenden SQL in Ordner export_to_pub
 // Ergebnis tabellenweise in Zielschema kopieren (persistieren)
 task copyDataFromProcessing(type: Db2Db, dependsOn: [processZonenschilde, processGemeinden]){
     sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -138,6 +141,7 @@ task exportXtf(type: Ili2pgExport, dependsOn: copyDataFromProcessing){
     models = "SO_ARP_SEin_Strukturdaten_Publikation_20250407"
 }
 
+// $td .../test/ ist das SEIN Testsystem? -> Pfadvariable Umgebungsabhängig setzen
 // XTF-Datei auf den SFTP-Server hochladen
 tasks.register('upload') {
     dependsOn 'exportXtf'
