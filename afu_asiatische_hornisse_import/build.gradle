@@ -1,0 +1,28 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+description = "GRETL-Job für den Import von Sichtungsmeldungen der Asiatischen Hornisse vom infofauna WFS"
+
+defaultTasks 'transferAfuAsiatischeHornissePub','refreshSolr','updateSearchIndex'
+
+def dbPath = "$buildDir/hornissen.duckdb"  // Ordner muss bestehen
+def dbUriDuckDB = "jdbc:duckdb:$dbPath"
+def dbFile = new File(dbPath)
+
+if (dbFile.exists()) {
+    dbFile.delete()
+}
+
+// query WFS
+tasks.register('GetFromWFSAndTransform', SqlExecutor){
+    database = [dbUriDuckDB]
+    sqlParameters = [
+        connectionStringEdit : dbConnectionStringEdit as String
+        ]
+    sqlFiles = files(
+        load_extension_spatial,
+        'some_duckdb_query.sql'
+    )
+}
