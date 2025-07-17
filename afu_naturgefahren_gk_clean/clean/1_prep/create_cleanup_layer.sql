@@ -1,5 +1,5 @@
-DROP VIEW IF EXISTS public.poly_cleanup_v;
 DROP TABLE IF EXISTS public.poly_cleanup;
+
 /* 
 Zentrale Bearbeitungstabelle, in welcher die Unterscheidung Gross-Kleinpolgon, 
 das Mapping Kleinpolygon -> Kleinpolygon -> Grosspolygon und das Geometrieupdate für die
@@ -22,19 +22,3 @@ CREATE TABLE public.poly_cleanup (
     CONSTRAINT poly_cleanup_pkey PRIMARY KEY (id)
 );
 CREATE INDEX sidx_poly_cleanup_geom ON public.poly_cleanup USING gist (geometrie);
-
-CREATE VIEW public.poly_cleanup_v AS
-SELECT 
-    id, 
-    COALESCE(_center_geom, geometrie) AS geometrie,
-    (_center_geom IS NOT NULL) AS geometrie_aktualisiert,
-    gefahrenstufe, 
-    _hazard_level,
-    _is_big,
-    _parent_id_ref,
-    _parent_level_diff,
-    _root_id_ref,
-    _node_position
-FROM 
-    public.poly_cleanup
-;

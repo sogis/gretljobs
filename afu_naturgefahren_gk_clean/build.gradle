@@ -77,18 +77,21 @@ task logModifications(type: SqlExecutor, dependsOn: mergeSmallPoly){
     sqlFiles = files('clean/3_post/log_modifications.sql')
 }
 
-task _createVerificationTable(type: SqlExecutor, dependsOn: logModifications){
+task _createReviewTables(type: SqlExecutor, dependsOn: logModifications){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('_tmp/_create_verification_table.sql')
+    sqlFiles = files(
+        '_tmp/_create_verification_table.sql',
+        '_tmp/_create_cleanup_layer_gpkg.sql'
+    )
 }
 
-task _exportGpkg(type: GpkgExport, dependsOn: _createVerificationTable) {
+task _exportGpkg(type: GpkgExport, dependsOn: _createReviewTables) {
     doFirst{
         delete(file("$buildDir/clean_results.gpkg"))
     }
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     schemaName = "public"
-    srcTableName = ["poly_cleanup_v", "verification"]
+    srcTableName = ["poly_cleanup_gpkg", "verification"]
     dataFile = file("$buildDir/clean_results.gpkg")
     dstTableName = ["poly_cleanup", "verification"]
 }
