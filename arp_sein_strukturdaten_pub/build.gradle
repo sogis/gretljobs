@@ -7,7 +7,7 @@ apply plugin: 'org.hidetake.ssh'
 defaultTasks "upload"
 
 // Definition von Pfaden
-def xtfPath = "$buildDir/sein_strukturdaten.xtf"
+def xtfPath = "${buildDir}/sein_strukturdaten.xtf"
 def ftpPath = "/opt/daten/gis_arp_raumdaten/test/"  // tbd: produktives Verzeichnis = ?
 
 // Multiline-Text ist im Task nicht möglich, darum als Variable
