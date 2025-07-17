@@ -6,9 +6,19 @@ apply plugin: 'org.hidetake.ssh'
 
 defaultTasks "upload"
 
-// Definition von Variablen
-def tmpDir = buildDir.toString()
-def xtfPath = tmpDir + "/sein_strukturdaten.xtf"
+// Definition von Pfaden
+def xtfPath = "$buildDir/sein_strukturdaten.xtf"
+def ftpPath = "/opt/daten/gis_arp_raumdaten/test/"  // tbd: produktives Verzeichnis = ?
+
+// Multiline-Text ist im Task nicht möglich, darum als Variable
+def importModels = 
+    "SO_AGI_MOpublic_20240711;" +
+    "SO_AGI_GWR_Publikation_20241118;" +
+    "SO_ARP_STATPOP_STATENT_20221114;" +
+    "SO_ARP_Auswertungen_Nutzungsplanung_Publikation_20210126;" +
+    "SO_ARP_Nutzungsplanung_Publikation_20201005;" +
+    "SO_Hoheitsgrenzen_Publikation_20170626;" +
+    "SO_ARP_SEin_Konfiguration_20250115"
 
 // Definition des SFTP-Servers für den Datenupload
 remotes {
@@ -23,17 +33,16 @@ remotes {
     }
 }
 
-// Extension für die UUID-Erstellung aktivieren (uuid-ossp)
+// In der processing DB die Extension für die UUID-Erstellung aktivieren (uuid-ossp)
 task createExtension(type: SqlExecutor){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = ['create_extension.sql']
 }
 
-// $td models zeilenumbruch
 // Schema "import" für Quelldaten in processing DB anlegen
 task createImportSchema(type: Ili2pgImportSchema, dependsOn: createExtension){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    models = "SO_AGI_MOpublic_20240711;SO_AGI_GWR_Publikation_20241118;SO_ARP_STATPOP_STATENT_20221114;SO_ARP_Auswertungen_Nutzungsplanung_Publikation_20210126;SO_ARP_Nutzungsplanung_Publikation_20201005;SO_Hoheitsgrenzen_Publikation_20170626;SO_ARP_SEin_Konfiguration_20250115"
+    models = importModels
     dbschema = "import"
     nameByTopic = true
     beautifyEnumDispName = true
@@ -94,7 +103,7 @@ task copyDataFromEdit(type: Db2Db, dependsOn: copyDataFromPub){
     ];
 }
 
-// $td Zusammenfassen in einen Executor, da es immer um Raumeinheit geht?
+// tbd: SQL files aufsplitten
 // Raumeinheit Parzelle aufbereiten
 task processParzellen(type: SqlExecutor, dependsOn: copyDataFromEdit) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -119,36 +128,22 @@ task processGemeinden(type: SqlExecutor, dependsOn: processZonentypen) {
     sqlFiles = ['gemeinde.sql']
 }
 
-// $td Gut: Gruppierung der zusammengehörenden SQL in Ordner export_to_pub
-// Ergebnis tabellenweise in Zielschema kopieren (persistieren)
-task copyDataFromProcessing(type: Db2Db, dependsOn: [processZonenschilde, processGemeinden]){
-    sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
-    transferSets = [
-        new TransferSet('export_to_pub/export_parzelle.sql', 'arp_sein_strukturdaten_pub_v1.parzelle', true),
-        new TransferSet('export_to_pub/export_zonentyp.sql', 'arp_sein_strukturdaten_pub_v1.zonentyp', true),
-        new TransferSet('export_to_pub/export_zonenschild.sql', 'arp_sein_strukturdaten_pub_v1.zonenschild', true),
-        new TransferSet('export_to_pub/export_gemeinde.sql', 'arp_sein_strukturdaten_pub_v1.gemeinde', true)
-    ];
-}
-
 // Ergebnis als XTF-Datei exportieren
-task exportXtf(type: Ili2pgExport, dependsOn: copyDataFromProcessing){
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    dbschema = "arp_sein_strukturdaten_pub_v1"
+task exportXtf(type: Ili2pgExport, dependsOn: [processZonenschilde, processGemeinden]){
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    dbschema = "export"
     disableValidation = false
     dataFile = xtfPath
     models = "SO_ARP_SEin_Strukturdaten_Publikation_20250407"
 }
 
-// $td .../test/ ist das SEIN Testsystem? -> Pfadvariable Umgebungsabhängig setzen
 // XTF-Datei auf den SFTP-Server hochladen
 tasks.register('upload') {
     dependsOn 'exportXtf'
     doLast {
         ssh.run {
             session(remotes.sftpServer) {
-                put from: xtfPath, into: "/opt/daten/gis_arp_raumdaten/test/"
+                put from: xtfPath, into: ftpPath
             }
         }
         println "File uploaded to FTP server"
