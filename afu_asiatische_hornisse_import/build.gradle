@@ -1,13 +1,14 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.Curl.MethodType
 
 apply plugin: 'ch.so.agi.gretl'
 
 description = "GRETL-Job für den Import von Sichtungsmeldungen der Asiatischen Hornisse vom infofauna WFS"
 
-defaultTasks 'transferAfuAsiatischeHornissePub','refreshSolr','updateSearchIndex'
+defaultTasks 'transformData'
 
-def dbPath = "$buildDir/hornissen.duckdb"  // Ordner muss bestehen
+def dbPath = "$buildDir/imported.duckdb"  // tbd: Ordner muss bestehen
 def dbUriDuckDB = "jdbc:duckdb:$dbPath"
 def dbFile = new File(dbPath)
 
@@ -15,14 +16,43 @@ if (dbFile.exists()) {
     dbFile.delete()
 }
 
-// query WFS
-tasks.register('GetFromWFSAndTransform', SqlExecutor){
+// Sichtungsmeldungen von Hornissen herunterladen
+// tbd: Abfrage auf Kt. SO BBOX plus Buffer und das laufende Jahr einschränken (so dass Daten für die Dauer einer Saison nachgeführt werden)
+tasks.register('downloadIndividuals', Curl) {
+    serverUrl = "https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=neovelutina:individuals&SRSNAME=urn:ogc:def:crs:EPSG::2056&outputFormat=application/json"
+    method = MethodType.GET
+    outputFile = file("$buildDir/individuals.geojson")
+    expectedStatusCode = 200
+    user = "${neovelutinaWfsUser}"
+    password = "${neovelutinaWfsPwd}"
+}
+
+// Sichtungsmeldungen von aktiven Nestern herunterladen
+// tbd: Abfrage auf Kt. SO BBOX plus Buffer und das laufende Jahr einschränken (so dass Daten für die Dauer einer Saison nachgeführt werden)
+tasks.register('downloadActiveNests', Curl) {
+    serverUrl = "https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=neovelutina:active_nests&SRSNAME=urn:ogc:def:crs:EPSG::2056&outputFormat=application/json"
+    method = MethodType.GET
+    outputFile = file("$buildDir/active_nests.geojson")
+    expectedStatusCode = 200
+    user = "${neovelutinaWfsUser}"
+    password = "${neovelutinaWfsPwd}"
+}
+
+// Sichtungsmeldungen von zerstörten Nestern herunterladen
+// tbd: Abfrage auf Kt. SO BBOX plus Buffer und das laufende Jahr einschränken (so dass Daten für die Dauer einer Saison nachgeführt werden)
+tasks.register('downloadUnactiveNests', Curl) {
+    serverUrl = "https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=neovelutina:unactive_nests&SRSNAME=urn:ogc:def:crs:EPSG::2056&outputFormat=application/json"
+    method = MethodType.GET
+    outputFile = file("$buildDir/unactive_nests.geojson")
+    expectedStatusCode = 200
+    user = "${neovelutinaWfsUser}"
+    password = "${neovelutinaWfsPwd}"
+}
+
+// Heruntergeladene Daten mit duckDB einlesen und transformieren
+tasks.register('transformData', SqlExecutor){
+    dependsOn = [downloadIndividuals, downloadActiveNests, downloadUnactiveNests]
     database = [dbUriDuckDB]
-    sqlParameters = [
-        connectionStringEdit : dbConnectionStringEdit as String
-        ]
-    sqlFiles = files(
-        load_extension_spatial,
-        'some_duckdb_query.sql'
-    )
+    sqlParameters = []
+    sqlFiles = files('dev.sql')
 }
