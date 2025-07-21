@@ -75,7 +75,7 @@ SET
 UPDATE
     afu_naturgefahren_mgdm_v1.hazard_mapping_synoptic_intensity 
 SET 
-    impact_zone = st_reducePrecision(impact_zone,0.001)
+    impact_zone = ST_SimplifyPreserveTopology(impact_zone,0.001) --st_reducePrecision produzierte Multipolygone. Deshalb simplify.
 ;
 
 DELETE FROM 
