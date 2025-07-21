@@ -1,5 +1,4 @@
 import ch.so.agi.gretl.tasks.*
-import ch.so.agi.gretl.api.TransferSet
 import ch.so.agi.gretl.tasks.Curl.MethodType
 
 apply plugin: 'ch.so.agi.gretl'
@@ -8,12 +7,20 @@ description = "GRETL-Job für den Import von Sichtungsmeldungen der Asiatischen 
 
 defaultTasks 'transformData'
 
-def dbPath = "$buildDir/imported.duckdb"  // tbd: Ordner muss bestehen
-def dbUriDuckDB = "jdbc:duckdb:$dbPath"
-def dbFile = new File(dbPath)
+def duckDbPath = "${buildDir}/imported.duckdb"  // tbd: Ordner muss bestehen
+def duckDbUri = "jdbc:duckdb:${duckDbPath}"
+def duckDbFile = file(duckDbPath)
 
-if (dbFile.exists()) {
-    dbFile.delete()
+def individualsPath = "${buildDir}/individuals.geojson"
+def activeNestsPath = "${buildDir}/active_nests.geojson"
+def unactiveNestsPath = "${buildDir}/unactive_nests.geojson"
+
+def individualsFile = file(individualsPath)
+def activeNestsFile = file(activeNestsPath)
+def unactiveNestsFile = file(unactiveNestsPath)
+
+if (duckDbFile.exists()) {
+    duckDbFile.delete()
 }
 
 // Sichtungsmeldungen von Hornissen herunterladen
@@ -21,10 +28,10 @@ if (dbFile.exists()) {
 tasks.register('downloadIndividuals', Curl) {
     serverUrl = "https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=neovelutina:individuals&SRSNAME=urn:ogc:def:crs:EPSG::2056&outputFormat=application/json"
     method = MethodType.GET
-    outputFile = file("$buildDir/individuals.geojson")
+    outputFile = individualsFile
     expectedStatusCode = 200
-    user = "${neovelutinaWfsUser}"
-    password = "${neovelutinaWfsPwd}"
+    user = neovelutinaWfsUser
+    password = neovelutinaWfsPwd
 }
 
 // Sichtungsmeldungen von aktiven Nestern herunterladen
@@ -32,10 +39,10 @@ tasks.register('downloadIndividuals', Curl) {
 tasks.register('downloadActiveNests', Curl) {
     serverUrl = "https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=neovelutina:active_nests&SRSNAME=urn:ogc:def:crs:EPSG::2056&outputFormat=application/json"
     method = MethodType.GET
-    outputFile = file("$buildDir/active_nests.geojson")
+    outputFile = activeNestsFile
     expectedStatusCode = 200
-    user = "${neovelutinaWfsUser}"
-    password = "${neovelutinaWfsPwd}"
+    user = neovelutinaWfsUser
+    password = neovelutinaWfsPwd
 }
 
 // Sichtungsmeldungen von zerstörten Nestern herunterladen
@@ -43,16 +50,22 @@ tasks.register('downloadActiveNests', Curl) {
 tasks.register('downloadUnactiveNests', Curl) {
     serverUrl = "https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=neovelutina:unactive_nests&SRSNAME=urn:ogc:def:crs:EPSG::2056&outputFormat=application/json"
     method = MethodType.GET
-    outputFile = file("$buildDir/unactive_nests.geojson")
+    outputFile = unactiveNestsFile
     expectedStatusCode = 200
-    user = "${neovelutinaWfsUser}"
-    password = "${neovelutinaWfsPwd}"
+    user = neovelutinaWfsUser
+    password = neovelutinaWfsPwd
 }
 
 // Heruntergeladene Daten mit duckDB einlesen und transformieren
 tasks.register('transformData', SqlExecutor){
     dependsOn = [downloadIndividuals, downloadActiveNests, downloadUnactiveNests]
-    database = [dbUriDuckDB]
-    sqlParameters = []
-    sqlFiles = files('dev.sql')
+    database = [duckDbUri]
+    sqlParameters = [
+        individuals_path: "'${individualsFile}'".toString(),
+        active_nests_path: "'${activeNestsFile}'".toString(),
+        unactive_nests_path: "'${unactiveNestsFile}'".toString()
+        ]
+    sqlFiles = files('create_duckdb_tables.sql')
 }
+
+// Daten in die Edit-DB kopieren (db2db; wie WKB zurück nach geometry? andere Lösung als via WKB?)
