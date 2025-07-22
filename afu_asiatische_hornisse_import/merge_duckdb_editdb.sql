@@ -1,0 +1,2 @@
+ATTACH ${editdb_connection_string} AS editdb (TYPE POSTGRES, READ_ONLY);
+

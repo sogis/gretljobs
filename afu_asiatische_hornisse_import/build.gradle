@@ -8,36 +8,41 @@ description = 'GRETL-Job für den Import von Sichtungsmeldungen der Asiatischen 
 
 defaultTasks 'copyToEditDb'
 
-/*
-WFS-Abfrage als cURL zum Testen (mit "active_nests" als Beispiel-Layer):
-curl --location 'https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=neovelutina%3Aactive_nests&SRSNAME=urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A2056&Filter=%3CFilter%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Ecanton%3C%2FPropertyName%3E%3CLiteral%3ESolothurn%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E&outputFormat=application%2Fjson' \
---header 'Authorization: Basic <neovelutinaWfsUser:neovelutinaWfsPwd>'
-*/
-
-// DuckDB Variablen
+// DuckDB
 def duckDbPath = "${buildDir}/imported.duckdb"
 def duckDbUri = "jdbc:duckdb:${duckDbPath}"
 def duckDbFile = file(duckDbPath)
 
-// WFS Variablen
+if (duckDbFile.exists()) {
+    duckDbFile.delete()
+    println 'Deleted existing DuckDB database.'
+}
+
+// EditDB
+def editDbHost = dbUriEdit.substring(dbUriPub.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
+def editDbDatabase = dbUriEdit.substring(dbUriEdit.lastIndexOf("/") + 1)
+def editDbConnectionString = "'dbname=$editDbDatabase user=$dbUserEdit password=$dbPwdEdit host=$editDbHost'"
+
+// WFS
 def wfsUrlEncodedFirstPart = 'https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?Filter=%3CFilter%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Ecanton%3C%2FPropertyName%3E%3CLiteral%3ESolothurn%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E&SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=neovelutina%3A'
 def wfsUrlEncodedThirdPart = '&SRSNAME=urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A2056&outputFormat=application%2Fjson'
 def wfsUrlIndividuals = wfsUrlEncodedFirstPart + 'individuals' + wfsUrlEncodedThirdPart
 def wfsUrlActiveNests = wfsUrlEncodedFirstPart + 'active_nests' + wfsUrlEncodedThirdPart
 def wfsUrlUnactiveNests = wfsUrlEncodedFirstPart + 'unactive_nests' + wfsUrlEncodedThirdPart
 
-// Pfade und Dateien
-def individualsPath = "${buildDir}/individuals.geojson"
-def activeNestsPath = "${buildDir}/active_nests.geojson"
-def unactiveNestsPath = "${buildDir}/unactive_nests.geojson"
+/*
+WFS-Abfrage als cURL zum Testen (mit "active_nests" als Beispiel-Layer):
+curl --location 'https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=neovelutina%3Aactive_nests&SRSNAME=urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A2056&Filter=%3CFilter%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Ecanton%3C%2FPropertyName%3E%3CLiteral%3ESolothurn%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E&outputFormat=application%2Fjson' \
+--header 'Authorization: Basic <neovelutinaWfsUser:neovelutinaWfsPwd>'
+*/
+
+// Dateipfade
+def individualsPath = "'${buildDir}/individuals.geojson'"
+def activeNestsPath = "'${buildDir}/active_nests.geojson'"
+def unactiveNestsPath = "'${buildDir}/unactive_nests.geojson'"
 def individualsFile = file(individualsPath)
 def activeNestsFile = file(activeNestsPath)
 def unactiveNestsFile = file(unactiveNestsPath)
-
-if (duckDbFile.exists()) {
-    println 'Found existing DuckDB database, deleting the database...'
-    duckDbFile.delete()
-}
 
 // Sichtungsmeldungen von Hornissen herunterladen
 // tbd: Abfrage auf das laufende Jahr einschränken (so dass Daten für die Dauer einer Saison nachgeführt werden)
@@ -72,23 +77,33 @@ tasks.register('downloadUnactiveNests', Curl) {
     password = neovelutinaWfsPwd
 }
 
-// Heruntergeladene Daten mit duckDB einlesen
+// Heruntergeladene Daten mit DuckDB einlesen
 // tbd: sql aufteilen
 tasks.register('loadDataToDuckDb', SqlExecutor){
     dependsOn = [downloadIndividuals, downloadActiveNests, downloadUnactiveNests]
     database = [duckDbUri]
     sqlParameters = [
-        individuals_path: "'${individualsFile}'".toString(),
-        active_nests_path: "'${activeNestsFile}'".toString(),
-        unactive_nests_path: "'${unactiveNestsFile}'".toString()
+        individuals_path: individualsPath as String,
+        active_nests_path: activeNestsPath as String,
+        unactive_nests_path: unactiveNestsPath as String
         ]
     sqlFiles = files('create_duckdb_tables.sql')
 }
 
-// Daten in die Edit-DB kopieren
+// Bestehende und heruntergeladene Daten in DuckDB zusammenführen
+tasks.register('mergeDataInDuckDb', SqlExecutor){
+    dependsOn 'loadDataToDuckDb'
+    database = [duckDbUri]
+    sqlParameters = [
+        editdb_connection_string : editDbConnectionString as String
+        ]
+    sqlFiles = files('merge_duckdb_editdb.sql')
+}
+
+// Zusammengeführte Daten in die Edit-DB zurückkopieren
 // tbd: das ist ein vorläufiger Entwicklungsstand; Ziel: merge mit bestehenden Daten anstatt overwrite
 tasks.register('copyToEditDb', Db2Db) {
-    dependsOn 'loadDataToDuckDb'
+    dependsOn 'mergeDataInDuckDb'
     sourceDb = [duckDbUri]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
