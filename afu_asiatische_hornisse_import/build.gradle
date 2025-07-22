@@ -1,32 +1,48 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.tasks.Curl.MethodType
+import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-description = "GRETL-Job für den Import von Sichtungsmeldungen der Asiatischen Hornisse vom infofauna WFS"
+description = 'GRETL-Job für den Import von Sichtungsmeldungen der Asiatischen Hornisse vom infofauna WFS'
 
-defaultTasks 'transformData'
+defaultTasks 'copyToEditDb'
 
-def duckDbPath = "${buildDir}/imported.duckdb"  // tbd: Ordner muss bestehen
+/*
+WFS-Abfrage als cURL zum Testen (mit "active_nests" als Beispiel-Layer):
+curl --location 'https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=neovelutina%3Aactive_nests&SRSNAME=urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A2056&Filter=%3CFilter%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Ecanton%3C%2FPropertyName%3E%3CLiteral%3ESolothurn%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E&outputFormat=application%2Fjson' \
+--header 'Authorization: Basic <neovelutinaWfsUser:neovelutinaWfsPwd>'
+*/
+
+// DuckDB Variablen
+def duckDbPath = "${buildDir}/imported.duckdb"
 def duckDbUri = "jdbc:duckdb:${duckDbPath}"
 def duckDbFile = file(duckDbPath)
 
+// WFS Variablen
+def wfsUrlEncodedFirstPart = 'https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?Filter=%3CFilter%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Ecanton%3C%2FPropertyName%3E%3CLiteral%3ESolothurn%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E&SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=neovelutina%3A'
+def wfsUrlEncodedThirdPart = '&SRSNAME=urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A2056&outputFormat=application%2Fjson'
+def wfsUrlIndividuals = wfsUrlEncodedFirstPart + 'individuals' + wfsUrlEncodedThirdPart
+def wfsUrlActiveNests = wfsUrlEncodedFirstPart + 'active_nests' + wfsUrlEncodedThirdPart
+def wfsUrlUnactiveNests = wfsUrlEncodedFirstPart + 'unactive_nests' + wfsUrlEncodedThirdPart
+
+// Pfade und Dateien
 def individualsPath = "${buildDir}/individuals.geojson"
 def activeNestsPath = "${buildDir}/active_nests.geojson"
 def unactiveNestsPath = "${buildDir}/unactive_nests.geojson"
-
 def individualsFile = file(individualsPath)
 def activeNestsFile = file(activeNestsPath)
 def unactiveNestsFile = file(unactiveNestsPath)
 
 if (duckDbFile.exists()) {
+    println 'Found existing DuckDB database, deleting the database...'
     duckDbFile.delete()
 }
 
 // Sichtungsmeldungen von Hornissen herunterladen
-// tbd: Abfrage auf Kt. SO BBOX plus Buffer und das laufende Jahr einschränken (so dass Daten für die Dauer einer Saison nachgeführt werden)
+// tbd: Abfrage auf das laufende Jahr einschränken (so dass Daten für die Dauer einer Saison nachgeführt werden)
 tasks.register('downloadIndividuals', Curl) {
-    serverUrl = "https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=neovelutina:individuals&SRSNAME=urn:ogc:def:crs:EPSG::2056&outputFormat=application/json"
+    serverUrl = wfsUrlIndividuals
     method = MethodType.GET
     outputFile = individualsFile
     expectedStatusCode = 200
@@ -35,9 +51,9 @@ tasks.register('downloadIndividuals', Curl) {
 }
 
 // Sichtungsmeldungen von aktiven Nestern herunterladen
-// tbd: Abfrage auf Kt. SO BBOX plus Buffer und das laufende Jahr einschränken (so dass Daten für die Dauer einer Saison nachgeführt werden)
+// tbd: Abfrage auf das laufende Jahr einschränken (so dass Daten für die Dauer einer Saison nachgeführt werden)
 tasks.register('downloadActiveNests', Curl) {
-    serverUrl = "https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=neovelutina:active_nests&SRSNAME=urn:ogc:def:crs:EPSG::2056&outputFormat=application/json"
+    serverUrl = wfsUrlActiveNests
     method = MethodType.GET
     outputFile = activeNestsFile
     expectedStatusCode = 200
@@ -46,9 +62,9 @@ tasks.register('downloadActiveNests', Curl) {
 }
 
 // Sichtungsmeldungen von zerstörten Nestern herunterladen
-// tbd: Abfrage auf Kt. SO BBOX plus Buffer und das laufende Jahr einschränken (so dass Daten für die Dauer einer Saison nachgeführt werden)
+// tbd: Abfrage auf das laufende Jahr einschränken (so dass Daten für die Dauer einer Saison nachgeführt werden)
 tasks.register('downloadUnactiveNests', Curl) {
-    serverUrl = "https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=neovelutina:unactive_nests&SRSNAME=urn:ogc:def:crs:EPSG::2056&outputFormat=application/json"
+    serverUrl = wfsUrlUnactiveNests
     method = MethodType.GET
     outputFile = unactiveNestsFile
     expectedStatusCode = 200
@@ -56,8 +72,9 @@ tasks.register('downloadUnactiveNests', Curl) {
     password = neovelutinaWfsPwd
 }
 
-// Heruntergeladene Daten mit duckDB einlesen und transformieren
-tasks.register('transformData', SqlExecutor){
+// Heruntergeladene Daten mit duckDB einlesen
+// tbd: sql aufteilen
+tasks.register('loadDataToDuckDb', SqlExecutor){
     dependsOn = [downloadIndividuals, downloadActiveNests, downloadUnactiveNests]
     database = [duckDbUri]
     sqlParameters = [
@@ -68,4 +85,14 @@ tasks.register('transformData', SqlExecutor){
     sqlFiles = files('create_duckdb_tables.sql')
 }
 
-// Daten in die Edit-DB kopieren (db2db; wie WKB zurück nach geometry? andere Lösung als via WKB?)
+// Daten in die Edit-DB kopieren
+// tbd: das ist ein vorläufiger Entwicklungsstand; Ziel: merge mit bestehenden Daten anstatt overwrite
+tasks.register('copyToEditDb', Db2Db) {
+    dependsOn 'loadDataToDuckDb'
+    sourceDb = [duckDbUri]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+        new TransferSet('select_duckdb_individuals.sql', 'afu_asiatische_hornisse_v2.asia_hornisse_sichtung', true, (String[])['geometrie:wkt:2056']),
+        new TransferSet('select_duckdb_nests.sql', 'afu_asiatische_hornisse_v2.asia_hornisse_nest', true, (String[])['geometrie:wkt:2056'])
+    ];
+}

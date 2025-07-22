@@ -1,11 +1,7 @@
 select
-	occurence_id        as import_occurrence_id,            -- sic!
-	nid_unique_id       as import_unique_nest_id,
-	null::text          as import_bienenstand_nr,           -- noch nicht verfügbar
-	null::int           as import_vor_10_uhr,				-- noch nicht verfügbar
-	null::int           as import_zwischen_10_und_13_uhr,   -- noch nicht verfügbar
-	null::int           as import_zwischen_13_und_17_uhr,	-- noch nicht verfügbar
-	null::int           as import_nach_17_uhr,			    -- noch nicht verfügbar
+	nid_id              as import_nest_id,
+    statut              as import_status,
+    null::date          as import_datum_behandlung,         -- noch nicht verfügbar
 	wkt                 as geometrie,
     materialentityid    as import_materialentity_id,
     date_decouverte     as import_datum_sichtung,
@@ -17,6 +13,6 @@ select
     null::text          as import_kontakt_mail,             -- noch nicht verfügbar
     null::text          as import_kontakt_tel,              -- noch nicht verfügbar
     remarques           as import_bemerkung,
-    null::text          as import_url,                      -- noch nicht verfügbar bei individuals
+    url                 as import_url,
     image               as import_foto_url
-from individuals;
+from nests;
