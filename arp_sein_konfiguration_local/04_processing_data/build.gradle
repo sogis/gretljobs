@@ -8,6 +8,21 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
+/*
+// Definition des SFTP-Servers für den Datenupload
+remotes {
+    sftpServer {
+        host = "${sftpServerSEinApp}"
+        user = "${sftpUserSEinApp}"
+        identity = file('/home/gradle/.ssh/id_rsa')
+        // Skip host key checking outside the following environments:
+        if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) {  // uses the Groovy membership operator
+            knownHosts = allowAnyHosts
+        }
+    }
+}
+*/
+
 // variables
 def dbPath = "$buildDir/sein.duckdb"
 def dbUriDuckDB = "jdbc:duckdb:$dbPath"
@@ -39,7 +54,7 @@ tasks.register("copyDuckDB", Copy){
     }
 }
 
-// transfer data from Sammeltabelle to sein_auswertung
+// transfer data from Sammeltabelle_filtered to sein_auswertung
 tasks.register("transfer_data", SqlExecutor){
     dependsOn "copyDuckDB"
     database = [dbUriDuckDB]
@@ -63,6 +78,21 @@ tasks.register("ili2duckdbexport", Ili2duckdbExport){
     dataFile = files(xtfPath_Export)
     dbfile = file("build/sein.duckdb")
 }
+
+/*
+// XTF-Datei auf den SFTP-Server hochladen
+tasks.register('upload') {
+    dependsOn 'exportXtf'
+    doLast {
+        ssh.run {
+            session(remotes.sftpServer) {
+                put from: xtfPath, into: ftpPath
+            }
+        }
+        println "File uploaded to FTP server"
+    }
+}
+*/
 
 // last task
 tasks.register("last"){

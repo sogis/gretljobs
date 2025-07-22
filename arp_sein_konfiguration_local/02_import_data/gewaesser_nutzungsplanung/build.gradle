@@ -11,11 +11,6 @@ apply plugin: 'org.hidetake.ssh'
 // variables
 def dbPath = "$buildDir/sein.duckdb"
 def dbUriDuckDB = "jdbc:duckdb:$dbPath"
-def datasetName = "importdata" // for naming tables in sql
-def downloadSrc = 'https://data.geo.admin.ch/ch.astra.ivs-reg_loc/ivs-reg_loc/ivs-reg_loc_2056.xtf.zip'
-def downloadFile = file("$buildDir/${datasetName}.zip")
-def unzipTargetDir = file("$buildDir/${datasetName}")
-def xtfPath = new File("$unzipTargetDir/IVS_V2_1_regional_lokal_LV95.xtf")
 
 // first task
 tasks.register("first"){
@@ -43,56 +38,23 @@ tasks.register("copyDuckDB", Copy){
     }
 }
 
-// download task
-tasks.register("downloadData", Download) {
+// copy data from PubDB to Sammeltabelle
+tasks.register("importPubdbData", SqlExecutor){
     dependsOn "copyDuckDB"
-    src downloadSrc
-    dest downloadFile
-    overwrite true
-}
-
-// unzip task
-tasks.register("unzipData", Copy){
-    dependsOn 'downloadData'
-    doLast {
-        println "File unzipped to directory: " + unzipTargetDir
-    }
-    from zipTree(downloadFile)
-    into file(unzipTargetDir)
-}
-
-// create schema for ivs regional lokal data
-tasks.register("createSchema", Ili2duckdbImportSchema) {
-    dependsOn "copyDuckDB"
-    dbfile = file(dbPath)
-    models = "IVS_V2_1"
-    dbschema = "importschema_xtf"
-}
-
-// import into duckdb
-tasks.register("ili2duckdbImport", Ili2duckdbImport) {
-    dependsOn "createSchema"
-    dependsOn "unzipData"
-    models = "IVS_V2_1"
-    dbschema = "importschema_xtf"
-    dataFile = files(xtfPath)
-    dbfile = file(dbPath)
-}
-
-// copy data to Sammeltabelle
-tasks.register("importXTFData",SqlExecutor){
-    dependsOn "ili2duckdbImport"
     database = [dbUriDuckDB]
+    sqlParameters = [connectionStringPub : dbConnectionStringPub as String]
     sqlFiles = files(
         load_extension_spatial,
         load_extension_postgres,
-        'import_ivs_regional_lokal.sql'
+        attach_pubdb,
+        'import_gewaesser_nutzungsplanung.sql',
+        detach_pubdb
     )
 }
 
 // export parquet-file
 tasks.register("exportParquet", SqlExecutor) {
-    dependsOn "importXTFData"
+    dependsOn "importPubdbData"
     database = [dbUriDuckDB]
     sqlParameters = [parquet_path_quoted: "'" + "$buildDir/theme_sammeltabelle.parquet" + "'"]
     sqlFiles = files(

@@ -25,9 +25,6 @@ tasks.register("first"){
 tasks.register('createSammelTabelle', SqlExecutor){
     dependsOn "first"
     database = [dbUriDuckDB]
-    sqlParameters = [
-        connectionStringEdit : dbConnectionStringEdit as String
-        ]
     sqlFiles = files(
         load_extension_spatial,
         'create_sammeltabelle.sql'

@@ -12,10 +12,10 @@ apply plugin: 'org.hidetake.ssh'
 def dbPath = "$buildDir/sein.duckdb"
 def dbUriDuckDB = "jdbc:duckdb:$dbPath"
 def datasetName = "importdata" // for naming tables in sql
-def downloadSrc = 'https://data.geo.admin.ch/ch.astra.ivs-reg_loc/ivs-reg_loc/ivs-reg_loc_2056.xtf.zip'
+def downloadSrc = 'https://data.geo.admin.ch/ch.astra.baulinien-nationalstrassen/data.zip'
 def downloadFile = file("$buildDir/${datasetName}.zip")
 def unzipTargetDir = file("$buildDir/${datasetName}")
-def xtfPath = new File("$unzipTargetDir/IVS_V2_1_regional_lokal_LV95.xtf")
+def xtfPath = new File("$unzipTargetDir/ch.astra.baulinien-nationalstrassen.xtf")
 
 // first task
 tasks.register("first"){
@@ -61,11 +61,11 @@ tasks.register("unzipData", Copy){
     into file(unzipTargetDir)
 }
 
-// create schema for ivs regional lokal data
+// create schema for ivs national
 tasks.register("createSchema", Ili2duckdbImportSchema) {
     dependsOn "copyDuckDB"
     dbfile = file(dbPath)
-    models = "IVS_V2_1"
+    models = "BuildingLinesForMotorways_V2_2"
     dbschema = "importschema_xtf"
 }
 
@@ -73,7 +73,7 @@ tasks.register("createSchema", Ili2duckdbImportSchema) {
 tasks.register("ili2duckdbImport", Ili2duckdbImport) {
     dependsOn "createSchema"
     dependsOn "unzipData"
-    models = "IVS_V2_1"
+    models = "BuildingLinesForMotorways_V2_2"
     dbschema = "importschema_xtf"
     dataFile = files(xtfPath)
     dbfile = file(dbPath)
@@ -86,7 +86,7 @@ tasks.register("importXTFData",SqlExecutor){
     sqlFiles = files(
         load_extension_spatial,
         load_extension_postgres,
-        'import_ivs_regional_lokal.sql'
+        'import_baulinien_nationalstrassen.sql'
     )
 }
 

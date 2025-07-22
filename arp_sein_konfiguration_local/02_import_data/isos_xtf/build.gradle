@@ -67,7 +67,7 @@ tasks.register("createSchema", Ili2duckdbImportSchema) {
     dependsOn "copyDuckDB"
     dbfile = file(dbPath)
     models = "ISOS_V2"
-    dbschema = "bundesinventar_isos"
+    dbschema = "importschema_xtf"
     createBasketCol = true
     createTidCol = true
 }
@@ -77,7 +77,7 @@ tasks.register("importCatalogue", Ili2duckdbImport) {
     dependsOn "unzipData"
     dbfile = file(dbPath)
     models = "ISOS_V2"
-    dbschema = "bundesinventar_isos"
+    dbschema = "importschema_xtf"
     dataFile = files(CataloguePath)
     dbfile = file(dbPath)
     importTid = true
@@ -88,7 +88,7 @@ tasks.register("ili2duckdbImport", Ili2duckdbImport) {
     dependsOn "importCatalogue"
     dependsOn "unzipData"
     models = "ISOS_V2"
-    dbschema = "bundesinventar_isos"
+    dbschema = "importschema_xtf"
     dataFile = files(xtfPath)
     dbfile = file(dbPath)
     importTid = true

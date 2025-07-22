@@ -42,7 +42,7 @@ tasks.register("copyDuckDB", Copy){
 tasks.register("importPubdbData", SqlExecutor){
     dependsOn "copyDuckDB"
     database = [dbUriDuckDB]
-    sqlParameters = [connectionStringPub : dbConnectionStringPub as String]
+    sqlParameters = [connectionStringPub : "'${duckDbPostgresqlUriPub}'" as String]
     sqlFiles = files(
         load_extension_spatial,
         load_extension_postgres,

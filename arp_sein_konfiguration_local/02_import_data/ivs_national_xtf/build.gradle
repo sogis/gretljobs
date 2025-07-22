@@ -66,7 +66,7 @@ tasks.register("createSchema", Ili2duckdbImportSchema) {
     dependsOn "copyDuckDB"
     dbfile = file(dbPath)
     models = "IVS_V2_1"
-    dbschema = "bundesinventar_ivs_national"
+    dbschema = "importschema_xtf"
 }
 
 // import into duckdb
@@ -74,7 +74,7 @@ tasks.register("ili2duckdbImport", Ili2duckdbImport) {
     dependsOn "createSchema"
     dependsOn "unzipData"
     models = "IVS_V2_1"
-    dbschema = "bundesinventar_ivs_national"
+    dbschema = "importschema_xtf"
     dataFile = files(xtfPath)
     dbfile = file(dbPath)
 }

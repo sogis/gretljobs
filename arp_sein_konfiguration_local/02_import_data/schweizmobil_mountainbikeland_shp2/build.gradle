@@ -12,10 +12,10 @@ apply plugin: 'org.hidetake.ssh'
 def dbPath = "$buildDir/sein.duckdb"
 def dbUriDuckDB = "jdbc:duckdb:$dbPath"
 def datasetName = "importdata" // for naming tables in sql
-def downloadSrc = 'https://data.geo.admin.ch/ch.astra.ivs-reg_loc/ivs-reg_loc/ivs-reg_loc_2056.xtf.zip'
+def downloadSrc = 'https://data.geo.admin.ch/ch.astra.mountainbikeland/mountainbikeland/mountainbikeland_2056.shp.zip'
 def downloadFile = file("$buildDir/${datasetName}.zip")
 def unzipTargetDir = file("$buildDir/${datasetName}")
-def xtfPath = new File("$unzipTargetDir/IVS_V2_1_regional_lokal_LV95.xtf")
+def shapefilePath = new File("$unzipTargetDir/2025_shape_MTBland/Route.shp")
 
 // first task
 tasks.register("first"){
@@ -61,38 +61,24 @@ tasks.register("unzipData", Copy){
     into file(unzipTargetDir)
 }
 
-// create schema for ivs regional lokal data
-tasks.register("createSchema", Ili2duckdbImportSchema) {
-    dependsOn "copyDuckDB"
-    dbfile = file(dbPath)
-    models = "IVS_V2_1"
-    dbschema = "importschema_xtf"
-}
-
-// import into duckdb
-tasks.register("ili2duckdbImport", Ili2duckdbImport) {
-    dependsOn "createSchema"
+// import shapefiles into duckdb and copy to Sammeltabelle
+tasks.register("importShpData", SqlExecutor){
     dependsOn "unzipData"
-    models = "IVS_V2_1"
-    dbschema = "importschema_xtf"
-    dataFile = files(xtfPath)
-    dbfile = file(dbPath)
-}
-
-// copy data to Sammeltabelle
-tasks.register("importXTFData",SqlExecutor){
-    dependsOn "ili2duckdbImport"
+    dependsOn "copyDuckDB"
     database = [dbUriDuckDB]
+    sqlParameters = [
+        shp_path: "'${shapefilePath}'".toString(),
+        table_name: "${datasetName}".toString()
+        ]
     sqlFiles = files(
         load_extension_spatial,
-        load_extension_postgres,
-        'import_ivs_regional_lokal.sql'
+        'import_mountainbikeland.sql'
     )
 }
 
 // export parquet-file
 tasks.register("exportParquet", SqlExecutor) {
-    dependsOn "importXTFData"
+    dependsOn "importShpData"
     database = [dbUriDuckDB]
     sqlParameters = [parquet_path_quoted: "'" + "$buildDir/theme_sammeltabelle.parquet" + "'"]
     sqlFiles = files(

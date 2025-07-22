@@ -1,3 +1,10 @@
+-- Delete existing objects --
+DELETE FROM
+	sein_sammeltabelle
+WHERE
+	thema_sql = 'Ortsbild von nationaler Bedeutung ISOS'
+;
+
 WITH
 
 isos_punkte AS (
@@ -7,14 +14,14 @@ isos_punkte AS (
 		hinweis.url AS link,
 		punkt.punkt AS geometrie
 	FROM
-		bundesinventar_isos.geometrie_punkt AS punkt
-	LEFT JOIN bundesinventar_isos.geometrie AS geometrie
+		importschema_xtf.geometrie_punkt AS punkt
+	LEFT JOIN importschema_xtf.geometrie AS geometrie
 		ON punkt.geometrie_punkt = geometrie.T_Id
-	LEFT JOIN bundesinventar_isos.geometriekollektion AS kollektion 
+	LEFT JOIN importschema_xtf.geometriekollektion AS kollektion 
 		ON geometrie.geometriekollektion_geometrie = kollektion.T_Id 
-	LEFT JOIN bundesinventar_isos.hinweisortsbildteil AS hinweisortsbildteil
+	LEFT JOIN importschema_xtf.hinweisortsbildteil AS hinweisortsbildteil
 		ON kollektion.hinweisortsbildteil_geometrie = hinweisortsbildteil.T_Id
-	LEFT JOIN bundesinventar_isos.hinweis AS hinweis 
+	LEFT JOIN importschema_xtf.hinweis AS hinweis 
 		ON hinweisortsbildteil.hinweis = hinweis.T_Id
 ),
 
@@ -25,14 +32,14 @@ isos_linien AS (
 		hinweis.url AS link,
 		linie.linie AS geometrie
 	FROM
-		bundesinventar_isos.geometrie_linie AS linie
-	LEFT JOIN bundesinventar_isos.geometrie AS geometrie
+		importschema_xtf.geometrie_linie AS linie
+	LEFT JOIN importschema_xtf.geometrie AS geometrie
 		ON linie.geometrie_linie = geometrie.T_Id
-	LEFT JOIN bundesinventar_isos.geometriekollektion AS kollektion 
+	LEFT JOIN importschema_xtf.geometriekollektion AS kollektion 
 		ON geometrie.geometriekollektion_geometrie = kollektion.T_Id 
-	LEFT JOIN bundesinventar_isos.hinweisortsbildteil AS hinweisortsbildteil
+	LEFT JOIN importschema_xtf.hinweisortsbildteil AS hinweisortsbildteil
 		ON kollektion.hinweisortsbildteil_geometrie = hinweisortsbildteil.T_Id
-	LEFT JOIN bundesinventar_isos.hinweis AS hinweis 
+	LEFT JOIN importschema_xtf.hinweis AS hinweis 
 		ON hinweisortsbildteil.hinweis = hinweis.T_Id
 ),
 
@@ -43,14 +50,14 @@ isos_perimeter AS (
 		hinweis.url AS link,
 		perimeter.perimeter AS geometrie
 	FROM
-		bundesinventar_isos.geometrie_perimeter AS perimeter
-	LEFT JOIN bundesinventar_isos.geometrie AS geometrie
+		importschema_xtf.geometrie_perimeter AS perimeter
+	LEFT JOIN importschema_xtf.geometrie AS geometrie
 		ON perimeter.geometrie_perimeter = geometrie.T_Id
-	LEFT JOIN bundesinventar_isos.geometriekollektion AS kollektion 
+	LEFT JOIN importschema_xtf.geometriekollektion AS kollektion 
 		ON geometrie.geometriekollektion_geometrie = kollektion.T_Id 
-	LEFT JOIN bundesinventar_isos.hinweisortsbildteil AS hinweisortsbildteil
+	LEFT JOIN importschema_xtf.hinweisortsbildteil AS hinweisortsbildteil
 		ON kollektion.hinweisortsbildteil_geometrie = hinweisortsbildteil.T_Id
-	LEFT JOIN bundesinventar_isos.hinweis AS hinweis 
+	LEFT JOIN importschema_xtf.hinweis AS hinweis 
 		ON hinweisortsbildteil.hinweis = hinweis.T_Id
 ),
 

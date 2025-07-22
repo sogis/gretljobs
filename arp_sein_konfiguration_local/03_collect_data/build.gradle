@@ -48,20 +48,24 @@ tasks.register("ImportAllParquet", SqlExecutor) {
         ":02_import_data:auengebiete_shp1:last",
         ":02_import_data:ausgangslage:last",
         ":02_import_data:baulinien_erschliessung:last",
+        //":02_import_data:baulinien_nationalstrassen_xtf:last",
         ":02_import_data:betriebe:last",
         ":02_import_data:betriebsareal_kb:last",
         ":02_import_data:bezirksgrenzen:last",
         ":02_import_data:bln_shp1:last",
         ":02_import_data:durchgangsstrassen:last",
+        ":02_import_data:durchgangsstrassen_kb:last",
         ":02_import_data:eisenbahn_shp2:last",
         ":02_import_data:erdgasroehrenspeicher:last",
         ":02_import_data:erdgasroehrenspeicher_kb:last",
         ":02_import_data:flachmoore_shp2:last",
         ":02_import_data:gemeindegrenzen:last",
+        ":02_import_data:gewaesser_nutzungsplanung:last",
+        ":02_import_data:grundwasserschutz:last",
         ":02_import_data:hochmoore_shp2:last",
-        ":02_import_data:isos_xtf:last",
-        ":02_import_data:ivs_national_xtf:last",
-        ":02_import_data:ivs_regional_lokal_xtf:last",
+        //":02_import_data:isos_xtf:last",
+        //":02_import_data:ivs_national_xtf:last",
+        //":02_import_data:ivs_regional_lokal_xtf:last",
         ":02_import_data:kantonsgrenzen:last",
         ":02_import_data:kbs:last",
         ":02_import_data:massnahmen_gen1:last",
@@ -69,12 +73,18 @@ tasks.register("ImportAllParquet", SqlExecutor) {
         ":02_import_data:massnahmen_gen3:last",
         //":02_import_data:massnahmen_gen4:last",
         ":02_import_data:nationalstrassen:last",
+        ":02_import_data:nationalstrassen_kb:last",
+        ":02_import_data:ortsbildschutz:last",
+        ":02_import_data:perimeter_gen5:last",
+        ":02_import_data:schweizmobil_mountainbikeland_shp2:last",
+        ":02_import_data:schweizmobil_veloland_shp2:last",
         //":02_import_data:testthema:last", // $$ Nur für Testzwecke. Löschen sobald Job fertig ist
         ":02_import_data:trockenwiesen_trockenweiden_shp1:last",
         ":02_import_data:vogelreservate_shp1:last",
         ":02_import_data:wildtierkorridore:last"
     ]
     dependsOn importTasks
+    mustRunAfter importTasks
     database = [dbUriDuckDB]
     sqlParameters = [root_dir_quoted: "'" + rootProject.projectDir.toString() + "'"]
     sqlFiles = files(
@@ -86,6 +96,7 @@ tasks.register("ImportAllParquet", SqlExecutor) {
 // create schema for arp sein data
 tasks.register("ili2duckdb_sein", Ili2duckdbImportSchema) {
     dependsOn "copyDuckDB"
+    dependsOn "ImportAllParquet"
     dbfile = file(dbPath)
     models = "SO_ARP_SEin_Konfiguration_20250115"
     dbschema = "arp_sein_konfiguration_grundlagen_v2"
@@ -108,6 +119,7 @@ tasks.register("transferGrundlagen", SqlExecutor){
 // create Sammeltabelle filtered
 tasks.register("createSammelTabelle_filtered", SqlExecutor){
     dependsOn "copyDuckDB"
+    dependsOn "transferGrundlagen"
     database = [dbUriDuckDB]
     sqlFiles = files(
         load_extension_spatial,
@@ -134,9 +146,18 @@ tasks.register("objektinfos_sein", SqlExecutor){
     sqlFiles = files("objektinfos_sein.sql")
 }
 
+// insert themes that concern all communities into Sammeltabelle filtered
+tasks.register("themes_all_communities", SqlExecutor){
+    dependsOn "objektinfos_sein"
+    database = [dbUriDuckDB]
+    sqlFiles = files(
+        import_data_dir + "grundnutzung/import_grundnutzung.sql",
+        import_data_dir + "natur_landschaft/import_natur_landschaft.sql")
+}
+
 // update themes and groups
 tasks.register("upate_theme_group", SqlExecutor){
-    dependsOn "objektinfos_sein"
+    dependsOn "themes_all_communities"
     database = [dbUriDuckDB]
     sqlFiles = files("update_thema_gruppe.sql")
 }
