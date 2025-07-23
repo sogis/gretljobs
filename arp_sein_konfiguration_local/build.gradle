@@ -23,6 +23,17 @@ ext {
     export_parquet = "${rootProject.projectDir}/export_parquet.sql"
     import_data_dir = "${rootProject.projectDir}/02_import_data/"
 
+    // Create DB-variables for sql-files
+    dbHostEdit = dbUriEdit.substring(dbUriEdit.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
+    dbDatabaseEdit = dbUriEdit.substring(dbUriEdit.lastIndexOf("/") + 1)
+    //dbConnectionStringEdit = "'dbname=$dbDatabaseEdit user=$dbUserEdit password=$dbPwdEdit host=$dbHostEdit'"
+    dbConnectionStringEdit = "'dbname=edit user=$dbUserEditS password=$dbPwdEditS host=geodb.rootso.org'"
+
+    dbHostPub = dbUriPub.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastIndexOf("/"))
+    dbDatabasePub = dbUriPub.substring(dbUriPub.lastIndexOf("/") + 1)
+    //dbConnectionStringPub = "'dbname=$dbDatabasePub user=$dbUserPub password=$dbPwdPub host=$dbHostPub'"
+    dbConnectionStringPub = "'dbname=pub user=$dbUserPubS password=$dbPWdPubS host=geodb.rootso.org'"
+/*
     // edit-db-attach-variable for sql-files
     duckDbPostgresqlUriEdit = dbUriEdit.substring('jdbc:'.length())
     .replaceAll('ApplicationName=GRETL', 'application_name=GRETL via DuckDB')
@@ -33,6 +44,7 @@ ext {
     .replaceAll('ApplicationName=GRETL', 'application_name=GRETL via DuckDB')
     duckDbPostgresqlUriPub += "&user=${dbUserPub}&password=${dbPwdPub}"
     duckDbPostgresqlUriPub += "&options=-c%20default_transaction_read_only%3Dtrue"
+*/
 }
 
 ssh.settings {

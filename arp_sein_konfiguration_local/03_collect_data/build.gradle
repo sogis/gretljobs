@@ -48,7 +48,7 @@ tasks.register("ImportAllParquet", SqlExecutor) {
         ":02_import_data:auengebiete_shp1:last",
         ":02_import_data:ausgangslage:last",
         ":02_import_data:baulinien_erschliessung:last",
-        //":02_import_data:baulinien_nationalstrassen_xtf:last",
+        ":02_import_data:baulinien_nationalstrassen_xtf:last",
         ":02_import_data:betriebe:last",
         ":02_import_data:betriebsareal_kb:last",
         ":02_import_data:bezirksgrenzen:last",
@@ -63,9 +63,9 @@ tasks.register("ImportAllParquet", SqlExecutor) {
         ":02_import_data:gewaesser_nutzungsplanung:last",
         ":02_import_data:grundwasserschutz:last",
         ":02_import_data:hochmoore_shp2:last",
-        //":02_import_data:isos_xtf:last",
-        //":02_import_data:ivs_national_xtf:last",
-        //":02_import_data:ivs_regional_lokal_xtf:last",
+        ":02_import_data:isos_xtf:last",
+        ":02_import_data:ivs_national_xtf:last",
+        ":02_import_data:ivs_regional_lokal_xtf:last",
         ":02_import_data:kantonsgrenzen:last",
         ":02_import_data:kbs:last",
         ":02_import_data:massnahmen_gen1:last",
@@ -78,9 +78,13 @@ tasks.register("ImportAllParquet", SqlExecutor) {
         ":02_import_data:perimeter_gen5:last",
         ":02_import_data:schweizmobil_mountainbikeland_shp2:last",
         ":02_import_data:schweizmobil_veloland_shp2:last",
+        ":02_import_data:schweizmobil_wanderland_shp2:last",
+        ":02_import_data:sondernutzungsplaene:last",
         //":02_import_data:testthema:last", // $$ Nur für Testzwecke. Löschen sobald Job fertig ist
         ":02_import_data:trockenwiesen_trockenweiden_shp1:last",
         ":02_import_data:vogelreservate_shp1:last",
+        ":02_import_data:vorhaben:last",
+        ":02_import_data:wanderwege:last",
         ":02_import_data:wildtierkorridore:last"
     ]
     dependsOn importTasks
@@ -152,7 +156,9 @@ tasks.register("themes_all_communities", SqlExecutor){
     database = [dbUriDuckDB]
     sqlFiles = files(
         import_data_dir + "grundnutzung/import_grundnutzung.sql",
-        import_data_dir + "natur_landschaft/import_natur_landschaft.sql")
+        import_data_dir + "natur_landschaft/import_natur_landschaft.sql",
+        import_data_dir + "wald/import_wald.sql",
+        import_data_dir + "weitere_festlegungen/import_weitere_festlegungen.sql")
 }
 
 // update themes and groups

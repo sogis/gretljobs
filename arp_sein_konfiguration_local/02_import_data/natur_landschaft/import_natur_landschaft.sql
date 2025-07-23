@@ -17,6 +17,8 @@ SELECT DISTINCT
 	bfsnr,
 	'Natur und Landschaft (Nutzungsplanung)' AS thema_sql,
 	'Natur und Landschaft (Nutzungsplanung)' AS information,
-	'https://geo.so.ch/map/?t=default&l=ch.so.arp.nutzungsplanung.natur_landschaft_gruppe' AS link
+	'https://geo.so.ch/map/?t=default&l=ch.so.arp.nutzungsplanung.natur_landschaft_gruppe&bl=hintergrundkarte_sw&c=' || 
+    ROUND(ST_X(ST_Centroid(geometrie))) || '%2C' || 
+    ROUND(ST_Y(ST_Centroid(geometrie))) || '&s=20000' AS link,
 FROM
 	arp_sein_konfiguration_grundlagen_v2.so_rp_s0250115grundlagen_gemeinde 

@@ -11,6 +11,11 @@ apply plugin: 'org.hidetake.ssh'
 // variables
 def dbPath = "$buildDir/sein.duckdb"
 def dbUriDuckDB = "jdbc:duckdb:$dbPath"
+def datasetName = "importdata" // for naming tables in sql
+def downloadSrc = 'https://data.geo.admin.ch/ch.astra.wanderland/wanderland/wanderland_2056.shp.zip'
+def downloadFile = file("$buildDir/${datasetName}.zip")
+def unzipTargetDir = file("$buildDir/${datasetName}")
+def shapefilePath = new File("$unzipTargetDir/2025_shape_wanderland/Route.shp")
 
 // first task
 tasks.register("first"){
@@ -38,23 +43,42 @@ tasks.register("copyDuckDB", Copy){
     }
 }
 
-// copy data from PubDB to Sammeltabelle
-tasks.register("importPubdbData", SqlExecutor){
+// download task
+tasks.register("downloadData", Download) {
+    dependsOn "copyDuckDB"
+    src downloadSrc
+    dest downloadFile
+    overwrite true
+}
+
+// unzip task
+tasks.register("unzipData", Copy){
+    dependsOn 'downloadData'
+    doLast {
+        println "File unzipped to directory: " + unzipTargetDir
+    }
+    from zipTree(downloadFile)
+    into file(unzipTargetDir)
+}
+
+// import shapefiles into duckdb and copy to Sammeltabelle
+tasks.register("importShpData", SqlExecutor){
+    dependsOn "unzipData"
     dependsOn "copyDuckDB"
     database = [dbUriDuckDB]
-    sqlParameters = [connectionStringPub : dbConnectionStringPub as String]
+    sqlParameters = [
+        shp_path: "'${shapefilePath}'".toString(),
+        table_name: "${datasetName}".toString()
+        ]
     sqlFiles = files(
         load_extension_spatial,
-        load_extension_postgres,
-        attach_pubdb,
-        'import_kantonsgrenzen.sql',
-        detach_pubdb
+        'import_wanderland.sql'
     )
 }
 
 // export parquet-file
 tasks.register("exportParquet", SqlExecutor) {
-    dependsOn "importPubdbData"
+    dependsOn "importShpData"
     database = [dbUriDuckDB]
     sqlParameters = [parquet_path_quoted: "'" + "$buildDir/theme_sammeltabelle.parquet" + "'"]
     sqlFiles = files(

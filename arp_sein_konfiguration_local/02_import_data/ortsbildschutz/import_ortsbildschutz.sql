@@ -10,7 +10,9 @@ ortsbild_punktobjekt AS (
 	SELECT DISTINCT
 		'Ortsbildschutz (Nutzungsplanung)' AS thema_sql,
 		typ_bezeichnung AS information,
-		'https://geo.so.ch/map/?t=default&l=ch.so.arp.nutzungsplanung.ortsbildschutz' AS link,
+		'https://geo.so.ch/map/?t=default&l=ch.so.arp.nutzungsplanung.ortsbildschutz&bl=hintergrundkarte_sw&c=' || 
+    	ROUND(ST_X(CAST(geometrie AS GEOMETRY))) || '%2C' || 
+    	ROUND(ST_Y(CAST(geometrie AS GEOMETRY))) || '&s=500' AS link,
 		geometrie
 	FROM
 		pubdb.arp_nutzungsplanung_pub_v1.nutzungsplanung_ueberlagernd_punkt_v
@@ -24,19 +26,25 @@ ortsbild_linienobjekt AS (
 	SELECT DISTINCT
 		'Ortsbildschutz (Nutzungsplanung)' AS thema_sql,
 		typ_bezeichnung AS information,
-		'https://geo.so.ch/map/?t=default&l=ch.so.arp.nutzungsplanung.ortsbildschutz' AS link,
-		geometrie
+		'https://geo.so.ch/map/?t=default&l=ch.so.arp.nutzungsplanung.ortsbildschutz&bl=hintergrundkarte_sw&c=' || 
+    ROUND(ST_X(ST_LineInterpolatePoint(ST_GeomFromWKB(geometrie),0.5))) || '%2C' || 
+    ROUND(ST_Y(ST_LineInterpolatePoint(ST_GeomFromWKB(geometrie),0.5))) || '&s=1000' AS link,
+	geometrie
 	FROM
 		pubdb.arp_nutzungsplanung_pub_v1.nutzungsplanung_ueberlagernd_linie_v
 	WHERE 
 		rechtsstatus = 'inKraft'
+	AND 
+		typ_code_kt = 791
 ),
 
 ortsbild_flaechenobjekt AS (
 	SELECT DISTINCT
 		'Ortsbildschutz (Nutzungsplanung)' AS thema_sql,
 		typ_bezeichnung AS information,
-		'https://geo.so.ch/map/?t=default&l=ch.so.arp.nutzungsplanung.ortsbildschutz' AS link,
+		'https://geo.so.ch/map/?t=default&l=ch.so.arp.nutzungsplanung.ortsbildschutz&bl=hintergrundkarte_sw&c=' || 
+    	ROUND(ST_X(ST_Centroid(ST_GeomFromWKB(geometrie)))) || '%2C' || 
+    	ROUND(ST_Y(ST_Centroid(ST_GeomFromWKB(geometrie)))) || '&s=2000' AS link,
 		geometrie
 	FROM
 		pubdb.arp_nutzungsplanung_pub_v1.nutzungsplanung_ueberlagernd_flaeche_v

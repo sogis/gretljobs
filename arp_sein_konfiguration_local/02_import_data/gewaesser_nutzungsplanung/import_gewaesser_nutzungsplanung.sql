@@ -10,7 +10,9 @@ uferschutzzone AS (
 	SELECT DISTINCT
 		'Gewässer (Nutzungsplanung)' AS thema_sql,
 		typ_bezeichnung AS information,
-		'https://geo.so.ch/map/?t=default&l=ch.so.arp.nutzungsplanung.gewaesser' AS link,
+		'https://geo.so.ch/map/?t=default&l=ch.so.arp.nutzungsplanung.gewaesser&bl=hintergrundkarte_sw&c=' || 
+    	ROUND(ST_X(ST_Centroid(ST_GeomFromWKB(geometrie)))) || '%2C' || 
+    	ROUND(ST_Y(ST_Centroid(ST_GeomFromWKB(geometrie)))) || '&s=2000' AS link,
 		geometrie
 	FROM
 		pubdb.arp_nutzungsplanung_pub_v1.nutzungsplanung_ueberlagernd_flaeche_v
@@ -24,7 +26,9 @@ grundnutzung AS (
 	SELECT DISTINCT
 		'Gewässer (Nutzungsplanung)' AS thema_sql,
 		typ_bezeichnung AS information,
-		'https://geo.so.ch/map/?t=default&l=ch.so.arp.nutzungsplanung.gewaesser' AS link,
+		'https://geo.so.ch/map/?t=default&l=ch.so.arp.nutzungsplanung.gewaesser&bl=hintergrundkarte_sw&c=' || 
+    	ROUND(ST_X(ST_Centroid(ST_GeomFromWKB(geometrie)))) || '%2C' || 
+    	ROUND(ST_Y(ST_Centroid(ST_GeomFromWKB(geometrie)))) || '&s=2000' AS link,
 		geometrie
 	FROM
 		pubdb.arp_nutzungsplanung_pub_v1.nutzungsplanung_grundnutzung_v

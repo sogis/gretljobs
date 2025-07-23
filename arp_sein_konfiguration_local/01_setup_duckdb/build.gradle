@@ -13,9 +13,13 @@ def dbPath = "$buildDir/sein.duckdb"
 def dbUriDuckDB = "jdbc:duckdb:$dbPath"
 def dbFile = new File(dbPath)
 
-if (dbFile.exists()) {
-    dbFile.delete()
+// delete build-directory if it exists
+if (buildDir.exists()) {
+    buildDir.deleteDir()
 }
+
+// create build-directory
+buildDir.mkdirs()
 
 // first task
 tasks.register("first"){

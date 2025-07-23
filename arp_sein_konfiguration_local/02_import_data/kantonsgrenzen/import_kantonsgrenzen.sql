@@ -13,7 +13,7 @@ INSERT INTO sein_sammeltabelle (
 
 SELECT DISTINCT
 	'Kantonsgrenzen' AS thema_sql,
-	'Kantonsgrenze Solothurn' AS information,
+	'Kanton Solothurn' AS information,
 	'https://geo.so.ch/map/?t=default&l=ch.so.agi.kantonsgrenzen' AS link,
 	geometrie
 FROM

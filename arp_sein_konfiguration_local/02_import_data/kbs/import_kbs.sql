@@ -14,7 +14,9 @@ INSERT INTO sein_sammeltabelle (
 SELECT DISTINCT
 	'Kataster der belasteten Standorte (KBS)' AS thema_sql,
 	'Nr. ' || standortnummer || ' / ' || standorttyp AS information,
-	'https://geo.so.ch/map/?t=default&l=ch.so.afu.altlasten.standorte' AS link,
+	'https://geo.so.ch/map/?t=default&l=ch.so.afu.altlasten.standorte&bl=hintergrundkarte_sw&c=' || 
+    ROUND(ST_X(ST_Centroid(ST_GeomFromWKB(geometrie)))) || '%2C' || 
+    ROUND(ST_Y(ST_Centroid(ST_GeomFromWKB(geometrie)))) || '&s=5000' AS link,
 	geometrie
 FROM
-	pubdb.afu_altlasten_pub_v2.belasteter_standort 
+	pubdb.afu_altlasten_pub_v2.belasteter_standort

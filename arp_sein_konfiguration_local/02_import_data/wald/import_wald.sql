@@ -1,7 +1,7 @@
 DELETE FROM
 	sein_sammeltabelle_filtered
 WHERE
-	thema_sql = 'Grundnutzung'
+	thema_sql = 'Wald'
 ;
 
 INSERT INTO sein_sammeltabelle_filtered (
@@ -15,9 +15,9 @@ INSERT INTO sein_sammeltabelle_filtered (
 SELECT DISTINCT
 	aname AS gemeindename,
 	bfsnr,
-	'Grundnutzung' AS thema_sql,
-	'Grundnutzung' AS information,
-	'https://geo.so.ch/map/?t=default&l=ch.so.arp.nutzungsplanung.grundnutzung&bl=hintergrundkarte_sw&c=' || 
+	'Wald' AS thema_sql,
+	'Nutzungsplanung Wald' AS information,
+	'https://geo.so.ch/map/?t=default&l=ch.so.arp.nutzungsplanung.wald&bl=hintergrundkarte_sw&c=' || 
     ROUND(ST_X(ST_Centroid(geometrie))) || '%2C' || 
     ROUND(ST_Y(ST_Centroid(geometrie))) || '&s=20000' AS link,
 FROM
