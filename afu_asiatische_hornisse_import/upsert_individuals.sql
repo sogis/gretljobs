@@ -17,7 +17,7 @@ INSERT INTO afu_individuals (
     import_foto_url
 )
 SELECT
-    occurence_id,
+    occurence_id,  -- sic!
     nid_unique_id,
     geom,
     materialentityid,
@@ -27,7 +27,7 @@ SELECT
     lv95_east_x,
     lv95_north_y,
     remarques,
-    image
+    "image"
 FROM infofauna_individuals
 -- Bei Konflikt auf "import_materialentity_id" UPDATE anstatt INSERT
 ON CONFLICT (import_materialentity_id)
