@@ -1,22 +1,22 @@
 select
-	occurence_id        as import_occurrence_id,            -- sic!
-	nid_unique_id       as import_unique_nest_id,
-	null::text          as import_bienenstand_nr,           -- noch nicht verfügbar
-	null::int           as import_vor_10_uhr,				-- noch nicht verfügbar
-	null::int           as import_zwischen_10_und_13_uhr,   -- noch nicht verfügbar
-	null::int           as import_zwischen_13_und_17_uhr,	-- noch nicht verfügbar
-	null::int           as import_nach_17_uhr,			    -- noch nicht verfügbar
-	wkt                 as geometrie,
-    materialentityid    as import_materialentity_id,
-    date_decouverte     as import_datum_sichtung,
-    location            as import_ort,
-    canton              as import_kanton,
-    lv95_east_x         as import_x_koordinate,
-    lv95_north_y        as import_y_koordinate,
-    null::text          as import_kontakt_name,             -- noch nicht verfügbar
-    null::text          as import_kontakt_mail,             -- noch nicht verfügbar
-    null::text          as import_kontakt_tel,              -- noch nicht verfügbar
-    remarques           as import_bemerkung,
-    null::text          as import_url,                      -- noch nicht verfügbar bei individuals
-    image               as import_foto_url
-from individuals;
+    import_occurrence_id,           -- sic!
+    import_unique_nest_id,
+    import_bienenstand_nr,          -- noch nicht verfügbar
+    import_vor_10_uhr,				-- noch nicht verfügbar
+    import_zwischen_10_und_13_uhr,  -- noch nicht verfügbar
+    import_zwischen_13_und_17_uhr,	-- noch nicht verfügbar
+    import_nach_17_uhr,			    -- noch nicht verfügbar
+    geometrie,
+    import_materialentity_id,
+    import_datum_sichtung,
+    import_ort,
+    import_kanton,
+    import_x_koordinate,
+    import_y_koordinate,
+    import_kontakt_name,             -- noch nicht verfügbar
+    import_kontakt_mail,             -- noch nicht verfügbar
+    import_kontakt_tel,              -- noch nicht verfügbar
+    import_bemerkung,
+    import_url,                      -- noch nicht verfügbar bei individuals
+    import_foto_url
+from afu_individuals;

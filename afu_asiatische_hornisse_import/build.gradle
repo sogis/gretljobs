@@ -6,7 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 description = 'GRETL-Job für den Import von Sichtungsmeldungen der Asiatischen Hornisse vom infofauna WFS'
 
-defaultTasks 'copyToEditDb'
+defaultTasks 'mergeDataInDuckDb'
 
 // DuckDB
 def duckDbPath = "${buildDir}/imported.duckdb"
@@ -21,9 +21,9 @@ if (duckDbFile.exists()) {
 // EditDB
 def editDbHost = dbUriEdit.substring(dbUriPub.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
 def editDbDatabase = dbUriEdit.substring(dbUriEdit.lastIndexOf("/") + 1)
-def editDbConnectionString = "'dbname=$editDbDatabase user=$dbUserEdit password=$dbPwdEdit host=$editDbHost'"
+def editDbConnectionString = "dbname=${editDbDatabase} user=${dbUserEdit} password=${dbPwdEdit} host=${editDbHost}"
 
-// WFS
+// WFS (Abfrage mit Filter auf canton = Solothurn)
 def wfsUrlEncodedFirstPart = 'https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?Filter=%3CFilter%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Ecanton%3C%2FPropertyName%3E%3CLiteral%3ESolothurn%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E&SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=neovelutina%3A'
 def wfsUrlEncodedThirdPart = '&SRSNAME=urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A2056&outputFormat=application%2Fjson'
 def wfsUrlIndividuals = wfsUrlEncodedFirstPart + 'individuals' + wfsUrlEncodedThirdPart
@@ -37,9 +37,9 @@ curl --location 'https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?SERVIC
 */
 
 // Dateipfade
-def individualsPath = "'${buildDir}/individuals.geojson'"
-def activeNestsPath = "'${buildDir}/active_nests.geojson'"
-def unactiveNestsPath = "'${buildDir}/unactive_nests.geojson'"
+def individualsPath = "${buildDir}/infofauna_individuals.geojson"
+def activeNestsPath = "${buildDir}/infofauna_active_nests.geojson"
+def unactiveNestsPath = "${buildDir}/infofauna_unactive_nests.geojson"
 def individualsFile = file(individualsPath)
 def activeNestsFile = file(activeNestsPath)
 def unactiveNestsFile = file(unactiveNestsPath)
@@ -53,6 +53,9 @@ tasks.register('downloadIndividuals', Curl) {
     expectedStatusCode = 200
     user = neovelutinaWfsUser
     password = neovelutinaWfsPwd
+    doLast {
+        println 'Hornissen-Sichtungen von InfoFauna heruntergeladen.'
+    }
 }
 
 // Sichtungsmeldungen von aktiven Nestern herunterladen
@@ -64,6 +67,9 @@ tasks.register('downloadActiveNests', Curl) {
     expectedStatusCode = 200
     user = neovelutinaWfsUser
     password = neovelutinaWfsPwd
+    doLast {
+        println 'Bestehende Hornissen-Nester von InfoFauna heruntergeladen.'
+    }
 }
 
 // Sichtungsmeldungen von zerstörten Nestern herunterladen
@@ -75,29 +81,32 @@ tasks.register('downloadUnactiveNests', Curl) {
     expectedStatusCode = 200
     user = neovelutinaWfsUser
     password = neovelutinaWfsPwd
+    doLast {
+        println 'Zerstörte Hornissen-Nester von InfoFauna heruntergeladen.'
+    }
 }
 
-// Heruntergeladene Daten mit DuckDB einlesen
-// tbd: sql aufteilen
-tasks.register('loadDataToDuckDb', SqlExecutor){
-    dependsOn = [downloadIndividuals, downloadActiveNests, downloadUnactiveNests]
+// Ausgangsdaten (heruntergeladene und bestehende) mit DuckDB einlesen
+// tbd: create konsequent von insert trennen? -> Logging & Data Types
+tasks.register('loadDataToDuckDb', SqlExecutor) {
+    dependsOn 'downloadIndividuals', 'downloadActiveNests', 'downloadUnactiveNests'
     database = [duckDbUri]
     sqlParameters = [
-        individuals_path: individualsPath as String,
-        active_nests_path: activeNestsPath as String,
-        unactive_nests_path: unactiveNestsPath as String
-        ]
-    sqlFiles = files('create_duckdb_tables.sql')
+        // Für die Verwendung in DuckDB-Querys Hochkommas hinzufügen und GString nach String casten
+        editdb_connection_string : "'${editDbConnectionString}'".toString(),
+        individuals_path: "'${individualsPath}'".toString(),
+        active_nests_path: "'${activeNestsPath}'".toString(),
+        unactive_nests_path: "'${unactiveNestsPath}'".toString()
+        ] 
+    sqlFiles = files('load_spatial.sql', 'attach_editdb.sql', 'create_duckdb_tables.sql')
 }
 
-// Bestehende und heruntergeladene Daten in DuckDB zusammenführen
-tasks.register('mergeDataInDuckDb', SqlExecutor){
+// Unseren Datensatz mit den heruntergeladenen Daten zusammenführen
+// tbd: massnahmenstatus und ..bemerkungen nach duckdb mitnehmen und zurückschreiben, weil seitens Postgres kein upsert möglich
+tasks.register('mergeDataInDuckDb', SqlExecutor) {
     dependsOn 'loadDataToDuckDb'
     database = [duckDbUri]
-    sqlParameters = [
-        editdb_connection_string : editDbConnectionString as String
-        ]
-    sqlFiles = files('merge_duckdb_editdb.sql')
+    sqlFiles = files('upsert_individuals.sql')
 }
 
 // Zusammengeführte Daten in die Edit-DB zurückkopieren
@@ -108,6 +117,6 @@ tasks.register('copyToEditDb', Db2Db) {
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
         new TransferSet('select_duckdb_individuals.sql', 'afu_asiatische_hornisse_v2.asia_hornisse_sichtung', true, (String[])['geometrie:wkt:2056']),
-        new TransferSet('select_duckdb_nests.sql', 'afu_asiatische_hornisse_v2.asia_hornisse_nest', true, (String[])['geometrie:wkt:2056'])
+        // new TransferSet('select_duckdb_nests.sql', 'afu_asiatische_hornisse_v2.asia_hornisse_nest', true, (String[])['geometrie:wkt:2056'])
     ];
 }
