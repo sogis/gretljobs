@@ -10,7 +10,7 @@ tatsächlich etwas geändert hat (-> Logging).
 
 INSERT INTO afu_nests (
     import_nest_id,
-    import_status,
+    import_nest_status,
     geometrie,
     import_materialentity_id,
     import_datum_sichtung,
@@ -26,7 +26,7 @@ INSERT INTO afu_nests (
 )
 SELECT
     nid_id,
-    statut,
+    import_nest_status,
     geometrie,
     materialentityid,
     date_decouverte,
@@ -45,7 +45,7 @@ ON CONFLICT (import_materialentity_id)
 DO UPDATE SET
 	-- Alle Felder ausser Konfliktfeld müssen explizit überschrieben werden
     import_nest_id = EXCLUDED.import_nest_id,
-    import_status = EXCLUDED.import_status,
+    import_nest_status = EXCLUDED.import_nest_status,
     geometrie = EXCLUDED.geometrie,
     import_datum_sichtung = EXCLUDED.import_datum_sichtung,
     import_ort = EXCLUDED.import_ort,
@@ -60,7 +60,7 @@ DO UPDATE SET
 WHERE
     -- UPDATE nur ausführen, wenn sich mindestens ein Wert geändert hat
     import_nest_id IS DISTINCT FROM EXCLUDED.import_nest_id
-    OR import_status IS DISTINCT FROM EXCLUDED.import_status
+    OR import_nest_status IS DISTINCT FROM EXCLUDED.import_nest_status
     OR geometrie IS DISTINCT FROM EXCLUDED.geometrie
     OR import_datum_sichtung IS DISTINCT FROM EXCLUDED.import_datum_sichtung
     OR import_ort IS DISTINCT FROM EXCLUDED.import_ort

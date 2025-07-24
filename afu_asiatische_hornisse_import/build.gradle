@@ -44,9 +44,9 @@ def individualsFile = file(individualsPath)
 def activeNestsFile = file(activeNestsPath)
 def unactiveNestsFile = file(unactiveNestsPath)
 
-// Sichtungsmeldungen von Hornissen herunterladen
-// tbd: Abfrage auf das laufende Jahr einschränken (so dass Daten für die Dauer einer Saison nachgeführt werden)
+// tbd: Abfrage auf das laufende Jahr einschränken (so dass Daten für die Dauer einer Saison nachgeführt werden)?
 tasks.register('downloadIndividuals', Curl) {
+    description = 'Hornissen-Sichtungen von info fauna herunterladen.'
     serverUrl = wfsUrlIndividuals
     method = MethodType.GET
     outputFile = individualsFile
@@ -54,13 +54,13 @@ tasks.register('downloadIndividuals', Curl) {
     user = neovelutinaWfsUser
     password = neovelutinaWfsPwd
     doLast {
-        println 'Hornissen-Sichtungen von InfoFauna heruntergeladen.'
+        println 'Hornissen-Sichtungen von info fauna heruntergeladen.'
     }
 }
 
-// Sichtungsmeldungen von aktiven Nestern herunterladen
-// tbd: Abfrage auf das laufende Jahr einschränken (so dass Daten für die Dauer einer Saison nachgeführt werden)
+// tbd: Abfrage auf das laufende Jahr einschränken (so dass Daten für die Dauer einer Saison nachgeführt werden)?
 tasks.register('downloadActiveNests', Curl) {
+    description = 'Bestehende Hornissen-Nester von info fauna herunterladen.'
     serverUrl = wfsUrlActiveNests
     method = MethodType.GET
     outputFile = activeNestsFile
@@ -68,13 +68,13 @@ tasks.register('downloadActiveNests', Curl) {
     user = neovelutinaWfsUser
     password = neovelutinaWfsPwd
     doLast {
-        println 'Bestehende Hornissen-Nester von InfoFauna heruntergeladen.'
+        println 'Bestehende Hornissen-Nester von info fauna heruntergeladen.'
     }
 }
 
-// Sichtungsmeldungen von zerstörten Nestern herunterladen
-// tbd: Abfrage auf das laufende Jahr einschränken (so dass Daten für die Dauer einer Saison nachgeführt werden)
+// tbd: Abfrage auf das laufende Jahr einschränken (so dass Daten für die Dauer einer Saison nachgeführt werden)?
 tasks.register('downloadUnactiveNests', Curl) {
+    description = 'Zerstörte Hornissen-Nester von info fauna herunterladen.'
     serverUrl = wfsUrlUnactiveNests
     method = MethodType.GET
     outputFile = unactiveNestsFile
@@ -82,14 +82,14 @@ tasks.register('downloadUnactiveNests', Curl) {
     user = neovelutinaWfsUser
     password = neovelutinaWfsPwd
     doLast {
-        println 'Zerstörte Hornissen-Nester von InfoFauna heruntergeladen.'
+        println 'Zerstörte Hornissen-Nester von info fauna heruntergeladen.'
     }
 }
 
-// Ausgangsdaten (heruntergeladene und bestehende) mit DuckDB einlesen
 // tbd: create konsequent von insert trennen -> Logging & Data Types
 tasks.register('loadDataToDuckDb', SqlExecutor) {
     dependsOn 'downloadIndividuals', 'downloadActiveNests', 'downloadUnactiveNests'
+    description = 'Ausgangsdaten (heruntergeladene und bestehende) in DuckDB einlesen.'
     database = [duckDbUri]
     sqlParameters = [
         // Für die Verwendung in DuckDB-Querys Hochkommas hinzufügen und GString nach String casten
@@ -108,15 +108,12 @@ tasks.register('loadDataToDuckDb', SqlExecutor) {
     )
 }
 
-// Unseren Datensatz mit den heruntergeladenen Daten zusammenführen
-// tbd: t_id und t_ili_id mitnehmen und rückkopieren oder nicht? (aktuell: nicht)
-// tbd: check lat lon constraint failures
-
-// Upsert ist nicht mit attached PostgreSQL DB möglich wegen einer Limitation
-// von DuckDB (https://github.com/duckdb/duckdb-postgres/issues/189). Darum
-// innerhalb duckDB mit anschliessendem Db2DB nach Edit-DB.
+// Hinweise:
+// Upsert ist mit attached PostgreSQL DB nicht möglich wegen einer Limitation von DuckDB 
+// (https://github.com/duckdb/duckdb-postgres/issues/189). Darum innerhalb DuckDB gefolgt von Db2DB nach Edit-DB.
 tasks.register('upsertIndividualsInsideDuckDb', SqlExecutor) {
     dependsOn 'loadDataToDuckDb'
+    description = 'Bestehende Daten zu Hornissen-Sichtungen mit den heruntergeladenen Daten zusammenführen.'
     database = [duckDbUri]
     sqlParameters = [
         // Für die Verwendung in DuckDB-Querys Hochkommas hinzufügen und GString nach String casten
@@ -131,6 +128,7 @@ tasks.register('upsertIndividualsInsideDuckDb', SqlExecutor) {
 
 tasks.register('upsertNestsInsideDuckDb', SqlExecutor) {
     dependsOn 'loadDataToDuckDb'
+    description = 'Bestehende Daten zu Hornissen-Nestern mit den heruntergeladenen Daten zusammenführen.'
     database = [duckDbUri]
     sqlParameters = [
         // Für die Verwendung in DuckDB-Querys Hochkommas hinzufügen und GString nach String casten
@@ -143,11 +141,12 @@ tasks.register('upsertNestsInsideDuckDb', SqlExecutor) {
     )
 }
 
-// Zusammengeführte Daten in die Edit-DB zurückkopieren (überschreibend).
-// Achtung: Db2Db unterstützt kein LOAD SPATIAL Query, somit stehen keine räumlichen
-// Funktionen zur Verfügung. Und um Geometrien zu kopieren, ist der Umweg über WKT nötig.
+// Hinweise:
+// a) Db2Db unterstützt kein LOAD SPATIAL Query, somit stehen bei DuckDB-Quelle keine räumlichen Funktionen zur Verfügung.
+// b) Um Geometrien zwischen verschiedenen DBMS zu kopieren, ist der Umweg über WKT nötig.
 tasks.register('copyResultsToEditDb', Db2Db) {
     dependsOn 'upsertIndividualsInsideDuckDb', 'upsertNestsInsideDuckDb'
+    description = 'Zusammengeführte Daten in die Edit-DB zurückkopieren (überschreibend).'
     sourceDb = [duckDbUri]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [

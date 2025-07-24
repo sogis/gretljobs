@@ -1,6 +1,6 @@
 SELECT
     import_nest_id,
-    import_status,
+    import_nest_status,
     NULL::DATE AS import_datum_behandlung,  -- noch nicht verfügbar
     geometrie,
     import_materialentity_id,

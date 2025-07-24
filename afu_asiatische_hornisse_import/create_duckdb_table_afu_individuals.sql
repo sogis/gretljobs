@@ -1,4 +1,3 @@
--- tbd: Schema mit Ili2pgImportSchema anlegen?
 CREATE TABLE afu_individuals (
     import_occurrence_id            VARCHAR,
     import_unique_nest_id           VARCHAR,
@@ -16,8 +15,8 @@ CREATE TABLE afu_individuals (
     import_kanton                   VARCHAR,
     import_x_koordinate             INTEGER,
     import_y_koordinate             INTEGER,
-    import_lat                      NUMERIC,
-    import_lon                      NUMERIC,
+    import_lat                      NUMERIC(8,6),
+    import_lon                      NUMERIC(8,6),
     import_kontakt_name             VARCHAR,
     import_kontakt_mail             VARCHAR,
     import_kontakt_tel              VARCHAR,

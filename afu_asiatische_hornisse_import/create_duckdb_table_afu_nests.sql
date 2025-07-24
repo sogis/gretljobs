@@ -1,7 +1,6 @@
--- tbd: Schema mit Ili2pgImportSchema anlegen?
 CREATE TABLE afu_nests (
     import_nest_id              VARCHAR,
-    import_status               VARCHAR,
+    import_nest_status          VARCHAR,
     import_datum_behandlung     VARCHAR,
     geometrie                   TEXT,                   -- WKT
     import_materialentity_id    VARCHAR PRIMARY KEY,    -- Upsert ist nur mit Primary Key möglich
@@ -10,8 +9,8 @@ CREATE TABLE afu_nests (
     import_kanton               VARCHAR,
     import_x_koordinate         INTEGER,
     import_y_koordinate         INTEGER,
-    import_lat                  NUMERIC,
-    import_lon                  NUMERIC,
+    import_lat                  NUMERIC(8,6),
+    import_lon                  NUMERIC(8,6),
     import_kontakt_name         VARCHAR,
     import_kontakt_mail         VARCHAR,
     import_kontakt_tel          VARCHAR,
@@ -23,7 +22,7 @@ CREATE TABLE afu_nests (
 INSERT INTO afu_nests
     SELECT
         import_nest_id,
-        import_status,
+        import_nest_status,
         import_datum_behandlung,
         ST_AsText(geometrie::geometry) AS geometrie,  -- WKT
         import_materialentity_id,
