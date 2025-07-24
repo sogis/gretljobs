@@ -24,8 +24,16 @@ def editDbDatabase = dbUriEdit.substring(dbUriEdit.lastIndexOf("/") + 1)
 def editDbConnectionString = "dbname=${editDbDatabase} user=${dbUserEdit} password=${dbPwdEdit} host=${editDbHost}"
 
 // WFS Parametrisierung (Abfrage mit Filter auf canton = Solothurn)
-def wfsUrlEncodedFirstPart = 'https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?Filter=%3CFilter%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Ecanton%3C%2FPropertyName%3E%3CLiteral%3ESolothurn%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E&SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=neovelutina%3A'
-def wfsUrlEncodedThirdPart = '&SRSNAME=urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A2056&outputFormat=application%2Fjson'
+def wfsUrlEncodedFirstPart =
+    'https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?' +
+    'Filter=%3CFilter%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Ecanton%3C%2FPropertyName%3E%3CLiteral%3ESolothurn%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E' +
+    '&SERVICE=WFS' +
+    '&REQUEST=GetFeature' +
+    '&VERSION=2.0.0' +
+    '&TYPENAMES=neovelutina%3A'
+def wfsUrlEncodedThirdPart =
+    '&SRSNAME=urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A2056' +
+    '&outputFormat=application%2Fjson'
 def wfsUrlIndividuals = wfsUrlEncodedFirstPart + 'individuals' + wfsUrlEncodedThirdPart
 def wfsUrlActiveNests = wfsUrlEncodedFirstPart + 'active_nests' + wfsUrlEncodedThirdPart
 def wfsUrlUnactiveNests = wfsUrlEncodedFirstPart + 'unactive_nests' + wfsUrlEncodedThirdPart
