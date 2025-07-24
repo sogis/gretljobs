@@ -8,7 +8,7 @@ description = 'GRETL-Job für den Import von Sichtungsmeldungen der Asiatischen 
 
 defaultTasks 'copyResultsToEditDb'
 
-// DuckDB
+// DuckDB Initialisierung
 def duckDbPath = "${buildDir}/imported.duckdb"
 def duckDbUri = "jdbc:duckdb:${duckDbPath}"
 def duckDbFile = file(duckDbPath)
@@ -18,12 +18,12 @@ if (duckDbFile.exists()) {
     println 'Deleted existing DuckDB database.'
 }
 
-// EditDB
+// Connection String erstellen, um Edit-DB in DuckDB einzubinden
 def editDbHost = dbUriEdit.substring(dbUriPub.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
 def editDbDatabase = dbUriEdit.substring(dbUriEdit.lastIndexOf("/") + 1)
 def editDbConnectionString = "dbname=${editDbDatabase} user=${dbUserEdit} password=${dbPwdEdit} host=${editDbHost}"
 
-// WFS (Abfrage mit Filter auf canton = Solothurn)
+// WFS Parametrisierung (Abfrage mit Filter auf canton = Solothurn)
 def wfsUrlEncodedFirstPart = 'https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?Filter=%3CFilter%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Ecanton%3C%2FPropertyName%3E%3CLiteral%3ESolothurn%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E&SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=neovelutina%3A'
 def wfsUrlEncodedThirdPart = '&SRSNAME=urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A2056&outputFormat=application%2Fjson'
 def wfsUrlIndividuals = wfsUrlEncodedFirstPart + 'individuals' + wfsUrlEncodedThirdPart
@@ -36,7 +36,7 @@ curl --location 'https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?SERVIC
 --header 'Authorization: Basic <neovelutinaWfsUser:neovelutinaWfsPwd>'
 */
 
-// Dateipfade
+// Dateipfade für die WFS Downloads
 def individualsPath = "${buildDir}/infofauna_individuals.geojson"
 def activeNestsPath = "${buildDir}/infofauna_active_nests.geojson"
 def unactiveNestsPath = "${buildDir}/infofauna_unactive_nests.geojson"
@@ -92,7 +92,7 @@ tasks.register('loadDataToDuckDb', SqlExecutor) {
     description = 'Ausgangsdaten (heruntergeladene und bestehende) in DuckDB einlesen.'
     database = [duckDbUri]
     sqlParameters = [
-        // Für die Verwendung in DuckDB-Querys Hochkommas hinzufügen und GString nach String casten
+        // Für die Verwendung in den Querys Hochkommas hinzufügen und GString nach String casten
         editdb_connection_string : "'${editDbConnectionString}'".toString(),
         individuals_path: "'${individualsPath}'".toString(),
         active_nests_path: "'${activeNestsPath}'".toString(),
@@ -116,7 +116,7 @@ tasks.register('upsertIndividualsInsideDuckDb', SqlExecutor) {
     description = 'Bestehende Daten zu Hornissen-Sichtungen mit den heruntergeladenen Daten zusammenführen.'
     database = [duckDbUri]
     sqlParameters = [
-        // Für die Verwendung in DuckDB-Querys Hochkommas hinzufügen und GString nach String casten
+        // Für die Verwendung in den Querys Hochkommas hinzufügen und GString nach String casten
         editdb_connection_string : "'${editDbConnectionString}'".toString()
     ] 
     sqlFiles = files(
@@ -131,9 +131,9 @@ tasks.register('upsertNestsInsideDuckDb', SqlExecutor) {
     description = 'Bestehende Daten zu Hornissen-Nestern mit den heruntergeladenen Daten zusammenführen.'
     database = [duckDbUri]
     sqlParameters = [
-        // Für die Verwendung in DuckDB-Querys Hochkommas hinzufügen und GString nach String casten
+        // Für die Verwendung in den Querys Hochkommas hinzufügen und GString nach String casten
         editdb_connection_string : "'${editDbConnectionString}'".toString()
-    ] 
+    ]
     sqlFiles = files(
         'load_spatial.sql',
         'attach_editdb_read.sql',
