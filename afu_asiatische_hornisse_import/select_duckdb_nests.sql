@@ -1,4 +1,5 @@
 SELECT
+    t_ili_tid,
     import_nest_id,
     import_nest_status,
     NULL::DATE AS import_datum_behandlung,  -- noch nicht verfügbar

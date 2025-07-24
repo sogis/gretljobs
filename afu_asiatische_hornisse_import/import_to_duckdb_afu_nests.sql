@@ -1,4 +1,5 @@
 CREATE TABLE afu_nests (
+    t_ili_tid                   UUID,
     import_nest_id              VARCHAR,
     import_nest_status          VARCHAR,
     import_datum_behandlung     VARCHAR,
@@ -21,6 +22,7 @@ CREATE TABLE afu_nests (
 
 INSERT INTO afu_nests
     SELECT
+        t_ili_tid,
         import_nest_id,
         import_nest_status,
         import_datum_behandlung,

@@ -101,10 +101,10 @@ tasks.register('loadDataToDuckDb', SqlExecutor) {
     sqlFiles = files(
         'load_spatial.sql',
         'attach_editdb_read.sql',
-        'create_duckdb_table_afu_individuals.sql',
-        'create_duckdb_table_afu_nests.sql',
-        'create_duckdb_table_infofauna_individuals.sql',
-        'create_duckdb_table_infofauna_nests.sql'
+        'import_to_duckdb_afu_individuals.sql',
+        'import_to_duckdb_afu_nests.sql',
+        'import_to_duckdb_infofauna_individuals.sql',
+        'import_to_duckdb_infofauna_nests.sql'
     )
 }
 

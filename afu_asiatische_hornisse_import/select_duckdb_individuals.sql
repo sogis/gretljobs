@@ -1,4 +1,5 @@
 SELECT
+    t_ili_tid,
     import_occurrence_id,
     import_unique_nest_id,
     NULL::TEXT AS import_bienenstand_nr,        -- noch nicht verfügbar

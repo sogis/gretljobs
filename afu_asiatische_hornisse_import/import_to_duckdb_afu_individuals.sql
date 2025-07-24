@@ -1,4 +1,5 @@
 CREATE TABLE afu_individuals (
+    t_ili_tid                       UUID,
     import_occurrence_id            VARCHAR,
     import_unique_nest_id           VARCHAR,
     import_bienenstand_nr           VARCHAR,
@@ -27,6 +28,7 @@ CREATE TABLE afu_individuals (
 
 INSERT INTO afu_individuals
     SELECT
+        t_ili_tid,
         import_occurrence_id,
         import_unique_nest_id,
         import_bienenstand_nr,
