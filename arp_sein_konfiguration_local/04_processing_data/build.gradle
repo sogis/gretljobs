@@ -8,7 +8,12 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-/*
+// variables
+def dbPath = "$buildDir/sein.duckdb"
+def dbUriDuckDB = "jdbc:duckdb:$dbPath"
+def xtfPath = "$buildDir" + "/arp_sein_konfiguraton_auswertung_uc1.xtf"
+def ftpPath = "/opt/daten/gis_arp_raumdaten/test/"
+
 // Definition des SFTP-Servers für den Datenupload
 remotes {
     sftpServer {
@@ -21,12 +26,6 @@ remotes {
         }
     }
 }
-*/
-
-// variables
-def dbPath = "$buildDir/sein.duckdb"
-def dbUriDuckDB = "jdbc:duckdb:$dbPath"
-def xtfPath_Export = "$buildDir" + "/arp_sein_konfiguraton_auswertung_uc1.xtf"
 
 // first task
 tasks.register("first"){
@@ -75,14 +74,13 @@ tasks.register("ili2duckdbexport", Ili2duckdbExport){
     dependsOn "prepareExport"
     models = "SO_ARP_SEin_Konfiguration_20250115"
     dbschema = "arp_sein_konfiguration_grundlagen_v2"
-    dataFile = files(xtfPath_Export)
+    dataFile = files(xtfPath)
     dbfile = file("build/sein.duckdb")
 }
 
-/*
 // XTF-Datei auf den SFTP-Server hochladen
 tasks.register('upload') {
-    dependsOn 'exportXtf'
+    dependsOn 'ili2duckdbexport'
     doLast {
         ssh.run {
             session(remotes.sftpServer) {
@@ -92,9 +90,8 @@ tasks.register('upload') {
         println "File uploaded to FTP server"
     }
 }
-*/
 
 // last task
 tasks.register("last"){
-    dependsOn "ili2duckdbexport"
+    dependsOn "upload"
 }

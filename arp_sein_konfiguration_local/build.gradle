@@ -8,7 +8,7 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'standardRun'
+defaultTasks ':04_processing_data:last'
 
 // global variables
 ext {
@@ -49,18 +49,4 @@ ext {
 
 ssh.settings {
     knownHosts = allowAnyHosts
-}
-
-// $$ task-list for testing - delete when job finished
-def TestRun1 = [
-    ':03_collect_data:last'
-]
-
-def TestRun2 = [
-    ':04_processing_data:last'
-]
-
-// $$ task to run (see defaultTask) - delete when job finished
-task standardRun(){
-    dependsOn TestRun2
 }
