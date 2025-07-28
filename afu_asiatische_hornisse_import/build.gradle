@@ -19,8 +19,8 @@ if (duckDbFile.exists()) {
 }
 
 // Connection String erstellen, um Edit-DB in DuckDB einzubinden
-def editDbHost = dbUriEdit.substring(dbUriPub.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
-def editDbDatabase = dbUriEdit.substring(dbUriEdit.lastIndexOf("/") + 1)
+def editDbHost = dbUriEdit.substring(dbUriEdit.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
+def editDbDatabase = 'edit'
 def editDbConnectionString = "dbname=${editDbDatabase} user=${dbUserEdit} password=${dbPwdEdit} host=${editDbHost}"
 
 // WFS Parametrisierung (Abfrage mit Filter auf canton = Solothurn)
