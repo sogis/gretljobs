@@ -24,6 +24,7 @@ def editDbDatabase = dbUriEdit.substring(dbUriEdit.lastIndexOf("/") + 1)
 def editDbConnectionString = "dbname=${editDbDatabase} user=${dbUserEdit} password=${dbPwdEdit} host=${editDbHost}"
 
 // WFS Parametrisierung (Abfrage mit Filter auf canton = Solothurn)
+// tbd: Abfrage nach dem initialen Download auf das laufende Jahr einschränken, so dass Daten nur für die Dauer einer Saison nachgeführt werden?
 def wfsUrlEncodedFirstPart =
     'https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?' +
     'Filter=%3CFilter%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Ecanton%3C%2FPropertyName%3E%3CLiteral%3ESolothurn%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E' +
@@ -52,7 +53,6 @@ def individualsFile = file(individualsPath)
 def activeNestsFile = file(activeNestsPath)
 def unactiveNestsFile = file(unactiveNestsPath)
 
-// tbd: Abfrage auf das laufende Jahr einschränken (so dass Daten für die Dauer einer Saison nachgeführt werden)?
 tasks.register('downloadIndividuals', Curl) {
     description = 'Hornissen-Sichtungen von info fauna herunterladen.'
     serverUrl = wfsUrlIndividuals
@@ -66,7 +66,6 @@ tasks.register('downloadIndividuals', Curl) {
     }
 }
 
-// tbd: Abfrage auf das laufende Jahr einschränken (so dass Daten für die Dauer einer Saison nachgeführt werden)?
 tasks.register('downloadActiveNests', Curl) {
     description = 'Bestehende Hornissen-Nester von info fauna herunterladen.'
     serverUrl = wfsUrlActiveNests
@@ -80,7 +79,6 @@ tasks.register('downloadActiveNests', Curl) {
     }
 }
 
-// tbd: Abfrage auf das laufende Jahr einschränken (so dass Daten für die Dauer einer Saison nachgeführt werden)?
 tasks.register('downloadUnactiveNests', Curl) {
     description = 'Zerstörte Hornissen-Nester von info fauna herunterladen.'
     serverUrl = wfsUrlUnactiveNests
@@ -94,7 +92,6 @@ tasks.register('downloadUnactiveNests', Curl) {
     }
 }
 
-// tbd: create konsequent von insert trennen -> Logging & Data Types
 tasks.register('loadDataToDuckDb', SqlExecutor) {
     dependsOn 'downloadIndividuals', 'downloadActiveNests', 'downloadUnactiveNests'
     description = 'Ausgangsdaten (heruntergeladene und bestehende) in DuckDB einlesen.'
@@ -151,7 +148,7 @@ tasks.register('upsertNestsInsideDuckDb', SqlExecutor) {
 
 // Hinweise:
 // a) Db2Db unterstützt kein LOAD SPATIAL Query, somit stehen bei DuckDB-Quelle keine räumlichen Funktionen zur Verfügung.
-// b) Um Geometrien zwischen verschiedenen DBMS zu kopieren, ist der Umweg über WKT nötig.
+// b) Um Geometrien zwischen verschiedenen DBMS zu kopieren, ist der Umweg über WKT nötig. Vgl. "import_[...].sql".
 tasks.register('copyResultsToEditDb', Db2Db) {
     dependsOn 'upsertIndividualsInsideDuckDb', 'upsertNestsInsideDuckDb'
     description = 'Zusammengeführte Daten in die Edit-DB zurückkopieren (überschreibend).'
