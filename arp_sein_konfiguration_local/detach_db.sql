@@ -1,2 +1,0 @@
-DETACH editdb;
-DETACH pubdb; 

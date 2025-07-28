@@ -1,6 +1,3 @@
-/*
-Aktualisiert die Geometrie der Root-Polygone, falls diese Flächenanteile von benachbarten Polygonen erhalten.
-*/
 WITH 
 
 root_id_list AS (
@@ -14,19 +11,19 @@ root_id_list AS (
         _root_id_ref
 )
 
-,root_set_self_reference AS (
-    UPDATE 
-        public.poly_cleanup p
-    SET 
-        _root_id_ref = id
-    FROM 
-        root_id_list l
-    WHERE 
-        l.root_id = p.id
-    RETURNING *
-)
+UPDATE -- Setzt temporär für Root-Polygone die _root_id_ref, damit beim Merge das Root-Polygon mit seinen Kleinstflächen gemerged werden kann.
+    public.poly_cleanup p
+SET 
+    _root_id_ref = id
+FROM 
+    root_id_list l
+WHERE 
+    l.root_id = p.id
+;
 
-,merged AS ( -- Gemergte neue Fläche der Root-Polygone, in welche andere Polygone aufgelöst werden
+WITH
+
+merged AS ( -- Gemergte neue Fläche der Root-Polygone, in welche andere Polygone aufgelöst werden
     SELECT 
         _root_id_ref,
         ST_Multi(ST_Union(geometrie)) AS merged_geom

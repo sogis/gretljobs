@@ -6,6 +6,8 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'updateLayerSearchIndex'
 
 task updateLayerSearchIndex(type: Db2Db){
+    description = "Update des Ebenen/Layer-Suchindexes"
+
     sourceDb = [dbUriSimi, dbUserSimi, dbPwdSimi]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     def dbSearchSchema = dbSearchSchemaPub
