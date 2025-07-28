@@ -22,16 +22,15 @@ ext {
     set_root_path = "${rootProject.projectDir}/set_root_path.sql"
     export_parquet = "${rootProject.projectDir}/export_parquet.sql"
     import_data_dir = "${rootProject.projectDir}/02_import_data/"
-
+ 
     // Create DB-variables for sql-files
     dbHostEdit = dbUriEdit.substring(dbUriEdit.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
-    dbDatabaseEdit = dbUriEdit.substring(dbUriEdit.lastIndexOf("/") + 1)
+    dbDatabaseEdit = 'edit'
     dbConnectionStringEdit = "'dbname=$dbDatabaseEdit user=$dbUserEdit password=$dbPwdEdit host=$dbHostEdit'"
 
     dbHostPub = dbUriPub.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastIndexOf("/"))
-    dbDatabasePub = dbUriPub.substring(dbUriPub.lastIndexOf("/") + 1)
+    dbDatabasePub = 'pub'
     dbConnectionStringPub = "'dbname=$dbDatabasePub user=$dbUserPub password=$dbPwdPub host=$dbHostPub'"
-
 }
 
 ssh.settings {
