@@ -26,25 +26,12 @@ ext {
     // Create DB-variables for sql-files
     dbHostEdit = dbUriEdit.substring(dbUriEdit.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
     dbDatabaseEdit = dbUriEdit.substring(dbUriEdit.lastIndexOf("/") + 1)
-    //dbConnectionStringEdit = "'dbname=$dbDatabaseEdit user=$dbUserEdit password=$dbPwdEdit host=$dbHostEdit'"
-    dbConnectionStringEdit = "'dbname=edit user=$dbUserEditS password=$dbPwdEditS host=geodb.rootso.org'"
+    dbConnectionStringEdit = "'dbname=$dbDatabaseEdit user=$dbUserEdit password=$dbPwdEdit host=$dbHostEdit'"
 
     dbHostPub = dbUriPub.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastIndexOf("/"))
     dbDatabasePub = dbUriPub.substring(dbUriPub.lastIndexOf("/") + 1)
-    //dbConnectionStringPub = "'dbname=$dbDatabasePub user=$dbUserPub password=$dbPwdPub host=$dbHostPub'"
-    dbConnectionStringPub = "'dbname=pub user=$dbUserPubS password=$dbPWdPubS host=geodb.rootso.org'"
-/*
-    // edit-db-attach-variable for sql-files
-    duckDbPostgresqlUriEdit = dbUriEdit.substring('jdbc:'.length())
-    .replaceAll('ApplicationName=GRETL', 'application_name=GRETL via DuckDB')
-    duckDbPostgresqlUriEdit += "&user=${dbUserEdit}&password=${dbPwdEdit}"
-    duckDbPostgresqlUriEdit += "&options=-c%20default_transaction_read_only%3Dtrue"
-    // pub-db-attach-variable for sql-files
-    duckDbPostgresqlUriPub = dbUriPub.substring('jdbc:'.length())
-    .replaceAll('ApplicationName=GRETL', 'application_name=GRETL via DuckDB')
-    duckDbPostgresqlUriPub += "&user=${dbUserPub}&password=${dbPwdPub}"
-    duckDbPostgresqlUriPub += "&options=-c%20default_transaction_read_only%3Dtrue"
-*/
+    dbConnectionStringPub = "'dbname=$dbDatabasePub user=$dbUserPub password=$dbPwdPub host=$dbHostPub'"
+
 }
 
 ssh.settings {
