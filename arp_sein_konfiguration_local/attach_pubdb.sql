@@ -1,1 +1,0 @@
-ATTACH ${connectionStringPub} AS pubdb (TYPE POSTGRES, READ_ONLY); 
