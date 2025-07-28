@@ -41,7 +41,6 @@ tasks.register("copyDuckDB", Copy){
 tasks.register("ImportAllParquet", SqlExecutor) {
     dependsOn "copyDuckDB"
     def importTasks = [
-        /*
         ":02_import_data:amphibiengebiete_ortsfest_shp2:last",
         ":02_import_data:amphibiengebiete_wander_shp2:last",
         ":02_import_data:archaeologische_flaechenfundstellen:last",
@@ -81,14 +80,11 @@ tasks.register("ImportAllParquet", SqlExecutor) {
         ":02_import_data:schweizmobil_veloland_shp2:last",
         ":02_import_data:schweizmobil_wanderland_shp2:last",
         ":02_import_data:sondernutzungsplaene:last",
-        //":02_import_data:testthema:last", // $$ Nur für Testzwecke. Löschen sobald Job fertig ist
         ":02_import_data:trockenwiesen_trockenweiden_shp1:last",
         ":02_import_data:vogelreservate_shp1:last",
         ":02_import_data:vorhaben:last",
         ":02_import_data:wanderwege:last",
         ":02_import_data:wildtierkorridore:last"
-        */
-        ":02_import_data:bln_shp1:last"
     ]
     dependsOn importTasks
     mustRunAfter importTasks
