@@ -117,8 +117,8 @@ grundbuchkreis AS
     kreis.aname AS aname,
     nummerierungsbereich.geometrie
     FROM
-    agi_av_gb_admin_einteilung.grundbuchkreise_grundbuchkreis AS kreis
-    LEFT JOIN agi_av_gb_admin_einteilung.grundbuchkreise_grundbuchamt AS amt
+    agi_av_gb_administrative_einteilungen_v2.grundbuchkreise_grundbuchkreis AS kreis
+    LEFT JOIN agi_av_gb_administrative_einteilungen_v2.grundbuchkreise_grundbuchamt AS amt
     ON kreis.r_grundbuchamt = amt.t_id
     LEFT JOIN 
     (

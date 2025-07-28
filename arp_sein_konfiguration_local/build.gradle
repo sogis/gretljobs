@@ -22,7 +22,7 @@ ext {
     set_root_path = "${rootProject.projectDir}/set_root_path.sql"
     export_parquet = "${rootProject.projectDir}/export_parquet.sql"
     import_data_dir = "${rootProject.projectDir}/02_import_data/"
- 
+
     // Create DB-variables for sql-files
     dbHostEdit = dbUriEdit.substring(dbUriEdit.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
     dbDatabaseEdit = 'edit'

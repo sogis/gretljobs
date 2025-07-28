@@ -40,15 +40,15 @@ def dbHostSimi = dbUriSimi.substring(dbUriSimi.indexOf("//") + 2, dbUriSimi.last
 def dbDatabaseSimi = dbUriSimi.substring(dbUriSimi.lastIndexOf("/") + 1)
 def dbConnectionStringSimi = "'dbname=$dbDatabaseSimi user=$dbUserSimi password=$dbPwdSimi host=$dbHostSimi'"
 
-ssh.settings {
-    knownHosts = allowAnyHosts
-}
-
 remotes {
     sftpServer {
         host = sftpUrlSogis
         user = sftpUserSogis
         password = sftpPwdSogis
+        // Skip host key checking outside the following environments:
+        if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) { // uses the Groovy membership operator
+            knownHosts = allowAnyHosts
+        }
     }
 }
 

@@ -1,0 +1,103 @@
+
+# Ablauf zum Arbeiten mit image und deamon:
+# 1. Docker compose mit compose-deamon.yml hochfahren. Fährt auch gretl container durch command "sleep xxx" hoch.:: docker compose -f compose-deamon.yml up
+# 2. Interaktive bash in gretl container öffnen:: docker compose exec -u $UID gretl bash
+# 3. In "container bash" in das entsprechende Jobverzeichnis wechseln und Job starten mit:: gradle -I /home/gradle/init.gradle
+#
+# Beenden mit:: docker compose -f compose-deamon.yml down
+#
+# Vergleich mit bisheriger Startmethode
+# a. docker compose up
+# b. Job starten:: docker compose run --rm -u $UID gretl --project-dir=afu_neophyten
+#
+# Resultat: Zügigeres Arbeiten, da der gradle deamon erhalten bleibt.
+services:
+  gretl:
+    image: sogis/gretl:3 #${GRETL_IMAGE_TAG:-2.2.617}
+    environment:
+      ORG_GRADLE_PROJECT_gretlEnvironment: development
+    command: "sleep 72000" # 72000 = 20h
+    init: true # Damit SIGTERM bei "docker compose down" berücksichtigt wird, und nicht SIGKILL abgewartet wird
+    volumes:
+      - type: bind
+        source: $HOME/gretljobs.properties
+        target: /home/gradle/.gradle/gradle.properties
+      - type: bind
+        source: .
+        target: /home/gradle/project
+      - type: bind
+        source: ../schema-jobs
+        target: /home/gradle/schema-jobs
+      - type: bind
+        source: ${TMP:-/tmp}
+        target: /gretl-share
+      - type: bind
+        source: ${TMP:-/tmp}
+        target: /home/gradle/.gradle/caches
+  edit-db:
+    image: postgis/postgis:17-3.5
+    environment:
+      POSTGRES_DB: edit
+      POSTGRES_PASSWORD: secret
+      POSTGRES_INITDB_ARGS: "-c include_dir=/opt/postgresql/conf.d/"
+    ports:
+      - "54321:5432"
+    volumes:
+      - type: bind
+        source: ./docker-compose/initdb.sh
+        target: /docker-entrypoint-initdb.d/initdb.sh
+      - type: bind
+        source: ./docker-compose/initdb.sql
+        target: /docker-entrypoint-initdb.d/initdb.sql
+      - type: bind
+        source: ./docker-compose/postgresql-custom.conf
+        target: /opt/postgresql/conf.d/postgresql-custom.conf
+      - type: volume
+        source: pgdata_edit
+        target: /var/lib/postgresql/data
+  pub-db:
+    image: postgis/postgis:17-3.5
+    environment:
+      POSTGRES_DB: pub
+      POSTGRES_PASSWORD: secret
+      POSTGRES_INITDB_ARGS: "-c include_dir=/opt/postgresql/conf.d/"
+    ports:
+      - "54322:5432"
+    volumes:
+      - type: bind
+        source: ./docker-compose/initdb.sh
+        target: /docker-entrypoint-initdb.d/initdb.sh
+      - type: bind
+        source: ./docker-compose/initdb.sql
+        target: /docker-entrypoint-initdb.d/initdb.sql
+      - type: bind
+        source: ./docker-compose/postgresql-custom.conf
+        target: /opt/postgresql/conf.d/postgresql-custom.conf
+      - type: volume
+        source: pgdata_pub
+        target: /var/lib/postgresql/data
+  processing-db:
+    profiles: ["processing"]
+    image: postgis/postgis:17-3.5-alpine
+    environment:
+      POSTGRES_USER: processing
+      POSTGRES_PASSWORD: processing
+    ports:
+      - "54323:5432"
+    volumes:
+      - type: volume
+        source: pgdata_processing
+        target: /var/lib/postgresql/data
+  db-tools:
+    profiles: ["tools"]
+    image: postgis/postgis:17-3.5
+    environment:
+      PGPASSWORD: ddluser
+    volumes:
+      - type: bind
+        source: /tmp
+        target: /tmp
+volumes:
+  pgdata_edit:
+  pgdata_pub:
+  pgdata_processing:

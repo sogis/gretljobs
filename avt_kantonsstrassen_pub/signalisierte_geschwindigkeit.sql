@@ -1,0 +1,9 @@
+SELECT
+    max_geschw,
+    laenge,
+    achsenumme,
+    achsename,
+    geometrie
+FROM
+    avt_kantonsstrassen_staging_v1.signalisierte_geschwindigkeit
+;

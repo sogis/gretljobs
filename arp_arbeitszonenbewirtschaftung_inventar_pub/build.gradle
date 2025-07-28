@@ -5,7 +5,13 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'datenumbau_pub'
 
-task validate(type: Ili2pgValidate) {
+task update_edit(type: SqlExecutor) {
+    description = "updatet das Attribut Bemerkung. Setzt alle leeren Strings auf NULL"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["set_empty_string_to_null.sql"]
+}
+
+task validate(type: Ili2pgValidate, dependsOn: 'update_edit') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = "SO_ARP_Arbeitszonenbewirtschaftung_20240517"
     dbschema = "arp_arbeitszonenbewirtschaftung_v1"

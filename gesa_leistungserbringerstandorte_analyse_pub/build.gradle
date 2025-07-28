@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'refreshSolr'
+defaultTasks 'publishPub', 'refreshSolr', 'updateSearchIndex'
 
 task transferData(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -29,6 +29,29 @@ task publishPub(type: Publisher, dependsOn: 'transferData') {
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
-task refreshSolr(type:Exec, dependsOn:'publishPub') {
-	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.gesa.leistungserbringerstandorte_erreichbarkeitsanalyse' 
+task refreshSolr(type:Exec) {
+    mustRunAfter 'publishPub'
+	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.gesa.leistungserbringerstandorte_erreichbarkeitsanalyse'
 }
+
+task updateSearchIndex(type: SqlExecutor){
+    mustRunAfter 'publishPub'
+    def layerName = 'ch.so.gesa.leistungserbringerstandorte_erreichbarkeitsanalyse'
+    def sqlFileName = 'searchindex_' + layerName + '.sql'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
+
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
