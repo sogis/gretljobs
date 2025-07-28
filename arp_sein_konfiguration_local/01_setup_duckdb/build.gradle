@@ -1,0 +1,40 @@
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+import java.nio.file.Files
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
+// variables
+def dbPath = "$buildDir/sein.duckdb"
+def dbUriDuckDB = "jdbc:duckdb:$dbPath"
+def dbFile = new File(dbPath)
+
+// delete build-directory if it exists
+if (buildDir.exists()) {
+    buildDir.deleteDir()
+}
+
+// create build-directory
+buildDir.mkdirs()
+
+// first task
+tasks.register("first"){
+}
+
+// create Sammeltabelle
+tasks.register('createSammelTabelle', SqlExecutor){
+    dependsOn "first"
+    database = [dbUriDuckDB]
+    sqlFiles = files(
+        load_extension_spatial,
+        'create_sammeltabelle.sql'
+    )
+}
+
+tasks.register("last"){
+    dependsOn "createSammelTabelle"
+}
