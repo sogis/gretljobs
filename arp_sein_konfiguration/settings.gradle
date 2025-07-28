@@ -39,7 +39,6 @@ include ':02_import_data:schweizmobil_mountainbikeland_shp2'
 include ':02_import_data:schweizmobil_veloland_shp2'
 include ':02_import_data:schweizmobil_wanderland_shp2'
 include ':02_import_data:sondernutzungsplaene'
-//include ':02_import_data:testthema' // $$ Nur für Testzwecke. Löschen sobald Job fertig ist
 include ':02_import_data:trockenwiesen_trockenweiden_shp1'
 include ':02_import_data:vogelreservate_shp1'
 include ':02_import_data:vorhaben'

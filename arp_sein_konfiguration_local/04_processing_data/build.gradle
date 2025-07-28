@@ -12,20 +12,6 @@ apply plugin: 'org.hidetake.ssh'
 def dbPath = "$buildDir/sein.duckdb"
 def dbUriDuckDB = "jdbc:duckdb:$dbPath"
 def xtfPath = "$buildDir" + "/arp_sein_konfiguraton_auswertung_uc1.xtf"
-def ftpPath = "/opt/daten/gis_arp_raumdaten/test/"
-
-// Definition des SFTP-Servers für den Datenupload
-remotes {
-    sftpServer {
-        host = "${sftpServerSEinApp}"
-        user = "${sftpUserSEinApp}"
-        identity = file('/home/gradle/.ssh/id_rsa')
-        // Skip host key checking outside the following environments:
-        if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) {  // uses the Groovy membership operator
-            knownHosts = allowAnyHosts
-        }
-    }
-}
 
 // first task
 tasks.register("first"){
@@ -78,20 +64,7 @@ tasks.register("ili2duckdbexport", Ili2duckdbExport){
     dbfile = file("build/sein.duckdb")
 }
 
-// XTF-Datei auf den SFTP-Server hochladen
-tasks.register('upload') {
-    dependsOn 'ili2duckdbexport'
-    doLast {
-        ssh.run {
-            session(remotes.sftpServer) {
-                put from: xtfPath, into: ftpPath
-            }
-        }
-        println "File uploaded to FTP server"
-    }
-}
-
 // last task
 tasks.register("last"){
-    dependsOn "upload"
+    dependsOn "ili2duckdbexport"
 }
