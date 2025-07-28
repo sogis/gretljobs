@@ -9,6 +9,7 @@ tatsächlich etwas geändert hat (-> Logging).
 */
 
 INSERT INTO afu_individuals (
+    t_ili_tid,
     import_occurrence_id,
     import_unique_nest_id,
     geometrie,
@@ -24,6 +25,7 @@ INSERT INTO afu_individuals (
     import_foto_url
 )
 SELECT
+    gen_random_uuid() AS t_ili_tid,  -- neue Records benötigen eine t_ili_tid
     occurence_id,  -- sic!
     nid_unique_id,
     geometrie,
@@ -41,7 +43,7 @@ FROM infofauna_individuals
 -- Bei Konflikt auf "import_materialentity_id" UPDATE anstatt INSERT
 ON CONFLICT (import_materialentity_id)
 DO UPDATE SET
-	-- Alle Felder ausser Konfliktfeld müssen explizit überschrieben werden
+	-- Alle importierten Felder überschreiben
     import_occurrence_id = EXCLUDED.import_occurrence_id,
     import_unique_nest_id = EXCLUDED.import_unique_nest_id,
     geometrie = EXCLUDED.geometrie,
