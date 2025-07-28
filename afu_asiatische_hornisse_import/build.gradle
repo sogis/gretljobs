@@ -42,7 +42,7 @@ def wfsUrlUnactiveNests = wfsUrlEncodedFirstPart + 'unactive_nests' + wfsUrlEnco
 /*
 WFS-Abfrage als cURL zum Testen (mit "active_nests" als Beispiel-Layer):
 curl --location 'https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=neovelutina%3Aactive_nests&SRSNAME=urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A2056&Filter=%3CFilter%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Ecanton%3C%2FPropertyName%3E%3CLiteral%3ESolothurn%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E&outputFormat=application%2Fjson' \
---header 'Authorization: Basic <neovelutinaWfsUser:neovelutinaWfsPwd>'
+--header 'Authorization: Basic <infofaunaWfsUser:infofaunaWfsPwd>'
 */
 
 // Dateipfade für die WFS Downloads
@@ -59,8 +59,8 @@ tasks.register('downloadIndividuals', Curl) {
     method = MethodType.GET
     outputFile = individualsFile
     expectedStatusCode = 200
-    user = neovelutinaWfsUser
-    password = neovelutinaWfsPwd
+    user = infofaunaWfsUser
+    password = infofaunaWfsPwd
     doLast {
         println 'Hornissen-Sichtungen von info fauna heruntergeladen.'
     }
@@ -72,8 +72,8 @@ tasks.register('downloadActiveNests', Curl) {
     method = MethodType.GET
     outputFile = activeNestsFile
     expectedStatusCode = 200
-    user = neovelutinaWfsUser
-    password = neovelutinaWfsPwd
+    user = infofaunaWfsUser
+    password = infofaunaWfsPwd
     doLast {
         println 'Bestehende Hornissen-Nester von info fauna heruntergeladen.'
     }
@@ -85,8 +85,8 @@ tasks.register('downloadUnactiveNests', Curl) {
     method = MethodType.GET
     outputFile = unactiveNestsFile
     expectedStatusCode = 200
-    user = neovelutinaWfsUser
-    password = neovelutinaWfsPwd
+    user = infofaunaWfsUser
+    password = infofaunaWfsPwd
     doLast {
         println 'Zerstörte Hornissen-Nester von info fauna heruntergeladen.'
     }
