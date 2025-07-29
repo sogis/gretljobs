@@ -12,6 +12,6 @@ task transferAlwFutterbaulinienPub(type: Db2Db) {
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('transfer_data.sql',
-                    'alw_futterbaulinien_v1.futterbaulinien_geometrie', true)
+                    'alw_futterbaulinien_pub_v1.futterbaulinien_geometrie', true)
     ];
 }
