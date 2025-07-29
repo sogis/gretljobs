@@ -1,0 +1,17 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+description = "GRETL-Job für Datenübernahme der Futterbaulinien edit-DB, pub-DB"
+
+defaultTasks 'transferAlwFutterbaulinienPub'
+
+task transferAlwFutterbaulinienPub(type: Db2Db) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('transfer_data.sql',
+                    'alw_futterbaulinien_v1.futterbaulinien_geometrie', true)
+    ];
+}
