@@ -88,9 +88,9 @@ task _exportGpkg(type: GpkgExport, dependsOn: _createVerificationTable) {
     }
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     schemaName = "public"
-    srcTableName = ["poly_cleanup_v", "verification"]
+    srcTableName = ["poly_cleanup_v", "verification", "gk_mocklayer"]
     dataFile = file("$buildDir/clean_results.gpkg")
-    dstTableName = ["poly_cleanup", "verification"]
+    dstTableName = ["poly_cleanup", "verification", "gk_modified"]
 }
 
 /*
@@ -108,5 +108,11 @@ Lokale Befehle:
 docker compose --profile processing up
 docker compose --profile processing down
 
-GRETL_IMAGE_TAG=3.1 docker compose run --rm -u $UID gretl --project-dir=afu_naturgefahren_gk_clean -PcleanMaxArea=10 -PcleanMaxDiameter=0.5 -PsourceTableName=gefahrengebiet_hauptprozess_wasser
+GRETL_IMAGE_TAG=3.1 docker compose run --rm -u $UID gretl --project-dir=afu_naturgefahren_gk_clean -PcleanMaxArea=100 -PcleanMaxDiameter=0.2 -PsourceTableName=synoptisches_gefahrengebiet
+
+$td
+1’075’534
+
+1’077’937
+1’081’993
 */

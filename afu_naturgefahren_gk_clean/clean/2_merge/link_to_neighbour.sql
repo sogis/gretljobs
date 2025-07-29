@@ -21,8 +21,14 @@ parent AS (
     SELECT 
         child_candidate.id AS child_id,
         parent.id AS parent_id,
-        parent._hazard_level - child_candidate._hazard_level AS _parent_level_diff,
-        ROW_NUMBER() OVER (PARTITION BY child_candidate.id ORDER BY parent._hazard_level - child_candidate._hazard_level ASC) AS merge_rank
+        parent._hazard_level - child_candidate._hazard_level AS parent_level_diff,
+        ST_Length( -- Länge der bbox als Mass für die Ausdehnung der Intersection
+            ST_Boundary(
+                ST_Envelope(
+                    ST_Intersection(child_candidate.geometrie, parent.geometrie)
+                )
+            )
+        ) AS intersect_bbox_length
     FROM 
     (
         SELECT 
@@ -47,17 +53,26 @@ parent AS (
             child_candidate._hazard_level <= parent._hazard_level
 )
 
+,ranked_candiates AS ( -- Priorisierung der Verschmelzungskandidaten nach: 1. Kleiner _parent_level_diff und 2. Grosser _intersect_bbox_length
+    SELECT 
+        intersecting.*,
+        ROW_NUMBER() OVER (PARTITION BY child_id ORDER BY parent_level_diff ASC, intersect_bbox_length DESC) AS merge_rank
+    FROM 
+       intersecting 
+)
+
 UPDATE -- Setzen der Attribute für die Child-Polygone
     public.poly_cleanup t
 SET 
-    _parent_id_ref = i.parent_id,
-    _parent_level_diff = i._parent_level_diff,
+    _parent_id_ref = r.parent_id,
+    _parent_level_diff = r.parent_level_diff,
+    _intersect_bbox_length = r.intersect_bbox_length,
     _node_position = g.nodeposition + 1
 FROM 
-    intersecting i,
+    ranked_candiates r,
     parent g
 WHERE 
-        t.id = i.child_id
+        t.id = r.child_id
     AND 
-        i.merge_rank = 1   
+        r.merge_rank = 1   
 ;

@@ -13,5 +13,5 @@ INSERT INTO -- Insert aus Quelle in Verarbeitungstabelle
         geometrie
     FROM 
         ${sourcetable}
-    --LIMIT 1000 -- $td
+    --LIMIT 1000
 ;

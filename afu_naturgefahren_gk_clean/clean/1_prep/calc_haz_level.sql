@@ -16,7 +16,7 @@ hazard_level_map AS ( -- Zuordnung der gefahrenstufen auf Ganzzahlen. Grössere 
 UPDATE 
     public.poly_cleanup t
 SET 
-    _hazard_level = coalesce(l_int, -999999) -- -999999 ist für int2 OUT OF RANGE -> wirft Fehler  
+    _hazard_level = coalesce(l_int, -999999) -- -999999 ist für int2 OUT OF RANGE -> provoziert Fehler, damit fehlendes Gefahrenstufen-mapping zu einem Fehler führt
 FROM 
     public.poly_cleanup p 
 LEFT JOIN 
