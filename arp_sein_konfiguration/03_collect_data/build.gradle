@@ -1,0 +1,182 @@
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+import java.nio.file.Files
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: "ch.so.agi.gretl"
+apply plugin: "org.hidetake.ssh"
+
+// variables
+def dbPath = "$buildDir/sein.duckdb"
+def dbUriDuckDB = "jdbc:duckdb:$dbPath"
+
+// first task
+tasks.register("first"){
+    dependsOn ":01_setup_duckdb:last"
+}
+
+// copy duckdb
+tasks.register("copyDuckDB", Copy){
+    dependsOn "first"
+    doFirst {
+        def targetDir = file(buildDir)
+        if (targetDir.exists()) {
+            println "Deleting existing build directory: ${targetDir.absolutePath}"
+            targetDir.deleteDir()
+        }
+        println "Copying DuckDB from 01_setup_duckdb..."
+    }
+    
+    from file("${project(':01_setup_duckdb').buildDir}/sein.duckdb")
+    into buildDir
+    
+    doLast {
+        println "DuckDB successfully copied to ${buildDir}/sein.duckdb"
+    }
+}
+
+// import all parquet-files
+tasks.register("ImportAllParquet", SqlExecutor) {
+    dependsOn "copyDuckDB"
+    def importTasks = [
+        ":02_import_data:amphibiengebiete_ortsfest_shp2:last",
+        ":02_import_data:amphibiengebiete_wander_shp2:last",
+        ":02_import_data:archaeologische_flaechenfundstellen:last",
+        ":02_import_data:archaeologische_punktfundstellen:last",
+        ":02_import_data:auengebiete_shp1:last",
+        ":02_import_data:ausgangslage:last",
+        ":02_import_data:baulinien_erschliessung:last",
+        ":02_import_data:baulinien_nationalstrassen_xtf:last",
+        ":02_import_data:betriebe:last",
+        ":02_import_data:betriebsareal_kb:last",
+        ":02_import_data:bezirksgrenzen:last",
+        ":02_import_data:bln_shp1:last",
+        ":02_import_data:durchgangsstrassen:last",
+        ":02_import_data:durchgangsstrassen_kb:last",
+        ":02_import_data:eisenbahn_shp2:last",
+        ":02_import_data:erdgasroehrenspeicher:last",
+        ":02_import_data:erdgasroehrenspeicher_kb:last",
+        ":02_import_data:flachmoore_shp2:last",
+        ":02_import_data:gemeindegrenzen:last",
+        ":02_import_data:gewaesser_nutzungsplanung:last",
+        ":02_import_data:grundwasserschutz:last",
+        ":02_import_data:hochmoore_shp2:last",
+        ":02_import_data:isos_xtf:last",
+        ":02_import_data:ivs_national_xtf:last",
+        ":02_import_data:ivs_regional_lokal_xtf:last",
+        ":02_import_data:kantonsgrenzen:last",
+        ":02_import_data:kbs:last",
+        ":02_import_data:massnahmen_gen1:last",
+        ":02_import_data:massnahmen_gen2:last",
+        ":02_import_data:massnahmen_gen3:last",
+        //":02_import_data:massnahmen_gen4:last",
+        ":02_import_data:nationalstrassen:last",
+        ":02_import_data:nationalstrassen_kb:last",
+        ":02_import_data:ortsbildschutz:last",
+        ":02_import_data:perimeter_gen5:last",
+        ":02_import_data:schweizmobil_mountainbikeland_shp2:last",
+        ":02_import_data:schweizmobil_veloland_shp2:last",
+        ":02_import_data:schweizmobil_wanderland_shp2:last",
+        ":02_import_data:sondernutzungsplaene:last",
+        ":02_import_data:trockenwiesen_trockenweiden_shp1:last",
+        ":02_import_data:vogelreservate_shp1:last",
+        ":02_import_data:vorhaben:last",
+        ":02_import_data:wanderwege:last",
+        ":02_import_data:wildtierkorridore:last"
+    ]
+
+    dependsOn importTasks
+    mustRunAfter importTasks
+    database = [dbUriDuckDB]
+    sqlParameters = [root_dir_quoted: "'" + rootProject.projectDir.toString() + "'"]
+    sqlFiles = files(
+        load_extension_spatial,
+        "import_all_parquet.sql"
+    )
+}
+
+// create schema for arp sein data
+tasks.register("ili2duckdb_sein", Ili2duckdbImportSchema) {
+    dependsOn "copyDuckDB"
+    dependsOn "ImportAllParquet"
+    dbfile = file(dbPath)
+    models = "SO_ARP_SEin_Konfiguration_20250115"
+    dbschema = "arp_sein_konfiguration_grundlagen_v2"
+    smart2Inheritance = true
+}
+
+// transfer data "Grundlagen"-data to duckdb
+tasks.register("transferGrundlagen", SqlExecutor){
+    dependsOn "ili2duckdb_sein"
+    database = [dbUriDuckDB]
+    sqlParameters = [connectionStringEdit : dbConnectionStringEdit as String]
+    sqlFiles = files(
+        load_extension_spatial,
+        load_extension_postgres,
+        attach_editdb,
+        "transfer_grundlagen_arp_sein.sql"
+    )
+}
+
+// create Sammeltabelle filtered
+tasks.register("createSammelTabelle_filtered", SqlExecutor){
+    dependsOn "copyDuckDB"
+    dependsOn "transferGrundlagen"
+    database = [dbUriDuckDB]
+    sqlFiles = files(
+        load_extension_spatial,
+        "create_sammeltabelle_filtered.sql"
+    )
+}
+
+// filter data with spatial query
+tasks.register("filter_data", SqlExecutor){
+    dependsOn "createSammelTabelle_filtered"
+    dependsOn "transferGrundlagen"
+    dependsOn "ImportAllParquet"
+    database = [dbUriDuckDB]
+    sqlFiles = files(
+        load_extension_spatial,
+        "filter_data.sql"
+    )
+}
+
+// insert custom sein-data into Sammeltabelle filtered
+tasks.register("objektinfos_sein", SqlExecutor){
+    dependsOn "filter_data"
+    database = [dbUriDuckDB]
+    sqlFiles = files("objektinfos_sein.sql")
+}
+
+// insert themes that concern all communities into Sammeltabelle filtered
+tasks.register("themes_all_communities", SqlExecutor){
+    dependsOn "objektinfos_sein"
+    database = [dbUriDuckDB]
+    sqlFiles = files(
+        load_extension_spatial,
+        import_data_dir + "grundnutzung/import_grundnutzung.sql",
+        import_data_dir + "natur_landschaft/import_natur_landschaft.sql",
+        import_data_dir + "wald/import_wald.sql",
+        import_data_dir + "weitere_festlegungen/import_weitere_festlegungen.sql")
+}
+
+// update themes and groups
+tasks.register("upate_theme_group", SqlExecutor){
+    dependsOn "themes_all_communities"
+    database = [dbUriDuckDB]
+    sqlFiles = files("update_thema_gruppe.sql")
+}
+
+// validate data
+tasks.register("validate_thema", SqlExecutor){
+    dependsOn "upate_theme_group"
+    database = [dbUriDuckDB]
+    sqlFiles = files("validate_thema.sql")
+}
+
+// last task
+tasks.register("last"){
+    dependsOn "validate_thema"
+}
