@@ -1,0 +1,165 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.tasks.Curl.MethodType
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+description = 'GRETL-Job für den Import von Sichtungsmeldungen der Asiatischen Hornisse vom infofauna WFS'
+
+defaultTasks 'copyResultsToEditDb'
+
+// $td pub-job folgt noch?
+// $td Wie wird gelöscht?
+// $td Import "nur" aktuelle Saison
+
+// DuckDB Initialisierung
+def duckDbPath = "${buildDir}/imported.duckdb"
+def duckDbUri = "jdbc:duckdb:${duckDbPath}"
+def duckDbFile = file(duckDbPath)
+
+if (duckDbFile.exists()) {
+    duckDbFile.delete()
+    println 'Deleted existing DuckDB database.'
+}
+
+// Connection String erstellen, um Edit-DB in DuckDB einzubinden
+def editDbHost = dbUriEdit.substring(dbUriEdit.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
+def editDbDatabase = 'edit'
+def editDbConnectionString = "dbname=${editDbDatabase} user=${dbUserEdit} password=${dbPwdEdit} host=${editDbHost}"
+
+// WFS Parametrisierung (Abfrage mit Filter auf canton = Solothurn)
+// tbd: Abfrage nach dem initialen Download auf das laufende Jahr einschränken, so dass Daten nur für die Dauer einer Saison nachgeführt werden?
+def wfsUrlEncodedFirstPart =
+    'https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?' +
+    'Filter=%3CFilter%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Ecanton%3C%2FPropertyName%3E%3CLiteral%3ESolothurn%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E' +
+    '&SERVICE=WFS' +
+    '&REQUEST=GetFeature' +
+    '&VERSION=2.0.0' +
+    '&TYPENAMES=neovelutina%3A'
+def wfsUrlEncodedThirdPart =
+    '&SRSNAME=urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A2056' +
+    '&outputFormat=application%2Fjson'
+def wfsUrlIndividuals = wfsUrlEncodedFirstPart + 'individuals' + wfsUrlEncodedThirdPart
+def wfsUrlActiveNests = wfsUrlEncodedFirstPart + 'active_nests' + wfsUrlEncodedThirdPart
+def wfsUrlUnactiveNests = wfsUrlEncodedFirstPart + 'unactive_nests' + wfsUrlEncodedThirdPart
+
+/*
+WFS-Abfrage als cURL zum Testen (mit "active_nests" als Beispiel-Layer):
+curl --location 'https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=neovelutina%3Aactive_nests&SRSNAME=urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A2056&Filter=%3CFilter%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Ecanton%3C%2FPropertyName%3E%3CLiteral%3ESolothurn%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E&outputFormat=application%2Fjson' \
+--header 'Authorization: Basic <infofaunaWfsUser:infofaunaWfsPwd>'
+*/
+
+// Dateipfade für die WFS Downloads
+def individualsPath = "${buildDir}/infofauna_individuals.geojson" // $td {} braucht es nicht, oder?
+def activeNestsPath = "${buildDir}/infofauna_active_nests.geojson"
+def unactiveNestsPath = "${buildDir}/infofauna_unactive_nests.geojson"
+def individualsFile = file(individualsPath) // $td bewusst nicht file("$buildDir/infofauna ...")
+def activeNestsFile = file(activeNestsPath)
+def unactiveNestsFile = file(unactiveNestsPath)
+
+tasks.register('downloadIndividuals', Curl) { // $td Wegen secrets nicht direkt in Duck-Db?
+    description = 'Hornissen-Sichtungen von info fauna herunterladen.'
+    serverUrl = wfsUrlIndividuals
+    method = MethodType.GET
+    outputFile = individualsFile
+    expectedStatusCode = 200
+    user = infofaunaWfsUser
+    password = infofaunaWfsPwd
+    doLast {
+        println 'Hornissen-Sichtungen von info fauna heruntergeladen.'
+    }
+}
+
+tasks.register('downloadActiveNests', Curl) {
+    description = 'Bestehende Hornissen-Nester von info fauna herunterladen.'
+    serverUrl = wfsUrlActiveNests
+    method = MethodType.GET
+    outputFile = activeNestsFile
+    expectedStatusCode = 200
+    user = infofaunaWfsUser
+    password = infofaunaWfsPwd
+    doLast {
+        println 'Bestehende Hornissen-Nester von info fauna heruntergeladen.'
+    }
+}
+
+tasks.register('downloadUnactiveNests', Curl) {
+    description = 'Zerstörte Hornissen-Nester von info fauna herunterladen.'
+    serverUrl = wfsUrlUnactiveNests
+    method = MethodType.GET
+    outputFile = unactiveNestsFile
+    expectedStatusCode = 200
+    user = infofaunaWfsUser
+    password = infofaunaWfsPwd
+    doLast {
+        println 'Zerstörte Hornissen-Nester von info fauna heruntergeladen.'
+    }
+}
+
+tasks.register('loadDataToDuckDb', SqlExecutor) {
+    dependsOn 'downloadIndividuals', 'downloadActiveNests', 'downloadUnactiveNests'
+    description = 'Ausgangsdaten (heruntergeladene und bestehende) in DuckDB einlesen.'
+    database = [duckDbUri]
+    sqlParameters = [
+        // Für die Verwendung in den Querys Hochkommas hinzufügen und GString nach String casten
+        editdb_connection_string : "'${editDbConnectionString}'".toString(),
+        individuals_path: "'${individualsPath}'".toString(), // $td file_search_path innerhalb Duck-DB? 
+        active_nests_path: "'${activeNestsPath}'".toString(),
+        unactive_nests_path: "'${unactiveNestsPath}'".toString()
+    ]
+    sqlFiles = files(
+        'load_spatial.sql',
+        'attach_editdb_read.sql',
+        'import_to_duckdb_afu_individuals.sql',
+        'import_to_duckdb_afu_nests.sql',
+        'import_to_duckdb_infofauna_individuals.sql',
+        'import_to_duckdb_infofauna_nests.sql'
+    )
+}
+
+// Hinweise:
+// Upsert ist mit attached PostgreSQL DB nicht möglich wegen einer Limitation von DuckDB $td Hier passiert doch ein upsert...?
+// (https://github.com/duckdb/duckdb-postgres/issues/189). Darum innerhalb DuckDB gefolgt von Db2DB nach Edit-DB.
+tasks.register('upsertIndividualsInsideDuckDb', SqlExecutor) {
+    dependsOn 'loadDataToDuckDb'
+    description = 'Bestehende Daten zu Hornissen-Sichtungen mit den heruntergeladenen Daten zusammenführen.'
+    database = [duckDbUri]
+    sqlParameters = [
+        // Für die Verwendung in den Querys Hochkommas hinzufügen und GString nach String casten
+        editdb_connection_string : "'${editDbConnectionString}'".toString()
+    ] 
+    sqlFiles = files(
+        'load_spatial.sql',
+        'attach_editdb_read.sql',
+        'upsert_duckdb_individuals.sql'
+    )
+}
+
+tasks.register('upsertNestsInsideDuckDb', SqlExecutor) {
+    dependsOn 'loadDataToDuckDb'
+    description = 'Bestehende Daten zu Hornissen-Nestern mit den heruntergeladenen Daten zusammenführen.'
+    database = [duckDbUri]
+    sqlParameters = [
+        // Für die Verwendung in den Querys Hochkommas hinzufügen und GString nach String casten
+        editdb_connection_string : "'${editDbConnectionString}'".toString()
+    ]
+    sqlFiles = files(
+        'load_spatial.sql',
+        'attach_editdb_read.sql',
+        'upsert_duckdb_nests.sql'
+    )
+}
+
+// Hinweise:
+// a) Db2Db unterstützt kein LOAD SPATIAL Query, somit stehen bei DuckDB-Quelle keine räumlichen Funktionen zur Verfügung. $td verstehe ich nicht
+// b) Um Geometrien zwischen verschiedenen DBMS zu kopieren, ist der Umweg über WKT nötig. Vgl. "import_[...].sql". $td Hinweis: WKB geht auch
+tasks.register('copyResultsToEditDb', Db2Db) {
+    dependsOn 'upsertIndividualsInsideDuckDb', 'upsertNestsInsideDuckDb'
+    description = 'Zusammengeführte Daten in die Edit-DB zurückkopieren (überschreibend).'
+    sourceDb = [duckDbUri]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+        new TransferSet('select_duckdb_individuals.sql', 'afu_asiatische_hornisse_v2.asia_hornisse_sichtung', true, (String[])['geometrie:wkt:2056']),
+        new TransferSet('select_duckdb_nests.sql', 'afu_asiatische_hornisse_v2.asia_hornisse_nest', true, (String[])['geometrie:wkt:2056'])
+    ];
+}
