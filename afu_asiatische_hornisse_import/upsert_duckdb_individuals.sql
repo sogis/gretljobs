@@ -1,6 +1,6 @@
 /*
 Diese SQL-Query führt unseren Datenbestand mit den heruntergeladenen Daten von infofauna zusammen
-mittels UPSERT (INSERT, bei Konflikt UPDATE).
+mittels Upsert (INSERT, bei Konflikt UPDATE).
 Technischer Hinweis:
 Wenn man *immer alle* Zielfelder überschreiben möchte, reicht INSERT OR REPLACE INTO ohne ON CONFLICT.
 Aber wir wollen a) die vom AfU geführten Felder nicht überschreiben (massnahmenstatus, bemerkung_massnahme)
@@ -22,7 +22,8 @@ INSERT INTO afu_individuals (
     import_lat,
     import_lon,
     import_bemerkung,
-    import_foto_url
+    import_foto_url,
+    massnahmenstatus
 )
 SELECT
     gen_random_uuid() AS t_ili_tid,  -- neue Records benötigen eine t_ili_tid
@@ -38,7 +39,8 @@ SELECT
     import_lat,
     import_lon,
     remarques,
-    "image"
+    "image",
+    'neu' AS massnahmenstatus  -- neue Records haben Status "neu"
 FROM infofauna_individuals
 -- Bei Konflikt auf "import_materialentity_id" UPDATE anstatt INSERT
 ON CONFLICT (import_materialentity_id)

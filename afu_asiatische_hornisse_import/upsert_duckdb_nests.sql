@@ -1,6 +1,6 @@
 /*
 Diese SQL-Query führt unseren Datenbestand mit den heruntergeladenen Daten von infofauna zusammen
-mittels UPSERT (INSERT, bei Konflikt UPDATE).
+mittels Upsert (INSERT, bei Konflikt UPDATE).
 Technischer Hinweis:
 Wenn man *immer alle* Zielfelder überschreiben möchte, reicht INSERT OR REPLACE INTO ohne ON CONFLICT.
 Aber wir wollen a) die vom AfU geführten Felder nicht überschreiben (massnahmenstatus, bemerkung_massnahme)
