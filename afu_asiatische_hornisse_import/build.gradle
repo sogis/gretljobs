@@ -8,6 +8,10 @@ description = 'GRETL-Job für den Import von Sichtungsmeldungen der Asiatischen 
 
 defaultTasks 'copyResultsToEditDb'
 
+// $td pub-job folgt noch?
+// $td Wie wird gelöscht?
+// $td Import "nur" aktuelle Saison
+
 // DuckDB Initialisierung
 def duckDbPath = "${buildDir}/imported.duckdb"
 def duckDbUri = "jdbc:duckdb:${duckDbPath}"
@@ -46,14 +50,14 @@ curl --location 'https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?SERVIC
 */
 
 // Dateipfade für die WFS Downloads
-def individualsPath = "${buildDir}/infofauna_individuals.geojson"
+def individualsPath = "${buildDir}/infofauna_individuals.geojson" // $td {} braucht es nicht, oder?
 def activeNestsPath = "${buildDir}/infofauna_active_nests.geojson"
 def unactiveNestsPath = "${buildDir}/infofauna_unactive_nests.geojson"
-def individualsFile = file(individualsPath)
+def individualsFile = file(individualsPath) // $td bewusst nicht file("$buildDir/infofauna ...")
 def activeNestsFile = file(activeNestsPath)
 def unactiveNestsFile = file(unactiveNestsPath)
 
-tasks.register('downloadIndividuals', Curl) {
+tasks.register('downloadIndividuals', Curl) { // $td Wegen secrets nicht direkt in Duck-Db?
     description = 'Hornissen-Sichtungen von info fauna herunterladen.'
     serverUrl = wfsUrlIndividuals
     method = MethodType.GET
@@ -99,7 +103,7 @@ tasks.register('loadDataToDuckDb', SqlExecutor) {
     sqlParameters = [
         // Für die Verwendung in den Querys Hochkommas hinzufügen und GString nach String casten
         editdb_connection_string : "'${editDbConnectionString}'".toString(),
-        individuals_path: "'${individualsPath}'".toString(),
+        individuals_path: "'${individualsPath}'".toString(), // $td file_search_path innerhalb Duck-DB? 
         active_nests_path: "'${activeNestsPath}'".toString(),
         unactive_nests_path: "'${unactiveNestsPath}'".toString()
     ]
@@ -114,7 +118,7 @@ tasks.register('loadDataToDuckDb', SqlExecutor) {
 }
 
 // Hinweise:
-// Upsert ist mit attached PostgreSQL DB nicht möglich wegen einer Limitation von DuckDB 
+// Upsert ist mit attached PostgreSQL DB nicht möglich wegen einer Limitation von DuckDB $td Hier passiert doch ein upsert...?
 // (https://github.com/duckdb/duckdb-postgres/issues/189). Darum innerhalb DuckDB gefolgt von Db2DB nach Edit-DB.
 tasks.register('upsertIndividualsInsideDuckDb', SqlExecutor) {
     dependsOn 'loadDataToDuckDb'
@@ -147,8 +151,8 @@ tasks.register('upsertNestsInsideDuckDb', SqlExecutor) {
 }
 
 // Hinweise:
-// a) Db2Db unterstützt kein LOAD SPATIAL Query, somit stehen bei DuckDB-Quelle keine räumlichen Funktionen zur Verfügung.
-// b) Um Geometrien zwischen verschiedenen DBMS zu kopieren, ist der Umweg über WKT nötig. Vgl. "import_[...].sql".
+// a) Db2Db unterstützt kein LOAD SPATIAL Query, somit stehen bei DuckDB-Quelle keine räumlichen Funktionen zur Verfügung. $td verstehe ich nicht
+// b) Um Geometrien zwischen verschiedenen DBMS zu kopieren, ist der Umweg über WKT nötig. Vgl. "import_[...].sql". $td Hinweis: WKB geht auch
 tasks.register('copyResultsToEditDb', Db2Db) {
     dependsOn 'upsertIndividualsInsideDuckDb', 'upsertNestsInsideDuckDb'
     description = 'Zusammengeführte Daten in die Edit-DB zurückkopieren (überschreibend).'

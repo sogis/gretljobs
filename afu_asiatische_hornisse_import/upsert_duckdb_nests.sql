@@ -60,6 +60,7 @@ DO UPDATE SET
     import_url = EXCLUDED.import_url,
     import_foto_url = EXCLUDED.import_foto_url
 WHERE
+    -- $td Wieso sich die Mühe machen?
     -- UPDATE nur ausführen, wenn sich mindestens ein Wert geändert hat
     import_nest_id IS DISTINCT FROM EXCLUDED.import_nest_id
     OR import_nest_status IS DISTINCT FROM EXCLUDED.import_nest_status
