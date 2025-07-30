@@ -1,0 +1,93 @@
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+import java.nio.file.Files
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
+// variables
+def dbPath = "$buildDir/sein.duckdb"
+def dbUriDuckDB = "jdbc:duckdb:$dbPath"
+def datasetName = "importdata" // for naming tables in sql
+def downloadSrc = 'https://data.geo.admin.ch/ch.bafu.bundesinventare-amphibien/data.zip'
+def downloadFile = file("$buildDir/${datasetName}.zip")
+def unzipTargetDir = file("$buildDir/${datasetName}")
+def shapefilePath = new File("$unzipTargetDir/Amphibien_LV95/amphibWanderobjekt.shp")
+
+// first task
+tasks.register("first"){
+    dependsOn ":01_setup_duckdb:last"
+}
+
+// copy duckdb
+tasks.register("copyDuckDB", Copy){
+    dependsOn "first"
+
+    doFirst {
+        def targetDir = file(buildDir)
+        if (targetDir.exists()) {
+            println "Deleting existing build directory: ${targetDir.absolutePath}"
+            targetDir.deleteDir()
+        }
+        println "Copying DuckDB from 01_setup_duckdb..."
+    }
+    
+    from file("${project(':01_setup_duckdb').buildDir}/sein.duckdb")
+    into buildDir
+    
+    doLast {
+        println "DuckDB successfully copied to ${buildDir}/sein.duckdb"
+    }
+}
+
+// download task
+tasks.register("downloadData", Download) {
+    dependsOn "copyDuckDB"
+    src downloadSrc
+    dest downloadFile
+    overwrite true
+}
+
+// unzip task
+tasks.register("unzipData", Copy){
+    dependsOn 'downloadData'
+    doLast {
+        println "File unzipped to directory: " + unzipTargetDir
+    }
+    from zipTree(downloadFile)
+    into file(unzipTargetDir)
+}
+
+// import shapefiles into duckdb and copy to Sammeltabelle
+tasks.register("importShpData", SqlExecutor){
+    dependsOn "unzipData"
+    dependsOn "copyDuckDB"
+    database = [dbUriDuckDB]
+    sqlParameters = [
+        shp_path: "'${shapefilePath}'".toString(),
+        table_name: "${datasetName}".toString()
+        ]
+    sqlFiles = files(
+        load_extension_spatial,
+        'import_amphibiengebiete_wander.sql'
+    )
+}
+
+// export parquet-file
+tasks.register("exportParquet", SqlExecutor) {
+    dependsOn "importShpData"
+    database = [dbUriDuckDB]
+    sqlParameters = [parquet_path_quoted: "'" + "$buildDir/theme_sammeltabelle.parquet" + "'"]
+    sqlFiles = files(
+        load_extension_spatial,
+        export_parquet
+    )
+}
+
+// last task
+tasks.register("last"){
+    dependsOn "exportParquet"
+}
