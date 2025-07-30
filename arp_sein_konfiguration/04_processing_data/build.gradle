@@ -11,7 +11,7 @@ apply plugin: 'org.hidetake.ssh'
 // variables
 def dbPath = "$buildDir/sein.duckdb"
 def dbUriDuckDB = "jdbc:duckdb:$dbPath"
-def xtfPath = "$buildDir" + "/arp_sein_konfiguraton_auswertung_uc1.xtf"
+def xtfPath = "$buildDir" + "/arp_sein_konfiguraton.xtf"
 def ftpPath = "/opt/daten/gis_arp_raumdaten/test/"
 
 // Definition des SFTP-Servers für den Datenupload
