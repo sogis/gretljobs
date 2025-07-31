@@ -28,5 +28,5 @@ INSERT INTO infofauna_individuals BY NAME
         ST_AsText(geom) AS geometrie,
         round(ST_X(ST_Transform(geom, 'EPSG:2056', 'EPSG:4326')), 6) AS import_lat,
         round(ST_Y(ST_Transform(geom, 'EPSG:2056', 'EPSG:4326')), 6) AS import_lon
-    FROM ST_Read(${individuals_path})
+    FROM ST_Read(${wfs_url_individuals})
 ;

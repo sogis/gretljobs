@@ -3,9 +3,9 @@ Diese SQL-Query führt unseren Datenbestand mit den heruntergeladenen Daten von 
 mittels Upsert (INSERT, bei Konflikt UPDATE).
 Technischer Hinweis:
 Wenn man *immer alle* Zielfelder überschreiben möchte, reicht INSERT OR REPLACE INTO ohne ON CONFLICT.
-Aber wir wollen a) die vom AfU geführten Felder nicht überschreiben (massnahmenstatus, bemerkung_massnahme)
-und benötigen b) eine WHERE Clause um das UPDATE auf Zeilen einschränken zu können, in denen sich
-tatsächlich etwas geändert hat (-> Logging).
+Aber wir wollen a) die von uns geführten Felder nicht überschreiben (t_ili_tid, massnahmenstatus, bemerkung_massnahme)
+und b) eine WHERE Clause um das UPDATE auf Zeilen einschränken zu können, in denen sich tatsächlich etwas geändert hat,
+daher wird das ON CONFLICT Statement benötigt.
 */
 
 INSERT INTO afu_nests (
@@ -60,8 +60,8 @@ DO UPDATE SET
     import_url = EXCLUDED.import_url,
     import_foto_url = EXCLUDED.import_foto_url
 WHERE
-    -- $td Wieso sich die Mühe machen?
-    -- UPDATE nur ausführen, wenn sich mindestens ein Wert geändert hat
+    -- UPDATE nur ausführen, wenn sich mindestens ein Wert geändert hat. Damit erscheint im Log für diesen
+    -- Task die Anzahl tatsächlich veränderte Zeilen, was Entwicklung und Troubleshooting unterstützt.
     import_nest_id IS DISTINCT FROM EXCLUDED.import_nest_id
     OR import_nest_status IS DISTINCT FROM EXCLUDED.import_nest_status
     OR geometrie IS DISTINCT FROM EXCLUDED.geometrie

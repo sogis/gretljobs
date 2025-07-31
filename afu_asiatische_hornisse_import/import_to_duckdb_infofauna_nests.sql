@@ -35,7 +35,7 @@ INSERT INTO infofauna_nests BY NAME
         END AS import_nest_status,
         round(ST_X(ST_Transform(geom, 'EPSG:2056', 'EPSG:4326')), 6) AS import_lat,
         round(ST_Y(ST_Transform(geom, 'EPSG:2056', 'EPSG:4326')), 6) AS import_lon
-    FROM ST_Read(${active_nests_path})
+    FROM ST_Read(${wfs_url_active_nests})
     UNION 
     SELECT 
         * EXCLUDE(geom, statut),
@@ -47,5 +47,5 @@ INSERT INTO infofauna_nests BY NAME
         END AS import_nest_status,
         round(ST_X(ST_Transform(geom, 'EPSG:2056', 'EPSG:4326')), 6)::NUMERIC(8,6) AS import_lat,
         round(ST_Y(ST_Transform(geom, 'EPSG:2056', 'EPSG:4326')), 6)::NUMERIC(8,6) AS import_lon
-    FROM ST_Read(${unactive_nests_path})
+    FROM ST_Read(${wfs_url_unactive_nests})
 ;
