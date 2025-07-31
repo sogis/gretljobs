@@ -35,7 +35,7 @@ tasks.register("copyDuckDB", Copy){
         println "Copying DuckDB from 01_setup_duckdb..."
     }
     
-    from project(':01_setup_duckdb').file("${project(':01_setup_duckdb').buildDir}/sein.duckdb")
+    from file("${project(':01_setup_duckdb').buildDir}/sein.duckdb")
     into buildDir
     
     doLast {
