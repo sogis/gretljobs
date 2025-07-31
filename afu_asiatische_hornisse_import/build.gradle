@@ -38,14 +38,14 @@ def wfsUrlIndividuals = wfsUrlEncodedFirstPart + 'individuals'
 def wfsUrlActiveNests = wfsUrlEncodedFirstPart + 'active_nests'
 def wfsUrlUnactiveNests = wfsUrlEncodedFirstPart + 'unactive_nests'
 
+// WFS Credentials für die Authentifizierung via Basic Authentication
+def wfsCredentialsEncoded = 'Basic ' + "${infofaunaWfsUser}:${infofaunaWfsPwd}".getBytes().encodeBase64().toString()
+
 /*
 WFS-Abfrage als cURL zum Testen (mit "active_nests" als Beispiel-Layer):
 curl --location 'https://geoserver.infofauna.ch/geoserver/neovelutina/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=neovelutina%3Aactive_nests&SRSNAME=urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A2056&Filter=%3CFilter%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Ecanton%3C%2FPropertyName%3E%3CLiteral%3ESolothurn%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E&outputFormat=application%2Fjson' \
 --header 'Authorization: Basic <infofaunaWfsUser:infofaunaWfsPwd>'
 */
-
-// WFS Credentials für die Authentifizierung via Basic Authentication
-def wfsCredentialsEncoded = 'Basic ' + "${infofaunaWfsUser}:${infofaunaWfsPwd}".getBytes().encodeBase64().toString()
 
 tasks.register('loadDataToDuckDb', SqlExecutor) {
     description = 'Ausgangsdaten (heruntergeladene und bestehende) in DuckDB einlesen.'
