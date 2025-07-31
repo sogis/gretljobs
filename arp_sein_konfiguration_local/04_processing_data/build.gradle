@@ -11,7 +11,7 @@ apply plugin: 'org.hidetake.ssh'
 // variables
 def dbPath = "$buildDir/sein.duckdb"
 def dbUriDuckDB = "jdbc:duckdb:$dbPath"
-def xtfPath = "$buildDir" + "/arp_sein_konfiguraton_auswertung_uc1.xtf"
+def xtfPath = "$buildDir" + "/arp_sein_konfigurationsdaten.xtf"
 
 // first task
 tasks.register("first"){
@@ -31,7 +31,7 @@ tasks.register("copyDuckDB", Copy){
         println "Copying DuckDB from 01_setup_duckdb..."
     }
     
-    from project(':03_collect_data').file("${project(':03_collect_data').buildDir}/sein.duckdb")
+    from file("${project(':03_collect_data').buildDir}/sein.duckdb")
     into buildDir
     
     doLast {
