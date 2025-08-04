@@ -12,9 +12,14 @@ def duckDbPath = "${buildDir}/temp.duckdb"
 def duckDbUri = "jdbc:duckdb:${duckDbPath}"
 def duckDbFile = file(duckDbPath)
 
+
 if (duckDbFile.exists()) {
     duckDbFile.delete()
     println 'Deleted existing DuckDB database.'
+} else if (duckDbFile.parentFile.mkdirs()) {
+    println 'Created build directory for DuckDB database.'
+} else {
+    println 'Found build directory without existing DuckDB database. No action taken.'
 }
 
 // Connection String für die Einbindung der Edit-DB in DuckDB
