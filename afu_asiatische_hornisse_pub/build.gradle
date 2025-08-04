@@ -23,7 +23,7 @@ task refreshSolr(type:Exec) {
 
 task updateSearchIndexNester(type: SqlExecutor){
     mustRunAfter 'transferAfuAsiatischeHornissePub'
-    def layerName = 'ch.so.afu.asiatische_hornisse_nester'
+    def layerName = 'ch.so.afu.asiatische_hornisse.nester'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
     def dbSearchSchema = dbSearchSchemaPub
@@ -43,7 +43,7 @@ task updateSearchIndexNester(type: SqlExecutor){
 
 task updateSearchIndexSichtungen(type: SqlExecutor){
     mustRunAfter 'transferAfuAsiatischeHornissePub'
-    def layerName = 'ch.so.afu.asiatische_hornisse_sichtungen'
+    def layerName = 'ch.so.afu.asiatische_hornisse.sichtungen'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
     def dbSearchSchema = dbSearchSchemaPub
