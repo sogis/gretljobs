@@ -5,14 +5,14 @@ apply plugin: 'ch.so.agi.gretl'
 
 description = "GRETL-Job für Datenübernahme der Asiatischen Hornisse innerhalb der edit-DB, ins pub-Schema (pub-DB, edit-DB)"
 
-defaultTasks 'transferAfuAsiatischeHornissePub','refreshSolr','updateSearchIndex'
+defaultTasks 'transferAfuAsiatischeHornissePub','refreshSolr','updateSearchIndexNester','updateSearchIndexSichtungen'
 
 task transferAfuAsiatischeHornissePub(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('afu_asiatische_hornisse_pub.sql',
-                    'afu_asiatische_hornisse_pub_v1.asia_hornisse_ash', true)
+            new TransferSet('afu_asiatische_hornisse_nest_pub.sql', 'afu_asiatische_hornisse_pub_v2.asia_hornisse_nest', true),
+            new TransferSet('afu_asiatische_hornisse_sichtung_pub.sql', 'afu_asiatische_hornisse_pub_v2.asia_hornisse_sichtung', true)
     ]
 }
 
@@ -21,9 +21,9 @@ task refreshSolr(type:Exec) {
     commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.asiatische_hornisse'
 }
 
-task updateSearchIndex(type: SqlExecutor){
+task updateSearchIndexNester(type: SqlExecutor){
     mustRunAfter 'transferAfuAsiatischeHornissePub'
-    def layerName = 'ch.so.afu.asiatische_hornisse'
+    def layerName = 'ch.so.afu.asiatische_hornisse_nester'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
     def dbSearchSchema = dbSearchSchemaPub
@@ -41,3 +41,22 @@ task updateSearchIndex(type: SqlExecutor){
     }
 }
 
+task updateSearchIndexSichtungen(type: SqlExecutor){
+    mustRunAfter 'transferAfuAsiatischeHornissePub'
+    def layerName = 'ch.so.afu.asiatische_hornisse_sichtungen'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
