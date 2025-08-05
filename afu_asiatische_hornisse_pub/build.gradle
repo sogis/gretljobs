@@ -5,7 +5,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 description = "GRETL-Job für Datenübernahme der Asiatischen Hornisse innerhalb der edit-DB, ins pub-Schema (pub-DB, edit-DB)"
 
-defaultTasks 'transferAfuAsiatischeHornissePub','refreshSolr','updateSearchIndexNester','updateSearchIndexSichtungen'
+defaultTasks 'transferAfuAsiatischeHornissePub','refreshSolr','updateSearchIndexNester','updateSearchIndexNesterGeschuetzt','updateSearchIndexSichtungen','updateSearchIndexSichtungenGeschuetzt'
 
 task transferAfuAsiatischeHornissePub(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -21,42 +21,32 @@ task refreshSolr(type:Exec) {
     commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.asiatische_hornisse'
 }
 
-task updateSearchIndexNester(type: SqlExecutor){
-    mustRunAfter 'transferAfuAsiatischeHornissePub'
-    def layerName = 'ch.so.afu.asiatische_hornisse.nester'
+// Suchindex aktualisieren: Konfiguration (Zuordnung von Tasknamen und Layernamen festlegen)
+def layerTasks = [
+    'updateSearchIndexSichtungen': 'ch.so.afu.asiatische_hornisse.sichtungen',
+    'updateSearchIndexSichtungenGeschuetzt': 'ch.so.afu.asiatische_hornisse.sichtungen_geschuetzt', 
+    'updateSearchIndexNester': 'ch.so.afu.asiatische_hornisse.nester',
+    'updateSearchIndexNesterGeschuetzt': 'ch.so.afu.asiatische_hornisse.nester_geschuetzt'
+]
 
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    def dbSearchSchema = dbSearchSchemaPub
+// Suchindex aktualisieren: Tasks dynamisch erstellen
+layerTasks.each { taskName, layerName ->
+    tasks.register(taskName, SqlExecutor) {
+        mustRunAfter 'transferAfuAsiatischeHornissePub'
+        
+        database = [dbUriPub, dbUserPub, dbPwdPub]
+        def dbSearchSchema = dbSearchSchemaPub
+        String layerNameString = "'${layerName}'"
 
-    String layerNameString = "'${layerName}'"
-    sqlParameters = [
-            [layername: layerNameString, db_schema: dbSearchSchema]
-    ]
-    sqlFiles = [
-            '../searchindex_deleteFeatures.sql',
-            'searchindex_' + layerName + '.sql'
-    ]
-    doFirst {
-        println 'layer name: ' + layerName
-    }
-}
-
-task updateSearchIndexSichtungen(type: SqlExecutor){
-    mustRunAfter 'transferAfuAsiatischeHornissePub'
-    def layerName = 'ch.so.afu.asiatische_hornisse.sichtungen'
-
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    def dbSearchSchema = dbSearchSchemaPub
-
-    String layerNameString = "'${layerName}'"
-    sqlParameters = [
-            [layername: layerNameString, db_schema: dbSearchSchema]
-    ]
-    sqlFiles = [
-            '../searchindex_deleteFeatures.sql',
-            'searchindex_' + layerName + '.sql'
-    ]
-    doFirst {
-        println 'layer name: ' + layerName
+        sqlParameters = [
+                [layername: layerNameString, db_schema: dbSearchSchema]
+        ]
+        sqlFiles = [
+                '../searchindex_deleteFeatures.sql',
+                'searchindex_' + layerName + '.sql'
+        ]
+        doFirst {
+            println 'Updating index for layer: ' + layerName
+        }
     }
 }

@@ -16,9 +16,9 @@ index_base AS (
     SELECT
         ${layername}::text AS subclass,
         t_id AS id_in_class,
-        concat('ID: ', import_occurrence_id, ' (Occurrence-ID)') AS displaytext,
+        concat('Sichtung: ', import_occurrence_id, ' (Occurrence-ID)') AS displaytext,
         import_occurrence_id AS part_1,
-        'Occurrence-ID Hornissen Sichtungsmeldungen'::text AS part_3,  -- Begriffe in Mehrzahl, weil auch Wortteile gefunden werden
+        'Occurrence-ID Sichtungen Meldungen'::text AS part_3,  -- Begriffe in Mehrzahl, weil auch Wortteile gefunden werden
         (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
         asia_hornisse_sichtung

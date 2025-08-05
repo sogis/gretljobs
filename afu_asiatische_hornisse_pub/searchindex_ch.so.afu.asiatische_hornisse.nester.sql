@@ -16,9 +16,9 @@ index_base AS (
     SELECT
         ${layername}::text AS subclass,
         t_id AS id_in_class,
-        concat('ID: ', import_nest_id, ' (Nest-ID)') AS displaytext,
+        concat('Nest: ', import_nest_id, ' (Nest-ID)') AS displaytext,
         import_nest_id  AS part_1,
-        'Nest-ID Hornissen Sichtungsmeldungen'::text AS part_3,  -- Begriffe in Mehrzahl, weil auch Wortteile gefunden werden
+        'Nest-ID Sichtungen Meldungen'::text AS part_3,  -- Begriffe in Mehrzahl, weil auch Wortteile gefunden werden
         (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
         asia_hornisse_nest
