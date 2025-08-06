@@ -43,7 +43,7 @@ updateSearchIndexTasksConfig.each { taskName, config ->
         database = [dbUriPub, dbUserPub, dbPwdPub]
 
         String dbSearchSchemaString = dbSearchSchemaPub
-        String layerNameString = config.layer
+        String layerNameString = "'${config.layer}'"
         String fileNameString = config.file
 
         sqlParameters = [
@@ -54,7 +54,7 @@ updateSearchIndexTasksConfig.each { taskName, config ->
                 fileNameString
         ]
         doFirst {
-            println 'Updating index for layer: ' + layerNameString
+            println 'Updating index for layer: ' + config.layer
         }
     }
 }
