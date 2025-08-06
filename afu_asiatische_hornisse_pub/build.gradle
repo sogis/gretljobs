@@ -5,39 +5,56 @@ apply plugin: 'ch.so.agi.gretl'
 
 description = "GRETL-Job für Datenübernahme der Asiatischen Hornisse innerhalb der edit-DB, ins pub-Schema (pub-DB, edit-DB)"
 
-defaultTasks 'transferAfuAsiatischeHornissePub','refreshSolr','updateSearchIndex'
+defaultTasks 'transferAfuAsiatischeHornissePub', 'updateSearchIndexNester','updateSearchIndexNesterGeschuetzt','updateSearchIndexSichtungen','updateSearchIndexSichtungenGeschuetzt'
 
 task transferAfuAsiatischeHornissePub(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('afu_asiatische_hornisse_pub.sql',
-                    'afu_asiatische_hornisse_pub_v1.asia_hornisse_ash', true)
+            new TransferSet('afu_asiatische_hornisse_nest_pub.sql', 'afu_asiatische_hornisse_pub_v2.asia_hornisse_nest', true),
+            new TransferSet('afu_asiatische_hornisse_sichtung_pub.sql', 'afu_asiatische_hornisse_pub_v2.asia_hornisse_sichtung', true)
     ]
 }
 
-task refreshSolr(type:Exec) {
-    mustRunAfter 'transferAfuAsiatischeHornissePub'
-    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.asiatische_hornisse'
-}
-
-task updateSearchIndex(type: SqlExecutor){
-    mustRunAfter 'transferAfuAsiatischeHornissePub'
-    def layerName = 'ch.so.afu.asiatische_hornisse'
-
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    def dbSearchSchema = dbSearchSchemaPub
-
-    String layerNameString = "'${layerName}'"
-    sqlParameters = [
-            [layername: layerNameString, db_schema: dbSearchSchema]
+// Suchindex aktualisieren: Konfiguration der Tasks
+def updateSearchIndexTasksConfig = [
+    'updateSearchIndexSichtungen': [
+        layer: 'ch.so.afu.asiatische_hornisse.sichtungen',
+        file: 'searchindex_ch.so.afu.asiatische_hornisse.sichtungen.sql'
+    ],
+    'updateSearchIndexSichtungenGeschuetzt': [
+        layer: 'ch.so.afu.asiatische_hornisse.sichtungen_geschuetzt',
+        file: 'searchindex_ch.so.afu.asiatische_hornisse.sichtungen.sql'
+    ],
+    'updateSearchIndexNester': [
+        layer: 'ch.so.afu.asiatische_hornisse.nester',
+        file: 'searchindex_ch.so.afu.asiatische_hornisse.nester.sql'
+    ],
+    'updateSearchIndexNesterGeschuetzt': [
+        layer: 'ch.so.afu.asiatische_hornisse.nester_geschuetzt',
+        file: 'searchindex_ch.so.afu.asiatische_hornisse.nester.sql'
     ]
-    sqlFiles = [
-            '../searchindex_deleteFeatures.sql',
-            'searchindex_' + layerName + '.sql'
-    ]
-    doFirst {
-        println 'layer name: ' + layerName
+]
+
+// Suchindex aktualisieren: Tasks dynamisch erstellen
+updateSearchIndexTasksConfig.each { taskName, config ->
+    tasks.register(taskName, SqlExecutor) {
+        mustRunAfter 'transferAfuAsiatischeHornissePub'
+        database = [dbUriPub, dbUserPub, dbPwdPub]
+
+        String dbSearchSchemaString = dbSearchSchemaPub
+        String layerNameString = "'${config.layer}'"
+        String fileNameString = config.file
+
+        sqlParameters = [
+                [layername: layerNameString, db_schema: dbSearchSchemaString]
+        ]
+        sqlFiles = [
+                '../searchindex_deleteFeatures.sql',
+                fileNameString
+        ]
+        doFirst {
+            println 'Updating index for layer: ' + config.layer
+        }
     }
 }
-
