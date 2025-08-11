@@ -64,16 +64,16 @@ tasks.register('loadDataToDuckDb', SqlExecutor) {
         wfs_url_unactive_nests: "'${wfsUrlUnactiveNests}'".toString()
     ]
     sqlFiles = files(
-        'load_spatial.sql',
+        '0_helper_queries/load_spatial.sql',
         // Daten aus der Edit-DB laden
-        'attach_editdb_read.sql',
-        'import_to_duckdb_afu_individuals.sql',
-        'import_to_duckdb_afu_nests.sql',
+        '0_helper_queries/attach_editdb_read.sql',
+        '1_import_to_duckdb/import_to_duckdb_afu_individuals.sql',
+        '1_import_to_duckdb/import_to_duckdb_afu_nests.sql',
         // Daten vom WFS laden
-        'load_httpfs.sql',
-        'create_wfs_secret.sql',
-        'import_to_duckdb_infofauna_individuals.sql',
-        'import_to_duckdb_infofauna_nests.sql'
+        '0_helper_queries/load_httpfs.sql',
+        '0_helper_queries/create_wfs_secret.sql',
+        '1_import_to_duckdb/import_to_duckdb_infofauna_individuals.sql',
+        '1_import_to_duckdb/import_to_duckdb_infofauna_nests.sql'
     )
 }
 
@@ -90,9 +90,9 @@ tasks.register('upsertIndividualsInsideDuckDb', SqlExecutor) {
         editdb_connection_string : "'${editDbConnectionString}'".toString()
     ] 
     sqlFiles = files(
-        'load_spatial.sql',
-        'attach_editdb_read.sql',
-        'upsert_duckdb_individuals.sql'
+        '0_helper_queries/load_spatial.sql',
+        '0_helper_queries/attach_editdb_read.sql',
+        '2_upsert_in_duckdb/upsert_duckdb_individuals.sql'
     )
 }
 
@@ -105,9 +105,9 @@ tasks.register('upsertNestsInsideDuckDb', SqlExecutor) {
         editdb_connection_string : "'${editDbConnectionString}'".toString()
     ]
     sqlFiles = files(
-        'load_spatial.sql',
-        'attach_editdb_read.sql',
-        'upsert_duckdb_nests.sql'
+        '0_helper_queries/load_spatial.sql',
+        '0_helper_queries/attach_editdb_read.sql',
+        '2_upsert_in_duckdb/upsert_duckdb_nests.sql'
     )
 }
 
@@ -121,7 +121,7 @@ tasks.register('copyResultsToEditDb', Db2Db) {
     sourceDb = [duckDbUri]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
-        new TransferSet('select_duckdb_individuals.sql', 'afu_asiatische_hornisse_v2.asia_hornisse_sichtung', true, (String[])['geometrie:wkt:2056']),
-        new TransferSet('select_duckdb_nests.sql', 'afu_asiatische_hornisse_v2.asia_hornisse_nest', true, (String[])['geometrie:wkt:2056'])
+        new TransferSet('3_copy_from_duckdb/select_duckdb_individuals.sql', 'afu_asiatische_hornisse_v2.asia_hornisse_sichtung', true, (String[])['geometrie:wkt:2056']),
+        new TransferSet('3_copy_from_duckdb/select_duckdb_nests.sql', 'afu_asiatische_hornisse_v2.asia_hornisse_nest', true, (String[])['geometrie:wkt:2056'])
     ];
 }
