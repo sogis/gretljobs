@@ -1,8 +1,8 @@
 # Import von Sichtungsmeldungen der Asiatischen Hornisse
 
-Dieser Job importiert Sichtungsmeldungen der Asiatischen Hornisse, bestehend aus Individuen und Nestern, vom Web Feature Service (WFS) [geoserver.infofauna.ch/geoserver/neovelutina/ows](https://geoserver.infofauna.ch/geoserver/neovelutina/ows), der von infofauna bereitgestellt wird.
+Dieser Job importiert Sichtungsmeldungen der Asiatischen Hornisse von einem Web Feature Service (WFS), der von infofauna bereitgestellt wird ([geoserver.infofauna.ch/geoserver/neovelutina/ows](https://geoserver.infofauna.ch/geoserver/neovelutina/ows)). Importiert werden Individuen (Layer `neovelutina:individuals`) und Nester (Layer `neovelutina:active_nests`, `neovelutina:unactive_nests`). Die importierten Datenfelder werden vom AfU und von Dritten über die Meldeplattform [www.asiatischehornisse.ch](https://www.asiatischehornisse.ch) geführt.
 
-Anhand der `materialentityid`, einer eindeutigen Record-ID von infofauna, werden vorhandene und heruntergeladene Records zusammengeführt. Dabei werden alle Felder überschrieben ausser seitens AfU in der Erfassungs-DB geführte Felder (`massnahmenstatus`, `bemerkung_massnahme`) und `t_ili_tid`. Die importierten Felder werden vom AfU und von Dritten über die Meldeplattform [www.asiatischehornisse.ch](https://www.asiatischehornisse.ch) geführt.
+Anhand der `materialentityid`, einer eindeutigen Record-ID von infofauna, werden bereits in der Erfassungs-DB vorhandene und neu heruntergeladene Records zusammengeführt ("Upsert"). Dabei werden alle Datenfelder überschrieben, mit Ausnahme von `massnahmenstatus` und `bemerkung_massnahme` (vom AfU in der Erfassungs-DB geführt) sowie `t_ili_tid` (Objekt-ID).
 
 ## Abhängigkeit: afu_asiatische_hornisse_pub
 
