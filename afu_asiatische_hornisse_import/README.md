@@ -1,12 +1,12 @@
 # Import von Sichtungsmeldungen der Asiatischen Hornisse
 
-Dieser Job importiert Sichtungsmeldungen der Asiatischen Hornisse (Individuen und Nester) vom infofauna WFS.
+Dieser Job importiert Sichtungsmeldungen der Asiatischen Hornisse, bestehend aus Individuen und Nestern, vom Web Feature Service (WFS) [geoserver.infofauna.ch/geoserver/neovelutina/ows](https://geoserver.infofauna.ch/geoserver/neovelutina/ows), der von infofauna bereitgestellt wird.
 
-Anhand der `materialentityid`, einer eindeutigen Record-ID von infofauna, werden vorhandene und heruntergeladene Records zusammengeführt. Dabei werden alle Felder überschrieben ausser seitens AfU in der Edit-DB geführte Felder (`massnahmenstatus`, `bemerkung_massnahme`) und `t_ili_tid`. Die importierten Felder werden vom AfU über die Meldeplattform [www.asiatischehornisse.ch](https://www.asiatischehornisse.ch) von infofauna geführt.
+Anhand der `materialentityid`, einer eindeutigen Record-ID von infofauna, werden vorhandene und heruntergeladene Records zusammengeführt. Dabei werden alle Felder überschrieben ausser seitens AfU in der Erfassungs-DB geführte Felder (`massnahmenstatus`, `bemerkung_massnahme`) und `t_ili_tid`. Die importierten Felder werden vom AfU und von Dritten über die Meldeplattform [www.asiatischehornisse.ch](https://www.asiatischehornisse.ch) von infofauna geführt.
 
 ## Abhängigkeit: afu_asiatische_hornisse_pub
 
-Die Ausführung dieses Import-Jobs erfolgt zeitgesteuert täglich zwischen 0:00 und 1:00 Uhr vor der Ausführung des Jobs [afu_asiatische_hornisse_pub](https://github.com/sogis/gretljobs/tree/main/afu_asiatische_hornisse_pub) zwischen 2:00 und 3:00 Uhr, der die aktualisierten und editierten Daten in die Pub-DB überträgt.
+Die Ausführung dieses Import-Jobs erfolgt zeitgesteuert täglich zwischen 0:00 und 1:00 Uhr. Im Anschluss, zwischen 2:00 und 3:00 Uhr, erfolgt die Ausführung des Jobs [afu_asiatische_hornisse_pub](https://github.com/sogis/gretljobs/tree/main/afu_asiatische_hornisse_pub), der den aktuellen Stand der importierten und editierten Daten in die Publikations-DB überträgt.
 
 # TODO
 
