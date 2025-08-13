@@ -1,0 +1,70 @@
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+import java.nio.file.Files
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
+// variables
+def dbPath = "$buildDir/sein.duckdb"
+def dbUriDuckDB = "jdbc:duckdb:$dbPath"
+def xtfPath = "$buildDir" + "/arp_sein_konfigurationsdaten.xtf"
+
+// first task
+tasks.register("first"){
+    dependsOn ":03_collect_data:last"
+}
+
+// copy duckdb
+tasks.register("copyDuckDB", Copy){
+    dependsOn "first"
+
+    doFirst {
+        def targetDir = file(buildDir)
+        if (targetDir.exists()) {
+            println "Deleting existing build directory: ${targetDir.absolutePath}"
+            targetDir.deleteDir()
+        }
+        println "Copying DuckDB from 01_setup_duckdb..."
+    }
+    
+    from file("${project(':03_collect_data').buildDir}/sein.duckdb")
+    into buildDir
+    
+    doLast {
+        println "DuckDB successfully copied to ${buildDir}/sein.duckdb"
+    }
+}
+
+// transfer data from Sammeltabelle_filtered to sein_auswertung
+tasks.register("transfer_data", SqlExecutor){
+    dependsOn "copyDuckDB"
+    database = [dbUriDuckDB]
+    sqlFiles = files(
+        load_extension_spatial,
+        'processing_data.sql')
+}
+
+// clear data from not necessary tables for export
+tasks.register("prepareExport", SqlExecutor){
+    dependsOn "transfer_data"
+    database = [dbUriDuckDB]
+    sqlFiles = files('clean_tables.sql')
+}
+
+// export data to xtf
+tasks.register("ili2duckdbexport", Ili2duckdbExport){
+    dependsOn "prepareExport"
+    models = "SO_ARP_SEin_Konfiguration_20250115"
+    dbschema = "arp_sein_konfiguration_grundlagen_v2"
+    dataFile = files(xtfPath)
+    dbfile = file("build/sein.duckdb")
+}
+
+// last task
+tasks.register("last"){
+    dependsOn "ili2duckdbexport"
+}

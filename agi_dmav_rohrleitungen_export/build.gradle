@@ -1,0 +1,19 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'publiedit'
+
+task publiedit(type: Publisher){
+  database = [dbUriEdit,dbUserEdit,dbPwdEdit]
+  dataIdent = "ch.so.agi.dmav.relational.rohrleitungen"
+  dbSchema = "agi_dmav_rohrleitungen_v1"
+  userFormats = false
+  region = ".*" // Wähle alle datasets aus
+
+  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}

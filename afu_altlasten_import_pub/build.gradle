@@ -6,7 +6,7 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: 'de.undercouch.download'
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPub'
+defaultTasks 'publishPub', 'refreshSolrKbs', 'updateSearchIndex_1', 'updateSearchIndex_2'
 
 // Download-Verzeichnis
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
@@ -73,36 +73,27 @@ task importKbsRestrictedData(type: Ili2pgImport, dependsOn: 'unzipKbsRestrictedD
     strokeArcs = true
 }
 
-task refreshSolrKbs(type:Exec, dependsOn: 'importKbsRestrictedData') {
-    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte'
-}
-
-task refreshSolrKbsRestricted(type:Exec, dependsOn:'refreshSolrKbs') {
-        commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte_geschuetzt'
-}
-
-task downloadMgdm(type: Download, dependsOn: 'refreshSolrKbsRestricted') {
+task downloadMgdm(type: Download, dependsOn: 'importKbsRestrictedData') {
     src "https://altlast4web.verw.rootso.org/interlis_exports/mgdm/data.zip"
     dest pathToTempFolder
     overwrite true
     acceptAnyCertificate true
 }
 
-// Geodienste verlangt Version 1.5.
-// task uploadMgdm(dependsOn: 'downloadMgdm') {
-//     doLast {
-//         def response = ["curl", "-u", aiLogin, "-F", "topic=kataster_belasteter_standorte_v1_4", "-F",
-//                         "lv95_file=@" + Paths.get(pathToTempFolder.toString(), 'data.zip'), "-F", "publish=true",
-//                         "https://" + aiServer + "/data_agg/interlis/import"].execute().text
-//         println(response)
-//         if (response.contains("false") || response == null || response.trim().isEmpty()) {
-//             throw new GradleException()
-//         }
-//     }
-// }
+task uploadMgdm(dependsOn: 'downloadMgdm') {
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=kataster_belasteter_standorte_v1_5", "-F",
+                        "lv95_file=@" + Paths.get(pathToTempFolder.toString(), 'data.zip'), "-F", "publish=true",
+                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
+}
 
-//task publishPub(type: Publisher, dependsOn: 'uploadMgdm') {
-task publishPub(type: Publisher, dependsOn: 'downloadMgdm') {
+task publishPub(type: Publisher, dependsOn: 'uploadMgdm') {
+//task publishPub(type: Publisher, dependsOn: 'downloadMgdm') {
     dataIdent = "ch.so.afu.belastete_standorte"
     userFormats = true
     database = [dbUriPub,dbUserPub,dbPwdPub]
@@ -113,4 +104,49 @@ task publishPub(type: Publisher, dependsOn: 'downloadMgdm') {
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
+task refreshSolrKbs(type:Exec) {
+    mustRunAfter 'publishPub'
+    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte,ch.so.afu.altlasten.standorte_geschuetzt'
+}
+
+task updateSearchIndex_1(type: SqlExecutor){
+    mustRunAfter 'publishPub'
+    def layerName = 'ch.so.afu.altlasten.standorte'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+task updateSearchIndex_2(type: SqlExecutor){
+    mustRunAfter 'publishPub'
+    def layerName = 'ch.so.afu.altlasten.standorte_geschuetzt'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            'searchindex_' + layerName + '.sql'
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
 }

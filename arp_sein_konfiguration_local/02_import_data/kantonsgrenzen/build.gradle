@@ -1,0 +1,69 @@
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+import java.nio.file.Files
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
+// variables
+def dbPath = "$buildDir/sein.duckdb"
+def dbUriDuckDB = "jdbc:duckdb:$dbPath"
+
+// first task
+tasks.register("first"){
+    dependsOn ":01_setup_duckdb:last"
+}
+
+// copy duckdb
+tasks.register("copyDuckDB", Copy){
+    dependsOn "first"
+
+    doFirst {
+        def targetDir = file(buildDir)
+        if (targetDir.exists()) {
+            println "Deleting existing build directory: ${targetDir.absolutePath}"
+            targetDir.deleteDir()
+        }
+        println "Copying DuckDB from 01_setup_duckdb..."
+    }
+    
+    from file("${project(':01_setup_duckdb').buildDir}/sein.duckdb")
+    into buildDir
+    
+    doLast {
+        println "DuckDB successfully copied to ${buildDir}/sein.duckdb"
+    }
+}
+
+// copy data from PubDB to Sammeltabelle
+tasks.register("importPubdbData", SqlExecutor){
+    dependsOn "copyDuckDB"
+    database = [dbUriDuckDB]
+    sqlParameters = [connectionStringPub : dbConnectionStringPub as String]
+    sqlFiles = files(
+        load_extension_spatial,
+        load_extension_postgres,
+        attach_pubdb,
+        'import_kantonsgrenzen.sql',
+        detach_pubdb
+    )
+}
+
+// export parquet-file
+tasks.register("exportParquet", SqlExecutor) {
+    dependsOn "importPubdbData"
+    database = [dbUriDuckDB]
+    sqlParameters = [parquet_path_quoted: "'" + "$buildDir/theme_sammeltabelle.parquet" + "'"]
+    sqlFiles = files(
+        load_extension_spatial,
+        export_parquet
+    )
+}
+
+// last task
+tasks.register("last"){
+    dependsOn "exportParquet"
+}

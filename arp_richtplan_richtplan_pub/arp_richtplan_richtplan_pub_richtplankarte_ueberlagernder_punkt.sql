@@ -40,3 +40,5 @@ LEFT JOIN
     arp_richtplan_v2.richtplankarte_anpassung AS a ON p.anpassung = a.t_id
 LEFT JOIN 
     dokumente AS d ON p.t_id = d.ueberlagernder_punkt  
+WHERE
+	a.stand = 'rechtsgueltig'
