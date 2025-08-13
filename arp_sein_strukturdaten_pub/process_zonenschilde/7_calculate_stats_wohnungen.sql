@@ -1,25 +1,26 @@
--- GWR WOHNUNG: Aggregiert auf Parzellen-Ebene (Summen und Anzahlen)
+-- GWR: Wohnungsdaten aggregiert auf Zonenschild-Ebene (Summen und Anzahlen)
 
 DROP TABLE IF EXISTS
-    export.parzellen_wohnungen_statistik CASCADE
+    export.zonenschild_wohnungen_statistik CASCADE
 ;
 
-CREATE TABLE export.parzellen_wohnungen_statistik (
-    t_ili_tid                   UUID,
-    total_wohnungen             INTEGER,
-    anzahl_wohnungen_avg        NUMERIC,
-    flaeche_wohnungen           NUMERIC,
-    flaeche_wohnung_avg         NUMERIC,
-    flaeche_wohnung_anz_null    INTEGER,
-    total_zimmer                INTEGER,
-    anzahl_zimmer_avg           NUMERIC,
-    anzahl_zimmer_anz_null      INTEGER
+CREATE TABLE
+    export.zonenschild_wohnungen_statistik (
+        schild_uuid					UUID,
+        total_wohnungen				INTEGER,
+        anzahl_wohnungen_avg		NUMERIC,
+        flaeche_wohnungen			NUMERIC,
+        flaeche_wohnung_avg			NUMERIC,
+        flaeche_wohnung_anz_null	INTEGER,
+        total_zimmer				INTEGER,
+        anzahl_zimmer_avg			NUMERIC,
+        anzahl_zimmer_anz_null		INTEGER
 );
 
 INSERT
-    INTO export.parzellen_wohnungen_statistik
+    INTO export.zonenschild_wohnungen_statistik
     SELECT
-        t_ili_tid,
+        schild_uuid,
         count(ewid) AS total_wohnungen,
         -- mind. 1 Wert muss nach numeric gecastet werden, damit keine integer division durchgeführt wird
         round((count(ewid) / count(DISTINCT egid)::NUMERIC), 2) AS anzahl_wohnungen_avg,
@@ -32,5 +33,5 @@ INSERT
     FROM
         export.wohnung
     GROUP BY
-        t_ili_tid
+        schild_uuid
 ;

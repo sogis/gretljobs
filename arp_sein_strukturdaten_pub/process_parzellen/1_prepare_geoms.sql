@@ -6,17 +6,17 @@ DROP TABLE IF EXISTS
 
 CREATE TABLE 
     export.parzellen_geoms (
-    t_ili_tid                   UUID,
-    geometrie                   public.geometry(MultiPolygon, 2056),
-    bfs_nr                      INTEGER,
-    typ_kt                      TEXT,
-    typ_bund                    TEXT,
-    bebauungsstand              TEXT,
-    flaeche                     NUMERIC,
-    flaeche_bebaut              NUMERIC,
-    flaeche_unbebaut            NUMERIC,
-    flaeche_teilweise_bebaut    NUMERIC,
-    pip                         public.geometry(MultiPoint, 2056)
+        t_ili_tid                   UUID,
+        geometrie                   public.geometry(MultiPolygon, 2056),
+        bfs_nr                      INTEGER,
+        typ_kt                      TEXT,
+        typ_bund                    TEXT,
+        bebauungsstand              TEXT,
+        flaeche                     NUMERIC,
+        flaeche_bebaut              NUMERIC,
+        flaeche_unbebaut            NUMERIC,
+        flaeche_teilweise_bebaut    NUMERIC,
+        pip                         public.geometry(MultiPoint, 2056)
 );
 
 INSERT
@@ -80,7 +80,7 @@ INSERT
             bfs_nr,
             ST_ReducePrecision(geometrie, 0.001) AS geometrie,
             typ_kt,
-            NULL::text AS bebauungsstand,
+            NULL::TEXT AS bebauungsstand,
             ST_Area(geometrie) AS flaeche,
             ST_PointOnSurface(geometrie) AS pip
         FROM

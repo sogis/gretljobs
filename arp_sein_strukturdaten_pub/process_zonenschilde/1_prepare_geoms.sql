@@ -25,20 +25,20 @@ INSERT
         z.typ_bund,
         z.bfs_nr,
         sum(flaeche) AS flaeche,
-        COALESCE(sum(flaeche) FILTER (WHERE bebauungsstand = 'bebaut'), 0) AS flaeche_bebaut,
-        COALESCE(sum(flaeche) FILTER (WHERE bebauungsstand = 'unbebaut'), 0) AS flaeche_unbebaut,
-        COALESCE(sum(flaeche) FILTER (WHERE bebauungsstand = 'teilweise_bebaut'), 0) AS flaeche_teilweise_bebaut
-FROM
-    export.zonentyp_dump z
-JOIN export.parzellen_geoms p
-    ON ST_Intersects(p.pip, z.geometrie)
-    -- tbd Denkfehler: ein Zonenschild kann kleiner sein als Parzelle, ich darf nicht die ganze Parzelle joinen!
-GROUP BY
-    z.schild_uuid,
-    z.geometrie,
-    z.typ_kt,
-    z.typ_bund,
-    z.bfs_nr
+        coalesce(sum(flaeche) FILTER (WHERE bebauungsstand = 'bebaut'), 0) AS flaeche_bebaut,
+        coalesce(sum(flaeche) FILTER (WHERE bebauungsstand = 'unbebaut'), 0) AS flaeche_unbebaut,
+        coalesce(sum(flaeche) FILTER (WHERE bebauungsstand = 'teilweise_bebaut'), 0) AS flaeche_teilweise_bebaut
+    FROM
+        export.zonentyp_dump z
+    JOIN export.parzellen_geoms p
+        ON ST_Intersects(p.pip, z.geometrie)
+        -- tbd Denkfehler? ein Zonenschild kann kleiner sein als Parzelle, ich darf nicht die ganze Parzelle joinen!
+    GROUP BY
+        z.schild_uuid,
+        z.geometrie,
+        z.typ_kt,
+        z.typ_bund,
+        z.bfs_nr
 ;
 
 CREATE INDEX

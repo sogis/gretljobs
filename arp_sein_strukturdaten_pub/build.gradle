@@ -119,10 +119,10 @@ task processParzellen(type: SqlExecutor, dependsOn: copyDataFromEdit) {
         'process_parzellen/3_create_json_bodenbedeckungen.sql',
         'process_parzellen/4_create_json_grundnutzungen.sql',
         'process_parzellen/5_create_jsons_gwr.sql',
-        'process_parzellen/6_calculate_gebaeude_stats.sql',
-        'process_parzellen/7_calculate_wohnungen_stats.sql',
+        'process_parzellen/6_calculate_stats_gebaeude.sql',
+        'process_parzellen/7_calculate_stats_wohnungen.sql',
         'process_parzellen/8_create_json_statpop.sql',
-        'process_parzellen/9_calculate_statent_stats.sql',
+        'process_parzellen/9_calculate_stats_statent.sql',
         'process_parzellen/10_final_join_of_everything.sql'
     ]
 }
@@ -132,14 +132,14 @@ task processZonentypen(type: SqlExecutor, dependsOn: processParzellen) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = [
         'process_zonentypen/1_prepare_geoms.sql',
-        'process_zonentypen/2_join_bodenbedeckung.sql',
+        'process_zonentypen/2b_prepare_bodenbedeckung.sql',
         'process_zonentypen/3_create_json_bodenbedeckungen.sql',
         'process_zonentypen/4_create_json_grundnutzungen.sql',
         'process_zonentypen/5_create_jsons_gwr.sql',
-        'process_zonentypen/6_calculate_gebaeude_stats.sql',
-        'process_zonentypen/7_calculate_wohnungen_stats.sql',
+        'process_zonentypen/6_calculate_stats_gebaeude.sql',
+        'process_zonentypen/7_calculate_stats_wohnungen.sql',
         'process_zonentypen/8_create_json_statpop.sql',
-        'process_zonentypen/9_calculate_statent_stats.sql',
+        'process_zonentypen/9_calculate_stats_statent.sql',
         'process_zonentypen/10_final_join_of_everything.sql'
     ]
 }
@@ -154,31 +154,31 @@ task processZonenschilde(type: SqlExecutor, dependsOn: processZonentypen) {
         'process_zonenschilde/1-2_join_wohnung.sql',
         'process_zonenschilde/1-3_join_statpop.sql',
         'process_zonenschilde/1-4_join_statent.sql',
-        'process_zonenschilde/2_join_bodenbedeckung.sql',
+        'process_zonenschilde/2b_prepare_bodenbedeckung.sql',
         'process_zonenschilde/3_create_json_bodenbedeckungen.sql',
         'process_zonenschilde/4_create_json_grundnutzungen.sql',
         'process_zonenschilde/5_create_jsons_gwr.sql',
-        'process_zonenschilde/6_calculate_gebaeude_stats.sql',
-        'process_zonenschilde/7_calculate_wohnungen_stats.sql',
+        'process_zonenschilde/6_calculate_stats_gebaeude.sql',
+        'process_zonenschilde/7_calculate_stats_wohnungen.sql',
         'process_zonenschilde/8_create_json_statpop.sql',
-        'process_zonenschilde/9_calculate_statent_stats.sql',
+        'process_zonenschilde/9_calculate_stats_statent.sql',
         'process_zonenschilde/10_final_join_of_everything.sql'
     ]
 }
 
-// Raumeinheit Gemeinde aufbereiten (bedingt zonentyp.sql und somit parzelle.sql)
+// Raumeinheit Gemeinde aufbereiten (bedingt Zonentyp- und Parzellen-Daten)
 task processGemeinden(type: SqlExecutor, dependsOn: processZonentypen) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = [
         'process_gemeinden/1_prepare_geoms.sql',
-        'process_gemeinden/2_join_bodenbedeckung.sql',  // tbd: 2a spatial-join / 2b attributive-join
+        'process_gemeinden/2b_prepare_bodenbedeckung.sql',
         'process_gemeinden/3_create_json_bodenbedeckungen.sql',
         'process_gemeinden/4_create_json_grundnutzungen.sql',
         'process_gemeinden/5_create_jsons_gwr.sql',
-        'process_gemeinden/6_calculate_gebaeude_stats.sql',
-        'process_gemeinden/7_calculate_wohnungen_stats.sql',
+        'process_gemeinden/6_calculate_stats_gebaeude.sql',
+        'process_gemeinden/7_calculate_stats_wohnungen.sql',
         'process_gemeinden/8_create_json_statpop.sql',
-        'process_gemeinden/9_calculate_statent_stats.sql',
+        'process_gemeinden/9_calculate_stats_statent.sql',
         'process_gemeinden/10_final_join_of_everything.sql'
     ]
 }

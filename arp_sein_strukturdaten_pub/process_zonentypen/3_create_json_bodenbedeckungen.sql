@@ -9,11 +9,13 @@ CREATE TABLE
     SELECT
         typ_kt,
         bfs_nr,
-        jsonb_agg(jsonb_build_object(
-            '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Bodenbedeckung',
-            'Kategorie_Text', kategorie_text,
-            'Flaeche', round(flaeche_agg::NUMERIC, 2)
-        )) AS bodenbedeckungen
+        jsonb_agg(
+            jsonb_build_object(
+                '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Bodenbedeckung',
+                'Kategorie_Text', kategorie_text,
+                'Flaeche', round(flaeche_agg, 2)
+            )
+        ) AS bodenbedeckungen
     FROM
         export.zonentyp_bodenbedeckung
     WHERE

@@ -19,12 +19,12 @@ INSERT
         typ_kt,
         kategorie_text,
         sum(flaeche_agg) AS flaeche_agg
-FROM
-    export.parzellen_bodenbedeckung
-GROUP BY
-    typ_kt,
-    bfs_nr,
-    kategorie_text
+    FROM
+        export.parzellen_bodenbedeckung
+    GROUP BY
+        typ_kt,
+        bfs_nr,
+        kategorie_text
 ;
 
 CREATE INDEX

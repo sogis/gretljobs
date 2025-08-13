@@ -21,7 +21,7 @@ CREATE TABLE
     )
     SELECT 
         t_ili_tid,
-        sum(anzahl)::integer AS popcount,
+        sum(anzahl)::INTEGER AS popcount,
         jsonb_agg(
         jsonb_build_object(
             '@type', 'SO_ARP_SEin_Strukturdaten_Publikation_20250407.Strukturdaten.Altersklasse_5j',
@@ -34,7 +34,8 @@ CREATE TABLE
             'Anzahl', anzahl
         )
     ) altersklassen_5j
-FROM
-    statpop_grouped
-GROUP BY
-    t_ili_tid;
+    FROM
+        statpop_grouped
+    GROUP BY
+        t_ili_tid
+;

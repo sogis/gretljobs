@@ -1,4 +1,3 @@
-
 -- GWR: Gebäudedaten aggregiert auf Gemeinde-Ebene (Summen und Anzahlen)
 
 DROP TABLE IF EXISTS
@@ -7,13 +6,13 @@ DROP TABLE IF EXISTS
 
 CREATE TABLE
     export.gemeinde_gebaeude_statistik (
-    bfs_nr						INTEGER,
-    total_gebaeude				INTEGER,
-    flaeche_gebaeude			NUMERIC,
-    flaeche_gebaeude_anz_null	INTEGER,
-    total_geschosse				INTEGER,
-    anzahl_geschosse_avg		NUMERIC,
-    anzahl_geschosse_anz_null	INTEGER 
+        bfs_nr						INTEGER,
+        total_gebaeude				INTEGER,
+        flaeche_gebaeude			NUMERIC,
+        flaeche_gebaeude_anz_null	INTEGER,
+        total_geschosse				INTEGER,
+        anzahl_geschosse_avg		NUMERIC,
+        anzahl_geschosse_anz_null	INTEGER 
 );
 
 INSERT

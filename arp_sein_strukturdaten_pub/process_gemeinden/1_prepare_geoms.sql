@@ -22,17 +22,17 @@ INSERT
         g.gemeindename,
         g.bfs_gemeindenummer AS bfs_nr,
         sum(flaeche) AS flaeche,
-        COALESCE(sum(flaeche) FILTER (WHERE bebauungsstand = 'bebaut'), 0) AS flaeche_bebaut,
-        COALESCE(sum(flaeche) FILTER (WHERE bebauungsstand = 'unbebaut'), 0) AS flaeche_unbebaut,
-        COALESCE(sum(flaeche) FILTER (WHERE bebauungsstand = 'teilweise_bebaut'), 0) AS flaeche_teilweise_bebaut
-FROM
-    import.hoheitsgrenzen_gemeindegrenze g
-JOIN export.parzellen_geoms p
-    ON g.bfs_gemeindenummer = p.bfs_nr
-GROUP BY
-    g.geometrie,
-    g.gemeindename,
-    g.bfs_gemeindenummer
+        coalesce(sum(flaeche) FILTER (WHERE bebauungsstand = 'bebaut'), 0) AS flaeche_bebaut,
+        coalesce(sum(flaeche) FILTER (WHERE bebauungsstand = 'unbebaut'), 0) AS flaeche_unbebaut,
+        coalesce(sum(flaeche) FILTER (WHERE bebauungsstand = 'teilweise_bebaut'), 0) AS flaeche_teilweise_bebaut
+    FROM
+        import.hoheitsgrenzen_gemeindegrenze g
+    JOIN export.parzellen_geoms p
+        ON g.bfs_gemeindenummer = p.bfs_nr
+    GROUP BY
+        g.geometrie,
+        g.gemeindename,
+        g.bfs_gemeindenummer
 ;
 
 CREATE INDEX

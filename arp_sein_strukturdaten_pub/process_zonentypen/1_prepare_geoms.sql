@@ -36,21 +36,21 @@ INSERT
         typ_bund,
         NULL AS bebauungsstand,
         ST_Area(ST_Union(geometrie)) AS flaeche,
-        COALESCE(
+        coalesce(
             sum(ST_Area(geometrie)) FILTER (WHERE bebauungsstand = 'bebaut'), 0
         ) AS flaeche_bebaut,
-        COALESCE(
+        coalesce(
             sum(ST_Area(geometrie)) FILTER (WHERE bebauungsstand = 'unbebaut'), 0
         ) AS flaeche_unbebaut,
-        COALESCE(
+        coalesce(
             sum(ST_Area(geometrie)) FILTER (WHERE bebauungsstand = 'teilweise_bebaut'), 0
         ) AS flaeche_teilweise_bebaut
-FROM
-    export.parzellen_geoms
-GROUP BY
-    typ_kt,
-    typ_bund,
-    bfs_nr
+    FROM
+        export.parzellen_geoms
+    GROUP BY
+        typ_kt,
+        typ_bund,
+        bfs_nr
 ;
 
 CREATE INDEX

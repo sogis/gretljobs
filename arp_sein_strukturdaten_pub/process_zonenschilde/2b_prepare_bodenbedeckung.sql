@@ -6,9 +6,9 @@ DROP TABLE IF EXISTS
 
 CREATE TABLE
     export.zonenschild_bodenbedeckung (
-    schild_uuid     UUID,
-    kategorie_text  TEXT,
-    flaeche_agg     NUMERIC
+        schild_uuid     UUID,
+        kategorie_text  TEXT,
+        flaeche_agg     NUMERIC
 );
 
 INSERT
@@ -21,7 +21,7 @@ INSERT
         export.zonenschild_geoms z
     JOIN export.parzellen_geoms p
         ON ST_Intersects(p.pip, z.geometrie)
-    -- tbd Denkfehler: ein Zonenschild kann kleiner sein als Parzelle, ich darf nicht die ganze Parzelle joinen!
+    -- tbd Denkfehler? ein Zonenschild kann kleiner sein als Parzelle, ich darf nicht die ganze Parzelle joinen!
     JOIN export.parzellen_bodenbedeckung b
         USING (t_ili_tid)
     GROUP BY

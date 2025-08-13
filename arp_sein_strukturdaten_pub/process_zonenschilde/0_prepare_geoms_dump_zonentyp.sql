@@ -21,8 +21,8 @@ INSERT
         typ_bund,
         bfs_nr,
         (ST_Dump(geometrie)).geom AS geometrie
-FROM
-    export.zonentyp_geoms
+    FROM
+        export.zonentyp_geoms
 ;
 
 CREATE INDEX
