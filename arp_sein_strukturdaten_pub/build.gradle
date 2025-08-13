@@ -109,21 +109,21 @@ task copyDataFromEdit(type: Db2Db, dependsOn: copyDataFromPub){
 task processParzellen(type: SqlExecutor, dependsOn: copyDataFromEdit) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = [
-        'process_parzellen/gebklasse10_mapping.sql',
-        'process_parzellen/parzellen_basis.sql',
-        'process_parzellen/parzellen_bodenbedeckung.sql',
-        'process_parzellen/gebaeude.sql',
-        'process_parzellen/wohnung.sql',
-        'process_parzellen/statpop.sql',
-        'process_parzellen/statent.sql',
-        'process_parzellen/parzellen_grundnutzungen_array.sql',
-        'process_parzellen/parzellen_bodenbedeckungen_array.sql',
-        'process_parzellen/parzellen_gwr_array.sql',
-        'process_parzellen/parzellen_gwr_geb_agg.sql',
-        'process_parzellen/parzellen_gwr_wohn_agg.sql',
-        'process_parzellen/parzellen_statpop_array.sql',
-        'process_parzellen/parzellen_statent_agg.sql',
-        'process_parzellen/strukturdaten_parzelle.sql'
+        'process_parzellen/0_prepare_gebklasse_mapping.sql',
+        'process_parzellen/1_prepare_geoms.sql',
+        'process_parzellen/1-1_join_gebaeude.sql',
+        'process_parzellen/1-2_join_wohnung.sql',
+        'process_parzellen/1-3_join_statpop.sql',
+        'process_parzellen/1-4_join_statent.sql',
+        'process_parzellen/2a_intersect_bodenbedeckung.sql',
+        'process_parzellen/3_create_json_bodenbedeckungen.sql',
+        'process_parzellen/4_create_json_grundnutzungen.sql',
+        'process_parzellen/5_create_jsons_gwr.sql',
+        'process_parzellen/6_calculate_gebaeude_stats.sql',
+        'process_parzellen/7_calculate_wohnungen_stats.sql',
+        'process_parzellen/8_create_json_statpop.sql',
+        'process_parzellen/9_calculate_statent_stats.sql',
+        'process_parzellen/10_final_join_of_everything.sql'
     ]
 }
 
@@ -131,16 +131,16 @@ task processParzellen(type: SqlExecutor, dependsOn: copyDataFromEdit) {
 task processZonentypen(type: SqlExecutor, dependsOn: processParzellen) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = [
-        'process_zonentypen/zonentyp_basis.sql',
-        'process_zonentypen/zonentyp_bodenbedeckung.sql',
-        'process_zonentypen/zonentyp_grundnutzungen_array.sql',
-        'process_zonentypen/zonentyp_bodenbedeckungen_array.sql',
-        'process_zonentypen/zonentyp_gwr_array.sql',
-        'process_zonentypen/zonentyp_gwr_geb_agg.sql',
-        'process_zonentypen/zonentyp_gwr_wohn_agg.sql',
-        'process_zonentypen/zonentyp_statpop_array.sql',
-        'process_zonentypen/zonentyp_statent_agg.sql',
-        'process_zonentypen/strukturdaten_zonentyp.sql'
+        'process_zonentypen/1_prepare_geoms.sql',
+        'process_zonentypen/2_join_bodenbedeckung.sql',
+        'process_zonentypen/3_create_json_bodenbedeckungen.sql',
+        'process_zonentypen/4_create_json_grundnutzungen.sql',
+        'process_zonentypen/5_create_jsons_gwr.sql',
+        'process_zonentypen/6_calculate_gebaeude_stats.sql',
+        'process_zonentypen/7_calculate_wohnungen_stats.sql',
+        'process_zonentypen/8_create_json_statpop.sql',
+        'process_zonentypen/9_calculate_statent_stats.sql',
+        'process_zonentypen/10_final_join_of_everything.sql'
     ]
 }
 
@@ -148,21 +148,21 @@ task processZonentypen(type: SqlExecutor, dependsOn: processParzellen) {
 task processZonenschilde(type: SqlExecutor, dependsOn: processZonentypen) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = [
-        'process_zonenschilde/zonenschild_dump.sql',
-        'process_zonenschilde/zonenschild_basis.sql',
-        'process_zonenschilde/zonenschild_bodenbedeckung.sql',
-        'process_zonenschilde/zonenschild_grundnutzungen_array.sql',
-        'process_zonenschilde/zonenschild_bodenbedeckungen_array.sql',
-        'process_zonenschilde/gebaeude_x_zonenschild.sql',
-        'process_zonenschilde/wohnung_x_zonenschild.sql',
-        'process_zonenschilde/zonenschild_gwr_array.sql',
-        'process_zonenschilde/zonenschild_gwr_geb_agg.sql',
-        'process_zonenschilde/zonenschild_gwr_wohn_agg.sql',
-        'process_zonenschilde/zonenschild_basis_statpop.sql',
-        'process_zonenschilde/zonenschild_basis_statent.sql',
-        'process_zonenschilde/zonenschild_statpop_array.sql',
-        'process_zonenschilde/zonenschild_statent_agg.sql',
-        'process_zonenschilde/strukturdaten_zonenschild.sql'
+        'process_zonenschilde/0_prepare_geoms_dump_zonentyp.sql',
+        'process_zonenschilde/1_prepare_geoms.sql',
+        'process_zonenschilde/1-1_join_gebaeude.sql',
+        'process_zonenschilde/1-2_join_wohnung.sql',
+        'process_zonenschilde/1-3_join_statpop.sql',
+        'process_zonenschilde/1-4_join_statent.sql',
+        'process_zonenschilde/2_join_bodenbedeckung.sql',
+        'process_zonenschilde/3_create_json_bodenbedeckungen.sql',
+        'process_zonenschilde/4_create_json_grundnutzungen.sql',
+        'process_zonenschilde/5_create_jsons_gwr.sql',
+        'process_zonenschilde/6_calculate_gebaeude_stats.sql',
+        'process_zonenschilde/7_calculate_wohnungen_stats.sql',
+        'process_zonenschilde/8_create_json_statpop.sql',
+        'process_zonenschilde/9_calculate_statent_stats.sql',
+        'process_zonenschilde/10_final_join_of_everything.sql'
     ]
 }
 
@@ -170,16 +170,16 @@ task processZonenschilde(type: SqlExecutor, dependsOn: processZonentypen) {
 task processGemeinden(type: SqlExecutor, dependsOn: processZonentypen) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = [
-        'process_gemeinden/gemeinde_basis.sql',
-        'process_gemeinden/gemeinde_bodenbedeckung.sql',
-        'process_gemeinden/gemeinde_grundnutzungen_array.sql',
-        'process_gemeinden/gemeinde_bodenbedeckungen_array.sql',
-        'process_gemeinden/gemeinde_gwr_array.sql',
-        'process_gemeinden/gemeinde_gwr_geb_agg.sql',
-        'process_gemeinden/gemeinde_gwr_wohn_agg.sql',
-        'process_gemeinden/gemeinde_statpop_array.sql',
-        'process_gemeinden/gemeinde_statent_agg.sql',
-        'process_gemeinden/strukturdaten_gemeinde.sql'
+        'process_gemeinden/1_prepare_geoms.sql',
+        'process_gemeinden/2_join_bodenbedeckung.sql',  // tbd: 2a spatial-join / 2b attributive-join
+        'process_gemeinden/3_create_json_bodenbedeckungen.sql',
+        'process_gemeinden/4_create_json_grundnutzungen.sql',
+        'process_gemeinden/5_create_jsons_gwr.sql',
+        'process_gemeinden/6_calculate_gebaeude_stats.sql',
+        'process_gemeinden/7_calculate_wohnungen_stats.sql',
+        'process_gemeinden/8_create_json_statpop.sql',
+        'process_gemeinden/9_calculate_statent_stats.sql',
+        'process_gemeinden/10_final_join_of_everything.sql'
     ]
 }
 
