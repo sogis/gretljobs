@@ -1,0 +1,214 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
+defaultTasks "upload"
+
+// Definition von Pfaden
+def xtfPath = "${buildDir}/arp_sein_strukturdaten.xtf"
+def xtfFile = files(xtfPath)
+def ftpPath = "/opt/daten/gis_arp_raumdaten/test/"  // tbd: produktives Verzeichnis = ?
+
+// Multiline-Text ist im Task nicht möglich, darum als Variable
+def importModels = 
+    "SO_AGI_MOpublic_20240711;" +
+    "SO_AGI_GWR_Publikation_20241118;" +
+    "SO_ARP_STATPOP_STATENT_20221114;" +
+    "SO_ARP_Auswertungen_Nutzungsplanung_Publikation_20210126;" +
+    "SO_ARP_Nutzungsplanung_Publikation_20201005;" +
+    "SO_Hoheitsgrenzen_Publikation_20170626;" +
+    "SO_ARP_SEin_Konfiguration_20250115"
+
+// Definition des SFTP-Servers für den Datenupload
+remotes {
+    sftpServer {
+        host = "${sftpServerSEinApp}"
+        user = "${sftpUserSEinApp}"
+        identity = file('/home/gradle/.ssh/id_rsa')
+        // Skip host key checking outside the following environments:
+        if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) {  // uses the Groovy membership operator
+            knownHosts = allowAnyHosts
+        }
+    }
+}
+
+tasks.register('createExtension', SqlExecutor) {
+    description = 'In der Processing-DB die Extension für die UUID-Erstellung aktivieren (uuid-ossp).'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files('create_extension.sql')
+}
+
+tasks.register('createImportSchema', Ili2pgImportSchema) {
+    dependsOn 'createExtension'
+    description = 'Schema IMPORT für Quelldaten in der Processing-DB anlegen.'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    models = importModels
+    dbschema = "import"
+    nameByTopic = true
+    beautifyEnumDispName = true
+    strokeArcs = true
+    createEnumTabs = false
+    createNumChecks = true
+    createFk = true
+    createFkIdx = true
+    createGeomIdx = true
+    createMetaInfo = true
+    createBasketCol = false
+    createUnique = true
+    smart2Inheritance = true
+}
+
+tasks.register('createExportSchema', Ili2pgImportSchema) {
+    dependsOn 'createImportSchema'
+    description = 'Schema EXPORT für Ausgabedaten in der Processing-DB anlegen.'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    models = "SO_ARP_SEin_Strukturdaten_Publikation_20250407"
+    dbschema = "export"
+    nameByTopic = true
+    beautifyEnumDispName = true
+    strokeArcs = true
+    createEnumTabs = false
+    createNumChecks = true
+    createFk = true
+    createFkIdx = true
+    createGeomIdx = true
+    createMetaInfo = true
+    createBasketCol = false
+    createUnique = true
+    smart2Inheritance = true
+}
+
+tasks.register('copyDataFromPub', Db2Db) {
+    dependsOn 'createExportSchema'
+    description = 'Quelldaten tabellenweise aus der Pub-DB in die Processing-DB kopieren.'
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    transferSets = [
+        new TransferSet('import_to_processing/import_bauzonenstatistik_liegenschaft_nach_bebauungsstand.sql', 'import.bauzonenstatistik_liegenschaft_nach_bebauungsstand', true),
+        new TransferSet('import_to_processing/import_nutzungsplanung_grundnutzung.sql', 'import.nutzungsplanung_grundnutzung', true),
+        new TransferSet('import_to_processing/import_mopublic_bodenbedeckung.sql', 'import.mopublic_bodenbedeckung', true),
+        new TransferSet('import_to_processing/import_mopublic_grundstueck.sql', 'import.mopublic_grundstueck', true),
+        new TransferSet('import_to_processing/import_gwr_gebaeude.sql', 'import.gwr_gebaeude', true),
+        new TransferSet('import_to_processing/import_gwr_wohnung.sql', 'import.gwr_wohnung', true),
+        new TransferSet('import_to_processing/import_hoheitsgrenzen_gemeindegrenze.sql', 'import.hoheitsgrenzen_gemeindegrenze', true)
+    ];
+}
+
+tasks.register('copyDataFromEdit', Db2Db) {
+    dependsOn 'copyDataFromPub'
+    description = 'Quelldaten tabellenweise aus der Edit-DB in die Processing-DB kopieren.'
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    transferSets = [
+        new TransferSet('import_to_processing/import_statpop.sql', 'import.statpop_statent_statpop', true),
+        new TransferSet('import_to_processing/import_statent.sql', 'import.statpop_statent_statent', true),
+        new TransferSet('import_to_processing/import_grundlagen_gemeinde.sql', 'import.grundlagen_gemeinde', true)
+    ];
+}
+
+tasks.register('processParzellen', SqlExecutor) {
+    dependsOn 'copyDataFromEdit'
+    description = 'Raumeinheit Parzelle aufbereiten.'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files(
+        'process_parzellen/0_prepare_gebklasse_mapping.sql',
+        'process_parzellen/1_prepare_geoms.sql',
+        'process_parzellen/1-1_join_gebaeude.sql',
+        'process_parzellen/1-2_join_wohnung.sql',
+        'process_parzellen/1-3_join_statpop.sql',
+        'process_parzellen/1-4_join_statent.sql',
+        'process_parzellen/2a_intersect_bodenbedeckung.sql',
+        'process_parzellen/3_create_json_bodenbedeckungen.sql',
+        'process_parzellen/4_create_json_grundnutzungen.sql',
+        'process_parzellen/5_create_jsons_gwr.sql',
+        'process_parzellen/6_calculate_stats_gebaeude.sql',
+        'process_parzellen/7_calculate_stats_wohnungen.sql',
+        'process_parzellen/8_create_json_statpop.sql',
+        'process_parzellen/9_calculate_stats_statent.sql',
+        'process_parzellen/10_final_join_of_everything.sql'
+    )
+}
+
+tasks.register('processZonentypen', SqlExecutor) {
+    dependsOn 'processParzellen'
+    description = 'Raumeinheit Zonentyp aufbereiten (bedingt Parzellen-Daten).'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files(
+        'process_zonentypen/1_prepare_geoms.sql',
+        'process_zonentypen/2b_prepare_bodenbedeckung.sql',
+        'process_zonentypen/3_create_json_bodenbedeckungen.sql',
+        'process_zonentypen/4_create_json_grundnutzungen.sql',
+        'process_zonentypen/5_create_jsons_gwr.sql',
+        'process_zonentypen/6_calculate_stats_gebaeude.sql',
+        'process_zonentypen/7_calculate_stats_wohnungen.sql',
+        'process_zonentypen/8_create_json_statpop.sql',
+        'process_zonentypen/9_calculate_stats_statent.sql',
+        'process_zonentypen/10_final_join_of_everything.sql'
+    )
+}
+
+tasks.register('processZonenschilde', SqlExecutor) {
+    dependsOn 'processZonentypen'
+    description = 'Raumeinheit Zonenschild aufbereiten (bedingt Zonentyp- und Parzellen-Daten).'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files(
+        'process_zonenschilde/0_prepare_geoms_dump_zonentyp.sql',
+        'process_zonenschilde/1_prepare_geoms.sql',
+        'process_zonenschilde/1-1_join_gebaeude.sql',
+        'process_zonenschilde/1-2_join_wohnung.sql',
+        'process_zonenschilde/1-3_join_statpop.sql',
+        'process_zonenschilde/1-4_join_statent.sql',
+        'process_zonenschilde/2b_prepare_bodenbedeckung.sql',
+        'process_zonenschilde/3_create_json_bodenbedeckungen.sql',
+        'process_zonenschilde/4_create_json_grundnutzungen.sql',
+        'process_zonenschilde/5_create_jsons_gwr.sql',
+        'process_zonenschilde/6_calculate_stats_gebaeude.sql',
+        'process_zonenschilde/7_calculate_stats_wohnungen.sql',
+        'process_zonenschilde/8_create_json_statpop.sql',
+        'process_zonenschilde/9_calculate_stats_statent.sql',
+        'process_zonenschilde/10_final_join_of_everything.sql'
+    )
+}
+
+tasks.register('processGemeinden', SqlExecutor) {
+    dependsOn 'processZonentypen'
+    description = 'Raumeinheit Gemeinde aufbereiten (bedingt Zonentyp- und Parzellen-Daten).'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files(
+        'process_gemeinden/1_prepare_geoms.sql',
+        'process_gemeinden/2b_prepare_bodenbedeckung.sql',
+        'process_gemeinden/3_create_json_bodenbedeckungen.sql',
+        'process_gemeinden/4_create_json_grundnutzungen.sql',
+        'process_gemeinden/5_create_jsons_gwr.sql',
+        'process_gemeinden/6_calculate_stats_gebaeude.sql',
+        'process_gemeinden/7_calculate_stats_wohnungen.sql',
+        'process_gemeinden/8_create_json_statpop.sql',
+        'process_gemeinden/9_calculate_stats_statent.sql',
+        'process_gemeinden/10_final_join_of_everything.sql'
+    )
+}
+
+tasks.register('exportXtf', Ili2pgExport) {
+    dependsOn 'processZonenschilde', 'processGemeinden'
+    description = 'Ergebnis als XTF-Datei exportieren.'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    dbschema = "export"
+    disableValidation = false
+    dataFile = xtfFile
+    models = "SO_ARP_SEin_Strukturdaten_Publikation_20250407"
+}
+
+tasks.register('upload') {
+    dependsOn 'exportXtf'
+    description = 'XTF-Datei auf den SFTP-Server hochladen.'
+    doLast {
+        ssh.run {
+            session(remotes.sftpServer) {
+                put from: xtfPath, into: ftpPath
+            }
+        }
+        println "File uploaded to FTP server."
+    }
+}
