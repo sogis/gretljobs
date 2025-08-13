@@ -8,6 +8,7 @@ defaultTasks "upload"
 
 // Definition von Pfaden
 def xtfPath = "${buildDir}/arp_sein_strukturdaten.xtf"
+def xtfFile = files(xtfPath)
 def ftpPath = "/opt/daten/gis_arp_raumdaten/test/"  // tbd: produktives Verzeichnis = ?
 
 // Multiline-Text ist im Task nicht möglich, darum als Variable
@@ -20,7 +21,6 @@ def importModels =
     "SO_Hoheitsgrenzen_Publikation_20170626;" +
     "SO_ARP_SEin_Konfiguration_20250115"
 
-/* tbd wieder einkommentieren
 // Definition des SFTP-Servers für den Datenupload
 remotes {
     sftpServer {
@@ -33,16 +33,16 @@ remotes {
         }
     }
 }
-*/
 
-// In der processing DB die Extension für die UUID-Erstellung aktivieren (uuid-ossp)
-task createExtension(type: SqlExecutor){
+tasks.register('createExtension', SqlExecutor) {
+    description = 'In der Processing-DB die Extension für die UUID-Erstellung aktivieren (uuid-ossp).'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['create_extension.sql']
+    sqlFiles = files('create_extension.sql')
 }
 
-// Schema "import" für Quelldaten in processing DB anlegen
-task createImportSchema(type: Ili2pgImportSchema, dependsOn: createExtension){
+tasks.register('createImportSchema', Ili2pgImportSchema) {
+    dependsOn 'createExtension'
+    description = 'Schema IMPORT für Quelldaten in der Processing-DB anlegen.'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = importModels
     dbschema = "import"
@@ -60,8 +60,9 @@ task createImportSchema(type: Ili2pgImportSchema, dependsOn: createExtension){
     smart2Inheritance = true
 }
 
-// Schema "export" für Ausgabedaten in processing DB anlegen
-task createExportSchema(type: Ili2pgImportSchema, dependsOn: createImportSchema){
+tasks.register('createExportSchema', Ili2pgImportSchema) {
+    dependsOn 'createImportSchema'
+    description = 'Schema EXPORT für Ausgabedaten in der Processing-DB anlegen.'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_ARP_SEin_Strukturdaten_Publikation_20250407"
     dbschema = "export"
@@ -79,8 +80,9 @@ task createExportSchema(type: Ili2pgImportSchema, dependsOn: createImportSchema)
     smart2Inheritance = true
 }
 
-// Quelldaten tabellenweise aus Pub nach Processing kopieren
-task copyDataFromPub(type: Db2Db, dependsOn: createExportSchema){ 
+tasks.register('copyDataFromPub', Db2Db) {
+    dependsOn 'createExportSchema'
+    description = 'Quelldaten tabellenweise aus der Pub-DB in die Processing-DB kopieren.'
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     transferSets = [
@@ -94,8 +96,9 @@ task copyDataFromPub(type: Db2Db, dependsOn: createExportSchema){
     ];
 }
 
-// Quelldaten tabellenweise aus Edit nach Processing kopieren
-task copyDataFromEdit(type: Db2Db, dependsOn: copyDataFromPub){ 
+tasks.register('copyDataFromEdit', Db2Db) {
+    dependsOn 'copyDataFromPub'
+    description = 'Quelldaten tabellenweise aus der Edit-DB in die Processing-DB kopieren.'
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     transferSets = [
@@ -105,10 +108,11 @@ task copyDataFromEdit(type: Db2Db, dependsOn: copyDataFromPub){
     ];
 }
 
-// Raumeinheit Parzelle aufbereiten
-task processParzellen(type: SqlExecutor, dependsOn: copyDataFromEdit) {
+tasks.register('processParzellen', SqlExecutor) {
+    dependsOn 'copyDataFromEdit'
+    description = 'Raumeinheit Parzelle aufbereiten.'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = [
+    sqlFiles = files(
         'process_parzellen/0_prepare_gebklasse_mapping.sql',
         'process_parzellen/1_prepare_geoms.sql',
         'process_parzellen/1-1_join_gebaeude.sql',
@@ -124,13 +128,14 @@ task processParzellen(type: SqlExecutor, dependsOn: copyDataFromEdit) {
         'process_parzellen/8_create_json_statpop.sql',
         'process_parzellen/9_calculate_stats_statent.sql',
         'process_parzellen/10_final_join_of_everything.sql'
-    ]
+    )
 }
 
-// Raumeinheit Zonentyp aufbereiten (bedingt Parzellen-Daten)
-task processZonentypen(type: SqlExecutor, dependsOn: processParzellen) {
+tasks.register('processZonentypen', SqlExecutor) {
+    dependsOn 'processParzellen'
+    description = 'Raumeinheit Zonentyp aufbereiten (bedingt Parzellen-Daten).'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = [
+    sqlFiles = files(
         'process_zonentypen/1_prepare_geoms.sql',
         'process_zonentypen/2b_prepare_bodenbedeckung.sql',
         'process_zonentypen/3_create_json_bodenbedeckungen.sql',
@@ -141,13 +146,14 @@ task processZonentypen(type: SqlExecutor, dependsOn: processParzellen) {
         'process_zonentypen/8_create_json_statpop.sql',
         'process_zonentypen/9_calculate_stats_statent.sql',
         'process_zonentypen/10_final_join_of_everything.sql'
-    ]
+    )
 }
 
-// Raumeinheit Zonenschild aufbereiten (bedingt Zonentyp- und Parzellen-Daten)
-task processZonenschilde(type: SqlExecutor, dependsOn: processZonentypen) {
+tasks.register('processZonenschilde', SqlExecutor) {
+    dependsOn 'processZonentypen'
+    description = 'Raumeinheit Zonenschild aufbereiten (bedingt Zonentyp- und Parzellen-Daten).'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = [
+    sqlFiles = files(
         'process_zonenschilde/0_prepare_geoms_dump_zonentyp.sql',
         'process_zonenschilde/1_prepare_geoms.sql',
         'process_zonenschilde/1-1_join_gebaeude.sql',
@@ -163,13 +169,14 @@ task processZonenschilde(type: SqlExecutor, dependsOn: processZonentypen) {
         'process_zonenschilde/8_create_json_statpop.sql',
         'process_zonenschilde/9_calculate_stats_statent.sql',
         'process_zonenschilde/10_final_join_of_everything.sql'
-    ]
+    )
 }
 
-// Raumeinheit Gemeinde aufbereiten (bedingt Zonentyp- und Parzellen-Daten)
-task processGemeinden(type: SqlExecutor, dependsOn: processZonentypen) {
+tasks.register('processGemeinden', SqlExecutor) {
+    dependsOn 'processZonentypen'
+    description = 'Raumeinheit Gemeinde aufbereiten (bedingt Zonentyp- und Parzellen-Daten).'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = [
+    sqlFiles = files(
         'process_gemeinden/1_prepare_geoms.sql',
         'process_gemeinden/2b_prepare_bodenbedeckung.sql',
         'process_gemeinden/3_create_json_bodenbedeckungen.sql',
@@ -180,27 +187,28 @@ task processGemeinden(type: SqlExecutor, dependsOn: processZonentypen) {
         'process_gemeinden/8_create_json_statpop.sql',
         'process_gemeinden/9_calculate_stats_statent.sql',
         'process_gemeinden/10_final_join_of_everything.sql'
-    ]
+    )
 }
 
-// Ergebnis als XTF-Datei exportieren
-task exportXtf(type: Ili2pgExport, dependsOn: [processZonenschilde, processGemeinden]){
+tasks.register('exportXtf', Ili2pgExport) {
+    dependsOn 'processZonenschilde', 'processGemeinden'
+    description = 'Ergebnis als XTF-Datei exportieren.'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     dbschema = "export"
     disableValidation = false
-    dataFile = xtfPath
+    dataFile = xtfFile
     models = "SO_ARP_SEin_Strukturdaten_Publikation_20250407"
 }
 
-// XTF-Datei auf den SFTP-Server hochladen
 tasks.register('upload') {
     dependsOn 'exportXtf'
+    description = 'XTF-Datei auf den SFTP-Server hochladen.'
     doLast {
         ssh.run {
             session(remotes.sftpServer) {
                 put from: xtfPath, into: ftpPath
             }
         }
-        println "File uploaded to FTP server"
+        println "File uploaded to FTP server."
     }
 }
