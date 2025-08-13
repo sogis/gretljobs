@@ -4,16 +4,15 @@
 -- GRUNDLAGEN -------------------------------------------------------------------------
 -- Mapping von GWR-Gebäudeklassen-Codes und -Beschreibungen
 -- $td Richtlinien durchschauen und anpassen. Beispielsweise Keywords UPPERCASE
--- $td Allgemein: Versuchen, klare und darum nicht zu kurze namen für die CTE's zu finden
 -- $td Datei ist deutlich zu gross. Auseinanderdividieren, beispielsweise eine Datei pro Temp-Tabelle. Dateinahmen wohlüberlegt wählen.
-drop table if exists export.gklas_10_map cascade;
+drop table if exists export.gebklasse10_mapping cascade;
 
-create table export.gklas_10_map (
+create table export.gebklasse10_mapping (
     gklas_10		integer,
     gklas_10_txt	text
 );
 
-insert into export.gklas_10_map values
+insert into export.gebklasse10_mapping values
 	(111, 'Wohnbauten'),
 	(112, 'Gebäude mit zwei oder mehr Wohnungen'),
 	(113, 'Wohngebäude für Gemeinschaften'),
@@ -44,7 +43,19 @@ create table export.parzellen_basis (
 );
 
 insert into export.parzellen_basis
-	with baustat as (
+	with bauzonenstatistik_dump as (
+		select
+			t_ili_tid,
+			bfs_nr,
+			grundnutzung_typ_kt,
+			bebauungsstand,
+			-- MultiPolygon dumpen
+			ST_ReducePrecision((ST_Dump(geometrie)).geom, 0.001) as part,
+			-- Punkte aus den Teilpolygonen ableiten (wird für Join verwendet in der Zonenschild-Berechnung)
+			ST_PointOnSurface((ST_Dump(geometrie)).geom) as pip
+		from import.bauzonenstatistik_liegenschaft_nach_bebauungsstand
+	),
+	bauzonenstatistik_basis as (
 		select 
 			t_ili_tid,
 			bfs_nr,
@@ -55,24 +66,13 @@ insert into export.parzellen_basis
 			ST_Collect(part) as geometrie,
 			-- MultiPoint zusammensetzen (benötigt in der Zonenschild-Berechnung)
 			ST_Collect(pip) as pip
-		from (
-			select -- $td Auslagern in CTE und bewusst benennen
-				t_ili_tid,
-				bfs_nr,
-				grundnutzung_typ_kt,
-				bebauungsstand,
-				-- MultiPolygon dumpen
-				ST_ReducePrecision((ST_Dump(geometrie)).geom, 0.001) as part,
-				-- Punkte aus den Teilpolygonen ableiten (benötigt in der Zonenschild-Berechnung)
-				ST_PointOnSurface((ST_Dump(geometrie)).geom) as pip
-			from import.bauzonenstatistik_liegenschaft_nach_bebauungsstand
-		) dump
+		from bauzonenstatistik_dump
 		-- Kleinst-Teilpolygone eliminieren (unscharfe Verschnitte)
 		where (ST_MaximumInscribedCircle(part)).radius > 0.2
 		and ST_Area(part) > 0.5
 		group by t_ili_tid, bfs_nr, grundnutzung_typ_kt, bebauungsstand
 	),
-	polys as (
+	vereinigte_basis as (
 	    select 
 			t_ili_tid, 
 			bfs_nr, 
@@ -81,8 +81,8 @@ insert into export.parzellen_basis
 			bebauungsstand, 
 			flaeche, 
 			pip
-	    from baustat
-	    union -- $td union all ... und falls nicht bekannt: union funktioniert bei Position, und nicht name
+	    from bauzonenstatistik_basis
+	    union all
 	    select
 			t_ili_tid, 
 			bfs_nr, 
@@ -103,15 +103,20 @@ insert into export.parzellen_basis
 	    substring(typ_kt, 2, 2) as typ_bund,
 	    bebauungsstand,
 	    flaeche,
-		-- $td formatierung wie unten folgend
-	    case 
-			when bebauungsstand = 'bebaut' then flaeche 
-			else 0 
+	    case
+			when bebauungsstand = 'bebaut' then flaeche
+			else 0
 		end as flaeche_bebaut,
-	    case when bebauungsstand = 'unbebaut' then flaeche else 0 end as flaeche_unbebaut,
-	    case when bebauungsstand = 'teilweise_bebaut' then flaeche else 0 end as flaeche_teilweise_bebaut,
+	    case
+			when bebauungsstand = 'unbebaut' then flaeche
+			else 0
+		end as flaeche_unbebaut,
+	    case
+			when bebauungsstand = 'teilweise_bebaut' then flaeche
+			else 0
+		end as flaeche_teilweise_bebaut,
 		pip
-	from polys
+	from vereinigte_basis
 ;
 
 create index on export.parzellen_basis using gist (geometrie);
@@ -184,7 +189,7 @@ insert into export.gebaeude
 		geb.lage as geometrie
 	from export.parzellen_basis p
 	join import.gwr_gebaeude geb on ST_Within(geb.lage, p.geometrie)
-	left join export.gklas_10_map g on left(geb.gklas::text,3)::int = g.gklas_10
+	left join export.gebklasse10_mapping g on left(geb.gklas::text,3)::int = g.gklas_10
 	where geb.gstat = 1004  -- nur existierende
 ;
 
@@ -218,7 +223,7 @@ insert into export.wohnung
 	    w.warea,       -- Wohnungsfläche
 	    w.wazim        -- Anzahl Zimmer
 	from export.gebaeude g
-	left join import.gwr_wohnung w using (egid) -- $td "using" nicht so gebräuchlich - ist std sql?
+	left join import.gwr_wohnung w using (egid)
 ;
 
 create index on export.wohnung using gist (geometrie);
@@ -316,7 +321,6 @@ create table export.parzellen_bodenbedeckungen_array as
 drop table if exists export.parzellen_gwr_array cascade;
 create table export.parzellen_gwr_array as
 -- $td Deutlich zu tiefe Schachtelung von select statements. CTE einsetzen
--- $td Zusammen brainstormen, wie dies umgeschrieben werden kann
 	select 
 	    t_ili_tid,
 	    (

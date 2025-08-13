@@ -7,7 +7,7 @@ apply plugin: 'org.hidetake.ssh'
 defaultTasks "upload"
 
 // Definition von Pfaden
-def xtfPath = "${buildDir}/sein_strukturdaten.xtf"
+def xtfPath = "${buildDir}/arp_sein_strukturdaten.xtf"
 def ftpPath = "/opt/daten/gis_arp_raumdaten/test/"  // tbd: produktives Verzeichnis = ?
 
 // Multiline-Text ist im Task nicht möglich, darum als Variable
@@ -20,6 +20,7 @@ def importModels =
     "SO_Hoheitsgrenzen_Publikation_20170626;" +
     "SO_ARP_SEin_Konfiguration_20250115"
 
+/* tbd wieder einkommentieren
 // Definition des SFTP-Servers für den Datenupload
 remotes {
     sftpServer {
@@ -32,6 +33,7 @@ remotes {
         }
     }
 }
+*/
 
 // In der processing DB die Extension für die UUID-Erstellung aktivieren (uuid-ossp)
 task createExtension(type: SqlExecutor){
@@ -103,29 +105,82 @@ task copyDataFromEdit(type: Db2Db, dependsOn: copyDataFromPub){
     ];
 }
 
-// tbd: SQL files aufsplitten
 // Raumeinheit Parzelle aufbereiten
 task processParzellen(type: SqlExecutor, dependsOn: copyDataFromEdit) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['parzelle.sql']
+    sqlFiles = [
+        'process_parzellen/gebklasse10_mapping.sql',
+        'process_parzellen/parzellen_basis.sql',
+        'process_parzellen/parzellen_bodenbedeckung.sql',
+        'process_parzellen/gebaeude.sql',
+        'process_parzellen/wohnung.sql',
+        'process_parzellen/statpop.sql',
+        'process_parzellen/statent.sql',
+        'process_parzellen/parzellen_grundnutzungen_array.sql',
+        'process_parzellen/parzellen_bodenbedeckungen_array.sql',
+        'process_parzellen/parzellen_gwr_array.sql',
+        'process_parzellen/parzellen_gwr_geb_agg.sql',
+        'process_parzellen/parzellen_gwr_wohn_agg.sql',
+        'process_parzellen/parzellen_statpop_array.sql',
+        'process_parzellen/parzellen_statent_agg.sql',
+        'process_parzellen/strukturdaten_parzelle.sql'
+    ]
 }
 
-// Raumeinheit Zonentyp aufbereiten (bedingt parzelle.sql)
+// Raumeinheit Zonentyp aufbereiten (bedingt Parzellen-Daten)
 task processZonentypen(type: SqlExecutor, dependsOn: processParzellen) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['zonentyp.sql']
+    sqlFiles = [
+        'process_zonentypen/zonentyp_basis.sql',
+        'process_zonentypen/zonentyp_bodenbedeckung.sql',
+        'process_zonentypen/zonentyp_grundnutzungen_array.sql',
+        'process_zonentypen/zonentyp_bodenbedeckungen_array.sql',
+        'process_zonentypen/zonentyp_gwr_array.sql',
+        'process_zonentypen/zonentyp_gwr_geb_agg.sql',
+        'process_zonentypen/zonentyp_gwr_wohn_agg.sql',
+        'process_zonentypen/zonentyp_statpop_array.sql',
+        'process_zonentypen/zonentyp_statent_agg.sql',
+        'process_zonentypen/strukturdaten_zonentyp.sql'
+    ]
 }
 
-// Raumeinheit Zonenschild aufbereiten (bedingt zonentyp.sql und somit parzelle.sql)
+// Raumeinheit Zonenschild aufbereiten (bedingt Zonentyp- und Parzellen-Daten)
 task processZonenschilde(type: SqlExecutor, dependsOn: processZonentypen) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['zonenschild.sql']
+    sqlFiles = [
+        'process_zonenschilde/zonenschild_dump.sql',
+        'process_zonenschilde/zonenschild_basis.sql',
+        'process_zonenschilde/zonenschild_bodenbedeckung.sql',
+        'process_zonenschilde/zonenschild_grundnutzungen_array.sql',
+        'process_zonenschilde/zonenschild_bodenbedeckungen_array.sql',
+        'process_zonenschilde/gebaeude_x_zonenschild.sql',
+        'process_zonenschilde/wohnung_x_zonenschild.sql',
+        'process_zonenschilde/zonenschild_gwr_array.sql',
+        'process_zonenschilde/zonenschild_gwr_geb_agg.sql',
+        'process_zonenschilde/zonenschild_gwr_wohn_agg.sql',
+        'process_zonenschilde/zonenschild_basis_statpop.sql',
+        'process_zonenschilde/zonenschild_basis_statent.sql',
+        'process_zonenschilde/zonenschild_statpop_array.sql',
+        'process_zonenschilde/zonenschild_statent_agg.sql',
+        'process_zonenschilde/strukturdaten_zonenschild.sql'
+    ]
 }
 
 // Raumeinheit Gemeinde aufbereiten (bedingt zonentyp.sql und somit parzelle.sql)
 task processGemeinden(type: SqlExecutor, dependsOn: processZonentypen) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = ['gemeinde.sql']
+    sqlFiles = [
+        'process_gemeinden/gemeinde_basis.sql',
+        'process_gemeinden/gemeinde_bodenbedeckung.sql',
+        'process_gemeinden/gemeinde_grundnutzungen_array.sql',
+        'process_gemeinden/gemeinde_bodenbedeckungen_array.sql',
+        'process_gemeinden/gemeinde_gwr_array.sql',
+        'process_gemeinden/gemeinde_gwr_geb_agg.sql',
+        'process_gemeinden/gemeinde_gwr_wohn_agg.sql',
+        'process_gemeinden/gemeinde_statpop_array.sql',
+        'process_gemeinden/gemeinde_statent_agg.sql',
+        'process_gemeinden/strukturdaten_gemeinde.sql'
+    ]
 }
 
 // Ergebnis als XTF-Datei exportieren
