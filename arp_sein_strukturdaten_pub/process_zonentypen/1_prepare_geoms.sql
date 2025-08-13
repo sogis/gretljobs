@@ -21,14 +21,14 @@ INSERT
     INTO export.zonentyp_geoms
     SELECT
         ST_Union(
-            ST_MakeValid(
-                ST_ReducePrecision(
+            ST_ReducePrecision(
+                ST_MakeValid(
                     ST_Buffer(
                         ST_Buffer(
                             geometrie, 0.25, 'join=mitre'
                         ), -0.25, 'join=mitre'
-                    ), 0.001
-                ), 'method=structure'
+                    ), 'method=structure'
+                ), 0.001
             ), 0.001
         ) as geometrie,
         bfs_nr,
