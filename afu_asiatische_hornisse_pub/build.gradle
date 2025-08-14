@@ -16,45 +16,78 @@ task transferAfuAsiatischeHornissePub(type: Db2Db) {
     ]
 }
 
-// Suchindex aktualisieren: Konfiguration der Tasks
-def updateSearchIndexTasksConfig = [
-    'updateSearchIndexSichtungen': [
-        layer: 'ch.so.afu.asiatische_hornisse.sichtungen',
-        file: 'searchindex_ch.so.afu.asiatische_hornisse.sichtungen.sql'
-    ],
-    'updateSearchIndexSichtungenGeschuetzt': [
-        layer: 'ch.so.afu.asiatische_hornisse.sichtungen_geschuetzt',
-        file: 'searchindex_ch.so.afu.asiatische_hornisse.sichtungen.sql'
-    ],
-    'updateSearchIndexNester': [
-        layer: 'ch.so.afu.asiatische_hornisse.nester',
-        file: 'searchindex_ch.so.afu.asiatische_hornisse.nester.sql'
-    ],
-    'updateSearchIndexNesterGeschuetzt': [
-        layer: 'ch.so.afu.asiatische_hornisse.nester_geschuetzt',
-        file: 'searchindex_ch.so.afu.asiatische_hornisse.nester.sql'
+tasks.register('updateSearchIndexSichtungen', SqlExecutor) {
+    mustRunAfter 'transferAfuAsiatischeHornissePub'
+    String layerNameStringQuoted = "'ch.so.afu.asiatische_hornisse.sichtungen'"
+    String fileNameString = 'searchindex_ch.so.afu.asiatische_hornisse.sichtungen.sql'
+    String dbSearchSchemaString = dbSearchSchemaPub
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlParameters = [
+            [layername: layerNameStringQuoted, db_schema: dbSearchSchemaString]
     ]
-]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            fileNameString
+    ]
+    doFirst {
+        println 'Updating index for layer ' + layerNameStringQuoted
+    }
+}
 
-// Suchindex aktualisieren: Tasks dynamisch erstellen
-updateSearchIndexTasksConfig.each { taskName, config ->
-    tasks.register(taskName, SqlExecutor) {
-        mustRunAfter 'transferAfuAsiatischeHornissePub'
-        database = [dbUriPub, dbUserPub, dbPwdPub]
+tasks.register('updateSearchIndexSichtungenGeschuetzt', SqlExecutor) {
+    mustRunAfter 'transferAfuAsiatischeHornissePub'
+    String layerNameStringQuoted = "'ch.so.afu.asiatische_hornisse.sichtungen_geschuetzt'"
+    String fileNameString = 'searchindex_ch.so.afu.asiatische_hornisse.sichtungen.sql'
+    String dbSearchSchemaString = dbSearchSchemaPub
 
-        String dbSearchSchemaString = dbSearchSchemaPub
-        String layerNameString = "'${config.layer}'"
-        String fileNameString = config.file
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlParameters = [
+            [layername: layerNameStringQuoted, db_schema: dbSearchSchemaString]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            fileNameString
+    ]
+    doFirst {
+        println 'Updating index for layer ' + layerNameStringQuoted
+    }
+}
 
-        sqlParameters = [
-                [layername: layerNameString, db_schema: dbSearchSchemaString]
-        ]
-        sqlFiles = [
-                '../searchindex_deleteFeatures.sql',
-                fileNameString
-        ]
-        doFirst {
-            println 'Updating index for layer: ' + config.layer
-        }
+tasks.register('updateSearchIndexNester', SqlExecutor) {
+    mustRunAfter 'transferAfuAsiatischeHornissePub'
+    String layerNameStringQuoted = "'ch.so.afu.asiatische_hornisse.nester'"
+    String fileNameString = 'searchindex_ch.so.afu.asiatische_hornisse.nester.sql'
+    String dbSearchSchemaString = dbSearchSchemaPub
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlParameters = [
+            [layername: layerNameStringQuoted, db_schema: dbSearchSchemaString]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            fileNameString
+    ]
+    doFirst {
+        println 'Updating index for layer ' + layerNameStringQuoted
+    }
+}
+
+tasks.register('updateSearchIndexNesterGeschuetzt', SqlExecutor) {
+    mustRunAfter 'transferAfuAsiatischeHornissePub'
+    String layerNameStringQuoted = "'ch.so.afu.asiatische_hornisse.nester_geschuetzt'"
+    String fileNameString = 'searchindex_ch.so.afu.asiatische_hornisse.nester.sql'
+    String dbSearchSchemaString = dbSearchSchemaPub
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlParameters = [
+            [layername: layerNameStringQuoted, db_schema: dbSearchSchemaString]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            fileNameString
+    ]
+    doFirst {
+        println 'Updating index for layer ' + layerNameStringQuoted
     }
 }
