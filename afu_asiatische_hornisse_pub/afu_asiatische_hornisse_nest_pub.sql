@@ -1,0 +1,21 @@
+SELECT
+    t_ili_tid,
+    import_nest_id,
+    import_nest_status,
+    import_datum_behandlung,
+    geometrie,
+    import_materialentity_id,
+    import_datum_sichtung,
+    import_ort,
+    import_kanton,
+    import_x_koordinate,
+    import_y_koordinate,
+    import_lat,
+    import_lon,
+    import_kontakt_name,
+    import_kontakt_mail,
+    import_kontakt_tel,
+    import_bemerkung,
+    import_url,
+    import_foto_url
+FROM afu_asiatische_hornisse_v2.asia_hornisse_nest;

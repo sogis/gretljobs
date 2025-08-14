@@ -1,6 +1,6 @@
 -- TRIGRAMM SUCHINDEX: UPDATE FEATURES
 
-SET search_path to afu_asiatische_hornisse_pub_v1, public;
+SET search_path to afu_asiatische_hornisse_pub_v2, public;
 
 INSERT INTO ${db_schema}.feature (
     anzeige,            -- Anzeigetext
@@ -16,18 +16,18 @@ index_base AS (
     SELECT
         ${layername}::text AS subclass,
         t_id AS id_in_class,
-        concat('Nr: ',nummer,' (Sichtungsmeldung)') AS displaytext,
-        concat(' ',nummer)  AS part_1,
-        'Sichtungsmeldung Nr'::text AS part_3,
+        concat('Nest: ', import_nest_id, ' (Nest-ID)') AS displaytext,
+        import_nest_id  AS part_1,
+        'Nest-ID Sichtungen Meldungen'::text AS part_3,  -- Begriffe in Mehrzahl, weil auch Wortteile gefunden werden
         (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
-        asia_hornisse_ash
+        asia_hornisse_nest
     WHERE
-        nummer IS NOT NULL
+        import_nest_id IS NOT NULL
 )
 SELECT
     displaytext AS anzeige,
-    lower((part_1 || ' '::text) || index_base.part_3) AS suchbegriffe,
+    lower((part_1 || ' '::text) || part_3) AS suchbegriffe,
     subclass AS layer_ident,
     bbox as ausdehnung,
     id_in_class::text AS id_feature,
