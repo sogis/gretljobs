@@ -6,7 +6,7 @@ Anhand der `materialentityid`, einer eindeutigen Record-ID von infofauna, werden
 
 ## Abhängigkeit: afu_asiatische_hornisse_pub
 
-infofauna importiert die Sichtungsmeldungen täglich um 02:00 von www.asiatischehornisse.ch. Die Ausführung unseres Import-Jobs erfolgt zeitgesteuert täglich zwischen 3:00 und 4:00 Uhr. Im Anschluss, zwischen 5:00 und 6:00 Uhr, erfolgt die Ausführung des Jobs [afu_asiatische_hornisse_pub](https://github.com/sogis/gretljobs/tree/main/afu_asiatische_hornisse_pub), der den aktuellen Stand der importierten und editierten Daten in die Publikations-DB überträgt.
+infofauna importiert die Sichtungsmeldungen täglich um 02:00 (UTC oder MESZ?) von www.asiatischehornisse.ch. Die Ausführung unseres Import-Jobs erfolgt zeitgesteuert täglich um 04:15 UTC. Im Anschluss, um 04:30 UTC, erfolgt die Ausführung des Jobs [afu_asiatische_hornisse_pub](https://github.com/sogis/gretljobs/tree/main/afu_asiatische_hornisse_pub), der den aktuellen Stand der importierten und editierten Daten in die Publikations-DB überträgt.
 
 # TODO
 
