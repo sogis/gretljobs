@@ -57,7 +57,9 @@ WITH leitungen AS (
         eig.organisationstyp AS eigentuemer_organisationstyp,
         eig.bezeichnung AS eigentuemer_bezeichnung,
         CASE
-            WHEN l.funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung', 'Pumpendruckleitung') THEN 'L_Drainage'
+            WHEN (l.lichte_breite <> 0 AND l.laengeeffektiv > 0 AND l.kote_von > 0 AND l.kote_nach > 0) THEN  ROUND(((l.kote_von - l.kote_nach) / l.laengeeffektiv * 1000), 1) || ' ‰'
+	    	ELSE NULL
+            -- 'L_Drainage' Dieses Attribut wird missbraucht für die Beschriftung des Gefälles. Es gibt leider nur Beschriftung für Paa
         END AS stilid
     FROM
         alw_drainagen_v1.vsadssmini_leitung l
@@ -103,6 +105,4 @@ WHERE
         funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung', 'Pumpendruckleitung')
     AND 
         nutzungsart_ist LIKE 'Reinabwasser'
-    AND 
-        stilid IS NOT NULL
 ;
