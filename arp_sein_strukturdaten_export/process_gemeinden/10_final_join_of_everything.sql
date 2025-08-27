@@ -18,7 +18,7 @@ INSERT
         gemeindenummer,
         altersklassen_5j,
         beschaeftigte_fte,
-        raumnutzendendichte,
+        raumnutzungsdichte,
         flaechendichte,
         grundnutzungen_kanton,
         grundnutzungen_bund,
@@ -54,11 +54,11 @@ INSERT
         a.bfs_nr AS gemeindenummer,
         h.altersklassen_5j,
         coalesce(i.beschaeftigte_fte, 0) AS beschaeftigte_fte,
-        -- Raumnutzendendichte: Umrechnung von m2 auf ha = Faktor 10'000
+        -- Raumnutzungsdichte: Umrechnung von m2 auf ha = Faktor 10'000
         (
             (coalesce(h.popcount, 0) + coalesce(i.beschaeftigte_fte, 0)) / 
             nullif((a.flaeche_bebaut + a.flaeche_teilweise_bebaut) * 10000, 0)
-        ) AS raumnutzendendichte,
+        ) AS raumnutzungsdichte,
         -- Flächendichte
         (
             (a.flaeche_bebaut + a.flaeche_teilweise_bebaut) / 
