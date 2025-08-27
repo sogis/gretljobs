@@ -4,28 +4,27 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks "upload"
+defaultTasks 'upload'
 
 // Definition von Pfaden
 def xtfPath = "${buildDir}/arp_sein_strukturdaten.xtf"
 def xtfFile = files(xtfPath)
-def ftpPath = "/opt/daten/gis_arp_raumdaten/test/"  // tbd: produktives Verzeichnis = ?
 
 // Multiline-Text ist im Task nicht möglich, darum als Variable
 def importModels = 
-    "SO_AGI_MOpublic_20240711;" +
-    "SO_AGI_GWR_Publikation_20241118;" +
-    "SO_ARP_STATPOP_STATENT_20221114;" +
-    "SO_ARP_Auswertungen_Nutzungsplanung_Publikation_20210126;" +
-    "SO_ARP_Nutzungsplanung_Publikation_20201005;" +
-    "SO_Hoheitsgrenzen_Publikation_20170626;" +
-    "SO_ARP_SEin_Konfiguration_20250115"
+    'SO_AGI_MOpublic_20240711;' +
+    'SO_AGI_GWR_Publikation_20241118;' +
+    'SO_ARP_STATPOP_STATENT_20221114;' +
+    'SO_ARP_Auswertungen_Nutzungsplanung_Publikation_20210126;' +
+    'SO_ARP_Nutzungsplanung_Publikation_20201005;' +
+    'SO_Hoheitsgrenzen_Publikation_20170626;' +
+    'SO_ARP_SEin_Konfiguration_20250115'
 
 // Definition des SFTP-Servers für den Datenupload
 remotes {
     sftpServer {
-        host = "${sftpServerSEinApp}"
-        user = "${sftpUserSEinApp}"
+        host = sftpServerSEinApp
+        user = sftpUserSEinApp
         identity = file('/home/gradle/.ssh/id_rsa')
         // Skip host key checking outside the following environments:
         if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) {  // uses the Groovy membership operator
@@ -45,7 +44,7 @@ tasks.register('createImportSchema', Ili2pgImportSchema) {
     description = 'Schema IMPORT für Quelldaten in der Processing-DB anlegen.'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = importModels
-    dbschema = "import"
+    dbschema = 'import'
     nameByTopic = true
     beautifyEnumDispName = true
     strokeArcs = true
@@ -64,8 +63,8 @@ tasks.register('createExportSchema', Ili2pgImportSchema) {
     dependsOn 'createImportSchema'
     description = 'Schema EXPORT für Ausgabedaten in der Processing-DB anlegen.'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    models = "SO_ARP_SEin_Strukturdaten_Publikation_20250407"
-    dbschema = "export"
+    models = 'SO_ARP_SEin_Strukturdaten_Publikation_20250407'
+    dbschema = 'export'
     nameByTopic = true
     beautifyEnumDispName = true
     strokeArcs = true
@@ -194,10 +193,10 @@ tasks.register('exportXtf', Ili2pgExport) {
     dependsOn 'processZonenschilde', 'processGemeinden'
     description = 'Ergebnis als XTF-Datei exportieren.'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    dbschema = "export"
+    dbschema = 'export'
     disableValidation = false
     dataFile = xtfFile
-    models = "SO_ARP_SEin_Strukturdaten_Publikation_20250407"
+    models = 'SO_ARP_SEin_Strukturdaten_Publikation_20250407'
 }
 
 tasks.register('upload') {
@@ -206,9 +205,9 @@ tasks.register('upload') {
     doLast {
         ssh.run {
             session(remotes.sftpServer) {
-                put from: xtfPath, into: ftpPath
+                put from: xtfPath, into: sftpPathSEinApp
             }
         }
-        println "File uploaded to FTP server."
+        println 'File uploaded to FTP server.'
     }
 }
