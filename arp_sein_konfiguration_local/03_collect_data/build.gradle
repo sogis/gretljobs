@@ -176,7 +176,8 @@ tasks.register("upate_rows", SqlExecutor){
     database = [dbUriDuckDB]
     sqlFiles = files(
         "update_thema_gruppe.sql",
-        "update_gemeindename.sql")
+        "update_gemeindename.sql",
+        "remove_returns.sql")
 }
 
 // validate data
