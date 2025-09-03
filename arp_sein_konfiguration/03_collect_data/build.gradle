@@ -57,11 +57,9 @@ tasks.register("ImportAllParquet", SqlExecutor) {
         ":02_import_data:erdgasroehrenspeicher_kb:last",
         ":02_import_data:flachmoore_shp2:last",
         ":02_import_data:hochmoore_shp2:last",
-        /*
         ":02_import_data:isos_xtf:last",
         ":02_import_data:ivs_national_xtf:last",
         ":02_import_data:ivs_regional_lokal_xtf:last",
-        */
         ":02_import_data:kbs:last",
         ":02_import_data:massnahmen_gen1:last",
         ":02_import_data:massnahmen_gen2:last",
