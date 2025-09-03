@@ -133,12 +133,14 @@ tasks.register("filter_data", SqlExecutor){
     )
 }
 
+// insert objektinfos
 tasks.register("objektinfos_sein", SqlExecutor){
     dependsOn "filter_data"
     database = [dbUriDuckDB]
     sqlFiles = files("objektinfos_sein.sql")
 }
 
+// insert data that concerns all communities
 tasks.register("all_communities", SqlExecutor){
     dependsOn "objektinfos_sein"
     database = [dbUriDuckDB]
@@ -168,15 +170,18 @@ tasks.register("all_communities", SqlExecutor){
         )
 }
 
-tasks.register("upate_theme_group", SqlExecutor){
+// update themes, groups and gemeindenamen
+tasks.register("upate_rows", SqlExecutor){
     dependsOn "all_communities"
     database = [dbUriDuckDB]
-    sqlFiles = files("update_thema_gruppe.sql")
+    sqlFiles = files(
+        "update_thema_gruppe.sql",
+        "update_gemeindename.sql")
 }
 
 // validate data
 tasks.register("validate_thema", SqlExecutor){
-    dependsOn "upate_theme_group"
+    dependsOn "upate_rows"
     database = [dbUriDuckDB]
     sqlFiles = files("validate_thema.sql")
 }
