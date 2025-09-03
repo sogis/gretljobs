@@ -47,11 +47,8 @@ tasks.register("ImportAllParquet", SqlExecutor) {
         ":02_import_data:archaeologische_punktfundstellen:last",
         ":02_import_data:auengebiete_shp1:last",
         ":02_import_data:ausgangslage:last",
-        ":02_import_data:baulinien_erschliessung:last",
-        ":02_import_data:baulinien_nationalstrassen_xtf:last",
         ":02_import_data:betriebe:last",
         ":02_import_data:betriebsareal_kb:last",
-        ":02_import_data:bezirksgrenzen:last",
         ":02_import_data:bln_shp1:last",
         ":02_import_data:durchgangsstrassen:last",
         ":02_import_data:durchgangsstrassen_kb:last",
@@ -59,34 +56,27 @@ tasks.register("ImportAllParquet", SqlExecutor) {
         ":02_import_data:erdgasroehrenspeicher:last",
         ":02_import_data:erdgasroehrenspeicher_kb:last",
         ":02_import_data:flachmoore_shp2:last",
-        ":02_import_data:gemeindegrenzen:last",
-        ":02_import_data:gewaesser_nutzungsplanung:last",
-        ":02_import_data:grundwasserschutz:last",
         ":02_import_data:hochmoore_shp2:last",
+        /*
         ":02_import_data:isos_xtf:last",
         ":02_import_data:ivs_national_xtf:last",
         ":02_import_data:ivs_regional_lokal_xtf:last",
-        ":02_import_data:kantonsgrenzen:last",
+        */
         ":02_import_data:kbs:last",
         ":02_import_data:massnahmen_gen1:last",
         ":02_import_data:massnahmen_gen2:last",
         ":02_import_data:massnahmen_gen3:last",
-        //":02_import_data:massnahmen_gen4:last",
+        ":02_import_data:massnahmen_gen4:last",
         ":02_import_data:nationalstrassen:last",
         ":02_import_data:nationalstrassen_kb:last",
-        ":02_import_data:ortsbildschutz:last",
-        ":02_import_data:perimeter_gen5:last",
         ":02_import_data:schweizmobil_mountainbikeland_shp2:last",
         ":02_import_data:schweizmobil_veloland_shp2:last",
         ":02_import_data:schweizmobil_wanderland_shp2:last",
-        ":02_import_data:sondernutzungsplaene:last",
         ":02_import_data:trockenwiesen_trockenweiden_shp1:last",
         ":02_import_data:vogelreservate_shp1:last",
         ":02_import_data:vorhaben:last",
-        ":02_import_data:wanderwege:last",
         ":02_import_data:wildtierkorridore:last"
     ]
-
     dependsOn importTasks
     mustRunAfter importTasks
     database = [dbUriDuckDB]
@@ -143,35 +133,56 @@ tasks.register("filter_data", SqlExecutor){
     )
 }
 
-// insert custom sein-data into Sammeltabelle filtered
+// insert objektinfos
 tasks.register("objektinfos_sein", SqlExecutor){
     dependsOn "filter_data"
     database = [dbUriDuckDB]
     sqlFiles = files("objektinfos_sein.sql")
 }
 
-// insert themes that concern all communities into Sammeltabelle filtered
-tasks.register("themes_all_communities", SqlExecutor){
+// insert data that concerns all communities
+tasks.register("all_communities", SqlExecutor){
     dependsOn "objektinfos_sein"
     database = [dbUriDuckDB]
+    sqlParameters = [connectionStringPub : dbConnectionStringPub as String]
     sqlFiles = files(
         load_extension_spatial,
-        import_data_dir + "grundnutzung/import_grundnutzung.sql",
-        import_data_dir + "natur_landschaft/import_natur_landschaft.sql",
-        import_data_dir + "wald/import_wald.sql",
-        import_data_dir + "weitere_festlegungen/import_weitere_festlegungen.sql")
+        load_extension_postgres,
+        attach_pubdb,
+        import_data_dir + "grundnutzung_d/import_grundnutzung.sql",
+        import_data_dir + "natur_landschaft_d/import_natur_landschaft.sql",
+        import_data_dir + "wald_d/import_wald.sql",
+        import_data_dir + "weitere_festlegungen_d/import_weitere_festlegungen.sql",
+        import_data_dir + "bezirksgrenzen_d/import_bezirksgrenzen.sql",
+        import_data_dir + "gemeindegrenzen_d/import_gemeindegrenzen.sql",
+        import_data_dir + "kantonsgrenzen_d/import_kantonsgrenzen.sql",
+        import_data_dir + "ortsbildschutz_d/import_ortsbildschutz.sql",
+        import_data_dir + "baulinien_nationalstrassen_d/import_baulinien_nationalstrassen.sql",
+        import_data_dir + "baulinien_erschliessung_d/import_baulinien_erschliessung.sql",
+        import_data_dir + "erschliessungsplanung_d/import_erschliessungsplanung.sql",
+        import_data_dir + "gewaesser_nutzungsplanung_d/import_gewaesser_nutzungsplanung.sql",
+        import_data_dir + "grundwasserschutz_d/import_grundwasserschutz.sql",
+        import_data_dir + "wanderwege_d/import_wanderwege.sql",
+        import_data_dir + "oev_gueteklassen_d/import_oev_gueteklassen.sql",
+        import_data_dir + "sondernutzungsplaene_d/import_sondernutzungsplaene.sql",
+        import_data_dir + "perimeter_gen5_d/import_perimeter_gen5.sql",
+        detach_pubdb
+        )
 }
 
-// update themes and groups
-tasks.register("upate_theme_group", SqlExecutor){
-    dependsOn "themes_all_communities"
+// update themes, groups and gemeindenamen
+tasks.register("upate_rows", SqlExecutor){
+    dependsOn "all_communities"
     database = [dbUriDuckDB]
-    sqlFiles = files("update_thema_gruppe.sql")
+    sqlFiles = files(
+        "update_thema_gruppe.sql",
+        "update_gemeindename.sql",
+        "remove_returns.sql")
 }
 
 // validate data
 tasks.register("validate_thema", SqlExecutor){
-    dependsOn "upate_theme_group"
+    dependsOn "upate_rows"
     database = [dbUriDuckDB]
     sqlFiles = files("validate_thema.sql")
 }
