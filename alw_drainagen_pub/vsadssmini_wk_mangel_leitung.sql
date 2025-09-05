@@ -39,7 +39,7 @@ WITH leitungen AS (
             WHEN l.material = 'Guss_duktil' THEN 'Guss'
             WHEN l.material = 'Guss_Grauguss' THEN 'Guss'
             WHEN l.material = 'Kunststoff_Epoxyharz' THEN 'Kunststoff (EP)'
-            WHEN l.material = 'Kunstoff_Hartpolyethylen' THEN 'Kunststoff (PE)'
+            WHEN l.material = 'Kunststoff_Hartpolyethylen' THEN 'Kunststoff (PE)'
             WHEN l.material = 'Kunststoff_Polyester_GUP' THEN 'Kunststoff (GUP)'
             WHEN l.material = 'Kunststoff_Polyethylen' THEN 'Kunststoff (PE)'
             WHEN l.material = 'Kunststoff_Polypropylen' THEN 'Kunststoff (PP)'
