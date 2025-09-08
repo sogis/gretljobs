@@ -17,8 +17,8 @@ def ftpPath = "/opt/daten/gis_arp_raumdaten/test/"
 // Definition des SFTP-Servers für den Datenupload
 remotes {
     sftpServer {
-        host = "${sftpServerSEinApp}"
-        user = "${sftpUserSEinApp}"
+        host = sftpServerSEinApp
+        user = sftpUserSEinApp
         identity = file('/home/gradle/.ssh/id_rsa')
         // Skip host key checking outside the following environments:
         if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) {  // uses the Groovy membership operator
@@ -81,6 +81,7 @@ tasks.register("ili2duckdbexport", Ili2duckdbExport){
 // XTF-Datei auf den SFTP-Server hochladen
 tasks.register('upload') {
     dependsOn 'ili2duckdbexport'
+    description = 'XTF-Datei auf den SFTP-Server hochladen.'
     doLast {
         ssh.run {
             session(remotes.sftpServer) {
