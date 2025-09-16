@@ -1,0 +1,46 @@
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+import java.nio.file.Files
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
+defaultTasks 'create_sap_structure'
+
+// variables
+def dbPath = "$buildDir/afu_bootsanbindeplaetze.duckdb"
+def dbUriDuckDB = "jdbc:duckdb:$dbPath"
+def dbFile = new File(dbPath)
+def today = LocalDate.now()
+
+// Create DB-variables for sql-files
+def dbHostPub = dbUriPub.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastIndexOf("/"))
+def dbDatabasePub = 'pub'
+def dbConnectionStringPub = "'dbname=$dbDatabasePub user=$dbUserPub password=$dbPwdPub host=$dbHostPub'"
+
+// delete build-directory if it exists
+if (buildDir.exists()) {
+    buildDir.deleteDir()
+}
+
+// create build-directory
+buildDir.mkdirs()
+
+// create sap-structure
+tasks.register("create_sap_structure", SqlExecutor){
+    database = [dbUriDuckDB]
+    sqlParameters = [
+        connectionStringPub : dbConnectionStringPub as String,
+        excelPath: "'" + "$buildDir/sap_export_${today}.xlsx" + "'",]
+    sqlFiles = files(
+        'load_extension_spatial.sql',
+        'attach_pubdb.sql',
+        'create_sap_table.sql',
+        'calculate_values.sql',
+        'export_excel.sql',
+        'detach_pubdb.sql'
+    )
+}
