@@ -27,7 +27,7 @@ index_base AS (
 )
 SELECT
     displaytext AS anzeige,
-    rank as rangbegriffe,
+    lower(rank) as rangbegriffe,
     lower((part_1 || ' '::text) || index_base.part_3) AS suchbegriffe,
     subclass AS layer_ident,
     bbox as ausdehnung,
