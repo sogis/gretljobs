@@ -20,7 +20,7 @@ Die `materialentityid` ändert sich, wenn auf der Meldeplattform der Status eine
 
 Das WFS Feld `date_decouverte` wird beim Statuswechsel von "actif" auf "detruit" scheinbar mit dem (noch nicht, bzw. nur via `remarques` verfügbaren) `destroy_date` überschrieben.
 
-## Fehler 3: Nest-Status wechselt von "detruit" zurück auf "actif"
+## Fehler 3 (einmaliger Vorfall, gelöst per 24.09.2025): Nest-Status wechselt von "detruit" zurück auf "actif"
 
 Mutmasslich mit dem Import vom 20. September 06:15 MESZ haben einige Nester unerwartet vom Status "detruit" auf "actif" gewechselt. Gleichzeitig werden seither zusätzliche Informationen im Kommentarfeld (`remarques`) mitgeliefert, weshalb der Verdacht besteht, dass der Statuswechsel ein ungewollter Nebeneffekt einer Änderung ist.  
 Auch dieser Statuswechsel führte zu einer Veränderung der `materialentityid` und somit zu Dubletten, siehe Fehler 1.
