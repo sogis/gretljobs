@@ -1,8 +1,8 @@
 SELECT
-    NULL::UUID          AS t_ili_tid,
+    gen_random_uuid()   AS t_ili_tid,  -- neue Records benötigen eine OID, obwohl bei Kill & Fill sinnlos
     nid_id              AS import_nest_id,
     import_nest_status,
-    date_destroyed      AS import_datum_behandlung,
+    NULL::DATE          AS import_datum_behandlung,
     geometrie,
     materialentityid    AS import_materialentity_id,
     date_decouverte     AS import_datum_sichtung,
