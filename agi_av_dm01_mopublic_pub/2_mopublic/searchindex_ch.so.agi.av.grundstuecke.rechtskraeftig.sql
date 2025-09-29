@@ -61,7 +61,7 @@ index_base AS (
 )
 SELECT
     displaytext AS anzeige,
-    lower(part_1) AS rangbegriffe,
+    lower(concat(part_1, ' abcdefg')) AS rangbegriffe,
     lower((part_1 || ' '::text) || index_base.part_3) AS suchbegriffe,
     subclass AS layer_ident,
     bbox as ausdehnung,
