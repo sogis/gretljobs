@@ -12,7 +12,7 @@ infofauna importiert die Sichtungsmeldungen täglich um 02:00 (UTC oder MESZ?) v
 
 # Bekannte Probleme und offene ToDo's
 
-## ToDo 1 @ infofauna: Eindeutige und stabile Object ID
+## ToDo 1 @ infofauna: Eindeutige und stabile Object-ID
 
 #### Problem
 
@@ -74,14 +74,14 @@ Das Feld `date_decouverte` wird beim Statuswechsel von "actif" auf "detruit" mit
 
 Das seit 27.09.2025 im WFS verfügbare Feld `date_destroyed` ist ein Freitextfeld und teilweise nicht in ein Datum konvertierbar aufgrund inkonsistenter Formatierung. Mögliche Ausprägungen sind beispielsweise "2024-8-9", "2024", "20", "date_destroyed", "date_des", "da" und weitere anscheinend inkorrekt geparste Variationen von Datum und "date_destroyed".
 
-#### Erwartung
+#### Erwartete Lösung
 
 `date_destroyed` ist ein Feld vom Typ `xsd:date` analog `date_decouverte` und dementsprechend als Datum formatiert.
 
-## ToDo @ Kt. SO: Die ID der Meldeplattform implementieren
+## ToDo 5 @ Kt. SO: Die ID der Meldeplattform implementieren
 
 Sobald der infofauna WFS die ID übermittelt, welche von der Meldeplattform angezeigt und per E-Mail verschickt wird (`submission_id`) (siehe [ToDo 2](#todo-2--infofauna-fehlende-attribute-in-den-wfs-aufnehmen)), muss diese in das Datenmodell und die GRETL-Jobs aufgenommen werden.
 
-## ToDo @ Kt. SO: Automatischer Abschluss von Hornissen-Sichtungen
+## ToDo 6 @ Kt. SO: Automatischer Abschluss von Hornissen-Sichtungen
 
 Ausserdem sollen gemäss [Auftrag 2671](https://sogis.openproject.com/projects/task/work_packages/2671) Sichtungsmeldungen von Individuen auf Basis ihrer Distanz zu behandelten Nestern und des Behandlungsdatums (`import_datum_behandlung`) automatisch abgeschlossen werden. Diese Logik ist zu entwickeln, sobald das vorgenannte Feld verfügbar ist, siehe [ToDo 3](#todo-3--infofauna-das-nest-sichtungsdatum-ändert-sich-bei-zerstörung).
