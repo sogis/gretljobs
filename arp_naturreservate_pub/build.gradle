@@ -7,7 +7,7 @@ import java.io.File
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'validateData', 'uploadPlanregister', 'refreshSolr', 'updateSearchIndex'
+defaultTasks 'validateData', 'uploadPlanregister', 'updateSearchIndex'
 
 def FileName = "arp_naturreservate.xtf"
 def FileNamePub = "arp_naturreservate_pub.xtf"
@@ -128,11 +128,6 @@ task uploadPlanregister(type: Curl, dependsOn: 'zipPlanregister') {
     user = digiplanUser
     password = digiplanPwd
     expectedStatusCode = 202
-}
-
-task refreshSolr(type:Exec) {
-    mustRunAfter 'uploadPlanregister'
-    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.arp.naturreservate.reservate'
 }
 
 task updateSearchIndex(type: SqlExecutor){

@@ -9,7 +9,7 @@ import java.nio.file.Paths
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'transferALWAgrardaten', 'refreshSolr', 'updateSearchIndex_1', 'updateSearchIndex_2', 'updateSearchIndex_3', 'updateSearchIndex_4', 'updateSearchIndex_5', 'updateSearchIndex_6', 'updateSearchIndex_7', 'updateSearchIndex_8'
+defaultTasks 'transferALWAgrardaten', 'updateSearchIndex_1', 'updateSearchIndex_2', 'updateSearchIndex_3', 'updateSearchIndex_4', 'updateSearchIndex_5', 'updateSearchIndex_6', 'updateSearchIndex_7', 'updateSearchIndex_8'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
@@ -60,11 +60,6 @@ task transferALWAgrardaten(type: Db2Db, dependsOn: importGELAN){
         new TransferSet("kultur_punktelement.sql",'alw_landwirtschaft_tierhaltung_pub_v1.betrbsdttrktrdten_kultur_punktelement',true),
         new TransferSet("tierstandorte.sql",'alw_landwirtschaft_tierhaltung_pub_v1.betrbsdttrktrdten_tierstandort',true)
     ];
-}
-
-task refreshSolr(type:Exec) {
-    mustRunAfter 'transferALWAgrardaten'
-	commandLine 'curl', '-i', '--max-time', '20', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.alw.bienenstandorte_und_sperrgebiete.bienenstandorte,ch.so.alw.bienenstandorte_und_sperrgebiete.bienenstandorte_geschuetzt,ch.so.alw.landwirtschaft_tierhaltung.kulturflaechen_bff_qualitaetsstufe_I,ch.so.alw.landwirtschaft_tierhaltung.kulturflaechen_bff_qualitaetsstufe_I_geschuetzt,ch.so.alw.landwirtschaft_tierhaltung.kulturflaechen_hauptkategorien,ch.so.alw.landwirtschaft_tierhaltung.kulturflaechen_hauptkategorien_geschuetzt,ch.so.alw.landwirtschaft_tierhaltung.kultur_punktelement_bff_qualitaetsstufe_I,ch.so.alw.landwirtschaft_tierhaltung.kultur_punktelement_bff_qualitaetsstufe_I_geschuetzt'
 }
 
 task updateSearchIndex_1(type: SqlExecutor){
