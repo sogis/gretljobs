@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'refreshSolr'
+defaultTasks 'publishPub'
 
 
 task publishEdit(type: Publisher) {
@@ -53,7 +53,4 @@ task publishPub(type: Publisher, dependsOn: 'publipubOberhoehenbonitaet') {
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
-task refreshSolr(type:Exec, dependsOn: 'publishPub') {
-    commandLine 'curl', '-i', '--max-time', '20', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.schutzwaldausscheidung,ch.so.awjf.schutzwald_hauptgefahrenpotentiale'
-}
 
