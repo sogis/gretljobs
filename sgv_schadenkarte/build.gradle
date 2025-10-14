@@ -1,0 +1,125 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import java.nio.file.Paths
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: "org.hidetake.ssh"
+
+defaultTasks 'update_data'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def downloadFolder = Paths.get(pathToTempFolder, "download").toFile()
+println downloadFolder
+if (!downloadFolder.exists()) {
+    downloadFolder.mkdirs()
+}
+def remoteDirectory = "/sgv-gemdat/sgv/schadenkarte-test"
+def bucketSuffix = '-undefined'
+    if ( gretlEnvironment == 'production' ) { 
+        bucketSuffix = ''
+        remoteDirectory = "/sgv-gemdat/sgv/schadenkarte-test"
+    } else if ( gretlEnvironment == 'integration' || gretlEnvironment == 'development' ) { 
+        bucketSuffix = '-' + gretlEnvironment.substring(0, 3)
+    } else {
+        bucketSuffix = '-' + gretlEnvironment
+    }
+def sgvSchadenkartenBucket = "ch.so.agi.sgv-schadenkarte$bucketSuffix"
+def csvFile = new File(downloadFolder, "schadenkarten.csv")
+
+
+remotes {
+    sftpServer {
+        host = "${sftpServerSogis}"
+        user = "${sftpUserSogisGemdat}"
+        identity = file('/home/gradle/.ssh/id_rsa')
+        // Skip host key checking outside the following environments:
+        if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) { // uses the Groovy membership operator
+            knownHosts = allowAnyHosts
+        }
+    }
+}
+
+tasks.register('downloadFromSgv') {
+    description = "Download files from SFTP server"
+    doLast {
+        file(downloadFolder).mkdirs()
+
+        ssh.run {
+            session(remotes.sftpServer) {
+                sftp {
+                    def entries = ls(remoteDirectory)
+                    get from: remoteDirectory,
+                        into: downloadFolder,
+                        recursive: true,
+                        filter: { f -> f.isDirectory() || f.name?.toLowerCase()?.endsWith('.csv') }
+                }
+            }
+        }
+
+        def downloaded = fileTree(dir: downloadFolder, include: '**/*.csv').files
+        println "Files downloaded from SFTP server (${downloaded.size()}):"
+        downloaded.each { println " - ${it}" }
+    }
+}
+
+tasks.register('fixDotZeroZero') {
+    description = 'Ersetzt Zellen mit exakt ".00" durch 0 und Konvertiert alles in UTF-8'
+    dependsOn 'downloadFromSgv'
+    def sep = ';'
+    doLast {
+        if (!csvFile.exists()) throw new GradleException("Datei nicht gefunden: $csv")
+        def tmp = file("${csvFile.absolutePath}.tmp")
+        tmp.withWriter('UTF-8') { w ->
+            csvFile.withReader('ISO-8859-1') { r ->
+                r.eachLine { line ->
+                    def fixed = line.replaceAll(/(^|${sep})\.00(${sep}|$)/, "\$10\$2")
+                    w << fixed << '\n'
+                }
+            }
+        }
+        assert csvFile.delete()
+        assert tmp.renameTo(csvFile)
+        println "Bereinigt: ${csvFile.name}"
+    }
+}
+
+tasks.register('validate', CsvValidator){
+    dependsOn 'fixDotZeroZero'
+    models = "SO_SGV_Schadenkarte_20250327"
+    firstLineIsHeader=true
+    valueSeparator=";"
+    dataFiles = files(csvFile)
+}
+
+tasks.register('deleteData', SqlExecutor) {
+    dependsOn 'validate'
+    description = 'Löscht die alten Daten'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['deletedata.sql']
+}
+
+tasks.register('csvimport',  CsvImport) {
+    dependsOn 'deleteData'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = "sgv_schadenkarte_v1"
+    tableName = "schadenfall"
+    firstLineIsHeader = true
+    valueSeparator=";"
+    dataFile = csvFile
+}
+
+tasks.register('transferData', Db2Db) {
+    dependsOn 'csvimport'
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+        new TransferSet('schadenfaelle_transfer_to_pub.sql', 'sgv_schadenkarte_pub_v1.schadenfall', true)
+    ];
+}
+
+tasks.register('update_data', SqlExecutor) {
+    dependsOn 'transferData'
+    description = 'Updatet die Daten und versieht sie mir Geometrie und anderen Informationen.'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['update.sql']
+}
