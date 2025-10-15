@@ -8,7 +8,7 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'create_kontokorrent_list'
+defaultTasks 'create_sap_list'
 
 // variables
 def dbPath = "$buildDir/afu_bootsanbindeplaetze.duckdb"
@@ -41,23 +41,6 @@ tasks.register("create_sap_list", SqlExecutor){
         'create_sap_table.sql',
         'calculate_values_sap.sql',
         'export_excel_sap.sql',
-        'detach_pubdb.sql'
-    )
-}
-
-// create kontokorrent-structure
-tasks.register("create_kontokorrent_list", SqlExecutor){
-    dependsOn "create_sap_list"
-    database = [dbUriDuckDB]
-    sqlParameters = [
-        connectionStringPub : dbConnectionStringPub as String,
-        excelPathKontokorrent: "'" + "$buildDir/bootsanbindeplaetze_kontokorrent_export_${today}.xlsx" + "'"]
-    sqlFiles = files(
-        'load_extension_spatial.sql',
-        'attach_pubdb.sql',
-        'create_kontokorrent_table.sql',
-        'calculate_values_kontokorrent.sql',
-        'export_excel_kontokorrent.sql',
         'detach_pubdb.sql'
     )
 }
