@@ -1,7 +1,7 @@
 /*
-Über _parent_id_ref und id ist der Bezug eines leafnodes-polygon auf das unmittelbare 
-parentnode-polygon gegeben.
-Dieses Query setzt für alle nodes inkl. der root nodes die _root_id_ref
+Über _parent_id_ref und id ist der Bezug eines Polygons der aktuellen Generation auf das 
+Mutter-Polygon der Vor-Generation gegeben.
+Dieses Query setzt für alle nodes inkl. der root nodes die _root_id_ref.
 */
 
 -- Gibt für jeden node die id des root-nodes aus. 

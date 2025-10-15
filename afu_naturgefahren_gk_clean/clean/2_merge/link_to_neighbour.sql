@@ -1,15 +1,16 @@
 /*
-Selektiert die parent_nodes über die Where-Clause "_node_position = MAX(_node_position)"
-und die möglichen child_nodes über die Where-Clause "_node_position IS NULL",
+Selektiert die parent_nodes über die Where-Clause "_node_generation = MAX(_node_generation)"
+und die möglichen child_nodes über die Where-Clause "_node_generation IS NULL",
 Das sql kann mehr als einmal ausgeführt werden, um schrittweise auch weiter von den Grosspolygonen entfernte Kleinpolygone
 zu verknüpfen.
+Siehe "Beschreibung der Schritte des Merge" im readme.md
 */
 
 WITH 
 
 parent AS (
     SELECT 
-        MAX(_node_position) AS nodeposition
+        MAX(_node_generation) AS nodegeneration
     FROM 
         public.poly_cleanup 
 )
@@ -36,7 +37,7 @@ parent AS (
         FROM 
             public.poly_cleanup 
         WHERE
-            _node_position IS NULL 
+            _node_generation IS NULL 
     ) AS child_candidate
     ,(
         SELECT 
@@ -45,7 +46,7 @@ parent AS (
             public.poly_cleanup p,
             parent g
         WHERE
-            p._node_position = g.nodeposition -- Bewirkt, dass nur die aktuellen Leaf-Nodes als Parents berücksichtigt werden
+            p._node_generation = g.nodegeneration -- Bewirkt, dass nur die aktuellen Leaf-Nodes als Parents berücksichtigt werden
     ) AS parent
     WHERE 
             ST_Intersects(child_candidate.geometrie, parent.geometrie)
@@ -67,7 +68,7 @@ SET
     _parent_id_ref = r.parent_id,
     _parent_level_diff = r.parent_level_diff,
     _intersect_bbox_length = r.intersect_bbox_length,
-    _node_position = g.nodeposition + 1
+    _node_generation = g.nodegeneration + 1
 FROM 
     ranked_candiates r,
     parent g

@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 import java.nio.file.Paths
 import de.undercouch.gradle.tasks.download.Download
 
-defaultTasks 'publipub','updateSearchIndex','refreshSolr'
+defaultTasks 'publipub','updateSearchIndex'
 
 def tmpDir = buildDir.toString()
 def appXtfPath = tmpDir + "/appdata.xtf"
@@ -78,12 +78,6 @@ task publipub(type: Publisher, dependsOn:'writeToPub'){
   kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
   grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
   if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-}
-
-task refreshSolr(type:Exec) {
-    mustRunAfter 'publipub'
-
-	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.abbaustellen'
 }
 
 task updateSearchIndex(type: SqlExecutor){
