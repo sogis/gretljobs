@@ -34,13 +34,17 @@ tasks.register("create_sap_structure", SqlExecutor){
     database = [dbUriDuckDB]
     sqlParameters = [
         connectionStringPub : dbConnectionStringPub as String,
-        excelPath: "'" + "$buildDir/sap_export_${today}.xlsx" + "'",]
+        excelPathSAP: "'" + "$buildDir/bootsanbindeplaetze_sap_export_${today}.xlsx" + "'",
+        excelPathKontokorrent: "'" + "$buildDir/bootsanbindeplaetze_kontokorrent_export_${today}.xlsx" + "'",]
     sqlFiles = files(
         'load_extension_spatial.sql',
         'attach_pubdb.sql',
         'create_sap_table.sql',
-        'calculate_values.sql',
-        'export_excel.sql',
+        'calculate_values_sap.sql',
+        'create_kontokorrent_table.sql',
+        'calculate_values_kontokorrent.sql',
+        'export_excel_sap.sql',
+        'export_excel_kontokorrent.sql',
         'detach_pubdb.sql'
     )
 }
