@@ -46,6 +46,7 @@ pipeline {
                 container('gretl') {
                     sh "gretl --project-dir=${env.JOB_BASE_NAME}"
                     archiveArtifacts "${env.JOB_BASE_NAME}/build/bootsanbindeplaetze_sap_export_*.xlsx"
+                    archiveArtifacts "${env.JOB_BASE_NAME}/build/bootsanbindeplaetze_kontokorrent_export_*.xlsx"
                 }
             }
         }
