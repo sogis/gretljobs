@@ -37,11 +37,11 @@ WITH leitungen AS (
             WHEN l.material = 'Beton_unbekannt' THEN 'Beton'
             WHEN l.material = 'Guss_duktil' THEN 'Guss'
             WHEN l.material = 'Guss_Grauguss' THEN 'Guss'
-            WHEN l.material = 'Kunstoff_Epoxyharz' THEN 'Kunststoff (EP)'
-            WHEN l.material = 'Kunstoff_Hartpolyethylen' THEN 'Kunststoff (PE)'
+            WHEN l.material = 'Kunststoff_Epoxyharz' THEN 'Kunststoff (EP)'
+            WHEN l.material = 'Kunststoff_Hartpolyethylen' THEN 'Kunststoff (PE)'
             WHEN l.material = 'Kunststoff_Polyester_GUP' THEN 'Kunststoff (GUP)'
             WHEN l.material = 'Kunststoff_Polyethylen' THEN 'Kunststoff (PE)'
-            WHEN l.material = 'Kunstoff_Polypropylen' THEN 'Kunststoff (PP)'
+            WHEN l.material = 'Kunststoff_Polypropylen' THEN 'Kunststoff (PP)'
             WHEN l.material = 'Kunststoff_Polyvinilchlorid' THEN 'Kunststoff (PVC)'
             WHEN l.material = 'Kunststoff_unbekannt' THEN 'Kunststoff'
             WHEN l.material = 'Stahl_rostfrei' THEN 'Stahl'
@@ -57,7 +57,9 @@ WITH leitungen AS (
         eig.organisationstyp AS eigentuemer_organisationstyp,
         eig.bezeichnung AS eigentuemer_bezeichnung,
         CASE
-            WHEN l.funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung', 'Pumpendruckleitung') THEN 'L_Drainage'
+            WHEN (l.lichte_breite <> 0 AND l.laengeeffektiv > 0 AND l.kote_von > 0 AND l.kote_nach > 0) THEN  ROUND(((l.kote_von - l.kote_nach) / l.laengeeffektiv * 1000), 1) || ' ‰'
+	    	ELSE NULL
+            -- 'L_Drainage' Dieses Attribut wird missbraucht für die Beschriftung des Gefälles. Es gibt leider nur Beschriftung für Paa
         END AS stilid
     FROM
         alw_drainagen_v1.vsadssmini_leitung l
@@ -103,6 +105,4 @@ WHERE
         funktionhydraulisch IN ('Drainagetransportleitung', 'Sickerleitung', 'Pumpendruckleitung')
     AND 
         nutzungsart_ist LIKE 'Reinabwasser'
-    AND 
-        stilid IS NOT NULL
 ;

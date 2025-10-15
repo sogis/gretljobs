@@ -58,11 +58,6 @@ task publish(type: Publisher, dependsOn: placeInDatasets){
 
 task execProjPubTasks(dependsOn: publish){}
 
-task refreshSolr(type:Exec) {
-    mustRunAfter 'placeInDatasets'
-    commandLine 'curl', '-i', '--max-time', '20', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.agi.av.bodenbedeckung,ch.so.agi.av.gebaeudeadressen.gebaeudeeingaenge,ch.so.agi.av.grundstuecke.rechtskraeftig,ch.so.agi.av.grundstuecke.projektierte,ch.so.agi.av.nomenklatur.flurnamen,ch.so.agi.av.nomenklatur.gelaendenamen'
-}
-
 task updateSearchIndex_1(type: SqlExecutor){
     mustRunAfter 'placeInDatasets'
     def layerName = 'ch.so.agi.av.bodenbedeckung'

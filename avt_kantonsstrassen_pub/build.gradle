@@ -4,8 +4,8 @@ import java.io.File
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
 
-defaultTasks 'transferToPub', 'refreshSolr', 'updateSearchIndex_1', 'updateSearchIndex_2'
- 
+defaultTasks 'transferToPub', 'updateSearchIndex_1', 'updateSearchIndex_2'
+
 def achsenFile = file("$buildDir/shapes/achsen.shp")
 def punkteFile = file("$buildDir/shapes/bezugspunkte.shp")
 def geschwFile = file("$buildDir/shapes/signalisierte_geschwindigkeit.shp")
@@ -24,7 +24,7 @@ task unpackShapes(type: Copy, dependsOn: deleteAllFeatures) {
 task validateGeschwindigkeiten(type: ShpValidator, dependsOn: unpackShapes){
     models = "SO_AVT_Kantonsstrassen_Publikation_20250521"
     dataFiles = [geschwFile]
-} 
+}
 
 task importGeschwindigkeiten(type: ShpImport, dependsOn: validateGeschwindigkeiten){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -37,7 +37,7 @@ task importGeschwindigkeiten(type: ShpImport, dependsOn: validateGeschwindigkeit
 task validateAchsen(type: ShpValidator, dependsOn: unpackShapes){
     models = "SO_AVT_Kantonsstrassen_Publikation_20250521"
     dataFiles = [achsenFile]
-} 
+}
 
 task importAchsen(type: ShpImport, dependsOn: validateAchsen){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -50,7 +50,7 @@ task importAchsen(type: ShpImport, dependsOn: validateAchsen){
 task validatePunkte(type: ShpValidator, dependsOn: unpackShapes){
     models = "SO_AVT_Kantonsstrassen_Publikation_20250521"
     dataFiles = [punkteFile]
-} 
+}
 
 task importPunkte(type: ShpImport, dependsOn: validatePunkte){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -76,7 +76,7 @@ task publishFiles(type: Publisher){
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
-task transferToPub(type: Db2Db, dependsOn: publishFiles){    
+task transferToPub(type: Db2Db, dependsOn: publishFiles){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -84,11 +84,6 @@ task transferToPub(type: Db2Db, dependsOn: publishFiles){
         new TransferSet('achse.sql', 'avt_kantonsstrassen_pub_v1.achse', true),
         new TransferSet('signalisierte_geschwindigkeit.sql', 'avt_kantonsstrassen_pub_v1.signalisierte_geschwindigkeit', true),
     ];
-}
-
-task refreshSolr(type:Exec) {
-    mustRunAfter 'transferToPub'
-    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.avt.kantonsstrassen_achsen,ch.so.avt.kantonsstrassen_bezugspunkte'
 }
 
 task updateSearchIndex_1(type: SqlExecutor){

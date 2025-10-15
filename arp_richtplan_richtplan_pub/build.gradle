@@ -30,7 +30,7 @@ task publishPub(type: Publisher, dependsOn: 'dataTransfer'){
     database = [dbUriPub,dbUserPub,dbPwdPub]
     dataIdent = "ch.so.arp.richtplan"
     dbSchema = "arp_richtplan_pub_v2"
-    modelsToPublish = "SO_ARP_Richtplan_Publikation_20241127"
+    modelsToPublish = "SO_ARP_Richtplan_Publikation_20250820"
     userFormats = true
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]

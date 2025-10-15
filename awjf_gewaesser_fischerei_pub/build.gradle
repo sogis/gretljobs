@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPub', 'refreshSolr', 'updateSearchIndex_1', 'updateSearchIndex_2'
+defaultTasks 'publishPub', 'updateSearchIndex_1', 'updateSearchIndex_2'
 
 task transferAwjfFischerei(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -24,11 +24,6 @@ task publishPub(type: Publisher, dependsOn: 'transferAwjfFischerei'){
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-}
-
-task refreshSolr(type:Exec) {
-    mustRunAfter 'publishPub'
-	commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.gewaesser.fischereireviere,ch.so.awjf.gewaesser.patentgewaesser'
 }
 
 task updateSearchIndex_1(type: SqlExecutor){
