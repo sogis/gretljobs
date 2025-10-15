@@ -23,7 +23,7 @@ WHERE
 
 WITH
 
-merged AS ( -- Gemergte neue Fläche der Root-Polygone, in welche andere Polygone aufgelöst werden
+merged AS ( -- Gemergte neue Geometrie der Root-Polygone, in welche andere Polygone aufgelöst werden
     SELECT 
         _root_id_ref,
         ST_Multi(ST_Union(geometrie)) AS merged_geom

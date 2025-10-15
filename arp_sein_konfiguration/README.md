@@ -92,9 +92,9 @@ Grob kann zwischen folgenden Datenquellen unterschieden werden:
 - Shapefiles, welche zuerst beim Bund heruntergeladen, entzippt und dann in die Datenbank importiert werden (shp2). Beispiel: amphibiengebiete_ortsfest_shp2
 - Xtf-Datein, welche beim Bund heruntergeladen, enzippt und dann in die Datenbank importiert werden (xtf). Damit der Import funktionieren kann, muss zudem ein Schema auf der Datenbank angelegt werden. Der Import dieser Daten nimmt mit Abstand am meisten Zeit in Anspruch, besonders dort, wo viele Daten vorhanden sind (insbesondere IVS). Beispiel: ivs_national_xtf
 
-Daneben existieren auch noch Themen, welche keine Geometrien besitzen oder, welche jede Gemeinde betreffen. Diese werden anders gehandhabt und erst in 03_collect_data importiert. Der Vollständigkeit halber sind die Themen, welche jede Gemeinde betreffen aber auch in diesem Verzeichnis aufgelistet. Beispiel: grundnutzung
+Daneben existieren auch noch Themen, welche keine Geometrien besitzen oder, welche jede Gemeinde betreffen. Diese werden anders gehandhabt und erst in 03_collect_data importiert. Der Vollständigkeit halber sind die Themen, welche jede Gemeinde betreffen aber auch in diesem Verzeichnis aufgelistet. Beispiel: grundnutzung_d. 
 
-Die Themen Objekte ohne Geometrien werden in 03_collect_data erklärt.
+Die Objekte ohne Geometrien werden in 03_collect_data erklärt.
 
 ### 03_collect_data
 Auch hier wird zuerst die Datenbank aus 01_setup_duckdb kopiert.
@@ -102,7 +102,7 @@ Nun werden sämtliche parquet-files aus den verschiedenen Themen in die Sammelta
 
 In der Datenbank wird ebenfalls das Schema arp_sein_konfiguration_grundlagen_v2 angelegt. Zusätzlich wird eine zweite Sammeltabelle ohne Geometrien erstellt (Sammeltabelle_filtered). Unter Anwendung eine spatial-filters (st_intersects) werden nun die Daten aus der ersten Sammeltabelle in die zweite überführt. Somit sind dann nur noch diejenigen vorhanden, welche für die Gemeinden im Kanton Solothurn relevant sind.
 
-In diese zweite Sammeltabelle werden nun auch die Daten importiert, welche auf der Edit-DB im Schema arp_sein_konfiguration_grundlagen_v2.grundlagen_objektinfo durch das ARP erfasst wurden (besitzen keine Geometrien) und diejenigen Themendaten, welche für alle Gemeinden immer relevant sind.
+In diese zweite Sammeltabelle werden nun auch die Daten importiert, welche auf der Edit-DB im Schema arp_sein_konfiguration_grundlagen_v2.grundlagen_objektinfo durch das ARP erfasst wurden (besitzen keine Geometrien) und diejenigen Themendaten, welche für alle Gemeinden immer relevant sind. Diese Themen enden alle mit einem _d. Wie alle Themen, sind auch diese im Ordner 02_import_data hinterlegt.
 
 Zur Kontrolle der Themenbezeichnungen werden nun die aktualisierten Themen mit thema_sql verglichen. Sollten hier Unregelmässigkeiten auftreten, bricht der Job ab. Unregelmässigkeiten deuten darauf hin, dass ein Thema entweder geändert oder gelöscht wurde.
 

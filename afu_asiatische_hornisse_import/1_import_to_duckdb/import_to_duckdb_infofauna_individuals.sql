@@ -20,13 +20,16 @@ CREATE TABLE infofauna_individuals (
 	import_lon          NUMERIC(8,6)
 );
 
--- Alles einzufügen versuchen (SELECT *), damit wir mitbekommen, wenn neue Felder in den
--- WFS aufgenommen werden (auf die wir warten). Explizit machen, sobald vollständig.
+-- Alles einzufügen versuchen (SELECT *), damit wir mitbekommen, wenn neue Felder in den WFS aufgenommen
+-- werden (auf die wir warten). Explizit machen, sobald der WFS vollständige Informationen liefert.
+-- "date_destroyed" wird ignoriert, da sinnbefreit im individuals Layer und ohne Entsprechung im Datenmodell.
 INSERT INTO infofauna_individuals BY NAME
     SELECT
-        * EXCLUDE(geom),
+        * EXCLUDE(geom, observer, remarques, submission_id, date_destroyed),
         ST_AsText(geom) AS geometrie,
         round(ST_X(ST_Transform(geom, 'EPSG:2056', 'EPSG:4326')), 6) AS import_lat,
-        round(ST_Y(ST_Transform(geom, 'EPSG:2056', 'EPSG:4326')), 6) AS import_lon
+        round(ST_Y(ST_Transform(geom, 'EPSG:2056', 'EPSG:4326')), 6) AS import_lon,
+		-- 29.09.2025: infofauna hat Felder aufgesplittet. Altes Verhalten reproduzieren
+        nullif(concat_ws(' | ', trim(observer), trim(remarques), 'Meldung: ' || trim(submission_id)), '') AS remarques
     FROM ST_Read(${wfs_url_individuals})
 ;

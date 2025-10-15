@@ -6,17 +6,17 @@ pipeline {
     }
     parameters {
         booleanParam(defaultValue: false,
-                description: 'Update entire feature search index: complete rebuild of the feature search index',
+                description: 'Update entire feature search index: rebuild of the feature search index. If not checked: no action',
                 name: 'UPDATE_FEATURES'
         )
 
         // TODO: Parameter needed for toggling DELETION of the entire feature search index
         // choice(name: 'UPDATE_FEATURES', choices: ['NO', 'UPDATE', 'DELETE_UPDATE'], description: 'Update entire feature search index: complete rebuild of the feature search index')
 
-        string(name: 'TASK_NAME', defaultValue: 'updateSearchIndex', description: 'Name of the GRETL task to be started to rebuild the feature search index')
+        string(name: 'TASK_NAME', defaultValue: 'updateSearchIndex', description: 'Name of the GRETL task to be started to rebuild the feature search index. Evaluated with contains().')
 
         booleanParam(defaultValue: false,
-                description: 'Update only feature search index for filtered job: partial rebuild of the feature search index',
+                description: 'Update only feature search index for filtered job: partial rebuild of the feature search index. Use JOB_FILTER_NAME to filter',
                 name: 'JOB_FILTER'
         )
 
