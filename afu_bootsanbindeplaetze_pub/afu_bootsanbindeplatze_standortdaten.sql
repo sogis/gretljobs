@@ -52,16 +52,6 @@ kontaktdaten AS (
 		afu_bootsanbindeplaetze_v1.kontaktdaten
 ),
 
-stegflaeche AS (
-	SELECT
-		SUM (flaeche_schiffsteg) AS flaeche_schiffsteg_gesamt,
-		standort_r
-	FROM
-		afu_bootsanbindeplaetze_v1.bootsanbindeplatz
-	GROUP BY 
-		standort_r
-),
-
 dokumentdaten AS (
 	SELECT 
 		t_id,
@@ -151,7 +141,6 @@ SELECT
 	sd.privatvermietung,
 	sd.privatvermietung_txt,
 	ez.personendaten::JSON AS eigentuemerin,
-	sf.flaeche_schiffsteg_gesamt,
 	sd.bemerkung,
 	sd.geometrie
 FROM
@@ -160,7 +149,5 @@ LEFT JOIN hauptstandortdaten AS hd
 	ON sd.hauptstandort_r = hd.t_id
 LEFT JOIN dokumente_standort_json AS dj 
 	ON hd.t_id = dj.hauptstandort_r
-LEFT JOIN stegflaeche AS sf 
-	ON sd.t_id = sf.standort_r
 LEFT JOIN eigentumszuorndung AS ez 
 	ON sd.t_id = ez.standort_r

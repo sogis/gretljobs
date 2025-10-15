@@ -5,8 +5,7 @@ gebuehren AS (
 		100::NUMERIC AS betrag_boot_ruderboot,
 		150::NUMERIC AS betrag_boot_b_6kw,
 		250::NUMERIC AS betrag_boot_u_6kw,
-		120::NUMERIC AS betrag_pfosten,
-		6::NUMERIC AS betrag_schiffsteg
+		120::NUMERIC AS betrag_pfosten
 ),
 
 platzdaten AS (
@@ -22,7 +21,7 @@ platzdaten AS (
 				THEN 'vorhanden'
 			ELSE 'nicht vorhanden'
 		END AS zufahrtsbewilligung_txt,
-		flaeche_schiffsteg,
+		steggebuehr,
 		miete,
 		pfosten_anz,
 		geometrie,
@@ -121,12 +120,7 @@ gebuehren_berechnet AS (
 				THEN NULL
 			ELSE 0
 		END AS bootsgebuehr,
-		pd.pfosten_anz * g.betrag_pfosten AS pfostengebuehr,
-		CASE
-			WHEN pd.flaeche_schiffsteg IS NOT NULL
-				THEN pd.flaeche_schiffsteg * betrag_schiffsteg
-			ELSE NULL
-		END AS steggebuehr
+		pd.pfosten_anz * g.betrag_pfosten AS pfostengebuehr
 	FROM 
 		platzdaten AS pd
 	LEFT JOIN bootsdaten AS bd 
@@ -207,9 +201,9 @@ SELECT
 	pd.zufahrtsbewilligung,
 	pd.zufahrtsbewilligung_txt,
 	gb.bootsgebuehr,
-	gb.steggebuehr,
 	pd.miete AS mietkosten,
 	gb.pfostengebuehr,
+	pd.steggebuehr,
 	sd.kennnummer || ' ' || sd.bezeichnung AS standort,
 	dj.dokumente::JSON AS dokumente,
 	nb.personendaten::JSON AS nutzer,
@@ -219,7 +213,6 @@ SELECT
 			THEN sgb.personendaten::JSON
 		ELSE nb.personendaten::JSON
 	END AS rechnungsstelle_steggebuehr,
-	pd.flaeche_schiffsteg,
 	pd.pfosten_anz,
 	pd.geometrie,
 	pd.bemerkung
