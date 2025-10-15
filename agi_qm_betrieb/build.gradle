@@ -136,6 +136,63 @@ tasks.register('simiTableOhneTableView2Excel', Csv2Excel) {
 
 //-----------
 
+tasks.register('simiRollenOhneVerknuepfung', SqlExecutor) {
+    database = [dbUriDuckDB]
+    sqlFiles = ["simi_rollen_ohne_verknuepfung.sql"]
+    sqlParameters = [
+        connectionStringSimi : dbConnectionStringSimi as String
+        ]
+}
+
+tasks.register('simiRollenOhneVerknuepfung2Excel', Csv2Excel) {
+    dependsOn 'simiRollenOhneVerknuepfung'
+    csvFile = file("/tmp/qmbetrieb/simi_rollen_ohne_verknuepfung.csv")
+    firstLineIsHeader = true
+    valueDelimiter = null
+    valueSeparator = ";"
+    outputFile = xlsxOutputFile
+}
+
+//-----------
+
+tasks.register('simiUserOhneVerknuepfung', SqlExecutor) {
+    database = [dbUriDuckDB]
+    sqlFiles = ["simi_user_ohne_verknuepfung.sql"]
+    sqlParameters = [
+        connectionStringSimi : dbConnectionStringSimi as String
+        ]
+}
+
+tasks.register('simiUserOhneVerknuepfung2Excel', Csv2Excel) {
+    dependsOn 'simiUserOhneVerknuepfung'
+    csvFile = file("/tmp/qmbetrieb/simi_user_ohne_verknuepfung.csv")
+    firstLineIsHeader = true
+    valueDelimiter = null
+    valueSeparator = ";"
+    outputFile = xlsxOutputFile
+}
+
+//-----------
+
+tasks.register('simiViewsOhneVerknuepfung', SqlExecutor) {
+    database = [dbUriDuckDB]
+    sqlFiles = ["simi_views_ohne_verknuepfung.sql"]
+    sqlParameters = [
+        connectionStringSimi : dbConnectionStringSimi as String
+        ]
+}
+
+tasks.register('simiViewsOhneVerknuepfung2Excel', Csv2Excel) {
+    dependsOn 'simiViewsOhneVerknuepfung'
+    csvFile = file("/tmp/qmbetrieb/simi_views_ohne_verknuepfung.csv")
+    firstLineIsHeader = true
+    valueDelimiter = null
+    valueSeparator = ";"
+    outputFile = xlsxOutputFile
+}
+
+//-----------
+
 tasks.register('listSftpDirectories') {
     doLast {
         ssh.run {
@@ -319,6 +376,9 @@ tasks.register('validationTasks') {
         'simiSchemaOhneTabelle2Excel',
         'simiRasterOhneDatesetView2Excel',
         'simiTableOhneTableView2Excel',
+        'simiRollenOhneVerknuepfung2Excel',
+        'simiUserOhneVerknuepfung2Excel',
+        'simiViewsOhneVerknuepfung2Excel',
         'diffKennungSimiDatenabgabe2Excel',
         'superflousPublicationFormatsCsv2Excel',
         'countSimplePublicationFormatsCsv2Excel',

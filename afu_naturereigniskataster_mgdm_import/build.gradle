@@ -8,7 +8,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 
 
-defaultTasks 'transferSammelereignisPub', 'refreshSolrNaturereigniskataster', 'updateSearchIndex_1', 'updateSearchIndex_2', 'updateSearchIndex_3'
+defaultTasks 'transferSammelereignisPub', 'updateSearchIndex_1', 'updateSearchIndex_2', 'updateSearchIndex_3'
 
 
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
@@ -106,11 +106,6 @@ task transferSammelereignisPub(type: Db2Db, dependsOn: 'transferProzessraumWasse
     transferSets = [
             new TransferSet('sammelereignis_pub.sql', 'afu_naturereigniskataster_pub_v1.sammelereignis', true)
     ];
-}
-
-task refreshSolrNaturereigniskataster(type:Exec) {
-    mustRunAfter 'transferSammelereignisPub'
-    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.naturereigniskataster.basisinformation,ch.so.afu.naturereigniskataster.prozessraum.sturz,ch.so.afu.naturereigniskataster.prozessraum.wasser'
 }
 
 task updateSearchIndex_1(type: SqlExecutor){

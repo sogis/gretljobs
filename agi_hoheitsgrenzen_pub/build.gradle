@@ -6,7 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 description = "GRETL-Job für Datenumbau der Hoheitsgrenzen innerhalb der edit-DB, ins pub-Schema (pub-DB, edit-DB), am Ende ins pub-Schema der sogis-DB"
 
 
-defaultTasks 'publishPub', 'refreshSolr', 'updateSearchIndex_1', 'updateSearchIndex_2'
+defaultTasks 'publishPub', 'updateSearchIndex_1', 'updateSearchIndex_2'
 
 
 task transferAgiHoheitsgrenzen(type: Db2Db) {
@@ -90,11 +90,6 @@ task publishPub(type: Publisher, dependsOn:'transferAgiHoheitsgrenzenToPubDb'){
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-}
-
-task refreshSolr(type:Exec) {
-    mustRunAfter 'publishPub'
-    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.agi.gemeindegrenzen,ch.so.agi.bezirksgrenzen'
 }
 
 task updateSearchIndex_1(type: SqlExecutor){

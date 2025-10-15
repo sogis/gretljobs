@@ -6,7 +6,7 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: 'de.undercouch.download'
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPub', 'refreshSolrKbs', 'updateSearchIndex_1', 'updateSearchIndex_2'
+defaultTasks 'publishPub', 'updateSearchIndex_1', 'updateSearchIndex_2'
 
 // Download-Verzeichnis
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
@@ -104,11 +104,6 @@ task publishPub(type: Publisher, dependsOn: 'uploadMgdm') {
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-}
-
-task refreshSolrKbs(type:Exec) {
-    mustRunAfter 'publishPub'
-    commandLine 'curl', '-i', '--max-time', '5', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.afu.altlasten.standorte,ch.so.afu.altlasten.standorte_geschuetzt'
 }
 
 task updateSearchIndex_1(type: SqlExecutor){

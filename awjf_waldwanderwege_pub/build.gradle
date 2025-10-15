@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferWaldwanderwege', 'refreshSolr', 'updateSearchIndex'
+defaultTasks 'transferWaldwanderwege', 'updateSearchIndex'
 
 task publishEdit (type: Publisher){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -25,11 +25,6 @@ task transferWaldwanderwege(type: Db2Db, dependsOn: 'publishEdit'){
             new TransferSet('waldwanderwege_posten.sql', 'awjf_waldwanderwege_pub.waldwanderwege_posten', true),
             new TransferSet('waldwanderwege_wanderwege.sql', 'awjf_waldwanderwege_pub.waldwanderwege_wanderwege', true)
     ];
-}
-
-task refreshSolr(type:Exec) {
-    mustRunAfter 'transferWaldwanderwege'
-	commandLine 'curl', '-i', '--max-time', '10', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.awjf.waldwanderwege_posten'
 }
 
 task updateSearchIndex(type: SqlExecutor){

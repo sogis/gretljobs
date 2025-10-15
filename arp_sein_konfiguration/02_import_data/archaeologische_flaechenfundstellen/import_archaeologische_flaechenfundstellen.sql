@@ -13,7 +13,7 @@ INSERT INTO sein_sammeltabelle (
 
 SELECT DISTINCT
 	'Archäologische Fundstellen Flächenfundstelle' AS thema_sql,
-	'Nr. ' || fundstellen_nummer || '; ' || fundstellen_art  AS information,
+	'Nr. ' || fundstellen_nummer || ' ' || fundstellen_art  AS information,
 	'https://geo.so.ch/map/?t=default&l=ch.so.ada.archaeologie.flaechenfundstellen_nr_geschuetzt%2Cch.so.ada.archaeologie.flaechenfundstellen_geschuetzt&bl=hintergrundkarte_sw&c=' || 
     ROUND(ST_X(ST_Centroid(ST_GeomFromWKB(amultipolygon)))) || '%2C' || 
     ROUND(ST_Y(ST_Centroid(ST_GeomFromWKB(amultipolygon)))) || '&s=10000' AS link,

@@ -46,7 +46,10 @@ task placeInDatasets(type: SqlExecutor, dependsOn: transferAgiMopublic){
 }
 
 task refreshSolr(type:Exec, dependsOn:placeInDatasets) {
-    commandLine 'curl', '-i', '--max-time', '20', solrIndexupdaterBaseUrl + '/queue?ds=ch.so.agi.av.bodenbedeckung,ch.so.agi.av.gebaeudeadressen.gebaeudeeingaenge,ch.so.agi.av.grundstuecke.rechtskraeftig,ch.so.agi.av.grundstuecke.projektierte,ch.so.agi.av.nomenklatur.flurnamen,ch.so.agi.av.nomenklatur.gelaendenamen'
+    doLast {
+        throw new GradleException(
+            "Solr wurde durch Trigramm abgelöst. Bitte an Team Betrieb melden zum Update des Suchindexes. 01.10.2025, chb")
+    }
 }
 
 
