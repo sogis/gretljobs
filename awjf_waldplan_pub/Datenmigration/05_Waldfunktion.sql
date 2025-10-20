@@ -1,4 +1,4 @@
-DELETE FROM awjf_waldplan_v2.waldfunktion;
+DELETE FROM awjf_waldplan_v2.waldplan_waldfunktion;
 
 WITH
 
@@ -70,9 +70,8 @@ GROUP BY
 	biodiversitaet_id,
 	biodiversitaet_objekt,
 	wytweide
-)
+),
 
-/*
 reduce_precision AS (
 SELECT 
 	t_basket,
@@ -85,9 +84,8 @@ SELECT
 FROM 
 	buffer_geometry
 )
-*/
 
-INSERT INTO awjf_waldplan_v2.waldfunktion  (
+INSERT INTO awjf_waldplan_v2.waldplan_waldfunktion  (
 	t_basket,
 	t_datasetname,
 	funktion,
@@ -111,7 +109,7 @@ SELECT
     END AS bemerkung,
 	r.geometrie
 FROM 
-	buffer_geometry AS r
+	reduce_precision AS r
 LEFT JOIN awjf_schutzwald_v1.schutzwald AS s
 	ON ST_Within(ST_PointOnSurface(s.geometrie), r.geometrie)
 GROUP BY 
