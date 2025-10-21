@@ -93,7 +93,8 @@ INSERT INTO awjf_waldplan_v2.waldplan_waldfunktion  (
 	biodiversitaet_objekt,
 	wytweide,
 	bemerkung,
-	geometrie
+	geometrie,
+	schutzwald_r
 )
 
 SELECT 
@@ -107,11 +108,19 @@ SELECT
         WHEN r.funktion IN ('Schutzwald', 'Schutzwald_Biodiversitaet') 
         	THEN 'Mögliche Schutzwald-Nr.: ' || E'\n' || string_agg(DISTINCT s.schutzwald_nr2, E'\n')
     END AS bemerkung,
-	r.geometrie
+	r.geometrie,
+	CASE 
+		WHEN r.funktion IN ('Schutzwald', 'Schutzwald_Biodiversitaet')
+			AND COUNT(DISTINCT s.schutzwald_nr2) = 1
+		THEN MAX(sn.t_id)
+		ELSE NULL
+	END AS schutzwald_r
 FROM 
 	reduce_precision AS r
 LEFT JOIN awjf_schutzwald_v1.schutzwald AS s
 	ON ST_Within(ST_PointOnSurface(s.geometrie), r.geometrie)
+LEFT JOIN awjf_waldplan_v2.waldplan_schutzwald AS sn
+	ON s.schutzwald_nr2 = sn.schutzwald_nr
 GROUP BY 
 	r.t_basket,
 	r.t_datasetname,

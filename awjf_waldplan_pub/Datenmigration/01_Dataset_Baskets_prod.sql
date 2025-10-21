@@ -1,10 +1,6 @@
 -- Delete dataset and baskets --
 DELETE FROM awjf_waldplan_v2.t_ili2db_dataset CASCADE;
 
--- restart t_id sequence --
-ALTER SEQUENCE awjf_waldplan_v2.t_ili2db_seq RESTART WITH 1;
-;
-
 -- insert admin dataset --
 INSERT INTO awjf_waldplan_v2.t_ili2db_dataset (
 	t_id,

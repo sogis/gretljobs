@@ -1,4 +1,4 @@
-DELETE FROM awjf_waldplan_v2.waldplantyp;
+DELETE FROM awjf_waldplan_v2.waldplan_waldplantyp;
 
 WITH 
 
@@ -63,7 +63,7 @@ GROUP BY
 )
 
 
-INSERT INTO awjf_waldplan_v2.waldplantyp (
+INSERT INTO awjf_waldplan_v2.waldplan_waldplantyp (
 	t_basket,
 	t_datasetname,
 	Nutzungskategorie,
