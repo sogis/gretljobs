@@ -113,4 +113,4 @@ SELECT
         ELSE 'nein'
     END AS bewertung_vorhanden_txt
 FROM
-    arp_arbeitszonenbewirtschaftung_staging_v1.inventar_flaeche_v
+    arp_arbeitszonenbewirtschaftung_staging_v2.inventar_flaeche_v
