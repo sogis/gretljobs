@@ -134,7 +134,10 @@ INSERT INTO awjf_waldplan_v2.waldplan_waldeigentum (
 	Wirtschaftszone,
 	Ausserkantonal,
 	Bemerkung,
-	Forstrevier
+	Forstrevier,
+	t_lastchange,
+	t_createdate,
+	t_user
 )
 
 SELECT DISTINCT
@@ -147,7 +150,10 @@ SELECT DISTINCT
 	Wirtschaftszone,
 	Ausserkantonal,
 	string_agg(DISTINCT bemerkung, E'\n') AS bemerkung,
-	Forstrevier
+	Forstrevier,
+	CURRENT_TIMESTAMP AS t_lastchange,
+	CURRENT_TIMESTAMP AS t_createdate,
+	'Datenmigration' t_user
 FROM
 	datasets_baskets
 GROUP BY 

@@ -3,7 +3,10 @@ DELETE FROM awjf_waldplan_v2.waldplancatalgues_forstrevier;
 INSERT INTO awjf_waldplan_v2.waldplancatalgues_forstrevier (
 	aname,
 	t_basket,
-	t_datasetname
+	t_datasetname,
+	t_lastchange,
+	t_createdate,
+	t_user
 )
 
 SELECT DISTINCT
@@ -44,7 +47,10 @@ SELECT DISTINCT
 			THEN 'Thierstein West/Laufental'	
 	END AS aname,
 	b.t_id,
-	d.datasetname
+	d.datasetname,
+	CURRENT_TIMESTAMP AS t_lastchange,
+	CURRENT_TIMESTAMP AS t_createdate,
+	'Datenmigration' t_user
 FROM 
 	awjf_waldplan_bestandeskarte_v1.waldplan_bestandeskarte
 CROSS JOIN (

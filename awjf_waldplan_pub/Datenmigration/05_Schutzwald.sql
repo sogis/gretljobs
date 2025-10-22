@@ -70,7 +70,10 @@ INSERT INTO awjf_waldplan_v2.waldplan_schutzwald (
 	schadenpotential,
 	hauptgefahrenpotential,
 	intensitaet_geschaetzt,
-	bemerkungen 
+	bemerkungen,
+	t_lastchange,
+	t_createdate,
+	t_user
 )
 
 SELECT
@@ -86,7 +89,10 @@ SELECT
 	sw.schadenpotential,
 	sw.hauptgefahrenpotential,
 	sw.intensitaet_geschaetzt,
-	sw.bemerkungen
+	sw.bemerkungen,
+	CURRENT_TIMESTAMP AS t_lastchange,
+	CURRENT_TIMESTAMP AS t_createdate,
+	'Datenmigration' t_user
 FROM 
 	schutzwald AS sw
 LEFT JOIN dataset_gemeinde AS dataset

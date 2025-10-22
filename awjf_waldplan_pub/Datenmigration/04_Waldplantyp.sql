@@ -67,14 +67,20 @@ INSERT INTO awjf_waldplan_v2.waldplan_waldplantyp (
 	t_basket,
 	t_datasetname,
 	Nutzungskategorie,
-	Geometrie
+	Geometrie,
+	t_lastchange,
+	t_createdate,
+	t_user
 )
 
 SELECT 
 	t_basket,
 	t_datasetname,
 	Nutzungskategorie,
-	Geometrie
+	Geometrie,
+	CURRENT_TIMESTAMP AS t_lastchange,
+	CURRENT_TIMESTAMP AS t_createdate,
+	'Datenmigration' t_user
 FROM
 	buffer_geometry
 

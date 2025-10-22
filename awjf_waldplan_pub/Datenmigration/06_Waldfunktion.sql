@@ -94,7 +94,10 @@ INSERT INTO awjf_waldplan_v2.waldplan_waldfunktion  (
 	wytweide,
 	bemerkung,
 	geometrie,
-	schutzwald_r
+	schutzwald_r,
+	t_lastchange,
+	t_createdate,
+	t_user
 )
 
 SELECT 
@@ -114,7 +117,10 @@ SELECT
 			AND COUNT(DISTINCT s.schutzwald_nr2) = 1
 		THEN MAX(sn.t_id)
 		ELSE NULL
-	END AS schutzwald_r
+	END AS schutzwald_r,
+	CURRENT_TIMESTAMP AS t_lastchange,
+	CURRENT_TIMESTAMP AS t_createdate,
+	'Datenmigration' t_user
 FROM 
 	reduce_precision AS r
 LEFT JOIN awjf_schutzwald_v1.schutzwald AS s
