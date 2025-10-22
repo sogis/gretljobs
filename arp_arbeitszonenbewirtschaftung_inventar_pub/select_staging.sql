@@ -90,7 +90,7 @@ relevante_sdr_bauzonenstatistik_nicht_gleich_Liegenschaft AS (
         sdr.art_txt
     FROM
         relevante_sdr_bauzonenstatistik sdr
-        JOIN
+        LEFT JOIN
         arp_auswertung_nutzungsplanung_pub_v1.bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen unbebaut_fl
             ON
         ST_Within(ST_PointOnSurface(sdr.geometrie), unbebaut_fl.geometrie) AND unbebaut_fl.bebauungsstand = 'unbebaut'
