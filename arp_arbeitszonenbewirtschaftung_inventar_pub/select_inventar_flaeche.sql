@@ -111,6 +111,19 @@ SELECT
         WHEN bewertung_vorhanden=TRUE
             THEN 'ja'
         ELSE 'nein'
-    END AS bewertung_vorhanden_txt
+    END AS bewertung_vorhanden_txt,
+    notiz,
+    watchlist_prio,
+    CASE
+        WHEN watchlist_prio = 'Prio_1'
+            THEN '1'
+        WHEN watchlist_prio = 'Prio_2'
+            THEN '2'
+        WHEN watchlist_prio = 'Prio_3'
+            THEN '3'
+        ELSE 'keine'
+    END AS watchlist_prio_txt,
+    grundstuecksart_txt AS grundstuecksart,
+	grundstuecksart_txt
 FROM
     arp_arbeitszonenbewirtschaftung_staging_v2.inventar_flaeche_v
