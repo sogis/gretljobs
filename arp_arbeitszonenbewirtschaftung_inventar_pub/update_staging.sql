@@ -25,8 +25,8 @@ FROM
     arp_arbeitszonenbewirtschaftung_staging_v2.arbtszng_nvntar_arbeitszonenbewirtschaftung_inventar_grusart AS g
 WHERE
     nutzungsgrad=n.ilicode
-    AND
+    OR
     bebauungsstand=b.ilicode
-    AND
+    OR
     grundstuecksart=g.ilicode
 ; 
