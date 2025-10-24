@@ -115,11 +115,11 @@ SELECT
     notiz,
     watchlist_prio,
     CASE
-        WHEN watchlist_prio = 'Prio_1'
+        WHEN watchlist_prio = 'Prio1'
             THEN '1'
-        WHEN watchlist_prio = 'Prio_2'
+        WHEN watchlist_prio = 'Prio2'
             THEN '2'
-        WHEN watchlist_prio = 'Prio_3'
+        WHEN watchlist_prio = 'Prio3'
             THEN '3'
         ELSE 'keine'
     END AS watchlist_prio_txt,
