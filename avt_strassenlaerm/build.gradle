@@ -6,27 +6,16 @@ import ch.so.agi.gretl.api.TransferSet
 import java.nio.file.Paths
 
 defaultTasks 'publishPub'
-//defaultTasks 'replaceDataset'
 
-ext {
-    pathToTempFolder = System.getProperty("java.io.tmpdir")
-    xtfFilePath = Paths.get(pathToTempFolder.toString(), 'strassenlaerm_KGDM_SO_20200115.xtf')
-    filename = 'strassenlaerm_KGDM_SO_20200115.xtf'
-}
+/*
+Bei der Aktualisierung 2025 musste G+P das Modell kosmetisch anpassen. Damit aufgrund dieser
+Anpassung nicht alle Schemen inkl. Kataloge neu angelegt werden müssen, wurde das gelieferte
+XTF auf das alte Modell angepasst (Search SO_AVT_Strassenlaerm_20250813 Replace SO_AVT_Strassenlaerm_20190806).
+*/
 
-task downloadData(type: Download) {
-    //src 'https://s3.eu-central-1.amazonaws.com/ch.so.avt.strassenlaerm/strassenlaerm_KGDM_20191023.xtf'
-    src 'https://s3.eu-central-1.amazonaws.com/ch.so.avt.strassenlaerm/' + filename
-    dest pathToTempFolder
-    overwrite true
+def filename = 'xyz.xtf'
 
-    doLast {
-        println "File downloaded to: " + pathToTempFolder
-    }    
-}
-
-
-task replaceDataset (type: Ili2pgReplace, dependsOn: downloadData) {
+task replaceDataset (type: Ili2pgReplace) {
     description = "Ersetzt die Daten in der Edit-DB."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "avt_strassenlaerm_v1"
@@ -34,8 +23,7 @@ task replaceDataset (type: Ili2pgReplace, dependsOn: downloadData) {
     disableValidation = true
     importTid = true
     dataset = "data"
-    dataFile = file(xtfFilePath)
-    //dataFile = "strassenlaerm.xtf" // name is injected by jenkins
+    dataFile = file(filename)
 }
 
 task publishEdit(type: Publisher, dependsOn: replaceDataset){

@@ -68,7 +68,6 @@ tasks.register('loadDataToDuckDb', SqlExecutor) {
         // Daten aus der Edit-DB laden
         '0_helper_queries/attach_editdb_read.sql',
         '1_import_to_duckdb/import_to_duckdb_afu_individuals.sql',
-        '1_import_to_duckdb/import_to_duckdb_afu_nests.sql',
         // Daten vom WFS laden
         '0_helper_queries/load_httpfs.sql',
         '0_helper_queries/create_wfs_secret.sql',
@@ -96,27 +95,12 @@ tasks.register('upsertIndividualsInsideDuckDb', SqlExecutor) {
     )
 }
 
-tasks.register('upsertNestsInsideDuckDb', SqlExecutor) {
-    dependsOn 'loadDataToDuckDb'
-    description = 'Bestehende Daten zu Hornissen-Nestern mit den heruntergeladenen Daten zusammenführen.'
-    database = [duckDbUri]
-    sqlParameters = [
-        // Für die Verwendung in den Querys Hochkommas hinzufügen und GString nach String casten
-        editdb_connection_string : "'${editDbConnectionString}'".toString()
-    ]
-    sqlFiles = files(
-        '0_helper_queries/load_spatial.sql',
-        '0_helper_queries/attach_editdb_read.sql',
-        '2_upsert_in_duckdb/upsert_duckdb_nests.sql'
-    )
-}
-
 // Hinweis:
 // Um Geometrien zwischen den verschiedenen DBMS zu kopieren, in den import_*.sql Skripts als WKT einlesen, 
 // und im Db2Db Task von WKT nach PostGIS umwandeln mit dem vierten TransferSet Parameter.
 
 tasks.register('copyResultsToEditDb', Db2Db) {
-    dependsOn 'upsertIndividualsInsideDuckDb', 'upsertNestsInsideDuckDb'
+    dependsOn 'upsertIndividualsInsideDuckDb'
     description = 'Zusammengeführte Daten in die Edit-DB zurückkopieren (überschreibend).'
     sourceDb = [duckDbUri]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]

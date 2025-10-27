@@ -42,13 +42,14 @@ SELECT
     "image",
     'neu' AS massnahmenstatus  -- neue Records haben Status "neu"
 FROM infofauna_individuals
--- Bei Konflikt auf "import_materialentity_id" UPDATE anstatt INSERT
-ON CONFLICT (import_materialentity_id)
+-- Bei Konflikt auf dem Primary Key UPDATE anstatt INSERT
+ON CONFLICT (import_occurrence_id, import_x_koordinate, import_y_koordinate)
 DO UPDATE SET
 	-- Alle importierten Felder überschreiben
     import_occurrence_id = EXCLUDED.import_occurrence_id,
     import_unique_nest_id = EXCLUDED.import_unique_nest_id,
     geometrie = EXCLUDED.geometrie,
+    import_materialentity_id = EXCLUDED.import_materialentity_id,
     import_datum_sichtung = EXCLUDED.import_datum_sichtung,
     import_ort = EXCLUDED.import_ort,
     import_kanton = EXCLUDED.import_kanton,
@@ -59,7 +60,8 @@ DO UPDATE SET
     import_bemerkung = EXCLUDED.import_bemerkung,
     import_foto_url = EXCLUDED.import_foto_url
 WHERE
-    -- UPDATE nur ausführen, wenn sich mindestens ein Wert geändert hat
+    -- UPDATE nur ausführen, wenn sich mindestens ein Wert geändert hat.
+    -- Kein Vergleich der MaterialEntityID, weil dies ein Hashwert des infofauna-Records ist.
     import_occurrence_id IS DISTINCT FROM EXCLUDED.import_occurrence_id
     OR import_unique_nest_id IS DISTINCT FROM EXCLUDED.import_unique_nest_id
     OR geometrie IS DISTINCT FROM EXCLUDED.geometrie

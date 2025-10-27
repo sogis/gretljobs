@@ -10,7 +10,7 @@ CREATE TABLE afu_individuals (
     massnahmenstatus                VARCHAR,  -- vom AfU geführtes Feld
     bemerkung_massnahme             VARCHAR,  -- vom AfU geführtes Feld
     geometrie                       TEXT,     -- WKT
-    import_materialentity_id        VARCHAR PRIMARY KEY,  -- Upsert ist nur mit Primary Key möglich
+    import_materialentity_id        VARCHAR,
     import_datum_sichtung           DATE,
     import_ort                      VARCHAR,
     import_kanton                   VARCHAR,
@@ -23,7 +23,10 @@ CREATE TABLE afu_individuals (
     import_kontakt_tel              VARCHAR,
     import_bemerkung                VARCHAR,
     import_url                      VARCHAR,
-    import_foto_url                 VARCHAR
+    import_foto_url                 VARCHAR,
+    -- Upsert ist nur mit Primary Key möglich.
+    -- Behelfsmässiger Primary Key, solange keine stabile ID verfügbar ist, siehe README.
+    PRIMARY KEY (import_occurrence_id, import_x_koordinate, import_y_koordinate)
 );
 
 INSERT INTO afu_individuals
