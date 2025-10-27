@@ -1,3 +1,6 @@
+WITH 
+
+grundstuecke AS (
 SELECT 
 	ww.egrid,
 	hg.gemeindename AS gemeinde,
@@ -43,3 +46,34 @@ LEFT JOIN awjf_waldplan_v2.waldplancatalgues_forstrevier AS wfr
 	ON ww.forstrevier = wfr.t_id
 LEFT JOIN awjf_waldplan_v2.forstkreise AS fk 
 	ON ww.forstkreis = fk.ilicode 
+),
+
+waldfunktion_flaechen_berechnet AS (
+	SELECT 
+		g.egrid,
+		wf.funktion,
+		ROUND(ST_Area(ST_Intersection(g.geometrie, wf.geometrie))::NUMERIC) AS flaeche
+	FROM
+		grundstuecke AS g
+	LEFT JOIN awjf_waldplan_v2.waldplan_waldfunktion AS wf 
+		ON ST_INTERSECTS(g.geometrie, wf.geometrie)
+),
+
+waldfunktion_flaechen_berechnet_json AS (
+    SELECT
+    	egrid,
+        json_agg(
+            json_build_object(
+                'funktion', funktion,
+                'flaeche', flaeche
+            )
+        ) AS waldfunktion_flaechen
+    FROM 
+        waldfunktion_flaechen_berechnet
+    WHERE
+    	flaeche > 0
+    GROUP BY 
+        egrid
+)
+
+SELECT * FROM waldfunktion_flaechen_berechnet_json
