@@ -14,10 +14,7 @@ defaultTasks 'copy_alle_natgef_produkte'
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
 
 /* TEST TEST TEST */
-def auftragskennung = '051_DreiHoefe_Wasser_2025' // NUR für TESTZWECK!!!
-def altdatenwasser = true //NUR ZU TESTZWECKEN!!!!
-def altdatenrutschung = true //NUR ZU TESTZWECKEN!!!!
-def altdatensturz = true //NUR ZU TESTZWECKEN!!!!
+// def auftragskennung = '051_DreiHoefe_Wasser_2025' // NUR für TESTZWECK!!!
 
 /* Die Boolean-Parameter zum Exkludieren der Altdaten werden als String übergeben und müssen hier wieder zu Boolean-Werten gemacht werden.
 */
