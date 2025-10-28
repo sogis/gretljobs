@@ -12,7 +12,7 @@ UPDATE arp_arbeitszonenbewirtschaftung_staging_v2.arbtsznnng_nvntar_arbeitszonen
 SET
     nutzungsgrad_txt=n.dispname,
     bebauungsstand_txt=b.dispname,
-    grundstuecksart_txt=g.dispname,
+    grundstuecksart_txt=grundstuecksart,
     gestaltungsplanpflicht_txt=(
         CASE 
             WHEN gestaltungsplanpflicht = TRUE 
@@ -21,12 +21,9 @@ SET
         END) 
 FROM
     arp_arbeitszonenbewirtschaftung_staging_v2.arbtszng_nvntar_arbeitszonenbewirtschaftung_inventar_bebtand AS b,
-    arp_arbeitszonenbewirtschaftung_staging_v2.arbtszng_nvntar_arbeitszonenbewirtschaftung_inventar_nutgrad AS n,
-    arp_arbeitszonenbewirtschaftung_staging_v2.arbtszng_nvntar_arbeitszonenbewirtschaftung_inventar_grusart AS g
+    arp_arbeitszonenbewirtschaftung_staging_v2.arbtszng_nvntar_arbeitszonenbewirtschaftung_inventar_nutgrad AS n
 WHERE
     nutzungsgrad=n.ilicode
     OR
     bebauungsstand=b.ilicode
-    OR
-    grundstuecksart=g.ilicode
 ; 

@@ -44,6 +44,8 @@ relevante_sdr_bauzonenstatistik AS (
         li.t_id,
         mg.geometrie,
         mg.nummer,
+        li.nummer AS li_nummer,
+        li.geometrie AS li_geometrie,
         li.bebauungsstand,
         li.nutzungsgrad,
         li.grundnutzung_typ_kt, 
@@ -118,28 +120,28 @@ relevante_grundstuecke_bauzonenstatistik AS (
     FROM
         relevante_liegenschaften_bauzonenstatistik li
         
-    UNION
+--    UNION
 
--- SDR die gleich sind wie Liegenschaft   
-    SELECT          
-        sdr.t_id,
-        sdr.geometrie,
-        sdr.nummer,
-        sdr.bebauungsstand,
-        sdr.nutzungsgrad,
-        sdr.grundnutzung_typ_kt, 
-        sdr.flaeche_beschnitten,
-        sdr.flaeche_unbebaut,
-        sdr.flaechenmass,
-        sdr.grundbuch,
-        sdr.bfs_nr, -- BFS Nummer
-        sdr.gemeinde, -- Gemeindename
-        sdr.egrid,
-        sdr.art_txt
-    FROM
-        relevante_sdr_bauzonenstatistik sdr  
-    WHERE
-        sdr.identisch_liegenschaft = TRUE
+-- SDR die gleich sind wie Liegenschaft    -> braucht es nicht, weil sonst doppelt zu Liegenschaft
+--    SELECT          
+--        sdr.t_id,
+--        sdr.geometrie,
+--        sdr.nummer,
+--       sdr.bebauungsstand,
+--        sdr.nutzungsgrad,
+--        sdr.grundnutzung_typ_kt, 
+--        sdr.flaeche_beschnitten,
+--        sdr.flaeche_unbebaut,
+--        sdr.flaechenmass,
+--       sdr.grundbuch,
+--        sdr.bfs_nr, -- BFS Nummer
+--        sdr.gemeinde, -- Gemeindename
+--        sdr.egrid,
+--        sdr.art_txt
+--    FROM
+--        relevante_sdr_bauzonenstatistik sdr  
+--    WHERE
+--        sdr.identisch_liegenschaft = TRUE
         
     UNION
     
