@@ -1,0 +1,11 @@
+SELECT 
+    t_ili_tid, 
+    geometrie, 
+    prozessq, 
+    wkp, 
+    bemerkung, 
+    ueberfl_hb, 
+    ngkid
+FROM 
+    afu_gefahrenkartierung.gefahrenkartirung_ueberflutungskarte
+;
