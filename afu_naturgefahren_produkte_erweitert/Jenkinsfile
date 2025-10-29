@@ -31,12 +31,6 @@ pipeline {
 '''
         }
     }
-    parameters {
-      booleanParam(name: 'ohne_altdaten_wasser',    defaultValue: false, description: 'Hauptprozess Wasser ohne Altdaten')
-      booleanParam(name: 'ohne_altdaten_rutschung', defaultValue: false, description: 'Hauptprozess Rutschung ohne Altdaten')
-      booleanParam(name: 'ohne_altdaten_sturz',     defaultValue: false, description: 'Hauptprozess Sturz ohne Altdaten')
-      string(name: 'auftragskennung', defaultValue: 'main', description: 'Auftragskennung …')
-    }
     options {
         timeout(time: 6, unit: 'HOURS')
     }
@@ -53,7 +47,7 @@ pipeline {
                     dir(env.JOB_BASE_NAME) {
                         sh """
                             gretl \
-                            -Pauftragskennung=${params.auftragskennung}
+                            -Pauftragskennung=${params.auftragskennung} \
                             -Paltdatenwasser=${params.ohne_altdaten_wasser ?: false} \
                             -Paltdatenrutschung=${params.ohne_altdaten_rutschung ?: false} \
                             -Paltdatensturz=${params.ohne_altdaten_sturz ?: false}
