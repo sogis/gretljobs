@@ -50,7 +50,8 @@ pipeline {
                             -Pauftragskennung=${params.auftragskennung} \
                             -Paltdatenwasser=${params.ohne_altdaten_wasser ?: false} \
                             -Paltdatenrutschung=${params.ohne_altdaten_rutschung ?: false} \
-                            -Paltdatensturz=${params.ohne_altdaten_sturz ?: false}
+                            -Paltdatensturz=${params.ohne_altdaten_sturz ?: false} \
+                            -Paltdatensynoptisch=${params.ohne_altdaten_synoptische_gk ?: false}
                           """
                     }
                 }
