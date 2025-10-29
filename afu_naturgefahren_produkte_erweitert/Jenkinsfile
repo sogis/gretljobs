@@ -31,6 +31,12 @@ pipeline {
 '''
         }
     }
+    parameters {
+      booleanParam(name: 'ohne_altdaten_wasser',    defaultValue: false, description: 'Hauptprozess Wasser ohne Altdaten')
+      booleanParam(name: 'ohne_altdaten_rutschung', defaultValue: false, description: 'Hauptprozess Rutschung ohne Altdaten')
+      booleanParam(name: 'ohne_altdaten_sturz',     defaultValue: false, description: 'Hauptprozess Sturz ohne Altdaten')
+      string(name: 'auftragskennung', defaultValue: 'main', description: 'Auftragskennung …')
+    }
     options {
         timeout(time: 6, unit: 'HOURS')
     }
