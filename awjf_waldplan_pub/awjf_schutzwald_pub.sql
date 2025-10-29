@@ -3,31 +3,51 @@ SELECT
 	--forstkreis, --erst möglich wenn entsprechender Layer erstellt wurde...aber braucht es die hier überhaupt?
 	--forstkreis_txt,
 	--forstrevier,
-	sw.sturz,
+	CASE 
+		WHEN sw.sturz IS TRUE 
+			THEN TRUE 
+		ELSE FALSE
+	END AS sturz,
 	CASE 
 		WHEN sw.sturz IS TRUE
 			THEN 'Sturz modelliert'
 		ELSE 'Sturz nicht modelliert'
 	END AS sturz_txt,
-	sw.rutsch,
+	CASE 
+		WHEN sw.rutsch IS TRUE 
+			THEN TRUE 
+		ELSE FALSE
+	END AS rutsch,
 	CASE 
 		WHEN sw.rutsch IS TRUE
 			THEN 'Rutsch modelliert'
 		ELSE 'Rutsch nicht modelliert'
 	END AS rutsch_txt,
-	sw.gerinnerelevante_prozesse,
+	CASE 
+		WHEN sw.gerinnerelevante_prozesse IS TRUE 
+			THEN TRUE 
+		ELSE FALSE
+	END AS gerinnerelevante_prozesse,
 	CASE 
 		WHEN sw.gerinnerelevante_prozesse IS TRUE
 			THEN 'Gerinnerelevante Prozesse modelliert'
 		ELSE 'Gerinnerelevante Prozesse nicht modelliert'
 	END AS gerinnerelevante_prozesse_txt,
-	sw.lawine,
+	CASE 
+		WHEN sw.lawine IS TRUE 
+			THEN TRUE 
+		ELSE FALSE
+	END AS lawine,
 	CASE 
 		WHEN sw.lawine IS TRUE
 			THEN 'Lawine modelliert'
 		ELSE 'Lawine nicht modelliert'
 	END AS lawine_txt,
-	sw.andere_kt,
+	CASE 
+		WHEN sw.andere_kt IS TRUE 
+			THEN TRUE 
+		ELSE FALSE
+	END AS andere_kt,
 	CASE 
 		WHEN sw.andere_kt IS TRUE
 			THEN 'Schadenspotential in anderen Kantonen'
