@@ -32,7 +32,7 @@ task copyXtfFile(type: Copy) {
 task validateData(type: IliValidator){
     dependsOn "copyXtfFile"
     description "Validiere den importierten Datensatz"
-    dataFiles = files("upload/uploadFileName")
+    dataFiles = files(upload/uploadFileName)
     logFile = "validation.log"
 }
 
