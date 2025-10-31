@@ -35,6 +35,7 @@ task validateData(type: IliValidator){
     description "Validiere den importierten Datensatz"
     dataFiles = validateFile
     logFile = "validation.log"
+    allObjectsAccessible = "https://models.geo.admin.ch/ASTRA/ExceptionalLoadsRoute_Catalogue_V1.xml"
 }
 
 task zipMgdm(type: Zip) {
