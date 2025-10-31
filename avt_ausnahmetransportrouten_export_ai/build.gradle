@@ -41,6 +41,8 @@ task zipMgdm(type: Zip) {
     dependsOn "validateData"
     archiveName = zipName
     destinationDir = file(pathToTempFolder)
+    from Paths.get(pathToTempFolder)
+    include exportFileName
 }
 
 task uploadMgdm (dependsOn: zipMgdm) {
