@@ -19,12 +19,20 @@ def pathToUploadFolder = 'upload'
 def zipName = 'iliexport.zip'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
+task copyXtfFile(type: Copy) {
+    from "upload/"
+    into "upload/"
+    include("uploadFile")
+    rename uploadFileName, exportFileName
+}
+
 /**
  * Validiere den Datensatz.
  */
 task validateData(type: IliValidator){
+    dependsOn "copyXtfFile"
     description "Validiere den importierten Datensatz"
-    dataFiles = [uploadFileName]
+    dataFiles = files("upload/uploadFileName")
     logFile = "validation.log"
 }
 
