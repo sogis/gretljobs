@@ -35,6 +35,7 @@ task validateData(type: IliValidator){
     description "Validiere den importierten Datensatz"
     dataFiles = validateFile
     logFile = "validation.log"
+    configFile = file('ilivalidator.ini')
 }
 
 task zipMgdm(type: Zip) {
