@@ -5,6 +5,8 @@ Publiziert die AVT Ausnahmetransportrouten nach geodienste.ch
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.io.File
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
 
 defaultTasks 'uploadMgdm'
 
@@ -16,14 +18,33 @@ def exportFileName = 'data.xtf'
 def pathToUploadFolder = 'upload'
 def zipName = 'iliexport.zip'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def validateFile = pathToTempFolder + "/" + exportFileName
 
+task copyXtfFile(type: Copy) {
+    from Paths.get(pathToUploadFolder)
+    into Paths.get(pathToTempFolder)
+    include uploadFileName
+    rename uploadFileName, exportFileName
+}
+
+/**
+ * Validiere den Datensatz.
+ */
+task validateData(type: IliValidator){
+    dependsOn "copyXtfFile"
+    description "Validiere den importierten Datensatz"
+    dataFiles = validateFile
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    configFile = file('ilivalidator.ini')
+    logFile = "validation.log"
+}
 
 task zipMgdm(type: Zip) {
+    dependsOn "validateData"
     archiveName = zipName
     destinationDir = file(pathToTempFolder)
-
-    from Paths.get(pathToUploadFolder)
-    rename uploadFileName, exportFileName
+    from Paths.get(pathToTempFolder)
+    include exportFileName
 }
 
 task uploadMgdm (dependsOn: zipMgdm) {
