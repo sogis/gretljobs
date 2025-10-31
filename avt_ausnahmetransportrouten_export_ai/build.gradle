@@ -18,7 +18,7 @@ def exportFileName = 'data.xtf'
 def pathToUploadFolder = 'upload'
 def zipName = 'iliexport.zip'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
-def validateFile = pathToTempFolder + exportFileName
+def validateFile = pathToTempFolder + "/" + exportFileName
 
 task copyXtfFile(type: Copy) {
     from Paths.get(pathToUploadFolder)
