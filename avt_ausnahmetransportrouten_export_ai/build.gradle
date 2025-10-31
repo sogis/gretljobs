@@ -22,7 +22,7 @@ def pathToTempFolder = System.getProperty("java.io.tmpdir")
  */
 task validateData(type: IliValidator){
     description "Validiere den importierten Datensatz"
-    dataFiles = uploadFileName
+    dataFiles = [uploadFileName]
     logFile = "validation.log"
 }
 
