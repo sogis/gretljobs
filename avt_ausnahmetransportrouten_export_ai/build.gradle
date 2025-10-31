@@ -18,11 +18,12 @@ def exportFileName = 'data.xtf'
 def pathToUploadFolder = 'upload'
 def zipName = 'iliexport.zip'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def validateFile = pathToTempFolder + exportFileName
 
 task copyXtfFile(type: Copy) {
-    from "upload/"
-    into "upload/"
-    include("uploadFile")
+    from Paths.get(pathToUploadFolder)
+    into Paths.get(pathToTempFolder)
+    include uploadFileName
     rename uploadFileName, exportFileName
 }
 
@@ -32,7 +33,7 @@ task copyXtfFile(type: Copy) {
 task validateData(type: IliValidator){
     dependsOn "copyXtfFile"
     description "Validiere den importierten Datensatz"
-    dataFiles = files(upload/uploadFileName)
+    dataFiles = validateFile
     logFile = "validation.log"
 }
 
@@ -40,9 +41,6 @@ task zipMgdm(type: Zip) {
     dependsOn "validateData"
     archiveName = zipName
     destinationDir = file(pathToTempFolder)
-
-    from Paths.get(pathToUploadFolder)
-    rename uploadFileName, exportFileName
 }
 
 task uploadMgdm (dependsOn: zipMgdm) {
