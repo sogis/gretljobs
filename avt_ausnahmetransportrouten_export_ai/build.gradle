@@ -34,8 +34,9 @@ task validateData(type: IliValidator){
     dependsOn "copyXtfFile"
     description "Validiere den importierten Datensatz"
     dataFiles = validateFile
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    models = modelNameconfigFile = file('ilivalidator.ini')
     logFile = "validation.log"
-    configFile = file('ilivalidator.ini')
 }
 
 task zipMgdm(type: Zip) {
