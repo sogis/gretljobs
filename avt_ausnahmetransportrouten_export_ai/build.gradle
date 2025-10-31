@@ -35,7 +35,8 @@ task validateData(type: IliValidator){
     description "Validiere den importierten Datensatz"
     dataFiles = validateFile
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-    models = modelNameconfigFile = file('ilivalidator.ini')
+    models = modelName
+    configFile = file('ilivalidator.ini')
     logFile = "validation.log"
 }
 
