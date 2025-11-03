@@ -35,8 +35,8 @@ task validateData(type: IliValidator){
     description "Validiere den importierten Datensatz"
     dataFiles = validateFile
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-    configFile = file('ilivalidator.ini')
     logFile = "validation.log"
+    allObjectsAccessible = true
 }
 
 task zipMgdm(type: Zip) {
