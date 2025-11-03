@@ -36,8 +36,7 @@ task validateData(type: IliValidator){
     dataFiles = validateFile
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     logFile = "validation.log"
-    ExceptionalLoadsCatalogues_V1.TypeOfRouteCatalogue.html
-    allObjectsAccessible = true
+    allObjectsAccessible = true "ExceptionalLoadsCatalogues_V1.TypeOfRouteCatalogue.html"
     forceTypeValidation = true
     
 }
