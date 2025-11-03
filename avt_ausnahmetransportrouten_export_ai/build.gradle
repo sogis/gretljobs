@@ -23,7 +23,7 @@ def validateFile = pathToTempFolder + "/" + exportFileName
 def katalogFileName = 'ExceptionalLoadsRoute_Catalogue_V1.xml'
 def validateKatalogFile = pathToTempFolder + "/" + katalogFileName
 
-task downloadKatalog(type: Download, dependsOn: 'deleteFromZonengrenzenTables'){
+task downloadKatalog(type: Download){
     description = 'Download Kataloge https://models.geo.admin.ch/ASTRA/ExceptionalLoadsRoute_Catalogue_V1.xml'
     src 'https://models.geo.admin.ch/ASTRA/ExceptionalLoadsRoute_Catalogue_V1.xml'
     dest pathToTempFolder
