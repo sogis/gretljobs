@@ -39,7 +39,6 @@ task validateData(type: IliValidator){
     logFile = "validation.log"
     allObjectsAccessible = true
     forceTypeValidation = true
-    metaConfigFile = [catalogueFile]
     failOnError = true
     
 }
