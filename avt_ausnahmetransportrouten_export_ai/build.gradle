@@ -20,22 +20,18 @@ def pathToUploadFolder = 'upload'
 def zipName = 'iliexport.zip'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def validateFile = pathToTempFolder + "/" + exportFileName
-def pathToCatalogFile = "https://models.geo.admin.ch/ASTRA/ExceptionalLoadsRoute_Catalogue_V1.xml"
-def catalogFileName = 'ExceptionalLoadsCatalogues_V1.TypeOfRouteCatalogue.xml'
-def validateCatalogFile = pathToTempFolder + "/" + catalogFileName
+def katalogFileName = 'ExceptionalLoadsRoute_Catalogue_V1.xml'
+def validateKatalogFile = pathToTempFolder + "/" + katalogFileName
 
-task download(type: Download) {
-    description = "Download Catalog https://models.geo.admin.ch/ASTRA/ExceptionalLoadsRoute_Catalogue_V1.xml"
-    src "https://models.geo.admin.ch/ASTRA/ExceptionalLoadsRoute_Catalogue_V1.xml"
-    dest pathToTempFolder + catalogFileName
+task downloadKatalog(type: Download, dependsOn: 'deleteFromZonengrenzenTables'){
+    description = 'Download Kataloge https://models.geo.admin.ch/ASTRA/ExceptionalLoadsRoute_Catalogue_V1.xml'
+    src 'https://models.geo.admin.ch/ASTRA/ExceptionalLoadsRoute_Catalogue_V1.xml'
+    dest pathToTempFolder
     overwrite true
-     doLast {
-        println "File downloaded to: " + pathToTempFolder
-    }
 }
 
 task copyXtfFile(type: Copy) {
-    dependsOn "download"
+    dependsOn "downloadKatalog"
     from Paths.get(pathToUploadFolder)
     into Paths.get(pathToTempFolder)
     include uploadFileName
@@ -48,7 +44,7 @@ task copyXtfFile(type: Copy) {
 task validateData(type: IliValidator){
     dependsOn "copyXtfFile"
     description "Validiere den importierten Datensatz"
-    dataFiles = [validateFile, validateCatalogFile]
+    dataFiles = [validateFile, validateKatalogFile]
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     logFile = "validation.log"
     allObjectsAccessible = true
