@@ -36,8 +36,10 @@ task validateData(type: IliValidator){
     dataFiles = validateFile
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     logFile = "validation.log"
-    allObjectsAccessible="https://models.geo.admin.ch/ASTRA/ExceptionalLoadsRoute_Catalogue_V1.xml"
-    forceTypeValidation=true
+    allObjectsAccessible = true
+    metaConfigFile = "ExceptionalLoadsCatalogues_V1.TypeOfRouteCatalogue.html"
+    forceTypeValidation = true
+    failOnError = true
     
 }
 
