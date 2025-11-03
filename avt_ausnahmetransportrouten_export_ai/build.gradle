@@ -19,6 +19,7 @@ def pathToUploadFolder = 'upload'
 def zipName = 'iliexport.zip'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def validateFile = pathToTempFolder + "/" + exportFileName
+def catalogueFile = 'ExceptionalLoadsCatalogues_V1.TypeOfRouteCatalogue.html'
 
 task copyXtfFile(type: Copy) {
     from Paths.get(pathToUploadFolder)
@@ -33,11 +34,10 @@ task copyXtfFile(type: Copy) {
 task validateData(type: IliValidator){
     dependsOn "copyXtfFile"
     description "Validiere den importierten Datensatz"
-    dataFiles = validateFile
+    dataFiles = [validateFile, catalogueFile]
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     logFile = "validation.log"
     allObjectsAccessible = true
-    metaConfigFile = file("ExceptionalLoadsCatalogues_V1.TypeOfRouteCatalogue.html")
     forceTypeValidation = true
     failOnError = true
     
