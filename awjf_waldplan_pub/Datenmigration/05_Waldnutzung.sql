@@ -1,8 +1,8 @@
-DELETE FROM awjf_waldplan_v2.waldplan_waldplantyp;
+DELETE FROM awjf_waldplan_v2.waldplan_waldnutzung;
 
 WITH 
 
-waldplantyp AS (
+waldnutzung AS (
 SELECT
 	b.t_id AS t_basket,
 	d.datasetname AS t_datasetname,
@@ -16,7 +16,7 @@ SELECT
 		WHEN wptyp = 5
 			THEN 'Bauten_Anlagen'
 		WHEN wptyp = 6
-			THEN 'Rodung_temporaer'
+			THEN 'Rodungsflaechen_temporaer'
 		WHEN wptyp = 7
 			THEN 'Gewaesser'
 	END AS Nutzungskategorie,
@@ -31,39 +31,40 @@ WHERE
 	wptyp NOT IN (1,8,9)
 ),
 
-/*
-buffer_geometry AS (
-SELECT
-	t_basket,
-	t_datasetname,
-	Nutzungskategorie,
-	(ST_Dump(ST_RemoveRepeatedPoints(
-		ST_MakeValid(
-			ST_Buffer(ST_UnaryUnion(ST_Collect(geometrie)),0))))).geom AS geometrie
-FROM
-	waldplantyp
-GROUP BY 
-	t_basket,
-	t_datasetname,
-	Nutzungskategorie
-)
-*/
-buffer_geometry AS (
+union_geometry AS (
 SELECT
 	t_basket,
 	t_datasetname,
 	Nutzungskategorie,
 	(ST_Dump(ST_UNION(geometrie))).geom AS geometrie
 FROM
-	waldplantyp
+	waldnutzung
 GROUP BY 
 	t_basket,
 	t_datasetname,
 	Nutzungskategorie
+),
+
+buffer_geometry AS (
+    SELECT
+        t_basket,
+        t_datasetname,
+		nutzungskategorie,
+        (ST_Dump(
+            ST_Buffer(
+                ST_Buffer(ST_Union(geometrie), 0.001),
+                -0.001                                   
+            )
+        )).geom AS geometrie
+    FROM
+    	union_geometry
+    GROUP BY
+        t_basket,
+        t_datasetname,
+		nutzungskategorie
 )
 
-
-INSERT INTO awjf_waldplan_v2.waldplan_waldplantyp (
+INSERT INTO awjf_waldplan_v2.waldplan_waldnutzung (
 	t_basket,
 	t_datasetname,
 	Nutzungskategorie,
@@ -83,13 +84,3 @@ SELECT
 	'Datenmigration' t_user
 FROM
 	buffer_geometry
-
-/*
-SELECT 
-	t_basket,
-	t_datasetname,
-	Nutzungskategorie,
-	(ST_Dump(st_makevalid(st_reduceprecision(geometrie,0.001)))).geom AS geometrie
-FROM 
-	buffer_geometry
-*/

@@ -52,7 +52,7 @@ WHERE
 	wpnr != 509
 ),
 
-buffer_geometry AS (
+union_geometry AS (
 SELECT
 	t_basket,
 	t_datasetname,
@@ -72,17 +72,29 @@ GROUP BY
 	wytweide
 ),
 
-reduce_precision AS (
-SELECT 
-	t_basket,
-	t_datasetname,
-	funktion,
-	biodiversitaet_id,
-	biodiversitaet_objekt,
-	wytweide,
-	(ST_Dump(ST_MakeValid(st_reduceprecision(geometrie,0.001)))).geom AS geometrie
-FROM 
-	buffer_geometry
+buffer_geometry AS (
+    SELECT
+        t_basket,
+        t_datasetname,
+        funktion,
+        biodiversitaet_id,
+        biodiversitaet_objekt,
+        wytweide,
+        (ST_Dump(
+            ST_Buffer(
+                ST_Buffer(ST_Union(geometrie), 0.001),
+                -0.001                                   
+            )
+        )).geom AS geometrie
+    FROM
+    	union_geometry
+    GROUP BY
+        t_basket,
+        t_datasetname,
+        funktion,
+        biodiversitaet_id,
+        biodiversitaet_objekt,
+        wytweide
 )
 
 INSERT INTO awjf_waldplan_v2.waldplan_waldfunktion  (
@@ -122,7 +134,7 @@ SELECT
 	CURRENT_TIMESTAMP AS t_createdate,
 	'Datenmigration' t_user
 FROM 
-	reduce_precision AS r
+	buffer_geometry AS r
 LEFT JOIN awjf_schutzwald_v1.schutzwald AS s
 	ON ST_Within(ST_PointOnSurface(s.geometrie), r.geometrie)
 LEFT JOIN awjf_waldplan_v2.waldplan_schutzwald AS sn

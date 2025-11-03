@@ -37,7 +37,7 @@ INSERT INTO awjf_waldplan_v2.t_ili2db_basket (
 SELECT
 	nextval('awjf_waldplan_v2.t_ili2db_seq'::regclass),
 	t_id AS dataset,
-	'SO_AWJF_Waldplan_20250312.WaldplanCatalogues' AS topic,
+	'SO_AWJF_Waldplan_20250312.Waldplankatalog' AS topic,
 	uuid_generate_v4(),
 	datasetname || '.' || 'awjf_waldplan.xtf-1'
 FROM 
