@@ -1,6 +1,6 @@
-DELETE FROM awjf_waldplan_v2.waldplancatalgues_forstrevier;
+DELETE FROM awjf_waldplan_v2.waldplankatalog_forstrevier;
 
-INSERT INTO awjf_waldplan_v2.waldplancatalgues_forstrevier (
+INSERT INTO awjf_waldplan_v2.waldplankatalog_forstrevier (
 	aname,
 	t_basket,
 	t_datasetname,
