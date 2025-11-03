@@ -34,11 +34,12 @@ task copyXtfFile(type: Copy) {
 task validateData(type: IliValidator){
     dependsOn "copyXtfFile"
     description "Validiere den importierten Datensatz"
-    dataFiles = [validateFile, catalogueFile]
+    dataFiles = [validateFile]
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     logFile = "validation.log"
     allObjectsAccessible = true
     forceTypeValidation = true
+    metaConfigFile = [catalogueFile]
     failOnError = true
     
 }
