@@ -36,7 +36,10 @@ task validateData(type: IliValidator){
     dataFiles = validateFile
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     logFile = "validation.log"
+    metaConfigFile = "ilidata:ExceptionalLoadsCatalogues_V1.TypeOfRouteCatalogue"
     allObjectsAccessible = true
+    forceTypeValidation = true
+    
 }
 
 task zipMgdm(type: Zip) {
