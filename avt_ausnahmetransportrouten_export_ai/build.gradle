@@ -7,6 +7,7 @@ import java.nio.file.Paths
 import java.io.File
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
+import de.undercouch.gradle.tasks.download.Download
 
 defaultTasks 'uploadMgdm'
 
@@ -19,8 +20,18 @@ def pathToUploadFolder = 'upload'
 def zipName = 'iliexport.zip'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def validateFile = pathToTempFolder + "/" + exportFileName
+def katalogFileName = 'ExceptionalLoadsRoute_Catalogue_V1.xml'
+def validateKatalogFile = pathToTempFolder + "/" + katalogFileName
+
+task downloadKatalog(type: Download){
+    description = 'Download Kataloge https://models.geo.admin.ch/ASTRA/ExceptionalLoadsRoute_Catalogue_V1.xml'
+    src 'https://models.geo.admin.ch/ASTRA/ExceptionalLoadsRoute_Catalogue_V1.xml'
+    dest pathToTempFolder
+    overwrite true
+}
 
 task copyXtfFile(type: Copy) {
+    dependsOn "downloadKatalog"
     from Paths.get(pathToUploadFolder)
     into Paths.get(pathToTempFolder)
     include uploadFileName
@@ -33,10 +44,13 @@ task copyXtfFile(type: Copy) {
 task validateData(type: IliValidator){
     dependsOn "copyXtfFile"
     description "Validiere den importierten Datensatz"
-    dataFiles = validateFile
+    dataFiles = [validateFile, validateKatalogFile]
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-    configFile = file('ilivalidator.ini')
     logFile = "validation.log"
+    allObjectsAccessible = true
+    forceTypeValidation = true
+    failOnError = true
+    
 }
 
 task zipMgdm(type: Zip) {
