@@ -163,7 +163,7 @@ waldnutzung_flaechen_berechnet_json AS (
             json_build_object(
                 'nutzungskategorie', nutzungskategorie_txt,
                 'flaeche', flaeche,
-                '@type', 'SO_AWJF_Waldplan_Publikation_20250312.Waldplan.Flaechen_Waldplantyp'
+                '@type', 'SO_AWJF_Waldplan_Publikation_20250312.Waldplan.Flaechen_Waldnutzung'
             )
         ) AS waldnutzung_flaechen
     FROM 
@@ -286,3 +286,7 @@ LEFT JOIN waldflaechen_berechnet AS wfb
 	ON gs.egrid = wfb.egrid
 LEFT JOIN wytweideflaechen_berechnet AS wytb 
 	ON gs.egrid = wytb.egrid
+WHERE 
+	gs.forstbetrieb IS NOT NULL
+AND 
+	gs.forstrevier IS NOT NULL --Die WHERE-Klauseln müssen am Schluss gelöscht werden. Sind aktuell nur drin, damit sinnvoll getestet werden kann.

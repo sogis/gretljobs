@@ -1,9 +1,9 @@
 SELECT
 	funktion,
-	typ_wf.dispname AS funktion_txt,
+	wfk.dispname AS funktion_txt,
 	biodiversitaet_id,
 	biodiversitaet_objekt,
-	typ_bio.dispname AS biodiversitaet_objekt_txt,
+	biotyp.dispname AS biodiversitaet_objekt_txt,
 	--schutzwald_nr, --Zuteilung Schutzwald-Nr. vorher notwendig
 	wytweide,
 	CASE 
@@ -15,7 +15,7 @@ SELECT
 	bemerkung
 FROM 
 	awjf_waldplan_v2.waldplan_waldfunktion AS wf
-LEFT JOIN awjf_waldplan_v2.typ_waldfunktion AS typ_wf 
-	ON wf.funktion = typ_wf.ilicode
-LEFT JOIN awjf_waldplan_v2.typ_biodiversitaet typ_bio 
-	ON wf.biodiversitaet_objekt = typ_bio.ilicode
+LEFT JOIN awjf_waldplan_v2.waldfunktionskategorie AS wfk
+	ON wf.funktion = wfk.ilicode
+LEFT JOIN awjf_waldplan_v2.biodiversitaetstyp AS biotyp
+	ON wf.biodiversitaet_objekt = biotyp.ilicode
