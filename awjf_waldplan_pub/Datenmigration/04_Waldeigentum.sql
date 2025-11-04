@@ -151,7 +151,7 @@ LEFT JOIN awjf_waldplan_v2.waldplankatalog_forstbetrieb AS fb
 		OR (w.fid_eigcod = 65 AND fb.aname = 'Halten')
 		OR (w.fid_eigcod = 68 AND fb.aname = 'Horriwil')
 		OR (w.fid_eigcod = 468 AND fb.aname = 'Hüniken')
-		OR (w.fid_eigcod = 469 AND fb.aname = 'Krigestetten')
+		OR (w.fid_eigcod = 469 AND fb.aname = 'Kriegestetten')
 		OR (w.fid_eigcod = 71 AND fb.aname = 'Lohn')
 		OR (w.fid_eigcod = 72 AND fb.aname = 'Luterbach')
 		OR (w.fid_eigcod = 73 AND fb.aname = 'Obergerlafingen')

@@ -32,36 +32,52 @@ WHERE
 ),
 
 union_geometry AS (
-SELECT
-	t_basket,
-	t_datasetname,
-	Nutzungskategorie,
-	(ST_Dump(ST_UNION(geometrie))).geom AS geometrie
-FROM
-	waldnutzung
-GROUP BY 
-	t_basket,
-	t_datasetname,
-	Nutzungskategorie
-),
-
-buffer_geometry AS (
     SELECT
-        t_basket,
-        t_datasetname,
-		nutzungskategorie,
+		t_basket,
+		t_datasetname,
+		Nutzungskategorie,
         (ST_Dump(
-            ST_Buffer(
-                ST_Buffer(ST_Union(geometrie), 0.001),
-                -0.001                                   
+            ST_Union(
+                ST_SnapToGrid(
+                    ST_RemoveRepeatedPoints(
+                        ST_MakeValid(geometrie),
+                        0.0005
+                    ),
+                    0.0005
+                )
             )
         )).geom AS geometrie
     FROM
-    	union_geometry
-    GROUP BY
-        t_basket,
-        t_datasetname,
-		nutzungskategorie
+        waldnutzung
+	GROUP BY 
+		t_basket,
+		t_datasetname,
+		Nutzungskategorie
+),
+
+cleaned_geometry AS (
+    SELECT
+		t_basket,
+		t_datasetname,
+		Nutzungskategorie,
+        CASE 
+            WHEN ST_GeometryType(geometrie) = 'ST_Polygon' THEN
+                ST_MakePolygon(
+                    ST_ExteriorRing(geometrie),
+                    ARRAY(
+                        SELECT ST_ExteriorRing(ring.geom)
+                        FROM (
+                            SELECT (ST_DumpRings(ug.geometrie)).*
+                        ) AS ring
+                        WHERE ring.path[1] > 0
+                        AND (4 * 3.14159 * ST_Area(ring.geom)) / 
+                            (ST_Perimeter(ring.geom) ^ 2) > 0.005
+                    )
+                )
+            ELSE geometrie
+        END AS geometrie
+    FROM
+        union_geometry AS ug
 )
 
 INSERT INTO awjf_waldplan_v2.waldplan_waldnutzung (
@@ -83,4 +99,4 @@ SELECT
 	CURRENT_TIMESTAMP AS t_createdate,
 	'Datenmigration' t_user
 FROM
-	buffer_geometry
+	cleaned_geometry

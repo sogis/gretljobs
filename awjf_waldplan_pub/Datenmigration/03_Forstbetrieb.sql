@@ -65,7 +65,7 @@ FROM (VALUES
 	('Halten'),
 	('Horriwil'),
 	('Hüniken'),
-	('Krigestetten'),
+	('Kriegestetten'),
 	('Lohn'),
 	('Luterbach'),
 	('Obergerlafingen'),

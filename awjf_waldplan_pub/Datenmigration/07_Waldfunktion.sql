@@ -53,26 +53,6 @@ WHERE
 ),
 
 union_geometry AS (
-SELECT
-	t_basket,
-	t_datasetname,
-	funktion,
-	biodiversitaet_id,
-	biodiversitaet_objekt,
-	wytweide,
-	(ST_Dump(ST_Union(geometrie))).geom AS geometrie
-FROM 
-	waldfunktionen
-GROUP BY
-	t_basket,
-	t_datasetname,
-	funktion,
-	biodiversitaet_id,
-	biodiversitaet_objekt,
-	wytweide
-),
-
-buffer_geometry AS (
     SELECT
         t_basket,
         t_datasetname,
@@ -81,13 +61,18 @@ buffer_geometry AS (
         biodiversitaet_objekt,
         wytweide,
         (ST_Dump(
-            ST_Buffer(
-                ST_Buffer(ST_Union(geometrie), 0.001),
-                -0.001                                   
+            ST_Union(
+                ST_SnapToGrid(
+                    ST_RemoveRepeatedPoints(
+                        ST_MakeValid(geometrie),
+                        0.0005
+                    ),
+                    0.0005
+                )
             )
         )).geom AS geometrie
     FROM
-    	union_geometry
+        waldfunktionen
     GROUP BY
         t_basket,
         t_datasetname,
@@ -95,6 +80,34 @@ buffer_geometry AS (
         biodiversitaet_id,
         biodiversitaet_objekt,
         wytweide
+),
+
+cleaned_geometry AS (
+    SELECT
+        t_basket,
+        t_datasetname,
+        funktion,
+        biodiversitaet_id,
+        biodiversitaet_objekt,
+        wytweide,
+        CASE 
+            WHEN ST_GeometryType(geometrie) = 'ST_Polygon' THEN
+                ST_MakePolygon(
+                    ST_ExteriorRing(geometrie),
+                    ARRAY(
+                        SELECT ST_ExteriorRing(ring.geom)
+                        FROM (
+                            SELECT (ST_DumpRings(ug.geometrie)).*
+                        ) AS ring
+                        WHERE ring.path[1] > 0
+                        AND (4 * 3.14159 * ST_Area(ring.geom)) / 
+                            (ST_Perimeter(ring.geom) ^ 2) > 0.005
+                    )
+                )
+            ELSE geometrie
+        END AS geometrie
+    FROM
+        union_geometry AS ug
 )
 
 INSERT INTO awjf_waldplan_v2.waldplan_waldfunktion  (
@@ -134,7 +147,7 @@ SELECT
 	CURRENT_TIMESTAMP AS t_createdate,
 	'Datenmigration' t_user
 FROM 
-	buffer_geometry AS r
+	cleaned_geometry AS r
 LEFT JOIN awjf_schutzwald_v1.schutzwald AS s
 	ON ST_Within(ST_PointOnSurface(s.geometrie), r.geometrie)
 LEFT JOIN awjf_waldplan_v2.waldplan_schutzwald AS sn
