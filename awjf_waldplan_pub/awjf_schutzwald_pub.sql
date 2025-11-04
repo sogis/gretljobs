@@ -1,6 +1,28 @@
+WITH
+
+grundstuecke AS (
+SELECT 
+	ww.egrid,
+	ww.forstkreis,
+	fk.dispname AS forstkreis_txt,
+	wfr.aname AS forstrevier,
+	ll.geometrie
+FROM
+	awjf_waldplan_v2.waldplan_waldeigentum AS ww
+LEFT JOIN agi_dm01avso24.liegenschaften_grundstueck AS lg
+	ON ww.egrid = lg.egris_egrid
+LEFT JOIN agi_dm01avso24.liegenschaften_liegenschaft AS ll
+	ON lg.t_id = ll.liegenschaft_von
+LEFT JOIN awjf_waldplan_v2.waldplankatalog_forstrevier AS wfr
+	ON ww.forstrevier = wfr.t_id
+LEFT JOIN awjf_waldplan_v2.forstkreise AS fk 
+	ON ww.forstkreis = fk.ilicode 
+),
+
+schutzwald AS (
 SELECT
 	sw.schutzwald_nr,
-	--forstkreis, --erst möglich wenn entsprechender Layer erstellt wurde...aber braucht es die hier überhaupt?
+	--forstkreis,
 	--forstkreis_txt,
 	--forstrevier,
 	CASE 
@@ -57,24 +79,72 @@ SELECT
 	osw.dispname AS objektkategorie_txt,
 	sw.schadenpotential,
 	sw.hauptgefahrenpotential,
-	th.dispname AS hauptgefahrenpotential_txt,
+	ah.dispname AS hauptgefahrenpotential_txt,
 	sw.intensitaet_geschaetzt,
-	tig.dispname AS intensitaet_geschaetzt_txt,
+	ins.dispname AS intensitaet_geschaetzt_txt,
 	hgg.gemeindename AS gemeinde,
 	ROUND((ST_Area(wf.geometrie)/10000)::numeric,3) AS flaeche,
 	sw.bemerkungen,
-	 wf.geometrie
+	wf.geometrie
 FROM 
 	awjf_waldplan_v2.waldplan_waldfunktion AS wf
 LEFT JOIN awjf_waldplan_v2.waldplan_schutzwald AS sw 
 	ON wf.schutzwald_r = sw.t_id
 LEFT JOIN awjf_waldplan_v2.objekte_schutzwald AS osw 
 	ON sw.objektkategorie = osw.ilicode
-LEFT JOIN awjf_waldplan_v2.typ_hauptgefahrenpotential AS th 
-	ON sw.hauptgefahrenpotential = th.ilicode
-LEFT JOIN awjf_waldplan_v2.typ_intensitaet_geschaetzt tig 
-	ON sw.intensitaet_geschaetzt = tig.ilicode
+LEFT JOIN awjf_waldplan_v2.art_hauptgefahrenpotential AS ah 
+	ON sw.hauptgefahrenpotential = ah.ilicode
+LEFT JOIN awjf_waldplan_v2.intensitaetsstufe AS ins 
+	ON sw.intensitaet_geschaetzt = ins.ilicode
 LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS hgg 
 	ON wf.t_datasetname = hgg.bfs_gemeindenummer::text
 WHERE 
 	wf.funktion IN ('Schutzwald','Schutzwald_Biodiversitaet')
+),
+
+forstdaten_admin AS (
+SELECT DISTINCT ON (sw.schutzwald_nr)
+	sw.schutzwald_nr,
+	gs.forstkreis,
+	gs.forstkreis_txt,
+	gs.forstrevier,
+	sw.geometrie
+FROM 
+	schutzwald AS sw
+LEFT JOIN grundstuecke AS gs 
+	ON ST_INTERSECTS(sw.geometrie, gs.geometrie)
+ORDER BY 
+	sw.schutzwald_nr,
+	ST_Area(ST_INTERSECTION(sw.geometrie, gs.geometrie)) DESC --Es soll nur die grösste Grundstücksfläche verglichen werden
+)
+
+SELECT
+	sw.schutzwald_nr,
+	fa.forstkreis,
+	fa.forstkreis_txt,
+	fa.forstrevier,
+	sw.sturz,
+	sw.sturz_txt,
+	sw.rutsch,
+	sw.rutsch_txt,
+	sw.gerinnerelevante_prozesse,
+	sw.gerinnerelevante_prozesse_txt,
+	sw.lawine,
+	sw.lawine_txt,
+	sw.andere_kt,
+	sw.andere_kt_txt,
+	sw.objektkategorie,
+	sw.objektkategorie_txt,
+	sw.schadenpotential,
+	sw.hauptgefahrenpotential,
+	sw.hauptgefahrenpotential_txt,
+	sw.intensitaet_geschaetzt,
+	sw.intensitaet_geschaetzt_txt,
+	sw.gemeinde,
+	sw.flaeche,
+	sw.bemerkungen,
+	sw.geometrie
+FROM 
+	schutzwald AS sw 
+LEFT JOIN forstdaten_admin AS fa 
+	ON sw.schutzwald_nr = fa.schutzwald_nr

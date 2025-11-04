@@ -9,14 +9,14 @@ SELECT
 	fk.dispname AS forstkreis_txt,
 	wfr.aname AS forstrevier,
 	ww.wirtschaftszone,
-	twz.dispname AS wirtschaftszone_txt,
+	wz.dispname AS wirtschaftszone_txt,
 	lg.nummer AS grundstuecknummer,
 	ll.flaechenmass,
-	ww.typ || ' ' || ww.zusatzinformation AS eigentuemer,
-	ww.typ,
-	tw.dispname AS typ_txt,
+	ww.eigentuemer || ' ' || ww.zusatzinformation AS eigentuemerinformation,
+	ww.eigentuemer,
+	wet.dispname AS eigentuemer_txt,
 	--waldfunktion_flaechen,
-	--waldplantyp_flaechen,
+	--waldnutzung_flaechen,
 	--wytweide_flaeche,
 	--waldflaeche,
 	gg.aname AS grundbuch,
@@ -38,11 +38,11 @@ LEFT JOIN agi_av_gb_administrative_einteilungen_v2.grundbuchkreise_grundbuchkrei
 	ON lg.nbident = gg.nbident
 LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS hg 
 	ON gg.bfsnr = hg.bfs_gemeindenummer
-LEFT JOIN awjf_waldplan_v2.typ_waldeigentum AS tw
-	ON ww.typ = tw.ilicode
-LEFT JOIN awjf_waldplan_v2.typ_wirtschaftszone AS twz 
-	ON ww.wirtschaftszone = twz.ilicode
-LEFT JOIN awjf_waldplan_v2.waldplancatalgues_forstrevier AS wfr
+LEFT JOIN awjf_waldplan_v2.waldeigentuemer AS wet
+	ON ww.eigentuemer = wet.ilicode
+LEFT JOIN awjf_waldplan_v2.wirtschaftszonen AS wz 
+	ON ww.wirtschaftszone = wz.ilicode
+LEFT JOIN awjf_waldplan_v2.waldplankatalog_forstrevier AS wfr
 	ON ww.forstrevier = wfr.t_id
 LEFT JOIN awjf_waldplan_v2.forstkreise AS fk 
 	ON ww.forstkreis = fk.ilicode 
@@ -51,10 +51,10 @@ LEFT JOIN awjf_waldplan_v2.forstkreise AS fk
 waldfunktion AS (
 SELECT
 	funktion,
-	typ_wf.dispname AS funktion_txt,
+	wfk.dispname AS funktion_txt,
 	biodiversitaet_id,
 	biodiversitaet_objekt,
-	typ_bio.dispname AS biodiversitaet_objekt_txt,
+	biotyp.dispname AS biodiversitaet_objekt_txt,
 	--schutzwald_nr, --Zuteilung Schutzwald-Nr. vorher notwendig
 	wytweide,
 	CASE 
@@ -66,22 +66,22 @@ SELECT
 	bemerkung
 FROM 
 	awjf_waldplan_v2.waldplan_waldfunktion AS wf
-LEFT JOIN awjf_waldplan_v2.typ_waldfunktion AS typ_wf 
-	ON wf.funktion = typ_wf.ilicode
-LEFT JOIN awjf_waldplan_v2.typ_biodiversitaet typ_bio 
-	ON wf.biodiversitaet_objekt = typ_bio.ilicode
+LEFT JOIN awjf_waldplan_v2.waldfunktionskategorie AS wfk 
+	ON wf.funktion = wfk.ilicode
+LEFT JOIN awjf_waldplan_v2.biodiversitaetstyp AS biotyp 
+	ON wf.biodiversitaet_objekt = biotyp.ilicode
 ),
 
-waldplantyp AS (
+waldnutzung AS (
 	SELECT
-		wt.t_id,
-		wt.nutzungskategorie,
-		typ_nk.dispName AS nutzungskategorie_txt,
-		wt.geometrie
+		wnz.t_id,
+		wnz.nutzungskategorie,
+		wnk.dispName AS nutzungskategorie_txt,
+		wnz.geometrie
 	FROM 
-		awjf_waldplan_v2.waldplan_waldplantyp AS wt
-	LEFT JOIN awjf_waldplan_v2.typ_nutzungskategorie AS typ_nk 
-		ON wt.nutzungskategorie = typ_nk.ilicode
+		awjf_waldplan_v2.waldplan_waldnutzung AS wnz
+	LEFT JOIN awjf_waldplan_v2.waldnutzungskategorie AS wnk 
+		ON wnz.nutzungskategorie = wnk.ilicode
 ),
 
 waldflaechen_berechnet AS (
@@ -142,21 +142,21 @@ waldfunktion_flaechen_berechnet_json AS (
         egrid
 ),
 
-waldplantyp_flaechen_berechnet AS (
+waldnutzung_flaechen_berechnet AS (
 	SELECT 
 		g.egrid,
-		wt.nutzungskategorie_txt,
-		ROUND(SUM(ST_Area(ST_Intersection(g.geometrie, wt.geometrie)))::NUMERIC) AS flaeche
+		wnz.nutzungskategorie_txt,
+		ROUND(SUM(ST_Area(ST_Intersection(g.geometrie, wnz.geometrie)))::NUMERIC) AS flaeche
 	FROM
 		grundstuecke AS g
-	LEFT JOIN waldplantyp AS wt 
-		ON ST_INTERSECTS(g.geometrie, wt.geometrie)
+	LEFT JOIN waldnutzung AS wnz 
+		ON ST_INTERSECTS(g.geometrie, wnz.geometrie)
 	GROUP BY 
 		g.egrid,
-		wt.nutzungskategorie_txt
+		wnz.nutzungskategorie_txt
 ),
 
-waldplantyp_flaechen_berechnet_json AS (
+waldnutzung_flaechen_berechnet_json AS (
     SELECT
     	egrid,
         json_agg(
@@ -165,9 +165,9 @@ waldplantyp_flaechen_berechnet_json AS (
                 'flaeche', flaeche,
                 '@type', 'SO_AWJF_Waldplan_Publikation_20250312.Waldplan.Flaechen_Waldplantyp'
             )
-        ) AS waldplantyp_flaechen
+        ) AS waldnutzung_flaechen
     FROM 
-        waldplantyp_flaechen_berechnet
+        waldnutzung_flaechen_berechnet
     WHERE
     	flaeche > 0
     GROUP BY 
@@ -246,43 +246,43 @@ biodiversitaet_id_flaechen_berechnet_json AS (
 )
 
 SELECT 
-	g.egrid,
-	g.gemeinde,
-	g.forstbetrieb,
-	g.forstkreis,
-	g.forstkreis_txt,
-	g.forstrevier,
-	g.wirtschaftszone,
-	g.wirtschaftszone_txt,
-	g.grundstuecknummer,
-	g.flaechenmass,
-	g.eigentuemer,
-	g.typ,
-	g.typ_txt,
+	gs.egrid,
+	gs.gemeinde,
+	gs.forstbetrieb,
+	gs.forstkreis,
+	gs.forstkreis_txt,
+	gs.forstrevier,
+	gs.wirtschaftszone,
+	gs.wirtschaftszone_txt,
+	gs.grundstuecknummer,
+	gs.flaechenmass,
+	gs.eigentuemer,
+	gs.eigentuemer_txt,
+	gs.eigentuemerinformation,
 	wffj.waldfunktion_flaechen::JSON AS waldfunktion_flaechen,
-	wtfj.waldplantyp_flaechen::JSON AS waldplantyp_flaechen,
+	wnfj.waldnutzung_flaechen::JSON AS waldnutzung_flaechen,
 	bofj.biodiversitaet_objekt_flaechen::JSON AS biodiversitaetsobjekt_flaeche,
 	bifj.biodiversitaet_id_flaechen::JSON AS biodiversitaet_id_flaeche,
 	wytb.flaeche AS wytweide_flaeche,
 	--produktive_flaeche,
 	--hiebsatzrelevante_flaeche,
 	wfb.flaeche AS waldflaeche,
-	g.grundbuch,
-	g.ausserkantonal,
-	g.ausserkantonal_txt,
-	g.geometrie,
-	g.bemerkung
+	gs.grundbuch,
+	gs.ausserkantonal,
+	gs.ausserkantonal_txt,
+	gs.geometrie,
+	gs.bemerkung
 FROM 
-	grundstuecke AS g
+	grundstuecke AS gs
 LEFT JOIN waldfunktion_flaechen_berechnet_json AS wffj 
-	ON g.egrid = wffj.egrid
-LEFT JOIN waldplantyp_flaechen_berechnet_json AS wtfj 
-	ON g.egrid = wtfj.egrid
+	ON gs.egrid = wffj.egrid
+LEFT JOIN waldnutzung_flaechen_berechnet_json AS wnfj 
+	ON gs.egrid = wnfj.egrid
 LEFT JOIN biodiversitaet_objekt_flaechen_berechnet_json AS bofj
-	ON g.egrid = bofj.egrid
+	ON gs.egrid = bofj.egrid
 LEFT JOIN biodiversitaet_id_flaechen_berechnet_json AS bifj
-	ON g.egrid = bifj.egrid
+	ON gs.egrid = bifj.egrid
 LEFT JOIN waldflaechen_berechnet AS wfb 
-	ON g.egrid = wfb.egrid
+	ON gs.egrid = wfb.egrid
 LEFT JOIN wytweideflaechen_berechnet AS wytb 
-	ON g.egrid = wytb.egrid
+	ON gs.egrid = wytb.egrid
