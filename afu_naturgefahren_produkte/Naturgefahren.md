@@ -56,7 +56,9 @@ Die Naturgefahren-Produkte sind die folgenden:
 - Synoptisches Gefahrengebiet
 - Hinweis Ufererosion
 
-Die Produkte werden mit folgendem GRETL-Job berechnet: *afu_naturgefahren_produkte*. Auch hier muss wieder das Dataset eingegeben werden, für welches man die Produkte berechnen will (Beispiel: main). Die Daten werden in folgendem Modell berechnet und abgelegt: https://geo.so.ch/models/AFU/SO_AFU_Naturgefahren_Kernmodell_20231016.ili
+Die Produkte werden mit folgendem GRETL-Job berechnet: *afu_naturgefahren_produkte*. Auch hier muss wieder das Dataset eingegeben werden, für welches man die Produkte berechnen will (Beispiel: main). Des weiteren kann der Einbezug der alten Daten einzelner Hauptprozess-Gefahrenkarten unterbunden werden. Hierzu schreibt man bspw. beim Parameter "ohne_altdaten_wasser" "true" hin. 
+
+Die Daten werden in folgendem Modell berechnet und abgelegt: https://geo.so.ch/models/AFU/SO_AFU_Naturgefahren_Kernmodell_20231016.ili
 
     Im Ordner des GRETL-Jobs (afu_naturgefahren_produkte) befindet sich ein docker-compose.yml. <br>
     Wird es mit "docker-compose up" ausgeführt, wird eine postgis DB hochgefahren. 
