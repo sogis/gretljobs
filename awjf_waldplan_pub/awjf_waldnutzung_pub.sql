@@ -25,24 +25,24 @@ wald_bestockt AS (
 		'Mit Wald bestockt' AS nutzungskategorie_txt,
 		(ST_Dump(
 			CASE 
-				WHEN wpu.geometrie IS NULL
+				WHEN wnu.geometrie IS NULL
 					THEN wf.geometrie  -- Keine Überschneidung → ganze Fläche
-				WHEN ST_Intersects(wf.geometrie, wpu.geometrie)
-					THEN ST_Difference(wf.geometrie, wpu.geometrie)  -- Differenz
+				WHEN ST_Intersects(wf.geometrie, wnu.geometrie)
+					THEN ST_Difference(wf.geometrie, wnu.geometrie)  -- Differenz
 				ELSE wf.geometrie  -- Sicherheitsfall
 			END
 		)).geom AS geometrie,
 		NULL AS bemerkung
 	FROM
 		awjf_waldplan_v2.waldplan_waldfunktion AS wf
-    LEFT JOIN waldnutzung_union AS wpu
-    	ON ST_Intersects(wf.geometrie, wpu.geometrie)
+    LEFT JOIN waldnutzung_union AS wnu
+    	ON ST_Intersects(wf.geometrie, wnu.geometrie)
     WHERE
     	ST_IsValid(wf.geometrie)
     AND (
-    	wpu.geometrie IS NULL  -- Keine Waldnutzung → ganze Fläche
+    	wnu.geometrie IS NULL  -- Keine Waldnutzung → ganze Fläche
    	OR NOT
-   		ST_IsEmpty(ST_Difference(wf.geometrie, wpu.geometrie))  -- Differenz vorhanden
+   		ST_IsEmpty(ST_Difference(wf.geometrie, wnu.geometrie))  -- Differenz vorhanden
     )
 ),
 

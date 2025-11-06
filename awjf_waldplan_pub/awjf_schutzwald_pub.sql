@@ -102,7 +102,9 @@ WHERE
 	wf.funktion IN ('Schutzwald','Schutzwald_Biodiversitaet')
 ),
 
-forstdaten_admin AS (
+/*
+-- Sofern nur die grösste Fläche von forstrevier berücksichtigt werden soll--
+administrative_forstdaten AS (
 SELECT DISTINCT ON (sw.schutzwald_nr)
 	sw.schutzwald_nr,
 	gs.forstkreis,
@@ -117,11 +119,31 @@ ORDER BY
 	sw.schutzwald_nr,
 	ST_Area(ST_INTERSECTION(sw.geometrie, gs.geometrie)) DESC --Es soll nur die grösste Grundstücksfläche verglichen werden
 )
+*/
+
+administrative_forstdaten AS (
+SELECT
+	sw.schutzwald_nr,
+	gs.forstkreis,
+	gs.forstkreis_txt,
+	STRING_AGG(DISTINCT gs.forstrevier, ', ') AS forstrevier,
+	sw.geometrie
+FROM 
+	schutzwald AS sw
+LEFT JOIN grundstuecke AS gs 
+	ON ST_INTERSECTS(sw.geometrie, gs.geometrie)
+WHERE
+	ST_Area(ST_Intersection(sw.geometrie, gs.geometrie)) > 1
+GROUP BY 
+	sw.schutzwald_nr,
+	gs.forstkreis,
+	gs.forstkreis_txt,
+	sw.geometrie
+)
 
 SELECT
 	sw.schutzwald_nr,
-	fa.forstkreis,
-	fa.forstkreis_txt,
+	fa.forstkreis_txt AS forstkreis,
 	fa.forstrevier,
 	sw.sturz,
 	sw.sturz_txt,
@@ -146,5 +168,5 @@ SELECT
 	sw.geometrie
 FROM 
 	schutzwald AS sw 
-LEFT JOIN forstdaten_admin AS fa 
+LEFT JOIN administrative_forstdaten AS fa 
 	ON sw.schutzwald_nr = fa.schutzwald_nr
