@@ -1,25 +1,34 @@
 import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
 import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferData'
+defaultTasks 'create_index'
+
+tasks.register('create_index', SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = files(
+        'waldplan_create_index.sql'
+    )
+}
 
 tasks.register('transferData', Db2Db) {
+    dependsOn "create_index"
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            /*new TransferSet('awjf_waldfunktion_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldfunktion', true),*/
-            new TransferSet('awjf_waldnutzung_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldnutzung', true)/*,
+            /*new TransferSet('awjf_waldfunktion_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldfunktion', true),
+            new TransferSet('awjf_waldnutzung_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldnutzung', true),
             new TransferSet('awjf_schutzwald_pub.sql', 'awjf_waldplan_pub_v2.waldplan_schutzwald', true),
-            new TransferSet('awjf_walduebersicht_pub.sql', 'awjf_waldplan_pub_v2.waldplan_walduebersicht', true),
-            new TransferSet('awjf_waldplan_grundstueck_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck', true)*/          
+            new TransferSet('awjf_walduebersicht_pub.sql', 'awjf_waldplan_pub_v2.waldplan_walduebersicht', true),*/
+            new TransferSet('awjf_waldplan_grundstueck_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck', true)          
     ];
 }
 
 tasks.register('UpdateValues', SqlExecutor) {
     dependsOn "transferData"
-    database = [dbUriDuckDB]
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = files(
         'test.sql'
     )
@@ -30,7 +39,7 @@ tasks.register('UpdateValues', SqlExecutor) {
 * Aktivieren sobald produktiv
 
 tasks.register('validateData', Ili2pgValidate) {
-    dependsOn transferData
+    dependsOn "transferData"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     models = "SO_AWJF_Waldplan_Publikation_20250312"
     dbschema = "awjf_waldplan_pub_v2"

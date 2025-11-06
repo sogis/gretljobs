@@ -48,6 +48,31 @@ LEFT JOIN awjf_waldplan_v2.forstkreise AS fk
 	ON ww.forstkreis = fk.ilicode 
 ),
 
+waldflaeche_grundstueck AS (
+SELECT
+    egrid,
+    geometrie
+FROM (
+    SELECT
+        gs.egrid,
+        (ST_Dump(ST_Intersection(wf.geometrie, gs.geometrie))).geom AS geometrie
+    FROM
+        awjf_waldplan_v2.waldplan_waldfunktion AS wf
+    JOIN grundstuecke AS gs
+        ON ST_Intersects(wf.geometrie, gs.geometrie)
+    WHERE
+        ST_Intersects(wf.geometrie, gs.geometrie)
+    GROUP BY
+        gs.egrid,
+        gs.geometrie,
+        wf.geometrie
+) sub
+WHERE
+    ST_GeometryType(geometrie) = 'ST_Polygon'
+AND
+	ST_Area(geometrie) > 0.5
+),
+
 waldfunktion AS (
 SELECT
 	funktion,
@@ -270,7 +295,7 @@ SELECT
 	gs.grundbuch,
 	gs.ausserkantonal,
 	gs.ausserkantonal_txt,
-	gs.geometrie,
+	wfg.geometrie,
 	gs.bemerkung
 FROM 
 	grundstuecke AS gs
@@ -286,7 +311,11 @@ LEFT JOIN waldflaechen_berechnet AS wfb
 	ON gs.egrid = wfb.egrid
 LEFT JOIN wytweideflaechen_berechnet AS wytb 
 	ON gs.egrid = wytb.egrid
+LEFT JOIN waldflaeche_grundstueck AS wfg 
+	ON gs.egrid = wfg.egrid
 WHERE 
 	gs.forstbetrieb IS NOT NULL
 AND 
 	gs.forstrevier IS NOT NULL --Die WHERE-Klauseln müssen am Schluss gelöscht werden. Sind aktuell nur drin, damit sinnvoll getestet werden kann.
+AND 
+	wfg.geometrie IS NOT NULL
