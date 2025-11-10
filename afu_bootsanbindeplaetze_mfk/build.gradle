@@ -1,0 +1,76 @@
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+import java.nio.file.Files
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
+defaultTasks 'import_mfk_data'
+
+// variables
+def dbPath = "$buildDir/afu_bootsanbindeplaetze_mfk.duckdb"
+def dbUriDuckDB = "jdbc:duckdb:$dbPath"
+def dbFile = new File(dbPath)
+def today = LocalDate.now()
+def uploadfile = file("data/mfk_data.xlsx")
+
+// Create DB-variables for sql-files
+def dbHostPub = dbUriPub.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastIndexOf("/"))
+def dbDatabasePub = 'pub'
+def dbConnectionStringPub = "'dbname=$dbDatabasePub user=$dbUserPub password=$dbPwdPub host=$dbHostPub'"
+
+// delete build-directory if it exists
+if (buildDir.exists()) {
+    buildDir.deleteDir()
+}
+
+// create build-directory
+buildDir.mkdirs()
+
+tasks.register("import_mfk_data", SqlExecutor){
+    database = [dbUriDuckDB]
+    sqlParameters = [
+        mfkPath: "'${uploadfile}'".toString()]
+    sqlFiles = files(
+        'load_extension_spatial.sql',
+        'import_data_mfk.sql'
+    )
+}
+
+/*
+// create sap-structure
+tasks.register("create_sap_list", SqlExecutor){
+    database = [dbUriDuckDB]
+    sqlParameters = [
+        connectionStringPub : dbConnectionStringPub as String,
+        csvPathSAP: "'" + "$buildDir/bootsanbindeplaetze_sap_export_${today}.csv" + "'"]
+    sqlFiles = files(
+        'load_extension_spatial.sql',
+        'attach_pubdb.sql',
+        'create_sap_table.sql',
+        'calculate_values_sap.sql',
+        'export_csv_sap.sql',
+        'detach_pubdb.sql'
+    )
+}
+
+// create kontokorrent-structure
+tasks.register("create_kontokorrent_list", SqlExecutor){
+    dependsOn "create_sap_list"
+    database = [dbUriDuckDB]
+    sqlParameters = [
+        connectionStringPub : dbConnectionStringPub as String,
+        csvPathKontokorrent: "'" + "$buildDir/bootsanbindeplaetze_kontokorrent_export_${today}.csv" + "'"]
+    sqlFiles = files(
+        'load_extension_spatial.sql',
+        'attach_pubdb.sql',
+        'create_kontokorrent_table.sql',
+        'calculate_values_kontokorrent.sql',
+        'export_csv_kontokorrent.sql',
+        'detach_pubdb.sql'
+    )
+}
+*/
