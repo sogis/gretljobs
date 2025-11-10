@@ -8,7 +8,7 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'import_mfk_data'
+defaultTasks 'abgleich_mfk'
 
 // variables
 def dbPath = "$buildDir/afu_bootsanbindeplaetze_mfk.duckdb"
@@ -18,16 +18,15 @@ def today = LocalDate.now()
 def uploadfile = file("data/mfk_data.xlsx")
 
 // Create DB-variables for sql-files
-def dbHostPub = dbUriPub.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastIndexOf("/"))
-def dbDatabasePub = 'pub'
-def dbConnectionStringPub = "'dbname=$dbDatabasePub user=$dbUserPub password=$dbPwdPub host=$dbHostPub'"
+def dbHostEdit= dbUriEdit.substring(dbUriEdit.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
+def dbDatabaseEdit = 'edit'
+def dbConnectionStringEdit = "'dbname=$dbDatabaseEdit user=$dbUserEdit password=$dbPwdEdit host=$dbHostEdit'"
 
 // delete build-directory if it exists
 if (buildDir.exists()) {
     buildDir.deleteDir()
 }
 
-// create build-directory
 buildDir.mkdirs()
 
 tasks.register("import_mfk_data", SqlExecutor){
@@ -40,37 +39,18 @@ tasks.register("import_mfk_data", SqlExecutor){
     )
 }
 
-/*
-// create sap-structure
-tasks.register("create_sap_list", SqlExecutor){
+tasks.register("abgleich_mfk", SqlExecutor){
+    dependsOn "import_mfk_data"
     database = [dbUriDuckDB]
     sqlParameters = [
-        connectionStringPub : dbConnectionStringPub as String,
-        csvPathSAP: "'" + "$buildDir/bootsanbindeplaetze_sap_export_${today}.csv" + "'"]
+        connectionStringEdit : dbConnectionStringEdit as String,
+        exportPathAbgleich: "'" + "$buildDir/bootsanbindeplaetze_abgleich_mfk.gpkg" + "'" ]
     sqlFiles = files(
         'load_extension_spatial.sql',
-        'attach_pubdb.sql',
-        'create_sap_table.sql',
-        'calculate_values_sap.sql',
-        'export_csv_sap.sql',
-        'detach_pubdb.sql'
+        'attach_editdb.sql',
+        'create_table_abgleich.sql',
+        'abgleich_mfk.sql',
+        'export_abgleich_mfk.sql',
+        'detach_editdb.sql'
     )
 }
-
-// create kontokorrent-structure
-tasks.register("create_kontokorrent_list", SqlExecutor){
-    dependsOn "create_sap_list"
-    database = [dbUriDuckDB]
-    sqlParameters = [
-        connectionStringPub : dbConnectionStringPub as String,
-        csvPathKontokorrent: "'" + "$buildDir/bootsanbindeplaetze_kontokorrent_export_${today}.csv" + "'"]
-    sqlFiles = files(
-        'load_extension_spatial.sql',
-        'attach_pubdb.sql',
-        'create_kontokorrent_table.sql',
-        'calculate_values_kontokorrent.sql',
-        'export_csv_kontokorrent.sql',
-        'detach_pubdb.sql'
-    )
-}
-*/

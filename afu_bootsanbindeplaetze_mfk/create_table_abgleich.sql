@@ -4,12 +4,12 @@ DROP TABLE IF EXISTS abgleich_mfk;
 CREATE TABLE abgleich_mfk (
 	Bootsanbindeplatz_ID INTEGER,
 	Bootskennzeichen INTEGER,
-	Daten_gleich BOOLEAN,
-	nur_Vorname BOOLEAN,
-	nur_Nachname BOOLEAN,
-	nur_Name_ganz BOOLEAN,
-	Bootslaenge BOOLEAN,
-	keine_Daten_MFK BOOLEAN,
-	Geometrie GEOMETRY
+	Personendaten_gleich BOOLEAN,
+	Kein_Match_MFK BOOLEAN,
+	Vorname_gleich BOOLEAN,
+	Nachname_gleich BOOLEAN,
+	Adresse_gleich BOOLEAN,
+	PLZ_gleich BOOLEAN,
+	Bootslaenge_gleich BOOLEAN
 )
 ;
