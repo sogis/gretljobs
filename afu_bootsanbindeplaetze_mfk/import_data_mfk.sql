@@ -40,6 +40,5 @@ INSERT INTO data_mfk
 		Ort,
 		Land
 	FROM
-		ST_READ(${mfkPath})
-	OFFSET 1
+		read_xlsx(${mfkPath}, header = true)
 ;
