@@ -14,7 +14,6 @@ defaultTasks 'abgleich_mfk'
 def dbPath = "$buildDir/afu_bootsanbindeplaetze_mfk.duckdb"
 def dbUriDuckDB = "jdbc:duckdb:$dbPath"
 def dbFile = new File(dbPath)
-def uploadFile = file("upload/uploadFile.xlsx")
 /**
 * Nur lokal zum Testen
 def uploadFile = file("data/mfk_data.xlsx")
@@ -35,7 +34,7 @@ buildDir.mkdirs()
 tasks.register("import_mfk_data", SqlExecutor){
     database = [dbUriDuckDB]
     sqlParameters = [
-        mfkPath: "'uploadFile'".toString()]
+        mfkPath: "upload/uploadFile"]
     sqlFiles = files(
         'load_extension_spatial.sql',
         'import_data_mfk.sql'
