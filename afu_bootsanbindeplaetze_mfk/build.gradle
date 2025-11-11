@@ -35,7 +35,7 @@ buildDir.mkdirs()
 tasks.register("import_mfk_data", SqlExecutor){
     database = [dbUriDuckDB]
     sqlParameters = [
-        mfkPath: "'${uploadFile}'".toString()]
+        mfkPath: "'uploadFile'".toString()]
     sqlFiles = files(
         'load_extension_spatial.sql',
         'import_data_mfk.sql'
