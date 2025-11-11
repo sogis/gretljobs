@@ -39,6 +39,7 @@ tasks.register("import_mfk_data", SqlExecutor){
         'load_extension_spatial.sql',
         'import_data_mfk.sql'
     )
+    environment 'OGR_XLSX_HEADERS', 'FORCE'
 }
 
 tasks.register("abgleich_mfk", SqlExecutor){
