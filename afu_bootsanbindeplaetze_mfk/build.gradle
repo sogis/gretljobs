@@ -37,7 +37,6 @@ tasks.register("import_mfk_data", SqlExecutor){
         mfkPath: "upload/uploadFile.xlsx"]
     sqlFiles = files(
         'load_extension_spatial.sql',
-        'load_extension_excel.sql',
         'import_data_mfk.sql'
     )
 }

@@ -40,5 +40,5 @@ INSERT INTO data_mfk
 		Ort,
 		Land
 	FROM
-		read_xlsx(${mfkPath}, header = true)
+		FROM ST_READ(${mfkPath}, open_options='HEADERS=FORCE')
 ;
