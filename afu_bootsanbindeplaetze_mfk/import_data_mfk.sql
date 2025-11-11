@@ -40,5 +40,6 @@ INSERT INTO data_mfk
 		Ort,
 		Land
 	FROM
-		ST_READ(${mfkPath}, open_options=['HEADERS=FORCE'])
+		ST_READ(${mfkPath})
+	OFFSET 1
 ;
