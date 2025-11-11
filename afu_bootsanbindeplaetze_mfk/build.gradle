@@ -32,11 +32,6 @@ if (buildDir.exists()) {
 buildDir.mkdirs()
 
 tasks.register("import_mfk_data", SqlExecutor){
-    doFirst {
-        // Setzt die Umgebungsvariable für den aktuellen Prozess
-        environmentVariables.put('OGR_XLSX_HEADERS', 'FORCE')
-    }
-    
     database = [dbUriDuckDB]
     sqlParameters = [
         mfkPath: "upload/uploadFile.xlsx"]
