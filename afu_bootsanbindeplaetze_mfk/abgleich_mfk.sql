@@ -25,6 +25,8 @@ daten_mfk AS (
 	SELECT
 		schild AS bootskennzeichen,
 		"Länge [cm]" AS bootslaenge,
+		"Breite [cm]" AS bootsbreite,
+		"Motorenstärke Hauptantrieb [kw]" AS motorenstaerke,
 		"Name" AS aname,
 		Vorname AS vorname,
 		Adresse AS strasse_nr,
@@ -38,6 +40,14 @@ abgleich AS (
 	SELECT
 		afu.Bootsanbindeplatz_ID,
 		afu.bootskennzeichen,
+		mfk.vorname AS Vorname_MFK,
+		mfk.aname AS Nachname_MFK,
+		mfk.strasse_nr AS Adresse_MFK,
+		mfk.plz AS PLZ_MFK,
+		mfk.ort AS Ort_MFK,
+		mfk.bootslaenge / 100 AS MFK_Bootslaenge,
+		mfk.bootsbreite / 100 AS MFK_Bootsbreite,
+		mfk.motorenstaerke AS MFK_Motorenstaerke_Boot,
 		CASE
 			WHEN afu.aname = mfk.aname 
 			AND afu.vorname = mfk.vorname
@@ -85,6 +95,13 @@ abgleich AS (
 					FALSE
 		END AS PLZ_gleich,
 		CASE
+			WHEN afu.ort = mfk.ort
+				THEN 
+					TRUE 
+				ELSE 
+					FALSE
+		END AS Ort_gleich,
+		CASE
 			WHEN afu.bootslaenge = mfk.bootslaenge 
 				THEN 
 					TRUE 
@@ -101,24 +118,42 @@ abgleich AS (
 INSERT INTO afu_bootsanbindeplaetze_mfk.main.abgleich_mfk(
 	Bootsanbindeplatz_ID,
 	bootskennzeichen,
+	Vorname_MFK,
+	Nachname_MFK,
+	Adresse_MFK,
+	PLZ_MFK,
+	Ort_MFK,
+	MFK_Bootslaenge,
+	MFK_Bootsbreite,
+	MFK_Motorenstaerke_Boot,
 	Personendaten_gleich,
 	Kein_Match_MFK,
 	Vorname_gleich,
 	Nachname_gleich,
 	Adresse_gleich,
 	PLZ_gleich,
+	Ort_gleich,
 	Bootslaenge_gleich
 )
 
 SELECT 
 	Bootsanbindeplatz_ID,
 	bootskennzeichen,
+	Vorname_MFK,
+	Nachname_MFK,
+	Adresse_MFK,
+	PLZ_MFK,
+	Ort_MFK,
+	MFK_Bootslaenge,
+	MFK_Bootsbreite,
+	MFK_Motorenstaerke_Boot,
 	Personendaten_gleich,
 	Kein_Match_MFK,
 	Vorname_gleich,
 	Nachname_gleich,
 	Adresse_gleich,
 	PLZ_gleich,
+	Ort_gleich,
 	Bootslaenge_gleich
 FROM
 	abgleich

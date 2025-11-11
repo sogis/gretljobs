@@ -14,8 +14,11 @@ defaultTasks 'abgleich_mfk'
 def dbPath = "$buildDir/afu_bootsanbindeplaetze_mfk.duckdb"
 def dbUriDuckDB = "jdbc:duckdb:$dbPath"
 def dbFile = new File(dbPath)
-def today = LocalDate.now()
+def uploadFile = 'mfk_data.xlsx'
+/**
+* Nur lokal zum Testen
 def uploadfile = file("data/mfk_data.xlsx")
+*/
 
 // Create DB-variables for sql-files
 def dbHostEdit= dbUriEdit.substring(dbUriEdit.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
