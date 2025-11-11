@@ -1,0 +1,59 @@
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+import java.nio.file.Files
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
+defaultTasks 'abgleich_mfk'
+
+// variables
+def dbPath = "$buildDir/afu_bootsanbindeplaetze_mfk.duckdb"
+def dbUriDuckDB = "jdbc:duckdb:$dbPath"
+def dbFile = new File(dbPath)
+def uploadFile = 'mfk_data.xlsx'
+/**
+* Nur lokal zum Testen
+def uploadfile = file("data/mfk_data.xlsx")
+*/
+
+// Create DB-variables for sql-files
+def dbHostEdit= dbUriEdit.substring(dbUriEdit.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
+def dbDatabaseEdit = 'edit'
+def dbConnectionStringEdit = "'dbname=$dbDatabaseEdit user=$dbUserEdit password=$dbPwdEdit host=$dbHostEdit'"
+
+// delete build-directory if it exists
+if (buildDir.exists()) {
+    buildDir.deleteDir()
+}
+
+buildDir.mkdirs()
+
+tasks.register("import_mfk_data", SqlExecutor){
+    database = [dbUriDuckDB]
+    sqlParameters = [
+        mfkPath: "'${uploadfile}'".toString()]
+    sqlFiles = files(
+        'load_extension_spatial.sql',
+        'import_data_mfk.sql'
+    )
+}
+
+tasks.register("abgleich_mfk", SqlExecutor){
+    dependsOn "import_mfk_data"
+    database = [dbUriDuckDB]
+    sqlParameters = [
+        connectionStringEdit : dbConnectionStringEdit as String,
+        exportPathAbgleich: "'" + "$buildDir/bootsanbindeplaetze_abgleich_mfk.gpkg" + "'" ]
+    sqlFiles = files(
+        'load_extension_spatial.sql',
+        'attach_editdb.sql',
+        'create_table_abgleich.sql',
+        'abgleich_mfk.sql',
+        'export_abgleich_mfk.sql',
+        'detach_editdb.sql'
+    )
+}
