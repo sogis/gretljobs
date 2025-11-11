@@ -1,2 +1,1 @@
-INSTALL excel;
 LOAD excel;
