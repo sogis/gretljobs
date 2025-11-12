@@ -1,12 +1,11 @@
 DROP TABLE IF EXISTS data_mfk;
 
 --- Create Table for intersecting objects --- 
-CREATE TABLE data_mfk (
+CREATE TABLE data_mfk AS
 	SELECT
 		*
 	FROM 
 		ST_READ(${mfkPath})
-)
 ;
 
 INSERT INTO data_mfk
