@@ -12,7 +12,7 @@ SELECT
 	wz.dispname AS wirtschaftszone_txt,
 	lg.nummer AS grundstuecknummer,
 	ll.flaechenmass,
-	ww.eigentuemer || ' ' || ww.zusatzinformation AS eigentuemerinformation,
+	CONCAT_WS(' ', ww.eigentuemer, ww.zusatzinformation) AS eigentuemerinformation,
 	ww.eigentuemer,
 	wet.dispname AS eigentuemer_txt,
 	--waldfunktion_flaechen,
@@ -48,10 +48,11 @@ LEFT JOIN awjf_waldplan_v2.forstkreise AS fk
 	ON ww.forstkreis = fk.ilicode 
 ),
 
+--- Ausschneiden der Waldfläche pro Grundstück/Liegenshaft ---
 waldflaeche_grundstueck AS (
 SELECT
     egrid,
-    geometrie
+    ST_Union(geometrie) AS geometrie
 FROM (
     SELECT
         gs.egrid,
@@ -60,18 +61,16 @@ FROM (
         awjf_waldplan_v2.waldplan_waldfunktion AS wf
     JOIN grundstuecke AS gs
         ON ST_Intersects(wf.geometrie, gs.geometrie)
-    WHERE
-        ST_Intersects(wf.geometrie, gs.geometrie)
-    GROUP BY
-        gs.egrid,
-        gs.geometrie,
-        wf.geometrie
 ) sub
 WHERE
     ST_GeometryType(geometrie) = 'ST_Polygon'
 AND
-	ST_Area(geometrie) > 0.5
-),
+    ST_Area(geometrie) > 0.5
+GROUP BY
+    egrid
+)
+
+SELECT * FROM waldflaeche_grundstueck
 
 waldfunktion AS (
 SELECT

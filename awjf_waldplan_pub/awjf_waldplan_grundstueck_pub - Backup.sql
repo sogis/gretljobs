@@ -1,8 +1,7 @@
 WITH 
 
 grundstuecke AS (
-SELECT
-	ww.t_datasetname AS bfsnr,
+SELECT 
 	ww.egrid,
 	hg.gemeindename AS gemeinde,
 	ww.forstbetrieb,
@@ -13,7 +12,7 @@ SELECT
 	wz.dispname AS wirtschaftszone_txt,
 	lg.nummer AS grundstuecknummer,
 	ll.flaechenmass,
-	ww.eigentuemer || ' ' || ww.zusatzinformation AS eigentuemerinformation,
+	CONCAT_WS(' ', ww.eigentuemer, ww.zusatzinformation) AS eigentuemerinformation,
 	ww.eigentuemer,
 	wet.dispname AS eigentuemer_txt,
 	--waldfunktion_flaechen,
@@ -76,7 +75,6 @@ AND
 
 waldfunktion AS (
 SELECT
-	t_datasetname AS bfsnr,
 	funktion,
 	wfk.dispname AS funktion_txt,
 	biodiversitaet_id,
@@ -101,7 +99,6 @@ LEFT JOIN awjf_waldplan_v2.biodiversitaetstyp AS biotyp
 
 waldnutzung AS (
 	SELECT
-		t_datasetname AS bfsnr,
 		wnz.t_id,
 		wnz.nutzungskategorie,
 		wnk.dispName AS nutzungskategorie_txt,
@@ -115,16 +112,11 @@ waldnutzung AS (
 waldflaechen_berechnet AS (
 	SELECT
 		g.egrid,
-		CASE
-			WHEN ROUND(SUM(ST_Area(ST_Intersection(g.geometrie, wf.geometrie)))::NUMERIC) > g.flaechenmass 
-				THEN g.flaechenmass 
-			ELSE ROUND(SUM(ST_Area(ST_Intersection(g.geometrie, wf.geometrie)))::NUMERIC)
-		END AS flaeche
+		ROUND(SUM(ST_Area(ST_Intersection(g.geometrie, wf.geometrie)))::NUMERIC) AS flaeche
 	FROM
 		grundstuecke AS g
 	LEFT JOIN waldfunktion AS wf 
-		ON g.bfsnr = wf.bfsnr
-		AND ST_INTERSECTS(g.geometrie, wf.geometrie)
+		ON ST_INTERSECTS(g.geometrie, wf.geometrie)
 	GROUP BY 
 		g.egrid
 ),
@@ -136,8 +128,7 @@ wytweideflaechen_berechnet AS (
 	FROM
 		grundstuecke AS g
 	LEFT JOIN waldfunktion AS wf 
-		ON g.bfsnr = wf.bfsnr
-		AND ST_INTERSECTS(g.geometrie, wf.geometrie)
+		ON ST_INTERSECTS(g.geometrie, wf.geometrie)
 	WHERE
 		wf.wytweide IS TRUE
 	GROUP BY 
