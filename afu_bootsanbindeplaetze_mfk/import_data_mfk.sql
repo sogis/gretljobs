@@ -38,7 +38,7 @@ INSERT INTO data_mfk
 		CAST(Adresse AS VARCHAR),
 		TRY_CAST(PLZ AS INTEGER),
 		CAST(Ort AS VARCHAR),
-		CAST(columns[15] Land AS VARCHAR)
+		CAST(Land AS VARCHAR)
 	FROM
 		ST_READ(${mfkPath})
 ;
