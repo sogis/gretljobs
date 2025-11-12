@@ -31,10 +31,18 @@ if (buildDir.exists()) {
 
 buildDir.mkdirs()
 
+task copyExcelFile(type: Copy) {
+    from "upload/"
+    into "upload/"
+    include("uploadFile")
+    rename("uploadFile", "uploadFile.xlsx")
+}
+
 tasks.register("import_mfk_data", SqlExecutor){
+    dependsOn "copyExcelFile"
     database = [dbUriDuckDB]
     sqlParameters = [
-        mfkPath: "'${uploadFile}'".toString()]
+        mfkPath: "upload/uploadFile"]
     sqlFiles = files(
         'load_extension_spatial.sql',
         'import_data_mfk.sql'
