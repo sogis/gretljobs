@@ -1,0 +1,1 @@
+DELETE FROM sgv_schadenkarte_v1.schadenfall;

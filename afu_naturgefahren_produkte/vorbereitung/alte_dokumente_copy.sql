@@ -9,7 +9,6 @@ map_perimeter_file AS (
 ,('198c30af-5ada-45da-a67f-91b79aac991b','121_Baerschwil_Wasser_2021.pdf')
 ,('434bf8fb-a66c-4ffd-9692-11542f8f275a','093_Rickenbach_Rutsch_2020.pdf')
 ,('434bf8fb-a66c-4ffd-9692-11542f8f275a','093_Rickenbach_Duennern_2015.pdf')
-,('8a709d46-b5bb-4639-a196-f7539534f1dc','111_Bueren_Wasser_Rutsch_Sturz_2008.pdf')
 ,('8f5c69ff-139d-4eb7-ae0e-9e00790d7eff','109_Winznau_SB_Baslerstrasse_2021.pdf')
 ,('8f5c69ff-139d-4eb7-ae0e-9e00790d7eff','108_Winznau_Wasser_Rutsch_Stein_2008.pdf')
 ,('a3199209-c239-43c7-adc1-c5edc6f801e6','001_Solothurn_Wasser_Duerrbach_2009.pdf')
