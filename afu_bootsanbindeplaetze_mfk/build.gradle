@@ -15,7 +15,8 @@ def dbPath = "$buildDir/afu_bootsanbindeplaetze_mfk.duckdb"
 def dbUriDuckDB = "jdbc:duckdb:$dbPath"
 def dbFile = new File(dbPath)
 /* Nur lokal zum Testen */
-def uploadFile = file("data/mfk_data.xlsx")
+/*def uploadFile = file("data/mfk_data.xlsx")*/
+def uploadFile = file("upload/uploadFile.xlsx")
 
 
 // Create DB-variables for sql-files
@@ -33,8 +34,7 @@ buildDir.mkdirs()
 tasks.register("import_mfk_data", SqlExecutor){
     database = [dbUriDuckDB]
     sqlParameters = [
-        /*mfkPath: "'${uploadFile}'".toString()]*/
-        mfkPath: "'upload/uploadFile.xlsx'"]
+        mfkPath: "'${uploadFile}'".toString()]
     sqlFiles = files(
         'load_extension_spatial.sql',
         'import_data_mfk.sql'
