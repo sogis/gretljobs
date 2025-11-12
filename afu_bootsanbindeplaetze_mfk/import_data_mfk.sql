@@ -40,5 +40,5 @@ INSERT INTO data_mfk
 		Ort,
 		Land
 	FROM
-		ST_READ(${mfkPath})
+		ST_READ('upload/uploadFile.xlsx')
 ;
