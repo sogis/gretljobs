@@ -354,9 +354,11 @@ INSERT INTO
     WHERE
         stop_name = 'Olten'
     AND
-        linienname = 'L650 Olten - Brugg AG (S29)'
-    AND
        trip_headsign IN ('Aarau', 'Rupperswil', 'Wildegg', 'Holderbank AG', 'Schinznach Bad', 'Brugg AG')
+    AND
+        substring(linienname from 1 for 4) = 'L650'
+    AND
+        linienname <> 'L650 Olten - Brugg AG (S29)'
     GROUP BY
         stop_name,
         route_id,
