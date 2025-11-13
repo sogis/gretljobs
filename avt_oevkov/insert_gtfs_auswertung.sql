@@ -341,6 +341,57 @@ INSERT INTO
 
     UNION ALL
     
+    -- Bahnhof Olten: L650 Brugg (S29)
+    SELECT
+        stop_name,
+        route_id,
+        linienname,
+        unternehmer,
+        sum(gtfs_count),
+        verkehrsmittel
+    FROM
+        abfahrten
+    WHERE
+        stop_name = 'Olten'
+    AND
+        linienname = 'L650 Olten - Brugg (S29)'
+    AND
+       trip_headsign IN ('Brugg AG')
+    GROUP BY
+        stop_name,
+        route_id,
+        linienname,
+        unternehmer,
+        verkehrsmittel
+
+    
+    UNION ALL
+    
+    -- Bahnhof Olten: L650 Olten - Muri AG (S26)
+    SELECT
+        stop_name,
+        route_id,
+        linienname,
+        unternehmer,
+        sum(gtfs_count),
+        verkehrsmittel
+    FROM
+        abfahrten
+    WHERE
+        stop_name = 'Olten'
+    AND
+        linienname = 'L650 Olten - Muri AG (S26)'
+    AND
+       trip_headsign IN ('Dulliken', 'Däniken SO', 'Schönenwerd SO')
+    GROUP BY
+        stop_name,
+        route_id,
+        linienname,
+        unternehmer,
+        verkehrsmittel
+
+    UNION ALL
+    
     -- Bahnhof Olten: L650 Turgi - Sursee (S29)
     SELECT
         stop_name,
@@ -412,6 +463,33 @@ INSERT INTO
         abfahrten
     WHERE
         stop_name IN ('Dulliken', 'Däniken SO', 'Schönenwerd SO')
+    AND
+        substring(linienname from 1 for 4) = 'L650'
+    GROUP BY
+        stop_name,
+        route_id,
+        linienname,
+        gtfs_count,
+        unternehmer,
+        verkehrsmittel
+
+            verkehrsmittel
+
+    UNION ALL
+
+    -- Däniken, Dulliken:
+    -- 650 Olten-Aarau (S29) - Olten haben die gleiche route_id!
+    SELECT
+    stop_name,
+        route_id,
+        linienname,
+        unternehmer,
+        sum(gtfs_count) AS gtfs_count,
+        verkehrsmittel
+    FROM
+        abfahrten
+    WHERE
+        stop_name IN ('Dulliken', 'Däniken SO')
     AND
         substring(linienname from 1 for 4) = 'L650'
     GROUP BY
