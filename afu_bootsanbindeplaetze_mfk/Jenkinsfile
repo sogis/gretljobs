@@ -13,7 +13,7 @@ pipeline {
                             unstash name: 'uploadFile'
                         }
                         sh 'gretl'
-                      archiveArtifacts "${env.JOB_BASE_NAME}/build/bootsanbindeplaetze_abgleich_mfk.gpkg"
+                      archiveArtifacts "build/bootsanbindeplaetze_abgleich_mfk.gpkg"
                     }
                 }
             }
