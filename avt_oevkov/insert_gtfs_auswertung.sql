@@ -354,8 +354,6 @@ INSERT INTO
     WHERE
         stop_name = 'Olten'
     AND
-       trip_headsign IN ('Brugg AG')
-    AND
         substring(linienname from 1 for 4) = 'L650'
     AND
         linienname = 'L650 Olten - Aarau - Turgi (S29)'
