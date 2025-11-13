@@ -364,7 +364,6 @@ INSERT INTO
         unternehmer,
         verkehrsmittel
 
-    
     UNION ALL
     
     -- Bahnhof Olten: L650 Olten - Muri AG (S26)
@@ -472,8 +471,6 @@ INSERT INTO
         gtfs_count,
         unternehmer,
         verkehrsmittel
-
-            verkehrsmittel
 
     UNION ALL
 
