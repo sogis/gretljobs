@@ -32,8 +32,8 @@ buildDir.mkdirs()
 task copyExcelFile(type: Copy) {
     from "upload/"
     into "upload/"
-    include("uploadFile")
-    rename("uploadFile", "uploadFile.xlsx")
+    include("*.xlsx")
+    rename(fileName -> "uploadFile.xlsx")
     
     doLast {
         println "Excel file location: ${file('upload/uploadFile.xlsx').absolutePath}"
