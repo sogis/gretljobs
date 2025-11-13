@@ -389,7 +389,7 @@ INSERT INTO
         linienname,
         unternehmer,
         verkehrsmittel
-*/
+
     UNION ALL
 
     -- Bahnhof Olten: L650 Olten - Zürich HB (RE)
@@ -422,7 +422,7 @@ INSERT INTO
         linienname,
         unternehmer,
         verkehrsmittel
-
+*/
     UNION ALL
 
     -- Däniken, Dulliken, Schönenwerd:
