@@ -37,7 +37,7 @@ tasks.register("copyCSVFile", Copy) {
 }
 
 tasks.register("import_mfk_data", SqlExecutor){
-    dependsOn "copyExcelFile"
+    dependsOn "copyCSVFile"
     database = [dbUriDuckDB]
     sqlParameters = [
         /*mfkPath: "'${uploadFile}'".toString()]*/
