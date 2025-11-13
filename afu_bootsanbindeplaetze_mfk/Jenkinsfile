@@ -1,10 +1,46 @@
 pipeline {
-    agent { label env.NODE_LABEL ?: 'gretl' }
     options {
-        timeout(time: 6, unit: 'HOURS')
+        timeout(time: 1, unit: 'HOURS')
+    }
+    agent {
+        kubernetes {
+            inheritFrom env.NODE_LABEL ?: 'gretl'
+            yamlMergeStrategy merge()
+            yaml '''
+            spec:
+              containers:
+                - name: processing-db
+                  image: postgis/postgis:17-3.5-alpine
+                  resources:
+                    requests:
+                      cpu: 300m
+                      memory: "2Gi"
+                    limits:
+                      cpu: "2"
+                      memory: "8Gi"
+                  env:
+                    - name: POSTGRES_USER
+                      value: processing
+                    - name: POSTGRES_PASSWORD
+                      value: processing
+                    - name: PGDATA
+                      value: /var/lib/postgresql/data/pgdata
+                  volumeMounts:
+                    - name: postgresql-data-volume
+                      mountPath: /var/lib/postgresql/data
+              volumes:
+                - name: postgresql-data-volume
+                  emptyDir: {}
+'''
+        }
     }
     stages {
         stage('Run GRETL job') {
+            environment {
+                ORG_GRADLE_PROJECT_dbUriProcessing = 'jdbc:postgresql://127.0.0.1/processing'
+                ORG_GRADLE_PROJECT_dbUserProcessing = 'processing'
+                ORG_GRADLE_PROJECT_dbPwdProcessing = 'processing'
+            }
             steps {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
@@ -23,6 +59,11 @@ pipeline {
     post {
         unsuccessful {
             emailext (
+                // If build was started by a user ("UserIdCause"), then set to user that started the build (the "requestor");
+                // otherweise set to $DEFAULT_RECIPIENTS
+                // Good to know: $DEFAULT_RECIPIENTS is not a variable,
+                // but rather a token which will be replaced by the Email Extension plugin
+                // Docs: https://plugins.jenkins.io/email-ext/#plugin-content-tokens
                 to: "${currentBuild.getBuildCauses()[0]._class == 'hudson.model.Cause$UserIdCause' ? emailextrecipients([requestor()]) : '$DEFAULT_RECIPIENTS'}",
                 subject: "GRETL-Job ${JOB_NAME} (${BUILD_DISPLAY_NAME}) ist fehlgeschlagen",
                 body: "Die Ausführung des GRETL-Jobs ${JOB_NAME} (${BUILD_DISPLAY_NAME}) war nicht erfolgreich. Details dazu finden Sie in den Log-Meldungen unter ${RUN_DISPLAY_URL}."
