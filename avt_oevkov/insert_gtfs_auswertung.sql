@@ -363,11 +363,11 @@ INSERT INTO
         linienname,
         unternehmer,
         verkehrsmittel
- /*   
+ 
     UNION ALL
 
 
-    -- Bahnhof Olten: L650 Turgi - Sursee (S29)
+    -- Bahnhof Olten: L650 Olten - Rotkreuz (S26)
     SELECT
         stop_name,
         route_id,
@@ -380,16 +380,16 @@ INSERT INTO
     WHERE
         stop_name = 'Olten'
     AND
-        linienname = 'L650 Olten - Turgi (S29)'
+        linienname = 'L650 Olten - Rotkreuz (S26)'
     AND
-       trip_headsign IN ('Brugg AG', 'Turgi')
+       trip_headsign IN ('Rotkreuz', 'Muri AG')
     GROUP BY
         stop_name,
         route_id,
         linienname,
         unternehmer,
         verkehrsmittel
-
+/*
     UNION ALL
 
     -- Bahnhof Olten: L650 Olten - Zürich HB (RE)
