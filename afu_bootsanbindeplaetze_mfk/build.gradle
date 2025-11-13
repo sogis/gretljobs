@@ -39,8 +39,8 @@ task copyExcelFile(type: Copy) {
 tasks.register("import_mfk_data", SqlExecutor){
     dependsOn "copyExcelFile"
     database = [dbUriDuckDB]
-    sqlParameters = [
-        mfkPath: "upload/uploadFile.xlsx"]
+    /*sqlParameters = [
+        mfkPath: "upload/uploadFile.xlsx"]*/
     sqlFiles = files(
         'load_extension_spatial.sql',
         'import_data_mfk.sql'
