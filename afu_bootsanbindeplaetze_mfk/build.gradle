@@ -39,30 +39,3 @@ tasks.register("copyExcelFile", Copy) {
         println "Excel file location: ${file('upload/uploadFile.xlsx').absolutePath}"
     }
 }
-
-tasks.register("import_mfk_data", SqlExecutor){
-    dependsOn "copyExcelFile"
-    database = [dbUriDuckDB]
-    /*sqlParameters = [
-        mfkPath: "upload/uploadFile.xlsx"]*/
-    sqlFiles = files(
-        'load_extension_spatial.sql',
-        'import_data_mfk.sql'
-    )
-}
-
-tasks.register("abgleich_mfk", SqlExecutor){
-    dependsOn "import_mfk_data"
-    database = [dbUriDuckDB]
-    sqlParameters = [
-        connectionStringEdit : dbConnectionStringEdit as String,
-        exportPathAbgleich: "'" + "$buildDir/bootsanbindeplaetze_abgleich_mfk.gpkg" + "'" ]
-    sqlFiles = files(
-        'load_extension_spatial.sql',
-        'attach_editdb.sql',
-        'create_table_abgleich.sql',
-        'abgleich_mfk.sql',
-        'export_abgleich_mfk.sql',
-        'detach_editdb.sql'
-    )
-}
