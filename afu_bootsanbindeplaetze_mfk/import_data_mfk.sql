@@ -12,7 +12,7 @@ CREATE TABLE data_mfk (
 	"Motorenstärke Hauptantrieb [kw]" DOUBLE,
 	"Länge [cm]" INTEGER,
 	"Breite [cm]" INTEGER,
-	Name VARCHAR,
+	"Name" VARCHAR,
 	Vorname VARCHAR,
 	Adresse VARCHAR,
 	PLZ INTEGER,
@@ -23,22 +23,22 @@ CREATE TABLE data_mfk (
 
 INSERT INTO data_mfk
 	SELECT
-		Stammnummer,
-		Schild,
-		Schilderart,
-		Standort,
-		Schiffstyp,
-		Motorisierung,
-		"Anzahl eingelöster Motoren",
-		"Motorenstärke Hauptantrieb [kw]",
-		"Länge [cm]",
-		"Breite [cm]",
-		Name,
-		Vorname,
-		Adresse,
-		PLZ,
-		Ort,
-		Land
+		CAST(Stammnummer AS VARCHAR),
+		TRY_CAST(Schild AS INTEGER),
+		CAST(Schilderart AS VARCHAR),
+		CAST(Standort AS VARCHAR),
+		CAST(Schiffstyp AS VARCHAR),
+		CAST(Motorisierung AS VARCHAR),
+		TRY_CAST("Anzahl eingelöster Motoren" AS INTEGER),
+		TRY_CAST("Motorenstärke Hauptantrieb [kw]" AS DOUBLE),
+		TRY_CAST("Länge [cm]" AS INTEGER),
+		TRY_CAST("Breite [cm]" AS INTEGER),
+		CAST("Name" AS VARCHAR),
+		CAST(Vorname AS VARCHAR),
+		CAST(Adresse AS VARCHAR),
+		TRY_CAST(PLZ AS INTEGER),
+		CAST(Ort AS VARCHAR),
+		CAST(Land AS VARCHAR)
 	FROM
 		ST_READ(${mfkPath})
 ;
