@@ -15,7 +15,7 @@ def dbPath = "$buildDir/afu_bootsanbindeplaetze_mfk.duckdb"
 def dbUriDuckDB = "jdbc:duckdb:$dbPath"
 def dbFile = new File(dbPath)
 /* Nur lokal zum Testen */
-/*def uploadFile = file("data/mfk_data.xlsx")*/
+/*def uploadFile = file("upload/mfk_data.csv")*/
 
 // Create DB-variables for sql-files
 def dbHostEdit= dbUriEdit.substring(dbUriEdit.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
@@ -29,18 +29,19 @@ if (buildDir.exists()) {
 
 buildDir.mkdirs()
 
-task copyExcelFile(type: Copy) {
+tasks.register("copyCSVFile", Copy) {
     from "upload/"
     into "upload/"
     include("uploadFile")
-    rename("uploadFile", "uploadFile.xlsx")
+    rename("uploadFile", "uploadFile.csv")
 }
 
 tasks.register("import_mfk_data", SqlExecutor){
-    dependsOn "copyExcelFile"
+    dependsOn "copyCSVFile"
     database = [dbUriDuckDB]
     sqlParameters = [
-        mfkPath: file("upload/uploadFile.xlsx")]
+        /*mfkPath: "'${uploadFile}'".toString()]*/
+       mfkPath: "'upload/uploadFile.csv'"]
     sqlFiles = files(
         'load_extension_spatial.sql',
         'import_data_mfk.sql'
