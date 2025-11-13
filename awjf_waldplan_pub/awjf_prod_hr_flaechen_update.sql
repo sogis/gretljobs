@@ -1,5 +1,17 @@
+-------------------------------------------------------------------------
+------------------------ Setze Werte auf NULL ---------------------------
+-------------------------------------------------------------------------
+UPDATE
+	awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck
+SET
+	produktive_flaeche = NULL
+;
+
 WITH
 
+-------------------------------------------------------------------------
+----------------------- Berechnung Waldflächen --------------------------
+-------------------------------------------------------------------------
 produktive_flaechen_berechnet AS (
 	SELECT 
 		gs.egrid,
@@ -28,7 +40,9 @@ unproduktive_flaechen_berechnet AS (
 		gs.egrid
 ),
 
-
+-------------------------------------------------------------------------
+---------- Erstellung JSON-Attribute für berechnete Waldflächen ---------
+-------------------------------------------------------------------------
 produktive_flaechen_berechnet_json AS (
     SELECT
     	pfb.egrid,
@@ -47,7 +61,14 @@ produktive_flaechen_berechnet_json AS (
         pfb.egrid
 )
 
-SELECT
-	* 
+-------------------------------------------------------------------------
+------------------------ Update Flächenwerte ----------------------------
+-------------------------------------------------------------------------
+UPDATE
+	awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck AS wwg
+SET
+	produktive_flaeche = pfj.flaechen_produktiv 
 FROM 
-	produktive_flaechen_berechnet_json
+	produktive_flaechen_berechnet_json AS pfj 
+WHERE 
+	wwg.egrid = pfj.egrid

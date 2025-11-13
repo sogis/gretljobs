@@ -121,14 +121,20 @@ GROUP BY
 waldflaechen_berechnet AS (
 	SELECT
 		gs.egrid,
-		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC) AS flaeche
+		CASE
+			WHEN gs.flaechenmass -ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC) < 0 
+			AND gs.flaechenmass -ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC) > -2
+				THEN gs.flaechenmass 
+			ELSE ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC)
+		END AS flaeche
 	FROM
 		grundstuecke AS gs
 	LEFT JOIN waldfunktion AS wf 
 		ON ST_INTERSECTS(gs.geometrie, wf.geometrie)
 		AND gs.bfsnr = wf.bfsnr
 	GROUP BY 
-		gs.egrid
+		gs.egrid,
+		gs.flaechenmass
 ),
 
 wytweideflaechen_berechnet AS (
@@ -210,7 +216,32 @@ biodiversitaet_id_flaechen_berechnet AS (
 		gs.egrid,
 		wf.biodiversitaet_id,
 		wf.funktion_txt
-),
+)
+
+-------------------------------------------------------------------------
+--------------- Plausibilisierung berechneter Waldflächen ---------------
+-------------------------------------------------------------------------
+SELECT
+	gs.egrid,
+	gs.flaechenmass,
+	wfb.flaeche AS waldflaeche_berechnet,
+	gs.flaechenmass - wfb.flaeche AS Differenz,
+	wyt.flaeche AS wytweideflaeche_berechnet,
+	SUM(funk.flaeche) AS waldfunktionsflaeche_berechnet
+FROM
+	grundstuecke AS gs
+LEFT JOIN waldflaechen_berechnet AS wfb 
+	ON gs.egrid = wfb.egrid
+LEFT JOIN wytweideflaechen_berechnet AS wyt 
+	ON gs.egrid = wyt.egrid
+LEFT JOIN waldfunktion_flaechen_berechnet AS funk 
+	ON gs.egrid = funk.egrid
+GROUP BY 
+	gs.egrid,
+	gs.flaechenmass,
+	wfb.flaeche,
+	wyt.flaeche
+
 
 -------------------------------------------------------------------------
 ---------- Erstellung JSON-Attribute für berechnete Waldflächen ---------
