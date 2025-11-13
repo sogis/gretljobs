@@ -341,6 +341,32 @@ INSERT INTO
 
     UNION ALL
     
+    -- Bahnhof Olten: L650 Olten - Aarau - Turgi (S29)
+    SELECT
+        stop_name,
+        route_id,
+        linienname,
+        unternehmer,
+        sum(gtfs_count),
+        verkehrsmittel
+    FROM
+        abfahrten
+    WHERE
+        stop_name = 'Olten'
+     AND
+        linienname = 'L650 Olten - Aarau - Turgi (S29)'
+    AND
+       trip_headsign IN ('Brugg AG', 'Turgi', 'Aarau')
+    GROUP BY
+        stop_name,
+        route_id,
+        linienname,
+        unternehmer,
+        verkehrsmittel
+ /*   
+    UNION ALL
+
+
     -- Bahnhof Olten: L650 Turgi - Sursee (S29)
     SELECT
         stop_name,
@@ -396,7 +422,7 @@ INSERT INTO
         linienname,
         unternehmer,
         verkehrsmittel
-
+*/
     UNION ALL
 
     -- Däniken, Dulliken, Schönenwerd:
