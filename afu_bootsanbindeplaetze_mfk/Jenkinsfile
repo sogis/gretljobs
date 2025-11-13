@@ -20,7 +20,6 @@ pipeline {
                 }
             }
         }
-    }
     post {
         unsuccessful {
             emailext (
