@@ -40,5 +40,5 @@ INSERT INTO data_mfk
 		CAST(Ort AS VARCHAR),
 		CAST(Land AS VARCHAR)
 	FROM
-		ST_READ('./upload/uploadFile.xlsx')
+		ST_READ(${mfkPath})
 ;

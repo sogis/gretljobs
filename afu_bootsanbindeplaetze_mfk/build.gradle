@@ -8,7 +8,7 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'copyExcelFile'
+defaultTasks 'abgleich_mfk'
 
 // variables
 def dbPath = "$buildDir/afu_bootsanbindeplaetze_mfk.duckdb"
@@ -29,13 +29,36 @@ if (buildDir.exists()) {
 
 buildDir.mkdirs()
 
-task copyExcelFile(type: Copy) {
+tasks.register("copyExcelFile", Copy) {
     from "upload/"
     into "upload/"
-    include("*.xlsx")
-    rename(fileName -> "uploadFile.xlsx")
-    
-    doLast {
-        println "Excel file location: ${file('upload/uploadFile.xlsx').absolutePath}"
-    }
+    include("uploadFile")
+    rename("uploadFile", "uploadFile.xlsx")
+}
+
+tasks.register("import_mfk_data", SqlExecutor){
+    dependsOn "copyExcelFile"
+    database = [dbUriDuckDB]
+    sqlParameters = [
+        mfkPath: "upload/uploadFile.xlsx"]
+    sqlFiles = files(
+        'load_extension_spatial.sql',
+        'import_data_mfk.sql'
+    )
+}
+
+tasks.register("abgleich_mfk", SqlExecutor){
+    dependsOn "import_mfk_data"
+    database = [dbUriDuckDB]
+    sqlParameters = [
+        connectionStringEdit : dbConnectionStringEdit as String,
+        exportPathAbgleich: "'" + "$buildDir/bootsanbindeplaetze_abgleich_mfk.gpkg" + "'" ]
+    sqlFiles = files(
+        'load_extension_spatial.sql',
+        'attach_editdb.sql',
+        'create_table_abgleich.sql',
+        'abgleich_mfk.sql',
+        'export_abgleich_mfk.sql',
+        'detach_editdb.sql'
+    )
 }
