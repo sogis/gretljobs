@@ -365,7 +365,7 @@ INSERT INTO
         linienname,
         unternehmer,
         verkehrsmittel
-
+    
     UNION ALL
     
     -- Bahnhof Olten: L650 Turgi - Sursee (S29)
