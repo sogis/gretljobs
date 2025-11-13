@@ -341,7 +341,7 @@ INSERT INTO
 
     UNION ALL
     
-    -- Bahnhof Olten: L650 Olten - Brugg AG (S29)
+    -- Bahnhof Olten: L650 Olten - Aarau - Turgi (S29)
     SELECT
         stop_name,
         route_id,
@@ -358,7 +358,7 @@ INSERT INTO
     AND
         substring(linienname from 1 for 4) = 'L650'
     AND
-        linienname = 'L650 Olten - Brugg AG (S29)'
+        linienname = 'L650 Olten - Aarau - Turgi (S29)'
     GROUP BY
         stop_name,
         route_id,
@@ -367,7 +367,8 @@ INSERT INTO
         verkehrsmittel
     
     UNION ALL
-    
+
+    /*
     -- Bahnhof Olten: L650 Turgi - Sursee (S29)
     SELECT
         stop_name,
@@ -423,7 +424,7 @@ INSERT INTO
         linienname,
         unternehmer,
         verkehrsmittel
-
+*/
     UNION ALL
 
     -- Däniken, Dulliken, Schönenwerd:
