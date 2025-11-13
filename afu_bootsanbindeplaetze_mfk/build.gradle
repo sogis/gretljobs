@@ -29,7 +29,7 @@ if (buildDir.exists()) {
 
 buildDir.mkdirs()
 
-tasks.register("copyExcelFile", Copy) {
+task copyExcelFile(type: Copy) {
     from "upload/"
     into "upload/"
     include("uploadFile")
