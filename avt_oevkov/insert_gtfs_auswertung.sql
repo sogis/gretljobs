@@ -353,10 +353,10 @@ INSERT INTO
         abfahrten
     WHERE
         stop_name = 'Olten'
-    AND
-        substring(linienname from 1 for 4) = 'L650'
-    AND
+     AND
         linienname = 'L650 Olten - Aarau - Turgi (S29)'
+    AND
+       trip_headsign IN ('Brugg AG', 'Turgi', 'Aarau')
     GROUP BY
         stop_name,
         route_id,
@@ -389,7 +389,7 @@ INSERT INTO
         linienname,
         unternehmer,
         verkehrsmittel
-
+*/
     UNION ALL
 
     -- Bahnhof Olten: L650 Olten - Zürich HB (RE)
@@ -422,7 +422,7 @@ INSERT INTO
         linienname,
         unternehmer,
         verkehrsmittel
-*/
+
     UNION ALL
 
     -- Däniken, Dulliken, Schönenwerd:
