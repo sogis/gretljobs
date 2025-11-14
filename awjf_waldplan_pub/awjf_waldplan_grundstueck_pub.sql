@@ -52,7 +52,8 @@ LEFT JOIN awjf_waldplan_v2.forstkreise AS fk
 	ON ww.forstkreis = fk.ilicode 
 ),
 
----------------------- Erstellung Grundtabellen -------------------------
+-- Das folgende CTE (grundstuecke) kann gelöscht werden, sobald die Rohdaten behoben wurden
+-- Danach muss grundstuecke_aufbereitung wieder in grundstuecke umbenennt werden
 grundstuecke AS (
 	SELECT DISTINCT ON (egrid)
 		ga.egrid,
