@@ -13,7 +13,7 @@ INSERT INTO
         verkehrsmittel
     )
     (
-    WITH calendar AS (
+WITH calendar AS (
     -- dayofweek (1=fährt, 0=fährt nicht) am Stichtag
         SELECT
             service_id,
@@ -220,7 +220,7 @@ INSERT INTO
 
     UNION ALL
 
-    -- Bahnhof Olten: L450 Olten - Bern
+    -- Bahnhof Olten: L450 Olten - Langenthal (S23)
     SELECT
         stop_name,
         route_id,
@@ -233,9 +233,34 @@ INSERT INTO
     WHERE
         stop_name = 'Olten'
     AND
-        trip_headsign IN ('Bern', 'Langenthal')
+        trip_headsign IN ('Bern', 'Langenthal', 'Murgenthal')
     AND
-        substring(linienname from 1 for 4) = 'L450'
+        linienname = 'L450 Olten - Langenthal (S23)'
+    GROUP BY
+        stop_name,
+        route_id,
+        linienname,
+        unternehmer,
+        verkehrsmittel
+
+            UNION ALL
+
+    -- Bahnhof Olten: L650 Olten - Baden (S23)
+    SELECT
+        stop_name,
+        route_id,
+        linienname,
+        unternehmer,
+        sum(gtfs_count),
+        verkehrsmittel
+    FROM
+        abfahrten
+    WHERE
+        stop_name = 'Olten'
+    AND
+        trip_headsign IN ('Baden')
+    AND
+        linienname = 'L650 Olten - Baden (S23)'
     GROUP BY
         stop_name,
         route_id,
@@ -389,10 +414,10 @@ INSERT INTO
         linienname,
         unternehmer,
         verkehrsmittel
-/*
+ 
     UNION ALL
 
-    -- Bahnhof Olten: L650 Olten - Zürich HB (RE)
+    -- Bahnhof Olten: L650 Olten - Wettingen - Zürich HB (RE12)
     SELECT
         stop_name,
         route_id,
@@ -405,71 +430,13 @@ INSERT INTO
     WHERE
         stop_name = 'Olten'
     AND
-        trip_headsign IN (
-            'Baden',
-            'Rotkreuz',
-            'Turgi',
-            'Wettingen',
-            'Zürich HB'
-        )
+        linienname = 'L650 Olten - Wettingen - Zürich HB (RE12)'
     AND
-        substring(linienname from 1 for 4) = 'L650'
-    AND
-        linienname <> 'L650 Olten - Turgi (S29)'
+       trip_headsign IN ('Wettingen', 'Zürich HB')
     GROUP BY
         stop_name,
         route_id,
         linienname,
-        unternehmer,
-        verkehrsmittel
-*/
-    UNION ALL
-
-    -- Däniken, Dulliken, Schönenwerd:
-    -- 650 Olten-Zürich R, S und 450 Bern - Olten haben die gleiche route_id!
-    SELECT
-    stop_name,
-        route_id,
-        linienname,
-        unternehmer,
-        sum(gtfs_count) AS gtfs_count,
-        verkehrsmittel
-    FROM
-        abfahrten
-    WHERE
-        stop_name IN ('Dulliken', 'Däniken SO', 'Schönenwerd SO')
-    AND
-        substring(linienname from 1 for 4) = 'L650'
-    GROUP BY
-        stop_name,
-        route_id,
-        linienname,
-        gtfs_count,
-        unternehmer,
-        verkehrsmittel
-
-   UNION ALL
-
-    -- Bahnhof Murgenthal
-    -- 650 Olten-Zürich R, S und 450 Bern - Olten haben die gleiche route_id!
-    SELECT
-    stop_name,
-        route_id,
-        linienname,
-        unternehmer,
-        sum(gtfs_count) AS gtfs_count,
-        verkehrsmittel
-    FROM
-        abfahrten
-    WHERE
-        stop_name = 'Murgenthal'
-    AND
-        substring(linienname from 1 for 4) = 'L450'
-    GROUP BY
-        stop_name,
-        route_id,
-        linienname,
-        gtfs_count,
         unternehmer,
         verkehrsmittel
     )
