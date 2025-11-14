@@ -3,7 +3,7 @@ WITH
 -------------------------------------------------------------------------
 ---------------------- Erstellung Grundtabellen -------------------------
 -------------------------------------------------------------------------
-grundstuecke AS (
+grundstuecke_aufbereitung AS (
 SELECT
 	ww.t_datasetname AS bfsnr,
 	ww.egrid,
@@ -50,6 +50,43 @@ LEFT JOIN awjf_waldplan_v2.waldplankatalog_forstrevier AS wfr
 	ON ww.forstrevier = wfr.t_id
 LEFT JOIN awjf_waldplan_v2.forstkreise AS fk 
 	ON ww.forstkreis = fk.ilicode 
+),
+
+---------------------- Erstellung Grundtabellen -------------------------
+grundstuecke AS (
+	SELECT DISTINCT ON (egrid)
+		ga.egrid,
+		ga.bfsnr,
+		ga.gemeinde,
+		ga.forstbetrieb,
+		ga.forstkreis,
+		ga.forstkreis_txt,
+		ga.forstrevier,
+		ga.wirtschaftszone,
+		ga.wirtschaftszone_txt,
+		ga.grundstuecknummer,
+		ga.flaechenmass,
+		ga.eigentuemerinformation,
+		ga.eigentuemer,
+		ga.eigentuemer_txt,
+		ga.grundbuch,
+		ga.ausserkantonal,
+		ga.ausserkantonal_txt,
+		-- Geometrien der Duplikate korrekt vereinen:
+		(
+			SELECT
+				ST_Union(gg.geometrie)
+			FROM
+				grundstuecke_aufbereitung AS gg
+			WHERE
+				gg.egrid = ga.egrid
+		) AS geometrie,
+		ga.bemerkung
+	FROM
+		grundstuecke_aufbereitung AS ga
+	ORDER BY
+    egrid,
+    geometrie IS NULL DESC  -- bevorzugt Geometrien
 ),
 
 waldfunktion AS (
@@ -216,18 +253,22 @@ biodiversitaet_id_flaechen_berechnet AS (
 		gs.egrid,
 		wf.biodiversitaet_id,
 		wf.funktion_txt
-)
+),
 
 -------------------------------------------------------------------------
 --------------- Plausibilisierung berechneter Waldflächen ---------------
 -------------------------------------------------------------------------
+/**
 SELECT
 	gs.egrid,
 	gs.flaechenmass,
 	wfb.flaeche AS waldflaeche_berechnet,
 	gs.flaechenmass - wfb.flaeche AS Differenz,
 	wyt.flaeche AS wytweideflaeche_berechnet,
-	SUM(funk.flaeche) AS waldfunktionsflaeche_berechnet
+	SUM(funk.flaeche) AS waldfunktionsflaeche_berechnet,
+	SUM(wnb.flaeche) AS waldnutzungsflaeche_berechnet,
+	SUM(bioob.flaeche) AS biodiversitaetflaeche_objekt_berechnet,
+	SUM(bioid.flaeche) AS biodiversitaetflaeche_id_berechnet
 FROM
 	grundstuecke AS gs
 LEFT JOIN waldflaechen_berechnet AS wfb 
@@ -236,13 +277,18 @@ LEFT JOIN wytweideflaechen_berechnet AS wyt
 	ON gs.egrid = wyt.egrid
 LEFT JOIN waldfunktion_flaechen_berechnet AS funk 
 	ON gs.egrid = funk.egrid
+LEFT JOIN waldnutzung_flaechen_berechnet AS wnb 
+	ON gs.egrid = wnb.egrid
+LEFT JOIN biodiversitaet_objekt_flaechen_berechnet AS bioob 
+	ON gs.egrid = bioob.egrid
+LEFT JOIN biodiversitaet_id_flaechen_berechnet AS bioid
+	ON gs.egrid = bioid.egrid
 GROUP BY 
 	gs.egrid,
 	gs.flaechenmass,
 	wfb.flaeche,
 	wyt.flaeche
-
-
+*/
 -------------------------------------------------------------------------
 ---------- Erstellung JSON-Attribute für berechnete Waldflächen ---------
 -------------------------------------------------------------------------
