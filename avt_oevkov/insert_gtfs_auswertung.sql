@@ -13,7 +13,7 @@ INSERT INTO
         verkehrsmittel
     )
     (
-WITH calendar AS (
+    WITH calendar AS (
     -- dayofweek (1=fährt, 0=fährt nicht) am Stichtag
         SELECT
             service_id,
@@ -220,7 +220,7 @@ WITH calendar AS (
 
     UNION ALL
 
-    -- Bahnhof Olten: L450 Olten - Langenthal (S23)
+    -- Bahnhof Olten: L450 Olten - Bern
     SELECT
         stop_name,
         route_id,
@@ -233,34 +233,9 @@ WITH calendar AS (
     WHERE
         stop_name = 'Olten'
     AND
-        trip_headsign IN ('Bern', 'Langenthal', 'Murgenthal')
+        trip_headsign IN ('Bern', 'Langenthal')
     AND
-        linienname = 'L450 Olten - Langenthal (S23)'
-    GROUP BY
-        stop_name,
-        route_id,
-        linienname,
-        unternehmer,
-        verkehrsmittel
-
-            UNION ALL
-
-    -- Bahnhof Olten: L650 Olten - Baden (S23)
-    SELECT
-        stop_name,
-        route_id,
-        linienname,
-        unternehmer,
-        sum(gtfs_count),
-        verkehrsmittel
-    FROM
-        abfahrten
-    WHERE
-        stop_name = 'Olten'
-    AND
-        trip_headsign IN ('Baden')
-    AND
-        linienname = 'L650 Olten - Baden (S23)'
+        substring(linienname from 1 for 4) = 'L450'
     GROUP BY
         stop_name,
         route_id,
@@ -366,7 +341,7 @@ WITH calendar AS (
 
     UNION ALL
     
-    -- Bahnhof Olten: L650 Olten - Aarau - Turgi (S29)
+    -- Bahnhof Olten: L650 Turgi - Sursee (S29)
     SELECT
         stop_name,
         route_id,
@@ -378,21 +353,20 @@ WITH calendar AS (
         abfahrten
     WHERE
         stop_name = 'Olten'
-     AND
-        linienname = 'L650 Olten - Aarau - Turgi (S29)'
     AND
-       trip_headsign IN ('Brugg AG', 'Turgi', 'Aarau')
+        linienname = 'L650 Olten - Turgi (S29)'
+    AND
+       trip_headsign IN ('Brugg AG', 'Turgi')
     GROUP BY
         stop_name,
         route_id,
         linienname,
         unternehmer,
         verkehrsmittel
- 
+
     UNION ALL
 
-
-    -- Bahnhof Olten: L650 Olten - Rotkreuz (S26)
+    -- Bahnhof Olten: L650 Olten - Zürich HB (RE)
     SELECT
         stop_name,
         route_id,
@@ -405,38 +379,71 @@ WITH calendar AS (
     WHERE
         stop_name = 'Olten'
     AND
-        linienname = 'L650 Olten - Rotkreuz (S26)'
+        trip_headsign IN (
+            'Baden',
+            'Rotkreuz',
+            'Turgi',
+            'Wettingen',
+            'Zürich HB'
+        )
     AND
-       trip_headsign IN ('Rotkreuz', 'Muri AG')
+        substring(linienname from 1 for 4) = 'L650'
+    AND
+        linienname <> 'L650 Olten - Turgi (S29)'
     GROUP BY
         stop_name,
         route_id,
         linienname,
         unternehmer,
         verkehrsmittel
- 
+
     UNION ALL
 
-    -- Bahnhof Olten: L650 Olten - Wettingen - Zürich HB (RE12)
+    -- Däniken, Dulliken, Schönenwerd:
+    -- 650 Olten-Zürich R, S und 450 Bern - Olten haben die gleiche route_id!
     SELECT
-        stop_name,
+    stop_name,
         route_id,
         linienname,
         unternehmer,
-        sum(gtfs_count),
+        sum(gtfs_count) AS gtfs_count,
         verkehrsmittel
     FROM
         abfahrten
     WHERE
-        stop_name = 'Olten'
+        stop_name IN ('Dulliken', 'Däniken SO', 'Schönenwerd SO')
     AND
-        linienname = 'L650 Olten - Wettingen - Zürich HB (RE12)'
-    AND
-       trip_headsign IN ('Wettingen', 'Zürich HB')
+        substring(linienname from 1 for 4) = 'L650'
     GROUP BY
         stop_name,
         route_id,
         linienname,
+        gtfs_count,
+        unternehmer,
+        verkehrsmittel
+
+   UNION ALL
+
+    -- Bahnhof Murgenthal
+    -- 650 Olten-Zürich R, S und 450 Bern - Olten haben die gleiche route_id!
+    SELECT
+    stop_name,
+        route_id,
+        linienname,
+        unternehmer,
+        sum(gtfs_count) AS gtfs_count,
+        verkehrsmittel
+    FROM
+        abfahrten
+    WHERE
+        stop_name = 'Murgenthal'
+    AND
+        substring(linienname from 1 for 4) = 'L450'
+    GROUP BY
+        stop_name,
+        route_id,
+        linienname,
+        gtfs_count,
         unternehmer,
         verkehrsmittel
     )
