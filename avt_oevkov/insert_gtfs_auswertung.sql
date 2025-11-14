@@ -411,8 +411,8 @@ INSERT INTO
     FROM
         abfahrten
     WHERE
-        stop_name IN ('Dulliken', 'Däniken SO', 'Schönenwerd SO')
-    AND
+       stop_name IN ('Dulliken', 'Däniken SO', 'Schönenwerd SO')
+   AND
         substring(linienname from 1 for 4) = 'L650'
     GROUP BY
         stop_name,
@@ -422,6 +422,37 @@ INSERT INTO
         unternehmer,
         verkehrsmittel
 
+        
+    UNION ALL
+
+    -- Olten, Däniken, Dulliken, Schönenwerd:
+    -- L650 S26 und S29 mit speziellen End-Bahnhöfen
+    SELECT
+    stop_name,
+        route_id,
+        linienname,
+        unternehmer,
+        sum(gtfs_count) AS gtfs_count,
+        verkehrsmittel
+    FROM
+        abfahrten
+    WHERE
+        trip_headsign IN (
+            'Brugg AG',
+            'Aarau',
+            'Turgi',
+            'Rotkreuz'
+        )
+    AND
+        substring(linienname from 1 for 4) = 'L650'
+    GROUP BY
+        stop_name,
+        route_id,
+        linienname,
+        gtfs_count,
+        unternehmer,
+        verkehrsmittel
+        
    UNION ALL
 
     -- Bahnhof Murgenthal
