@@ -4,7 +4,7 @@ SET
         CASE 
             WHEN gestaltungsplan IS NOT NULL 
                 THEN TRUE
-            ELSE FALSE 
+            ELSE gestaltungsplanpflicht 
         END)   
 ;
 
