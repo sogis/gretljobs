@@ -414,5 +414,30 @@ WITH calendar AS (
         linienname,
         unternehmer,
         verkehrsmittel
+ 
+    UNION ALL
+
+    -- Bahnhof Olten: L650 Olten - Wettingen - Zürich HB (RE12)
+    SELECT
+        stop_name,
+        route_id,
+        linienname,
+        unternehmer,
+        sum(gtfs_count),
+        verkehrsmittel
+    FROM
+        abfahrten
+    WHERE
+        stop_name = 'Olten'
+    AND
+        linienname = 'L650 Olten - Wettingen - Zürich HB (RE12)'
+    AND
+       trip_headsign IN ('Wettingen', 'Zürich HB')
+    GROUP BY
+        stop_name,
+        route_id,
+        linienname,
+        unternehmer,
+        verkehrsmittel
     )
 ;
