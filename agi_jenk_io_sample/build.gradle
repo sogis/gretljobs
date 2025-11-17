@@ -3,17 +3,35 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'dumpProps'
+defaultTasks 'lsDir'
+
+tasks.register("writeFile", Exec) {
+    // Ensure the build directory exists
+    doFirst {
+        mkdir("$buildDir")
+    }
+
+    commandLine "bash", "-c", "echo 'hello world' > $buildDir/test.txt"
+}
+
+tasks.register("lsDir", Exec) {
+    dependsOn writeFile
+    doFirst {
+        mkdir("$buildDir")
+    }
+
+    commandLine "bash", "-c", "ls $buildDir"
+}
 
 tasks.register('dumpProps'){
     doLast {
         println "Project properties:"
         project.properties.sort().each { k, v ->
-            println "  $k = $v"
+            println "$k"
         }
     }
 }
 
 /*
-GRETL_IMAGE_TAG=3.1 docker compose run --rm -u $UID gretl --project-dir=agi_bjsvwbur_jenk_io
+GRETL_IMAGE_TAG=3.1 docker compose run --rm -u $UID gretl --project-dir=agi_jenk_io_sample
 */
