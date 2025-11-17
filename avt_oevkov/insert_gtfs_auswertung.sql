@@ -394,7 +394,7 @@ INSERT INTO
     FROM
         abfahrten
     WHERE
-        stop_name IN ('Olten', 'Dulliken', 'Däniken SO', 'Schönenwerd SO')
+        stop_name IN ('Dulliken', 'Däniken SO', 'Schönenwerd SO')
     AND
         substring(linienname from 1 for 4) = 'L650'
     GROUP BY
