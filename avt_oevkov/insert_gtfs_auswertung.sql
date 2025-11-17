@@ -341,7 +341,7 @@ INSERT INTO
 
     UNION ALL
     
-    -- Bahnhof Olten,Dulliken, Däniken SO, Schönenwerd SO
+    -- Bahnhof Olten
     -- L650 Olten - Baden (S23)
     -- L650 Olten - Rotkreuz (S26)
     -- L650 Olten - Wettingen - Zürich HB (RE12)
@@ -356,7 +356,7 @@ INSERT INTO
     FROM
         abfahrten
     WHERE
-        stop_name IN ('Olten','Dulliken', 'Däniken SO', 'Schönenwerd SO')
+        stop_name = 'Olten'
     AND
         trip_headsign IN (
             'Baden',
@@ -368,6 +368,33 @@ INSERT INTO
             'Aarau',
             'Muri AG'
        )
+    AND
+        substring(linienname from 1 for 4) = 'L650'
+    GROUP BY
+        stop_name,
+        route_id,
+        linienname,
+        unternehmer,
+        verkehrsmittel
+ 
+    UNION ALL
+    
+    -- Bahnhof Dulliken, Däniken SO, Schönenwerd SO
+    -- L650 Olten - Baden (S23)
+    -- L650 Olten - Rotkreuz (S26)
+    -- L650 Olten - Wettingen - Zürich HB (RE12)
+    -- L650 Olten - Aarau - Turgi (S29)
+    SELECT
+        stop_name,
+        route_id,
+        linienname,
+        unternehmer,
+        sum(gtfs_count),
+        verkehrsmittel
+    FROM
+        abfahrten
+    WHERE
+        stop_name IN ('Olten', 'Dulliken', 'Däniken SO', 'Schönenwerd SO')
     AND
         substring(linienname from 1 for 4) = 'L650'
     GROUP BY
