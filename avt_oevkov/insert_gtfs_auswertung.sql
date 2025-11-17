@@ -365,7 +365,8 @@ INSERT INTO
             'Wettingen',
             'Zürich HB',
             'Brugg AG',
-            'Aarau'
+            'Aarau',
+            'Muri AG'
        )
     AND
         substring(linienname from 1 for 4) = 'L650'
