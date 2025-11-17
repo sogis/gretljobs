@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'lsDir'
+defaultTasks 'writeFile'
 
 tasks.register("writeFile", Exec) {
     // Ensure the build directory exists
@@ -11,16 +11,7 @@ tasks.register("writeFile", Exec) {
         mkdir("$buildDir")
     }
 
-    commandLine "bash", "-c", "echo 'hello world' > $buildDir/test.txt"
-}
-
-tasks.register("lsDir", Exec) {
-    dependsOn writeFile
-    doFirst {
-        mkdir("$buildDir")
-    }
-
-    commandLine "bash", "-c", "ls $buildDir"
+    commandLine "bash", "-c", "ls $projectDir > $buildDir/test.txt"
 }
 
 tasks.register('dumpProps'){
