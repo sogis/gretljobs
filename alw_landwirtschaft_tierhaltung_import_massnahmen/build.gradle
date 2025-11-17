@@ -36,7 +36,27 @@ task downloadData () {
     }
 }
 
-task importGELAN(type: Ili2pgReplace, dependsOn: downloadData) {
+task checkDownloadedFileSize(dependsOn: downloadData) {
+    description = "Check size of downloaded GELAN data file"
+    doLast {
+        def downloadedFile = file(Paths.get(pathToTempFolder, "Export_ais_pp-mg.xtf").toFile())
+        if (!downloadedFile.exists()) {
+            throw new GradleException("Erwartete Datei wurde nicht gefunden: ${downloadedFile}")
+        }
+
+        long minSizeBytes = 50L * 1024L * 1024L  // 50 MB
+        if (downloadedFile.length() < minSizeBytes) {
+            throw new GradleException(
+                "Datei ist zu klein (${downloadedFile.length()} Bytes). " +
+                "Erwartet mindestens ${minSizeBytes} Bytes (50 MB)."
+            )
+        }
+
+        println "Dateigrösse OK: ${downloadedFile.length()} Bytes"
+    }
+}
+
+task importGELAN(type: Ili2pgReplace, dependsOn: checkDownloadedFileSize) {
     description = 'Import resp. ersetzt einmal im Monat die GELAN-Daten (Topic: Massnahmen_Perimeter, Datentransfer) in der Erfassungsdatenbank'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "alw_landwirtschaft_tierhaltung_v1"
