@@ -5,19 +5,20 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferData'
+
 /*
-tasks.register('create_index', SqlExecutor) {
+tasks.register('create_index_edit', SqlExecutor) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = files(
         'waldplan_create_index.sql'
     )
 }
-*/
 
-tasks.register('transferData', Db2Db) {
-    /*dependsOn "create_index"*/
+
+tasks.register("transferData", Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlParameters = [bfsnr_param:bfsnr]
     transferSets = [
             new TransferSet('awjf_waldfunktion_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldfunktion', true),
             new TransferSet('awjf_waldnutzung_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldnutzung', true), 
@@ -26,12 +27,25 @@ tasks.register('transferData', Db2Db) {
             new TransferSet('awjf_waldplan_grundstueck_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck', true)         
     ];
 }
+*/
 
-tasks.register('UpdateValues', SqlExecutor) {
+tasks.register("transferData", Db2Db) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('lokal/awjf_waldfunktion_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldfunktion', true),
+            new TransferSet('lokal/awjf_waldnutzung_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldnutzung', true), 
+            new TransferSet('lokal/awjf_schutzwald_pub.sql', 'awjf_waldplan_pub_v2.waldplan_schutzwald', true),
+            new TransferSet('lokal/awjf_walduebersicht_pub.sql', 'awjf_waldplan_pub_v2.waldplan_walduebersicht', true),
+            new TransferSet('lokal/awjf_waldplan_grundstueck_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck', true)         
+    ];
+}
+
+tasks.register("UpdateFlaeche", SqlExecutor) {
     dependsOn "transferData"
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = files(
-        'test.sql'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlParameters = [bfsnr_param:bfsnr]
+    sqlFiles = files('awjf_update_flaechenwerte.sql'
     )
 }
 

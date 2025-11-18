@@ -17,8 +17,6 @@ LEFT JOIN awjf_waldplan_v2.waldplankatalog_forstrevier AS wfr
 	ON ww.forstrevier = wfr.t_id
 LEFT JOIN awjf_waldplan_v2.forstkreise AS fk 
 	ON ww.forstkreis = fk.ilicode
-WHERE
-	ww.t_datasetname = ${bfsnr_param}
 ),
 
 schutzwald AS (
@@ -103,8 +101,6 @@ LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS hgg
 	ON wf.t_datasetname = hgg.bfs_gemeindenummer::text
 WHERE 
 	wf.funktion IN ('Schutzwald','Schutzwald_Biodiversitaet')
-AND 
-	wf.t_datasetname = ${bfsnr_param}
 ),
 
 /*

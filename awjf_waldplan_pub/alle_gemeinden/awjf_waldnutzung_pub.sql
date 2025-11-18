@@ -5,8 +5,6 @@ waldnutzung_union AS (
 		ST_UNION(geometrie) AS geometrie 
 	FROM 
 		awjf_waldplan_v2.waldplan_waldnutzung
-	WHERE 
-		t_datasetname = ${bfsnr_param}
 ),
 
 waldnutzung_edit AS (
@@ -20,8 +18,6 @@ waldnutzung_edit AS (
 		awjf_waldplan_v2.waldplan_waldnutzung AS wnz
 	LEFT JOIN awjf_waldplan_v2.waldnutzungskategorie AS wnk
 		ON wnz.nutzungskategorie = wnk.ilicode
-	WHERE 
-		wnz.t_datasetname = ${bfsnr_param}
 ),
 
 wald_bestockt AS (
@@ -45,8 +41,6 @@ wald_bestockt AS (
     	ON ST_Intersects(wf.geometrie, wnu.geometrie)
     WHERE
     	ST_IsValid(wf.geometrie)
-    AND 
-    	wf.t_datasetname = ${bfsnr_param}
     AND (
     	wnu.geometrie IS NULL  -- Keine Waldnutzung → ganze Fläche
    	OR NOT

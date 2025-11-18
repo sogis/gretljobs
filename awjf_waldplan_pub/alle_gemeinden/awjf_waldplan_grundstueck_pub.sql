@@ -50,8 +50,6 @@ grundstuecke_aufbereitung AS (
 		ON ww.forstrevier = wfr.t_id
 	LEFT JOIN awjf_waldplan_v2.forstkreise AS fk 
 		ON ww.forstkreis = fk.ilicode
-	WHERE
-		ww.t_datasetname = :bfsnr_param
 ),
 
 -- Das folgende CTE (grundstuecke) kann gelöscht werden, sobald die Rohdaten behoben wurden
@@ -115,8 +113,6 @@ waldfunktion AS (
 		ON wf.funktion = wfk.ilicode
 	LEFT JOIN awjf_waldplan_v2.biodiversitaetstyp AS biotyp 
 		ON wf.biodiversitaet_objekt = biotyp.ilicode
-	WHERE
-		wf.t_datasetname = :bfsnr_param
 ),
 
 waldnutzung AS (
@@ -130,8 +126,6 @@ waldnutzung AS (
 		awjf_waldplan_v2.waldplan_waldnutzung AS wnz
 	LEFT JOIN awjf_waldplan_v2.waldnutzungskategorie AS wnk 
 		ON wnz.nutzungskategorie = wnk.ilicode
-	WHERE
-		wnz.t_datasetname = :bfsnr_param
 ),
 
 -------------------------------------------------------------------------

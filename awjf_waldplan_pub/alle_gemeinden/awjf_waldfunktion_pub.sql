@@ -21,6 +21,4 @@ LEFT JOIN awjf_waldplan_v2.waldfunktionskategorie AS wfk
 LEFT JOIN awjf_waldplan_v2.biodiversitaetstyp AS biotyp
 	ON wf.biodiversitaet_objekt = biotyp.ilicode
 LEFT JOIN awjf_waldplan_v2.waldplan_schutzwald AS sw 
-	ON wf.schutzwald_r = sw.t_id 
-WHERE
-	wf.t_datasetname = ${bfsnr_param}
+	ON wf.schutzwald_r = sw.t_id
