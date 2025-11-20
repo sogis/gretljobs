@@ -41,7 +41,7 @@ tasks.register("import_mfk_data", SqlExecutor){
     database = [dbUriDuckDB]
     sqlParameters = [
         /*mfkPath: "'${uploadFile}'".toString()]*/
-       mfkPath: "'upload/uploadFile.csv'"]
+       mfkPath: 'upload/uploadFile.csv']
     sqlFiles = files(
         'load_extension_spatial.sql',
         'import_data_mfk.sql'
