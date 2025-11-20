@@ -7,15 +7,15 @@ grundstuecke_aufbereitung AS (
 	SELECT
 		ww.t_datasetname AS bfsnr,
 		ww.egrid,
-		hg.gemeindename AS gemeinde,
+		mop.gemeinde AS gemeinde,
 		ww.forstbetrieb,
 		ww.forstkreis,
 		fk.dispname AS forstkreis_txt,
 		wfr.aname AS forstrevier,
 		ww.wirtschaftszone,
 		wz.dispname AS wirtschaftszone_txt,
-		lg.nummer AS grundstuecknummer,
-		ll.flaechenmass,
+		mop.nummer AS grundstuecknummer,
+		mop.flaechenmass,
 		CONCAT_WS(' ', ww.eigentuemer, ww.zusatzinformation) AS eigentuemerinformation,
 		ww.eigentuemer,
 		wet.dispname AS eigentuemer_txt,
@@ -23,25 +23,19 @@ grundstuecke_aufbereitung AS (
 		--waldnutzung_flaechen,
 		--wytweide_flaeche,
 		--waldflaeche,
-		gg.aname AS grundbuch,
+		mop.grundbuch AS grundbuch,
 		ww.ausserkantonal,
 		CASE
 			WHEN ausserkantonal IS TRUE 
 				THEN 'Ausserkantonales Eigentum'
 			ELSE 'Kantonales Eigentum'
 		END AS ausserkantonal_txt,
-		ll.geometrie,
+		mop.geometrie,
 		ww.bemerkung
 	FROM
 		awjf_waldplan_v2.waldplan_waldeigentum AS ww
-	LEFT JOIN agi_dm01avso24.liegenschaften_grundstueck AS lg
-		ON ww.egrid = lg.egris_egrid
-	LEFT JOIN agi_dm01avso24.liegenschaften_liegenschaft AS ll
-		ON lg.t_id = ll.liegenschaft_von
-	LEFT JOIN agi_av_gb_administrative_einteilungen_v2.grundbuchkreise_grundbuchkreis AS gg 
-		ON lg.nbident = gg.nbident
-	LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS hg 
-		ON gg.bfsnr = hg.bfs_gemeindenummer
+	LEFT JOIN agi_mopublic_pub.mopublic_grundstueck AS mop
+		ON ww.egrid = mop.egrid
 	LEFT JOIN awjf_waldplan_v2.waldeigentuemer AS wet
 		ON ww.eigentuemer = wet.ilicode
 	LEFT JOIN awjf_waldplan_v2.wirtschaftszonen AS wz 

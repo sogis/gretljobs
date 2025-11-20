@@ -6,13 +6,11 @@ SELECT
 	ww.forstkreis,
 	fk.dispname AS forstkreis_txt,
 	wfr.aname AS forstrevier,
-	ll.geometrie
+	mop.geometrie
 FROM
 	awjf_waldplan_v2.waldplan_waldeigentum AS ww
-LEFT JOIN agi_dm01avso24.liegenschaften_grundstueck AS lg
-	ON ww.egrid = lg.egris_egrid
-LEFT JOIN agi_dm01avso24.liegenschaften_liegenschaft AS ll
-	ON lg.t_id = ll.liegenschaft_von
+LEFT JOIN agi_mopublic_pub.mopublic_grundstueck AS mop
+	ON ww.egrid = mop.egrid
 LEFT JOIN awjf_waldplan_v2.waldplankatalog_forstrevier AS wfr
 	ON ww.forstrevier = wfr.t_id
 LEFT JOIN awjf_waldplan_v2.forstkreise AS fk 

@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'copyDataFromPub'
+defaultTasks 'copyDataFromHoheitsgrenzen'
 
 // Multiline-Text ist im Task nicht möglich, darum als Variable
 def importModelsPub = 
@@ -79,8 +79,26 @@ tasks.register('createImportSchema_Mopublic', Ili2pgImportSchema) {
     smart2Inheritance = true
 }
 
-tasks.register('copyDataFromEdit', Db2Db) {
+tasks.register('createImportSchema_Hoheitsgrenzen', Ili2pgImportSchema) {
     dependsOn 'createImportSchema_Mopublic'
+    description = 'Schema IMPORT für Quelldaten in der Processing-DB anlegen.'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    models = 'SO_Hoheitsgrenzen_Publikation_20170626'
+    dbschema = 'agi_hoheitsgrenzen_pub'
+    createGeomIdx = true
+    createFk = true
+    createFkIdx = true
+    createUnique = true
+    createEnumTabs = true
+    beautifyEnumDispName = true
+    createMetaInfo = true
+    createNumChecks = true
+    nameByTopic = true
+    strokeArcs = true
+}
+
+tasks.register('copyDataFromEdit', Db2Db) {
+    dependsOn 'createImportSchema_Hoheitsgrenzen'
     description = 'Quelldaten tabellenweise aus der Edit-DB in die Processing-DB kopieren.'
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -96,13 +114,23 @@ tasks.register('copyDataFromEdit', Db2Db) {
     ];
 }
 
-tasks.register('copyDataFromPub', Db2Db) {
+tasks.register('copyDataFromMopublic', Db2Db) {
     dependsOn 'copyDataFromEdit'
     description = 'Quelldaten tabellenweise aus der Pub-DB in die Processing-DB kopieren.'
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     transferSets = [
         new TransferSet('import_to_processing/import_mopublic_grundstueck.sql', 'agi_mopublic_pub.mopublic_grundstueck', true)
+    ];
+}
+
+tasks.register('copyDataFromHoheitsgrenzen', Db2Db) {
+    dependsOn 'copyDataFromMopublic'
+    description = 'Quelldaten tabellenweise aus der Pub-DB in die Processing-DB kopieren.'
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    transferSets = [
+        new TransferSet('import_to_processing/import_hoheitsgrenzen_gemeindegrenze.sql', 'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze', true)
     ];
 }
 
