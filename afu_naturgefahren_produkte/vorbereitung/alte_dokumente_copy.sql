@@ -20,7 +20,6 @@ map_perimeter_file AS (
 ,('6b99d319-bd16-430a-934d-f255459c7e5b','104_Obergoesgen_Wasser_2008.pdf')
 ,('0cf8601e-e5b6-448b-8642-b72a7b526b5b','072_Mümliswil_Ramiswil_Wasser_Sturz_Rutsch_2017.pdf')
 ,('f97b3c44-d811-4ae4-900d-c02a0ae664c1','112_Dornach_Birs_2017.pdf')
-,('f97b3c44-d811-4ae4-900d-c02a0ae664c1','112_Dornach_Sturz_2024.pdf')
 ,('f97b3c44-d811-4ae4-900d-c02a0ae664c1','112_Dornach_Wasser_2010.pdf')
 ,('25277cde-271a-4e84-86d9-8ab55e3e4aa1','123_Breitenbach_Rutsch_2013.pdf')
 ,('25277cde-271a-4e84-86d9-8ab55e3e4aa1','123_Breitenbach_Wasser_2009.pdf')
