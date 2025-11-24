@@ -1,19 +1,3 @@
-DELETE FROM awjf_waldplan_pub_v2.waldplan_waldfunktion;
-
-INSERT INTO awjf_waldplan_pub_v2.waldplan_waldfunktion(
-	bfsnr,
-	funktion,
-	funktion_txt,
-	biodiversitaet_id,
-	biodiversitaet_objekt,
-	biodiversitaet_objekt_txt,
-	schutzwald_nr,
-	wytweide,
-	wytweide_txt,
-	geometrie,
-	bemerkung
-)
-
 SELECT
 	wf.t_datasetname::INTEGER AS bfsnr,
 	funktion,
@@ -37,4 +21,4 @@ LEFT JOIN awjf_waldplan_v2.waldfunktionskategorie AS wfk
 LEFT JOIN awjf_waldplan_v2.biodiversitaetstyp AS biotyp
 	ON wf.biodiversitaet_objekt = biotyp.ilicode
 LEFT JOIN awjf_waldplan_v2.waldplan_schutzwald AS sw 
-	ON wf.schutzwald_r = sw.t_id 
+	ON wf.schutzwald_r = sw.t_id

@@ -1,5 +1,3 @@
-DELETE FROM awjf_waldplan_pub_v2.waldplan_waldnutzung;
-
 WITH
 
 waldnutzung_union AS (
@@ -68,14 +66,6 @@ waldnutzung_pub AS (
 		bemerkung
 	FROM
 		wald_bestockt
-)
-
-INSERT INTO awjf_waldplan_pub_v2.waldplan_waldnutzung(
-	bfsnr,
-	nutzungskategorie,
-	nutzungskategorie_txt,
-	geometrie,
-	bemerkung
 )
 
 SELECT

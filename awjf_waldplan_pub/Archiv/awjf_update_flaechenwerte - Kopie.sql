@@ -8,15 +8,6 @@ SET
 	hiebsatzrelevante_flaeche = NULL
 ;
 
-DROP TABLE IF EXISTS 
-	produktive_waldflaechen,
-	produktive_waldflaechen_grundstueck,
-	hiebsatzrelevante_waldfunktionsflaechen,
-	hiebsatzrelevante_waldflaechen,
-	hiebsatzrelevante_waldflaechen_grundstueck,
-	
-CASCADE
-;
 WITH
 
 -------------------------------------------------------------------------

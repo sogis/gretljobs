@@ -1,6 +1,22 @@
-WITH
+DELETE FROM awjf_waldplan_pub_v2.waldplan_walduebersicht;
 
-union_geometry AS (
+DROP TABLE IF EXISTS 
+	walduebersicht_union_geometry,
+	walduebersicht_cleaned_geometry
+CASCADE
+;
+
+CREATE TABLE 
+	walduebersicht_union_geometry (
+		geometrie GEOMETRY
+);
+
+CREATE TABLE 
+	walduebersicht_cleaned_geometry (
+		geometrie GEOMETRY
+);
+
+INSERT INTO walduebersicht_union_geometry
     SELECT
         (ST_Dump(
             ST_Union(
@@ -15,9 +31,14 @@ union_geometry AS (
         )).geom AS geometrie
     FROM
         awjf_waldplan_v2.waldplan_waldfunktion
-),
+;
 
-cleaned_geometry AS (
+CREATE INDEX
+	ON walduebersicht_union_geometry
+	USING gist (geometrie)
+;
+
+INSERT INTO walduebersicht_cleaned_geometry
     SELECT
         CASE 
             WHEN ST_GeometryType(geometrie) = 'ST_Polygon' THEN
@@ -36,10 +57,19 @@ cleaned_geometry AS (
             ELSE geometrie
         END AS geometrie
     FROM
-        union_geometry AS ug
+        walduebersicht_union_geometry AS ug
+;
+
+CREATE INDEX
+	ON walduebersicht_cleaned_geometry
+	USING gist (geometrie)
+;
+
+INSERT INTO awjf_waldplan_pub_v2.waldplan_walduebersicht (
+	geometrie
 )
 
 SELECT
 	ST_Collect(geometrie) AS geometrie 
 FROM
-	cleaned_geometry
+	walduebersicht_cleaned_geometry

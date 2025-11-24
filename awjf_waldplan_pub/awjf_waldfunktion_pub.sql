@@ -1,3 +1,19 @@
+DELETE FROM awjf_waldplan_pub_v2.waldplan_waldfunktion;
+
+INSERT INTO awjf_waldplan_pub_v2.waldplan_waldfunktion(
+	bfsnr,
+	funktion,
+	funktion_txt,
+	biodiversitaet_id,
+	biodiversitaet_objekt,
+	biodiversitaet_objekt_txt,
+	schutzwald_nr,
+	wytweide,
+	wytweide_txt,
+	geometrie,
+	bemerkung
+)
+
 SELECT
 	wf.t_datasetname::INTEGER AS bfsnr,
 	funktion,

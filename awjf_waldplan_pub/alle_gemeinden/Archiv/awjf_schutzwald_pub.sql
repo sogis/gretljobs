@@ -1,5 +1,3 @@
-DELETE FROM awjf_waldplan_pub_v2.waldplan_schutzwald;
-
 WITH
 
 grundstuecke AS (
@@ -8,11 +6,13 @@ SELECT
 	ww.forstkreis,
 	fk.dispname AS forstkreis_txt,
 	wfr.aname AS forstrevier,
-	mop.geometrie
+	ll.geometrie
 FROM
 	awjf_waldplan_v2.waldplan_waldeigentum AS ww
-LEFT JOIN agi_mopublic_pub.mopublic_grundstueck AS mop
-	ON ww.egrid = mop.egrid
+LEFT JOIN agi_dm01avso24.liegenschaften_grundstueck AS lg
+	ON ww.egrid = lg.egris_egrid
+LEFT JOIN agi_dm01avso24.liegenschaften_liegenschaft AS ll
+	ON lg.t_id = ll.liegenschaft_von
 LEFT JOIN awjf_waldplan_v2.waldplankatalog_forstrevier AS wfr
 	ON ww.forstrevier = wfr.t_id
 LEFT JOIN awjf_waldplan_v2.forstkreise AS fk 
@@ -142,34 +142,6 @@ GROUP BY
 	sw.geometrie
 )
 
-INSERT INTO awjf_waldplan_pub_v2.waldplan_schutzwald (
-	schutzwald_nr,
-	forstkreis,
-	forstrevier,
-	sturz,
-	sturz_txt,
-	rutsch,
-	rutsch_txt,
-	gerinnerelevante_prozesse,
-	gerinnerelevante_prozesse_txt,
-	lawine,
-	lawine_txt,
-	andere_kt,
-	andere_kt_txt,
-	objektkategorie,
-	objektkategorie_txt,
-	schadenpotential,
-	hauptgefahrenpotential,
-	hauptgefahrenpotential_txt,
-	intensitaet_geschaetzt,
-	intensitaet_geschaetzt_txt,
-	bfsnr,
-	gemeinde,
-	flaeche,
-	bemerkungen,
-	geometrie
-)
-
 SELECT
 	sw.schutzwald_nr,
 	fa.forstkreis_txt AS forstkreis,
@@ -200,4 +172,3 @@ FROM
 	schutzwald AS sw 
 LEFT JOIN administrative_forstdaten AS fa 
 	ON sw.schutzwald_nr = fa.schutzwald_nr
-;

@@ -1,9 +1,132 @@
-WITH 
+DELETE FROM awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck;
+
+DROP TABLE IF EXISTS 
+	grundstuecke,
+	grundstuecke_berechnung,
+	waldfunktion,
+	waldnutzung,
+	waldflaeche_grundstueck,
+	waldflaechen_berechnet,
+	wytweideflaechen_berechnet,
+	waldfunktion_flaechen_berechnet,
+	waldnutzung_flaechen_berechnet,
+	biodiversitaet_objekt_flaechen_berechnet,
+	biodiversitaet_id_flaechen_berechnet
+CASCADE
+;
 
 -------------------------------------------------------------------------
 ---------------------- Erstellung Grundtabellen -------------------------
 -------------------------------------------------------------------------
-grundstuecke_aufbereitung AS (
+CREATE TABLE 
+	grundstuecke (
+		bfsnr TEXT,
+		egrid TEXT,
+		gemeinde TEXT,
+		forstbetrieb INTEGER,
+		forstkreis TEXT,
+		forstkreis_txt TEXT,
+		forstrevier TEXT,
+		wirtschaftszone TEXT,
+		wirtschaftszone_txt TEXT,
+		grundstuecknummer TEXT,
+		flaechenmass INTEGER,
+		eigentuemerinformation TEXT,
+		eigentuemer TEXT,
+		eigentuemer_txt TEXT,
+		grundbuch TEXT,
+		ausserkantonal BOOLEAN,
+		ausserkantonal_txt TEXT,
+		geometrie GEOMETRY,
+		bemerkung TEXT
+);
+
+-- Die folgende Tabelle kann gelöscht werden, sobald die Rohdaten behoben wurden
+CREATE TABLE
+	grundstuecke_berechnung (
+		bfsnr TEXT,
+		egrid TEXT,
+		flaechenmass INTEGER,
+		geometrie GEOMETRY
+);
+
+CREATE TABLE
+	waldfunktion (
+		bfsnr TEXT,
+		funktion TEXT,
+		funktion_txt TEXT,
+		biodiversitaet_id TEXT,
+		biodiversitaet_objekt TEXT,
+		biodiversitaet_objekt_txt TEXT,
+		wytweide BOOLEAN,
+		wytweide_txt TEXT,
+		geometrie GEOMETRY,
+		bemerkung TEXT
+);
+
+CREATE TABLE
+	waldnutzung (
+		t_id INTEGER,
+		bfsnr TEXT,
+		nutzungskategorie TEXT,
+		nutzungskategorie_txt TEXT,
+		geometrie GEOMETRY
+);
+
+CREATE TABLE
+	waldflaeche_grundstueck (
+    	egrid TEXT,
+   		geometrie GEOMETRY
+);
+
+-------------------------------------------------------------------------
+---------------- Erstellung Flächenberechnungstabellen ------------------
+-------------------------------------------------------------------------
+CREATE TABLE
+	waldflaechen_berechnet (
+		egrid TEXT,
+		flaeche INTEGER
+);
+
+CREATE TABLE
+	wytweideflaechen_berechnet (
+		egrid TEXT,
+		flaeche INTEGER
+);
+
+CREATE TABLE
+	waldfunktion_flaechen_berechnet (
+		egrid TEXT,
+		funktion_txt TEXT,
+		flaeche INTEGER
+);
+
+CREATE TABLE
+	waldnutzung_flaechen_berechnet (
+		egrid TEXT,
+		nutzungskategorie_txt TEXT,
+		flaeche INTEGER
+);
+
+CREATE TABLE
+	biodiversitaet_objekt_flaechen_berechnet (
+		egrid TEXT,
+		funktion_txt TEXT,
+		flaeche INTEGER
+);
+
+CREATE TABLE
+	biodiversitaet_id_flaechen_berechnet (
+		egrid TEXT,
+		biodiversitaet_id TEXT,
+		funktion_txt TEXT,
+		flaeche INTEGER
+);
+
+-------------------------------------------------------------------------
+----------------------- Grundtabellen befüllen --------------------------
+-------------------------------------------------------------------------
+INSERT INTO grundstuecke
 	SELECT
 		ww.t_datasetname AS bfsnr,
 		ww.egrid,
@@ -19,10 +142,6 @@ grundstuecke_aufbereitung AS (
 		CONCAT_WS(' ', ww.eigentuemer, ww.zusatzinformation) AS eigentuemerinformation,
 		ww.eigentuemer,
 		wet.dispname AS eigentuemer_txt,
-		--waldfunktion_flaechen,
-		--waldnutzung_flaechen,
-		--wytweide_flaeche,
-		--waldflaeche,
 		mop.grundbuch AS grundbuch,
 		ww.ausserkantonal,
 		CASE
@@ -45,48 +164,38 @@ grundstuecke_aufbereitung AS (
 	LEFT JOIN awjf_waldplan_v2.forstkreise AS fk 
 		ON ww.forstkreis = fk.ilicode
 	WHERE
-		ww.t_datasetname = :bfsnr_param
-),
+		ww.t_datasetname =  ${bfsnr_param}
+;
 
--- Das folgende CTE (grundstuecke) kann gelöscht werden, sobald die Rohdaten behoben wurden
--- Danach muss grundstuecke_aufbereitung wieder in grundstuecke umbenennt werden
-grundstuecke AS (
-	SELECT DISTINCT ON (egrid)
-		ga.egrid,
-		ga.bfsnr,
-		ga.gemeinde,
-		ga.forstbetrieb,
-		ga.forstkreis,
-		ga.forstkreis_txt,
-		ga.forstrevier,
-		ga.wirtschaftszone,
-		ga.wirtschaftszone_txt,
-		ga.grundstuecknummer,
-		ga.flaechenmass,
-		ga.eigentuemerinformation,
-		ga.eigentuemer,
-		ga.eigentuemer_txt,
-		ga.grundbuch,
-		ga.ausserkantonal,
-		ga.ausserkantonal_txt,
-		-- Geometrien der Duplikate korrekt vereinen:
-		(
-			SELECT
-				ST_Union(gg.geometrie)
-			FROM
-				grundstuecke_aufbereitung AS gg
-			WHERE
-				gg.egrid = ga.egrid
-		) AS geometrie,
-		ga.bemerkung
+CREATE INDEX 
+	ON grundstuecke
+	USING gist (geometrie)
+;
+
+INSERT INTO grundstuecke_berechnung
+	SELECT
+		ww.t_datasetname AS bfsnr,
+		ww.egrid,
+		mop.flaechenmass,
+		ST_UNION(mop.geometrie) AS geometrie
 	FROM
-		grundstuecke_aufbereitung AS ga
-	ORDER BY
-    	egrid,
-    	geometrie IS NULL DESC  -- bevorzugt Geometrien
-),
+		awjf_waldplan_v2.waldplan_waldeigentum AS ww
+	LEFT JOIN agi_mopublic_pub.mopublic_grundstueck AS mop
+		ON ww.egrid = mop.egrid
+	WHERE
+		ww.t_datasetname =  ${bfsnr_param}
+	GROUP BY
+		ww.egrid,
+		ww.t_datasetname,
+		mop.flaechenmass
+;
 
-waldfunktion AS (
+CREATE INDEX 
+	ON grundstuecke_berechnung
+	USING gist (geometrie)
+;
+
+INSERT INTO waldfunktion
 	SELECT
 		t_datasetname AS bfsnr,
 		funktion,
@@ -110,10 +219,15 @@ waldfunktion AS (
 	LEFT JOIN awjf_waldplan_v2.biodiversitaetstyp AS biotyp 
 		ON wf.biodiversitaet_objekt = biotyp.ilicode
 	WHERE
-		wf.t_datasetname = :bfsnr_param
-),
+		wf.t_datasetname =  ${bfsnr_param}
+;
 
-waldnutzung AS (
+CREATE INDEX 
+	ON waldfunktion
+	USING gist (geometrie)
+;
+
+INSERT INTO waldnutzung
 	SELECT
 		wnz.t_id,
 		wnz.t_datasetname AS bfsnr,
@@ -125,38 +239,45 @@ waldnutzung AS (
 	LEFT JOIN awjf_waldplan_v2.waldnutzungskategorie AS wnk 
 		ON wnz.nutzungskategorie = wnk.ilicode
 	WHERE
-		wnz.t_datasetname = :bfsnr_param
-),
+		wnz.t_datasetname =  ${bfsnr_param}
+;
+
+CREATE INDEX 
+	ON waldnutzung
+	USING gist (geometrie)
+;
+
+INSERT INTO waldflaeche_grundstueck
+	SELECT
+    	egrid,
+    	ST_Union(geometrie) AS geometrie
+	FROM (
+    	SELECT
+        	gs.egrid,
+        	(ST_Dump(ST_Intersection(wf.geometrie, gs.geometrie))).geom AS geometrie
+    	FROM
+        	waldfunktion AS wf
+    	JOIN grundstuecke_berechnung AS gs
+        	ON ST_Intersects(wf.geometrie, gs.geometrie)
+        	AND wf.bfsnr = gs.bfsnr
+	) sub
+	WHERE
+    	ST_GeometryType(geometrie) = 'ST_Polygon'
+	AND
+   		ST_Area(geometrie) > 0.5
+	GROUP BY
+    	egrid
+;
+
+CREATE INDEX 
+	ON waldflaeche_grundstueck
+	USING gist (geometrie)
+;
 
 -------------------------------------------------------------------------
---------------------- Waldflächen pro Grundstück ------------------------
+---------------- Flächenberechnungstabellen befüllen --------------------
 -------------------------------------------------------------------------
-waldflaeche_grundstueck AS (
-SELECT
-    egrid,
-    ST_Union(geometrie) AS geometrie
-FROM (
-    SELECT
-        gs.egrid,
-        (ST_Dump(ST_Intersection(wf.geometrie, gs.geometrie))).geom AS geometrie
-    FROM
-        waldfunktion AS wf
-    JOIN grundstuecke AS gs
-        ON ST_Intersects(wf.geometrie, gs.geometrie)
-        AND wf.bfsnr = gs.bfsnr
-) sub
-WHERE
-    ST_GeometryType(geometrie) = 'ST_Polygon'
-AND
-    ST_Area(geometrie) > 0.5
-GROUP BY
-    egrid
-),
-
--------------------------------------------------------------------------
------------------------ Berechnung Waldflächen --------------------------
--------------------------------------------------------------------------
-waldflaechen_berechnet AS (
+INSERT INTO waldflaechen_berechnet
 	SELECT
 		gs.egrid,
 		CASE
@@ -166,68 +287,88 @@ waldflaechen_berechnet AS (
 			ELSE ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC)
 		END AS flaeche
 	FROM
-		grundstuecke AS gs
+		grundstuecke_berechnung AS gs
 	LEFT JOIN waldfunktion AS wf 
 		ON ST_INTERSECTS(gs.geometrie, wf.geometrie)
 		AND gs.bfsnr = wf.bfsnr
 	GROUP BY 
 		gs.egrid,
 		gs.flaechenmass
-),
+;
 
-wytweideflaechen_berechnet AS (
+CREATE INDEX 
+	ON waldflaechen_berechnet(egrid)
+;
+
+INSERT INTO wytweideflaechen_berechnet
 	SELECT
 		gs.egrid,
 		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC) AS flaeche
 	FROM
-		grundstuecke AS gs
-	LEFT JOIN waldfunktion AS wf 
+		grundstuecke_berechnung AS gs
+	INNER JOIN waldfunktion AS wf 
 		ON ST_INTERSECTS(gs.geometrie, wf.geometrie)
 		AND gs.bfsnr = wf.bfsnr
 	WHERE
 		wf.wytweide IS TRUE
 	GROUP BY 
 		gs.egrid
-),
+;
 
-waldfunktion_flaechen_berechnet AS (
+CREATE INDEX 
+	ON wytweideflaechen_berechnet(egrid)
+;
+
+INSERT INTO waldfunktion_flaechen_berechnet
 	SELECT 
 		gs.egrid,
 		wf.funktion_txt,
 		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC) AS flaeche
 	FROM
-		grundstuecke AS gs
-	LEFT JOIN waldfunktion AS wf 
+		grundstuecke_berechnung AS gs
+	INNER JOIN waldfunktion AS wf 
 		ON ST_INTERSECTS(gs.geometrie, wf.geometrie)
 		AND gs.bfsnr = wf.bfsnr
 	GROUP BY 
 		gs.egrid,
 		wf.funktion_txt
-),
+	HAVING 
+		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC) > 0
+;
 
-waldnutzung_flaechen_berechnet AS (
+CREATE INDEX 
+	ON waldfunktion_flaechen_berechnet(egrid)
+;
+
+INSERT INTO waldnutzung_flaechen_berechnet
 	SELECT 
 		gs.egrid,
 		wnz.nutzungskategorie_txt,
 		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wnz.geometrie)))::NUMERIC) AS flaeche
 	FROM
-		grundstuecke AS gs
-	LEFT JOIN waldnutzung AS wnz 
+		grundstuecke_berechnung AS gs
+	INNER JOIN waldnutzung AS wnz 
 		ON ST_INTERSECTS(gs.geometrie, wnz.geometrie)
 		AND gs.bfsnr = wnz.bfsnr
 	GROUP BY 
 		gs.egrid,
 		wnz.nutzungskategorie_txt
-),
+	HAVING 
+		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wnz.geometrie)))::NUMERIC) > 0
+;
 
-biodiversitaet_objekt_flaechen_berechnet AS (
+CREATE INDEX 
+	ON waldnutzung_flaechen_berechnet(egrid)
+;
+
+INSERT INTO biodiversitaet_objekt_flaechen_berechnet
 	SELECT 
 		gs.egrid,
 		wf.funktion_txt,
 		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC) AS flaeche
 	FROM
-		grundstuecke AS gs
-	LEFT JOIN waldfunktion AS wf 
+		grundstuecke_berechnung AS gs
+	INNER JOIN waldfunktion AS wf 
 		ON ST_INTERSECTS(gs.geometrie, wf.geometrie)
 		AND gs.bfsnr = wf.bfsnr
 	WHERE
@@ -235,26 +376,36 @@ biodiversitaet_objekt_flaechen_berechnet AS (
 	GROUP BY 
 		gs.egrid,
 		wf.funktion_txt
-),
+	HAVING
+		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC) > 0
+;
 
-biodiversitaet_id_flaechen_berechnet AS (
+CREATE INDEX 
+	ON biodiversitaet_objekt_flaechen_berechnet(egrid)
+;
+
+INSERT INTO biodiversitaet_id_flaechen_berechnet
 	SELECT 
 		gs.egrid,
 		wf.biodiversitaet_id,
-		wf.funktion_txt,
 		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC) AS flaeche
 	FROM
-		grundstuecke AS gs
-	LEFT JOIN waldfunktion AS wf 
+		grundstuecke_berechnung AS gs
+	INNER JOIN waldfunktion AS wf 
 		ON ST_INTERSECTS(gs.geometrie, wf.geometrie)
 		AND gs.bfsnr = wf.bfsnr
 	WHERE
 		wf.funktion IN ('Biodiversitaet', 'Schutzwald_Biodiversitaet')
 	GROUP BY 
 		gs.egrid,
-		wf.biodiversitaet_id,
-		wf.funktion_txt
-),
+		wf.biodiversitaet_id
+	HAVING 
+		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC) > 0
+;
+
+CREATE INDEX 
+	ON biodiversitaet_id_flaechen_berechnet(egrid)
+;
 
 -------------------------------------------------------------------------
 --------------- Plausibilisierung berechneter Waldflächen ---------------
@@ -293,6 +444,8 @@ GROUP BY
 -------------------------------------------------------------------------
 ---------- Erstellung JSON-Attribute für berechnete Waldflächen ---------
 -------------------------------------------------------------------------
+WITH
+
 waldfunktion_flaechen_berechnet_json AS (
     SELECT
     	egrid,
@@ -369,6 +522,36 @@ biodiversitaet_id_flaechen_berechnet_json AS (
 -------------------------------------------------------------------------
 ----------------------- Selektierung Attribute --------------------------
 -------------------------------------------------------------------------
+INSERT INTO awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck(
+	egrid,
+	gemeinde,
+	forstbetrieb,
+	forstkreis,
+	forstkreis_txt,
+	forstrevier,
+	wirtschaftszone,
+	wirtschaftszone_txt,
+	grundstuecknummer,
+	flaechenmass,
+	eigentuemer,
+	eigentuemer_txt,
+	eigentuemerinformation,
+	waldfunktion_flaechen,
+	waldnutzung_flaechen,
+	biodiversitaetsobjekt_flaeche,
+	biodiversitaet_id_flaeche,
+	wytweide_flaeche,
+	--produktive_flaeche,
+	--hiebsatzrelevante_flaeche,
+	waldflaeche,
+	grundbuch,
+	ausserkantonal,
+	ausserkantonal_txt,
+	bfsnr,
+	geometrie,
+	bemerkung
+)
+
 SELECT 
 	gs.egrid,
 	gs.gemeinde,
