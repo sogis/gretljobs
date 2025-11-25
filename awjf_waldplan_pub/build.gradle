@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'exportData'
+defaultTasks 'replaceData'
 
 def xtfPath = "${buildDir}/exportdata.xtf"
 def xtfFile = files(xtfPath)
@@ -180,6 +180,8 @@ tasks.register('UpdateFlaechenwerte', SqlExecutor) {
     sqlFiles = files('processing_data/awjf_update_flaechenwerte_processing.sql'
     )
 }
+
+/* Nur, wenn ein Geopackage generiert werden soll
 tasks.register('importData', Ili2gpkgImport) {
     dependsOn 'UpdateFlaechenwerte'
     models = "SO_AWJF_Waldplan_Publikation_20250312"
@@ -189,6 +191,7 @@ tasks.register('importData', Ili2gpkgImport) {
     ;
     dbfile = file("data.gpkg") 
 }
+*/
 
 tasks.register('exportData', Ili2pgExport) {
     dependsOn 'UpdateFlaechenwerte'
@@ -200,8 +203,6 @@ tasks.register('exportData', Ili2pgExport) {
     disableValidation = true
     skipGeometryErrors = true
 }
-
-
 
 tasks.register('validateXTF', IliValidator) {
     dependsOn 'exportData'
