@@ -23,7 +23,8 @@ WHERE
 
 schutzwald AS (
 SELECT
-	sw.t_datasetname AS bfsnr,
+	basket.t_id AS t_basket,
+	sw.t_datasetname,
 	sw.schutzwald_nr,
 	--forstkreis,
 	--forstkreis_txt,
@@ -91,7 +92,7 @@ SELECT
 	wf.geometrie
 FROM 
 	awjf_waldplan_v2.waldplan_waldfunktion AS wf
-LEFT JOIN awjf_waldplan_v2.waldplan_schutzwald AS sw 
+INNER JOIN awjf_waldplan_v2.waldplan_schutzwald AS sw 
 	ON wf.schutzwald_r = sw.t_id
 LEFT JOIN awjf_waldplan_v2.objekte_schutzwald AS osw 
 	ON sw.objektkategorie = osw.ilicode
@@ -101,11 +102,16 @@ LEFT JOIN awjf_waldplan_v2.intensitaetsstufe AS ins
 	ON sw.intensitaet_geschaetzt = ins.ilicode
 LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS hgg 
 	ON wf.t_datasetname = hgg.bfs_gemeindenummer::text
+LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_dataset AS dataset
+	ON sw.t_datasetname = dataset.datasetname
+LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_basket AS basket
+	ON dataset.t_id = basket.dataset
 WHERE 
 	wf.funktion IN ('Schutzwald','Schutzwald_Biodiversitaet')
 AND 
 	wf.t_datasetname = ${bfsnr_param}
 ),
+
 
 /*
 -- Sofern nur die grösste Fläche von forstrevier berücksichtigt werden soll--
@@ -147,6 +153,8 @@ GROUP BY
 )
 
 INSERT INTO awjf_waldplan_pub_v2.waldplan_schutzwald (
+	t_basket,
+	t_datasetname,
 	schutzwald_nr,
 	forstkreis,
 	forstrevier,
@@ -167,7 +175,6 @@ INSERT INTO awjf_waldplan_pub_v2.waldplan_schutzwald (
 	hauptgefahrenpotential_txt,
 	intensitaet_geschaetzt,
 	intensitaet_geschaetzt_txt,
-	bfsnr,
 	gemeinde,
 	flaeche,
 	bemerkungen,
@@ -175,6 +182,8 @@ INSERT INTO awjf_waldplan_pub_v2.waldplan_schutzwald (
 )
 
 SELECT
+	sw.t_basket,
+	sw.t_datasetname,
 	sw.schutzwald_nr,
 	fa.forstkreis_txt AS forstkreis,
 	fa.forstrevier,
@@ -195,7 +204,6 @@ SELECT
 	sw.hauptgefahrenpotential_txt,
 	sw.intensitaet_geschaetzt,
 	sw.intensitaet_geschaetzt_txt,
-	sw.bfsnr::INTEGER,
 	sw.gemeinde,
 	sw.flaeche,
 	sw.bemerkungen,

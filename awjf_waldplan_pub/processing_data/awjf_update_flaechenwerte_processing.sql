@@ -7,7 +7,7 @@ SET
 	produktive_flaeche = NULL,
 	hiebsatzrelevante_flaeche = NULL
 WHERE 
-	bfsnr = ${bfsnr_param}
+	t_datasetname = ${bfsnr_param}
 ;
 
 -------------------------------------------------------------------------

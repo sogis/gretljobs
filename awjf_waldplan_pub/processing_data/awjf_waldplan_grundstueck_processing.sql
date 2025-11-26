@@ -20,7 +20,8 @@ CASCADE
 -------------------------------------------------------------------------
 CREATE TABLE 
 	grundstuecke (
-		bfsnr TEXT,
+		t_basket INTEGER,
+		t_datasetname TEXT,
 		egrid TEXT,
 		gemeinde TEXT,
 		forstbetrieb INTEGER,
@@ -44,7 +45,7 @@ CREATE TABLE
 -- Die folgende Tabelle kann gelöscht werden, sobald die Rohdaten behoben wurden
 CREATE TABLE
 	grundstuecke_berechnung (
-		bfsnr TEXT,
+		t_datasetname TEXT,	
 		egrid TEXT,
 		flaechenmass INTEGER,
 		geometrie GEOMETRY
@@ -52,7 +53,7 @@ CREATE TABLE
 
 CREATE TABLE
 	waldfunktion (
-		bfsnr TEXT,
+		t_datasetname TEXT,
 		funktion TEXT,
 		funktion_txt TEXT,
 		biodiversitaet_id TEXT,
@@ -66,8 +67,8 @@ CREATE TABLE
 
 CREATE TABLE
 	waldnutzung (
+		t_datasetname TEXT,
 		t_id INTEGER,
-		bfsnr TEXT,
 		nutzungskategorie TEXT,
 		nutzungskategorie_txt TEXT,
 		geometrie GEOMETRY
@@ -128,7 +129,8 @@ CREATE TABLE
 -------------------------------------------------------------------------
 INSERT INTO grundstuecke
 	SELECT
-		ww.t_datasetname AS bfsnr,
+		basket.t_id AS t_basket,
+		ww.t_datasetname,
 		ww.egrid,
 		mop.gemeinde AS gemeinde,
 		ww.forstbetrieb,
@@ -163,6 +165,10 @@ INSERT INTO grundstuecke
 		ON ww.forstrevier = wfr.t_id
 	LEFT JOIN awjf_waldplan_v2.forstkreise AS fk 
 		ON ww.forstkreis = fk.ilicode
+	LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_dataset AS dataset
+		ON ww.t_datasetname = dataset.datasetname
+	LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_basket AS basket
+		ON dataset.t_id = basket.dataset
 	WHERE
 		ww.t_datasetname =  ${bfsnr_param}
 ;
@@ -174,7 +180,7 @@ CREATE INDEX
 
 INSERT INTO grundstuecke_berechnung
 	SELECT
-		ww.t_datasetname AS bfsnr,
+		ww.t_datasetname,
 		ww.egrid,
 		mop.flaechenmass,
 		ST_UNION(mop.geometrie) AS geometrie
@@ -197,21 +203,21 @@ CREATE INDEX
 
 INSERT INTO waldfunktion
 	SELECT
-		t_datasetname AS bfsnr,
-		funktion,
+		wf.t_datasetname,
+		wf.funktion,
 		wfk.dispname AS funktion_txt,
-		biodiversitaet_id,
-		biodiversitaet_objekt,
+		wf.biodiversitaet_id,
+		wf.biodiversitaet_objekt,
 		biotyp.dispname AS biodiversitaet_objekt_txt,
 		--schutzwald_nr, --Zuteilung Schutzwald-Nr. vorher notwendig
-		wytweide,
+		wf.wytweide,
 		CASE 
 			WHEN wytweide IS TRUE
 				THEN 'Wytweidefläche vorhanden'
 			ELSE 'keine Wytweidefläche vorhanden'
 		END AS wytweide_txt,
-		geometrie,
-		bemerkung
+		wf.geometrie,
+		wf.bemerkung
 	FROM 
 		awjf_waldplan_v2.waldplan_waldfunktion AS wf
 	LEFT JOIN awjf_waldplan_v2.waldfunktionskategorie AS wfk 
@@ -229,8 +235,8 @@ CREATE INDEX
 
 INSERT INTO waldnutzung
 	SELECT
+		wnz.t_datasetname,
 		wnz.t_id,
-		wnz.t_datasetname AS bfsnr,
 		wnz.nutzungskategorie,
 		wnk.dispName AS nutzungskategorie_txt,
 		wnz.geometrie
@@ -259,7 +265,7 @@ INSERT INTO waldflaeche_grundstueck
         	waldfunktion AS wf
     	JOIN grundstuecke_berechnung AS gs
         	ON ST_Intersects(wf.geometrie, gs.geometrie)
-        	AND wf.bfsnr = gs.bfsnr
+        	AND wf.t_datasetname = gs.t_datasetname
 	) sub
 	WHERE
     	ST_GeometryType(geometrie) = 'ST_Polygon'
@@ -290,7 +296,7 @@ INSERT INTO waldflaechen_berechnet
 		grundstuecke_berechnung AS gs
 	LEFT JOIN waldfunktion AS wf 
 		ON ST_INTERSECTS(gs.geometrie, wf.geometrie)
-		AND gs.bfsnr = wf.bfsnr
+		AND gs.t_datasetname = wf.t_datasetname
 	GROUP BY 
 		gs.egrid,
 		gs.flaechenmass
@@ -308,7 +314,7 @@ INSERT INTO wytweideflaechen_berechnet
 		grundstuecke_berechnung AS gs
 	INNER JOIN waldfunktion AS wf 
 		ON ST_INTERSECTS(gs.geometrie, wf.geometrie)
-		AND gs.bfsnr = wf.bfsnr
+		AND gs.t_datasetname = wf.t_datasetname
 	WHERE
 		wf.wytweide IS TRUE
 	GROUP BY 
@@ -328,7 +334,7 @@ INSERT INTO waldfunktion_flaechen_berechnet
 		grundstuecke_berechnung AS gs
 	INNER JOIN waldfunktion AS wf 
 		ON ST_INTERSECTS(gs.geometrie, wf.geometrie)
-		AND gs.bfsnr = wf.bfsnr
+		AND gs.t_datasetname = wf.t_datasetname
 	GROUP BY 
 		gs.egrid,
 		wf.funktion_txt
@@ -349,7 +355,7 @@ INSERT INTO waldnutzung_flaechen_berechnet
 		grundstuecke_berechnung AS gs
 	INNER JOIN waldnutzung AS wnz 
 		ON ST_INTERSECTS(gs.geometrie, wnz.geometrie)
-		AND gs.bfsnr = wnz.bfsnr
+		AND gs.t_datasetname = wnz.t_datasetname
 	GROUP BY 
 		gs.egrid,
 		wnz.nutzungskategorie_txt
@@ -370,7 +376,7 @@ INSERT INTO biodiversitaet_objekt_flaechen_berechnet
 		grundstuecke_berechnung AS gs
 	INNER JOIN waldfunktion AS wf 
 		ON ST_INTERSECTS(gs.geometrie, wf.geometrie)
-		AND gs.bfsnr = wf.bfsnr
+		AND gs.t_datasetname = wf.t_datasetname
 	WHERE
 		wf.funktion IN ('Biodiversitaet', 'Schutzwald_Biodiversitaet')
 	GROUP BY 
@@ -393,7 +399,7 @@ INSERT INTO biodiversitaet_id_flaechen_berechnet
 		grundstuecke_berechnung AS gs
 	INNER JOIN waldfunktion AS wf 
 		ON ST_INTERSECTS(gs.geometrie, wf.geometrie)
-		AND gs.bfsnr = wf.bfsnr
+		AND gs.t_datasetname = wf.t_datasetname
 	WHERE
 		wf.funktion IN ('Biodiversitaet', 'Schutzwald_Biodiversitaet')
 	GROUP BY 
@@ -523,6 +529,8 @@ biodiversitaet_id_flaechen_berechnet_json AS (
 ----------------------- Selektierung Attribute --------------------------
 -------------------------------------------------------------------------
 INSERT INTO awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck(
+	t_basket,
+	t_datasetname,
 	egrid,
 	gemeinde,
 	forstbetrieb,
@@ -547,12 +555,13 @@ INSERT INTO awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck(
 	grundbuch,
 	ausserkantonal,
 	ausserkantonal_txt,
-	bfsnr,
 	geometrie,
 	bemerkung
 )
 
-SELECT 
+SELECT
+	gs.t_basket,
+	gs.t_datasetname,
 	gs.egrid,
 	gs.gemeinde,
 	gs.forstbetrieb,
@@ -577,7 +586,6 @@ SELECT
 	gs.grundbuch,
 	gs.ausserkantonal,
 	gs.ausserkantonal_txt,
-	gs.bfsnr::INTEGER,
 	wfg.geometrie,
 	gs.bemerkung
 FROM 
