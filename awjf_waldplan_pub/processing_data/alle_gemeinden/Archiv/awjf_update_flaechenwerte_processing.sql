@@ -6,8 +6,6 @@ UPDATE
 SET
 	produktive_flaeche = NULL,
 	hiebsatzrelevante_flaeche = NULL
-WHERE 
-	t_datasetname = ${bfsnr_param}
 ;
 
 -------------------------------------------------------------------------
@@ -55,8 +53,6 @@ INSERT INTO produktive_waldflaechen
 		awjf_waldplan_pub_v2.waldplan_waldnutzung
 	WHERE 
 		nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
-	AND
-		t_datasetname = ${bfsnr_param}
 ;
 
 CREATE INDEX 
@@ -75,8 +71,6 @@ INSERT INTO produktive_waldflaechen_grundstueck
 		awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck AS gs
 	INNER JOIN produktive_waldflaechen AS pwf
 		ON ST_INTERSECTS(gs.geometrie, pwf.geometrie)
-	WHERE 
-		gs.t_datasetname = ${bfsnr_param}
 	GROUP BY 
 		gs.egrid,
 		gs.waldflaeche
@@ -106,8 +100,6 @@ INSERT INTO hiebsatzrelevante_waldflaechen_grundstueck
 		wwf.funktion IN ('Wirtschaftswald', 'Schutzwald', 'Erholungswald', 'Biodiversitaet', 'Schutzwald_Biodiversitaet')
 	AND
 		(wwf.funktion <> 'Biodiversitaet' OR wwf.biodiversitaet_objekt NOT IN ('Waldreservat','Altholzinsel'))
-	AND 
-		wwf.t_datasetname = ${bfsnr_param}
 	GROUP BY 
 		pwf.egrid,
 		pwf.waldflaeche
@@ -130,7 +122,7 @@ produktive_waldflaechen_grundstueck_json AS (
             json_build_object(
                 'produktiv', pfb.produktiv,
                 'unproduktiv', pfb.unproduktiv,
-                '@type', 'SO_AWJF_Waldplan_Publikation_20250312.Flaechen_Produktiv'
+                '@type', 'SO_AWJF_Waldplan_Publikation_20250312.Waldplan.flaechen_produktiv'
             )
         ) AS flaechen_produktiv
     FROM 
@@ -146,7 +138,7 @@ hiebsatzrelevante_waldflaechen_grundstueck_json AS (
             json_build_object(
                 'relevant', hwg.relevant,
                 'irrelevant', hwg.irrelevant,
-                '@type', 'SO_AWJF_Waldplan_Publikation_20250312.Flaechen_Hiebsatzrelevant'
+                '@type', 'SO_AWJF_Waldplan_Publikation_20250312.Waldplan.flaechen_hiebsatzrelevant'
             )
         ) AS flaechen_hiebsatzrelevant
     FROM 

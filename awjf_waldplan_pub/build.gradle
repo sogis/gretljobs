@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'replaceData'
+defaultTasks 'importData'
 
 def xtfPath = "${buildDir}/exportdata.xtf"
 def xtfFile = files(xtfPath)
@@ -137,7 +137,7 @@ tasks.register('copyDataFromHoheitsgrenzen', Db2Db) {
         new TransferSet('import_to_processing/import_hoheitsgrenzen_gemeindegrenze.sql', 'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze', true)
     ];
 }
-/*
+
 tasks.register('processingPubData', SqlExecutor) {
     dependsOn 'copyDataFromHoheitsgrenzen'
     description = 'Berechnung Waldplandaten für alle Gemeinden'
@@ -148,10 +148,11 @@ tasks.register('processingPubData', SqlExecutor) {
         'processing_data/alle_gemeinden/awjf_waldfunktion_processing.sql',
         'processing_data/alle_gemeinden/awjf_waldnutzung_processing.sql',
         'processing_data/alle_gemeinden/awjf_waldplan_grundstueck_processing.sql',
-        'processing_data/alle_gemeinden/awjf_walduebersicht_processing.sql'
+        'processing_data/awjf_walduebersicht_processing.sql'
     )
 }
-*/
+
+/*
 tasks.register('processingPubData', SqlExecutor) {
     dependsOn 'copyDataFromHoheitsgrenzen'
     description = 'Berechnung Waldplandaten für eine Gemeinde'
@@ -166,7 +167,8 @@ tasks.register('processingPubData', SqlExecutor) {
         'processing_data/awjf_walduebersicht_processing.sql'
     )
 }
-/*
+*/
+
 tasks.register("UpdateFlaechenwerte", SqlExecutor) {
     dependsOn 'processingPubData'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -174,7 +176,8 @@ tasks.register("UpdateFlaechenwerte", SqlExecutor) {
     sqlFiles = files('processing_data/alle_gemeinden/awjf_update_flaechenwerte_processing.sql'
     )
 }
-*/
+
+/*
 tasks.register('UpdateFlaechenwerte', SqlExecutor) {
     dependsOn 'processingPubData'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -182,6 +185,7 @@ tasks.register('UpdateFlaechenwerte', SqlExecutor) {
     sqlFiles = files('processing_data/awjf_update_flaechenwerte_processing.sql'
     )
 }
+*/
 
 /* Nur, wenn ein Geopackage generiert werden soll
 tasks.register('importData', Ili2gpkgImport) {
@@ -202,21 +206,35 @@ tasks.register('exportData', Ili2pgExport) {
     dbschema = 'awjf_waldplan_pub_v2'
     models = 'SO_AWJF_Waldplan_Publikation_20250312'
     dataFile = xtfFile
+    /*dataset = bfsnr_dataset*/
     disableValidation = true
     skipGeometryErrors = true
 }
+
 
 tasks.register('validateXTF', IliValidator) {
     dependsOn 'exportData'
 }
 
+tasks.register('importData', Ili2pgImport) {
+    dependsOn 'validateXTF'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = 'awjf_waldplan_pub_v2'
+    models = 'SO_AWJF_Waldplan_Publikation_20250312'
+    dataFile = xtfFile
+    disableValidation = true
+    skipGeometryErrors = true
+}
+
+/*
 tasks.register('replaceData', Ili2pgReplace) {
     dependsOn 'validateXTF'
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'awjf_waldplan_pub_v2'
     models = 'SO_AWJF_Waldplan_Publikation_20250312'
     dataFile = xtfFile
-    dataset = bfsnr
+    dataset = bfsnr_dataset
     disableValidation = true
     skipGeometryErrors = true
 }
+*/

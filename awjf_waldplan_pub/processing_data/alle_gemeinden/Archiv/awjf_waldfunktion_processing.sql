@@ -1,8 +1,7 @@
 DELETE FROM awjf_waldplan_pub_v2.waldplan_waldfunktion;
 
 INSERT INTO awjf_waldplan_pub_v2.waldplan_waldfunktion(
-	t_basket,
-	t_datasetname,
+	bfsnr,
 	funktion,
 	funktion_txt,
 	biodiversitaet_id,
@@ -16,8 +15,7 @@ INSERT INTO awjf_waldplan_pub_v2.waldplan_waldfunktion(
 )
 
 SELECT
-	basket.t_id AS t_basket,
-	wf.t_datasetname,
+	wf.t_datasetname::INTEGER AS bfsnr,
 	funktion,
 	wfk.dispname AS funktion_txt,
 	biodiversitaet_id,
@@ -39,8 +37,4 @@ LEFT JOIN awjf_waldplan_v2.waldfunktionskategorie AS wfk
 LEFT JOIN awjf_waldplan_v2.biodiversitaetstyp AS biotyp
 	ON wf.biodiversitaet_objekt = biotyp.ilicode
 LEFT JOIN awjf_waldplan_v2.waldplan_schutzwald AS sw 
-	ON wf.schutzwald_r = sw.t_id
-LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_dataset AS dataset
-	ON wf.t_datasetname = dataset.datasetname
-LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_basket AS basket
-	ON dataset.t_id = basket.dataset
+	ON wf.schutzwald_r = sw.t_id 
