@@ -14,8 +14,8 @@ def xtfFile = file(xtfPath)
 // Definition des SFTP-Servers für den Datenupload
 remotes {
     sftpServerTest {
-        host = 'srsofaioi23444.so.ch'
-        user = 's_gis_arp_raumdaten_test'
+        host = sftpServerSEinApp
+        user = sftpUserSEinApp.replace('_prod', '_test')
         identity = file('/home/gradle/.ssh/id_rsa')
         // Skip host key checking outside the following environments:
         if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) {  // uses the Groovy membership operator
@@ -23,8 +23,8 @@ remotes {
         }
     }
     sftpServerProd {
-        host = 'srsofaioi23444.so.ch'
-        user = 's_gis_arp_raumdaten_prod'
+        host = sftpServerSEinApp
+        user = sftpUserSEinApp.replace('_test', '_prod')
         identity = file('/home/gradle/.ssh/id_rsa')
         // Skip host key checking outside the following environments:
         if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) {  // uses the Groovy membership operator
@@ -62,14 +62,14 @@ tasks.register('upload') {
     doLast {
         ssh.run {
             session(remotes.sftpServerTest) {
-                put from: xtfPath, into: '/opt/daten/gis_arp_raumdaten/test'
+                put from: xtfPath, into: sftpPathSEinApp.replace('/prod', '/test')
             }
         }
         println 'Test file uploaded to FTP server TEST'
 
         ssh.run {
             session(remotes.sftpServerProd) {
-                put from: xtfPath, into: '/opt/daten/gis_arp_raumdaten/prod'
+                put from: xtfPath, into: sftpPathSEinApp.replace('/test', '/prod')
             }
         }
         println 'Test file uploaded to FTP server PROD'
