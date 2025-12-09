@@ -10,8 +10,8 @@ defaultTasks 'sftpListing'
 def xtfPath = "${buildDir}/test_sftp_agi.txt"
 def xtfFile = file(xtfPath)
 
-def remotePathTest = sftpPathSEinApp.replace('prod', 'test')
-def remotePathProd = sftpPathSEinApp.replace('test', 'prod')
+def remotePathTest = project.findProperty('sftpPathSEinApp').replace('prod', 'test')
+def remotePathProd = project.findProperty('sftpPathSEinApp').replace('test', 'prod')
 
 // Definition des SFTP-Servers für den Datenupload
 remotes {
