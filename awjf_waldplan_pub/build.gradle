@@ -140,21 +140,6 @@ tasks.register('copyDataFromHoheitsgrenzen', Db2Db) {
 
 tasks.register('processingPubData', SqlExecutor) {
     dependsOn 'copyDataFromHoheitsgrenzen'
-    description = 'Berechnung Waldplandaten für alle Gemeinden'
-    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files(
-        'processing_data/awjf_dataset_basket_processing.sql',
-        'processing_data/alle_gemeinden/awjf_schutzwald_processing.sql',
-        'processing_data/alle_gemeinden/awjf_waldfunktion_processing.sql',
-        'processing_data/alle_gemeinden/awjf_waldnutzung_processing.sql',
-        'processing_data/alle_gemeinden/awjf_waldplan_grundstueck_processing.sql',
-        'processing_data/awjf_walduebersicht_processing.sql'
-    )
-}
-
-/*
-tasks.register('processingPubData', SqlExecutor) {
-    dependsOn 'copyDataFromHoheitsgrenzen'
     description = 'Berechnung Waldplandaten für eine Gemeinde'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlParameters = [bfsnr_param:bfsnr]
@@ -167,17 +152,7 @@ tasks.register('processingPubData', SqlExecutor) {
         'processing_data/awjf_walduebersicht_processing.sql'
     )
 }
-*/
 
-tasks.register("UpdateFlaechenwerte", SqlExecutor) {
-    dependsOn 'processingPubData'
-    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlParameters = [bfsnr_param:bfsnr]
-    sqlFiles = files('processing_data/alle_gemeinden/awjf_update_flaechenwerte_processing.sql'
-    )
-}
-
-/*
 tasks.register('UpdateFlaechenwerte', SqlExecutor) {
     dependsOn 'processingPubData'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -185,19 +160,6 @@ tasks.register('UpdateFlaechenwerte', SqlExecutor) {
     sqlFiles = files('processing_data/awjf_update_flaechenwerte_processing.sql'
     )
 }
-*/
-
-/* Nur, wenn ein Geopackage generiert werden soll
-tasks.register('importData', Ili2gpkgImport) {
-    dependsOn 'UpdateFlaechenwerte'
-    models = "SO_AWJF_Waldplan_Publikation_20250312"
-    dataFile = xtfFile
-    disableValidation = true
-    skipGeometryErrors = true
-    ;
-    dbfile = file("data.gpkg") 
-}
-*/
 
 tasks.register('exportData', Ili2pgExport) {
     dependsOn 'UpdateFlaechenwerte'
@@ -211,22 +173,10 @@ tasks.register('exportData', Ili2pgExport) {
     skipGeometryErrors = true
 }
 
-
 tasks.register('validateXTF', IliValidator) {
     dependsOn 'exportData'
 }
 
-tasks.register('importData', Ili2pgImport) {
-    dependsOn 'validateXTF'
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    dbschema = 'awjf_waldplan_pub_v2'
-    models = 'SO_AWJF_Waldplan_Publikation_20250312'
-    dataFile = xtfFile
-    disableValidation = true
-    skipGeometryErrors = true
-}
-
-/*
 tasks.register('replaceData', Ili2pgReplace) {
     dependsOn 'validateXTF'
     database = [dbUriPub, dbUserPub, dbPwdPub]
@@ -237,4 +187,3 @@ tasks.register('replaceData', Ili2pgReplace) {
     disableValidation = true
     skipGeometryErrors = true
 }
-*/

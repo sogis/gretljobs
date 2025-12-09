@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'importData'
+defaultTasks 'transferData'
 
 def xtfPath = "${buildDir}/exportdata.xtf"
 def xtfFile = files(xtfPath)
@@ -160,40 +160,17 @@ tasks.register("UpdateFlaechenwerte", SqlExecutor) {
     )
 }
 
-tasks.register('exportData', Ili2pgExport) {
+tasks.register('transferData', Db2Db) {
     dependsOn 'UpdateFlaechenwerte'
-    description = "Exportiert die Daten mit DataSet = BFSNr aus dem Processing-Schema awjf_waldplan_pub_v2 in eine INTERLIS-Datei."
-    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    dbschema = 'awjf_waldplan_pub_v2'
-    models = 'SO_AWJF_Waldplan_Publikation_20250312'
-    dataFile = xtfFile
-    /*dataset = bfsnr_dataset*/
-    disableValidation = true
-    skipGeometryErrors = true
-}
-
-
-tasks.register('validateXTF', IliValidator) {
-    dependsOn 'exportData'
-}
-
-tasks.register('transferDatasetBaskets', Db2Db) {
-    dependsOn 'validateXTF'
     description = 'Einmaliger Transfer von Dataset und BAsket'
     sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-        new TransferSet('import_to_processing/import_waldplan_dataset.sql', 'awjf_waldplan_pub_v2.t_ili2db_dataset', true),
-        new TransferSet('import_to_processing/import_waldplan_basket.sql', 'awjf_waldplan_pub_v2.t_ili2db_basket', true)
+        new TransferSet('transfer_data/01_waldplan_dataset_pub.sql', 'awjf_waldplan_pub_v2.t_ili2db_dataset', true),
+        new TransferSet('transfer_data/02_waldplan_basket_pub.sql', 'awjf_waldplan_pub_v2.t_ili2db_basket', true),
+        new TransferSet('transfer_data/03_waldplan_schutzwald_pub.sql', 'awjf_waldplan_pub_v2.waldplan_schutzwald', true),
+        new TransferSet('transfer_data/04_waldplan_waldfunktion_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldfunktion', true),
+        new TransferSet('transfer_data/05_waldplan_waldnutzung_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldnutzung', true),
+        new TransferSet('transfer_data/06_waldplan_waldeigentum_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck', true)
     ];
-}
-
-tasks.register('importData', Ili2pgImport) {
-    dependsOn 'transferDatasetBaskets'
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    dbschema = 'awjf_waldplan_pub_v2'
-    models = 'SO_AWJF_Waldplan_Publikation_20250312'
-    dataFile = xtfFile
-    disableValidation = true
-    skipGeometryErrors = true
 }
