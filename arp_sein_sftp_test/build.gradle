@@ -62,14 +62,14 @@ tasks.register('upload') {
     doLast {
         ssh.run {
             session(remotes.sftpServerTest) {
-                put from: xtfPath, into: sftpPathSEinApp.replace('/prod', '/test')
+                put from: xtfPath, into: '/opt/daten/gis_arp_raumdaten/test'
             }
         }
         println 'Test file uploaded to FTP server TEST'
 
         ssh.run {
             session(remotes.sftpServerProd) {
-                put from: xtfPath, into: sftpPathSEinApp.replace('/test', '/prod')
+                put from: xtfPath, into: '/opt/daten/gis_arp_raumdaten/prod'
             }
         }
         println 'Test file uploaded to FTP server PROD'
