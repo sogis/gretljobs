@@ -47,7 +47,7 @@ tasks.register("importPubdbData", SqlExecutor){
         load_extension_spatial,
         load_extension_postgres,
         attach_pubdb,
-        'import_archaeologische_punktfundstellen.sql',
+        'import_massnahmen_gen5.sql',
         detach_pubdb
     )
 }
