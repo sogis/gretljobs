@@ -100,7 +100,7 @@ task sftpListing {
         }
 
         //PROD
-        def remotePath = remotePathProd
+        remotePath = remotePathProd
         ssh.run {
             session(remotes.sftpServerProd) {
                 // Listing mit ls
