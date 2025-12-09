@@ -10,6 +10,9 @@ defaultTasks 'sftpListing'
 def xtfPath = "${buildDir}/test_sftp_agi.txt"
 def xtfFile = file(xtfPath)
 
+def remotePathTest = sftpPathSEinApp.replace('prod', 'test') ?: '/opt/daten/gis_arp_raumdaten/test/'
+def remotePathProd = sftpPathSEinApp.replace('test', 'prod') ?: '/opt/daten/gis_arp_raumdaten/prod/'
+
 // Definition des SFTP-Servers für den Datenupload
 remotes {
     sftpServerTest {
@@ -62,8 +65,6 @@ tasks.register('upload') {
     description = 'Test-Datei auf beide SFTP-Server hochladen'
 
     doLast {
-        def remotePathTest = sftpPathSEinApp.replace('prod', 'test')
-        def remotePathProd = sftpPathSEinApp.replace('test', 'prod')
 
         ssh.run {
             session(remotes.sftpServerTest) {
@@ -88,9 +89,6 @@ task sftpListing {
     description = 'Listet Dateien und Verzeichnisse von beiden SFTP-Servern auf'
 
     doLast {
-        def remotePathTest = sftpPathSEinApp.replace('prod', 'test')
-        def remotePathProd = sftpPathSEinApp.replace('test', 'prod')
-
         //TEST
         def remotePath = remotePathTest
         ssh.run {
