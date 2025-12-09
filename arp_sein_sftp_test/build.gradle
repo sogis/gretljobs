@@ -1,0 +1,78 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
+defaultTasks 'upload'
+
+// Definition von Pfaden
+def xtfPath = "${buildDir}/test_sftp_agi.txt"
+def xtfFile = file(xtfPath)
+
+
+// Definition des SFTP-Servers für den Datenupload
+remotes {
+    sftpServerTest {
+        host = 'srsofaioi23444.so.ch'
+        user = 's_gis_arp_raumdaten_test'
+        identity = file('/home/gradle/.ssh/id_rsa')
+        // Skip host key checking outside the following environments:
+        if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) {  // uses the Groovy membership operator
+            knownHosts = allowAnyHosts
+        }
+    }
+    sftpServerProd {
+        host = 'srsofaioi23444.so.ch'
+        user = 's_gis_arp_raumdaten_prod'
+        identity = file('/home/gradle/.ssh/id_rsa')
+        // Skip host key checking outside the following environments:
+        if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) {  // uses the Groovy membership operator
+            knownHosts = allowAnyHosts
+        }
+    }
+}
+
+tasks.register('exportTest') {
+    def outputFile = xtfFile
+
+    // Erstelle das Verzeichnis, falls es nicht existiert
+    if (!outputFile.parentFile.exists()) {
+        outputFile.parentFile.mkdirs()
+        println "Verzeichnis erstellt: ${outputFile.parentFile.absolutePath}"
+    }
+
+    // Erstelle die Datei zuerst
+    if (!outputFile.exists()) {
+        outputFile.createNewFile()
+        println "Datei erstellt: ${outputFile.absolutePath}"
+    }
+
+    // Schreibe Testinhalt in die Datei
+    def now = new Date()
+    outputFile.text = "TEST AGI-GDI\n\nGeneriert am: ${now}"
+
+    println "Datei geschrieben nach: ${outputFile.absolutePath}"
+    println "Dateigröße: ${outputFile.length()} bytes"
+}
+
+tasks.register('upload') {
+    dependsOn 'exportTest'
+    description = 'Test-Datei auf den SFTP-Server hochladen.'
+    doLast {
+        ssh.run {
+            session(remotes.sftpServerTest) {
+                put from: xtfPath, into: '/opt/daten/gis_arp_raumdaten/test'
+            }
+        }
+        println 'Test file uploaded to FTP server TEST'
+
+        ssh.run {
+            session(remotes.sftpServerProd) {
+                put from: xtfPath, into: '/opt/daten/gis_arp_raumdaten/prod'
+            }
+        }
+        println 'Test file uploaded to FTP server PROD'
+
+    }
+}
