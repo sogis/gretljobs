@@ -256,7 +256,7 @@ CREATE INDEX
 INSERT INTO waldflaeche_grundstueck
 	SELECT
     	egrid,
-    	ST_RemoveRepeatedPoints(ST_MakeValid(ST_Union(geometrie)), 0.001) AS geometrie
+    	ST_MakeValid(ST_RemoveRepeatedPoints(ST_MakeValid(ST_Union(geometrie)), 0.001)) AS geometrie
 	FROM (
     	SELECT
         	gs.egrid,
