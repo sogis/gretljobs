@@ -37,6 +37,7 @@ remotes {
 
 tasks.register('writeTest') {
     def outputFile = xtfFile
+    description = 'Test-Datei erstellen'
 
     // Erstelle das Verzeichnis, falls es nicht existiert
     if (!outputFile.parentFile.exists()) {
@@ -52,14 +53,15 @@ tasks.register('writeTest') {
 
     // Schreibe Testinhalt in die Datei
     def now = new Date()
-    outputFile.text = "TEST AGI-GDI\n\nGeneriert am: ${now}"
+    outputFile.text = "TEST AGI-GDI: Generiert am: ${now}. "
 
     println "Datei geschrieben nach: ${outputFile.absolutePath}"
-    println "Dateigröße: ${outputFile.length()} bytes"
+    println "Dateiinhalt: ${outputFile.text}"
 }
 
 tasks.register('upload') {
     dependsOn 'writeTest'
+    group = 'sftp'
     description = 'Test-Datei auf beide SFTP-Server hochladen'
 
     doLast {
@@ -95,7 +97,7 @@ task sftpListing {
                 def result = execute("ls -l ${remotePath}")
                 println "=== TEST Directory Listing: ${remotePath} ==="
                 println result
-                println "==================================="
+                println "===================================\n"
             }
         }
 
@@ -107,7 +109,7 @@ task sftpListing {
                 def result = execute("ls -l ${remotePath}")
                 println "=== PROD Directory Listing: ${remotePath} ==="
                 println result
-                println "==================================="
+                println "===================================\n"
             }
         }
     }
