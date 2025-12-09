@@ -4,12 +4,14 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'upload'
+defaultTasks 'sftpListing'
 
 // Definition von Pfaden
 def xtfPath = "${buildDir}/test_sftp_agi.txt"
 def xtfFile = file(xtfPath)
 
+def remotePathTest = '/opt/daten/gis_arp_raumdaten/test'
+def remotePathProd = '/opt/daten/gis_arp_raumdaten/prod'
 
 // Definition des SFTP-Servers für den Datenupload
 remotes {
@@ -33,7 +35,7 @@ remotes {
     }
 }
 
-tasks.register('exportTest') {
+tasks.register('writeTest') {
     def outputFile = xtfFile
 
     // Erstelle das Verzeichnis, falls es nicht existiert
@@ -57,22 +59,56 @@ tasks.register('exportTest') {
 }
 
 tasks.register('upload') {
-    dependsOn 'exportTest'
-    description = 'Test-Datei auf den SFTP-Server hochladen.'
+    dependsOn 'writeTest'
+    description = 'Test-Datei auf beide SFTP-Server hochladen'
+
     doLast {
         ssh.run {
             session(remotes.sftpServerTest) {
-                put from: xtfPath, into: '/opt/daten/gis_arp_raumdaten/test'
+                put from: xtfPath, into: remotePathTest
             }
         }
         println 'Test file uploaded to FTP server TEST'
 
         ssh.run {
             session(remotes.sftpServerProd) {
-                put from: xtfPath, into: '/opt/daten/gis_arp_raumdaten/prod'
+                put from: xtfPath, into: remotePathProd
             }
         }
         println 'Test file uploaded to FTP server PROD'
 
+    }
+}
+
+task sftpListing {
+    dependsOn 'upload'
+    group = 'sftp'
+    description = 'Listet Dateien und Verzeichnisse von beiden SFTP-Servern auf'
+
+    doLast {
+
+        //TEST
+        def remotePath = remotePathTest
+        ssh.run {
+            session(remotes.sftpServerTest) {
+                // Listing mit ls
+                def result = execute("ls -l ${remotePath}")
+                println "=== TEST Directory Listing: ${remotePath} ==="
+                println result
+                println "==================================="
+            }
+        }
+
+        //PROD
+        def remotePath = remotePathProd
+        ssh.run {
+            session(remotes.sftpServerProd) {
+                // Listing mit ls
+                def result = execute("ls -l ${remotePath}")
+                println "=== PROD Directory Listing: ${remotePath} ==="
+                println result
+                println "==================================="
+            }
+        }
     }
 }
