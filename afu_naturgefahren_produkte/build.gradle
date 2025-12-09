@@ -9,10 +9,20 @@ import java.util.ArrayList
 import java.util.Iterator
 import java.util.List
 
-
 apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'copy_alle_natgef_produkte'
 def pathToTempFolder = System.getProperty('java.io.tmpdir')
+
+/* TEST TEST TEST */
+// def auftragskennung = '051_DreiHoefe_Wasser_2025' // NUR für TESTZWECK!!!
+
+/* Die Boolean-Parameter zum Exkludieren der Altdaten werden als String übergeben und müssen hier wieder zu Boolean-Werten gemacht werden.
+*/
+ext {
+  altdatenWasser   = (findProperty('altdatenwasser')   ?: 'false').toBoolean()
+  altdatenRutschung= (findProperty('altdatenrutschung')?: 'false').toBoolean()
+  altdatenSturz    = (findProperty('altdatensturz')    ?: 'false').toBoolean()
+}
 
 /*
 Der Job AfU_Naturgefahren_Produkte erstellt aus den neuen und alten Naturgefahren-Daten verschiedene Naturgefahren-Produkte (Karten). 
@@ -24,7 +34,7 @@ In einem letzten Schritt werden die Daten noch gesäubert und auf die Edit-DB ko
 
 task prepare_db(type: SqlExecutor) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('vorbereitung/prepare_db.sql')
+    sqlFiles = files('vorbereitung/prepare_db.sql') 
 }
 
 task make_staging_schema(type: Ili2pgImportSchema, dependsOn: prepare_db){
@@ -187,7 +197,7 @@ task make_hoheitsgrenzen_schema(type: Ili2pgImportSchema, dependsOn: import_beur
 }
 
 task export_hoheitsgrenzen(type: Ili2pgExport, dependsOn: make_hoheitsgrenzen_schema) {
-    database = [dbUriPub, dbUserPub, dbPwdPub]
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "agi_hoheitsgrenzen_pub"
     models = "SO_Hoheitsgrenzen_Publikation_20170626"
     disableValidation = true
@@ -333,13 +343,69 @@ task gefahrengebiet_hauptprozess_wasser(type: SqlExecutor, dependsOn: gefahrenge
 }
 
 task gefahrengebiet_hauptprozess_wasser_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozess_wasser) {
+    onlyIf { 
+        if (altdatenWasser) {
+            println "Überspringe Task gefahrengebiet_hauptprozess_wasser_altdaten_copy, weil altdatenWasser=true"
+        return false
+        }
+        true
+    }
     description = "Kopieren der alten Daten der Gefahrengebiete des Hauptprozesses Wasser"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = files('hauptprozesse/gefahrengebiet_hauptprozess_wasser_altdaten_copy.sql')
-
 }
 
-task gefahrengebiet_hauptprozess_rutschung(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozess_wasser_altdaten_copy) {
+task gefahrengebiet_hauptprozesse_wasser_uniquePathForIdenticalFile(dependsOn: gefahrengebiet_hauptprozess_wasser_altdaten_copy) {
+    doLast {
+        copy {
+            from 'clean/2_merge/link_to_neighbour.sql'
+            into "$buildDir/link1"
+        }
+        copy {
+            from 'clean/2_merge/link_to_neighbour.sql'
+            into "$buildDir/link2"
+        }
+        copy {
+            from 'clean/2_merge/link_to_neighbour.sql'
+            into "$buildDir/link3"
+        }
+        copy {
+            from 'clean/2_merge/link_to_neighbour.sql'
+            into "$buildDir/link4"
+        }
+    }
+}
+
+task gefahrengebiet_hauptprozesse_wasser_mergeSmallPoly(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozesse_wasser_uniquePathForIdenticalFile){
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlParameters = [
+        'sourcetable':'afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_wasser',
+        'clean_max_area':'100',
+        'clean_max_diameter':'0.2'
+    ]
+    sqlFiles = files(
+        'clean/1_prep/create_cleanup_layer.sql'
+        ,'clean/1_prep/copy_from_sourcetable.sql'
+        ,'clean/1_prep/calc_haz_level.sql'
+        ,'clean/1_prep/calc_isbig.sql'
+        ,'clean/1_prep/set_bigpolys_as_roots.sql'
+        ,"$buildDir/link1/link_to_neighbour.sql"
+        ,"$buildDir/link2/link_to_neighbour.sql"
+        ,"$buildDir/link3/link_to_neighbour.sql"
+        ,"$buildDir/link4/link_to_neighbour.sql"
+        ,'clean/2_merge/set_root_id.sql'
+        ,'clean/2_merge/merge_geometries.sql'
+        ,'clean/3_post/update_sourcetable_geom.sql'
+        ,'clean/3_post/delete_sourcetable_smallpoly.sql'
+    )
+}
+
+task gefahrengebiet_hauptprozesse_wasser_logModifications(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozesse_wasser_mergeSmallPoly){
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files('clean/3_post/log_modifications.sql')
+}
+
+task gefahrengebiet_hauptprozess_rutschung(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozesse_wasser_logModifications) {
     description = "Berechnung der Gefahrengebiete des Hauptprozess Rutschung"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = files('hauptprozesse/gefahrengebiet_hauptprozess_rutschung.sql')
@@ -348,12 +414,69 @@ task gefahrengebiet_hauptprozess_rutschung(type: SqlExecutor, dependsOn: gefahre
 
 
 task gefahrengebiet_hauptprozess_rutschung_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozess_rutschung) {
+    onlyIf { 
+        if (altdatenRutschung) {
+            println "Überspringe Task gefahrengebiet_hauptprozess_rutschung_altdaten_copy, weil altdatenRutschung=true"
+        return false
+        }
+        true
+    }
     description = "Kopieren der alten Daten der Gefahrengebiete des Hauptprozesses Rutschung"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = files('hauptprozesse/gefahrengebiet_hauptprozess_rutschung_altdaten_copy.sql')
 }
 
-task gefahrengebiet_hauptprozess_sturz(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozess_rutschung_altdaten_copy) {
+task gefahrengebiet_hauptprozesse_rutschung_uniquePathForIdenticalFile(dependsOn: gefahrengebiet_hauptprozess_rutschung_altdaten_copy) {
+    doLast {
+        copy {
+            from 'clean/2_merge/link_to_neighbour.sql'
+            into "$buildDir/link1"
+        }
+        copy {
+            from 'clean/2_merge/link_to_neighbour.sql'
+            into "$buildDir/link2"
+        }
+        copy {
+            from 'clean/2_merge/link_to_neighbour.sql'
+            into "$buildDir/link3"
+        }
+        copy {
+            from 'clean/2_merge/link_to_neighbour.sql'
+            into "$buildDir/link4"
+        }
+    }
+}
+
+task gefahrengebiet_hauptprozesse_rutschung_mergeSmallPoly(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozesse_rutschung_uniquePathForIdenticalFile){
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlParameters = [
+        'sourcetable':'afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_rutschung',
+        'clean_max_area':'100',
+        'clean_max_diameter':'0.2'
+    ]
+    sqlFiles = files(
+        'clean/1_prep/create_cleanup_layer.sql'
+        ,'clean/1_prep/copy_from_sourcetable.sql'
+        ,'clean/1_prep/calc_haz_level.sql'
+        ,'clean/1_prep/calc_isbig.sql'
+        ,'clean/1_prep/set_bigpolys_as_roots.sql'
+        ,"$buildDir/link1/link_to_neighbour.sql"
+        ,"$buildDir/link2/link_to_neighbour.sql"
+        ,"$buildDir/link3/link_to_neighbour.sql"
+        ,"$buildDir/link4/link_to_neighbour.sql"
+        ,'clean/2_merge/set_root_id.sql'
+        ,'clean/2_merge/merge_geometries.sql'
+        ,'clean/3_post/update_sourcetable_geom.sql'
+        ,'clean/3_post/delete_sourcetable_smallpoly.sql'
+    )
+}
+
+task gefahrengebiet_hauptprozesse_rutschung_logModifications(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozesse_rutschung_mergeSmallPoly){
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files('clean/3_post/log_modifications.sql')
+}
+
+task gefahrengebiet_hauptprozess_sturz(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozesse_rutschung_logModifications) {
     description = "Berechnung der Gefahrengebiete des Hauptprozess Sturz"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = files('hauptprozesse/gefahrengebiet_hauptprozess_sturz.sql')
@@ -361,15 +484,72 @@ task gefahrengebiet_hauptprozess_sturz(type: SqlExecutor, dependsOn: gefahrengeb
 }
 
 task gefahrengebiet_hauptprozess_sturz_altdaten_copy(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozess_sturz) {
+    onlyIf { 
+        if (altdatenSturz) {
+            println "Überspringe Task gefahrengebiet_hauptprozess_sturz_altdaten_copy, weil altdatenSturz=true"
+        return false
+        }
+        true
+    }
     description = "Kopieren der alten Daten der Gefahrengebiete des Hauptprozesses Sturz"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = files('hauptprozesse/gefahrengebiet_hauptprozess_sturz_altdaten_copy.sql')
 }
 
+task gefahrengebiet_hauptprozesse_sturz_uniquePathForIdenticalFile(dependsOn: gefahrengebiet_hauptprozess_sturz_altdaten_copy) {
+    doLast {
+        copy {
+            from 'clean/2_merge/link_to_neighbour.sql'
+            into "$buildDir/link1"
+        }
+        copy {
+            from 'clean/2_merge/link_to_neighbour.sql'
+            into "$buildDir/link2"
+        }
+        copy {
+            from 'clean/2_merge/link_to_neighbour.sql'
+            into "$buildDir/link3"
+        }
+        copy {
+            from 'clean/2_merge/link_to_neighbour.sql'
+            into "$buildDir/link4"
+        }
+    }
+}
+
+task gefahrengebiet_hauptprozesse_sturz_mergeSmallPoly(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozesse_sturz_uniquePathForIdenticalFile){
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlParameters = [
+        'sourcetable':'afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz',
+        'clean_max_area':'100',
+        'clean_max_diameter':'0.2'
+    ]
+    sqlFiles = files(
+        'clean/1_prep/create_cleanup_layer.sql'
+        ,'clean/1_prep/copy_from_sourcetable.sql'
+        ,'clean/1_prep/calc_haz_level.sql'
+        ,'clean/1_prep/calc_isbig.sql'
+        ,'clean/1_prep/set_bigpolys_as_roots.sql'
+        ,"$buildDir/link1/link_to_neighbour.sql"
+        ,"$buildDir/link2/link_to_neighbour.sql"
+        ,"$buildDir/link3/link_to_neighbour.sql"
+        ,"$buildDir/link4/link_to_neighbour.sql"
+        ,'clean/2_merge/set_root_id.sql'
+        ,'clean/2_merge/merge_geometries.sql'
+        ,'clean/3_post/update_sourcetable_geom.sql'
+        ,'clean/3_post/delete_sourcetable_smallpoly.sql'
+    )
+}
+
+task gefahrengebiet_hauptprozesse_sturz_logModifications(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozesse_sturz_mergeSmallPoly){
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files('clean/3_post/log_modifications.sql')
+}
+
 // HAUPTPROZESSE SYNOPTISCH
 
 
-task gefahrengebiet_hauptprozesse_synoptisch(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozess_sturz_altdaten_copy) {
+task gefahrengebiet_hauptprozesse_synoptisch(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozesse_sturz_logModifications) {
     description = "Berechnung der synoptischen Hauptprozess - Gefahrengebiete"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = files(
@@ -383,9 +563,59 @@ task gefahrengebiet_hauptprozesse_synoptisch(type: SqlExecutor, dependsOn: gefah
     )
 }
 
+task gefahrengebiet_hauptprozesse_synoptisch_uniquePathForIdenticalFile(dependsOn: gefahrengebiet_hauptprozesse_synoptisch) {
+    doLast {
+        copy {
+            from 'clean/2_merge/link_to_neighbour.sql'
+            into "$buildDir/link1"
+        }
+        copy {
+            from 'clean/2_merge/link_to_neighbour.sql'
+            into "$buildDir/link2"
+        }
+        copy {
+            from 'clean/2_merge/link_to_neighbour.sql'
+            into "$buildDir/link3"
+        }
+        copy {
+            from 'clean/2_merge/link_to_neighbour.sql'
+            into "$buildDir/link4"
+        }
+    }
+}
+
+task gefahrengebiet_hauptprozesse_synoptisch_mergeSmallPoly(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozesse_synoptisch_uniquePathForIdenticalFile){
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlParameters = [
+        'sourcetable':'afu_naturgefahren_staging_v1.synoptisches_gefahrengebiet',
+        'clean_max_area':'100',
+        'clean_max_diameter':'0.2'
+    ]
+    sqlFiles = files(
+        'clean/1_prep/create_cleanup_layer.sql'
+        ,'clean/1_prep/copy_from_sourcetable.sql'
+        ,'clean/1_prep/calc_haz_level.sql'
+        ,'clean/1_prep/calc_isbig.sql'
+        ,'clean/1_prep/set_bigpolys_as_roots.sql'
+        ,"$buildDir/link1/link_to_neighbour.sql"
+        ,"$buildDir/link2/link_to_neighbour.sql"
+        ,"$buildDir/link3/link_to_neighbour.sql"
+        ,"$buildDir/link4/link_to_neighbour.sql"
+        ,'clean/2_merge/set_root_id.sql'
+        ,'clean/2_merge/merge_geometries.sql'
+        ,'clean/3_post/update_sourcetable_geom.sql'
+        ,'clean/3_post/delete_sourcetable_smallpoly.sql'
+    )
+}
+
+task gefahrengebiet_hauptprozesse_synoptisch_logModifications(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozesse_synoptisch_mergeSmallPoly){
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files('clean/3_post/log_modifications.sql')
+}
+
 // FLIESSRICHTUNG
 
-task fliessrichtung(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozesse_synoptisch) {
+task fliessrichtung(type: SqlExecutor, dependsOn: gefahrengebiet_hauptprozesse_synoptisch_logModifications) {
     description = "Kopieren der Fliessrichtungen"
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = files('kennwerte/fliessrichtung.sql')

@@ -4,4 +4,4 @@ SELECT
 	kontaktangaben AS ansprechperson,
 	geometrie
 FROM
-    arp_arbeitszonenbewirtschaftung_v1.regionen_region rr;
+    arp_arbeitszonenbewirtschaftung_v2.regionen_region rr;
