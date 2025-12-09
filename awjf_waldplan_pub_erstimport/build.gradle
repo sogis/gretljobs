@@ -155,7 +155,6 @@ tasks.register('processingPubData', SqlExecutor) {
 tasks.register("UpdateFlaechenwerte", SqlExecutor) {
     dependsOn 'processingPubData'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlParameters = [bfsnr_param:bfsnr]
     sqlFiles = files('processing_data/awjf_update_flaechenwerte_processing.sql'
     )
 }
