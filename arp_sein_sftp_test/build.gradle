@@ -10,9 +10,6 @@ defaultTasks 'sftpListing'
 def xtfPath = "${buildDir}/test_sftp_agi.txt"
 def xtfFile = file(xtfPath)
 
-def remotePathTest = project.findProperty('sftpPathSEinApp').replace('prod', 'test')
-def remotePathProd = project.findProperty('sftpPathSEinApp').replace('test', 'prod')
-
 // Definition des SFTP-Servers für den Datenupload
 remotes {
     sftpServerTest {
@@ -65,6 +62,9 @@ tasks.register('upload') {
     description = 'Test-Datei auf beide SFTP-Server hochladen'
 
     doLast {
+        def remotePathTest = sftpPathSEinApp.replace('prod', 'test')
+        def remotePathProd = sftpPathSEinApp.replace('test', 'prod')
+
         ssh.run {
             session(remotes.sftpServerTest) {
                 put from: xtfPath, into: remotePathTest
@@ -88,6 +88,8 @@ task sftpListing {
     description = 'Listet Dateien und Verzeichnisse von beiden SFTP-Servern auf'
 
     doLast {
+        def remotePathTest = sftpPathSEinApp.replace('prod', 'test')
+        def remotePathProd = sftpPathSEinApp.replace('test', 'prod')
 
         //TEST
         def remotePath = remotePathTest
