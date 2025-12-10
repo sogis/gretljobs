@@ -189,8 +189,6 @@ simiMetadataServicePwd=
 simiTokenServiceUrl=
 simiTokenServiceUser=
 simiTokenServicePwd=
-# Der Wert von solrIndexupdaterBaseUrl ist die interne Basis-URL zum Indexupdater für Solr:
-solrIndexupdaterBaseUrl=
 
 # Diverse Variablen
 dbSearchSchemaPub=
