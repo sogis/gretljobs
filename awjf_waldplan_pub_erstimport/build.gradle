@@ -169,6 +169,7 @@ tasks.register('transferData', Db2Db) {
         new TransferSet('transfer_data/03_waldplan_schutzwald_pub.sql', 'awjf_waldplan_pub_v2.waldplan_schutzwald', true),
         new TransferSet('transfer_data/04_waldplan_waldfunktion_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldfunktion', true),
         new TransferSet('transfer_data/05_waldplan_waldnutzung_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldnutzung', true),
-        new TransferSet('transfer_data/06_waldplan_waldeigentum_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck', true)
+        new TransferSet('transfer_data/06_waldplan_waldeigentum_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck', true),
+        new TransferSet('transfer_data/07_waldplan_walduebersicht_pub.sql', 'awjf_waldplan_pub_v2.waldplan_walduebersicht', true)
     ];
 }
