@@ -1,5 +1,5 @@
 -- Relevant sind alle Grundstücke, die innerhalb einer Arbeitszone liegen mit Angabe zu Nutzungsplanung. Quelle Bauzonenstatistik
-WITH relevante_grundstuecke_bauzonenstatistik AS (
+WITH relevante_liegenschaften_bauzonenstatistik AS (
     SELECT
         st.t_id,
         st.geometrie,
@@ -21,18 +21,150 @@ WITH relevante_grundstuecke_bauzonenstatistik AS (
         mg.grundbuch,
         mg.bfs_nr, -- BFS Nummer
         mg.gemeinde, -- Gemeindename
-        mg.egrid      
+        mg.egrid,
+        mg.art_txt -- Grundstücksart
     FROM
-       arp_auswertung_nutzungsplanung_pub_v1.bauzonenstatistik_liegenschaft_nach_bebauungsstand st
+        arp_auswertung_nutzungsplanung_pub_v1.bauzonenstatistik_liegenschaft_nach_bebauungsstand st
     -- Wegen Attribut Grundbuch und Fläche mit AV noch verknüpfen
-    JOIN
+        JOIN
         agi_mopublic_pub.mopublic_grundstueck mg
-    ON
+        ON
         mg.egrid = st.egris_egrid 
     WHERE
         substring(st.grundnutzung_typ_kt from 1 for 4) in ( 'N120', 'N121', 'N122', 'N130', 'N131', 'N132', 'N133', 'N134')
+            AND
+                 mg.art_txt = 'Liegenschaft'
 ),
 
+relevante_sdr_bauzonenstatistik AS (
+        
+    -- Baurecht die in Arbeitszonen  sind
+    
+    SELECT
+        li.t_id,
+        mg.geometrie,
+        mg.nummer,
+        li.nummer AS li_nummer,
+        li.geometrie AS li_geometrie,
+        li.bebauungsstand,
+        li.nutzungsgrad,
+        li.grundnutzung_typ_kt, 
+        li.flaeche_beschnitten, 
+        li.flaeche_unbebaut,
+        mg.flaechenmass,
+        mg.grundbuch,
+        mg.bfs_nr, -- BFS Nummer
+        mg.gemeinde, -- Gemeindename
+        mg.egrid,
+        mg.art_txt, -- Grundstücksart
+        CASE WHEN -- identisch zu liegenschaft? muss anders behandelt werden bezüglich verschnitt und join mit Bewertungs-Punkte
+            li.flaechenmass = mg.flaechenmass
+                THEN TRUE
+        ELSE
+            FALSE
+        END AS identisch_liegenschaft,
+        li.nummer AS liegt_auf_liegenschaft
+    FROM
+        agi_mopublic_pub.mopublic_grundstueck mg
+        JOIN
+        relevante_liegenschaften_bauzonenstatistik li
+            ON
+        ST_Within(ST_PointOnSurface(mg.geometrie), li.geometrie)
+    WHERE
+                mg.art_txt = 'SelbstRecht.Baurecht'
+),
+
+relevante_sdr_bauzonenstatistik_nicht_gleich_Liegenschaft AS (
+        SELECT          
+        sdr.t_id,
+        sdr.geometrie,
+        sdr.nummer,
+        sdr.bebauungsstand, --kommt von der Liegenschaft. evtl. nicht ganz korrekt
+        sdr.nutzungsgrad,
+        sdr.grundnutzung_typ_kt, --kommt von der Liegenschaft. evtl. nicht ganz korrekt
+        NULL AS flaeche_beschnitten,
+        Round(ST_Area(ST_Intersection(sdr.geometrie,unbebaut_fl.geometrie,0.001))::numeric,0) AS flaeche_unbebaut,
+        sdr.flaechenmass,
+        sdr.grundbuch,
+        sdr.bfs_nr, -- BFS Nummer
+        sdr.gemeinde, -- Gemeindename
+        sdr.egrid,
+        sdr.art_txt
+    FROM
+        relevante_sdr_bauzonenstatistik sdr
+        LEFT JOIN
+        arp_auswertung_nutzungsplanung_pub_v1.bauzonenstatistik_bebauungsstand_mit_zonen_und_lsgrenzen unbebaut_fl
+            ON
+        ST_Within(ST_PointOnSurface(sdr.geometrie), unbebaut_fl.geometrie) AND unbebaut_fl.bebauungsstand = 'unbebaut'
+    WHERE
+        sdr.identisch_liegenschaft = FALSE
+),
+
+relevante_grundstuecke_bauzonenstatistik AS (
+--Liegenschaften
+    SELECT          
+        li.t_id,
+        li.geometrie,
+        li.nummer,
+        li.bebauungsstand,
+        li.nutzungsgrad,
+        li.grundnutzung_typ_kt,
+        li.flaeche_beschnitten,
+        li.flaeche_unbebaut,
+        li.flaechenmass,
+        li.grundbuch,
+        li.bfs_nr, -- BFS Nummer
+        li.gemeinde, -- Gemeindename
+        li.egrid,
+        li.art_txt
+    FROM
+        relevante_liegenschaften_bauzonenstatistik li
+        
+--    UNION
+
+-- SDR die gleich sind wie Liegenschaft    -> braucht es nicht, weil sonst doppelt zu Liegenschaft
+--    SELECT          
+--        sdr.t_id,
+--        sdr.geometrie,
+--        sdr.nummer,
+--       sdr.bebauungsstand,
+--        sdr.nutzungsgrad,
+--        sdr.grundnutzung_typ_kt, 
+--        sdr.flaeche_beschnitten,
+--        sdr.flaeche_unbebaut,
+--        sdr.flaechenmass,
+--       sdr.grundbuch,
+--        sdr.bfs_nr, -- BFS Nummer
+--        sdr.gemeinde, -- Gemeindename
+--        sdr.egrid,
+--        sdr.art_txt
+--    FROM
+--        relevante_sdr_bauzonenstatistik sdr  
+--    WHERE
+--        sdr.identisch_liegenschaft = TRUE
+        
+    UNION
+    
+-- SDR die nicht gleich sind mit Liegenschaft    
+        SELECT          
+        sdr.t_id,
+        sdr.geometrie,
+        sdr.nummer,
+        sdr.bebauungsstand,
+        sdr.nutzungsgrad,
+        sdr.grundnutzung_typ_kt, 
+        sdr.flaeche_beschnitten::numeric,
+        sdr.flaeche_unbebaut,
+        sdr.flaechenmass,
+        sdr.grundbuch,
+        sdr.bfs_nr, -- BFS Nummer
+        sdr.gemeinde, -- Gemeindename
+        sdr.egrid,
+        sdr.art_txt
+    FROM
+        relevante_sdr_bauzonenstatistik_nicht_gleich_Liegenschaft sdr
+),        
+    
 -- Baureglement werden über die BFS-Nr zugewiesen. Achtung bei Fusionen gibt es theoretisch mehrere ZR und BR
 baureglement AS (
     SELECT
@@ -176,6 +308,15 @@ relevante_grundstueck_reglement AS (
         gr.grundnutzung_typ_kt,
         gr.flaeche_beschnitten, -- von Bauzonenstatistik
         gr.flaeche_unbebaut, -- von Bauzonenstatistik
+        CASE
+            WHEN 
+                gr.art_txt = 'SelbstRecht.Baurecht'
+                    THEN 'Baurecht'
+            WHEN gr.art_txt = 'SelbstRecht.Quellenrecht'
+                    THEN 'Quellenrecht'
+            ELSE
+                gr.art_txt
+         END  AS grundstuecksart,
         b.baureglement, 
         z.zonenreglement,
         STRING_AGG(gp.textimweb, ' ') AS gestaltungsplan,
@@ -225,7 +366,8 @@ relevante_grundstueck_reglement AS (
         z.zonenreglement,
         gr.grundnutzung_typ_kt,
         gr.flaeche_beschnitten,
-        gr.flaeche_unbebaut 
+        gr.flaeche_unbebaut,
+        gr.art_txt
 ),
 
 region AS (
@@ -258,7 +400,8 @@ SELECT
     gbr.baureglement,
     gbr.grundnutzung_typ_kt,
     gbr.flaeche_beschnitten,
-    gbr.flaeche_unbebaut
+    gbr.flaeche_unbebaut,
+    gbr.grundstuecksart
 FROM
     relevante_grundstueck_reglement gbr
 -- Verknüpfe die Region mit dem Grundstück
@@ -283,4 +426,5 @@ GROUP BY
     gbr.flaeche_unbebaut,
     gbr.gestaltungsplan,
     gbr.gestaltungsplanpflicht,
-    rr.aname
+    rr.aname,
+    gbr.grundstuecksart

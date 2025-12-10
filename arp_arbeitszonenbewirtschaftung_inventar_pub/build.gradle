@@ -13,8 +13,8 @@ task update_edit(type: SqlExecutor) {
 
 task validate(type: Ili2pgValidate, dependsOn: 'update_edit') {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    models = "SO_ARP_Arbeitszonenbewirtschaftung_20240517"
-    dbschema = "arp_arbeitszonenbewirtschaftung_v1"
+    models = "SO_ARP_Arbeitszonenbewirtschaftung_20250902"
+    dbschema = "arp_arbeitszonenbewirtschaftung_v2"
     failOnException = false
 }
 
@@ -24,7 +24,7 @@ task datatransfer_staging(type: Db2Db){
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
-        new TransferSet('select_staging.sql', 'arp_arbeitszonenbewirtschaftung_staging_v1.arbtsznnng_nvntar_arbeitszonenbewirtschaftung_inventar', true)
+        new TransferSet('select_staging.sql', 'arp_arbeitszonenbewirtschaftung_staging_v2.arbtsznnng_nvntar_arbeitszonenbewirtschaftung_inventar', true)
     ];
 }
 
@@ -39,7 +39,7 @@ task datenumbau_pub(type: Db2Db, dependsOn: 'update_staging') {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-        new TransferSet('select_region.sql', 'arp_arbeitszonenbewirtschaftung_pub_v1.region_region', true),
-        new TransferSet('select_inventar_flaeche.sql', 'arp_arbeitszonenbewirtschaftung_pub_v1.arbtsznnng_nvntar_arbeitszonenbewirtschaftung_inventar', true),
+        new TransferSet('select_region.sql', 'arp_arbeitszonenbewirtschaftung_pub_v2.region_region', true),
+        new TransferSet('select_inventar_flaeche.sql', 'arp_arbeitszonenbewirtschaftung_pub_v2.arbtsznnng_nvntar_arbeitszonenbewirtschaftung_inventar', true),
     ];
 }
