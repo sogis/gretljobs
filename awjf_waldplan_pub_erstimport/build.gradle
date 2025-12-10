@@ -152,11 +152,10 @@ tasks.register('processingPubData', SqlExecutor) {
     )
 }
 
-tasks.register("UpdateFlaechenwerte", SqlExecutor) {
+tasks.register('UpdateFlaechenwerte', SqlExecutor) {
     dependsOn 'processingPubData'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('processing_data/awjf_update_flaechenwerte_processing.sql'
-    )
+    sqlFiles = files('processing_data/awjf_update_flaechenwerte_processing.sql')
 }
 
 tasks.register('transferData', Db2Db) {
