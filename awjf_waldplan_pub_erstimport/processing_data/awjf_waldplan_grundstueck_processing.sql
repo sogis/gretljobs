@@ -362,7 +362,7 @@ CREATE INDEX
 INSERT INTO biodiversitaet_objekt_flaechen_berechnet
 	SELECT 
 		gs.egrid,
-		wf.funktion_txt,
+		wf.funktion_txt AS funktion,
 		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC) AS flaeche
 	FROM
 		grundstuecke_berechnung AS gs
@@ -386,6 +386,7 @@ INSERT INTO biodiversitaet_id_flaechen_berechnet
 	SELECT 
 		gs.egrid,
 		wf.biodiversitaet_id,
+		wf.funktion_txt AS funktion,
 		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC) AS flaeche
 	FROM
 		grundstuecke_berechnung AS gs
@@ -396,7 +397,8 @@ INSERT INTO biodiversitaet_id_flaechen_berechnet
 		wf.funktion IN ('Biodiversitaet', 'Schutzwald_Biodiversitaet')
 	GROUP BY 
 		gs.egrid,
-		wf.biodiversitaet_id
+		wf.biodiversitaet_id,
+		wf.funktion_txt
 	HAVING 
 		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC) > 0
 ;
