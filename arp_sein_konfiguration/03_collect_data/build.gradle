@@ -43,8 +43,7 @@ tasks.register("ImportAllParquet", SqlExecutor) {
     def importTasks = [
         ":02_import_data:amphibiengebiete_ortsfest_shp2:last",
         ":02_import_data:amphibiengebiete_wander_shp2:last",
-        ":02_import_data:archaeologische_flaechenfundstellen:last",
-        ":02_import_data:archaeologische_punktfundstellen:last",
+        ":02_import_data:archaeologische_fundstellen_im_siedlungsgebiet:last",
         ":02_import_data:auengebiete_shp1:last",
         ":02_import_data:ausgangslage:last",
         ":02_import_data:betriebe:last",
@@ -65,6 +64,7 @@ tasks.register("ImportAllParquet", SqlExecutor) {
         ":02_import_data:massnahmen_gen2:last",
         ":02_import_data:massnahmen_gen3:last",
         ":02_import_data:massnahmen_gen4:last",
+        ":02_import_data:massnahmen_gen5:last",
         ":02_import_data:nationalstrassen:last",
         ":02_import_data:nationalstrassen_kb:last",
         ":02_import_data:schweizmobil_mountainbikeland_shp2:last",
