@@ -31,7 +31,6 @@ map_perimeter_file AS (
 ,('e9c761fa-e2bc-44c3-854c-bf76b610f2e9','059_Oekingen_Wasser_2012.pdf')
 ,('a6f6569a-c2c9-4208-9b16-cd1e82866720','005_Feldbrunnen_St.Niklaus_Wasser_StKatharinenbach_2011.pdf')
 ,('4b200e58-3f87-4083-b8b6-a5be207adb99','015_Riedholz_Rutsch_2009.pdf')
-,('db1bd810-d219-43fc-b972-fcffd8c7beae','034_Messen_OT_Balm_Rutsch_2008.pdf')
 ,('d6bbd082-bdab-43e9-8d29-c3b3fc48e827','031_Lüsslingen_Nennigkofen_Wasser_2025.pdf')
 ,('38440e0b-2e89-4197-a684-d29c132ad386','046_Deitingen_Wasser_2012.pdf')
 ,('85677796-bb79-4743-bb40-47f1e7670a5f','017_Selzach_Wasser_2009.pdf')
