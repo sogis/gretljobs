@@ -45,7 +45,13 @@ pipeline {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
-                        sh "gretl -Pauftragskennung=${params.auftragskennung}"
+                        sh """
+                            gretl \
+                            -Pauftragskennung=${params.auftragskennung} \
+                            -Paltdatenwasser=${params.ohne_altdaten_wasser ?: false} \
+                            -Paltdatenrutschung=${params.ohne_altdaten_rutschung ?: false} \
+                            -Paltdatensturz=${params.ohne_altdaten_sturz ?: false}
+                          """
                     }
                 }
             }
