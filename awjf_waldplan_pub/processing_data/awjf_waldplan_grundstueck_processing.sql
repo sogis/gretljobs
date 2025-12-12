@@ -141,7 +141,7 @@ INSERT INTO grundstuecke
 		wz.dispname AS wirtschaftszone_txt,
 		mop.nummer AS grundstuecknummer,
 		mop.flaechenmass::INTEGER,
-		CONCAT_WS(' ', ww.eigentuemer, ww.zusatzinformation) AS eigentuemerinformation,
+		CONCAT_WS(' ', wet.dispname, ww.zusatzinformation) AS eigentuemerinformation,
 		ww.eigentuemer,
 		wet.dispname AS eigentuemer_txt,
 		mop.grundbuch AS grundbuch,
