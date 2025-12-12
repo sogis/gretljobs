@@ -133,7 +133,7 @@ INSERT INTO grundstuecke
 		ww.t_datasetname,
 		ww.egrid,
 		mop.gemeinde AS gemeinde,
-		ww.forstbetrieb,
+		wkfb.aname AS forstbetrieb,
 		ww.forstkreis,
 		fk.dispname AS forstkreis_txt,
 		wfr.aname AS forstrevier,
@@ -148,8 +148,8 @@ INSERT INTO grundstuecke
 		ww.ausserkantonal,
 		CASE
 			WHEN ausserkantonal IS TRUE 
-				THEN 'Ausserkantonales Eigentum'
-			ELSE 'Kantonales Eigentum'
+				THEN 'Ja'
+			ELSE 'Nein'
 		END AS ausserkantonal_txt,
 		mop.geometrie,
 		ww.bemerkung
@@ -165,6 +165,8 @@ INSERT INTO grundstuecke
 		ON ww.forstrevier = wfr.t_id
 	LEFT JOIN awjf_waldplan_v2.forstkreise AS fk 
 		ON ww.forstkreis = fk.ilicode
+	LEFT JOIN awjf_waldplan_v2.waldplankatalog_forstbetrieb AS wkfb 
+		ON ww.forstbetrieb = wkfb.t_id
 	LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_dataset AS dataset
 		ON ww.t_datasetname = dataset.datasetname
 	LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_basket AS basket
