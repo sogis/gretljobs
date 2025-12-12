@@ -140,7 +140,7 @@ INSERT INTO grundstuecke
 		ww.wirtschaftszone,
 		wz.dispname AS wirtschaftszone_txt,
 		mop.nummer AS grundstuecknummer,
-		mop.flaechenmass,
+		ROUND(mop.flaechenmass,0) AS flaechenmass,
 		CONCAT_WS(' ', ww.eigentuemer, ww.zusatzinformation) AS eigentuemerinformation,
 		ww.eigentuemer,
 		wet.dispname AS eigentuemer_txt,
@@ -201,25 +201,16 @@ INSERT INTO waldfunktion
 	SELECT
 		wf.t_datasetname,
 		wf.funktion,
-		wfk.dispname AS funktion_txt,
+		wf.funktion_txt,
 		wf.biodiversitaet_id,
 		wf.biodiversitaet_objekt,
-		biotyp.dispname AS biodiversitaet_objekt_txt,
-		--schutzwald_nr, --Zuteilung Schutzwald-Nr. vorher notwendig
+		wf.biodiversitaet_objekt_txt,
 		wf.wytweide,
-		CASE 
-			WHEN wytweide IS TRUE
-				THEN 'Wytweidefläche vorhanden'
-			ELSE 'keine Wytweidefläche vorhanden'
-		END AS wytweide_txt,
+		wytweide_txt,
 		wf.geometrie,
 		wf.bemerkung
 	FROM 
-		awjf_waldplan_v2.waldplan_waldfunktion AS wf
-	LEFT JOIN awjf_waldplan_v2.waldfunktionskategorie AS wfk 
-		ON wf.funktion = wfk.ilicode
-	LEFT JOIN awjf_waldplan_v2.biodiversitaetstyp AS biotyp 
-		ON wf.biodiversitaet_objekt = biotyp.ilicode
+		awjf_waldplan_pub_v2.waldplan_waldfunktion AS wf
 ;
 
 CREATE INDEX 
@@ -232,12 +223,10 @@ INSERT INTO waldnutzung
 		wnz.t_datasetname,
 		wnz.t_id,
 		wnz.nutzungskategorie,
-		wnk.dispName AS nutzungskategorie_txt,
+		wnz.nutzungskategorie_txt,
 		wnz.geometrie
 	FROM 
-		awjf_waldplan_v2.waldplan_waldnutzung AS wnz
-	LEFT JOIN awjf_waldplan_v2.waldnutzungskategorie AS wnk 
-		ON wnz.nutzungskategorie = wnk.ilicode
+		awjf_waldplan_pub_v2.waldplan_waldnutzung AS wnz
 ;
 
 CREATE INDEX 
@@ -278,12 +267,13 @@ CREATE INDEX
 INSERT INTO waldflaechen_berechnet
 	SELECT
 		gs.egrid,
+		(
 		CASE
-			WHEN gs.flaechenmass -ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC) < 0 
-			AND gs.flaechenmass -ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC) > -2
+			WHEN gs.flaechenmass -ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))) < 0 
+			AND gs.flaechenmass -ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))) > -2
 				THEN gs.flaechenmass 
-			ELSE ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC)
-		END AS flaeche
+			ELSE ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie))))
+		END)::INTEGER AS flaeche
 	FROM
 		grundstuecke_berechnung AS gs
 	LEFT JOIN waldfunktion AS wf 

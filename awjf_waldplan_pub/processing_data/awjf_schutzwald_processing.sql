@@ -36,8 +36,8 @@ SELECT
 	END AS sturz,
 	CASE 
 		WHEN sw.sturz IS TRUE
-			THEN 'Sturz modelliert'
-		ELSE 'Sturz nicht modelliert'
+			THEN 'Ja'
+		ELSE 'Nein'
 	END AS sturz_txt,
 	CASE 
 		WHEN sw.rutsch IS TRUE 
@@ -46,8 +46,8 @@ SELECT
 	END AS rutsch,
 	CASE 
 		WHEN sw.rutsch IS TRUE
-			THEN 'Rutsch modelliert'
-		ELSE 'Rutsch nicht modelliert'
+			THEN 'Ja'
+		ELSE 'Nein'
 	END AS rutsch_txt,
 	CASE 
 		WHEN sw.gerinnerelevante_prozesse IS TRUE 
@@ -56,8 +56,8 @@ SELECT
 	END AS gerinnerelevante_prozesse,
 	CASE 
 		WHEN sw.gerinnerelevante_prozesse IS TRUE
-			THEN 'Gerinnerelevante Prozesse modelliert'
-		ELSE 'Gerinnerelevante Prozesse nicht modelliert'
+			THEN 'Ja'
+		ELSE 'Nein'
 	END AS gerinnerelevante_prozesse_txt,
 	CASE 
 		WHEN sw.lawine IS TRUE 
@@ -66,8 +66,8 @@ SELECT
 	END AS lawine,
 	CASE 
 		WHEN sw.lawine IS TRUE
-			THEN 'Lawine modelliert'
-		ELSE 'Lawine nicht modelliert'
+			THEN 'Ja'
+		ELSE 'Nein'
 	END AS lawine_txt,
 	CASE 
 		WHEN sw.andere_kt IS TRUE 
@@ -76,8 +76,8 @@ SELECT
 	END AS andere_kt,
 	CASE 
 		WHEN sw.andere_kt IS TRUE
-			THEN 'Schadenspotential in anderen Kantonen'
-		ELSE 'Kein Schadenspotential in anderen Kantonen'
+			THEN 'Ja'
+		ELSE 'Nein'
 	END AS andere_kt_txt,
 	sw.objektkategorie,
 	osw.dispname AS objektkategorie_txt,

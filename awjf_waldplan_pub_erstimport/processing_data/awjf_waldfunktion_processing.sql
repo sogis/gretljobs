@@ -27,8 +27,8 @@ SELECT
 	wytweide,
 	CASE 
 		WHEN wytweide IS TRUE
-			THEN 'Wytweidefläche vorhanden'
-		ELSE 'keine Wytweidefläche vorhanden'
+			THEN 'Ja'
+		ELSE 'Nein'
 	END AS wytweide_txt,
 	geometrie,
 	bemerkung
