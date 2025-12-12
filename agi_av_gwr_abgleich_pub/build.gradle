@@ -7,7 +7,7 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'de.undercouch.download'
 
-defaultTasks 'transferData'
+defaultTasks 'insertFromGebaeudeinformationen'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
@@ -63,4 +63,10 @@ tasks.register('transferData', Db2Db) {
             new TransferSet('transfer_data.sql',
                     'agi_av_gwr_abgleich_pub_v1.av_gwr_differnzen_av_gwr_differenzen', true)
                 ]
+}
+
+tasks.register('insertFromGebaeudeinformationen', SqlExecutor) {
+    dependsOn 'transferData'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = files('insert_from_gebaeudeinformation.sql')
 }
