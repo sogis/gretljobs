@@ -24,7 +24,7 @@ CREATE TABLE
 		t_datasetname TEXT,
 		egrid TEXT,
 		gemeinde TEXT,
-		forstbetrieb INTEGER,
+		forstbetrieb TEXT,
 		forstkreis TEXT,
 		forstkreis_txt TEXT,
 		forstrevier TEXT,
