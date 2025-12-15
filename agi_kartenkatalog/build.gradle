@@ -14,7 +14,7 @@ tasks.register('deleteData', SqlExecutor) {
 }
 
 tasks.register('transferData', Db2Db) {
-    dependsOn: 'deleteData'    
+    dependsOn 'deleteData'    
     sourceDb = [dbUriSimi, dbUserSimi, dbPwdSimi]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
