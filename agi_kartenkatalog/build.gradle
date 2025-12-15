@@ -10,7 +10,7 @@ defaultTasks 'transferData'
 // ACHTUNG: Nicht transaktionssicher!
 tasks.register('deleteData', SqlExecutor) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ['delete_data.sql']
+    sqlFiles = files('delete_data.sql')
 }
 
 tasks.register('transferData', Db2Db) {
