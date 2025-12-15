@@ -341,32 +341,11 @@ INSERT INTO
 
     UNION ALL
     
-    -- Bahnhof Olten: L650 Turgi - Sursee (S29)
-    SELECT
-        stop_name,
-        route_id,
-        linienname,
-        unternehmer,
-        sum(gtfs_count),
-        verkehrsmittel
-    FROM
-        abfahrten
-    WHERE
-        stop_name = 'Olten'
-    AND
-        linienname = 'L650 Olten - Turgi (S29)'
-    AND
-       trip_headsign IN ('Brugg AG', 'Turgi')
-    GROUP BY
-        stop_name,
-        route_id,
-        linienname,
-        unternehmer,
-        verkehrsmittel
-
-    UNION ALL
-
-    -- Bahnhof Olten: L650 Olten - Zürich HB (RE)
+    -- Bahnhof Olten
+    -- L650 Olten - Baden (S23)
+    -- L650 Olten - Rotkreuz (S26)
+    -- L650 Olten - Wettingen - Zürich HB (RE12)
+    -- L650 Olten - Aarau - Turgi (S29)
     SELECT
         stop_name,
         route_id,
@@ -384,29 +363,33 @@ INSERT INTO
             'Rotkreuz',
             'Turgi',
             'Wettingen',
-            'Zürich HB'
-        )
+            'Zürich HB',
+            'Brugg AG',
+            'Aarau',
+            'Muri AG'
+       )
     AND
         substring(linienname from 1 for 4) = 'L650'
-    AND
-        linienname <> 'L650 Olten - Turgi (S29)'
     GROUP BY
         stop_name,
         route_id,
         linienname,
         unternehmer,
         verkehrsmittel
-
+ 
     UNION ALL
-
-    -- Däniken, Dulliken, Schönenwerd:
-    -- 650 Olten-Zürich R, S und 450 Bern - Olten haben die gleiche route_id!
+    
+    -- Bahnhof Dulliken, Däniken SO, Schönenwerd SO
+    -- L650 Olten - Baden (S23)
+    -- L650 Olten - Rotkreuz (S26)
+    -- L650 Olten - Wettingen - Zürich HB (RE12)
+    -- L650 Olten - Aarau - Turgi (S29)
     SELECT
-    stop_name,
+        stop_name,
         route_id,
         linienname,
         unternehmer,
-        sum(gtfs_count) AS gtfs_count,
+        sum(gtfs_count),
         verkehrsmittel
     FROM
         abfahrten
@@ -418,14 +401,13 @@ INSERT INTO
         stop_name,
         route_id,
         linienname,
-        gtfs_count,
         unternehmer,
         verkehrsmittel
-
-   UNION ALL
-
+ 
+    UNION ALL
+    
     -- Bahnhof Murgenthal
-    -- 650 Olten-Zürich R, S und 450 Bern - Olten haben die gleiche route_id!
+    -- 450 Olten-Zürich R, S und 450 Bern - Olten haben die gleiche route_id!
     SELECT
     stop_name,
         route_id,

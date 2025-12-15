@@ -98,6 +98,24 @@ git checkout -b branchname
 * `t_id` in aller Regel nicht von einem Schema in das andere übertragen (Typicherweise Edit-DB -> Pub-DB), damit diese sauber über die Sequenz im Zielschema vergeben wird.
 * Variablen mit `def` definieren und nicht mit `ext{}`
 
+#### Migration von V2 auf V3
+
+* Tasks müssen mittels task.register definiert sein.
+  * Beispiel für Typ Db2Db:
+  ```
+  tasks.register('HierStehtDerTaskname', Db2Db) {
+    dependsOn 'getToken' 
+    sourceDb = [db_uri, db_user, db_pass]
+    targetDb = ['jdbc:sqlite:gretldemo.sqlite',null,null]
+    transferSets = [new TransferSet('some.sql', 'albums_dest', true)];
+  }
+  ```
+* Datei- und Ordnerreferenzen mittels file() oder files() definieren. Beispiele:
+  * outputFile = file("./data.json")
+  * localDir = file("downloads")
+  * dataFiles = files("attributes.gpkg", "tables.gpkg")
+* nodeLabel=gretl-3.1 muss gesetzt werden (in gretljobs.properties)
+
 #### Zugriff auf Ressourcen
 
 Für den Zugriff auf Datenbanken und andere Ressourcen sollen die Variablen gemäss der folgenden Auflistung verwendet werden. (Die Variablenwerte, die in dieser Auflistung angegeben sind, dienen für die Entwicklung von GRETL-Jobs auf der lokalen Maschine mit Docker Compose.)
@@ -191,8 +209,6 @@ simiMetadataServicePwd=
 simiTokenServiceUrl=
 simiTokenServiceUser=
 simiTokenServicePwd=
-# Der Wert von solrIndexupdaterBaseUrl ist die interne Basis-URL zum Indexupdater für Solr:
-solrIndexupdaterBaseUrl=
 
 # Diverse Variablen
 dbSearchSchemaPub=

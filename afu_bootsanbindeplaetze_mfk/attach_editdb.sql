@@ -1,0 +1,1 @@
+ATTACH ${connectionStringEdit} AS editdb (TYPE POSTGRES, READ_ONLY); 
