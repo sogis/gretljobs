@@ -8,7 +8,7 @@ waldnutzung_union AS (
 	FROM 
 		awjf_waldplan_v2.waldplan_waldnutzung
 	WHERE 
-		t_datasetname = ${bfsnr_param}
+		t_datasetname::int4 = ${bfsnr_param}
 ),
 
 waldnutzung_edit AS (
@@ -28,7 +28,7 @@ waldnutzung_edit AS (
 	LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_basket AS basket
 		ON dataset.t_id = basket.dataset
 	WHERE 
-		wnz.t_datasetname = ${bfsnr_param}
+		wnz.t_datasetname::int4 = ${bfsnr_param}
 ),
 
 wald_bestockt AS (
@@ -58,7 +58,7 @@ wald_bestockt AS (
     WHERE
     	ST_IsValid(wf.geometrie)
     AND 
-    	wf.t_datasetname = ${bfsnr_param}
+    	wf.t_datasetname::int4 = ${bfsnr_param}
     AND (
     	wnu.geometrie IS NULL  -- Keine Waldnutzung → ganze Fläche
    	OR NOT

@@ -18,7 +18,7 @@ LEFT JOIN awjf_waldplan_v2.waldplankatalog_forstrevier AS wfr
 LEFT JOIN awjf_waldplan_v2.forstkreise AS fk 
 	ON ww.forstkreis = fk.ilicode
 WHERE
-	ww.t_datasetname = ${bfsnr_param}
+	ww.t_datasetname::int4 = ${bfsnr_param}
 ),
 
 schutzwald AS (
@@ -109,7 +109,7 @@ LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_basket AS basket
 WHERE 
 	wf.funktion IN ('Schutzwald','Schutzwald_Biodiversitaet')
 AND 
-	wf.t_datasetname = ${bfsnr_param}
+	wf.t_datasetname::int4 = ${bfsnr_param}
 ),
 
 

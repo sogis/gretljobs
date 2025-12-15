@@ -7,7 +7,7 @@ SET
 	produktive_flaeche = NULL,
 	hiebsatzrelevante_flaeche = NULL
 WHERE 
-	t_datasetname = ${bfsnr_param}
+	t_datasetname::int4 = ${bfsnr_param}
 ;
 
 -------------------------------------------------------------------------
@@ -56,7 +56,7 @@ INSERT INTO produktive_waldflaechen
 	WHERE 
 		nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
 	AND
-		t_datasetname = ${bfsnr_param}
+		t_datasetname::int4 = ${bfsnr_param}
 ;
 
 CREATE INDEX 
@@ -76,7 +76,7 @@ INSERT INTO produktive_waldflaechen_grundstueck
 	INNER JOIN produktive_waldflaechen AS pwf
 		ON ST_INTERSECTS(gs.geometrie, pwf.geometrie)
 	WHERE 
-		gs.t_datasetname = ${bfsnr_param}
+		gs.t_datasetname::int4 = ${bfsnr_param}
 	GROUP BY 
 		gs.egrid,
 		gs.waldflaeche
@@ -107,7 +107,7 @@ INSERT INTO hiebsatzrelevante_waldflaechen_grundstueck
 	AND
 		(wwf.funktion <> 'Biodiversitaet' OR wwf.biodiversitaet_objekt NOT IN ('Waldreservat','Altholzinsel'))
 	AND 
-		wwf.t_datasetname = ${bfsnr_param}
+		wwf.t_datasetname::int4 = ${bfsnr_param}
 	GROUP BY 
 		pwf.egrid,
 		pwf.waldflaeche
