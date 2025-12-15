@@ -172,7 +172,7 @@ INSERT INTO grundstuecke
 	LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_basket AS basket
 		ON dataset.t_id = basket.dataset
 	WHERE
-		ww.t_datasetname =  ${bfsnr_param}
+		ww.t_datasetname::int4 = ${bfsnr_param}
 ;
 
 CREATE INDEX 
@@ -191,7 +191,7 @@ INSERT INTO grundstuecke_berechnung
 	LEFT JOIN agi_mopublic_pub.mopublic_grundstueck AS mop
 		ON ww.egrid = mop.egrid
 	WHERE
-		ww.t_datasetname =  ${bfsnr_param}
+		ww.t_datasetname::int4 = ${bfsnr_param}
 	GROUP BY
 		ww.egrid,
 		ww.t_datasetname,
@@ -218,7 +218,7 @@ INSERT INTO waldfunktion
 	FROM 
 		awjf_waldplan_pub_v2.waldplan_waldfunktion AS wf
 	WHERE
-		wf.t_datasetname =  ${bfsnr_param}
+		wf.t_datasetname::int4 = ${bfsnr_param}
 ;
 
 CREATE INDEX 
@@ -236,7 +236,7 @@ INSERT INTO waldnutzung
 	FROM 
 		awjf_waldplan_pub_v2.waldplan_waldnutzung AS wnz
 	WHERE
-		wnz.t_datasetname =  ${bfsnr_param}
+		wnz.t_datasetname::int4 = ${bfsnr_param}
 ;
 
 CREATE INDEX 

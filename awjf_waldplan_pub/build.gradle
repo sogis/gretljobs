@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'importData'
+defaultTasks 'replaceData'
 
 def xtfPath = "${buildDir}/exportdata.xtf"
 def xtfFile = files(xtfPath)
@@ -168,7 +168,7 @@ tasks.register('exportData', Ili2pgExport) {
     dbschema = 'awjf_waldplan_pub_v2'
     models = 'SO_AWJF_Waldplan_Publikation_20250312'
     dataFile = xtfFile
-    /*dataset = bfsnr_dataset*/
+    dataset = bfsnr
     disableValidation = true
     skipGeometryErrors = true
 }
@@ -183,7 +183,7 @@ tasks.register('replaceData', Ili2pgReplace) {
     dbschema = 'awjf_waldplan_pub_v2'
     models = 'SO_AWJF_Waldplan_Publikation_20250312'
     dataFile = xtfFile
-    dataset = bfsnr_dataset
+    dataset = bfsnr
     disableValidation = true
     skipGeometryErrors = true
 }
