@@ -175,6 +175,7 @@ tasks.register('exportData', Ili2pgExport) {
 
 tasks.register('validateXTF', IliValidator) {
     dependsOn 'exportData'
+    dataFiles = xtfFile
 }
 
 tasks.register('replaceData', Ili2pgReplace) {

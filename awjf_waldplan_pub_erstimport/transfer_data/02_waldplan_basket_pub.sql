@@ -6,4 +6,4 @@ SELECT
 	attachmentkey,
 	domains
 FROM 
-	awjf_waldplan_v2.t_ili2db_basket
+	awjf_waldplan_pub_v2.t_ili2db_basket

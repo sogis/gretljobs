@@ -443,8 +443,8 @@ waldfunktion_flaechen_berechnet_json AS (
     	egrid,
         json_agg(
             json_build_object(
-                'funktion', funktion_txt,
-                'flaeche', flaeche,
+                'Funktion', funktion_txt,
+                'Flaeche', flaeche,
                 '@type', 'SO_AWJF_Waldplan_Publikation_20250312.Flaechen_Waldfunktion' 
             )
         ) AS waldfunktion_flaechen
@@ -461,8 +461,8 @@ waldnutzung_flaechen_berechnet_json AS (
     	egrid,
         json_agg(
             json_build_object(
-                'nutzungskategorie', nutzungskategorie_txt,
-                'flaeche', flaeche,
+                'Nutzungskategorie', nutzungskategorie_txt,
+                'Flaeche', flaeche,
                 '@type', 'SO_AWJF_Waldplan_Publikation_20250312.Flaechen_Waldnutzung'
             )
         ) AS waldnutzung_flaechen
@@ -479,8 +479,8 @@ biodiversitaet_objekt_flaechen_berechnet_json AS (
     	egrid,
         json_agg(
             json_build_object(
-                'biodiversitaet_objekt', funktion_txt,
-                'flaeche', flaeche,
+                'Biodiversitaet_Objekt', funktion_txt,
+                'Flaeche', flaeche,
                 '@type', 'SO_AWJF_Waldplan_Publikation_20250312.Flaechen_Biodiversitaet_Objekt'
             )
         ) AS biodiversitaet_objekt_flaechen
@@ -497,9 +497,9 @@ biodiversitaet_id_flaechen_berechnet_json AS (
     	egrid,
         json_agg(
             json_build_object(
-            	'id', biodiversitaet_id,
-                'biodiversitaet_objekt', funktion_txt,
-                'flaeche', flaeche,
+            	'ID', biodiversitaet_id,
+                'Biodiversitaet_Objekt', funktion_txt,
+                'Flaeche', flaeche,
                 '@type', 'SO_AWJF_Waldplan_Publikation_20250312.Flaechen_Biodiversitaet_ID'
             )
         ) AS biodiversitaet_id_flaechen
