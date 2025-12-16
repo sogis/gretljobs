@@ -25,7 +25,7 @@ SELECT
     vereinbarungsende,
     vertragsspeicherort,
     projektstatus,
-    ST_Area(biotopflaeche.geometrie) / 100 AS flaeche
+    ST_Area(biotopflaeche.geometrie) AS flaeche
 FROM
     awjf_programm_biodiversitaet_wald_v1.biodiversitt_wald_waldbiodiversitaetsflaeche AS biotopflaeche
 LEFT JOIN zielgruppe AS zielgruppe
