@@ -17,7 +17,6 @@ map_perimeter_file AS (
 ,('7297d18b-96b3-4867-8789-cf995d114d0a','065_Aedermannsdorf_Wasser_2009.pdf')
 ,('a303c702-4e0b-4449-8704-5e80d0bcd67a','127_Grindel_Rutsch_Sturz_2007.pdf')
 ,('a303c702-4e0b-4449-8704-5e80d0bcd67a','127_Grindel_Wasser_2014.pdf')
-,('6b99d319-bd16-430a-934d-f255459c7e5b','104_Obergoesgen_Wasser_2008.pdf')
 ,('0cf8601e-e5b6-448b-8642-b72a7b526b5b','072_Mümliswil_Ramiswil_Wasser_Sturz_Rutsch_2017.pdf')
 ,('f97b3c44-d811-4ae4-900d-c02a0ae664c1','112_Dornach_Birs_2017.pdf')
 ,('f97b3c44-d811-4ae4-900d-c02a0ae664c1','112_Dornach_Wasser_2010.pdf')
