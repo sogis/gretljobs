@@ -24,7 +24,7 @@ SELECT
 	NULL AS bdg_e,
 	NULL AS bdg_n,
 	NULL AS link,
-	'Neu' AS agi_klasse,
+	'Korrektur Geometer' AS agi_klasse,
 	'EGID gemäss GWR erfassen' agi_text,
 	NULL agi_index,
 	g.t_ili_tid AS agi_id,
