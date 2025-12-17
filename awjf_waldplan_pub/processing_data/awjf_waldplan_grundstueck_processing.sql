@@ -116,14 +116,6 @@ CREATE TABLE
 		flaeche INTEGER
 );
 
-CREATE TABLE
-	biodiversitaet_id_flaechen_berechnet (
-		egrid TEXT,
-		biodiversitaet_id TEXT,
-		funktion_txt TEXT,
-		flaeche INTEGER
-);
-
 -------------------------------------------------------------------------
 ----------------------- Grundtabellen befüllen --------------------------
 -------------------------------------------------------------------------
@@ -382,65 +374,6 @@ CREATE INDEX
 	ON biodiversitaet_objekt_flaechen_berechnet(egrid)
 ;
 
-INSERT INTO biodiversitaet_id_flaechen_berechnet
-	SELECT 
-		gs.egrid,
-		wf.biodiversitaet_id,
-		wf.funktion_txt AS funktion,
-		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC) AS flaeche
-	FROM
-		grundstuecke_berechnung AS gs
-	INNER JOIN waldfunktion AS wf 
-		ON ST_INTERSECTS(gs.geometrie, wf.geometrie)
-		AND gs.t_datasetname = wf.t_datasetname
-	WHERE
-		wf.funktion IN ('Biodiversitaet', 'Schutzwald_Biodiversitaet')
-	GROUP BY 
-		gs.egrid,
-		wf.biodiversitaet_id,
-		wf.funktion_txt
-	HAVING 
-		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC) > 0
-;
-
-CREATE INDEX 
-	ON biodiversitaet_id_flaechen_berechnet(egrid)
-;
-
--------------------------------------------------------------------------
---------------- Plausibilisierung berechneter Waldflächen ---------------
--------------------------------------------------------------------------
-/**
-SELECT
-	gs.egrid,
-	gs.flaechenmass,
-	wfb.flaeche AS waldflaeche_berechnet,
-	gs.flaechenmass - wfb.flaeche AS Differenz,
-	wyt.flaeche AS wytweideflaeche_berechnet,
-	SUM(funk.flaeche) AS waldfunktionsflaeche_berechnet,
-	SUM(wnb.flaeche) AS waldnutzungsflaeche_berechnet,
-	SUM(bioob.flaeche) AS biodiversitaetflaeche_objekt_berechnet,
-	SUM(bioid.flaeche) AS biodiversitaetflaeche_id_berechnet
-FROM
-	grundstuecke AS gs
-LEFT JOIN waldflaechen_berechnet AS wfb 
-	ON gs.egrid = wfb.egrid
-LEFT JOIN wytweideflaechen_berechnet AS wyt 
-	ON gs.egrid = wyt.egrid
-LEFT JOIN waldfunktion_flaechen_berechnet AS funk 
-	ON gs.egrid = funk.egrid
-LEFT JOIN waldnutzung_flaechen_berechnet AS wnb 
-	ON gs.egrid = wnb.egrid
-LEFT JOIN biodiversitaet_objekt_flaechen_berechnet AS bioob 
-	ON gs.egrid = bioob.egrid
-LEFT JOIN biodiversitaet_id_flaechen_berechnet AS bioid
-	ON gs.egrid = bioid.egrid
-GROUP BY 
-	gs.egrid,
-	gs.flaechenmass,
-	wfb.flaeche,
-	wyt.flaeche
-*/
 -------------------------------------------------------------------------
 ---------- Erstellung JSON-Attribute für berechnete Waldflächen ---------
 -------------------------------------------------------------------------
@@ -498,25 +431,6 @@ biodiversitaet_objekt_flaechen_berechnet_json AS (
     	flaeche > 0
     GROUP BY 
         egrid
-),
-
-biodiversitaet_id_flaechen_berechnet_json AS (
-    SELECT
-    	egrid,
-        json_agg(
-            json_build_object(
-            	'ID', biodiversitaet_id,
-                'Biodiversitaet_Objekt', funktion_txt,
-                'Flaeche', flaeche,
-                '@type', 'SO_AWJF_Waldplan_Publikation_20250312.Flaechen_Biodiversitaet_ID'
-            )
-        ) AS biodiversitaet_id_flaechen
-    FROM 
-        biodiversitaet_id_flaechen_berechnet
-    WHERE
-    	flaeche > 0
-    GROUP BY 
-        egrid
 )
 
 -------------------------------------------------------------------------
@@ -541,7 +455,6 @@ INSERT INTO awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck(
 	waldfunktion_flaechen,
 	waldnutzung_flaechen,
 	biodiversitaetsobjekt_flaeche,
-	biodiversitaet_id_flaeche,
 	wytweide_flaeche,
 	--produktive_flaeche,
 	--hiebsatzrelevante_flaeche,
@@ -572,7 +485,6 @@ SELECT
 	wffj.waldfunktion_flaechen::JSON AS waldfunktion_flaechen,
 	wnfj.waldnutzung_flaechen::JSON AS waldnutzung_flaechen,
 	bofj.biodiversitaet_objekt_flaechen::JSON AS biodiversitaetsobjekt_flaeche,
-	bifj.biodiversitaet_id_flaechen::JSON AS biodiversitaet_id_flaeche,
 	wytb.flaeche AS wytweide_flaeche,
 	--produktive_flaeche,
 	--hiebsatzrelevante_flaeche,
@@ -590,8 +502,6 @@ LEFT JOIN waldnutzung_flaechen_berechnet_json AS wnfj
 	ON gs.egrid = wnfj.egrid
 LEFT JOIN biodiversitaet_objekt_flaechen_berechnet_json AS bofj
 	ON gs.egrid = bofj.egrid
-LEFT JOIN biodiversitaet_id_flaechen_berechnet_json AS bifj
-	ON gs.egrid = bifj.egrid
 LEFT JOIN waldflaechen_berechnet AS wfb 
 	ON gs.egrid = wfb.egrid
 LEFT JOIN wytweideflaechen_berechnet AS wytb 
