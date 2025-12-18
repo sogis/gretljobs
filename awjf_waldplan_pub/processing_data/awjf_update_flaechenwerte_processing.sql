@@ -128,8 +128,8 @@ produktive_waldflaechen_grundstueck_json AS (
     	pfb.egrid,
         json_agg(
             json_build_object(
-                'produktiv', pfb.produktiv,
-                'unproduktiv', pfb.unproduktiv,
+                'Produktiv', pfb.produktiv,
+                'Unproduktiv', pfb.unproduktiv,
                 '@type', 'SO_AWJF_Waldplan_Publikation_20250312.Flaechen_Produktiv'
             )
         ) AS flaechen_produktiv
@@ -144,8 +144,8 @@ hiebsatzrelevante_waldflaechen_grundstueck_json AS (
     	hwg.egrid,
         json_agg(
             json_build_object(
-                'relevant', hwg.relevant,
-                'irrelevant', hwg.irrelevant,
+                'Relevant', hwg.relevant,
+                'Irrelevant', hwg.irrelevant,
                 '@type', 'SO_AWJF_Waldplan_Publikation_20250312.Flaechen_Hiebsatzrelevant'
             )
         ) AS flaechen_hiebsatzrelevant
