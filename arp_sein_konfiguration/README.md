@@ -36,7 +36,6 @@ Die einzelnen Subprojekte enthalten ebenfalls ihre eigenen sql-files, welche abe
 Der Ablauf des GRETL-Jobs sieht folgendermassen aus:
 
 ```
-
 ┌───────────────────────┐
 │    01_setup_duckdb    │ subroject 1
 └───────────────────────┘
@@ -57,14 +56,19 @@ Der Ablauf des GRETL-Jobs sieht folgendermassen aus:
             ▼
     export & upload xtf
 ```
+Neben der parallelen Abwicklung verschiedener Subjobs, bietet ein Multi-Project-Build auch eine bessere Übersicht (hier für jedes Thema ein Subjob, anstatt alle Themen in einem build.gradle) und erlaubt es wärend der Entwicklung einzelne Subjobs bzw. -Tasks auszuführen, ohne, dass jedes mal in das build.gradle eingegriffen werden muss. <br>
+Ein Beispiel. Es soll nur der letzte Task für das Thema amphbiengebiete_ortsfest_shp2 ausgeführt werden:
+```
+GRETL_IMAGE_TAG=3.1 docker compose run --rm -u $UID gretl --project-dir=arp_sein_konfiguration_local :02_import_data:amphibiengebiete_ortsfest_shp2:last
+```
 
 <b>Kurze Erklärung der Subprojekte:<br></b>
 
 - <b>01_setup_duckdb:</b> Die Datenverarbeitung erfolgt innerhalb von DuckDB. Daher wird in einem ersten Schritt eine Datenbank generiert und eine Sammeltabelle erstellt. Diese dient, wie der Name vermuten lässt, zum Sammeln der Themendaten.
-- <b>02_import_data:</b> Importiert die Daten aller Themen. Jedes Thema ist ein eigenes Subprojekt. Jedes Subprojekt kopiert die in 01_setub_duckdb erstellte Datenbank in das eigene build-Verzeichnis. Hier werden dann die (heruntergeladenen) Daten in die Sammeltabelle eingefüllt. Das heisst am Ende bestehen dann rund 50 Datenbanken. So kann sichergestellt werden, dass der Import parallel stattfinden kann. Zudem sind sämtliche Subprojekte hier sind nur von 01_setup_duckdb abhängig und können unabhängig voneinander funktionieren. Zum Schluss exportiert jedes Subprojekt den Inhalt ihrer Sammeltabelle in ein parquet-file. Parquet ist ein spaltenbasiertes Speicherformat welches die Daten binär kodiert. Es ist ein praktisches Format um Daten aus DuckDB zu exportieren und importieren. 
+- <b>02_import_data:</b> Importiert die Daten aller Themen. Jedes Thema ist ein eigenes Subprojekt. Jedes Subprojekt kopiert die in 01_setub_duckdb erstellte Datenbank in das eigene build-Verzeichnis. Hier werden dann die (heruntergeladenen) Daten in die Sammeltabelle eingefüllt. Das heisst am Ende bestehen dann rund 50 Datenbanken. So kann sichergestellt werden, dass der Import parallel stattfinden kann. Zudem sind sämtliche Subprojekte hier sind nur von 01_setup_duckdb abhängig und können unabhängig voneinander funktionieren. Zum Schluss exportiert jedes Subprojekt den Inhalt ihrer Sammeltabelle in ein parquet-file. 
 - <b>03_collect_data:</b> Auch hier wird zuerst die Datenbank aus 01_setup_duckdb kopiert. Danach werden sämtliche parquet-files aus 02_import_data in eine Sammeltabelle importiert. Nun werden die Daten durch eine spatial-Funktion gefiltert (es sollen nur die Daten verwendet werden, welche sich auch auf einem Gemeindegebiet im Kanton Solothurn befinden) und in eine zweite Sammeltabelle eingefüllt.<br>
 Einige Themen besitzen keine Geometrien oder sind immer betroffen und könne bzw. müssen nicht nach ihrer Geometrie gefiltert werden. Diese werden direkt in die zweite Sammeltabelle abgefüllt.
-- <b>04_processing_data:</b> Hier wird die Datenbank aus 03_collect_data kopiert und zusätzlich das Schema arp_sein_konfiguration_grundlagen_v2 anglegt. Nun werden die Daten aus der zweiten Sammeltabelle in so prozessiert, dass sie in die Tabelle auswertung_gemeinde eingefügt werden können. Anschliessend wird daraus ein xtf generiert und dieses auf dem ftp-Server hochgeladen.
+- <b>04_processing_data:</b> Hier wird die Datenbank aus 03_collect_data kopiert und zusätzlich das Schema arp_sein_konfiguration_grundlagen_v2 anglegt. Nun werden die Daten aus der zweiten Sammeltabelle in so prozessiert, dass sie in die Tabelle auswertung_gemeinde eingefügt werden können. Anschliessend wird daraus ein xtf generiert und dieses auf den ftp-Server hochgeladen.
 
 ## Ausführlichere Erklärung Subprojekte
 Im Folgenden werden die einzelnen Subprojekte etwas detaillierter erklärt.
@@ -83,8 +87,8 @@ Dazu gehören unter anderem sql-Files, welche in erster Linie für DuckDB-Funkti
 Dies ist das erste Subprojekt, von dem alle weiteren Subprojekte abhängig sind (direkt oder indirekt). Hier wird die DuckDB-Datenbank und darin die Sammeltabelle für die einzelnen Themen erstellt.
 
 ### 02_import_data
-Hier ist zu jedem Thema ein eigenes Subprojekt enthalten. Jedes Subprojekt kopiert die Datenbank aus 01_setup_duckdb in das eigene build-Verzeichnis und importiert die eigenen Daten in die Sammeltabelle. Nach dem Import wird ein parquet-file mit 
-Die Themen sind im Schema arp_sein_konfiguration_grundlagen_v2.grundlagen_thema festgehalten.
+Hier ist zu jedem Thema ein eigenes Subprojekt enthalten. Jedes Subprojekt kopiert die Datenbank aus 01_setup_duckdb in das eigene build-Verzeichnis und importiert die eigenen Daten in die Sammeltabelle. Zum Schluss wird aus der Sammeltabelle eine parquet-Datei exportiert. Parquet ist ein spaltenbasiertes Speicherformat welches die Daten binär kodiert. Es ist ein praktisches und schnelles Format um Daten in DuckDB zu lesen und schreiben. <br>
+Die einzelnen Themen sind im Schema arp_sein_konfiguration_grundlagen_v2.grundlagen_thema festgehalten.
 Beim Import wird zudem hart kodiert das Attribut thema_sql abgefüllt. Der Wert sollte dabei genau dem entsprechen was in arp_sein_konfiguration_grundlagen_v2.grundlagen_thema festgelegt wurde. In 03_collect_data wird dies dann abgeglichen.
 
 Grob kann zwischen folgenden Datenquellen unterschieden werden:
@@ -107,7 +111,7 @@ In diese zweite Sammeltabelle werden nun auch die Daten importiert, welche auf d
 Zur Kontrolle der Themenbezeichnungen werden nun die aktualisierten Themen mit thema_sql verglichen. Sollten hier Unregelmässigkeiten auftreten, bricht der Job ab. Unregelmässigkeiten deuten darauf hin, dass ein Thema entweder geändert oder gelöscht wurde.
 
 ### 04_processing_data
-Hier wird nun die Datenbank aus 03_collect_data kopiert. Anschliessend werden die Daten so prozessiert, dass sie in arp_sein_konfiguration_grundlagen.auswertung_gemeinde eingefügt werden können. Die Themen werden dabei in ein verschachteltes JSON-Format gebracht.
+Hier wird die Datenbank aus 03_collect_data kopiert. Anschliessend werden die Daten so prozessiert, dass sie in arp_sein_konfiguration_grundlagen.auswertung_gemeinde eingefügt werden können. Die Themen werden dabei in ein verschachteltes JSON-Format gebracht.
 
 Anschliessend wird aus dem Schema ein xtf exportiert und dieses auf den ftp-Server hochgeladen.
 
