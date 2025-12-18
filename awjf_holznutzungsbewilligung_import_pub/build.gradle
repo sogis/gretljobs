@@ -1,0 +1,645 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
+defaultTasks 'importXtf', 'uploadZipToGeodiensteCh'
+
+// Definition von Variablen
+String tmpDir = buildDir.toString()
+
+String sftpEnvironment = 'prod'
+String sftpDir = 'holznutzungsbewilligungen'
+
+String zipFileName = 'holznutzungsbewilligungen_so_latest.zip'
+String zipFileLocalPath = "$tmpDir/$zipFileName"
+String xtfFileName = 'SO_holznutzungsbewilligungen_prod.xtf'
+String xtfFilePath = "$tmpDir/$xtfFileName"
+
+String dbSchema = 'awjf_holznutzungsbewilligung_mgdm_v1'
+String iliModel = 'Holznutzungsbewilligung_V1_0'
+
+String aiLogin = aiUser + ':' + aiPwd
+String aiUrl = 'https://' + aiServer + '/data_agg/interlis/import'
+
+// Build-Ordner anlegen, falls nicht existierend
+buildDir.mkdirs()
+
+// Definition der Zugangsdaten für den Waldportal-SFTP-Server
+remotes {
+    sftpServer {
+        host = sftpServerWaldportal
+        user = sftpUserWaldportal
+        password = sftpPwdWaldportal
+        // Skip host key checking outside the following environments:
+        if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) { // uses the Groovy membership operator
+            knownHosts = allowAnyHosts
+        }
+    }
+}
+
+tasks.register('downloadZip') {
+    description = 'Download ZIP file from Waldportal-SFTP-Server'
+
+    doLast {
+        ssh.run {
+            session(remotes.sftpServer) {
+                get from: sftpEnvironment+'/'+sftpDir+'/'+zipFileName, into: zipFileLocalPath
+            }
+        }
+        println 'File downloaded from Waldportal-SFTP-Server'
+    }
+}
+
+tasks.register('unzipXtf', Copy) {
+    dependsOn 'downloadZip'
+    description = 'Extract XTF file from ZIP file'
+
+    from zipTree(zipFileLocalPath)
+    into tmpDir
+}
+
+// Der Katalog kann nicht mit dem Schema-Job importiert werden, darum hier.
+// Update, um die Daten (aus dem XTF) in einem separaten Task löschen zu müssen.
+tasks.register('importKatalog', Ili2pgUpdate) {
+    dependsOn 'unzipXtf'
+    description = 'Import des Katalogs in die Edit-DB'
+
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = dbSchema
+    models = iliModel
+    dataFile = files('Holznutzungsbewilligung_Codelisten_V1_0.xml')
+    dataset = 'Holznutzungsbewilligung_Codelisten_V1_0.xml'
+    importTid = true
+}
+
+tasks.register('importXtf', Ili2pgReplace) {
+    dependsOn 'importKatalog'
+    description = 'Import der Holznutzungsbewilligungen vom Waldportal in die Edit-DB'
+
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = dbSchema
+    models = iliModel
+    dataFile = files(xtfFilePath)
+    dataset = xtfFileName
+    importTid = true
+}
+
+// tbd: prüfen, ob auch die Publikation erfolgreich war?
+// tbd: http code != 200
+tasks.register('uploadZipToGeodiensteCh') {
+    dependsOn 'downloadZip'
+    description = 'Upload the ZIP file from Waldportal to geodienste.ch'
+
+    doLast {
+        def response = [
+            'curl', 
+            '--user', aiLogin, 
+            '--form', 'topic=holznutzungsbewilligung_v1_0', 
+            '--form', 'lv95_file=@' + zipFileLocalPath, 
+            '--form', 'publish=true', 
+            '--form', 'replace_all=false', 
+            aiUrl
+        ].execute().text
+
+        println(response)
+
+        if (response.contains('false') 
+                || response.contains('DOCTYPE html') 
+                || response == null 
+                || response.trim().isEmpty()
+            ) {
+            throw new GradleException()
+        }
+    }
+}
+
+
+
+
+/*
+// Macht ein Datenumbau in die Struktur des Publikationsmodells (Schema "arp_nutzungsplanung_transfer_pub"). 
+// Das resultierende XTF wird ins Schema "arp_nutzungsplanung_pub" importiert.
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.tasks.Curl.MethodType
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
+
+
+apply plugin: 'ch.so.agi.gretl'
+
+//defaultTasks 'importXTF_stage', 'importXTF_pub', 'uploadMgdmLandUsePlans'
+// defaultTasks 'publishAlt'
+//def bfsnr = '2492'
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+def iliModelMgdm = "Nutzungsplanung_V1_2"
+def dbSchemaMgdmLandUsePlans = "arp_nutzungsplanung_mgdm_v1"
+def mgdmLandUsePlansXtfFileName = "mgdm/ch.so.arp.npl.mgdm."+bfsnr+".xtf"
+def mgdmLandUsePlansZipFileName = "mgdm/ch.so.arp.npl.mgdm."+bfsnr+".zip"
+def mgdmLandUsePlansXtfFileNameclean = "ch.so.arp.npl.mgdm."+bfsnr+".xtf"
+
+def iliModelMgdmNoiseSensitivityLevels = "Laermempfindlichkeitsstufen_V1_2"
+def dbSchemaMgdmSensitivityLevels = "arp_laermempfindlichkeitsstufen_mgdm_v1"
+def mgdmSensitivityLevelsXtfFileName = "mgdm/ch.so.arp.laerm.mgdm."+bfsnr+".xtf"
+def mgdmSensitivityLevelsZipFileName = "mgdm/ch.so.arp.laerm.mgdm."+bfsnr+".zip"
+def mgdmSensitivityLevelsXtfFileNameclean = "ch.so.arp.laerm.mgdm."+bfsnr+".xtf"
+
+def iliModelMgdmWaldabstand = "Waldabstandslinien_V1_2"
+def dbSchemaWaldabstand = "arp_waldabstandslinien_mgdm_v1"
+def mgdmWaldabstandXtfFileName = "mgdm/ch.so.arp.waldabstand.mgdm."+bfsnr+".xtf"
+def mgdmWaldabstandZipFileName = "mgdm/ch.so.arp.waldabstand.mgdm."+bfsnr+".zip"
+def mgdmWaldabstandXtfFileNameclean = "ch.so.arp.waldabstand.mgdm."+bfsnr+".xtf"
+
+def iliModelMgdmPlanungszonen = "Planungszonen_V1_1"
+def dbSchemaPlanungszonen = "arp_planungszonen_mgdm_v1"
+def mgdmPlanungszonenXtfFileName = "mgdm/ch.so.arp.planungszonen.mgdm."+bfsnr+".xtf"
+def mgdmPlanungszonenZipFileName = "mgdm/ch.so.arp.planungszonen.mgdm."+bfsnr+".zip"
+def mgdmPlanungszonenXtfFileNameclean = "ch.so.arp.planungszonen.mgdm."+bfsnr+".xtf"
+
+//Für Planregister
+def iliModelPlanregister = "SO_Nutzungsplanung_Planregister_Publikation_20221115"
+def dbSchemaPlanregister = "arp_nutzungsplanung_planregister_pub_v1"
+def planregisterFileBaseName = "ch.so.arp.planregister"
+def planregisterXtfFileName = planregisterFileBaseName+".xml"
+def planregisterZipFileName = planregisterFileBaseName+".xml.gz"
+
+//Normale Publikation
+
+task deleteData_transfer_pub (type: SqlExecutor) {
+    description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_transfer_pub."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["delete_arp_nutzungsplanung_transfer_pub.sql"]
+}
+
+task exportDataEdit (type: Ili2pgExport, dependsOn: 'deleteData_transfer_pub') {
+    description = "Exportiert die Daten mit DataSet= BFSNr aus dem Schema arp_nutzungsplanung in ein INTERLIS-Datei."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'arp_nutzungsplanung_v1'
+    models = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118'
+    dataset = bfsnr
+    dataFile = file("kommunal_edit/" + bfsnr + ".xtf")
+    disableValidation = true
+}
+
+task validateDataEdit(type: IliValidator, dependsOn: 'exportDataEdit') {
+    description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
+    dataFiles = file("kommunal_edit/" + bfsnr + ".xtf")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    configFile = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118.ini'
+    allObjectsAccessible = true
+    failOnError = true
+}
+
+task publishEdit(type: Publisher, dependsOn: validateDataEdit){
+    dataIdent = 'ch.so.arp.nutzungsplanung.kommunal.relational'
+    modelsToPublish = 'SO_ARP_Nutzungsplanung_Nachfuehrung_20221118'
+    region = '.*'
+    sourcePath = file("kommunal_edit/" + bfsnr + ".xtf")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+}
+
+task transferData(type: SqlExecutor, dependsOn: 'publishEdit') {
+    description = "Führt den Datenumbau in das Schema arp_nutzungsplanung_transfer_pub durch. Das braucht es, damit ein XFT pro Dataser ins Schema arp_nutzungsplanung_pub importiert resp. ersetzt werden kann"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [bfsnr_param:bfsnr]
+    sqlFiles = ["insert_arp_nutzungsplanung_transfer_pub.sql"]
+}
+
+task exportData (type: Ili2pgExport, dependsOn: 'transferData') {
+    description = "Exportiert die umgebauten Daten mit DataSet= BFSNr aus dem Schema arp_nutzungsplanung_transfer_pub in ein INTERLIS-Datei."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'arp_nutzungsplanung_transfer_pub_v1'
+    models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
+    dataFile= file("kommunal_pub/" + bfsnr + ".xtf")
+    disableValidation = true
+}
+
+task validateData(type: IliValidator, dependsOn: 'exportData') {
+    description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
+    dataFiles = file("kommunal_pub/" + bfsnr + ".xtf")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    failOnError = true
+}
+
+task importXTF_stage(type: Ili2pgReplace, dependsOn: 'validateData') {
+    description = 'Import der umgebaute INTERLIS-Datei einer Gemeinde (BFS-Nr.) in das Schema arp_nutzungsplanung_staging.'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = 'arp_nutzungsplanung_staging_v1'
+    models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
+    dataset = bfsnr
+    dataFile = file("kommunal_pub/" + bfsnr + ".xtf")
+    disableValidation = true
+}
+
+task delete_Dataset_stage(type: Ili2pgDelete) {
+    description = "Löscht Daten mit dem angegebenen Datasetname (BFS-Nr.) aus dem Schema arp_nutzungsplanung_staging"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
+    dbschema = 'arp_nutzungsplanung_staging_v1'
+    dataset = bfsnr
+}
+
+task importXTF_pub(type: Ili2pgReplace) {
+    description = 'Import der umgebaute INTERLIS-Datei einer Gemeinde (BFS-Nr.) in das Schema arp_nutzungsplanung_pub.'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = 'arp_nutzungsplanung_pub_v1'
+    models = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
+    dataset = bfsnr
+    dataFile = file("kommunal_pub/" + bfsnr + ".xtf")
+    disableValidation = true
+    finalizedBy delete_Dataset_stage
+}
+
+task publish(type: Publisher, dependsOn: importXTF_pub){
+    dataIdent = 'ch.so.arp.nutzungsplanung.kommunal'
+    userFormats = true
+    modelsToPublish = 'SO_ARP_Nutzungsplanung_Publikation_20201005'
+    region = '.*'
+    sourcePath = file("kommunal_pub/" + bfsnr + ".xtf")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+}
+
+// TASKS FÜR ALTES MODELL
+
+task deleteData_export (type: SqlExecutor) { 
+    description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_export_v1."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["delete_arp_nutzungsplanung_export.sql"]
+}
+
+task transferDataExport(type: SqlExecutor, dependsOn: 'deleteData_export') {
+    description = "Führt den Datenumbau in das Schema arp_nutzungsplanung_export_v1 durch. Das braucht es, damit die Daten auch im alten Modell abgegeben werden können"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [bfsnr_param:bfsnr]
+    sqlFiles = ["insert_arp_nutzungsplanung_export_2017.sql"]
+}
+
+task exportDataExport (type: Ili2pgExport, dependsOn: 'transferDataExport') {
+    description = "Exportiert die umgebauten Daten aus dem Schema arp_nutzungsplanung_export_v1 in ein INTERLIS-Datei."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'arp_nutzungsplanung_export_v1'
+    models = 'SO_Nutzungsplanung_20171118'
+    dataFile= file("modell_2017/" + bfsnr + ".xtf")
+    disableValidation = false
+}
+
+task publishAlt(type: Publisher, dependsOn: exportDataExport){
+    dataIdent = 'ch.so.arp.nutzungsplanung.kommunal_modell_2017'
+    modelsToPublish = 'SO_Nutzungsplanung_20171118'
+    region = '.*'
+    sourcePath = file("modell_2017/" + bfsnr + ".xtf")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+}
+
+// EXPORT Typo3
+// Datenumbau für Planregister (Nur Daten aus Schema "arp_nutzungsplanung_v1" werden ersetzt) und an Typo3 senden
+
+
+task deleteData_planregister_pub(type: SqlExecutor) {
+    description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_planregister_pub"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlParameters = [bfsnr_param:bfsnr]
+    sqlFiles = ["delete_arp_nutzungsplanung_planregister_pub_kommunal.sql"]
+}
+
+task transfer_planregister_pub(type: Db2Db, dependsOn: 'deleteData_planregister_pub') {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlParameters = [bfsnr_param:bfsnr]
+    transferSets = [
+        new TransferSet('insert_arp_nutzungsplanung_planregister_pub_kommunal.sql', 'arp_nutzungsplanung_planregister_pub_v1.planregister_dokument', false)
+    ];
+}
+
+task deleteData_doppelte_dokumente(type: SqlExecutor, dependsOn:transfer_planregister_pub) {
+    description = "Löscht die doppelten Dokumente aus dem Schema arp_nutzungsplanung_planregister_pub"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ["delete_arp_nutzungsplanung_planregister_pub_doppelte_dokumente.sql"]
+}
+
+task exportPlanregisterPub(type: Ili2pgExport, dependsOn: 'deleteData_doppelte_dokumente') {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    models = iliModelPlanregister
+    dbschema = dbSchemaPlanregister
+    dataFile = file(Paths.get(pathToTempFolder, planregisterXtfFileName))
+    disableValidation = true
+    // Kein Dataset, weil alle Daten enthalten sein sollen.
+}
+
+task zipPlanregister(type: Gzip, dependsOn: 'exportPlanregisterPub') {
+    dataFile = file(Paths.get(pathToTempFolder, planregisterXtfFileName))
+    gzipFile = file(Paths.get(pathToTempFolder, planregisterZipFileName))
+}
+
+task uploadPlanregister(type: Curl, dependsOn: 'zipPlanregister') {
+    finalizedBy 'removePlanregisterFiles'
+    serverUrl = digiplanUrl
+    method = MethodType.POST
+    headers = ["Content-Type": "application/xml", "Content-Encoding": "gzip"]
+    dataBinary = file(Paths.get(pathToTempFolder, planregisterZipFileName))
+    user = digiplanUser
+    password = digiplanPwd
+    expectedStatusCode = 202
+}
+
+task removePlanregisterFiles(type: Delete) {
+    delete file(Paths.get(pathToTempFolder, planregisterXtfFileName)),
+        file(Paths.get(pathToTempFolder, planregisterZipFileName))
+}
+
+// EXPORT AI
+
+// Nutzungsplanung
+
+task deleteMgdmLandUsesPlansData(type: SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['truncate_all_arp_npl_mgdm_tables.sql']
+}
+
+task importMgdmHauptnutzung(type: Ili2pgImport, dependsOn: 'deleteMgdmLandUsesPlansData') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdm
+    dbschema = dbSchemaMgdmLandUsePlans
+    dataset = 'catalogue_ch'
+    dataFile = file("Nutzungsplanung_Catalogue_CH_V1_2_20210901.xml")
+}
+
+//Hier wird ein leeres XTF importiert, damit ein Basket vorhanden ist, auf den im nächsten Schritt dann referenziert werden kann.
+task importEmptyXtf(type: Ili2pgImport, dependsOn: 'importMgdmHauptnutzung') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdm
+    dbschema = dbSchemaMgdmLandUsePlans
+    dataset = 'data'
+    dataFile = file("arp_nutzungsplanung_empty.xtf")
+}
+
+task transferLandUsePlansData(type: SqlExecutor, dependsOn: 'importEmptyXtf') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [bfsnr_param:bfsnr]
+    sqlFiles = ['arp_nutzungsplanung_kommunal_mgdm.sql']
+}
+
+task exportMgdmLandUsePlans(type: Ili2pgExport, dependsOn: 'transferLandUsePlansData') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = dbSchemaMgdmLandUsePlans
+    dataFile = file(mgdmLandUsePlansXtfFileName)
+    disableValidation = true
+    dataset = bfsnr
+}
+
+task validateMgdmLandUsePlans(type: IliValidator, dependsOn: 'exportMgdmLandUsePlans') {
+    dataFiles = [file("Nutzungsplanung_Catalogue_CH_V1_2_20210901.xml"), file(mgdmLandUsePlansXtfFileName)]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    logFile = "ilivalidator_landuseplans.log"
+    allObjectsAccessible = true
+    configFile = "config.toml"
+    failOnError = true
+}
+
+task zipMgdmLandUsePlans(type: Zip, dependsOn: 'validateMgdmLandUsePlans') {
+    from pathToTempFolder
+    from "./mgdm"
+    include mgdmLandUsePlansXtfFileNameclean
+    include "config.toml"
+    archiveName mgdmLandUsePlansZipFileName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadMgdmLandUsePlans(dependsOn: 'zipMgdmLandUsePlans') {
+    finalizedBy 'removeMgdmZipFiles'
+
+    def aiLogin = aiUser + ":" + aiPwd
+    def zipFileLocalPath = Paths.get(pathToTempFolder.toString(), mgdmLandUsePlansZipFileName)
+    def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
+
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_nutzungsplanung_v1_2", "-F",
+                        "lv95_file=@" + zipFileLocalPath, "-F", "publish=true", "-F", "replace_all=false", serverUrl
+                        ].execute().text
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
+}
+
+//Laermempfindlichkeitsstufen
+
+task deleteMgdmLaermData(type: SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['truncate_all_arp_laermempfindlichkeit_mgdm_tables.sql']
+}
+
+//Hier wird ein leeres XTF importiert, damit ein Basket vorhanden ist, auf den im nächsten Schritt dann referenziert werden kann.
+task importEmptyXtfLaerm(type: Ili2pgImport, dependsOn: 'deleteMgdmLaermData') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdmNoiseSensitivityLevels
+    dbschema = dbSchemaMgdmSensitivityLevels
+    dataset = 'data'
+    dataFile = file("arp_laermempfindlichkeitsstufen_empty.xtf")
+}
+
+task transferNoiseSensitivityLevels(type: SqlExecutor, dependsOn: 'importEmptyXtfLaerm') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [bfsnr_param:bfsnr]
+    sqlFiles = ['arp_laermempfindlichkeitsstufen_mgdm.sql']
+}
+
+task exportMgdmNoiseSensitivityLevels(type: Ili2pgExport, dependsOn: 'transferNoiseSensitivityLevels') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdmNoiseSensitivityLevels
+    dbschema = dbSchemaMgdmSensitivityLevels
+    dataFile = file(mgdmSensitivityLevelsXtfFileName)
+    disableValidation = true
+}
+
+task validateMgdmNoiseSensitivityLevels(type: IliValidator, dependsOn: 'exportMgdmNoiseSensitivityLevels') {
+    dataFiles = [file(mgdmSensitivityLevelsXtfFileName)]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    logFile = "ilivalidator_noisesensitivitylevels.log"
+    configFile = "config.toml"
+    failOnError = true
+}
+
+task zipMgdmNoiseSensitivityLevels(type: Zip, dependsOn: 'validateMgdmNoiseSensitivityLevels') {
+    from pathToTempFolder
+    from "./mgdm"
+    include mgdmSensitivityLevelsXtfFileNameclean
+    include "config.toml"
+    archiveName mgdmSensitivityLevelsZipFileName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadMgdmNoiseSensitivityLevels(dependsOn: 'zipMgdmNoiseSensitivityLevels') {
+    finalizedBy 'removeMgdmZipFiles'
+
+    def aiLogin = aiUser + ":" + aiPwd
+    def zipFileLocalPath = Paths.get(pathToTempFolder.toString(), mgdmSensitivityLevelsZipFileName)
+    def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
+
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_laermempfindlichkeitsstufen_v1_2", "-F",
+                        "lv95_file=@" + zipFileLocalPath, "-F", "publish=true", "-F", "replace_all=false", serverUrl
+                        ].execute().text
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
+}
+
+//Waldabstandslinien
+
+task deleteMgdmWaldData(type: SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['truncate_all_arp_waldabstandslinien_mgdm_tables.sql']
+}
+
+//Hier wird ein leeres XTF importiert, damit ein Basket vorhanden ist, auf den im nächsten Schritt dann referenziert werden kann.
+task importEmptyXtfWald(type: Ili2pgImport, dependsOn: 'deleteMgdmWaldData') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdmWaldabstand
+    dbschema = dbSchemaWaldabstand
+    dataset = 'data'
+    dataFile = file("arp_waldabstandslinien_empty.xtf")
+}
+
+task transferWaldabstandslinien(type: SqlExecutor, dependsOn: 'importEmptyXtfWald') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [bfsnr_param:bfsnr]
+    sqlFiles = ['arp_waldabstandslinien_mgdm.sql']
+}
+
+task exportMgdmWaldabstandslinien(type: Ili2pgExport, dependsOn: 'transferWaldabstandslinien') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdmWaldabstand
+    dbschema = dbSchemaWaldabstand
+    dataFile = file(mgdmWaldabstandXtfFileName)
+    disableValidation = true
+}
+
+task validateMgdmWaldabstandslinien(type: IliValidator, dependsOn: 'exportMgdmWaldabstandslinien') {
+    dataFiles = [file(mgdmWaldabstandXtfFileName)]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    logFile = "ilivalidator_waldabstandslinien.log"
+    configFile = "config.toml"
+    failOnError = true
+}
+
+task zipMgdmWaldabstandslinien(type: Zip, dependsOn: 'validateMgdmWaldabstandslinien') {
+    from pathToTempFolder
+    from "./mgdm"
+    include mgdmWaldabstandXtfFileNameclean
+    include "config.toml"
+    archiveName mgdmWaldabstandZipFileName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadMgdmWaldabstandslinien(dependsOn: 'zipMgdmWaldabstandslinien') {
+    finalizedBy 'removeMgdmZipFiles'
+
+    def aiLogin = aiUser + ":" + aiPwd
+    def zipFileLocalPath = Paths.get(pathToTempFolder.toString(), mgdmWaldabstandZipFileName)
+    def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
+
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=npl_waldabstandslinien_v1_2", "-F",
+                        "lv95_file=@" + zipFileLocalPath, "-F", "publish=true", "-F", "replace_all=false", serverUrl
+                        ].execute().text
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
+}
+
+//Planungszonen
+
+task deleteMgdmPlanungszonenData(type: SqlExecutor) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['truncate_all_arp_planungszonen_mgdm_tables.sql']
+}
+
+//Hier wird ein leeres XTF importiert, damit ein Basket vorhanden ist, auf den im nächsten Schritt dann referenziert werden kann.
+task importEmptyXtfPlanungszonen(type: Ili2pgImport, dependsOn: 'deleteMgdmPlanungszonenData') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdmPlanungszonen
+    dbschema = dbSchemaPlanungszonen
+    dataset = 'data'
+    dataFile = file("arp_planungszonen_empty.xtf")
+}
+
+task transferPlanungszonen(type: SqlExecutor, dependsOn: 'importEmptyXtfPlanungszonen') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [bfsnr_param:bfsnr]
+    sqlFiles = ['arp_planungszonen_mgdm.sql']
+}
+
+task exportMgdmPlanungszonen(type: Ili2pgExport, dependsOn: 'transferPlanungszonen') {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelMgdmPlanungszonen
+    dbschema = dbSchemaPlanungszonen
+    dataFile = file(mgdmPlanungszonenXtfFileName)
+    disableValidation = true
+}
+
+task validateMgdmPlanungszonen(type: IliValidator, dependsOn: 'exportMgdmPlanungszonen') {
+    dataFiles = [file(mgdmPlanungszonenXtfFileName)]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    logFile = "ilivalidator_planungszonen.log"
+    configFile = "config.toml"
+    failOnError = true
+}
+
+task zipMgdmPlanungszonen(type: Zip, dependsOn: 'validateMgdmPlanungszonen') {
+    from pathToTempFolder
+    from "./mgdm"
+    include mgdmPlanungszonenXtfFileNameclean
+    include "config.toml"
+    archiveName mgdmPlanungszonenZipFileName
+    destinationDir(file(pathToTempFolder))
+}
+
+task uploadMgdmPlanungszonen(dependsOn: 'zipMgdmPlanungszonen') {
+    finalizedBy 'removeMgdmZipFiles'
+
+    def aiLogin = aiUser + ":" + aiPwd
+    def zipFileLocalPath = Paths.get(pathToTempFolder.toString(), mgdmPlanungszonenZipFileName)
+    def serverUrl = "https://" + aiServer + "/data_agg/interlis/import"
+
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=planungszonen_v1_1", "-F",
+                        "lv95_file=@" + zipFileLocalPath, "-F", "publish=true", "-F", "replace_all=false", serverUrl
+                        ].execute().text
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
+}
+
+task removeMgdmZipFiles(type: Delete) {
+    delete fileTree(pathToTempFolder).matching {
+        include "mgdm/ch.so.arp.*.mgdm.*.zip"
+    }
+}
+
+*/
