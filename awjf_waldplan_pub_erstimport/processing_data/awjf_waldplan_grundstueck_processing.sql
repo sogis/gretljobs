@@ -228,35 +228,7 @@ CREATE INDEX
 	USING gist (geometrie)
 ;
 
-INSERT INTO waldflaeche_grundstueck
-SELECT
-    egrid,
-    ST_RemoveRepeatedPoints(
-        ST_MakeValid(
-            ST_Union(geometrie)
-        ),
-        0.001
-    ) AS geometrie
-FROM (
-    SELECT
-        gs.egrid,
-        (ST_Dump(
-            ST_Intersection(wf.geometrie, gs.geometrie)
-        )).geom AS geometrie
-    FROM
-        waldfunktion wf
-    JOIN grundstuecke_berechnung gs
-        ON ST_Intersects(wf.geometrie, gs.geometrie)
-        AND wf.t_datasetname = gs.t_datasetname
-) sub
-WHERE
-    GeometryType(geometrie) = 'POLYGON'
-    AND ST_Area(geometrie) > 0.5
-GROUP BY
-    egrid;
-;
 
-/*
 INSERT INTO waldflaeche_grundstueck
 	SELECT
     	egrid,
@@ -278,7 +250,6 @@ INSERT INTO waldflaeche_grundstueck
 	GROUP BY
     	egrid
 ;
-*/
 
 CREATE INDEX 
 	ON waldflaeche_grundstueck
