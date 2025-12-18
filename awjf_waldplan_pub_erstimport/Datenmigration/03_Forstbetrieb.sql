@@ -43,7 +43,7 @@ FROM (VALUES
 	('Walterswil'),
 	('Niedergösgen'),
 	('Obererlinsbach'),
-	('Eppenberg-Wöschnau')
+	('Eppenberg-Wöschnau'),
 	('Kienberg'),
 	('Solothurn'),
 	('Grenchen'),
