@@ -22,15 +22,7 @@ hauptprozesse_clean as (
 	geometrie, 
         'Sturz' as hauptprozess
     FROM 
-        afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz 
-    UNION ALL 
-    SELECT 
-        gefahrenstufe,
-        charakterisierung, 
-        geometrie,
-        'Absenkung/Einsturz' as hauptprozess
-    FROM 
-        afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_absenkung_einsturz   
+        afu_naturgefahren_staging_v1.gefahrengebiet_hauptprozess_sturz   
 )
 
 ,hauptprozesse_clean_prio as (
