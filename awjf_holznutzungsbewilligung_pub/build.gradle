@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'updateDispnamesInPub', 'uploadZipToGeodiensteCh'
+defaultTasks 'updateDispnames', 'uploadZip'
 
 // Definition von Variablen
 String tmpDir = buildDir.toString()
@@ -12,16 +12,13 @@ String tmpDir = buildDir.toString()
 String sftpEnvironment = 'prod'
 
 String zipFileName = 'holznutzungsbewilligungen_so_latest.zip'
-String zipFileLocalPath = "$tmpDir/$zipFileName"
+String zipFilePath = "$tmpDir/$zipFileName"
 String xtfFileName = 'SO_holznutzungsbewilligungen_prod.xtf'
 String xtfFilePath = "$tmpDir/$xtfFileName"
 
 String dbSchema = 'awjf_holznutzungsbewilligung_v1'
 String iliModel = 'Holznutzungsbewilligung_V1_0'
 String aiTopic = iliModel.toLowerCase()
-
-// Build-Ordner anlegen, falls nicht existierend
-buildDir.mkdirs()
 
 // Definition der Zugangsdaten für den Waldportal-SFTP-Server
 remotes {
@@ -30,19 +27,25 @@ remotes {
         user = sftpUserWaldportal
         password = sftpPwdWaldportal
         // Skip host key checking outside the following environments:
-        if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) { // uses the Groovy membership operator
+        if (!(gretlEnvironment in ['test', 'integration', 'production'])) { // uses the Groovy membership operator
             knownHosts = allowAnyHosts
         }
     }
 }
 
 tasks.register('downloadZip') {
+    group = 'shared'
     description = 'ZIP-Datei vom Waldportal-SFTP-Server herunterladen'
+
+    // build-Ordner (tmpDir) anlegen, falls nicht existierend
+    doFirst {
+        buildDir.mkdirs()
+    }
 
     doLast {
         ssh.run {
             session(remotes.sftpServer) {
-                get from: sftpEnvironment+'/holznutzungsbewilligungen/'+zipFileName, into: zipFileLocalPath
+                get from: "${sftpEnvironment}/holznutzungsbewilligungen/${zipFileName}", into: zipFilePath
             }
         }
         println 'ZIP-Datei vom Waldportal-SFTP-Server heruntergeladen.'
@@ -50,16 +53,18 @@ tasks.register('downloadZip') {
 }
 
 tasks.register('unzipXtf', Copy) {
+    group = 'updateDatabases'
     dependsOn 'downloadZip'
     description = 'XTF-Datei aus dem ZIP-Archiv extrahieren'
 
-    from zipTree(zipFileLocalPath)
+    from zipTree(zipFilePath)
     into tmpDir
 }
 
 // Der Katalog kann nicht mit dem Schema-Job importiert werden, darum hier.
 // Update, um die Daten (aus dem XTF) nicht in einem separaten Task löschen zu müssen.
-tasks.register('importKatalog', Ili2pgUpdate) {
+tasks.register('importCatalog', Ili2pgUpdate) {
+    group = 'updateDatabases'
     dependsOn 'unzipXtf'
     description = 'Import des Katalogs Bewilligte_Holzart_Catalogue in die Edit-DB'
 
@@ -72,7 +77,8 @@ tasks.register('importKatalog', Ili2pgUpdate) {
 }
 
 tasks.register('importXtf', Ili2pgReplace) {
-    dependsOn 'importKatalog'
+    group = 'updateDatabases'
+    dependsOn 'importCatalog'
     description = 'Import der Holznutzungsbewilligungen vom Waldportal in die Edit-DB'
 
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -83,39 +89,8 @@ tasks.register('importXtf', Ili2pgReplace) {
     importTid = true
 }
 
-// tbd: prüfen, ob auch die Publikation erfolgreich war?
-// tbd: http code != 200
-tasks.register('uploadZipToGeodiensteCh') {
-    dependsOn 'downloadZip'
-    description = 'ZIP-Datei vom Waldportal nach geodienste.ch übertragen und publizieren'
-
-    String aiLogin = aiUser + ':' + aiPwd
-    String aiUrl = 'https://' + aiServer + '/data_agg/interlis/import'
-
-    doLast {
-        def response = [
-            'curl', 
-            '--user', aiLogin, 
-            '--form', 'topic=' + aiTopic, 
-            '--form', 'lv95_file=@' + zipFileLocalPath, 
-            '--form', 'publish=true', 
-            '--form', 'replace_all=false', 
-            aiUrl
-        ].execute().text
-
-        println(response)
-
-        if (response.contains('false') 
-                || response.contains('DOCTYPE html') 
-                || response == null 
-                || response.trim().isEmpty()
-            ) {
-            throw new GradleException()
-        }
-    }
-}
-
 tasks.register('copyDataToPub', Db2Db) {
+    group = 'updateDatabases'
     dependsOn 'importXtf'
     description = 'Daten vom MGDM in das Publikationsschema überführen'
 
@@ -123,13 +98,45 @@ tasks.register('copyDataToPub', Db2Db) {
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
         new TransferSet('select_holznutzungsbewilligungen.sql', 'awjf_holznutzungsbewilligung_pub_v1.holznutzungsbewilligung', true)
-    ];
+    ]
 }
 
-tasks.register('updateDispnamesInPub', SqlExecutor) {
+tasks.register('updateDispnames', SqlExecutor) {
+    group = 'updateDatabases'
     dependsOn 'copyDataToPub'
     description = 'Für die Darstellung im WGC den <dispname> von Enumerationen nach <attribut>_txt schreiben'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = files('update_dispnames.sql')
+}
+
+tasks.register('uploadZip') {
+    group = 'uploadZip'
+    dependsOn 'downloadZip'
+    description = 'ZIP-Datei vom Waldportal nach geodienste.ch übertragen und publizieren'
+
+    String aiLogin = "${aiUser}:${aiPwd}"
+    String aiUrl = "https://${aiServer}/data_agg/interlis/import"
+
+    doLast {
+        def response = [
+            'curl', 
+            '--user', aiLogin, 
+            '--form', "topic=${aiTopic}",
+            '--form', "lv95_file=@${zipFilePath}", 
+            '--form', 'publish=true', 
+            '--form', 'replace_all=false', 
+            aiUrl
+        ].execute().text
+
+        if (response.contains('false')
+                || response.contains('DOCTYPE html')
+                || response == null
+                || response.trim().isEmpty()
+            ) {
+            throw new GradleException("Upload zu geodienste.ch fehlgeschlagen: $response")
+        } else {
+            println(response)
+        }
+    }
 }
