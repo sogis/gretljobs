@@ -10,7 +10,7 @@ WITH published_sub_area AS
         spsa.published
     FROM 
         simidb.simi.simitheme_published_sub_area AS spsa 
-)
+)z
 ,
 -- Themenbereitstellung mit Publikation
 theme_publication AS
