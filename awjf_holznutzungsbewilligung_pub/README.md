@@ -1,40 +1,40 @@
-## Information zum GRETL-Job "pub"
-## Allgemein
-Die Daten aus dem Schema «arp_nutzungsplanung» (Datenmodell «SO_ARP_Nutzungsplanung_Nachfuehrung_20201005») werden pro Dataset (BFS-Nr.) publiziert. Die Daten werden zuerst mit dem Validierungsmodell geprüft. 
-Falls die Prüfung in Ordnung ist, werden die Daten in das Schema «arp_nutzungsplanung_staging» importiert. Mittels Bestätigung durch die zuständigen Geschäftsverantwortlichen (z.B. Gemeinde, Kreisplanende oder Nachführungsstelle Nutzungsplanung) 
-wird der Job weitergeführt und die Daten werden in das Publikationsschema «arp_nutzungsplanung_pub» importiert. Das Schema «arp_nutzungsplanung_staging» wird geleert. Die INTERLIS-Transferdatei wird zudem archiviert (Artefakte). 
-Die Publikation wird pro Dataset (BFS-Nr.) ausgeführt. So kann definiert werden, von welcher Gemeinde die Publikation erfolgen sollen. Schema arp_nutzungsplanung_transfer_pub ist nötig damit die Replace funktion von ili2pg im Schema 
-«arp_nutzungsplanung_staging» und «arp_nutzungsplanung_pub» verwendet werden kann.
+# awjf_holznutzungsbewilligung_pub
 
-Hinweis für Publikation Kanton gibt es ein eignener GRETL-Job.
+Import und Publikation der Holznutzungsbewilligungen (MGDM) aus dem Waldportal (vgl. [Roter Faden](https://github.com/sogis/dok/blob/dok/dok_rote_faeden/Documents/AWJF/Waldmassnahmen_Waldportal/Waldmassnahmen_Waldportal.md)).
 
-## Job Ablauf
-1. Schema «arp_nutzungsplanung_transfer_pub» leeren
-2. Export XTF-Datei aus Schema arp_nutzungsplanung
-3. Validation der INTERLIS-Dateien im Modell «SO_ARP_Nutzungsplanung_Nachfuehrung_20201005» mit dem Validierungsmodell «SO_ARP_Nutzungsplanung_Nachfuehrung_20201005_Validierung_20201005» (mit ini-Datei)
-4. Datenumabu vom Schema «arp_nutzungsplanung» (Datenmodell «SO_ARP_Nutzungsplanung_Nachfuehrung_20201005») ins Schema «arp_nutzungsplanung_transfer_pub» (Datenmodell «SO_ARP_Nutzungsplanung_Publikation_20201005»)
-5. Export der XTF-Datei im Modell «SO_ARP_Nutzungsplanung_Publikation_20201005»
-6. Validation der INTERLIS-Dateien im Modell  «SO_ARP_Nutzungsplanung_Publikation_20201005»
-7. Import/Replace XTF in Schema «arp_nutzungsplanung_staging»
-8. Bestätigung (manuell) Review ist i.O. 
-9. Import/Replace XTF in Schema «arp_nutzungsplanung_pub»
-10. Dataset aus Schema «arp_nutzungsplanung_staging» löschen
-11. Stellt die Daten (Modell Pub) für den Geodatenbezug bereit
-12. Stellt die Daten im "alten" Erfassungsmodell im Geodatenbezug bereit
-13. Aktuallisiert das Planregister
-14. Liefert die MGDM (Lärm, Nutzungsplanung, Waldabstandslinie, Planungszonen) an Geodienste
+## Funktionsweise
 
+Der Job lädt ein gezipptes XTF vom SFTP-Server des Waldportals herunter (Task-Gruppe *shared*) und führt zwei Workflows aus:
 
-## GRETL
-Lokales arbeiten:
-Parameter:
-```
-export ORG_GRADLE_PROJECT_dbUriEdit=jdbc:postgresql://edit-db/edit
-export ORG_GRADLE_PROJECT_dbUserEdit=gretl
-export ORG_GRADLE_PROJECT_dbPwdEdit=gretl
-export ORG_GRADLE_PROJECT_dbUriPub=jdbc:postgresql://pub-db/pub
-export ORG_GRADLE_PROJECT_dbUserPub=gretl
-export ORG_GRADLE_PROJECT_dbPwdPub=gretl
-```
-./start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network schema-jobs_default --job-directory $PWD/arp_nutzungsplanung_pub -Pbfsnr='2457'
-```
+### Import vom Waldportal in die KGDI (Task-Gruppe *updateDatabases*)
+1. *unzipXtf*: XTF-Datei aus dem ZIP-Archiv extrahieren
+2. *importCatalog*: Holznutzungsbewilligung_Codelisten_V1_0.xml (in diesem Repo) in die Erfassungs-DB importieren
+3. *importXtf*: Holznutzungsbewilligungen in die Erfassungs-DB importieren
+4. *copyToPub*: Daten in das Publikationsschema überführen
+5. *updateDispnames*: Für die Darstellung im WGC den `<dispname>` von Enumerationen nach `<attribut>_txt` schreiben
+
+### Export nach geodienste.ch (Task-Gruppe *uploadZip*)
+
+1. *uploadZip*: ZIP-Datei nach geodienste.ch übertragen und publizieren
+
+## Abhängigkeiten
+
+### Extern
+
+- Waldportal SFTP-Server: Quelle der Holznutzungsbewilligungen (ZIP/XTF)
+- geodienste.ch: Zielserver für die Publikation
+
+### Umgebungsvariablen
+
+- `dbUriEdit`, `dbUserEdit`, `dbPwdEdit`: Zugangsdaten Erfassungs-DB
+- `dbUriPub`, `dbUserPub`, `dbPwdPub`: Zugangsdaten Publikations-DB
+- `sftpServerWaldportal`, `sftpUserWaldportal`, `sftpPwdWaldportal`: Zugangsdaten Waldportal SFTP-Server
+- `aiServer`, `aiUser`, `aiPwd`: Zugangsdaten geodienste.ch
+
+## Datenmodelle
+- MGDM: `Holznutzungsbewilligung_V1_0`
+- Publikationsmodell: `SO_AWJF_Holznutzungsbewilligung_Publikation_20251222`
+
+## Periodizität
+
+Ausführung jeden Donnerstag zwischen 1:00 und 3:00 UTC.
