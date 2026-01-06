@@ -98,7 +98,7 @@ tasks.register('copyToPub', Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-        new TransferSet('select_holznutzungsbewilligungen.sql', 'awjf_holznutzungsbewilligung_pub_v1.holznutzungsbewilligung', true)
+        new TransferSet('select_holznutzungsbewilligungen.sql', 'awjf_holznutzungsbewilligung_pub_v1.holznutzung_holznutzungsbewilligung', true)
     ]
 }
 
