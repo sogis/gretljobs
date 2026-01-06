@@ -1,4 +1,4 @@
-UPDATE awjf_holznutzungsbewilligung_pub_v1.holznutzungsbewilligung
+UPDATE awjf_holznutzungsbewilligung_pub_v1.holznutzung_holznutzungsbewilligung
     SET
         erzeugungsland_txt          = country.dispname,
         datenherr_txt               = canton.dispname,
@@ -12,7 +12,7 @@ UPDATE awjf_holznutzungsbewilligung_pub_v1.holznutzungsbewilligung
     FROM
         awjf_holznutzungsbewilligung_pub_v1.countrycode_iso3166_1 AS country,
         awjf_holznutzungsbewilligung_pub_v1.chcantoncode AS canton,
-        awjf_holznutzungsbewilligung_pub_v1.holznutzungsbewilligung_allgholzart AS holz
+        awjf_holznutzungsbewilligung_pub_v1.holznutzung_holznutzungsbewilligung_allgholzart AS holz
     WHERE
         erzeugungsland = country.ilicode
         AND
