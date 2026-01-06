@@ -252,7 +252,7 @@ https://github.com/sogis/gretljobs/blob/eb6f40ffb9c9ec3e41c2d46220780636a65db7e0
 https://github.com/sogis/gretljobs/blob/eb6f40ffb9c9ec3e41c2d46220780636a65db7e0/agi_mopublic_pub_export/build.gradle#L79
 
 #### Einrichtung Volltextsuche
-Details zur Definition des Suchindexes in Gradle finden sich in der internen Dokumentation [Simi - Konfiguration Suche Trigramm](https://github.com/sogis/dok/blob/dok/dok_div_anleitungen/Documents/simi/simi_anleitung_Erfassung.md)
+Details zur Definition des Suchindexes in Gradle finden sich in der internen Dokumentation [Simi - Konfiguration Suche Trigramm](https://github.com/sogis/dok/blob/dok/dok_div_anleitungen/Documents/simi/simi_anleitung_Erfassung.md#konfiguration-für-suche-trigramm)
 
 ### Files
 
