@@ -110,7 +110,7 @@ grundnutzung AS (
         typ.bezeichnung AS typ_bezeichnung,
         typ.abkuerzung AS typ_abkuerzung,
         typ.verbindlichkeit AS typ_verbindlichkeit,
-        typ.bemerkungen AS typ_bemerkungen,
+        typ.bemerkungen || ' ; ' || 'Publikation Status Änderung mit Vorwirkung' AS typ_bemerkungen,
         typ.typ_kt,
         typ.code_kommunal AS typ_code_kommunal,
         typ.nutzungsziffer AS typ_nutzungsziffer,
