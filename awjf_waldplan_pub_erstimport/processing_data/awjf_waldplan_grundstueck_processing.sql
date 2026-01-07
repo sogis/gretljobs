@@ -236,7 +236,12 @@ INSERT INTO waldflaeche_grundstueck
 	FROM (
     	SELECT
         	gs.egrid,
-        	(ST_Dump(ST_Intersection(wf.geometrie, gs.geometrie))).geom AS geometrie
+        	(ST_Dump(
+				ST_Intersection(
+					ST_SnapToGrid(wf.geometrie, 0.001),
+					St_snapToGrid(gs.geometrie, 0.001)
+				)
+			)).geom AS geometrie
     	FROM
         	waldfunktion AS wf
     	JOIN grundstuecke_berechnung AS gs
