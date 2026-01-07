@@ -18,7 +18,13 @@ CREATE TABLE
 		waldfunktion_erholungswald INTEGER,
 		waldfunktion_schutzwald INTEGER,
 		waldfunktion_schutzwald_biodiversitaet INTEGER,
-		waldnutzung INTEGER,
+		waldnutzung_nachteilige_nutzung INTEGER,
+		waldnutzung_waldstrasse INTEGER,
+		waldnutzung_maschinenweg INTEGER,
+		waldnutzung_bauten_anlagen INTEGER,
+		waldnutzung_rodungen_temp INTEGER,
+		waldnutzung_gewaesser INTEGER,
+		waldnutzung_wald_bestockt INTEGER,
 		wytweide INTEGER,
 		biodiveritaet INTEGER,
 		produktiv INTEGER,
@@ -29,7 +35,7 @@ CREATE TABLE
 
 CREATE TABLE 
 	differences (
-		egrid TEXT
+		egrid TEXT,
 		grundstueck_wald INTEGER,
 		wald_waldfunktion INTEGER,
 		wald_waldnutzung INTEGER,
@@ -115,7 +121,6 @@ SELECT
 	WHERE
 		f->>'Nutzungskategorie' = 'Mit Wald bestockt')::numeric AS waldnutzung_wald_bestockt,
 
-	waldnutzung_flaechen AS waldnutzung,
 	wytweide_flaeche AS wytweide,
 	biodiversitaetsobjekt_flaeche AS biodiversitaet,
 	(produktive_flaeche->0->>'Produktiv')::INTEGER AS produktiv,
