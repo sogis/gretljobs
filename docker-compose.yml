@@ -22,7 +22,7 @@ services:
         source: ${TMP:-/tmp}
         target: /home/gradle/.gradle/caches
   edit-db:
-    image: postgis/postgis:17-3.5
+    image: sogis/postgis:17-3.6
     environment:
       POSTGRES_DB: edit
       POSTGRES_PASSWORD: secret
@@ -43,7 +43,7 @@ services:
         source: pgdata_edit
         target: /var/lib/postgresql/data
   pub-db:
-    image: postgis/postgis:17-3.5
+    image: sogis/postgis:17-3.6
     environment:
       POSTGRES_DB: pub
       POSTGRES_PASSWORD: secret
@@ -65,7 +65,7 @@ services:
         target: /var/lib/postgresql/data
   processing-db:
     profiles: ["processing"]
-    image: postgis/postgis:17-3.5-alpine
+    image: postgis/postgis:17-3.6-alpine
     environment:
       POSTGRES_USER: processing
       POSTGRES_PASSWORD: processing
@@ -77,7 +77,7 @@ services:
         target: /var/lib/postgresql/data
   db-tools:
     profiles: ["tools"]
-    image: postgis/postgis:17-3.5
+    image: sogis/postgis:17-3.6
     environment:
       PGPASSWORD: ddluser
     volumes:
