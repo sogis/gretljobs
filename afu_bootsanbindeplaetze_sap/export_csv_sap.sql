@@ -1,0 +1,37 @@
+COPY (
+	SELECT
+		AuftrArt,
+		VerkOrg,
+		VertrWeg,
+		Sparte,
+		Verkaufsbüro,
+		KundenNr,
+		"Bestellnummer des Kunden",
+		BestellDatum,
+		Wunschlieferdatum,
+		Preisdatum,
+		"MaterialNr.",
+		Materialtext,
+		printf('%.2f', "Betrag 2Komma") AS "Betrag_2Komma",
+		"Menge Ganzahlg",
+		Auftragsnummer,
+		Profitcenter,
+		"MaterialVerkaufstext Zeile 1 Position",
+		"MaterialVerkaufstext Zeile 2 Position",
+		"MaterialVerkaufstext Zeile 3 Position",
+		"MaterialVerkaufstext Zeile 4 Position",
+		"MaterialVerkaufstext Zeile 5 Position",
+		"PositionsNotiz Zeile 1",
+		"PositionsNotiz Zeile 2",
+		"PositionsNotiz Zeile 3",
+		"PositionsNotiz Zeile 4",
+		"PositionsNotiz Zeile 5",
+		"Email Kunde",
+		"Name1 Debitor(Info)",
+		"Name2 Debitor(Info)",
+		"Strasse Debitor(Info)",
+		"PostLz(Info)",
+		"Ortschaft(Info)"
+	FROM
+		afu_bootsanbindeplaetze.main.sap_structure)
+TO ${csvPathSAP} WITH (HEADER, DELIMITER E'\t');
