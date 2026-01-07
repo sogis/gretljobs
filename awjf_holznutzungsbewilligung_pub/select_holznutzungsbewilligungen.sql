@@ -39,7 +39,7 @@ aggregierte_mengenholzarten AS (
                 '@type', 'SO_AWJF_Holznutzungsbewilligung_Publikation_20251222.Holznutzung.MengeHolzart',
                 'Bew_Menge_Holzart', mh.bew_menge_holzart,
                 'Bew_Holzart_Code', cat.acode,
-                'Bew_Holzart_Definition', ltext.atext
+                'Bew_Holzart_Text', ltext.atext
             ) ORDER BY mh.bew_menge_holzart DESC
         ) AS mengenholzarten
     FROM
