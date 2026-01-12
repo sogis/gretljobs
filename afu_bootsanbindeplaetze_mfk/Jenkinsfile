@@ -9,10 +9,12 @@ pipeline {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
-                        unstash name: 'uploadFile'
+                        dir('upload') {
+                            unstash name: 'uploadFile'
+                        }
+                        sh "gretl"
+                        archiveArtifacts "build/bootsanbindeplaetze_abgleich_mfk.gpkg"
                     }
-                    sh "gretl --project-dir=${env.JOB_BASE_NAME}"
-                    archiveArtifacts "${env.JOB_BASE_NAME}/build/bootsanbindeplaetze_abgleich_mfk.gpkg"
                 }
             }
         }
