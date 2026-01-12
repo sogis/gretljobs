@@ -12,6 +12,13 @@ pipeline {
                         dir('upload') {
                             unstash name: 'uploadFile'
                         }
+                        sh '''
+                            echo "=== Upload Verzeichnis ==="
+                            ls -la upload/
+                            echo "=== Projektverzeichnis ==="
+                            ls -la
+                        '''
+                        
                         sh "gretl"
                         archiveArtifacts "build/bootsanbindeplaetze_abgleich_mfk.gpkg"
                     }

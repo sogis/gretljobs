@@ -23,13 +23,17 @@ def dbDatabaseEdit = 'edit'
 def dbConnectionStringEdit = "'dbname=$dbDatabaseEdit user=$dbUserEdit password=$dbPwdEdit host=$dbHostEdit'"
 
 // delete build-directory if it exists
-if (buildDir.exists()) {
-    buildDir.deleteDir()
+tasks.register('cleanBuild') {
+    doLast {
+        if (buildDir.exists()) {
+            buildDir.deleteDir()
+        }
+        buildDir.mkdirs()
+    }
 }
 
-buildDir.mkdirs()
-
 tasks.register("copyCSVFile", Copy) {
+    dependsOn "cleanBuild"
     from "upload/"
     into "upload/"
     include("uploadFile")
