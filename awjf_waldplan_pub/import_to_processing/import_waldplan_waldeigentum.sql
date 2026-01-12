@@ -1,0 +1,19 @@
+SELECT 
+	t_id,
+	t_basket,
+	t_datasetname,
+	t_ili_tid,
+	egrid,
+	eigentuemer,
+	zusatzinformation,
+	forstkreis,
+	forstrevier,
+	forstbetrieb,
+	wirtschaftszone,
+	ausserkantonal,
+	bemerkung,
+	t_lastchange,
+	t_createdate,
+	t_user
+FROM 
+	awjf_waldplan_v2.waldplan_waldeigentum
