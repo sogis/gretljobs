@@ -31,7 +31,7 @@ task publipub(type: Publisher) {
     dbSchema = "afu_bodenverdichtung_pub_v1"
     modelsToPublish = "SO_AFU_Bodenverdichtung_20251201"
 
-    target = ["sftp://$sftpServ`erSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
