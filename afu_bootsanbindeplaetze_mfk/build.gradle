@@ -30,9 +30,10 @@ if (buildDir.exists()) {
 buildDir.mkdirs()
 
 tasks.register("copyCSVFile", Copy) {
-    from 'upload'
-    into 'upload'
-    rename 'uploadFile', 'uploadFile.csv'
+    from "upload/"
+    into "upload/"
+    include("uploadFile")
+    rename("uploadFile", "uploadFile.csv")
 }
 
 tasks.register("import_mfk_data", SqlExecutor){
