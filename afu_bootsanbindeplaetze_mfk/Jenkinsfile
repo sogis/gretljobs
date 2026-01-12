@@ -12,9 +12,10 @@ pipeline {
                         dir('upload') {
                             unstash name: 'uploadFile'
                         }
+                        sh 'gretl'
+                    }
                     sh "gretl --project-dir=${env.JOB_BASE_NAME}"
                     archiveArtifacts "${env.JOB_BASE_NAME}/build/bootsanbindeplaetze_abgleich_mfk.gpkg"
-                    }
                 }
             }
         }
