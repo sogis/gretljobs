@@ -1,0 +1,9 @@
+SELECT
+	t_basket,
+	t_datasetname,
+	nutzungskategorie,
+	nutzungskategorie_txt,
+	geometrie,
+	bemerkung
+FROM
+	awjf_waldplan_pub_v2.waldplan_waldnutzung

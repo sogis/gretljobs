@@ -1,0 +1,21 @@
+SELECT 
+	t_id,
+	t_basket,
+	t_datasetname,
+	t_ili_tid,
+	schutzwald_nr,
+	sturz,
+	rutsch,
+	gerinnerelevante_prozesse,
+	lawine,
+	andere_kt,
+	objektkategorie,
+	schadenpotential,
+	hauptgefahrenpotential,
+	intensitaet_geschaetzt,
+	bemerkungen,
+	t_lastchange,
+	t_createdate,
+	t_user
+FROM 
+	awjf_waldplan_v2.waldplan_schutzwald

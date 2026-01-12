@@ -110,7 +110,12 @@ grundnutzung AS (
         typ.bezeichnung AS typ_bezeichnung,
         typ.abkuerzung AS typ_abkuerzung,
         typ.verbindlichkeit AS typ_verbindlichkeit,
-        typ.bemerkungen AS typ_bemerkungen,
+        COALESCE(typ.bemerkungen, '') || 
+            CASE 
+                WHEN typ.bemerkungen IS NOT NULL 
+                THEN ' ; ' 
+     			ELSE '' 
+            END  || 'Publikation Status Änderung mit Vorwirkung'AS typ_bemerkungen,
         typ.typ_kt,
         typ.code_kommunal AS typ_code_kommunal,
         typ.nutzungsziffer AS typ_nutzungsziffer,
@@ -249,7 +254,12 @@ ueberlagernd_flaeche AS (
         typ.bezeichnung AS typ_bezeichnung,
         typ.abkuerzung AS typ_abkuerzung,
         typ.verbindlichkeit AS typ_verbindlichkeit,
-        typ.bemerkungen AS typ_bemerkungen,
+        COALESCE(typ.bemerkungen, '') || 
+            CASE 
+                WHEN typ.bemerkungen IS NOT NULL 
+                THEN ' ; ' 
+     			ELSE '' 
+            END  || 'Publikation Status Änderung mit Vorwirkung'AS typ_bemerkungen,
         typ.typ_kt,
         typ.code_kommunal AS typ_code_kommunal,
         typ.t_id AS typ_t_id,
@@ -383,7 +393,12 @@ ueberlagernd_linie AS (
         typ.bezeichnung AS typ_bezeichnung,
         typ.abkuerzung AS typ_abkuerzung,
         typ.verbindlichkeit AS typ_verbindlichkeit,
-        typ.bemerkungen AS typ_bemerkungen,
+        COALESCE(typ.bemerkungen, '') || 
+            CASE 
+                WHEN typ.bemerkungen IS NOT NULL 
+                THEN ' ; ' 
+     			ELSE '' 
+            END  || 'Publikation Status Änderung mit Vorwirkung'AS typ_bemerkungen,
         typ.typ_kt,
         typ.code_kommunal AS typ_code_kommunal,
         typ.t_id AS typ_t_id,
@@ -518,7 +533,12 @@ ueberlagernd_punkt AS (
         typ.bezeichnung AS typ_bezeichnung,
         typ.abkuerzung AS typ_abkuerzung,
         typ.verbindlichkeit AS typ_verbindlichkeit,
-        typ.bemerkungen AS typ_bemerkungen,
+        COALESCE(typ.bemerkungen, '') || 
+            CASE 
+                WHEN typ.bemerkungen IS NOT NULL 
+                THEN ' ; ' 
+     			ELSE '' 
+            END  || 'Publikation Status Änderung mit Vorwirkung'AS typ_bemerkungen,
         typ.typ_kt,
         typ.code_kommunal AS typ_code_kommunal,
         typ.t_id AS typ_t_id,
@@ -653,7 +673,12 @@ erschliessung_flaechenobjekt AS (
         typ.bezeichnung AS typ_bezeichnung,
         typ.abkuerzung AS typ_abkuerzung,
         typ.verbindlichkeit AS typ_verbindlichkeit,
-        typ.bemerkungen AS typ_bemerkungen,
+        COALESCE(typ.bemerkungen, '') || 
+            CASE 
+                WHEN typ.bemerkungen IS NOT NULL 
+                THEN ' ; ' 
+     			ELSE '' 
+            END  || 'Publikation Status Änderung mit Vorwirkung'AS typ_bemerkungen,
         typ.typ_kt,
         typ.code_kommunal AS typ_code_kommunal,
         typ.t_id AS typ_t_id,
@@ -787,7 +812,12 @@ erschliessung_linienobjekt AS (
         typ.bezeichnung AS typ_bezeichnung,
         typ.abkuerzung AS typ_abkuerzung,
         typ.verbindlichkeit AS typ_verbindlichkeit,
-        typ.bemerkungen AS typ_bemerkungen,
+        COALESCE(typ.bemerkungen, '') || 
+            CASE 
+                WHEN typ.bemerkungen IS NOT NULL 
+                THEN ' ; ' 
+     			ELSE '' 
+            END  || 'Publikation Status Änderung mit Vorwirkung'AS typ_bemerkungen,
         typ.typ_kt,
         typ.code_kommunal AS typ_code_kommunal,
         typ.t_id AS typ_t_id,
@@ -920,7 +950,12 @@ erschliessung_punktobjekt AS (
         typ.bezeichnung AS typ_bezeichnung,
         typ.abkuerzung AS typ_abkuerzung,
         typ.verbindlichkeit AS typ_verbindlichkeit,
-        typ.bemerkungen AS typ_bemerkungen,
+        COALESCE(typ.bemerkungen, '') || 
+            CASE 
+                WHEN typ.bemerkungen IS NOT NULL 
+                THEN ' ; ' 
+     			ELSE '' 
+            END  || 'Publikation Status Änderung mit Vorwirkung'AS typ_bemerkungen,
         typ.typ_kt,
         typ.code_kommunal AS typ_code_kommunal,
         typ.t_id AS typ_t_id,
@@ -1053,7 +1088,12 @@ empfindlichkeitsstufe AS (
         typ.bezeichnung AS typ_bezeichnung,
         typ.abkuerzung AS typ_abkuerzung,
         typ.verbindlichkeit AS typ_verbindlichkeit,
-        typ.bemerkungen AS typ_bemerkungen,
+        COALESCE(typ.bemerkungen, '') || 
+            CASE 
+                WHEN typ.bemerkungen IS NOT NULL 
+                THEN ' ; ' 
+     			ELSE '' 
+            END  || 'Publikation Status Änderung mit Vorwirkung'AS typ_bemerkungen,
         typ.typ_kt,
         typ.t_id AS typ_t_id,
         empfindlichkeitsstufe.geometrie,

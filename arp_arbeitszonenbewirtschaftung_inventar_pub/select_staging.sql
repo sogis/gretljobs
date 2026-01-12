@@ -376,7 +376,7 @@ region AS (
         r.typ,
         r.aname
     FROM
-        arp_arbeitszonenbewirtschaftung_pub_v1.region_region r
+        arp_arbeitszonenbewirtschaftung_pub_v2.region_region r
     WHERE
         r.typ='Arbeitszonenbewirtschaftung'
 )

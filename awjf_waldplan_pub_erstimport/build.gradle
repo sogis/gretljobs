@@ -1,0 +1,175 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferData'
+
+def xtfPath = "${buildDir}/exportdata.xtf"
+def xtfFile = files(xtfPath)
+
+// Multiline-Text ist im Task nicht möglich, darum als Variable
+def importModelsPub = 
+    'SO_AGI_MOpublic_20240711;' +
+    'SO_AWJF_Waldplan_Publikation_20250312;'
+
+tasks.register('createExtension', SqlExecutor) {
+    description = 'In der Processing-DB die Extension für die UUID-Erstellung aktivieren (uuid-ossp).'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files('processing_data/create_extension.sql')
+}
+
+tasks.register('createImportSchema_Waldplan_Edit', Ili2pgImportSchema) {
+    dependsOn 'createExtension'
+    description = 'Waldplan-Schema IMPORT für Quelldaten in der Processing-DB anlegen'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    models = 'SO_AWJF_Waldplan_20250312'
+    dbschema = 'awjf_waldplan_v2'
+    createGeomIdx = true
+    createFk = true
+    createFkIdx = true
+    createUnique = true
+    createEnumTabs = true
+    beautifyEnumDispName = true
+    createMetaInfo = true
+    createNumChecks = true
+    strokeArcs = true
+    createBasketCol = true
+    createDatasetCol = true
+    nameByTopic = true
+    createStdCols = true
+}
+
+tasks.register('createImportSchema_Waldplan_Pub', Ili2pgImportSchema) {
+    dependsOn 'createImportSchema_Waldplan_Edit'
+    description = 'Schema IMPORT für Quelldaten in der Processing-DB anlegen.'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    models = 'SO_AWJF_Waldplan_Publikation_20250312'
+    dbschema = 'awjf_waldplan_pub_v2'
+    createGeomIdx = true
+    createFk = true
+    createFkIdx = true
+    createUnique = true
+    createEnumTabs = true
+    beautifyEnumDispName = true
+    createMetaInfo = true
+    createNumChecks = true
+    strokeArcs = true
+    createEnumTxtCol = true
+    createBasketCol = true
+    createDatasetCol = true
+    nameByTopic = true
+    smart2Inheritance = true
+}
+
+tasks.register('createImportSchema_Mopublic', Ili2pgImportSchema) {
+    dependsOn 'createImportSchema_Waldplan_Pub'
+    description = 'Schema IMPORT für Quelldaten in der Processing-DB anlegen.'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    models = 'SO_AGI_MOpublic_20240711'
+    dbschema = 'agi_mopublic_pub'
+    nameByTopic = true
+    beautifyEnumDispName = true
+    strokeArcs = true
+    createEnumTabs = false
+    createNumChecks = true
+    createFk = true
+    createFkIdx = true
+    createGeomIdx = true
+    createMetaInfo = true
+    createBasketCol = false
+    createUnique = true
+    smart2Inheritance = true
+}
+
+tasks.register('createImportSchema_Hoheitsgrenzen', Ili2pgImportSchema) {
+    dependsOn 'createImportSchema_Mopublic'
+    description = 'Schema IMPORT für Quelldaten in der Processing-DB anlegen.'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    models = 'SO_Hoheitsgrenzen_Publikation_20170626'
+    dbschema = 'agi_hoheitsgrenzen_pub'
+    createGeomIdx = true
+    createFk = true
+    createFkIdx = true
+    createUnique = true
+    createEnumTabs = true
+    beautifyEnumDispName = true
+    createMetaInfo = true
+    createNumChecks = true
+    nameByTopic = true
+    strokeArcs = true
+}
+
+tasks.register('copyDataFromEdit', Db2Db) {
+    dependsOn 'createImportSchema_Hoheitsgrenzen'
+    description = 'Quelldaten tabellenweise aus der Edit-DB in die Processing-DB kopieren.'
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    transferSets = [
+        new TransferSet('import_to_processing/import_waldplan_dataset.sql', 'awjf_waldplan_v2.t_ili2db_dataset', true),
+        new TransferSet('import_to_processing/import_waldplan_basket.sql', 'awjf_waldplan_v2.t_ili2db_basket', true),
+        new TransferSet('import_to_processing/import_waldplan_schutzwald.sql', 'awjf_waldplan_v2.waldplan_schutzwald', true),
+        new TransferSet('import_to_processing/import_waldplankatalog_forstbetrieb.sql', 'awjf_waldplan_v2.waldplankatalog_forstbetrieb', true),
+        new TransferSet('import_to_processing/import_waldplankatalog_forstrevier.sql', 'awjf_waldplan_v2.waldplankatalog_forstrevier', true),
+        new TransferSet('import_to_processing/import_waldplan_waldfunktion.sql', 'awjf_waldplan_v2.waldplan_waldfunktion', true),
+        new TransferSet('import_to_processing/import_waldplan_waldnutzung.sql', 'awjf_waldplan_v2.waldplan_waldnutzung', true),
+        new TransferSet('import_to_processing/import_waldplan_waldeigentum.sql', 'awjf_waldplan_v2.waldplan_waldeigentum', true)
+    ];
+}
+
+tasks.register('copyDataFromMopublic', Db2Db) {
+    dependsOn 'copyDataFromEdit'
+    description = 'Quelldaten tabellenweise aus der Pub-DB in die Processing-DB kopieren.'
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    transferSets = [
+        new TransferSet('import_to_processing/import_mopublic_grundstueck.sql', 'agi_mopublic_pub.mopublic_grundstueck', true)
+    ];
+}
+
+tasks.register('copyDataFromHoheitsgrenzen', Db2Db) {
+    dependsOn 'copyDataFromMopublic'
+    description = 'Quelldaten tabellenweise aus der Pub-DB in die Processing-DB kopieren.'
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    transferSets = [
+        new TransferSet('import_to_processing/import_hoheitsgrenzen_gemeindegrenze.sql', 'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze', true)
+    ];
+}
+
+tasks.register('processingPubData', SqlExecutor) {
+    dependsOn 'copyDataFromHoheitsgrenzen'
+    description = 'Berechnung Waldplandaten für alle Gemeinden'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files(
+        'processing_data/awjf_dataset_basket_processing.sql',
+        'processing_data/awjf_schutzwald_processing.sql',
+        'processing_data/awjf_waldfunktion_processing.sql',
+        'processing_data/awjf_waldnutzung_processing.sql',
+        'processing_data/awjf_waldplan_grundstueck_processing.sql',
+        'processing_data/awjf_walduebersicht_processing.sql'
+    )
+}
+
+tasks.register('UpdateFlaechenwerte', SqlExecutor) {
+    dependsOn 'processingPubData'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files('processing_data/awjf_update_flaechenwerte_processing.sql')
+}
+
+tasks.register('transferData', Db2Db) {
+    dependsOn 'UpdateFlaechenwerte'
+    description = 'Einmaliger Transfer von Dataset und BAsket'
+    sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+        new TransferSet('transfer_data/01_waldplan_dataset_pub.sql', 'awjf_waldplan_pub_v2.t_ili2db_dataset', true),
+        new TransferSet('transfer_data/02_waldplan_basket_pub.sql', 'awjf_waldplan_pub_v2.t_ili2db_basket', true),
+        new TransferSet('transfer_data/03_waldplan_schutzwald_pub.sql', 'awjf_waldplan_pub_v2.waldplan_schutzwald', true),
+        new TransferSet('transfer_data/04_waldplan_waldfunktion_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldfunktion', true),
+        new TransferSet('transfer_data/05_waldplan_waldnutzung_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldnutzung', true),
+        new TransferSet('transfer_data/06_waldplan_waldeigentum_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck', true),
+        new TransferSet('transfer_data/07_waldplan_walduebersicht_pub.sql', 'awjf_waldplan_pub_v2.waldplan_walduebersicht', true)
+    ];
+}
