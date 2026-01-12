@@ -1,0 +1,15 @@
+SELECT
+	t_basket,
+	t_datasetname,
+	funktion,
+	funktion_txt,
+	biodiversitaet_id,
+	biodiversitaet_objekt,
+	biodiversitaet_objekt_txt,
+	schutzwald_nr,
+	wytweide,
+	wytweide_txt,
+	geometrie,
+	bemerkung
+FROM 
+	awjf_waldplan_pub_v2.waldplan_waldfunktion
