@@ -23,16 +23,17 @@ task transferAfuBodenverdichtungPub(type: Db2Db) {
     ]
 }
 
-task publipub(type: Publisher, dependsOn:'transferAfuBodenverdichtungPub'){
-  dataIdent = "ch.so.afu.bodenverdichtung_hinweiskarte"
-  userFormats = false
-  database = [dbUriPub,dbUserPub,dbPwdPub]
-  dbSchema = "afu_bodenverdichtung_pub_v1"
-  modelsToPublish = "SO_AFU_Bodenverdichtung_20251201"
+task publipub(type: Publisher) {
+    dependsOn transferAfuBodenverdichtungPub
+    dataIdent = "ch.so.afu.bodenverdichtung_hinweiskarte"
+    userFormats = true
+    database = [dbUriPub,dbUserPub,dbPwdPub]
+    dbSchema = "afu_bodenverdichtung_pub_v1"
+    modelsToPublish = "SO_AFU_Bodenverdichtung_20251201"
 
-  target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
-  kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-  kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-  grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
-  if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    target = ["sftp://$sftpServ`erSogis/$sftpUserSogis", sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
