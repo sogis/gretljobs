@@ -367,6 +367,26 @@ tasks.register('missingEbauLayer2Excel', Csv2Excel) {
     outputFile = xlsxOutputFile
 }
 
+//-----------
+
+tasks.register('diffLayeridentSimiSuchindex', SqlExecutor) {
+    database = [dbUriDuckDB]
+    sqlFiles = ["diff_layerident_simi_suchindex.sql"]
+    sqlParameters = [
+        connectionStringSimi : dbConnectionStringSimi as String,
+        connectionStringPub : dbConnectionStringPub as String
+        ]
+}
+
+tasks.register('diffLayeridentSimiSuchindex2Excel', Csv2Excel) {
+    description 'Wandelt CSV in eine Excel-Datei um resp. fügt CSV einem neuen Sheet hinzu.'
+    dependsOn 'diffLayeridentSimiSuchindex'
+    csvFile = file("/tmp/qmbetrieb/diff_layerident_simi_suchindex.csv")
+    firstLineIsHeader = true
+    valueDelimiter = null
+    valueSeparator = ";"
+    outputFile = xlsxOutputFile
+}
 
 //-----------
 
@@ -382,7 +402,8 @@ tasks.register('validationTasks') {
         'diffKennungSimiDatenabgabe2Excel',
         'superflousPublicationFormatsCsv2Excel',
         'countSimplePublicationFormatsCsv2Excel',
-        'missingEbauLayer2Excel'
+        'missingEbauLayer2Excel',
+        'diffLayeridentSimiSuchindex2Excel'
 }
 
 //-----------

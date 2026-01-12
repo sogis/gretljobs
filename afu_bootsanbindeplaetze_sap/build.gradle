@@ -34,13 +34,13 @@ tasks.register("create_sap_list", SqlExecutor){
     database = [dbUriDuckDB]
     sqlParameters = [
         connectionStringPub : dbConnectionStringPub as String,
-        excelPathSAP: "'" + "$buildDir/bootsanbindeplaetze_sap_export_${today}.xlsx" + "'"]
+        csvPathSAP: "'" + "$buildDir/bootsanbindeplaetze_sap_export_${today}.csv" + "'"]
     sqlFiles = files(
         'load_extension_spatial.sql',
         'attach_pubdb.sql',
         'create_sap_table.sql',
         'calculate_values_sap.sql',
-        'export_excel_sap.sql',
+        'export_csv_sap.sql',
         'detach_pubdb.sql'
     )
 }
@@ -51,13 +51,13 @@ tasks.register("create_kontokorrent_list", SqlExecutor){
     database = [dbUriDuckDB]
     sqlParameters = [
         connectionStringPub : dbConnectionStringPub as String,
-        excelPathKontokorrent: "'" + "$buildDir/bootsanbindeplaetze_kontokorrent_export_${today}.xlsx" + "'"]
+        csvPathKontokorrent: "'" + "$buildDir/bootsanbindeplaetze_kontokorrent_export_${today}.csv" + "'"]
     sqlFiles = files(
         'load_extension_spatial.sql',
         'attach_pubdb.sql',
         'create_kontokorrent_table.sql',
         'calculate_values_kontokorrent.sql',
-        'export_excel_kontokorrent.sql',
+        'export_csv_kontokorrent.sql',
         'detach_pubdb.sql'
     )
 }

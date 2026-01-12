@@ -118,7 +118,7 @@ WHERE
 
 UPDATE 
     sgv_schadenkarte_pub_v1.schadenfall
-    SET problem = 'EGRID, EGID und/oder Adresse stimmen nicht überein. Bitte manuell überprüfen.'
+    SET problem = 'ERROR: EGRID, EGID und/oder Adresse stimmen nicht überein. Bitte manuell überprüfen.'
 WHERE
     geometrie IS NULL 
 ;
@@ -134,3 +134,4 @@ WHERE
     AND 
     s.geometrie IS NOT NULL 
     
+

@@ -13,11 +13,11 @@ println downloadFolder
 if (!downloadFolder.exists()) {
     downloadFolder.mkdirs()
 }
-def remoteDirectory = "/sgv-gemdat/sgv/schadenkarte-test"
+def remoteDirectory = "/sgv-gemdat/sgv/schadenkarte"
 def bucketSuffix = '-undefined'
     if ( gretlEnvironment == 'production' ) { 
         bucketSuffix = ''
-        remoteDirectory = "/sgv-gemdat/sgv/schadenkarte-test"
+        remoteDirectory = "/sgv-gemdat/sgv/schadenkarte"
     } else if ( gretlEnvironment == 'integration' || gretlEnvironment == 'development' ) { 
         bucketSuffix = '-' + gretlEnvironment.substring(0, 3)
     } else {
