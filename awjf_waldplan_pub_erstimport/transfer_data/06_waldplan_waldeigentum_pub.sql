@@ -17,7 +17,6 @@ SELECT
 	waldfunktion_flaechen,
 	waldnutzung_flaechen,
 	biodiversitaetsobjekt_flaeche,
-	biodiversitaet_id_flaeche,
 	wytweide_flaeche,
 	produktive_flaeche,
 	hiebsatzrelevante_flaeche,
