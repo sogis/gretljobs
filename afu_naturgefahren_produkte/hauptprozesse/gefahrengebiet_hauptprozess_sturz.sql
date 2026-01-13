@@ -26,6 +26,16 @@ hauptprozess_sturz AS (
         afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_fels_bergsturz 
     WHERE 
         datenherkunft = 'Neudaten'
+    UNION ALL 
+    SELECT
+        gefahrenstufe, 
+        charakterisierung, 
+        teilprozess,
+        (ST_dump(geometrie)).geom AS geometrie	
+    FROM 
+        afu_naturgefahren_staging_v1.gefahrengebiet_teilprozess_absenkung_einsturz 
+    WHERE 
+        datenherkunft = 'Neudaten'
 )
 ,hauptprozess_sturz_clean AS (
     SELECT 

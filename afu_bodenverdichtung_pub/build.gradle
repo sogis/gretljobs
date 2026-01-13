@@ -1,0 +1,39 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+description = "GRETL-Job für Datenübernahme und Validierung der Hinweiskarte Bodenverdichtung edit-DB, pub-DB"
+
+defaultTasks 'publipub'
+
+task validateData(type: Ili2pgValidate) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = "SO_AFU_Bodenverdichtung_20251201"
+    dbschema = "afu_bodenverdichtung_v1"
+}
+
+task transferAfuBodenverdichtungPub(type: Db2Db) {
+    dependsOn validateData
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('transfer_data.sql',
+                    'afu_bodenverdichtung_pub_v1.bodenverdichtung_hinweiskarte', true)
+    ]
+}
+
+task publipub(type: Publisher) {
+    dependsOn transferAfuBodenverdichtungPub
+    dataIdent = "ch.so.afu.bodenverdichtung_hinweiskarte"
+    userFormats = true
+    database = [dbUriPub,dbUserPub,dbPwdPub]
+    dbSchema = "afu_bodenverdichtung_pub_v1"
+    modelsToPublish = "SO_AFU_Bodenverdichtung_20251201"
+
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}

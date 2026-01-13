@@ -1,0 +1,69 @@
+import ch.so.agi.gretl.api.TransferSet
+import java.nio.file.Paths
+import java.nio.file.Files
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'org.hidetake.ssh'
+
+defaultTasks 'abgleich_mfk'
+
+// variables
+def dbPath = "$buildDir/afu_bootsanbindeplaetze_mfk.duckdb"
+def dbUriDuckDB = "jdbc:duckdb:$dbPath"
+def dbFile = new File(dbPath)
+/* Nur lokal zum Testen */
+/*def uploadFile = file("upload/mfk_data.csv")*/
+
+// Create DB-variables for sql-files
+def dbHostEdit= dbUriEdit.substring(dbUriEdit.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
+def dbDatabaseEdit = 'edit'
+def dbConnectionStringEdit = "'dbname=$dbDatabaseEdit user=$dbUserEdit password=$dbPwdEdit host=$dbHostEdit'"
+
+// delete build-directory if it exists
+tasks.register('cleanBuild') {
+    doLast {
+        if (buildDir.exists()) {
+            buildDir.deleteDir()
+        }
+        buildDir.mkdirs()
+    }
+}
+
+tasks.register("copyCSVFile", Copy) {
+    dependsOn "cleanBuild"
+    from "upload/"
+    into "upload/"
+    include("uploadFile")
+    rename("uploadFile", "uploadFile.csv")
+}
+
+tasks.register("import_mfk_data", SqlExecutor){
+    dependsOn "copyCSVFile"
+    database = [dbUriDuckDB]
+    sqlParameters = [
+        /*mfkPath: "'${uploadFile}'".toString()]*/
+       mfkPath: "'upload/uploadFile.csv'"]
+    sqlFiles = files(
+        'load_extension_spatial.sql',
+        'import_data_mfk.sql'
+    )
+}
+
+tasks.register("abgleich_mfk", SqlExecutor){
+    dependsOn "import_mfk_data"
+    database = [dbUriDuckDB]
+    sqlParameters = [
+        connectionStringEdit : dbConnectionStringEdit as String,
+        exportPathAbgleich: "'" + "$buildDir/bootsanbindeplaetze_abgleich_mfk.gpkg" + "'" ]
+    sqlFiles = files(
+        'load_extension_spatial.sql',
+        'attach_editdb.sql',
+        'create_table_abgleich.sql',
+        'abgleich_mfk.sql',
+        'export_abgleich_mfk.sql',
+        'detach_editdb.sql'
+    )
+}
