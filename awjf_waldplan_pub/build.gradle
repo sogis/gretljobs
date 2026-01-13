@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'replaceData'
+defaultTasks 'transferData'
 
 def xtfPath = "${buildDir}/exportdata.xtf"
 def xtfFile = files(xtfPath)
@@ -187,4 +187,14 @@ tasks.register('replaceData', Ili2pgReplace) {
     dataset = bfsnr
     disableValidation = true
     skipGeometryErrors = true
+}
+
+tasks.register('transferData', Db2Db) {
+    dependsOn 'replaceData'
+    description = 'Transfer der Walduebersicht'
+    sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+        new TransferSet('transfer_data/awjf_waldplan_walduebersicht_pub.sql', 'awjf_waldplan_pub_v2.waldplan_walduebersicht', true)
+    ];
 }
