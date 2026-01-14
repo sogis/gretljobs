@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS
 	waldfunktion,
 	waldnutzung,
 	waldflaeche_grundstueck,
+	waldflaeche_grundstueck_bereinigt,
 	waldflaechen_berechnet,
 	wytweideflaechen_berechnet,
 	waldfunktion_flaechen_berechnet,
@@ -76,6 +77,12 @@ CREATE TABLE
 
 CREATE TABLE
 	waldflaeche_grundstueck (
+    	egrid TEXT,
+   		geometrie GEOMETRY
+);
+
+CREATE TABLE
+	waldflaeche_grundstueck_bereinigt (
     	egrid TEXT,
    		geometrie GEOMETRY
 );
@@ -237,34 +244,54 @@ CREATE INDEX
 ;
 
 INSERT INTO waldflaeche_grundstueck
-	SELECT
-    	egrid,
-    	ST_MakeValid(ST_RemoveRepeatedPoints(ST_MakeValid(ST_Union(geometrie)), 0.001)) AS geometrie
-	FROM (
-    	SELECT
-        	gs.egrid,
-        	(ST_Dump(
-				ST_Intersection(
-					ST_SnapToGrid(wf.geometrie, 0.001),
-					St_snapToGrid(gs.geometrie, 0.001)
-				)
-			)).geom AS geometrie
-    	FROM
-        	waldfunktion AS wf
-    	JOIN grundstuecke_berechnung AS gs
-        	ON ST_Intersects(wf.geometrie, gs.geometrie)
-        	AND wf.t_datasetname = gs.t_datasetname
-	) sub
-	WHERE
-    	ST_GeometryType(geometrie) = 'ST_Polygon'
-	AND
-   		ST_Area(geometrie) > 0.5
-	GROUP BY
-    	egrid
+SELECT
+    gs.egrid,
+    (ST_Dump(
+        ST_Intersection(
+            ST_Snap(wf.geometrie, gs.geometrie, 0.01), --snap auf Grundstueck-Geometrie
+            gs.geometrie
+        )
+    )).geom AS geometrie
+FROM
+	waldfunktion AS wf
+JOIN grundstuecke_berechnung AS gs
+	ON ST_Intersects(wf.geometrie, gs.geometrie)
+    AND wf.t_datasetname = gs.t_datasetname
+WHERE
+	ST_Area(ST_Intersection(
+        ST_Snap(wf.geometrie, gs.geometrie, 0.01),
+        gs.geometrie
+    )) > 0.5;
+
 ;
 
 CREATE INDEX 
 	ON waldflaeche_grundstueck
+	USING gist (geometrie)
+;
+
+-- Bereinigung der Geometrien
+INSERT INTO waldflaeche_grundstueck_bereinigt
+SELECT
+	egrid,
+    (ST_Dump(
+        ST_ReducePrecision(
+            (ST_Dump(
+                ST_CollectionExtract(
+                    ST_MakeValid(geometrie),
+                    3
+                )
+            )).geom,
+            0.001  -- 1 mm Präzision
+        )
+    )).geom AS geometrie
+FROM
+	waldflaeche_grundstueck
+WHERE
+	ST_Area(geometrie) > 0.5;
+
+CREATE INDEX 
+	ON waldflaeche_grundstueck_bereinigt
 	USING gist (geometrie)
 ;
 
@@ -511,7 +538,7 @@ LEFT JOIN waldflaechen_berechnet AS wfb
 	ON gs.egrid = wfb.egrid
 LEFT JOIN wytweideflaechen_berechnet AS wytb 
 	ON gs.egrid = wytb.egrid
-LEFT JOIN waldflaeche_grundstueck AS wfg 
+LEFT JOIN waldflaeche_grundstueck_bereinigt AS wfg 
 	ON gs.egrid = wfg.egrid
 WHERE 
 	wfg.geometrie IS NOT NULL
