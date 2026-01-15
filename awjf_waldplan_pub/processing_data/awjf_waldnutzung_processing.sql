@@ -90,7 +90,8 @@ waldnutzung_pub AS (
 		nutzungskategorie_txt,
 		geometrie,
 		bemerkung
-	FROM waldnutzung_edit_clean
+	FROM
+		waldnutzung_edit_clean
 	UNION ALL
 	SELECT
 		t_basket,
@@ -101,6 +102,22 @@ waldnutzung_pub AS (
 		bemerkung
 	FROM
 		wald_bestockt_final
+),
+
+waldnutzung_pub_clean AS (
+	SELECT
+		t_basket,
+		t_datasetname,
+		nutzungskategorie,
+		nutzungskategorie_txt,
+		ST_RemoveRepeatedPoints(geometrie, 0.001) AS geometrie,
+		bemerkung
+	FROM
+		waldnutzung_pub
+	WHERE
+		ST_IsValid(geometrie)
+	AND
+		ST_Area(geometrie) > 1.0
 )
 
 -- =========================================================
@@ -122,4 +139,4 @@ SELECT
 	geometrie,
 	bemerkung
 FROM
-	waldnutzung_pub;
+	waldnutzung_pub_clean;
