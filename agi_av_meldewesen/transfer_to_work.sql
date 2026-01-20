@@ -87,4 +87,4 @@ LEFT JOIN
 LEFT JOIN 
     gemeinden ON ST_Intersects(ST_PointOnSurface(grundstuecke.geometrie), gemeinden.geometrie)
 ON CONFLICT (messageid) DO NOTHING
-;
+WHERE m.meldegrund != 'Entlassung';
