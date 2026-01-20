@@ -1,0 +1,88 @@
+import java.nio.file.Paths
+import java.nio.file.Files
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.*
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'runTest'
+
+/* gradle.useLogger(new StandardOutputListener() {
+    void onOutput(CharSequence output) {
+        def sanitized = output.toString()
+            .replaceAll(/(password=)[^\s'"]+/, '$1***')
+        System.out.print(sanitized)
+    }
+}) */
+
+// DuckDB Initialisierung
+def duckDbPath = "${buildDir}/temp.duckdb"
+def duckDbUri = "jdbc:duckdb:${duckDbPath}"
+def duckDbFile = file(duckDbPath)
+
+if (duckDbFile.exists()) {
+    duckDbFile.delete()
+    println 'Deleted existing DuckDB database.'
+} else if (duckDbFile.parentFile.mkdirs()) {
+    println 'Created build directory for DuckDB database.'
+} else {
+    println 'Found build directory without existing DuckDB database. No action taken.'
+}
+
+def dbHostPub = dbUriPub.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastIndexOf("/"))
+def dbDatabasePub = dbUriPub.substring(dbUriPub.lastIndexOf("/") + 1)
+def dbConnectionStringPub = "'dbname=$dbDatabasePub user=$dbUserPub password=$dbPwdPub host=$dbHostPub'"
+
+def dbHostEdit = dbUriEdit.substring(dbUriPub.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
+def dbDatabaseEdit = dbUriEdit.substring(dbUriEdit.lastIndexOf("/") + 1)
+def dbConnectionStringEdit = "'dbname=$dbDatabaseEdit user=$dbUserEdit password=$dbPwdEdit host=$dbHostEdit'"
+
+def dbHostSimi = dbUriSimi.substring(dbUriSimi.indexOf("//") + 2, dbUriSimi.lastIndexOf("/"))
+def dbDatabaseSimi = dbUriSimi.substring(dbUriSimi.lastIndexOf("/") + 1)
+def dbConnectionStringSimi = "'dbname=$dbDatabaseSimi user=$dbUserSimi password=$dbPwdSimi host=$dbHostSimi'"
+
+
+//-----------
+
+tasks.register('connectionStrings') {
+    description "Diesen Task löschen!"
+    doLast {
+        println 'dbConnectionStringPub: ' + dbConnectionStringPub
+        println 'dbConnectionStringEdit: ' + dbConnectionStringEdit
+        println 'dbConnectionStringSimi: ' + dbConnectionStringSimi
+    }
+}
+
+tasks.register('connectPub', SqlExecutor) {
+    dependsOn 'connectionStrings'
+    database = [duckDbUri] 
+    sqlFiles = files("read_pubdb.sql")
+    sqlParameters = [
+        connectionStringPub : dbConnectionStringPub as String
+        ]
+}
+tasks.register('connectEdit', SqlExecutor) {
+    dependsOn 'connectPub'
+    database = [duckDbUri] 
+    sqlFiles = files("read_editdb.sql")
+    sqlParameters = [
+        connectionStringEdit : dbConnectionStringEdit as String
+        ]
+}
+tasks.register('connectSimi', SqlExecutor) {
+    dependsOn 'connectEdit'
+    database = [duckDbUri] 
+    sqlFiles = files("read_simidb.sql")
+    sqlParameters = [
+        connectionStringSimi : dbConnectionStringSimi as String
+        ]
+}
+
+tasks.register('runTest') {
+    dependsOn 'connectSimi'
+    doLast {
+        println 'Alle Tests ausgeführt'
+    }
+}
+
+
