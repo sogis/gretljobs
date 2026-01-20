@@ -86,5 +86,6 @@ LEFT JOIN
     grundstuecke ON m.egrid = grundstuecke.egris_egrid 
 LEFT JOIN 
     gemeinden ON ST_Intersects(ST_PointOnSurface(grundstuecke.geometrie), gemeinden.geometrie)
+WHERE m.meldegrund != 'Entlassung'
 ON CONFLICT (messageid) DO NOTHING
-WHERE m.meldegrund != 'Entlassung';
+;
