@@ -48,7 +48,7 @@ waldfunktion_edit_clean AS (
 		schutzwald_nr,
 		wytweide,
 		wytweide_txt,
-		ST_RemoveRepeatedPoints(geometrie, 0.001) AS geometrie,
+		ST_ReducePrecision(geometrie, 0.001) AS geometrie,
 		bemerkung
 	FROM 
 		waldfunktion_edit
