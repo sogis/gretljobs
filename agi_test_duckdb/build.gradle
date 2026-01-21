@@ -7,13 +7,27 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'runTest'
 
-/* gradle.useLogger(new StandardOutputListener() {
-    void onOutput(CharSequence output) {
-        def sanitized = output.toString()
-            .replaceAll(/(password=)[^\s'"]+/, '$1***')
-        System.out.print(sanitized)
+class SecureString {
+    private final String value
+    
+    SecureString(String value) {
+        this.value = value
     }
-}) */
+    
+    // Wird bei println, logger, Exceptions aufgerufen
+    @Override
+    String toString() {
+        value
+            ?.replaceAll(/(password=)[^\s;&'"]+/, '$1***') 
+            ?.replaceAll(/(user=)[^\s;&'"]+/, '$1***') 
+            ?: ''
+    }
+    
+    // Echter Wert für die Library
+    String getValue() {
+        return value
+    }
+}
 
 // DuckDB Initialisierung
 def duckDbPath = "${buildDir}/temp.duckdb"
@@ -31,15 +45,15 @@ if (duckDbFile.exists()) {
 
 def dbHostPub = dbUriPub.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastIndexOf("/"))
 def dbDatabasePub = dbUriPub.substring(dbUriPub.lastIndexOf("/") + 1)
-def dbConnectionStringPub = "'dbname=$dbDatabasePub user=$dbUserPub password=$dbPwdPub host=$dbHostPub'"
+def dbConnectionStringPub = new SecureString("'dbname=$dbDatabasePub user=$dbUserPub password=$dbPwdPub host=$dbHostPub'")
 
 def dbHostEdit = dbUriEdit.substring(dbUriPub.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
 def dbDatabaseEdit = dbUriEdit.substring(dbUriEdit.lastIndexOf("/") + 1)
-def dbConnectionStringEdit = "'dbname=$dbDatabaseEdit user=$dbUserEdit password=$dbPwdEdit host=$dbHostEdit'"
+def dbConnectionStringEdit = new SecureString("'dbname=$dbDatabaseEdit user=$dbUserEdit password=$dbPwdEdit host=$dbHostEdit'")
 
 def dbHostSimi = dbUriSimi.substring(dbUriSimi.indexOf("//") + 2, dbUriSimi.lastIndexOf("/"))
 def dbDatabaseSimi = dbUriSimi.substring(dbUriSimi.lastIndexOf("/") + 1)
-def dbConnectionStringSimi = "'dbname=$dbDatabaseSimi user=$dbUserSimi password=$dbPwdSimi host=$dbHostSimi'"
+def dbConnectionStringSimi = new SecureString("'dbname=$dbDatabaseSimi user=$dbUserSimi password=$dbPwdSimi host=$dbHostSimi'")
 
 
 //-----------
@@ -58,7 +72,8 @@ tasks.register('connectPub', SqlExecutor) {
     database = [duckDbUri] 
     sqlFiles = files("read_pubdb.sql")
     sqlParameters = [
-        connectionStringPub : dbConnectionStringPub as String
+        connectionStringPub : dbConnectionStringPub.getValue() //as String
+        //connectionStringPub : testCString
         ]
 }
 tasks.register('connectEdit', SqlExecutor) {
@@ -66,7 +81,7 @@ tasks.register('connectEdit', SqlExecutor) {
     database = [duckDbUri] 
     sqlFiles = files("read_editdb.sql")
     sqlParameters = [
-        connectionStringEdit : dbConnectionStringEdit as String
+        connectionStringEdit : dbConnectionStringEdit.getValue()  //as String
         ]
 }
 tasks.register('connectSimi', SqlExecutor) {
@@ -74,7 +89,7 @@ tasks.register('connectSimi', SqlExecutor) {
     database = [duckDbUri] 
     sqlFiles = files("read_simidb.sql")
     sqlParameters = [
-        connectionStringSimi : dbConnectionStringSimi as String
+        connectionStringSimi : dbConnectionStringSimi.getValue()  //as String
         ]
 }
 
