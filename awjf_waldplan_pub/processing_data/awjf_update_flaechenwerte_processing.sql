@@ -1,6 +1,6 @@
--------------------------------------------------------------------------
------------------------- Setze Werte auf NULL ---------------------------
--------------------------------------------------------------------------
+-- =========================================================
+-- 1) Setze Werte auf NULL
+-- =========================================================
 UPDATE
 	awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck
 SET
@@ -10,9 +10,9 @@ WHERE
 	t_datasetname::int4 = ${bfsnr_param}
 ;
 
--------------------------------------------------------------------------
---------------------------- Erstelle Tabellen ---------------------------
--------------------------------------------------------------------------
+-- =========================================================
+-- 2) Erstelle Tabellen
+-- =========================================================
 DROP TABLE IF EXISTS 
 	produktive_waldflaechen,
 	produktive_waldflaechen_grundstueck,
@@ -43,9 +43,9 @@ CREATE TABLE
 		irrelevant INTEGER
 );
 
--------------------------------------------------------------------------
------------------- Berechnung produktive Waldflächen --------------------
--------------------------------------------------------------------------
+-- =========================================================
+-- 3) Berechnung produktive Waldflächen
+-- =========================================================
 INSERT INTO produktive_waldflaechen
 	SELECT 
 		t_id,
@@ -67,19 +67,22 @@ CREATE INDEX
 INSERT INTO produktive_waldflaechen_grundstueck
 	SELECT 
 		gs.egrid,
-		gs.waldflaeche,
+		wfb.flaeche AS waldlaeche,
 		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, pwf.geometrie)))::NUMERIC) AS produktiv,
-		gs.waldflaeche - ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, pwf.geometrie)))::NUMERIC) AS unproduktiv,
+		wfb.flaeche - ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, pwf.geometrie)))::NUMERIC) AS unproduktiv,
 		ST_UNION(ST_Intersection(gs.geometrie, pwf.geometrie)) AS geometrie
 	FROM
 		awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck AS gs
 	INNER JOIN produktive_waldflaechen AS pwf
 		ON ST_INTERSECTS(gs.geometrie, pwf.geometrie)
+	LEFT JOIN waldflaechen_berechnet AS wfb
+		ON gs.egrid = wfb.egrid
 	WHERE 
 		gs.t_datasetname::int4 = ${bfsnr_param}
 	GROUP BY 
 		gs.egrid,
-		gs.waldflaeche
+		gs.waldflaeche,
+		wfb.flaeche
 ;
 
 CREATE INDEX 
@@ -90,9 +93,10 @@ CREATE INDEX
 CREATE INDEX
 	ON produktive_waldflaechen_grundstueck(egrid)
 ;
--------------------------------------------------------------------------
--------------- Berechnung hiebsatzrelevante Waldflächen -----------------
--------------------------------------------------------------------------
+
+-- =========================================================
+-- 4) Berechnung hiebsatzrelevante Waldflächen
+-- =========================================================
 INSERT INTO hiebsatzrelevante_waldflaechen_grundstueck
 	SELECT
 		pwf.egrid,
@@ -117,10 +121,9 @@ CREATE INDEX
 	ON hiebsatzrelevante_waldflaechen_grundstueck(egrid)
 ;
 
-
--------------------------------------------------------------------------
----------- Erstellung JSON-Attribute für berechnete Waldflächen ---------
--------------------------------------------------------------------------
+-- =========================================================
+-- 5) Erstellung JSON-Attribute für berechnete Waldflächen
+-- =========================================================
 WITH
 
 produktive_waldflaechen_grundstueck_json AS (
@@ -155,9 +158,9 @@ hiebsatzrelevante_waldflaechen_grundstueck_json AS (
         hwg.egrid
 )
 
--------------------------------------------------------------------------
------------------------- Update Flächenwerte ----------------------------
--------------------------------------------------------------------------
+-- =========================================================
+-- 6) Update Flächenwerte
+-- =========================================================
 UPDATE
 	awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck AS wwg
 SET

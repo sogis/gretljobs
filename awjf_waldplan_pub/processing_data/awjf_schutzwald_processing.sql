@@ -112,26 +112,6 @@ AND
 	wf.t_datasetname::int4 = ${bfsnr_param}
 ),
 
-
-/*
--- Sofern nur die grösste Fläche von forstrevier berücksichtigt werden soll--
-administrative_forstdaten AS (
-SELECT DISTINCT ON (sw.schutzwald_nr)
-	sw.schutzwald_nr,
-	gs.forstkreis,
-	gs.forstkreis_txt,
-	gs.forstrevier,
-	sw.geometrie
-FROM 
-	schutzwald AS sw
-LEFT JOIN grundstuecke AS gs 
-	ON ST_INTERSECTS(sw.geometrie, gs.geometrie)
-ORDER BY 
-	sw.schutzwald_nr,
-	ST_Area(ST_INTERSECTION(sw.geometrie, gs.geometrie)) DESC --Es soll nur die grösste Grundstücksfläche verglichen werden
-)
-*/
-
 administrative_forstdaten AS (
 SELECT
 	sw.schutzwald_nr,
@@ -151,6 +131,25 @@ GROUP BY
 	gs.forstkreis_txt,
 	sw.geometrie
 )
+
+/*
+-- Sofern nur die grösste Fläche von forstrevier berücksichtigt werden soll--
+administrative_forstdaten AS (
+SELECT DISTINCT ON (sw.schutzwald_nr)
+	sw.schutzwald_nr,
+	gs.forstkreis,
+	gs.forstkreis_txt,
+	gs.forstrevier,
+	sw.geometrie
+FROM 
+	schutzwald AS sw
+LEFT JOIN grundstuecke AS gs 
+	ON ST_INTERSECTS(sw.geometrie, gs.geometrie)
+ORDER BY 
+	sw.schutzwald_nr,
+	ST_Area(ST_INTERSECTION(sw.geometrie, gs.geometrie)) DESC --Es soll nur die grösste Grundstücksfläche verglichen werden
+)
+*/
 
 INSERT INTO awjf_waldplan_pub_v2.waldplan_schutzwald (
 	t_basket,

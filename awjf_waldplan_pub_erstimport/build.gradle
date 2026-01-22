@@ -1,6 +1,8 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.*
 import ch.so.agi.gretl.api.TransferSet
+/**
+ ** Deaktiviert, da nur für den ersten gesamthaften Pub-Transfer benötigt
 
 apply plugin: 'ch.so.agi.gretl'
 
@@ -173,3 +175,5 @@ tasks.register('transferData', Db2Db) {
         new TransferSet('transfer_data/07_waldplan_walduebersicht_pub.sql', 'awjf_waldplan_pub_v2.waldplan_walduebersicht', true)
     ];
 }
+
+*/
