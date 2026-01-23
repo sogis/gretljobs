@@ -87,7 +87,6 @@ WITH dataset AS     (
     (84,'nutzungsplanung_kommunal_2517'),
     (85,'nutzungsplanung_kommunal_2422'),
     (86,'nutzungsplanung_kommunal_2556'),
-    (87,'nutzungsplanung_kommunal_2520'),
     (88,'nutzungsplanung_kommunal_2525'),
     (89,'nutzungsplanung_kommunal_2427'),
     (90,'nutzungsplanung_kommunal_2526'),
@@ -110,8 +109,7 @@ WITH dataset AS     (
     (107,'nutzungsplanung_kommunal_2465'),
     (108,'nutzungsplanung_kommunal_2574'),
     (109,'nutzungsplanung_kommunal_2519'),
-    (110,'nutzungsplanung_kommunal_2571'),
-    (111,'nutzungsplanung_kommunal_2529')
+    (110,'nutzungsplanung_kommunal_2571')
 )
         
 SELECT
