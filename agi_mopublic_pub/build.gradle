@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'refreshSolr'  //"Extra Fehler eingebaut: Dieser Gretljob ist nur zur erstmaligen übernahme der AV-Daten in das leere Schema agi_mopublic_pub zu gebrauchen ! In allen anderen Fällen VERBOTEN !!"
+defaultTasks 'placeInDatasets'  "Extra Fehler eingebaut: Dieser Gretljob ist nur zur erstmaligen übernahme der AV-Daten in das leere Schema agi_mopublic_pub zu gebrauchen ! In allen anderen Fällen VERBOTEN !!"
 
 def schemaNamePub = 'agi_mopublic_pub'
 
@@ -45,11 +45,11 @@ task placeInDatasets(type: SqlExecutor, dependsOn: transferAgiMopublic){
     sqlFiles = ['dataset/create_bfs_dsets.sql', 'dataset/update_basket_refs.sql']
 }
 
+/*
 task refreshSolr(type:Exec, dependsOn:placeInDatasets) {
     doLast {
         throw new GradleException(
             "Solr wurde durch Trigramm abgelöst. Bitte an Team Betrieb melden zum Update des Suchindexes. 01.10.2025, chb")
     }
 }
-
-
+*/
