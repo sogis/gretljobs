@@ -1,0 +1,80 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import java.nio.file.Files
+import groovy.json.JsonSlurper
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.ArrayList
+import java.util.Iterator
+import java.util.List
+
+apply plugin: 'ch.so.agi.gretl'
+defaultTasks 'importData'
+
+def xtfPath = "${buildDir}/exportdata.xtf"
+def xtfFile = files(xtfPath)
+
+def pathToTempFolder = System.getProperty('java.io.tmpdir')
+
+
+/*
+Der Job AfU_Bodeneinheiten_pub publiziert die Daten der Bodenkartierung. Dabei werden einige Werte neu berechnet. 
+*/
+
+// PROCESSING VORBEREITUNG UND IMPORT 
+tasks.register('prepare_db', SqlExecutor) {
+    description = 'Vorebreiten der Processing-DB'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files('prepare_db.sql') 
+}
+
+tasks.register('makeSchemaBodeneinheitenPublic', Ili2pgImportSchema) {
+    dependsOn 'prepare_db'
+    description = 'Bodeneinheiten Publikations-Schema anlegen in der Processing-DB.'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    models = "SO_AFU_Bodeneinheiten_Publikation_20260106"
+    dbschema = "afu_bodeneinheiten_pub_v1"
+    strokeArcs = true
+    beautifyEnumDispName = true
+    createUnique = true 
+    nameByTopic = true 
+    createMetaInfo = true 
+}
+
+tasks.register('makeSchemaBodeneinheitenEdit', Ili2pgImportSchema) {
+    dependsOn 'makeSchemaBodeneinheitenPublic'
+    description = 'Bodeneinheiten Edit-Schema anlegen in der Processing-DB.'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    models = "SO_AFU_Bodeneinheiten_20251210"
+    dbschema = "afu_bodeneinheiten_v1"
+    strokeArcs = true
+    beautifyEnumDispName = true
+    createUnique = true 
+    nameByTopic = true 
+    createMetaInfo = true 
+}
+
+tasks.register('exportBodeneinheiten', Ili2pgExport) {
+    dependsOn 'makeSchemaBodeneinheitenEdit'
+    description = "Exportiert die Bodeneinheiten aus der Edit-DB"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'afu_bodeneinheiten_v1'
+    models = 'SO_AFU_Bodeneinheiten_20251210'
+    dataFile = xtfFile
+    disableValidation = true
+}
+
+tasks.register('validateXTF', IliValidator) {
+    dependsOn 'exportBodeneinheiten'
+    dataFiles = xtfFile
+}
+
+tasks.register('importData', Ili2pgImport) {
+    dependsOn 'validateXTF'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    dbschema = 'afu_bodeneinheiten_v1'
+    models = 'SO_AFU_Bodeneinheiten_20251210'
+    dataFile = xtfFile
+    disableValidation = true
+}
