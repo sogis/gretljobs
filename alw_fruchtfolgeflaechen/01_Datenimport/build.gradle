@@ -256,7 +256,7 @@ task importFlachmoore(type: ShpImport, dependsOn: unpackFilesFlachmoore){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     schemaName = "flachmoore"
     tableName = "flachmoore_standorte"
-    dataFile = file(pathToUnzipFolder.toString()+'/bundesinventare-flachmoore_2056.shp/N2025_Revision_flachmoor_20251201.shp')
+    dataFile = file(pathToUnzipFolder.toString()+'/N2025_Revision_flachmoor_20251201.shp')
 }
 
 ////////////////Hochmoore ///////////////////////
