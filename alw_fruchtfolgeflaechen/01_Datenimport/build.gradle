@@ -364,7 +364,7 @@ task unpackFilesTww2(type: Copy, dependsOn: downloadTww2) {
     into pathToUnzipFolder
 }
 
-task importTww2(type: ShpImport, dependsOn: importTww2){
+task importTww2(type: ShpImport, dependsOn: unpackFilesTww2){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     schemaName = "trockenwiesenweiden"
     tableName = "trockenwiesenwden_standorte"
