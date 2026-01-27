@@ -87,7 +87,6 @@ WITH basket AS (
     (203,84,'SO_Nutzungsplanung_Planregister_Publikation_20221115.Planregister',NULL,'nutzungsplanung_kommunal_2517',NULL),
     (204,85,'SO_Nutzungsplanung_Planregister_Publikation_20221115.Planregister',NULL,'nutzungsplanung_kommunal_2422',NULL),
     (205,86,'SO_Nutzungsplanung_Planregister_Publikation_20221115.Planregister',NULL,'nutzungsplanung_kommunal_2556',NULL),
-    (206,87,'SO_Nutzungsplanung_Planregister_Publikation_20221115.Planregister',NULL,'nutzungsplanung_kommunal_2520',NULL),
     (207,88,'SO_Nutzungsplanung_Planregister_Publikation_20221115.Planregister',NULL,'nutzungsplanung_kommunal_2525',NULL),
     (208,89,'SO_Nutzungsplanung_Planregister_Publikation_20221115.Planregister',NULL,'nutzungsplanung_kommunal_2427',NULL),
     (209,90,'SO_Nutzungsplanung_Planregister_Publikation_20221115.Planregister',NULL,'nutzungsplanung_kommunal_2526',NULL),
@@ -110,8 +109,7 @@ WITH basket AS (
     (226,107,'SO_Nutzungsplanung_Planregister_Publikation_20221115.Planregister',NULL,'nutzungsplanung_kommunal_2465',NULL),
     (227,108,'SO_Nutzungsplanung_Planregister_Publikation_20221115.Planregister',NULL,'nutzungsplanung_kommunal_2574',NULL),
     (228,109,'SO_Nutzungsplanung_Planregister_Publikation_20221115.Planregister',NULL,'nutzungsplanung_kommunal_2519',NULL),
-    (229,110,'SO_Nutzungsplanung_Planregister_Publikation_20221115.Planregister',NULL,'nutzungsplanung_kommunal_2571',NULL),
-    (230,111,'SO_Nutzungsplanung_Planregister_Publikation_20221115.Planregister',NULL,'nutzungsplanung_kommunal_2529',NULL)
+    (229,110,'SO_Nutzungsplanung_Planregister_Publikation_20221115.Planregister',NULL,'nutzungsplanung_kommunal_2571',NULL)
 )
         
 SELECT
