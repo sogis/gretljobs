@@ -256,7 +256,7 @@ task importFlachmoore(type: ShpImport, dependsOn: unpackFilesFlachmoore){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     schemaName = "flachmoore"
     tableName = "flachmoore_standorte"
-    dataFile = file(pathToUnzipFolder.toString()+'/bundesinventare-flachmoore_2056.shp/N2025_Revision_flachmoor_20251201.shp')
+    dataFile = file(pathToUnzipFolder.toString()+'/N2025_Revision_flachmoor_20251201.shp')
 }
 
 ////////////////Hochmoore ///////////////////////
@@ -283,7 +283,7 @@ task makeSchemaHochmoore(type: Ili2pgImportSchema){
 
 task downloadHochmoore(type: Download, dependsOn: makeSchemaHochmoore) {
     description = "Download Hochmoore" 
-    src 'https://data.geo.admin.ch/ch.bafu.bundesinventare-hochmoore/data.zip'
+    src 'https://data.geo.admin.ch/ch.bafu.bundesinventare-hochmoore/bundesinventare-hochmoore/bundesinventare-hochmoore_2056.shp.zip'
     dest file(pathToDataZip)
     overwrite true 
     doLast {
@@ -301,7 +301,7 @@ task importHochmoore(type: ShpImport, dependsOn: unpackFilesHochmoore){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     schemaName = "hochmoore"
     tableName = "hochmoore_standorte"
-    dataFile = file(pathToUnzipFolder.toString()+'/Hochmoor_LV95/hochmoor.shp')
+    dataFile = file(pathToUnzipFolder.toString()+'/N2025_Revision_hochmoor_20251201.shp')
 }
 
 ////////////////Trockenwiesen- und Weiden ///////////////////////
@@ -327,7 +327,7 @@ task makeSchemaTww(type: Ili2pgImportSchema){
 
 task downloadTww(type: Download, dependsOn: makeSchemaTww) {
     description = "Download Trockenwiesen- und Weiden" 
-    src 'https://data.geo.admin.ch/ch.bafu.bundesinventare-trockenwiesen_trockenweiden/data.zip'
+    src 'https://data.geo.admin.ch/ch.bafu.bundesinventare-trockenwiesen_trockenweiden/bundesinventare-trockenwiesen_trockenweiden/bundesinventare-trockenwiesen_trockenweiden_2056.shp.zip'
     dest file(pathToDataZip)
     overwrite true 
     doLast {
@@ -345,14 +345,30 @@ task importTww(type: ShpImport, dependsOn: unpackFilesTww){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     schemaName = "trockenwiesenweiden"
     tableName = "trockenwiesenwden_standorte"
-    dataFile = file(pathToUnzipFolder.toString()+'/TWW_LV95/trockenwiesenweiden.shp')
+    dataFile = file(pathToUnzipFolder.toString()+'/N2025_Revision_trockenwiesenweiden_20251201.shp')
 }
 
-task importTww2(type: ShpImport, dependsOn: importTww){
+task downloadTww2(type: Download, dependsOn: makeSchemaTww) {
+    description = "Download Trockenwiesen- und Weiden" 
+    src 'https://data.geo.admin.ch/ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2/bundesinventare-trockenwiesen_trockenweiden_anhang2/bundesinventare-trockenwiesen_trockenweiden_anhang2_2056.shp.zip'
+    dest file(pathToDataZip)
+    overwrite true 
+    doLast {
+        println "FileSize = " + file(pathToDataZip).size()
+    }
+}
+
+task unpackFilesTww2(type: Copy, dependsOn: downloadTww2) {
+    description = "Unzip Data.zip"
+    from zipTree(pathToDataZip)
+    into pathToUnzipFolder
+}
+
+task importTww2(type: ShpImport, dependsOn: unpackFilesTww2){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     schemaName = "trockenwiesenweiden"
     tableName = "trockenwiesenwden_standorte"
-    dataFile = file(pathToUnzipFolder.toString()+'/TWW_LV95/trockenwiesenweiden_A2.shp')
+    dataFile = file(pathToUnzipFolder.toString()+'/N2025_Revision_trockenwiesenweiden_Anhang2_20251201.shp')
 }
 
 ////////////////Schadstoffbelastete Böden ///////////////////////
