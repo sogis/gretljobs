@@ -5,7 +5,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'insertGemeindeRegion'
 
-def gemTid = '16164' // t_id der datenabdeckung, zu welcher die Gemeinden aktualisiert werden sollen
+def gemTid = '9035' // t_id der datenabdeckung, zu welcher die Gemeinden aktualisiert werden sollen
 
 task deleteGemeindeRegion(type: SqlExecutor){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
