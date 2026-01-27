@@ -238,7 +238,7 @@ task makeSchemaFlachmoore(type: Ili2pgImportSchema){
 
 task downloadFlachmoore(type: Download, dependsOn: makeSchemaFlachmoore) {
     description = "Download Flachmoore" 
-    src 'https://data.geo.admin.ch/ch.bafu.bundesinventare-flachmoore/data.zip'
+    src 'https://data.geo.admin.ch/ch.bafu.bundesinventare-flachmoore/bundesinventare-flachmoore/bundesinventare-flachmoore_2056.shp.zip'
     dest file(pathToDataZip)
     overwrite true 
     doLast {
@@ -256,7 +256,7 @@ task importFlachmoore(type: ShpImport, dependsOn: unpackFilesFlachmoore){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     schemaName = "flachmoore"
     tableName = "flachmoore_standorte"
-    dataFile = file(pathToUnzipFolder.toString()+'/Flachmoor_LV95/flachmoor_20210701.shp')
+    dataFile = file(pathToUnzipFolder.toString()+'/bundesinventare-flachmoore_2056.shp')
 }
 
 ////////////////Hochmoore ///////////////////////
