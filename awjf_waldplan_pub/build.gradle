@@ -14,6 +14,16 @@ def importModelsPub =
     'SO_AGI_MOpublic_20240711;' +
     'SO_AWJF_Waldplan_Publikation_20250312;'
 
+/*
+ * Erst Aktivieren, sobald Edit-Daten bereinigt wurden
+
+tasks.register('validateEditData', Ili2pgValidate) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = 'SO_AWJF_Waldplan_20250312'
+    dbschema = "awjf_waldplan_v2"
+}
+*/
+
 tasks.register('createExtension', SqlExecutor) {
     description = 'In der Processing-DB die Extension für die UUID-Erstellung aktivieren (uuid-ossp).'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -198,3 +208,22 @@ tasks.register('transferData', Db2Db) {
         new TransferSet('transfer_data/awjf_waldplan_walduebersicht_pub.sql', 'awjf_waldplan_pub_v2.waldplan_walduebersicht', true)
     ];
 }
+
+/*
+ * Erst Aktivieren wenn öffentlich publiziert
+ * Offene Frage ob und wie die Daten auch Gemeindeweise angeboten werden sollen
+
+tasks.register('publishPub', Publisher){
+    dependsOn 'transferData'
+    database = [dbUriPub,dbUserPub,dbPwdPub]
+    dataIdent = "ch.so.awjf.waldplan"
+    dbSchema = "awjf_waldplan_pub_v2"
+    modelsToPublish = "SO_AWJF_Waldplan_Publikation_20250312"
+    userFormats = true
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+*/
