@@ -2,11 +2,11 @@ DELETE FROM awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck;
 
 DROP TABLE IF EXISTS 
 	grundstuecke,
-	grundstuecke_mop,
 	waldfunktion,
 	waldnutzung,
 	waldflaeche_grundstueck,
 	waldflaeche_grundstueck_bereinigt,
+	waldflaeche_grundstueck_final,
 	waldflaechen_berechnet,
 	wytweideflaechen_berechnet,
 	waldfunktion_flaechen_berechnet,
@@ -47,14 +47,6 @@ CREATE TABLE
 );
 
 CREATE TABLE
-	grundstuecke_mop (
-		t_datasetname TEXT,	
-		egrid TEXT,
-		flaechenmass INTEGER,
-		geometrie GEOMETRY
-);
-
-CREATE TABLE
 	waldfunktion (
 		t_datasetname TEXT,
 		funktion TEXT,
@@ -85,6 +77,12 @@ CREATE TABLE
 
 CREATE TABLE
 	waldflaeche_grundstueck_bereinigt (
+    	egrid TEXT,
+   		geometrie GEOMETRY
+);
+
+CREATE TABLE
+	waldflaeche_grundstueck_final (
     	egrid TEXT,
    		geometrie GEOMETRY
 );
@@ -227,29 +225,6 @@ CREATE INDEX
 	USING gist (geometrie)
 ;
 
-INSERT INTO grundstuecke_mop
-	SELECT
-		ww.t_datasetname,
-		ww.egrid,
-		mop.flaechenmass,
-		ST_Union(mop.geometrie) AS geometrie
-	FROM
-		awjf_waldplan_v2.waldplan_waldeigentum AS ww
-	LEFT JOIN agi_mopublic_pub.mopublic_grundstueck AS mop
-		ON ww.egrid = mop.egrid
-	WHERE
-		ww.t_datasetname::int4 = ${bfsnr_param}
-	GROUP BY
-		ww.egrid,
-		ww.t_datasetname,
-		mop.flaechenmass
-;
-
-CREATE INDEX 
-	ON grundstuecke_mop
-	USING gist (geometrie)
-;
-
 INSERT INTO waldfunktion
 	SELECT
 		wf.t_datasetname,
@@ -302,7 +277,7 @@ SELECT
     )).geom AS geometrie
 FROM
 	waldfunktion AS wf
-JOIN grundstuecke_mop AS gs
+JOIN grundstuecke AS gs
 	ON ST_Intersects(wf.geometrie, gs.geometrie)
     AND wf.t_datasetname = gs.t_datasetname
 WHERE
@@ -343,6 +318,22 @@ CREATE INDEX
 	USING gist (geometrie)
 ;
 
+INSERT INTO waldflaeche_grundstueck_final
+SELECT
+    egrid,
+    ST_Multi(
+        ST_Union(geometrie)
+    ) AS geometrie
+FROM
+	waldflaeche_grundstueck_bereinigt
+GROUP BY
+	egrid;
+
+CREATE INDEX
+	ON waldflaeche_grundstueck_final
+	USING gist (geometrie)
+;
+
 -- =========================================================
 -- 4) Flächenberechnungstabellen für Waldfunktion und Waldnutzung befüllen
 -- =========================================================
@@ -356,7 +347,7 @@ INSERT INTO waldflaechen_berechnet
 			ELSE ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC)
 		END)::INTEGER AS flaeche
 	FROM
-		grundstuecke_mop AS gs
+		grundstuecke AS gs
 	LEFT JOIN waldfunktion AS wf 
 		ON ST_INTERSECTS(gs.geometrie, wf.geometrie)
 		AND gs.t_datasetname = wf.t_datasetname
@@ -381,7 +372,7 @@ INSERT INTO waldfunktion_flaechen_berechnet
 		wf.wytweide_txt,
 		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC) AS flaeche
 	FROM
-		grundstuecke_mop AS gs
+		grundstuecke AS gs
 	INNER JOIN waldfunktion AS wf 
 		ON ST_INTERSECTS(gs.geometrie, wf.geometrie)
 		AND gs.t_datasetname = wf.t_datasetname
@@ -409,7 +400,7 @@ INSERT INTO waldnutzung_flaechen_berechnet
 		wnz.nutzungskategorie_txt,
 		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wnz.geometrie)))::NUMERIC) AS flaeche
 	FROM
-		grundstuecke_mop AS gs
+		grundstuecke AS gs
 	INNER JOIN waldnutzung AS wnz 
 		ON ST_INTERSECTS(gs.geometrie, wnz.geometrie)
 		AND gs.t_datasetname = wnz.t_datasetname
@@ -701,7 +692,7 @@ LEFT JOIN waldflaechen_berechnet AS wfb
 	ON gs.egrid = wfb.egrid
 LEFT JOIN wytweideflaechen_berechnet AS wytb 
 	ON gs.egrid = wytb.egrid
-LEFT JOIN waldflaeche_grundstueck_bereinigt AS wfg 
+LEFT JOIN waldflaeche_grundstueck_final AS wfg 
 	ON gs.egrid = wfg.egrid
 WHERE 
 	wfg.geometrie IS NOT NULL

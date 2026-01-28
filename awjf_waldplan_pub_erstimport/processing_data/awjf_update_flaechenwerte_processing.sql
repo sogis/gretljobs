@@ -120,15 +120,15 @@ produktive_waldflaechen_grundstueck_json AS (
     	pfb.egrid,
         json_agg(
             json_build_object(
-                'Produktiv', pfb.produktiv,
-                'Unproduktiv', pfb.unproduktiv,
+                'Produktiv', produktiv,
+                'Unproduktiv', unproduktiv,
                 '@type', 'SO_AWJF_Waldplan_Publikation_20250312.Flaechen_Produktiv'
             )
         ) AS flaechen_produktiv
     FROM 
-        produktive_waldflaechen_grundstueck AS pfb
+        produktive_waldflaechen_grundstueck
     GROUP BY 
-        pfb.egrid
+        egrid
 ),
 
 hiebsatzrelevante_waldflaechen_grundstueck_json AS (
@@ -136,15 +136,15 @@ hiebsatzrelevante_waldflaechen_grundstueck_json AS (
     	hwg.egrid,
         json_agg(
             json_build_object(
-                'Relevant', hwg.relevant,
-                'Irrelevant', hwg.irrelevant,
+                'Relevant', relevant,
+                'Irrelevant', irrelevant,
                 '@type', 'SO_AWJF_Waldplan_Publikation_20250312.Flaechen_Hiebsatzrelevant'
             )
         ) AS flaechen_hiebsatzrelevant
     FROM 
-        hiebsatzrelevante_waldflaechen_grundstueck AS hwg
+        hiebsatzrelevante_waldflaechen_grundstueck
     GROUP BY 
-        hwg.egrid
+        egrid
 )
 
 -------------------------------------------------------------------------
