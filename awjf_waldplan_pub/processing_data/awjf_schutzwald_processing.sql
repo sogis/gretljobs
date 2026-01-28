@@ -29,11 +29,7 @@ SELECT
 	--forstkreis,
 	--forstkreis_txt,
 	--forstrevier,
-	CASE 
-		WHEN sw.sturz IS TRUE 
-			THEN TRUE 
-		ELSE FALSE
-	END AS sturz,
+	BOOL_OR(sw.sturz) AS sturz,
 	CASE 
 		WHEN sw.sturz IS TRUE
 			THEN 'Ja'

@@ -1,6 +1,6 @@
--------------------------------------------------------------------------
------------------------- Setze Werte auf NULL ---------------------------
--------------------------------------------------------------------------
+-- =========================================================
+-- 1) Setze Werte auf NULL
+-- =========================================================
 UPDATE
 	awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck
 SET
@@ -8,9 +8,9 @@ SET
 	hiebsatzrelevante_flaeche = NULL
 ;
 
--------------------------------------------------------------------------
---------------------------- Erstelle Tabellen ---------------------------
--------------------------------------------------------------------------
+-- =========================================================
+-- 2) Erstelle Tabellen
+-- =========================================================
 DROP TABLE IF EXISTS 
 	produktive_waldflaechen,
 	produktive_waldflaechen_grundstueck,
@@ -41,9 +41,9 @@ CREATE TABLE
 		irrelevant INTEGER
 );
 
--------------------------------------------------------------------------
------------------- Berechnung produktive Waldflächen --------------------
--------------------------------------------------------------------------
+-- =========================================================
+-- 3) Berechnung produktive Waldflächen
+-- =========================================================
 INSERT INTO produktive_waldflaechen
 	SELECT 
 		t_id,
@@ -63,17 +63,20 @@ CREATE INDEX
 INSERT INTO produktive_waldflaechen_grundstueck
 	SELECT 
 		gs.egrid,
-		gs.waldflaeche,
-		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, pwf.geometrie)))::NUMERIC) AS produktiv,
-		gs.waldflaeche - ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, pwf.geometrie)))::NUMERIC) AS unproduktiv,
+		wfb.flaeche AS waldlaeche,
+		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, pwf.geometrie)))::BIGINT) AS produktiv,
+		wfb.flaeche - ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, pwf.geometrie)))::BIGINT) AS unproduktiv,
 		ST_UNION(ST_Intersection(gs.geometrie, pwf.geometrie)) AS geometrie
 	FROM
 		awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck AS gs
 	INNER JOIN produktive_waldflaechen AS pwf
 		ON ST_INTERSECTS(gs.geometrie, pwf.geometrie)
+	LEFT JOIN waldflaechen_berechnet AS wfb
+		ON gs.egrid = wfb.egrid
 	GROUP BY 
 		gs.egrid,
-		gs.waldflaeche
+		gs.waldflaeche,
+		wfb.flaeche
 ;
 
 CREATE INDEX 
@@ -84,35 +87,65 @@ CREATE INDEX
 CREATE INDEX
 	ON produktive_waldflaechen_grundstueck(egrid)
 ;
--------------------------------------------------------------------------
--------------- Berechnung hiebsatzrelevante Waldflächen -----------------
--------------------------------------------------------------------------
+
+-- =========================================================
+-- 4) Berechnung hiebsatzrelevante Waldflächen
+-- =========================================================
 INSERT INTO hiebsatzrelevante_waldflaechen_grundstueck
-	SELECT
-		pwf.egrid,
-		ROUND(SUM(ST_Area(ST_Intersection(pwf.geometrie, wwf.geometrie)))::NUMERIC) AS relevant,
-		pwf.waldflaeche - ROUND(SUM(ST_Area(ST_Intersection(pwf.geometrie, wwf.geometrie)))::NUMERIC) AS irrelevant
-	FROM 
-		produktive_waldflaechen_grundstueck AS pwf 
-	INNER JOIN awjf_waldplan_pub_v2.waldplan_waldfunktion AS wwf
-		ON ST_INTERSECTS(pwf.geometrie, wwf.geometrie)
-	WHERE
-		wwf.funktion IN ('Wirtschaftswald', 'Schutzwald', 'Erholungswald', 'Biodiversitaet', 'Schutzwald_Biodiversitaet')
-	AND
-		(wwf.funktion <> 'Biodiversitaet' OR wwf.biodiversitaet_objekt NOT IN ('Waldreservat','Altholzinsel'))
-	GROUP BY 
-		pwf.egrid,
-		pwf.waldflaeche
+SELECT
+    pwf.egrid,
+    ROUND(
+        SUM(
+            CASE
+                WHEN
+                    wwf.funktion IN ('Wirtschaftswald','Schutzwald','Erholungswald','Schutzwald_Biodiversitaet')
+                OR (
+    				wwf.funktion = 'Biodiversitaet'
+                AND wwf.biodiversitaet_objekt NOT IN ('Waldreservat','Altholzinsel')
+                    )
+                THEN
+                    ST_Area(
+                        ST_Intersection(pwf.geometrie, wwf.geometrie)
+                    )
+                ELSE
+                    0
+            END
+        )::BIGINT
+    ) AS relevant,
+    pwf.waldflaeche -
+	ROUND(
+        SUM(
+            CASE
+                WHEN
+                    wwf.funktion IN ('Wirtschaftswald','Schutzwald','Erholungswald','Schutzwald_Biodiversitaet')
+                OR (
+    				wwf.funktion = 'Biodiversitaet'
+                AND wwf.biodiversitaet_objekt NOT IN ('Waldreservat','Altholzinsel')
+                    )
+                THEN
+                    ST_Area(
+                        ST_Intersection(pwf.geometrie, wwf.geometrie)
+                    )
+                ELSE
+                    0
+            END
+        )::BIGINT
+    ) AS irrelevant
+FROM produktive_waldflaechen_grundstueck pwf
+LEFT JOIN awjf_waldplan_pub_v2.waldplan_waldfunktion wwf
+    ON ST_Intersects(pwf.geometrie, wwf.geometrie)
+GROUP BY
+    pwf.egrid,
+    pwf.waldflaeche
 ;
 
 CREATE INDEX
 	ON hiebsatzrelevante_waldflaechen_grundstueck(egrid)
 ;
 
-
--------------------------------------------------------------------------
----------- Erstellung JSON-Attribute für berechnete Waldflächen ---------
--------------------------------------------------------------------------
+-- =========================================================
+-- 5) Erstellung JSON-Attribute für berechnete Waldflächen
+-- =========================================================
 WITH
 
 produktive_waldflaechen_grundstueck_json AS (
@@ -120,15 +153,15 @@ produktive_waldflaechen_grundstueck_json AS (
     	pfb.egrid,
         json_agg(
             json_build_object(
-                'Produktiv', produktiv,
-                'Unproduktiv', unproduktiv,
+                'Produktiv', pfb.produktiv,
+                'Unproduktiv', pfb.unproduktiv,
                 '@type', 'SO_AWJF_Waldplan_Publikation_20250312.Flaechen_Produktiv'
             )
         ) AS flaechen_produktiv
     FROM 
-        produktive_waldflaechen_grundstueck
+        produktive_waldflaechen_grundstueck AS pfb
     GROUP BY 
-        egrid
+        pfb.egrid
 ),
 
 hiebsatzrelevante_waldflaechen_grundstueck_json AS (
@@ -136,30 +169,28 @@ hiebsatzrelevante_waldflaechen_grundstueck_json AS (
     	hwg.egrid,
         json_agg(
             json_build_object(
-                'Relevant', relevant,
-                'Irrelevant', irrelevant,
+                'Relevant', hwg.relevant,
+                'Irrelevant', hwg.irrelevant,
                 '@type', 'SO_AWJF_Waldplan_Publikation_20250312.Flaechen_Hiebsatzrelevant'
             )
         ) AS flaechen_hiebsatzrelevant
     FROM 
-        hiebsatzrelevante_waldflaechen_grundstueck
+        hiebsatzrelevante_waldflaechen_grundstueck AS hwg
     GROUP BY 
-        egrid
+        hwg.egrid
 )
 
--------------------------------------------------------------------------
------------------------- Update Flächenwerte ----------------------------
--------------------------------------------------------------------------
-UPDATE
-	awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck AS wwg
+-- =========================================================
+-- 6) Update Flächenwerte
+-- =========================================================
+UPDATE awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck AS wwg
 SET
-	produktive_flaeche = pwfj.flaechen_produktiv,
-	hiebsatzrelevante_flaeche = hwfj.flaechen_hiebsatzrelevant
-FROM 
-	produktive_waldflaechen_grundstueck_json AS pwfj,
-	hiebsatzrelevante_waldflaechen_grundstueck_json AS hwfj 
-WHERE 
+    produktive_flaeche = pwfj.flaechen_produktiv::JSON,
+    hiebsatzrelevante_flaeche = hwfj.flaechen_hiebsatzrelevant::JSON
+FROM
+	produktive_waldflaechen_grundstueck_json AS pwfj
+LEFT JOIN hiebsatzrelevante_waldflaechen_grundstueck_json AS hwfj
+	ON pwfj.egrid = hwfj.egrid
+WHERE
 	wwg.egrid = pwfj.egrid
-AND 
-	wwg.egrid = hwfj.egrid
 ;

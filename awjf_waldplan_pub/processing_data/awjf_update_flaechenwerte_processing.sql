@@ -68,8 +68,8 @@ INSERT INTO produktive_waldflaechen_grundstueck
 	SELECT 
 		gs.egrid,
 		wfb.flaeche AS waldlaeche,
-		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, pwf.geometrie)))::NUMERIC) AS produktiv,
-		wfb.flaeche - ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, pwf.geometrie)))::NUMERIC) AS unproduktiv,
+		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, pwf.geometrie)))::BIGINT) AS produktiv,
+		wfb.flaeche - ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, pwf.geometrie)))::BIGINT) AS unproduktiv,
 		ST_UNION(ST_Intersection(gs.geometrie, pwf.geometrie)) AS geometrie
 	FROM
 		awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck AS gs
@@ -116,7 +116,7 @@ SELECT
                 ELSE
                     0
             END
-        )::numeric
+        )::BIGINT
     ) AS relevant,
     pwf.waldflaeche -
 	ROUND(
@@ -135,7 +135,7 @@ SELECT
                 ELSE
                     0
             END
-        )::numeric
+        )::BIGINT
     ) AS irrelevant
 FROM produktive_waldflaechen_grundstueck pwf
 LEFT JOIN awjf_waldplan_pub_v2.waldplan_waldfunktion wwf
@@ -184,34 +184,18 @@ hiebsatzrelevante_waldflaechen_grundstueck_json AS (
         hiebsatzrelevante_waldflaechen_grundstueck AS hwg
     GROUP BY 
         hwg.egrid
-),
+)
 
 -- =========================================================
 -- 6) Update Flächenwerte
 -- =========================================================
-pwfj AS (
-    SELECT
-		egrid,
-		flaechen_produktiv
-    FROM
-		produktive_waldflaechen_grundstueck_json
-),
-
-hwfj AS (
-    SELECT
-		egrid,
-		flaechen_hiebsatzrelevant
-    FROM
-		hiebsatzrelevante_waldflaechen_grundstueck_json
-)
-
-UPDATE awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck wwg
+UPDATE awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck AS wwg
 SET
-    produktive_flaeche = pwfj.flaechen_produktiv,
-    hiebsatzrelevante_flaeche = hwfj.flaechen_hiebsatzrelevant
+    produktive_flaeche = pwfj.flaechen_produktiv::JSON,
+    hiebsatzrelevante_flaeche = hwfj.flaechen_hiebsatzrelevant::JSON
 FROM
-	pwfj
-LEFT JOIN hwfj
+	produktive_waldflaechen_grundstueck_json AS pwfj
+LEFT JOIN hiebsatzrelevante_waldflaechen_grundstueck_json AS hwfj
 	ON pwfj.egrid = hwfj.egrid
 WHERE
 	wwg.egrid = pwfj.egrid
