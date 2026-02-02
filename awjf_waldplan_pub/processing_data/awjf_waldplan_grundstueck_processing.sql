@@ -109,6 +109,7 @@ CREATE TABLE
 		flaeche INTEGER
 );
 
+-- Für den Vergleich der Waldfunktionsflächen mit dem Flächenmass des Grundstücks --
 CREATE TABLE
 	waldfunktion_flaechen_summen (
 		egrid TEXT,
@@ -117,6 +118,7 @@ CREATE TABLE
 		flaeche_differenz INTEGER
 );
 
+-- Angpeasste Flächenwerte für die Waldfunktion, sofern Differenzen auftauchen (siehe waldfunktion_flaechen_summen) --
 CREATE TABLE
 	waldfunktion_flaechen_berechnet_angepasst (
 		egrid TEXT,
@@ -131,6 +133,16 @@ CREATE TABLE
 		angepasst BOOLEAN
 );
 
+-- Für die Aggregation nach Funktion --
+CREATE TABLE
+	waldfunktion_funktion_flaechen_berechnet (
+		egrid TEXT,
+		funktion TEXT,
+		funktion_txt TEXT,
+		flaeche INTEGER,
+);
+
+-- Für die Aggregation nach Nutzungskategorie --
 CREATE TABLE
 	waldnutzung_flaechen_berechnet (
 		egrid TEXT,
@@ -156,12 +168,14 @@ CREATE TABLE
 		angepasst BOOLEAN
 );
 
+-- Für die Aggregation nach Wytweide --
 CREATE TABLE
 	wytweideflaechen_berechnet (
 		egrid TEXT,
 		flaeche INTEGER
 );
 
+-- Für die Aggregation nach Biodiversität und Biodiversitätsobjekt --
 CREATE TABLE
 	biodiversitaet_objekt_flaechen_berechnet (
 		egrid TEXT,

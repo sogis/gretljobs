@@ -35,6 +35,29 @@ schutzwald_flaeche AS (
 		schutzwald_r
 ),
 
+schutzwald_flaeche_cleaned AS (
+	SELECT
+		schutzwald_r,
+		CASE 
+			WHEN ST_GeometryType(geometrie) = 'ST_Polygon' THEN
+				ST_MakePolygon(
+					ST_ExteriorRing(geometrie), --äussere Begrenzung des Polygons
+					ARRAY(
+						SELECT ST_ExteriorRing(ring.geom) --Erstelle Array mit inneren Ringen (Löchern)
+						FROM (
+							SELECT (ST_DumpRings(swf.geometrie)).* --Zerlegung in einzelne ringe
+						) AS ring
+						WHERE ring.path[1] > 0 -- 0 = äusserer Ring, alles grösser als 0 sind innere Ringe, also Löcher
+						AND (4 * 3.14159 * ST_Area(ring.geom)) /  --Polsby-Popper-Test ((4π × Fläche) / (Umfang²)). Je kleiner der Wert, also nahe 0, desto länger ist die Form des Rings, was auf ein Silver-Polygon hindeutet.
+							(ST_Perimeter(ring.geom) ^ 2) > 0.005 -- Werte über 0.0005 sollten "gewollte" Ringe sein, unter 0.0005 Silver-Polygone
+					)
+				)
+			ELSE geometrie
+		END AS geometrie
+	FROM
+		schutzwald_flaeche AS swf
+),
+
 administrative_forstdaten AS (
 	SELECT
 		schutzwald_r,
@@ -43,7 +66,7 @@ administrative_forstdaten AS (
 		STRING_AGG(DISTINCT gs.forstrevier, ', ') AS forstrevier,
 		swf.geometrie
 	FROM 
-		schutzwald_flaeche AS swf
+		schutzwald_flaeche_cleaned AS swf
 	LEFT JOIN grundstuecke AS gs 
 		ON ST_INTERSECTS(swf.geometrie, gs.geometrie)
 	WHERE
