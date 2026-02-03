@@ -23,8 +23,10 @@ waldnutzung_edit_clean AS (
 		ON dataset.t_id = basket.dataset
 	WHERE
 		wnz.t_datasetname::int4 = ${bfsnr_param}
-		AND ST_IsValid(wnz.geometrie)
-		AND ST_Area(wnz.geometrie) > 1.0
+	AND
+		ST_IsValid(wnz.geometrie)
+	AND
+		ST_Area(wnz.geometrie) > 1.0
 ),
 
 -- =========================================================
