@@ -46,7 +46,6 @@ pipeline {
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
                         sh "gretl -Pbfsnr=${params.bfsnr}"
-                        archiveArtifacts "build/exportdata.xtf"
                     }
                 }
             }
