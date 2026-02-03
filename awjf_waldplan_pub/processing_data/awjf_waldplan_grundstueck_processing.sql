@@ -190,7 +190,7 @@ CREATE TABLE
 CREATE TABLE
 	biodiversitaet_objekt_flaechen_berechnet (
 		egrid TEXT,
-		funktion_txt TEXT,
+		biodiversitaet_objekt_txt TEXT,
 		flaeche INTEGER
 );
 
@@ -608,7 +608,7 @@ INSERT INTO wytweideflaechen_berechnet
 INSERT INTO biodiversitaet_objekt_flaechen_berechnet
 	SELECT 
 		egrid,
-		funktion_txt AS funktion,
+		biodiversitaet_objekt_txt,
 		SUM(flaeche) AS flaeche
 	FROM
 		waldfunktion_flaechen_berechnet_plausibilisiert
@@ -616,7 +616,7 @@ INSERT INTO biodiversitaet_objekt_flaechen_berechnet
 		funktion IN ('Biodiversitaet', 'Schutzwald_Biodiversitaet')
 	GROUP BY 
 		egrid,
-		funktion_txt
+		biodiversitaet_objekt_txt
 ;
 
 -- =========================================================
@@ -665,7 +665,7 @@ biodiversitaet_objekt_flaechen_berechnet_json AS (
     	egrid,
         json_agg(
             json_build_object(
-                'Biodiversitaet_Objekt', funktion_txt,
+                'Biodiversitaet_Objekt', biodiversitaet_objekt_txt,
                 'Flaeche', flaeche,
                 '@type', 'SO_AWJF_Waldplan_Publikation_20250312.Flaechen_Biodiversitaet_Objekt'
             )

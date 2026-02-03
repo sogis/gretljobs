@@ -67,22 +67,22 @@ CREATE INDEX
 INSERT INTO produktive_waldflaechen_grundstueck
 	SELECT 
 		gs.egrid,
-		wfb.flaeche AS waldlaeche,
+		wfbp.flaeche AS waldflaeche,
 		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, pwf.geometrie)))::BIGINT) AS produktiv,
-		wfb.flaeche - ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, pwf.geometrie)))::BIGINT) AS unproduktiv,
+		wfbp.flaeche - ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, pwf.geometrie)))::BIGINT) AS unproduktiv,
 		ST_UNION(ST_Intersection(gs.geometrie, pwf.geometrie)) AS geometrie
 	FROM
 		awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck AS gs
 	INNER JOIN produktive_waldflaechen AS pwf
 		ON ST_INTERSECTS(gs.geometrie, pwf.geometrie)
-	LEFT JOIN waldflaechen_berechnet AS wfb
-		ON gs.egrid = wfb.egrid
+	LEFT JOIN waldflaechen_berechnet_plausibilisiert AS wfbp
+		ON gs.egrid = wfbp.egrid
 	WHERE 
 		gs.t_datasetname::int4 = ${bfsnr_param}
 	GROUP BY 
 		gs.egrid,
 		gs.waldflaeche,
-		wfb.flaeche
+		wfbp.flaeche
 ;
 
 CREATE INDEX 
