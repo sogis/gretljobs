@@ -19,6 +19,7 @@ WITH leistungen_per_vereinbarung AS (
     SELECT vereinbarung, SUM(betrag_total) as betrag_total
     FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung
     WHERE auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer
+	AND status_abrechnung != 'in_bearbeitung'
     GROUP BY vereinbarung
 ),
 beurteilungs_metainfo_baeume AS (
@@ -62,7 +63,9 @@ SELECT
 	SUM(COALESCE(bae.beitrag_oekomaxi_anzahl, 0)) as baeume_oekomaxi_total,
 	SUM(COALESCE(lstg.betrag_total,0)) as betrag_total,
 	count(DISTINCT gemeinde.bfs_gemeindenummer) as anzahl_gemeinden
-FROM ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
+FROM leistungen_per_vereinbarung lstg
+INNER JOIN ${DB_Schema_MJPNL}.mjpnl_vereinbarung vbg
+ON lstg.vereinbarung = vbg.t_id
 LEFT JOIN agi_hoheitsgrenzen_v1.hoheitsgrenzen_gemeinde gemeinde
 ON gemeinde.bfs_gemeindenummer = vbg.bfs_nr[1]
 LEFT JOIN agi_hoheitsgrenzen_v1.hoheitsgrenzen_bezirk bezirk
@@ -72,8 +75,6 @@ ON vbg.t_id = bae.vereinbarung
 -- berücksichtige nur die neusten (sofern mehrere existieren)
 AND bae.beurteilungsdatum = (SELECT MAX(beurteilungsdatum) FROM beurteilungs_metainfo_baeume be WHERE be.vereinbarung = vbg.t_id)
 -- wir holen den totalbetrag aus den leistungen, da auch einmalige miteinbezogen werden sollen
-LEFT JOIN leistungen_per_vereinbarung lstg
-ON lstg.vereinbarung = vbg.t_id
-WHERE vbg.status_vereinbarung = 'aktiv' AND vbg.bewe_id_geprueft IS TRUE AND vbg.ist_nutzungsvereinbarung IS NOT TRUE
+WHERE vbg.ist_nutzungsvereinbarung IS NOT TRUE
 GROUP BY bezirk.bezirksnummer, bezirk.bezirksname, vbg.vereinbarungsart
 ORDER BY vbg.vereinbarungsart, bezirk.bezirksnummer
