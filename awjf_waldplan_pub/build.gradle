@@ -206,7 +206,8 @@ tasks.register('UpdateTxtValues', SqlExecutor) {
     sqlFiles = files(
         'update_pubdata/awjf_waldplan_pub_waldfunktion_update.sql',
         'update_pubdata/awjf_waldplan_pub_waldnutzung_update.sql',
-        'update_pubdata/awjf_waldplan_pub_schutzwald_update.sql',     
+        'update_pubdata/awjf_waldplan_pub_waldeigentum_update.sql',
+        'update_pubdata/awjf_waldplan_pub_schutzwald_update.sql'     
     )
 }
 
