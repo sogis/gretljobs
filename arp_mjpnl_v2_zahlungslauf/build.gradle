@@ -21,13 +21,20 @@ def AUSZAHLUNGSJAHR = Integer.valueOf(new SimpleDateFormat("MM").format(new Date
 /* Kalkulation der Zahlungslaufdaten */
 
 task "cleanup_abrechnung_per_leistung"(type: SqlExecutor) {
-    description = "Löscht alle diesjährigen Leistungen (die nicht einmalig oder migriert sind) und setzt FKs auf NULL"
+    description = "Löscht alle diesjährigen Leistungen (die nicht einmalig oder migriert sind) - ausser per Auszahlung gestoppt"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
     sqlFiles = ['cleanup_mjpnl_abrechnung_per_leistung.sql']
 }
 
-task "cleanup_abrechnung_per_leistung_orphans"(type: SqlExecutor,dependsOn: "cleanup_abrechnung_per_leistung") {
+task "cleanup_fks_abrechnung_per_leistung"(type: SqlExecutordependsOn: "cleanup_abrechnung_per_leistung") {
+    description = "Setzt FKs der übrigen Leistungen auf NULL, damit sie vom CASCADE bewahrt werden können"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
+    sqlFiles = ['cleanup_mjpnl_abrechnung_per_leistung_fks.sql']
+}
+
+task "cleanup_abrechnung_per_leistung_orphans"(type: SqlExecutor,dependsOn: "cleanup_fks_abrechnung_per_leistung") {
     description = "Löscht alle diesjährigen Leistungen, deren Vereinbarung manuell gelöscht wurden (was eigentlich nicht gemacht wird ausser bei Bereinigung nach Migration)"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
@@ -56,7 +63,7 @@ task "delete_migrierte_leistungen"(type: SqlExecutor,dependsOn: "cleanup_abrechn
 }
 
 task "calculate_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "delete_migrierte_leistungen") {
-    description = "Kalkuliert für alle aktiven Vereinbarungen die Abrechnungen pro Leistung anhand der neusten besprochenen Beurteilungen"
+    description = "Kalkuliert für alle aktiven Vereinbarungen die Abrechnungen pro Leistung anhand der neusten besprochenen Beurteilungen - ausser per Auszahlung gestoppt"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
     sqlFiles = ['calc_mjpnl_abrechnung_per_leistung_alr_buntbrache.sql', 'calc_mjpnl_abrechnung_per_leistung_alr_saum.sql', 'calc_mjpnl_abrechnung_per_leistung_hecke.sql', 'calc_mjpnl_abrechnung_per_leistung_hostet.sql', 'calc_mjpnl_abrechnung_per_leistung_obl.sql', 
@@ -64,7 +71,7 @@ task "calculate_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "delete_mi
 }
 
 task "copy_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "calculate_abrechnung_per_leistung") {
-    description = "Kopiert für alle aktiven Vereinbarungen die Leistungen vom letzten Jahr, falls keine diesjährigen kalkuliert werden konnten, weil keine besprochene Beurteilung vorhanden"
+    description = "Kopiert für alle aktiven Vereinbarungen die Leistungen vom letzten Jahr, falls keine diesjährigen kalkuliert werden konnten, weil keine besprochene Beurteilung vorhanden - ausser per Auszahlung gestoppt"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
     sqlFiles = ['copy_mjpnl_abrechnung_per_leistung.sql']
