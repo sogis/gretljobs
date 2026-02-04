@@ -86,31 +86,31 @@ schutzwald_attribute AS (
 		sw.schutzwald_nr,
 		sw.sturz,
 		CASE 
-			WHEN sw.sturz IS TRUE
+			WHEN sw.sturz = TRUE
 				THEN 'Ja'
 			ELSE 'Nein'
 		END AS sturz_txt,
 		sw.rutsch,
 		CASE 
-			WHEN sw.rutsch IS TRUE
+			WHEN sw.rutsch = TRUE
 				THEN 'Ja'
 			ELSE 'Nein'
 		END AS rutsch_txt,
 		sw.gerinnerelevante_prozesse,
 		CASE
-			WHEN sw.gerinnerelevante_prozesse IS TRUE
+			WHEN sw.gerinnerelevante_prozesse = TRUE
 				THEN 'Ja'
 			ELSE 'Nein'
 		END AS gerinnerelevante_prozesse_txt,
 		sw.lawine,
 		CASE 
-			WHEN sw.lawine IS TRUE
+			WHEN sw.lawine = TRUE
 				THEN 'Ja'
 			ELSE 'Nein'
 		END AS lawine_txt,
 		sw.andere_kt,
 		CASE 
-			WHEN sw.andere_kt IS TRUE
+			WHEN sw.andere_kt = TRUE
 				THEN 'Ja'
 			ELSE 'Nein'
 		END AS andere_kt_txt,
@@ -172,12 +172,12 @@ schutzwald_zusammengefasst AS (
 		ON swa.t_id = af.schutzwald_r
 )
 
-
 INSERT INTO awjf_waldplan_pub_v2.waldplan_schutzwald (
 	t_basket,
 	t_datasetname,
 	schutzwald_nr,
 	forstkreis,
+	forstkreis_txt,
 	forstrevier,
 	sturz,
 	sturz_txt,
@@ -206,7 +206,8 @@ SELECT
 	t_basket,
 	t_datasetname,
 	schutzwald_nr,
-	forstkreis_txt AS forstkreis,
+	forstkreis,
+	forstkreis_txt,
 	forstrevier,
 	sturz,
 	sturz_txt,

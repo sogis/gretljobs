@@ -199,13 +199,24 @@ tasks.register('replaceData', Ili2pgReplace) {
     skipGeometryErrors = true
 }
 
-tasks.register('transferData', Db2Db) {
+tasks.register('UpdateTxtValues', SqlExecutor) {
     dependsOn 'replaceData'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlParameters = [bfsnr_param:bfsnr]
+    sqlFiles = files(
+        'update_pubdata/awjf_waldplan_pub_waldfunktion_update.sql',
+        'update_pubdata/awjf_waldplan_pub_waldnutzung_update.sql',
+        'update_pubdata/awjf_waldplan_pub_schutzwald_update.sql',     
+    )
+}
+
+tasks.register('transferData', Db2Db) {
+    dependsOn 'UpdateTxtValues'
     description = 'Transfer der Walduebersicht'
     sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-        new TransferSet('transfer_data/awjf_waldplan_walduebersicht_pub.sql', 'awjf_waldplan_pub_v2.waldplan_walduebersicht', true)
+        new TransferSet('transfer_data/awjf_waldplan_pub_walduebersicht.sql', 'awjf_waldplan_pub_v2.waldplan_walduebersicht', true)
     ];
 }
 
