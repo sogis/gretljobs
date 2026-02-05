@@ -5,4 +5,4 @@ SELECT
     tiefe_hinweis,
     hinweis_oeffentlich,
     mpoly 
-FROM afu_ewsabfrage_2d_staging_v1.hinweis
+FROM afu_ewsabfrage_2d_staging_v2.hinweis
