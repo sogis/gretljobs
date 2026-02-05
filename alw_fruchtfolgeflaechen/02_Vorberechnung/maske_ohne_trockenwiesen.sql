@@ -12,7 +12,10 @@ WITH trockenwiese AS (
 )
 
 SELECT 
-    ST_difference(ohne_bauzonen.geometrie,trockenwiese.geometrie) AS geometrie
+  CASE
+    WHEN trockenwiese.geometrie IS NULL THEN ohne_bauzonen.geometrie
+    ELSE ST_difference(ohne_bauzonen.geometrie,trockenwiese.geometrie)
+  END AS geometrie
 INTO 
     alw_fruchtfolgeflaechen.fff_maske_ohne_trockenwiesen 
 FROM 
