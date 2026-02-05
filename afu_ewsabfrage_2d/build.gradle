@@ -21,7 +21,8 @@ task copyFromEwsabfrage2d(type: Db2Db, dependsOn: deleteStageObjects){
     targetDb = edit
     transferSets = [
         new TransferSet('./0_CopyToStaging/ewsabfrage_tiefenbeschraenkung.sql', 'afu_ewsabfrage_2d_staging_v2.tiefenbeschraenkung', false),
-        new TransferSet('./0_CopyToStaging/abklaerung.sql', 'afu_ewsabfrage_2d_staging_v2.abklaerung', false)
+        new TransferSet('./0_CopyToStaging/abklaerung.sql', 'afu_ewsabfrage_2d_staging_v2.abklaerung', false),
+        new TransferSet('./0_CopyToStaging/hinweis.sql', 'afu_ewsabfrage_2d_staging_v2.hinweis', false),
     ]
 }
 
