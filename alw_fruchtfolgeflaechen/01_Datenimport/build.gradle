@@ -348,7 +348,7 @@ task importTww(type: ShpImport, dependsOn: unpackFilesTww){
     dataFile = file(pathToUnzipFolder.toString()+'/N2025_Revision_trockenwiesenweiden_20251201.shp')
 }
 
-task downloadTww2(type: Download, dependsOn: makeSchemaTww) {
+task downloadTww2(type: Download, dependsOn: importTww) {
     description = "Download Trockenwiesen- und Weiden" 
     src 'https://data.geo.admin.ch/ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2/bundesinventare-trockenwiesen_trockenweiden_anhang2/bundesinventare-trockenwiesen_trockenweiden_anhang2_2056.shp.zip'
     dest file(pathToDataZip)
