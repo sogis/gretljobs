@@ -3,45 +3,68 @@ DELETE FROM afu_bootsanbindeplaetze.main.sap_structure;
 WITH 
 
 -- Wenn Steggebühren an den gleichen Kunden gehen wie die restlichen Nutzungsgebühren --
-nutzungsgebuehren_all AS (
+nutzungsgebuehren_intern AS (
 	SELECT 
-		(rechnungsstelle_nutzungsgebuehr->0->>'SAP')::text AS KundenNr,
+		(bp.rechnungsstelle_nutzungsgebuehr->0->>'SAP')::text AS KundenNr,
 		2232 AS "MaterialNr.",
-		'Nutzungsgebühr' || ' ' || EXTRACT(YEAR FROM CURRENT_DATE)::int AS Materialtext,
-		ROUND((COALESCE(bootsgebuehr,0) + COALESCE(steggebuehr,0) + COALESCE(pfostengebuehr,0))::NUMERIC,2) AS "Betrag 2Komma",
+		concat_ws(
+			E'\n',
+			CASE
+				WHEN bp.bootsgebuehr > 0
+					THEN 'Bootsgebühr: ' || bp.bootsgebuehr
+			END,
+			CASE
+				WHEN bp.steggebuehr > 0
+					THEN 'Steggebühr: ' || bp.steggebuehr
+			END,
+			CASE
+				WHEN bp.steggebuehr > 0
+					THEN 'Pfostengebühr: ' || bp.pfostengebuehr
+			END
+			) AS Materialtext,
+		ROUND((COALESCE(bp.bootsgebuehr,0) + COALESCE(bp.steggebuehr,0) + COALESCE(bp.pfostengebuehr,0))::NUMERIC,2) AS "Betrag 2Komma",
 		1 AS "Menge Ganzahlg",
-		(nutzer->0->>'Kontokorrent')::bool AS Kontokorrent
+		'Bootsplatz' || ' ' || sd.gemeinde || ', ' || regexp_replace(bp.standort, '^\S+\s+', '') || ', Nr. ' || bp.platznummer AS "Kopfnotiz Zeile 1 Kopf",
+		(bp.nutzer->0->>'Kontokorrent')::bool AS Kontokorrent
 	FROM
-		pubdb.afu_bootsanbindeplaetze_pub_v1.bootsanbindeplatz
+		pubdb.afu_bootsanbindeplaetze_pub_v1.bootsanbindeplatz AS bp
+	LEFT JOIN pubdb.afu_bootsanbindeplaetze_pub_v1.standortdaten AS sd
+		ON bp.standort = sd.standort
 	WHERE 
-		rechnungsstelle_nutzungsgebuehr = rechnungsstelle_steggebuehr
+		bp.rechnungsstelle_nutzungsgebuehr = bp.rechnungsstelle_steggebuehr
 ),
 
 -- Wenn Steggebühren an einen anderen Kunden gehen wie die restlichen Nutzungsgebühren --
 steggebuehren_separat AS (
 	SELECT 
-		(rechnungsstelle_steggebuehr->0->>'SAP')::text AS KundenNr,
+		(bp.rechnungsstelle_steggebuehr->0->>'SAP')::text AS KundenNr,
 		2232 AS "MaterialNr.",
-		'Nutzungsgebühr' || ' ' || EXTRACT(YEAR FROM CURRENT_DATE)::int AS Materialtext,
-		ROUND((COALESCE(steggebuehr,0))::NUMERIC,2) AS "Betrag 2Komma",
+		'Steggebühr: ' || bp.steggebuehr AS Materialtext,
+		ROUND((COALESCE(bp.steggebuehr,0))::NUMERIC,2) AS "Betrag 2Komma",
 		1 AS "Menge Ganzahlg",
-		(nutzer->0->>'Kontokorrent')::bool AS Kontokorrent
+		'Bootsplatz' || ' ' || sd.gemeinde || ', ' || regexp_replace(bp.standort, '^\S+\s+', '') || ', Nr. ' || bp.platznummer AS "Kopfnotiz Zeile 1 Kopf",
+		(bp.nutzer->0->>'Kontokorrent')::bool AS Kontokorrent
 	FROM
-		pubdb.afu_bootsanbindeplaetze_pub_v1.bootsanbindeplatz
+		pubdb.afu_bootsanbindeplaetze_pub_v1.bootsanbindeplatz AS bp
+	LEFT JOIN pubdb.afu_bootsanbindeplaetze_pub_v1.standortdaten AS sd
+		ON bp.standort = sd.standort
 	WHERE 
 		rechnungsstelle_nutzungsgebuehr != rechnungsstelle_steggebuehr
 ),
 
 bewilligunsgebuehr AS (
 	SELECT 
-		(rechnungsstelle_nutzungsgebuehr->0->>'SAP')::text AS KundenNr,
+		(bp.rechnungsstelle_nutzungsgebuehr->0->>'SAP')::text AS KundenNr,
 		2671 AS "MaterialNr.",
-		'Bewilligungsgebühr' || ' ' || EXTRACT(YEAR FROM CURRENT_DATE)::int AS Materialtext,
+		'Bewilligungsgebühr: ' || 100.00 AS Materialtext ,
 		100.00 AS "Betrag 2Komma",
 		1 AS "Menge Ganzahlg",
-		(nutzer->0->>'Kontokorrent')::bool AS Kontokorrent
+		'Bootsplatz' || ' ' || sd.gemeinde || ', ' || regexp_replace(bp.standort, '^\S+\s+', '') || ', Nr. ' || bp.platznummer AS "Kopfnotiz Zeile 1 Kopf",
+		(bp.nutzer->0->>'Kontokorrent')::bool AS Kontokorrent
 	FROM
-		pubdb.afu_bootsanbindeplaetze_pub_v1.bootsanbindeplatz
+		pubdb.afu_bootsanbindeplaetze_pub_v1.bootsanbindeplatz AS bp
+	LEFT JOIN pubdb.afu_bootsanbindeplaetze_pub_v1.standortdaten AS sd
+		ON bp.standort = sd.standort
 	WHERE
     	datum_bewilligung >= CASE 
         	WHEN EXTRACT(MONTH FROM CURRENT_DATE) >= 7 -- Prüft ob der aktuelle Monat nach dem Juni ist
@@ -61,9 +84,10 @@ gebuehren_all AS (
 		Materialtext,
 		"Betrag 2Komma",
 		"Menge Ganzahlg",
+		"Kopfnotiz Zeile 1 Kopf",
 		Kontokorrent
 	FROM 
-		nutzungsgebuehren_all
+		nutzungsgebuehren_intern
 	UNION ALL
 	SELECT
  		KundenNr,
@@ -71,6 +95,7 @@ gebuehren_all AS (
 		Materialtext,
 		"Betrag 2Komma",
 		"Menge Ganzahlg",
+		"Kopfnotiz Zeile 1 Kopf",
 		Kontokorrent
 	FROM 
 		steggebuehren_separat 
@@ -81,10 +106,40 @@ gebuehren_all AS (
 		Materialtext,
 		"Betrag 2Komma",
 		"Menge Ganzahlg",
+		"Kopfnotiz Zeile 1 Kopf",
 		Kontokorrent
 	FROM 
 		bewilligunsgebuehr
+),
+
+gebuehren_bereinigt AS (
+	SELECT 
+		--row_number() OVER (ORDER BY KundenNr) AS Eintragsnummer,
+		dense_rank() OVER (
+    		ORDER BY KundenNr
+  		) AS Eintragsnummer,
+		KundenNr,
+		row_number() OVER (
+			PARTITION BY KundenNr
+		) * 10 AS Position,
+		"MaterialNr.",
+		Materialtext,
+		"Betrag 2Komma",
+		"Menge Ganzahlg",
+		"Kopfnotiz Zeile 1 Kopf",
+		Kontokorrent
+	FROM 
+		gebuehren_all
 )
+
+SELECT 
+	*
+FROM 
+	gebuehren_bereinigt
+	
+	
+	
+	
 
 INSERT INTO afu_bootsanbindeplaetze.main.sap_structure (
 	KundenNr,
@@ -111,3 +166,7 @@ AND
 AND
 	KundenNr != 'XXX'
 ;
+
+
+
+EXTRACT(YEAR FROM CURRENT_DATE)::int AS Materialtext
