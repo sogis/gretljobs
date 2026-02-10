@@ -14,16 +14,6 @@ def importModelsPub =
     'SO_AGI_MOpublic_20240711;' +
     'SO_AWJF_Waldplan_Publikation_20250312;'
 
-/*
- * Erst Aktivieren, sobald Edit-Daten bereinigt wurden
-
-tasks.register('validateEditData', Ili2pgValidate) {
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    models = 'SO_AWJF_Waldplan_20250312'
-    dbschema = "awjf_waldplan_v2"
-}
-*/
-
 tasks.register('createExtension', SqlExecutor) {
     description = 'In der Processing-DB die Extension für die UUID-Erstellung aktivieren (uuid-ossp).'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -150,9 +140,8 @@ tasks.register('copyDataFromHoheitsgrenzen', Db2Db) {
 
 tasks.register('processingPubData', SqlExecutor) {
     dependsOn 'copyDataFromHoheitsgrenzen'
-    description = 'Berechnung Waldplandaten für eine Gemeinde'
+    description = 'Berechnung Waldplandaten für alle Gemeinden'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlParameters = [bfsnr_param:bfsnr]
     sqlFiles = files(
         'processing_data/awjf_dataset_basket_processing.sql',
         'processing_data/awjf_schutzwald_processing.sql',
@@ -166,76 +155,21 @@ tasks.register('processingPubData', SqlExecutor) {
 tasks.register('UpdateFlaechenwerte', SqlExecutor) {
     dependsOn 'processingPubData'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlParameters = [bfsnr_param:bfsnr]
-    sqlFiles = files('processing_data/awjf_update_flaechenwerte_processing.sql'
-    )
-}
-
-tasks.register('exportData', Ili2pgExport) {
-    dependsOn 'UpdateFlaechenwerte'
-    description = "Exportiert die Daten mit DataSet = BFSNr aus dem Processing-Schema awjf_waldplan_pub_v2 in eine INTERLIS-Datei."
-    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    dbschema = 'awjf_waldplan_pub_v2'
-    models = 'SO_AWJF_Waldplan_Publikation_20250312'
-    dataFile = xtfFile
-    dataset = bfsnr
-    disableValidation = true
-    skipGeometryErrors = true
-}
-
-tasks.register('validateXTF', IliValidator) {
-    dependsOn 'exportData'
-    dataFiles = xtfFile
-}
-
-tasks.register('replaceData', Ili2pgReplace) {
-    dependsOn 'validateXTF'
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    dbschema = 'awjf_waldplan_pub_v2'
-    models = 'SO_AWJF_Waldplan_Publikation_20250312'
-    dataFile = xtfFile
-    dataset = bfsnr
-    disableValidation = true
-    skipGeometryErrors = true
-}
-
-tasks.register('UpdateTxtValues', SqlExecutor) {
-    dependsOn 'replaceData'
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlParameters = [bfsnr_param:bfsnr]
-    sqlFiles = files(
-        'update_pubdata/awjf_waldplan_pub_waldfunktion_update.sql',
-        'update_pubdata/awjf_waldplan_pub_waldnutzung_update.sql',
-        'update_pubdata/awjf_waldplan_pub_waldeigentum_update.sql',
-        'update_pubdata/awjf_waldplan_pub_schutzwald_update.sql'     
-    )
+    sqlFiles = files('processing_data/awjf_update_flaechenwerte_processing.sql')
 }
 
 tasks.register('transferData', Db2Db) {
-    dependsOn 'UpdateTxtValues'
-    description = 'Transfer der Walduebersicht'
+    dependsOn 'UpdateFlaechenwerte'
+    description = 'Einmaliger Transfer von Dataset und BAsket'
     sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-        new TransferSet('transfer_data/awjf_waldplan_pub_walduebersicht.sql', 'awjf_waldplan_pub_v2.waldplan_walduebersicht', true)
+        new TransferSet('transfer_data/01_waldplan_dataset_pub.sql', 'awjf_waldplan_pub_v2.t_ili2db_dataset', true),
+        new TransferSet('transfer_data/02_waldplan_basket_pub.sql', 'awjf_waldplan_pub_v2.t_ili2db_basket', true),
+        new TransferSet('transfer_data/03_waldplan_schutzwald_pub.sql', 'awjf_waldplan_pub_v2.waldplan_schutzwald', true),
+        new TransferSet('transfer_data/04_waldplan_waldfunktion_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldfunktion', true),
+        new TransferSet('transfer_data/05_waldplan_waldnutzung_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldnutzung', true),
+        new TransferSet('transfer_data/06_waldplan_waldeigentum_pub.sql', 'awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck', true),
+        new TransferSet('transfer_data/07_waldplan_walduebersicht_pub.sql', 'awjf_waldplan_pub_v2.waldplan_walduebersicht', true)
     ];
 }
-
-/*
- * Erst Aktivieren wenn öffentlich publiziert
- * Offene Frage ob und wie die Daten auch Gemeindeweise angeboten werden sollen
-
-tasks.register('publishPub', Publisher){
-    dependsOn 'transferData'
-    database = [dbUriPub,dbUserPub,dbPwdPub]
-    dataIdent = "ch.so.awjf.waldplan"
-    dbSchema = "awjf_waldplan_pub_v2"
-    modelsToPublish = "SO_AWJF_Waldplan_Publikation_20250312"
-    userFormats = true
-    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
-    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
-    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-}
-*/

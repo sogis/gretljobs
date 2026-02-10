@@ -1,0 +1,13 @@
+SELECT 
+	t_id,
+	t_basket,
+	t_datasetname,
+	t_ili_tid,
+	nutzungskategorie,
+	geometrie,
+	bemerkung,
+	t_lastchange,
+	t_createdate,
+	t_user
+FROM 
+	awjf_waldplan_v2.waldplan_waldnutzung

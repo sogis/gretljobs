@@ -6,8 +6,6 @@ UPDATE
 SET
 	produktive_flaeche = NULL,
 	hiebsatzrelevante_flaeche = NULL
-WHERE 
-	t_datasetname::int4 = ${bfsnr_param}
 ;
 
 -- =========================================================
@@ -77,8 +75,6 @@ INSERT INTO produktive_waldflaechen
 		awjf_waldplan_pub_v2.waldplan_waldnutzung
 	WHERE 
 		nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
-	AND
-		t_datasetname::int4 = ${bfsnr_param}
 ;
 
 CREATE INDEX 
@@ -99,8 +95,6 @@ INSERT INTO produktive_waldflaechen_grundstueck
 		ON ST_INTERSECTS(gs.geometrie, pwf.geometrie)
 	LEFT JOIN waldflaechen_berechnet_plausibilisiert AS wfbp
 		ON gs.egrid = wfbp.egrid
-	WHERE 
-		gs.t_datasetname::int4 = ${bfsnr_param}
 	GROUP BY 
 		gs.egrid,
 		gs.waldflaeche,
