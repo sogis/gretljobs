@@ -30,7 +30,7 @@ tasks.register('transferAvtVerkehrszaehlstellen', Db2Db) {
     ]
 }
 
-task.register('publipub', Publisher) {
+tasks.register('publipub', Publisher) {
     dependsOn = 'transferAvtVerkehrszaehlstellen'
     dataIdent = "ch.so.avt.verkehrszaehlstellen"
     userFormats = true
