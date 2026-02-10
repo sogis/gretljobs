@@ -41,8 +41,8 @@ tasks.register("copyDuckDB", Copy){
 tasks.register("ImportAllParquet", SqlExecutor) {
     dependsOn "copyDuckDB"
     def importTasks = [
-        ":02_import_data:amphibiengebiete_ortsfest_shp2:last",
-        ":02_import_data:amphibiengebiete_wander_shp2:last",
+        ":02_import_data:amphibiengebiete_ortsfest_shp1:last",
+        ":02_import_data:amphibiengebiete_wander_shp1:last",
         ":02_import_data:archaeologische_fundstellen_im_siedlungsgebiet:last",
         ":02_import_data:auengebiete_shp1:last",
         ":02_import_data:ausgangslage:last",
@@ -54,8 +54,8 @@ tasks.register("ImportAllParquet", SqlExecutor) {
         ":02_import_data:eisenbahn_shp2:last",
         ":02_import_data:erdgasroehrenspeicher:last",
         ":02_import_data:erdgasroehrenspeicher_kb:last",
-        ":02_import_data:flachmoore_shp2:last",
-        ":02_import_data:hochmoore_shp2:last",
+        ":02_import_data:flachmoore_shp1:last",
+        ":02_import_data:hochmoore_shp1:last",
         ":02_import_data:isos_xtf:last",
         ":02_import_data:ivs_national_xtf:last",
         ":02_import_data:ivs_regional_lokal_xtf:last",

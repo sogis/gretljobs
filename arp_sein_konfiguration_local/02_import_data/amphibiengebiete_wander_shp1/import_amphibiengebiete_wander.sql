@@ -6,7 +6,7 @@ CREATE TABLE
 		SELECT
     		*
 		FROM
-    		ST_Read(${shp_path})
+    		ST_Read('https://data.geo.admin.ch/ch.bafu.amphibienwanderung-verkehrskonflikte/amphibienwanderung-verkehrskonflikte/amphibienwanderung-verkehrskonflikte_2056.shp.zip')
 ;
 
 SELECT
@@ -18,7 +18,7 @@ FROM
 DELETE FROM
 	sein_sammeltabelle
 WHERE
-	thema_sql = 'Hoch- und Übergangsmoore von nationaler Bedeutung'
+	thema_sql = 'Amphibienlaichgebiete von nationaler Bedeutung - Wanderobjekte'
 ;
 
 --- Insert into Sammeltabelle ---
@@ -30,10 +30,10 @@ INSERT INTO sein_sammeltabelle (
 )
 
 SELECT DISTINCT
-	'Hoch- und Übergangsmoore von nationaler Bedeutung' AS thema_sql,
+	'Amphibienlaichgebiete von nationaler Bedeutung - Wanderobjekte' AS thema_sql,
 	"Name" AS information,
-	RefObjBlat AS link,
+	RefDatenbl AS link,
 	geom AS geometrie
 FROM 
-	main.${table_name}
+	${table_name}
 ;
