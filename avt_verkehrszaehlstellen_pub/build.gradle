@@ -1,5 +1,4 @@
 import ch.so.agi.gretl.tasks.*
-import ch.so.agi.gretl.api.TransferSet
 import ch.so.agi.gretl.api.*
 import java.nio.file.Paths
 
@@ -22,7 +21,7 @@ task publiedit(type: Publisher){
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 */
-tasks.register('transferAvtVerkehrszaehlstellen', Db2Db){
+task transferAvtVerkehrszaehlstellen(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -30,6 +29,7 @@ tasks.register('transferAvtVerkehrszaehlstellen', Db2Db){
             new Transferset('zaehlstellen.sql', 'avt_verkehrszaehlstellen_pub_v1.verkehrszaehlstelle', true)          
     ]
 }
+
 /*
 task.register('publipub', Publisher) {
     dependsOn: 'transferAvtVerkehrszaehlstellen'
