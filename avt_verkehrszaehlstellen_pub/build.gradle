@@ -1,8 +1,11 @@
 import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
 import ch.so.agi.gretl.api.*
 import java.nio.file.Paths
 
 apply plugin: 'ch.so.agi.gretl'
+
+description = "GRETL-Job für Publikation der Verkehrszählstellen"
 
 defaultTasks 'transferAvtVerkehrszaehlstellen'
 /*
