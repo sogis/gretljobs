@@ -5,7 +5,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 description = "GRETL-Job für Publikation der Verkehrszählstellen"
 
-defaultTasks 'publipub'
+defaultTasks 'publipub', 'updateSearchIndex'
 
 tasks.register('publiedit', Publisher){
     dataIdent = "ch.so.avt.verkehrszaehlstellen.relational"
@@ -45,10 +45,10 @@ tasks.register('publipub', Publisher) {
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
-/*
+
 task updateSearchIndex(type: SqlExecutor){
     mustRunAfter 'publipub'
-    def layerName = 'ch.so.avt.verkehrszaehlstellen'
+    def layerName = 'ch.so.avt.verkehrszaehlstellen.zaehlstellen'
     def sqlFileName = 'searchindex_' + layerName + '.sql'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
@@ -66,4 +66,3 @@ task updateSearchIndex(type: SqlExecutor){
         println 'layer name: ' + layerName
     }
 }
-*/
