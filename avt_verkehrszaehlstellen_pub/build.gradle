@@ -21,7 +21,7 @@ tasks.register('publiedit', Publisher){
 }
 
 tasks.register('transferAvtVerkehrszaehlstellen', Db2Db) {
-    dependsOn: 'publiedit'
+    dependsOn = 'publiedit'
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -31,7 +31,7 @@ tasks.register('transferAvtVerkehrszaehlstellen', Db2Db) {
 }
 
 task.register('publipub', Publisher) {
-    dependsOn: 'transferAvtVerkehrszaehlstellen'
+    dependsOn = 'transferAvtVerkehrszaehlstellen'
     dataIdent = "ch.so.avt.verkehrszaehlstellen"
     userFormats = true
 
