@@ -25,7 +25,7 @@ LEFT JOIN
 LEFT JOIN 
     avt_verkehrszaehlstellen_v1.dokument dok
     ON 
-    dok.zaehlstelle_staedtische_verkehrszaehlung = zaehlstelle.t_id
+    dok.zaehlstelle_verkehrszaehlstelle = zaehlstelle.t_id
 GROUP BY 
     zaehlobjekt, 
     objekt.dispname,
