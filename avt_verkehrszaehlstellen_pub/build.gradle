@@ -25,7 +25,7 @@ task transferAvtVerkehrszaehlstellen(type: Db2Db) {
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('staedtische_zaehlung.sql', 'avt_verkehrszaehlstellen_pub_v1.staedtische_verkehrszaehlung', true),
-            new Transferset('zaehlstellen.sql', 'avt_verkehrszaehlstellen_pub_v1.verkehrszaehlstelle', true)          
+            new TransferSet('zaehlstellen.sql', 'avt_verkehrszaehlstellen_pub_v1.verkehrszaehlstelle', true)          
     ]
 }
 
