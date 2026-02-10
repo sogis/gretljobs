@@ -3,13 +3,13 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publipub', 'updateSearchIndex'
-
+defaultTasks 'transferAvtVerkehrszaehlstellen'
+/*
 task publiedit(type: Publisher){
     dataIdent = "ch.so.avt.verkehrszaehlstellen.relational"
     database = [dbUriEdit,dbUserEdit,dbPwdEdit]
-    dbSchema = "avt_verkehrszaehlstellen"
-    modelsToPublish = "SO_AVT_Verkehrszaehlstellen_20190206"
+    dbSchema = "avt_verkehrszaehlstellen_v1"
+    modelsToPublish = "SO_AVT_Verkehrszaehlstellen_20260127"
 
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
@@ -17,17 +17,19 @@ task publiedit(type: Publisher){
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
-
-task transferAvtVerkehrszaehlstellen(type: Db2Db, dependsOn: 'publiedit'){
+*/
+task.register('transferAvtVerkehrszaehlstellen', Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('avt_verkehrszaehlstellen_pub_verkehrszhlstllen_verkehrszaehlstelle.sql',
-                    'avt_verkehrszaehlstellen_pub.verkehrszhlstllen_verkehrszaehlstelle', true)
+            new TransferSet(
+                'staedtische_zaehlung.sql',
+                'zaehlstellen', true)
     ]
 }
-
-task publipub(type: Publisher, dependsOn: 'transferAvtVerkehrszaehlstellen'){
+/*
+task.register('publipub', Publisher) {
+    dependsOn: 'transferAvtVerkehrszaehlstellen'
     dataIdent = "ch.so.avt.verkehrszaehlstellen"
     userFormats = true
 
@@ -62,3 +64,4 @@ task updateSearchIndex(type: SqlExecutor){
         println 'layer name: ' + layerName
     }
 }
+*/
