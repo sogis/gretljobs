@@ -5,9 +5,9 @@ apply plugin: 'ch.so.agi.gretl'
 
 description = "GRETL-Job für Publikation der Verkehrszählstellen"
 
-defaultTasks 'transferAvtVerkehrszaehlstellen'
-/*
-task publiedit(type: Publisher){
+defaultTasks 'publipub'
+
+tasks.register('publiedit', Publisher){
     dataIdent = "ch.so.avt.verkehrszaehlstellen.relational"
     database = [dbUriEdit,dbUserEdit,dbPwdEdit]
     dbSchema = "avt_verkehrszaehlstellen_v1"
@@ -19,8 +19,9 @@ task publiedit(type: Publisher){
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
-*/
-task transferAvtVerkehrszaehlstellen(type: Db2Db) {
+
+tasks.register('transferAvtVerkehrszaehlstellen', Db2Db) {
+    dependsOn: 'publiedit'
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -29,15 +30,14 @@ task transferAvtVerkehrszaehlstellen(type: Db2Db) {
     ]
 }
 
-/*
 task.register('publipub', Publisher) {
     dependsOn: 'transferAvtVerkehrszaehlstellen'
     dataIdent = "ch.so.avt.verkehrszaehlstellen"
     userFormats = true
 
     database = [dbUriPub,dbUserPub,dbPwdPub]
-    dbSchema = "avt_verkehrszaehlstellen_pub"
-    modelsToPublish = "SO_AVT_Verkehrszaehlstellen_Publikation_20190206"
+    dbSchema = "avt_verkehrszaehlstellen_pub_v1"
+    modelsToPublish = "SO_AVT_Verkehrszaehlstellen_Publikation_20260205"
 
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
@@ -45,7 +45,7 @@ task.register('publipub', Publisher) {
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
-
+/*
 task updateSearchIndex(type: SqlExecutor){
     mustRunAfter 'publipub'
     def layerName = 'ch.so.avt.verkehrszaehlstellen'
