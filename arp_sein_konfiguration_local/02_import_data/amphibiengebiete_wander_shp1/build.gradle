@@ -12,10 +12,6 @@ apply plugin: 'org.hidetake.ssh'
 def dbPath = "$buildDir/sein.duckdb"
 def dbUriDuckDB = "jdbc:duckdb:$dbPath"
 def datasetName = "importdata" // for naming tables in sql
-def downloadSrc = 'https://data.geo.admin.ch/ch.bafu.bundesinventare-amphibien/data.zip'
-def downloadFile = file("$buildDir/${datasetName}.zip")
-def unzipTargetDir = file("$buildDir/${datasetName}")
-def shapefilePath = new File("$unzipTargetDir/Amphibien_LV95/amphibLaichgebiet.shp")
 
 // first task
 tasks.register("first"){
@@ -43,36 +39,15 @@ tasks.register("copyDuckDB", Copy){
     }
 }
 
-// download task
-tasks.register("downloadData", Download) {
-    dependsOn "copyDuckDB"
-    src downloadSrc
-    dest downloadFile
-    overwrite true
-}
-
-// unzip task
-tasks.register("unzipData", Copy){
-    dependsOn 'downloadData'
-    doLast {
-        println "File unzipped to directory: " + unzipTargetDir
-    }
-    from zipTree(downloadFile)
-    into file(unzipTargetDir)
-}
-
 // import shapefiles into duckdb and copy to Sammeltabelle
-tasks.register("importShpData", SqlExecutor){
-    dependsOn "unzipData"
+tasks.register("importShpData", SqlExecutor) {
     dependsOn "copyDuckDB"
     database = [dbUriDuckDB]
-    sqlParameters = [
-        shp_path: "'${shapefilePath}'".toString(),
-        table_name: "${datasetName}".toString()
-        ]
+    sqlParameters = [table_name: "${datasetName}".toString()]
     sqlFiles = files(
         load_extension_spatial,
-        'import_amphibiengebiete_ortsfest.sql'
+        load_extension_httpfs,
+        'import_amphibiengebiete_wander.sql'
     )
 }
 

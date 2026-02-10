@@ -6,7 +6,7 @@ CREATE TABLE
 		SELECT
     		*
 		FROM
-    		ST_Read(${shp_path})
+    		ST_Read('https://data.geo.admin.ch/ch.bafu.bundesinventare-amphibien/bundesinventare-amphibien/bundesinventare-amphibien_2056.shp.zip')
 ;
 
 SELECT
@@ -18,7 +18,7 @@ FROM
 DELETE FROM
 	sein_sammeltabelle
 WHERE
-	thema_sql = 'Amphibienlaichgebiete von nationaler Bedeutung - Wanderobjekte'
+	thema_sql = 'Amphibienlaichgebiete von nationaler Bedeutung - Ortsfeste Objekte'
 ;
 
 --- Insert into Sammeltabelle ---
@@ -30,10 +30,10 @@ INSERT INTO sein_sammeltabelle (
 )
 
 SELECT DISTINCT
-	'Amphibienlaichgebiete von nationaler Bedeutung - Wanderobjekte' AS thema_sql,
+	'Amphibienlaichgebiete von nationaler Bedeutung - Ortsfeste Objekte' AS thema_sql,
 	"Name" AS information,
 	RefObjBlat AS link,
 	geom AS geometrie
 FROM 
-	main.${table_name}
+	${table_name}
 ;

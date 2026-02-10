@@ -6,7 +6,7 @@ CREATE TABLE
 		SELECT
     		*
 		FROM
-    		ST_Read(${shp_path})
+    		ST_Read('https://data.geo.admin.ch/ch.bafu.bundesinventare-hochmoore/bundesinventare-hochmoore/bundesinventare-hochmoore_2056.shp.zip')
 ;
 
 SELECT
@@ -18,7 +18,7 @@ FROM
 DELETE FROM
 	sein_sammeltabelle
 WHERE
-	thema_sql = 'Flachmoore von nationaler Bedeutung'
+	thema_sql = 'Hoch- und Übergangsmoore von nationaler Bedeutung'
 ;
 
 --- Insert into Sammeltabelle ---
@@ -30,10 +30,10 @@ INSERT INTO sein_sammeltabelle (
 )
 
 SELECT DISTINCT
-	'Flachmoore von nationaler Bedeutung' AS thema_sql,
+	'Hoch- und Übergangsmoore von nationaler Bedeutung' AS thema_sql,
 	"Name" AS information,
 	RefObjBlat AS link,
 	geom AS geometrie
 FROM 
-	main.${table_name}
+	${table_name}
 ;
