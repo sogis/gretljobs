@@ -6,32 +6,32 @@ SET
 	sturz_txt = 
 		CASE
 			WHEN sturz = true
-				THEN 'ja'
-			ELSE 'nein'
+				THEN 'Ja'
+			ELSE 'Nein'
 		END,
 	rutsch_txt =
 		CASE
 			WHEN rutsch = true
-				THEN 'ja'
-			ELSE 'nein'
+				THEN 'Ja'
+			ELSE 'Nein'
 		END,
 	gerinnerelevante_prozesse_txt = 
 		CASE
 			WHEN gerinnerelevante_prozesse_txt = 'true'
-				THEN 'ja'
-			ELSE 'nein'
+				THEN 'Ja'
+			ELSE 'Nein'
 		END,
 	lawine_txt = 
 		CASE
 			WHEN lawine = true
-				THEN 'ja'
-			ELSE 'nein'
+				THEN 'Ja'
+			ELSE 'Nein'
 		END,
 	andere_kt_txt = 
 		CASE
 			WHEN andere_kt = true
-				THEN 'ja'
-			ELSE 'nein'
+				THEN 'Ja'
+			ELSE 'Nein'
 		END
 WHERE 
 	t_datasetname::int4 = ${bfsnr_param}

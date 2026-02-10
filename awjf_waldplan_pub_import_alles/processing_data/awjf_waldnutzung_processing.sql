@@ -21,7 +21,7 @@ waldnutzung_edit_clean AS (
 		ON wnz.t_datasetname = dataset.datasetname
 	LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_basket AS basket
 		ON dataset.t_id = basket.dataset
-	WHERE
+	AND
 		ST_IsValid(wnz.geometrie)
 	AND
 		ST_Area(wnz.geometrie) > 1.0
@@ -36,7 +36,7 @@ wald_bestockt_roh AS (
 			(SELECT
 				ST_Union(geometrie)
 			 FROM
-			 	awjf_waldplan_v2.waldplan_waldfunktion),
+			 	awjf_waldplan_v2.waldplan_waldfunktion
 			(SELECT
 				ST_Union(geometrie)
 			 FROM

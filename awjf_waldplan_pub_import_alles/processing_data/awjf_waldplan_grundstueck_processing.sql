@@ -8,13 +8,15 @@ DROP TABLE IF EXISTS
 	waldflaeche_grundstueck_bereinigt,
 	waldflaeche_grundstueck_final,
 	waldflaechen_berechnet,
+	waldflaechen_berechnet_plausibilisiert,
 	wytweideflaechen_berechnet,
 	waldfunktion_flaechen_berechnet,
 	waldfunktion_flaechen_summen,
-	waldfunktion_flaechen_berechnet_angepasst,
+	waldfunktion_flaechen_berechnet_plausibilisiert,
+	waldfunktion_funktion_flaechen_berechnet,
 	waldnutzung_flaechen_berechnet,
 	waldnutzung_flaechen_summen,
-	waldnutzung_flaechen_berechnet_angepasst,
+	waldnutzung_flaechen_berechnet_plausibilisiert,
 	biodiversitaet_objekt_flaechen_berechnet
 CASCADE
 ;
@@ -93,7 +95,16 @@ CREATE TABLE
 CREATE TABLE
 	waldflaechen_berechnet (
 		egrid TEXT,
-		flaeche INTEGER
+		flaechenmass_grundstueck INTEGER,
+		waldflaeche INTEGER,
+		flaeche_differenz INTEGER
+);
+
+CREATE TABLE
+	waldflaechen_berechnet_plausibilisiert (
+		egrid TEXT,
+		flaeche INTEGER,
+		angepasst BOOLEAN
 );
 
 CREATE TABLE
@@ -109,6 +120,7 @@ CREATE TABLE
 		flaeche INTEGER
 );
 
+-- Für den Vergleich der Waldfunktionsflächen mit dem Flächenmass des Grundstücks --
 CREATE TABLE
 	waldfunktion_flaechen_summen (
 		egrid TEXT,
@@ -117,8 +129,9 @@ CREATE TABLE
 		flaeche_differenz INTEGER
 );
 
+-- Angpeasste Flächenwerte für die Waldfunktion, sofern Differenzen auftauchen (siehe waldfunktion_flaechen_summen) --
 CREATE TABLE
-	waldfunktion_flaechen_berechnet_angepasst (
+	waldfunktion_flaechen_berechnet_plausibilisiert (
 		egrid TEXT,
 		funktion TEXT,
 		funktion_txt TEXT,
@@ -131,6 +144,16 @@ CREATE TABLE
 		angepasst BOOLEAN
 );
 
+-- Für die Aggregation nach Funktion --
+CREATE TABLE
+	waldfunktion_funktion_flaechen_berechnet (
+		egrid TEXT,
+		funktion TEXT,
+		funktion_txt TEXT,
+		flaeche INTEGER
+);
+
+-- Für die Aggregation nach Nutzungskategorie --
 CREATE TABLE
 	waldnutzung_flaechen_berechnet (
 		egrid TEXT,
@@ -148,7 +171,7 @@ CREATE TABLE
 );
 
 CREATE TABLE
-	waldnutzung_flaechen_berechnet_angepasst (
+	waldnutzung_flaechen_berechnet_plausibilisiert (
 		egrid TEXT,
 		nutzungskategorie TEXT,
 		nutzungskategorie_txt TEXT,
@@ -156,16 +179,18 @@ CREATE TABLE
 		angepasst BOOLEAN
 );
 
+-- Für die Aggregation nach Wytweide --
 CREATE TABLE
 	wytweideflaechen_berechnet (
 		egrid TEXT,
 		flaeche INTEGER
 );
 
+-- Für die Aggregation nach Biodiversität und Biodiversitätsobjekt --
 CREATE TABLE
 	biodiversitaet_objekt_flaechen_berechnet (
 		egrid TEXT,
-		funktion_txt TEXT,
+		biodiversitaet_objekt_txt TEXT,
 		flaeche INTEGER
 );
 
@@ -334,12 +359,9 @@ CREATE INDEX
 INSERT INTO waldflaechen_berechnet
 	SELECT
 		gs.egrid,
-		(
-		CASE
-			WHEN gs.flaechenmass -ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC) BETWEEN -2 AND 0
-				THEN gs.flaechenmass -- Wenn der berechnete Wert zwischen -2 und 0 ist, dann soll direkt das Flachenmass des Grundstückes verwendet werden
-			ELSE ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC)
-		END)::INTEGER AS flaeche
+		gs.flaechenmass AS flaechenmass_grundstueck,
+		ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::INTEGER) AS waldflaeche,
+		gs.flaechenmass -ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wf.geometrie)))::NUMERIC) AS flaeche_differenz
 	FROM
 		grundstuecke AS gs
 	LEFT JOIN waldfunktion AS wf 
@@ -413,19 +435,44 @@ CREATE INDEX
 -- =========================================================
 -- 5) Plausibilsierung berechnete Waldfunktions- und Waldnutzungsflächen
 -- =========================================================
+INSERT INTO	waldflaechen_berechnet_plausibilisiert
+	SELECT
+		egrid,
+		CASE
+			WHEN flaeche_differenz BETWEEN -1 AND 1 
+				THEN flaechenmass_grundstueck 
+			ELSE waldflaeche
+		END AS flaeche,
+		CASE
+			WHEN flaeche_differenz BETWEEN -1 AND 1 
+				THEN TRUE
+			ELSE FALSE
+		END AS angepasst
+	FROM 
+		waldflaechen_berechnet
+;
+
+CREATE INDEX 
+	ON waldflaechen_berechnet_plausibilisiert (egrid)
+;
+
 INSERT INTO waldfunktion_flaechen_summen
 	SELECT
-		wg.egrid,
-		wg.flaeche AS flaechenmass_grundstueck,
+		wfbp.egrid,
+		wfbp.flaeche AS waldflaeche,
 		SUM(wfb.flaeche) AS flaeche_summe_waldfunktion,
-		SUM(wfb.flaeche) - wg.flaeche AS flaeche_differenz
+		wfbp.flaeche - SUM(wfb.flaeche) AS flaeche_differenz
 	FROM
-		waldflaechen_berechnet AS wg
+		waldflaechen_berechnet_plausibilisiert AS wfbp
 	LEFT JOIN waldfunktion_flaechen_berechnet AS wfb 
-		ON wg.egrid = wfb.egrid
+		ON wfbp.egrid = wfb.egrid
 	GROUP BY
-		wg.egrid,
-		wg.flaeche
+		wfbp.egrid,
+		wfbp.flaeche
+;
+
+CREATE INDEX 
+	ON waldfunktion_flaechen_summen (egrid)
 ;
 
 WITH
@@ -443,7 +490,7 @@ groesste_waldfunktion AS (
         flaeche DESC
 )
 
-INSERT INTO waldfunktion_flaechen_berechnet_angepasst 
+INSERT INTO waldfunktion_flaechen_berechnet_plausibilisiert 
 	SELECT
 		wfb.egrid,
 		wfb.funktion,
@@ -473,21 +520,20 @@ INSERT INTO waldfunktion_flaechen_berechnet_angepasst
 
 INSERT INTO waldnutzung_flaechen_summen
 	SELECT
-		wg.egrid,
-		wg.flaeche AS flaechenmass_grundstueck,
+		wfbp.egrid,
+		wfbp.flaeche AS flaechenmass_grundstueck,
 		SUM(wfb.flaeche) AS flaeche_summe_waldnutzung,
-		SUM(wfb.flaeche) - wg.flaeche AS flaeche_differenz
+		wfbp.flaeche - SUM(wfb.flaeche) AS flaeche_differenz
 	FROM
-		waldflaechen_berechnet AS wg
+		waldflaechen_berechnet_plausibilisiert AS wfbp
 	LEFT JOIN waldnutzung_flaechen_berechnet AS wfb 
-		ON wg.egrid = wfb.egrid
+		ON wfbp.egrid = wfb.egrid
 	GROUP BY
-		wg.egrid,
-		wg.flaeche
+		wfbp.egrid,
+		wfbp.flaeche
 ;
 
 WITH
-
 groesste_waldnutzung AS (
     SELECT DISTINCT ON (egrid)
         egrid,
@@ -501,7 +547,7 @@ groesste_waldnutzung AS (
         flaeche DESC
 )
 
-INSERT INTO waldnutzung_flaechen_berechnet_angepasst 
+INSERT INTO waldnutzung_flaechen_berechnet_plausibilisiert 
 	SELECT
 		wfb.egrid,
 		wfb.nutzungskategorie,
@@ -525,15 +571,28 @@ INSERT INTO waldnutzung_flaechen_berechnet_angepasst
 ;
 
 -- =========================================================
--- 6) Flächenberechnungstabellen für Wytweide und Biodiversität befüllen
+-- 6) Flächenberechnungstabellen für Waldfunktion, Wytweide und Biodiversität befüllen
 -- =========================================================
+INSERT INTO waldfunktion_funktion_flaechen_berechnet
+	SELECT 
+		egrid,
+		funktion,
+		funktion_txt,
+		SUM(flaeche) AS flaeche
+	FROM 
+		waldfunktion_flaechen_berechnet_plausibilisiert
+	GROUP BY
+		egrid,
+		funktion,
+		funktion_txt
+;
 
 INSERT INTO wytweideflaechen_berechnet
 	SELECT
 		egrid,
 		SUM(flaeche) AS flaeche
 	FROM
-		waldfunktion_flaechen_berechnet_angepasst
+		waldfunktion_flaechen_berechnet_plausibilisiert
 	WHERE
 		wytweide IS TRUE
 	GROUP BY 
@@ -543,15 +602,15 @@ INSERT INTO wytweideflaechen_berechnet
 INSERT INTO biodiversitaet_objekt_flaechen_berechnet
 	SELECT 
 		egrid,
-		funktion_txt AS funktion,
+		biodiversitaet_objekt_txt,
 		SUM(flaeche) AS flaeche
 	FROM
-		waldfunktion_flaechen_berechnet_angepasst
+		waldfunktion_flaechen_berechnet_plausibilisiert
 	WHERE
 		funktion IN ('Biodiversitaet', 'Schutzwald_Biodiversitaet')
 	GROUP BY 
 		egrid,
-		funktion_txt
+		biodiversitaet_objekt_txt
 ;
 
 -- =========================================================
@@ -570,7 +629,7 @@ waldfunktion_flaechen_berechnet_json AS (
             )
         ) AS waldfunktion_flaechen
     FROM 
-        waldfunktion_flaechen_berechnet_angepasst
+        waldfunktion_funktion_flaechen_berechnet
     WHERE
     	flaeche > 0
     GROUP BY 
@@ -588,7 +647,7 @@ waldnutzung_flaechen_berechnet_json AS (
             )
         ) AS waldnutzung_flaechen
     FROM 
-        waldnutzung_flaechen_berechnet_angepasst
+        waldnutzung_flaechen_berechnet_plausibilisiert
     WHERE
     	flaeche > 0
     GROUP BY 
@@ -600,7 +659,7 @@ biodiversitaet_objekt_flaechen_berechnet_json AS (
     	egrid,
         json_agg(
             json_build_object(
-                'Biodiversitaet_Objekt', funktion_txt,
+                'Biodiversitaet_Objekt', biodiversitaet_objekt_txt,
                 'Flaeche', flaeche,
                 '@type', 'SO_AWJF_Waldplan_Publikation_20250312.Flaechen_Biodiversitaet_Objekt'
             )
@@ -668,7 +727,7 @@ SELECT
 	wytb.flaeche AS wytweide_flaeche,
 	--produktive_flaeche,
 	--hiebsatzrelevante_flaeche,
-	wfb.flaeche AS waldflaeche,
+	wfbp.flaeche AS waldflaeche,
 	gs.grundbuch,
 	gs.ausserkantonal,
 	gs.ausserkantonal_txt,
@@ -682,8 +741,8 @@ LEFT JOIN waldnutzung_flaechen_berechnet_json AS wnfj
 	ON gs.egrid = wnfj.egrid
 LEFT JOIN biodiversitaet_objekt_flaechen_berechnet_json AS bofj
 	ON gs.egrid = bofj.egrid
-LEFT JOIN waldflaechen_berechnet AS wfb 
-	ON gs.egrid = wfb.egrid
+LEFT JOIN waldflaechen_berechnet_plausibilisiert AS wfbp 
+	ON gs.egrid = wfbp.egrid
 LEFT JOIN wytweideflaechen_berechnet AS wytb 
 	ON gs.egrid = wytb.egrid
 LEFT JOIN waldflaeche_grundstueck_final AS wfg 
