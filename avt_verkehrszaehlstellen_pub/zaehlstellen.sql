@@ -6,7 +6,7 @@ SELECT
     zaehlkadenz, 
     kadenz.dispname  AS zaehlkadenz_txt, 
     zaehlstelle.bezeichnung, 
-    json_agg(json_build_object('Bezeichnung', dok.bezeichnung, 'Link', link, 'Jahr', jahr)) AS dokumente, 
+    json_agg(json_build_object('@type','SO_AVT_Verkehrszaehlstellen_Publikation_20260205.Verkehrszaehlstellen.Dokument','Bezeichnung', dok.bezeichnung, 'Link', link, 'Jahr', jahr)) AS dokumente, 
     geometrie 
 FROM 
     avt_verkehrszaehlstellen_v1.verkehrszaehlstelle zaehlstelle
