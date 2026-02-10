@@ -3,6 +3,7 @@ SELECT
 	t_datasetname,
 	schutzwald_nr,
 	forstkreis,
+	forstkreis_txt,
 	forstrevier,
 	sturz,
 	sturz_txt,

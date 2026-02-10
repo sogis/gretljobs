@@ -36,7 +36,7 @@ wald_bestockt_roh AS (
 			(SELECT
 				ST_Union(geometrie)
 			 FROM
-			 	awjf_waldplan_v2.waldplan_waldfunktion
+			 	awjf_waldplan_v2.waldplan_waldfunktion),
 			(SELECT
 				ST_Union(geometrie)
 			 FROM
