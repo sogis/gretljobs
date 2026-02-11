@@ -6,7 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'dumpProps'
 
 tasks.register("listFiles", Exec) {
-    commandLine "ls $projectDir"
+    commandLine "ls"
 }
 
 tasks.register('dumpProps'){
@@ -20,5 +20,5 @@ tasks.register('dumpProps'){
 }
 
 /*
-GRETL_IMAGE_TAG=3.1 docker compose run --rm -u $UID gretl --project-dir=agi_jenk_io_sample
+GRETL_IMAGE_TAG=3.1 docker compose run --rm -u $UID gretl --project-dir=afu_schiesslaerm -PanlageId=15
 */
