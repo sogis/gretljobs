@@ -1,6 +1,5 @@
 DROP TABLE IF EXISTS sap_structure;
 
---- Create Table for intersecting objects --- 
 CREATE TABLE sap_structure (
 	Eintragsnummer INTEGER,
 	AuftrArt VARCHAR,
@@ -17,7 +16,7 @@ CREATE TABLE sap_structure (
 	"Position" INTEGER,
 	"MaterialNr." VARCHAR,
 	Materialtext VARCHAR,
-	"Betrag 2 Kommastellen" DOUBLE,
+	"Betrag 2 Kommastellen" NUMERIC(6,2),
 	"Menge Ganzahlg" INTEGER,
 	Mengeneinheit VARCHAR,
 	Auftragsnummer VARCHAR,
@@ -46,11 +45,11 @@ CREATE TABLE sap_structure (
 	"MaterialVerkaufstext Zeile 3 Position" VARCHAR,
 	"MaterialVerkaufstext Zeile 4 Position" VARCHAR,
 	"MaterialVerkaufstext Zeile 5 Position" VARCHAR,
-	"PositionsNotiz Zeile 1" VARCHAR,
-	"PositionsNotiz Zeile 2" VARCHAR,
-	"PositionsNotiz Zeile 3" VARCHAR,
-	"PositionsNotiz Zeile 4" VARCHAR,
-	"PositionsNotiz Zeile 5" VARCHAR,
+	"PositionsNotiz Zeile 1 Position" VARCHAR,
+	"PositionsNotiz Zeile 2 Position" VARCHAR,
+	"PositionsNotiz Zeile 3 Position" VARCHAR,
+	"PositionsNotiz Zeile 4 Position" VARCHAR,
+	"PositionsNotiz Zeile 5 Position" VARCHAR,
 	"Email Kunde" VARCHAR,
 	"Name1 Debitor(Info)" VARCHAR,
 	"Name2 Debitor(Info)" VARCHAR,

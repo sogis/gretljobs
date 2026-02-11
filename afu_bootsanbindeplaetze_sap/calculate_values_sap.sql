@@ -2,27 +2,13 @@ DELETE FROM afu_bootsanbindeplaetze.main.sap_structure;
 
 WITH 
 
--- Wenn Steggebühren an den gleichen Kunden gehen wie die restlichen Nutzungsgebühren --
-nutzungsgebuehren_intern AS (
+-- Selektierung Beträge, wenn die Nutzungsgebühr und Steggebühr an die gleiche Rechnungsstelle geht --
+nutzungsgebuehren_gleiche_RS AS (
 	SELECT 
 		(bp.rechnungsstelle_nutzungsgebuehr->0->>'SAP')::text AS KundenNr,
 		2232 AS "MaterialNr.",
-		concat_ws(
-			E'\n',
-			CASE
-				WHEN bp.bootsgebuehr > 0
-					THEN 'Bootsgebühr: ' || bp.bootsgebuehr
-			END,
-			CASE
-				WHEN bp.steggebuehr > 0
-					THEN 'Steggebühr: ' || bp.steggebuehr
-			END,
-			CASE
-				WHEN bp.steggebuehr > 0
-					THEN 'Pfostengebühr: ' || bp.pfostengebuehr
-			END
-			) AS Materialtext,
-		ROUND((COALESCE(bp.bootsgebuehr,0) + COALESCE(bp.steggebuehr,0) + COALESCE(bp.pfostengebuehr,0))::NUMERIC,2) AS "Betrag 2Komma",
+		ROUND(g.betrag,2) AS "Betrag 2 Kommastellen",
+		g.Materialtext,
 		1 AS "Menge Ganzahlg",
 		'Bootsplatz' || ' ' || sd.gemeinde || ', ' || regexp_replace(bp.standort, '^\S+\s+', '') || ', Nr. ' || bp.platznummer AS "Kopfnotiz Zeile 1 Kopf",
 		(bp.nutzer->0->>'Kontokorrent')::bool AS Kontokorrent
@@ -30,17 +16,28 @@ nutzungsgebuehren_intern AS (
 		pubdb.afu_bootsanbindeplaetze_pub_v1.bootsanbindeplatz AS bp
 	LEFT JOIN pubdb.afu_bootsanbindeplaetze_pub_v1.standortdaten AS sd
 		ON bp.standort = sd.standort
-	WHERE 
-		bp.rechnungsstelle_nutzungsgebuehr = bp.rechnungsstelle_steggebuehr
+	CROSS JOIN LATERAL (
+		VALUES
+			('Bootsgebühr', bp.bootsgebuehr),
+			('Steggebühr', bp.steggebuehr),
+			('Pfostengebühr', bp.pfostengebuehr),
+			('Miete', bp.mietkosten)
+	) AS g(Materialtext, betrag)
+	WHERE
+		bp.rechnungsstelle_nutzungsgebuehr = bp.rechnungsstelle_steggebuehr -- Rechnungstelle für Nutzungsgebühr und Steggebühr ist die gleiche
+	AND
+		g.betrag IS NOT NULL
+	AND
+		g.betrag > 0
 ),
 
--- Wenn Steggebühren an einen anderen Kunden gehen wie die restlichen Nutzungsgebühren --
-steggebuehren_separat AS (
+-- Selektierung Beträge, wenn die Nutzungsgebühr und Steggebühr nicht and die gleiche Rechnungsstelle geht --
+nutzungsgebuehren_separate_RS AS (
 	SELECT 
 		(bp.rechnungsstelle_steggebuehr->0->>'SAP')::text AS KundenNr,
 		2232 AS "MaterialNr.",
-		'Steggebühr: ' || bp.steggebuehr AS Materialtext,
-		ROUND((COALESCE(bp.steggebuehr,0))::NUMERIC,2) AS "Betrag 2Komma",
+		'Steggebühr' AS Materialtext,
+		ROUND((COALESCE(bp.steggebuehr,0))::NUMERIC,2) AS "Betrag 2 Kommastellen",
 		1 AS "Menge Ganzahlg",
 		'Bootsplatz' || ' ' || sd.gemeinde || ', ' || regexp_replace(bp.standort, '^\S+\s+', '') || ', Nr. ' || bp.platznummer AS "Kopfnotiz Zeile 1 Kopf",
 		(bp.nutzer->0->>'Kontokorrent')::bool AS Kontokorrent
@@ -56,8 +53,8 @@ bewilligunsgebuehr AS (
 	SELECT 
 		(bp.rechnungsstelle_nutzungsgebuehr->0->>'SAP')::text AS KundenNr,
 		2671 AS "MaterialNr.",
-		'Bewilligungsgebühr: ' || 100.00 AS Materialtext ,
-		100.00 AS "Betrag 2Komma",
+		'Bewilligungsgebühr ' || EXTRACT(YEAR FROM CURRENT_DATE)::int AS Materialtext ,
+		100.00 AS "Betrag 2 Kommastellen",
 		1 AS "Menge Ganzahlg",
 		'Bootsplatz' || ' ' || sd.gemeinde || ', ' || regexp_replace(bp.standort, '^\S+\s+', '') || ', Nr. ' || bp.platznummer AS "Kopfnotiz Zeile 1 Kopf",
 		(bp.nutzer->0->>'Kontokorrent')::bool AS Kontokorrent
@@ -77,42 +74,46 @@ bewilligunsgebuehr AS (
     	datum_bewilligung <= CURRENT_DATE -- Das Bewilligungsdatum darf nicht in der Zukunft liegen.
 ),
 
-gebuehren_all AS (
+gebuehren_alle AS (
 	SELECT
  		KundenNr,
 		"MaterialNr.",
 		Materialtext,
-		"Betrag 2Komma",
+		"Betrag 2 Kommastellen",
 		"Menge Ganzahlg",
 		"Kopfnotiz Zeile 1 Kopf",
 		Kontokorrent
 	FROM 
-		nutzungsgebuehren_intern
+		nutzungsgebuehren_gleiche_RS
 	UNION ALL
 	SELECT
  		KundenNr,
 		"MaterialNr.",
 		Materialtext,
-		"Betrag 2Komma",
+		"Betrag 2 Kommastellen",
 		"Menge Ganzahlg",
 		"Kopfnotiz Zeile 1 Kopf",
 		Kontokorrent
 	FROM 
-		steggebuehren_separat 
+		nutzungsgebuehren_separate_RS
 	UNION ALL 
 	SELECT
 	 	KundenNr,
 		"MaterialNr.",
 		Materialtext,
-		"Betrag 2Komma",
+		"Betrag 2 Kommastellen",
 		"Menge Ganzahlg",
 		"Kopfnotiz Zeile 1 Kopf",
 		Kontokorrent
 	FROM 
 		bewilligunsgebuehr
+	ORDER BY 
+		KundenNr,
+		"Kopfnotiz Zeile 1 Kopf",
+		Materialtext
 ),
 
-gebuehren_bereinigt AS (
+gebuehren_nummerierung AS (
 	SELECT 
 		--row_number() OVER (ORDER BY KundenNr) AS Eintragsnummer,
 		dense_rank() OVER (
@@ -121,52 +122,206 @@ gebuehren_bereinigt AS (
 		KundenNr,
 		row_number() OVER (
 			PARTITION BY KundenNr
-		) * 10 AS Position,
+		) * 10 AS "Position",
 		"MaterialNr.",
 		Materialtext,
-		"Betrag 2Komma",
+		"Betrag 2 Kommastellen",
 		"Menge Ganzahlg",
 		"Kopfnotiz Zeile 1 Kopf",
 		Kontokorrent
 	FROM 
-		gebuehren_all
-)
+		gebuehren_alle
+	ORDER BY 
+		KundenNr,
+		"Position",
+		"Kopfnotiz Zeile 1 Kopf"
+),
 
-SELECT 
-	*
-FROM 
-	gebuehren_bereinigt
-	
-	
-	
-	
+gebuehren_sap AS (
+	SELECT 
+		Eintragsnummer,
+		NULL AS AuftrArt,
+		NULL AS VertrWeg,
+		NULL AS Sparte,
+		NULL AS "Verkaufsbüro",
+		CASE
+			WHEN "Position" = 10
+				THEN 'K'
+			ELSE 'P'
+		END AS "K=Kopf/P=Position",
+		KundenNr,
+		NULL AS "Bestellnummer des Kunden",
+		NULL AS BestellDatum,
+		NULL AS Wunschlieferdatum,
+		NULL AS Preisdatum,
+		"Position",
+		"MaterialNr.",
+		Materialtext,
+		"Betrag 2 Kommastellen",
+		"Menge Ganzahlg",
+		NULL AS Mengeneinheit,
+		NULL AS Auftragsnummer,
+		NULL AS Profitcenter,
+		"Kopfnotiz Zeile 1 Kopf",
+		NULL AS "Kopfnotiz Zeile 2 Kopf",
+		NULL AS "Kopfnotiz Zeile 3 Kopf",
+		NULL AS "Kopfnotiz Zeile 4 Kopf",
+		NULL AS "Kopfnotiz Zeile 5 Kopf",
+		NULL AS "Kopfnotiz Zeile 6 Kopf",
+		NULL AS "Kopfnotiz Zeile 7 Kopf",
+		NULL AS "Kopfnotiz Zeile 8 Kopf",
+		NULL AS "Kopfnotiz Zeile 9 Kopf",
+		NULL AS "Kopfnotiz Zeile 10 Kopf",
+		NULL AS "Schlussnotiz Zeile 1 Kopf",
+		NULL AS "Schlussnotiz Zeile 2 Kopf",
+		NULL AS "Schlussnotiz Zeile 3 Kopf",
+		NULL AS "Sachbearbeiter Zeile 1 Kopf",
+		NULL AS "Sachbearbeiter Zeile 2 Kopf",
+		NULL AS "Sachbearbeiter Zeile 3 Kopf",
+		NULL AS "Sachbearbeiter Zeile 4 Kopf",
+		NULL AS "Sachbearbeiter Zeile 5 Kopf",
+		NULL AS "Kundenansprechperson Kopf",
+		NULL AS "MaterialVerkaufstext Zeile 1 Position",
+		NULL AS "MaterialVerkaufstext Zeile 2 Position",
+		NULL AS "MaterialVerkaufstext Zeile 3 Position",
+		NULL AS "MaterialVerkaufstext Zeile 4 Position",
+		NULL AS "MaterialVerkaufstext Zeile 5 Position",
+		NULL AS "PositionsNotiz Zeile 1 Position",
+		NULL AS "PositionsNotiz Zeile 2 Position",
+		NULL AS "PositionsNotiz Zeile 3 Position",
+		NULL AS "PositionsNotiz Zeile 4 Position",
+		NULL AS "PositionsNotiz Zeile 5 Position",
+		NULL AS "Email Kunde",
+		NULL AS "Name1 Debitor(Info)",
+		NULL AS "Name2 Debitor(Info)",
+		NULL AS "Strasse Debitor(Info)",
+		NULL AS "PostLz(Info)",
+		NULL AS "Ortschaft(Info)",
+		NULL AS Zahlweg
+	FROM 
+		gebuehren_nummerierung
+	WHERE
+		Kontokorrent IS FALSE
+	AND 
+		KundenNr IS NOT NULL
+	AND
+		KundenNr != 'XXX'	
+)
 
 INSERT INTO afu_bootsanbindeplaetze.main.sap_structure (
+	Eintragsnummer,
+	AuftrArt,
+	VertrWeg,
+	Sparte,
+	"Verkaufsbüro",
+	"K=Kopf/P=Position",
 	KundenNr,
+	"Bestellnummer des Kunden",
+	BestellDatum,
+	Wunschlieferdatum,
+	Preisdatum,
+	"Position",
 	"MaterialNr.",
 	Materialtext,
-	"Betrag 2Komma",
-	"Menge Ganzahlg"
+	"Betrag 2 Kommastellen",
+	"Menge Ganzahlg",
+	Mengeneinheit,
+	Auftragsnummer,
+	Profitcenter,
+	"Kopfnotiz Zeile 1 Kopf",
+	"Kopfnotiz Zeile 2 Kopf",
+	"Kopfnotiz Zeile 3 Kopf",
+	"Kopfnotiz Zeile 4 Kopf",
+	"Kopfnotiz Zeile 5 Kopf",
+	"Kopfnotiz Zeile 6 Kopf",
+	"Kopfnotiz Zeile 7 Kopf",
+	"Kopfnotiz Zeile 8 Kopf",
+	"Kopfnotiz Zeile 9 Kopf",
+	"Kopfnotiz Zeile 10 Kopf",
+	"Schlussnotiz Zeile 1 Kopf",
+	"Schlussnotiz Zeile 2 Kopf",
+	"Schlussnotiz Zeile 3 Kopf",
+	"Sachbearbeiter Zeile 1 Kopf",
+	"Sachbearbeiter Zeile 2 Kopf",
+	"Sachbearbeiter Zeile 3 Kopf",
+	"Sachbearbeiter Zeile 4 Kopf",
+	"Sachbearbeiter Zeile 5 Kopf",
+	"Kundenansprechperson Kopf",
+	"MaterialVerkaufstext Zeile 1 Position",
+	"MaterialVerkaufstext Zeile 2 Position",
+	"MaterialVerkaufstext Zeile 3 Position",
+	"MaterialVerkaufstext Zeile 4 Position",
+	"MaterialVerkaufstext Zeile 5 Position",
+	"PositionsNotiz Zeile 1 Position",
+	"PositionsNotiz Zeile 2 Position",
+	"PositionsNotiz Zeile 3 Position",
+	"PositionsNotiz Zeile 4 Position",
+	"PositionsNotiz Zeile 5 Position",
+	"Email Kunde",
+	"Name1 Debitor(Info)",
+	"Name2 Debitor(Info)",
+	"Strasse Debitor(Info)",
+	"PostLz(Info)",
+	"Ortschaft(Info)",
+	Zahlweg
 )
 
 SELECT 
+	Eintragsnummer,
+	AuftrArt,
+	VertrWeg,
+	Sparte,
+	"Verkaufsbüro",
+	"K=Kopf/P=Position",
 	KundenNr,
+	"Bestellnummer des Kunden",
+	BestellDatum,
+	Wunschlieferdatum,
+	Preisdatum,
+	"Position",
 	"MaterialNr.",
 	Materialtext,
-	"Betrag 2Komma",
-	"Menge Ganzahlg"
+	"Betrag 2 Kommastellen",
+	"Menge Ganzahlg",
+	Mengeneinheit,
+	Auftragsnummer,
+	Profitcenter,
+	"Kopfnotiz Zeile 1 Kopf",
+	"Kopfnotiz Zeile 2 Kopf",
+	"Kopfnotiz Zeile 3 Kopf",
+	"Kopfnotiz Zeile 4 Kopf",
+	"Kopfnotiz Zeile 5 Kopf",
+	"Kopfnotiz Zeile 6 Kopf",
+	"Kopfnotiz Zeile 7 Kopf",
+	"Kopfnotiz Zeile 8 Kopf",
+	"Kopfnotiz Zeile 9 Kopf",
+	"Kopfnotiz Zeile 10 Kopf",
+	"Schlussnotiz Zeile 1 Kopf",
+	"Schlussnotiz Zeile 2 Kopf",
+	"Schlussnotiz Zeile 3 Kopf",
+	"Sachbearbeiter Zeile 1 Kopf",
+	"Sachbearbeiter Zeile 2 Kopf",
+	"Sachbearbeiter Zeile 3 Kopf",
+	"Sachbearbeiter Zeile 4 Kopf",
+	"Sachbearbeiter Zeile 5 Kopf",
+	"Kundenansprechperson Kopf",
+	"MaterialVerkaufstext Zeile 1 Position",
+	"MaterialVerkaufstext Zeile 2 Position",
+	"MaterialVerkaufstext Zeile 3 Position",
+	"MaterialVerkaufstext Zeile 4 Position",
+	"MaterialVerkaufstext Zeile 5 Position",
+	"PositionsNotiz Zeile 1 Position",
+	"PositionsNotiz Zeile 2 Position",
+	"PositionsNotiz Zeile 3 Position",
+	"PositionsNotiz Zeile 4 Position",
+	"PositionsNotiz Zeile 5 Position",
+	"Email Kunde",
+	"Name1 Debitor(Info)",
+	"Name2 Debitor(Info)",
+	"Strasse Debitor(Info)",
+	"PostLz(Info)",
+	"Ortschaft(Info)",
+	Zahlweg
 FROM
-	gebuehren_all
-WHERE
-	"Betrag 2Komma" > 0
-AND 
-	Kontokorrent IS FALSE
-AND 
-	KundenNr IS NOT NULL
-AND
-	KundenNr != 'XXX'
+	gebuehren_sap
 ;
-
-
-
-EXTRACT(YEAR FROM CURRENT_DATE)::int AS Materialtext
