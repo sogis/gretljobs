@@ -20,6 +20,8 @@ index_base AS (
         (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
         verkehrszaehlstelle
+    WHERE 
+        zaehlobjekt = 'MIV'
 )
 SELECT
     displaytext AS anzeige,

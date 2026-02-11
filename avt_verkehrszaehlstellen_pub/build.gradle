@@ -5,7 +5,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 description = "GRETL-Job für Publikation der Verkehrszählstellen"
 
-defaultTasks 'publipub', 'updateSearchIndex'
+defaultTasks 'publipub', 'updateSearchIndexGemischt', 'updateSearchIndexMiv', 'updateSearchIndexVelo'
 
 tasks.register('publiedit', Publisher){
     dataIdent = "ch.so.avt.verkehrszaehlstellen.relational"
@@ -46,9 +46,51 @@ tasks.register('publipub', Publisher) {
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
-task updateSearchIndex(type: SqlExecutor){
+task updateSearchIndexGemischt(type: SqlExecutor){
     mustRunAfter 'publipub'
-    def layerName = 'ch.so.avt.verkehrszaehlstellen.zaehlstellen'
+    def layerName = 'ch.so.avt.verkehrszaehlstellen.zaehlstellen.gemischt'
+    def sqlFileName = 'searchindex_' + layerName + '.sql'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
+
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+task updateSearchIndexMiv(type: SqlExecutor){
+    mustRunAfter 'publipub'
+    def layerName = 'ch.so.avt.verkehrszaehlstellen.zaehlstellen.miv'
+    def sqlFileName = 'searchindex_' + layerName + '.sql'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
+
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+task updateSearchIndexVelo(type: SqlExecutor){
+    mustRunAfter 'publipub'
+    def layerName = 'ch.so.avt.verkehrszaehlstellen.zaehlstellen.velo'
     def sqlFileName = 'searchindex_' + layerName + '.sql'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
