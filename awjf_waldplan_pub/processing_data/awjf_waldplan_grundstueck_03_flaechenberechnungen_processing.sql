@@ -216,7 +216,7 @@ INSERT INTO waldnutzung_flaechen_berechnet_plausibilisiert
 ;
 
 -- =========================================================
--- 6) Flächenberechnungstabellen für Waldfunktion, Wytweide und Biodiversität befüllen
+-- 3) Flächenberechnungstabellen für Waldfunktion, Wytweide und Biodiversität befüllen
 -- =========================================================
 INSERT INTO waldfunktion_funktion_flaechen_berechnet
 	SELECT 
@@ -257,6 +257,22 @@ INSERT INTO biodiversitaet_objekt_flaechen_berechnet
 		egrid,
 		biodiversitaet_objekt_txt
 ;
+
+-- =========================================================
+-- 4) Flächenberechnungstabellen für die diversen Waldfunktionen nach Waldnutzung befüllen
+-- =========================================================
+INSERT INTO wirtschaftswald_waldnutzung_flaechen_berechnet
+SELECT
+	gs.egrid,
+	wnz.t_datasetname,
+	wnz.nutzungskategorie,
+	wnz.nutzungskategorie_txt
+FROM 
+	grundstuecke AS gs 
+LEFT JOIN 
+	
+
+
 
 -- =========================================================
 -- 7) Erstellung JSON-Attribute für berechnete Waldflächen

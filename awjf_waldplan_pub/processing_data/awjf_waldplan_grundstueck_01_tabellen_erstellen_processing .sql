@@ -1,3 +1,7 @@
+-- =========================================================
+-- 1) Bestehende Tabellen in Processing-DB löschen
+-- =========================================================
+
 DELETE FROM awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck;
 
 DROP TABLE IF EXISTS 
@@ -7,11 +11,7 @@ DROP TABLE IF EXISTS
 	waldflaeche_grundstueck,
 	waldflaeche_grundstueck_bereinigt,
 	waldflaeche_grundstueck_final,
-	wirtschaftswald_waldnutzung_flaechen,
-	schutzwald_waldnutzung_flaechen,
-	erholungswald_waldnutzung_flaechen,
-	biodiversitaet_waldnutzung_flaechen,
-	schutzwald_biodiversitaet_waldnutzung_flaechen,
+	waldfunktion_waldnutzung_flaechen,
 	waldflaechen_berechnet,
 	waldflaechen_berechnet_plausibilisiert,
 	wytweideflaechen_berechnet,
@@ -23,17 +23,11 @@ DROP TABLE IF EXISTS
 	waldnutzung_flaechen_summen,
 	waldnutzung_flaechen_berechnet_plausibilisiert,
 	biodiversitaet_objekt_flaechen_berechnet,
-	wirtschaftswald_waldnutzung_flaechen_berechnet,
-	schutzwald_waldnutzung_flaechen_berechnet,
-	erholungswald_waldnutzung_flaechen_berechnet,
-	biodiversitaet_waldnutzung_flaechen_berechnet,
-	schutzwald_biodiversitaet_waldnutzung_flaechen_berechnet,
-	
-CASCADE
+	waldfunktion_waldnutzung_flaechen_berechnet,
 ;
 
 -- =========================================================
--- 1) Erstellung Grundtabellen
+-- 2) Grundtabellen in Processing DB erstellen
 -- =========================================================
 
 -- Grundstücke / Liegenschaften --
@@ -107,54 +101,18 @@ CREATE TABLE
    		geometrie GEOMETRY
 );
 
--- Wirtschaftswaldflächen nach Waldnutzung --
+-- Für Verschnitt von Waldfunktion und Waldnutzung --
 CREATE TABLE
-	wirtschaftswald_waldnutzung_flaechen (
+	waldfunktion_waldnutzung_flaechen (
 		t_datasetname TEXT,
+		funktion TEXT,
 		nutzungskategorie TEXT,
 		nutzungskategorie_txt TEXT,
 		geometrie GEOMETRY
 );
-
--- Schutzwaldflächen nach Waldnutzung --
-CREATE TABLE
-	schutzwald_waldnutzung_flaechen (
-		t_datasetname TEXT,
-		nutzungskategorie TEXT,
-		nutzungskategorie_txt TEXT,
-		geometrie GEOMETRY
-);
-
--- Erholungswaldflächen nach Waldnutzung --
-CREATE TABLE
-	erholungswald_waldnutzung_flaechen (
-		t_datasetname TEXT,
-		nutzungskategorie TEXT,
-		nutzungskategorie_txt TEXT,
-		geometrie GEOMETRY
-);
-
--- Biodiversitätsflächen nach Waldnutzung --
-CREATE TABLE
-	biodiversitaet_waldnutzung_flaechen (
-		t_datasetname TEXT,
-		nutzungskategorie TEXT,
-		nutzungskategorie_txt TEXT,
-		geometrie GEOMETRY
-);
-
--- Schutzwald-Biodiversitätsflächen nach Waldnutzung --
-CREATE TABLE
-	schutzwald_biodiversitaet_waldnutzung_flaechen (
-		t_datasetname TEXT,
-		nutzungskategorie TEXT,
-		nutzungskategorie_txt TEXT,
-		geometrie GEOMETRY
-);
-
 
 -- =========================================================
--- 2) Erstellung Flächenberechnungstabellen
+-- 3) Flächenberechnungstabellen in Processing DB erstellen
 -- =========================================================
 CREATE TABLE
 	waldflaechen_berechnet (
@@ -226,6 +184,7 @@ CREATE TABLE
 		flaeche INTEGER
 );
 
+-- Für den Vergleich der Waldnutzungsflächen mit dem Flächenmass des Grundstücks --
 CREATE TABLE
 	waldnutzung_flaechen_summen (
 		egrid TEXT,
@@ -258,47 +217,13 @@ CREATE TABLE
 		flaeche INTEGER
 );
 
--- Wirtschaftswaldflächen nach Waldnutzung pro Grundstück --
+-- Flächenwerte der verschnittenen Waldfunktions udn Waldnutzungsflächen nach Grundstück --
 CREATE TABLE
-	wirtschaftswald_waldnutzung_flaechen_berechnet (
+	waldfunktion_waldnutzung_flaechen_berechnet (
 		egrid TEXT,
 		t_datasetname TEXT,
-		nutzungskategorie TEXT,
-		nutzungskategorie_txt TEXT
-);
-
--- Schutzwaldflächen nach Waldnutzung pro Grundstück--
-CREATE TABLE
-	schutzwald_waldnutzung_flaechen_berechnet (
-		t_datasetname TEXT,
+		funktion TEXT,
 		nutzungskategorie TEXT,
 		nutzungskategorie_txt TEXT,
-		geometrie GEOMETRY
-);
-
--- Erholungswaldflächen nach Waldnutzung pro Grundstück--
-CREATE TABLE
-	erholungswald_waldnutzung_flaechen_berechnet (
-		t_datasetname TEXT,
-		nutzungskategorie TEXT,
-		nutzungskategorie_txt TEXT,
-		geometrie GEOMETRY
-);
-
--- Biodiversitätsflächen nach Waldnutzung pro Grundstück--
-CREATE TABLE
-	biodiversitaet_waldnutzung_flaechen_berechnet (
-		t_datasetname TEXT,
-		nutzungskategorie TEXT,
-		nutzungskategorie_txt TEXT,
-		geometrie GEOMETRY
-);
-
--- Schutzwald-Biodiversitätsflächen nach Waldnutzung --
-CREATE TABLE
-	schutzwald_biodiversitaet_waldnutzung_flaechen_berechnet (
-		t_datasetname TEXT,
-		nutzungskategorie TEXT,
-		nutzungskategorie_txt TEXT,
-		geometrie GEOMETRY
+		flaeche INTEGER
 );
