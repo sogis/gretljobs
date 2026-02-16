@@ -163,52 +163,11 @@ CREATE INDEX
 	USING gist (geometrie)
 ;
 
-INSERT INTO wirtschaftswald_waldnutzung_flaechen
+INSERT INTO waldfunktion_waldnutzung_flaechen
 SELECT
 	wnz.t_datasetname,
-	wnz.nutzungskategorie,
-	wnz.nutzungskategorie_txt,
-	ST_Intersection(wnz.geometrie, wf.geometrie) AS geometrie
-FROM 
-	waldnutzung AS wnz
-LEFT JOIN waldfunktion AS wf 
-	ON St_Intersects(wnz.geometrie, wf.geometrie)
-WHERE 
-	wf.funktion = 'Wirtschaftswald'
-AND 
-	ST_Area(ST_Intersection(wnz.geometrie, wf.geometrie)) > 0.5
-;
-
-CREATE INDEX
-	ON wirtschaftswald_waldnutzung_flaechen
-	USING gist (geometrie)
-;
-
-INSERT INTO schutzwald_waldnutzung_flaechen
-SELECT
-	wnz.t_datasetname,
-	wnz.nutzungskategorie,
-	wnz.nutzungskategorie_txt,
-	ST_Intersection(wnz.geometrie, wf.geometrie) AS geometrie
-FROM 
-	waldnutzung AS wnz
-LEFT JOIN waldfunktion AS wf 
-	ON St_Intersects(wnz.geometrie, wf.geometrie)
-WHERE 
-	wf.funktion = 'Schutzwald'
-AND 
-	ST_Area(ST_Intersection(wnz.geometrie, wf.geometrie)) > 0.5
-;
-
-CREATE INDEX
-	ON schutzwald_waldnutzung_flaechen
-	USING gist (geometrie)
-;
-
-INSERT INTO erholungswald_waldnutzung_flaechen
-SELECT
 	wf.funktion,
-	wnz.t_datasetname,
+	wf.biodiversitaet_objekt,
 	wnz.nutzungskategorie,
 	wnz.nutzungskategorie_txt,
 	ST_Intersection(wnz.geometrie, wf.geometrie) AS geometrie
@@ -216,55 +175,11 @@ FROM
 	waldnutzung AS wnz
 LEFT JOIN waldfunktion AS wf 
 	ON St_Intersects(wnz.geometrie, wf.geometrie)
-WHERE 
-	wf.funktion = 'Erholungswald'
 AND 
 	ST_Area(ST_Intersection(wnz.geometrie, wf.geometrie)) > 0.5
 ;
 
 CREATE INDEX
-	ON erholungswald_waldnutzung_flaechen
-	USING gist (geometrie)
-;
-
-INSERT INTO biodiversitaet_waldnutzung_flaechen
-SELECT
-	wnz.t_datasetname,
-	wnz.nutzungskategorie,
-	wnz.nutzungskategorie_txt,
-	ST_Intersection(wnz.geometrie, wf.geometrie) AS geometrie
-FROM 
-	waldnutzung AS wnz
-LEFT JOIN waldfunktion AS wf 
-	ON St_Intersects(wnz.geometrie, wf.geometrie)
-WHERE 
-	wf.funktion = 'Biodiversitaet'
-AND 
-	ST_Area(ST_Intersection(wnz.geometrie, wf.geometrie)) > 0.5
-;
-
-CREATE INDEX
-	ON biodiversitaet_waldnutzung_flaechen
-	USING gist (geometrie)
-;
-
-INSERT INTO schutzwald_biodiversitaet_waldnutzung_flaechen
-SELECT
-	wnz.t_datasetname,
-	wnz.nutzungskategorie,
-	wnz.nutzungskategorie_txt,
-	ST_Intersection(wnz.geometrie, wf.geometrie) AS geometrie
-FROM 
-	waldnutzung AS wnz
-LEFT JOIN waldfunktion AS wf 
-	ON St_Intersects(wnz.geometrie, wf.geometrie)
-WHERE 
-	wf.funktion = 'Schutzwald_Biodiversitaet'
-AND 
-	ST_Area(ST_Intersection(wnz.geometrie, wf.geometrie)) > 0.5
-;
-
-CREATE INDEX
-	ON schutzwald_biodiversitaet_waldnutzung_flaechen
+	ON waldfunktion_waldnutzung_flaechen
 	USING gist (geometrie)
 ;

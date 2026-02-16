@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS
 	waldnutzung_flaechen_summen,
 	waldnutzung_flaechen_berechnet_plausibilisiert,
 	biodiversitaet_objekt_flaechen_berechnet,
-	waldfunktion_waldnutzung_flaechen_berechnet,
+	waldfunktion_waldnutzung_flaechen_berechnet
 ;
 
 -- =========================================================
@@ -106,6 +106,7 @@ CREATE TABLE
 	waldfunktion_waldnutzung_flaechen (
 		t_datasetname TEXT,
 		funktion TEXT,
+		biodiversitaet_objekt TEXT,
 		nutzungskategorie TEXT,
 		nutzungskategorie_txt TEXT,
 		geometrie GEOMETRY
@@ -223,6 +224,7 @@ CREATE TABLE
 		egrid TEXT,
 		t_datasetname TEXT,
 		funktion TEXT,
+		biodiversitaet_objekt TEXT,
 		nutzungskategorie TEXT,
 		nutzungskategorie_txt TEXT,
 		flaeche INTEGER

@@ -157,11 +157,26 @@ tasks.register('processingPubData', SqlExecutor) {
         'processing_data/awjf_dataset_basket_processing.sql',
         'processing_data/awjf_schutzwald_processing.sql',
         'processing_data/awjf_waldfunktion_processing.sql',
+        'processing_data/awjf_waldnutzung_processing.sql'
+    )
+}
+
+/*
+tasks.register('processingPubData', SqlExecutor) {
+    dependsOn 'copyDataFromHoheitsgrenzen'
+    description = 'Berechnung Waldplandaten für eine Gemeinde'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlParameters = [bfsnr_param:bfsnr]
+    sqlFiles = files(
+        'processing_data/awjf_dataset_basket_processing.sql',
+        'processing_data/awjf_schutzwald_processing.sql',
+        'processing_data/awjf_waldfunktion_processing.sql',
         'processing_data/awjf_waldnutzung_processing.sql',
         'processing_data/awjf_waldplan_grundstueck_processing.sql',
         'processing_data/awjf_walduebersicht_processing.sql'
     )
 }
+*/
 
 tasks.register('UpdateFlaechenwerte', SqlExecutor) {
     dependsOn 'processingPubData'
