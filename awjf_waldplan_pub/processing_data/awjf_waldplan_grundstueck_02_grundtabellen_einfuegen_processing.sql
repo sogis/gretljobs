@@ -207,6 +207,7 @@ CREATE INDEX
 
 INSERT INTO erholungswald_waldnutzung_flaechen
 SELECT
+	wf.funktion,
 	wnz.t_datasetname,
 	wnz.nutzungskategorie,
 	wnz.nutzungskategorie_txt,
