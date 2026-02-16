@@ -8,7 +8,7 @@ task transferAgiAdressen(type: Db2Db){
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('agi_adressen_pub_verbindungslinie_strasse_hausnummer.sql',
-                    'agi_adressen_pub_v1.verbindungslinie_strasse_hausnummer', true),
-            new TransferSet('agi_adressen_pub_benanntes_gebiet.sql', 'agi_adressen_pub_v1.benanntes_gebiet', true)
+                    'agi_adressen_pub_v1.adressen_verbindungslinie_strasse_hausnummer', true),
+            new TransferSet('agi_adressen_pub_benanntes_gebiet.sql', 'agi_adressen_pub_v1.adressen_benanntes_gebiet', true)
     ];
 }
