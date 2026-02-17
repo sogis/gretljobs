@@ -10,5 +10,6 @@ export PGUSER=`awk -F ' *[=|:] *' '$1 == "dbUserEditDdl" { print $2 }' ${PROPERT
 export PGPASSWORD=`awk -F ' *[=|:] *' '$1 == "dbPwdEditDdl" { print $2 }' ${PROPERTYFILE}`
 
 for DBSCHEMA in $DBSCHEMAS; do
+    echo "Dumping schema ${DBSCHEMA} from DB ${DBNAME} on host ${PGHOST}"
     pg_dump -Fc -n $DBSCHEMA -f $DBSCHEMA.dump $DBNAME
 done
