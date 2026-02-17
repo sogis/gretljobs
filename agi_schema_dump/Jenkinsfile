@@ -46,8 +46,8 @@ pipeline {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('processing-db') {
                     dir(env.JOB_BASE_NAME) {
-                        sh "./create_dump.sh geodb.rootso.org ${params.dbname} ${params.schemaname}"
-                        archiveArtifacts 'schema.dump'
+                        sh "./create_dump.sh geodb.rootso.org ${params.dbname} '${params.schemaname}'"
+                        archiveArtifacts '*.dump'
                     }
                 }
             }
