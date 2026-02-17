@@ -19,6 +19,7 @@ DROP TABLE IF EXISTS
 	produktive_waldflaechen_grundstueck_plausibilisiert,
 	hiebsatzrelevante_waldflaechen_grundstueck,
 	hiebsatzrelevante_waldflaechen_grundstueck_plausibilisiert
+CASCADE
 ;
 
 CREATE TABLE

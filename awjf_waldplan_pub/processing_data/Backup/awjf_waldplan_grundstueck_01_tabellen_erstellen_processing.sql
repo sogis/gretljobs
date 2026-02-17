@@ -2,7 +2,7 @@
 -- 1) Bestehende Tabellen in Processing-DB löschen
 -- =========================================================
 
-DELETE FROM awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck;
+--DELETE FROM awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck;
 
 DROP TABLE IF EXISTS 
 	grundstuecke,

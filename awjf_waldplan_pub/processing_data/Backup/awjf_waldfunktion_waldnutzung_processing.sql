@@ -1,6 +1,6 @@
 WITH
 
-waldfunktionsflaechen_grundstueck AS (
+waldfunktionsflaechen AS (
 	SELECT 
 		egrid,
 		SUM(flaeche) FILTER (WHERE funktion = 'Wirtschaftswald') AS wirtschaftswald,
@@ -12,23 +12,37 @@ waldfunktionsflaechen_grundstueck AS (
 		waldfunktion_waldnutzung_flaechen_berechnet
 	GROUP BY
 		egrid
+)
+
+waldfunktionsflaechenv1 AS (
+SELECT 
+	egrid,
+	COALESCE(SUM(flaeche) FILTER (WHERE funktion = 'Wirtschaftswald'), 0) AS wirtschaftswald,
+    COALESCE(SUM(flaeche) FILTER (WHERE funktion = 'Schutzwald'), 0)      AS schutzwald,
+    COALESCE(SUM(flaeche) FILTER (WHERE funktion = 'Erholungswald'), 0) AS erholungswald,
+    COALESCE(SUM(flaeche) FILTER (WHERE funktion = 'Biodiversitaet'), 0) AS biodiversitaet,
+    COALESCE(SUM(flaeche) FILTER (WHERE funktion = 'Schutzwald_biodiversitaet'), 0) AS schutzwald_biodiversitaet
+FROM
+	waldfunktion_flaechen_berechnet_plausibilisiert
+GROUP BY
+		egrid
 ),
 
-waldnutzungsflaechen_grundstueck AS (
-	SELECT 
-		egrid,
-		SUM(flaeche) FILTER (WHERE nutzungskategorie = 'Wald_bestockt') AS wirtschaftswald,
-		SUM(flaeche) FILTER (WHERE nutzungskategorie = 'Nachteilige_Nutzung') AS nachteilige_nutzung,
-		SUM(flaeche) FILTER (WHERE nutzungskategorie = 'Waldstrasse') AS waldstrasse,
-		SUM(flaeche) FILTER (WHERE nutzungskategorie = 'Maschinenweg') AS maschinenweg,
-		SUM(flaeche) FILTER (WHERE nutzungskategorie = 'Bauten_Anlagen') AS bauten_anlagen,
-		SUM(flaeche) FILTER (WHERE nutzungskategorie = 'Rodungsflaechen_temporaer') AS rodung_temporaer,
-		SUM(flaeche) FILTER (WHERE nutzungskategorie = 'Gewaesser') AS gewaesser
-	FROM 
-		waldfunktion_waldnutzung_flaechen_berechnet
-	GROUP BY
+waldnutzungsflaechen AS (
+SELECT
+	egrid,
+	COALESCE(SUM(flaeche) FILTER (WHERE nutzungskategorie = 'Wald_bestockt'), 0) AS wald_bestockt,
+    COALESCE(SUM(flaeche) FILTER (WHERE nutzungskategorie = 'Nachteilige_Nutzung'), 0) AS nachteilige_nutzung,
+    COALESCE(SUM(flaeche) FILTER (WHERE nutzungskategorie = 'Waldstrasse'), 0) AS waldstrasse,
+    COALESCE(SUM(flaeche) FILTER (WHERE nutzungskategorie = 'Maschinenweg'), 0) AS maschinenweg,
+    COALESCE(SUM(flaeche) FILTER (WHERE nutzungskategorie = 'Bauten_Anlagen'), 0) AS bauten_anlagen,
+    COALESCE(SUM(flaeche) FILTER (WHERE nutzungskategorie = 'Rodungsflaechen_temporaer'), 0) AS rodung_temporaer,
+    COALESCE(SUM(flaeche) FILTER (WHERE nutzungskategorie = 'Gewaesser'), 0) AS gewaesser
+FROM
+		waldnutzung_flaechen_berechnet_plausibilisiert
+GROUP BY
 		egrid
-)
+),
 
 biodiversitaetsobjekte AS (
 	SELECT
