@@ -80,6 +80,7 @@ CREATE TABLE
 CREATE TABLE
 	waldflaeche_berechnet_plausibilisiert (
 		egrid TEXT,
+		flaechenmass_grundstueck INTEGER,
 		flaeche INTEGER,
 		angepasst BOOLEAN
 );
@@ -134,3 +135,43 @@ CREATE TABLE
 		nutzungskategorie_txt TEXT,
 		flaeche INTEGER
 );
+
+-- =========================================================
+-- 6) Detaillierte Flächenberechnungen
+-- =========================================================
+CREATE TABLE 
+	waldfunktionsflaechen_grundstueck (
+		egrid TEXT,
+		wirtschaftswald INTEGER,
+		schutzwald INTEGER,
+    	erholungswald INTEGER,
+    	biodiversitaet INTEGER,
+    	schutzwald_biodiversitaet INTEGER,
+		waldfunktion_total INTEGER
+);
+
+CREATE TABLE 
+	waldnutzungsflaechen_grundstueck (
+		egrid TEXT,
+		wald_bestockt INTEGER,
+		nachteilige_nutzung INTEGER,
+    	waldstrasse INTEGER,
+    	maschinenweg INTEGER,
+    	bauten_anlagen INTEGER,
+		rodung_temporaer INTEGER,
+		gewaesser INTEGER,
+		waldnutzung_total INTEGER
+);
+
+CREATE TABLE
+	biodiversitaetsobjekte_grundstueck (
+    	egrid TEXT,
+    	waldreservat INTEGER,
+    	altholzinsel INTEGER,
+    	waldrand INTEGER,
+    	lichter_wald INTEGER,
+    	lebensraum_prioritaer INTEGER,
+    	andere_foerderflaeche INTEGER,
+		biodiversitaetsobjekte_total INTEGER
+);
+

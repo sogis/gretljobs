@@ -96,6 +96,7 @@ DELETE FROM waldflaeche_berechnet_plausibilisiert;
 INSERT INTO	waldflaeche_berechnet_plausibilisiert
 	SELECT
 		egrid,
+		flaechenmass_grundstueck,
 		CASE
 			WHEN flaeche_differenz BETWEEN -1 AND 1 
 				THEN flaechenmass_grundstueck 
