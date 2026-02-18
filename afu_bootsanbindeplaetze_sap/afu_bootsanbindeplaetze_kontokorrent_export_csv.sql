@@ -15,7 +15,7 @@ COPY (
 		"Position",
 		"MaterialNr.",
 		Materialtext,
-		"Betrag 2 Kommastellen",
+		printf('%.2f',"Betrag 2 Kommastellen") AS "Betrag 2 Kommastellen",
 		"Menge Ganzahlg",
 		Mengeneinheit,
 		Auftragsnummer,
