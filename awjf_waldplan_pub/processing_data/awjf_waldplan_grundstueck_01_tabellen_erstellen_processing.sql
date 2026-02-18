@@ -13,7 +13,11 @@ DROP TABLE IF EXISTS
 	waldfunktion,
 	waldnutzung,
 	waldfunktion_waldnutzung,
-	waldfunktion_waldnutzung_grundstueck_berechnet
+	waldfunktion_waldnutzung_grundstueck_berechnet,
+	waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert,
+	waldfunktionsflaechen_grundstueck,
+	waldnutzungsflaechen_grundstueck,
+	biodiversitaetsobjekte_grundstueck
 ;
 
 -- =========================================================
@@ -118,7 +122,9 @@ CREATE TABLE
 	waldfunktion_waldnutzung (
 		t_datasetname TEXT,
 		funktion TEXT,
+		funktion_txt TEXT,
 		biodiversitaet_objekt TEXT,
+		biodiversitaet_objekt_txt TEXT,
 		nutzungskategorie TEXT,
 		nutzungskategorie_txt TEXT,
 		geometrie GEOMETRY
@@ -130,10 +136,27 @@ CREATE TABLE
 		egrid TEXT,
 		t_datasetname TEXT,
 		funktion TEXT,
+		funktion_txt TEXT,
 		biodiversitaet_objekt TEXT,
+		biodiversitaet_objekt_txt TEXT,
 		nutzungskategorie TEXT,
 		nutzungskategorie_txt TEXT,
 		flaeche INTEGER
+);
+
+-- Plausibilisierte Flächenwerte der verschnittenen Waldfunktions und Waldnutzungsflächen nach Grundstück --
+CREATE TABLE
+	waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert (
+		egrid TEXT,
+		t_datasetname TEXT,
+		funktion TEXT,
+		funktion_txt TEXT,
+		biodiversitaet_objekt TEXT,
+		biodiversitaet_objekt_txt TEXT,
+		nutzungskategorie TEXT,
+		nutzungskategorie_txt TEXT,
+		flaeche INTEGER,
+		angepasst BOOLEAN
 );
 
 -- =========================================================
@@ -174,4 +197,3 @@ CREATE TABLE
     	andere_foerderflaeche INTEGER,
 		biodiversitaetsobjekte_total INTEGER
 );
-

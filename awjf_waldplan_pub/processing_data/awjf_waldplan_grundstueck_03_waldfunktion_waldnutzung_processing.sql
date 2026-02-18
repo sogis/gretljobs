@@ -51,7 +51,9 @@ INSERT INTO waldfunktion_waldnutzung
 SELECT
 	wnz.t_datasetname,
 	wf.funktion,
+	wf.funktion_txt,
 	wf.biodiversitaet_objekt,
+	wf.biodiversitaet_objekt_txt,
 	wnz.nutzungskategorie,
 	wnz.nutzungskategorie_txt,
 	ST_Intersection(wnz.geometrie, wf.geometrie) AS geometrie
@@ -77,7 +79,9 @@ INSERT INTO waldfunktion_waldnutzung_grundstueck_berechnet
 			gs.egrid,
 			wfn.t_datasetname,
 			wfn.funktion,
+			wfn.funktion_txt,
 			wfn.biodiversitaet_objekt,
+			wfn.biodiversitaet_objekt_txt,
 			wfn.nutzungskategorie,
 			wfn.nutzungskategorie_txt,
 			ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wfn.geometrie)))::NUMERIC) AS flaeche
@@ -90,7 +94,9 @@ INSERT INTO waldfunktion_waldnutzung_grundstueck_berechnet
 			gs.egrid,
 			wfn.t_datasetname,
 			wfn.funktion,
+			wfn.funktion_txt,
 			wfn.biodiversitaet_objekt,
+			wfn.biodiversitaet_objekt_txt,
 			wfn.nutzungskategorie,
 			wfn.nutzungskategorie_txt
 		ORDER BY

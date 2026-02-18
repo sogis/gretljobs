@@ -1,3 +1,78 @@
+DELETE FROM waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert;
+
+WITH 
+-- Berechne die totale Waldfunktion pro Grundstück --
+waldfunktion_summe AS (
+	SELECT
+		egrid,
+		SUM(flaeche) AS waldfunktion_total
+	FROM
+		waldfunktion_waldnutzung_grundstueck_berechnet
+	WHERE
+		funktion IN (
+			'Wirtschaftswald',
+			'Schutzwald',
+			'Erholungswald',
+			'Biodiversitaet',
+			'Schutzwald_Biodiversitaet'
+		)
+	GROUP BY
+		egrid
+),
+
+-- Vergleich der berechneten Waldfunktionssumme mit der berechneten Waldfläche --
+differenz AS (
+	SELECT 
+		wbp.egrid,
+		wbp.flaeche - COALESCE(wfs.waldfunktion_total,0) AS diff
+	FROM
+		waldflaeche_berechnet_plausibilisiert AS wbp
+	LEFT JOIN waldfunktion_summe AS wfs
+		ON wbp.egrid = wfs.egrid
+),
+
+-- Nummerierung/Rangierung der Teilflächen pro Grundstück --
+-- Bei einer Differenz soll später nur die grösste Teilfläche angepasst werden --
+rangiert AS (
+	SELECT
+		w.*,
+		d.diff,
+		ROW_NUMBER() OVER (
+			PARTITION BY
+				w.egrid
+				ORDER BY
+					w.flaeche DESC
+		) AS rn
+	FROM
+		waldfunktion_waldnutzung_grundstueck_berechnet AS w
+	LEFT JOIN differenz AS d
+		ON w.egrid = d.egrid
+)
+
+INSERT INTO waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert
+	SELECT
+		egrid,
+		t_datasetname,
+		funktion,
+		funktion_txt,
+		biodiversitaet_objekt,
+		biodiversitaet_objekt_txt,
+		nutzungskategorie,
+		nutzungskategorie_txt,
+    	-- Anpassung grösste Teilfläche pro egrid --
+		CASE 
+			WHEN rn = 1 AND diff IS NOT NULL
+				THEN flaeche + diff
+			ELSE flaeche
+		END AS flaeche,
+		CASE 
+			WHEN rn = 1 AND diff IS NOT NULL AND diff <> 0
+				THEN TRUE
+			ELSE FALSE
+		END AS korrigiert
+	FROM rangiert;
+
+DELETE FROM waldfunktionsflaechen_grundstueck;
 INSERT INTO waldfunktionsflaechen_grundstueck
 	SELECT
     	egrid,
@@ -21,12 +96,13 @@ INSERT INTO waldfunktionsflaechen_grundstueck
 			SUM(flaeche) FILTER (WHERE funktion = 'Biodiversitaet') AS biodiversitaet,
 			SUM(flaeche) FILTER (WHERE funktion = 'Schutzwald_Biodiversitaet') AS schutzwald_biodiversitaet
 		FROM
-			waldfunktion_waldnutzung_grundstueck_berechnet
+			waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert
 		GROUP BY
 			egrid
 	) t
 ;
 
+DELETE FROM waldnutzungsflaechen_grundstueck;
 INSERT INTO waldnutzungsflaechen_grundstueck
 	SELECT
     	egrid,
@@ -56,12 +132,13 @@ INSERT INTO waldnutzungsflaechen_grundstueck
 				SUM(flaeche) FILTER (WHERE nutzungskategorie = 'Rodungsflaechen_temporaer') AS rodung_temporaer,
 				SUM(flaeche) FILTER (WHERE nutzungskategorie = 'Gewaesser') AS gewaesser
 		FROM
-			waldfunktion_waldnutzung_grundstueck_berechnet
+			waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert
 		GROUP BY
 			egrid
 	) t
 ;
 
+DELETE FROM waldnutzungsflaechen_grundstueck;
 INSERT INTO biodiversitaetsobjekte_grundstueck
 	SELECT
     	egrid,
@@ -73,7 +150,6 @@ INSERT INTO biodiversitaetsobjekte_grundstueck
     	andere_foerderflaeche,
     
 		COALESCE(waldreservat,0)
-		+ COALESCE(waldreservat,0)
 		+ COALESCE(altholzinsel,0)
 		+ COALESCE(waldrand,0)
 		+ COALESCE(lichter_wald,0)
@@ -89,68 +165,41 @@ INSERT INTO biodiversitaetsobjekte_grundstueck
 				SUM(flaeche) FILTER (WHERE biodiversitaet_objekt = 'Lebensraum_prioritaer') AS lebensraum_prioritaer,
 				SUM(flaeche) FILTER (WHERE biodiversitaet_objekt = 'Andere_Foerderflaeche') AS andere_foerderflaeche
 		FROM
-			waldfunktion_waldnutzung_grundstueck_berechnet
+			waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert
 		GROUP BY
 			egrid
 	) t
 ;
 
-
-
-
-Differenzen AS (
+INSERT INTO produktive_waldflaechen
 	SELECT
-		wbp.egrid,
-		wbp.flaeche AS waldflaeche,
-		COALESCE(wfg.wirtschaftswald,0) + COALESCE(wfg.schutzwald,0) + COALESCE(wfg.erholungswald,0) + COALESCE(wfg.biodiversitaet,0) + COALESCE(wfg.schutzwald_biodiversitaet,0) AS waldfunktion_summe
+		wfnp.egrid,
+		wald.flaeche AS waldflaeche,
+		SUM(wfnp.flaeche) FILTER (WHERE wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')) AS waldflaeche_produktiv,
+		wald.flaeche - SUM(wfnp.flaeche) FILTER (WHERE wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')) AS waldflaeche_unproduktiv,
+		-- Wirtschaftswald --
+		SUM(wfnp.flaeche) FILTER (WHERE wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung') AND wfnp.funktion = 'Wirtschaftswald') AS wirtschaftswald_produktiv,
+		SUM(wfnp.flaeche) FILTER (WHERE wfnp.nutzungskategorie NOT IN ('Wald_bestockt', 'Nachteilige_Nutzung') AND wfnp.funktion = 'Wirtschaftswald') AS wirtschaftswald_unproduktiv,
+		-- Schutzwald --
+		SUM(wfnp.flaeche) FILTER (WHERE wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung') AND wfnp.funktion = 'Schutzwald') AS schutzwald_produktiv,
+		SUM(wfnp.flaeche) FILTER (WHERE wfnp.nutzungskategorie NOT IN ('Wald_bestockt', 'Nachteilige_Nutzung') AND wfnp.funktion = 'Schutzwald') AS schutzwald_unproduktiv,
+		-- Erholungswald --
+		SUM(wfnp.flaeche) FILTER (WHERE wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung') AND wfnp.funktion = 'Erholungswald') AS erholungswald_produktiv,
+		SUM(wfnp.flaeche) FILTER (WHERE wfnp.nutzungskategorie NOT IN ('Wald_bestockt', 'Nachteilige_Nutzung') AND wfnp.funktion = 'Erholungswald') AS erholungswald_unproduktiv,
+		-- Biodiversität --
+		SUM(wfnp.flaeche) FILTER (WHERE wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung') AND wfnp.funktion = 'Biodiversitaet') AS biodiversitaet_produktiv,
+		SUM(wfnp.flaeche) FILTER (WHERE wfnp.nutzungskategorie NOT IN ('Wald_bestockt', 'Nachteilige_Nutzung') AND wfnp.funktion = 'Biodiversitaet') AS biodiversitaet_unproduktiv,
+		-- Schutzwald / Biodiversität --
+		SUM(wfnp.flaeche) FILTER (WHERE wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung') AND wfnp.funktion = 'Schutzwald_Biodiversitaet') AS schutzwald_bio_produktiv,
+		SUM(wfnp.flaeche) FILTER (WHERE wfnp.nutzungskategorie NOT IN ('Wald_bestockt', 'Nachteilige_Nutzung') AND wfnp.funktion = 'Schutzwald_Biodiversitaet') AS schutzwald_bio_unproduktiv
 	FROM 
-		waldflaeche_berechnet_plausibilisiert AS wbp
-	LEFT JOIN waldfunktionsflaechen_grundstueck AS wfg 
-		ON wbp.egrid = wfg.egrid
-)
-
-SELECT * FROM Differenzen
-
-
-
-biodiversitaetsobjekte AS (
-	SELECT
-		egrid,
-		SUM(flaeche) FILTER (WHERE biodiversitaet_objekt = 'Waldreservat') AS waldreservat,
-		SUM(flaeche) FILTER (WHERE biodiversitaet_objekt = 'Altholzinsel') AS altholzinsel,
-		SUM(flaeche) FILTER (WHERE biodiversitaet_objekt = 'Waldrand') AS waldrand,
-		SUM(flaeche) FILTER (WHERE biodiversitaet_objekt = 'Lichter_Wald') AS lichter_wald,
-		SUM(flaeche) FILTER (WHERE biodiversitaet_objekt = 'Lebensraum_prioritaer') AS lebensraum_prioritaer,
-		SUM(flaeche) FILTER (WHERE biodiversitaet_objekt = 'Andere_Foerderflaeche') AS andere_foerderflaeche
-	FROM 
-		waldfunktion_waldnutzung_flaechen_berechnet
+		waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert AS wfnp
+	LEFT JOIN waldflaeche_berechnet_plausibilisiert AS wald
+		ON wfnp.egrid = wald.egrid
 	GROUP BY 
-		egrid
-),
+		wfnp.egrid,
+		wald.flaeche
 
-produktive_flaechen AS (
-	SELECT
-		wfnb.egrid,
-		prod.waldflaeche,
-		prod.produktiv AS waldflaeche_produktiv,
-		prod.unproduktiv AS waldflaeche_unproduktiv,
-		SUM(wfnb.flaeche) FILTER (WHERE wfnb.funktion = 'Wirtschaftswald' AND wfnb.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')) AS wirtschaftswald_produktiv,
-		wfun.wirtschaftswald - SUM(wfnb.flaeche) FILTER (WHERE wfnb.funktion = 'Wirtschaftswald' AND wfnb.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')) AS wirtschaftswald_unproduktiv
-	FROM 
-		waldfunktion_waldnutzung_flaechen_berechnet AS wfnb
-	LEFT JOIN produktive_waldflaechen_grundstueck_plausibilisiert AS prod 
-		ON wfnb.egrid = prod.egrid
-	LEFT JOIN waldfunktionsflaechen AS wfun
-		ON wfnb.egrid = wfun.egrid
-	GROUP BY 
-		wfnb.egrid,
-		prod.waldflaeche,
-		prod.produktiv,
-		prod.unproduktiv,
-		wfun.wirtschaftswald
-)
-
-SELECT * FROM produktive_flaechen
 
 
 
@@ -181,8 +230,6 @@ berechnete_flaechen AS (
 		waldflaeche_produktiv,
 		waldflaeche_unproduktiv,
 		wirtschaftswald_produktiv
-		
-
 		wirtschaftswald_produktiv,
 		wirtschaftswald_unproduktiv,
 		schutzwald_produktiv,

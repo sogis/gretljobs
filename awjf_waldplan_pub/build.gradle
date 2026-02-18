@@ -161,7 +161,8 @@ tasks.register('processingPubData', SqlExecutor) {
         'processing_data/awjf_waldplan_grundstueck_01_tabellen_erstellen_processing.sql',
         'processing_data/awjf_waldplan_grundstueck_02_grundstueck_processing.sql',
         'processing_data/awjf_waldplan_grundstueck_03_waldfunktion_waldnutzung_processing.sql',
-        'processing_data/awjf_waldplan_grundstueck_04_waldflaeche_processing.sql'
+        'processing_data/awjf_waldplan_grundstueck_04_waldflaeche_processing.sql',
+        'processing_data/awjf_waldplan_grundstueck_05_flaechenberechnungen_processing.sql'
     )
 }
 
