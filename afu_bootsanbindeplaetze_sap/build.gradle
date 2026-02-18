@@ -38,9 +38,9 @@ tasks.register("create_sap_list", SqlExecutor){
     sqlFiles = files(
         'load_extension_spatial.sql',
         'attach_pubdb.sql',
-        'create_sap_table.sql',
-        'calculate_values_sap.sql',
-        'export_csv_sap.sql',
+        'afu_bootsanbindeplaetze_sap_create_table.sql',
+        'afu_bootsanbindeplaetze_sap_calculate_values.sql',
+        'afu_bootsanbindeplaetze_sap_export_csv.sql',
         'detach_pubdb.sql'
     )
 }
@@ -55,9 +55,9 @@ tasks.register("create_kontokorrent_list", SqlExecutor){
     sqlFiles = files(
         'load_extension_spatial.sql',
         'attach_pubdb.sql',
-        'create_kontokorrent_table.sql',
-        'calculate_values_kontokorrent.sql',
-        'export_csv_kontokorrent.sql',
+        'afu_bootsanbindeplaetze_kontokorrent_create_table.sql',
+        'afu_bootsanbindeplaetze_kontokorrent_calculate_values.sql',
+        'afu_bootsanbindeplaetze_kontokorrent_export_csv.sql',
         'detach_pubdb.sql'
     )
 }

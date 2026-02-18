@@ -2,6 +2,7 @@ COPY (
 	SELECT
 		Eintragsnummer,
 		AuftrArt,
+		VerkOrg,
 		VertrWeg,
 		Sparte,
 		"Verkaufsbüro",
