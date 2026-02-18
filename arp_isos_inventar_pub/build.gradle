@@ -9,6 +9,6 @@ task transferISOS(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('isos_objekte.sql', 'arp_isos_inventar_v1.isos_inventar', true),
+            new TransferSet('isos_objekte.sql', 'arp_isos_inventar_pub_v1.isos_inventar', true),
     ];
 }
