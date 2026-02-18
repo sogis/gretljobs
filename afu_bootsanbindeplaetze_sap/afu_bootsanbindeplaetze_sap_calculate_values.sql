@@ -1,4 +1,4 @@
-DELETE FROM afu_bootsanbindeplaetze.main.kontokorrent_structure;
+DELETE FROM afu_bootsanbindeplaetze.main.sap_structure;
 
 WITH 
 
@@ -10,7 +10,8 @@ nutzungsgebuehren_gleiche_RS AS (
 		ROUND(g.betrag,2) AS "Betrag 2 Kommastellen",
 		g.Materialtext,
 		1 AS "Menge Ganzahlg",
-		'Bootsplatz' || ' ' || sd.gemeinde || ', ' || regexp_replace(bp.standort, '^\S+\s+', '') || ', Nr. ' || bp.platznummer AS "Kopfnotiz Zeile 1 Kopf",
+		'Nutzungsgebühr ' || EXTRACT(YEAR FROM CURRENT_DATE)::int AS "Kopfnotiz Zeile 1 Kopf",
+		'Bootsplatz' || ' ' || sd.gemeinde || ', ' || regexp_replace(bp.standort, '^\S+\s+', '') || ', Nr. ' || bp.platznummer AS "MaterialVerkaufstext Zeile 1 Position",
 		(bp.nutzer->0->>'Kontokorrent')::bool AS Kontokorrent
 	FROM
 		pubdb.afu_bootsanbindeplaetze_pub_v1.bootsanbindeplatz AS bp
@@ -39,7 +40,8 @@ nutzungsgebuehren_separate_RS AS (
 		'Steggebühr' AS Materialtext,
 		ROUND((COALESCE(bp.steggebuehr,0))::NUMERIC,2) AS "Betrag 2 Kommastellen",
 		1 AS "Menge Ganzahlg",
-		'Bootsplatz' || ' ' || sd.gemeinde || ', ' || regexp_replace(bp.standort, '^\S+\s+', '') || ', Nr. ' || bp.platznummer AS "Kopfnotiz Zeile 1 Kopf",
+		'Nutzungsgebühr ' || EXTRACT(YEAR FROM CURRENT_DATE)::int AS "Kopfnotiz Zeile 1 Kopf",
+		'Bootsplatz' || ' ' || sd.gemeinde || ', ' || regexp_replace(bp.standort, '^\S+\s+', '') || ', Nr. ' || bp.platznummer AS "MaterialVerkaufstext Zeile 1 Position",
 		(bp.nutzer->0->>'Kontokorrent')::bool AS Kontokorrent
 	FROM
 		pubdb.afu_bootsanbindeplaetze_pub_v1.bootsanbindeplatz AS bp
@@ -53,10 +55,11 @@ bewilligunsgebuehr AS (
 	SELECT 
 		(bp.rechnungsstelle_nutzungsgebuehr->0->>'SAP')::text AS KundenNr,
 		2671 AS "MaterialNr.",
-		'Bewilligungsgebühr ' || EXTRACT(YEAR FROM CURRENT_DATE)::int AS Materialtext ,
+		'Bewilligungsgebühr' AS Materialtext ,
 		100.00 AS "Betrag 2 Kommastellen",
 		1 AS "Menge Ganzahlg",
-		'Bootsplatz' || ' ' || sd.gemeinde || ', ' || regexp_replace(bp.standort, '^\S+\s+', '') || ', Nr. ' || bp.platznummer AS "Kopfnotiz Zeile 1 Kopf",
+		'Bewilligungsgebühr ' || EXTRACT(YEAR FROM CURRENT_DATE)::int AS "Kopfnotiz Zeile 1 Kopf",
+		'Bootsplatz' || ' ' || sd.gemeinde || ', ' || regexp_replace(bp.standort, '^\S+\s+', '') || ', Nr. ' || bp.platznummer AS "MaterialVerkaufstext Zeile 1 Position",
 		(bp.nutzer->0->>'Kontokorrent')::bool AS Kontokorrent
 	FROM
 		pubdb.afu_bootsanbindeplaetze_pub_v1.bootsanbindeplatz AS bp
@@ -82,6 +85,7 @@ gebuehren_alle AS (
 		"Betrag 2 Kommastellen",
 		"Menge Ganzahlg",
 		"Kopfnotiz Zeile 1 Kopf",
+		"MaterialVerkaufstext Zeile 1 Position",
 		Kontokorrent
 	FROM 
 		nutzungsgebuehren_gleiche_RS
@@ -93,6 +97,7 @@ gebuehren_alle AS (
 		"Betrag 2 Kommastellen",
 		"Menge Ganzahlg",
 		"Kopfnotiz Zeile 1 Kopf",
+		"MaterialVerkaufstext Zeile 1 Position",
 		Kontokorrent
 	FROM 
 		nutzungsgebuehren_separate_RS
@@ -104,13 +109,15 @@ gebuehren_alle AS (
 		"Betrag 2 Kommastellen",
 		"Menge Ganzahlg",
 		"Kopfnotiz Zeile 1 Kopf",
+		"MaterialVerkaufstext Zeile 1 Position",
 		Kontokorrent
 	FROM 
 		bewilligunsgebuehr
 	ORDER BY 
 		KundenNr,
-		"Kopfnotiz Zeile 1 Kopf",
-		Materialtext
+		"MaterialVerkaufstext Zeile 1 Position",
+		Materialtext,
+		"Kopfnotiz Zeile 1 Kopf"
 ),
 
 gebuehren_nummerierung AS (
@@ -128,6 +135,7 @@ gebuehren_nummerierung AS (
 		"Betrag 2 Kommastellen",
 		"Menge Ganzahlg",
 		"Kopfnotiz Zeile 1 Kopf",
+		"MaterialVerkaufstext Zeile 1 Position",
 		Kontokorrent
 	FROM 
 		gebuehren_alle
@@ -137,10 +145,11 @@ gebuehren_nummerierung AS (
 		"Kopfnotiz Zeile 1 Kopf"
 ),
 
-gebuehren_kontokorrent AS (
+gebuehren_sap AS (
 	SELECT 
 		Eintragsnummer,
 		NULL AS AuftrArt,
+		NULL AS VerkOrg,
 		NULL AS VertrWeg,
 		NULL AS Sparte,
 		NULL AS "Verkaufsbüro",
@@ -181,7 +190,7 @@ gebuehren_kontokorrent AS (
 		NULL AS "Sachbearbeiter Zeile 4 Kopf",
 		NULL AS "Sachbearbeiter Zeile 5 Kopf",
 		NULL AS "Kundenansprechperson Kopf",
-		NULL AS "MaterialVerkaufstext Zeile 1 Position",
+		"MaterialVerkaufstext Zeile 1 Position",
 		NULL AS "MaterialVerkaufstext Zeile 2 Position",
 		NULL AS "MaterialVerkaufstext Zeile 3 Position",
 		NULL AS "MaterialVerkaufstext Zeile 4 Position",
@@ -201,16 +210,17 @@ gebuehren_kontokorrent AS (
 	FROM 
 		gebuehren_nummerierung
 	WHERE
-		Kontokorrent IS TRUE
+		Kontokorrent IS FALSE
 	AND 
 		KundenNr IS NOT NULL
 	AND
 		KundenNr != 'XXX'	
 )
 
-INSERT INTO afu_bootsanbindeplaetze.main.kontokorrent_structure (
+INSERT INTO afu_bootsanbindeplaetze.main.sap_structure (
 	Eintragsnummer,
 	AuftrArt,
+	VerkOrg,
 	VertrWeg,
 	Sparte,
 	"Verkaufsbüro",
@@ -269,6 +279,7 @@ INSERT INTO afu_bootsanbindeplaetze.main.kontokorrent_structure (
 SELECT 
 	Eintragsnummer,
 	AuftrArt,
+	VerkOrg,
 	VertrWeg,
 	Sparte,
 	"Verkaufsbüro",
@@ -323,5 +334,5 @@ SELECT
 	"Ortschaft(Info)",
 	Zahlweg
 FROM
-	gebuehren_kontokorrent
+	gebuehren_sap
 ;
