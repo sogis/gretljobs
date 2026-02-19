@@ -57,6 +57,7 @@ INSERT INTO waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert
 		funktion_txt,
 		biodiversitaet_objekt,
 		biodiversitaet_objekt_txt,
+		wytweide,
 		nutzungskategorie,
 		nutzungskategorie_txt,
     	-- Anpassung grösste Teilfläche pro egrid --
@@ -171,10 +172,12 @@ INSERT INTO biodiversitaetsobjekte_grundstueck
 	) t
 ;
 
-INSERT INTO produktive_waldflaechen
+DELETE FROM waldflaeche_produktiv;
+INSERT INTO waldflaeche_produktiv
 	SELECT
 		wfnp.egrid,
 		wald.flaeche AS waldflaeche,
+		-- Waldfläche total --
 		SUM(wfnp.flaeche) FILTER (WHERE wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')) AS waldflaeche_produktiv,
 		wald.flaeche - SUM(wfnp.flaeche) FILTER (WHERE wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')) AS waldflaeche_unproduktiv,
 		-- Wirtschaftswald --
@@ -199,113 +202,262 @@ INSERT INTO produktive_waldflaechen
 	GROUP BY 
 		wfnp.egrid,
 		wald.flaeche
+;
 
-
-
-
-/*
-berechnete_flaechen AS (
+DELETE FROM waldfunktion_hiebsatzrelevant;
+INSERT INTO waldfunktion_hiebsatzrelevant
 	SELECT
-		wfnb.egrid,
-		waldf.flaeche AS waldflaeche,
+		wfnp.egrid,
+		wald.flaeche AS waldflaeche,
 		
-		--- Waldfunktionsflächen ---
-		wirtschaftswald,
-		schutzwald,
-		erholungswald,
-		biodiversitaet,
-		schutzwald_biodiversitaet,
+		-- Waldfläche total --
+		SUM(wfnp.flaeche) FILTER (
+			WHERE
+				wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+			AND (
+				biodiversitaet_objekt IS NULL
+				OR biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel'))
+			) AS waldflaeche_hiebrel,
+			
+		wald.flaeche - SUM(wfnp.flaeche) FILTER (
+			WHERE
+				wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+			AND (
+				biodiversitaet_objekt IS NULL
+				OR biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel'))
+			) AS waldflaeche_n_hiebrel,
+			
+		-- Wirtschaftswald --
+		SUM(wfnp.flaeche) FILTER (
+			WHERE
+				wfnp.funktion = 'Wirtschaftswald'
+			AND
+				wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+			AND (
+				biodiversitaet_objekt IS NULL
+				OR biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel'))
+			) AS wirtschaftswald_hiebrel,
+
+		SUM(wfnp.flaeche) FILTER (
+			WHERE
+				wfnp.funktion = 'Wirtschaftswald'
+			AND (
+				wfnp.nutzungskategorie NOT IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+				OR biodiversitaet_objekt IN ('Waldreservat', 'Altholzinsel')
+				)
+			) AS wirtschaftswald_n_hiebrel,
+						
+		-- Erholungswald --
+		SUM(wfnp.flaeche) FILTER (
+			WHERE
+				wfnp.funktion = 'Erholungswald'
+			AND
+				wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+			AND (
+				biodiversitaet_objekt IS NULL
+				OR biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel'))
+			) AS erholungswald_hiebrel,
+
+		SUM(wfnp.flaeche) FILTER (
+			WHERE
+				wfnp.funktion = 'Erholungswald'
+			AND (
+				wfnp.nutzungskategorie NOT IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+				OR biodiversitaet_objekt IN ('Waldreservat', 'Altholzinsel')
+				)
+			) AS erholungswald_n_hiebrel,
+						
+		-- Biodiversität --
+		SUM(wfnp.flaeche) FILTER (
+			WHERE
+				wfnp.funktion = 'Biodiversitaet'
+			AND
+				wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+			AND (
+				biodiversitaet_objekt IS NULL
+				OR biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel'))
+			) AS biodiversitaet_hiebrel,
+
+		SUM(wfnp.flaeche) FILTER (
+			WHERE
+				wfnp.funktion = 'Biodiversitaet'
+			AND (
+				wfnp.nutzungskategorie NOT IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+				OR biodiversitaet_objekt IN ('Waldreservat', 'Altholzinsel')
+				)
+			) AS biodiversitaet_n_hiebrel,
+						
+		-- Schutzwald --
+		SUM(wfnp.flaeche) FILTER (
+			WHERE
+				wfnp.funktion = 'Schutzwald'
+			AND
+				wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+			AND (
+				biodiversitaet_objekt IS NULL
+				OR biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel'))
+			) AS schutzwald_hiebrel,
+
+		SUM(wfnp.flaeche) FILTER (
+			WHERE
+				wfnp.funktion = 'Schutzwald'
+			AND (
+				wfnp.nutzungskategorie NOT IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+				OR biodiversitaet_objekt IN ('Waldreservat', 'Altholzinsel')
+				)
+			) AS schutzwald_n_hiebrel,
+						
+		-- Schutzwald / Biodiversität --
+		SUM(wfnp.flaeche) FILTER (
+			WHERE
+				wfnp.funktion = 'Schutzwald_Biodiversitaet'
+			AND
+				wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+			AND (
+				biodiversitaet_objekt IS NULL
+				OR biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel'))
+			) AS schutzwald_bio_hiebrel,
+
+		SUM(wfnp.flaeche) FILTER (
+			WHERE
+				wfnp.funktion = 'Schutzwald_Biodiversitaet'
+			AND (
+				wfnp.nutzungskategorie NOT IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+				OR biodiversitaet_objekt IN ('Waldreservat', 'Altholzinsel')
+				)
+			) AS schutzwald_bio_n_hiebrel
+	FROM 
+		waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert AS wfnp
+	LEFT JOIN waldflaeche_berechnet_plausibilisiert AS wald
+		ON wfnp.egrid = wald.egrid
+	GROUP BY 
+		wfnp.egrid,
+		wald.flaeche
+;
+
+DELETE FROM waldnutzung_hiebsatzrelevant;
+INSERT INTO waldnutzung_hiebsatzrelevant
+	SELECT
+		wfnp.egrid,
+		wald.flaeche AS waldflaeche,
 		
-		--- Waldnutzungsflächen ---
-		wald_bestockt,
-		nachteilige_nutzung,
-		waldstrasse,
-		maschinenweg,
-		bauten_anlagen,
-		rodung_temporaer,
-		gewaesser,
+		-- Waldfläche total --
+		SUM(wfnp.flaeche) FILTER (
+			WHERE
+				wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+			AND (
+				biodiversitaet_objekt IS NULL
+				OR biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel'))
+			) AS waldflaeche_hiebrel,
+			
+		SUM(wfnp.flaeche) FILTER (
+			WHERE
+				wfnp.nutzungskategorie NOT IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+			OR 
+				biodiversitaet_objekt IN ('Waldreservat', 'Altholzinsel')
+			) AS waldflaeche_n_hiebrel,
+			
+		-- Wald bestockt --
+		SUM(wfnp.flaeche) FILTER (
+			WHERE 
+				wfnp.nutzungskategorie = 'Wald_bestockt'
+			AND (
+				biodiversitaet_objekt IS NULL
+				OR biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel'))
+			) AS wald_bestockt_hiebrel,
+
+			SUM(wfnp.flaeche) FILTER (
+			WHERE
+				wfnp.nutzungskategorie = 'Wald_bestockt'
+			AND
+				biodiversitaet_objekt IN ('Waldreservat', 'Altholzinsel')
+			) AS wald_bestockt_n_hiebrel,
+			
+					-- Nachteilige Nutzung --
+		SUM(wfnp.flaeche) FILTER (
+			WHERE
+				wfnp.nutzungskategorie = 'Nachteilige_Nutzung'
+			AND (
+				biodiversitaet_objekt IS NULL
+				OR biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel'))
+			) AS nachteilige_nutzung_hiebrel,
+
+			SUM(wfnp.flaeche) FILTER (
+			WHERE
+				wfnp.nutzungskategorie = 'Nachteilige_Nutzung'
+			AND
+				biodiversitaet_objekt IN ('Waldreservat', 'Altholzinsel')
+			) AS nachteilige_nutzung_n_hiebrel
+	FROM 
+		waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert AS wfnp
+	LEFT JOIN waldflaeche_berechnet_plausibilisiert AS wald
+		ON wfnp.egrid = wald.egrid
+	GROUP BY 
+		wfnp.egrid,
+		wald.flaeche
+;
+
+DELETE FROM waldfunktion_nach_waldnutzung;
+INSERT INTO waldfunktion_nach_waldnutzung
+	SELECT
+		egrid,
 		
+		-- Wirtschaftswald --
+		SUM(flaeche) FILTER(WHERE funktion = 'Wirtschaftswald' AND nutzungskategorie = 'Wald_bestockt') AS wirtschaftswald_wald_bestockt,
+		SUM(flaeche) FILTER(WHERE funktion = 'Wirtschaftswald' AND nutzungskategorie = 'Nachteilige_Nutzung') AS wirtschaftswald_nt_nutzung,
+		SUM(flaeche) FILTER(WHERE funktion = 'Wirtschaftswald' AND nutzungskategorie = 'Waldstrasse') AS wirtschaftswald_waldstrasse,
+		SUM(flaeche) FILTER(WHERE funktion = 'Wirtschaftswald' AND nutzungskategorie = 'Maschinenweg') AS wirtschaftswald_maschinenweg,
+		SUM(flaeche) FILTER(WHERE funktion = 'Wirtschaftswald' AND nutzungskategorie = 'Bauten_Anlagen') AS wirtschaftswald_bauanl,
+		SUM(flaeche) FILTER(WHERE funktion = 'Wirtschaftswald' AND nutzungskategorie = 'Gewaesser') AS wirtschaftswald_gewaesser,
+		SUM(flaeche) FILTER(WHERE funktion = 'Wirtschaftswald' AND nutzungskategorie = 'Rodung_temporaer') AS wirtschaftswald_rodung_temp,
 		
-		--- Produktive Waldfunktionsflächen ---
-		waldflaeche_produktiv,
-		waldflaeche_unproduktiv,
-		wirtschaftswald_produktiv
-		wirtschaftswald_produktiv,
-		wirtschaftswald_unproduktiv,
-		schutzwald_produktiv,
-		schutzwald_unproduktiv,
-		erholungswald_produktiv,
-		erholungswald_unproduktiv,
-		biodiversitaet_produktiv,
-		biodiversitaet_unproduktiv,
-		schutzwald_bio_produktiv,
-		schutzwald_bio_unproduktiv,
-		waldflaeche_hiebrel,
-		waldflaeche_n_hiebrel,
-		wirtschaftswald_hiebrel,
-		wirtschaftswald_n_hiebrel,
-		schutzwald_hiebrel,
-		schutzwald_n_hiebrel,
-		erholungswald_hiebrel,
-		erholungswald_n_hiebrel,
-		biodiversitaet_hiebrel,
-		biodiversitaet_n_hiebrel,
-		schutzwald_bio_hiebrel,
-		schutzwald_bio_n_hiebrel,
-		wald_bestockt_hiebrel,
-		wald_bestockt_n_hiebrel,
-		nachteilige_nutzung_hiebrel,
-		nachteilige_nutzung_n_hiebrel,
-		wirtschaftswald_wald_bestockt,
-		wirtschaftswald_nt_nutzung,
-		wirtschaftswald_waldstrasse,
-		wirtschaftswald_maschinenweg,
-		wirtschaftswald_bauanl,
-		wirtschaftswald_gewaesser,
-		wirtschaftswald_rodung_temp,
-		schutzwald_wald_bestockt,
-		schutzwald_nt_nutzung,
-		schutzwald_waldstrasse,
-		schutzwald_maschinenweg,
-		schutzwald_bauanl,
-		schutzwald_gewaesser,
-		schutzwald_rodung_temp,
-		erholungswald_wald_bestockt,
-		erholungswald_nt_nutzung,
-		erholungswald_waldstrasse,
-		erholungswald_maschinenweg,
-		erholungswald_bauanl,
-		erholungswald_gewaesser,
-		erholungswald_rodung_temp,
-		biodiversitaet_wald_bestockt,
-		biodiversitaet_nt_nutzung,
-		biodiversitaet_waldstrasse,
-		biodiversitaet_maschinenweg,
-		biodiversitaet_bauanl,
-		biodiversitaet_gewaesser,
-		biodiversitaet_rodung_temp,
-		schutzwald_bio_wald_bestockt,
-		schutzwald_bio_nt_nutzung,
-		schutzwald_bio_waldstrasse,
-		schutzwald_bio_maschinenweg,
-		schutzwald_bio_bauanl,
-		schutzwald_bio_gewaesser,
-		schutzwald_bio_rodung_temp,
-		gemeinde,
-		grundbuch,
-		forstkreis,
-		forstkreis_txt,
-		forstrevier,
-		forstbetrieb,
-		wirtschaftszone,
-		wirtschaftszone_txt,
-		grundstuecknummer,
-		flaechenmass,
-		eigentuemer,
-		eigentuemer_txt,
-		eigentuemerinformation,
-		wytweide_flaeche,
-		waldflaeche,
-		geometrie,
-		bemerkung
-		*/
+		-- Erholungswald --
+		SUM(flaeche) FILTER(WHERE funktion = 'Erholungswald' AND nutzungskategorie = 'Wald_bestockt') AS erholungswald_wald_bestockt,
+		SUM(flaeche) FILTER(WHERE funktion = 'Erholungswald' AND nutzungskategorie = 'Nachteilige_Nutzung') AS erholungswald_nt_nutzung,
+		SUM(flaeche) FILTER(WHERE funktion = 'Erholungswald' AND nutzungskategorie = 'Waldstrasse') AS erholungswald_waldstrasse,
+		SUM(flaeche) FILTER(WHERE funktion = 'Erholungswald' AND nutzungskategorie = 'Maschinenweg') AS erholungswald_maschinenweg,
+		SUM(flaeche) FILTER(WHERE funktion = 'Erholungswald' AND nutzungskategorie = 'Bauten_Anlagen') AS erholungswald_bauanl,
+		SUM(flaeche) FILTER(WHERE funktion = 'Erholungswald' AND nutzungskategorie = 'Gewaesser') AS erholungswald_gewaesser,
+		SUM(flaeche) FILTER(WHERE funktion = 'Erholungswald' AND nutzungskategorie = 'Rodung_temporaer') AS erholungswald_rodung_temp,
+		
+		-- Schutzwald --
+		SUM(flaeche) FILTER(WHERE funktion = 'Schutzwald' AND nutzungskategorie = 'Wald_bestockt') AS schutzwald_wald_bestockt,
+		SUM(flaeche) FILTER(WHERE funktion = 'Schutzwald' AND nutzungskategorie = 'Nachteilige_Nutzung') AS schutzwald_nt_nutzung,
+		SUM(flaeche) FILTER(WHERE funktion = 'Schutzwald' AND nutzungskategorie = 'Waldstrasse') AS schutzwald_waldstrasse,
+		SUM(flaeche) FILTER(WHERE funktion = 'Schutzwald' AND nutzungskategorie = 'Maschinenweg') AS schutzwaldmaschinenweg,
+		SUM(flaeche) FILTER(WHERE funktion = 'Schutzwald' AND nutzungskategorie = 'Bauten_Anlagen') AS schutzwald_bauanl,
+		SUM(flaeche) FILTER(WHERE funktion = 'Schutzwald' AND nutzungskategorie = 'Gewaesser') AS schutzwald_gewaesser,
+		SUM(flaeche) FILTER(WHERE funktion = 'Schutzwald' AND nutzungskategorie = 'Rodung_temporaer') AS schutzwald_rodung_temp,
+		
+		-- Biodiversität --
+		SUM(flaeche) FILTER(WHERE funktion = 'Biodiversitaet' AND nutzungskategorie = 'Wald_bestockt') AS biodiversitaet_wald_bestockt,
+		SUM(flaeche) FILTER(WHERE funktion = 'Biodiversitaet' AND nutzungskategorie = 'Nachteilige_Nutzung') AS biodiversitaet_nt_nutzung,
+		SUM(flaeche) FILTER(WHERE funktion = 'Biodiversitaet' AND nutzungskategorie = 'Waldstrasse') AS biodiversitaet_waldstrasse,
+		SUM(flaeche) FILTER(WHERE funktion = 'Biodiversitaet' AND nutzungskategorie = 'Maschinenweg') AS biodiversitaet_maschinenweg,
+		SUM(flaeche) FILTER(WHERE funktion = 'Biodiversitaet' AND nutzungskategorie = 'Bauten_Anlagen') AS biodiversitaet_bauanl,
+		SUM(flaeche) FILTER(WHERE funktion = 'Biodiversitaet' AND nutzungskategorie = 'Gewaesser') AS biodiversitaet_gewaesser,
+		SUM(flaeche) FILTER(WHERE funktion = 'Biodiversitaet' AND nutzungskategorie = 'Rodung_temporaer') AS biodiversitaet_rodung_temp,
+		
+		-- Schutzwald / Biodiversität --
+		SUM(flaeche) FILTER(WHERE funktion = 'Schutzwald_Biodiversitaet' AND nutzungskategorie = 'Wald_bestockt') AS schutzwald_bio_wald_bestockt,
+		SUM(flaeche) FILTER(WHERE funktion = 'Schutzwald_Biodiversitaet' AND nutzungskategorie = 'Nachteilige_Nutzung') AS schutzwald_bio_nt_nutzung,
+		SUM(flaeche) FILTER(WHERE funktion = 'Schutzwald_Biodiversitaet' AND nutzungskategorie = 'Waldstrasse') AS schutzwald_bio_waldstrasse,
+		SUM(flaeche) FILTER(WHERE funktion = 'Schutzwald_Biodiversitaet' AND nutzungskategorie = 'Maschinenweg') AS schutzwald_bio_maschinenweg,
+		SUM(flaeche) FILTER(WHERE funktion = 'Schutzwald_Biodiversitaet' AND nutzungskategorie = 'Bauten_Anlagen') AS schutzwald_bio_bauanl,
+		SUM(flaeche) FILTER(WHERE funktion = 'Schutzwald_Biodiversitaet' AND nutzungskategorie = 'Gewaesser') AS schutzwald_bio_gewaesser,
+		SUM(flaeche) FILTER(WHERE funktion = 'Schutzwald_Biodiversitaet' AND nutzungskategorie = 'Rodung_temporaer') AS schutzwald_bio_rodung_temp
+	FROM 
+		waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert
+	GROUP BY 
+		egrid
+;
+
+DELETE FROM wytweide_grundstueck;
+INSERT INTO wytweide_grundstueck
+	SELECT 
+		egrid,
+		SUM(flaeche) FILTER(WHERE wytweide IS TRUE) AS wytweide_flaeche
+	FROM 
+		waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert
+	GROUP BY 
+		egrid

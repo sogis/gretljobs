@@ -1,5 +1,4 @@
 DELETE FROM grundstueck;
-
 INSERT INTO grundstueck
 	SELECT
 		basket.t_id AS t_basket,

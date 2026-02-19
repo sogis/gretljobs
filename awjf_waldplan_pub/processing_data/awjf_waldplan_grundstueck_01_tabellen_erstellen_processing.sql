@@ -17,7 +17,12 @@ DROP TABLE IF EXISTS
 	waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert,
 	waldfunktionsflaechen_grundstueck,
 	waldnutzungsflaechen_grundstueck,
-	biodiversitaetsobjekte_grundstueck
+	biodiversitaetsobjekte_grundstueck,
+	waldflaeche_produktiv,
+	waldfunktion_hiebsatzrelevant,
+	waldnutzung_hiebsatzrelevant,
+	waldfunktion_nach_waldnutzung,
+	wytweide_grundstueck
 ;
 
 -- =========================================================
@@ -125,6 +130,7 @@ CREATE TABLE
 		funktion_txt TEXT,
 		biodiversitaet_objekt TEXT,
 		biodiversitaet_objekt_txt TEXT,
+		wytweide BOOLEAN,
 		nutzungskategorie TEXT,
 		nutzungskategorie_txt TEXT,
 		geometrie GEOMETRY
@@ -139,6 +145,7 @@ CREATE TABLE
 		funktion_txt TEXT,
 		biodiversitaet_objekt TEXT,
 		biodiversitaet_objekt_txt TEXT,
+		wytweide BOOLEAN,
 		nutzungskategorie TEXT,
 		nutzungskategorie_txt TEXT,
 		flaeche INTEGER
@@ -153,6 +160,7 @@ CREATE TABLE
 		funktion_txt TEXT,
 		biodiversitaet_objekt TEXT,
 		biodiversitaet_objekt_txt TEXT,
+		wytweide BOOLEAN,
 		nutzungskategorie TEXT,
 		nutzungskategorie_txt TEXT,
 		flaeche INTEGER,
@@ -196,4 +204,98 @@ CREATE TABLE
     	lebensraum_prioritaer INTEGER,
     	andere_foerderflaeche INTEGER,
 		biodiversitaetsobjekte_total INTEGER
+);
+
+CREATE TABLE 
+	waldflaeche_produktiv (
+		egrid TEXT,
+		waldflaeche INTEGER,
+		waldflaeche_produktiv INTEGER,
+		waldflaeche_unproduktiv INTEGER,
+		wirtschaftswald_produktiv INTEGER,
+		wirtschaftswald_unproduktiv INTEGER,
+		schutzwald_produktiv INTEGER,
+		schutzwald_unproduktiv INTEGER,
+		erholungswald_produktiv INTEGER,
+		erholungswald_unproduktiv INTEGER,
+		biodiversitaet_produktiv INTEGER,
+		biodiversitaet_unproduktiv INTEGER,
+		schutzwald_bio_produktiv INTEGER,
+		schutzwald_bio_unproduktiv INTEGER
+);
+
+CREATE TABLE 
+	waldfunktion_hiebsatzrelevant (
+		egrid TEXT,
+		waldflaeche INTEGER,
+		waldflaeche_hiebrel INTEGER,
+		waldflaeche_n_hiebrel INTEGER,
+		wirtschaftswald_hiebrel INTEGER,
+		wirtschaftswald_n_hiebrel INTEGER,
+		schutzwald_hiebrel INTEGER,
+		schutzwald_n_hiebrel INTEGER,
+		erholungswald_hiebrel INTEGER,
+		erholungswald_n_hiebrel INTEGER,
+		biodiversitaet_hiebrel INTEGER,
+		biodiversitaet_n_hiebrel INTEGER,
+		schutzwald_bio_hiebrel INTEGER,
+		schutzwald_bio_n_hiebrel INTEGER
+);
+
+CREATE TABLE 
+	waldnutzung_hiebsatzrelevant (
+		egrid TEXT,
+		waldflaeche INTEGER,
+		waldflaeche_hiebrel INTEGER,
+		waldflaeche_n_hiebrel INTEGER,
+		wald_bestockt_hiebrel INTEGER,
+		wald_bestockt_n_hiebrel INTEGER,
+		nachteilige_nutzung_hiebrel INTEGER,
+		nachteilige_nutzung_n_hiebrel INTEGER
+);
+
+CREATE TABLE 
+	waldfunktion_nach_waldnutzung (
+		egrid TEXT,
+		wirtschaftswald_wald_bestockt INTEGER,
+		wirtschaftswald_nt_nutzung INTEGER,
+		wirtschaftswald_waldstrasse INTEGER,
+		wirtschaftswald_maschinenweg INTEGER,
+		wirtschaftswald_bauanl INTEGER,
+		wirtschaftswald_gewaesser INTEGER,
+		wirtschaftswald_rodung_temp INTEGER,
+		erholungswald_wald_bestockt INTEGER,
+		erholungswald_nt_nutzung INTEGER,
+		erholungswald_waldstrasse INTEGER,
+		erholungswald_maschinenweg INTEGER,
+		erholungswald_bauanl INTEGER,
+		erholungswald_gewaesser INTEGER,
+		erholungswald_rodung_temp INTEGER,
+		schutzwald_wald_bestockt INTEGER,
+		schutzwald_nt_nutzung INTEGER,
+		schutzwald_waldstrasse INTEGER,
+		schutzwald_maschinenweg INTEGER,
+		schutzwald_bauanl INTEGER,
+		schutzwald_gewaesser INTEGER,
+		schutzwald_rodung_temp INTEGER,
+		biodiversitaet_wald_bestockt INTEGER,
+		biodiversitaet_nt_nutzung INTEGER,
+		biodiversitaet_waldstrasse INTEGER,
+		biodiversitaet_maschinenweg INTEGER,
+		biodiversitaet_bauanl INTEGER,
+		biodiversitaet_gewaesser INTEGER,
+		biodiversitaet_rodung_temp INTEGER,
+		schutzwald_bio_wald_bestockt INTEGER,
+		schutzwald_bio_nt_nutzung INTEGER,
+		schutzwald_bio_waldstrasse INTEGER,
+		schutzwald_bio_maschinenweg INTEGER,
+		schutzwald_bio_bauanl INTEGER,
+		schutzwald_bio_gewaesser INTEGER,
+		schutzwald_bio_rodung_temp INTEGER
+);
+
+CREATE TABLE 
+	wytweide_grundstueck (
+		egrid TEXT,
+		flaeche INTEGER
 );

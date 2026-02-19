@@ -54,6 +54,7 @@ SELECT
 	wf.funktion_txt,
 	wf.biodiversitaet_objekt,
 	wf.biodiversitaet_objekt_txt,
+	wf.wytweide,
 	wnz.nutzungskategorie,
 	wnz.nutzungskategorie_txt,
 	ST_Intersection(wnz.geometrie, wf.geometrie) AS geometrie
@@ -82,6 +83,7 @@ INSERT INTO waldfunktion_waldnutzung_grundstueck_berechnet
 			wfn.funktion_txt,
 			wfn.biodiversitaet_objekt,
 			wfn.biodiversitaet_objekt_txt,
+			wfn.wytweide,
 			wfn.nutzungskategorie,
 			wfn.nutzungskategorie_txt,
 			ROUND(SUM(ST_Area(ST_Intersection(gs.geometrie, wfn.geometrie)))::NUMERIC) AS flaeche
@@ -97,6 +99,7 @@ INSERT INTO waldfunktion_waldnutzung_grundstueck_berechnet
 			wfn.funktion_txt,
 			wfn.biodiversitaet_objekt,
 			wfn.biodiversitaet_objekt_txt,
+			wfn.wytweide,
 			wfn.nutzungskategorie,
 			wfn.nutzungskategorie_txt
 		ORDER BY
