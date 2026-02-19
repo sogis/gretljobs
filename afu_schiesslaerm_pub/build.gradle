@@ -18,7 +18,8 @@ tasks.register('sqlPrep', SqlExecutor) {
     sqlParameters = [anlage_id:anlageId]
     sqlFiles = files(
         'id_record.sql',
-        'delete_previous_import.sql'
+        'delete_previous_import.sql',
+        '_insert_dev_dummies.sql'
         )
 }
 
@@ -30,8 +31,34 @@ tasks.register('importCells', ShpImport) {
     dataFile = file("$buildDir/shape.shp")
 }
 
-tasks.register('publish'){
+tasks.register('stage', SqlExecutor) {
     dependsOn importCells
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [anlage_id:anlageId]
+    sqlFiles = files(
+        'delete_stage.sql',
+        'transform_to_stage.sql'
+    )
+}
+
+tasks.register('exportXtf', Ili2pgExport) {
+    dependsOn stage
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dataFile = files("$buildDir/pubModelData.xtf")
+    models = 'SO_AFU_Schiesslaerm_Publikation_20260210'
+    dbschema = 'afu_schiesslaerm_stage_v1'
+}
+
+tasks.register('replaceXtf', Ili2pgReplace) {
+    dependsOn exportXtf
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dataFile = files("$buildDir/pubModelData.xtf")
+    dbschema = 'afu_schiesslaerm_pub_v1'
+    dataset = anlageId
+}
+
+tasks.register('publish'){
+    dependsOn replaceXtf
 }
 
 /*
