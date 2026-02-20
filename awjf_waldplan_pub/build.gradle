@@ -162,20 +162,15 @@ tasks.register('processingPubData', SqlExecutor) {
         'processing_data/awjf_waldplan_grundstueck_02_grundstueck_processing.sql',
         'processing_data/awjf_waldplan_grundstueck_03_waldfunktion_waldnutzung_processing.sql',
         'processing_data/awjf_waldplan_grundstueck_04_waldflaeche_processing.sql',
-        'processing_data/awjf_waldplan_grundstueck_05_flaechenberechnungen_processing.sql'
-    )
-}
-
-tasks.register('UpdateFlaechenwerte', SqlExecutor) {
-    dependsOn 'processingPubData'
-    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlParameters = [bfsnr_param:bfsnr]
-    sqlFiles = files('processing_data/awjf_update_flaechenwerte_processing.sql'
+        'processing_data/awjf_waldplan_grundstueck_05_flaechenberechnungen_processing.sql',
+        'processing_data/awjf_waldplan_grundstueck_06_json_processing.sql',
+        'processing_data/awjf_waldplan_auswertung_processing.sql',
+        'processing_data/awjf_walduebersicht_processing.sql'
     )
 }
 
 tasks.register('exportData', Ili2pgExport) {
-    dependsOn 'UpdateFlaechenwerte'
+    dependsOn 'processingPubData'
     description = "Exportiert die Daten mit DataSet = BFSNr aus dem Processing-Schema awjf_waldplan_pub_v2 in eine INTERLIS-Datei."
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     dbschema = 'awjf_waldplan_pub_v2'
@@ -210,7 +205,7 @@ tasks.register('UpdateTxtValues', SqlExecutor) {
         'update_pubdata/awjf_waldplan_pub_waldfunktion_update.sql',
         'update_pubdata/awjf_waldplan_pub_waldnutzung_update.sql',
         'update_pubdata/awjf_waldplan_pub_waldeigentum_update.sql',
-        'update_pubdata/awjf_waldplan_pub_schutzwald_update.sql'     
+        'update_pubdata/awjf_waldplan_pub_schutzwald_update.sql'
     )
 }
 
