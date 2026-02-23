@@ -1,10 +1,13 @@
-# Schema in die lokale Entwicklungs-DBs kopieren
+# Schema in die lokale Entwicklungs-DB kopieren
 
 ## Schema-Dump erzeugen und in lokalem Linux speichern
 
-Im produktiven GRETL-Jenkins den Job "agi_schema_dump" ausführen. Nach Ausführung steht der Dump als Build-Artefakt "schema.dump" zur Verfügung.
+Im produktiven GRETL-Jenkins den Job _agi_schema_dump_ ausführen.
+Der Job funktioniert für die Edit-, Publikations- und ÖREB-DB.
+Es können ein oder mehrere Schemas (mit Leerschlag getrennt) für den Export angegeben werden.
+Nach Ausführung stehen die Dumps als Build-Artefakt `schemaname.dump` zur Verfügung.
 
-Dieses herunterladen und im Verzeichnis /tmp des lokalen (WSL-)Linux speichern.
+Diese herunterladen und im Verzeichnis `/tmp` des lokalen (WSL-)Linux speichern.
 
 ## Schema-Berechtigungen anwenden
 
