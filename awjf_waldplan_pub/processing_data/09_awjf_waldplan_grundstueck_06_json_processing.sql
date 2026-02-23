@@ -171,7 +171,7 @@ INSERT INTO awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck(
 )
 
 SELECT
-	gs.t_basket,
+	gs.t_basket_waldplan AS t_basket,
 	gs.t_datasetname,
 	gs.egrid,
 	gs.gemeinde,

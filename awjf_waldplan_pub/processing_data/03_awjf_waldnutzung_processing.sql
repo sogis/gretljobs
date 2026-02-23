@@ -23,6 +23,8 @@ waldnutzung_edit_clean AS (
 		ON dataset.t_id = basket.dataset
 	WHERE
 		wnz.t_datasetname::int4 = ${bfsnr_param}
+	AND 
+		split_part(basket.topic, '.', 2) = 'Waldplan'
 	AND
 		ST_IsValid(wnz.geometrie)
 	AND

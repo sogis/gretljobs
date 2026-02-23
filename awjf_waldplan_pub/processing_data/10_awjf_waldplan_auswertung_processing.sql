@@ -103,7 +103,7 @@ INSERT INTO awjf_waldplan_pub_v2.waldplan_aswrtung_auswertung (
 	bemerkung	
 )
 	SELECT 
-		gs.t_basket::bigint,
+		gs.t_basket_auswertung::bigint AS t_basket,
 		gs.t_datasetname,
 		wfg.wirtschaftswald,
 		wfg.schutzwald,
@@ -206,6 +206,10 @@ INSERT INTO awjf_waldplan_pub_v2.waldplan_aswrtung_auswertung (
 		gs.bemerkung
 	FROM
 		grundstueck AS gs
+	LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_dataset AS dataset
+		ON gs.t_datasetname = dataset.datasetname
+	LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_basket AS basket
+		ON dataset.t_id = basket.dataset
 	LEFT JOIN waldfunktion_nach_waldnutzung AS wnw
 		ON gs.egrid = wnw.egrid 
 	LEFT JOIN wytweide_grundstueck AS wyt 

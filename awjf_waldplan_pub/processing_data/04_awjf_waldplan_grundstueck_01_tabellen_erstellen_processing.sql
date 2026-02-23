@@ -30,7 +30,8 @@ DROP TABLE IF EXISTS
 -- =========================================================
 CREATE TABLE 
 	grundstueck (
-		t_basket INTEGER,
+		t_basket_waldplan INTEGER,
+		t_basket_auswertung INTEGER,
 		t_datasetname TEXT,
 		egrid TEXT,
 		gemeinde TEXT,
