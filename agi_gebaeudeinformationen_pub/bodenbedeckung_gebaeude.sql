@@ -53,7 +53,7 @@ INSERT INTO
         )) FILTER (WHERE adresse.hausnummer IS NOT NULL), NULL) AS gebaeudeeingang,
         CASE
             WHEN bodenbedeckung.egid IS NOT NULL
-                THEN concat('https://www.housing-stat.ch/de/query/egid.html?egid=',bodenbedeckung.egid::TEXT)
+                THEN concat('https://www.housing-stat.ch/de/data/query/egid.html?egid=',bodenbedeckung.egid::TEXT)
             ELSE 'https://www.housing-stat.ch/'
         END AS link_gwr,
         'real' AS astatus,
