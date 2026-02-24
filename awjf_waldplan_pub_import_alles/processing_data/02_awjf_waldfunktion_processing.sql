@@ -32,6 +32,8 @@ waldfunktion_edit AS (
 		ON wf.t_datasetname = dataset.datasetname
 	LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_basket AS basket
 		ON dataset.t_id = basket.dataset
+	WHERE
+		split_part(basket.topic, '.', 2) = 'Waldplan'
 ),
 
 waldfunktion_edit_clean AS (
@@ -68,6 +70,7 @@ INSERT INTO awjf_waldplan_pub_v2.waldplan_waldfunktion(
 	geometrie,
 	bemerkung
 )
+
 SELECT
 	t_basket,
 	t_datasetname,

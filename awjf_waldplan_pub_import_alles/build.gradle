@@ -20,8 +20,14 @@ tasks.register('createExtension', SqlExecutor) {
     sqlFiles = files('processing_data/create_extension.sql')
 }
 
-tasks.register('createImportSchema_Waldplan_Edit', Ili2pgImportSchema) {
+tasks.register('deleteAllSchemasIfExists', SqlExecutor) {
     dependsOn 'createExtension'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files('processing_data/deleteallschemas.sql')
+}
+
+tasks.register('createImportSchema_Waldplan_Edit', Ili2pgImportSchema) {
+    dependsOn 'deleteAllSchemasIfExists'
     description = 'Waldplan-Schema IMPORT für Quelldaten in der Processing-DB anlegen'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = 'SO_AWJF_Waldplan_20250312'
@@ -118,8 +124,19 @@ tasks.register('copyDataFromEdit', Db2Db) {
     ];
 }
 
-tasks.register('copyDataFromMopublic', Db2Db) {
+tasks.register('copyDataFromPub', Db2Db) {
     dependsOn 'copyDataFromEdit'
+    description = 'Quelldaten tabellenweise aus der Pub-DB in die Processing-DB kopieren.'
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    transferSets = [
+        new TransferSet('import_to_processing/import_waldplan_pub_dataset.sql', 'awjf_waldplan_pub_v2.t_ili2db_dataset', true),
+        new TransferSet('import_to_processing/import_waldplan_pub_basket.sql', 'awjf_waldplan_pub_v2.t_ili2db_basket', true)
+    ];
+}
+
+tasks.register('copyDataFromMopublic', Db2Db) {
+    dependsOn 'copyDataFromPub'
     description = 'Quelldaten tabellenweise aus der Pub-DB in die Processing-DB kopieren.'
     sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
     targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -140,26 +157,26 @@ tasks.register('copyDataFromHoheitsgrenzen', Db2Db) {
 
 tasks.register('processingPubData', SqlExecutor) {
     dependsOn 'copyDataFromHoheitsgrenzen'
-    description = 'Berechnung Waldplandaten für alle Gemeinden'
+    description = 'Berechnung Waldplandaten für eine Gemeinde'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlParameters = [bfsnr_param:bfsnr]
     sqlFiles = files(
-        'processing_data/awjf_dataset_basket_processing.sql',
-        'processing_data/awjf_schutzwald_processing.sql',
-        'processing_data/awjf_waldfunktion_processing.sql',
-        'processing_data/awjf_waldnutzung_processing.sql',
-        'processing_data/awjf_waldplan_grundstueck_processing.sql',
-        'processing_data/awjf_walduebersicht_processing.sql'
+        'processing_data/01_awjf_schutzwald_processing.sql',
+        'processing_data/02_awjf_waldfunktion_processing.sql',
+        'processing_data/03_awjf_waldnutzung_processing.sql',
+        'processing_data/04_awjf_waldplan_grundstueck_01_tabellen_erstellen_processing.sql',
+        'processing_data/05_awjf_waldplan_grundstueck_02_grundstueck_processing.sql',
+        'processing_data/06_awjf_waldplan_grundstueck_03_waldfunktion_waldnutzung_processing.sql',
+        'processing_data/07_awjf_waldplan_grundstueck_04_waldflaeche_processing.sql',
+        'processing_data/08_awjf_waldplan_grundstueck_05_flaechenberechnungen_processing.sql',
+        'processing_data/09_awjf_waldplan_grundstueck_06_json_processing.sql',
+        'processing_data/10_awjf_waldplan_auswertung_processing.sql',
+        'processing_data/11_awjf_walduebersicht_processing.sql'
     )
 }
 
-tasks.register('UpdateFlaechenwerte', SqlExecutor) {
-    dependsOn 'processingPubData'
-    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlFiles = files('processing_data/awjf_update_flaechenwerte_processing.sql')
-}
-
 tasks.register('transferData', Db2Db) {
-    dependsOn 'UpdateFlaechenwerte'
+    dependsOn 'processingPubData'
     description = 'Einmaliger Transfer von Dataset und BAsket'
     sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
