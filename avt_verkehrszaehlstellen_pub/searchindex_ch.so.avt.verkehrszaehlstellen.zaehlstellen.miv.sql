@@ -1,4 +1,4 @@
-SET search_path to avt_verkehrszaehlstellen_pub, public;
+SET search_path to avt_verkehrszaehlstellen_pub_v1, public;
 
 INSERT INTO ${db_schema}.feature (
     anzeige,            -- Anzeigetext
@@ -19,7 +19,9 @@ index_base AS (
         'Verkehrszählstelle Name'::text AS part_3,
         (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
-        verkehrszhlstllen_verkehrszaehlstelle
+        verkehrszaehlstelle
+    WHERE 
+        zaehlobjekt = 'MIV'
 )
 SELECT
     displaytext AS anzeige,

@@ -65,6 +65,7 @@ map_perimeter_file AS (
 ,('c36d9fb0-edc2-451b-a98e-faf2ff639078','129_Kleinluetzel_Wasser_Rutsch_Stein_2007.pdf')
 ,('2bd5c6cc-3ae1-4e8d-b9df-289629a3316c','069_Holderbank_Sturz_Talflueli_2018.pdf')
 ,('2bd5c6cc-3ae1-4e8d-b9df-289629a3316c','069_Holderbank_Wasser_2008.pdf')
+,('2bd5c6cc-3ae1-4e8d-b9df-289629a3316c','069_Holderbank_Rutsch_2008.pdf')
 ,('fbad49f7-c69e-476a-990d-e267a46f95f2','121_Baerschwil_Sturz_SBB_2016.pdf')
 ,('533b15f4-974e-40bb-af11-84808f526fe3','019_Aetingen_Rutsch_2009.pdf')
 ,('0f0d247f-453d-497f-a999-e4c225c4332d','099_Kienberg_Rutsch_2007.pdf')
