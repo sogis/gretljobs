@@ -1,5 +1,3 @@
-DELETE FROM waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert;
-
 WITH 
 -- Berechne die totale Waldfunktion pro Grundstück --
 waldfunktion_summe AS (
@@ -73,7 +71,6 @@ INSERT INTO waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert
 		END AS korrigiert
 	FROM rangiert;
 
-DELETE FROM waldfunktionsflaechen_grundstueck;
 INSERT INTO waldfunktionsflaechen_grundstueck
 	SELECT
     	egrid,
@@ -103,7 +100,6 @@ INSERT INTO waldfunktionsflaechen_grundstueck
 	) t
 ;
 
-DELETE FROM waldnutzungsflaechen_grundstueck;
 INSERT INTO waldnutzungsflaechen_grundstueck
 	SELECT
     	egrid,
@@ -139,7 +135,6 @@ INSERT INTO waldnutzungsflaechen_grundstueck
 	) t
 ;
 
-DELETE FROM waldnutzungsflaechen_grundstueck;
 INSERT INTO biodiversitaetsobjekte_grundstueck
 	SELECT
     	egrid,
@@ -172,7 +167,6 @@ INSERT INTO biodiversitaetsobjekte_grundstueck
 	) t
 ;
 
-DELETE FROM waldflaeche_produktiv;
 INSERT INTO waldflaeche_produktiv
 	SELECT
 		wfnp.egrid,
@@ -204,7 +198,6 @@ INSERT INTO waldflaeche_produktiv
 		wald.flaeche
 ;
 
-DELETE FROM waldfunktion_hiebsatzrelevant;
 INSERT INTO waldfunktion_hiebsatzrelevant
 	SELECT
 		wfnp.egrid,
@@ -335,7 +328,6 @@ INSERT INTO waldfunktion_hiebsatzrelevant
 		wald.flaeche
 ;
 
-DELETE FROM waldnutzung_hiebsatzrelevant;
 INSERT INTO waldnutzung_hiebsatzrelevant
 	SELECT
 		wfnp.egrid,
@@ -397,7 +389,6 @@ INSERT INTO waldnutzung_hiebsatzrelevant
 		wald.flaeche
 ;
 
-DELETE FROM waldfunktion_nach_waldnutzung;
 INSERT INTO waldfunktion_nach_waldnutzung
 	SELECT
 		egrid,
@@ -452,7 +443,6 @@ INSERT INTO waldfunktion_nach_waldnutzung
 		egrid
 ;
 
-DELETE FROM wytweide_grundstueck;
 INSERT INTO wytweide_grundstueck
 	SELECT 
 		egrid,
