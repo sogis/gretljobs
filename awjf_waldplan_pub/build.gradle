@@ -141,32 +141,14 @@ tasks.register('copyDataFromPub', Db2Db) {
     targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     transferSets = [
         new TransferSet('import_to_processing/import_waldplan_pub_dataset.sql', 'awjf_waldplan_pub_v2.t_ili2db_dataset', true),
-        new TransferSet('import_to_processing/import_waldplan_pub_basket.sql', 'awjf_waldplan_pub_v2.t_ili2db_basket', true)
-    ];
-}
-
-tasks.register('copyDataFromMopublic', Db2Db) {
-    dependsOn 'copyDataFromPub'
-    description = 'Quelldaten tabellenweise aus der Pub-DB in die Processing-DB kopieren.'
-    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
-    targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    transferSets = [
-        new TransferSet('import_to_processing/import_mopublic_grundstueck.sql', 'agi_mopublic_pub.mopublic_grundstueck', true)
-    ];
-}
-
-tasks.register('copyDataFromHoheitsgrenzen', Db2Db) {
-    dependsOn 'copyDataFromMopublic'
-    description = 'Quelldaten tabellenweise aus der Pub-DB in die Processing-DB kopieren.'
-    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
-    targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    transferSets = [
+        new TransferSet('import_to_processing/import_waldplan_pub_basket.sql', 'awjf_waldplan_pub_v2.t_ili2db_basket', true),
+        new TransferSet('import_to_processing/import_mopublic_grundstueck.sql', 'agi_mopublic_pub.mopublic_grundstueck', true),
         new TransferSet('import_to_processing/import_hoheitsgrenzen_gemeindegrenze.sql', 'agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze', true)
     ];
 }
 
 tasks.register('processingPubData', SqlExecutor) {
-    dependsOn 'copyDataFromHoheitsgrenzen'
+    dependsOn 'copyDataFromPub'
     description = 'Berechnung Waldplandaten für eine Gemeinde'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlParameters = [bfsnr_param:bfsnr]

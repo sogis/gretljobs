@@ -1,4 +1,3 @@
-DELETE FROM waldflaeche_grundstueck;
 INSERT INTO waldflaeche_grundstueck
 SELECT
     gs.egrid,
@@ -27,7 +26,6 @@ CREATE INDEX
 ;
 
 -- Bereinigung der Geometrien --
-DELETE FROM waldflaeche_grundstueck_bereinigt;
 INSERT INTO waldflaeche_grundstueck_bereinigt
 SELECT
 	egrid,
@@ -53,7 +51,6 @@ CREATE INDEX
 ;
 
 -- Zweite Bereinigung --
-DELETE FROM waldflaeche_grundstueck_final;
 INSERT INTO waldflaeche_grundstueck_final
 SELECT
     egrid,
@@ -71,7 +68,6 @@ CREATE INDEX
 ;
 
 -- Berechnung Waldfläche pro Grundstück --
-DELETE FROM waldflaeche_berechnet;
 INSERT INTO waldflaeche_berechnet
 	SELECT
 		gs.egrid,
@@ -92,7 +88,6 @@ CREATE INDEX
 	ON waldflaeche_berechnet(egrid)
 ;
 
-DELETE FROM waldflaeche_berechnet_plausibilisiert;
 INSERT INTO	waldflaeche_berechnet_plausibilisiert
 	SELECT
 		egrid,

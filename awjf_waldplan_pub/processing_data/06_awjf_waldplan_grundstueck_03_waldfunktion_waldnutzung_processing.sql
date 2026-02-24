@@ -1,4 +1,3 @@
-DELETE FROM waldfunktion;
 INSERT INTO waldfunktion
 	SELECT
 		wf.t_datasetname,
@@ -22,7 +21,6 @@ CREATE INDEX
 	USING gist (geometrie)
 ;
 
-DELETE FROM waldnutzung;
 INSERT INTO waldnutzung
 	SELECT
 		wnz.t_datasetname,
@@ -46,7 +44,6 @@ CREATE INDEX
 	USING gist (geometrie)
 ;
 
-DELETE FROM waldfunktion_waldnutzung;
 INSERT INTO waldfunktion_waldnutzung
 SELECT
 	wnz.t_datasetname,
@@ -71,7 +68,6 @@ CREATE INDEX
 	USING gist (geometrie)
 ;
 
-DELETE FROM waldfunktion_waldnutzung_grundstueck_berechnet;
 INSERT INTO waldfunktion_waldnutzung_grundstueck_berechnet
 	SELECT
 		*

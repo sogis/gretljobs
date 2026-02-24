@@ -1,4 +1,3 @@
-DELETE FROM grundstueck;
 INSERT INTO grundstueck
 	SELECT
 		basket_w.t_id AS t_basket_waldplan,

@@ -1,9 +1,6 @@
-DELETE FROM awjf_waldplan_pub_v2.waldplan_walduebersicht;
-
 DROP TABLE IF EXISTS 
 	walduebersicht_union_geometry,
 	walduebersicht_cleaned_geometry
-CASCADE
 ;
 
 CREATE TABLE 

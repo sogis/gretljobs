@@ -1,5 +1,3 @@
-DELETE FROM awjf_waldplan_pub_v2.waldplan_schutzwald;
-
 WITH
 
 grundstuecke AS (
@@ -133,7 +131,7 @@ schutzwald_attribute AS (
 		ON sw.intensitaet_geschaetzt = ins.ilicode
 	LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS hgg 
 		ON sw.t_datasetname = hgg.bfs_gemeindenummer::text
-	WHERE 
+	WHERE
 		split_part(basket.topic, '.', 2) = 'Waldplan'
 ),
 

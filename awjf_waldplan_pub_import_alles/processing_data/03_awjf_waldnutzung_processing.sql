@@ -1,5 +1,3 @@
-DELETE FROM awjf_waldplan_pub_v2.waldplan_waldnutzung;
-
 WITH
 
 -- =========================================================
@@ -21,7 +19,7 @@ waldnutzung_edit_clean AS (
 		ON wnz.t_datasetname = dataset.datasetname
 	LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_basket AS basket
 		ON dataset.t_id = basket.dataset
-	AND 
+	WHERE
 		split_part(basket.topic, '.', 2) = 'Waldplan'
 	AND
 		ST_IsValid(wnz.geometrie)

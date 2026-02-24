@@ -1,4 +1,3 @@
-DELETE FROM awjf_waldplan_pub_v2.waldplan_aswrtung_auswertung;
 INSERT INTO awjf_waldplan_pub_v2.waldplan_aswrtung_auswertung (
 	t_basket,
 	t_datasetname,
@@ -224,5 +223,5 @@ INSERT INTO awjf_waldplan_pub_v2.waldplan_aswrtung_auswertung (
 		ON gs.egrid = wnhr.egrid
 	LEFT JOIN waldflaeche_grundstueck_final AS wfgf
 		ON gs.egrid = wfgf.egrid
-	WHERE
-		wfgf.geometrie IS NOT NULL 
+	WHERE 
+		wfgf.geometrie IS NOT NULL
