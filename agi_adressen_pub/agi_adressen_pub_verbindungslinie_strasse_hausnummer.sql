@@ -50,4 +50,5 @@ SELECT
     datum
 FROM
     strasse_hausnummer
+WHERE geometrie IS NOT NULL
 ;
