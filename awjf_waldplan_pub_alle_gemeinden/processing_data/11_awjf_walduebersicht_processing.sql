@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS 
 	walduebersicht_union_geometry,
 	walduebersicht_cleaned_geometry
+CASCADE
 ;
 
 CREATE TABLE 

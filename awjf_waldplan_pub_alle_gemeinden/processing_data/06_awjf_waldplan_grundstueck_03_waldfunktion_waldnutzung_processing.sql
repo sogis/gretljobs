@@ -12,6 +12,8 @@ INSERT INTO waldfunktion
 		wf.bemerkung
 	FROM 
 		awjf_waldplan_pub_v2.waldplan_waldfunktion AS wf
+	WHERE
+		wf.t_datasetname::int4 = ${bfsnr_param}
 ;
 
 CREATE INDEX 
@@ -28,6 +30,8 @@ INSERT INTO waldnutzung
 		wnz.geometrie
 	FROM 
 		awjf_waldplan_pub_v2.waldplan_waldnutzung AS wnz
+	WHERE
+		wnz.t_datasetname::int4 = ${bfsnr_param}
 ;
 
 CREATE INDEX 

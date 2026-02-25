@@ -47,6 +47,8 @@ INSERT INTO grundstueck
 	LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_basket AS basket_a
 		ON dataset.t_id = basket_a.dataset 
 		AND split_part(basket_a.topic, '.', 2) = 'Waldplan_Auswertung'
+	WHERE
+		ww.t_datasetname::int4 = ${bfsnr_param}
 ;
 
 CREATE INDEX 

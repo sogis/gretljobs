@@ -15,6 +15,8 @@ grundstuecke AS (
 		ON ww.forstrevier = wfr.t_id
 	LEFT JOIN awjf_waldplan_v2.forstkreise AS fk 
 		ON ww.forstkreis = fk.ilicode
+	WHERE
+		ww.t_datasetname::int4 = ${bfsnr_param}
 ),
 
 schutzwald_flaeche AS (
@@ -25,6 +27,8 @@ schutzwald_flaeche AS (
 		awjf_waldplan_v2.waldplan_waldfunktion
 	WHERE 
 		funktion IN ('Schutzwald','Schutzwald_Biodiversitaet')
+	AND 
+		t_datasetname::int4 = ${bfsnr_param}
 	GROUP BY
 		schutzwald_r
 ),
@@ -132,6 +136,8 @@ schutzwald_attribute AS (
 	LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze AS hgg 
 		ON sw.t_datasetname = hgg.bfs_gemeindenummer::text
 	WHERE
+		sw.t_datasetname::int4 = ${bfsnr_param}
+	AND 
 		split_part(basket.topic, '.', 2) = 'Waldplan'
 ),
 

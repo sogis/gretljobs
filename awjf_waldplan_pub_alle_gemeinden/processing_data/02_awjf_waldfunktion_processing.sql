@@ -31,6 +31,8 @@ waldfunktion_edit AS (
 	LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_basket AS basket
 		ON dataset.t_id = basket.dataset
 	WHERE
+		wf.t_datasetname::int4 = ${bfsnr_param}
+	AND 
 		split_part(basket.topic, '.', 2) = 'Waldplan'
 ),
 
