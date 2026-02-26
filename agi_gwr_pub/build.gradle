@@ -10,8 +10,8 @@ defaultTasks 'transferData'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def sqliteFileName = "data_so.sqlite"
-def sqliteFile = Paths.get(pathToTempFolder, sqliteFileName)
-def dbUriGwr = "jdbc:sqlite:"+sqliteFile.toFile().getAbsolutePath()  
+def sqliteFile = Paths.get(pathToTempFolder, sqliteFileName).toFile()
+def dbUriGwr = "jdbc:sqlite:"+sqliteFile.getAbsolutePath()  
 
 def iliModelName = "";
 
