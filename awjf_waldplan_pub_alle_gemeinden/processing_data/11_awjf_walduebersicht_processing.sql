@@ -1,5 +1,3 @@
-DELETE FROM awjf_waldplan_pub_v2.waldplan_walduebersicht;
-
 DROP TABLE IF EXISTS 
 	walduebersicht_union_geometry,
 	walduebersicht_cleaned_geometry
@@ -81,5 +79,7 @@ LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_dataset AS dataset
 	ON 'admin' = dataset.datasetname
 LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_basket AS basket
 	ON dataset.t_id = basket.dataset
+	AND split_part(basket.topic, '.', 2) = 'Waldplan'
 GROUP BY 
 	basket.t_id
+;

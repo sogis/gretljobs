@@ -1,5 +1,3 @@
-DELETE FROM awjf_waldplan_pub_v2.waldplan_schutzwald;
-
 WITH
 
 grundstuecke AS (
@@ -81,7 +79,7 @@ administrative_forstdaten AS (
 schutzwald_attribute AS (
 	SELECT 
 		sw.t_id,
-		sw.t_basket,
+		basket.t_id AS t_basket,
 		sw.t_datasetname,
 		sw.schutzwald_nr,
 		sw.sturz,
@@ -125,6 +123,10 @@ schutzwald_attribute AS (
 		sw.bemerkungen
 	FROM
 		awjf_waldplan_v2.waldplan_schutzwald AS sw
+	LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_dataset AS dataset
+		ON sw.t_datasetname = dataset.datasetname
+	LEFT JOIN awjf_waldplan_pub_v2.t_ili2db_basket AS basket
+		ON dataset.t_id = basket.dataset
 	LEFT JOIN awjf_waldplan_v2.objekte_schutzwald AS osw 
 		ON sw.objektkategorie = osw.ilicode
 	LEFT JOIN awjf_waldplan_v2.art_hauptgefahrenpotential AS ah 
@@ -135,6 +137,8 @@ schutzwald_attribute AS (
 		ON sw.t_datasetname = hgg.bfs_gemeindenummer::text
 	WHERE
 		sw.t_datasetname::int4 = ${bfsnr_param}
+	AND 
+		split_part(basket.topic, '.', 2) = 'Waldplan'
 ),
 
 schutzwald_zusammengefasst AS (
