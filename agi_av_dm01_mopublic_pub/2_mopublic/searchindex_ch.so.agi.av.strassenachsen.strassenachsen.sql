@@ -16,6 +16,7 @@ index_base AS (
         concat(ms.strassenname, '.', mg.gemeindename ) AS id_in_class,
         ms.strassenname AS name_in_class,
         concat(ms.strassenname, ' | ', mg.gemeindename, ' (Strasse)' )  AS displaytext,
+        concat(ms.strassenname, ' ',mg.gemeindename) AS part_1,
         'Strassenachse Name '::text AS part_3,
         (st_asgeojson(st_envelope(st_collect(ms.geometrie)), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
