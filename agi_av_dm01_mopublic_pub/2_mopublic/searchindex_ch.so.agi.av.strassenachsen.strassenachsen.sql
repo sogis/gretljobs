@@ -13,20 +13,15 @@ WITH
 index_base AS (
     SELECT
         ${layername}::text AS subclass,
-        concat(ms.strassenname, '.', mg.gemeindename ) AS id_in_class,
-        ms.strassenname AS name_in_class,
-        concat(ms.strassenname, ' | ', mg.gemeindename, ' (Strasse)' )  AS displaytext,
-        concat(ms.strassenname, ' ',mg.gemeindename) AS part_1,
+        id AS id_in_class,
+        concat(strassenname, ' | ', bfs_nr, ' ' , gemeindename, ' (Strasse)' )  AS displaytext,
+        concat(strassenname, ' | ', bfs_nr, ' ' , gemeindename, ' (Strasse)' ) AS part_1,
         'Strassenachse Name '::text AS part_3,
-        (st_asgeojson(st_envelope(st_collect(ms.geometrie)), 0, 1)::json -> 'bbox'::text)::text AS bbox
+        (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
-        mopublic_strassenachse ms
-        JOIN mopublic_gemeindegrenze mg
-            ON ms.bfs_nr = mg.bfs_nr 
+        mopublic_strassenachse_search_v
     WHERE
-        ms.strassenname IS NOT NULL
-    GROUP BY
-        ms.strassenname, mg.gemeindename
+        strassenname IS NOT NULL
 )
 SELECT
     displaytext AS anzeige,
@@ -34,7 +29,7 @@ SELECT
     subclass AS layer_ident,
     bbox as ausdehnung,
     id_in_class::text AS id_feature,
-    'id_in_class'::text as id_spalten_name,
+    'id'::text as id_spalten_name,
     false as id_in_hochkomma
 FROM
     index_base
