@@ -1,4 +1,15 @@
-INSERT INTO waldfunktion
+INSERT INTO waldfunktion (
+		t_datasetname,
+		funktion,
+		funktion_txt,
+		biodiversitaet_id,
+		biodiversitaet_objekt,
+		biodiversitaet_objekt_txt,
+		wytweide,
+		wytweide_txt,
+		geometrie,
+		bemerkung
+)
 	SELECT
 		wf.t_datasetname,
 		wf.funktion,
@@ -21,7 +32,13 @@ CREATE INDEX
 	USING gist (geometrie)
 ;
 
-INSERT INTO waldnutzung
+INSERT INTO waldnutzung (
+		t_datasetname,
+		t_id,
+		nutzungskategorie,
+		nutzungskategorie_txt,
+		geometrie
+)
 	SELECT
 		wnz.t_datasetname,
 		wnz.t_id,
@@ -44,7 +61,17 @@ CREATE INDEX
 	USING gist (geometrie)
 ;
 
-INSERT INTO waldfunktion_waldnutzung
+INSERT INTO waldfunktion_waldnutzung (
+	t_datasetname,
+	funktion,
+	funktion_txt,
+	biodiversitaet_objekt,
+	biodiversitaet_objekt_txt,
+	wytweide,
+	nutzungskategorie,
+	nutzungskategorie_txt,
+	geometrie
+)
 SELECT
 	wnz.t_datasetname,
 	wf.funktion,
@@ -68,7 +95,18 @@ CREATE INDEX
 	USING gist (geometrie)
 ;
 
-INSERT INTO waldfunktion_waldnutzung_grundstueck_berechnet
+INSERT INTO waldfunktion_waldnutzung_grundstueck_berechnet (
+	egrid,
+	t_datasetname,
+	funktion,
+	funktion_txt,
+	biodiversitaet_objekt,
+	biodiversitaet_objekt_txt,
+	wytweide,
+	nutzungskategorie,
+	nutzungskategorie_txt,
+	flaeche
+)
 	SELECT
 		*
 	FROM (

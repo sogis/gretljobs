@@ -1,4 +1,26 @@
-INSERT INTO grundstueck
+INSERT INTO grundstueck (
+	t_basket_waldplan,
+	t_basket_auswertung,
+	t_datasetname,
+	egrid,
+	gemeinde,
+	forstbetrieb,
+	forstkreis,
+	forstkreis_txt,
+	forstrevier,
+	wirtschaftszone,
+	wirtschaftszone_txt,
+	grundstuecknummer,
+	flaechenmass,
+	eigentuemerinformation,
+	eigentuemer,
+	eigentuemer_txt,
+	grundbuch,
+	ausserkantonal,
+	ausserkantonal_txt,
+	geometrie,
+	bemerkung
+)
 	SELECT
 		basket_w.t_id AS t_basket_waldplan,
 		basket_a.t_id AS t_basket_auswertung,

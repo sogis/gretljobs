@@ -47,7 +47,19 @@ rangiert AS (
 		ON w.egrid = d.egrid
 )
 
-INSERT INTO waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert
+INSERT INTO waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert (
+	egrid,
+	t_datasetname,
+	funktion,
+	funktion_txt,
+	biodiversitaet_objekt,
+	biodiversitaet_objekt_txt,
+	wytweide,
+	nutzungskategorie,
+	nutzungskategorie_txt,
+	flaeche,
+	angepasst
+)
 	SELECT
 		egrid,
 		t_datasetname,
@@ -71,7 +83,15 @@ INSERT INTO waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert
 		END AS korrigiert
 	FROM rangiert;
 
-INSERT INTO waldfunktionsflaechen_grundstueck
+INSERT INTO waldfunktionsflaechen_grundstueck (
+	egrid,
+	wirtschaftswald,
+	schutzwald,
+	erholungswald,
+	biodiversitaet,
+	schutzwald_biodiversitaet,
+	waldfunktion_total
+)
 	SELECT
     	egrid,
     	wirtschaftswald,
@@ -100,7 +120,17 @@ INSERT INTO waldfunktionsflaechen_grundstueck
 	) t
 ;
 
-INSERT INTO waldnutzungsflaechen_grundstueck
+INSERT INTO waldnutzungsflaechen_grundstueck (
+	egrid,
+	wald_bestockt,
+	nachteilige_nutzung,
+	waldstrasse,
+	maschinenweg,
+	bauten_anlagen,
+	rodung_temporaer,
+	gewaesser,
+	waldnutzung_total
+)
 	SELECT
     	egrid,
     	wald_bestockt,
@@ -135,7 +165,16 @@ INSERT INTO waldnutzungsflaechen_grundstueck
 	) t
 ;
 
-INSERT INTO biodiversitaetsobjekte_grundstueck
+INSERT INTO biodiversitaetsobjekte_grundstueck (
+	egrid,
+	waldreservat,
+	altholzinsel,
+	waldrand,
+	lichter_wald,
+	lebensraum_prioritaer,
+	andere_foerderflaeche,
+	biodiversitaetsobjekte_total
+)
 	SELECT
     	egrid,
     	waldreservat,
@@ -167,7 +206,22 @@ INSERT INTO biodiversitaetsobjekte_grundstueck
 	) t
 ;
 
-INSERT INTO waldflaeche_produktiv
+INSERT INTO waldflaeche_produktiv (
+	egrid,
+	waldflaeche,
+	waldflaeche_produktiv,
+	waldflaeche_unproduktiv,
+	wirtschaftswald_produktiv,
+	wirtschaftswald_unproduktiv,
+	schutzwald_produktiv,
+	schutzwald_unproduktiv,
+	erholungswald_produktiv,
+	erholungswald_unproduktiv,
+	biodiversitaet_produktiv,
+	biodiversitaet_unproduktiv,
+	schutzwald_bio_produktiv,
+	schutzwald_bio_unproduktiv
+)
 	SELECT
 		wfnp.egrid,
 		wald.flaeche AS waldflaeche,
@@ -198,127 +252,190 @@ INSERT INTO waldflaeche_produktiv
 		wald.flaeche
 ;
 
-INSERT INTO waldfunktion_hiebsatzrelevant
+INSERT INTO waldfunktion_hiebsatzrelevant (
+	egrid,
+	waldflaeche,
+	waldflaeche_hiebrel,
+	waldflaeche_n_hiebrel,
+	wirtschaftswald_hiebrel,
+	wirtschaftswald_n_hiebrel,
+	schutzwald_hiebrel,
+	schutzwald_n_hiebrel,
+	erholungswald_hiebrel,
+	erholungswald_n_hiebrel,
+	biodiversitaet_hiebrel,
+	biodiversitaet_n_hiebrel,
+	schutzwald_bio_hiebrel,
+	schutzwald_bio_n_hiebrel
+)
 	SELECT
 		wfnp.egrid,
 		wald.flaeche AS waldflaeche,
 		
 		-- Waldfläche total --
-		COALESCE(SUM(wfnp.flaeche) FILTER (
-			WHERE
-				wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
-			AND (
-				biodiversitaet_objekt IS NULL
-				OR biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel'))
-			),0) AS waldflaeche_hiebrel,
+		COALESCE(
+			SUM(wfnp.flaeche) FILTER (
+				WHERE
+					wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+				AND (
+					wfnp.biodiversitaet_objekt IS NULL
+					OR wfnp.biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel')
+				)
+			),0
+		) AS waldflaeche_hiebrel,
 			
-		COALESCE(SUM(wfnp.flaeche) FILTER (
-			WHERE
-				wfnp.nutzungskategorie NOT IN ('Wald_bestockt', 'Nachteilige_Nutzung')
-			AND (
-				biodiversitaet_objekt IS NOT NULL
-				OR biodiversitaet_objekt IN ('Waldreservat', 'Altholzinsel'))
-			),0) AS waldflaeche_n_hiebrel,
+		COALESCE(
+			SUM(wfnp.flaeche) FILTER (
+				WHERE NOT (
+					wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+					AND (
+						wfnp.biodiversitaet_objekt IS NULL
+						OR wfnp.biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel')
+					)
+				)
+			),0
+		) AS waldflaeche_n_hiebrel,
 			
 		-- Wirtschaftswald --
-		COALESCE(SUM(wfnp.flaeche) FILTER (
-			WHERE
-				wfnp.funktion = 'Wirtschaftswald'
-			AND
-				wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
-			AND (
-				biodiversitaet_objekt IS NULL
-				OR biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel'))
-			),0) AS wirtschaftswald_hiebrel,
-
-		COALESCE(SUM(wfnp.flaeche) FILTER (
-			WHERE
-				wfnp.funktion = 'Wirtschaftswald'
-			AND (
-				wfnp.nutzungskategorie NOT IN ('Wald_bestockt', 'Nachteilige_Nutzung')
-				OR biodiversitaet_objekt IN ('Waldreservat', 'Altholzinsel')
+		COALESCE(
+			SUM(wfnp.flaeche) FILTER (
+				WHERE
+					wfnp.funktion = 'Wirtschaftswald'
+				AND
+					wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+				AND (
+					wfnp.biodiversitaet_objekt IS NULL
+					OR wfnp.biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel')
 				)
-			),0) AS wirtschaftswald_n_hiebrel,
+			),0
+		) AS wirtschaftswald_hiebrel,
+
+		COALESCE(
+			SUM(wfnp.flaeche) FILTER (
+				WHERE 
+					wfnp.funktion = 'Wirtschaftswald'
+				AND NOT (
+					wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+					AND (
+						wfnp.biodiversitaet_objekt IS NULL
+						OR wfnp.biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel')
+					)
+				)
+			),0
+		) AS wirtschaftswald_n_hiebrel,
+		
+				-- Schutzwald --
+		COALESCE(
+			SUM(wfnp.flaeche) FILTER (
+				WHERE
+					wfnp.funktion = 'Schutzwald'
+				AND
+					wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+				AND (
+					wfnp.biodiversitaet_objekt IS NULL
+					OR wfnp.biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel')
+				)
+			),0
+		) AS schutzwald_hiebrel,
+
+		COALESCE(
+			SUM(wfnp.flaeche) FILTER (
+				WHERE 
+					wfnp.funktion = 'Schutzwald'
+				AND NOT (
+					wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+					AND (
+						wfnp.biodiversitaet_objekt IS NULL
+						OR wfnp.biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel')
+					)
+				)
+			),0
+		) AS schutzwald_n_hiebrel,
 						
 		-- Erholungswald --
-		COALESCE(SUM(wfnp.flaeche) FILTER (
-			WHERE
-				wfnp.funktion = 'Erholungswald'
-			AND
-				wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
-			AND (
-				biodiversitaet_objekt IS NULL
-				OR biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel'))
-			),0) AS erholungswald_hiebrel,
-
-		COALESCE(SUM(wfnp.flaeche) FILTER (
-			WHERE
-				wfnp.funktion = 'Erholungswald'
-			AND (
-				wfnp.nutzungskategorie NOT IN ('Wald_bestockt', 'Nachteilige_Nutzung')
-				OR biodiversitaet_objekt IN ('Waldreservat', 'Altholzinsel')
+		COALESCE(
+			SUM(wfnp.flaeche) FILTER (
+				WHERE
+					wfnp.funktion = 'Erholungswald'
+				AND
+					wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+				AND (
+					wfnp.biodiversitaet_objekt IS NULL
+					OR wfnp.biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel')
 				)
-			),0) AS erholungswald_n_hiebrel,
+			),0
+		) AS erholungswald_hiebrel,
+
+		COALESCE(
+			SUM(wfnp.flaeche) FILTER (
+				WHERE 
+					wfnp.funktion = 'Erholungswald'
+				AND NOT (
+					wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+					AND (
+						wfnp.biodiversitaet_objekt IS NULL
+						OR wfnp.biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel')
+					)
+				)
+			),0
+		) AS erholungswald_n_hiebrel,
 						
 		-- Biodiversität --
-		COALESCE(SUM(wfnp.flaeche) FILTER (
-			WHERE
-				wfnp.funktion = 'Biodiversitaet'
-			AND
-				wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
-			AND (
-				biodiversitaet_objekt IS NULL
-				OR biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel'))
-			),0) AS biodiversitaet_hiebrel,
-
-		COALESCE(SUM(wfnp.flaeche) FILTER (
-			WHERE
-				wfnp.funktion = 'Biodiversitaet'
-			AND (
-				wfnp.nutzungskategorie NOT IN ('Wald_bestockt', 'Nachteilige_Nutzung')
-				OR biodiversitaet_objekt IN ('Waldreservat', 'Altholzinsel')
+		COALESCE(
+			SUM(wfnp.flaeche) FILTER (
+				WHERE
+					wfnp.funktion = 'Biodiversitaet'
+				AND
+					wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+				AND (
+					wfnp.biodiversitaet_objekt IS NULL
+					OR wfnp.biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel')
 				)
-			),0) AS biodiversitaet_n_hiebrel,
+			),0
+		) AS biodiversitaet_hiebrel,
+
+		COALESCE(
+			SUM(wfnp.flaeche) FILTER (
+				WHERE 
+					wfnp.funktion = 'Biodiversitaet'
+				AND NOT (
+					wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+					AND (
+						wfnp.biodiversitaet_objekt IS NULL
+						OR wfnp.biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel')
+					)
+				)
+			),0
+		) AS biodiversitaet_n_hiebrel,
 						
-		-- Schutzwald --
-		COALESCE(SUM(wfnp.flaeche) FILTER (
-			WHERE
-				wfnp.funktion = 'Schutzwald'
-			AND
-				wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
-			AND (
-				biodiversitaet_objekt IS NULL
-				OR biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel'))
-			),0) AS schutzwald_hiebrel,
-
-		COALESCE(SUM(wfnp.flaeche) FILTER (
-			WHERE
-				wfnp.funktion = 'Schutzwald'
-			AND (
-				wfnp.nutzungskategorie NOT IN ('Wald_bestockt', 'Nachteilige_Nutzung')
-				OR biodiversitaet_objekt IN ('Waldreservat', 'Altholzinsel')
-				)
-			),0) AS schutzwald_n_hiebrel,
 						
 		-- Schutzwald / Biodiversität --
-		COALESCE(SUM(wfnp.flaeche) FILTER (
-			WHERE
-				wfnp.funktion = 'Schutzwald_Biodiversitaet'
-			AND
-				wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
-			AND (
-				biodiversitaet_objekt IS NULL
-				OR biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel'))
-			),0) AS schutzwald_bio_hiebrel,
-
-		COALESCE(SUM(wfnp.flaeche) FILTER (
-			WHERE
-				wfnp.funktion = 'Schutzwald_Biodiversitaet'
-			AND (
-				wfnp.nutzungskategorie NOT IN ('Wald_bestockt', 'Nachteilige_Nutzung')
-				OR biodiversitaet_objekt IN ('Waldreservat', 'Altholzinsel')
+		COALESCE(
+			SUM(wfnp.flaeche) FILTER (
+				WHERE
+					wfnp.funktion = 'Schutzwald_Biodiversitaet'
+				AND
+					wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+				AND (
+					wfnp.biodiversitaet_objekt IS NULL
+					OR wfnp.biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel')
 				)
-			),0) AS schutzwald_bio_n_hiebrel
+			),0
+		) AS schutzwald_bio_hiebrel,
+
+		COALESCE(
+			SUM(wfnp.flaeche) FILTER (
+				WHERE 
+					wfnp.funktion = 'Schutzwald_Biodiversitaet'
+				AND NOT (
+					wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+					AND (
+						wfnp.biodiversitaet_objekt IS NULL
+						OR wfnp.biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel')
+					)
+				)
+			),0
+		) AS schutzwald_bio_n_hiebrel
 	FROM 
 		waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert AS wfnp
 	LEFT JOIN waldflaeche_berechnet_plausibilisiert AS wald
@@ -328,58 +445,89 @@ INSERT INTO waldfunktion_hiebsatzrelevant
 		wald.flaeche
 ;
 
-INSERT INTO waldnutzung_hiebsatzrelevant
+INSERT INTO waldnutzung_hiebsatzrelevant (
+	egrid,
+	waldflaeche,
+	waldflaeche_hiebrel,
+	waldflaeche_n_hiebrel,
+	wald_bestockt_hiebrel,
+	wald_bestockt_n_hiebrel,
+	nachteilige_nutzung_hiebrel,
+	nachteilige_nutzung_n_hiebrel
+)
 	SELECT
 		wfnp.egrid,
 		wald.flaeche AS waldflaeche,
 		
 		-- Waldfläche total --
-		COALESCE(SUM(wfnp.flaeche) FILTER (
-			WHERE
-				wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
-			AND (
-				biodiversitaet_objekt IS NULL
-				OR biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel'))
-			),0) AS waldflaeche_hiebrel,
+		COALESCE(
+			SUM(wfnp.flaeche) FILTER (
+				WHERE
+					wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+				AND (
+					wfnp.biodiversitaet_objekt IS NULL
+					OR wfnp.biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel')
+				)
+			),0
+		) AS waldflaeche_hiebrel,
 			
-		COALESCE(SUM(wfnp.flaeche) FILTER (
-			WHERE
-				wfnp.nutzungskategorie NOT IN ('Wald_bestockt', 'Nachteilige_Nutzung')
-			OR 
-				biodiversitaet_objekt IN ('Waldreservat', 'Altholzinsel')
-			),0) AS waldflaeche_n_hiebrel,
+		COALESCE(
+			SUM(wfnp.flaeche) FILTER (
+				WHERE NOT (
+					wfnp.nutzungskategorie IN ('Wald_bestockt', 'Nachteilige_Nutzung')
+					AND (
+						wfnp.biodiversitaet_objekt IS NULL
+						OR wfnp.biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel')
+					)
+				)
+			),0
+		) AS waldflaeche_n_hiebrel,
 			
 		-- Wald bestockt --
-		COALESCE(SUM(wfnp.flaeche) FILTER (
-			WHERE 
-				wfnp.nutzungskategorie = 'Wald_bestockt'
-			AND (
-				biodiversitaet_objekt IS NULL
-				OR biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel'))
-			),0) AS wald_bestockt_hiebrel,
-
-		COALESCE(SUM(wfnp.flaeche) FILTER (
-			WHERE
-				wfnp.nutzungskategorie = 'Wald_bestockt'
-			AND
-				biodiversitaet_objekt IN ('Waldreservat', 'Altholzinsel')
-			),0) AS wald_bestockt_n_hiebrel,
+		COALESCE(
+			SUM(wfnp.flaeche) FILTER (
+				WHERE
+					wfnp.nutzungskategorie = 'Wald_bestockt'
+				AND (
+					wfnp.biodiversitaet_objekt IS NULL
+					OR wfnp.biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel')
+				)
+			),0
+		) AS wald_bestockt_hiebrel,
 			
-					-- Nachteilige Nutzung --
-		COALESCE(SUM(wfnp.flaeche) FILTER (
-			WHERE
-				wfnp.nutzungskategorie = 'Nachteilige_Nutzung'
-			AND (
-				biodiversitaet_objekt IS NULL
-				OR biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel'))
-			),0) AS nachteilige_nutzung_hiebrel,
-
-		COALESCE(SUM(wfnp.flaeche) FILTER (
-			WHERE
-				wfnp.nutzungskategorie = 'Nachteilige_Nutzung'
-			AND
-				biodiversitaet_objekt IN ('Waldreservat', 'Altholzinsel')
-			),0) AS nachteilige_nutzung_n_hiebrel
+		COALESCE(
+			SUM(wfnp.flaeche) FILTER (
+				WHERE
+					wfnp.nutzungskategorie = 'Wald_bestockt'
+				AND NOT (
+					wfnp.biodiversitaet_objekt IS NULL
+					OR wfnp.biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel')
+				)
+			),0
+		) AS wald_bestockt_n_hiebrel,
+				
+		-- Nachteilige Nutzung --
+		COALESCE(
+			SUM(wfnp.flaeche) FILTER (
+				WHERE
+					wfnp.nutzungskategorie = 'Nachteilige_Nutzung'
+				AND (
+					wfnp.biodiversitaet_objekt IS NULL
+					OR wfnp.biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel')
+				)
+			),0
+		) AS nachteilige_nutzung_hiebrel,
+			
+		COALESCE(
+			SUM(wfnp.flaeche) FILTER (
+				WHERE
+					wfnp.nutzungskategorie = 'Nachteilige_Nutzung'
+				AND NOT (
+					wfnp.biodiversitaet_objekt IS NULL
+					OR wfnp.biodiversitaet_objekt NOT IN ('Waldreservat', 'Altholzinsel')
+				)
+			),0
+		) AS nachteilige_nutzung_n_hiebrel
 	FROM 
 		waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert AS wfnp
 	LEFT JOIN waldflaeche_berechnet_plausibilisiert AS wald
@@ -389,7 +537,44 @@ INSERT INTO waldnutzung_hiebsatzrelevant
 		wald.flaeche
 ;
 
-INSERT INTO waldfunktion_nach_waldnutzung
+INSERT INTO waldfunktion_nach_waldnutzung (
+	egrid,
+	wirtschaftswald_wald_bestockt,
+	wirtschaftswald_nt_nutzung,
+	wirtschaftswald_waldstrasse,
+	wirtschaftswald_maschinenweg,
+	wirtschaftswald_bauanl,
+	wirtschaftswald_gewaesser,
+	wirtschaftswald_rodung_temp,
+	erholungswald_wald_bestockt,
+	erholungswald_nt_nutzung,
+	erholungswald_waldstrasse,
+	erholungswald_maschinenweg,
+	erholungswald_bauanl,
+	erholungswald_gewaesser,
+	erholungswald_rodung_temp,
+	schutzwald_wald_bestockt,
+	schutzwald_nt_nutzung,
+	schutzwald_waldstrasse,
+	schutzwald_maschinenweg,
+	schutzwald_bauanl,
+	schutzwald_gewaesser,
+	schutzwald_rodung_temp,
+	biodiversitaet_wald_bestockt,
+	biodiversitaet_nt_nutzung,
+	biodiversitaet_waldstrasse,
+	biodiversitaet_maschinenweg,
+	biodiversitaet_bauanl,
+	biodiversitaet_gewaesser,
+	biodiversitaet_rodung_temp,
+	schutzwald_bio_wald_bestockt,
+	schutzwald_bio_nt_nutzung,
+	schutzwald_bio_waldstrasse,
+	schutzwald_bio_maschinenweg,
+	schutzwald_bio_bauanl,
+	schutzwald_bio_gewaesser,
+	schutzwald_bio_rodung_temp
+)
 	SELECT
 		egrid,
 		
@@ -443,7 +628,10 @@ INSERT INTO waldfunktion_nach_waldnutzung
 		egrid
 ;
 
-INSERT INTO wytweide_grundstueck
+INSERT INTO wytweide_grundstueck (
+	egrid,
+	flaeche
+)
 	SELECT 
 		egrid,
 		SUM(flaeche) FILTER(WHERE wytweide IS TRUE) AS wytweide_flaeche

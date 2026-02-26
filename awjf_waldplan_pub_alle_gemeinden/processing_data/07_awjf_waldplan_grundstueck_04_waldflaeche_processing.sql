@@ -1,4 +1,7 @@
-INSERT INTO waldflaeche_grundstueck
+INSERT INTO waldflaeche_grundstueck (
+	egrid,
+	geometrie
+)
 SELECT
     gs.egrid,
     (ST_Dump(
@@ -26,7 +29,10 @@ CREATE INDEX
 ;
 
 -- Bereinigung der Geometrien --
-INSERT INTO waldflaeche_grundstueck_bereinigt
+INSERT INTO waldflaeche_grundstueck_bereinigt (
+	egrid,
+	geometrie
+)
 SELECT
 	egrid,
     (ST_Dump(
@@ -51,7 +57,10 @@ CREATE INDEX
 ;
 
 -- Zweite Bereinigung --
-INSERT INTO waldflaeche_grundstueck_final
+INSERT INTO waldflaeche_grundstueck_final (
+	egrid,
+	geometrie
+)
 SELECT
     egrid,
     ST_Multi(
@@ -68,7 +77,12 @@ CREATE INDEX
 ;
 
 -- Berechnung Waldfläche pro Grundstück --
-INSERT INTO waldflaeche_berechnet
+INSERT INTO waldflaeche_berechnet (
+	egrid,
+	flaechenmass_grundstueck,
+	waldflaeche,
+	flaeche_differenz
+)
 	SELECT
 		gs.egrid,
 		gs.flaechenmass AS flaechenmass_grundstueck,
@@ -88,7 +102,12 @@ CREATE INDEX
 	ON waldflaeche_berechnet(egrid)
 ;
 
-INSERT INTO	waldflaeche_berechnet_plausibilisiert
+INSERT INTO	waldflaeche_berechnet_plausibilisiert (
+	egrid,
+	flaechenmass_grundstueck,
+	flaeche,
+	angepasst
+)
 	SELECT
 		egrid,
 		flaechenmass_grundstueck,
