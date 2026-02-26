@@ -1,10 +1,5 @@
 -- =========================================================
--- 1) Vorhandene Daten aus Processing-DB löschen
--- =========================================================
-DELETE FROM awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck;
-
--- =========================================================
--- 2) Erstellung JSON-Attribute für berechnete Waldflächen
+-- 1) Erstellung JSON-Attribute für berechnete Waldflächen
 -- =========================================================
 WITH
 
@@ -138,7 +133,7 @@ hiebsatzrelevante_waldflaeche_json AS (
 )
 
 -- =========================================================
--- 3) Einfügen in Waldplan-Grundstückstabelle
+-- 2) Einfügen in Waldplan-Grundstückstabelle
 -- =========================================================
 INSERT INTO awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck(
 	t_basket,

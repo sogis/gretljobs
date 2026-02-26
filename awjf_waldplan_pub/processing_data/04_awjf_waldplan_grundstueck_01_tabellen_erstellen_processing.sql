@@ -1,5 +1,3 @@
---DELETE FROM awjf_waldplan_pub_v2.waldplan_waldplan_grundstueck;
-
 -- =========================================================
 -- 1) Bestehende Tabellen in Processing-DB löschen
 -- =========================================================

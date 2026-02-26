@@ -1,5 +1,15 @@
-DELETE FROM waldfunktion;
-INSERT INTO waldfunktion
+INSERT INTO waldfunktion (
+		t_datasetname,
+		funktion,
+		funktion_txt,
+		biodiversitaet_id,
+		biodiversitaet_objekt,
+		biodiversitaet_objekt_txt,
+		wytweide,
+		wytweide_txt,
+		geometrie,
+		bemerkung
+)
 	SELECT
 		wf.t_datasetname,
 		wf.funktion,
@@ -13,6 +23,8 @@ INSERT INTO waldfunktion
 		wf.bemerkung
 	FROM 
 		awjf_waldplan_pub_v2.waldplan_waldfunktion AS wf
+	WHERE
+		wf.t_datasetname::int4 = ${bfsnr_param}
 ;
 
 CREATE INDEX 
@@ -20,8 +32,13 @@ CREATE INDEX
 	USING gist (geometrie)
 ;
 
-DELETE FROM waldnutzung;
-INSERT INTO waldnutzung
+INSERT INTO waldnutzung (
+		t_datasetname,
+		t_id,
+		nutzungskategorie,
+		nutzungskategorie_txt,
+		geometrie
+)
 	SELECT
 		wnz.t_datasetname,
 		wnz.t_id,
@@ -30,6 +47,8 @@ INSERT INTO waldnutzung
 		wnz.geometrie
 	FROM 
 		awjf_waldplan_pub_v2.waldplan_waldnutzung AS wnz
+	WHERE
+		wnz.t_datasetname::int4 = ${bfsnr_param}
 ;
 
 CREATE INDEX 
@@ -42,8 +61,17 @@ CREATE INDEX
 	USING gist (geometrie)
 ;
 
-DELETE FROM waldfunktion_waldnutzung;
-INSERT INTO waldfunktion_waldnutzung
+INSERT INTO waldfunktion_waldnutzung (
+	t_datasetname,
+	funktion,
+	funktion_txt,
+	biodiversitaet_objekt,
+	biodiversitaet_objekt_txt,
+	wytweide,
+	nutzungskategorie,
+	nutzungskategorie_txt,
+	geometrie
+)
 SELECT
 	wnz.t_datasetname,
 	wf.funktion,
@@ -67,8 +95,18 @@ CREATE INDEX
 	USING gist (geometrie)
 ;
 
-DELETE FROM waldfunktion_waldnutzung_grundstueck_berechnet;
-INSERT INTO waldfunktion_waldnutzung_grundstueck_berechnet
+INSERT INTO waldfunktion_waldnutzung_grundstueck_berechnet (
+	egrid,
+	t_datasetname,
+	funktion,
+	funktion_txt,
+	biodiversitaet_objekt,
+	biodiversitaet_objekt_txt,
+	wytweide,
+	nutzungskategorie,
+	nutzungskategorie_txt,
+	flaeche
+)
 	SELECT
 		*
 	FROM (

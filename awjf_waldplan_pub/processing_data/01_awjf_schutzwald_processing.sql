@@ -1,5 +1,3 @@
-DELETE FROM awjf_waldplan_pub_v2.waldplan_schutzwald;
-
 WITH
 
 grundstuecke AS (
