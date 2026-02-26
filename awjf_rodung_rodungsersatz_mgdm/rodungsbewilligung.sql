@@ -89,7 +89,7 @@ fristen AS (
 rodung AS (
     SELECT 
         t_id,
-        nr_kanton,
+        'SO_' || nr_kanton AS nr_kanton,
         nr_bund,
         vorhaben,
         astatus,
