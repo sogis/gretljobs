@@ -4,7 +4,7 @@ DELETE FROM
 WHERE 
     auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer
     AND (einmalig = FALSE OR einmalig IS NULL)  -- denn diese wurden manuell erfasst (also wir nehmen false und null)
-    AND (migriert = FALSE OR migriert IS NULL); -- sind gültig und nicht kalkuliert (Berücksichtigung Migrationsjahr)
+    AND (migriert = FALSE OR migriert IS NULL) -- sind gültig und nicht kalkuliert (Berücksichtigung Migrationsjahr)
     AND (
         -- prüft, ob es bereits ausbezahlte nicht-einmalige und nicht-migrierte Leistungen gibt - wenn ja, dann wurde die Auszahlung bereits gemacht und es soll nicht erneut kalkulieren
         SELECT COUNT(*) 
