@@ -34,7 +34,7 @@ SELECT
     subclass AS layer_ident,
     bbox as ausdehnung,
     id_in_class::text AS id_feature,
-    'gnrso'::text as id_spalten_name,
+    'part_1'::text as id_spalten_name,
     false as id_in_hochkomma
 FROM
     index_base
