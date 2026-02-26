@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAllGemeinden'
+defaultTasks 'transferWalduebersicht'
 
 // Multiline-Text ist im Task nicht möglich, darum als Variable
 def importModelsPub = 
@@ -201,16 +201,19 @@ BfsNrGemeinden.each { bfs ->
     // --------------------------------------------------------
     // Validate
     // --------------------------------------------------------
+    /*
+    ** Für Testzwecke deaktiviert 
     tasks.register("validateXTF_${bfs}", IliValidator) {
         dependsOn "exportData_${bfs}"
         dataFiles = xtfFile
     }
+    */
 
     // --------------------------------------------------------
     // Replace
     // --------------------------------------------------------
     tasks.register("replaceData_${bfs}", Ili2pgReplace) {
-        dependsOn "validateXTF_${bfs}"
+        dependsOn "exportData_${bfs}"
         database = [dbUriPub, dbUserPub, dbPwdPub]
         dbschema = 'awjf_waldplan_pub_v2'
         models = 'SO_AWJF_Waldplan_Publikation_20250312'
@@ -246,10 +249,28 @@ BfsNrGemeinden.each { bfs ->
 // ------------------------------------------------------------
 // Sammel-Task
 // ------------------------------------------------------------
-tasks.register('transferAllGemeinden') {
+tasks.register('transferAlleGemeinden') {
     dependsOn {
         BfsNrGemeinden.collect { bfs ->
             tasks.named("transferData_${bfs}")
         }
     }
+}
+
+tasks.register("processingWalduebersicht", SqlExecutor) {
+    dependsOn 'transferAlleGemeinden'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files(
+            'processing_data/11_awjf_walduebersicht_processing.sql'
+        )
+    }
+
+tasks.register('transferWalduebersicht', Db2Db) {
+    dependsOn 'processingWalduebersicht'
+    description = 'Transfer der Walduebersicht'
+    sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+        new TransferSet('transfer_data/awjf_waldplan_pub_walduebersicht.sql', 'awjf_waldplan_pub_v2.waldplan_walduebersicht', true)
+    ];
 }
