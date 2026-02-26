@@ -9,36 +9,24 @@ apply plugin: 'de.undercouch.download'
 defaultTasks 'transferData'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
-def zipFileName = "so.zip"
-def zipFile = Paths.get(pathToTempFolder, zipFileName).toFile()
-def sqliteFile = Paths.get(pathToTempFolder, "data.sqlite")
+def sqliteFileName = "data_so.sqlite"
+def sqliteFile = Paths.get(pathToTempFolder, sqliteFileName)
 def dbUriGwr = "jdbc:sqlite:"+sqliteFile.toFile().getAbsolutePath()  
 
 def iliModelName = "";
 
 tasks.register('downloadFile', Download) {
-    src "https://public.madd.bfs.admin.ch/$zipFileName"
-    dest zipFile
+    src "https://public.madd.bfs.admin.ch/$sqliteFileName"
+    dest sqliteFile
     overwrite true
 
     doLast {
-        println("File downloaded: " + zipFile.getAbsolutePath())
-    }
-}
-
-tasks.register('unzipFile', Copy) {
-    dependsOn 'downloadFile'
-    from zipTree(zipFile)
-    into file(pathToTempFolder)
-    include "**/data.sqlite"
-
-    doLast {
-        println("Unzip file into: " + pathToTempFolder)
+        println("File downloaded: " + sqliteFile.getAbsolutePath())
     }
 }
 
 tasks.register('importData', Db2Db) {
-    dependsOn 'unzipFile'
+    dependsOn 'downloadFile'
     sourceDb = [dbUriGwr]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
