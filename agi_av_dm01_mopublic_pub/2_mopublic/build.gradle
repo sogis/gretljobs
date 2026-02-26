@@ -181,7 +181,7 @@ task updateSearchIndex_6(type: SqlExecutor){
 
 task updateSearchIndex_7(type: SqlExecutor){
     mustRunAfter 'placeInDatasets'
-    def layerName = 'ch.so.agi.av.strassenachsen.strassenachsen'
+    def layerName = 'ch.so.agi.av.strassenachsen.strassenachsen_suche'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
     def dbSearchSchema = dbSearchSchemaPub
