@@ -51,7 +51,8 @@ SELECT
     person.telefon_geschaeft,
     person.telefon_mobil,
     person.mailadresse,
-    person.gemeinde_wohnsitz
+    person.gemeinde_wohnsitz,
+    standorte.standortname AS standortname
 FROM
     alw_landwirtschaft_tierhaltung_v1.betrbsdttrktrdten_standorte AS standorte 
     LEFT JOIN alw_landwirtschaft_tierhaltung_v1.betrbsdttrktrdten_betrieb AS betrieb
