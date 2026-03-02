@@ -9,6 +9,6 @@ task transferKGS(type: Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('kulturgueterschutzobjekte_objekte.sql', 'arp_kulturgueterschutzobjekte_pub_v1.objekte', true),
+            new TransferSet('kulturgueterschutzobjekte_objekte.sql', 'arp_kultugueterschutzobjekte_pub_v1.objekte', true),
     ];
 }
