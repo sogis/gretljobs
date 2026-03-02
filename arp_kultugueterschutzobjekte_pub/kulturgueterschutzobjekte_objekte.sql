@@ -6,4 +6,5 @@ SELECT
     bezeichnung, 
     adresse,
     art
-FROM arp_kultugueterschutzobjekte_pub_v1.objekte;
+FROM arp_kultugueterschutzobjekte_v1.objekte;
+
