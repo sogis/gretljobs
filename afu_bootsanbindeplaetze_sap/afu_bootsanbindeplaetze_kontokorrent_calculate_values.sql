@@ -48,7 +48,7 @@ nutzungsgebuehren_separate_RS AS (
 	LEFT JOIN pubdb.afu_bootsanbindeplaetze_pub_v1.standortdaten AS sd
 		ON bp.standort = sd.standort
 	WHERE 
-		rechnungsstelle_nutzungsgebuehr != rechnungsstelle_steggebuehr
+		rechnungsstelle_nutzungsgebuehr IS DISTINCT FROM rechnungsstelle_steggebuehr
 ),
 
 bewilligunsgebuehr AS (
