@@ -5,9 +5,27 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'publish'
 
+def anlageId_Quoted = "'" + anlageId + "'"
+
+/*
+Falls für eine Anlage-Id keine Datei hochgeladen wird, sollen die bestehenden
+Daten gelöscht werden.
+Dies wird mit den folgenden "? :" Statements erreicht
+
+Leeres Shapefile verwenden funktioniert nicht, darum dummy.shp mit einem Feature
+*/
+def hasRealData = file("$projectDir/xyz.zip").exists()
+def zipFile = hasRealData ? file("$projectDir/xyz.zip") : file("$projectDir/dummy.zip") 
+def xtfFile = hasRealData ? file("$buildDir/pubModelData.xtf") : file("$projectDir/emptyTransferFile.xtf")
+
 tasks.register('unzip', Copy) {
+    doFirst {
+        logger.lifecycle("Using zip and xtf files from paths:")
+        logger.lifecycle("Zip-File: " + zipFile)
+        logger.lifecycle("Xtf-File: " + xtfFile)
+    }
     from {
-        zipTree('xyz.zip')
+        zipTree(zipFile)
     }
     into layout.buildDirectory
 }
@@ -15,12 +33,11 @@ tasks.register('unzip', Copy) {
 tasks.register('sqlPrep', SqlExecutor) {
     dependsOn unzip
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlParameters = [anlage_id:anlageId]
+    sqlParameters = [anlage_id_quoted:anlageId_Quoted]
     sqlFiles = files(
         'id_record.sql',
-        'delete_previous_import.sql',
-        '_insert_dev_dummies.sql'
-        )
+        'delete_previous_import.sql'
+    )
 }
 
 tasks.register('importCells', ShpImport) {
@@ -28,7 +45,7 @@ tasks.register('importCells', ShpImport) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = "afu_schiesslaerm_v1"
     tableName = "schiesslaerm_import"
-    dataFile = file("$buildDir/shape.shp")
+    dataFile = file("$buildDir/schiesslaerm.shp")
 }
 
 tasks.register('stage', SqlExecutor) {
@@ -52,15 +69,21 @@ tasks.register('exportXtf', Ili2pgExport) {
 tasks.register('replaceXtf', Ili2pgReplace) {
     dependsOn exportXtf
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    dataFile = files("$buildDir/pubModelData.xtf")
+    dataFile = files(xtfFile)
     dbschema = 'afu_schiesslaerm_pub_v1'
     dataset = anlageId
 }
 
-tasks.register('publish'){
+tasks.register('setDisplayText', SqlExecutor) {
     dependsOn replaceXtf
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = files('set_display_text.sql')
+}
+
+tasks.register('publish'){
+    dependsOn setDisplayText
 }
 
 /*
-GRETL_IMAGE_TAG=3.1 docker compose run --rm -u $UID gretl --project-dir=afu_schiesslaerm_pub -PanlageId=15
+GRETL_IMAGE_TAG=3.1 docker compose run --rm -u $UID gretl --project-dir=afu_schiesslaerm_pub -PanlageId=test
 */

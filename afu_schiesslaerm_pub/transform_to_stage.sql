@@ -1,14 +1,16 @@
 WITH classified AS (
     SELECT
         CASE
-            WHEN decibel < 50 THEN 'eins'
-            WHEN decibel >= 50 AND decibel < 60 THEN 'zwei'
-            WHEN decibel >= 60 AND decibel < 70 THEN 'drei'
-            WHEN decibel >= 70 THEN 'vier'
+            WHEN decibel < 55 THEN 'eins'
+            WHEN decibel >= 55 AND decibel < 60 THEN 'zwei'
+            WHEN decibel >= 60 AND decibel < 65 THEN 'drei'
+            WHEN decibel >= 65 THEN 'vier'
         END AS db_class,
         pixel_quadrat
     FROM 
         afu_schiesslaerm_v1.schiesslaerm_import
+	WHERE
+		decibel >= 50
 ),
 dissolved AS (
     SELECT
