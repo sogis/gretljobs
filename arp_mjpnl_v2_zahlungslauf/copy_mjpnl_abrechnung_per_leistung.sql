@@ -73,4 +73,14 @@ INNER JOIN relevante_vereinbarungen rel_vbg
 ON l.vereinbarung = rel_vbg.t_id
 WHERE l.auszahlungsjahr = ${AUSZAHLUNGSJAHR}-1 AND einmalig IS NOT TRUE AND l.status_abrechnung = 'ausbezahlt'
 -- falls wir im Migrationsjahr sind, dann sollen keine Leistungen vom Vorjahr kopiert werden
-AND ${AUSZAHLUNGSJAHR} != 2023;
+AND ${AUSZAHLUNGSJAHR} != 2023
+AND
+    (
+    -- prüft, ob es bereits ausbezahlte nicht-einmalige und nicht-migrierte Leistungen gibt - wenn ja, dann wurde die Auszahlung bereits gemacht und es soll nicht erneut kalkulieren
+    SELECT COUNT(*) 
+    FROM ${DB_Schema_MJPNL}.mjpnl_abrechnung_per_leistung 
+    WHERE auszahlungsjahr = ${AUSZAHLUNGSJAHR}::integer 
+    AND status_abrechnung = 'ausbezahlt' 
+    AND (einmalig = FALSE OR einmalig IS NULL)
+    AND (migriert = FALSE OR migriert IS NULL)
+    ) < 5; --Tolleranz, falls fälschlicherweise nicht-einmalige ausbezahlt wurden

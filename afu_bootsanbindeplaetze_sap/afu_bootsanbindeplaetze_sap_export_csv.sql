@@ -15,7 +15,11 @@ COPY (
 		"Position",
 		"MaterialNr.",
 		Materialtext,
-		printf('%.2f',"Betrag 2 Kommastellen") AS "Betrag 2 Kommastellen",
+		CASE 
+    		WHEN "Betrag 2 Kommastellen" IS NULL
+				THEN '0.00'
+    		ELSE printf('%.2f', "Betrag 2 Kommastellen")
+		END AS "Betrag 2 Kommastellen",
 		"Menge Ganzahlg",
 		Mengeneinheit,
 		Auftragsnummer,

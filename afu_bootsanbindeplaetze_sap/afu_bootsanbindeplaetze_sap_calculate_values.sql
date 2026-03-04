@@ -48,7 +48,7 @@ nutzungsgebuehren_separate_RS AS (
 	LEFT JOIN pubdb.afu_bootsanbindeplaetze_pub_v1.standortdaten AS sd
 		ON bp.standort = sd.standort
 	WHERE 
-		rechnungsstelle_nutzungsgebuehr != rechnungsstelle_steggebuehr
+		rechnungsstelle_nutzungsgebuehr IS DISTINCT FROM rechnungsstelle_steggebuehr
 ),
 
 bewilligunsgebuehr AS (
@@ -129,6 +129,8 @@ gebuehren_nummerierung AS (
 		KundenNr,
 		row_number() OVER (
 			PARTITION BY KundenNr
+			ORDER BY
+				"MaterialVerkaufstext Zeile 1 Position"
 		) * 10 AS "Position",
 		"MaterialNr.",
 		Materialtext,
@@ -210,9 +212,7 @@ gebuehren_sap AS (
 	FROM 
 		gebuehren_nummerierung
 	WHERE
-		Kontokorrent IS FALSE
-	AND 
-		KundenNr IS NOT NULL
+		Kontokorrent IS NOT TRUE
 	AND
 		KundenNr != 'XXX'	
 )

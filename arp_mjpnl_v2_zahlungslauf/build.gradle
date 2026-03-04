@@ -20,68 +20,109 @@ def AUSZAHLUNGSJAHR = Integer.valueOf(new SimpleDateFormat("MM").format(new Date
 
 /* Kalkulation der Zahlungslaufdaten */
 
-task "cleanup_abrechnung_per_leistung"(type: SqlExecutor) {
-    description = "Löscht alle diesjährigen Leistungen (die nicht einmalig oder migriert sind) und setzt FKs auf NULL"
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
-    sqlFiles = ['cleanup_mjpnl_abrechnung_per_leistung.sql']
-}
-
-task "cleanup_abrechnung_per_leistung_orphans"(type: SqlExecutor,dependsOn: "cleanup_abrechnung_per_leistung") {
+task "cleanup_abrechnung_per_leistung_orphans"(type: SqlExecutor) {
     description = "Löscht alle diesjährigen Leistungen, deren Vereinbarung manuell gelöscht wurden (was eigentlich nicht gemacht wird ausser bei Bereinigung nach Migration)"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
-    sqlFiles = ['cleanup_mjpnl_abrechnung_per_leistung_orphans.sql']
+    sqlFiles = [
+        'cleanup_mjpnl_abrechnung_per_leistung_orphans.sql'
+        ]
 }
 
-task "cleanup_status_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "cleanup_abrechnung_per_leistung") {
-    description = "Setze die Status aller diesjährigen freigegeben-Leistungen, die einmalig oder migriert sind und *keine aktive* Vereinbarungen haben auf in_bearbeitung - Setze die Status aller diesjährigen in_bearbeitung-Leistungen, die migriert sind und eine *aktive* Vereinbarungen haben auf freigegeben"
+task "cleanup_status_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "cleanup_abrechnung_per_leistung_orphans") {
+    description = "Setze die Status aller diesjährigen freigegeben-Leistungen, die einmalig oder migriert sind und *keine aktive* Vereinbarungen haben auf in_bearbeitung"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
-    sqlFiles = ['cleanup_mjpnl_abrechnung_per_leistung_status.sql']
+    sqlFiles = [
+        'cleanup_mjpnl_abrechnung_per_leistung_status.sql'
+        ]
 }
 
-task "cleanup_abrechnungen_per_bewirtschafter_und_vereinbarung"(type: SqlExecutor,dependsOn: "cleanup_status_abrechnung_per_leistung") {
+task "cleanup_fks_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "cleanup_status_abrechnung_per_leistung") {
+    description = "Setzt FKs zur abrechnung_per_vereinbarung aller diesjährigen Leistungen auf NULL."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
+    sqlFiles = [
+        'cleanup_mjpnl_abrechnung_per_leistung_fks.sql'
+        ]
+}
+
+task "cleanup_abrechnungen_per_bewirtschafter_und_vereinbarung"(type: SqlExecutor,dependsOn: "cleanup_fks_abrechnung_per_leistung") {
     description = "Löscht alle diesjährigen zusammengefassten Abrechnungen"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
-    sqlFiles = ['cleanup_mjpnl_abrechnung_per_vereinbarung.sql', 'cleanup_mjpnl_abrechnung_per_bewirtschafter.sql']
+    sqlFiles = [
+        'cleanup_mjpnl_abrechnung_per_vereinbarung.sql', 
+        'cleanup_mjpnl_abrechnung_per_bewirtschafter.sql'
+        ]
 }
 
+/* Nur wenn die Leistungen noch nicht ausbezahlt sind - wird in SQLs geprüft. */
 task "delete_migrierte_leistungen"(type: SqlExecutor,dependsOn: "cleanup_abrechnungen_per_bewirtschafter_und_vereinbarung") {
     description = "Berücksichtigung Migrationsjahr: Löscht migrierte Leistungen von aktiven Beurteilungen, die eine besprochene Beurteilung haben, da diese neu kalkuliert werden"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
-    sqlFiles = ['delete_mjpnl_migrierte_leistungen.sql',]
+    sqlFiles = [
+        'delete_mjpnl_migrierte_leistungen.sql'
+        ]
 }
 
-task "calculate_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "delete_migrierte_leistungen") {
-    description = "Kalkuliert für alle aktiven Vereinbarungen die Abrechnungen pro Leistung anhand der neusten besprochenen Beurteilungen"
+/* Nur wenn die Leistungen noch nicht ausbezahlt sind - wird in SQLs geprüft. */
+task "cleanup_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "delete_migrierte_leistungen") {
+    description = "Löscht alle diesjährigen Leistungen (die nicht einmalig oder migriert sind) - nicht aber, wenn es bereits diesjährige ausbezahlte nicht-einmalige Leistungen hat."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
-    sqlFiles = ['calc_mjpnl_abrechnung_per_leistung_alr_buntbrache.sql', 'calc_mjpnl_abrechnung_per_leistung_alr_saum.sql', 'calc_mjpnl_abrechnung_per_leistung_hecke.sql', 'calc_mjpnl_abrechnung_per_leistung_hostet.sql', 'calc_mjpnl_abrechnung_per_leistung_obl.sql', 
-    'calc_mjpnl_abrechnung_per_leistung_wbl_weide.sql', 'calc_mjpnl_abrechnung_per_leistung_wbl_wiese.sql', 'calc_mjpnl_abrechnung_per_leistung_weide_ln.sql', 'calc_mjpnl_abrechnung_per_leistung_weide_soeg.sql', 'calc_mjpnl_abrechnung_per_leistung_wiese.sql']
+    sqlFiles = [
+        'cleanup_mjpnl_abrechnung_per_leistung.sql'
+        ]
 }
 
+/* Nur wenn die Leistungen noch nicht ausbezahlt sind - wird in SQLs geprüft. */
+task "calculate_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "cleanup_abrechnung_per_leistung") {
+    description = "Kalkuliert für alle aktiven Vereinbarungen die Abrechnungen pro Leistung anhand der neusten besprochenen Beurteilungen - nicht aber, wenn es bereits diesjährige ausbezahlte nicht-einmalige Leistungen hat."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
+    sqlFiles = [
+        'calc_mjpnl_abrechnung_per_leistung_alr_buntbrache.sql', 
+        'calc_mjpnl_abrechnung_per_leistung_alr_saum.sql', 
+        'calc_mjpnl_abrechnung_per_leistung_hecke.sql', 
+        'calc_mjpnl_abrechnung_per_leistung_hostet.sql', 
+        'calc_mjpnl_abrechnung_per_leistung_obl.sql', 
+        'calc_mjpnl_abrechnung_per_leistung_wbl_weide.sql', 
+        'calc_mjpnl_abrechnung_per_leistung_wbl_wiese.sql', 
+        'calc_mjpnl_abrechnung_per_leistung_weide_ln.sql', 
+        'calc_mjpnl_abrechnung_per_leistung_weide_soeg.sql', 
+        'calc_mjpnl_abrechnung_per_leistung_wiese.sql'
+        ]
+}
+
+/* Nur wenn die Leistungen noch nicht ausbezahlt sind - wird in SQLs geprüft. */
 task "copy_abrechnung_per_leistung"(type: SqlExecutor,dependsOn: "calculate_abrechnung_per_leistung") {
-    description = "Kopiert für alle aktiven Vereinbarungen die Leistungen vom letzten Jahr, falls keine diesjährigen kalkuliert werden konnten, weil keine besprochene Beurteilung vorhanden"
+    description = "Kopiert für alle aktiven Vereinbarungen die Leistungen vom letzten Jahr, falls keine diesjährigen kalkuliert werden konnten, weil keine besprochene Beurteilung vorhanden - nicht aber, wenn es bereits diesjährige ausbezahlte nicht-einmalige Leistungen hat."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
-    sqlFiles = ['copy_mjpnl_abrechnung_per_leistung.sql']
+    sqlFiles = [
+        'copy_mjpnl_abrechnung_per_leistung.sql'
+        ]
 }
 
+/* Zusammenzüge werden aber sowieso neu gemacht */
 task "calculate_abrechnung_per_vereinbarung"(type: SqlExecutor,dependsOn: "copy_abrechnung_per_leistung") {
     description = "Kalkuliert die Abrechnungen pro Vereinbarung anhand aller Abrechnungen pro Leistung"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
-    sqlFiles = ['calc_mjpnl_abrechnung_per_vereinbarung.sql']
+    sqlFiles = [
+        'calc_mjpnl_abrechnung_per_vereinbarung.sql'
+        ]
 }
 
 task "calculate_abrechnung_per_bewirtschafter"(type: SqlExecutor,dependsOn: "calculate_abrechnung_per_vereinbarung") {
     description = "Kalkuliert die Abrechnungen pro Bewirtschafter anhand aller Abrechnungen pro Leistung"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
-    sqlFiles = ['calc_mjpnl_abrechnung_per_bewirtschafter.sql']
+    sqlFiles = [
+        'calc_mjpnl_abrechnung_per_bewirtschafter.sql'
+        ]
 }
 
 /* Kalkulation der Auswertungstabellen */
@@ -90,40 +131,60 @@ task "cleanup_rrb"(type: SqlExecutor,dependsOn: "calculate_abrechnung_per_bewirt
     description = "Löscht alle diesjährigen einträge von RRB_Neue_Vereinbarung und RRB_Bewirtschafterwechsel"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
-    sqlFiles = ['auswertung_cleanup_rrb_neue_vereinbarung.sql', 'auswertung_cleanup_rrb_bewirtschafterwechsel.sql']
+    sqlFiles = [
+        'auswertung_cleanup_rrb_neue_vereinbarung.sql', 
+        'auswertung_cleanup_rrb_bewirtschafterwechsel.sql'
+        ]
 }
 
 task "calculate_rrb"(type: SqlExecutor,dependsOn: "cleanup_rrb") {
     description = "Kalkuliert RRB_Neue_Vereinbarung und RRB_Bewirtschafterwechsel"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
-    sqlFiles = ['auswertung_calc_rrb_neue_vereinbarung.sql', 'auswertung_calc_rrb_bewirtschafterwechsel.sql']
+    sqlFiles = [
+        'auswertung_calc_rrb_neue_vereinbarung.sql', 
+        'auswertung_calc_rrb_bewirtschafterwechsel.sql'
+        ]
 }
 
 task "cleanup_jahresbericht"(type: SqlExecutor,dependsOn: "calculate_rrb") {
     description = "Löscht alle diesjährigen Leistungen aus Jahresbericht_Abgeltungen"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
-    sqlFiles = ['auswertung_cleanup_jahresbericht_abgeltungen.sql']
+    sqlFiles = [
+        'auswertung_cleanup_jahresbericht_abgeltungen.sql'
+        ]
 }
 
 task "calculate_jahresbericht"(type: SqlExecutor,dependsOn: "cleanup_jahresbericht") {
     description = "Kalkuliert Jahresbericht_Abgeltungen"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
-    sqlFiles = ['auswertung_calc_jahresbericht_abgeltungen.sql']
+    sqlFiles = [
+        'auswertung_calc_jahresbericht_abgeltungen.sql'
+        ]
 }
 
 task "cleanup_snapshots"(type: SqlExecutor,dependsOn: "calculate_jahresbericht") {
     description = "Löscht alle diesjährigen Leistungen aus Snapshot_Wiese, Snapshot_WBL_Wiese, Snapshot_Weide, Snapshot_WBL_Weide"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
-    sqlFiles = ['auswertung_cleanup_snapshot_wiese.sql', 'auswertung_cleanup_snapshot_wbl_wiese.sql', 'auswertung_cleanup_snapshot_weide.sql', 'auswertung_cleanup_snapshot_wbl_weide.sql']
+    sqlFiles = [
+        'auswertung_cleanup_snapshot_wiese.sql', 
+        'auswertung_cleanup_snapshot_wbl_wiese.sql', 
+        'auswertung_cleanup_snapshot_weide.sql', 
+        'auswertung_cleanup_snapshot_wbl_weide.sql'
+        ]
 }
 
 task "calculate_snapshots"(type: SqlExecutor,dependsOn: "cleanup_snapshots") {
     description = "Kalkuliert Snapshot_Wiese, Snapshot_WBL_Wiese, Snapshot_Weide, Snapshot_WBL_Weide"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [DB_Schema_MJPNL:DB_Schema_MJPNL,AUSZAHLUNGSJAHR:AUSZAHLUNGSJAHR]
-    sqlFiles = ['auswertung_calc_snapshot_wiese.sql', 'auswertung_calc_snapshot_wbl_wiese.sql', 'auswertung_calc_snapshot_weide.sql', 'auswertung_calc_snapshot_wbl_weide.sql']
+    sqlFiles = [
+        'auswertung_calc_snapshot_wiese.sql', 
+        'auswertung_calc_snapshot_wbl_wiese.sql', 
+        'auswertung_calc_snapshot_weide.sql', 
+        'auswertung_calc_snapshot_wbl_weide.sql'
+        ]
 }
