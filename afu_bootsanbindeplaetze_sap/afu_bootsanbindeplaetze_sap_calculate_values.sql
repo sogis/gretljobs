@@ -143,7 +143,8 @@ gebuehren_nummerierung AS (
 		gebuehren_alle
 	ORDER BY 
 		KundenNr,
-		"Position"
+		"Position",
+		"Kopfnotiz Zeile 1 Kopf"
 ),
 
 gebuehren_sap AS (
@@ -211,13 +212,11 @@ gebuehren_sap AS (
 	FROM 
 		gebuehren_nummerierung
 	WHERE
-		Kontokorrent IS FALSE
-	OR
-		Kontokorrent IS NULL
+		Kontokorrent IS NOT TRUE
 	AND
 		KundenNr != 'XXX'	
 )
-/*
+
 INSERT INTO afu_bootsanbindeplaetze.main.sap_structure (
 	Eintragsnummer,
 	AuftrArt,
@@ -276,7 +275,7 @@ INSERT INTO afu_bootsanbindeplaetze.main.sap_structure (
 	"Ortschaft(Info)",
 	Zahlweg
 )
-*/
+
 SELECT 
 	Eintragsnummer,
 	AuftrArt,
