@@ -129,6 +129,8 @@ gebuehren_nummerierung AS (
 		KundenNr,
 		row_number() OVER (
 			PARTITION BY KundenNr
+			ORDER BY
+				"MaterialVerkaufstext Zeile 1 Position"
 		) * 10 AS "Position",
 		"MaterialNr.",
 		Materialtext,
