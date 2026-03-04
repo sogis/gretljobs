@@ -9,5 +9,5 @@ SELECT
     NULLIF(CODTXTKI, '') AS CODTXTKI,
     NULLIF(CEXPDAT, '') AS CEXPDAT
 FROM
-    codes
+    code
 ;
