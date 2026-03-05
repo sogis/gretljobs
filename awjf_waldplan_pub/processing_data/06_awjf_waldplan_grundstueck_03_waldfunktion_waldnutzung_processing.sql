@@ -56,11 +56,6 @@ CREATE INDEX
 	USING gist (geometrie)
 ;
 
-CREATE INDEX 
-	ON waldflaeche_grundstueck
-	USING gist (geometrie)
-;
-
 INSERT INTO waldfunktion_waldnutzung (
 	t_datasetname,
 	funktion,

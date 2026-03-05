@@ -221,7 +221,7 @@ INSERT INTO awjf_waldplan_pub_v2.waldplan_aswrtung_auswertung (
 		ON gs.egrid = wfhr.egrid
 	LEFT JOIN waldnutzung_hiebsatzrelevant AS wnhr
 		ON gs.egrid = wnhr.egrid
-	LEFT JOIN waldflaeche_grundstueck_final AS wfgf
+	LEFT JOIN waldgeometrie_grundstueck_final AS wfgf
 		ON gs.egrid = wfgf.egrid
 	WHERE 
 		wfgf.geometrie IS NOT NULL
