@@ -3,9 +3,9 @@
 -- =========================================================
 DROP TABLE IF EXISTS
 	grundstueck,
-	waldflaeche_grundstueck,
-	waldflaeche_grundstueck_bereinigt,
-	waldflaeche_grundstueck_final,
+	waldgeometrie_grundstueck,
+	waldgeometrie_grundstueck_bereinigt,
+	waldgeometrie_grundstueck_final,
 	waldflaeche_berechnet,
 	waldflaeche_berechnet_plausibilisiert,
 	waldfunktion,
@@ -55,22 +55,25 @@ CREATE TABLE
 -- 3) Waldflächengeometrie pro Grundstück
 -- =========================================================
 CREATE TABLE
-	waldflaeche_grundstueck (
+	waldgeometrie_grundstueck (
     	egrid TEXT,
+		flaechenmass INTEGER,
    		geometrie GEOMETRY
 );
 
 -- Waldfläche pro Grundstück mit bereinigten Daten --
 CREATE TABLE
-	waldflaeche_grundstueck_bereinigt (
+	waldgeometrie_grundstueck_bereinigt (
     	egrid TEXT,
+		flaechenmass INTEGER,
    		geometrie GEOMETRY
 );
 
 -- Waldfläche pro Grundstück mit final bereinigten Daten --
 CREATE TABLE
-	waldflaeche_grundstueck_final (
+	waldgeometrie_grundstueck_final (
     	egrid TEXT,
+		flaechenmass INTEGER,
    		geometrie GEOMETRY
 );
 

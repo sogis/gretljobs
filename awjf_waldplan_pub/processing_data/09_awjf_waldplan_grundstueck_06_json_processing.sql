@@ -209,7 +209,7 @@ LEFT JOIN produktive_waldflaeche_json AS prodj
 	ON gs.egrid = prodj.egrid
 LEFT JOIN hiebsatzrelevante_waldflaeche_json AS hiebj 
 	ON gs.egrid = hiebj.egrid
-LEFT JOIN waldflaeche_grundstueck_final AS wfg 
+LEFT JOIN waldgeometrie_grundstueck_final AS wfg 
 	ON gs.egrid = wfg.egrid
 WHERE 
 	wfg.geometrie IS NOT NULL
