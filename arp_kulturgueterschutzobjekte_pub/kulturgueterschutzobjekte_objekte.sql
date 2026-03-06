@@ -1,6 +1,5 @@
 SELECT 
     geometrie, 
-    kgs_name, 
     gemeinde, 
     kategorie, 
     bezeichnung, 
