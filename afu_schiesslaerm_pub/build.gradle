@@ -18,12 +18,16 @@ def hasRealData = file("$projectDir/xyz.zip").exists()
 def zipFile = hasRealData ? file("$projectDir/xyz.zip") : file("$projectDir/dummy.zip") 
 def xtfFile = hasRealData ? file("$buildDir/pubModelData.xtf") : file("$projectDir/emptyTransferFile.xtf")
 
-tasks.register('unzip', Copy) {
+tasks.register('logPaths') {
     doFirst {
         logger.lifecycle("Using zip and xtf files from paths:")
         logger.lifecycle("Zip-File: " + zipFile)
         logger.lifecycle("Xtf-File: " + xtfFile)
     }
+}
+
+tasks.register('unzip', Copy) {
+    dependsOn logPaths
     from {
         zipTree(zipFile)
     }
