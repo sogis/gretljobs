@@ -2,7 +2,6 @@ SELECT
     standorte.t_id,
     standorte.t_basket,
     standorte.t_datasetname,
-    'so_lw_l0211019betrbsdttrktrdten_tierstandort' AS t_type,
     standorte.t_ili_tid,
     standorte.geometrie,
     standorte.bezugsjahr,
