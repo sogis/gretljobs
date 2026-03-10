@@ -2,7 +2,6 @@ SELECT
     bewe.t_id,
     bewe.t_basket,
     bewe.t_datasetname,
-    'so_lw_l0211019betrbsdttrktrdten_bewirtschaftungseinheit' AS t_type,
     bewe.t_ili_tid,
     bewe.geometrie, 
     bewe.bezugsjahr,
