@@ -5,7 +5,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferISOS'
 
-
+def xtfPath = tmpDir + "/data.xtf"
 
 task exportXtf(type: Ili2pgExport){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
