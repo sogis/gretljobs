@@ -5,6 +5,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferISOS'
 
+def tmpDir = buildDir.toString()
 def xtfPath = tmpDir + "/data.xtf"
 
 task exportXtf(type: Ili2pgExport){
