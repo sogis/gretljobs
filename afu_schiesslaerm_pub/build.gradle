@@ -1,9 +1,23 @@
 import ch.so.agi.gretl.tasks.*
 import ch.so.agi.gretl.api.TransferSet
+import java.util.zip.ZipFile
 
 apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'publish'
+
+def isZipFile(File file) {
+    if (!file.exists() || !file.isFile()) {
+        return false
+    }
+
+    try {
+        new ZipFile(file).close()
+        return true
+    } catch (Exception ignored) {
+        return false
+    }
+}
 
 def anlageId_Quoted = "'" + anlageId + "'"
 
@@ -14,7 +28,7 @@ Dies wird mit den folgenden "? :" Statements erreicht
 
 Leeres Shapefile verwenden funktioniert nicht, darum dummy.shp mit einem Feature
 */
-def hasRealData = file("$projectDir/xyz.zip").exists()
+def hasRealData = isZipFile(file("$projectDir/xyz.zip"))
 def zipFile = hasRealData ? file("$projectDir/xyz.zip") : file("$projectDir/dummy.zip") 
 def xtfFile = hasRealData ? file("$buildDir/pubModelData.xtf") : file("$projectDir/emptyTransferFile.xtf")
 
