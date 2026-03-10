@@ -40,5 +40,5 @@ FROM
         ON betrieb.person = person.t_id
 WHERE 
 -- es wird immer nur ein Jahr publiziert
-    bewe.bezugsjahr = ${publikationsjahr_standort}
+    bewe.bezugsjahr != ${publikationsjahr_flaechenerhebung}
 ;
