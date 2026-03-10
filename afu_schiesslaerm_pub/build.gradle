@@ -58,8 +58,16 @@ tasks.register('sqlPrep', SqlExecutor) {
     )
 }
 
-tasks.register('importCells', ShpImport) {
+tasks.register('validate', Ili2pgValidate) {
     dependsOn sqlPrep
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = "SO_AFU_Schiesslaerm_20260210"
+    modeldir = rootProject.projectDir.toString() + ";http://models.interlis.ch"
+    dbschema = "afu_schiesslaerm_v1"
+}
+
+tasks.register('importCells', ShpImport) {
+    dependsOn validate
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = "afu_schiesslaerm_v1"
     tableName = "schiesslaerm_import"
