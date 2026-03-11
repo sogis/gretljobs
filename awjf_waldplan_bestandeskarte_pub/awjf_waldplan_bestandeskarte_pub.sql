@@ -36,7 +36,7 @@ SELECT
     betriebsteil_text,
     bsttyp_text
 FROM
-    awjf_waldplan_bestandeskarte_staging_v1.waldplan_bestandeskarte
+    awjf_waldplan_bestandeskarte_waldbestand_v1.waldplan_bestandeskarte
 WHERE
     astatus = 'abgeschlossen'
 AND
