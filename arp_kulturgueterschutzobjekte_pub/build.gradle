@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferKGS'
+defaultTasks 'updateTxtColsKGS'
 
 def tmpDir = buildDir.toString()
 def xtfPath = tmpDir + "/data.xtf"
