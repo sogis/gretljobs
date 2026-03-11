@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferISOS'
+defaultTasks 'updateTxtColsSchutzwald'
 
 def tmpDir = buildDir.toString()
 def xtfPath = tmpDir + "/data.xtf"
@@ -30,3 +30,12 @@ task transferISOS(type: Db2Db){
             new TransferSet('isos_objekte.sql', 'arp_isos_inventar_pub_v2.isos_inventar', true),
     ];
 }
+
+task updateTxtColsSchutzwald(type: SqlExecutor){
+    dependsOn 'transferISOS' 
+    description = "Füllt die _txt-Spalten ab"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['updateTxtColsISOS.sql']
+}
+
+
