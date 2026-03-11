@@ -32,7 +32,7 @@ task transferKGS(type: Db2Db){
 }
 
 task updateTxtColsKGS(type: SqlExecutor){
-    dependsOn 'transferISOS' 
+    dependsOn 'transferKGS' 
     description = "Füllt die _txt-Spalten ab"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ['updateTxtColsKGS.sql']
