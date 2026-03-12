@@ -104,7 +104,7 @@ task transferGewaesserschutzMGDM_V1_2 (type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
-        new TransferSet('gewaesserschutz_gewaesserschutzbereich_mgdm.sql', 'afu_gewaesserschutz_bereiche_mgdm_v1.gsbereiche_gsbereich', true),
+        new TransferSet('gewaesserschutz_gewaesserschutzbereich_mgdm.sql', 'afu_gewaesserschutz_bereiche_mgdm_v1.gsbereiche_gsbereich', true)
     ];
 }
 
