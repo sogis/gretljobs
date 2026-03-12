@@ -207,8 +207,8 @@ task transferGewaesserschutzMGDM_V1_2(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [
-        new TransferSet('gwszonen_gwsareal_mgdm.sql', 'afu_gewaesserschutz_zonen_areale_v1.gwszonen_gwsareal', true),
-        new TransferSet('gwszonen_gwszone_mgdm.sql', 'afu_gewaesserschutz_zonen_areale_v1.gwszonen_gwszone', true)    ];
+        new TransferSet('gwszonen_gwsareal_mgdm.sql', 'afu_gewaesserschutz_zonen_areale_mgdm_v1.gwszonen_gwsareal', true),
+        new TransferSet('gwszonen_gwszone_mgdm.sql', 'afu_gewaesserschutz_zonen_areale_mgdm_v1.gwszonen_gwszone', true)    ];
 }
 
 task exportDataMGDM (type: Ili2pgExport) {
