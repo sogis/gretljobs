@@ -14,14 +14,7 @@ def importModelsPub =
     'SO_AGI_MOpublic_20240711;' +
     'SO_AWJF_Waldplan_Publikation_20250312;'
 
-tasks.register('validateEditData', Ili2pgValidate) {
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    models = 'SO_AWJF_Waldplan_20250312'
-    dbschema = "awjf_waldplan_v2"
-}
-
 tasks.register('createExtension', SqlExecutor) {
-    dependsOn 'validateEditData'
     description = 'In der Processing-DB die Extension für die UUID-Erstellung aktivieren (uuid-ossp).'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = files('processing_data/create_extension.sql')
