@@ -111,7 +111,7 @@ task publishPub(type: Publisher){
 // EXPORT Typo3
 // Datenumbau für Planregister (Nur Daten aus Schema "afu_gewaesserschutz_zonen_areale_v1" werden ersetzt) und an Typo3 senden
 
-
+/*
 task deleteData_planregister_pub (type: SqlExecutor ) {
     dependsOn publishPub
     description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_planregister_pub"
@@ -161,9 +161,10 @@ task uploadPlanregister(type: Curl) {
     password = digiplanPwd
     expectedStatusCode = 202
 }
-
-task zipXtf(type: Zip){
     dependsOn uploadPlanregister
+
+*/
+task zipXtf(type: Zip){
     from "."
     include fileName
     archiveName fileNameZip
