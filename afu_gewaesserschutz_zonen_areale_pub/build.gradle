@@ -7,12 +7,14 @@ import java.io.File
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'validateData', 'deleteData_staging_pub', 'uploadXtf'
+defaultTasks 'validateData', 'deleteData_staging_pub', 'uploadMGDMXtf'
 
 
 def fileName = "afu_gewaesserschutz_zonen_areale.xtf"
 def fileNameZip = "afu_gewaesserschutz_zonen_areale.zip"
 def fileNamePub = "afu_gewaesserschutz_zonen_areale_pub.xtf"
+def fileNameMGDM = "afu_gewaesserschutz_zonen_areale.xtf"
+def fileNameMGDMZip = "afu_gewaesserschutz_zonen_areale.zip"
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
@@ -194,4 +196,62 @@ task deleteData_staging_pub (type: SqlExecutor) {
     description = "Löscht/leert die Daten aus dem Schema afu_gewaesserschutz_staging"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ["delete_afu_gewaesserschutz_staging.sql"]
+}
+
+/** MGDM planerischer Gewässerschutz v1.2
+* --------------------------------------- */
+
+task transferGewaesserschutzMGDM_V1_2(type: Db2Db) {
+    dependsOn uploadXtf
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+        new TransferSet('gwszonen_gwsareal_mgdm.sql', 'afu_gewaesserschutz_zonen_areale_v1.gwszonen_gwsareal', true),
+        new TransferSet('gwszonen_gwszone_mgdm.sql', 'afu_gewaesserschutz_zonen_areale_v1.gwszonen_gwszone', true)    ];
+}
+
+task exportDataMGDM (type: Ili2pgExport) {
+    dependsOn transferGewaesserschutzMGDM_V1_2
+    description = "Exportiert die Daten aus dem Schema afu_grundwasserschutz_zonen_areale in eine INTERLIS-Datei."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'afu_gewaesserschutz_zonen_areale_mgdm_v1'
+    models = 'PlanerischerGewaesserschutz_V1_2'
+    dataFile= file(fileNameMGDM)
+    disableValidation = true
+}
+
+task validateDataMGDM(type: IliValidator) {
+    dependsOn exportDataMGDM
+    description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
+    dataFiles = file(fileNameMGDM)
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    failOnError = true
+}
+task zipMGDMXtf(type: Zip){
+    dependsOn validateDataMGDM
+    from "."
+    include fileName
+    archiveName fileNameMGDMZip
+    destinationDir(file("."))
+}
+
+/* Falls man auf geodienste.ch alles löschen will/muss (siehe zweiter Abschnitt), muss man
+* einmalig replace_all=true setzen. Curl-Befehl kann natürlich auch lokal
+* ausgeführt werden.
+*
+* Achtung: Die Dateinamen müssen immer gleich sein. Diese werden als 
+* dataset-Name verwendet. Will man die Namen ändern, siehe erster Abschnitt
+* des Kommentars.
+*/
+task uploadMGDMXtf() {
+    dependsOn zipMGDMXtf
+    doLast {
+        def response = ["curl", "-u", aiLogin, "-F", "topic=planerischer_gewaesserschutz", "-F",
+                        "lv95_file=@" + Paths.get(".", fileNameMGDMZip), "-F", "publish=true", "-F", "replace_all=false",
+                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
+        println(response)
+        if (response.contains("false") || response == null || response.trim().isEmpty()) {
+            throw new GradleException()
+        }
+    }
 }
