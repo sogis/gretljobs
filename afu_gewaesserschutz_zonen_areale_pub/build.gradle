@@ -247,7 +247,7 @@ task zipMGDMXtf(type: Zip){
 task uploadMGDMXtf() {
     dependsOn zipMGDMXtf
     doLast {
-        def response = ["curl", "-u", aiLogin, "-F", "topic=planerischer_gewaesserschutz", "-F",
+        def response = ["curl", "-u", aiLogin, "-F", "topic=planerischer_gewaesserschutz_v1_2", "-F",
                         "lv95_file=@" + Paths.get(".", fileNameMGDMZip), "-F", "publish=true", "-F", "replace_all=false",
                         "https://" + aiServer + "/data_agg/interlis/import"].execute().text
         println(response)
