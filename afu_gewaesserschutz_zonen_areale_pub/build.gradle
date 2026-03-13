@@ -202,13 +202,10 @@ task deleteData_staging_pub (type: SqlExecutor) {
 /** MGDM planerischer Gewässerschutz v1.2
 * --------------------------------------- */
 
-task transferGewaesserschutzMGDM_V1_2(type: Db2Db) {
+task transferGewaesserschutzMGDM_V1_2(type: SqlExecutor) {
     dependsOn uploadXtf
-    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    transferSets = [
-        new TransferSet('gwszonen_gwsareal_mgdm.sql', 'afu_gewaesserschutz_zonen_areale_mgdm_v1.gwszonen_gwsareal', true),
-        new TransferSet('gwszonen_gwszone_mgdm.sql', 'afu_gewaesserschutz_zonen_areale_mgdm_v1.gwszonen_gwszone', true)    ];
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['gwszonen_gwsareal_mgdm.sql','gwszonen_gwszone_mgdm.sql','gwszonen_status_mgdm']
 }
 
 task exportDataMGDM (type: Ili2pgExport) {
