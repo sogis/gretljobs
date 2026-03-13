@@ -136,7 +136,7 @@ task uploadPlanregister(type: Curl) {
 }
 */
 task deleteData_staging_pub (type: SqlExecutor) {
-    dependsOn uploadPlanregister
+    dependsOn publishPub
     description = "Löscht/leert die Daten aus dem Schema afu_gewaesserschutz_staging"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ["delete_afu_gewaesserschutz_staging.sql"]
