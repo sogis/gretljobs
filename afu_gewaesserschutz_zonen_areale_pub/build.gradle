@@ -170,7 +170,7 @@ task validateDataMGDM(type: IliValidator) {
 task zipMGDMXtf(type: Zip){
     dependsOn validateDataMGDM
     from "."
-    include fileName
+    include fileNameMGDM
     archiveName fileNameMGDMZip
     destinationDir(file("."))
 }
