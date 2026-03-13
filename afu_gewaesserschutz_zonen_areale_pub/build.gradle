@@ -146,7 +146,6 @@ task deleteData_staging_pub (type: SqlExecutor) {
 * --------------------------------------- */
 
 task transferGewaesserschutzMGDM_V1_2(type: SqlExecutor) {
-    dependsOn uploadXtf
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ['gwszonen_status_mgdm.sql','gwszonen_gwsareal_mgdm.sql','gwszonen_gwszone_mgdm.sql']
 }
