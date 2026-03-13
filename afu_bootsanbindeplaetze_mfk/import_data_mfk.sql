@@ -1,6 +1,5 @@
 DROP TABLE IF EXISTS data_mfk;
 
---- Create Table for intersecting objects --- 
 CREATE TABLE data_mfk (
 	Stammnummer VARCHAR,
 	Schild INTEGER,
