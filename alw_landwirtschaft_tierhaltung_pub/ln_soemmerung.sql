@@ -3,7 +3,7 @@
         bb.t_id,
         bb.t_basket,
         bb.t_datasetname,           
-        bb.bezugjahr,
+        bb.bezugjahr AS bezugsjahr,
         bb.mandant AS kanton,
         bb.geometrie AS geometrie
     FROM
