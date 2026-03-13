@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS sap_structure;
 
+-- Tabelle gemäss SAP-Vorgaben erstellen --
 CREATE TABLE sap_structure (
 	Eintragsnummer INTEGER,
 	AuftrArt VARCHAR,

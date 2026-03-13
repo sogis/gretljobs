@@ -2,6 +2,7 @@ DELETE FROM afu_bootsanbindeplaetze_mfk.main.abgleich_mfk;
 
 WITH
 
+-- Bootsanbindeplatz-Daten aus Edit-Schema des AfU in DuckDB selektieren --
 daten_afu AS (
 	SELECT
 		platz.t_id AS Bootsanbindeplatz_ID,
@@ -11,7 +12,7 @@ daten_afu AS (
 		kontakt.plz,
 		kontakt.ort,
 		boot.bootskennzeichen,
-		boot.bootslaenge * 100 AS bootslaenge,
+		boot.bootslaenge * 100 AS bootslaenge, -- in cm umwandeln
 		platz.geometrie
 	FROM
 		editdb.afu_bootsanbindeplaetze_v1.bootsanbindeplatz AS platz
@@ -21,6 +22,7 @@ daten_afu AS (
 		ON platz.nutzer_bootsanbindeplatz = kontakt.t_id
 ),
 
+-- MFK-Daten selektieren
 daten_mfk AS (
 	SELECT
 		schild AS bootskennzeichen,
@@ -36,6 +38,7 @@ daten_mfk AS (
 		afu_bootsanbindeplaetze_mfk.main.data_mfk
 ),
 
+-- Abgleich: Wenn Daten gleich dann true, sonst false --
 abgleich AS (
 	SELECT
 		afu.Bootsanbindeplatz_ID,

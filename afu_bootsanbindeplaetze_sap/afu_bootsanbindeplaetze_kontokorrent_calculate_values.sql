@@ -1,11 +1,14 @@
 DELETE FROM afu_bootsanbindeplaetze.main.kontokorrent_structure;
 
+-- Die Berechnung der Kontokorrent-Gebühren entspricht bis auf den Kontokorrentfilter genau der Berechnung der SAP-Gebühren --
+-- Da die Rechnungsstellung für Kontokorrentkunden durch das AfU aber anders erfolgt, müssen diese separat ausgewiesen werden --
+
 WITH 
 
 -- Selektierung Beträge, wenn die Nutzungsgebühr und Steggebühr an die gleiche Rechnungsstelle geht --
 nutzungsgebuehren_gleiche_RS AS (
 	SELECT 
-		(bp.rechnungsstelle_nutzungsgebuehr->0->>'SAP')::text AS KundenNr,
+		(bp.rechnungsstelle_nutzungsgebuehr->0->>'SAP')::text AS KundenNr, -- extrahiert die Kunden-Nr. (SAP) aus dem JSON-Attribut
 		2232 AS "MaterialNr.",
 		ROUND(g.betrag,2) AS "Betrag 2 Kommastellen",
 		g.Materialtext,
@@ -51,6 +54,12 @@ nutzungsgebuehren_separate_RS AS (
 		rechnungsstelle_nutzungsgebuehr IS DISTINCT FROM rechnungsstelle_steggebuehr
 ),
 
+-- Die Bewilligungsgebühr wird einmalig mit der Vergabe der Nutzungsbewilligung erhoben --
+-- Die Bewilligungsgebühr wird für das aktuelle Jahr nicht erhoben, wenn die Bewilligung nach dem Juni vergeben wurde --
+-- Die Rechnungsperiode der Bewilligungsgebühr geht dementsprechend von Juli bis Juli --
+-- Beispiel: Das heutige Datum ist der 31.3.2026 (normalerweise wird ca. Ende März die Rechnung erstellt) --
+--			- Fall 1 - Bewilligungsdatum ist 20.08.2025: Bewilligugnsgebühr wird erhoben --
+--			- Fall 2 - Bewilligungsdatum ist 20.06.2025: Bewilligungsgebühr wird nicht erhoben, da bereits in vorheriger Periode verrechnet --
 bewilligunsgebuehr AS (
 	SELECT 
 		(bp.rechnungsstelle_nutzungsgebuehr->0->>'SAP')::text AS KundenNr,
@@ -122,7 +131,6 @@ gebuehren_alle AS (
 
 gebuehren_nummerierung AS (
 	SELECT 
-		--row_number() OVER (ORDER BY KundenNr) AS Eintragsnummer,
 		dense_rank() OVER (
     		ORDER BY KundenNr
   		) AS Eintragsnummer,
@@ -212,7 +220,7 @@ gebuehren_kontokorrent AS (
 	FROM 
 		gebuehren_nummerierung
 	WHERE
-		Kontokorrent IS TRUE
+		Kontokorrent IS TRUE -- Nur Kontokorrent-Kunden
 	AND 
 		KundenNr IS NOT NULL
 	AND
