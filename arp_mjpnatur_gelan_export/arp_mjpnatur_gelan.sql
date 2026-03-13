@@ -38,7 +38,7 @@ WHERE
     vereinbarung.status_vereinbarung = 'aktiv' 
     AND 
     vereinbarung.bewe_id_geprueft IS TRUE 
-    AND 
-    vereinbarung.ist_nutzungsvereinbarung IS NOT TRUE
+    --AND 
+    --vereinbarung.ist_nutzungsvereinbarung IS NOT TRUE
 ;
 
