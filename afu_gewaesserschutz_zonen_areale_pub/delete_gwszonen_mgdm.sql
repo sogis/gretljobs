@@ -1,0 +1,14 @@
+DELETE FROM afu_gewaesserschutz_zonen_areale_mgdm_v1.gwszonen_gwszone
+;
+
+DELETE FROM afu_gewaesserschutz_zonen_areale_mgdm_v1.gwszonen_gwsareal
+;
+
+DELETE FROM afu_gewaesserschutz_zonen_areale_mgdm_v1.gwszonen_dokument
+;
+
+DELETE FROM afu_gewaesserschutz_zonen_areale_mgdm_v1.localiseduri
+;
+
+DELETE FROM afu_gewaesserschutz_zonen_areale_mgdm_v1.multilingualuri
+;

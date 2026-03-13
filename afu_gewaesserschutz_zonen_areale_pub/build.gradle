@@ -145,14 +145,22 @@ task deleteData_staging_pub (type: SqlExecutor) {
 /** MGDM planerischer Gewässerschutz v1.2
 * --------------------------------------- */
 
-task transferGewaesserschutzMGDM_V1_2(type: SqlExecutor) {
+task deleteFromGewaesserschutzMGDM_V1_2(type: SqlExecutor) {
+    description = "Löscht die Daten aus dem Schema."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ['gwszonen_status_mgdm.sql','gwszonen_gwsareal_mgdm.sql','gwszonen_gwszone_mgdm.sql']
+    sqlFiles = ['delete_gwszonen_mgdm.sql']
+}
+
+task transferGewaesserschutzMGDM_V1_2(type: SqlExecutor) {
+    dependsOn deleteFromGewaesserschutzMGDM_V1_2
+    description = "Importiert die Daten aus dem afu_gewaesserschutz_zonen_areale."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['gwszonen_status_mgdm.sql','gwszonen_gwsareal_gwszone_mgdm.sql','gwszonen_dokument_mgdm.sql']
 }
 
 task exportDataMGDM (type: Ili2pgExport) {
     dependsOn transferGewaesserschutzMGDM_V1_2
-    description = "Exportiert die Daten aus dem Schema afu_grundwasserschutz_zonen_areale in eine INTERLIS-Datei."
+    description = "Exportiert die Daten aus dem Schema afu_grundwasserschutz_zonen_areale_MGDM in eine INTERLIS-Datei."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = 'afu_gewaesserschutz_zonen_areale_mgdm_v1'
     models = 'PlanerischerGewaesserschutz_V1_2'
