@@ -12,7 +12,6 @@ def fileNameMGDMZip = "afu_gewaesserschutz_mgdm.zip"
 def aiLogin = aiUser + ":" + aiPwd
 
 task transferGewaesserschutz(type: Db2Db) {
-    dependsOn 'validateDataEdit'
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
