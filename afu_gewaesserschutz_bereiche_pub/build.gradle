@@ -22,7 +22,7 @@ task transferGewaesserschutz(type: Db2Db) {
 }
 
 task publishPub(type: Publisher) {
-    dependsOn 'zipXtf'
+    dependsOn 'transferGewaesserschutz'
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.afu.gewaesserschutz"
     dbSchema = "afu_gewaesserschutz_pub_v3"
