@@ -1,4 +1,5 @@
 SELECT 
+    t_id
     identifikator, 
     geometrie, 
     bemerkungen, 
