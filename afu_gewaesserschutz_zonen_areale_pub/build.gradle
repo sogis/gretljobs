@@ -26,7 +26,6 @@ def planregisterZipFileName = planregisterFileBaseName+".xml.gz"
 def aiLogin = aiUser + ":" + aiPwd
 
 task transferGewaesserschutz_staging(type: Db2Db) {
-    dependsOn validateDataEdit
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -135,7 +134,7 @@ task uploadPlanregister(type: Curl) {
     password = digiplanPwd
     expectedStatusCode = 202
 }
-
+*/
 task deleteData_staging_pub (type: SqlExecutor) {
     dependsOn uploadPlanregister
     description = "Löscht/leert die Daten aus dem Schema afu_gewaesserschutz_staging"
