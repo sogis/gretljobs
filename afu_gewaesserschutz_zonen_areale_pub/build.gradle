@@ -10,8 +10,6 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'validateData', 'deleteData_staging_pub', 'uploadMGDMXtf'
 
 
-def fileName = "afu_gewaesserschutz_zonen_areale.xtf"
-def fileNameZip = "afu_gewaesserschutz_zonen_areale.zip"
 def fileNamePub = "afu_gewaesserschutz_zonen_areale_pub.xtf"
 def fileNameMGDM = "afu_gewaesserschutz_zonen_areale.xtf"
 def fileNameMGDMZip = "afu_gewaesserschutz_zonen_areale.zip"
@@ -26,30 +24,6 @@ def planregisterXtfFileName = planregisterFileBaseName+".xml"
 def planregisterZipFileName = planregisterFileBaseName+".xml.gz"
 
 def aiLogin = aiUser + ":" + aiPwd
-
-/**
- * Exportiere hier die Schutzzonen und -areale aus der Erfassungs-DB im MGDM.
- * Diese Daten werden anschliessend im Task zipXtf gezippt und an geodienste.ch
- * weitergeleitet.
- * Darum sind hier die zwei Schritte "Export" - "Validierung" nötig, anstelle
- * nur Ili2pgValidate direkt in der Datenbank.
- */
-task exportDataEdit (type: Ili2pgExport) {
-    description = "Exportiert die Daten aus dem Schema afu_grundwasserschutz_zonen_areale in eine INTERLIS-Datei."
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = 'afu_gewaesserschutz_zonen_areale_v1'
-    models = 'PlanerischerGewaesserschutz_LV95_V1_1'
-    dataFile= file(fileName)
-    disableValidation = true
-}
-
-task validateDataEdit(type: IliValidator) {
-    dependsOn exportDataEdit
-    description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
-    dataFiles = file(fileName)
-    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-    failOnError = true
-}
 
 task transferGewaesserschutz_staging(type: Db2Db) {
     dependsOn validateDataEdit
@@ -161,39 +135,9 @@ task uploadPlanregister(type: Curl) {
     password = digiplanPwd
     expectedStatusCode = 202
 }
-    dependsOn uploadPlanregister
-
-*/
-task zipXtf(type: Zip){
-    from "."
-    include fileName
-    archiveName fileNameZip
-    destinationDir(file("."))
-}
-
-/* Falls man auf geodienste.ch alles löschen will/muss (siehe zweiter Abschnitt), muss man
-* einmalig replace_all=true setzen. Curl-Befehl kann natürlich auch lokal
-* ausgeführt werden.
-*
-* Achtung: Die Dateinamen müssen immer gleich sein. Diese werden als 
-* dataset-Name verwendet. Will man die Namen ändern, siehe erster Abschnitt
-* des Kommentars.
-*/
-task uploadXtf() {
-    dependsOn zipXtf
-    doLast {
-        def response = ["curl", "-u", aiLogin, "-F", "topic=planerischer_gewaesserschutz", "-F",
-                        "lv95_file=@" + Paths.get(".", fileNameZip), "-F", "publish=true", "-F", "replace_all=false",
-                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
-        println(response)
-        if (response.contains("false") || response == null || response.trim().isEmpty()) {
-            throw new GradleException()
-        }
-    }
-}
 
 task deleteData_staging_pub (type: SqlExecutor) {
-    dependsOn transferGewaesserschutz_pub
+    dependsOn uploadPlanregister
     description = "Löscht/leert die Daten aus dem Schema afu_gewaesserschutz_staging"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = ["delete_afu_gewaesserschutz_staging.sql"]
@@ -205,7 +149,7 @@ task deleteData_staging_pub (type: SqlExecutor) {
 task transferGewaesserschutzMGDM_V1_2(type: SqlExecutor) {
     dependsOn uploadXtf
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ['gwszonen_gwsareal_mgdm.sql','gwszonen_gwszone_mgdm.sql','gwszonen_status_mgdm']
+    sqlFiles = ['gwszonen_status_mgdm.sql','gwszonen_gwsareal_mgdm.sql','gwszonen_gwszone_mgdm.sql']
 }
 
 task exportDataMGDM (type: Ili2pgExport) {
