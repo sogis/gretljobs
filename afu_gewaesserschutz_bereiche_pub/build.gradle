@@ -6,37 +6,10 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'uploadXtfMGDM'
 
-def fileName = "afu_gewaesserschutz_bereiche.xtf"
-def fileNameZip = "afu_gewaesserschutz_bereiche.zip"
 def fileNameMGDM = "afu_gewaesserschutz_mgdm.xtf"
 def fileNameMGDMZip = "afu_gewaesserschutz_mgdm.zip"
 
 def aiLogin = aiUser + ":" + aiPwd
-
-/**
- * Exportiere hier die Daten aus der Erfassungs-DB im MGDM. Diese Daten werden
- * anschliessend im Task zipXtf gezippt und an geodienste.ch weitergeleitet.
- */
-task exportDataEdit (type: Ili2pgExport) {
-    description = "Exportiert die Daten aus dem Schema afu_grundwasserschutz_bereiche in eine INTERLIS-Datei."
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = 'afu_gewaesserschutz_bereiche_v1'
-    models = 'PlanerischerGewaesserschutz_LV95_V1_1'
-    dataFile= file(fileName)
-    disableValidation = true
-}
-
-/**
- * Validiere die exportierten Daten aus der Erfassungs-DB. Wir können hier nicht
- * Ili2pgValidate, da die Daten sowieso exportiert werden müssen.
- */
-task validateDataEdit(type: IliValidator) {
-    dependsOn 'exportDataEdit'
-    description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
-    dataFiles = file(fileName)
-    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-    failOnError = true
-}
 
 task transferGewaesserschutz(type: Db2Db) {
     dependsOn 'validateDataEdit'
@@ -46,14 +19,6 @@ task transferGewaesserschutz(type: Db2Db) {
         new TransferSet('gewaesserschutz_gewaesserschutzbereich.sql', 'afu_gewaesserschutz_pub_v3.gewaesserschutz_gewaesserschutzbereich', true),
         new TransferSet('gewaesserschutz_zustroembereich.sql', 'afu_gewaesserschutz_pub_v3.gewaesserschutz_zustroembereich', true),
     ];
-}
-
-task zipXtf(type: Zip) {
-    dependsOn 'transferGewaesserschutz'
-    from "."
-    include fileName
-    archiveName fileNameZip
-    destinationDir(file("."))
 }
 
 task publishPub(type: Publisher) {
@@ -70,27 +35,6 @@ task publishPub(type: Publisher) {
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
-/* Falls man auf geodienste.ch alles löschen will/muss (siehe zweiter Abschnitt), muss man
-* einmalig replace_all=true setzen. Curl-Befehl kann natürlich auch lokal
-* ausgeführt werden.
-*
-* Achtung: Die Dateinamen müssen immer gleich sein. Diese werden als 
-* dataset-Name verwendet. Will man die Namen ändern, siehe erster Abschnitt
-* des Kommentars.
-*/
-task uploadXtf() {
-    dependsOn 'publishPub'
-    doLast {
-        def response = ["curl", "-u", aiLogin, "-F", "topic=planerischer_gewaesserschutz", "-F",
-                        "lv95_file=@" + Paths.get(".", fileNameZip), "-F", "publish=true", "-F", "replace_all=false",
-                        "https://" + aiServer + "/data_agg/interlis/import"].execute().text
-        println(response)
-        if (response.contains("false") || response == null || response.trim().isEmpty()) {
-            throw new GradleException()
-        }
-    }
-}
-
 /** MGDM planerischer Gewässerschutz v1.2
 * --------------------------------------- */
 
@@ -99,7 +43,7 @@ task uploadXtf() {
  * Diese Daten werden anschliessend im Task exportDataMGDM_V1_2 exportiert und an geodienste.ch weitergeleitet.
  */
 task transferGewaesserschutzMGDM_V1_2 (type: Db2Db) {
-    dependsOn 'uploadXtf'
+    dependsOn 'publishPub'
     description = "Exportiert die Daten aus dem Schema afu_grundwasserschutz_bereiche in das MGDM-Schema V1.2."
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
