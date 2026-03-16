@@ -225,7 +225,7 @@ tasks.register('publishPubGemeinde', Publisher){
     userFormats = true
     modelsToPublish = 'SO_AWJF_Waldplan_Publikation_20250312'
     region = '.*'
-    sourcePath = file("build/gemeinde" + bfsnr + ".xtf")
+    sourcePath = file("build/" + "gemeinde/" + bfsnr + ".xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
@@ -238,7 +238,7 @@ tasks.register('publishPubWalduebersicht', Publisher){
     dataIdent = 'ch.so.awjf.waldplan.walduebersicht'
     userFormats = true
     modelsToPublish = 'SO_AWJF_Waldplan_Publikation_20250312'
-    sourcePath = file("build/walduebersicht/" + "walduebersicht.xtf")
+    sourcePath = file("build/" + "walduebersicht/" + "walduebersicht.xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
