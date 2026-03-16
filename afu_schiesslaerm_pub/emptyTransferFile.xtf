@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+<HEADERSECTION SENDER="ili2pg-5.2.2-ac0902af2871467a7cc561755c119862520db298" VERSION="2.3"><MODELS><MODEL NAME="SO_AFU_Schiesslaerm_Publikation_20260210" VERSION="2026-02-10" URI="http://geo.so.ch/models/AFU/"></MODEL></MODELS></HEADERSECTION>
+<DATASECTION>
+<SO_AFU_Schiesslaerm_Publikation_20260210.Schiesslaerm BID="SO_AFU_Schiesslaerm_Publikation_20260210.Schiesslaerm">
+</SO_AFU_Schiesslaerm_Publikation_20260210.Schiesslaerm>
+</DATASECTION>
+</TRANSFER>
