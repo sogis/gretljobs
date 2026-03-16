@@ -209,9 +209,12 @@ tasks.register('transferData', Db2Db) {
 
 tasks.register('publishPub', Publisher){
     dependsOn 'transferData'
-    dataIdent = = "publishPub"
+    dataIdent = 'ch.so.awjf.waldplan'
+    userFormats = true
+    modelsToPublish = 'SO_AWJF_Waldplan_Publikation_20250312'
     region = '.*'
     sourcePath = xtfFile
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
