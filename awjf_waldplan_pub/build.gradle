@@ -6,23 +6,13 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferData'
 
-def xtfPath = "${buildDir}/" + bfsnr + ".xtf"
+def xtfPath = "${buildDir}/" + "gemeinde/" + bfsnr + ".xtf"
 def xtfFile = files(xtfPath)
 
 // Multiline-Text ist im Task nicht möglich, darum als Variable
 def importModelsPub = 
     'SO_AGI_MOpublic_20240711;' +
     'SO_AWJF_Waldplan_Publikation_20250312;'
-
-/*
- * Erst Aktivieren, sobald Edit-Daten bereinigt wurden
-
-tasks.register('validateEditData', Ili2pgValidate) {
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    models = 'SO_AWJF_Waldplan_20250312'
-    dbschema = "awjf_waldplan_v2"
-}
-*/
 
 tasks.register('createExtension', SqlExecutor) {
     description = 'In der Processing-DB die Extension für die UUID-Erstellung aktivieren (uuid-ossp).'
@@ -217,21 +207,62 @@ tasks.register('transferData', Db2Db) {
     ];
 }
 
-/*
- * Erst Aktivieren wenn öffentlich publiziert
- * Offene Frage ob und wie die Daten auch Gemeindeweise angeboten werden sollen
-
-tasks.register('publishPub', Publisher){
+tasks.register('exportWalduebersicht', Ili2pgExport) {
     dependsOn 'transferData'
-    database = [dbUriPub,dbUserPub,dbPwdPub]
-    dataIdent = "ch.so.awjf.waldplan"
-    dbSchema = "awjf_waldplan_pub_v2"
-    modelsToPublish = "SO_AWJF_Waldplan_Publikation_20250312"
+    description = "Exportiert die Walduebersicht in eine INTERLIS-Datei."
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = 'awjf_waldplan_pub_v2'
+    models = 'SO_AWJF_Waldplan_Publikation_20250312'
+    dataFile = files("build/walduebersicht/" + "walduebersicht.xtf")
+    dataset = 'admin'
+    disableValidation = true
+    skipGeometryErrors = true
+}
+
+tasks.register('publishPubGemeinde', Publisher){
+    dependsOn 'exportWalduebersicht'
+    dataIdent = 'ch.so.awjf.waldplan'
     userFormats = true
+    modelsToPublish = 'SO_AWJF_Waldplan_Publikation_20250312'
+    region = '.*'
+    sourcePath = file("build/" + "gemeinde/" + bfsnr + ".xtf")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
-    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
-*/
+
+tasks.register('publishPubWalduebersicht', Publisher){
+    dependsOn 'publishPubGemeinde'
+    dataIdent = 'ch.so.awjf.waldplan.walduebersicht'
+    userFormats = true
+    modelsToPublish = 'SO_AWJF_Waldplan_Publikation_20250312'
+    sourcePath = file("build/" + "walduebersicht/" + "walduebersicht.xtf")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+}
+
+tasks.register('updateSearchIndex_1', SqlExecutor){
+    mustRunAfter 'UpdateTxtValues'
+    def layerName = 'ch.so.awjf.waldplan.schutzwald'
+    def sqlFileName = 'searchindex_' + layerName + '.sql'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
+
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
