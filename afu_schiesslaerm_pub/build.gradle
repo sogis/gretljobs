@@ -106,8 +106,19 @@ tasks.register('setDisplayText', SqlExecutor) {
     sqlFiles = files('set_display_text.sql')
 }
 
-tasks.register('publish'){
+tasks.register('publish', Publisher){
     dependsOn setDisplayText
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dataIdent = "ch.so.afu.schiesslaerm"
+    dbSchema = "afu_schiesslaerm_pub_v1"
+    region = ".*"
+    userFormats = true
+    target = [file("$buildDir")]
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
 /*
