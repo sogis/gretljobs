@@ -113,7 +113,6 @@ tasks.register('publish', Publisher){
     dbSchema = "afu_schiesslaerm_pub_v1"
     region = ".*"
     userFormats = true
-    target = [file("$buildDir")]
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
