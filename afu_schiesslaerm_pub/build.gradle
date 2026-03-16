@@ -107,6 +107,7 @@ tasks.register('setDisplayText', SqlExecutor) {
 }
 
 tasks.register('publish'){
+    dependsOn setDisplayText
 }
 
 /*
