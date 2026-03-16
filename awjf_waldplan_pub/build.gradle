@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPub'
+defaultTasks 'publishPubWalduebersicht'
 
 def xtfPath = "${buildDir}/" + bfsnr + ".xtf"
 def xtfFile = files(xtfPath)
@@ -207,13 +207,38 @@ tasks.register('transferData', Db2Db) {
     ];
 }
 
-tasks.register('publishPub', Publisher){
+tasks.register('exportWalduebersicht', Ili2pgExport) {
     dependsOn 'transferData'
+    description = "Exportiert die Walduebersicht in eine INTERLIS-Datei."
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = 'awjf_waldplan_pub_v2'
+    models = 'SO_AWJF_Waldplan_Publikation_20250312'
+    dataFile = files("build/" + "walduebersicht.xtf")
+    dataset = 'admin'
+    disableValidation = true
+    skipGeometryErrors = true
+}
+
+tasks.register('publishPubGemeinde', Publisher){
+    dependsOn 'exportWalduebersicht'
     dataIdent = 'ch.so.awjf.waldplan'
     userFormats = true
     modelsToPublish = 'SO_AWJF_Waldplan_Publikation_20250312'
     region = '.*'
     sourcePath = file("build/" + bfsnr + ".xtf")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+}
+
+tasks.register('publishPubWalduebersicht, Publisher'){
+    dependsOn 'publishPubGemeinde'
+    dataIdent = 'ch.so.awjf.waldplan.walduebersicht'
+    userFormats = true
+    modelsToPublish = 'SO_AWJF_Waldplan_Publikation_20250312'
+    sourcePath = file("build/" + "walduebersicht.xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
