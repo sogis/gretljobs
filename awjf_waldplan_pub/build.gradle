@@ -233,7 +233,7 @@ tasks.register('publishPubGemeinde', Publisher){
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
 
-tasks.register('publishPubWalduebersicht, Publisher'){
+tasks.register('publishPubWalduebersicht', Publisher){
     dependsOn 'publishPubGemeinde'
     dataIdent = 'ch.so.awjf.waldplan.walduebersicht'
     userFormats = true
