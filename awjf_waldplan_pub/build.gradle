@@ -6,7 +6,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'publishPubWalduebersicht'
 
-def xtfPath = "${buildDir}/" + bfsnr + ".xtf"
+def xtfPath = "${buildDir}/" + "gemeinde/" + bfsnr + ".xtf"
 def xtfFile = files(xtfPath)
 
 // Multiline-Text ist im Task nicht möglich, darum als Variable
@@ -213,7 +213,7 @@ tasks.register('exportWalduebersicht', Ili2pgExport) {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'awjf_waldplan_pub_v2'
     models = 'SO_AWJF_Waldplan_Publikation_20250312'
-    dataFile = files("build/" + "walduebersicht.xtf")
+    dataFile = files("build/walduebersicht/" + "walduebersicht.xtf")
     dataset = 'admin'
     disableValidation = true
     skipGeometryErrors = true
@@ -225,7 +225,7 @@ tasks.register('publishPubGemeinde', Publisher){
     userFormats = true
     modelsToPublish = 'SO_AWJF_Waldplan_Publikation_20250312'
     region = '.*'
-    sourcePath = file("build/" + bfsnr + ".xtf")
+    sourcePath = file("build/gemeinde" + bfsnr + ".xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
@@ -238,7 +238,7 @@ tasks.register('publishPubWalduebersicht', Publisher){
     dataIdent = 'ch.so.awjf.waldplan.walduebersicht'
     userFormats = true
     modelsToPublish = 'SO_AWJF_Waldplan_Publikation_20250312'
-    sourcePath = file("build/" + "walduebersicht.xtf")
+    sourcePath = file("build/walduebersicht/" + "walduebersicht.xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
