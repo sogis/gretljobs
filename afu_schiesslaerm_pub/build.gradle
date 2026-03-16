@@ -106,6 +106,10 @@ tasks.register('setDisplayText', SqlExecutor) {
     sqlFiles = files('set_display_text.sql')
 }
 
+tasks.register('publish'){
+}
+
+/*
 tasks.register('publish', Publisher){
     dependsOn setDisplayText
     database = [dbUriPub, dbUserPub, dbPwdPub]
@@ -119,6 +123,7 @@ tasks.register('publish', Publisher){
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
+*/
 
 /*
 GRETL_IMAGE_TAG=3.1 docker compose run --rm -u $UID gretl --project-dir=afu_schiesslaerm_pub -PanlageId=test
