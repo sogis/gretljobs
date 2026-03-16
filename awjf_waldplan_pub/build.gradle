@@ -213,7 +213,7 @@ tasks.register('publishPub', Publisher){
     userFormats = true
     modelsToPublish = 'SO_AWJF_Waldplan_Publikation_20250312'
     region = '.*'
-    sourcePath = xtfFile
+    sourcePath = file("build/" + bfsnr + ".xtf")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
