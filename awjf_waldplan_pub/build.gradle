@@ -209,9 +209,7 @@ tasks.register('transferData', Db2Db) {
 
 tasks.register('publishPub', Publisher){
     dependsOn 'transferData'
-    dataIdent = "ch.so.awjf.waldplan"
-    userFormats = true
-    modelsToPublish = "SO_AWJF_Waldplan_Publikation_20250312"
+    dataIdent = = "publishPub"
     region = '.*'
     sourcePath = xtfFile
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
@@ -220,18 +218,23 @@ tasks.register('publishPub', Publisher){
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
 
-/*
-tasks.register('publishPub', Publisher){
-    dependsOn 'transferData'
-    database = [dbUriPub,dbUserPub,dbPwdPub]
-    dataIdent = "ch.so.awjf.waldplan"
-    dbSchema = "awjf_waldplan_pub_v2"
-    modelsToPublish = "SO_AWJF_Waldplan_Publikation_20250312"
-    userFormats = true
-    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
-    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
-    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+tasks.register('updateSearchIndex_1', SqlExecutor){
+    mustRunAfter 'UpdateTxtValues'
+    def layerName = 'ch.so.awjf.waldplan.schutzwald'
+    def sqlFileName = 'searchindex_' + layerName + '.sql'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
+
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
 }
-*/
