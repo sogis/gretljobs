@@ -11,4 +11,6 @@ WHERE
     topic = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426.BFF_Qualitaet' 
       OR
     topic = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426.Betriebsdaten_Strukturdaten'
+     OR
+    topic = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426.GELAN_Bodenbedeckung'
 ;
