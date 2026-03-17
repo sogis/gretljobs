@@ -160,7 +160,7 @@ tasks.register('copyDataFromPub', Db2Db) {
 // Loop über alle Gemeinden
 // ------------------------------------------------------------
 BfsNrGemeinden.each { bfs ->
-    def xtfFile = files("${buildDir}/" + "gemeinde/" + bfsnr + ".xtf")
+    def xtfFile = files("${buildDir}/gemeinde/${bfs}.xtf")
 
     // --------------------------------------------------------
     // Processing Daten
@@ -235,7 +235,7 @@ BfsNrGemeinden.each { bfs ->
         userFormats = true
         modelsToPublish = 'SO_AWJF_Waldplan_Publikation_20250312'
         region = '.*'
-        sourcePath = file("build/" + "gemeinde/" + bfsnr + ".xtf")
+        sourcePath = file("${buildDir}/gemeinde/${bfs}.xtf")
         if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
         target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
         kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
