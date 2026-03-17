@@ -1,6 +1,5 @@
 DROP TABLE IF EXISTS abgleich_mfk;
 
---- Create Table for intersecting objects --- 
 CREATE TABLE abgleich_mfk (
 	Bootsanbindeplatz_ID INTEGER,
 	Bootskennzeichen INTEGER,

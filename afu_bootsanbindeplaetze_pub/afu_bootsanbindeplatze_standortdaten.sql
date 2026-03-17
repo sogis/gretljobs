@@ -64,6 +64,7 @@ dokumentdaten AS (
 		afu_bootsanbindeplaetze_v1.dokument
 ),
 
+-- Generierung JSON-Attribute --
 vermieter_json AS (
     SELECT
     	array_to_json(
