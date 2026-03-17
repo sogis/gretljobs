@@ -246,6 +246,8 @@ tasks.register('publishPubWalduebersicht', Publisher){
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
 
+/** Suchindex noch in Arbeit
+
 tasks.register('updateSearchIndex_1', SqlExecutor){
     mustRunAfter 'UpdateTxtValues'
     def layerName = 'ch.so.awjf.waldplan.schutzwald'
@@ -266,3 +268,5 @@ tasks.register('updateSearchIndex_1', SqlExecutor){
         println 'layer name: ' + layerName
     }
 }
+
+**/
