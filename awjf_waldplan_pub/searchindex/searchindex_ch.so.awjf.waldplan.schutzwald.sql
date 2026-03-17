@@ -1,5 +1,6 @@
 SET search_path to awjf_waldplan_pub_v2, public;
 
+/*
 INSERT INTO ${db_schema}.feature (
     anzeige,            -- Anzeigetext
     suchbegriffe,       -- Suchbegriffe für den Index
@@ -9,6 +10,7 @@ INSERT INTO ${db_schema}.feature (
     id_spalten_name,    -- Spaltenname, z. B. 't_id'
     id_in_hochkomma     -- Wahrheitswert für ID-In-Hochkomma
 )
+*/
 WITH
 index_base AS (
     SELECT
@@ -19,7 +21,7 @@ index_base AS (
         'Schutzwald Perimeter Name'::text AS part_3,
         (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
-        schutzwald
+        awjf_schutzwald_pub_v1.schutzwald
 )
 SELECT
     displaytext AS anzeige,

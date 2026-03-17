@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferWalduebersicht'
+defaultTasks 'publishPubWalduebersicht'
 
 // Multiline-Text ist im Task nicht möglich, darum als Variable
 def importModelsPub = 
@@ -33,7 +33,6 @@ def BfsNrGemeinden = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
                       2611, 2612, 2613, 2614, 2615, 2616, 2617, 2618, 2619,
                       2620, 2621, 2622
 ]
-
 tasks.register('createExtension', SqlExecutor) {
     description = 'In der Processing-DB die Extension für die UUID-Erstellung aktivieren (uuid-ossp).'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -161,7 +160,7 @@ tasks.register('copyDataFromPub', Db2Db) {
 // Loop über alle Gemeinden
 // ------------------------------------------------------------
 BfsNrGemeinden.each { bfs ->
-    def xtfFile = files("${buildDir}/waldplan_${bfs}.xtf")
+    def xtfFile = files("${buildDir}/" + "gemeinde/" + bfsnr + ".xtf")
 
     // --------------------------------------------------------
     // Processing Daten
@@ -199,17 +198,6 @@ BfsNrGemeinden.each { bfs ->
     }
 
     // --------------------------------------------------------
-    // Validate
-    // --------------------------------------------------------
-    /*
-    ** Für Testzwecke deaktiviert 
-    tasks.register("validateXTF_${bfs}", IliValidator) {
-        dependsOn "exportData_${bfs}"
-        dataFiles = xtfFile
-    }
-    */
-
-    // --------------------------------------------------------
     // Replace
     // --------------------------------------------------------
     tasks.register("replaceData_${bfs}", Ili2pgReplace) {
@@ -239,10 +227,27 @@ BfsNrGemeinden.each { bfs ->
     }
 
     // --------------------------------------------------------
+    // Publisher
+    // --------------------------------------------------------
+    tasks.register("publishPubGemeinde_${bfs}", Publisher){
+        dependsOn "updateTxtValues_${bfs}"
+        dataIdent = 'ch.so.awjf.waldplan'
+        userFormats = true
+        modelsToPublish = 'SO_AWJF_Waldplan_Publikation_20250312'
+        region = '.*'
+        sourcePath = file("build/" + "gemeinde/" + bfsnr + ".xtf")
+        if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+        target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+        kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+        kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+        grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+}
+
+    // --------------------------------------------------------
     // Abschluss-Task pro Gemeinde
     // --------------------------------------------------------
     tasks.register("transferData_${bfs}") {
-        dependsOn "updateTxtValues_${bfs}"
+        dependsOn "publishPubGemeinde_${bfs}"
     }
 }
 
@@ -273,4 +278,29 @@ tasks.register('transferWalduebersicht', Db2Db) {
     transferSets = [
         new TransferSet('transfer_data/awjf_waldplan_pub_walduebersicht.sql', 'awjf_waldplan_pub_v2.waldplan_walduebersicht', true)
     ];
+}
+
+tasks.register('exportWalduebersicht', Ili2pgExport) {
+    dependsOn 'transferWalduebersicht'
+    description = "Exportiert die Walduebersicht in eine INTERLIS-Datei."
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = 'awjf_waldplan_pub_v2'
+    models = 'SO_AWJF_Waldplan_Publikation_20250312'
+    dataFile = files("build/walduebersicht/" + "walduebersicht.xtf")
+    dataset = 'admin'
+    disableValidation = true
+    skipGeometryErrors = true
+}
+
+tasks.register('publishPubWalduebersicht', Publisher){
+    dependsOn 'exportWalduebersicht'
+    dataIdent = 'ch.so.awjf.waldplan.walduebersicht'
+    userFormats = true
+    modelsToPublish = 'SO_AWJF_Waldplan_Publikation_20250312'
+    sourcePath = file("build/" + "walduebersicht/" + "walduebersicht.xtf")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
