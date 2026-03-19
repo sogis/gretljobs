@@ -109,6 +109,7 @@ tasks.register('setDisplayText', SqlExecutor) {
 /*
 tasks.register('publish'){
     dependsOn setDisplayText
+        modelsToPublish = "SO_AFU_Schiesslaerm_Publikation_20260210"
 }
 */
 
@@ -116,7 +117,6 @@ tasks.register('publish', Publisher){
     dependsOn setDisplayText
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataIdent = "ch.so.afu.schiesslaerm"
-    modelsToPublish = "SO_AFU_Schiesslaerm_Publikation_20260210"
     dbSchema = "afu_schiesslaerm_pub_v1"
     region = ".*"
     userFormats = true
