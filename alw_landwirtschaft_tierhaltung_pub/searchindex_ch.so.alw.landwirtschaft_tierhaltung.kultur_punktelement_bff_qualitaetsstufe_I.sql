@@ -1,4 +1,4 @@
-SET search_path to alw_landwirtschaft_tierhaltung_pub_v1, public;
+SET search_path to alw_landwirtschaft_tierhaltung_pub_v2, public;
 
 INSERT INTO ${db_schema}.feature (
     anzeige,            -- Anzeigetext
