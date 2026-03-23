@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPubWalduebersicht'
+defaultTasks 'publishPubWalduebersicht', 'updateSearchIndex_1'
 
 def xtfPath = "${buildDir}/" + "gemeinde/" + bfsnr + ".xtf"
 def xtfFile = files(xtfPath)
@@ -246,8 +246,6 @@ tasks.register('publishPubWalduebersicht', Publisher){
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
 
-/** Suchindex noch in Arbeit
-
 tasks.register('updateSearchIndex_1', SqlExecutor){
     mustRunAfter 'UpdateTxtValues'
     def layerName = 'ch.so.awjf.waldplan.schutzwald'
@@ -268,5 +266,3 @@ tasks.register('updateSearchIndex_1', SqlExecutor){
         println 'layer name: ' + layerName
     }
 }
-
-**/
