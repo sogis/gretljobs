@@ -249,7 +249,7 @@ tasks.register('publishPubWalduebersicht', Publisher){
 tasks.register('updateSearchIndex_1', SqlExecutor){
     mustRunAfter 'UpdateTxtValues'
     def layerName = 'ch.so.awjf.waldplan.schutzwald'
-    def sqlFileName = 'searchindex/searchindex_' + layerName + '.sql'
+    def sqlFileName = 'searchindex/' + 'searchindex_' + layerName + '.sql'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
     def dbSearchSchema = dbSearchSchemaPub
