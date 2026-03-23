@@ -248,6 +248,25 @@ tasks.register('publishPubWalduebersicht', Publisher){
 
 tasks.register('updateSearchIndex_1', SqlExecutor){
     mustRunAfter 'UpdateTxtValues'
+    String layerNameStringQuoted = "'ch.so.awjf.waldplan.schutzwald'"
+    String fileNameString = 'searchindex/searchindex_ch.so.awjf.waldplan.schutzwald.sql'
+    String dbSearchSchemaString = dbSearchSchemaPub
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlParameters = [
+            [layername: layerNameStringQuoted, db_schema: dbSearchSchemaString]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            fileNameString
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+/*
+tasks.register('updateSearchIndex_1', SqlExecutor){
+    mustRunAfter 'UpdateTxtValues'
     def layerName = 'ch.so.awjf.waldplan.schutzwald'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
@@ -265,3 +284,4 @@ tasks.register('updateSearchIndex_1', SqlExecutor){
         println 'layer name: ' + layerName
     }
 }
+*/
