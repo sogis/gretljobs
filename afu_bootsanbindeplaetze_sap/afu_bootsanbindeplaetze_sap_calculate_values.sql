@@ -5,7 +5,7 @@ WITH
 -- Selektierung Beträge, wenn die Nutzungsgebühr und Steggebühr an die gleiche Rechnungsstelle geht --
 nutzungsgebuehren_gleiche_RS AS (
 	SELECT 
-		(bp.rechnungsstelle_nutzungsgebuehr->0->>'SAP')::text AS KundenNr,
+		(bp.rechnungsstelle_nutzungsgebuehr->0->>'SAP')::text AS KundenNr, -- extrahiert die Kunden-Nr. (SAP) aus dem JSON-Attribut
 		2232 AS "MaterialNr.",
 		ROUND(g.betrag,2) AS "Betrag 2 Kommastellen",
 		g.Materialtext,
@@ -51,6 +51,12 @@ nutzungsgebuehren_separate_RS AS (
 		rechnungsstelle_nutzungsgebuehr IS DISTINCT FROM rechnungsstelle_steggebuehr
 ),
 
+-- Die Bewilligungsgebühr wird einmalig mit der Vergabe der Nutzungsbewilligung erhoben --
+-- Die Bewilligungsgebühr wird für das aktuelle Jahr nicht erhoben, wenn die Bewilligung nach dem Juni vergeben wurde --
+-- Die Rechnungsperiode der Bewilligungsgebühr geht dementsprechend von Juli bis Juli --
+-- Beispiel: Das heutige Datum ist der 31.3.2026 (normalerweise wird ca. Ende März die Rechnung erstellt) --
+--			- Fall 1 - Bewilligungsdatum ist 20.08.2025: Bewilligugnsgebühr wird erhoben --
+--			- Fall 2 - Bewilligungsdatum ist 20.06.2025: Bewilligungsgebühr wird nicht erhoben, da bereits in vorheriger Periode verrechnet --
 bewilligunsgebuehr AS (
 	SELECT 
 		(bp.rechnungsstelle_nutzungsgebuehr->0->>'SAP')::text AS KundenNr,
@@ -67,7 +73,7 @@ bewilligunsgebuehr AS (
 		ON bp.standort = sd.standort
 	WHERE
     	datum_bewilligung >= CASE 
-        	WHEN EXTRACT(MONTH FROM CURRENT_DATE) >= 7 -- Prüft ob der aktuelle Monat nach dem Juni ist
+        	WHEN EXTRACT(MONTH FROM CURRENT_DATE) >= 7 -- Prüft ob der aktuelle Monat nach dem Juni ist (also Juli oder später)
         		THEN
         			MAKE_DATE(EXTRACT(YEAR FROM CURRENT_DATE)::int, 7, 1) -- wenn wir uns im gleichen Jahr befinden wird der 1.7. des aktuellen Jahres genommen
        			ELSE
@@ -122,16 +128,15 @@ gebuehren_alle AS (
 
 gebuehren_nummerierung AS (
 	SELECT 
-		--row_number() OVER (ORDER BY KundenNr) AS Eintragsnummer,
 		dense_rank() OVER (
     		ORDER BY KundenNr
-  		) AS Eintragsnummer,
+  		) AS Eintragsnummer, -- Zuweisung Eintragsnummer
 		KundenNr,
 		row_number() OVER (
 			PARTITION BY KundenNr
 			ORDER BY
 				"MaterialVerkaufstext Zeile 1 Position"
-		) * 10 AS "Position",
+		) * 10 AS "Position", -- Pro Kunde (SAP) wird jeder Rechnungsposition eine aufsteigende Nummer (10er-Schritte) zugewiesen
 		"MaterialNr.",
 		Materialtext,
 		"Betrag 2 Kommastellen",
@@ -159,7 +164,7 @@ gebuehren_sap AS (
 			WHEN "Position" = 10
 				THEN 'K'
 			ELSE 'P'
-		END AS "K=Kopf/P=Position",
+		END AS "K=Kopf/P=Position", -- Die erste Rechnungsposition jedes Kunden wird als Kopf bezeichnet
 		KundenNr,
 		NULL AS "Bestellnummer des Kunden",
 		NULL AS BestellDatum,

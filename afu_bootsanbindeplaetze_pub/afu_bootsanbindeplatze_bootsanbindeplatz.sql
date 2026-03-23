@@ -1,5 +1,6 @@
 WITH
 
+-- Variablen für fixe Gebührenbeträge --
 gebuehren AS (
 	SELECT 
 		100::NUMERIC AS betrag_boot_ruderboot,
@@ -21,8 +22,8 @@ platzdaten AS (
 				THEN 'vorhanden'
 			ELSE 'nicht vorhanden'
 		END AS zufahrtsbewilligung_txt,
-		steggebuehr,
-		miete,
+		steggebuehr, -- wird vom AfU individell festgelegt, daher keine Berechnung --
+		miete, -- kommt nur in seltenen Fällen vor und wird vom AfU individuell festgelegt, daher keine Berechnung --
 		pfosten_anz,
 		geometrie,
 		bemerkung,
@@ -128,6 +129,7 @@ gebuehren_berechnet AS (
 	CROSS JOIN gebuehren AS g
 ),
 
+-- Generierung JSON-Attribute --
 kontaktdaten_json AS (
     SELECT
     	array_to_json(
