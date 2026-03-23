@@ -106,19 +106,28 @@ tasks.register('setDisplayText', SqlExecutor) {
     sqlFiles = files('set_display_text.sql')
 }
 
-/*
-tasks.register('publish'){
-    dependsOn setDisplayText
-        modelsToPublish = "SO_AFU_Schiesslaerm_Publikation_20260210"
-}
-*/
-
-tasks.register('publish', Publisher){
+tasks.register('exportFullXtf', Publisher){
     dependsOn setDisplayText
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    dataIdent = "ch.so.afu.schiesslaerm"
+    dataIdent = "full_export"
     dbSchema = "afu_schiesslaerm_pub_v1"
     region = ".*"
+    userFormats = false
+    target = ["$buildDir"]
+}
+
+tasks.register('unzipFullXtf', Copy) {
+    dependsOn exportFullXtf
+    from {
+        zipTree(file("$buildDir/full_export/aktuell/test.full_export.xtf.zip"))
+    }
+    into layout.buildDirectory
+}
+
+tasks.register('publish', Publisher){
+    dependsOn unzipFullXtf
+    dataIdent = "ch.so.afu.schiesslaerm"
+    sourcePath = file("$buildDir/test.full_export.xtf")
     userFormats = true
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
