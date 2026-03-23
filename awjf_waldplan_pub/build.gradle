@@ -257,10 +257,10 @@ tasks.register('updateSearchIndex_1', SqlExecutor){
     sqlParameters = [
             [layername: layerNameString, db_schema: dbSearchSchema]
     ]
-    sqlFiles = [
+    sqlFiles = files(
             '../searchindex_deleteFeatures.sql',
-            "searchindex/searchindex_${layerName}.sql"
-    ]
+            'searchindex/' + 'searchindex_' + layerName + '.sql'
+    )
     doFirst {
         println 'layer name: ' + layerName
     }
