@@ -32,6 +32,7 @@ tasks.register('cleanBuild') {
     }
 }
 
+// upload and rename mfk-file
 tasks.register("copyCSVFile", Copy) {
     dependsOn "cleanBuild"
     from "upload/"
@@ -40,11 +41,11 @@ tasks.register("copyCSVFile", Copy) {
     rename("uploadFile", "uploadFile.csv")
 }
 
+// import mfk-file into DuckDB
 tasks.register("import_mfk_data", SqlExecutor){
     dependsOn "copyCSVFile"
     database = [dbUriDuckDB]
     sqlParameters = [
-        /*mfkPath: "'${uploadFile}'".toString()]*/
        mfkPath: "'upload/uploadFile.csv'"]
     sqlFiles = files(
         'load_extension_spatial.sql',
