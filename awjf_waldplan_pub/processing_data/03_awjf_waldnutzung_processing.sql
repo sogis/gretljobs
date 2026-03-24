@@ -1,7 +1,7 @@
 WITH
 
 -- =========================================================
--- 1) Bereinigung Waldnutzung
+-- 1) Selektierung Waldnutzungsdaten aus Edit-DB (inkl. Geometriebereinigung)
 -- =========================================================
 waldnutzung_edit_clean AS (
 	SELECT
@@ -199,7 +199,7 @@ waldnutzung_pub_clean AS (
 )
 
 -- =========================================================
--- 10) Insert in Publikationstabelle
+-- 10) Einfügen Waldnutzung-Attribute in Pub-Schema
 -- =========================================================
 INSERT INTO awjf_waldplan_pub_v2.waldplan_waldnutzung(
 	t_basket,
