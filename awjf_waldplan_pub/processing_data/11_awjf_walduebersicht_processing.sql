@@ -1,3 +1,6 @@
+-- =========================================================
+-- 1) Tabellen erstellen
+-- =========================================================
 DROP TABLE IF EXISTS 
 	walduebersicht_union_geometry,
 	walduebersicht_cleaned_geometry
@@ -14,6 +17,9 @@ CREATE TABLE
 		geometrie GEOMETRY
 );
 
+-- =========================================================
+-- 2) Waldübersicht Geometrie
+-- =========================================================
 INSERT INTO walduebersicht_union_geometry
 	SELECT
 		(ST_Dump(
@@ -36,6 +42,10 @@ CREATE INDEX
 	USING gist (geometrie)
 ;
 
+-- =========================================================
+-- 3) Bereinigung Waldübersichtsgeometrie
+--    Zu diesem Zeitpunkt enthält die Geometrie noch viele Silver-Polygone
+-- =========================================================
 INSERT INTO walduebersicht_cleaned_geometry
 	SELECT
 		CASE 
@@ -44,12 +54,14 @@ INSERT INTO walduebersicht_cleaned_geometry
 					ST_ExteriorRing(geometrie), --äussere Begrenzung des Polygons
 					ARRAY(
 						SELECT ST_ExteriorRing(ring.geom) --Erstelle Array mit inneren Ringen (Löchern)
-						FROM (
-							SELECT (ST_DumpRings(ug.geometrie)).* --Zerlegung in einzelne ringe
-						) AS ring
-						WHERE ring.path[1] > 0 -- 0 = äusserer Ring, alles grösser als 0 sind innere Ringe, also Löcher
-						AND (4 * 3.14159 * ST_Area(ring.geom)) /  --Polsby-Popper-Test ((4π × Fläche) / (Umfang²)). Je kleiner der Wert, also nahe 0, desto länger ist die Form des Rings, was auf ein Silver-Polygon hindeutet.
-							(ST_Perimeter(ring.geom) ^ 2) > 0.005 -- Werte über 0.0005 sollten "gewollte" Ringe sein, unter 0.0005 Silver-Polygone
+							FROM (
+								SELECT (ST_DumpRings(ug.geometrie)).* --Zerlegung in einzelne ringe
+							) AS ring
+							WHERE
+								ring.path[1] > 0 -- 0 = äusserer Ring, alles grösser als 0 sind innere Ringe, also Löcher
+							AND
+								(4 * 3.14159 * ST_Area(ring.geom)) /  --Polsby-Popper-Test ((4π × Fläche) / (Umfang²)). Je kleiner der Wert, also nahe 0, desto länger ist die Form des Rings, was auf ein Silver-Polygon hindeutet.
+								(ST_Perimeter(ring.geom) ^ 2) > 0.005 -- Werte über 0.0005 sollten "gewollte" Ringe sein, unter 0.0005 Silver-Polygone
 					)
 				)
 			ELSE geometrie
@@ -63,6 +75,9 @@ CREATE INDEX
 	USING gist (geometrie)
 ;
 
+-- =========================================================
+-- 4) Einfügen Waldübersicht in Pub-Schema
+-- =========================================================
 INSERT INTO awjf_waldplan_pub_v2.waldplan_walduebersicht (
 	t_basket,
 	t_datasetname,

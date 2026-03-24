@@ -1,3 +1,6 @@
+-- =========================================================
+-- 1) Waldfunktionsdaten nach bfsnr gefiltert
+-- =========================================================
 INSERT INTO waldfunktion (
 		t_datasetname,
 		funktion,
@@ -32,6 +35,9 @@ CREATE INDEX
 	USING gist (geometrie)
 ;
 
+-- =========================================================
+-- 2) Waldnutzung nach bfsnr gefiltert
+-- =========================================================
 INSERT INTO waldnutzung (
 		t_datasetname,
 		t_id,
@@ -56,6 +62,9 @@ CREATE INDEX
 	USING gist (geometrie)
 ;
 
+-- =========================================================
+-- 3) Verschneidung Waldfunktions- und Waldnutzungsflächen
+-- =========================================================
 INSERT INTO waldfunktion_waldnutzung (
 	t_datasetname,
 	funktion,
@@ -90,6 +99,9 @@ CREATE INDEX
 	USING gist (geometrie)
 ;
 
+-- =========================================================
+-- 4) Flächenberechnung der verschnittenen Waldfunktions- Waldnutzungsflächen
+-- =========================================================
 INSERT INTO waldfunktion_waldnutzung_grundstueck_berechnet (
 	egrid,
 	t_datasetname,

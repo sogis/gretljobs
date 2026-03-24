@@ -1,5 +1,7 @@
 WITH
-
+-- =========================================================
+-- 1) Zusammenführung Grundstückgeometrie und Forstdaten
+-- =========================================================
 grundstuecke AS (
 	SELECT
 		ww.egrid,
@@ -19,6 +21,9 @@ grundstuecke AS (
 		ww.t_datasetname::int4 = ${bfsnr_param}
 ),
 
+-- =========================================================
+-- 2) Erstellung Schutzwaldfläche aus Waldfunktion
+-- =========================================================
 schutzwald_flaeche AS (
 	SELECT
 		schutzwald_r,
@@ -33,6 +38,7 @@ schutzwald_flaeche AS (
 		schutzwald_r
 ),
 
+-- Bereinigung Schutzwaldfläche --
 schutzwald_flaeche_cleaned AS (
 	SELECT
 		schutzwald_r,
@@ -56,6 +62,9 @@ schutzwald_flaeche_cleaned AS (
 		schutzwald_flaeche AS swf
 ),
 
+-- =========================================================
+-- 3) Zuteilung der Forstdaten zum Schutzwald
+-- =========================================================
 administrative_forstdaten AS (
 	SELECT
 		schutzwald_r,
@@ -76,6 +85,9 @@ administrative_forstdaten AS (
 		swf.geometrie
 ),
 
+-- =========================================================
+-- 4) Zusammenführung der Schutzwald-Attribute
+-- =========================================================
 schutzwald_attribute AS (
 	SELECT 
 		sw.t_id,
@@ -176,6 +188,9 @@ schutzwald_zusammengefasst AS (
 		ON swa.t_id = af.schutzwald_r
 )
 
+-- =========================================================
+-- 5) Einfügen Schutzwald-Attribute in Pub-Schema
+-- =========================================================
 INSERT INTO awjf_waldplan_pub_v2.waldplan_schutzwald (
 	t_basket,
 	t_datasetname,
