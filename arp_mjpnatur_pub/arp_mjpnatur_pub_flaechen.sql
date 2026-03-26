@@ -192,6 +192,7 @@ LEFT JOIN
 WHERE 
     --vereinbarung.bewe_id_geprueft IS TRUE  soll laut Sandra Geiser (05.03.2025) nicht mehr Filterkriterium sein.
     --AND 
-    vereinbarung.ist_nutzungsvereinbarung IS NOT TRUE
-    AND 
+    --vereinbarung.ist_nutzungsvereinbarung IS NOT TRUE
+    --AND 
     person.name_vorname IS NOT NULL
+
