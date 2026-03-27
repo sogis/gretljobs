@@ -1,0 +1,1 @@
+DELETE FROM pubdb.arp_solaranlagen_bewilligungsverfahren_pub_v1.bauten_baute WHERE bfsnr = ${bfsnr};
