@@ -3,12 +3,39 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferISOS'
+defaultTasks 'updateTxtColsSchutzwald'
+
+def tmpDir = buildDir.toString()
+def xtfPath = tmpDir + "/data.xtf"
+
+task exportXtf(type: Ili2pgExport){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "arp_isos_inventar_v2"
+    disableValidation = true
+    dataFile = xtfPath
+    models = "SO_ARP_ISOS_Inventar_20260310"
+}
+
+task validate(type: IliValidator){
+    dependsOn 'exportXtf' 
+    dataFiles = [xtfPath]
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
 
 task transferISOS(type: Db2Db){
+    dependsOn 'validate' 
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('isos_objekte.sql', 'arp_isos_inventar_pub_v1.isos_inventar', true),
+            new TransferSet('isos_objekte.sql', 'arp_isos_inventar_pub_v2.isos_inventar', true),
     ];
 }
+
+task updateTxtColsSchutzwald(type: SqlExecutor){
+    dependsOn 'transferISOS' 
+    description = "Füllt die _txt-Spalten ab"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = ['updateTxtColsISOS.sql']
+}
+
+
