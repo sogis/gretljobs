@@ -1,3 +1,6 @@
+-- =========================================================
+-- 1) Waldeigentumsdaten mit Grundstücksdaten vereinen
+-- =========================================================
 INSERT INTO grundstueck (
 	t_basket_waldplan,
 	t_basket_auswertung,

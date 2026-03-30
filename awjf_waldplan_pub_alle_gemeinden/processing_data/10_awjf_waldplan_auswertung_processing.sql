@@ -1,3 +1,6 @@
+-- =========================================================
+-- 1) Zusammenstellung Attribute für Auswertungstabelle
+-- =========================================================
 INSERT INTO awjf_waldplan_pub_v2.waldplan_aswrtung_auswertung (
 	t_basket,
 	t_datasetname,
