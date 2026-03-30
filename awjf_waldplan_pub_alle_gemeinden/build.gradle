@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPubWalduebersicht'
+defaultTasks 'publishPubWalduebersicht', 'updateSearchIndex_1'
 
 // Multiline-Text ist im Task nicht möglich, darum als Variable
 def importModelsPub = 
@@ -46,6 +46,7 @@ tasks.register('deleteAllSchemasIfExists', SqlExecutor) {
     sqlFiles = files('processing_data/deleteallschemas.sql')
 }
 
+// -------------- Erstellung Schemas auf Processing-DB -------------- //
 tasks.register('createImportSchema_Waldplan_Edit', Ili2pgImportSchema) {
     dependsOn 'deleteAllSchemasIfExists'
     description = 'Waldplan-Schema IMPORT für Quelldaten in der Processing-DB anlegen'
@@ -127,6 +128,7 @@ tasks.register('createImportSchema_Hoheitsgrenzen', Ili2pgImportSchema) {
     strokeArcs = true
 }
 
+// -------------- Import Daten in erstelle Processing-DB-Schemas -------------- //
 tasks.register('copyDataFromEdit', Db2Db) {
     dependsOn 'createImportSchema_Hoheitsgrenzen'
     description = 'Quelldaten tabellenweise aus der Edit-DB in die Processing-DB kopieren.'
@@ -163,9 +165,7 @@ tasks.register('copyDataFromPub', Db2Db) {
 BfsNrGemeinden.each { bfs ->
     def xtfFile = files("${buildDir}/gemeinde/${bfs}.xtf")
 
-    // --------------------------------------------------------
-    // Processing Daten
-    // --------------------------------------------------------
+    // -------------- Prozessierung der Waldplandaten -------------- //
     tasks.register("processingPubData_${bfs}", SqlExecutor) {
         dependsOn 'copyDataFromPub'
         database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -184,9 +184,7 @@ BfsNrGemeinden.each { bfs ->
         )
     }
 
-    // --------------------------------------------------------
-    // Export XTF
-    // --------------------------------------------------------
+    // -------------- Export, Validierung und Ersatz Daten -------------- //
     tasks.register("exportData_${bfs}", Ili2pgExport) {
         dependsOn "processingPubData_${bfs}"
         database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -198,9 +196,6 @@ BfsNrGemeinden.each { bfs ->
         skipGeometryErrors = true
     }
 
-    // --------------------------------------------------------
-    // Replace
-    // --------------------------------------------------------
     tasks.register("replaceData_${bfs}", Ili2pgReplace) {
         dependsOn "exportData_${bfs}"
         database = [dbUriPub, dbUserPub, dbPwdPub]
@@ -212,9 +207,7 @@ BfsNrGemeinden.each { bfs ->
         skipGeometryErrors = true
     }
 
-    // --------------------------------------------------------
-    // Update TXT-Werte
-    // --------------------------------------------------------
+    // -------------- Update Anzeigenamen -------------- //
     tasks.register("updateTxtValues_${bfs}", SqlExecutor) {
         dependsOn "replaceData_${bfs}"
         database = [dbUriPub, dbUserPub, dbPwdPub]
@@ -227,9 +220,7 @@ BfsNrGemeinden.each { bfs ->
         )
     }
 
-    // --------------------------------------------------------
-    // Publisher
-    // --------------------------------------------------------
+    // -------------- Publisher Waldplandaten -------------- //
     tasks.register("publishPubGemeinde_${bfs}", Publisher){
         dependsOn "updateTxtValues_${bfs}"
         dataIdent = 'ch.so.awjf.waldplan'
@@ -244,17 +235,13 @@ BfsNrGemeinden.each { bfs ->
         grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
 
-    // --------------------------------------------------------
-    // Abschluss-Task pro Gemeinde
-    // --------------------------------------------------------
+    // -------------- Abschlusstask pro Gemeinde -------------- //
     tasks.register("transferData_${bfs}") {
         dependsOn "publishPubGemeinde_${bfs}"
     }
 }
 
-// ------------------------------------------------------------
-// Sammel-Task
-// ------------------------------------------------------------
+// -------------- Sammel-Task -------------- //
 tasks.register('transferAlleGemeinden') {
     dependsOn {
         BfsNrGemeinden.collect { bfs ->
@@ -271,6 +258,7 @@ tasks.register("processingWalduebersicht", SqlExecutor) {
         )
     }
 
+// -------------- Transfer & Export Waldübersicht (immer gesamthaft) aus Processing-DB -------------- //
 tasks.register('transferWalduebersicht', Db2Db) {
     dependsOn 'processingWalduebersicht'
     description = 'Transfer der Walduebersicht'
@@ -293,6 +281,7 @@ tasks.register('exportWalduebersicht', Ili2pgExport) {
     skipGeometryErrors = true
 }
 
+// -------------- Publisher Waldplandaten -------------- //
 tasks.register('publishPubWalduebersicht', Publisher){
     dependsOn 'exportWalduebersicht'
     dataIdent = 'ch.so.awjf.waldplan.walduebersicht'
@@ -304,4 +293,25 @@ tasks.register('publishPubWalduebersicht', Publisher){
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+}
+
+// -------------- Suchindex-------------- //
+tasks.register('updateSearchIndex_1', SqlExecutor){
+    mustRunAfter 'publishPubWalduebersicht'
+    def layerName = 'ch.so.awjf.waldplan.schutzwald'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = files(
+            '../searchindex_deleteFeatures.sql',
+            'searchindex/' + 'searchindex_' + layerName + '.sql'
+    )
+    doFirst {
+        println 'layer name: ' + layerName
+    }
 }

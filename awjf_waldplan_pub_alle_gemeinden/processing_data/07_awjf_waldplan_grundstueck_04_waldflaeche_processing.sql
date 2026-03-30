@@ -1,3 +1,6 @@
+-- =========================================================
+-- 1) Waldgeometrie pro Grundstück
+-- =========================================================
 INSERT INTO waldgeometrie_grundstueck (
 	egrid,
 	flaechenmass,
@@ -8,7 +11,7 @@ SELECT
     gs.flaechenmass,
     (ST_Dump(
         ST_Intersection(
-            ST_Snap(wf.geometrie, gs.geometrie, 0.01), --snap auf Grundstueck-Geometrie
+            ST_Snap(wf.geometrie, gs.geometrie, 0.01), --snap auf Grundstuecksgeometrie
             gs.geometrie
         )
     )).geom AS geometrie
@@ -45,10 +48,10 @@ INSERT INTO waldgeometrie_grundstueck_bereinigt (
 SELECT
 	egrid,
 	flaechenmass,
-    (ST_Dump(
-        ST_ReducePrecision(
-            (ST_Dump(
-                ST_CollectionExtract(
+    (ST_Dump( -- da St_ReducePrecision teilweise Multipolygone erzeugen kann, müssen diese nochmals zerlegt werden
+        ST_ReducePrecision( -- Reduziert Koordinatengenauigkeit
+            (ST_Dump( -- Zerlegung Multipolygone in Einzelpolygone
+                ST_CollectionExtract( -- filtert Polygone heraus (3)
                     ST_MakeValid(geometrie),
                     3
                 )
@@ -59,7 +62,7 @@ SELECT
 FROM
 	waldgeometrie_grundstueck
 WHERE
-	ST_Area(geometrie) > 0.5
+	ST_Area(geometrie) > 0.5 -- nur Geometrien mit sinnvoller Grösse soll 
 GROUP BY
 	egrid,
 	flaechenmass,
@@ -95,7 +98,9 @@ CREATE INDEX
 	USING gist (geometrie)
 ;
 
--- Berechnung Waldfläche pro Grundstück --
+-- =========================================================
+-- 2) Berechnung Waldfläche pro Grundstück
+-- =========================================================
 INSERT INTO waldflaeche_berechnet (
 	egrid,
 	flaechenmass_grundstueck,
@@ -119,6 +124,9 @@ CREATE INDEX
 	ON waldflaeche_berechnet(egrid)
 ;
 
+-- =========================================================
+-- 3) Plausibilisierung der berechneten Waldflächen
+-- =========================================================
 INSERT INTO	waldflaeche_berechnet_plausibilisiert (
 	egrid,
 	flaechenmass_grundstueck,
@@ -129,7 +137,7 @@ INSERT INTO	waldflaeche_berechnet_plausibilisiert (
 		egrid,
 		flaechenmass_grundstueck,
 		CASE
-			WHEN flaeche_differenz BETWEEN -1 AND 1 
+			WHEN flaeche_differenz BETWEEN -1 AND 1 -- Wenn die berechnete Waldfläche 1 m2 grösser oder kleiner ist als die Grundstücksfläche, wird diese angeglichen
 				THEN flaechenmass_grundstueck 
 			ELSE waldflaeche
 		END AS flaeche,

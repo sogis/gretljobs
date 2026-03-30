@@ -1,5 +1,8 @@
-WITH 
--- Berechne die totale Waldfunktion pro Grundstück --
+WITH
+
+-- =========================================================
+-- 1) Berechnung Flächen der verschnittenen Waldfunktions- und Waldnutzungsflächen
+-- =========================================================
 waldfunktion_summe AS (
 	SELECT
 		egrid,
@@ -18,6 +21,9 @@ waldfunktion_summe AS (
 		egrid
 ),
 
+-- =========================================================
+-- 2) Plausibilisierung der berechneten Flächen
+-- =========================================================
 -- Vergleich der berechneten Waldfunktionssumme mit der berechneten Waldfläche --
 differenz AS (
 	SELECT 
@@ -83,6 +89,9 @@ INSERT INTO waldfunktion_waldnutzung_grundstueck_berechnet_plausibilisiert (
 		END AS korrigiert
 	FROM rangiert;
 
+-- =========================================================
+-- 3) Waldfunktionsfläche pro Grundstück
+-- =========================================================
 INSERT INTO waldfunktionsflaechen_grundstueck (
 	egrid,
 	wirtschaftswald,
@@ -120,6 +129,9 @@ INSERT INTO waldfunktionsflaechen_grundstueck (
 	) t
 ;
 
+-- =========================================================
+-- 4) Waldnutzungsfläche pro Grundstück
+-- =========================================================
 INSERT INTO waldnutzungsflaechen_grundstueck (
 	egrid,
 	wald_bestockt,
@@ -165,6 +177,9 @@ INSERT INTO waldnutzungsflaechen_grundstueck (
 	) t
 ;
 
+-- =========================================================
+-- 5) Biodiversitätsobjektfläche pro Grundstück
+-- =========================================================
 INSERT INTO biodiversitaetsobjekte_grundstueck (
 	egrid,
 	waldreservat,
@@ -206,6 +221,10 @@ INSERT INTO biodiversitaetsobjekte_grundstueck (
 	) t
 ;
 
+-- =========================================================
+-- 6) Produktive Waldfläche pro Grundstück
+--    Die produktive Fläche setzt sich aus der Waldnutzungskategorie 'Wald_bestockt' und 'Nachteilige_Nutzung' zusammen
+-- =========================================================
 INSERT INTO waldflaeche_produktiv (
 	egrid,
 	waldflaeche,
@@ -252,6 +271,11 @@ INSERT INTO waldflaeche_produktiv (
 		wald.flaeche
 ;
 
+-- =========================================================
+-- 7) Hiebsatzrelevante Waldfunktionsfläche pro Grundstück
+--    Die hiebsatzrelevante Fläche setzt aus der produktiven Waldfläche zusammen, mit Ausnahme dort,
+--    wo die Waldfunktion = Biodiversitaet und Biodiversitaet_Objekt = 'Waldreservat' oder 'Altholzinsel' ist
+-- =========================================================
 INSERT INTO waldfunktion_hiebsatzrelevant (
 	egrid,
 	waldflaeche,
@@ -404,6 +428,12 @@ INSERT INTO waldfunktion_hiebsatzrelevant (
 		wald.flaeche
 ;
 
+
+-- =========================================================
+-- 8) Hiebsatzrelevante Waldnutzungsfläche pro Grundstück
+--    Die hiebsatzrelevante Fläche setzt aus der produktiven Waldfläche zusammen, mit Ausnahme dort,
+--    wo die Waldfunktion = Biodiversitaet und Biodiversitaet_Objekt = 'Waldreservat' oder 'Altholzinsel' ist
+-- =========================================================
 INSERT INTO waldnutzung_hiebsatzrelevant (
 	egrid,
 	waldflaeche,
@@ -499,6 +529,9 @@ INSERT INTO waldnutzung_hiebsatzrelevant (
 		wald.flaeche
 ;
 
+-- =========================================================
+-- 9) Waldfunktionsflächen nach Waldnutzung
+-- =========================================================
 INSERT INTO waldfunktion_nach_waldnutzung (
 	egrid,
 	wirtschaftswald_wald_bestockt,
@@ -590,6 +623,9 @@ INSERT INTO waldfunktion_nach_waldnutzung (
 		egrid
 ;
 
+-- =========================================================
+-- 9) Wytweidefläche pro Grundstück
+-- =========================================================
 INSERT INTO wytweide_grundstueck (
 	egrid,
 	flaeche

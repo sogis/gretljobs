@@ -179,7 +179,7 @@ schutzwald_zusammengefasst AS (
 		swa.intensitaet_geschaetzt,
 		swa.intensitaet_geschaetzt_txt,
 		swa.gemeinde,
-		ROUND((ST_Area(af.geometrie)/1000)::NUMERIC,3) AS flaeche,
+		ROUND((ST_Area(af.geometrie)/10000)::NUMERIC,3) AS flaeche,
 		swa.bemerkungen,
 		af.geometrie
 	FROM
