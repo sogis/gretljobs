@@ -14,12 +14,14 @@ index_base AS (
     SELECT
         ${layername}::text AS subclass,
         t_id AS id_in_class,
-        concat('Id: ', kultur_id, ' (Kultur)') AS displaytext,
-        kultur_id AS part_1,
-        'Id Kultur'::text AS part_3,
+        concat('Nr: ', tvd_nummer, ' (TVD Nummer)') AS displaytext,
+        tvd_nummer AS part_1,
+        'TVD Nummer'::text AS part_3,
         (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
-        betrbsdttrktrdten_kultur_flaeche_aktuellesjahr
+        betrbsdttrktrdten_tierstandort
+    WHERE
+        standorttyp::text != 'Bienenstand'::text AND tvd_nummer < 99999999
 )
 SELECT
     displaytext AS anzeige,

@@ -257,3 +257,25 @@ task updateSearchIndex_8(type: SqlExecutor){
         println 'layer name: ' + layerName
     }
 }
+
+task updateSearchIndex_9(type: SqlExecutor){
+    mustRunAfter 'transferALWAgrardaten'
+    def layerName = 'ch.so.alw.landwirtschaft_tierhaltung.tierstandort_tierstandorte_geschuetzt'
+    def sqlFileName = 'searchindex_' + layerName + '.sql'
+    //def sqlFileName = 'searchindex_' + layerName.replace('_geschuetzt', '') + '.sql'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
+
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
