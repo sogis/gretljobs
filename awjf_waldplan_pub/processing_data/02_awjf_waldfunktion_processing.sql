@@ -1,5 +1,8 @@
 WITH
 
+-- =========================================================
+-- 1) Selektierung Waldfunktionsdaten aus Edit-DB
+-- =========================================================
 waldfunktion_edit AS (
 	SELECT
 		basket.t_id AS t_basket,
@@ -36,6 +39,9 @@ waldfunktion_edit AS (
 		split_part(basket.topic, '.', 2) = 'Waldplan'
 ),
 
+-- =========================================================
+-- 2) Bereinigung Geometrie
+-- =========================================================
 waldfunktion_edit_clean AS (
 	SELECT 
 		t_basket,
@@ -56,6 +62,9 @@ waldfunktion_edit_clean AS (
 		ST_IsValid(geometrie)
 )
 
+-- =========================================================
+-- 3) Einfügen Waldfunktion-Attribute in Pub-Schema
+-- =========================================================
 INSERT INTO awjf_waldplan_pub_v2.waldplan_waldfunktion(
 	t_basket,
 	t_datasetname,

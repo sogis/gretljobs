@@ -33,6 +33,7 @@ def zipFile = hasRealData ? file("$projectDir/xyz.zip") : file("$projectDir/dumm
 def xtfFile = hasRealData ? file("$buildDir/pubModelData.xtf") : file("$projectDir/emptyTransferFile.xtf")
 
 tasks.register('logPaths') {
+    description 'Ausgabe der Übersicht, welche Zip- und XTF-Dateien verwendet werden (Die hochgeladeneen oder die leeren)'
     doFirst {
         logger.lifecycle("Using zip and xtf files from paths:")
         logger.lifecycle("Zip-File: " + zipFile)
@@ -42,6 +43,7 @@ tasks.register('logPaths') {
 
 tasks.register('unzip', Copy) {
     dependsOn logPaths
+    description 'Unzip des vom Benutzer hochgeladenen Shape in den "build" Ordner.'
     from {
         zipTree(zipFile)
     }
@@ -50,6 +52,7 @@ tasks.register('unzip', Copy) {
 
 tasks.register('sqlPrep', SqlExecutor) {
     dependsOn unzip
+    description 'Vorbereitende SQL-Scripts.'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [anlage_id_quoted:anlageId_Quoted]
     sqlFiles = files(
@@ -60,6 +63,7 @@ tasks.register('sqlPrep', SqlExecutor) {
 
 tasks.register('validate', Ili2pgValidate) {
     dependsOn sqlPrep
+    description 'Validiert insbesondere, ob die vom Benutzer übergebene Schiessplatz-ID in der Tabelle "anlage_attribute" enthalten ist.'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = "SO_AFU_Schiesslaerm_20260210"
     modeldir = rootProject.projectDir.toString() + ";http://models.interlis.ch"
@@ -68,6 +72,7 @@ tasks.register('validate', Ili2pgValidate) {
 
 tasks.register('importCells', ShpImport) {
     dependsOn validate
+    description 'Importiert die "Lärm-Quadrate" im Shapefile in die Edit-DB.'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = "afu_schiesslaerm_v1"
     tableName = "schiesslaerm_import"
@@ -76,6 +81,7 @@ tasks.register('importCells', ShpImport) {
 
 tasks.register('stage', SqlExecutor) {
     dependsOn importCells
+    description 'Transformiert die Daten in das Pub-Modell ins staging Schema.'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [anlage_id:anlageId]
     sqlFiles = files(
@@ -86,6 +92,7 @@ tasks.register('stage', SqlExecutor) {
 
 tasks.register('exportXtf', Ili2pgExport) {
     dependsOn stage
+    description 'Export des Schiessplatzes als XTF, damit mittels Ili2pgReplace das Pub-Schema aktualisiert werden kann.'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dataFile = files("$buildDir/pubModelData.xtf")
     models = 'SO_AFU_Schiesslaerm_Publikation_20260210'
@@ -94,6 +101,7 @@ tasks.register('exportXtf', Ili2pgExport) {
 
 tasks.register('replaceXtf', Ili2pgReplace) {
     dependsOn exportXtf
+    description 'Aktualisierung des Pub-Schemas.'
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dataFile = files(xtfFile)
     dbschema = 'afu_schiesslaerm_pub_v1'
@@ -102,21 +110,36 @@ tasks.register('replaceXtf', Ili2pgReplace) {
 
 tasks.register('setDisplayText', SqlExecutor) {
     dependsOn replaceXtf
+    description 'Aktualisierung des Pub-Schemas mit dem Display-Text.'
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = files('set_display_text.sql')
 }
 
-tasks.register('publish'){
+tasks.register('exportFullXtf', Publisher){
     dependsOn setDisplayText
-}
-
-/*
-tasks.register('publish', Publisher){
-    dependsOn setDisplayText
+    description 'Export des Stands der Pub-DB in ein XTF. Workaround, da mit datasets nicht direkt ab DB publiziert werden kann.'
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    dataIdent = "ch.so.afu.schiesslaerm"
+    dataIdent = "full_export"
     dbSchema = "afu_schiesslaerm_pub_v1"
     region = ".*"
+    userFormats = false
+    target = ["$buildDir"]
+}
+
+tasks.register('unzipFullXtf', Copy) {
+    dependsOn exportFullXtf
+    description 'Unzip des im vorherigen Task erstellten *.zip.'
+    from {
+        zipTree(file("$buildDir/full_export/aktuell/test.full_export.xtf.zip"))
+    }
+    into layout.buildDirectory
+}
+
+tasks.register('publish', Publisher){
+    dependsOn unzipFullXtf
+    description 'Publikation der Daten für den Datenbezug.'
+    dataIdent = "ch.so.afu.schiesslaerm"
+    sourcePath = file("$buildDir/test.full_export.xtf")
     userFormats = true
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
@@ -124,7 +147,6 @@ tasks.register('publish', Publisher){
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
-*/
 
 /*
 GRETL_IMAGE_TAG=3.1 docker compose run --rm -u $UID gretl --project-dir=afu_schiesslaerm_pub -PanlageId=test

@@ -4,12 +4,11 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPubWalduebersicht'
+defaultTasks 'publishPubWalduebersicht', 'updateSearchIndex_1'
 
 def xtfPath = "${buildDir}/" + "gemeinde/" + bfsnr + ".xtf"
 def xtfFile = files(xtfPath)
 
-// Multiline-Text ist im Task nicht möglich, darum als Variable
 def importModelsPub = 
     'SO_AGI_MOpublic_20240711;' +
     'SO_AWJF_Waldplan_Publikation_20250312;'
@@ -20,6 +19,7 @@ tasks.register('createExtension', SqlExecutor) {
     sqlFiles = files('processing_data/create_extension.sql')
 }
 
+// -------------- Erstellung Schemas auf Processing-DB -------------- //
 tasks.register('deleteAllSchemasIfExists', SqlExecutor) {
     dependsOn 'createExtension'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -107,6 +107,7 @@ tasks.register('createImportSchema_Hoheitsgrenzen', Ili2pgImportSchema) {
     strokeArcs = true
 }
 
+// -------------- Import Daten in erstelle Processing-DB-Schemas -------------- //
 tasks.register('copyDataFromEdit', Db2Db) {
     dependsOn 'createImportSchema_Hoheitsgrenzen'
     description = 'Quelldaten tabellenweise aus der Edit-DB in die Processing-DB kopieren.'
@@ -137,6 +138,7 @@ tasks.register('copyDataFromPub', Db2Db) {
     ];
 }
 
+// -------------- Prozessierung der Waldplandaten -------------- //
 tasks.register('processingPubData', SqlExecutor) {
     dependsOn 'copyDataFromPub'
     description = 'Berechnung Waldplandaten für eine Gemeinde'
@@ -157,6 +159,7 @@ tasks.register('processingPubData', SqlExecutor) {
     )
 }
 
+// -------------- Export, Validierung und Ersatz Daten -------------- //
 tasks.register('exportData', Ili2pgExport) {
     dependsOn 'processingPubData'
     description = "Exportiert die Daten mit DataSet = BFSNr aus dem Processing-Schema awjf_waldplan_pub_v2 in eine INTERLIS-Datei."
@@ -171,11 +174,13 @@ tasks.register('exportData', Ili2pgExport) {
 
 tasks.register('validateXTF', IliValidator) {
     dependsOn 'exportData'
+    description = 'Validiert die exportierten Waldplandaten aus der Processing-DB'
     dataFiles = xtfFile
 }
 
 tasks.register('replaceData', Ili2pgReplace) {
     dependsOn 'validateXTF'
+    description = 'Ersetzt die Daten mit dem entsprechenden Dataset (BFS-Nr) auf der Pub-DB'
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'awjf_waldplan_pub_v2'
     models = 'SO_AWJF_Waldplan_Publikation_20250312'
@@ -185,6 +190,7 @@ tasks.register('replaceData', Ili2pgReplace) {
     skipGeometryErrors = true
 }
 
+// -------------- Update Anzeigenamen -------------- //
 tasks.register('UpdateTxtValues', SqlExecutor) {
     dependsOn 'replaceData'
     database = [dbUriPub, dbUserPub, dbPwdPub]
@@ -197,6 +203,7 @@ tasks.register('UpdateTxtValues', SqlExecutor) {
     )
 }
 
+// -------------- Transfer & Export Waldübersicht (immer gesamthaft) aus Processing-DB -------------- //
 tasks.register('transferData', Db2Db) {
     dependsOn 'UpdateTxtValues'
     description = 'Transfer der Walduebersicht'
@@ -219,6 +226,7 @@ tasks.register('exportWalduebersicht', Ili2pgExport) {
     skipGeometryErrors = true
 }
 
+// -------------- Publisher Waldplandaten -------------- //
 tasks.register('publishPubGemeinde', Publisher){
     dependsOn 'exportWalduebersicht'
     dataIdent = 'ch.so.awjf.waldplan'
@@ -246,27 +254,23 @@ tasks.register('publishPubWalduebersicht', Publisher){
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
 
-/** Suchindex noch in Arbeit
-
+// -------------- Suchindex-------------- //
 tasks.register('updateSearchIndex_1', SqlExecutor){
     mustRunAfter 'UpdateTxtValues'
     def layerName = 'ch.so.awjf.waldplan.schutzwald'
-    def sqlFileName = 'searchindex_' + layerName + '.sql'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
     def dbSearchSchema = dbSearchSchemaPub
-    String layerNameString = "'${layerName}'"
 
+    String layerNameString = "'${layerName}'"
     sqlParameters = [
             [layername: layerNameString, db_schema: dbSearchSchema]
     ]
-    sqlFiles = [
+    sqlFiles = files(
             '../searchindex_deleteFeatures.sql',
-            sqlFileName
-    ]
+            'searchindex/' + 'searchindex_' + layerName + '.sql'
+    )
     doFirst {
         println 'layer name: ' + layerName
     }
 }
-
-**/
