@@ -1,0 +1,1 @@
+DELETE FROM afu_schiesslaerm_v1.schiesslaerm_import;
