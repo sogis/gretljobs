@@ -5,15 +5,23 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'csvimport'
 
-def db_uri = 'jdbc:postgresql://localhost:54321/gretldemo'
-def db_user = "dmluser"
-def db_pass = "dmluser"
+def schemaNameEdit = "gesa_tigermueckenfundstellen_v1"
+
+tasks.register('deleteCsvTableRows', SqlExecutor){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [dbSchema:schemaNameEdit]
+    sqlFiles = files(
+        'delete_csv.sql'
+    )
+}
 
 tasks.register('csvimport',  CsvImport) {
+    dependsOn "deleteCsvTableRows"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    schemaName = "gesa_tigermueckenfundstellen_v1"
+    schemaName = schemaNameEdit
     tableName = "csv_import"
     firstLineIsHeader = true
+    valueSeparator = ';'
     dataFile = file("upload/Tigermuecken_SO_W38.csv")
 }
 
