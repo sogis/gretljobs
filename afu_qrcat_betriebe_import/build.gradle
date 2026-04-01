@@ -7,7 +7,7 @@ defaultTasks 'connectTest'
 
 tasks.register('connectTest', SqlExecutor) {
     description 'Verbindungstest auf die Feko-DB'
-    database = [dbUriOnlinerisk, dbUserOnlinerisk, dbPwdOnlinerisk]
+    database = [dbUriFekoStoerfall, dbUserFekoStoerfall, dbPwdFekoStoerfall]
     sqlFiles = files('connect_test.sql')
 }
 
@@ -35,5 +35,5 @@ task "betriebe_fehlende_koordinaten_ergaenzen"(type: SqlExecutor,dependsOn: "tra
     sqlFiles = ['update_fehlende_koordinaten_betrieb.sql']
 }
 
-GRETL_IMAGE_TAG=3.1.857 docker compose run --rm -u $UID gretl --project-dir=afu_qrcat_feko_transfer
+GRETL_IMAGE_TAG=3.1.857 docker compose run --rm -u $UID gretl --project-dir=afu_qrcat_betriebe_import
 */
