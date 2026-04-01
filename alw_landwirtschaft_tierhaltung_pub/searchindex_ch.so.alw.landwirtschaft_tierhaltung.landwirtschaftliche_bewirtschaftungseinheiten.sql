@@ -19,7 +19,7 @@ index_base AS (
         'BewE-ID Bewirtschaftungseinheit'::text AS part_3,
         (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
-        betrbsdttrktrdten_bewe_aktuellesjahr
+        betrbsdttrktrdten_bewe_aktuellesjahr    
 )
 SELECT
     displaytext AS anzeige,

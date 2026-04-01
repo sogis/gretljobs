@@ -14,9 +14,9 @@ index_base AS (
     SELECT
         ${layername}::text AS subclass,
         t_id AS id_in_class,
-        concat('Id: ', kultur_id, ' (Kultur)') AS displaytext,
+        concat('KulturID: ', kultur_id, ' (Kultur)') AS displaytext,
         kultur_id AS part_1,
-        'Id Kultur'::text AS part_3,
+        'KulturID'::text AS part_3,
         (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
         betrbsdttrktrdten_kultur_flaeche_aktuellesjahr
