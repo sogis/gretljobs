@@ -7,7 +7,16 @@ defaultTasks 'csvimport'
 
 def schemaNameEdit = "gesa_tigermueckenfundstellen_v1"
 
+// rename uploadfile
+tasks.register("copyCSVFile", Copy) {
+    from "upload/"
+    into "upload/"
+    include("*.csv")
+    rename(/.*/, "uploadFile.csv")
+}
+
 tasks.register('deleteCsvTableRows', SqlExecutor){
+    dependsOn "copyCSVFile"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [dbSchema:schemaNameEdit]
     sqlFiles = files(
@@ -16,9 +25,9 @@ tasks.register('deleteCsvTableRows', SqlExecutor){
 }
 
 tasks.register('fixCsvHeader') {
-    dependsOn deleteCsvTableRows
+    dependsOn "deleteCsvTableRows"
     doLast {
-        def file = file("upload/Tigermuecken_SO_W38.csv")
+        def file = file("upload/uploadFile.csv")
         def lines = file.readLines('UTF-8')
         lines[0] = lines[0].replace('UID', 'auid')
         file.write(lines.join('\n'), 'UTF-8')
@@ -32,7 +41,7 @@ tasks.register('csvimport',  CsvImport) {
     tableName = "csv_import"
     firstLineIsHeader = true
     valueSeparator = ';'
-    dataFile = file("upload/Tigermuecken_SO_W38.csv")
+    dataFile = file("upload/uploadFile.csv")
 }
 
 /*
