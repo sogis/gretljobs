@@ -1,0 +1,29 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'csvimport'
+
+def db_uri = 'jdbc:postgresql://localhost:54321/gretldemo'
+def db_user = "dmluser"
+def db_pass = "dmluser"
+
+tasks.register('csvimport',  CsvImport) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = "gesa_tigermueckenfundstellen_v1"
+    tableName = "csv_import"
+    firstLineIsHeader = true
+    dataFile = file("upload/Tigermuecken_SO_W38.csv")
+}
+
+/*
+tasks.register('transferData', Db2Db) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('afu_bootsanbindeplatze_bootsanbindeplatz.sql', 'afu_bootsanbindeplaetze_pub_v1.bootsanbindeplatz', true),
+            new TransferSet('afu_bootsanbindeplatze_standortdaten.sql', 'afu_bootsanbindeplaetze_pub_v1.standortdaten', true)
+    ];
+}
+*/
