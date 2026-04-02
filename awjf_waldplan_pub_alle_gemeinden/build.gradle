@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPubWalduebersicht'/*, 'updateSearchIndex_1' */
+defaultTasks 'publishPubWalduebersicht', 'updateSearchIndex_1'
 
 // Multiline-Text ist im Task nicht möglich, darum als Variable
 def importModelsPub = 
