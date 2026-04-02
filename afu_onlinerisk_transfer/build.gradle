@@ -34,6 +34,6 @@ task "betriebe_fehlende_koordinaten_ergaenzen"(type: SqlExecutor,dependsOn: "tra
     sqlParameters = [DB_Schema_QRcat:DB_Schema_QRcat]
     sqlFiles = ['update_fehlende_koordinaten_betrieb.sql']
 }
-*/
-GRETL_IMAGE_TAG=3.1.857 docker compose run --rm -u $UID gretl --project-dir=afu_qrcat_betriebe_import
 
+GRETL_IMAGE_TAG=3.1.857 docker compose run --rm -u $UID gretl --project-dir=afu_qrcat_betriebe_import
+*/
