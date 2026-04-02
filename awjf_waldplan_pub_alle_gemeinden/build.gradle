@@ -162,7 +162,17 @@ tasks.register('copyDataFromPub', Db2Db) {
 // ------------------------------------------------------------
 // Loop über alle Gemeinden
 // ------------------------------------------------------------
-BfsNrGemeinden.each { bfs ->
+def gemeindeliste // leere Gemeindeliste
+
+// Wenn als bfsnr-Variable 'alle_gemeinden' übergeben wird, werden alle Gemeinden publiziert,
+// andernfalls die angegebene bfsnr.
+if (bfsnr == 'alle_gemeinden'){
+    gemeindeliste = BfsNrGemeinden
+} else {
+    gemeindeliste = [bfsnr.toInteger()]
+}
+
+gemeindeliste.each { bfs ->
     def xtfFile = files("${buildDir}/gemeinde/${bfs}.xtf")
 
     // -------------- Prozessierung der Waldplandaten -------------- //
@@ -244,7 +254,7 @@ BfsNrGemeinden.each { bfs ->
 // -------------- Sammel-Task -------------- //
 tasks.register('transferAlleGemeinden') {
     dependsOn {
-        BfsNrGemeinden.collect { bfs ->
+        gemeindeliste.collect { bfs ->
             tasks.named("transferData_${bfs}")
         }
     }
