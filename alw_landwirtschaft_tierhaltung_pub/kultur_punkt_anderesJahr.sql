@@ -2,7 +2,6 @@ SELECT
     kultur.t_id,
     kultur.t_basket,
     kultur.t_datasetname,
-    'so_lw_l0211019betrbsdttrktrdten_kultur_flaeche' AS t_type,
     kultur.t_ili_tid,
     kultur.geometrie, 
     kultur.bezugsjahr,
@@ -21,17 +20,18 @@ SELECT
     kultur.vernetzung_flaeche,
     kultur.vernetzung_nutzungsvariante,
     bewe.betriebsnummer_agis,
+    bewe.bewe_name,
     person.pid_gelan,
     person.name_vorname,
     person.adresse_strasse || ' ' || adresse_hausnummer AS adresse,
-    person.plz || ' ' || person.ortschaft AS plz_ortschaft,
     person.telefon_privat,
     person.telefon_geschaeft,
     person.telefon_mobil,
     person.mailadresse,
-    person.gemeinde_wohnsitz
+    person.gemeinde_wohnsitz,
+    person.plz || ' ' || person.ortschaft AS plz_ortschaft
 FROM
-    alw_landwirtschaft_tierhaltung_v1.betrbsdttrktrdten_kultur_flaechen AS kultur
+    alw_landwirtschaft_tierhaltung_v1.betrbsdttrktrdten_kultur_punktelemente AS kultur
     LEFT JOIN alw_landwirtschaft_tierhaltung_v1.betrbsdttrktrdten_bewirtschaftungseinheit AS bewe
         ON kultur.bewirtschaftungseinheit = bewe.t_id
     LEFT JOIN alw_landwirtschaft_tierhaltung_v1.betrbsdttrktrdten_betrieb AS betrieb
@@ -40,5 +40,5 @@ FROM
         ON betrieb.person = person.t_id
 WHERE 
 -- es wird immer nur ein Jahr publiziert
-    bewe.bezugsjahr = ${publikationsjahr_flaechenerhebung}
+    bewe.bezugsjahr != ${publikationsjahr_flaechenerhebung}
 ;

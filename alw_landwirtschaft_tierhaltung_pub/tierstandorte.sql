@@ -2,7 +2,6 @@ SELECT
     standorte.t_id,
     standorte.t_basket,
     standorte.t_datasetname,
-    'so_lw_l0211019betrbsdttrktrdten_tierstandort' AS t_type,
     standorte.t_ili_tid,
     standorte.geometrie,
     standorte.bezugsjahr,
@@ -51,7 +50,8 @@ SELECT
     person.telefon_geschaeft,
     person.telefon_mobil,
     person.mailadresse,
-    person.gemeinde_wohnsitz
+    person.gemeinde_wohnsitz,
+    standorte.standortname AS standortname
 FROM
     alw_landwirtschaft_tierhaltung_v1.betrbsdttrktrdten_standorte AS standorte 
     LEFT JOIN alw_landwirtschaft_tierhaltung_v1.betrbsdttrktrdten_betrieb AS betrieb

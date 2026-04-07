@@ -9,7 +9,7 @@ import java.nio.file.Paths
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'transferALWAgrardaten', 'updateSearchIndex_1', 'updateSearchIndex_2', 'updateSearchIndex_3', 'updateSearchIndex_4', 'updateSearchIndex_5', 'updateSearchIndex_6', 'updateSearchIndex_7', 'updateSearchIndex_8'
+defaultTasks 'transferALWAgrardaten', 'updateSearchIndex_1', 'updateSearchIndex_2', 'updateSearchIndex_3', 'updateSearchIndex_4', 'updateSearchIndex_5', 'updateSearchIndex_6', 'updateSearchIndex_7', 'updateSearchIndex_8', 'updateSearchIndex_9', 'updateSearchIndex_10', 'updateSearchIndex_11'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
@@ -72,13 +72,17 @@ task transferALWAgrardaten(type: Db2Db, dependsOn: importGELAN){
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     sqlParameters = [publikationsjahr_standort: '2026', publikationsjahr_flaechenerhebung: '2026']
     transferSets = [
-        new TransferSet("dataset.sql",'alw_landwirtschaft_tierhaltung_pub_v1.t_ili2db_dataset',true),
-        new TransferSet("basket.sql",'alw_landwirtschaft_tierhaltung_pub_v1.t_ili2db_basket',true),
-        new TransferSet("bff_qualitaet.sql",'alw_landwirtschaft_tierhaltung_pub_v1.bff_qualitaet_bff_qualitaet',true),
-        new TransferSet("bewirtschaftungseinheit.sql",'alw_landwirtschaft_tierhaltung_pub_v1.betrbsdttrktrdten_bewirtschaftungseinheit',true),
-        new TransferSet("kultur_flaeche.sql",'alw_landwirtschaft_tierhaltung_pub_v1.betrbsdttrktrdten_kultur_flaeche',true),
-        new TransferSet("kultur_punktelement.sql",'alw_landwirtschaft_tierhaltung_pub_v1.betrbsdttrktrdten_kultur_punktelement',true),
-        new TransferSet("tierstandorte.sql",'alw_landwirtschaft_tierhaltung_pub_v1.betrbsdttrktrdten_tierstandort',true)
+        new TransferSet("dataset.sql",'alw_landwirtschaft_tierhaltung_pub_v2.t_ili2db_dataset',true),
+        new TransferSet("basket.sql",'alw_landwirtschaft_tierhaltung_pub_v2.t_ili2db_basket',true),
+        new TransferSet("bff_qualitaet.sql",'alw_landwirtschaft_tierhaltung_pub_v2.bff_qualitaet_bff_qualitaet',true),
+        new TransferSet("bewirtschaftungseinheit_aktuellesJahr.sql",'alw_landwirtschaft_tierhaltung_pub_v2.betrbsdttrktrdten_bewe_aktuellesjahr',true),
+        new TransferSet("bewirtschaftungseinheit_anderesJahr.sql",'alw_landwirtschaft_tierhaltung_pub_v2.betrbsdttrktrdten_bewe_anderesjahr',true),
+        new TransferSet("kultur_flaeche_aktuellesJahr.sql",'alw_landwirtschaft_tierhaltung_pub_v2.betrbsdttrktrdten_kultur_flaeche_aktuellesjahr',true),
+        new TransferSet("kultur_flaeche_anderesJahr.sql",'alw_landwirtschaft_tierhaltung_pub_v2.betrbsdttrktrdten_kultur_flaeche_anderesjahr',true),
+        new TransferSet("kultur_punkt_aktuellesJahr.sql",'alw_landwirtschaft_tierhaltung_pub_v2.betrbsdttrktrdten_kultur_punkt_aktuellesjahr',true),
+        new TransferSet("kultur_punkt_anderesJahr.sql",'alw_landwirtschaft_tierhaltung_pub_v2.betrbsdttrktrdten_kultur_punkt_anderesjahr',true),
+        new TransferSet("ln_soemmerung.sql",'alw_landwirtschaft_tierhaltung_pub_v2.ln_soemmerung_ln_soemmerung',true),
+        new TransferSet("tierstandorte.sql",'alw_landwirtschaft_tierhaltung_pub_v2.betrbsdttrktrdten_tierstandort',true)
     ];
 }
 
@@ -236,6 +240,70 @@ task updateSearchIndex_7(type: SqlExecutor){
 task updateSearchIndex_8(type: SqlExecutor){
     mustRunAfter 'transferALWAgrardaten'
     def layerName = 'ch.so.alw.landwirtschaft_tierhaltung.kultur_punktelement_bff_qualitaetsstufe_I_geschuetzt'
+    def sqlFileName = 'searchindex_' + layerName.replace('_geschuetzt', '') + '.sql'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
+
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+task updateSearchIndex_9(type: SqlExecutor){
+    mustRunAfter 'transferALWAgrardaten'
+    def layerName = 'ch.so.alw.landwirtschaft_tierhaltung.tierstandort_tierstandorte_geschuetzt'
+    def sqlFileName = 'searchindex_' + layerName.replace('_geschuetzt', '') + '.sql'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
+
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+task updateSearchIndex_10(type: SqlExecutor){
+    mustRunAfter 'transferALWAgrardaten'
+    def layerName = 'ch.so.alw.landwirtschaft_tierhaltung.landwirtschaftliche_bewirtschaftungseinheiten'
+    def sqlFileName = 'searchindex_' + layerName + '.sql'
+    //def sqlFileName = 'searchindex_' + layerName.replace('_geschuetzt', '') + '.sql'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+    String layerNameString = "'${layerName}'"
+
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = [
+            '../searchindex_deleteFeatures.sql',
+            sqlFileName
+    ]
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+task updateSearchIndex_11(type: SqlExecutor){
+    mustRunAfter 'transferALWAgrardaten'
+    def layerName = 'ch.so.alw.landwirtschaft_tierhaltung.landwirtschaftliche_bewirtschaftungseinheiten_geschuetzt'
     def sqlFileName = 'searchindex_' + layerName.replace('_geschuetzt', '') + '.sql'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]

@@ -2,7 +2,6 @@ SELECT
     bewe.t_id,
     bewe.t_basket,
     bewe.t_datasetname,
-    'so_lw_l0211019betrbsdttrktrdten_bewirtschaftungseinheit' AS t_type,
     bewe.t_ili_tid,
     bewe.geometrie, 
     bewe.bezugsjahr,
@@ -15,6 +14,7 @@ SELECT
     bewe.bestockte_flaeche,
     bewe.unproduktive_flaeche,
     bewe.betriebsnummer_agis,
+    bewe.bewe_name,
     person.pid_gelan,
     person.name_vorname,
     person.adresse_strasse || ' ' || adresse_hausnummer AS adresse,
@@ -32,5 +32,5 @@ FROM
         ON person.t_id = betrieb.person
 WHERE 
 -- es wird immer nur ein Jahr publiziert
-    bewe.bezugsjahr = ${publikationsjahr_flaechenerhebung}
+    bewe.bezugsjahr != ${publikationsjahr_flaechenerhebung}
 ;
