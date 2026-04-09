@@ -2,6 +2,7 @@ DELETE FROM arp_mjpnl_gelan_v1.mehrjahresprgramm_vereinbarungensflaechen
 ;
 
 INSERT INTO arp_mjpnl_gelan_v1.mehrjahresprgramm_vereinbarungensflaechen (
+    t_ili_tid,
     geometrie, 
     artcode, 
     ueberlagernd, 
@@ -12,6 +13,7 @@ INSERT INTO arp_mjpnl_gelan_v1.mehrjahresprgramm_vereinbarungensflaechen (
 )
 
 SELECT 
+    vereinbarung.t_ili_tid,
     vereinbarung.geometrie,
     CASE 
         WHEN vereinbarungsart IN ('Wiese', 'WBL_Wiese') THEN 42055 --Wiesen
