@@ -1,0 +1,114 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+
+defaultTasks 'migration'
+
+tasks.register('prepare_db', SqlExecutor) {
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files('prepare_db.sql')
+}
+
+/*
+tasks.register('makeSchemaBodeneinheiten', Ili2pgImportSchema){
+    dependsOn 'prepare_db'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    models = "SO_AFU_Bodeneinheiten_20251210"
+    dbschema = "afu_bodeneinheiten_v1"
+    nameByTopic = false
+    strokeArcs = true
+    defaultSrsCode = "2056"
+    createGeomIdx = true
+    createMetaInfo = true
+    createFk = true
+    createFkIdx = true
+    createEnumTabs = true
+    beautifyEnumDispName = true
+    createUnique = true
+    createNumChecks = false //für migrierte Daten
+    createDatasetCol = true
+    createTypeConstraint = true
+    coalesceMultiSurface = true
+    coalesceArray = true
+    sqlEnableNull = true //für migrierte Daten
+    createBasketCol = true 
+    createTidCol = true
+    expandStruct = true //Damit die Strukturen Oberboden und Unterboden richtig expanded werden
+}
+
+Vorläufig muss folgendes ausgeführt werden: 
+
+java -jar software/ili2pg-5.5.1/ili2pg-5.5.1.jar --schemaimport --dbhost localhost --dbport 54323 --dbdatabase processing --dbusr "processing"   --dbpwd "processing"   --models SO_AFU_Bodeneinheiten_20251210   --modeldir "%ILI_DIR;http://models.interlis.ch/"   --dbschema afu_bodeneinheiten_v1   --strokeArcs   --defaultSrsCode 2056   --createGeomIdx   --createMetaInfo   --createFk   --createFkIdx   --createEnumTabs   --beautifyEnumDispName   --createUnique   --createDatasetCol   --createTypeConstraint   --coalesceMultiSurface   --coalesceArray   --sqlEnableNull   --createBasketCol   --createTidCol   --expandStruct
+*/
+
+tasks.register('makeSchemaIsBoden', SqlExecutor) {
+    //dependsOn 'makeSchemaBodeneinheiten'
+    dependsOn 'prepare_db'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files('schema_isboden_minimal.sql')
+}
+
+tasks.register('transferIsboden', Db2Db) {
+    dependsOn 'makeSchemaIsBoden'
+    sourceDb = [dbUriIsboden, dbUserIsboden, dbPwdIsboden]
+    targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    transferSets = [
+            new TransferSet('select_scripts_isboden/select_bodentyp_t.sql','afu_isboden.bodentyp_t', true),
+            new TransferSet('select_scripts_isboden/select_druckmodul_ausschnitte_t.sql','afu_isboden.druckmodul_ausschnitte_t', true),
+            new TransferSet('select_scripts_isboden/select_wt_nutzbfk.sql','afu_isboden.wt_nutzbfk', true),
+            new TransferSet('select_scripts_isboden/select_koernkl_t.sql','afu_isboden.koernkl_t', true),
+            new TransferSet('select_scripts_isboden/select_humusform_wa_t.sql','afu_isboden.humusform_wa_t', true),
+            new TransferSet('select_scripts_isboden/select_bodeneinheit_lw_qgis_server_client_t.sql','afu_isboden.bodeneinheit_lw_qgis_server_client_t', true),
+            new TransferSet('select_scripts_isboden/select_wt_znutzbfk.sql','afu_isboden.wt_znutzbfk', true),
+            new TransferSet('select_scripts_isboden/select_gefuegeform_t.sql','afu_isboden.gefuegeform_t', true),
+            new TransferSet('select_scripts_isboden/select_bodeneinheit_overlap_t.sql','afu_isboden.bodeneinheit_overlap_t', true),
+            new TransferSet('select_scripts_isboden/select_skelett_t.sql','afu_isboden.skelett_t', true),
+            new TransferSet('select_scripts_isboden/select_kartiererin_v_sc.sql','afu_isboden.kartiererin_v_sc', true),
+            new TransferSet('select_scripts_isboden/select_bodeneinheit_onlinedata_t.sql','afu_isboden.bodeneinheit_onlinedata_t', true),
+            new TransferSet('select_scripts_isboden/select_wt_tab70_4.sql','afu_isboden.wt_tab70_4', true),
+            new TransferSet('select_scripts_isboden/select_wt_tab70_4sk.sql','afu_isboden.wt_tab70_4sk', true),
+            new TransferSet('select_scripts_isboden/select_gemeindeteil_t.sql','afu_isboden.gemeindeteil_t', true),
+
+            // Parents for bodeneinheit_* children
+            new TransferSet('select_scripts_isboden/select_bodeneinheit_t.sql','afu_isboden.bodeneinheit_t', true),
+            new TransferSet('select_scripts_isboden/select_begelfor_t.sql','afu_isboden.begelfor_t', true),
+            new TransferSet('select_scripts_isboden/select_untertyp_t.sql','afu_isboden.untertyp_t', true),
+            new TransferSet('select_scripts_isboden/select_wasserhhgr_t.sql','afu_isboden.wasserhhgr_t', true),
+            new TransferSet('select_scripts_isboden/select_wt_tab70_1.sql','afu_isboden.wt_tab70_1', true),
+            new TransferSet('select_scripts_isboden/select_gefueggr_t.sql','afu_isboden.gefueggr_t', true),
+            new TransferSet('select_scripts_isboden/select_erosionsgefahr_qgis_server_client_t.sql','afu_isboden.erosionsgefahr_qgis_server_client_t', true),
+            new TransferSet('select_scripts_isboden/select_kalkgehalt_t.sql','afu_isboden.kalkgehalt_t', true),
+            new TransferSet('select_scripts_isboden/select_wt_tab70_3.sql','afu_isboden.wt_tab70_3', true),
+            new TransferSet('select_scripts_isboden/select_wt_gefueg.sql','afu_isboden.wt_gefueg', true),
+            new TransferSet('select_scripts_isboden/select_wt_tab70_2.sql','afu_isboden.wt_tab70_2', true),
+            new TransferSet('select_scripts_isboden/select_wt_pfnugr.sql','afu_isboden.wt_pfnugr', true),
+            new TransferSet('select_scripts_isboden/select_hinweiskarte_bodenverdichtung_qgis_server_client_t.sql','afu_isboden.hinweiskarte_bodenverdichtung_qgis_server_client_t', true),
+            new TransferSet('select_scripts_isboden/select_bodeneinheit_wald_qgis_server_client_t.sql','afu_isboden.bodeneinheit_wald_qgis_server_client_t', true),
+            new TransferSet('select_scripts_isboden/select_csv_import_t.sql','afu_isboden.csv_import_t', true),
+            new TransferSet('select_scripts_isboden/select_wt_bodart.sql','afu_isboden.wt_bodart', true),
+
+            // Children of bodeneinheit_t
+            new TransferSet('select_scripts_isboden/select_bodeneinheit_historische_nummerierung_t.sql','afu_isboden.bodeneinheit_historische_nummerierung_t', true),
+
+            // Must be after bodeneinheit_t and several lookups
+            new TransferSet('select_scripts_isboden/select_bodeneinheit_auspraegung_t.sql','afu_isboden.bodeneinheit_auspraegung_t', true),
+
+            // Must be after bodeneinheit_auspraegung_t and untertyp_t
+            new TransferSet('select_scripts_isboden/select_zw_bodeneinheit_untertyp.sql','afu_isboden.zw_bodeneinheit_untertyp', true)
+    ]
+}
+
+tasks.register('migration', SqlExecutor) {
+    //dependsOn 'makeSchemaBodeneinheiten'
+    dependsOn 'transferIsboden'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files('copy_altdaten.sql', 
+                     'make_los.sql',
+                     'bodeneinheit_hauptauspraegung_landwirtschaft.sql',
+                     'bodeneinheit_nebenauspraegung_landwirtschaft.sql',
+                     'bodeneinheit_hauptauspraegung_wald.sql',
+                     'bodeneinheit_nebenauspraegung_wald.sql'
+    )
+}

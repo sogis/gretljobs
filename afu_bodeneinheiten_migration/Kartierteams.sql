@@ -1,0 +1,115 @@
+WITH dataset AS (
+    SELECT
+        t_id,
+        datasetname
+    FROM
+        afu_bodeneinheiten_v1.t_ili2db_dataset
+    WHERE
+        datasetname = 'migration'
+),
+basket AS (
+    SELECT
+        t_id
+    FROM
+        afu_bodeneinheiten_v1.t_ili2db_basket
+    WHERE
+        attachmentkey = 'migration'
+)
+INSERT INTO afu_bodeneinheiten_v1.kartierteam
+(
+    t_basket,
+    t_datasetname,
+    teamkuerzel
+)
+SELECT
+    basket.t_id,
+    dataset.datasetname,
+    v.teamkuerzel
+FROM dataset
+CROSS JOIN basket
+CROSS JOIN (
+    VALUES
+        ('BW'),
+        ('BW/GK'),
+        ('ED'),
+        ('HP'),
+        ('Pa/AR/MK'),
+        ('Ro'),
+        ('SH'),
+        ('zü'),
+        ('ga'),
+        ('MV'),
+        ('rü/ug'),
+        ('VAV/PRE'),
+        ('VIDE'),
+        ('PRE'),
+        ('PRE/VOG'),
+        ('AR/MK/UB/KB'),
+        ('GUN'),
+        ('ga/as'),
+        ('as'),
+        ('AR/UB/MW'),
+        ('ga/as/mw'),
+        ('MK/KB/MM'),
+        ('Ro/Tu'),
+        ('Ro/EK'),
+        ('MK'),
+        ('KB'),
+        ('Ro/Tu/sfe'),
+        ('UR'),
+        ('ga/mw/mm/as'),
+        ('BW/ED/GK'),
+        ('Pa/Ro'),
+        ('HP/UV'),
+        ('PRE/GUN'),
+        ('PRE/MV/CAR'),
+        ('PRE/MV/VAR/GUN/ga'),
+        ('Ro/Pa'),
+        ('Ro/Pa/Tu'),
+        ('AR/MK/UB/KB/MM'),
+        ('rü/uv/ug'),
+        ('MV/Bau'),
+        ('UV/MW/MM'),
+        ('ga/ra'),
+        ('ru/zü'),
+        ('hü/zü'),
+        ('brä'),
+        ('sfe/Zü'),
+        ('MM'),
+        ('MW'),
+        ('ra'),
+        ('Dn/Vf'),
+        ('MM/JS'),
+        ('MK/TS'),
+        ('ML'),
+        ('JS'),
+        ('ga / laz'),
+        ('sfe'),
+        ('sfl'),
+        ('vö'),
+        ('eg'),
+        ('bü'),
+        ('ho'),
+        ('hü'),
+        ('kö'),
+        ('TS'),
+        ('bk'),
+        ('WD'),
+        ('IV'),
+        ('bb/ga'),
+        ('pi'),
+        ('ba'),
+        ('bb'),
+        ('bego'),
+        ('ed/sfl'),
+        ('ne'),
+        ('ne/slf'),
+        ('ne/lm'),
+        ('slf/lr'),
+        ('slf/ne'),
+        ('slf/lm'),
+        ('lm/ne'),
+        ('oe'),
+        ('pf'),
+        ('np')
+) AS v(teamkuerzel);
