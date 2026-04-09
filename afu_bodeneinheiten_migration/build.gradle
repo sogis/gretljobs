@@ -109,6 +109,23 @@ tasks.register('migration', SqlExecutor) {
                      'bodeneinheit_hauptauspraegung_landwirtschaft.sql',
                      'bodeneinheit_nebenauspraegung_landwirtschaft.sql',
                      'bodeneinheit_hauptauspraegung_wald.sql',
-                     'bodeneinheit_nebenauspraegung_wald.sql'
+                     'bodeneinheit_nebenauspraegung_wald.sql',
+                     'untertypen_diverse_hauptauspraegung_landwirtschaft.sql',
+                     'untertypen_diverse_hauptauspraegung_wald.sql',
+                     'untertypen_diverse_nebenauspraegung_landwirtschaft.sql',
+                     'untertypen_diverse_nebenauspraegung_wald.sql',
+                     'untertypen_k_hauptauspraegung_landwirtschaft.sql',
+                     'untertypen_k_hauptauspraegung_wald.sql',
+                     'untertypen_k_nebenauspraegung_landwirtschaft.sql',
+                     'untertypen_k_nebenauspraegung_wald.sql',
+                     'untertypen_p_hauptauspraegung_landwirtschaft.sql',
+                     'untertypen_p_hauptauspraegung_wald.sql',
+                     'untertypen_p_nebenauspraegung_landwirtschaft.sql',
+                     'untertypen_p_nebenauspraegung_wald.sql',
+                     'kartierpersonen.sql',
+                     'Kartierteams.sql',
+                     'kartierpersonen_teams.sql',
+                     'set_kartierteam_bodeneinheit_hauptauspraegung_landwirtschaft.sql',
+                     'set_kartierteam_bodeneinheit_hauptauspraegung_wald.sql'
     )
 }
