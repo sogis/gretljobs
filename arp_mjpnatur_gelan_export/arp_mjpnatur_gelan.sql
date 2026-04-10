@@ -35,7 +35,18 @@ FROM
 LEFT JOIN 
     arp_mjpnl_v2.mjpnl_beurteilung_hostet hostet
     ON 
-    hostet.vereinbarung = vereinbarung.t_id
+    hostet.vereinbarung = vereinbarung.t_id 
+    AND 
+    hostet.beurteilungsdatum = (
+        SELECT 
+            MAX(beurteilungsdatum) 
+        FROM 
+            arp_mjpnl_v2.mjpnl_beurteilung_hostet b 
+        WHERE 
+            b.mit_bewirtschafter_besprochen IS TRUE 
+            AND 
+            b.vereinbarung = hostet.vereinbarung
+    )
 WHERE 
     vereinbarung.status_vereinbarung = 'aktiv' 
     AND 
