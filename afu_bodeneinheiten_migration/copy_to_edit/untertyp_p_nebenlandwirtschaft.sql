@@ -1,0 +1,2 @@
+SELECT t_basket, t_datasetname, acode, nebenauspraegunglandassociation_p
+FROM afu_bodeneinheiten_v1.untertyp_p_nebenlandwirtschaft;

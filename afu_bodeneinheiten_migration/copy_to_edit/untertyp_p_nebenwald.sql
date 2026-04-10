@@ -1,0 +1,2 @@
+SELECT t_basket, t_datasetname, acode, nebenauspraegungwaldassociation_p
+FROM afu_bodeneinheiten_v1.untertyp_p_nebenwald;

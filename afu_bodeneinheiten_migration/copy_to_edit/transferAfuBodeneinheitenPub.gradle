@@ -1,0 +1,26 @@
+task transferAfuBodeneinheitenPub(type: Db2Db) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('bodeneinheithauptauspraegung_landwirtschaft.sql', 'afu_bodeneinheiten_v1.bodeneinheithauptauspraegung_landwirtschaft', true),
+            new TransferSet('bodeneinheithauptauspraegung_wald.sql', 'afu_bodeneinheiten_v1.bodeneinheithauptauspraegung_wald', true),
+            new TransferSet('kartierperson.sql', 'afu_bodeneinheiten_v1.kartierperson', true),
+            new TransferSet('kartierpersonteam.sql', 'afu_bodeneinheiten_v1.kartierpersonteam', true),
+            new TransferSet('kartierteam.sql', 'afu_bodeneinheiten_v1.kartierteam', true),
+            new TransferSet('los.sql', 'afu_bodeneinheiten_v1.los', true),
+            new TransferSet('nebenauspraegung_landwirtschaft.sql', 'afu_bodeneinheiten_v1.nebenauspraegung_landwirtschaft', true),
+            new TransferSet('nebenauspraegung_wald.sql', 'afu_bodeneinheiten_v1.nebenauspraegung_wald', true),
+            new TransferSet('untertyp_diverse_hauptlandwirtschaft.sql', 'afu_bodeneinheiten_v1.untertyp_diverse_hauptlandwirtschaft', true),
+            new TransferSet('untertyp_diverse_hauptwald.sql', 'afu_bodeneinheiten_v1.untertyp_diverse_hauptwald', true),
+            new TransferSet('untertyp_diverse_nebenlandwirtschaft.sql', 'afu_bodeneinheiten_v1.untertyp_diverse_nebenlandwirtschaft', true),
+            new TransferSet('untertyp_diverse_nebenwald.sql', 'afu_bodeneinheiten_v1.untertyp_diverse_nebenwald', true),
+            new TransferSet('untertyp_k_hauptlandwirtschaft.sql', 'afu_bodeneinheiten_v1.untertyp_k_hauptlandwirtschaft', true),
+            new TransferSet('untertyp_k_hauptwald.sql', 'afu_bodeneinheiten_v1.untertyp_k_hauptwald', true),
+            new TransferSet('untertyp_k_nebenlandwirtschaft.sql', 'afu_bodeneinheiten_v1.untertyp_k_nebenlandwirtschaft', true),
+            new TransferSet('untertyp_k_nebenwald.sql', 'afu_bodeneinheiten_v1.untertyp_k_nebenwald', true),
+            new TransferSet('untertyp_p_hauptlandwirtschaft.sql', 'afu_bodeneinheiten_v1.untertyp_p_hauptlandwirtschaft', true),
+            new TransferSet('untertyp_p_hauptwald.sql', 'afu_bodeneinheiten_v1.untertyp_p_hauptwald', true),
+            new TransferSet('untertyp_p_nebenlandwirtschaft.sql', 'afu_bodeneinheiten_v1.untertyp_p_nebenlandwirtschaft', true),
+            new TransferSet('untertyp_p_nebenwald.sql', 'afu_bodeneinheiten_v1.untertyp_p_nebenwald', true)
+    ]
+}

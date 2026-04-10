@@ -1,0 +1,2 @@
+SELECT t_basket, t_datasetname, acode, bodeneinheitlandassociation_diverse
+FROM afu_bodeneinheiten_v1.untertyp_diverse_hauptlandwirtschaft;
