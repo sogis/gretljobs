@@ -55,7 +55,7 @@ nutzungsgebuehren_separate_RS AS (
 -- Die Bewilligungsgebühr wird für das aktuelle Jahr nicht erhoben, wenn die Bewilligung nach dem Juni vergeben wurde --
 -- Die Rechnungsperiode der Bewilligungsgebühr geht dementsprechend von Juli bis Juli --
 -- Beispiel: Das heutige Datum ist der 31.3.2026 (normalerweise wird ca. Ende März die Rechnung erstellt) --
---			- Fall 1 - Bewilligungsdatum ist 20.08.2025: Bewilligugnsgebühr wird erhoben --
+--			- Fall 1 - Bewilligungsdatum ist 20.08.2025: Bewilligungsgebühr wird erhoben --
 --			- Fall 2 - Bewilligungsdatum ist 20.06.2025: Bewilligungsgebühr wird nicht erhoben, da bereits in vorheriger Periode verrechnet --
 bewilligunsgebuehr AS (
 	SELECT 
