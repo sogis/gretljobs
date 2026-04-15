@@ -8,7 +8,7 @@ defaultTasks 'connectTest'
 tasks.register('connectTest', SqlExecutor) {
     description 'Verbindungstest auf die Feko-DB'
     database = [dbUriFekoStoerfall, dbUserFekoStoerfall, dbPwdFekoStoerfall]
-    sqlFiles = [file('connect_test.sql')]
+    sqlFiles = [file('connect_test.sql').absolutePath]
 }
 
 /*
