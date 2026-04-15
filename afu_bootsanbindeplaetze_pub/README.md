@@ -7,4 +7,4 @@ Publikation der Bootsanbindeplatz-Daten aus dem Edit-Schema afu_bootsanbindeplae
 ## Gebühren
 Für die Bootsanbindeplätze werden diverse Gebühren berechnet. Dies geschieht im SQL-File [afu_bootsanbindeplaetz.sql](afu_bootsanbindeplatze_bootsanbindeplatz.sql)   
 
-Einige Gebühren sind dabei fix. Anpassungen dieser Gebühren werden durch das AfU mitgeteilt. In dem Fall können im CTE gebuehren die entsprechenden Beträge angepasst werden.
+Einige Gebühren sind dabei fix. Anpassungen dieser Gebühren werden durch das AfU mitgeteilt. In dem Fall können im CTE `gebuehren` die entsprechenden Beträge angepasst werden.

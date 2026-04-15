@@ -55,7 +55,7 @@ nutzungsgebuehren_separate_RS AS (
 ),
 
 -- Die Bewilligungsgebühr wird einmalig mit der Vergabe der Nutzungsbewilligung erhoben --
--- Die Bewilligungsgebühr wird für das aktuelle Jahr nicht erhoben, wenn die Bewilligung nach dem Juni vergeben wurde --
+-- Die Bewilligungsgebühr wird für das aktuelle Jahr nicht erhoben, wenn die Bewilligung vor dem Juli vergeben wurde --
 -- Die Rechnungsperiode der Bewilligungsgebühr geht dementsprechend von Juli bis Juli --
 -- Beispiel: Das heutige Datum ist der 31.3.2026 (normalerweise wird ca. Ende März die Rechnung erstellt) --
 --			- Fall 1 - Bewilligungsdatum ist 20.08.2025: Bewilligungsgebühr wird erhoben --
@@ -76,14 +76,14 @@ bewilligunsgebuehr AS (
 		ON bp.standort = sd.standort
 	WHERE
     	datum_bewilligung >= CASE 
-        	WHEN EXTRACT(MONTH FROM CURRENT_DATE) >= 7 -- Prüft ob der aktuelle Monat nach dem Juni ist
+        	WHEN EXTRACT(MONTH FROM CURRENT_DATE) >= 7 -- Prüft ob der aktuelle Monat nach dem Juni ist (also Juli oder später)
         		THEN
-        			MAKE_DATE(EXTRACT(YEAR FROM CURRENT_DATE)::int, 7, 1) -- wenn wir uns im gleichen Jahr befinden wird der 1.7. des aktuellen Jahres genommen
+        			MAKE_DATE(EXTRACT(YEAR FROM CURRENT_DATE)::int, 7, 1) -- Vergleich mit dem 1.7. des aktuellen Jahres
        			ELSE
-        			MAKE_DATE(EXTRACT(YEAR FROM CURRENT_DATE)::int - 1, 7, 1) -- wenn wir uns im Folgejahr befinden wird der 1.7. des letzten Jahres genommen
+        			MAKE_DATE(EXTRACT(YEAR FROM CURRENT_DATE)::int - 1, 7, 1) -- Vergleich mit dem 1.7. des Vorjahres
     	END
     AND
-    	datum_bewilligung <= CURRENT_DATE -- Das Bewilligungsdatum darf nicht in der Zukunft liegen.
+    	datum_bewilligung <= CURRENT_DATE -- Nur Daten bis heute (keine zukünftigen)
 ),
 
 gebuehren_alle AS (
