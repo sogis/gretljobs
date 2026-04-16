@@ -115,16 +115,16 @@ SELECT
       WHEN imp.gefueggr_ob = 7 THEN 'groesser_als_100'
     END,
     CASE 
-      WHEN imp.skelett_ob = 1 THEN 'skelettfrei'
-      WHEN imp.skelett_ob = 2 THEN 'schwach_skeletthaltig'
-      WHEN imp.skelett_ob = 3 THEN 'kieshaltig'
-      WHEN imp.skelett_ob = 4 THEN 'steinhaltig'
-      WHEN imp.skelett_ob = 5 THEN 'stark_kieshaltig'
-      WHEN imp.skelett_ob = 6 THEN 'stark_steinhaltig'
-      WHEN imp.skelett_ob = 7 THEN 'kiesreich'
-      WHEN imp.skelett_ob = 8 THEN 'steinreich'
-      WHEN imp.skelett_ob = 9 THEN 'kies'
-      WHEN imp.skelett_ob = 10 THEN 'geroell'
+      WHEN imp.skelett_ob = 0 THEN 'skelettfrei'
+      WHEN imp.skelett_ob = 1 THEN 'schwach_skeletthaltig'
+      WHEN imp.skelett_ob = 2 THEN 'kieshaltig'
+      WHEN imp.skelett_ob = 3 THEN 'steinhaltig'
+      WHEN imp.skelett_ob = 4 THEN 'stark_kieshaltig'
+      WHEN imp.skelett_ob = 5 THEN 'stark_steinhaltig'
+      WHEN imp.skelett_ob = 6 THEN 'kiesreich'
+      WHEN imp.skelett_ob = 7 THEN 'steinreich'
+      WHEN imp.skelett_ob = 8 THEN 'kies'
+      WHEN imp.skelett_ob = 9 THEN 'geroell'
     END,
     'unterboden_landwirtschaft',
     imp.ton_ub,
