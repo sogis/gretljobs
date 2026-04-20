@@ -1,3 +1,4 @@
+
 WITH aw_agg AS (
   SELECT
     aw.energieberater_berater_aus_weiterbildung AS berater_id,
@@ -8,8 +9,10 @@ WITH aw_agg AS (
 tg_agg AS (
   SELECT
     tg.energieberater_berater_themengebiete AS berater_id,
-    STRING_AGG(tg.themengebiete, CHR(10) ORDER BY tg.t_seq NULLS LAST, tg.t_id) AS themengebiete
+    STRING_AGG(d.dispname, CHR(10) ORDER BY tg.t_seq NULLS LAST, tg.t_id) AS themengebiete
   FROM awa_energieberater_v1.energieberater_berater_themengebiete tg
+  LEFT JOIN awa_energieberater_v1.energieberater_themengebiete d
+         ON d.ilicode = tg.themengebiete
   GROUP BY tg.energieberater_berater_themengebiete
 )
 SELECT
@@ -32,4 +35,5 @@ LEFT JOIN aw_agg
         ON aw_agg.berater_id = b.t_id
 LEFT JOIN tg_agg
         ON tg_agg.berater_id = b.t_id
-ORDER BY aname;
+ORDER BY aname
+;
