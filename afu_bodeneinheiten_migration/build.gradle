@@ -11,7 +11,7 @@ tasks.register('prepare_db', SqlExecutor) {
     sqlFiles = files('prepare_db.sql')
 }
 
-/*
+
 tasks.register('makeSchemaBodeneinheiten', Ili2pgImportSchema){
     dependsOn 'prepare_db'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -38,14 +38,15 @@ tasks.register('makeSchemaBodeneinheiten', Ili2pgImportSchema){
     expandStruct = true //Damit die Strukturen Oberboden und Unterboden richtig expanded werden
 }
 
+/*
 Vorläufig muss folgendes ausgeführt werden: 
 
 java -jar software/ili2pg-5.5.1/ili2pg-5.5.1.jar --schemaimport --dbhost localhost --dbport 54323 --dbdatabase processing --dbusr "processing"   --dbpwd "processing"   --models SO_AFU_Bodeneinheiten_20251210   --modeldir "%ILI_DIR;http://models.interlis.ch/"   --dbschema afu_bodeneinheiten_v1   --strokeArcs   --defaultSrsCode 2056   --createGeomIdx   --createMetaInfo   --createFk   --createFkIdx   --createEnumTabs   --beautifyEnumDispName   --createUnique   --createDatasetCol   --createTypeConstraint   --coalesceMultiSurface   --coalesceArray   --sqlEnableNull   --createBasketCol   --createTidCol   --expandStruct
 */
 
 tasks.register('makeSchemaIsBoden', SqlExecutor) {
-    //dependsOn 'makeSchemaBodeneinheiten'
-    dependsOn 'prepare_db'
+    dependsOn 'makeSchemaBodeneinheiten'
+    //dependsOn 'prepare_db'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = files('schema_isboden_minimal.sql')
 }

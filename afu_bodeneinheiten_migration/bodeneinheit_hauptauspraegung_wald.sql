@@ -182,14 +182,10 @@ SELECT
     CASE 
       WHEN imp.skelett_ub = 0 THEN 'skelettfrei'
       WHEN imp.skelett_ub = 1 THEN 'schwach_skeletthaltig'
-      WHEN imp.skelett_ub = 2 THEN 'kieshaltig'
-      WHEN imp.skelett_ub = 3 THEN 'steinhaltig'
-      WHEN imp.skelett_ub = 4 THEN 'stark_kieshaltig'
-      WHEN imp.skelett_ub = 5 THEN 'stark_steinhaltig'
-      WHEN imp.skelett_ub = 6 THEN 'kiesreich'
-      WHEN imp.skelett_ub = 7 THEN 'steinreich'
+      WHEN imp.skelett_ub = 2 THEN 'skeletthaltig'
+      WHEN imp.skelett_ub = 4 THEN 'stark_skeletthaltig'
+      WHEN imp.skelett_ub = 6 THEN 'skelettreich'
       WHEN imp.skelett_ub = 8 THEN 'kies'
-      WHEN imp.skelett_ub = 9 THEN 'geroell'
     END,
     imp.ohne_oberboden,
     imp.ohne_unterboden, 
