@@ -493,7 +493,7 @@ docker compose exec -u $UID gretl-service gretl --rerun-tasks --project-dir=arp_
 Erläuterungen:
 
 * `MY_JOB_NAME` muss durch den Namen des auszuführenden GRETL-Jobs (den Ordnernamen) ersetzt werden.
-* Mit `OPTION...` (optional) können beliebige Gradle-Optionen übergeben werden, z.B.: `--console=rich`, `-Pmyprop=myvalue`, `-Dmyprop=myvalue`.
+* Mit `OPTION...` (optional) können beliebige Gradle-Optionen übergeben werden, z.B.: `--rerun-tasks`, `--stacktrace`, `--info`, `--debug`, `--console=rich`, `-Pmyprop=myvalue`, `-Dmyprop=myvalue`.
   Dokumentation der Gradle-Optionen: https://docs.gradle.org/current/userguide/command_line_interface.html
 * Mit der Option `--rerun-tasks` wird GRETL gezwungen, auch diejenigen Tasks auszuführen, die es als bereits *UP-TO-DATE* erkannt hat.
 * Mit der Option `--no-daemon` wird der Job ohne Nutzung des Daemons ausgeführt (dies war das bisherige Verhalten des GRETL-Containers).
