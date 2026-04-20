@@ -1,3 +1,17 @@
+WITH aw_agg AS (
+  SELECT
+    aw.energieberater_berater_aus_weiterbildung AS berater_id,
+    STRING_AGG(aw.aus_weiterbildung, CHR(10) ORDER BY aw.t_seq NULLS LAST, aw.t_id) AS aus_weiterbildung
+  FROM awa_energieberater_v1.energieberater_berater_aus_weiterbildung aw
+  GROUP BY aw.energieberater_berater_aus_weiterbildung
+),
+tg_agg AS (
+  SELECT
+    tg.energieberater_berater_themengebiete AS berater_id,
+    STRING_AGG(tg.themengebiete, CHR(10) ORDER BY tg.t_seq NULLS LAST, tg.t_id) AS themengebiete
+  FROM awa_energieberater_v1.energieberater_berater_themengebiete tg
+  GROUP BY tg.energieberater_berater_themengebiete
+)
 SELECT
     b.aname || ' ' || b.vorname AS aname,
     b.firmenname AS firma_name,
@@ -7,31 +21,15 @@ SELECT
     b.email AS email,
     b.web AS web,
     r.aname AS region,
-    STRING_AGG(aw.aus_weiterbildung, CHR(10) ORDER BY aw.t_seq) AS aus_weiterbildung,
-    STRING_AGG(tg.themengebiete, CHR(10) ORDER BY tg.t_seq) AS themengebiete,
+    aw_agg.aus_weiterbildung,
+    tg_agg.themengebiete,
     b.foto,
     b.standort
 FROM awa_energieberater_v1.energieberater_berater AS b
 INNER JOIN awa_energieberater_v1.energieberater_region AS r
         ON b.region_r = r.t_id
-LEFT JOIN awa_energieberater_v1.energieberater_berater_aus_weiterbildung AS aw
-        ON aw.energieberater_berater_aus_weiterbildung = b.t_id
-LEFT JOIN awa_energieberater_v1.energieberater_berater_themengebiete   AS tg
-        ON tg.energieberater_berater_themengebiete = b.t_id
-GROUP BY
-    b.t_id,
-    b.aname,
-    b.vorname,
-    b.firmenname,
-    b.strassenname,
-    b.hausnummer,
-    b.plz,
-    b.ortschaft,
-    b.telefonnummer,
-    b.email,
-    b.web,
-    r.aname,
-    b.foto,
-    b.standort
+LEFT JOIN aw_agg
+        ON aw_agg.berater_id = b.t_id
+LEFT JOIN tg_agg
+        ON tg_agg.berater_id = b.t_id
 ORDER BY aname;
-;
