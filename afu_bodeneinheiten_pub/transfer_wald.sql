@@ -44,6 +44,7 @@ GROUP BY
 )
 INSERT INTO 
     afu_bodeneinheiten_pub_v1.bodeneinheit_wald (
+    migriert,
     bodeneinheit_nummer,
     skelettgehalt_unterboden,
     skelettgehalt_unterboden_txt,
@@ -117,6 +118,7 @@ INSERT INTO
     geometrie
 )
 SELECT 
+    true,
     src.bodeneinheit_nummer,
     src.unterboden0_skelettgehalt_unterboden,
     sgu.dispname AS skelettgehalt_unterboden_txt,

@@ -10,7 +10,7 @@ import java.util.Iterator
 import java.util.List
 
 apply plugin: 'ch.so.agi.gretl'
-defaultTasks 'importData'
+defaultTasks 'publikation'
 
 def xtfPath = "${buildDir}/exportdata.xtf"
 def xtfFile = files(xtfPath)
@@ -35,12 +35,28 @@ tasks.register('makeSchemaBodeneinheitenPublic', Ili2pgImportSchema) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_AFU_Bodeneinheiten_Publikation_20260106"
     dbschema = "afu_bodeneinheiten_pub_v1"
+    nameByTopic = false
     strokeArcs = true
+    defaultSrsCode = "2056"
+    createGeomIdx = true
+    createMetaInfo = true
+    createFk = true
+    createFkIdx = true
+    createEnumTabs = true
     beautifyEnumDispName = true
-    createUnique = true 
-    nameByTopic = true 
-    createMetaInfo = true 
+    createUnique = true
+    createNumChecks = false //für migrierte Daten
+    createTypeConstraint = true
+    coalesceMultiSurface = true
+    coalesceArray = true
+    sqlEnableNull = true //für migrierte Daten -> provisorisch!
+    createTidCol = true 
+    createEnumTxtCol = true 
 }
+
+/*
+
+Das muss noch abgeändert werden. Die Daten können nicht aus Edit exportiert werden wegen den migrierten Daten. Es braucht also einen Db2Db-Job
 
 tasks.register('makeSchemaBodeneinheitenEdit', Ili2pgImportSchema) {
     dependsOn 'makeSchemaBodeneinheitenPublic'
@@ -77,4 +93,27 @@ tasks.register('importData', Ili2pgImport) {
     models = 'SO_AFU_Bodeneinheiten_20251210'
     dataFile = xtfFile
     disableValidation = true
+}
+
+*/
+
+tasks.register('publikation', SqlExecutor) {
+    //dependsOn 'makeSchemaBodeneinheiten'
+    dependsOn 'makeSchemaBodeneinheitenPublic'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files('transfer_landwirtschaft.sql',
+                     'transfer_wald.sql',
+                     'update_landwirtschaft_bindung_cd.sql',
+                     'update_landwirtschaft_bindung_cu.sql',
+                     'update_landwirtschaft_bindung_pb.sql',
+                     'update_landwirtschaft_bindung_zn.sql',
+                     'update_landwirtschaft_nutzbarefeldkapazitaet.sql',
+                     'update_landwirtschaft_verdichtungsempfindlichkeit.sql',
+                     'update_wald_bindung_cd.sql',
+                     'update_wald_bindung_cu.sql',
+                     'update_wald_bindung_pb.sql',
+                     'update_wald_bindung_zn.sql',
+                     'update_wald_nutzbarefeldkapazitaet.sql',
+                     'update_wald_verdichtungsempfindlichkeit.sql'
+    )
 }
