@@ -10,6 +10,7 @@ tasks.register('transfer', Db2Db) {
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
         new TransferSet('transfer_region.sql', 'awa_energieberater_pub_v1.energieberater_region', true),
+        new TransferSet('transfer_berater.sql', 'awa_energieberater_pub_v1.energieberater_berater', true)
     ];
 }
 
