@@ -75,15 +75,6 @@ services:
       - type: volume
         source: pgdata_processing
         target: /var/lib/postgresql/data
-  db-tools:
-    profiles: ["tools"]
-    image: sogis/postgis:17-3.6
-    environment:
-      PGPASSWORD: ddluser
-    volumes:
-      - type: bind
-        source: /tmp
-        target: /tmp
 volumes:
   pgdata_edit:
   pgdata_pub:
