@@ -502,6 +502,8 @@ Erläuterungen:
 * `MY_JOB_NAME` muss durch den Namen des auszuführenden GRETL-Jobs (den Ordnernamen) ersetzt werden.
 * Mit `OPTION...` (optional) können beliebige Gradle-Optionen übergeben werden, z.B.: `--console=rich`, `-Pmyprop=myvalue`, `-Dmyprop=myvalue`.
   Dokumentation der Gradle-Optionen: https://docs.gradle.org/current/userguide/command_line_interface.html
+* Mit der Option `--rerun-tasks` kann GRETL gezwungen werden, auch diejenigen Tasks auszuführen, die es als bereits *UP-TO-DATE* erkannt hat.
+* Mit der Option `--no-daemon` wird der Job ohne Nutzung des Daemons ausgeführt.
 * Mit `TASK...` (optional) kann ein oder mehrere Tasks angegeben werden, die von GRETL ausgeführt werden sollen.
   Falls man nichts angibt, werden die in `build.gradle` definierten `defaultTasks` ausgeführt.
 * Falls man einen GRETL-Job mit einem ganz bestimmten GRETL-Image-Tag (z.B. `latest`) ausführen möchte, stellt man dem Compose-Befehl die Variablendefinition `GRETL_IMAGE_TAG=MYTAG` voran, z.B.:
