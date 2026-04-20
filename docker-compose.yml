@@ -21,9 +21,6 @@ services:
       - type: bind
         source: ${TMP:-/tmp}
         target: /gretl-share
-      - type: bind
-        source: ${TMP:-/tmp}
-        target: /home/gradle/.gradle/caches
   edit-db:
     image: sogis/postgis:17-3.6
     environment:
