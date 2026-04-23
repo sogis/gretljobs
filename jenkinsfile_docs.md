@@ -14,16 +14,18 @@ damit die Jenkinsfiles weitgehend einheitlich bleiben.
 
 ## Nach dem Start des GRETL-Jobs in Jenkins eine Datei hochladen
 
-Vorlage: [avt_ausnahmetransportrouten_export_ai/Jenkinsfile](avt_ausnahmetransportrouten_export_ai/Jenkinsfile)
+Vorlage: [avt_kantonsstrassen_pub/Jenkinsfile](avt_kantonsstrassen_pub/Jenkinsfile)
+Entsprechenden Eintrag im job.properties nicht vergessen: `parameters.stashedFile=xyz.zip`
 
-Direkt nach dem Start des Jobs wird man gefragt,
-welche Datei man hochladen möchte.
-(Diese Frage wird im klassischen Jenkins-GUI leider etwas versteckt angezeigt.)
+Jeweils in Jenkinsfile und job.properties anpassen auf die entsprechende Dateiendung (Beispielsweise xyz.csv), 
+damit die Benutzer sehen, welchen Dateityp hochgeladen werden soll.
 
-Mit diesem Jenkinsfile kann in `build.gradle`
-über den relativen Pfad `upload/uploadFile`
-(die Datei heisst nach dem Upload also immer `uploadFile`)
-auf die hochgeladene Datei zugegriffen werden.
+Mit dieser Konfiguration wird man direkt nach dem Start des Jobs gefragt, 
+welche Datei hochgeladen werden soll.
+
+Das Jenkinsfile platziert die hochgeladene Datei im Gradle Build-Dir. Bei der 
+Weiterverarbeitung die Datei im build.gradle mit Build-Dir referenzieren.
+Beispiele: `"$buildDir/xyz.zip"`, `buildDir + "/xyz.zip"`
 
 ## Nach dem Start des GRETL-Jobs in Jenkins eine Datei hochladen und zusätzlich den Dataset-Namen (z.B. BFS-Nummer) angeben
 
