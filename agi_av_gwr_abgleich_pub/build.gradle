@@ -25,13 +25,13 @@ tasks.register('replaceAttr') {
         def targetFile = Paths.get(pathToTempFolder, "SO_bdg.csv").toFile()
         ant.replace(
             file: targetFile,
-            token: "BDG_GKLAS",
-            value: "BDG_CLASS"
+            token: "BDG_CLASS",
+            value: "BDG_GKLAS"
         )
         ant.replace(
             file: targetFile,
-            token: "BDG_GSTAT",
-            value: "BDG_STATUS"
+            token: "BDG_STATUS",
+            value: "BDG_GSTAT"
         )
     }
 }
