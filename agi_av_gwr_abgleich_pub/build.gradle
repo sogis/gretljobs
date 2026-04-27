@@ -17,7 +17,7 @@ tasks.register('downloadCsv', Download) {
     overwrite true
 }
 
-task.replaceAttr(){
+task.replaceAttr("XX"){
     dependsOn 'register'
     // Zwei Attribute heissen neu anders
     description = "Ersetzt 'BDG_GKLAS; BDG_GSTAT' zu 'BDG_CLASS;BDG_STATUS'."
