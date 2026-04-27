@@ -28,6 +28,11 @@ tasks.register('replaceAttr') {
             token: "BDG_GKLAS",
             value: "BDG_CLASS"
         )
+        ant.replace(
+            file: targetFile,
+            token: "BDG_GSTAT",
+            value: "BDG_STATUS"
+        )
     }
 }
 
