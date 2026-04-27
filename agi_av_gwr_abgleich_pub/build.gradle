@@ -17,7 +17,7 @@ tasks.register('downloadCsv', Download) {
     overwrite true
 }
 
-task.replaceAttr("XX"){
+task.replaceAttr(){
     dependsOn 'register'
     // Zwei Attribute heissen neu anders
     description = "Ersetzt 'BDG_GKLAS; BDG_GSTAT' zu 'BDG_CLASS;BDG_STATUS'."
@@ -27,11 +27,6 @@ task.replaceAttr("XX"){
             file: targetFile,
             token: "BDG_GKLAS",
             value: "BDG_CLASS"
-        )
-        ant.replace(
-            file: targetFile,
-            token: "BDG_GSTAT",
-            value: "BDG_STATUS"
         )
     }
 }
