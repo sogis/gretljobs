@@ -17,8 +17,27 @@ tasks.register('downloadCsv', Download) {
     overwrite true
 }
 
+task.replaceAttr{
+    dependsOn 'register'
+    // Zwei Attribute heissen neu anders
+    description = "Ersetzt 'BDG_GKLAS; BDG_GSTAT' zu 'BDG_CLASS;BDG_STATUS'."
+    doLast {
+        def targetFile = Paths.get(pathToTempFolder, "SO_bdg.csv").toFile()
+        ant.replace(
+            file: targetFile,
+            token: "BDG_GKLAS",
+            value: "BDG_CLASS"
+        )
+        ant.replace(
+            file: targetFile,
+            token: "BDG_GSTAT",
+            value: "BDG_STATUS"
+        )
+    }
+}
+
 tasks.register('validateCsv',  CsvValidator) {
-    dependsOn 'downloadCsv'
+    dependsOn 'replaceAttr'
     models = "SO_AGI_AV_GWR_Abgleich_20241216"
     firstLineIsHeader = true
     valueSeparator = ';'
