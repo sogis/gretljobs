@@ -8,7 +8,7 @@ ovitraps_punkte AS (
 		SELECT
 			auid,
 			trapid,
-			SamMethode AS sammelmethode,
+			SamMethode,
 			art,
 			-- Anzahl positive Funde
 			COUNT(*) FILTER (WHERE positiv = 'Ja') OVER (PARTITION BY trapid) AS anzahl_positiv,
@@ -24,7 +24,7 @@ ovitraps_punkte AS (
 	WHERE
 		rn = 1
 	AND 
-		t.sammelmethode = 'Ovitrap'
+		t.SamMethode = 'Ovitrap'
 	AND 
 		t.art = 'Aedes albopictus'
 	AND
@@ -78,48 +78,38 @@ punktgeometrie_verwackelt AS (
 		punktgeometrie_zusammengefasst	
 ),
 
-
--- Punkte identifizieren, deren Abstand zwischen 300m und 500m liegt --
-punkte_mit_nachbar AS (
-	SELECT DISTINCT
-		a.auid
-	FROM
-		punktgeometrie_verwackelt AS a
-	JOIN punktgeometrie_verwackelt AS b
-		ON a.auid <> b.auid
-		AND ST_Distance(a.geometrie_shifted, b.geometrie_shifted) BETWEEN 300 AND 500
+-- Buffer um verwackelten Punkt erstellen --
+buffer200 AS (
+	SELECT 
+		ST_Buffer(geometrie_shifted,200) AS geometrie
+	FROM 
+		punktgeometrie_verwackelt
 ),
 
--- Adaptiver Buffer: 250m wenn 250m-Zonen sich berühren, sonst 150m --
-buffer_adaptiv AS (
+-- Aneinander grenzende Polygone vereinen --
+polygon_union AS (
 	SELECT
-		CASE
-			WHEN pn.auid IS NOT NULL
-				THEN ST_Buffer(p.geometrie_shifted, 250)
-			ELSE ST_Buffer(p.geometrie_shifted, 150)
-		END AS geometrie
-	FROM
-		punktgeometrie_verwackelt p
-	LEFT JOIN punkte_mit_nachbar pn
-		ON p.auid = pn.auid
+		ST_UNION(geometrie)AS geometrie
+	FROM 
+		buffer200
+),
+
+-- Doppelbuffer um Lücken zu schliessen und nicht zusammenhängende Geometrien wieder aufteilen --
+polygon_filled AS (
+    SELECT
+        (ST_Dump(ST_Buffer(ST_Buffer(geometrie, 0.5), -0.5))).geom AS geometrie
+    FROM
+        polygon_union
 ),
 
 -- an Kantonsgrenze schneiden --
-buffer_adaptiv_cut AS (
-	SELECT
-		ST_Intersection(b.geometrie, kg.geometrie) AS geometrie
-	FROM
-		buffer_adaptiv AS b
-	LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze AS kg
-		ON ST_Intersects(b.geometrie, kg.geometrie)
-),
-
--- Aneinander grenzende Polygone vereinen und dann wieder in Einzelpolygone aufteilen --
-polygon_oeffentlich AS (
-	SELECT
-		(ST_Dump(ST_UNION(geometrie))).geom AS geometrie
-	FROM
-		buffer_adaptiv_cut
+polygon_cut AS (
+	SELECT 
+		ST_Intersection(pf.geometrie, kg.geometrie) AS geometrie
+	FROM 
+		polygon_filled AS pf
+	LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze AS kg 
+		ON ST_Intersects(pf.geometrie, kg.geometrie)
 )
 
 SELECT
@@ -127,4 +117,4 @@ SELECT
 	'https://so.ch/fileadmin/internet/ddi/ddi-gesa/PDF/Erkrankungen_und_Impfungen/Klima/2026-04_Merktblatt_Asiatische_Tigermuecke_final.pdf' AS Merkblatt,
 	geometrie
 FROM
-	polygon_oeffentlich
+	polygon_cut

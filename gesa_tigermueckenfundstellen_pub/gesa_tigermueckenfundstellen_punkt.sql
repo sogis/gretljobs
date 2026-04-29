@@ -19,7 +19,7 @@ ovitraps AS (
 			TO_DATE(datumsetlast, 'MM.DD.YYYY') AS datumsetlast,
 			TO_DATE(datumsam, 'MM.DD.YYYY') AS sammeldatum,
 			ZeitraumSam AS Sammelzeitraum,
-			SamMethode AS sammelmethode,
+			SamMethode AS SamMethode,
 			CASE
 				WHEN positiv IS NOT NULL 
 					THEN positiv
@@ -58,7 +58,7 @@ ovitraps AS (
 	WHERE
 		rn = 1
 	AND 
-		t.sammelmethode = 'Ovitrap'
+		t.SamMethode = 'Ovitrap'
 	AND 
 		t.art = 'Aedes albopictus' -- Nur Tigermücken
 	AND
@@ -81,7 +81,7 @@ privatmeldungen AS (
 			TO_DATE(datumsetlast, 'MM.DD.YYYY') AS datumsetlast,
 			TO_DATE(datumsam, 'MM.DD.YYYY') AS sammeldatum,
 			ZeitraumSam AS Sammelzeitraum,
-			'Privat' AS sammelmethode,
+			'Privat' AS SamMethode,
 			positiv,
 			n_individuen,
 			geschlecht,
@@ -130,7 +130,7 @@ fundstellen_zusammengefasst AS (
 		datumsetlast,
 		sammeldatum,
 		Sammelzeitraum,
-		sammelmethode,
+		SamMethode,
 		positiv,
 		n_individuen,
 		geschlecht,
@@ -164,7 +164,7 @@ fundstellen_zusammengefasst AS (
 		pm.datumsetlast,
 		pm.sammeldatum,
 		pm.Sammelzeitraum,
-		pm.sammelmethode,
+		pm.SamMethode,
 		pm.positiv,
 		pm.n_individuen,
 		pm.geschlecht,
@@ -199,7 +199,7 @@ SELECT
 	datumsetlast,
 	sammeldatum,
 	Sammelzeitraum,
-	sammelmethode,
+	SamMethode,
 	positiv,
 	n_individuen,
 	geschlecht,
