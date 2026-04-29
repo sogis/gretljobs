@@ -43,7 +43,7 @@ INSERT INTO agi_dmav_untereinheit_grundbuch_v1.t_ili2db_basket
 SELECT
     nextval('agi_dmav_untereinheit_grundbuch_v1.t_ili2db_seq'::regclass) AS t_id,
     dataset.t_id AS dataset,
-    'DMAVSUP_UntereinheitGrundbuch_V1_0.UntereinheitGrundbuch' AS topic,
+    'DMAVSUP_UntereinheitGrundbuch_V1_1.UntereinheitGrundbuch' AS topic,
     'dmav_untereinheit_grundbuch_' || dataset.datasetname AS t_ili_tid,
     dataset.datasetname AS attachmentkey,
     NULL AS domains
