@@ -24,7 +24,8 @@ WITH grundbucheinheit AS (
         kreis.nbident,
         kreis.aname,
         kreis.nbident AS egris_subkreis,
-        kreis.grundbuchkreisnummer AS egris_los
+        kreis.grundbuchkreisnummer AS egris_los,
+        kreis.perimeter AS geometrie
      FROM
         agi_av_gb_administrative_einteilungen_v2.grundbuchkreise_grundbuchkreis AS kreis
     )
@@ -58,7 +59,8 @@ WITH grundbucheinheit AS (
         kreis.nbident,
         kreis.aname,
         kreis.nbident AS egris_subkreis,
-        kreis.grundbuchkreisnummer AS egris_los
+        kreis.grundbuchkreisnummer AS egris_los,
+        kreis.perimeter AS geometrie
      FROM
         agi_av_gb_administrative_einteilungen_v2.grundbuchkreise_grundbuchkreis AS kreis
     )
@@ -73,7 +75,8 @@ SELECT
     kreis.nbident,
     kreis.aname,
     kreis.egris_subkreis,
-    kreis.egris_los
+    kreis.egris_los,
+    kreis.geometrie
 FROM
    grundbucheinheit AS kreis
     LEFT JOIN
