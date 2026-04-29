@@ -114,7 +114,7 @@ git checkout -b branchname
   * outputFile = file("./data.json")
   * localDir = file("downloads")
   * dataFiles = files("attributes.gpkg", "tables.gpkg")
-* nodeLabel=gretl-3.1 muss gesetzt werden (in gretljobs.properties)
+* nodeLabel=gretl-3.2 muss gesetzt werden (in gretljobs.properties)
 
 #### Zugriff auf Ressourcen
 
