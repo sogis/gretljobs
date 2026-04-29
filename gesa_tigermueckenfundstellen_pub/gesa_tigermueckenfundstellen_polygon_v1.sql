@@ -5,8 +5,7 @@ ovitraps_punkte AS (
 	SELECT
 		*
 	FROM (
-		SELECT
-			auid,
+		SELECT 
 			trapid,
 			SamMethode AS sammelmethode,
 			art,
@@ -33,9 +32,8 @@ ovitraps_punkte AS (
 
 -- Meldungen von Privatpersonen --
 privatmeldungen_punkte AS (
-	SELECT
-		auid,
-		ST_SetSRID(ST_MakePoint(lv95_e, lv95_n), 2056) AS geometrie
+	SELECT 
+			ST_SetSRID(ST_MakePoint(lv95_e, lv95_n), 2056) AS geometrie
 	FROM 
 		gesa_tigermueckenfundstellen_v1.csv_import
 	WHERE 
@@ -50,7 +48,6 @@ privatmeldungen_punkte AS (
 
 punktgeometrie_zusammengefasst AS (
 	SELECT 
-		auid,
 		geometrie
 	FROM 
 		ovitraps_punkte
@@ -58,7 +55,6 @@ punktgeometrie_zusammengefasst AS (
 	UNION ALL
 	
 	SELECT 
-		auid,
 		geometrie
 	FROM 
 		privatmeldungen_punkte
@@ -66,8 +62,7 @@ punktgeometrie_zusammengefasst AS (
 
 -- Punktgeometrie wird aus Sicherheitsgründen zufällig um 0-10 m verschieben
 punktgeometrie_verwackelt AS (
-	SELECT
-		auid,
+	SELECT 
 		geometrie AS geometrie_original,
 		ST_Translate(
 			geometrie,
@@ -75,42 +70,25 @@ punktgeometrie_verwackelt AS (
 			(random() * 20 - 10)  -- y-Koordinate um -10 bis + 10 m verschieben
 		) AS geometrie_shifted
 	FROM 
-		punktgeometrie_zusammengefasst	
+		punktgeometrie_zusammengefasst
+		
 ),
 
-
--- Punkte identifizieren, deren Abstand zwischen 300m und 500m liegt --
-punkte_mit_nachbar AS (
-	SELECT DISTINCT
-		a.auid
-	FROM
-		punktgeometrie_verwackelt AS a
-	JOIN punktgeometrie_verwackelt AS b
-		ON a.auid <> b.auid
-		AND ST_Distance(a.geometrie_shifted, b.geometrie_shifted) BETWEEN 300 AND 500
-),
-
--- Adaptiver Buffer: 250m wenn 250m-Zonen sich berühren, sonst 150m --
-buffer_adaptiv AS (
-	SELECT
-		CASE
-			WHEN pn.auid IS NOT NULL
-				THEN ST_Buffer(p.geometrie_shifted, 250)
-			ELSE ST_Buffer(p.geometrie_shifted, 150)
-		END AS geometrie
-	FROM
-		punktgeometrie_verwackelt p
-	LEFT JOIN punkte_mit_nachbar pn
-		ON p.auid = pn.auid
+-- Buffer um verwackelten Punkt erstellen --
+buffer200 AS (
+	SELECT 
+		ST_Buffer(geometrie_shifted,200) AS geometrie
+	FROM 
+		punktgeometrie_verwackelt
 ),
 
 -- an Kantonsgrenze schneiden --
-buffer_adaptiv_cut AS (
-	SELECT
+buffer200_cut AS (
+	SELECT 
 		ST_Intersection(b.geometrie, kg.geometrie) AS geometrie
-	FROM
-		buffer_adaptiv AS b
-	LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze AS kg
+	FROM 
+		buffer200 AS b
+	LEFT JOIN agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze AS kg 
 		ON ST_Intersects(b.geometrie, kg.geometrie)
 ),
 
@@ -118,13 +96,13 @@ buffer_adaptiv_cut AS (
 polygon_oeffentlich AS (
 	SELECT
 		(ST_Dump(ST_UNION(geometrie))).geom AS geometrie
-	FROM
-		buffer_adaptiv_cut
+	FROM 
+		buffer200_cut
 )
 
 SELECT
 	'https://so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-umwelt/wasserbau/gebietsfremde-organismen/artenportraits/asiatische-tigermuecke/' AS URL,
 	'https://so.ch/fileadmin/internet/ddi/ddi-gesa/PDF/Erkrankungen_und_Impfungen/Klima/2026-04_Merktblatt_Asiatische_Tigermuecke_final.pdf' AS Merkblatt,
 	geometrie
-FROM
+FROM 
 	polygon_oeffentlich

@@ -59,8 +59,6 @@ ovitraps AS (
 		rn = 1
 	AND 
 		t.sammelmethode = 'Ovitrap'
-	AND 
-		t.art = 'Aedes albopictus' -- Nur Tigermücken
 	AND
 		t.positiv_anzahl > 0
 ),
@@ -107,8 +105,6 @@ privatmeldungen AS (
 		gesa_tigermueckenfundstellen_v1.csv_import
 	WHERE 
 		SamMethode IS DISTINCT FROM 'Ovitrap'
-	AND
-		art = 'Aedes albopictus' -- Nur Tigermücken
 	AND 
 		sicherheit = 'Sicher' -- Nur sichere Funde
 	AND 
