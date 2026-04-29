@@ -123,7 +123,7 @@ polygon_oeffentlich AS (
 )
 
 SELECT
-	'https://so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-umwelt/wasserbau/gebietsfremde-organismen/artenportraits/asiatische-tigermuecke/' AS URL,
+	'https://so.ch/verwaltung/departement-des-innern/gesundheitsamt/erkrankungen-und-impfungen/klima-und-gesundheit/asiatische-tigermuecke/' AS URL,
 	'https://so.ch/fileadmin/internet/ddi/ddi-gesa/PDF/Erkrankungen_und_Impfungen/Klima/2026-04_Merktblatt_Asiatische_Tigermuecke_final.pdf' AS Merkblatt,
 	geometrie
 FROM
