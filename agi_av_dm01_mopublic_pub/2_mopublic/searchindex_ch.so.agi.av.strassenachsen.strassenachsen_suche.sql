@@ -14,8 +14,8 @@ index_base AS (
     SELECT
         ${layername}::text AS subclass,
         id AS id_in_class,
-        concat(strassenname, ' | ', bfs_nr, ' ' , gemeindename, ' (Strasse)' )  AS displaytext,
-        concat(strassenname, ' | ', bfs_nr, ' ' , gemeindename, ' (Strasse)' ) AS part_1,
+        concat(strassenname, ' | ', plz, ' ' , ortsname, ' (Strasse)' )  AS displaytext,
+        concat(strassenname, ' | ', plz, ' ' , ortsname, ' (Strasse)' ) AS part_1,
         'Strassenachse Name '::text AS part_3,
         (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
