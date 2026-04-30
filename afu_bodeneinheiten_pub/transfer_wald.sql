@@ -48,8 +48,10 @@ INSERT INTO
     bodeneinheit_nummer,
     skelettgehalt_unterboden,
     skelettgehalt_unterboden_txt,
+    skelettgehalt_unterboden_beschreibung,
     skelettgehalt_oberboden,
     skelettgehalt_oberboden_txt,
+    skelettgehalt_oberboden_beschreibung,
     humusform_wald,
     humusform_wald_txt,
     humusform_wald_beschreibung,
@@ -96,6 +98,7 @@ INSERT INTO
     gefuegegroesse_oberboden,
     gefuegegroesse_oberboden_txt,
     pflanzennutzbaregruendigkeit,
+    pflanzennutzbaregruendigkeit_beschreibung,
     bodenpunktzahl,
     bodenpunktzahl_beschreibung,
     bemerkung,
@@ -121,9 +124,33 @@ SELECT
     true,
     src.bodeneinheit_nummer,
     src.unterboden0_skelettgehalt_unterboden,
-    sgu.dispname AS skelettgehalt_unterboden_txt,
+    CASE
+        WHEN src.unterboden0_skelettgehalt_unterboden = 'skelettfrei'
+            THEN 'keine oder nur wenige Steine (0-5%)'
+        WHEN src.unterboden0_skelettgehalt_unterboden = 'schwach_skeletthaltig'
+            THEN 'mässig viele Steine (5-10%)'
+        WHEN src.unterboden0_skelettgehalt_unterboden IN ('skeletthaltig')
+            THEN 'viele Steine (10-20%)'
+        WHEN src.unterboden0_skelettgehalt_unterboden IN ('stark_skeletthaltig')
+            THEN 'sehr viele Steine (20-30%)'
+        WHEN src.unterboden0_skelettgehalt_unterboden IN ('skelettreich','kies')
+            THEN 'extrem viele Steine (> 30%)'
+    END AS skelettgehalt_unterboden_txt,
+    sgu.dispname AS skelettgehalt_unterboden_beschreibung,
     src.oberboden0_skelettgehalt_oberboden,
-    sgo.dispname AS skelettgehalt_oberboden_txt,
+    CASE
+        WHEN src.oberboden0_skelettgehalt_oberboden = 'skelettfrei'
+            THEN 'keine oder nur wenige Steine (0-5%)'
+        WHEN src.oberboden0_skelettgehalt_oberboden = 'schwach_skeletthaltig'
+            THEN 'mässig viele Steine (5-10%)'
+        WHEN src.oberboden0_skelettgehalt_oberboden IN ('skeletthaltig')
+            THEN 'viele Steine (10-20%)'
+        WHEN src.oberboden0_skelettgehalt_oberboden IN ('stark_skeletthaltig')
+            THEN 'sehr viele Steine (20-30%)'
+        WHEN src.oberboden0_skelettgehalt_oberboden IN ('skelettreich','kies')
+            THEN 'extrem viele Steine (> 30%)'
+    END AS skelettgehalt_oberboden_txt,
+    sgo.dispname AS skelettgehalt_oberboden_beschreibung,
     src.humusform_wald,
     hfw.dispname AS humusform_wald_txt,
     CASE 
@@ -306,11 +333,11 @@ SELECT
     src.unterboden0_koernungsklasse,
     kku.dispname AS koernungsklasse_unterboden_txt,
     CASE 
-        WHEN src.oberboden0_koernungsklasse IN ('7', '8', '9', '13')
+        WHEN src.oberboden0_koernungsklasse IN ('toniger_lehm', 'lehmiger_ton', 'ton', 'toniger_schluff')
             THEN 'Schwere, tonige Böden: trocknen sehr langsam ab.'
-        WHEN src.oberboden0_koernungsklasse IN ('5', '6', '10', '11', '12')
+        WHEN src.oberboden0_koernungsklasse IN ('sandiger_lehm', 'lehm', 'sandiger_schluff', 'schluff', 'lehmiger_schluff')
             THEN 'Mittelschwere, lehmige bis schluffige Böden: trocknen mässig schnell ab.'
-        WHEN src.oberboden0_koernungsklasse IN ('1', '2', '3', '4')
+        WHEN src.oberboden0_koernungsklasse IN ('sand', 'schluffiger_sand', 'lehmiger_sand', 'lehmreicher_sand')
             THEN 'Leichte, sandige Böden: trocknen schnell ab.'
     END AS bodenart_bodenbearbeitbarkeit,
     src.oberboden0_tongehalt,
@@ -377,6 +404,54 @@ SELECT
     src.oberboden0_gefuegegroesse,
     ggo.dispname AS gefuegegroesse_oberboden_txt,
     src.pflanzennutzbaregruendigkeit,
+    CASE 
+        WHEN 
+            src.pflanzennutzbaregruendigkeit = 0 
+            OR
+            src.pflanzennutzbaregruendigkeit IS NULL
+                THEN
+                    CASE
+                        WHEN
+                            src.bodenpunktzahl > 0
+                            AND
+                            src.bodenpunktzahl <= 49
+                                THEN 'Geringe Durchwurzelungstiefe; schlechtes Speichervermögen für Nährstoffe und Wasser'
+                        WHEN
+                            src.bodenpunktzahl >= 50
+                            AND
+                            src.bodenpunktzahl <= 69
+                                THEN 'Mässige Durchwurzelungstiefe; genügendes Speichervermögen für Nährstoffe und Wasser'
+                        WHEN
+                            src.bodenpunktzahl >= 70
+                            AND
+                            src.bodenpunktzahl <= 79
+                                THEN 'Grosse Durchwurzelungstiefe; gutes Speichervermögen für Nährstoffe und Wasser'
+                        WHEN src.bodenpunktzahl >= 80
+                            THEN 'Sehr grosse Durchwurzelungstiefe; sehr gutes Speichervermögen für Nährstoffe und Wasser'
+                    END
+        WHEN src.pflanzennutzbaregruendigkeit > 0
+            THEN
+                CASE
+                    WHEN
+                        src.pflanzennutzbaregruendigkeit > 0
+                        AND
+                        src.pflanzennutzbaregruendigkeit <= 29
+                            THEN 'Geringe Durchwurzelungstiefe; schlechtes Speichervermögen für Nährstoffe und Wasser'
+                    WHEN
+                        src.pflanzennutzbaregruendigkeit >= 30
+                        AND
+                        src.pflanzennutzbaregruendigkeit <= 49
+                            THEN 'Mässige Durchwurzelungstiefe; genügendes Speichervermögen für Nährstoffe und Wasser'
+                    WHEN
+                        src.pflanzennutzbaregruendigkeit >= 50
+                        AND
+                        src.pflanzennutzbaregruendigkeit <= 69
+                            THEN 'Grosse Durchwurzelungstiefe; gutes Speichervermögen für Nährstoffe und Wasser'
+                    WHEN 
+                        src.pflanzennutzbaregruendigkeit >= 70
+                            THEN 'Sehr grosse Durchwurzelungstiefe; sehr gutes Speichervermögen für Nährstoffe und Wasser'
+                END
+    END AS pflanzennutzbaregruendigkeit_beschreibung,        
     src.bodenpunktzahl,
     CASE 
         WHEN src.bodenpunktzahl >= 90

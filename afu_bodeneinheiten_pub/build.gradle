@@ -34,6 +34,7 @@ tasks.register('makeSchemaBodeneinheitenPublic', Ili2pgImportSchema) {
     description = 'Bodeneinheiten Publikations-Schema anlegen in der Processing-DB.'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_AFU_Bodeneinheiten_Publikation_20260106"
+    modeldir = "https://geo.so.ch/models"
     dbschema = "afu_bodeneinheiten_pub_v1"
     nameByTopic = false
     strokeArcs = true

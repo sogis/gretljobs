@@ -60,7 +60,7 @@ UPDATE
 ;
     
 UPDATE 
-    afu_bodeneinheiten_pub_v1.bodeneinheit_landwirtschaft
+    afu_bodeneinheiten_pub_v1.bodeneinheit_wald
     SET 
     verdichtungsempfindlichkeit_beschreibung =
     CASE
