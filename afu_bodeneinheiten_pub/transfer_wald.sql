@@ -152,7 +152,6 @@ SELECT
     END AS skelettgehalt_oberboden_txt,
     sgo.dispname AS skelettgehalt_oberboden_beschreibung,
     src.humusform_wald,
-    hfw.dispname AS humusform_wald_txt,
     CASE 
         WHEN src.humusform_wald IN ('M', 'Mt', 'Mf')
             THEN 'Mull: Hohe biologische Aktivität mit vollständigem Streuabbau nach 1-2 Jahren. Über 8 cm mächtiger, gut strukturierter Oberboden. Günstiger Wasser-, Luft- und Nährstoffhaushalt.'
@@ -171,8 +170,9 @@ SELECT
         WHEN src.humusform_wald = 'T'
             THEN 'Torf: Anreicherung von kaum zersetzten Pflanzenrückständen, v.a. Torfmoose wegen dauernder Wassersättigung und stark sauren Bedingungen. Faserig, schwammig.'
         ELSE hfw.description::varchar(50)
-    END AS humusform_wald_beschreibung,
-    round(src.maechtigkeit_ahh)::int4 AS maechtigkeit_ahh,
+    END AS humusform_wald_txt,
+    hfw.dispname AS humusform_wald_beschreibung,
+    src.maechtigkeit_ahh AS maechtigkeit_ahh,
     src.gemeinde_nr AS gemeinde_bfs_nr,
     src.wasserhaushalt,
     wh.dispname AS wasserhaushalt_txt,

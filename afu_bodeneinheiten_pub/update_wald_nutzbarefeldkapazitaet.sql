@@ -1334,35 +1334,35 @@ UPDATE
     CASE
         WHEN 
             wurzelraum_feldkapazitaet < 50 
-        THEN '< 50 mm'
+        THEN '< 50 mm; sehr grosses Trockenstressrisiko'
         WHEN 
             wurzelraum_feldkapazitaet >= 50
             AND 
             wurzelraum_feldkapazitaet < 100
         THEN 
-            '50 - 100 mm'
+            '50 - 99 mm; sehr grosses Trockenstressrisiko'
         WHEN 
             wurzelraum_feldkapazitaet >= 100
             AND 
             wurzelraum_feldkapazitaet < 150
         THEN 
-            '100 - 150 mm'
+            '100 - 149 mm; grosses Trockenstressrisiko'
         WHEN 
             wurzelraum_feldkapazitaet >= 150
             AND 
             wurzelraum_feldkapazitaet < 200
         THEN 
-            '150 - 200 mm'
+            '150 - 199 mm; mässiges Trockenstressrisiko'
         WHEN 
             wurzelraum_feldkapazitaet >= 200
             AND 
             wurzelraum_feldkapazitaet < 250
         THEN 
-            '200 - 250 mm'
+            '200 - 249 mm; kleines Trockenstressrisiko'
         WHEN 
             wurzelraum_feldkapazitaet >= 250
         THEN 
-            '>= 250 mm'
+            '>= 250 mm; kein Trockenstressrisiko'
         ELSE NULL
     END
 ;
