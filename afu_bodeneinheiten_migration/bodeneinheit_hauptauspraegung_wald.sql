@@ -70,7 +70,9 @@ INSERT INTO afu_bodeneinheiten_v1.bodeneinheithauptauspraegung_wald (
     unterboden0_skelettgehalt_unterboden,
     ohne_oberboden,
     ohne_unterboden, 
-    geometrie
+    geometrie, 
+    maechtigkeit_ahh, 
+    humusform_wald
 )
 SELECT
     basket.t_id, 
@@ -189,7 +191,9 @@ SELECT
     END,
     imp.ohne_oberboden,
     imp.ohne_unterboden, 
-    geometrie_from_isboden.geometrie 
+    geometrie_from_isboden.geometrie, 
+    imp.maechtigk_ahh, 
+    imp.humusform_wa 
   FROM 
     dataset, 
     basket,
