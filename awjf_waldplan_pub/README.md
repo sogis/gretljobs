@@ -50,7 +50,10 @@ Der Gretl-Job ist folgendermassen aufgebaut:
 Anmerkung: Bei der Waldübersicht handelt es sich um ein Multipolygon über die ganze Gemeinde. Daher wird diese immer komplett neu publiziert.
 
 ### Publikation alle Gemeinden
-Um initial alle Daten zu publizieren, existiert der Gretl-Job [awjf_waldplan_pub_alle_gemeinden](https://github.com/sogis/gretljobs/tree/main/awjf_waldplan_pub_alle_gemeinden). Dieser funktioniert vom Prinzip gleich. Um aber alle Gemeinden mit einem Job publizieren zu können, wurde ein Loop eingebaut. Im Normalfall sollte der Job in Zukunft nicht mehr ausgeführt werden (ausser wenn das Schema neu aufgestzt werden muss). Idealerweise werden die beiden Jobs in Zukunft noch zusammengeführt. Dies ist Stand jetzt (März 2026) aber noch nicht der Fall.
+Wenn statt der BFS-Nr. "alle_gemeinden" eingegeben wird, können alle Gemeinden publiziert werden.
+Damit dies funktioniert wurde in den Gretljob ein Loop mit allen relevanten Tasks eingbaut. Diesem Loop wird zu Beginn eine Gemeindeliste übergeben. Wenn nur eine Gemeinde publiziert werden soll, enthält die Liste nur die angegebene BFS-Nr. Wenn "alle_gemeinden" als Variable übergeben wird, greift die Liste auf eine vordefinierte Liste mit allen Gemeinde-BFS-Nr. zu.
+
+Im Normalfall sollte dies nur gemacht werden, wenn das Schema neu aufgesetzt wird und initial alle Gemeinden publiziert werden sollen.
 
 ## Flächenberechnungen
 Innerhalb des Gretl-Jobs werden diverse Waldflächen berechnet. Als Basis für die Flächenberechnung wird im Task `processingPubData` mit dem SQL `06_awjf_waldplan_grundstueck_03_waldfunktion_waldnutzung_processing.sql` eine Tabelle gebildet, die sich aus den verschnittenen Waldfunktions- und Waldnutzungskategorie pro Grundstück zusammenstellt. Der nachfolgende Screenshot zeigt einen Ausschnitt der Tabelle aus der Processing-DB:

@@ -81,7 +81,7 @@ Im Root-Proejt bzw. im Hauptverzeichnis liegen alle Dateien, welche für das gan
 Dazu gehören unter anderem sql-Files, welche in erster Linie für DuckDB-Funktionen genutzt werden und die Definiton der Datenbank-Variablen, damit das Anfügen (Attach) der Edit- und Pub-DB funktioniert.
 - <b>gradel.properties:</b> Definiert, dass Subprojekte, wo möglich, parallel abgehandelt werden drüfen.
 - <b>settings.gradle:</b> Listet auf, welche Subprojekte in den GRETL-Job integriert sind. Ohne diese Auflistung können die einzelnen Subprojekte nicht ausgeführt werden.
-- <b>job.properties:</b> Wichtig hier ist vor allem die Zeile "nodeLabel=gretl-3.1", damit in Jenkins duckdb-Funktionen verwendet werden können, da diese im GRETL-image 3.1 vorhanden sind (Stand Juli 2025).
+- <b>job.properties:</b> Wichtig hier ist vor allem die Zeile "nodeLabel=gretl-3.2", damit in Jenkins duckdb-Funktionen verwendet werden können, da diese im GRETL-image 3.1 vorhanden sind (Stand Juli 2025).
 
 ### 01_setup_duckdb
 Dies ist das erste Subprojekt, von dem alle weiteren Subprojekte abhängig sind (direkt oder indirekt). Hier wird die DuckDB-Datenbank und darin die Sammeltabelle für die einzelnen Themen erstellt.
