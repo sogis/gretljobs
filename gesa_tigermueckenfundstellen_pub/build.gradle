@@ -7,17 +7,12 @@ defaultTasks 'transferData'
 
 def schemaNameEdit = "gesa_tigermueckenfundstellen_v1"
 
-// delete uploadFile if it already exists
-if (file("upload/uploadFile.csv").exists()) {
-    file("upload/uploadFile.csv").delete()
-}
-
 // rename uploadfile
 tasks.register("copyCSVFile", Copy) {
     from "upload/"
     into "upload/"
-    include("*.csv")
-    rename(/.*/, "uploadFile.csv")
+    include("uploadFile")
+    rename("uploadFile", "uploadFile.csv")
 }
 
 tasks.register('deleteCsvTableRows', SqlExecutor){
