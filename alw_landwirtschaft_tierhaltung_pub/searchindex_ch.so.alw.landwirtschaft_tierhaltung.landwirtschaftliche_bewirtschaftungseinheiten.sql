@@ -1,5 +1,4 @@
-SET search_path to awjf_waldplan_pub_v2, public;
-
+SET search_path to alw_landwirtschaft_tierhaltung_pub_v2, public;
 
 INSERT INTO ${db_schema}.feature (
     anzeige,            -- Anzeigetext
@@ -10,18 +9,17 @@ INSERT INTO ${db_schema}.feature (
     id_spalten_name,    -- Spaltenname, z. B. 't_id'
     id_in_hochkomma     -- Wahrheitswert für ID-In-Hochkomma
 )
-
 WITH
 index_base AS (
     SELECT
-    	'ch.so.awjf.waldplan.schutzwald'::text AS subclass,
+        ${layername}::text AS subclass,
         t_id AS id_in_class,
-        concat(schutzwald_nr,' (Schutzwald)') AS displaytext,
-        concat(' ',schutzwald_nr, ' ', gemeinde) AS part_1,
-        'Schutzwald Nr'::text AS part_3,
+        concat('BewE-ID: ', bewe_id, ' (Bewirtschaftungseinheit)') AS displaytext,
+        bewe_id AS part_1,
+        'BewE-ID Bewirtschaftungseinheit'::text AS part_3,
         (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
-       awjf_waldplan_pub_v2.waldplan_schutzwald
+        betrbsdttrktrdten_bewe_aktuellesjahr    
 )
 SELECT
     displaytext AS anzeige,

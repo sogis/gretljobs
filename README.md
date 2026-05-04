@@ -114,7 +114,7 @@ git checkout -b branchname
   * outputFile = file("./data.json")
   * localDir = file("downloads")
   * dataFiles = files("attributes.gpkg", "tables.gpkg")
-* nodeLabel=gretl-3.1 muss gesetzt werden (in gretljobs.properties)
+* nodeLabel=gretl-3.2 muss gesetzt werden (in gretljobs.properties)
 
 #### Zugriff auf Ressourcen
 
@@ -136,12 +136,6 @@ dbPwdSimi=
 dbUriIsboden=
 dbUserIsboden=
 dbPwdIsboden=
-dbUriVerisoNplso=
-dbUserVerisoNplso=
-dbPwdVerisoNplso=
-dbUriAltlast4web=
-dbUserAltlast4web=
-PdbPwdAltlast4web=
 dbUriKaso=
 dbUserKaso=
 dbPwdKaso=
@@ -197,7 +191,6 @@ awsSecretAccessKeyAgi=
 digiplanUrl=
 digiplanUser=
 digiplanPwd=
-efjServicesUrl=
 igelToken=
 infofaunaWfsUser=
 infofaunaWfsPwd=
@@ -333,9 +326,9 @@ Allerdings können auch diejenigen Benutzer oder Gruppen, welche durch globale B
 
 Zudem kann mit der Eigenschaft `nodeLabel` bestimmt werden,
 auf welchem Node der Job ausgeführt werden soll.
-Möglich ist hier der Wert `gretl-3.1`,
+Möglich ist hier der Wert `gretl-3.2`,
 damit der Job auf einem Jenkins Agent
-mit GRETL Version 3.1 ausgeführt wird.
+mit GRETL Version 3.2 ausgeführt wird.
 Diese Property dient primär dazu,
 dass bei einem grösseren Versionssprung von GRETL
 nicht alle Jobs gleichzeitig umgestellt werden müssen.

@@ -10,6 +10,7 @@ pipeline {
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
                         unstash name: 'xyz.zip'
+                        sh '[ -s xyz.zip ] || rm -f xyz.zip'        // Fix für Erstellung leerer Dateien durch Jenkins
                         sh "gretl -PanlageId=${params.anlage_id}"
                     }
                 }
