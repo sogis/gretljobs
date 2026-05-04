@@ -87,7 +87,9 @@ git checkout -b branchname
 * `import`-Statements zuoberst einfügen
 * Danach das `apply plugin`-Statement einfügen
 * Als DB-User bei AGI-Datenbanken `gretl`, bei den Entwicklungs-Datenbanken `dmluser` verwenden.
-* Als (temporäres) Verzeichnis beim Herunterladen von Dateien etc. ```System.getProperty("java.io.tmpdir")``` verwenden. Dies ist das temp-Verzeichnis des Betriebssystems. Heruntergeladene und temporäre Dateien bitte trotzdem mittels abschliessenden Task wieder löschen.
+* Als (temporäres) Verzeichnis für Zwischenresultate, beim Herunterladen von Dateien etc. das *Build Directory* verwenden und mit der Variablen `$buildDir` darauf zugreifen.
+  (Standardmässig zeigt diese auf den Ordner `build` innerhalb des Projektverzeichnis.)
+* Für Jobs mit File Upload: Die hochzuladende Datei soll im Unterordner `in` des *Build Directory* platziert werden (`$buildDir/in`).
 * Immer mindestens einen DefaultTask setzen mit dem das Skript startet. Dadurch muss kein Task beim Aufruf von GRETL mitgegeben werden (Bsp ```defaultTasks 'transferAgiHoheitsgrenzen'```).
 * `println` einsetzen wo sinnvoll, also informativ.
 * `description` für Projekt und Tasks machen (Beispiel `av_mopublic/build.gradle`).
