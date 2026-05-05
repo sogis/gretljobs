@@ -4,7 +4,7 @@ import ch.so.agi.gretl.api.TransferSet
 apply plugin: 'ch.so.agi.gretl'
 
 
-defaultTasks 'migration'
+defaultTasks 'copytoedit'
 
 tasks.register('prepare_db', SqlExecutor) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -123,4 +123,34 @@ tasks.register('migration', SqlExecutor) {
                      'set_kartierteam_bodeneinheit_hauptauspraegung_landwirtschaft.sql',
                      'set_kartierteam_bodeneinheit_hauptauspraegung_wald.sql'
     )
+}
+
+tasks.register('copytoedit', Db2Db) {
+    dependsOn 'migration'
+    sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [    
+            new TransferSet('copy_to_edit/dataset.sql', 'afu_bodeneinheiten_v1.t_ili2db_dataset', true), 
+            new TransferSet('copy_to_edit/basket.sql', 'afu_bodeneinheiten_v1.t_ili2db_basket', true), 
+            new TransferSet('copy_to_edit/kartierperson.sql', 'afu_bodeneinheiten_v1.kartierperson', true),
+            new TransferSet('copy_to_edit/kartierteam.sql', 'afu_bodeneinheiten_v1.kartierteam', true),
+            new TransferSet('copy_to_edit/kartierpersonteam.sql', 'afu_bodeneinheiten_v1.kartierpersonteam', true),
+            new TransferSet('copy_to_edit/los.sql', 'afu_bodeneinheiten_v1.los', true),
+            new TransferSet('copy_to_edit/bodeneinheithauptauspraegung_landwirtschaft.sql', 'afu_bodeneinheiten_v1.bodeneinheithauptauspraegung_landwirtschaft', true),
+            new TransferSet('copy_to_edit/bodeneinheithauptauspraegung_wald.sql', 'afu_bodeneinheiten_v1.bodeneinheithauptauspraegung_wald', true),
+            new TransferSet('copy_to_edit/nebenauspraegung_landwirtschaft.sql', 'afu_bodeneinheiten_v1.nebenauspraegung_landwirtschaft', true),
+            new TransferSet('copy_to_edit/nebenauspraegung_wald.sql', 'afu_bodeneinheiten_v1.nebenauspraegung_wald', true),
+            new TransferSet('copy_to_edit/untertyp_diverse_hauptlandwirtschaft.sql', 'afu_bodeneinheiten_v1.untertyp_diverse_hauptlandwirtschaft', true),
+            new TransferSet('copy_to_edit/untertyp_diverse_hauptwald.sql', 'afu_bodeneinheiten_v1.untertyp_diverse_hauptwald', true),
+            new TransferSet('copy_to_edit/untertyp_diverse_nebenlandwirtschaft.sql', 'afu_bodeneinheiten_v1.untertyp_diverse_nebenlandwirtschaft', true),
+            new TransferSet('copy_to_edit/untertyp_diverse_nebenwald.sql', 'afu_bodeneinheiten_v1.untertyp_diverse_nebenwald', true),
+            new TransferSet('copy_to_edit/untertyp_k_hauptlandwirtschaft.sql', 'afu_bodeneinheiten_v1.untertyp_k_hauptlandwirtschaft', true),
+            new TransferSet('copy_to_edit/untertyp_k_hauptwald.sql', 'afu_bodeneinheiten_v1.untertyp_k_hauptwald', true),
+            new TransferSet('copy_to_edit/untertyp_k_nebenlandwirtschaft.sql', 'afu_bodeneinheiten_v1.untertyp_k_nebenlandwirtschaft', true),
+            new TransferSet('copy_to_edit/untertyp_k_nebenwald.sql', 'afu_bodeneinheiten_v1.untertyp_k_nebenwald', true),
+            new TransferSet('copy_to_edit/untertyp_p_hauptlandwirtschaft.sql', 'afu_bodeneinheiten_v1.untertyp_p_hauptlandwirtschaft', true),
+            new TransferSet('copy_to_edit/untertyp_p_hauptwald.sql', 'afu_bodeneinheiten_v1.untertyp_p_hauptwald', true),
+            new TransferSet('copy_to_edit/untertyp_p_nebenlandwirtschaft.sql', 'afu_bodeneinheiten_v1.untertyp_p_nebenlandwirtschaft', true),
+            new TransferSet('copy_to_edit/untertyp_p_nebenwald.sql', 'afu_bodeneinheiten_v1.untertyp_p_nebenwald', true)
+    ]
 }

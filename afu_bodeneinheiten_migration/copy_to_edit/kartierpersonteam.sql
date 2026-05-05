@@ -1,2 +1,9 @@
-SELECT t_basket, t_datasetname, kartierperson_r, kartierteam_r
-FROM afu_bodeneinheiten_v1.kartierpersonteam;
+SELECT 
+    t_id,
+    t_basket, 
+    t_datasetname, 
+    kartierperson_r, 
+    kartierteam_r
+FROM 
+    afu_bodeneinheiten_v1.kartierpersonteam
+;
