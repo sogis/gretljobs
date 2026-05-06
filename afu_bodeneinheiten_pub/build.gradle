@@ -16,15 +16,16 @@ defaultTasks 'importBodeneinheitenPub'
 Der Job AfU_Bodeneinheiten_pub publiziert die Daten der Bodenkartierung. Dabei werden einige Werte neu berechnet. 
 */
 
-/* PROCESSING VORBEREITUNG UND IMPORT 
+// PROCESSING VORBEREITUNG UND IMPORT 
 tasks.register('prepare_db', SqlExecutor) {
     description = 'Vorebreiten der Processing-DB'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = files('prepare_db.sql') 
 }
-*/
+
 
 tasks.register('makeSchemaBodeneinheitenPublic', Ili2pgImportSchema) {
+    dependsOn 'prepare_db'
     description = 'Bodeneinheiten Publikations-Schema anlegen in der Processing-DB.'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_AFU_Bodeneinheiten_Publikation_20260106"
