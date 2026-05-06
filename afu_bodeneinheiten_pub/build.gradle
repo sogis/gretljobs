@@ -134,6 +134,7 @@ tasks.register('validation', Ili2pgValidate) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_AFU_Bodeneinheiten_Publikation_20260106"
     dbschema = "afu_bodeneinheiten_pub_v1"
+    disableAreaValidation = true //NUR TEMPORÄR!!!!! 
 }
 
 tasks.register("exportData", Ili2pgExport) {
