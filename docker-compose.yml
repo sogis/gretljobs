@@ -65,7 +65,7 @@ services:
         target: /var/lib/postgresql/data
   processing-db:
     profiles: ["processing"]
-    image: postgis/postgis:17-3.6-alpine
+    image: postgis/postgis:17-master
     environment:
       POSTGRES_USER: processing
       POSTGRES_PASSWORD: processing

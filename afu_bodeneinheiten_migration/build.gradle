@@ -125,8 +125,15 @@ tasks.register('migration', SqlExecutor) {
     )
 }
 
-tasks.register('copytoedit', Db2Db) {
+tasks.register('cleanGeometry', SqlExecutor) {
     dependsOn 'migration'
+    //dependsOn 'prepare_db'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files('cleangeometry.sql')
+}
+
+tasks.register('copytoedit', Db2Db) {
+    dependsOn 'cleanGeometry'
     sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [    
