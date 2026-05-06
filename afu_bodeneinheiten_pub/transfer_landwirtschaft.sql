@@ -114,6 +114,9 @@ INSERT INTO
     verdichtungsempfindlichkeit_beschreibung,
     untertypen,
     gemeindenummer_bfs_aktuell,
+    alte_daten_Vorhanden, 
+    alte_daten_vorhanden_txt, 
+    aufarbeitung,
     geometrie
 )
 SELECT 
@@ -410,6 +413,16 @@ SELECT
         ''
     )::varchar(200) AS untertypen,
     src.gemeinde_nr AS gemeindenummer_bfs_aktuell,
+    src.alte_daten_vorhanden,
+    adv.dispname AS alte_daten_vorhanden_txt, 
+    CASE 
+        WHEN 
+            src.alte_daten_vorhanden = 'nein' 
+        THEN 
+            NULL
+        ELSE
+            'Diese Kartierung stellt eine Aufarbeitung vorhandener Daten dar. Die genaue Methodik kann unter LINK eingesehen werden.' 
+    END AS aufarbeitung,            
     src.geometrie
 FROM 
     afu_bodeneinheiten_v1.bodeneinheithauptauspraegung_landwirtschaft src
@@ -465,6 +478,10 @@ LEFT JOIN
     afu_bodeneinheiten_v1.gefuegegroesse ggu
     ON 
     ggu.ilicode = src.unterboden0_gefuegegroesse
+LEFT JOIN 
+    afu_bodeneinheiten_v1.alte_daten_vorhanden_enum adv
+    ON 
+    adv.ilicode = src.alte_daten_vorhanden
 LEFT JOIN 
     afu_bodeneinheiten_v1.kartierteam kt
     ON 
