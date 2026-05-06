@@ -44,7 +44,7 @@ tasks.register('makeSchemaBodeneinheitenPublic', Ili2pgImportSchema) {
     createTypeConstraint = true
     coalesceMultiSurface = true
     coalesceArray = true
-    sqlEnableNull = true //für migrierte Daten -> provisorisch!
+    sqlEnableNull = true //für migrierte Daten
     createTidCol = true 
     createEnumTxtCol = true 
 }
