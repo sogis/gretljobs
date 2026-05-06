@@ -141,7 +141,7 @@ tasks.register("exportData", Ili2pgExport) {
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_AFU_Bodeneinheiten_Publikation_20260106"
     dbschema = "afu_bodeneinheiten_pub_v1"
-    dataFile = file("Bodeneinheiten.xtf")
+    dataFile = "Bodeneinheiten.xtf"
     disableValidation = true
 }
 
@@ -151,6 +151,6 @@ tasks.register("importBodeneinheitenPub", Ili2pgImport) {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     models = "SO_AFU_Bodeneinheiten_Publikation_20260106"
     dbschema = "afu_bodeneinheiten_pub_v1"
-    dataFile = file("Bodeneinheiten.xtf")
+    dataFile = "Bodeneinheiten.xtf"
     disableValidation = true
 }
