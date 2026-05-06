@@ -5,7 +5,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferAfuSchadstoffbelastetBoeden'
 
-task transferAfuSchadstoffbelastetBoeden(type: Db2Db){
+tasks.register('transferAfuSchadstoffbelastetBoeden', Db2Db){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
@@ -83,6 +83,11 @@ task transferAfuSchadstoffbelastetBoeden(type: Db2Db){
             new TransferSet(
                     'afu_schadstoffbelastete_boeden_pub_schdstfflstt_bden_strasse.sql',
                     'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_strasse',
+                    true
+            )
+            new TransferSet(
+                    'afu_schadstoffbelastete_boeden_pub_schdstfflstt_bden_pfas.sql',
+                    'afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_pfas',
                     true
             )
     ]
