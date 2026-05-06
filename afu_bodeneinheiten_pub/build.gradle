@@ -58,7 +58,7 @@ tasks.register('makeSchemaBodeneinheiten', Ili2pgImportSchema) {
     dbschema = "afu_bodeneinheiten_v1"
     nameByTopic = false
     strokeArcs = true
-    defaultSrsCode = 2056
+    defaultSrsCode = "2056"
     createGeomIdx = true
     createMetaInfo = true
     createFk = true
