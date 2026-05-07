@@ -19,7 +19,7 @@ tasks.register('downloadCsv', Download) {
 
 tasks.register('validateCsv',  CsvValidator) {
     dependsOn 'downloadCsv'
-    models = "SO_AGI_AV_GWR_Abgleich_20241216"
+    models = "SO_AGI_AV_GWR_Abgleich_Import_20260429"
     firstLineIsHeader = true
     valueSeparator = ';'
     valueDelimiter = null

@@ -1,0 +1,156 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import java.nio.file.Files
+import groovy.json.JsonSlurper
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.ArrayList
+import java.util.Iterator
+import java.util.List
+
+apply plugin: 'ch.so.agi.gretl'
+defaultTasks 'importBodeneinheitenPub'
+
+/*
+Der Job AfU_Bodeneinheiten_pub publiziert die Daten der Bodenkartierung. Dabei werden einige Werte neu berechnet. 
+*/
+
+/* PROCESSING VORBEREITUNG UND IMPORT 
+tasks.register('prepare_db', SqlExecutor) {
+    description = 'Vorebreiten der Processing-DB'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files('prepare_db.sql') 
+}
+*/
+
+tasks.register('makeSchemaBodeneinheitenPublic', Ili2pgImportSchema) {
+    description = 'Bodeneinheiten Publikations-Schema anlegen in der Processing-DB.'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    models = "SO_AFU_Bodeneinheiten_Publikation_20260106"
+    modeldir = "https://geo.so.ch/models"
+    dbschema = "afu_bodeneinheiten_pub_v1"
+    nameByTopic = false
+    strokeArcs = true
+    defaultSrsCode = "2056"
+    createGeomIdx = true
+    createMetaInfo = true
+    createFk = true
+    createFkIdx = true
+    createEnumTabs = true
+    beautifyEnumDispName = true
+    createUnique = true
+    createNumChecks = false //für migrierte Daten
+    createTypeConstraint = true
+    coalesceMultiSurface = true
+    coalesceArray = true
+    sqlEnableNull = true //für migrierte Daten
+    createTidCol = true 
+    createEnumTxtCol = true 
+}
+
+tasks.register('makeSchemaBodeneinheiten', Ili2pgImportSchema) {
+    dependsOn 'makeSchemaBodeneinheitenPublic'
+    description = 'Bodeneinheiten Schema anlegen in der Processing-DB.'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    models = "SO_AFU_Bodeneinheiten_20251210"
+    modeldir = "https://geo.so.ch/models"
+    dbschema = "afu_bodeneinheiten_v1"
+    nameByTopic = false
+    strokeArcs = true
+    defaultSrsCode = "2056"
+    createGeomIdx = true
+    createMetaInfo = true
+    createFk = true
+    createFkIdx = true
+    createEnumTabs = true
+    beautifyEnumDispName = true
+    createUnique = true
+    createDatasetCol = true
+    createTypeConstraint = true
+    coalesceMultiSurface = true
+    coalesceArray = true
+    sqlEnableNull = true
+    createBasketCol = true
+    createTidCol = true
+    expandStruct = true
+    createNumChecks = false
+}
+
+tasks.register('copyfromedit', Db2Db) {
+    dependsOn 'makeSchemaBodeneinheiten'
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    transferSets = [    
+            new TransferSet('copy_from_edit/dataset.sql', 'afu_bodeneinheiten_v1.t_ili2db_dataset', true), 
+            new TransferSet('copy_from_edit/basket.sql', 'afu_bodeneinheiten_v1.t_ili2db_basket', true), 
+            new TransferSet('copy_from_edit/kartierperson.sql', 'afu_bodeneinheiten_v1.kartierperson', true),
+            new TransferSet('copy_from_edit/kartierteam.sql', 'afu_bodeneinheiten_v1.kartierteam', true),
+            new TransferSet('copy_from_edit/kartierpersonteam.sql', 'afu_bodeneinheiten_v1.kartierpersonteam', true),
+            new TransferSet('copy_from_edit/los.sql', 'afu_bodeneinheiten_v1.los', true),
+            new TransferSet('copy_from_edit/bodeneinheithauptauspraegung_landwirtschaft.sql', 'afu_bodeneinheiten_v1.bodeneinheithauptauspraegung_landwirtschaft', true),
+            new TransferSet('copy_from_edit/bodeneinheithauptauspraegung_wald.sql', 'afu_bodeneinheiten_v1.bodeneinheithauptauspraegung_wald', true),
+            new TransferSet('copy_from_edit/nebenauspraegung_landwirtschaft.sql', 'afu_bodeneinheiten_v1.nebenauspraegung_landwirtschaft', true),
+            new TransferSet('copy_from_edit/nebenauspraegung_wald.sql', 'afu_bodeneinheiten_v1.nebenauspraegung_wald', true),
+            new TransferSet('copy_from_edit/untertyp_diverse_hauptlandwirtschaft.sql', 'afu_bodeneinheiten_v1.untertyp_diverse_hauptlandwirtschaft', true),
+            new TransferSet('copy_from_edit/untertyp_diverse_hauptwald.sql', 'afu_bodeneinheiten_v1.untertyp_diverse_hauptwald', true),
+            new TransferSet('copy_from_edit/untertyp_diverse_nebenlandwirtschaft.sql', 'afu_bodeneinheiten_v1.untertyp_diverse_nebenlandwirtschaft', true),
+            new TransferSet('copy_from_edit/untertyp_diverse_nebenwald.sql', 'afu_bodeneinheiten_v1.untertyp_diverse_nebenwald', true),
+            new TransferSet('copy_from_edit/untertyp_k_hauptlandwirtschaft.sql', 'afu_bodeneinheiten_v1.untertyp_k_hauptlandwirtschaft', true),
+            new TransferSet('copy_from_edit/untertyp_k_hauptwald.sql', 'afu_bodeneinheiten_v1.untertyp_k_hauptwald', true),
+            new TransferSet('copy_from_edit/untertyp_k_nebenlandwirtschaft.sql', 'afu_bodeneinheiten_v1.untertyp_k_nebenlandwirtschaft', true),
+            new TransferSet('copy_from_edit/untertyp_k_nebenwald.sql', 'afu_bodeneinheiten_v1.untertyp_k_nebenwald', true),
+            new TransferSet('copy_from_edit/untertyp_p_hauptlandwirtschaft.sql', 'afu_bodeneinheiten_v1.untertyp_p_hauptlandwirtschaft', true),
+            new TransferSet('copy_from_edit/untertyp_p_hauptwald.sql', 'afu_bodeneinheiten_v1.untertyp_p_hauptwald', true),
+            new TransferSet('copy_from_edit/untertyp_p_nebenlandwirtschaft.sql', 'afu_bodeneinheiten_v1.untertyp_p_nebenlandwirtschaft', true),
+            new TransferSet('copy_from_edit/untertyp_p_nebenwald.sql', 'afu_bodeneinheiten_v1.untertyp_p_nebenwald', true)
+    ]
+}
+
+tasks.register('publikation', SqlExecutor) {
+    //dependsOn 'makeSchemaBodeneinheiten'
+    dependsOn 'copyfromedit'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files('transfer_landwirtschaft.sql',
+                     'transfer_wald.sql',
+                     'update_landwirtschaft_bindung_cd.sql',
+                     'update_landwirtschaft_bindung_cu.sql',
+                     'update_landwirtschaft_bindung_pb.sql',
+                     'update_landwirtschaft_bindung_zn.sql',
+                     'update_landwirtschaft_nutzbarefeldkapazitaet.sql',
+                     'update_landwirtschaft_verdichtungsempfindlichkeit.sql',
+                     'update_wald_bindung_cd.sql',
+                     'update_wald_bindung_cu.sql',
+                     'update_wald_bindung_pb.sql',
+                     'update_wald_bindung_zn.sql',
+                     'update_wald_nutzbarefeldkapazitaet.sql',
+                     'update_wald_verdichtungsempfindlichkeit.sql'
+    )
+}
+
+tasks.register('validation', Ili2pgValidate) {
+    dependsOn 'publikation'    
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    models = "SO_AFU_Bodeneinheiten_Publikation_20260106"
+    dbschema = "afu_bodeneinheiten_pub_v1"
+}
+
+tasks.register("exportData", Ili2pgExport) {
+    dependsOn "validation"
+    description = "Exportiert die Daten nach INTERLIS."
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    models = "SO_AFU_Bodeneinheiten_Publikation_20260106"
+    dbschema = "afu_bodeneinheiten_pub_v1"
+    dataFile = files("Bodeneinheiten.xtf")
+    disableValidation = true
+}
+
+tasks.register("importBodeneinheitenPub", Ili2pgImport) {
+    dependsOn "exportData"
+    description = "Import der Bodeneinheiten in die Pub-DB"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    models = "SO_AFU_Bodeneinheiten_Publikation_20260106"
+    dbschema = "afu_bodeneinheiten_pub_v1"
+    dataFile = files("Bodeneinheiten.xtf")
+    disableValidation = true
+}

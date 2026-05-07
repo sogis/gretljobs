@@ -7,7 +7,7 @@ defaultTasks 'transferData'
 
 def schemaNameEdit = "gesa_tigermueckenfundstellen_v1"
 ext {
-    importYear = ""   // das bleibt, wird ja in readCsvYear befüllt
+    importYear = ""
 }
 
 // Uploadfile umbenennen

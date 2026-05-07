@@ -4,8 +4,8 @@ WITH
 gebuehren AS (
 	SELECT 
 		100::NUMERIC AS betrag_boot_ruderboot,
-		150::NUMERIC AS betrag_boot_b_6kw,
-		250::NUMERIC AS betrag_boot_u_6kw,
+		233.35::NUMERIC AS betrag_boot_b_6kw,
+		333.35::NUMERIC AS betrag_boot_u_6kw,
 		120::NUMERIC AS betrag_pfosten
 ),
 

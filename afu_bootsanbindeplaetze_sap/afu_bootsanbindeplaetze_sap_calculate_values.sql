@@ -48,14 +48,14 @@ nutzungsgebuehren_separate_RS AS (
 	LEFT JOIN pubdb.afu_bootsanbindeplaetze_pub_v1.standortdaten AS sd
 		ON bp.standort = sd.standort
 	WHERE 
-		rechnungsstelle_nutzungsgebuehr IS DISTINCT FROM rechnungsstelle_steggebuehr
+		rechnungsstelle_nutzungsgebuehr IS DISTINCT FROM rechnungsstelle_steggebuehr -- Rechnungstelle für Nutzungsgebühr und Steggebühr sind unterschiedlich
 ),
 
 -- Die Bewilligungsgebühr wird einmalig mit der Vergabe der Nutzungsbewilligung erhoben --
--- Die Bewilligungsgebühr wird für das aktuelle Jahr nicht erhoben, wenn die Bewilligung nach dem Juni vergeben wurde --
+-- Die Bewilligungsgebühr wird für das aktuelle Jahr nicht erhoben, wenn die Bewilligung vor dem Juli vergeben wurde --
 -- Die Rechnungsperiode der Bewilligungsgebühr geht dementsprechend von Juli bis Juli --
 -- Beispiel: Das heutige Datum ist der 31.3.2026 (normalerweise wird ca. Ende März die Rechnung erstellt) --
---			- Fall 1 - Bewilligungsdatum ist 20.08.2025: Bewilligugnsgebühr wird erhoben --
+--			- Fall 1 - Bewilligungsdatum ist 20.08.2025: Bewilligungsgebühr wird erhoben --
 --			- Fall 2 - Bewilligungsdatum ist 20.06.2025: Bewilligungsgebühr wird nicht erhoben, da bereits in vorheriger Periode verrechnet --
 bewilligunsgebuehr AS (
 	SELECT 
@@ -75,12 +75,12 @@ bewilligunsgebuehr AS (
     	datum_bewilligung >= CASE 
         	WHEN EXTRACT(MONTH FROM CURRENT_DATE) >= 7 -- Prüft ob der aktuelle Monat nach dem Juni ist (also Juli oder später)
         		THEN
-        			MAKE_DATE(EXTRACT(YEAR FROM CURRENT_DATE)::int, 7, 1) -- wenn wir uns im gleichen Jahr befinden wird der 1.7. des aktuellen Jahres genommen
+        			MAKE_DATE(EXTRACT(YEAR FROM CURRENT_DATE)::int, 7, 1) -- Vergleich mit dem 1.7. des aktuellen Jahres
        			ELSE
-        			MAKE_DATE(EXTRACT(YEAR FROM CURRENT_DATE)::int - 1, 7, 1) -- wenn wir uns im Folgejahr befinden wird der 1.7. des letzten Jahres genommen
+        			MAKE_DATE(EXTRACT(YEAR FROM CURRENT_DATE)::int - 1, 7, 1) -- Vergleich mit dem 1.7. des Vorjahres
     	END
     AND
-    	datum_bewilligung <= CURRENT_DATE -- Das Bewilligungsdatum darf nicht in der Zukunft liegen.
+    	datum_bewilligung <= CURRENT_DATE -- Nur Daten bis heute (keine zukünftigen)
 ),
 
 gebuehren_alle AS (
@@ -219,7 +219,7 @@ gebuehren_sap AS (
 	WHERE
 		Kontokorrent IS NOT TRUE
 	AND
-		KundenNr != 'XXX'	
+		KundenNr != 'XXX' -- Einige Kunden haben als Platzhalter 'XXX' Als SAP-Nummer erhalten. Diese sollen aber nicht in der Rechnung berücksichtigt werden
 )
 
 INSERT INTO afu_bootsanbindeplaetze.main.sap_structure (
