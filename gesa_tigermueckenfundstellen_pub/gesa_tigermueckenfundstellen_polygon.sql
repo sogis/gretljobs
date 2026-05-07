@@ -1,5 +1,49 @@
 WITH
 
+-- sucht das neuste Jahr aus den Daten --
+max_jahr AS (
+	SELECT
+		MAX(jahr) AS jahr
+	FROM gesa_tigermueckenfundstellen_v1.csv_import
+),
+
+-- nur Daten aus dem neusten Jahr sollen publiziert werden --
+daten_aktuelles_jahr AS (
+	SELECT
+		t_id,
+		t_ili_tid,
+		auid,
+		trapid,
+		typ,
+		kanton,
+		plz,
+		ort,
+		standort,
+		lv95_e,
+		lv95_n,
+		jahr,
+		woche,
+		datumsetfirst,
+		datumsetlast,
+		datumsam,
+		zeitraumsam,
+		sammethode,
+		positiv,
+		n_individuen,
+		geschlecht,
+		art,
+		sicherheit,
+		n_maldi_tof_ms,
+		fallenzustand,
+		einsender,
+		meldedatum,
+		kommentar
+	FROM
+		gesa_tigermueckenfundstellen_v1.csv_import
+	WHERE 
+		jahr = (SELECT jahr FROM max_jahr)
+),
+
 -- aufgestellte Fallen --
 ovitraps_punkte AS (
 	SELECT
@@ -19,7 +63,7 @@ ovitraps_punkte AS (
 				ORDER BY woche DESC
 			) AS rn
 		FROM 
-			gesa_tigermueckenfundstellen_v1.csv_import
+			daten_aktuelles_jahr
 	) AS t
 	WHERE
 		rn = 1
@@ -37,7 +81,7 @@ privatmeldungen_punkte AS (
 		auid,
 		ST_SetSRID(ST_MakePoint(lv95_e, lv95_n), 2056) AS geometrie
 	FROM 
-		gesa_tigermueckenfundstellen_v1.csv_import
+		daten_aktuelles_jahr
 	WHERE 
 		SamMethode IS DISTINCT FROM 'Ovitrap'
 	AND
@@ -79,9 +123,9 @@ punktgeometrie_verwackelt AS (
 ),
 
 -- Buffer um verwackelten Punkt erstellen --
-buffer200 AS (
+buffer150 AS (
 	SELECT 
-		ST_Buffer(geometrie_shifted,200) AS geometrie
+		ST_Buffer(geometrie_shifted,150) AS geometrie
 	FROM 
 		punktgeometrie_verwackelt
 ),
@@ -91,7 +135,7 @@ polygon_union AS (
 	SELECT
 		ST_UNION(geometrie)AS geometrie
 	FROM 
-		buffer200
+		buffer150
 ),
 
 -- Doppelbuffer um Lücken zu schliessen und nicht zusammenhängende Geometrien wieder aufteilen --
