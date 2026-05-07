@@ -22,7 +22,7 @@ SELECT
     bdg_egid || '-' || issue_category AS agi_id,
     com_fosnr,
     bdg_egid,
-    bdg_geomsrc,
+    NULL AS bdg_geomsrc,
     bdg_category,
     bdg_gklas,
     bdg_gstat,
