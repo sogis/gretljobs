@@ -125,8 +125,7 @@ tasks.register('publikation', SqlExecutor) {
                      'update_wald_bindung_pb.sql',
                      'update_wald_bindung_zn.sql',
                      'update_wald_nutzbarefeldkapazitaet.sql',
-                     'update_wald_verdichtungsempfindlichkeit.sql',
-                     'cleangeometry.sql'
+                     'update_wald_verdichtungsempfindlichkeit.sql'
     )
 }
 
