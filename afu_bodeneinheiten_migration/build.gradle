@@ -95,9 +95,15 @@ tasks.register('transferIsboden', Db2Db) {
     ]
 }
 
+tasks.register('cleanGeometry_isboden', SqlExecutor) {
+    dependsOn 'transferIsboden'
+    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    sqlFiles = files('cleangeometry_isboden.sql')
+}
+
 tasks.register('migration', SqlExecutor) {
     //dependsOn 'makeSchemaBodeneinheiten'
-    dependsOn 'transferIsboden'
+    dependsOn 'cleanGeometry_isboden'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = files('copy_altdaten.sql', 
                      'make_los.sql',
@@ -124,16 +130,16 @@ tasks.register('migration', SqlExecutor) {
                      'set_kartierteam_bodeneinheit_hauptauspraegung_wald.sql'
     )
 }
-
+/*
 tasks.register('cleanGeometry', SqlExecutor) {
     dependsOn 'migration'
     //dependsOn 'prepare_db'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = files('cleangeometry.sql')
 }
-
+*/
 tasks.register('copytoedit', Db2Db) {
-    dependsOn 'cleanGeometry'
+    dependsOn 'migration'
     sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     transferSets = [    
