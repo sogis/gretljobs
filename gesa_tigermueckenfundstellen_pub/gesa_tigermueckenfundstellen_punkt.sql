@@ -1,5 +1,49 @@
 WITH
 
+-- sucht das neuste Jahr aus den Daten --
+max_jahr AS (
+	SELECT
+		MAX(jahr) AS jahr
+	FROM gesa_tigermueckenfundstellen_v1.csv_import
+),
+
+-- nur Daten aus dem neusten Jahr sollen publiziert werden --
+daten_aktuelles_jahr AS (
+	SELECT
+		t_id,
+		t_ili_tid,
+		auid,
+		trapid,
+		typ,
+		kanton,
+		plz,
+		ort,
+		standort,
+		lv95_e,
+		lv95_n,
+		jahr,
+		woche,
+		datumsetfirst,
+		datumsetlast,
+		datumsam,
+		zeitraumsam,
+		sammethode,
+		positiv,
+		n_individuen,
+		geschlecht,
+		art,
+		sicherheit,
+		n_maldi_tof_ms,
+		fallenzustand,
+		einsender,
+		meldedatum,
+		kommentar
+	FROM
+		gesa_tigermueckenfundstellen_v1.csv_import
+	WHERE 
+		jahr = (SELECT jahr FROM max_jahr)
+),
+
 -- aufgestellte Fallen --
 ovitraps AS (
 	SELECT
@@ -53,16 +97,12 @@ ovitraps AS (
 				ORDER BY woche DESC
 			) AS rn
 		FROM 
-			gesa_tigermueckenfundstellen_v1.csv_import
+			daten_aktuelles_jahr
 	) AS t
 	WHERE
 		rn = 1
 	AND 
 		t.SamMethode = 'Ovitrap'
-	AND 
-		t.art = 'Aedes albopictus' -- Nur Tigermücken
-	AND
-		t.positiv_anzahl > 0
 ),
 
 -- Meldungen von Privatpersonen --
@@ -104,13 +144,11 @@ privatmeldungen AS (
 			) OVER (PARTITION BY (ST_MakePoint(lv95_e, lv95_n), 2056)) AS sammeldatum_positiv,
 			ST_SetSRID(ST_MakePoint(lv95_e, lv95_n), 2056) AS geometrie
 	FROM 
-		gesa_tigermueckenfundstellen_v1.csv_import
+		daten_aktuelles_jahr
 	WHERE 
 		SamMethode IS DISTINCT FROM 'Ovitrap'
 	AND
 		art = 'Aedes albopictus' -- Nur Tigermücken
-	AND 
-		sicherheit = 'Sicher' -- Nur sichere Funde
 	AND 
 		lv95_e IS NOT NULL -- Meldungen ohne geografische Angaben sind nicht brauchbar
 ),
