@@ -1,0 +1,56 @@
+/*
+Import der Daten der Bodenkartierung (Bodeneinheiten) in die Edit-DB
+*/
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.io.File
+import java.util.zip.GZIPInputStream
+
+defaultTasks 'importData'
+
+def uploadFileName = 'uploadFile'
+def exportFileName = 'data.xtf'
+def pathToUploadFolder = 'upload'
+
+project.ext.los = null
+
+tasks.register('copyUploadFile', Copy) {
+    from 'uploadFile'
+    into pathToUploadFolder
+    rename { exportFileName }
+}
+
+tasks.register('readLos') {
+    dependsOn "copyUploadFile"
+
+    doLast {
+        def xtfFile = file('upload/data.xtf')
+        def xml = new XmlSlurper(false, false).parse(xtfFile)
+
+        def losObj = xml.depthFirst().find {
+            it.name().toString().endsWith('.Los')
+        }
+
+        project.ext.los = losObj?.Los?.text()?.trim()
+
+        if (!project.ext.los) {
+            throw new GradleException("Kein Los im XTF gefunden.")
+        }
+
+println "Los: ${project.ext.los}"
+    }
+}
+
+tasks.register('importData', Ili2pgReplace){
+     dependsOn "readLos"
+     description = 'Import der Boden-Daten'
+     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+     dbschema = 'afu_bodeneinheiten_v1'
+     models = 'SO_AFU_Bodeneinheiten_20251210'
+     dataFile = files('upload/data.xtf')
+     topics = 'Bodeneinheiten'
+     dataset = providers.provider {
+         project.ext.los
+     }
+}
