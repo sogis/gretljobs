@@ -147,8 +147,6 @@ privatmeldungen AS (
 		daten_aktuelles_jahr
 	WHERE 
 		SamMethode IS DISTINCT FROM 'Ovitrap'
-	AND
-		art = 'Aedes albopictus' -- Nur Tigermücken
 	AND 
 		lv95_e IS NOT NULL -- Meldungen ohne geografische Angaben sind nicht brauchbar
 ),

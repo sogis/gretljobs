@@ -70,7 +70,7 @@ ovitraps_punkte AS (
 	AND 
 		t.SamMethode = 'Ovitrap'
 	AND 
-		t.art = 'Aedes albopictus'
+		t.art = 'Aedes albopictus' -- Nur Tigermücken
 	AND
 		t.anzahl_positiv > 0
 ),
@@ -85,9 +85,9 @@ privatmeldungen_punkte AS (
 	WHERE 
 		SamMethode IS DISTINCT FROM 'Ovitrap'
 	AND
-		art = 'Aedes albopictus'
+		art = 'Aedes albopictus' -- Nur Tigermücken
 	AND 
-		sicherheit = 'Sicher'
+		sicherheit = 'Sicher' -- Nur sichere Meldungen
 	AND 
 		lv95_e IS NOT NULL
 ),

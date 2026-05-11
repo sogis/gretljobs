@@ -37,7 +37,7 @@ tasks.register('readCsvYear') {
 
         importYear = firstData[jahrIndex].trim()
 
-        println "Import-Jahr erkannt: ${importYear}"
+        println "Import-Jahr: ${importYear}"
     }
 }
 
