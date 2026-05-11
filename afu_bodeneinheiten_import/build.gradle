@@ -16,7 +16,7 @@ def pathToUploadFolder = 'upload'
 project.ext.los = null
 
 tasks.register('copyUploadFile', Copy) {
-    from 'uploadFile'
+    from 'upload/uploadFile'
     into pathToUploadFolder
     rename { exportFileName }
 }
