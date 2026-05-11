@@ -49,7 +49,7 @@ tasks.register('importData', Ili2pgReplace){
      dbschema = 'afu_bodeneinheiten_v1'
      models = 'SO_AFU_Bodeneinheiten_20251210'
      dataFile = files('upload/data.xtf')
-     topics = 'Bodeneinheiten'
+     topics = 'SO_AFU_Bodeneinheiten_20251210.Bodeneinheiten'
      dataset = providers.provider {
          project.ext.los
      }
