@@ -50,7 +50,5 @@ tasks.register('importData', Ili2pgReplace){
      models = 'SO_AFU_Bodeneinheiten_20251210'
      dataFile = files('upload/data.xtf')
      topics = 'SO_AFU_Bodeneinheiten_20251210.Bodeneinheiten'
-     dataset = providers.provider {
-         project.ext.los
-     }
+     dataset = datasetlos //Parameter, der von Jenkins kommt. 
 }
