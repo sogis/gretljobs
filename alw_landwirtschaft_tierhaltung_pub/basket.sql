@@ -1,7 +1,7 @@
 SELECT 
     t_id,
     dataset,
-    replace(topic,'SO_ALW_Landwirtschaft_Tierhaltung_20210426','SO_ALW_Landwirtschaft_Tierhaltung_Publikation_restricted_20211019') AS topic,
+    replace(topic,'SO_ALW_Landwirtschaft_Tierhaltung_20210426','SO_ALW_Landwirtschaft_Tierhaltung_Publikation_20260218') AS topic,
     t_ili_tid,
     'Datenumbau edit/pub' AS attachmentkey,
     domains
@@ -11,4 +11,6 @@ WHERE
     topic = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426.BFF_Qualitaet' 
       OR
     topic = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426.Betriebsdaten_Strukturdaten'
+     OR
+    topic = 'SO_ALW_Landwirtschaft_Tierhaltung_20210426.GELAN_Bodenbedeckung'
 ;

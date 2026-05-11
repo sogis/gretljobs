@@ -1,4 +1,4 @@
-SET search_path to alw_landwirtschaft_tierhaltung_pub_v1, public;
+SET search_path to alw_landwirtschaft_tierhaltung_pub_v2, public;
 
 INSERT INTO ${db_schema}.feature (
     anzeige,            -- Anzeigetext
@@ -14,12 +14,12 @@ index_base AS (
     SELECT
         ${layername}::text AS subclass,
         t_id AS id_in_class,
-        concat('GeoID: ', kultur_id, ' (Kultur)') AS displaytext,
+        concat('Id: ', kultur_id, ' (Kultur)') AS displaytext,
         kultur_id AS part_1,
-        'GeoID Kultur'::text AS part_3,
+        'ID Kultur'::text AS part_3,
         (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
-        betrbsdttrktrdten_kultur_flaeche
+        betrbsdttrktrdten_kultur_flaeche_aktuellesjahr
 )
 SELECT
     displaytext AS anzeige,

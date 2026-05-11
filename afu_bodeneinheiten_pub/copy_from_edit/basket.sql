@@ -1,0 +1,9 @@
+SELECT 
+    t_id,
+    dataset, 
+    topic, 
+    t_ili_tid, 
+    attachmentkey, 
+    domains 
+FROM 
+    afu_bodeneinheiten_v1.t_ili2db_basket;

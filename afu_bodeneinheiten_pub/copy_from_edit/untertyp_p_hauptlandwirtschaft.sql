@@ -1,0 +1,9 @@
+SELECT 
+    t_id,
+    t_basket, 
+    t_datasetname, 
+    acode, 
+    bodeneinheitlandassociation_p
+FROM 
+    afu_bodeneinheiten_v1.untertyp_p_hauptlandwirtschaft
+;
