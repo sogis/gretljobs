@@ -128,7 +128,6 @@ tasks.register('publikation', SqlExecutor) {
                      'update_wald_verdichtungsempfindlichkeit.sql'
     )
 }
-/* 
 
 Zum Testen mal usgeschaltet. Die Fehler werden vom AFU noch behoben!
 tasks.register('validation', Ili2pgValidate) {
@@ -138,11 +137,10 @@ tasks.register('validation', Ili2pgValidate) {
     dbschema = "afu_bodeneinheiten_pub_v1"
     disableAreaValidation = false //NUR TEMPORÄR!!!!! 
 }
-*/
 
 tasks.register("exportData", Ili2pgExport) {
-    //dependsOn "validation"
-    dependsOn 'publikation'
+    dependsOn "validation"
+    //dependsOn 'publikation'
     description = "Exportiert die Daten nach INTERLIS."
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     models = "SO_AFU_Bodeneinheiten_Publikation_20260106"
