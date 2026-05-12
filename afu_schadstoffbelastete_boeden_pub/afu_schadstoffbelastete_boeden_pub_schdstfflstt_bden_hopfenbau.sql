@@ -8,10 +8,10 @@ dokumente AS (
 		schdstfflstt_bden_dokument.dateipfad,
 		schdstfflstt_bden_anbaugebiet.t_id AS anbaugebiet
 	FROM
-		afu_schadstoffbelastete_boeden.schdstfflstt_bden_dokument_anbaugebiet
-		LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_anbaugebiet
+		afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_dokument_anbaugebiet
+		LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_anbaugebiet
 			ON schdstfflstt_bden_anbaugebiet.t_id = schdstfflstt_bden_dokument_anbaugebiet.anbaugebiet
-		LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_dokument
+		LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_dokument
 			ON schdstfflstt_bden_dokument.t_id = schdstfflstt_bden_dokument_anbaugebiet.dokument
 ),
 
@@ -39,10 +39,10 @@ schadstoffe AS (
 		schdstfflstt_bden_schadstoff.kuerzel,
 		schdstfflstt_bden_anbaugebiet.t_id AS anbaugebiet
 	FROM
-		afu_schadstoffbelastete_boeden.schdstfflstt_bden_schadstoff_anbaugebiet
-		LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_anbaugebiet
+		afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_schadstoff_anbaugebiet
+		LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_anbaugebiet
 			ON schdstfflstt_bden_anbaugebiet.t_id = schdstfflstt_bden_schadstoff_anbaugebiet.anbaugebiet
-		LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_schadstoff
+		LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_schadstoff
 			ON schdstfflstt_bden_schadstoff.t_id = schdstfflstt_bden_schadstoff_anbaugebiet.schadstoff
 ),
 
@@ -68,7 +68,7 @@ gemeinden AS (
 		string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename ASC) AS gemeinden
 	FROM
 		agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
-		afu_schadstoffbelastete_boeden.schdstfflstt_bden_anbaugebiet
+		afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_anbaugebiet
 	WHERE
 		schdstfflstt_bden_anbaugebiet.geometrie && hoheitsgrenzen_gemeindegrenze.geometrie
 	AND
@@ -83,7 +83,7 @@ bfs_nummern AS (
 		string_agg(DISTINCT CAST(hoheitsgrenzen_gemeindegrenze.bfs_gemeindenummer AS varchar), ', ' ORDER BY CAST(hoheitsgrenzen_gemeindegrenze.bfs_gemeindenummer AS varchar) ASC) AS bfs_nummern
 	FROM
 		agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
-		afu_schadstoffbelastete_boeden.schdstfflstt_bden_anbaugebiet
+		afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_anbaugebiet
 	WHERE
 		schdstfflstt_bden_anbaugebiet.geometrie && hoheitsgrenzen_gemeindegrenze.geometrie
 	AND 
@@ -104,7 +104,7 @@ parzellennummern AS (
 		 LEFT JOIN agi_dm01avso24.liegenschaften_liegenschaft 
 			 ON liegenschaften_liegenschaft.liegenschaft_von = liegenschaften_grundstueck.t_id
 		) liegen,
-		afu_schadstoffbelastete_boeden.schdstfflstt_bden_anbaugebiet
+		afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_anbaugebiet
 	WHERE
 		schdstfflstt_bden_anbaugebiet.geometrie && liegen.geometrie
 	AND 
@@ -124,7 +124,7 @@ flurnamen AS (
 		 FROM 
 			 agi_dm01avso24.nomenklatur_flurname
 		 ) flurname,
-		afu_schadstoffbelastete_boeden.schdstfflstt_bden_anbaugebiet
+		afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_anbaugebiet
 	WHERE
 		schdstfflstt_bden_anbaugebiet.geometrie && flurname.geometrie
 		AND
@@ -157,7 +157,7 @@ SELECT
 	status.description AS status_txt,
 	begruendung_vsb_entlassen.description AS begruendung_aus_vsb_entlassen_txt
 FROM
-	afu_schadstoffbelastete_boeden.schdstfflstt_bden_anbaugebiet
+	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_anbaugebiet
 	LEFT JOIN dokumente_json
 		ON dokumente_json.anbaugebiet = schdstfflstt_bden_anbaugebiet.t_id
 	LEFT JOIN schadstoffe_json
@@ -170,9 +170,9 @@ FROM
 		ON parzellennummern.t_id = schdstfflstt_bden_anbaugebiet.t_id
 	LEFT JOIN flurnamen
 		ON flurnamen.t_id = schdstfflstt_bden_anbaugebiet.t_id
-	LEFT JOIN afu_schadstoffbelastete_boeden.schadstoffbelasteter_boden_status status
+	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_status status
 		ON status.ilicode = schdstfflstt_bden_anbaugebiet.astatus
-	LEFT JOIN afu_schadstoffbelastete_boeden.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
+	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
 		ON begruendung_vsb_entlassen.ilicode = schdstfflstt_bden_anbaugebiet.begruendung_aus_vsb_entlassen
 WHERE
 	anbautyp = 'Hopfenbau'

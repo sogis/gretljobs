@@ -8,10 +8,10 @@ dokumente AS (
 		schdstfflstt_bden_dokument.dateipfad,
 		schdstfflstt_bden_strasse.t_id AS strasse
 	FROM
-		afu_schadstoffbelastete_boeden.schdstfflstt_bden_dokument_strasse
-		LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_strasse
+		afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_dokument_strasse
+		LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_strasse
 			ON schdstfflstt_bden_strasse.t_id = schdstfflstt_bden_dokument_strasse.strasse
-		LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_dokument
+		LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_dokument
 			ON schdstfflstt_bden_dokument.t_id = schdstfflstt_bden_dokument_strasse.dokument
 ),
 
@@ -39,10 +39,10 @@ schadstoffe AS (
 		schdstfflstt_bden_schadstoff.kuerzel,
 		schdstfflstt_bden_strasse.t_id AS strasse
 	FROM
-		afu_schadstoffbelastete_boeden.schdstfflstt_bden_schadstoff_strasse
-		LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_strasse
+		afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_schadstoff_strasse
+		LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_strasse
 			ON schdstfflstt_bden_strasse.t_id = schdstfflstt_bden_schadstoff_strasse.strasse
-		LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_schadstoff
+		LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_schadstoff
 			ON schdstfflstt_bden_schadstoff.t_id = schdstfflstt_bden_schadstoff_strasse.schadstoff
 ),
 
@@ -68,7 +68,7 @@ gemeinden AS (
 		string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename ASC) AS gemeinden
 	FROM
 		agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
-		afu_schadstoffbelastete_boeden.schdstfflstt_bden_strasse
+		afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_strasse
 	WHERE
 		ST_DWithin(schdstfflstt_bden_strasse.geometrie, hoheitsgrenzen_gemeindegrenze.geometrie, 0)
 		OR
@@ -83,7 +83,7 @@ bfs_nummern AS (
 		string_agg(DISTINCT CAST(hoheitsgrenzen_gemeindegrenze.bfs_gemeindenummer AS varchar), ', ' ORDER BY CAST(hoheitsgrenzen_gemeindegrenze.bfs_gemeindenummer AS varchar) ASC) AS bfs_nummern
 	FROM
 		agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
-		afu_schadstoffbelastete_boeden.schdstfflstt_bden_strasse
+		afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_strasse
 	WHERE
 		ST_DWithin(schdstfflstt_bden_strasse.geometrie, hoheitsgrenzen_gemeindegrenze.geometrie, 0)
 	GROUP BY
@@ -102,7 +102,7 @@ parzellennummern AS (
 		 LEFT JOIN agi_dm01avso24.liegenschaften_liegenschaft 
 			 ON liegenschaften_liegenschaft.liegenschaft_von = liegenschaften_grundstueck.t_id
 		) liegen,
-		afu_schadstoffbelastete_boeden.schdstfflstt_bden_strasse
+		afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_strasse
 	WHERE
 			ST_DWithin(schdstfflstt_bden_strasse.geometrie, liegen.geometrie, 0)
 	GROUP BY
@@ -120,7 +120,7 @@ flurnamen AS (
 		 FROM 
 			 agi_dm01avso24.nomenklatur_flurname
 		 ) flurname,
-		afu_schadstoffbelastete_boeden.schdstfflstt_bden_strasse
+		afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_strasse
 	WHERE
 		ST_DWithin(schdstfflstt_bden_strasse.geometrie, flurname.geometrie, 0)
 	GROUP BY
@@ -155,7 +155,7 @@ SELECT
 	status.description AS status_txt,
 	begruendung_vsb_entlassen.description AS begruendung_aus_vsb_entlassen_txt
 FROM
-	afu_schadstoffbelastete_boeden.schdstfflstt_bden_strasse
+	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_strasse
 	LEFT JOIN dokumente_json
 		ON dokumente_json.strasse = schdstfflstt_bden_strasse.t_id
 	LEFT JOIN schadstoffe_json
@@ -168,14 +168,14 @@ FROM
 		ON parzellennummern.t_id = schdstfflstt_bden_strasse.t_id
 	LEFT JOIN flurnamen
 		ON flurnamen.t_id = schdstfflstt_bden_strasse.t_id
-	LEFT JOIN afu_schadstoffbelastete_boeden.schdstfstt_bden_strasse_verkehrsfrequenz strasse_verkehrsfrequenz
+	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfstt_bden_strasse_verkehrsfrequenz strasse_verkehrsfrequenz
 		ON strasse_verkehrsfrequenz.ilicode = schdstfflstt_bden_strasse.verkehrsfrequenz
-	LEFT JOIN afu_schadstoffbelastete_boeden.schdstfstt_bden_strasse_verdachtsstreifenbreite strasse_verdachtsstreifenbreite
+	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfstt_bden_strasse_verdachtsstreifenbreite strasse_verdachtsstreifenbreite
 		ON strasse_verdachtsstreifenbreite.ilicode = schdstfflstt_bden_strasse.verdachtsstreifenbreite
-	LEFT JOIN afu_schadstoffbelastete_boeden.schdstfstt_bden_strasse_strassentyp strasse_strassentyp
+	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfstt_bden_strasse_strassentyp strasse_strassentyp
 		ON strasse_strassentyp.ilicode = schdstfflstt_bden_strasse.strassentyp
-	LEFT JOIN afu_schadstoffbelastete_boeden.schadstoffbelasteter_boden_status status
+	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_status status
 		ON status.ilicode = schdstfflstt_bden_strasse.astatus
-	LEFT JOIN afu_schadstoffbelastete_boeden.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
+	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
 		ON begruendung_vsb_entlassen.ilicode = schdstfflstt_bden_strasse.begruendung_aus_vsb_entlassen
 ;

@@ -8,10 +8,10 @@ dokumente AS (
 		schdstfflstt_bden_dokument.dateipfad,
 		schdstfflstt_bden_stahlmast.t_id AS stahlmast
 	FROM
-		afu_schadstoffbelastete_boeden.schdstfflstt_bden_dokument_stahlmast
-		LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_stahlmast
+		afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_dokument_stahlmast
+		LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_stahlmast
 			ON schdstfflstt_bden_stahlmast.t_id = schdstfflstt_bden_dokument_stahlmast.stahlmast
-		LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_dokument
+		LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_dokument
 			ON schdstfflstt_bden_dokument.t_id = schdstfflstt_bden_dokument_stahlmast.dokument
 ),
 
@@ -39,10 +39,10 @@ schadstoffe AS (
 		schdstfflstt_bden_schadstoff.kuerzel,
 		schdstfflstt_bden_stahlmast.t_id AS stahlmast
 	FROM
-		afu_schadstoffbelastete_boeden.schdstfflstt_bden_schadstoff_stahlmast
-		LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_stahlmast
+		afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_schadstoff_stahlmast
+		LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_stahlmast
 			ON schdstfflstt_bden_schadstoff_stahlmast.t_id = schdstfflstt_bden_schadstoff_stahlmast.stahlmast
-		LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_schadstoff
+		LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_schadstoff
 			ON schdstfflstt_bden_schadstoff.t_id = schdstfflstt_bden_schadstoff_stahlmast.schadstoff
 ),
 
@@ -68,7 +68,7 @@ gemeinden AS (
 		string_agg(DISTINCT hoheitsgrenzen_gemeindegrenze.gemeindename, ', ' ORDER BY hoheitsgrenzen_gemeindegrenze.gemeindename ASC) AS gemeinden
 	FROM
 		agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
-		afu_schadstoffbelastete_boeden.schdstfflstt_bden_stahlmast
+		afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_stahlmast
 	WHERE
 		ST_DWithin(schdstfflstt_bden_stahlmast.geometrie, hoheitsgrenzen_gemeindegrenze.geometrie, 0)
 	GROUP BY
@@ -81,7 +81,7 @@ bfs_nummern AS (
 		string_agg(DISTINCT CAST(hoheitsgrenzen_gemeindegrenze.bfs_gemeindenummer AS varchar), ', ' ORDER BY CAST(hoheitsgrenzen_gemeindegrenze.bfs_gemeindenummer AS varchar) ASC) AS bfs_nummern
 	FROM
 		agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze,
-		afu_schadstoffbelastete_boeden.schdstfflstt_bden_stahlmast
+		afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_stahlmast
 	WHERE
 		ST_DWithin(schdstfflstt_bden_stahlmast.geometrie, hoheitsgrenzen_gemeindegrenze.geometrie, 0)
 	GROUP BY
@@ -100,7 +100,7 @@ parzellennummern AS (
 		 LEFT JOIN agi_dm01avso24.liegenschaften_liegenschaft 
 			 ON liegenschaften_liegenschaft.liegenschaft_von = liegenschaften_grundstueck.t_id
 		) liegen,
-		afu_schadstoffbelastete_boeden.schdstfflstt_bden_stahlmast
+		afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_stahlmast
 	WHERE
 		ST_DWithin(schdstfflstt_bden_stahlmast.geometrie, liegen.geometrie, 0)
 	GROUP BY
@@ -118,7 +118,7 @@ flurnamen AS (
 		 FROM 
 			 agi_dm01avso24.nomenklatur_flurname
 		 ) flurname,
-		afu_schadstoffbelastete_boeden.schdstfflstt_bden_stahlmast
+		afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_stahlmast
 	WHERE
 		ST_DWithin(schdstfflstt_bden_stahlmast.geometrie, flurname.geometrie, 0)
 	GROUP BY
@@ -156,8 +156,8 @@ SELECT
 	status.description AS status_txt,
 	begruendung_vsb_entlassen.description AS begruendung_aus_vsb_entlassen_txt
 FROM
-	afu_schadstoffbelastete_boeden.schdstfflstt_bden_stahlmast
-	LEFT JOIN afu_schadstoffbelastete_boeden.schdstfflstt_bden_leitung
+	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_stahlmast
+	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_leitung
 		ON schdstfflstt_bden_stahlmast.leitung = schdstfflstt_bden_leitung.t_id
 	LEFT JOIN dokumente_json
 		ON dokumente_json.stahlmast = schdstfflstt_bden_stahlmast.t_id
@@ -171,11 +171,11 @@ FROM
 		ON parzellennummern.t_id = schdstfflstt_bden_stahlmast.t_id
 	LEFT JOIN flurnamen
 		ON flurnamen.t_id = schdstfflstt_bden_stahlmast.t_id
-	LEFT JOIN afu_schadstoffbelastete_boeden.schdstfstt_bden_stahlmast_radius stahlmast_radius
+	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfstt_bden_stahlmast_radius stahlmast_radius
 		ON stahlmast_radius.ilicode = schdstfflstt_bden_stahlmast.radius
-	LEFT JOIN afu_schadstoffbelastete_boeden.schadstoffbelasteter_boden_status status
+	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_status status
 		ON status.ilicode = schdstfflstt_bden_stahlmast.astatus
-	LEFT JOIN afu_schadstoffbelastete_boeden.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
+	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
 		ON begruendung_vsb_entlassen.ilicode = schdstfflstt_bden_stahlmast.begruendung_aus_vsb_entlassen
 WHERE
 	bfs_nummern.bfs_nummern IS NOT NULL
