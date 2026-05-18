@@ -147,29 +147,26 @@ SELECT
 	bfs_nummern.bfs_nummern AS bfs_gemeindenummern,
 	gemeinden.gemeinden AS gemeindenamen,
 	parzellennummern.grundbuchnummern,
-	flurnamen.flurname AS flurnamen,
-	stahlbruecke_brueckentyp.description AS brueckentyp_txt,
-	status.description AS status_txt,
-	begruendung_vsb_entlassen.description AS begruendung_aus_vsb_entlassen_txt
+	flurnamen.flurname AS flurnamen
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_stahlbruecke
-	LEFT JOIN dokumente_json
-		ON dokumente_json.stahlbruecke = schdstfflstt_bden_stahlbruecke.t_id
-	LEFT JOIN schadstoffe_json
-		ON schadstoffe_json.stahlbruecke = schdstfflstt_bden_stahlbruecke.t_id
-	LEFT JOIN gemeinden
-		ON gemeinden.t_id = schdstfflstt_bden_stahlbruecke.t_id
-	LEFT JOIN bfs_nummern
-		ON bfs_nummern.t_id = schdstfflstt_bden_stahlbruecke.t_id
-	LEFT JOIN parzellennummern
-		ON parzellennummern.t_id = schdstfflstt_bden_stahlbruecke.t_id
-	LEFT JOIN flurnamen
-		ON flurnamen.t_id = schdstfflstt_bden_stahlbruecke.t_id
-	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_status status
-		ON status.ilicode = schdstfflstt_bden_stahlbruecke.astatus
-	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfstt_bden_stahlbruecke_brueckentyp stahlbruecke_brueckentyp
-		ON stahlbruecke_brueckentyp.ilicode = schdstfflstt_bden_stahlbruecke.brueckentyp
-	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
-		ON begruendung_vsb_entlassen.ilicode = schdstfflstt_bden_stahlbruecke.begruendung_aus_vsb_entlassen
+LEFT JOIN dokumente_json
+	ON dokumente_json.stahlbruecke = schdstfflstt_bden_stahlbruecke.t_id
+LEFT JOIN schadstoffe_json
+	ON schadstoffe_json.stahlbruecke = schdstfflstt_bden_stahlbruecke.t_id
+LEFT JOIN gemeinden
+	ON gemeinden.t_id = schdstfflstt_bden_stahlbruecke.t_id
+LEFT JOIN bfs_nummern
+	ON bfs_nummern.t_id = schdstfflstt_bden_stahlbruecke.t_id
+LEFT JOIN parzellennummern
+	ON parzellennummern.t_id = schdstfflstt_bden_stahlbruecke.t_id
+LEFT JOIN flurnamen
+	ON flurnamen.t_id = schdstfflstt_bden_stahlbruecke.t_id
+LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_status status
+	ON status.ilicode = schdstfflstt_bden_stahlbruecke.astatus
+LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfstt_bden_stahlbruecke_brueckentyp stahlbruecke_brueckentyp
+	ON stahlbruecke_brueckentyp.ilicode = schdstfflstt_bden_stahlbruecke.brueckentyp
+LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
+	ON begruendung_vsb_entlassen.ilicode = schdstfflstt_bden_stahlbruecke.begruendung_aus_vsb_entlassen
 ;
 

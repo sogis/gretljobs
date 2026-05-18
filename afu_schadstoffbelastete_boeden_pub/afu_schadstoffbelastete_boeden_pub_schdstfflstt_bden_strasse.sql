@@ -148,34 +148,29 @@ SELECT
 	bfs_nummern.bfs_nummern AS bfs_gemeindenummern,
 	gemeinden.gemeinden AS gemeindenamen,
 	parzellennummern.grundbuchnummern,
-	flurnamen.flurname AS flurnamen,
-	strasse_strassentyp.description AS strassentyp_txt,
-	strasse_verkehrsfrequenz.description AS verkehrsfrequenz_txt,
-	strasse_verdachtsstreifenbreite.description AS verdachtsstreifenbreite_txt,
-	status.description AS status_txt,
-	begruendung_vsb_entlassen.description AS begruendung_aus_vsb_entlassen_txt
+	flurnamen.flurname AS flurnamen
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_strasse
-	LEFT JOIN dokumente_json
-		ON dokumente_json.strasse = schdstfflstt_bden_strasse.t_id
-	LEFT JOIN schadstoffe_json
-		ON schadstoffe_json.strasse = schdstfflstt_bden_strasse.t_id
-	LEFT JOIN gemeinden
-		ON gemeinden.t_id = schdstfflstt_bden_strasse.t_id
-	LEFT JOIN bfs_nummern
-		ON bfs_nummern.t_id = schdstfflstt_bden_strasse.t_id
-	LEFT JOIN parzellennummern
-		ON parzellennummern.t_id = schdstfflstt_bden_strasse.t_id
-	LEFT JOIN flurnamen
-		ON flurnamen.t_id = schdstfflstt_bden_strasse.t_id
-	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfstt_bden_strasse_verkehrsfrequenz strasse_verkehrsfrequenz
-		ON strasse_verkehrsfrequenz.ilicode = schdstfflstt_bden_strasse.verkehrsfrequenz
-	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfstt_bden_strasse_verdachtsstreifenbreite strasse_verdachtsstreifenbreite
-		ON strasse_verdachtsstreifenbreite.ilicode = schdstfflstt_bden_strasse.verdachtsstreifenbreite
-	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfstt_bden_strasse_strassentyp strasse_strassentyp
-		ON strasse_strassentyp.ilicode = schdstfflstt_bden_strasse.strassentyp
-	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_status status
-		ON status.ilicode = schdstfflstt_bden_strasse.astatus
-	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
-		ON begruendung_vsb_entlassen.ilicode = schdstfflstt_bden_strasse.begruendung_aus_vsb_entlassen
+LEFT JOIN dokumente_json
+	ON dokumente_json.strasse = schdstfflstt_bden_strasse.t_id
+LEFT JOIN schadstoffe_json
+	ON schadstoffe_json.strasse = schdstfflstt_bden_strasse.t_id
+LEFT JOIN gemeinden
+	ON gemeinden.t_id = schdstfflstt_bden_strasse.t_id
+LEFT JOIN bfs_nummern
+	ON bfs_nummern.t_id = schdstfflstt_bden_strasse.t_id
+LEFT JOIN parzellennummern
+	ON parzellennummern.t_id = schdstfflstt_bden_strasse.t_id
+LEFT JOIN flurnamen
+	ON flurnamen.t_id = schdstfflstt_bden_strasse.t_id
+LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfstt_bden_strasse_verkehrsfrequenz strasse_verkehrsfrequenz
+	ON strasse_verkehrsfrequenz.ilicode = schdstfflstt_bden_strasse.verkehrsfrequenz
+LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfstt_bden_strasse_verdachtsstreifenbreite strasse_verdachtsstreifenbreite
+	ON strasse_verdachtsstreifenbreite.ilicode = schdstfflstt_bden_strasse.verdachtsstreifenbreite
+LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfstt_bden_strasse_strassentyp strasse_strassentyp
+	ON strasse_strassentyp.ilicode = schdstfflstt_bden_strasse.strassentyp
+LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_status status
+	ON status.ilicode = schdstfflstt_bden_strasse.astatus
+LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
+	ON begruendung_vsb_entlassen.ilicode = schdstfflstt_bden_strasse.begruendung_aus_vsb_entlassen
 ;
