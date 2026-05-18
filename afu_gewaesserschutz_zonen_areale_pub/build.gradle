@@ -156,7 +156,7 @@ task transferGewaesserschutzMGDM_V1_2(type: SqlExecutor) {
     dependsOn deleteFromGewaesserschutzMGDM_V1_2
     description = "Importiert die Daten aus dem afu_gewaesserschutz_zonen_areale."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ['gwszonen_status_mgdm.sql','gwszonen_gwsareal_gwszone_mgdm.sql','gwszonen_dokument_mgdm.sql']
+    sqlFiles = ['gwszonen_multilungualuri.sql','gwszonen_status_mgdm.sql','gwszonen_gwsareal_gwszone_mgdm.sql','gwszonen_dokument_mgdm.sql']
 }
 
 task exportDataMGDM (type: Ili2pgExport) {
