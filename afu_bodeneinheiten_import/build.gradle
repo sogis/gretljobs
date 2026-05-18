@@ -21,29 +21,9 @@ tasks.register('copyUploadFile', Copy) {
     rename { exportFileName }
 }
 
-tasks.register('readLos') {
-    dependsOn "copyUploadFile"
-
-    doLast {
-        def xtfFile = file('upload/data.xtf')
-        def xml = new XmlSlurper(false, false).parse(xtfFile)
-
-        def losObj = xml.depthFirst().find {
-            it.name().toString().endsWith('.Los')
-        }
-
-        project.ext.los = losObj?.Los?.text()?.trim()
-
-        if (!project.ext.los) {
-            throw new GradleException("Kein Los im XTF gefunden.")
-        }
-
-println "Los: ${project.ext.los}"
-    }
-}
 
 tasks.register('importData', Ili2pgReplace){
-     dependsOn "readLos"
+     dependsOn "copyUploadFile"
      description = 'Import der Boden-Daten'
      database = [dbUriEdit, dbUserEdit, dbPwdEdit]
      dbschema = 'afu_bodeneinheiten_v1'
@@ -51,4 +31,5 @@ tasks.register('importData', Ili2pgReplace){
      dataFile = files('upload/data.xtf')
      topics = 'SO_AFU_Bodeneinheiten_20251210.Bodeneinheiten'
      dataset = datasetlos //Parameter, der von Jenkins kommt. 
+     importTid = true
 }
