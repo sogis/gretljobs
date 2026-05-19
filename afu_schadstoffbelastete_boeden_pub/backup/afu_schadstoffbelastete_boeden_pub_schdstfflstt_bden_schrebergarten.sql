@@ -9,10 +9,10 @@ dokumente AS (
 		schdstfflstt_bden_gartenbau.t_id AS gartenbau
 	FROM
 		afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_dokument_gartenbau
-		LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_gartenbau
-			ON schdstfflstt_bden_gartenbau.t_id = schdstfflstt_bden_dokument_gartenbau.gartenbau
-		LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_dokument
-			ON schdstfflstt_bden_dokument.t_id = schdstfflstt_bden_dokument_gartenbau.dokument
+	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_gartenbau
+		ON schdstfflstt_bden_gartenbau.t_id = schdstfflstt_bden_dokument_gartenbau.gartenbau
+	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_dokument
+		ON schdstfflstt_bden_dokument.t_id = schdstfflstt_bden_dokument_gartenbau.dokument
 ),
 
 dokumente_json AS (
@@ -92,13 +92,15 @@ parzellennummern AS (
 	SELECT
 		schdstfflstt_bden_gartenbau.t_id,
 		string_agg(DISTINCT liegen.nummer || '(' || liegen.bfs_nr|| ')', ', ' ORDER BY liegen.nummer || '(' || liegen.bfs_nr || ')') AS grundbuchnummern
-	FROM
-		(SELECT liegenschaften_grundstueck.nummer, 
-				 liegenschaften_grundstueck.t_datasetname AS bfs_nr,
-				 liegenschaften_liegenschaft.geometrie 
-		 FROM agi_dm01avso24.liegenschaften_grundstueck 
+	FROM (
+		SELECT
+			liegenschaften_grundstueck.nummer, 
+			liegenschaften_grundstueck.t_datasetname AS bfs_nr,
+			liegenschaften_liegenschaft.geometrie 
+		 FROM
+		 	agi_dm01avso24.liegenschaften_grundstueck 
 		 LEFT JOIN agi_dm01avso24.liegenschaften_liegenschaft 
-			 ON liegenschaften_liegenschaft.liegenschaft_von = liegenschaften_grundstueck.t_id
+		 	ON liegenschaften_liegenschaft.liegenschaft_von = liegenschaften_grundstueck.t_id
 		) liegen,
 		afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_gartenbau
 	WHERE
@@ -147,44 +149,27 @@ SELECT
 	gemeinden.gemeinden AS gemeindenamen,
 	parzellennummern.grundbuchnummern,
 	flurnamen.flurname AS flurnamen,
-	-- Boolean Txt-Attribute --
-	CASE
-		WHEN schdstfflstt_bden_gartenbau.aktiv IS TRUE
-			THEN 'Ja'
-		ELSE 'Nein'
-	END AS aktiv_txt,
-	CASE
-		WHEN schdstfflstt_bden_gartenbau.nutzungseinschraenkung IS TRUE
-			THEN 'Ja'
-		ELSE 'Nein'
-	END AS nutzungseinschraenkung_txt,
-	CASE
-		WHEN schdstfflstt_bden_gartenbau.nutzungsverbot IS TRUE
-			THEN 'Ja'
-		ELSE 'Nein'
-	END AS nutzungsverbot_txt,
-	-- Platzhalter für Displaynames --
-	schdstfflstt_bden_gartenbau.astatus AS astatus_txt,
-	schdstfflstt_bden_gartenbau.begruendung_aus_vsb_entlassen AS begruendung_aus_vsb_entlassen_txt
+	status.description AS status_txt,
+	begruendung_vsb_entlassen.description AS begruendung_aus_vsb_entlassen_txt
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_gartenbau
-LEFT JOIN dokumente_json
-	ON dokumente_json.gartenbau = schdstfflstt_bden_gartenbau.t_id
-LEFT JOIN schadstoffe_json
-	ON schadstoffe_json.gartenbau = schdstfflstt_bden_gartenbau.t_id
-LEFT JOIN gemeinden
-	ON gemeinden.t_id = schdstfflstt_bden_gartenbau.t_id
-LEFT JOIN bfs_nummern
-	ON bfs_nummern.t_id = schdstfflstt_bden_gartenbau.t_id
-LEFT JOIN parzellennummern
-	ON parzellennummern.t_id = schdstfflstt_bden_gartenbau.t_id
-LEFT JOIN flurnamen
-	ON flurnamen.t_id = schdstfflstt_bden_gartenbau.t_id
-LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_status status
-	ON status.ilicode = schdstfflstt_bden_gartenbau.astatus
-LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
-	ON begruendung_vsb_entlassen.ilicode = schdstfflstt_bden_gartenbau.begruendung_aus_vsb_entlassen
+	LEFT JOIN dokumente_json
+		ON dokumente_json.gartenbau = schdstfflstt_bden_gartenbau.t_id
+	LEFT JOIN schadstoffe_json
+		ON schadstoffe_json.gartenbau = schdstfflstt_bden_gartenbau.t_id
+	LEFT JOIN gemeinden
+		ON gemeinden.t_id = schdstfflstt_bden_gartenbau.t_id
+	LEFT JOIN bfs_nummern
+		ON bfs_nummern.t_id = schdstfflstt_bden_gartenbau.t_id
+	LEFT JOIN parzellennummern
+		ON parzellennummern.t_id = schdstfflstt_bden_gartenbau.t_id
+	LEFT JOIN flurnamen
+		ON flurnamen.t_id = schdstfflstt_bden_gartenbau.t_id
+	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_status status
+		ON status.ilicode = schdstfflstt_bden_gartenbau.astatus
+	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
+		ON begruendung_vsb_entlassen.ilicode = schdstfflstt_bden_gartenbau.begruendung_aus_vsb_entlassen
 WHERE
-	schdstfflstt_bden_gartenbau.flaechentyp = 'Gaertnerei'
+	schdstfflstt_bden_gartenbau.flaechentyp = 'Schrebergarten'
 ;
 

@@ -151,10 +151,26 @@ SELECT
 	gemeinden.gemeinden AS gemeindenamen,
 	parzellennummern.grundbuchnummern,
 	flurnamen.flurname AS flurnamen,
+	-- Boolean Txt-Attribute --
+	CASE
+		WHEN schdstfflstt_bden_militaerischer_schiessplatz.aktiv IS TRUE
+			THEN 'Ja'
+			ELSE 'Nein'
+	END AS aktiv_txt,
+	CASE
+		WHEN schdstfflstt_bden_militaerischer_schiessplatz.nutzungseinschraenkung IS TRUE
+			THEN 'Ja'
+			ELSE 'Nein'
+	END AS nutzungseinschraenkung_txt,
+	CASE
+		WHEN schdstfflstt_bden_militaerischer_schiessplatz.nutzungsverbot IS TRUE
+			THEN 'Ja'
+			ELSE 'Nein'
+	END AS nutzungsverbot_txt,
 	-- Platzhalter für Displaynames --
-	schdstfflstt_bden_militaerischer_schiessplatz.betriebsstatus AS betriebsstatus_txt,
-	schdstfflstt_bden_militaerischer_schiessplatz.astatus AS astatus_txt,
-	schdstfflstt_bden_militaerischer_schiessplatz.begruendung_aus_vsb_entlassen AS begruendung_aus_vsb_entlassen_txt
+	'dummy' AS betriebsstatus_txt,
+	'dummy' AS astatus_txt,
+	'dummy' AS begruendung_aus_vsb_entlassen_txt
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_militaerischer_schiessplatz
 LEFT JOIN dokumente_json

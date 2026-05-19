@@ -148,7 +148,26 @@ SELECT
 	bfs_nummern.bfs_nummern AS bfs_gemeindenummern,
 	gemeinden.gemeinden AS gemeindenamen,
 	parzellennummern.grundbuchnummern,
-	flurnamen.flurname AS flurnamen
+	flurnamen.flurname AS flurnamen,
+	-- Boolean Txt-Attribute --
+	CASE
+		WHEN schdstfflstt_bden_gartenbau.aktiv IS TRUE
+			THEN 'Ja'
+			ELSE 'Nein'
+	END AS aktiv_txt,
+	CASE
+		WHEN schdstfflstt_bden_gartenbau.nutzungseinschraenkung IS TRUE
+			THEN 'Ja'
+			ELSE 'Nein'
+	END AS nutzungseinschraenkung_txt,
+	CASE
+		WHEN schdstfflstt_bden_gartenbau.nutzungsverbot IS TRUE
+			THEN 'Ja'
+			ELSE 'Nein'
+	END AS nutzungsverbot_txt,
+	-- Platzhalter für Displaynames --
+	'dummy' AS astatus_txt,
+	'dummy' AS begruendung_aus_vsb_entlassen_txt
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_gartenbau
 LEFT JOIN dokumente_json

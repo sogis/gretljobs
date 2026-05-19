@@ -152,57 +152,30 @@ SELECT
 	bfs_nummern.bfs_nummern AS bfs_gemeindenummern,
 	gemeinden.gemeinden AS gemeindenamen,
 	parzellennummern.grundbuchnummern,
-	flurnamen.flurname AS flurnamen,
-	-- Boolean Txt-Attribute --
-	CASE
-		WHEN schdstfflstt_bden_bodenbelastungsgebiet.grundbucheintrag IS TRUE
-			THEN 'Ja'
-			ELSE 'Nein'
-	END AS grundbucheintrag_txt,
-	CASE
-		WHEN schdstfflstt_bden_bodenbelastungsgebiet.aktiv IS TRUE
-			THEN 'Ja'
-			ELSE 'Nein'
-	END AS aktiv_txt,
-	CASE
-		WHEN schdstfflstt_bden_bodenbelastungsgebiet.nutzungseinschraenkung IS TRUE
-			THEN 'Ja'
-			ELSE 'Nein'
-	END AS nutzungseinschraenkung_txt,
-	CASE
-		WHEN schdstfflstt_bden_bodenbelastungsgebiet.nutzungsverbot IS TRUE
-			THEN 'Ja'
-			ELSE 'Nein'
-	END AS nutzungsverbot_txt,
-	-- Platzhalter für Display-Names --
-	schdstfflstt_bden_bodenbelastungsgebiet.belastungsstufe AS belastungsstufe_txt,
-	schdstfflstt_bden_bodenbelastungsgebiet.astatus AS astatus_txt,
-	schdstfflstt_bden_bodenbelastungsgebiet.begruendung_aus_vsb_entlassen AS begruendung_aus_vsb_entlassen_txt,
-	schdstfflstt_bden_bodenbelastungsgebiet.flaechentyp AS flaechentyp_txt,
-	schdstfflstt_bden_bodenbelastungsgebiet.verursacher AS verursacher_txt
+	flurnamen.flurname AS flurnamen
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_bodenbelastungsgebiet
-LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_gebiet
-	ON schdstfflstt_bden_bodenbelastungsgebiet.bodenbelastungsgebiet = schdstfflstt_bden_gebiet.t_id
-LEFT JOIN dokumente_json
-	ON dokumente_json.bodenbelastungsgebiet = schdstfflstt_bden_bodenbelastungsgebiet.t_id
-LEFT JOIN schadstoffe_json
-	ON schadstoffe_json.bodenbelastungsgebiet = schdstfflstt_bden_bodenbelastungsgebiet.t_id
-LEFT JOIN gemeinden
-	ON gemeinden.t_id = schdstfflstt_bden_bodenbelastungsgebiet.t_id
-LEFT JOIN bfs_nummern
-	ON bfs_nummern.t_id = schdstfflstt_bden_bodenbelastungsgebiet.t_id
-LEFT JOIN parzellennummern
-	ON parzellennummern.t_id = schdstfflstt_bden_bodenbelastungsgebiet.t_id
-LEFT JOIN flurnamen
-	ON flurnamen.t_id = schdstfflstt_bden_bodenbelastungsgebiet.t_id
-LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfstt_bden_bodenbelastungsgebiet_belastungsstufe AS belastungsstufe
-	ON belastungsstufe.ilicode = schdstfflstt_bden_bodenbelastungsgebiet.belastungsstufe
-LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_status status
-	ON status.ilicode = schdstfflstt_bden_bodenbelastungsgebiet.astatus
-LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
-	ON begruendung_vsb_entlassen.ilicode = schdstfflstt_bden_bodenbelastungsgebiet.begruendung_aus_vsb_entlassen
-LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfstt_bden_eisenbahn_flaechentyp flaechentyp
-	ON flaechentyp.ilicode = schdstfflstt_bden_bodenbelastungsgebiet.flaechentyp
-LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfstt_bden_bodenbelastungsgebiet_verursacher verursacher
-	ON verursacher.ilicode = schdstfflstt_bden_bodenbelastungsgebiet.verursacher
+	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_gebiet
+		ON schdstfflstt_bden_bodenbelastungsgebiet.bodenbelastungsgebiet = schdstfflstt_bden_gebiet.t_id
+	LEFT JOIN dokumente_json
+		ON dokumente_json.bodenbelastungsgebiet = schdstfflstt_bden_bodenbelastungsgebiet.t_id
+	LEFT JOIN schadstoffe_json
+		ON schadstoffe_json.bodenbelastungsgebiet = schdstfflstt_bden_bodenbelastungsgebiet.t_id
+	LEFT JOIN gemeinden
+		ON gemeinden.t_id = schdstfflstt_bden_bodenbelastungsgebiet.t_id
+	LEFT JOIN bfs_nummern
+		ON bfs_nummern.t_id = schdstfflstt_bden_bodenbelastungsgebiet.t_id
+	LEFT JOIN parzellennummern
+		ON parzellennummern.t_id = schdstfflstt_bden_bodenbelastungsgebiet.t_id
+	LEFT JOIN flurnamen
+		ON flurnamen.t_id = schdstfflstt_bden_bodenbelastungsgebiet.t_id
+	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfstt_bden_bodenbelastungsgebiet_belastungsstufe AS belastungsstufe
+		ON belastungsstufe.ilicode = schdstfflstt_bden_bodenbelastungsgebiet.belastungsstufe
+	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_status status
+		ON status.ilicode = schdstfflstt_bden_bodenbelastungsgebiet.astatus
+	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schadstoffbelasteter_boden_begruendung_aus_vsb_entlassen begruendung_vsb_entlassen
+		ON begruendung_vsb_entlassen.ilicode = schdstfflstt_bden_bodenbelastungsgebiet.begruendung_aus_vsb_entlassen
+	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfstt_bden_eisenbahn_flaechentyp flaechentyp
+		ON flaechentyp.ilicode = schdstfflstt_bden_bodenbelastungsgebiet.flaechentyp
+	LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfstt_bden_bodenbelastungsgebiet_verursacher verursacher
+		ON verursacher.ilicode = schdstfflstt_bden_bodenbelastungsgebiet.verursacher
