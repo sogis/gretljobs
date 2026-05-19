@@ -10,7 +10,7 @@ prepared AS (
         bb.bezugjahr AS bezugsjahr,
         bb.mandant AS kanton,
         ST_MakeValid(
-            ST_ReducePrecision(bb.geometrie, 0.5)
+            ST_ReducePrecision(bb.geometrie, 0.01)
         ) AS geometrie
     FROM alw_landwirtschaft_tierhaltung_v1.gelan_bodnbdckung_bodenbedeckung AS bb
     JOIN kanton AS ke 
@@ -51,8 +51,8 @@ SELECT
     kanton,
     ST_RemoveRepeatedPoints(
         st_buffer(
-            st_buffer(geometrie, 0.5)
-        ,-0.5)
+            st_buffer(geometrie, 0.5, 'join=mitre mitre_limit=5.0')
+        ,-0.5, 'join=mitre mitre_limit=5.0')
     , 0.01) AS geometrie
 FROM 
     dumped
