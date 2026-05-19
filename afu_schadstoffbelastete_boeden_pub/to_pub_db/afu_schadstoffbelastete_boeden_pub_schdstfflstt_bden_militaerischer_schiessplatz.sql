@@ -168,9 +168,7 @@ SELECT
 			ELSE 'Nein'
 	END AS nutzungsverbot_txt,
 	-- Platzhalter für Displaynames --
-	'dummy' AS betriebsstatus_txt,
-	'dummy' AS astatus_txt,
-	'dummy' AS begruendung_aus_vsb_entlassen_txt
+	'dummy' AS astatus_txt
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_militaerischer_schiessplatz
 LEFT JOIN dokumente_json

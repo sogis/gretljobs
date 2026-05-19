@@ -165,9 +165,7 @@ SELECT
 			ELSE 'Nein'
 	END AS nutzungsverbot_txt,
 	-- Platzhalter für Displaynames --
-	'dummy' AS brueckentyp_txt,
-	'dummy' AS astatus_txt,
-	'dummy' AS begruendung_aus_vsb_entlassen_txt
+	'dummy' AS astatus_txt
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_stahlbruecke
 LEFT JOIN dokumente_json

@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferAfuSchadstoffbelastetBoeden'
+defaultTasks 'UpdateTxtValues'
 
 tasks.register('transferAfuSchadstoffbelastetBoeden', Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -91,3 +91,26 @@ tasks.register('transferAfuSchadstoffbelastetBoeden', Db2Db) {
             )
     ];
 }
+
+tasks.register("UpdateTxtValues", SqlExecutor) {
+    dependsOn 'transferAfuSchadstoffbelastetBoeden'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = files(
+            'update_txt/bodenbelastungsgebiet_update_txt.sql',
+            'update_txt/eisenbahn_update_txt.sql',
+            'update_txt/flugplatz_update_txt.sql',
+            'update_txt/gaertnerei_update_txt.sql',
+            'update_txt/geogene_bodenbelastung_update_txt.sql',
+            'update_txt/hopfenbau_update_txt.sql',
+            'update_txt/militaerischer_schiessplatz_update_txt.sql',
+            'update_txt/pfas_update_txt.sql',
+            'update_txt/rebbau_update_txt.sql',
+            'update_txt/schiessanlage_update_txt.sql',
+            'update_txt/schrebergarten_update_txt.sql',
+            'update_txt/siedlungsgebiet_update_txt.sql',
+            'update_txt/stahlbruecke_update_txt.sql',
+            'update_txt/stahlmast_update_txt.sql',
+            'update_txt/stahlkonstruktion_update_txt.sql',
+            'update_txt/strasse_update_txt.sql'
+        )
+    }
