@@ -162,6 +162,8 @@ SELECT
 	schdstfflstt_bden_schiessanlage.nutzungsverbot,
 	dokumente_json.dokumente,
 	schadstoffe_json.schadstoffe,
+	ROUND(St_Area(schdstfflstt_bden_schiessanlage.geometrie))::integer AS flaeche,
+	ROUND(St_Perimeter(schdstfflstt_bden_schiessanlage.geometrie))::integer AS umfang,
 	schdstfflstt_bden_schiessanlage.geometrie,
 	bfs_nummern.bfs_nummern AS bfs_gemeindenummern,
 	gemeinden.gemeinden AS gemeindenamen,

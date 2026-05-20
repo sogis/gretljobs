@@ -140,6 +140,8 @@ SELECT
 	schdstfflstt_bden_geogene_bodenbelastung.nutzungsverbot,
 	dokumente_json.dokumente,
 	schadstoffe_json.schadstoffe,
+	ROUND(St_Area(schdstfflstt_bden_geogene_bodenbelastung.geometrie))::integer AS flaeche,
+	ROUND(St_Perimeter(schdstfflstt_bden_geogene_bodenbelastung.geometrie))::integer AS umfang,
 	schdstfflstt_bden_geogene_bodenbelastung.geometrie,
 	bfs_nummern.bfs_nummern AS bfs_gemeindenummern,
 	gemeinden.gemeinden AS gemeindenamen,

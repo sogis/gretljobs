@@ -156,12 +156,13 @@ SELECT
 	schdstfflstt_bden_eisenbahn.nutzungsverbot,
 	dokumente_json.dokumente,
 	schadstoffe_json.schadstoffe,
+	ROUND(St_Area(schdstfflstt_bden_eisenbahn.geometrie))::integer AS flaeche,
+	ROUND(St_Perimeter(schdstfflstt_bden_eisenbahn.geometrie))::integer AS umfang,
 	schdstfflstt_bden_eisenbahn.geometrie,
 	bfs_nummern.bfs_nummern AS bfs_gemeindenummern,
 	gemeinden.gemeinden AS gemeindenamen,
 	parzellennummern.grundbuchnummern,
 	flurnamen.flurname AS flurnamen,
-	-- Txt-Attribute für Boolean-Attribute --
 	-- Txt-Attribute für Boolean-Attribute --
 	CASE
 		WHEN schdstfflstt_bden_eisenbahn.aktiv IS TRUE

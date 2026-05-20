@@ -144,6 +144,8 @@ SELECT
 	schdstfflstt_bden_stahlkonstruktion.nutzungsverbot,
 	dokumente_json.dokumente,
 	schadstoffe_json.schadstoffe,
+	ROUND(St_Area(schdstfflstt_bden_stahlkonstruktion.geometrie))::integer AS flaeche,
+	ROUND(St_Perimeter(schdstfflstt_bden_stahlkonstruktion.geometrie))::integer AS umfang,
 	schdstfflstt_bden_stahlkonstruktion.geometrie,
 	bfs_nummern.bfs_nummern AS bfs_gemeindenummern,
 	gemeinden.gemeinden AS gemeindenamen,

@@ -147,6 +147,8 @@ SELECT
 	schdstfflstt_bden_stahlmast.nutzungsverbot,
 	dokumente_json.dokumente,
 	schadstoffe_json.schadstoffe,
+	ROUND(St_Area(schdstfflstt_bden_stahlmast.geometrie))::integer AS flaeche,
+	ROUND(St_Perimeter(schdstfflstt_bden_stahlmast.geometrie))::integer AS umfang,
 	st_multi(st_buffer(schdstfflstt_bden_stahlmast.geometrie, cast(replace(schdstfflstt_bden_stahlmast.radius,'m_','')AS INTEGER))) AS geometrie,
 	bfs_nummern.bfs_nummern AS bfs_gemeindenummern,
 	gemeinden.gemeinden AS gemeindenamen,

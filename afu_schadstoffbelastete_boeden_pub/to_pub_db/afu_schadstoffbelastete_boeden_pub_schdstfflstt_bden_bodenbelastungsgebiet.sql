@@ -148,6 +148,8 @@ SELECT
 	schdstfflstt_bden_bodenbelastungsgebiet.bemerkung,
 	schdstfflstt_bden_bodenbelastungsgebiet.nutzungseinschraenkung,
 	schdstfflstt_bden_bodenbelastungsgebiet.nutzungsverbot,
+	ROUND(St_Area(schdstfflstt_bden_bodenbelastungsgebiet.geometrie))::integer AS flaeche,
+	ROUND(St_Perimeter(schdstfflstt_bden_bodenbelastungsgebiet.geometrie))::integer AS umfang,
 	schdstfflstt_bden_bodenbelastungsgebiet.geometrie,
 	bfs_nummern.bfs_nummern AS bfs_gemeindenummern,
 	gemeinden.gemeinden AS gemeindenamen,

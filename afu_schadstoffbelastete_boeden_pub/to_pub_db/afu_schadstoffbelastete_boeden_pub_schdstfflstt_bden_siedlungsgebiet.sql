@@ -139,6 +139,8 @@ SELECT
 	schdstfflstt_bden_siedlungsgebiet.nutzungsverbot,
 	dokumente_json.dokumente,
 	schadstoffe_json.schadstoffe,
+	ROUND(St_Area(schdstfflstt_bden_siedlungsgebiet.geometrie))::integer AS flaeche,
+	ROUND(St_Perimeter(schdstfflstt_bden_siedlungsgebiet.geometrie))::integer AS umfang,
 	schdstfflstt_bden_siedlungsgebiet.geometrie,
 	bfs_nummern.bfs_nummern AS bfs_gemeindenummern,
 	gemeinden.gemeinden AS gemeindenamen,

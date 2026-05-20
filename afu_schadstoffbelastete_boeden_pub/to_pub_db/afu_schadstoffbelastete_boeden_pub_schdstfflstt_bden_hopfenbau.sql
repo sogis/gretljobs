@@ -137,6 +137,8 @@ SELECT
 	schdstfflstt_bden_anbaugebiet.t_ili_tid,
 	schdstfflstt_bden_anbaugebiet.nutzungsbeginn,
 	schdstfflstt_bden_anbaugebiet.nutzungsende,
+	ROUND(St_Area(schdstfflstt_bden_anbaugebiet.geometrie))::integer AS flaeche,
+	ROUND(St_Perimeter(schdstfflstt_bden_anbaugebiet.geometrie))::integer AS umfang,
 	schdstfflstt_bden_anbaugebiet.geometrie,
 	dokumente_json.dokumente,
 	schadstoffe_json.schadstoffe,

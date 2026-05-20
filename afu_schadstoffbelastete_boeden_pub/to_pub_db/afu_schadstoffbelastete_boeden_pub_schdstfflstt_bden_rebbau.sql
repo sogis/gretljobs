@@ -148,6 +148,8 @@ SELECT
 	schdstfflstt_bden_anbaugebiet.datum_aus_vsb_entlassen,
 	schdstfflstt_bden_anbaugebiet.bemerkung,
 	schdstfflstt_bden_anbaugebiet.nutzungseinschraenkung,
+	ROUND(St_Area(schdstfflstt_bden_anbaugebiet.geometrie))::integer AS flaeche,
+	ROUND(St_Perimeter(schdstfflstt_bden_anbaugebiet.geometrie))::integer AS umfang,
 	schdstfflstt_bden_anbaugebiet.geometrie,
 	bfs_nummern.bfs_nummern AS bfs_gemeindenummern,
 	gemeinden.gemeinden AS gemeindenamen,
