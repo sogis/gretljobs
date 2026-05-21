@@ -163,7 +163,11 @@ SELECT
 			ELSE 'Nein'
 	END AS nutzungsverbot_txt,
 	-- Platzhalter für Displaynames --
-	'dummy' AS astatus_txt
+	'dummy' AS astatus_txt,
+	-- Attribute für öffentliche Bezeichnung --
+	'Ausdehnung des Siedlungsgebiets 1955' AS ausdehnung_oeffentlich,
+	'Asche, Gartenhilfsstoffe, Pflanzenschutzmittel, Dünger, Farbanstriche, Kompost, Kehrichtkompost und -schlacke' AS belastungsursache_oeffentlich,
+	'siedlungsgebiet' AS typ_oeffentlich
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_siedlungsgebiet
 LEFT JOIN dokumente_json

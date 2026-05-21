@@ -168,7 +168,19 @@ SELECT
 			ELSE 'Nein'
 	END AS nutzungsverbot_txt,
 	-- Platzhalter für Displaynames --
-	'dummy' AS astatus_txt
+	'dummy' AS astatus_txt,
+	-- Attribute für öffentliche Bezeichnungen --
+	CASE 	
+		WHEN schdstfflstt_bden_strasse.verdachtsstreifenbreite = 'm_5' 
+			THEN '5m seitlich ab Fahrbahnrand (die Darstellung ist nicht lagegenau)'
+	 	WHEN schdstfflstt_bden_strasse.verdachtsstreifenbreite = 'm_10' 
+			THEN '10m seitlich ab Fahrbahnrand (die Darstellung ist nicht lagegenau)'
+     	WHEN schdstfflstt_bden_strasse.verdachtsstreifenbreite = 'm_15' 
+			THEN '15m seitlich ab Fahrbahnrand (die Darstellung ist nicht lagegenau)'		
+	 	ELSE 'kein Verdachtsstreifen '
+	END AS verdachtsstreifenbreite_oeffentlich,
+	'Abgasemissionen, Abrieb von Strassenbelägen, Bremsbelägen und Pneus' AS belastungsursache_oeffentlich,
+	'strasse' AS typ_oeffentlich
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_strasse
 LEFT JOIN dokumente_json

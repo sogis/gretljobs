@@ -167,7 +167,11 @@ SELECT
 			ELSE 'Nein'
 	END AS nutzungsverbot_txt,
 	-- Platzhalter für Displaynames --
-	'dummy' AS astatus_txt
+	'dummy' AS astatus_txt,
+	-- Attribute für öffentliche Bezeichnung --
+	'20m zum Objekt' AS ausdehnung_oeffentlich,
+	'Verwitterung / Abrieb Korrosionsschutz' AS belastungsursache_oeffentlich,
+	'stahlbruecke' AS typ_oeffentlich
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_stahlbruecke
 LEFT JOIN dokumente_json
