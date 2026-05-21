@@ -5,7 +5,7 @@ WITH dataset AS (
     FROM
         afu_bodeneinheiten_v1.t_ili2db_dataset
     WHERE
-        datasetname = 'migration'
+        datasetname = 'kartierer'
 ),
 basket AS (
     SELECT
@@ -13,8 +13,9 @@ basket AS (
     FROM
         afu_bodeneinheiten_v1.t_ili2db_basket
     WHERE
-        attachmentkey = 'migration'
+        attachmentkey = 'kartierer'
 ),
+
 mapping AS (
     SELECT *
     FROM (

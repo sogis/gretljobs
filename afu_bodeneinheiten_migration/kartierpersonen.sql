@@ -1,20 +1,25 @@
 WITH dataset AS (
-    SELECT
-        t_id,
-        datasetname
-    FROM
-        afu_bodeneinheiten_v1.t_ili2db_dataset
-    WHERE
-        datasetname = 'migration'
+    INSERT INTO 
+        afu_bodeneinheiten_v1.t_ili2db_dataset (t_id, datasetname)
+        SELECT 
+            nextval('afu_bodeneinheiten_v1.t_ili2db_seq'::regclass) AS t_id,
+            'kartierer' AS datasetname 
+    RETURNING t_id, datasetname
 ),
+ 
 basket AS (
-    SELECT
-        t_id
-    FROM
-        afu_bodeneinheiten_v1.t_ili2db_basket
-    WHERE
-        attachmentkey = 'migration'
+    INSERT INTO 
+        afu_bodeneinheiten_v1.t_ili2db_basket (t_id, dataset, topic, attachmentkey)
+        SELECT 
+            nextval('afu_bodeneinheiten_v1.t_ili2db_seq'::regclass) AS t_id,
+            dataset.t_id AS dataset, 
+            'SO_AFU_Bodeneinheiten_20251210.Bodeneinheit' AS topic, 
+            'kartierer'  AS attachmentkey 
+        FROM 
+            dataset
+        RETURNING t_id 
 )
+
 INSERT INTO afu_bodeneinheiten_v1.kartierperson
 (
     t_basket,
