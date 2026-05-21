@@ -178,7 +178,22 @@ SELECT
 	END AS nutzungsverbot_txt,
 	-- Platzhalter für Display-Names --
 	'dummy' AS astatus_txt,
-	'dummy' AS flaechentyp_txt
+	'dummy' AS flaechentyp_txt,
+	-- Attribute für öffentliche Informationen --
+	'Einzelfallerhebung' AS trennkriterium_oeffentlich,
+	CASE 
+		WHEN schdstfflstt_bden_bodenbelastungsgebiet.belastungsstufe = 'Richtwert_bis_Pruefwert' 
+			THEN 'Fläche mit nachgewiesener Schadstoffbelastung: Richtwertzone'
+	 	WHEN schdstfflstt_bden_bodenbelastungsgebiet.belastungsstufe = 'groesser_als_Sanierungswert'
+        	THEN 'Fläche mit nachgewiesener Schadstoffbelastung: Sanierungswertzone'
+     	WHEN schdstfflstt_bden_bodenbelastungsgebiet.belastungsstufe = 'Pruefwert_bis_Pruefwert_A' 
+     	OR schdstfflstt_bden_bodenbelastungsgebiet.belastungsstufe = 'Pruefwert_A_bis_Pruefwert_B' 
+     	OR schdstfflstt_bden_bodenbelastungsgebiet.belastungsstufe = 'Pruefwert_B_bis_Sanierungswert' 
+     	OR schdstfflstt_bden_bodenbelastungsgebiet.belastungsstufe = 'Pruefwert_bis_Sanierungswert'
+	    	THEN 'Fläche mit nachgewiesener Schadstoffbelastung: Prüfwertzone'
+	END AS belastungsstufe_oeffentlich,
+	'abhängig vom Emittenten' AS belastungsursache_oeffentlich,
+	'bodenbelastungsgebiet' AS typ_oeffentlich
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_bodenbelastungsgebiet
 LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_gebiet

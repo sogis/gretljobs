@@ -145,7 +145,7 @@ SELECT
 	schdstfflstt_bden_schiessanlage.baujahr,
 	schdstfflstt_bden_schiessanlage.scheibenanzahl,
 	schdstfflstt_bden_schiessanlage.schusszahl_jahr,
-	schdstfflstt_bden_schiessanlage.lage,
+	lage.aname AS lage,
 	schdstfflstt_bden_schiessanlage.betriebsstatus,
 	schdstfflstt_bden_schiessanlage.kbs_nummer,
 	schdstfflstt_bden_schiessanlage.sanierungsstatus,
@@ -186,7 +186,9 @@ SELECT
 			ELSE 'Nein'
 	END AS nutzungsverbot_txt,
 	-- Platzhalter für Displaynames --
-	'dummy' AS astatus_txt
+	'dummy' AS astatus_txt,
+	-- Attribute für öffentliche Bezeichnung --
+	'schiessanlage' AS typ_oeffentlich
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_schiessanlage
 LEFT JOIN dokumente_json
@@ -205,7 +207,7 @@ LEFT JOIN flurnamen
 	ON flurnamen.t_id = schdstfflstt_bden_schiessanlage.t_id
 LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfstt_bden_schiessanlage_trennkriterium schiessanlage_trennkriterium
 	ON schiessanlage_trennkriterium.ilicode = schdstfflstt_bden_schiessanlage.trennkriterium
-LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_lage lage
+LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_lage AS lage
 	ON lage.t_id = schdstfflstt_bden_schiessanlage.lage
 LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfstt_bden_schiessanlage_sanierungsstatus schiessanlage_sanierungsstatus
 	ON schiessanlage_sanierungsstatus.ilicode = schdstfflstt_bden_schiessanlage.sanierungsstatus
