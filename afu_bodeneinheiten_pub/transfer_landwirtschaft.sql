@@ -34,13 +34,24 @@ GROUP BY
 untertypen_div AS (
 SELECT 
     bodeneinheitlandassociation_diverse AS bodeneinheit_id, 
-    string_agg(acode, ', ' ORDER BY acode) AS codes 
+    string_agg(
+        --Aus INTERLIS-Gründen muss der Wert OF im Erfassungsmodell OFF heissen. Bei der Publikation soll der aber wieder zu OF werden. 
+        CASE 
+            WHEN acode = 'OFF' THEN 'OF'
+            ELSE acode
+        END,
+        ', ' ORDER BY 
+        CASE 
+            WHEN acode = 'OFF' THEN 'OF'
+            ELSE acode
+        END
+    ) AS codes
 FROM 
     afu_bodeneinheiten_v1.untertyp_diverse_hauptlandwirtschaft 
 WHERE 
     acode IS NOT NULL 
 GROUP BY 
-    bodeneinheitlandassociation_diverse
+    bodeneinheitlandassociation_diverse;
 )
 INSERT INTO 
     afu_bodeneinheiten_pub_v1.bodeneinheit_landwirtschaft (
