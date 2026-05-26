@@ -21,7 +21,6 @@ map_perimeter_file AS (
 ,('f97b3c44-d811-4ae4-900d-c02a0ae664c1','112_Dornach_Birs_2017.pdf')
 ,('f97b3c44-d811-4ae4-900d-c02a0ae664c1','112_Dornach_Wasser_2010.pdf')
 ,('25277cde-271a-4e84-86d9-8ab55e3e4aa1','123_Breitenbach_Rutsch_2013.pdf')
-,('25277cde-271a-4e84-86d9-8ab55e3e4aa1','123_Breitenbach_Wasser_2009.pdf')
 ,('80abf32d-7567-47ff-b326-060ea96c3e92','120_Witterswil_Wasser_2015.pdf')
 ,('80abf32d-7567-47ff-b326-060ea96c3e92','120_Witterswil_Wasser_Rutsch_2003.pdf')
 ,('14491ead-dfd3-4b38-8cfd-74dcf4696915','132_Zullwil_TB_Wasser_2009.pdf')
