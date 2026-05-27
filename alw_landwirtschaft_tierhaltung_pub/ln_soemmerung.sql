@@ -10,7 +10,7 @@ prepared AS (
         bb.bezugjahr AS bezugsjahr,
         bb.mandant AS kanton,
         ST_MakeValid(
-            ST_ReducePrecision(bb.geometrie, 0.01)
+            ST_ReducePrecision(bb.geometrie, 0.001)
         ) AS geometrie
     FROM alw_landwirtschaft_tierhaltung_v1.gelan_bodnbdckung_bodenbedeckung AS bb
     JOIN kanton AS ke 
