@@ -170,8 +170,7 @@ SELECT
 	-- Platzhalter für Displaynames --
 	'dummy' AS astatus_txt,
 	-- Attribute für öffentliche Bezeichnung --
-	'Verwitterung / Abrieb Korrosionsschutz, Transformatorenöl' AS belastungsursache_oeffentlich,
-	'stahlkonstruktion' AS typ_oeffentlich
+	'Verwitterung / Abrieb Korrosionsschutz, Transformatorenöl' AS belastungsursache_oeffentlich
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_stahlkonstruktion
 LEFT JOIN dokumente_json

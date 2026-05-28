@@ -170,9 +170,7 @@ SELECT
 			ELSE 'Nein'
 	END AS nutzungsverbot_txt,
 	-- Platzhalter für Displaynames --
-	'dummy' AS astatus_txt,
-	-- Attribute für öffentliche Bezeichnungen --
-	'militaerischer_schiessplatz' AS typ_oeffentlich
+	'dummy' AS astatus_txt
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_militaerischer_schiessplatz
 LEFT JOIN dokumente_json

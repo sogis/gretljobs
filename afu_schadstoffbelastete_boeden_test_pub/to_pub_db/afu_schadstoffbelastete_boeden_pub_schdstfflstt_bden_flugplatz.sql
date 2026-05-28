@@ -168,8 +168,7 @@ SELECT
 	-- Attribute für öffentliche Bezeichnungen --
 	'Einzelfallerhebung' AS trennkriterium_oeffentlich,
     'Flughafenareal' AS ausdehnung_oeffentlich,
-	'Pneu, Treibstoff' AS belastungsursache_oeffentlich,
-	'flugplatz' AS typ_oeffentlich
+	'Pneu, Treibstoff' AS belastungsursache_oeffentlich
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_flugplatz
 LEFT JOIN dokumente_json

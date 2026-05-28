@@ -169,8 +169,7 @@ SELECT
 	'dummy' AS astatus_txt,
 	-- Attribute für öffentliche Bezeichnungen --
 	'Nutzungszeitraum > 10 Jahre' AS trennkriterium_oeffentlich,
-	'Gartenhilfsstoffe, Pflanzenschutzmittel, Dünger, Kompost, Asche' AS belastungsursache_oeffentlich,
-	'gaertnerei' AS typ_oeffentlich
+	'Gartenhilfsstoffe, Pflanzenschutzmittel, Dünger, Kompost, Asche' AS belastungsursache_oeffentlich
 	
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_gartenbau

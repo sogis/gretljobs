@@ -179,8 +179,7 @@ SELECT
 			THEN '15m seitlich ab Fahrbahnrand (die Darstellung ist nicht lagegenau)'		
 	 	ELSE 'kein Verdachtsstreifen '
 	END AS verdachtsstreifenbreite_oeffentlich,
-	'Abgasemissionen, Abrieb von Strassenbelägen, Bremsbelägen und Pneus' AS belastungsursache_oeffentlich,
-	'strasse' AS typ_oeffentlich
+	'Abgasemissionen, Abrieb von Strassenbelägen, Bremsbelägen und Pneus' AS belastungsursache_oeffentlich
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_strasse
 LEFT JOIN dokumente_json
