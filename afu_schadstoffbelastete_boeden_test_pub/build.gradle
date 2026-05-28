@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'UpdateTxtValues'
+defaultTasks 'Pruefperimeter_Bodenabtrag'
 
 tasks.register('transferAfuSchadstoffbelastetBoeden', Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -112,5 +112,13 @@ tasks.register("UpdateTxtValues", SqlExecutor) {
             'update_txt/stahlmast_update_txt.sql',
             'update_txt/stahlkonstruktion_update_txt.sql',
             'update_txt/strasse_update_txt.sql'
+        )
+}
+
+tasks.register("Pruefperimeter_Bodenabtrag", SqlExecutor) {
+    dependsOn 'UpdateTxtValues'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = files(
+            'to_pub_db/afu_schadstoffbelastete_boeden_pub_schdstfflstt_pruefperimeter_bodenabtrag.sql'
         )
 }

@@ -171,8 +171,7 @@ SELECT
 	'dummy' AS astatus_txt,
 	-- Attribute für öffentliche Bezeichnung --
 	'Alle Schrebergärten mit Nutzungsdauer > 15 Jahre' AS trennkriterium_oeffentlich,
-	'Gartenhilfsstoffe, Pflanzenschutzmittel, Dünger, Kompost, Asche, Kehrichtkompost und -schlacke' AS belastungsursache_oeffentlich,
-	'schrebergarten' AS typ_oeffentlich
+	'Gartenhilfsstoffe, Pflanzenschutzmittel, Dünger, Kompost, Asche, Kehrichtkompost und -schlacke' AS belastungsursache_oeffentlich
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_gartenbau
 LEFT JOIN dokumente_json

@@ -191,8 +191,7 @@ SELECT
 			THEN '15m seitlich ab Schotterrand (die Darstellung ist nicht lagegenau)'		
 	 	ELSE 'kein Verdachtsstreifen '
 	END AS verdachtsstreifenbreite_oeffentlich,
-	'Abrieb von Fahrleitungen, Stromabnehmern, Rädern, Schienen, Bremsbelägen' AS belastungsursache_oeffentlich,
-	'eisenbahn' AS typ_oeffentlich
+	'Abrieb von Fahrleitungen, Stromabnehmern, Rädern, Schienen, Bremsbelägen' AS belastungsursache_oeffentlich
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_eisenbahn
 LEFT JOIN dokumente_json

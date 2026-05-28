@@ -176,8 +176,7 @@ SELECT
 	'dummy' AS astatus_txt,
 	-- Attribute für öffentliche Bezeichnungen --
 	'Nutzungszeitraum > 15 Jahre' AS trennkriterium_oeffentlich,
-	'Pflanzenschutzmittel' AS belastungsursache_oeffentlich,
-	'hopfenbau' AS typ_oeffentlich
+	'Pflanzenschutzmittel' AS belastungsursache_oeffentlich
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_anbaugebiet
 LEFT JOIN dokumente_json

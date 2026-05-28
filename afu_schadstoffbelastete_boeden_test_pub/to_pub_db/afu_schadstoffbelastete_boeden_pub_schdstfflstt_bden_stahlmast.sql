@@ -180,8 +180,7 @@ SELECT
 	 	WHEN schdstfflstt_bden_stahlmast.radius = 'm_25' 
 			THEN 'Übertragungsleitungsmast vor 1970 erbaut'	
 	END AS trennkriterium_oeffentlich,
-	'Verwitterung / Abrieb Korrosionsschutz' AS belastungsursache_oeffentlich,
-	'stahlmast' AS typ_oeffentlich
+	'Verwitterung / Abrieb Korrosionsschutz' AS belastungsursache_oeffentlich
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_stahlmast
 LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_leitung

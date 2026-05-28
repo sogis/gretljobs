@@ -192,8 +192,7 @@ SELECT
      	OR schdstfflstt_bden_bodenbelastungsgebiet.belastungsstufe = 'Pruefwert_bis_Sanierungswert'
 	    	THEN 'Fläche mit nachgewiesener Schadstoffbelastung: Prüfwertzone'
 	END AS belastungsstufe_oeffentlich,
-	'abhängig vom Emittenten' AS belastungsursache_oeffentlich,
-	'bodenbelastungsgebiet' AS typ_oeffentlich
+	'abhängig vom Emittenten' AS belastungsursache_oeffentlich
 FROM
 	afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_bodenbelastungsgebiet
 LEFT JOIN afu_schadstoffbelastete_boeden_v1.schdstfflstt_bden_gebiet
