@@ -25,7 +25,7 @@ String exportXtfFilePath = Paths.get(tmpDir, exportXtfFileName).toString()
 String exportZipFileName = 'SO_holznutzungsbewilligungen_export.zip'
 String exportZipFilePath = Paths.get(tmpDir, exportZipFileName).toString()
 
-String dbSchema = 'awjf_holznutzungsbewilligung_v2' // tbd
+String dbSchema = 'awjf_holznutzungsbewilligung_v1' // tbd
 String dbSchemaStaging = 'awjf_holznutzungsbewilligung_staging_v1'
 
 String iliModel = 'Holznutzungsbewilligung_V1_0'
@@ -100,7 +100,7 @@ tasks.register('importEditToStaging', Ili2pgImport) {
     dbschema = dbSchemaStaging
     models = iliModel
     dataFile = files(editXtfFilePath)
-    importBid = true
+    importTid = true
     disableValidation = true  // wird bereits beim Export validiert
 }
 
@@ -115,7 +115,6 @@ tasks.register('importWaldportalToStaging', Ili2pgImport) {
     topics = 'Holznutzungsbewilligung_V1_0.Holznutzung'  // ansonsten wird der leere Codelisten-Basket importiert
     dataFile = files(waldportalXtfFilePath)
     importTid = true
-    importBid = true
 }
 
 tasks.register('copyStagingToPub', Db2Db) {
