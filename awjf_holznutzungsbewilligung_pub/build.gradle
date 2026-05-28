@@ -100,7 +100,6 @@ tasks.register('importEditToStaging', Ili2pgImport) {
     dbschema = dbSchemaStaging
     models = iliModel
     dataFile = files(editXtfFilePath)
-    importTid = true
     importBid = true
     disableValidation = true  // wird bereits beim Export validiert
 }
@@ -113,7 +112,7 @@ tasks.register('importWaldportalToStaging', Ili2pgImport) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = dbSchemaStaging
     models = iliModel
-    topics = 'Holznutzungsbewilligung_V1_0.Holznutzung'  // ansonsten wird das leere Codelisten-Topic importiert
+    topics = 'Holznutzungsbewilligung_V1_0.Holznutzung'  // ansonsten wird der leere Codelisten-Basket importiert
     dataFile = files(waldportalXtfFilePath)
     importTid = true
     importBid = true
