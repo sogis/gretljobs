@@ -52,7 +52,6 @@ map_perimeter_file AS (
 ,('c1d8cd2a-18e8-4f23-8897-9e0ac0402ed9','119_Seewen_Wasser_Rutsch_Stein_2002.pdf')
 ,('9e10824c-1a37-4880-bc66-5b030ac513bf','075_Haerkingen_Duennern_2015.pdf')
 ,('f43e3b1c-9069-4176-80f4-a151f1cfdd14','089_Gunzgen_Duennern_2015.pdf')
-,('f7edbffb-0118-4e15-b637-a09fc4de041b','131_Nunningen_GK_Wasser_Rutsch 2009.pdf')
 ,('aa6e632c-c036-4372-9ed1-c832d488a847','121_Baerschwil_Wasser_Rutsch_2008.pdf')
 ,('c148f134-b81c-4d12-b756-315a841f0585','110_Baettwil_Sturz_2007.pdf')
 ,('c148f134-b81c-4d12-b756-315a841f0585','110_Baettwil_Wasser_2015.pdf')
