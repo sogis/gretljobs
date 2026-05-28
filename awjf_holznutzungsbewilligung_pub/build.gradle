@@ -5,20 +5,29 @@ import java.nio.file.Paths
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'updateDispnames', 'uploadZip'
+defaultTasks 'updateDispnamesInPub', 'uploadZip'
 
 // Definition von Variablen
 String tmpDir = buildDir.toString()
 
 String sftpEnvironment = 'prod'
 
-String zipFileName = 'holznutzungsbewilligungen_so_latest.zip'
-String zipFilePath = Paths.get(tmpDir, zipFileName).toString()
-String xtfFileName = 'SO_holznutzungsbewilligungen_prod.xtf'
-String xtfFilePath = Paths.get(tmpDir, xtfFileName).toString()
+String waldportalZipFileName = 'holznutzungsbewilligungen_so_latest.zip'
+String waldportalZipFilePath = Paths.get(tmpDir, waldportalZipFileName).toString()
+String waldportalXtfFileName = "SO_holznutzungsbewilligungen_${sftpEnvironment}.xtf"
+String waldportalXtfFilePath = Paths.get(tmpDir, waldportalXtfFileName).toString()
+
+String editXtfFileName = 'SO_holznutzungsbewilligungen_edit.xtf'
+String editXtfFilePath = Paths.get(tmpDir, editXtfFileName).toString()
+
+String exportXtfFileName = 'SO_holznutzungsbewilligungen_export.xtf'
+String exportXtfFilePath = Paths.get(tmpDir, exportXtfFileName).toString()
+String exportZipFileName = 'SO_holznutzungsbewilligungen_export.zip'
+String exportZipFilePath = Paths.get(tmpDir, exportZipFileName).toString()
 
 String dbSchema = 'awjf_holznutzungsbewilligung_v1'
 String dbSchemaStaging = 'awjf_holznutzungsbewilligung_staging_v1'
+
 String iliModel = 'Holznutzungsbewilligung_V1_0'
 String aiTopic = iliModel.toLowerCase()
 
@@ -35,8 +44,34 @@ remotes {
     }
 }
 
-tasks.register('downloadZip') {
-    group = 'shared'
+tasks.register('importCatalogToEdit', Ili2pgUpdate) {
+    group = 'updateEdit'
+    description = 'Import des Katalogs Bewilligte_Holzart_Catalogue in das Erfassungsschema'
+
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = dbSchema
+    models = iliModel
+    dataFile = files('Holznutzungsbewilligung_Codelisten_V1_0.xml')
+    dataset = 'Holznutzungsbewilligung_Codelisten_V1_0.xml'  // obligatorisch bei Update
+    importTid = true
+    importBid = true
+    disableValidation = true  // statisches XML im Repository
+}
+
+tasks.register('exportEdit', Ili2pgExport) {
+    group = 'updateStaging'
+    dependsOn 'importCatalogToEdit'
+    description = 'Export der manuell erfassten Holznutzungsbewilligungen aus dem Erfassungsschema'
+
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = dbSchema
+    models = iliModel
+    dataFile = files(editXtfFilePath)
+    exportTid = true
+}
+
+tasks.register('downloadWaldportalZip') {
+    group = 'updateStaging'
     description = 'ZIP-Datei vom Waldportal-SFTP-Server herunterladen'
 
     // build-Ordner (tmpDir) anlegen, falls nicht existierend
@@ -47,38 +82,61 @@ tasks.register('downloadZip') {
     doLast {
         ssh.run {
             session(remotes.sftpServer) {
-                get from: "${sftpEnvironment}/holznutzungsbewilligungen/${zipFileName}", into: zipFilePath
+                get from: "${sftpEnvironment}/holznutzungsbewilligungen/${waldportalZipFileName}", into: waldportalZipFilePath
             }
         }
         println 'ZIP-Datei vom Waldportal-SFTP-Server heruntergeladen.'
     }
 }
 
-tasks.register('unzipXtf', Copy) {
-    group = 'updateDatabases'
-    dependsOn 'downloadZip'
+tasks.register('unzipWaldportalXtf', Copy) {
+    group = 'updateStaging'
+    dependsOn 'downloadWaldportalZip'
     description = 'XTF-Datei aus dem ZIP-Archiv extrahieren'
 
-    from zipTree(zipFilePath)
+    from zipTree(waldportalZipFilePath)
     into tmpDir
 }
 
-tasks.register('importXtf', Ili2pgReplace) {
-    group = 'updateDatabases'
-    dependsOn 'unzipXtf'
+tasks.register('deleteFromStaging', SqlExecutor) {
+    group = 'updateStaging'
+    description = 'Staging-Schema leeren'
+
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = files('delete_staging_tables.sql')
+}
+
+tasks.register('importEditToStaging', Ili2pgImport) {
+    group = 'updateStaging'
+    dependsOn 'exportEdit', 'deleteFromStaging'
+    description = 'Import der manuell erfassten Holznutzungsbewilligungen in das Staging-Schema'
+
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = dbSchemaStaging
+    models = iliModel
+    dataFile = files(editXtfFilePath)
+    importTid = true
+    importBid = true
+    disableValidation = true  // wird bereits beim Export validiert
+}
+
+tasks.register('importWaldportalToStaging', Ili2pgImport) {
+    group = 'updateStaging'
+    dependsOn 'importEditToStaging', 'unzipWaldportalXtf'
     description = 'Import der Holznutzungsbewilligungen vom Waldportal in das Staging-Schema'
 
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = dbSchemaStaging
     models = iliModel
-    dataFile = files(xtfFilePath)
-    dataset = xtfFileName
+    topics = 'Holznutzungsbewilligung_V1_0.Holznutzung'  // ansonsten wird das leere Codelisten-Topic importiert
+    dataFile = files(waldportalXtfFilePath)
     importTid = true
+    importBid = true
 }
 
-tasks.register('copyToPub', Db2Db) {
-    group = 'updateDatabases'
-    dependsOn 'importXtf'
+tasks.register('copyStagingToPub', Db2Db) {
+    group = 'updatePub'
+    dependsOn 'importWaldportalToStaging'
     description = 'Daten vom MGDM in das Publikationsschema überführen'
 
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -88,18 +146,41 @@ tasks.register('copyToPub', Db2Db) {
     ]
 }
 
-tasks.register('updateDispnames', SqlExecutor) {
-    group = 'updateDatabases'
-    dependsOn 'copyToPub'
+tasks.register('updateDispnamesInPub', SqlExecutor) {
+    group = 'updatePub'
+    dependsOn 'copyStagingToPub'
     description = 'Für die Darstellung im WGC den <dispname> von Enumerationen nach <attribut>_txt schreiben'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = files('update_dispnames.sql')
 }
 
+tasks.register('exportStaging', Ili2pgExport) {
+    group = 'updateGeodienste'
+    dependsOn 'importWaldportalToStaging'
+    description = 'Export der zusammengeführten Holznutzungsbewilligungen aus dem Staging-Schema'
+
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = dbSchemaStaging
+    models = iliModel
+    topics = 'Holznutzungsbewilligung_V1_0.Holznutzung'
+    dataFile = files(exportXtfFilePath)
+}
+
+tasks.register('zipXtf', Zip) {
+    group = 'updateGeodienste'
+    dependsOn 'exportStaging'
+    description = 'Zippen der zusammengeführten Holznutzungsbewilligungen aus dem Staging-Schema'
+
+    from tmpDir
+    include exportXtfFileName
+    archiveName exportZipFileName
+    destinationDir(file(tmpDir))
+}
+
 tasks.register('uploadZip') {
-    group = 'uploadZip'
-    dependsOn 'downloadZip'
+    group = 'updateGeodienste'
+    dependsOn 'zipXtf'
     description = 'ZIP-Datei vom Waldportal nach geodienste.ch übertragen und publizieren'
 
     String aiLogin = "${aiUser}:${aiPwd}"
@@ -110,7 +191,7 @@ tasks.register('uploadZip') {
             'curl', 
             '--user', aiLogin, 
             '--form', "topic=${aiTopic}",
-            '--form', "lv95_file=@${zipFilePath}", 
+            '--form', "lv95_file=@${exportZipFilePath}", 
             '--form', 'publish=true', 
             '--form', 'replace_all=false', 
             aiUrl
