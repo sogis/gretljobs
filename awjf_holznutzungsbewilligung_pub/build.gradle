@@ -25,7 +25,7 @@ String exportXtfFilePath = Paths.get(tmpDir, exportXtfFileName).toString()
 String exportZipFileName = 'SO_holznutzungsbewilligungen_export.zip'
 String exportZipFilePath = Paths.get(tmpDir, exportZipFileName).toString()
 
-String dbSchema = 'awjf_holznutzungsbewilligung_v1' // tbd
+String dbSchema = 'awjf_holznutzungsbewilligung_v1'
 String dbSchemaStaging = 'awjf_holznutzungsbewilligung_staging_v1'
 
 String iliModel = 'Holznutzungsbewilligung_V1_0'
