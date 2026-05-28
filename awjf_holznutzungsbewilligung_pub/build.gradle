@@ -25,7 +25,7 @@ String exportXtfFilePath = Paths.get(tmpDir, exportXtfFileName).toString()
 String exportZipFileName = 'SO_holznutzungsbewilligungen_export.zip'
 String exportZipFilePath = Paths.get(tmpDir, exportZipFileName).toString()
 
-String dbSchema = 'awjf_holznutzungsbewilligung_v1'
+String dbSchema = 'awjf_holznutzungsbewilligung_v2' // tbd
 String dbSchemaStaging = 'awjf_holznutzungsbewilligung_staging_v1'
 
 String iliModel = 'Holznutzungsbewilligung_V1_0'
@@ -44,23 +44,8 @@ remotes {
     }
 }
 
-tasks.register('importCatalogToEdit', Ili2pgUpdate) {
-    group = 'updateEdit'
-    description = 'Import des Katalogs Bewilligte_Holzart_Catalogue in das Erfassungsschema'
-
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = dbSchema
-    models = iliModel
-    dataFile = files('Holznutzungsbewilligung_Codelisten_V1_0.xml')
-    dataset = 'Holznutzungsbewilligung_Codelisten_V1_0.xml'  // obligatorisch bei Update
-    importTid = true
-    importBid = true
-    disableValidation = true  // statisches XML im Repository
-}
-
 tasks.register('exportEdit', Ili2pgExport) {
     group = 'updateStaging'
-    dependsOn 'importCatalogToEdit'
     description = 'Export der manuell erfassten Holznutzungsbewilligungen aus dem Erfassungsschema'
 
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
