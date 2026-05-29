@@ -127,6 +127,7 @@ SELECT
     true,
     src.bodeneinheit_nummer,
     src.unterboden0_skelettgehalt_unterboden,
+    sgu.dispname AS skelettgehalt_unterboden_txt,
     CASE
         WHEN src.unterboden0_skelettgehalt_unterboden = 'skelettfrei'
             THEN 'keine oder nur wenige Steine (0-5%)'
@@ -138,9 +139,9 @@ SELECT
             THEN 'sehr viele Steine (20-30%)'
         WHEN src.unterboden0_skelettgehalt_unterboden IN ('skelettreich','kies')
             THEN 'extrem viele Steine (> 30%)'
-    END AS skelettgehalt_unterboden_txt,
-    sgu.dispname AS skelettgehalt_unterboden_beschreibung,
+    END AS skelettgehalt_unterboden_beschreibung,
     src.oberboden0_skelettgehalt_oberboden,
+    sgo.dispname AS skelettgehalt_oberboden_txt,
     CASE
         WHEN src.oberboden0_skelettgehalt_oberboden = 'skelettfrei'
             THEN 'keine oder nur wenige Steine (0-5%)'
@@ -152,9 +153,9 @@ SELECT
             THEN 'sehr viele Steine (20-30%)'
         WHEN src.oberboden0_skelettgehalt_oberboden IN ('skelettreich','kies')
             THEN 'extrem viele Steine (> 30%)'
-    END AS skelettgehalt_oberboden_txt,
-    sgo.dispname AS skelettgehalt_oberboden_beschreibung,
+    END AS skelettgehalt_oberboden_beschreibung,
     src.humusform_wald,
+    hfw.dispname AS humusform_wald_txt,
     CASE 
         WHEN src.humusform_wald IN ('M', 'Mt', 'Mf')
             THEN 'Mull: Hohe biologische Aktivität mit vollständigem Streuabbau nach 1-2 Jahren. Über 8 cm mächtiger, gut strukturierter Oberboden. Günstiger Wasser-, Luft- und Nährstoffhaushalt.'
@@ -173,8 +174,7 @@ SELECT
         WHEN src.humusform_wald = 'T'
             THEN 'Torf: Anreicherung von kaum zersetzten Pflanzenrückständen, v.a. Torfmoose wegen dauernder Wassersättigung und stark sauren Bedingungen. Faserig, schwammig.'
         ELSE hfw.description::varchar(50)
-    END AS humusform_wald_txt,
-    hfw.dispname AS humusform_wald_beschreibung,
+    END AS humusform_wald_beschreibung,
     src.maechtigkeit_ahh AS maechtigkeit_ahh,
     src.gemeinde_nr AS gemeinde_bfs_nr,
     src.wasserhaushalt,
