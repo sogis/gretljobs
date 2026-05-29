@@ -48,10 +48,10 @@ INSERT INTO
     bodeneinheit_nummer,
     skelettgehalt_unterboden,
     skelettgehalt_unterboden_txt,
-    skelettgehalt_unterboden_beschreibung,
+    steingehalt_unterboden,
     skelettgehalt_oberboden,
     skelettgehalt_oberboden_txt,
-    skelettgehalt_oberboden_beschreibung,
+    steingehalt_oberboden,
     gemeinde_bfs_nr,
     wasserhaushalt,
     wasserhaushalt_txt,
@@ -62,7 +62,7 @@ INSERT INTO
     bodentyp_txt,
     gelaendeform,
     gelaendeform_txt,
-    gelaendeform_beschreibung,
+    hangneigung,
     geologie,
     koernungsklasse_oberboden,
     koernungsklasse_oberboden_txt,
@@ -96,7 +96,7 @@ INSERT INTO
     pflanzennutzbaregruendigkeit,
     pflanzennutzbaregruendigkeit_beschreibung,
     bodenpunktzahl,
-    bodenpunktzahl_beschreibung,
+    boden_nutzungsmoeglichkeit,
     bemerkung,
     los,
     kartierjahr,
@@ -113,6 +113,7 @@ INSERT INTO
     verdichtungsempfindlichkeit,
     verdichtungsempfindlichkeit_beschreibung,
     untertypen,
+    fremdwasserzufluss,
     gemeindenummer_bfs_aktuell,
     alte_daten_Vorhanden, 
     alte_daten_vorhanden_txt, 
@@ -120,11 +121,15 @@ INSERT INTO
     geometrie
 )
 SELECT 
-    true,
+    CASE 
+        WHEN dataset.datasetname = 'migration' 
+        THEN true
+        ELSE false 
+    END AS migriert,
     src.bodeneinheit_nummer,
     src.unterboden0_skelettgehalt_unterboden,
     sgu.dispname AS skelettgehalt_unterboden_txt, 
-    NULL AS skelettgehalt_unterboden_beschreibung, --Gibt es bei Landwirtschaft irgendwwie nicht.... 
+    NULL AS steingehalt_unterboden, --Gibt es bei Landwirtschaft irgendwwie nicht.... 
     src.oberboden0_skelettgehalt_oberboden,
     sgo.dispname AS skelettgehalt_oberboden_txt,
     CASE
@@ -138,7 +143,7 @@ SELECT
             THEN 'sehr viele Steine (20-30%)'
         WHEN src.oberboden0_skelettgehalt_oberboden IN ('kiesreich','steinreich','kies','geroell')
             THEN 'extrem viele Steine (> 30%)'
-    END AS skelettgehalt_oberboden_beschreibung,
+    END AS steingehalt_oberboden,
     src.gemeinde_nr AS gemeinde_bfs_nr,
     src.wasserhaushalt,
     wh.dispname AS wasserhaushalt_txt,
@@ -241,7 +246,7 @@ SELECT
             THEN '25-35%: Getreideanbau stark eingeschränkt, Hangmähdrescher; Hangtraktoren.'
         WHEN src.gelaendeform IN ('s', 't', 'u', 'v', 'w', 'x', 'y', 'z')
             THEN '>35%: nur Mähwiese und Weide möglich; spezialisierte Hangmechanisierung'
-    END AS gelaendeform_beschreibung,
+    END AS hangneigung,
     src.geologie,
     src.oberboden0_koernungsklasse,
     kko.dispname AS koernungsklasse_oberboden_txt,
@@ -383,7 +388,7 @@ SELECT
             THEN 'Für die landwirtschaftliche Nutzung ungeeignet'
         WHEN src.bodenpunktzahl = 0 OR src.bodenpunktzahl IS NULL
             THEN 'keine Information'
-    END AS bodenpunktzahl_beschreibung,
+    END AS boden_nutzungsmoeglichkeit,
     src.bemerkungen AS bemerkung,
     los.los,
     src.kartierjahr,
@@ -412,6 +417,33 @@ SELECT
         ),
         ''
     )::varchar(200) AS untertypen,
+    CASE 
+    	WHEN COALESCE(src.untertyp_g, '') like '%G5%' 
+    	  or COALESCE(src.untertyp_g, '') like '%G6%' 
+    	  or COALESCE(src.untertyp_r, '') like '%R3%' 
+    	  or COALESCE(src.untertyp_r, '') like '%R4%' 
+    	  or COALESCE(src.untertyp_r, '') like '%R5%'
+    	THEN 'starker Fremdwasserzufluss'
+    	WHEN (
+    	       (
+    	            COALESCE(src.untertyp_g, '') like '%G3%' 
+    	         or COALESCE(src.untertyp_g, '') like '%G4%' 
+    	         or COALESCE(src.untertyp_r, '') like '%R2%'
+    	       ) 
+    	       and not 
+    	       (
+    	           COALESCE(src.untertyp_g, '') like '%G5%' 
+    	        or COALESCE(src.untertyp_g, '') like '%G6%' 
+    	        or COALESCE(src.untertyp_r, '') like '%R3%' 
+    	        or COALESCE(src.untertyp_r, '') like '%R4%' 
+    	        or COALESCE(src.untertyp_r, '') like '%R5%'
+    	       )
+    	     )
+    	THEN 'mässiger Fremdwasserzufluss'
+    	ELSE 'kein Fremdwasserzufluss'
+    END AS fremdwasserzufluss,  
+    src.untertyp_g AS unter_g,
+    src.untertyp_r AS unter_r,
     src.gemeinde_nr AS gemeindenummer_bfs_aktuell,
     src.alte_daten_vorhanden,
     adv.dispname AS alte_daten_vorhanden_txt, 
@@ -502,6 +534,10 @@ LEFT JOIN
     untertypen_div ud
     ON 
     ud.bodeneinheit_id = src.t_id
+LEFT JOIN 
+    afu_bodeneinheiten_v1.t_ili2db_dataset dataset 
+    ON 
+    los.t_datasetname::integer = dataset.t_id
 WHERE 
     los.publizieren IS TRUE
 ;
