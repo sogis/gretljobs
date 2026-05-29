@@ -126,6 +126,7 @@ SELECT
     NULL AS skelettgehalt_unterboden_txt, --Gibt es bei Landwirtschaft irgendwwie nicht.... 
     sgu.dispname AS skelettgehalt_unterboden_beschreibung,
     src.oberboden0_skelettgehalt_oberboden,
+    sgo.dispnam AS skelettgehalt_oberboden_txt,
     CASE
         WHEN src.oberboden0_skelettgehalt_oberboden = 'skelettfrei'
             THEN 'keine oder nur wenige Steine (0-5%)'
@@ -137,8 +138,7 @@ SELECT
             THEN 'sehr viele Steine (20-30%)'
         WHEN src.oberboden0_skelettgehalt_oberboden IN ('kiesreich','steinreich','kies','geroell')
             THEN 'extrem viele Steine (> 30%)'
-    END AS skelettgehalt_oberboden_txt,
-    sgo.dispname AS skelettgehalt_oberboden_beschreibung,
+    END AS skelettgehalt_oberboden_beschreibung,
     src.gemeinde_nr AS gemeinde_bfs_nr,
     src.wasserhaushalt,
     wh.dispname AS wasserhaushalt_txt,
@@ -229,6 +229,7 @@ SELECT
     src.bodentyp,
     bt.dispname AS bodentyp_txt,
     src.gelaendeform,
+    gf.dispname AS gelaendeform_txt,
     CASE 
         WHEN src.gelaendeform IN ('a', 'b', 'c', 'd', 'e')
             THEN '0-10%: Keine Einschränkung'
@@ -240,8 +241,7 @@ SELECT
             THEN '25-35%: Getreideanbau stark eingeschränkt, Hangmähdrescher; Hangtraktoren.'
         WHEN src.gelaendeform IN ('s', 't', 'u', 'v', 'w', 'x', 'y', 'z')
             THEN '>35%: nur Mähwiese und Weide möglich; spezialisierte Hangmechanisierung'
-    END AS gelaendeform_txt,
-    gf.dispname AS gelaendeform_beschreibung,
+    END AS gelaendeform_beschreibung,
     src.geologie,
     src.oberboden0_koernungsklasse,
     kko.dispname AS koernungsklasse_oberboden_txt,
