@@ -123,8 +123,8 @@ SELECT
     true,
     src.bodeneinheit_nummer,
     src.unterboden0_skelettgehalt_unterboden,
-    NULL AS skelettgehalt_unterboden_txt, --Gibt es bei Landwirtschaft irgendwwie nicht.... 
-    sgu.dispname AS skelettgehalt_unterboden_beschreibung,
+    sgu.dispname AS skelettgehalt_unterboden_txt, 
+    NULL AS skelettgehalt_unterboden_beschreibung, --Gibt es bei Landwirtschaft irgendwwie nicht.... 
     src.oberboden0_skelettgehalt_oberboden,
     sgo.dispname AS skelettgehalt_oberboden_txt,
     CASE
