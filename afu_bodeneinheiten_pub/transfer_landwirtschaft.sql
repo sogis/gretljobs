@@ -442,8 +442,6 @@ SELECT
     	THEN 'mässiger Fremdwasserzufluss'
     	ELSE 'kein Fremdwasserzufluss'
     END AS fremdwasserzufluss,  
-    src.untertyp_g AS unter_g,
-    src.untertyp_r AS unter_r,
     src.gemeinde_nr AS gemeindenummer_bfs_aktuell,
     src.alte_daten_vorhanden,
     adv.dispname AS alte_daten_vorhanden_txt, 
