@@ -126,7 +126,7 @@ SELECT
     NULL AS skelettgehalt_unterboden_txt, --Gibt es bei Landwirtschaft irgendwwie nicht.... 
     sgu.dispname AS skelettgehalt_unterboden_beschreibung,
     src.oberboden0_skelettgehalt_oberboden,
-    sgo.dispnam AS skelettgehalt_oberboden_txt,
+    sgo.dispname AS skelettgehalt_oberboden_txt,
     CASE
         WHEN src.oberboden0_skelettgehalt_oberboden = 'skelettfrei'
             THEN 'keine oder nur wenige Steine (0-5%)'
