@@ -117,7 +117,7 @@ INSERT INTO
     verdichtungsempfindlichkeit,
     verdichtungsempfindlichkeit_beschreibung,
     untertypen,
-    fremdwasserzufluss
+    fremdwasserzufluss,
     gemeindenummer_bfs_aktuell,
     alte_daten_Vorhanden, 
     alte_daten_vorhanden_txt, 
