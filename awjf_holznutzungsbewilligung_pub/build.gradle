@@ -30,6 +30,7 @@ String dbSchemaStaging = 'awjf_holznutzungsbewilligung_staging_v1'
 String dbSchemaPub = 'awjf_holznutzungsbewilligung_pub_v1'
 
 String iliModel = 'Holznutzungsbewilligung_V1_0'
+String iliModelPub = 'SO_AWJF_Holznutzungsbewilligung_Publikation_20251222'
 String aiTopic = iliModel.toLowerCase()
 
 // Definition der Zugangsdaten für den Waldportal-SFTP-Server
@@ -145,7 +146,7 @@ tasks.register('validatePub', Ili2pgValidate) {
     description = 'Daten nach der Transformation im Publikationsschema validieren'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
-    models = iliModel
+    models = iliModelPub
     dbschema = dbSchemaPub
 }
 
