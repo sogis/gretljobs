@@ -490,6 +490,8 @@ docker compose exec -u $UID gretl-service gretl --rerun-tasks --project-dir=arp_
 docker compose exec -u $UID gretl-service gretl --rerun-tasks --project-dir=arp_nutzungsplanung_pub -Pbfsnr=2408 importXTF_stage
 ```
 
+**Wichtig**: Um den Job gründlich zu testen, ist es sinnvoll, von Zeit zu Zeit den Inhalt des *Build Directory* zu löschen.
+
 Erläuterungen:
 
 * `MY_JOB_NAME` muss durch den Namen des auszuführenden GRETL-Jobs (den Ordnernamen) ersetzt werden.
