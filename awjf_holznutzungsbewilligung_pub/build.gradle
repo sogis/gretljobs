@@ -5,7 +5,7 @@ import java.nio.file.Paths
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: 'org.hidetake.ssh'
 
-defaultTasks 'updateDispnamesInPub', 'uploadZip'
+defaultTasks 'validatePub', 'uploadZip'
 
 // Definition von Variablen
 String tmpDir = buildDir.toString()
@@ -27,6 +27,7 @@ String exportZipFilePath = Paths.get(tmpDir, exportZipFileName).toString()
 
 String dbSchema = 'awjf_holznutzungsbewilligung_v1'
 String dbSchemaStaging = 'awjf_holznutzungsbewilligung_staging_v1'
+String dbSchemaPub = 'awjf_holznutzungsbewilligung_pub_v1'
 
 String iliModel = 'Holznutzungsbewilligung_V1_0'
 String aiTopic = iliModel.toLowerCase()
@@ -136,6 +137,16 @@ tasks.register('updateDispnamesInPub', SqlExecutor) {
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = files('update_dispnames.sql')
+}
+
+tasks.register('validatePub', Ili2pgValidate) {
+    group = 'updatePub'
+    dependsOn 'updateDispnamesInPub'
+    description = 'Daten nach der Transformation im Publikationsschema validieren'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    models = iliModel
+    dbschema = dbSchemaPub
 }
 
 tasks.register('exportStaging', Ili2pgExport) {

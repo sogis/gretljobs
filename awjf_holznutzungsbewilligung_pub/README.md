@@ -15,7 +15,7 @@ downloadWaldportalZip ─> unzipWaldportalXtf ────────┘
 ```
 (Fortsetzung) Ablauf vom Import bis zu Publikation und Export: 
 ```
-importWaldportalToStaging ─┬─> copyStagingToPub ─> updateDispnamesInPub
+importWaldportalToStaging ─┬─> copyStagingToPub ─> updateDispnamesInPub -> validatePub
                            └─> exportStaging ─> zipXtf ─> uploadZip
 ```
 
