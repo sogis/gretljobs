@@ -146,7 +146,6 @@ tasks.register('exportStaging', Ili2pgExport) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = dbSchemaStaging
     models = iliModel
-    topics = 'Holznutzungsbewilligung_V1_0.Holznutzung'
     dataFile = files(exportXtfFilePath)
 }
 
