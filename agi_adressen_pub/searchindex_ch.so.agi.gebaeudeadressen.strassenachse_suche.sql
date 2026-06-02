@@ -1,4 +1,4 @@
-SET search_path to agi_mopublic_pub, public;
+SET search_path to agi_adressen_pub_v2, public;
 
 INSERT INTO ${db_schema}.feature (
     anzeige,            -- Anzeigetext
