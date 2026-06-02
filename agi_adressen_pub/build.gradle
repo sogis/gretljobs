@@ -34,7 +34,7 @@ task updateSearchIndex(type: SqlExecutor){
             [layername: layerNameString, db_schema: dbSearchSchema]
     ]
     sqlFiles = [
-            '../../searchindex_deleteFeatures.sql',
+            '../searchindex_deleteFeatures.sql',
             'searchindex_' + layerName + '.sql'
     ]
     doFirst {
