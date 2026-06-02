@@ -10,6 +10,6 @@ task transferAgiAdressen(type: Db2Db){
             new TransferSet('agi_adressen_pub_verbindungslinie_strasse_hausnummer.sql',
                     'agi_adressen_pub_v2.adressen_verbindungslinie_strasse_hausnummer', true),
             new TransferSet('agi_adressen_pub_benanntes_gebiet.sql', 'agi_adressen_pub_v2.adressen_benanntes_gebiet', true),
-            new TransferSet('agi_adressen_pub_strassenachse.sql', 'agi_adressen_pub_v2.adressen_strassenachse', true),
+            new TransferSet('agi_adressen_pub_strassenachse.sql', 'agi_adressen_pub_v2.adressen_strassenachse', true)
     ];
 }
