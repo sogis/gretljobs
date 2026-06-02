@@ -19,9 +19,9 @@ importWaldportalToStaging ─┬─> copyStagingToPub ─> updateDispnamesInPub 
                            └─> exportStaging ─> zipXtf ─> uploadZip
 ```
 
-## Abhängigkeiten
+## Besonderes
 
-### Extern
+### Exerne Abhängigkeiten
 
 - Waldportal SFTP-Server: Quelle der Holznutzungsbewilligungen auf privaten Flächen (ZIP/XTF)
 - geodienste.ch: Zielserver für die Publikation
@@ -29,15 +29,4 @@ importWaldportalToStaging ─┬─> copyStagingToPub ─> updateDispnamesInPub 
 ### Katalog
 
 Der Schema-Job 
-[schema_awjf_holznutzungsbewilligung](https://github.com/sogis/schema-jobs/tree/main/topics/awjf_holznutzungsbewilligung/schema)
-importiert den Katalog mit Baumarten in das Erfassungsschema. Der vorliegende Job kopiert diesen zusammen mit den 
-erfassten Holznutzungsbewilligungen in das Staging-Schema.
-
-## Datenmodelle
-
-- MGDM: `Holznutzungsbewilligung_V1_0`
-- Publikationsmodell: `SO_AWJF_Holznutzungsbewilligung_Publikation_20251222`
-
-## Periodizität
-
-Ausführung jeden Donnerstag zwischen 1:00 und 3:00 UTC.
+[schema_awjf_holznutzungsbewilligung](https://github.com/sogis/schema-jobs/tree/main/topics/awjf_holznutzungsbewilligung/schema) importiert den Katalog mit Baumarten in das Erfassungsschema. Der vorliegende Job kopiert diesen zusammen mit den erfassten Holznutzungsbewilligungen in das Staging-Schema.
