@@ -159,6 +159,8 @@ tasks.register('exportStaging', Ili2pgExport) {
     dbschema = dbSchemaStaging
     models = iliModel
     dataFile = files(exportXtfFilePath)
+    topics = 'Holznutzungsbewilligung_V1_0.Holznutzung'
+    exportTid = true
 }
 
 tasks.register('zipXtf', Zip) {
