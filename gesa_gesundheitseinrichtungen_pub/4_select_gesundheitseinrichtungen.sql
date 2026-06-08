@@ -1,0 +1,18 @@
+SELECT
+    geometrie,
+    x_koordinate,
+    y_koordinate,
+    aname,
+    telefon,
+    adresse_ortschaft,
+    adresse_plz,
+    adresse_strassenname,
+    adresse_hausnummer,
+    kognitiv_schwer_beeintraechtigt,
+    kognitiv_und_physisch_schwer_beeintraechtigt,
+    physisch_schwer_beeintraechtigt,
+    nicht_schwer_beeintraechtigt,
+    typ,
+    kommentare
+FROM 
+    gesa_gesundheitseinrichtungen_staging_v1.gesundheitseinrichtung;

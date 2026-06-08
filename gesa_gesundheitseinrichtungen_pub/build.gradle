@@ -1,0 +1,77 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+defaultTasks 'validatePub'
+
+// Test-Datei 'build/test.csv' annehmen, falls Projektvariable 'csvFilename' nicht verfügbar.
+// Beachte: Die Datei wird vom Task 'fixCsvHeader' modifiziert.
+def csvFile = file(project.hasProperty('csvFilename') ? csvFilename : 'build/test.csv')
+
+tasks.register('validateInputFile', CsvValidator) {
+    description = 'Validiere die vom User hochgeladene CSV-Datei'
+
+    models = 'SO_GESA_Gesundheitseinrichtungen_Publikation_20251209'
+    dataFiles = files(csvFile)
+    valueSeparator = ';'
+    encoding = 'UTF-8'
+    configFile = file('1_csv_file_validation.ini')
+}
+
+tasks.register('fixCsvHeader') {
+    dependsOn 'validateInputFile'
+    description = 'Spalte "Name" in "aname" umbenennen, damit die Spalte importiert wird'
+
+    doLast {
+        def lines = csvFile.readLines('UTF-8')
+        lines[0] = lines[0].replace('Name', 'aname')
+        csvFile.write(lines.join('\n'), 'UTF-8')
+    }
+}
+
+tasks.register('deleteStagingData', SqlExecutor) {
+    dependsOn 'fixCsvHeader'
+    description = 'Leere die Datenbanktabelle'
+
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = files('2_delete_staging_data.sql')
+}
+
+tasks.register('importFile', CsvImport) {
+    dependsOn 'deleteStagingData'
+    description = 'Importiere die CSV-Datei in die Datenbanktabelle'
+
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = 'gesa_gesundheitseinrichtungen_staging_v1'
+    tableName = 'gesundheitseinrichtung'
+    valueSeparator = ';'
+    dataFile = csvFile
+    encoding = 'UTF-8'
+}
+
+tasks.register('createGeometry', SqlExecutor) {
+    dependsOn 'importFile'
+    description = 'Erstelle die Punktgeometrie'
+
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = files('3_create_geometry.sql')
+}
+
+tasks.register('copyToPub', Db2Db) {
+    dependsOn 'createGeometry'
+    description = 'Daten in das Publikationsschema überführen'
+
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+        new TransferSet('4_select_gesundheitseinrichtungen.sql', 'gesa_gesundheitseinrichtungen_pub_v1.gesundheitseinrichtung', true)
+    ]
+}
+
+tasks.register('validatePub', Ili2pgValidate) {
+    dependsOn 'copyToPub'
+    description = 'Validiere die publizierten Daten'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    models = 'SO_GESA_Gesundheitseinrichtungen_Publikation_20251209'
+    dbschema = 'gesa_gesundheitseinrichtungen_pub_v1'
+}
