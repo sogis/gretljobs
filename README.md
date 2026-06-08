@@ -386,9 +386,9 @@ Was in dieser Datei drinstehen muss, ist im Abschnitt [Zugriff auf Ressourcen](#
 ```
 docker compose up -d
 ```
-bzw.
+bzw. wenn man sich im Verzeichnis _schema-jobs_ befindet:
 ```
-COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose up -d
+docker compose -f ../gretljobs/compose.yaml up -d
 ```
 Mit diesem Befehl werden ein GRETL-Container und zwei DB-Container gestartet, von denen einer eine *edit*-DB, der andere eine *pub*-DB enthält.
 
@@ -396,30 +396,30 @@ Mit der ersten Variante des Befehls startet man GRETL und die Entwicklungs-DBs, 
 Mit der zweiten Variante startet man sie, wenn man sich im _schema-jobs_-Verzeichnis befindet.
 
 Auch die weiter unten in diesem Kapitel angegebenen Befehle lassen sich auf diese Art jeweils auch aus dem _schema-jobs_-Verzeichnis heraus ausführen.
-Man muss in diesem Fall also dem Befehl die Umgebungsvariable `COMPOSE_FILE` voranstellen und so auf die Datei `docker-compose.yml` des Verzeichnis _gretljobs_ verweisen.
+Man muss in diesem Fall also dem Befehl die Option `-f ../gretljobs/compose.yaml` übergeben, um auf die Datei `compose.yaml` des Verzeichnis _gretljobs_ verweisen.
 
 _Voraussetzung, damit dies funktioniert_:
 Die Ordner _gretljobs_ und _schema-jobs_ müssen sich im gleichen übergeordneten Ordner befinden.
 
 ##### GRETL-Jobs, die eine DB für das Processing von Daten benötigen:
 ```
-docker compose --profile processing up -d
+docker compose -f compose.yaml -f compose.processing-db.yaml up -d
 ```
 So wird zusätzlich zur *edit*-DB und zur *pub*-DB
 auch eine *processing*-DB gestartet
 für GRETL-Jobs, die eine solche benötigen.
 
 **Wichtig**: In diesem Fall müssen auch die nachfolgenden Compose-Befehle
-jeweils mit der Option `--profile processing` aufgerufen werden,
+jeweils mit der Option `-f compose.yaml -f compose.processing-db.yaml` aufgerufen werden,
 damit sie auch die Processing-DB mit einschliessen.
 
 #### GRETL-Container und Entwicklungs-DBs stoppen
 ```
 docker compose stop
 ```
-bzw.
+bzw. wenn man sich im Verzeichnis _schema-jobs_ befindet:
 ```
-COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose stop
+docker compose -f ../gretljobs/compose.yaml stop
 ```
 So werden der GRETL-Container und die Entwicklungs-DB-Container gestoppt.
 Die Container und alle ihre Dateien bleiben erhalten, sind aber nicht mehr erreichbar, solange sie gestoppt sind.
@@ -429,9 +429,9 @@ Die Daten der DBs bleiben ebenfalls erhalten.
 ```
 docker compose down
 ```
-bzw.
+bzw. wenn man sich im Verzeichnis _schema-jobs_ befindet:
 ```
-COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose down
+docker compose -f ../gretljobs/compose.yaml down
 ```
 Der GRETL-Container und die Entwicklungs-DB-Container werden gestoppt und gelöscht.
 Auch das von Docker Compose angelegte Docker-Netzwerk wird gelöscht.
@@ -478,9 +478,9 @@ Die Entwicklungs-DBs sind z.B. aus _DBeaver_ oder _psql_ mit folgenden Verbindun
 ```
 docker compose exec -u $UID gretl-service gretl --rerun-tasks --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
 ```
-bzw.
+bzw. wenn man sich im Verzeichnis _schema-jobs_ befindet:
 ```
-COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose exec -u $UID gretl-service gretl --rerun-tasks --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
+docker compose -f ../gretljobs/compose.yaml exec -u $UID gretl-service gretl --rerun-tasks --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
 ```
 Dieser Befehl startet den GRETL-Job `MY_JOB_NAME`.
 
@@ -519,9 +519,9 @@ Erläuterungen:
 docker compose exec -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
   gretl-service gretl --rerun-tasks -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
 ```
-bzw.
+bzw. wenn man sich im Verzeichnis _schema-jobs_ befindet:
 ```
-COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose exec -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
+docker compose -f ../gretljobs/compose.yaml exec -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
   gretl-service gretl --rerun-tasks -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
 ```
 Dieser Befehl startet den Schema-Job im Ordner `MY_TOPIC_NAME\MY_SCHEMA_DIRECTORY_NAME`.
@@ -534,9 +534,9 @@ Beispiel:
 docker compose exec -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
   gretl-service gretl --rerun-tasks -PtopicName=agi_mopublic -PschemaDirName=schema_pub createSchema configureSchema
 ```
-Beispiel für Start desselben Schema-Jobs aus dem _schema-jobs_-Verzeichnis heraus:
+bzw. wenn man sich im Verzeichnis _schema-jobs_ befindet:
 ```
-COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose exec -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
+docker compose -f ../gretljobs/compose.yaml exec -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
   gretl-service gretl --rerun-tasks -PtopicName=agi_mopublic -PschemaDirName=schema_pub createSchema configureSchema
 ```
 
