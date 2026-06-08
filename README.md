@@ -516,13 +516,13 @@ Erläuterungen:
 
 ### Schema-Job ausführen
 ```
-docker compose exec -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
-  gretl-service gretl --rerun-tasks -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
+docker compose exec -u $UID --workdir //home/gradle/schema-jobs/shared/schema gretl-service \
+  gretl --rerun-tasks -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
 ```
 bzw. wenn man sich im Verzeichnis _schema-jobs_ befindet:
 ```
-docker compose -f ../gretljobs/compose.yaml exec -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
-  gretl-service gretl --rerun-tasks -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
+docker compose -f ../gretljobs/compose.yaml exec -u $UID --workdir //home/gradle/schema-jobs/shared/schema gretl-service \
+  gretl --rerun-tasks -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
 ```
 Dieser Befehl startet den Schema-Job im Ordner `MY_TOPIC_NAME\MY_SCHEMA_DIRECTORY_NAME`.
 
@@ -531,13 +531,13 @@ im gleichen übergeordneten Ordner befinden.
 
 Beispiel:
 ```
-docker compose exec -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
-  gretl-service gretl --rerun-tasks -PtopicName=agi_mopublic -PschemaDirName=schema_pub createSchema configureSchema
+docker compose exec -u $UID --workdir //home/gradle/schema-jobs/shared/schema gretl-service \
+  gretl --rerun-tasks -PtopicName=agi_mopublic -PschemaDirName=schema_pub createSchema configureSchema
 ```
 bzw. wenn man sich im Verzeichnis _schema-jobs_ befindet:
 ```
-docker compose -f ../gretljobs/compose.yaml exec -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
-  gretl-service gretl --rerun-tasks -PtopicName=agi_mopublic -PschemaDirName=schema_pub createSchema configureSchema
+docker compose -f ../gretljobs/compose.yaml exec -u $UID --workdir //home/gradle/schema-jobs/shared/schema gretl-service \
+  gretl --rerun-tasks -PtopicName=agi_mopublic -PschemaDirName=schema_pub createSchema configureSchema
 ```
 
 
@@ -551,8 +551,8 @@ Erläuterungen:
   Das heisst, dass lokal der Task `grantPrivileges` im Normalfall nicht ausgeführt werden muss.
 * Falls man einen Schema-Job mit einem ganz bestimmten GRETL-Image-Tag (z.B. `latest`) ausführen möchte, stellt man dem Compose-Befehl die Variablendefinition `GRETL_IMAGE_TAG=MYTAG` voran, z.B.:
   ```
-  GRETL_IMAGE_TAG=latest docker compose exec -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
-    gretl-service gretl --rerun-tasks -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
+  GRETL_IMAGE_TAG=latest docker compose exec -u $UID --workdir //home/gradle/schema-jobs/shared/schema gretl-service \
+    gretl --rerun-tasks -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
   ```
 
 ### Daten in die Entwicklungs-DBs importieren
