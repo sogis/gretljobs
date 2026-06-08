@@ -3,9 +3,9 @@ WITH aggregierte_egrids AS (
         h.t_id,
         string_agg(e.egrid, ', ' ORDER BY e.egrid) AS egrids
     FROM
-        awjf_holznutzungsbewilligung_v1.holznutzung_holznutzungsbewilligung h
+        awjf_holznutzungsbewilligung_staging_v1.holznutzung_holznutzungsbewilligung h
     JOIN
-        awjf_holznutzungsbewilligung_v1.holznutzung_holznutzungsbewilligung_egrid e ON h.t_id = e.holzntzng_hngsbwllgung_egrid
+        awjf_holznutzungsbewilligung_staging_v1.holznutzung_holznutzungsbewilligung_egrid e ON h.t_id = e.holzntzng_hngsbwllgung_egrid
     GROUP BY
         h.t_id
 ),
@@ -14,9 +14,9 @@ aggregierte_gemeinden AS (
         h.t_id,
         string_agg(g.gemeinde::text, ', ' ORDER BY g.gemeinde) AS gemeinden
     FROM
-        awjf_holznutzungsbewilligung_v1.holznutzung_holznutzungsbewilligung h
+        awjf_holznutzungsbewilligung_staging_v1.holznutzung_holznutzungsbewilligung h
     JOIN
-        awjf_holznutzungsbewilligung_v1.holznutzung_holznutzungsbewilligung_gemeinde g ON h.t_id = g.holzntzng_hngsbwllgung_gemeinde
+        awjf_holznutzungsbewilligung_staging_v1.holznutzung_holznutzungsbewilligung_gemeinde g ON h.t_id = g.holzntzng_hngsbwllgung_gemeinde
     GROUP BY
         h.t_id
 ),
@@ -25,9 +25,9 @@ aggregierte_reviere AS (
         h.t_id,
         string_agg(r.revier, ', ' ORDER BY r.revier) AS reviere
     FROM
-        awjf_holznutzungsbewilligung_v1.holznutzung_holznutzungsbewilligung h
+        awjf_holznutzungsbewilligung_staging_v1.holznutzung_holznutzungsbewilligung h
     JOIN
-        awjf_holznutzungsbewilligung_v1.holznutzung_holznutzungsbewilligung_revier r ON h.t_id = r.holzntzng_hngsbwllgung_revier
+        awjf_holznutzungsbewilligung_staging_v1.holznutzung_holznutzungsbewilligung_revier r ON h.t_id = r.holzntzng_hngsbwllgung_revier
     GROUP BY
         h.t_id
 ),
@@ -43,15 +43,15 @@ aggregierte_mengenholzarten AS (
             ) ORDER BY mh.bew_menge_holzart DESC
         ) AS mengenholzarten
     FROM
-        awjf_holznutzungsbewilligung_v1.holznutzung_holznutzungsbewilligung h
+        awjf_holznutzungsbewilligung_staging_v1.holznutzung_holznutzungsbewilligung h
     JOIN
-        awjf_holznutzungsbewilligung_v1.holznutzung_mengeholzart mh ON h.t_id = mh.holzntzng_hngsbwllgung_mengeholzart
+        awjf_holznutzungsbewilligung_staging_v1.holznutzung_mengeholzart mh ON h.t_id = mh.holzntzng_hngsbwllgung_mengeholzart
     JOIN
-        awjf_holznutzungsbewilligung_v1.codelisten_bewilligte_holzart_catalogue cat ON mh.bewilligte_holzart = cat.t_id
+        awjf_holznutzungsbewilligung_staging_v1.codelisten_bewilligte_holzart_catalogue cat ON mh.bewilligte_holzart = cat.t_id
     JOIN
-        awjf_holznutzungsbewilligung_v1.multilingualtext mtext ON cat.t_id = mtext.codlstn_bwllzrt_ctlgue_definition
+        awjf_holznutzungsbewilligung_staging_v1.multilingualtext mtext ON cat.t_id = mtext.codlstn_bwllzrt_ctlgue_definition
     JOIN
-        awjf_holznutzungsbewilligung_v1.localisedtext ltext ON mtext.t_id = ltext.multilingualtext_localisedtext AND ltext.alanguage = 'de'
+        awjf_holznutzungsbewilligung_staging_v1.localisedtext ltext ON mtext.t_id = ltext.multilingualtext_localisedtext AND ltext.alanguage = 'de'
     GROUP BY
         h.t_id
 )
@@ -75,7 +75,7 @@ SELECT
     mh.mengenholzarten,
     kantonale_referenz
 FROM
-    awjf_holznutzungsbewilligung_v1.holznutzung_holznutzungsbewilligung h
+    awjf_holznutzungsbewilligung_staging_v1.holznutzung_holznutzungsbewilligung h
 JOIN
     aggregierte_egrids e USING (t_id)
 JOIN
