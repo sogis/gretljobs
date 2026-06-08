@@ -142,5 +142,5 @@ Beispiel für den Mount des `datahub`-Subpath vom Projekt-lowback-PVC:
                 }
 ```
 
-Für lokale Entwicklung mit GRELT ohne Jenkins funktioniert das nicht. Hier muss das [Docker Compose](https://github.com/sogis/gretljobs/blob/main/docker-compose.yml) entsprechend um ein Volume ergänzt werden.
-
+Für lokale Entwicklung mit GRETL ohne Jenkins funktioniert das nicht.
+Hier muss das [Docker Compose](https://github.com/sogis/gretljobs/blob/main/compose.yaml) entsprechend um ein Volume ergänzt werden.
