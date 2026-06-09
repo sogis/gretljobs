@@ -26,7 +26,7 @@ Ich gehe nicht davon aus, dass dies tatsächlich nötig werden sollte.
 Falls doch, gebt mir bitte entsprechendes Feedback.
 
 ### Änderung 2: `docker-compose.yml` ist neu auf mehrere Compose Files aufgeteilt
-Das zentrale _Compose File_ heisst neu `compose.yaml`, und die Definition für die Processing-DB ist neu in einem separaten File `compose.processing-db.yaml`.
+Das zentrale _Compose File_ heisst neu `compose.yaml`, und die Definition für die Processing-DB ist neu in einem separaten File `compose.processing.yaml`.
 Daher ändern zudem folgende Punkte beim Ausführen von Jobs:
 
 * Wenn man die Compose-Befehle aus dem Schema-Jobs-Verzeichnis heraus ausführt, muss man neu mit `-f ../gretljobs/compose.yaml` auf das Compose File verweisen, z.B.
@@ -34,7 +34,7 @@ Daher ändern zudem folgende Punkte beim Ausführen von Jobs:
   https://github.com/sogis/gretljobs/blob/adfedef93a78d4cb353e1e8562a438f38ca07b7d/README.md?plain=1#L524-L525
   https://github.com/sogis/gretljobs/blob/adfedef93a78d4cb353e1e8562a438f38ca07b7d/README.md?plain=1#L422
 
-* Wenn man zusätzlich eine Processing-DB benötigt, muss man neu mit `-f compose.yaml -f compose.processing-db.yaml` auf zwei Compose Files verweisen, z.B.
+* Wenn man zusätzlich eine Processing-DB benötigt, muss man neu mit `-f compose.yaml -f compose.processing.yaml` auf zwei Compose Files verweisen, z.B.
   https://github.com/sogis/gretljobs/blob/adfedef93a78d4cb353e1e8562a438f38ca07b7d/README.md?plain=1#L406
   
 ### Änderung 3: Build Directory statt tmp-Verzeichnis verwenden
@@ -55,3 +55,5 @@ Daher ändern zudem folgende Punkte beim Ausführen von Jobs:
 ## 15.06.2026: Weitere kleine Änderungen bei der Entwicklung und lokalen Ausführung von GRETL-Jobs (Anpassungen im Nachgang zum 08.06.2026)
 
 * Die Processing-DB ist neu auf _localhost_ unter **Port 54324** (bisher 54323) erreichbar
+
+* Das Compose File für die Processing-DB heisst neu `compose.processing.yaml` (bisher `compose.processing-db.yaml`)
