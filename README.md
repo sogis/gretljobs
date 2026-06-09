@@ -401,6 +401,14 @@ Man muss in diesem Fall also dem Befehl die Option `-f ../gretljobs/compose.yaml
 _Voraussetzung, damit dies funktioniert_:
 Die Ordner _gretljobs_ und _schema-jobs_ müssen sich im gleichen übergeordneten Ordner befinden.
 
+##### GRETL-Jobs, die eine ÖREB-DB benötigen:
+```
+docker compose -f compose.yaml -f compose.oereb_v2.yaml up -d
+```
+So wird zusätzlich zur *edit*-DB und zur *pub*-DB auch eine *oereb_v2*-DB gestartet für GRETL-Jobs, die eine solche benötigen.
+
+**Wichtig**: In diesem Fall müssen auch die nachfolgenden Compose-Befehle jeweils mit der Option `-f compose.yaml -f compose.oereb_v2.yaml` aufgerufen werden, damit sie auch die ÖREB-DB mit einschliessen.
+
 ##### GRETL-Jobs, die eine DB für das Processing von Daten benötigen:
 ```
 docker compose -f compose.yaml -f compose.processing.yaml up -d
@@ -441,8 +449,9 @@ Die Daten der DBs bleiben auch in diesem Fall erhalten, weil sie in Docker-Volum
 ```
 docker volume rm gretljobs_pgdata_edit gretljobs_pgdata_pub
 ```
-bzw. für die Processing-DB
+bzw. für die ÖREB-DB oder die Processing-DB
 ```
+docker volume rm gretljobs_pgdata_oereb_v2
 docker volume rm gretljobs_pgdata_processing
 ```
 Mit diesem Befehl werden die Volumes der Entwicklungs-DB-Container und damit die Daten in den Entwicklungs-DBs gelöscht.
@@ -463,6 +472,14 @@ Die Entwicklungs-DBs sind z.B. aus _DBeaver_ oder _psql_ mit folgenden Verbindun
 * Hostname: `localhost`
 * Port: `54322`
 * DB-Name: `pub`
+* Benutzer mit DDL-Rechten: `ddluser` (zum Anlegen von Schemen, Tabellen usw.)
+* Benutzer mit DML-Rechten: `dmluser` (für Lese- und Schreibzugriff)
+* Passwörter: lauten jeweils gleich wie der Benutzername
+
+*ÖREB-DB:*
+* Hostname: `localhost`
+* Port: `54323`
+* DB-Name: `oereb_v2`
 * Benutzer mit DDL-Rechten: `ddluser` (zum Anlegen von Schemen, Tabellen usw.)
 * Benutzer mit DML-Rechten: `dmluser` (für Lese- und Schreibzugriff)
 * Passwörter: lauten jeweils gleich wie der Benutzername
