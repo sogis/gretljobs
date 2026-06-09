@@ -403,14 +403,14 @@ Die Ordner _gretljobs_ und _schema-jobs_ müssen sich im gleichen übergeordnete
 
 ##### GRETL-Jobs, die eine DB für das Processing von Daten benötigen:
 ```
-docker compose -f compose.yaml -f compose.processing-db.yaml up -d
+docker compose -f compose.yaml -f compose.processing.yaml up -d
 ```
 So wird zusätzlich zur *edit*-DB und zur *pub*-DB
 auch eine *processing*-DB gestartet
 für GRETL-Jobs, die eine solche benötigen.
 
 **Wichtig**: In diesem Fall müssen auch die nachfolgenden Compose-Befehle
-jeweils mit der Option `-f compose.yaml -f compose.processing-db.yaml` aufgerufen werden,
+jeweils mit der Option `-f compose.yaml -f compose.processing.yaml` aufgerufen werden,
 damit sie auch die Processing-DB mit einschliessen.
 
 #### GRETL-Container und Entwicklungs-DBs stoppen
