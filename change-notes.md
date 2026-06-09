@@ -57,3 +57,5 @@ Daher ändern zudem folgende Punkte beim Ausführen von Jobs:
 * Die Processing-DB ist neu auf _localhost_ unter **Port 54324** (bisher 54323) erreichbar
 
 * Das Compose File für die Processing-DB heisst neu `compose.processing.yaml` (bisher `compose.processing-db.yaml`)
+
+* Mit `docker compose -f compose.yaml -f compose.oereb_v2.yaml up -d` kann neu zusätzlich eine lokale ÖREB-DB gestartet werden
