@@ -50,3 +50,8 @@ Daher ändern zudem folgende Punkte beim Ausführen von Jobs:
 
 * Weil die Jobs neu in einem ständig laufenden GRETL-Container ausgeführt werden, ist es sinnvoll, von Zeit zu Zeit den Inhalt des _Build Directory_ (`$buildDir`) zu leeren:
   https://github.com/sogis/gretljobs/blob/adfedef93a78d4cb353e1e8562a438f38ca07b7d/README.md?plain=1#L495
+
+
+## 15.06.2026: Weitere kleine Änderungen bei der Entwicklung und lokalen Ausführung von GRETL-Jobs (Anpassungen im Nachgang zum 08.06.2026)
+
+* Die Processing-DB ist neu auf _localhost_ unter **Port 54324** (bisher 54323) erreichbar
