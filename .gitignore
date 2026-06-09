@@ -22,3 +22,6 @@
 
 # exclude upload directories
 **/upload/
+
+# exclude .env file
+.env
