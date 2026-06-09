@@ -469,7 +469,7 @@ Die Entwicklungs-DBs sind z.B. aus _DBeaver_ oder _psql_ mit folgenden Verbindun
 
 *Processing-DB:*
 * Hostname: `localhost`
-* Port: `54323`
+* Port: `54324`
 * DB-Name: `processing`
 * Benutzer mit Superuser-Rechten: `processing`
 * Passwort: lautet gleich wie der Benutzername
