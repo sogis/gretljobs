@@ -10,7 +10,7 @@ import java.util.Iterator
 import java.util.List
 
 apply plugin: 'ch.so.agi.gretl'
-defaultTasks 'importBodeneinheitenPub'
+defaultTasks 'publishBodeneinheiten'
 
 /*
 Der Job AfU_Bodeneinheiten_pub publiziert die Daten der Bodenkartierung. Dabei werden einige Werte neu berechnet. 
@@ -156,4 +156,17 @@ tasks.register("importBodeneinheitenPub", Ili2pgImport) {
     dbschema = "afu_bodeneinheiten_pub_v1"
     dataFile = files("Bodeneinheiten.xtf")
     disableValidation = true
+}
+
+tasks.register('publishBodeneinheiten', Publisher){
+    dependsOn 'importBodeneinheitenPub'
+    dataIdent = 'ch.so.afu.bodeneinheiten'
+    userFormats = true
+    modelsToPublish = 'SO_AFU_Bodeneinheiten_Publikation_20260106'
+    sourcePath = file("Bodeneinheiten.xtf")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
