@@ -1,0 +1,24 @@
+services:
+  oereb_v2-db:
+    image: sogis/postgis:17-3.6
+    environment:
+      POSTGRES_DB: oereb_v2
+      POSTGRES_PASSWORD: secret
+      POSTGRES_INITDB_ARGS: "-c include_dir=/opt/postgresql/conf.d/"
+    ports:
+      - "54323:5432"
+    volumes:
+      - type: bind
+        source: ./docker-compose/initdb.sh
+        target: /docker-entrypoint-initdb.d/initdb.sh
+      - type: bind
+        source: ./docker-compose/initdb.sql
+        target: /docker-entrypoint-initdb.d/initdb.sql
+      - type: bind
+        source: ./docker-compose/postgresql-custom.conf
+        target: /opt/postgresql/conf.d/postgresql-custom.conf
+      - type: volume
+        source: pgdata_oereb_v2
+        target: /var/lib/postgresql/data
+volumes:
+  pgdata_oereb_v2:
