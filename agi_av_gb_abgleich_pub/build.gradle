@@ -29,7 +29,14 @@ task convertData(type: SqlExecutor, dependsOn: 'transferGbData'){
     ]
 }
 
-task moveConvertedDataToPubDb(type: Db2Db, dependsOn: 'convertData'){
+task egridControl(type: SqlExecutor, dependsOn: 'convertData'){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = [
+            'agi_av_gb_abgleich_import_egrid_kontrolle.sql'
+    ]
+}
+
+task moveConvertedDataToPubDb(type: Db2Db, dependsOn: 'egridControl'){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
