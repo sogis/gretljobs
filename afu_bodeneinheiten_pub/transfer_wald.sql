@@ -48,10 +48,10 @@ INSERT INTO
     bodeneinheit_nummer,
     skelettgehalt_unterboden,
     skelettgehalt_unterboden_txt,
-    skelettgehalt_unterboden_beschreibung,
+    steingehalt_unterboden,
     skelettgehalt_oberboden,
     skelettgehalt_oberboden_txt,
-    skelettgehalt_oberboden_beschreibung,
+    steingehalt_oberboden,
     humusform_wald,
     humusform_wald_txt,
     humusform_wald_beschreibung,
@@ -66,7 +66,7 @@ INSERT INTO
     bodentyp_txt,
     gelaendeform,
     gelaendeform_txt,
-    gelaendeform_beschreibung,
+    hangneigung,
     geologie,
     koernungsklasse_oberboden,
     koernungsklasse_oberboden_txt,
@@ -100,7 +100,7 @@ INSERT INTO
     pflanzennutzbaregruendigkeit,
     pflanzennutzbaregruendigkeit_beschreibung,
     bodenpunktzahl,
-    bodenpunktzahl_beschreibung,
+    boden_nutzungsmoeglichkeit,
     bemerkung,
     los,
     kartierjahr,
@@ -117,6 +117,7 @@ INSERT INTO
     verdichtungsempfindlichkeit,
     verdichtungsempfindlichkeit_beschreibung,
     untertypen,
+    fremdwasserzufluss,
     gemeindenummer_bfs_aktuell,
     alte_daten_Vorhanden, 
     alte_daten_vorhanden_txt, 
@@ -124,9 +125,14 @@ INSERT INTO
     geometrie
 )
 SELECT 
-    true,
+    CASE 
+        WHEN dataset.datasetname = 'migration' 
+        THEN true
+        ELSE false 
+    END AS migriert,
     src.bodeneinheit_nummer,
     src.unterboden0_skelettgehalt_unterboden,
+    sgu.dispname AS skelettgehalt_unterboden_txt,
     CASE
         WHEN src.unterboden0_skelettgehalt_unterboden = 'skelettfrei'
             THEN 'keine oder nur wenige Steine (0-5%)'
@@ -138,9 +144,9 @@ SELECT
             THEN 'sehr viele Steine (20-30%)'
         WHEN src.unterboden0_skelettgehalt_unterboden IN ('skelettreich','kies')
             THEN 'extrem viele Steine (> 30%)'
-    END AS skelettgehalt_unterboden_txt,
-    sgu.dispname AS skelettgehalt_unterboden_beschreibung,
+    END AS steingehalt_unterboden,
     src.oberboden0_skelettgehalt_oberboden,
+    sgo.dispname AS skelettgehalt_oberboden_txt,
     CASE
         WHEN src.oberboden0_skelettgehalt_oberboden = 'skelettfrei'
             THEN 'keine oder nur wenige Steine (0-5%)'
@@ -152,9 +158,9 @@ SELECT
             THEN 'sehr viele Steine (20-30%)'
         WHEN src.oberboden0_skelettgehalt_oberboden IN ('skelettreich','kies')
             THEN 'extrem viele Steine (> 30%)'
-    END AS skelettgehalt_oberboden_txt,
-    sgo.dispname AS skelettgehalt_oberboden_beschreibung,
+    END AS steingehalt_oberboden,
     src.humusform_wald,
+    hfw.dispname AS humusform_wald_txt,
     CASE 
         WHEN src.humusform_wald IN ('M', 'Mt', 'Mf')
             THEN 'Mull: Hohe biologische Aktivität mit vollständigem Streuabbau nach 1-2 Jahren. Über 8 cm mächtiger, gut strukturierter Oberboden. Günstiger Wasser-, Luft- und Nährstoffhaushalt.'
@@ -173,8 +179,7 @@ SELECT
         WHEN src.humusform_wald = 'T'
             THEN 'Torf: Anreicherung von kaum zersetzten Pflanzenrückständen, v.a. Torfmoose wegen dauernder Wassersättigung und stark sauren Bedingungen. Faserig, schwammig.'
         ELSE hfw.description::varchar(50)
-    END AS humusform_wald_txt,
-    hfw.dispname AS humusform_wald_beschreibung,
+    END AS humusform_wald_beschreibung,
     src.maechtigkeit_ahh AS maechtigkeit_ahh,
     src.gemeinde_nr AS gemeinde_bfs_nr,
     src.wasserhaushalt,
@@ -329,7 +334,7 @@ SELECT
     bt.dispname AS bodentyp_txt,
     src.gelaendeform,
     gf.dispname AS gelaendeform_txt,
-    NULL::varchar(50) AS gelaendeform_beschreibung,
+    NULL::varchar(50) AS Hangneigung,
     src.geologie,
     src.oberboden0_koernungsklasse,
     kko.dispname AS koernungsklasse_oberboden_txt,
@@ -473,7 +478,7 @@ SELECT
             THEN 'Für die landwirtschaftliche Nutzung ungeeignet'
         WHEN src.bodenpunktzahl = 0 OR src.bodenpunktzahl IS NULL
             THEN 'keine Information'
-    END AS bodenpunktzahl_beschreibung,
+    END AS boden_nutzungsmoeglichkeit,
     src.bemerkungen AS bemerkung,
     los.los,
     src.kartierjahr,
@@ -502,6 +507,31 @@ SELECT
         ),
         ''
     )::varchar(200) AS untertypen,
+    CASE 
+    	WHEN COALESCE(src.untertyp_g, '') like '%G5%' 
+    	  or COALESCE(src.untertyp_g, '') like '%G6%' 
+    	  or COALESCE(src.untertyp_r, '') like '%R3%' 
+    	  or COALESCE(src.untertyp_r, '') like '%R4%' 
+    	  or COALESCE(src.untertyp_r, '') like '%R5%'
+    	THEN 'starker Fremdwasserzufluss'
+    	WHEN (
+    	       (
+    	            COALESCE(src.untertyp_g, '') like '%G3%' 
+    	         or COALESCE(src.untertyp_g, '') like '%G4%' 
+    	         or COALESCE(src.untertyp_r, '') like '%R2%'
+    	       ) 
+    	       and not 
+    	       (
+    	           COALESCE(src.untertyp_g, '') like '%G5%' 
+    	        or COALESCE(src.untertyp_g, '') like '%G6%' 
+    	        or COALESCE(src.untertyp_r, '') like '%R3%' 
+    	        or COALESCE(src.untertyp_r, '') like '%R4%' 
+    	        or COALESCE(src.untertyp_r, '') like '%R5%'
+    	       )
+    	     )
+    	THEN 'mässiger Fremdwasserzufluss'
+    	ELSE 'kein Fremdwasserzufluss'
+    END AS fremdwasserzufluss, 
     src.gemeinde_nr AS gemeindenummer_bfs_aktuell,
     src.alte_daten_vorhanden,
     adv.dispname AS alte_daten_vorhanden_txt, 
@@ -596,6 +626,10 @@ LEFT JOIN
     untertypen_div ud
     ON 
     ud.bodeneinheit_id = src.t_id
+LEFT JOIN 
+    afu_bodeneinheiten_v1.t_ili2db_dataset dataset 
+    ON 
+    los.t_datasetname::integer = dataset.t_id
 WHERE 
     los.publizieren IS TRUE
 ;
