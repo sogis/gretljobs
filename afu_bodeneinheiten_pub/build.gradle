@@ -156,6 +156,7 @@ tasks.register("importBodeneinheitenPub", Ili2pgImport) {
     dbschema = "afu_bodeneinheiten_pub_v1"
     dataFile = files("Bodeneinheiten.xtf")
     disableValidation = true
+    deleteData = true
 }
 
 tasks.register('publishBodeneinheiten', Publisher){
