@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishPub'
+defaultTasks 'dataTransfer'
 
 task deleteData(type: SqlExecutor){
     database = [dbUriPub, dbUserPub, dbPwdPub]
@@ -25,7 +25,7 @@ task dataTransfer(type: Db2Db, dependsOn: deleteData){
             new TransferSet('arp_richtplan_richtplan_pub_detailkarten_punkt.sql', 'arp_richtplan_pub_v2.detailkarten_punkt', false)
     ];
 }
-
+/*
 task publishPub(type: Publisher, dependsOn: 'dataTransfer'){
     database = [dbUriPub,dbUserPub,dbPwdPub]
     dataIdent = "ch.so.arp.richtplan"
@@ -38,3 +38,4 @@ task publishPub(type: Publisher, dependsOn: 'dataTransfer'){
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
+*/
