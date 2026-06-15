@@ -108,7 +108,7 @@ ovitraps AS (
 -- Meldungen von Privatpersonen --
 privatmeldungen AS (
 	SELECT 
-			'-' AS trapid,
+			'-' AS trapid, -- nur bei Fallen
 			typ,
 			kanton,
 			ort AS gemeinde,
@@ -128,7 +128,7 @@ privatmeldungen AS (
 			art,
 			sicherheit,
 			n_MALDI_TOF_MS,
-			'-' AS fallenzustand, -- Bei Privatmeldungen nicht relevant
+			'-' AS fallenzustand, -- nur bei Fallen
 			einsender,
 			TO_DATE(meldedatum, 'MM.DD.YYYY') AS meldedatum,
 			kommentar,
