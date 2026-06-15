@@ -59,3 +59,5 @@ Daher ändern zudem folgende Punkte beim Ausführen von Jobs:
 * Das Compose File für die Processing-DB heisst neu `compose.processing.yaml` (bisher `compose.processing-db.yaml`)
 
 * Mit `docker compose -f compose.yaml -f compose.oereb_v2.yaml up -d` kann neu zusätzlich eine lokale ÖREB-DB gestartet werden
+
+* Um GRETL mit einem spezifischen Image Tag zu verwenden, muss man neu `GRETL_IMAGE_TAG=xy` in der Datei `.env` platzieren.

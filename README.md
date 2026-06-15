@@ -520,10 +520,8 @@ Erläuterungen:
 * Mit der Option `--no-daemon` wird der Job ohne Nutzung des Daemons ausgeführt (dies war das bisherige Verhalten des GRETL-Containers).
 * Mit `TASK...` (optional) kann ein oder mehrere Tasks angegeben werden, die von GRETL ausgeführt werden sollen.
   Falls man nichts angibt, werden die in `build.gradle` definierten `defaultTasks` ausgeführt.
-* Falls man einen GRETL-Job mit einem ganz bestimmten GRETL-Image-Tag (z.B. `latest`) ausführen möchte, stellt man dem Compose-Befehl die Variablendefinition `GRETL_IMAGE_TAG=MYTAG` voran, z.B.:
-  ```
-  GRETL_IMAGE_TAG=latest docker compose exec -u $UID gretl-service gretl --rerun-tasks --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
-  ```
+* Falls man einen anderen GRETL-Image-Tag verwenden möchte (z.B. `latest` oder `3.2.861`), erstellt man vor dem Ausführen von `docker compose up` im Verzeichnis `gretljobs` eine Datei mit Name `.env` mit dem Inhalt `GRETL_IMAGE_TAG=MYTAG`, z.B. `GRETL_IMAGE_TAG=3.2.861`.
+  Zu beachten ist, dass danach alle Jobs mit diesem GRETL-Tag ausgeführt werden, solange dies so in der Datei `.env` steht und solange der GRETL-Container besteht.
 * Falls ein bestimmter Job Zugriff auf Daten in einem *Persistent Volume Claim* (PVC) benötigt, lässt sich dies lokal abbilden, indem man `docker compose run` mit einem *Volume Mount* (Option `-v ...`) gemäss folgendem Beispiel benutzt:
   ```
   docker compose run --rm -u $UID -v /local/path:/work/datahub/DMAV_FixpunkteAVKategorie3_V1_0 gretl-service gretl --rerun-tasks --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
@@ -566,11 +564,6 @@ Erläuterungen:
   z.B. `dropSchema` oder `createSchema configureSchema`.
 * Der Task `configureSchema` setzt, wenn er lokal, d.h. in einer Development-Umgebung ausgeführt wird, gleichzeitig auch die Berechtigungen auf den DB-Schemen und Tabellen so, dass GRETL-Jobs auf diese Schemen zugreifen können (Lese- und Schreibrechte).
   Das heisst, dass lokal der Task `grantPrivileges` im Normalfall nicht ausgeführt werden muss.
-* Falls man einen Schema-Job mit einem ganz bestimmten GRETL-Image-Tag (z.B. `latest`) ausführen möchte, stellt man dem Compose-Befehl die Variablendefinition `GRETL_IMAGE_TAG=MYTAG` voran, z.B.:
-  ```
-  GRETL_IMAGE_TAG=latest docker compose exec -u $UID --workdir //home/gradle/schema-jobs/shared/schema gretl-service \
-    gretl --rerun-tasks -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
-  ```
 
 ### Daten in die Entwicklungs-DBs importieren
 
