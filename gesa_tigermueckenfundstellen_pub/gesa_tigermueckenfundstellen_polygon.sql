@@ -1,3 +1,8 @@
+-- Dieses SQL erstellt aus den Punktgeometrien Ausbreitungsflächen.
+-- Die hier generierten Daten sollen öffentlich zugänglich sein. 
+-- Daher wird schlussendlich nur die Geometrie der generierten Flächen selektiert.
+-- Dies entspricht auch der Infomrationslage der Kantone Basellandschaft, Basel-Stadt und Aargau (Stand 06.2026)
+
 WITH
 
 -- sucht das neuste Jahr aus den Daten --
@@ -108,7 +113,7 @@ punktgeometrie_zusammengefasst AS (
 		privatmeldungen_punkte
 ),
 
--- Punktgeometrie wird aus Sicherheitsgründen zufällig um 0-10 m verschieben
+-- Punktgeometrie wird aus Sicherheitsgründen zufällig um 0-10 m verwackelt
 punktgeometrie_verwackelt AS (
 	SELECT
 		auid,
@@ -122,7 +127,7 @@ punktgeometrie_verwackelt AS (
 		punktgeometrie_zusammengefasst	
 ),
 
--- Buffer um verwackelten Punkt erstellen --
+-- 150m-Buffer um verwackelten Punkt erstellen --
 buffer150 AS (
 	SELECT 
 		ST_Buffer(geometrie_shifted,150) AS geometrie
@@ -156,6 +161,7 @@ polygon_cut AS (
 		ON ST_Intersects(pf.geometrie, kg.geometrie)
 )
 
+-- Die URL des Merkblattes und der Webseite sind hartkodiert. Bei Änderungen der URL muss dies hier deshalb auch geändert werden.
 SELECT
 	'https://so.ch/verwaltung/departement-des-innern/gesundheitsamt/erkrankungen-und-impfungen/klima-und-gesundheit/asiatische-tigermuecke/' AS URL,
 	'https://so.ch/fileadmin/internet/ddi/ddi-gesa/PDF/Erkrankungen_und_Impfungen/Klima/2026-04_Merktblatt_Asiatische_Tigermuecke_final.pdf' AS Merkblatt,
