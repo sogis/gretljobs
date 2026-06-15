@@ -15,7 +15,7 @@ tasks.register('transferData', Db2Db) {
 }
 
 tasks.register('validateData', Ili2pgValidate) {
-    dependsOn transferData
+    dependsOn "transferData"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     models = "SO_AFU_Bootsanbindeplaetze_Publikation_20250604"
     dbschema = "afu_bootsanbindeplaetze_pub_v1"

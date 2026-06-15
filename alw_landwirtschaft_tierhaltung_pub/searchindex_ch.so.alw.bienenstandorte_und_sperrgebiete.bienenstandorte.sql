@@ -1,4 +1,4 @@
-SET search_path to alw_landwirtschaft_tierhaltung_pub_v1, public;
+SET search_path to alw_landwirtschaft_tierhaltung_pub_v2, public;
 
 INSERT INTO ${db_schema}.feature (
     anzeige,            -- Anzeigetext
@@ -15,8 +15,20 @@ index_base AS (
         ${layername}::text AS subclass,
         t_id AS id_in_class,
         concat('Nr: ', bienenstand_nummer, ' (Bienenstandort)') AS displaytext,
-        bienenstand_nummer AS part_1,
+        bienenstand_nummer::text AS part_1,
         'Bienenstandort Nr'::text AS part_3,
+        (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
+    FROM
+        betrbsdttrktrdten_tierstandort
+    WHERE
+        standorttyp::text = 'Bienenstand'::text AND bienenstand_nummer IS NOT NULL
+    UNION
+    SELECT
+        ${layername}::text AS subclass,
+        t_id AS id_in_class,
+        concat('BUR-Nr: ', bur_registernummer_standort, ' (Betriebs- und Unternehmensregister)') AS displaytext,
+        bur_registernummer_standort AS part_1,
+        'BUR-Nr Betriebs- und Unternehmensregister'::text AS part_3,
         (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
         betrbsdttrktrdten_tierstandort

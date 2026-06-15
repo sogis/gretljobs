@@ -15,7 +15,7 @@ def datasetName = "importdata" // for naming tables in sql
 def downloadSrc = 'https://data.geo.admin.ch/ch.astra.mountainbikeland/mountainbikeland/mountainbikeland_2056.shp.zip'
 def downloadFile = file("$buildDir/${datasetName}.zip")
 def unzipTargetDir = file("$buildDir/${datasetName}")
-def shapefilePath = new File("$unzipTargetDir/2025_shape_MTBland/Route.shp")
+def shapefilePath = new File("$unzipTargetDir/2026_shape_MTBland/Route.shp")
 
 // first task
 tasks.register("first"){

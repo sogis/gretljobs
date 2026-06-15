@@ -6,12 +6,33 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'publishPubWalduebersicht', 'updateSearchIndex_1'
 
-def xtfPath = "${buildDir}/" + "gemeinde/" + bfsnr + ".xtf"
-def xtfFile = files(xtfPath)
-
+// Multiline-Text ist im Task nicht möglich, darum als Variable
 def importModelsPub = 
     'SO_AGI_MOpublic_20240711;' +
     'SO_AWJF_Waldplan_Publikation_20250312;'
+
+def BfsNrGemeinden = [2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408,
+                      2421, 2422, 2424, 2425, 2426, 2427, 2428, 2430,
+                      2445,
+                      2455, 2457,
+                      2461,
+                      2463, 2464, 2465,
+                      2471, 2472, 2473, 2474, 2475, 2476, 2477, 2478, 2479, 2480, 2481,
+                      2491, 2492, 2493, 2495,
+                      2497, 2499, 2500, 2501, 2502, 2503,
+                      2511,
+                      2513, 2514,
+                      2516, 2517, 2518, 2519,
+                      2523, 2524, 2525, 2526, 2527, 2528, 2530,
+                      2532, 2534, 2535,
+                      2541, 2542, 2543, 2544, 2545, 2546, 2547, 2548, 2549,
+                      2550, 2551, 2553, 2554, 2555, 2556,
+                      2571, 2572, 2573, 2574, 2575, 2576, 2578, 2579,
+                      2580, 2581, 2582, 2583, 2584, 2585, 2586,
+                      2601,
+                      2611, 2612, 2613, 2614, 2615, 2616, 2617, 2618, 2619,
+                      2620, 2621, 2622
+]
 
 tasks.register('createExtension', SqlExecutor) {
     description = 'In der Processing-DB die Extension für die UUID-Erstellung aktivieren (uuid-ossp).'
@@ -19,13 +40,13 @@ tasks.register('createExtension', SqlExecutor) {
     sqlFiles = files('processing_data/create_extension.sql')
 }
 
-// -------------- Erstellung Schemas auf Processing-DB -------------- //
 tasks.register('deleteAllSchemasIfExists', SqlExecutor) {
     dependsOn 'createExtension'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     sqlFiles = files('processing_data/deleteallschemas.sql')
 }
 
+// -------------- Erstellung Schemas auf Processing-DB -------------- //
 tasks.register('createImportSchema_Waldplan_Edit', Ili2pgImportSchema) {
     dependsOn 'deleteAllSchemasIfExists'
     description = 'Waldplan-Schema IMPORT für Quelldaten in der Processing-DB anlegen'
@@ -138,74 +159,118 @@ tasks.register('copyDataFromPub', Db2Db) {
     ];
 }
 
-// -------------- Prozessierung der Waldplandaten -------------- //
-tasks.register('processingPubData', SqlExecutor) {
-    dependsOn 'copyDataFromPub'
-    description = 'Berechnung Waldplandaten für eine Gemeinde'
+// ------------------------------------------------------------
+// Loop über alle Gemeinden
+// ------------------------------------------------------------
+def gemeindeliste // leere Gemeindeliste
+
+// Wenn als bfsnr-Variable 'alle_gemeinden' übergeben wird, werden alle Gemeinden publiziert,
+// andernfalls die angegebene bfsnr.
+if (bfsnr == 'alle_gemeinden'){
+    gemeindeliste = BfsNrGemeinden
+} else {
+    gemeindeliste = [bfsnr.toInteger()]
+}
+
+gemeindeliste.each { bfs ->
+    def xtfFile = files("${buildDir}/gemeinde/${bfs}.xtf")
+
+    // -------------- Prozessierung der Waldplandaten -------------- //
+    tasks.register("processingPubData_${bfs}", SqlExecutor) {
+        dependsOn 'copyDataFromPub'
+        database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+        sqlParameters = [bfsnr_param: bfs.toString()]
+        sqlFiles = files(
+            'processing_data/01_awjf_schutzwald_processing.sql',
+            'processing_data/02_awjf_waldfunktion_processing.sql',
+            'processing_data/03_awjf_waldnutzung_processing.sql',
+            'processing_data/04_awjf_waldplan_grundstueck_01_tabellen_erstellen_processing.sql',
+            'processing_data/05_awjf_waldplan_grundstueck_02_grundstueck_processing.sql',
+            'processing_data/06_awjf_waldplan_grundstueck_03_waldfunktion_waldnutzung_processing.sql',
+            'processing_data/07_awjf_waldplan_grundstueck_04_waldflaeche_processing.sql',
+            'processing_data/08_awjf_waldplan_grundstueck_05_flaechenberechnungen_processing.sql',
+            'processing_data/09_awjf_waldplan_grundstueck_06_json_processing.sql',
+            'processing_data/10_awjf_waldplan_auswertung_processing.sql'
+        )
+    }
+
+    // -------------- Export, Validierung und Ersatz Daten -------------- //
+    tasks.register("exportData_${bfs}", Ili2pgExport) {
+        dependsOn "processingPubData_${bfs}"
+        database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+        dbschema = 'awjf_waldplan_pub_v2'
+        models = 'SO_AWJF_Waldplan_Publikation_20250312'
+        dataFile = xtfFile
+        dataset = bfs.toString()
+        disableValidation = true
+        skipGeometryErrors = true
+    }
+
+    tasks.register("replaceData_${bfs}", Ili2pgReplace) {
+        dependsOn "exportData_${bfs}"
+        database = [dbUriPub, dbUserPub, dbPwdPub]
+        dbschema = 'awjf_waldplan_pub_v2'
+        models = 'SO_AWJF_Waldplan_Publikation_20250312'
+        dataFile = xtfFile
+        dataset = bfs.toString()
+        disableValidation = true
+        skipGeometryErrors = true
+    }
+
+    // -------------- Update Anzeigenamen -------------- //
+    tasks.register("updateTxtValues_${bfs}", SqlExecutor) {
+        dependsOn "replaceData_${bfs}"
+        database = [dbUriPub, dbUserPub, dbPwdPub]
+        sqlParameters = [bfsnr_param: bfs.toString()]
+        sqlFiles = files(
+            'update_pubdata/awjf_waldplan_pub_waldfunktion_update.sql',
+            'update_pubdata/awjf_waldplan_pub_waldnutzung_update.sql',
+            'update_pubdata/awjf_waldplan_pub_waldeigentum_update.sql',
+            'update_pubdata/awjf_waldplan_pub_schutzwald_update.sql'
+        )
+    }
+
+    // -------------- Publisher Waldplandaten -------------- //
+    tasks.register("publishPubGemeinde_${bfs}", Publisher){
+        dependsOn "updateTxtValues_${bfs}"
+        dataIdent = 'ch.so.awjf.waldplan'
+        userFormats = true
+        modelsToPublish = 'SO_AWJF_Waldplan_Publikation_20250312'
+        region = '.*'
+        sourcePath = file("${buildDir}/gemeinde/${bfs}.xtf")
+        if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+        target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+        kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+        kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+        grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
+}
+
+    // -------------- Abschlusstask pro Gemeinde -------------- //
+    tasks.register("transferData_${bfs}") {
+        dependsOn "publishPubGemeinde_${bfs}"
+    }
+}
+
+// -------------- Sammel-Task -------------- //
+tasks.register('transferAlleGemeinden') {
+    dependsOn {
+        gemeindeliste.collect { bfs ->
+            tasks.named("transferData_${bfs}")
+        }
+    }
+}
+
+tasks.register("processingWalduebersicht", SqlExecutor) {
+    dependsOn 'transferAlleGemeinden'
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    sqlParameters = [bfsnr_param:bfsnr]
     sqlFiles = files(
-        'processing_data/01_awjf_schutzwald_processing.sql',
-        'processing_data/02_awjf_waldfunktion_processing.sql',
-        'processing_data/03_awjf_waldnutzung_processing.sql',
-        'processing_data/04_awjf_waldplan_grundstueck_01_tabellen_erstellen_processing.sql',
-        'processing_data/05_awjf_waldplan_grundstueck_02_grundstueck_processing.sql',
-        'processing_data/06_awjf_waldplan_grundstueck_03_waldfunktion_waldnutzung_processing.sql',
-        'processing_data/07_awjf_waldplan_grundstueck_04_waldflaeche_processing.sql',
-        'processing_data/08_awjf_waldplan_grundstueck_05_flaechenberechnungen_processing.sql',
-        'processing_data/09_awjf_waldplan_grundstueck_06_json_processing.sql',
-        'processing_data/10_awjf_waldplan_auswertung_processing.sql',
-        'processing_data/11_awjf_walduebersicht_processing.sql'
-    )
-}
-
-// -------------- Export, Validierung und Ersatz Daten -------------- //
-tasks.register('exportData', Ili2pgExport) {
-    dependsOn 'processingPubData'
-    description = "Exportiert die Daten mit DataSet = BFSNr aus dem Processing-Schema awjf_waldplan_pub_v2 in eine INTERLIS-Datei."
-    database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    dbschema = 'awjf_waldplan_pub_v2'
-    models = 'SO_AWJF_Waldplan_Publikation_20250312'
-    dataFile = xtfFile
-    dataset = bfsnr
-    disableValidation = true
-    skipGeometryErrors = true
-}
-
-tasks.register('validateXTF', IliValidator) {
-    dependsOn 'exportData'
-    description = 'Validiert die exportierten Waldplandaten aus der Processing-DB'
-    dataFiles = xtfFile
-}
-
-tasks.register('replaceData', Ili2pgReplace) {
-    dependsOn 'validateXTF'
-    description = 'Ersetzt die Daten mit dem entsprechenden Dataset (BFS-Nr) auf der Pub-DB'
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    dbschema = 'awjf_waldplan_pub_v2'
-    models = 'SO_AWJF_Waldplan_Publikation_20250312'
-    dataFile = xtfFile
-    dataset = bfsnr
-    disableValidation = true
-    skipGeometryErrors = true
-}
-
-// -------------- Update Anzeigenamen -------------- //
-tasks.register('UpdateTxtValues', SqlExecutor) {
-    dependsOn 'replaceData'
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    sqlParameters = [bfsnr_param:bfsnr]
-    sqlFiles = files(
-        'update_pubdata/awjf_waldplan_pub_waldfunktion_update.sql',
-        'update_pubdata/awjf_waldplan_pub_waldnutzung_update.sql',
-        'update_pubdata/awjf_waldplan_pub_waldeigentum_update.sql',
-        'update_pubdata/awjf_waldplan_pub_schutzwald_update.sql'
-    )
-}
+            'processing_data/11_awjf_walduebersicht_processing.sql'
+        )
+    }
 
 // -------------- Transfer & Export Waldübersicht (immer gesamthaft) aus Processing-DB -------------- //
-tasks.register('transferData', Db2Db) {
-    dependsOn 'UpdateTxtValues'
+tasks.register('transferWalduebersicht', Db2Db) {
+    dependsOn 'processingWalduebersicht'
     description = 'Transfer der Walduebersicht'
     sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
@@ -215,7 +280,7 @@ tasks.register('transferData', Db2Db) {
 }
 
 tasks.register('exportWalduebersicht', Ili2pgExport) {
-    dependsOn 'transferData'
+    dependsOn 'transferWalduebersicht'
     description = "Exportiert die Walduebersicht in eine INTERLIS-Datei."
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'awjf_waldplan_pub_v2'
@@ -227,22 +292,8 @@ tasks.register('exportWalduebersicht', Ili2pgExport) {
 }
 
 // -------------- Publisher Waldplandaten -------------- //
-tasks.register('publishPubGemeinde', Publisher){
-    dependsOn 'exportWalduebersicht'
-    dataIdent = 'ch.so.awjf.waldplan'
-    userFormats = true
-    modelsToPublish = 'SO_AWJF_Waldplan_Publikation_20250312'
-    region = '.*'
-    sourcePath = file("build/" + "gemeinde/" + bfsnr + ".xtf")
-    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
-    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
-}
-
 tasks.register('publishPubWalduebersicht', Publisher){
-    dependsOn 'publishPubGemeinde'
+    dependsOn 'exportWalduebersicht'
     dataIdent = 'ch.so.awjf.waldplan.walduebersicht'
     userFormats = true
     modelsToPublish = 'SO_AWJF_Waldplan_Publikation_20250312'
@@ -256,7 +307,7 @@ tasks.register('publishPubWalduebersicht', Publisher){
 
 // -------------- Suchindex-------------- //
 tasks.register('updateSearchIndex_1', SqlExecutor){
-    mustRunAfter 'UpdateTxtValues'
+    mustRunAfter 'publishPubWalduebersicht'
     def layerName = 'ch.so.awjf.waldplan.schutzwald'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
