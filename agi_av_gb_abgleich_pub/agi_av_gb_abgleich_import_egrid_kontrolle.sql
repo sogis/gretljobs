@@ -73,8 +73,32 @@ nur_gb AS (
     FROM
         identisch)
 
--- Grundstücke mit falschem Egrid
 
+INSERT INTO agi_av_gb_abgleich_import.differenzen_staging (
+    geometrie,
+    av_gem_bfs,
+    av_nbident,
+    av_gemeinde,
+    av_nummer,
+    av_art,
+    av_art_txt,
+    av_flaeche,
+    av_lieferdatum,
+    av_mutation_id,
+    av_mut_beschreibung,
+    gb_gem_bfs,
+    gb_kreis_nr,
+    gb_gemeinde,
+    gb_nummer,
+    gb_art,
+    gb_flaeche,
+    gb_fuehrungsart,
+    gb_nbident,
+    flaechen_differenz,
+    fehlerart
+)
+        
+-- Grundstücke mit falschem Egrid
 SELECT 
     ST_CurveToLine(geometrie, 0.002, 1, 1) AS geometrie,
     NULL AS av_gem_bfs,
