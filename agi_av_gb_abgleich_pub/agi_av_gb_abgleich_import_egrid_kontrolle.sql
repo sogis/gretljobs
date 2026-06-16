@@ -115,7 +115,7 @@ SELECT
     NULL AS gb_kreis_nr,
     NULL AS gb_gemeinde,
     av.nummer as gb_nummer,
-    'SelbstaendigesDauerndesRecht' AS gb_art,
+    NULL AS gb_art,
     NULL AS gb_flaeche,
     NULL AS gb_fuehrungsart,
     av.nbident as gb_nbident, 
