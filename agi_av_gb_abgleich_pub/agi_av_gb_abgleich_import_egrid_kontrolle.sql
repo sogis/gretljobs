@@ -103,7 +103,7 @@ INSERT INTO agi_av_gb_abgleich_import.differenzen_staging (
 -- Grundstücke mit falschem Egrid
 SELECT 
     ST_CurveToLine(geometrie, 0.002, 1, 1) AS geometrie,
-    av.t_datasetname AS av_gem_bfs,
+    av.t_datasetname::varchar AS av_gem_bfs,
     NULL AS av_nbident,
     NULL AS av_gemeinde,
     NULL AS av_nummer,
