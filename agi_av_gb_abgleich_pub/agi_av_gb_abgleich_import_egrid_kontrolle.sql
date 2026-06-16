@@ -5,7 +5,8 @@ av_grundstuecke AS (
             g.egris_egrid,
             g.nbident,
             l.geometrie,
-            g.nummer
+            g.nummer,
+            g.t_datasetname
    
         FROM 
             agi_dm01avso24.liegenschaften_grundstueck AS g
@@ -23,7 +24,8 @@ av_grundstuecke AS (
             g.egris_egrid,
             g.nbident,
             sdr.geometrie,
-            g.nummer
+            g.nummer,
+            g.t_datasetname
    
         FROM 
             agi_dm01avso24.liegenschaften_grundstueck AS g
@@ -101,7 +103,7 @@ INSERT INTO agi_av_gb_abgleich_import.differenzen_staging (
 -- Grundstücke mit falschem Egrid
 SELECT 
     ST_CurveToLine(geometrie, 0.002, 1, 1) AS geometrie,
-    NULL AS av_gem_bfs,
+    av.t_datasetname AS av_gem_bfs,
     NULL AS av_nbident,
     NULL AS av_gemeinde,
     NULL AS av_nummer,
