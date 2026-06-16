@@ -16,7 +16,6 @@ max_jahr AS (
 daten_aktuelles_jahr AS (
 	SELECT
 		t_id,
-		t_ili_tid,
 		auid,
 		trapid,
 		typ,

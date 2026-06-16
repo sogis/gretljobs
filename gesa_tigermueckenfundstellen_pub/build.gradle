@@ -18,9 +18,17 @@ tasks.register("copyCSVFile", Copy) {
     rename("uploadFile", "uploadFile.csv")
 }
 
+tasks.register('validateCSVFile', CsvValidator) {
+    dependsOn "copyCSVFile"
+    models = "SO_GESA_Tigermueckenfundstellen_20260401"
+    firstLineIsHeader = true
+    dataFiles = files("upload/uploadFile.csv")
+    valueSeparator = ';'
+}
+
 // Jahr aus CSV-Datei rauslesen
 tasks.register('readCsvYear') {
-    dependsOn "copyCSVFile"
+    dependsOn "validateCSVFile"
 
     doLast {
         def file = file("upload/uploadFile.csv")
