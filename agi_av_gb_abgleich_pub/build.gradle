@@ -25,18 +25,12 @@ task convertData(type: SqlExecutor, dependsOn: 'transferGbData'){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = [
             'agi_av_gb_abgleich_import_differenzen_staging.sql',
+            'agi_av_gb_abgleich_import_egrid_kontrolle.sql',
             'agi_av_gb_abgleich_import_uebersicht_des_vergleichs_staging.sql'
     ]
 }
 
-task egridControl(type: SqlExecutor, dependsOn: 'convertData'){
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = [
-            'agi_av_gb_abgleich_import_egrid_kontrolle.sql'
-    ]
-}
-
-task moveConvertedDataToPubDb(type: Db2Db, dependsOn: 'egridControl'){
+task moveConvertedDataToPubDb(type: Db2Db, dependsOn: 'convertData'){
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
