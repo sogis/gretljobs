@@ -122,7 +122,7 @@ SELECT
     NULL AS gb_fuehrungsart,
     av.nbident as gb_nbident, 
     NULL AS flaechen_differenz, 
-    5::integer AS fehlerart --'EGRID stimmen nicht überein'
+    4::integer AS fehlerart --'EGRID stimmen nicht überein'
 
 FROM    
     nur_gb AS gb
