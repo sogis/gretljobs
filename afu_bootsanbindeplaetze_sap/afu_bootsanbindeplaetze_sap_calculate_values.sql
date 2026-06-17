@@ -2,7 +2,7 @@ DELETE FROM afu_bootsanbindeplaetze.main.sap_structure;
 
 WITH 
 
--- Selektierung Beträge, wenn die Nutzungsgebühr und Steggebühr an die gleiche Rechnungsstelle geht --
+-- Selektierung alle Beträge, wenn die Nutzungsgebühr und Steggebühr an die gleiche Rechnungsstelle geht --
 nutzungsgebuehren_gleiche_RS AS (
 	SELECT 
 		(bp.rechnungsstelle_nutzungsgebuehr->0->>'SAP')::text AS KundenNr, -- extrahiert die Kunden-Nr. (SAP) aus dem JSON-Attribut
@@ -32,8 +32,37 @@ nutzungsgebuehren_gleiche_RS AS (
 		g.betrag > 0
 ),
 
--- Selektierung Beträge, wenn die Nutzungsgebühr und Steggebühr nicht and die gleiche Rechnungsstelle geht --
-nutzungsgebuehren_separate_RS AS (
+-- Selektierung Nutzungsgebühr exkl. Steggebühr, wenn die Nutzungsgebühr und Steggebühr nicht an die gleiche Rechnungsstelle geht --
+nutzungsgebuehren_seperate_RS AS (
+	SELECT 
+		(bp.rechnungsstelle_nutzungsgebuehr->0->>'SAP')::text AS KundenNr, -- extrahiert die Kunden-Nr. (SAP) aus dem JSON-Attribut
+		2232 AS "MaterialNr.",
+		ROUND(g.betrag,2) AS "Betrag 2 Kommastellen",
+		g.Materialtext,
+		1 AS "Menge Ganzahlg",
+		'Nutzungsgebühr ' || EXTRACT(YEAR FROM CURRENT_DATE)::int AS "Kopfnotiz Zeile 1 Kopf",
+		'Bootsplatz' || ' ' || sd.gemeinde || ', ' || regexp_replace(bp.standort, '^\S+\s+', '') || ', Nr. ' || bp.platznummer AS "MaterialVerkaufstext Zeile 1 Position",
+		(bp.nutzer->0->>'Kontokorrent')::bool AS Kontokorrent
+	FROM
+		pubdb.afu_bootsanbindeplaetze_pub_v1.bootsanbindeplatz AS bp
+	LEFT JOIN pubdb.afu_bootsanbindeplaetze_pub_v1.standortdaten AS sd
+		ON bp.standort = sd.standort
+	CROSS JOIN LATERAL (
+		VALUES
+			('Bootsgebühr', bp.bootsgebuehr),
+			('Pfostengebühr', bp.pfostengebuehr),
+			('Miete', bp.mietkosten)
+	) AS g(Materialtext, betrag) -- Steggebühr wurde entfernt
+	WHERE
+		bp.rechnungsstelle_nutzungsgebuehr IS DISTINCT FROM bp.rechnungsstelle_steggebuehr -- Rechnungstelle für Nutzungsgebühr und Steggebühr ist die gleiche
+	AND
+		g.betrag IS NOT NULL
+	AND
+		g.betrag > 0
+),
+
+-- Selektierung Steggebühr, wenn die Nutzungsgebühr und Steggebühr nicht and die gleiche Rechnungsstelle geht --
+steggebuehr_separate_RS AS (
 	SELECT 
 		(bp.rechnungsstelle_steggebuehr->0->>'SAP')::text AS KundenNr,
 		2232 AS "MaterialNr.",
@@ -106,7 +135,19 @@ gebuehren_alle AS (
 		"MaterialVerkaufstext Zeile 1 Position",
 		Kontokorrent
 	FROM 
-		nutzungsgebuehren_separate_RS
+		nutzungsgebuehren_seperate_RS
+	UNION ALL
+	SELECT
+ 		KundenNr,
+		"MaterialNr.",
+		Materialtext,
+		"Betrag 2 Kommastellen",
+		"Menge Ganzahlg",
+		"Kopfnotiz Zeile 1 Kopf",
+		"MaterialVerkaufstext Zeile 1 Position",
+		Kontokorrent
+	FROM 
+		steggebuehr_separate_RS
 	UNION ALL 
 	SELECT
 	 	KundenNr,
