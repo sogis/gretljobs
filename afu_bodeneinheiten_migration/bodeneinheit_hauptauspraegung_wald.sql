@@ -2,7 +2,7 @@ TRUNCATE afu_bodeneinheiten_v1.bodeneinheithauptauspraegung_wald CASCADE;
 
 WITH dataset AS ( 
     SELECT  
-        t_id
+        datasetname
     FROM 
         afu_bodeneinheiten_v1.t_ili2db_dataset 
     WHERE  
@@ -76,7 +76,7 @@ INSERT INTO afu_bodeneinheiten_v1.bodeneinheithauptauspraegung_wald (
 )
 SELECT
     basket.t_id, 
-    dataset.t_id,
+    dataset.datasetname,
     imp.objnr,  
     imp.gemnr,
     imp.kartierjahr,

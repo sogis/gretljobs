@@ -1,12 +1,4 @@
-WITH dataset AS ( 
-    SELECT  
-        t_id
-    FROM 
-        afu_bodeneinheiten_v1.t_ili2db_dataset 
-    WHERE  
-        datasetname = 'migration'
-), 
-basket AS (
+WITH basket AS (
     SELECT 
         t_id  
     FROM 
@@ -24,7 +16,7 @@ INSERT INTO afu_bodeneinheiten_v1.los (
 )
 SELECT
     basket.t_id, 
-    dataset.t_id,
+    'migration' AS datasetname,
     los, 
     'true', 
     'true'

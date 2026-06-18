@@ -1,14 +1,6 @@
 TRUNCATE afu_bodeneinheiten_v1.untertyp_k_hauptwald;
 
-WITH dataset AS ( 
-    SELECT  
-        t_id
-    FROM 
-        afu_bodeneinheiten_v1.t_ili2db_dataset 
-    WHERE  
-        datasetname = 'migration'
-), 
-basket AS (
+WITH basket AS (
     SELECT 
         t_id  
     FROM 
@@ -65,7 +57,7 @@ INSERT INTO
     )
 SELECT  
     basket.t_id,
-    dataset.t_id,
+    'migration' AS datasetname,
     id,
     trim(acode) --Damit die Leerzeichen weg gehen.
 FROM 
