@@ -199,7 +199,6 @@ SELECT
     imp.ohne_unterboden, 
     geometrie_from_isboden.geometrie 
   FROM 
-    dataset, 
     basket,
     afu_bodeneinheiten_v1.import_table imp
 LEFT JOIN 

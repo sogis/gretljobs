@@ -22,10 +22,8 @@ SELECT
     'true'
 FROM 
     afu_bodeneinheiten_v1.import_table, 
-    dataset, 
     basket
 GROUP BY 
     basket.t_id,
-    dataset.t_id,
     los
 ;

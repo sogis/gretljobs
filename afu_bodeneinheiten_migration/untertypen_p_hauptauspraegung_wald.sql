@@ -62,7 +62,6 @@ SELECT
     trim(acode) --Damit die Leerzeichen weg gehen.
 FROM 
     basket, 
-    dataset,
     untertypen 
 WHERE 
     id IS NOT NULL

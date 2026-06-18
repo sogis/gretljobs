@@ -179,7 +179,6 @@ SELECT
     imp.ohne_unterboden, 
     hauptauspraegung.t_id AS bodeneinheit
   FROM 
-    dataset, 
     basket,
     afu_bodeneinheiten_v1.import_table imp
 LEFT JOIN 

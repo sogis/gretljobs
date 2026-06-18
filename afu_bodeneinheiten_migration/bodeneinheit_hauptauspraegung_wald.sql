@@ -195,7 +195,6 @@ SELECT
     imp.maechtigk_ahh, 
     imp.humusform_wa 
   FROM 
-    dataset, 
     basket,
     afu_bodeneinheiten_v1.import_table imp
 LEFT JOIN 
