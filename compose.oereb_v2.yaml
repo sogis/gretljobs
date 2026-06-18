@@ -1,6 +1,6 @@
 services:
   oereb_v2-db:
-    image: sogis/postgis:17-3.6
+    image: postgis/postgis:18-3.6
     environment:
       POSTGRES_DB: oereb_v2
       POSTGRES_PASSWORD: secret
@@ -19,6 +19,6 @@ services:
         target: /opt/postgresql/conf.d/postgresql-custom.conf
       - type: volume
         source: pgdata_oereb_v2
-        target: /var/lib/postgresql/data
+        target: /var/lib/postgresql
 volumes:
   pgdata_oereb_v2:

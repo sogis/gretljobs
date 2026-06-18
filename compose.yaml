@@ -22,7 +22,7 @@ services:
         source: ${TMP:-/tmp}
         target: /gretl-share
   edit-db:
-    image: sogis/postgis:17-3.6
+    image: postgis/postgis:18-3.6
     environment:
       POSTGRES_DB: edit
       POSTGRES_PASSWORD: secret
@@ -41,9 +41,9 @@ services:
         target: /opt/postgresql/conf.d/postgresql-custom.conf
       - type: volume
         source: pgdata_edit
-        target: /var/lib/postgresql/data
+        target: /var/lib/postgresql
   pub-db:
-    image: sogis/postgis:17-3.6
+    image: postgis/postgis:18-3.6
     environment:
       POSTGRES_DB: pub
       POSTGRES_PASSWORD: secret
@@ -62,7 +62,7 @@ services:
         target: /opt/postgresql/conf.d/postgresql-custom.conf
       - type: volume
         source: pgdata_pub
-        target: /var/lib/postgresql/data
+        target: /var/lib/postgresql
 volumes:
   pgdata_edit:
   pgdata_pub:
