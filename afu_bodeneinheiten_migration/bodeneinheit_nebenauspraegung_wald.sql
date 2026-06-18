@@ -1,14 +1,6 @@
 TRUNCATE afu_bodeneinheiten_v1.nebenauspraegung_wald CASCADE;
 
-WITH dataset AS ( 
-    SELECT  
-        datasetname
-    FROM 
-        afu_bodeneinheiten_v1.t_ili2db_dataset 
-    WHERE  
-        datasetname = 'migration'
-), 
-basket AS (
+WITH basket AS (
     SELECT 
         t_id  
     FROM 
@@ -62,7 +54,7 @@ INSERT INTO afu_bodeneinheiten_v1.nebenauspraegung_wald (
 )
 SELECT
     basket.t_id, 
-    dataset.datasetname,
+    'migration' AS datasetname,
     imp.t_id,
     imp.gewichtung_auspraegung,
     imp.wasserhhgr,

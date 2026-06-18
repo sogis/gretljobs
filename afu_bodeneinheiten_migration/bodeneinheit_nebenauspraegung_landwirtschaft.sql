@@ -60,7 +60,7 @@ INSERT INTO afu_bodeneinheiten_v1.nebenauspraegung_landwirtschaft (
 )
 SELECT
     basket.t_id, 
-    dataset.datasetname,
+    'migration' AS datasetname,
     imp.t_id,
     imp.gewichtung_auspraegung,
     imp.wasserhhgr,
