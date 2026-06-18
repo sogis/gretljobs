@@ -1,69 +1,51 @@
 # Dokumentation Jenkinsfile
 
-Standardmässig verwenden die GRETL-Jobs
-das "zentrale" [Standard-Jenkinsfile](Jenkinsfile).
-Bei speziellen Anforderungen kann man einem Job
-ein eigenes Jenkinsfile zuweisen,
-indem man es im Job-Ordner platziert.
-In den folgenden Abschnitten sind solche Fälle aufgelistet;
-es ist jeweils aufgeführt, welches Jenkinsfile für einen ähnlichen Fall
-als Vorlage übernommen werden soll.
-Es sollen möglichst wenige oder am besten gar keine Änderungen
-am übernommenen Jenkinsfile gemacht werden,
-damit die Jenkinsfiles weitgehend einheitlich bleiben.
+Standardmässig verwenden die GRETL-Jobs das "zentrale" [Standard-Jenkinsfile](Jenkinsfile).
+Bei speziellen Anforderungen kann man einem Job ein eigenes Jenkinsfile zuweisen, indem man es im Job-Ordner platziert.
+In den folgenden Abschnitten sind solche Fälle aufgelistet.
+Es ist jeweils aufgeführt, welches Jenkinsfile für einen ähnlichen Fall als Vorlage übernommen werden soll.
+Es sollen möglichst wenige oder am besten gar keine Änderungen am übernommenen Jenkinsfile gemacht werden, damit die Jenkinsfiles weitgehend einheitlich bleiben.
 
 ## Nach dem Start des GRETL-Jobs in Jenkins eine Datei hochladen
 
 Vorlage: [avt_kantonsstrassen_pub/Jenkinsfile](avt_kantonsstrassen_pub/Jenkinsfile)
-Entsprechenden Eintrag im job.properties nicht vergessen: `parameters.stashedFile=xyz.zip`
+Entsprechenden Eintrag in `job.properties` nicht vergessen: `parameters.stashedFile=xyz.zip`
 
-Jeweils in Jenkinsfile und job.properties anpassen auf die entsprechende Dateiendung (Beispielsweise xyz.csv), 
-damit die Benutzer sehen, welchen Dateityp hochgeladen werden soll.
+Jeweils in Jenkinsfile und `job.properties` anpassen auf die entsprechende Dateiendung (beispielsweise `xyz.csv`), damit die Benutzer sehen, welcher Dateityp hochgeladen werden soll.
 
-Mit dieser Konfiguration wird man direkt nach dem Start des Jobs gefragt, 
-welche Datei hochgeladen werden soll.
+Mit dieser Konfiguration wird man direkt nach dem Start des Jobs gefragt, welche Datei hochgeladen werden soll.
 
-Das Jenkinsfile platziert die hochgeladene Datei im Gradle Build-Dir. Bei der 
-Weiterverarbeitung die Datei im build.gradle mit Build-Dir referenzieren.
+Das Jenkinsfile platziert die hochgeladene Datei im *Gradle Build Directory*.
+Bei der Weiterverarbeitung die Datei im `build.gradle` mit `$buildDir` referenzieren.
 Beispiele: `"$buildDir/xyz.zip"`, `buildDir + "/xyz.zip"`
 
 ## Nach dem Start des GRETL-Jobs in Jenkins eine Datei hochladen und zusätzlich den Dataset-Namen (z.B. BFS-Nummer) angeben
 
 Vorlage: [arp_nutzungsplanung_import/Jenkinsfile](arp_nutzungsplanung_import/Jenkinsfile)
 
-Auch hier wird man direkt nach dem Start des Jobs gefragt,
-welche Datei man hochladen möchte, und man muss einen Dataset-Namen angeben.
+Auch hier wird man direkt nach dem Start des Jobs gefragt, welche Datei man hochladen möchte, und man muss einen Dataset-Namen angeben.
 
-In diesem Fall ist die hochgeladene Datei in `build.gradle`
-ebenfalls unter `upload/uploadFile` verfügbar.
-Zudem kann auf den angegebenen Dataset-Namen
-über die Variable `ili2pgDataset` zugegriffen werden.
+In diesem Fall ist die hochgeladene Datei in `build.gradle` ebenfalls unter `upload/uploadFile` verfügbar.
+Zudem kann auf den angegebenen Dataset-Namen über die Variable `ili2pgDataset` zugegriffen werden.
 
 ## Beim Start des GRETL-Jobs einen Parameter (String) übergeben
 
 Vorlage: [afu_abbaustellen_pub/Jenkinsfile](afu_abbaustellen_pub/Jenkinsfile)
 
-Damit dieser Job funktioniert, muss zusätzlich in der Datei `job.properties`
-die folgende Zeile stehen:
+Damit dieser Job funktioniert, muss zusätzlich in der Datei `job.properties` die folgende Zeile stehen:
 
 ```
 parameters.stringParams=afuAbbaustellenAppXtfUrl;;Komplette URL zum Download des XTF
 ```
 
-Der Name des Parameters kann frei gewählt werden
-(hier `afuAbbaustellenAppXtfUrl`);
-nach dem ersten Strichpunkt kann zudem ein Vorgabewert eingetragen werden
-(hier leerer String);
-nach dem zweiten Strichpunkt kann eine Beschreibung eingegeben werden,
-die dem Benutzer zu diesem Parameter
-beim Start des GRETL-Jobs angezeigt werden soll.
+Der Name des Parameters kann frei gewählt werden (hier `afuAbbaustellenAppXtfUrl`);
+nach dem ersten Strichpunkt kann zudem ein Vorgabewert eingetragen werden (hier leerer String);
+nach dem zweiten Strichpunkt kann eine Beschreibung eingegeben werden, die dem Benutzer zu diesem Parameter beim Start des GRETL-Jobs angezeigt werden soll.
 
-Im Jenkinsfile muss der Name des Parameters an den
-in `job.properties` definierten Namen angepasst werden.
+Im Jenkinsfile muss der Name des Parameters an den in `job.properties` definierten Namen angepasst werden.
 
 Es können auch mehrere String-Parameter übergeben werden.
-Hierzu trennt man die einzelnen String-Parameter
-mit dem Zeichen `@` voneinander ab.
+Hierzu trennt man die einzelnen String-Parameter mit dem Zeichen `@` voneinander ab.
 Vorlage: [arp_nutzungsplanung_kanton_pub/job.properties](arp_nutzungsplanung_kanton_pub/job.properties)
 
 ## Im Pod eine temporäre Datenbank für die Verarbeitung von Daten starten
