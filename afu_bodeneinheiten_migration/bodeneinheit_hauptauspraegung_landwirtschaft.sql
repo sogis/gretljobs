@@ -1,14 +1,6 @@
 TRUNCATE afu_bodeneinheiten_v1.bodeneinheithauptauspraegung_landwirtschaft CASCADE;
 
-WITH dataset AS ( 
-    SELECT  
-        datasetname
-    FROM 
-        afu_bodeneinheiten_v1.t_ili2db_dataset 
-    WHERE  
-        datasetname = 'migration'
-), 
-basket AS (
+WITH basket AS (
     SELECT 
         t_id  
     FROM 
@@ -74,7 +66,7 @@ INSERT INTO afu_bodeneinheiten_v1.bodeneinheithauptauspraegung_landwirtschaft (
 )
 SELECT
     basket.t_id, 
-    dataset.datasetname,
+    'migration' AS datasetname,
     imp.objnr,  
     imp.gemnr,
     imp.kartierjahr,
