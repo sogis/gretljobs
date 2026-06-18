@@ -535,7 +535,7 @@ LEFT JOIN
 LEFT JOIN 
     afu_bodeneinheiten_v1.t_ili2db_dataset dataset 
     ON 
-    los.t_datasetname::integer = dataset.t_id
+    los.t_datasetname = dataset.datasetname 
 WHERE 
     los.publizieren IS TRUE
 ;
