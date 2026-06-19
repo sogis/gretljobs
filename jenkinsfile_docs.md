@@ -6,24 +6,23 @@ In den folgenden Abschnitten sind solche Fälle aufgelistet.
 Es ist jeweils aufgeführt, welches Jenkinsfile für einen ähnlichen Fall als Vorlage übernommen werden soll.
 Es sollen möglichst wenige oder am besten gar keine Änderungen am übernommenen Jenkinsfile gemacht werden, damit die Jenkinsfiles weitgehend einheitlich bleiben.
 
-## Nach dem Start des GRETL-Jobs in Jenkins eine Datei hochladen
+## GRETL-Jobs mit File Upload
 
 Vorlage: [avt_kantonsstrassen_pub/Jenkinsfile](avt_kantonsstrassen_pub/Jenkinsfile)
 Entsprechenden Eintrag in `job.properties` nicht vergessen: `parameters.stashedFile=xyz.zip`
 
 Jeweils in Jenkinsfile und `job.properties` anpassen auf die entsprechende Dateiendung (beispielsweise `xyz.csv`), damit die Benutzer sehen, welcher Dateityp hochgeladen werden soll.
 
-Mit dieser Konfiguration wird man direkt nach dem Start des Jobs gefragt, welche Datei hochgeladen werden soll.
-
+Mit dieser Konfiguration wird man beim Start des Jobs gefragt, welche Datei hochgeladen werden soll.
 Das Jenkinsfile platziert die hochgeladene Datei im *Gradle Build Directory*.
 Bei der Weiterverarbeitung die Datei im `build.gradle` mit `$buildDir` referenzieren.
 Beispiele: `"$buildDir/xyz.zip"`, `buildDir + "/xyz.zip"`
 
-## Nach dem Start des GRETL-Jobs in Jenkins eine Datei hochladen und zusätzlich den Dataset-Namen (z.B. BFS-Nummer) angeben
+## GRETL-Jobs mit File Upload und String Parameter (z.B. für den Dataset-Namen/BFS-Nummer)
 
 Vorlage: [arp_nutzungsplanung_import/Jenkinsfile](arp_nutzungsplanung_import/Jenkinsfile)
 
-Auch hier wird man direkt nach dem Start des Jobs gefragt, welche Datei man hochladen möchte, und man muss einen Dataset-Namen angeben.
+Auch hier wird man beim Start des Jobs gefragt, welche Datei man hochladen möchte, und man muss einen Dataset-Namen angeben.
 
 In diesem Fall ist die hochgeladene Datei in `build.gradle` ebenfalls unter `upload/uploadFile` verfügbar.
 Zudem kann auf den angegebenen Dataset-Namen über die Variable `ili2pgDataset` zugegriffen werden.
