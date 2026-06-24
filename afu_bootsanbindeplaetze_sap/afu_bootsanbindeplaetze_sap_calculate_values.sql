@@ -2,7 +2,7 @@ DELETE FROM afu_bootsanbindeplaetze.main.sap_structure;
 
 WITH 
 
--- Selektierung alle Beträge, wenn die Nutzungsgebühr und Steggebühr an die gleiche Rechnungsstelle geht --
+-- Selektierung Nutzungsgebühr, wenn die Nutzungsgebühr und Steggebühr an die gleiche Rechnungsstelle geht --
 nutzungsgebuehren_gleiche_RS AS (
 	SELECT 
 		(bp.rechnungsstelle_nutzungsgebuehr->0->>'SAP')::text AS KundenNr, -- extrahiert die Kunden-Nr. (SAP) aus dem JSON-Attribut
@@ -54,7 +54,7 @@ nutzungsgebuehren_seperate_RS AS (
 			('Miete', bp.mietkosten)
 	) AS g(Materialtext, betrag) -- Steggebühr wurde entfernt
 	WHERE
-		bp.rechnungsstelle_nutzungsgebuehr IS DISTINCT FROM bp.rechnungsstelle_steggebuehr -- Rechnungstelle für Nutzungsgebühr und Steggebühr ist die gleiche
+		bp.rechnungsstelle_nutzungsgebuehr IS DISTINCT FROM bp.rechnungsstelle_steggebuehr -- Rechnungstelle für Nutzungsgebühr und Steggebühr ist ungleich
 	AND
 		g.betrag IS NOT NULL
 	AND
@@ -81,11 +81,7 @@ steggebuehr_separate_RS AS (
 ),
 
 -- Die Bewilligungsgebühr wird einmalig mit der Vergabe der Nutzungsbewilligung erhoben --
--- Die Bewilligungsgebühr wird für das aktuelle Jahr nicht erhoben, wenn die Bewilligung vor dem Juli vergeben wurde --
--- Die Rechnungsperiode der Bewilligungsgebühr geht dementsprechend von Juli bis Juli --
--- Beispiel: Das heutige Datum ist der 31.3.2026 (normalerweise wird ca. Ende März die Rechnung erstellt) --
---			- Fall 1 - Bewilligungsdatum ist 20.08.2025: Bewilligungsgebühr wird erhoben --
---			- Fall 2 - Bewilligungsdatum ist 20.06.2025: Bewilligungsgebühr wird nicht erhoben, da bereits in vorheriger Periode verrechnet --
+-- Sie wird nur in den SAP-Export integriert, wenn die Bewilligung zwischen dem 1.1. des aktuellen Jahres und der Ausführung des Gretljobs liegt --
 bewilligunsgebuehr AS (
 	SELECT 
 		(bp.rechnungsstelle_nutzungsgebuehr->0->>'SAP')::text AS KundenNr,
@@ -101,15 +97,9 @@ bewilligunsgebuehr AS (
 	LEFT JOIN pubdb.afu_bootsanbindeplaetze_pub_v1.standortdaten AS sd
 		ON bp.standort = sd.standort
 	WHERE
-    	datum_bewilligung >= CASE 
-        	WHEN EXTRACT(MONTH FROM CURRENT_DATE) >= 7 -- Prüft ob der aktuelle Monat nach dem Juni ist (also Juli oder später)
-        		THEN
-        			MAKE_DATE(EXTRACT(YEAR FROM CURRENT_DATE)::int, 7, 1) -- Vergleich mit dem 1.7. des aktuellen Jahres
-       			ELSE
-        			MAKE_DATE(EXTRACT(YEAR FROM CURRENT_DATE)::int - 1, 7, 1) -- Vergleich mit dem 1.7. des Vorjahres
-    	END
-    AND
-    	datum_bewilligung <= CURRENT_DATE -- Nur Daten bis heute (keine zukünftigen)
+    	bp.datum_bewilligung >= date_trunc('year', CURRENT_DATE)
+	AND
+		bp.datum_bewilligung <= CURRENT_DATE
 ),
 
 gebuehren_alle AS (
