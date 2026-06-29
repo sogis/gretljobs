@@ -8,15 +8,16 @@ Es sollen möglichst wenige oder am besten gar keine Änderungen am übernommene
 
 ## GRETL-Jobs mit File Upload
 
-Vorlage: [avt_kantonsstrassen_pub/Jenkinsfile](avt_kantonsstrassen_pub/Jenkinsfile)
-Entsprechenden Eintrag in `job.properties` nicht vergessen: `parameters.stashedFile=xyz.zip`
+Vorlage: [xy_jenkinsfile_template_fileupload/Jenkinsfile](xy_jenkinsfile_template_fileupload/Jenkinsfile)
 
-Jeweils in Jenkinsfile und `job.properties` anpassen auf die entsprechende Dateiendung (beispielsweise `xyz.csv`), damit die Benutzer sehen, welcher Dateityp hochgeladen werden soll.
+- Im Jenkinsfile muss die Umgebungsvariable `UPLOAD_FILE_NAME` auf den für die hochgeladene Datei zu verwendenden Namen gesetzt werden
+- In `job.properties` muss die folgende Property gesetzt werden: `parameters.stashedFile=data.zip`; hier muss derselbe Dateiname verwendet werden
+- Jeweils auch die entsprechende Dateiendung angeben (beispielsweise `xyz.csv`), damit die Benutzer sehen, welcher Dateityp hochgeladen werden soll
 
 Mit dieser Konfiguration wird man beim Start des Jobs gefragt, welche Datei hochgeladen werden soll.
-Das Jenkinsfile platziert die hochgeladene Datei im *Gradle Build Directory*.
-Bei der Weiterverarbeitung die Datei im `build.gradle` mit `$buildDir` referenzieren.
-Beispiele: `"$buildDir/xyz.zip"`, `buildDir + "/xyz.zip"`
+Das Jenkinsfile platziert die hochgeladene Datei im *Gradle Build Directory* im Unterordner `in`.
+Bei der Weiterverarbeitung die Datei im `build.gradle` mit der Variablen `$buildDir` referenzieren.
+Beispiele: `"$buildDir/in/data.zip"`, `buildDir + "/in/xyz.zip"`
 
 ## GRETL-Jobs mit File Upload und String Parameter (z.B. für den Dataset-Namen/BFS-Nummer)
 
