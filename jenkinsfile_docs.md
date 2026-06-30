@@ -20,6 +20,22 @@ Die hochgeladene Datei wird nach dem Upload jeweils den in `job.properties` unte
 Bei der Weiterverarbeitung die Datei im `build.gradle` mit der Variablen `$buildDir` referenzieren.
 Beispiele: `"$buildDir/in/data.zip"`, `buildDir + "/in/xyz.csv"`
 
+## GRETL-Jobs mit File Upload, wobei der ursprüngliche Dateiname beibehalten werden soll
+
+Vorlage: [xy_jenkinsfile_template_fileupload_origname/Jenkinsfile](xy_jenkinsfile_template_fileupload_origname/Jenkinsfile)
+
+- In `job.properties` muss die folgende Property gesetzt werden: `parameters.stashedFile=FILE_NAME` (in der Vorlage als Beispiel `parameters.stashedFile=data.zip`); der hier gesetzte Dateiname ist für den GRETL-Job irrelevant, da die Datei vom Jenkinsfile zu ihrem ursprünglichen Dateinamen umbenannt wird
+- Im Jenkinsfile muss in Zeile 13 die Umgebungsvariable `UPLOAD_FILE_NAME` auf denselben Dateinamen gesetzt werden (in der Vorlage `data.zip`)
+- Jeweils auch die entsprechende Dateiendung angeben (beispielsweise `xyz.csv`), damit die Benutzer sehen, welcher Dateityp hochgeladen werden soll
+
+Mit dieser Konfiguration wird man beim Start des Jobs gefragt, welche Datei hochgeladen werden soll.
+Das Jenkinsfile platziert die hochgeladene Datei im *Gradle Build Directory* im Unterordner `in`.
+Die Datei hat in diesem Fall immer denselben Namen wie die ursprünglich hochgeladene Datei.
+Dieser Name wird auf Zeile 20 dem GRETL-Befehl mit der Property `uploadFileName` übergeben.
+Dadurch ist die Datei in GRETL in `build.gradle` unter `"$buildDir/in/$uploadFileName"` erreichbar.
+
+Der Anwendungsfall für diese Variante ist, dass im Dateinamen der hochgeladenen Datei z.B. eine BFS-Nummer vorkommt (z.b. `schutzbauten_2408.xtf`), die dann in GRETL ausgelesen und bei _ili2pgReplace_ als Dataset übergeben werden kann.
+
 ## GRETL-Jobs mit File Upload und String Parameter (z.B. für den Dataset-Namen/BFS-Nummer)
 
 Vorlage: [arp_nutzungsplanung_import/Jenkinsfile](arp_nutzungsplanung_import/Jenkinsfile)
