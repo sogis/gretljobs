@@ -269,7 +269,7 @@ Die Datei `job.properties` kann folgende Eigenschaften des GRETL-Jobs enthalten:
 logRotator.numToKeep=30
 triggers.cron=H H(1-3) * * *
 parameters.stashedFile=myfilename.xyz
-parameters.stringParams=parameterName;default value;parameter description
+parameters.stringParams=PARAMETER_NAME;DEFAULT_VALUE;PARAMETER_DESCRIPTION
 triggers.upstream=other_job_name
 authorization.permissions=gretl-users-barpa
 ```
@@ -284,23 +284,17 @@ Unter dem Namen, den man dieser Property zuweist (z.B. `data.xtf`),kann dann der
 Damit dies funktioniert, ist allerdings ein spezielles Jenkinsfile nötig; siehe unter [GRETL-Jobs mit File Upload](jenkinsfile_docs.md#gretl-jobs-mit-file-upload) oder [GRETL-Jobs mit File Upload, wobei der ursprüngliche Dateiname beibehalten werden soll](jenkinsfile_docs.md#gretl-jobs-mit-file-upload-wobei-der-urspr%C3%BCngliche-dateiname-beibehalten-werden-soll).
 Hinweis: Jobs mit File Upload können nicht aus der *Blue Ocean*-Oberfläche heraus gestartet werden, sondern nur aus der klassischen Jenkins-Oberfläche heraus.
 
-Mit `parameters.stringParams` können Parameter definiert werden,
-für welche der Benutzer beim manuellen Start des Jobs Werte übergeben kann.
-Im Jenkinsfile kann Über den gesetzten Parameternamen (`parameterName`)
-auf den Wert des Parameters zugegriffen werden.
-Im obigen Beispiel wird ein String-Parameter mit Name `parameterName` definiert,
-dessen Standarwert `default value` ist
-und für den dem Benutzer neben dem Eingabefeld
-die Beschreibung `parameter description` angezeigt wird.
+Mit `parameters.stringParams` können Parameter definiert werden, für welche man beim manuellen Start des Jobs Werte übergeben kann.
+Damit man in GRETL auf den Parameterwert zugreifen kann, ist allerdings ein spezielles Jenkinsfile nötig; siehe unter [Beim Start des GRETL-Jobs einen Parameter (String) übergeben](jenkinsfile_docs.md#beim-start-des-gretl-jobs-einen-parameter-string-%C3%BCbergeben).
+Im Jenkinsfile kann mit dem gesetzten Parameternamen auf den Wert des Parameters zugegriffen werden (z.B. mit `${params.MY_PARAMETER_NAME}`).
+Eine Parameter-Definition umfasst jeweils den Parameternamen, optional den Vorgabewert und optional eine Beschreibung.
 Die drei Werte müssen mit Strichpunkt voneinander getrennt werden.
-Innerhalb der Werte dürfen deshalb keine Strichpunkte vorkommen
-(und auch nicht das Zeichen `@`).
-Für den Standardwert und die Beschreibung sind Leerschläge zugelassen.
+Innerhalb der Werte dürfen deshalb keine Strichpunkte vorkommen (und auch nicht das Zeichen `@`).
+Für den Standardwert und die Beschreibung sind Leerschläge zugelassen, und diese können auch aus einem leeren String bestehen.
 Es ist auch möglich, mehrere String-Parameter zu definieren.
 Sie müssen mit dem Zeichen `@` voneinander getrennt werden.
-Für die bessere Lesbarkeit ist es ratsam,
-jeden String-Parameter auf einer eigenen Zeile zu definieren;
-hierzu wird ein Backslash am Ende der vorangehenden Zeile benötigt.
+Für die bessere Lesbarkeit ist es ratsam, jeden String-Parameter auf einer eigenen Zeile zu definieren.
+Hierzu wird ein Backslash am Ende der vorangehenden Zeile benötigt.
 Beispiel:
 
 ```java
