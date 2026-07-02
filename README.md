@@ -279,10 +279,10 @@ Falls man alle Ausführungen aufbewahren möchte, kann man hier den Wert `unlimi
 
 Mit `triggers.cron` kann eingestellt werden, zu welchem Zeitpunkt der Job automatisch gestartet werden soll. Im Beispiel `H H(1-3) * * *` wird der Job jeden Tag irgendwann zwischen 01:00 Uhr und 03:59 Uhr ausgeführt. (Dokumentation der Schreibweise siehe https://github.com/jenkinsci/jenkins/blob/master/core/src/main/resources/hudson/triggers/TimerTrigger/help-spec.jelly). Wenn man diese Einstellung weglässt, wird der Job nie automatisch gestartet, und er muss manuell gestartet werden.
 
-Mit `parameters.stashedFile` kann konfiguriert werden,
-dass ein  Benutzer beim Starten des Jobs eine Datei hochladen muss.
-Man muss hier einen Dateinamen (z.B. `data.xtf`) angeben;
-unter diesem Dateinamen kann dann der GRETL-Job auf die Datei zugreifen.
+Mit `parameters.stashedFile` kann konfiguriert werden, dass beim manuellen Starten des Jobs eine Datei hochgeladen werden kann.
+Unter dem Namen, den man dieser Property zuweist (z.B. `data.xtf`),kann dann der GRETL-Job im Verzeichnis `$buildDir/in/` auf die hochgeladene Datei zugreifen.
+Damit dies funktioniert, ist allerdings ein spezielles Jenkinsfile nötig; siehe unter [GRETL-Jobs mit File Upload](jenkinsfile_docs.md#gretl-jobs-mit-file-upload) oder [GRETL-Jobs mit File Upload, wobei der ursprüngliche Dateiname beibehalten werden soll](jenkinsfile_docs.md#gretl-jobs-mit-file-upload-wobei-der-urspr%C3%BCngliche-dateiname-beibehalten-werden-soll).
+Hinweis: Jobs mit File Upload können nicht aus der *Blue Ocean*-Oberfläche heraus gestartet werden, sondern nur aus der klassischen Jenkins-Oberfläche heraus.
 
 Mit `parameters.stringParams` können Parameter definiert werden,
 für welche der Benutzer beim manuellen Start des Jobs Werte übergeben kann.
