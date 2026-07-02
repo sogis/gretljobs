@@ -36,34 +36,29 @@ Dadurch ist die Datei in GRETL in `build.gradle` unter `"$buildDir/in/$uploadFil
 
 Der Anwendungsfall für diese Variante ist, dass im Dateinamen der hochgeladenen Datei z.B. eine BFS-Nummer vorkommt (z.b. `schutzbauten_2408.xtf`), die dann in GRETL ausgelesen und bei _ili2pgReplace_ als Dataset übergeben werden kann.
 
-## GRETL-Jobs mit File Upload und String Parameter (z.B. für den Dataset-Namen/BFS-Nummer)
-
-Vorlage: [arp_nutzungsplanung_import/Jenkinsfile](arp_nutzungsplanung_import/Jenkinsfile)
-
-Auch hier wird man beim Start des Jobs gefragt, welche Datei man hochladen möchte, und man muss einen Dataset-Namen angeben.
-
-In diesem Fall ist die hochgeladene Datei in `build.gradle` ebenfalls unter `upload/uploadFile` verfügbar.
-Zudem kann auf den angegebenen Dataset-Namen über die Variable `ili2pgDataset` zugegriffen werden.
-
 ## Beim Start des GRETL-Jobs einen Parameter (String) übergeben
 
-Vorlage: [afu_abbaustellen_pub/Jenkinsfile](afu_abbaustellen_pub/Jenkinsfile)
+Vorlage: [xy_jenkinsfile_template_stringparams/Jenkinsfile](xy_jenkinsfile_template_stringparams/Jenkinsfile)
 
-Damit dieser Job funktioniert, muss zusätzlich in der Datei `job.properties` die folgende Zeile stehen:
+- In `job.properties` muss die Property `parameters.stringParams=PARAM_NAME;DEFAULT_VALUE;DESCRIPTION` gesetzt werden (in der Vorlage als Beispiel `parameters.stringParams=ili2pgDataset;2408;BFS-Nummer (Dataset) der Daten angeben`)
+- Im Jenkinsfile muss in Zeile 13 die Option `-P propertyName=${params.PARAM_NAME}` des GRETL-Aufrufs angepasst werden: `PARAM_NAME` muss gleich wie der Parametername lauten, den man in `job.properties` gewählt hat; `propertyName` kann im Prinzip anders lauten, aber es ist sinnvoll, wenn er möglichst ähnlich lautet wie der Parametername (in der Vorlage deshalb `-P ili2pgDataset=${params.ili2pgDataset}`)
 
+Mit dieser Konfiguration wird dem GRETL-Befehl die Property `propertyName` übergeben, deren Wert der Parameterwert ist, den man dem Job beim Start mitgegeben hat.
+Der Name des Parameters kann frei gewählt werden, muss aber in `job.properties` und im Jenkinsfile jeweils übereinstimmen.
+Der Name der Property, die man dem GRETL-Aufruf übergibt, kann ebenfalls frei gewählt werden, aber es ist sinnvoll, wenn er möglichst ähnlich lautet wie der Parametername.
+
+In `job.properties` muss hinter `parameters.stringParams=` der Parametername, optional ein Vorgabewert und optional eine Beschreibung, die im Jenkins GUI bei diesem Parameter angezeigt werden soll, definiert werden, jeweils mit Strichpunkt voneinander getrennt.
+Die Strichpunkte müssen immer gesetzt werden, auch wenn man einen oder beide optionale Angaben weglässt, z.B. `parameters.stringParams=MY_PARAMETER_NAME;;`
+
+Falls der Job mehrere String-Parameter benötigt, trennt man die einzelnen String-Parameter mit dem Zeichen `@` voneinander ab, z.B.:
 ```
-parameters.stringParams=afuAbbaustellenAppXtfUrl;;Komplette URL zum Download des XTF
+parameters.stringParams=bfsnr;;BFS-Nr. der Gemeinde, welche publiziert werden soll@buildDescription;Keine Beschreibung angegeben;Beschreibung/Grund für die Publikation der Daten
 ```
-
-Der Name des Parameters kann frei gewählt werden (hier `afuAbbaustellenAppXtfUrl`);
-nach dem ersten Strichpunkt kann zudem ein Vorgabewert eingetragen werden (hier leerer String);
-nach dem zweiten Strichpunkt kann eine Beschreibung eingegeben werden, die dem Benutzer zu diesem Parameter beim Start des GRETL-Jobs angezeigt werden soll.
-
-Im Jenkinsfile muss der Name des Parameters an den in `job.properties` definierten Namen angepasst werden.
-
-Es können auch mehrere String-Parameter übergeben werden.
-Hierzu trennt man die einzelnen String-Parameter mit dem Zeichen `@` voneinander ab.
-Vorlage: [arp_nutzungsplanung_kanton_pub/job.properties](arp_nutzungsplanung_kanton_pub/job.properties)
+oder etwas besser formatiert:
+```
+parameters.stringParams=bfsnr;;BFS-Nr. der Gemeinde, welche publiziert werden soll@\
+                        buildDescription;Keine Beschreibung angegeben;Beschreibung/Grund für die Publikation der Daten
+```
 
 ## Im Pod eine temporäre Datenbank für die Verarbeitung von Daten starten
 
