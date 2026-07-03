@@ -7,12 +7,14 @@ import java.io.File
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'validateData', 'deleteData_staging_pub', 'uploadXtf'
+defaultTasks 'validateData', 'deleteData_staging_pub', 'uploadMGDMXtf'
 
 
 def fileName = "afu_gewaesserschutz_zonen_areale.xtf"
 def fileNameZip = "afu_gewaesserschutz_zonen_areale.zip"
 def fileNamePub = "afu_gewaesserschutz_zonen_areale_pub.xtf"
+def fileNameMGDM = "afu_gewaesserschutz_zonen_areale.xtf"
+def fileNameMGDMZip = "afu_gewaesserschutz_zonen_areale.zip"
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
