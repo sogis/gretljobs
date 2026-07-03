@@ -109,7 +109,7 @@ task publishPub(type: Publisher){
 // EXPORT Typo3
 // Datenumbau für Planregister (Nur Daten aus Schema "afu_gewaesserschutz_zonen_areale_v1" werden ersetzt) und an Typo3 senden
 
-
+/*
 task deleteData_planregister_pub (type: SqlExecutor ) {
     dependsOn publishPub
     description = "Löscht/leert die Daten aus dem Schema arp_nutzungsplanung_planregister_pub"
@@ -159,12 +159,45 @@ task uploadPlanregister(type: Curl) {
     password = digiplanPwd
     expectedStatusCode = 202
 }
+*/
+/** MGDM planerischer Gewässerschutz v1.2
+* --------------------------------------- */
 
-task zipXtf(type: Zip){
-    dependsOn uploadPlanregister
+task deleteFromGewaesserschutzMGDM_V1_2(type: SqlExecutor) {
+    description = "Löscht die Daten aus dem Schema."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['delete_gwszonen_mgdm.sql']
+}
+
+task transferGewaesserschutzMGDM_V1_2(type: SqlExecutor) {
+    dependsOn deleteFromGewaesserschutzMGDM_V1_2
+    description = "Importiert die Daten aus dem afu_gewaesserschutz_zonen_areale."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ['gwszonen_status_mgdm.sql','gwszonen_gwsareal_gwszone_mgdm.sql','gwszonen_dokument_mgdm.sql']
+}
+
+task exportDataMGDM (type: Ili2pgExport) {
+    dependsOn transferGewaesserschutzMGDM_V1_2
+    description = "Exportiert die Daten aus dem Schema afu_grundwasserschutz_zonen_areale_MGDM in eine INTERLIS-Datei."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'afu_gewaesserschutz_zonen_areale_mgdm_v1'
+    models = 'PlanerischerGewaesserschutz_V1_2'
+    dataFile= file(fileNameMGDM)
+    disableValidation = true
+}
+
+task validateDataMGDM(type: IliValidator) {
+    dependsOn exportDataMGDM
+    description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
+    dataFiles = file(fileNameMGDM)
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    failOnError = true
+}
+task zipMGDMXtf(type: Zip){
+    dependsOn validateDataMGDM
     from "."
-    include fileName
-    archiveName fileNameZip
+    include fileNameMGDM
+    archiveName fileNameMGDMZip
     destinationDir(file("."))
 }
 
