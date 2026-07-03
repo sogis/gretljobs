@@ -16,4 +16,9 @@ SELECT
     bemerkungen_lang, 
     kantonalerstatus, 
     kantonalerstatus_lang
-FROM afu_gewaesserschutz_zonen_areale_v1.gwszonen_status;
+FROM 
+    afu_gewaesserschutz_zonen_areale_v1.gwszonen_status
+WHERE     
+    kantonalerstatus IS NULL 
+        OR kantonalerstatus  = 'RichtplanFestsetzung'
+;
