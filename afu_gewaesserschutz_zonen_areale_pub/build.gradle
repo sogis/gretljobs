@@ -212,7 +212,7 @@ task zipMGDMXtf(type: Zip){
 * des Kommentars.
 */
 task uploadXtf() {
-    dependsOn zipXtf
+    dependsOn zipMGDMXtf
     doLast {
         def response = ["curl", "-u", aiLogin, "-F", "topic=planerischer_gewaesserschutz", "-F",
                         "lv95_file=@" + Paths.get(".", fileNameZip), "-F", "publish=true", "-F", "replace_all=false",
