@@ -10,7 +10,7 @@ pipeline {
             spec:
               containers:
                 - name: processing-db
-                  image: postgis/postgis:17-3.5-alpine
+                  image: postgis/postgis:18-3.6-alpine
                   resources:
                     requests:
                       cpu: 300m
@@ -24,7 +24,7 @@ pipeline {
                     - name: POSTGRES_PASSWORD
                       value: processing
                     - name: PGDATA
-                      value: /var/lib/postgresql/data/pgdata
+                      value: /var/lib/postgresql/pgdata
                   envFrom:
                     - configMapRef:
                         name: "gretl-resources"
@@ -33,7 +33,7 @@ pipeline {
                       mountPath: "/home/gradle/.gradle/gradle.properties"
                       subPath: "gradle.properties"
                     - name: postgresql-data-volume
-                      mountPath: /var/lib/postgresql/data
+                      mountPath: /var/lib/postgresql
               volumes:
                 - name: postgresql-data-volume
                   emptyDir: {}

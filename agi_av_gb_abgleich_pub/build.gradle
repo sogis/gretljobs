@@ -25,6 +25,7 @@ task convertData(type: SqlExecutor, dependsOn: 'transferGbData'){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = [
             'agi_av_gb_abgleich_import_differenzen_staging.sql',
+            'agi_av_gb_abgleich_import_egrid_kontrolle.sql',
             'agi_av_gb_abgleich_import_uebersicht_des_vergleichs_staging.sql'
     ]
 }
