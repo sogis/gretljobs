@@ -271,7 +271,7 @@ triggers.cron=H H(1-3) * * *
 parameters.stashedFile=myfilename.xyz
 parameters.stringParams=PARAMETER_NAME;DEFAULT_VALUE;PARAMETER_DESCRIPTION
 triggers.upstream=other_job_name
-authorization.permissions=gretl-users-barpa
+authorization.permissions=GA_Gretl_barpa
 ```
 
 Mit `logRotator.numToKeep` kann eingestellt werden, wieviele Ausführungen des Jobs aufbewahrt werden sollen, d.h. für wieviele Ausführungen beispielsweise das Logfile vorgehalten wird. Standardwert ist 15. Wenn man diese Einstellung weglässt, werden also die 15 letzten Ausführungen aufbewahrt.
@@ -308,14 +308,14 @@ Mehrere Benutzer oder Gruppen
 können mit Komma getrennt aneinandergereiht werden.
 Folgende GRETL-spezifischen Benutzergruppen stehen im Moment zur Verfügung:
 
-* gretl-users-barpa (ARP)
-* gretl-users-bdafu (AfU)
-* gretl-users-bdhba (HBA)
-* gretl-users-bvtaa (AVT)
-* gretl-users-edden (ADA)
-* gretl-users-skkan (Staatskanzlei)
-* gretl-users-vkfaa (AWJF)
-* gretl-users-vlwaa (ALW)
+* GA_Gretl_barpa (ARP)
+* GA_Gretl_bdafu (AfU)
+* GA_Gretl_bdhba (HBA)
+* GA_Gretl_bvtaa (AVT)
+* GA_Gretl_edden (ADA)
+* GA_Gretl_skkan (Staatskanzlei)
+* GA_Gretl_vkfaa (AWJF)
+* GA_Gretl_vlwaa (ALW)
 
 Allerdings können auch diejenigen Benutzer oder Gruppen, welche durch globale Berechtigungseinstellungen in Jenkins dazu bereichtigt sind, den Job starten. Wenn man diese Einstellung weglässt, ist es von den globalen Berechtigungseinstellungen abhängig, wer den Job manuell starten darf.
 
