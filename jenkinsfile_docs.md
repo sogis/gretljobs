@@ -62,53 +62,25 @@ parameters.stringParams=bfsnr;;BFS-Nr. der Gemeinde, welche publiziert werden so
 
 ## Im Pod eine temporäre Datenbank für die Verarbeitung von Daten starten
 
-Vorlage: [alw_fruchtfolgeflaechen/Jenkinsfile](alw_fruchtfolgeflaechen/Jenkinsfile)
+Vorlage: [xy_jenkinsfile_template_processing/Jenkinsfile](xy_jenkinsfile_template_processing/Jenkinsfile)
 
-Mit diesem Jenkinsfile wird im Jenkins-Agent-Pod zusätzlich ein DB-Container
-für die Durchführung von umfangreichen Berechnungen (Geoverarbeitung) gestartet.
-Dies hat den Vorteil,
-dass die Rechenlast nicht auf den produktiven DBs anfällt.
+Mit diesem Jenkinsfile wird im Jenkins-Agent-Pod zusätzlich ein DB-Container für die Durchführung von umfangreichen Berechnungen (Geoverarbeitung) gestartet.
+Dies hat den Vorteil, dass die Rechenlast nicht auf den produktiven DBs anfällt.
 
-Der wichtigste Unterschied zum Default-Jenkinsfile ist ab Zeile 14:
-Anstatt dass einfach der Default Agent *gretl* gestartet wird,
-wird zwar das Pod Template dieses Agents referenziert (`inheritFrom 'gretl'`).
-Zusätzlich wird unter `yaml` aber ein weiterer Container
-mit Name `processing-db` und einem PostgreSQL-DB-Image
-von Crunchy Data definiert,
-der in diesem Pod ebenfalls gestartet werden soll.
-Mit den Umgebungsvariablen wird dabei der DB-Name (`processing`)
-und der zu verwendende DB-User (`user`) und sein Passwort festgelegt.
+Der wichtigste Unterschied zum Default-Jenkinsfile ist, dass nicht einfach der Default Agent *gretl* gestartet wird.
+Sondern das Pod Template dieses Agents wird zwar referenziert (`inheritFrom env.NODE_LABEL ?: 'gretl'` auf Zeile 4), aber mit zusätzlichem YAML wird ein weiterer Container mit Name `processing-db` und Image `postgis/postgis:18-3.6-alpine` definiert, der zusätzlich zum GRETL-Container im gleichen Pod gestartet wird.
+Mit der Umgebungsvariablen `POSTGRES_USER` wird dabei ein DB-User (`processing`) und implizit auch der DB-Name (also ebenfalls `processing`) festgelegt, und mit `POSTGRES_PASSWORD` das Passwort des DB-Users (ebenfalls `processing`).
 
-Ein weiterer Unterschied ist, dass ab Zeile 65 zusätzliche Umgebungsvariablen
-für den Job definiert werden,
-mit denen dann in `build.gradle` auf die DB zugegriffen werden kann.
-(In der DB-URI steht `127.0.0.1`, weil man so vom GRETL-Container aus
-den eigenen Pod erreicht, in welchem ja auch der DB-Container läuft.
-Und es kommt `processing` vor, weil dies der DB-Name ist,
-den man weiter oben im YAML definiert hat.)
+Ein weiterer Unterschied ist, dass ab Zeile 39 zusätzliche Umgebungsvariablen für den Job definiert werden, so dass man in `build.gradle` mit den Variablen `dbUriProcessing`, `dbUserProcessing` und `dbPwdProcessing` auf die DB zugreifen kann.
+(In der DB-URI steht `127.0.0.1`, weil man so vom GRETL-Container aus andere Container im aktuellen Pod, in welchem ja auch der DB-Container läuft, erreicht.
+Und hinter dem Schrägstrich steht `processing`, weil dies der DB-Name ist, den man weiter oben im YAML mit der Umgebungsvariable `POSTGRES_USER` implizit definiert hat.)
 
-### Zusätzlich: Beeinflussung des Ablaufs des GRETL-Jobs
+## Beeinflussung des Ablaufs des GRETL-Jobs
 
-Hinzu kommt noch ein Unterschied im Ablauf des GRETL-Jobs
-(dieser Unterschied hat aber nichts mit der Processing-DB zu tun):
-Nach dem Schritt `fff_to_edit_db`
-müssen die Benutzer das Resultat prüfen.
-Falls es nicht gut ist, nehmen sie Änderungen an den Übersteuerungsdaten vor
-und klicken im GUI des GRETL-Jobs auf *Fortfahren*;
-dann wird dieser Teil der Berechnung nochmals durchgeführt,
-und das Resultat kann erneut geprüft werden.
-Wenn das Resultat i.O. ist, setzt man im GUI das Häkchen bei `PUBLISH_RESULT`
-und klickt auf *Fortfahren*.
-So wird der letzte Schritt `gretl fff_to_edit_db_finish` ausgeführt
-und der Job abgeschlossen.
-
-(Die Logik des `input`-Steps funktioniert hier so:
-Weil er genau einen Parameter aufweist (den `booleanParam`),
-gibt der `input`-Step den Wert dieses Parameters zurück.
-Setzt man also im GUI das Häkchen, liefert der `input`-Step `true` zurück,
-und die `waitUntil`-Schleife wird deshalb verlassen.
-Doku: https://www.jenkins.io/doc/pipeline/steps/pipeline-input-step/ und
-https://www.jenkins.io/doc/pipeline/steps/workflow-basic-steps/#waituntil-wait-for-condition)
+In [afu_gewaesserschutz_zonen_areale_pub/Jenkinsfile](afu_gewaesserschutz_zonen_areale_pub/Jenkinsfile) findet sich ein Beispiel eines Jobs, bei dem der Ablauf vom User beeinflusst werden kann (Rückfrage an den User).
+Dieser Job lehnt sich an die ÖREB-GRETL-Jobs an.
+Es gibt hiefür keine Jenkinsfile-Vorlage, weil praktisch jeder Job wieder individuell ist.
+Generell gilt, dass man wenn möglich lieber auf dieses Feature verzichtet, wenn es nicht zwingend ist.
 
 ## Im Pod ein PVC einbinden
 
