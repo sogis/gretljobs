@@ -538,8 +538,6 @@ LEFT JOIN
     afu_bodeneinheiten_v1.t_ili2db_dataset dataset 
     ON 
     los.t_datasetname = dataset.datasetname 
-LEFT JOIN 
-    
 WHERE 
     los.publizieren IS TRUE
 ;
