@@ -3,11 +3,11 @@ pipeline {
         kubernetes {
             inheritFrom env.NODE_LABEL ?: 'gretl'
             yamlMergeStrategy merge()
-            yaml '''
+            yaml """
             spec:
               containers:
                 - name: processing-db
-                  image: postgis/postgis:18-3.6-alpine
+                  image: postgis/postgis:${env.POSTGIS_IMAGE_TAG}
                   resources:
                     requests:
                       cpu: 300m
@@ -26,7 +26,7 @@ pipeline {
               volumes:
                 - name: postgresql-data-volume
                   emptyDir: {}
-'''
+"""
         }
     }
     options {

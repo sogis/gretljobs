@@ -130,6 +130,8 @@ for (jobFile in jobFiles) {
       if (jobProperties.getProperty('nodeLabel') != null) {
         env('NODE_LABEL', jobProperties.getProperty('nodeLabel'))
       }
+      // set the PostGIS image tag for those jobs that need a processing DB
+      env('POSTGIS_IMAGE_TAG', '18-3.6-alpine')
     }
 
     definition {

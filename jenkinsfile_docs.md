@@ -68,7 +68,7 @@ Mit diesem Jenkinsfile wird im Jenkins-Agent-Pod zus채tzlich ein DB-Container f�
 Dies hat den Vorteil, dass die Rechenlast nicht auf den produktiven DBs anf채llt.
 
 Der wichtigste Unterschied zum Default-Jenkinsfile ist, dass nicht einfach der Default Agent *gretl* gestartet wird.
-Sondern das Pod Template dieses Agents wird zwar referenziert (`inheritFrom env.NODE_LABEL ?: 'gretl'` auf Zeile 4), aber mit zus채tzlichem YAML wird ein weiterer Container mit Name `processing-db` und Image `postgis/postgis:18-3.6-alpine` definiert, der zus채tzlich zum GRETL-Container im gleichen Pod gestartet wird.
+Sondern das Pod Template dieses Agents wird zwar referenziert (`inheritFrom env.NODE_LABEL ?: 'gretl'` auf Zeile 4), aber mit zus채tzlichem YAML wird ein weiterer Container mit Name `processing-db` und Image `postgis/postgis:${env.POSTGIS_IMAGE_TAG}` definiert, der zus채tzlich zum GRETL-Container im gleichen Pod gestartet wird.
 Mit der Umgebungsvariablen `POSTGRES_USER` wird dabei ein DB-User (`processing`) und implizit auch der DB-Name (also ebenfalls `processing`) festgelegt, und mit `POSTGRES_PASSWORD` das Passwort des DB-Users (ebenfalls `processing`).
 
 Ein weiterer Unterschied ist, dass ab Zeile 39 zus채tzliche Umgebungsvariablen f체r den Job definiert werden, so dass man in `build.gradle` mit den Variablen `dbUriProcessing`, `dbUserProcessing` und `dbPwdProcessing` auf die DB zugreifen kann.
