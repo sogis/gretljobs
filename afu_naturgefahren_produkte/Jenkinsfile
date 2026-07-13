@@ -20,8 +20,6 @@ pipeline {
                       value: processing
                     - name: POSTGRES_PASSWORD
                       value: processing
-                    - name: PGDATA
-                      value: /var/lib/postgresql/pgdata
                   volumeMounts:
                     - name: postgresql-data-volume
                       mountPath: /var/lib/postgresql
