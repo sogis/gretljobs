@@ -1,0 +1,28 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+description = "GRETL-Job für den Datentransfer der Meldungen aelter 1 Jahr ins Archiv edit-DB, edit-DB"
+
+defaultTasks 'validateDataPub'
+
+task validateData(type: Ili2pgValidate) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = "SO_AGI_SGV_Meldungen_20221109"
+    dbschema = "agi_av_meldewesen_work_v1"
+}
+
+task moveData(type: SqlExecutor, dependsOn: 'validateData'){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = [
+            'agi_av_meldewesen_transfer_data.sql'
+    ]
+}
+
+task validateDataPub(type: Ili2pgValidate) {
+    dependsOn moveData
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    models = "SO_AGI_SGV_Meldungen_20221109"
+    dbschema = "agi_av_meldewesen_archiv_v1"
+}
