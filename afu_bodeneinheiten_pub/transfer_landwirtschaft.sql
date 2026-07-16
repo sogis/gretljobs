@@ -118,7 +118,8 @@ INSERT INTO
     alte_daten_Vorhanden, 
     alte_daten_vorhanden_txt, 
     aufarbeitung,
-    geometrie
+    geometrie, 
+    gewichtung
 )
 SELECT 
     CASE 
@@ -449,11 +450,12 @@ SELECT
         WHEN 
             src.alte_daten_vorhanden = 'nein' 
         THEN 
-            NULL
+            'Nein'
         ELSE
-            'Diese Kartierung stellt eine Aufarbeitung vorhandener Daten dar. Die genaue Methodik kann unter LINK eingesehen werden.' 
+            'Diese Kartierung stellt eine Aufarbeitung vorhandener Daten dar. Die genaue Methodik kann im AfU (Abteilung Boden) angefragt werden.' 
     END AS aufarbeitung,            
-    src.geometrie
+    src.geometrie, 
+    src.gewichtung
 FROM 
     afu_bodeneinheiten_v1.bodeneinheithauptauspraegung_landwirtschaft src
 LEFT JOIN 
