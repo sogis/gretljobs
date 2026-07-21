@@ -87,7 +87,9 @@ git checkout -b branchname
 * `import`-Statements zuoberst einfügen
 * Danach das `apply plugin`-Statement einfügen
 * Als DB-User bei AGI-Datenbanken `gretl`, bei den Entwicklungs-Datenbanken `dmluser` verwenden.
-* Als (temporäres) Verzeichnis beim Herunterladen von Dateien etc. ```System.getProperty("java.io.tmpdir")``` verwenden. Dies ist das temp-Verzeichnis des Betriebssystems. Heruntergeladene und temporäre Dateien bitte trotzdem mittels abschliessenden Task wieder löschen.
+* Als (temporäres) Verzeichnis für Zwischenresultate, beim Herunterladen von Dateien etc. das *Build Directory* verwenden und mit der Variablen `$buildDir` darauf zugreifen.
+  (Standardmässig zeigt diese auf den Ordner `build` innerhalb des Projektverzeichnis.)
+* Für Jobs mit File Upload: Die hochzuladende Datei soll im Unterordner `in` des *Build Directory* platziert werden (`$buildDir/in`).
 * Immer mindestens einen DefaultTask setzen mit dem das Skript startet. Dadurch muss kein Task beim Aufruf von GRETL mitgegeben werden (Bsp ```defaultTasks 'transferAgiHoheitsgrenzen'```).
 * `println` einsetzen wo sinnvoll, also informativ.
 * `description` für Projekt und Tasks machen (Beispiel `av_mopublic/build.gradle`).
@@ -114,7 +116,7 @@ git checkout -b branchname
   * outputFile = file("./data.json")
   * localDir = file("downloads")
   * dataFiles = files("attributes.gpkg", "tables.gpkg")
-* nodeLabel=gretl-3.1 muss gesetzt werden (in gretljobs.properties)
+* nodeLabel=gretl-3.2 muss gesetzt werden (in gretljobs.properties)
 
 #### Zugriff auf Ressourcen
 
@@ -136,12 +138,6 @@ dbPwdSimi=
 dbUriIsboden=
 dbUserIsboden=
 dbPwdIsboden=
-dbUriVerisoNplso=
-dbUserVerisoNplso=
-dbPwdVerisoNplso=
-dbUriAltlast4web=
-dbUserAltlast4web=
-PdbPwdAltlast4web=
 dbUriKaso=
 dbUserKaso=
 dbPwdKaso=
@@ -197,7 +193,6 @@ awsSecretAccessKeyAgi=
 digiplanUrl=
 digiplanUser=
 digiplanPwd=
-efjServicesUrl=
 igelToken=
 infofaunaWfsUser=
 infofaunaWfsPwd=
@@ -274,9 +269,9 @@ Die Datei `job.properties` kann folgende Eigenschaften des GRETL-Jobs enthalten:
 logRotator.numToKeep=30
 triggers.cron=H H(1-3) * * *
 parameters.stashedFile=myfilename.xyz
-parameters.stringParams=parameterName;default value;parameter description
+parameters.stringParams=PARAMETER_NAME;DEFAULT_VALUE;PARAMETER_DESCRIPTION
 triggers.upstream=other_job_name
-authorization.permissions=gretl-users-barpa
+authorization.permissions=GA_Gretl_barpa
 ```
 
 Mit `logRotator.numToKeep` kann eingestellt werden, wieviele Ausführungen des Jobs aufbewahrt werden sollen, d.h. für wieviele Ausführungen beispielsweise das Logfile vorgehalten wird. Standardwert ist 15. Wenn man diese Einstellung weglässt, werden also die 15 letzten Ausführungen aufbewahrt.
@@ -284,28 +279,21 @@ Falls man alle Ausführungen aufbewahren möchte, kann man hier den Wert `unlimi
 
 Mit `triggers.cron` kann eingestellt werden, zu welchem Zeitpunkt der Job automatisch gestartet werden soll. Im Beispiel `H H(1-3) * * *` wird der Job jeden Tag irgendwann zwischen 01:00 Uhr und 03:59 Uhr ausgeführt. (Dokumentation der Schreibweise siehe https://github.com/jenkinsci/jenkins/blob/master/core/src/main/resources/hudson/triggers/TimerTrigger/help-spec.jelly). Wenn man diese Einstellung weglässt, wird der Job nie automatisch gestartet, und er muss manuell gestartet werden.
 
-Mit `parameters.stashedFile` kann konfiguriert werden,
-dass ein  Benutzer beim Starten des Jobs eine Datei hochladen muss.
-Man muss hier einen Dateinamen (z.B. `data.xtf`) angeben;
-unter diesem Dateinamen kann dann der GRETL-Job auf die Datei zugreifen.
+Mit `parameters.stashedFile` kann konfiguriert werden, dass beim manuellen Starten des Jobs eine Datei hochgeladen werden kann.
+Damit dies funktioniert, ist allerdings ein spezielles Jenkinsfile nötig; siehe unter [GRETL-Jobs mit File Upload](jenkinsfile_docs.md#gretl-jobs-mit-file-upload) oder [GRETL-Jobs mit File Upload, wobei der ursprüngliche Dateiname beibehalten werden soll](jenkinsfile_docs.md#gretl-jobs-mit-file-upload-wobei-der-urspr%C3%BCngliche-dateiname-beibehalten-werden-soll).
+Hinweis: Jobs mit File Upload können nicht aus der *Blue Ocean*-Oberfläche heraus gestartet werden, sondern nur aus der klassischen Jenkins-Oberfläche heraus.
 
-Mit `parameters.stringParams` können Parameter definiert werden,
-für welche der Benutzer beim manuellen Start des Jobs Werte übergeben kann.
-Im Jenkinsfile kann Über den gesetzten Parameternamen (`parameterName`)
-auf den Wert des Parameters zugegriffen werden.
-Im obigen Beispiel wird ein String-Parameter mit Name `parameterName` definiert,
-dessen Standarwert `default value` ist
-und für den dem Benutzer neben dem Eingabefeld
-die Beschreibung `parameter description` angezeigt wird.
+Mit `parameters.stringParams` können Parameter definiert werden, für welche man beim manuellen Start des Jobs Werte übergeben kann.
+Damit man in GRETL auf den Parameterwert zugreifen kann, ist allerdings ein spezielles Jenkinsfile nötig; siehe unter [Beim Start des GRETL-Jobs einen Parameter (String) übergeben](jenkinsfile_docs.md#beim-start-des-gretl-jobs-einen-parameter-string-%C3%BCbergeben).
+Im Jenkinsfile kann mit dem gesetzten Parameternamen auf den Wert des Parameters zugegriffen werden (z.B. mit `${params.MY_PARAMETER_NAME}`).
+Eine Parameter-Definition umfasst jeweils den Parameternamen, optional den Vorgabewert und optional eine Beschreibung.
 Die drei Werte müssen mit Strichpunkt voneinander getrennt werden.
-Innerhalb der Werte dürfen deshalb keine Strichpunkte vorkommen
-(und auch nicht das Zeichen `@`).
-Für den Standardwert und die Beschreibung sind Leerschläge zugelassen.
+Innerhalb der Werte dürfen deshalb keine Strichpunkte vorkommen (und auch nicht das Zeichen `@`).
+Für den Standardwert und die Beschreibung sind Leerschläge zugelassen, und diese können auch aus einem leeren String bestehen.
 Es ist auch möglich, mehrere String-Parameter zu definieren.
 Sie müssen mit dem Zeichen `@` voneinander getrennt werden.
-Für die bessere Lesbarkeit ist es ratsam,
-jeden String-Parameter auf einer eigenen Zeile zu definieren;
-hierzu wird ein Backslash am Ende der vorangehenden Zeile benötigt.
+Für die bessere Lesbarkeit ist es ratsam, jeden String-Parameter auf einer eigenen Zeile zu definieren.
+Hierzu wird ein Backslash am Ende der vorangehenden Zeile benötigt.
 Beispiel:
 
 ```java
@@ -320,22 +308,22 @@ Mehrere Benutzer oder Gruppen
 können mit Komma getrennt aneinandergereiht werden.
 Folgende GRETL-spezifischen Benutzergruppen stehen im Moment zur Verfügung:
 
-* gretl-users-barpa (ARP)
-* gretl-users-bdafu (AfU)
-* gretl-users-bdhba (HBA)
-* gretl-users-bvtaa (AVT)
-* gretl-users-edden (ADA)
-* gretl-users-skkan (Staatskanzlei)
-* gretl-users-vkfaa (AWJF)
-* gretl-users-vlwaa (ALW)
+* GA_Gretl_barpa (ARP)
+* GA_Gretl_bdafu (AfU)
+* GA_Gretl_bdhba (HBA)
+* GA_Gretl_bvtaa (AVT)
+* GA_Gretl_edden (ADA)
+* GA_Gretl_skkan (Staatskanzlei)
+* GA_Gretl_vkfaa (AWJF)
+* GA_Gretl_vlwaa (ALW)
 
 Allerdings können auch diejenigen Benutzer oder Gruppen, welche durch globale Berechtigungseinstellungen in Jenkins dazu bereichtigt sind, den Job starten. Wenn man diese Einstellung weglässt, ist es von den globalen Berechtigungseinstellungen abhängig, wer den Job manuell starten darf.
 
 Zudem kann mit der Eigenschaft `nodeLabel` bestimmt werden,
 auf welchem Node der Job ausgeführt werden soll.
-Möglich ist hier der Wert `gretl-3.1`,
+Möglich ist hier der Wert `gretl-3.2`,
 damit der Job auf einem Jenkins Agent
-mit GRETL Version 3.1 ausgeführt wird.
+mit GRETL Version 3.2 ausgeführt wird.
 Diese Property dient primär dazu,
 dass bei einem grösseren Versionssprung von GRETL
 nicht alle Jobs gleichzeitig umgestellt werden müssen.
@@ -377,8 +365,7 @@ Die speziellen Fälle und die jeweiligen Vorlagen sind in [jenkinsfile_docs.md](
 
 ## GRETL Docker Image verwenden
 
-Für die Entwicklung von GRETL-Jobs
-kann GRETL mit `docker compose` als Docker-Container gestartet werden.
+Für die Entwicklung von GRETL-Jobs kann GRETL mit `docker compose` als Docker-Container genutzt werden.
 
 ### Voraussetzungen
 
@@ -388,87 +375,83 @@ Was in dieser Datei drinstehen muss, ist im Abschnitt [Zugriff auf Ressourcen](#
 
 ### Entwicklungs-DBs nutzen
 
-#### Entwicklungs-DBs starten
+#### GRETL-Container und Entwicklungs-DBs starten
 ```
 docker compose up -d
 ```
-bzw.
+bzw. wenn man sich im Verzeichnis _schema-jobs_ befindet:
 ```
-COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose up -d
+docker compose -f ../gretljobs/compose.yaml up -d
 ```
-Mit diesem Befehl werden zwei DB-Container gestartet,
-von denen einer eine *edit*-DB, der andere eine *pub*-DB enthält.
+Mit diesem Befehl werden ein GRETL-Container und zwei DB-Container gestartet, von denen einer eine *edit*-DB, der andere eine *pub*-DB enthält.
 
-Mit der ersten Variante des Befehls startet man die Entwicklungs-DBs,
-wenn man sich im _gretljobs_-Verzeichnis befindet.
-Mit der zweiten Variante startet man sie,
-wenn man sich im _schema-jobs_-Verzeichnis befindet.
+Mit der ersten Variante des Befehls startet man GRETL und die Entwicklungs-DBs, wenn man sich im _gretljobs_-Verzeichnis befindet.
+Mit der zweiten Variante startet man sie, wenn man sich im _schema-jobs_-Verzeichnis befindet.
 
-Auch die weiter unten in diesem Kapitel angegebenen Befehle
-lassen sich auf diese Art
-jeweils auch aus dem _schema-jobs_-Verzeichnis heraus ausführen.
-Man muss in diesem Fall also dem Befehl
-die Umgebungsvariable `COMPOSE_FILE` voranstellen
-und so auf die Datei `docker-compose.yml` des Verzeichnis _gretljobs_ verweisen.
+Auch die weiter unten in diesem Kapitel angegebenen Befehle lassen sich auf diese Art jeweils auch aus dem _schema-jobs_-Verzeichnis heraus ausführen.
+Man muss in diesem Fall also dem Befehl die Option `-f ../gretljobs/compose.yaml` übergeben, um auf die Datei `compose.yaml` des Verzeichnis _gretljobs_ verweisen.
 
 _Voraussetzung, damit dies funktioniert_:
-Die Ordner _gretljobs_ und _schema-jobs_
-müssen sich im gleichen übergeordneten Ordner befinden.
+Die Ordner _gretljobs_ und _schema-jobs_ müssen sich im gleichen übergeordneten Ordner befinden.
+
+##### GRETL-Jobs, die eine ÖREB-DB benötigen:
+```
+docker compose -f compose.yaml -f compose.oereb_v2.yaml up -d
+```
+So wird zusätzlich zur *edit*-DB und zur *pub*-DB auch eine *oereb_v2*-DB gestartet für GRETL-Jobs, die eine solche benötigen.
+
+**Wichtig**: In diesem Fall müssen auch die nachfolgenden Compose-Befehle jeweils mit der Option `-f compose.yaml -f compose.oereb_v2.yaml` aufgerufen werden, damit sie auch die ÖREB-DB mit einschliessen.
 
 ##### GRETL-Jobs, die eine DB für das Processing von Daten benötigen:
 ```
-docker compose --profile processing up -d
+docker compose -f compose.yaml -f compose.processing.yaml up -d
 ```
 So wird zusätzlich zur *edit*-DB und zur *pub*-DB
 auch eine *processing*-DB gestartet
 für GRETL-Jobs, die eine solche benötigen.
 
 **Wichtig**: In diesem Fall müssen auch die nachfolgenden Compose-Befehle
-jeweils mit der Option `--profile processing` aufgerufen werden,
+jeweils mit der Option `-f compose.yaml -f compose.processing.yaml` aufgerufen werden,
 damit sie auch die Processing-DB mit einschliessen.
 
-#### Entwicklungs-DBs stoppen
+#### GRETL-Container und Entwicklungs-DBs stoppen
 ```
 docker compose stop
 ```
-bzw.
+bzw. wenn man sich im Verzeichnis _schema-jobs_ befindet:
 ```
-COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose stop
+docker compose -f ../gretljobs/compose.yaml stop
 ```
-So werden die Entwicklungs-DB-Container gestoppt.
-Die Daten der DBs bleiben erhalten,
-da sie in Docker-Volumes gespeichert sind,
-die hierbei nicht gelöscht werden.
+So werden der GRETL-Container und die Entwicklungs-DB-Container gestoppt.
+Die Container und alle ihre Dateien bleiben erhalten, sind aber nicht mehr erreichbar, solange sie gestoppt sind.
+Die Daten der DBs bleiben ebenfalls erhalten.
 
-#### Entwicklungs-DBs stoppen und DB-Container löschen
+#### GRETL-Container und Entwicklungs-DBs stoppen und Docker-Container löschen
 ```
 docker compose down
 ```
-bzw.
+bzw. wenn man sich im Verzeichnis _schema-jobs_ befindet:
 ```
-COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose down
+docker compose -f ../gretljobs/compose.yaml down
 ```
-Die Entwicklungs-DB-Container werden gestoppt, die DB-Container gelöscht
-und zugleich auch das von Docker Compose angelegte Docker-Netzwerk gelöscht.
-Die Daten der DBs bleiben aber auch in diesem Fall erhalten,
-weil die Docker-Volumes nicht gelöscht werden.
+Der GRETL-Container und die Entwicklungs-DB-Container werden gestoppt und gelöscht.
+Auch das von Docker Compose angelegte Docker-Netzwerk wird gelöscht.
+Die Daten der DBs bleiben auch in diesem Fall erhalten, weil sie in Docker-Volumes gespeichert sind, die hierbei nicht gelöscht werden.
 
 #### Daten der Entwicklungs-DB-Container löschen
 ```
 docker volume rm gretljobs_pgdata_edit gretljobs_pgdata_pub
 ```
-bzw. für die Processing-DB
+bzw. für die ÖREB-DB oder die Processing-DB
 ```
+docker volume rm gretljobs_pgdata_oereb_v2
 docker volume rm gretljobs_pgdata_processing
 ```
-Mit diesem Befehl werden die Volumes der Entwicklungs-DB-Container
-und damit die Daten in den Entwicklungs-DBs gelöscht.
-(Die DB-Container müssen vorgängig mit dem Befehl `docker compose down`
-ebenfalls gelöscht werden.)
+Mit diesem Befehl werden die Volumes der Entwicklungs-DB-Container und damit die Daten in den Entwicklungs-DBs gelöscht.
+(Die DB-Container müssen vorgängig mit dem Befehl `docker compose down` ebenfalls gelöscht werden.)
 
 #### Verbindungsparameter für die Entwicklungs-DBs
-Die Entwicklungs-DBs sind z.B. aus _DBeaver_ oder _psql_
-mit folgenden Verbindungsparametern erreichbar:
+Die Entwicklungs-DBs sind z.B. aus _DBeaver_ oder _psql_ mit folgenden Verbindungsparametern erreichbar:
 
 *Edit-DB:*
 * Hostname: `localhost`
@@ -486,64 +469,68 @@ mit folgenden Verbindungsparametern erreichbar:
 * Benutzer mit DML-Rechten: `dmluser` (für Lese- und Schreibzugriff)
 * Passwörter: lauten jeweils gleich wie der Benutzername
 
-*Processing-DB:*
+*ÖREB-DB:*
 * Hostname: `localhost`
 * Port: `54323`
+* DB-Name: `oereb_v2`
+* Benutzer mit DDL-Rechten: `ddluser` (zum Anlegen von Schemen, Tabellen usw.)
+* Benutzer mit DML-Rechten: `dmluser` (für Lese- und Schreibzugriff)
+* Passwörter: lauten jeweils gleich wie der Benutzername
+
+*Processing-DB:*
+* Hostname: `localhost`
+* Port: `54324`
 * DB-Name: `processing`
 * Benutzer mit Superuser-Rechten: `processing`
 * Passwort: lautet gleich wie der Benutzername
 
 ### GRETL-Job ausführen
 ```
-docker compose run --rm -u $UID gretl --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
+docker compose exec -u $UID gretl-service gretl --rerun-tasks --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
 ```
-bzw.
+bzw. wenn man sich im Verzeichnis _schema-jobs_ befindet:
 ```
-COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose run --rm -u $UID gretl --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
+docker compose -f ../gretljobs/compose.yaml exec -u $UID gretl-service gretl --rerun-tasks --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
 ```
 Dieser Befehl startet den GRETL-Job `MY_JOB_NAME`.
 
 Beispiele:
 ```
-docker compose run --rm -u $UID gretl --project-dir=arp_nutzungsplanung_pub
+docker compose exec -u $UID gretl-service gretl --rerun-tasks --project-dir=arp_nutzungsplanung_pub
 ```
 ```
-docker compose run --rm -u $UID gretl --project-dir=arp_nutzungsplanung_pub -Pbfsnr=2408 importXTF_stage
+docker compose exec -u $UID gretl-service gretl --rerun-tasks --project-dir=arp_nutzungsplanung_pub -Pbfsnr=2408 importXTF_stage
 ```
+
+**Wichtig**: Um den Job gründlich zu testen, ist es sinnvoll, von Zeit zu Zeit den Inhalt des *Build Directory* zu löschen.
 
 Erläuterungen:
 
-* `MY_JOB_NAME` muss durch den Namen des auszuführenden GRETL-Jobs
-  (den Ordnernamen) ersetzt werden.
-* Mit `OPTION...` (optional) können beliebige Gradle-Optionen übergeben werden,
-  z.B.: `--console=rich`, `-Pmyprop=myvalue`, `-Dmyprop=myvalue`.
-  Dokumentation der Gradle-Optionen:
-  https://docs.gradle.org/current/userguide/command_line_interface.html
-* Mit `TASK...` (optional) kann ein oder mehrere Tasks angegeben werden,
-  die von GRETL ausgeführt werden sollen;
-  falls man nichts angibt,
-  werden die in `build.gradle` definierten `defaultTasks` ausgeführt.
-* Falls man einen GRETL-Job mit einem ganz bestimmten GRETL-Image-Tag (z.B. `latest`)
-  ausführen möchte, stellt man dem Compose-Befehl
-  die Variablendefinition `GRETL_IMAGE_TAG=MYTAG` voran, z.B.:
+* `MY_JOB_NAME` muss durch den Namen des auszuführenden GRETL-Jobs (den Ordnernamen) ersetzt werden.
+* Mit `OPTION...` (optional) können beliebige Gradle-Optionen übergeben werden, z.B.: `--rerun-tasks`, `--stacktrace`, `--info`, `--debug`, `--console=rich`, `-Pmyprop=myvalue`, `-Dmyprop=myvalue`.
+  Dokumentation der Gradle-Optionen: https://docs.gradle.org/current/userguide/command_line_interface.html
+* Mit der Option `--rerun-tasks` wird GRETL gezwungen, auch diejenigen Tasks auszuführen, die es als bereits *UP-TO-DATE* erkannt hat.
+* Mit der Option `--no-daemon` wird der Job ohne Nutzung des Daemons ausgeführt (dies war das bisherige Verhalten des GRETL-Containers).
+* Mit `TASK...` (optional) kann ein oder mehrere Tasks angegeben werden, die von GRETL ausgeführt werden sollen.
+  Falls man nichts angibt, werden die in `build.gradle` definierten `defaultTasks` ausgeführt.
+* Falls man einen anderen GRETL-Image-Tag verwenden möchte (z.B. `latest` oder `3.2.861`), erstellt man vor dem Ausführen von `docker compose up` im Verzeichnis `gretljobs` eine Datei mit Name `.env` mit dem Inhalt `GRETL_IMAGE_TAG=MYTAG`, z.B. `GRETL_IMAGE_TAG=3.2.861`.
+  Zu beachten ist, dass danach alle Jobs mit diesem GRETL-Tag ausgeführt werden, solange dies so in der Datei `.env` steht und solange der GRETL-Container besteht.
+* Falls ein bestimmter Job Zugriff auf Daten in einem *Persistent Volume Claim* (PVC) benötigt, lässt sich dies lokal abbilden, indem man `docker compose run` mit einem *Volume Mount* (Option `-v ...`) gemäss folgendem Beispiel benutzt:
   ```
-  GRETL_IMAGE_TAG=latest docker compose run --rm -u $UID gretl --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
+  docker compose run --rm -u $UID -v /local/path:/work/datahub/DMAV_FixpunkteAVKategorie3_V1_0 gretl-service gretl --rerun-tasks --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
   ```
-* Falls ein bestimmter Job Zugriff auf Daten in einem *Persistent Volume Claim* (PVC) benötigt, lässt sich dies lokal abbilden, indem man den Befehl mit einem *Volume Mount* (Option `-v ...`) gemäss folgendem Beispiel ergänzt:
-  ```
-  docker compose run --rm -u $UID -v /local/path:/work/datahub/DMAV_FixpunkteAVKategorie3_V1_0 gretl --project-dir=MY_JOB_NAME [OPTION...] [TASK...]
-  ```
+  In diesem Fall wird ein separater GRETL-Container gestartet, so dass die Vorteile des Gradle Daemon nicht zum Einsatz kommen.
   (Mit Vorteil erstellt man das zu mountende lokale Verzeichnis (im Beispiel `/local/path`) bereits vor dem Ausführen des Befehls; andernfalls wird es zwar von Docker Compose automatisch angelegt, allerdings mit Schreibberechtigung nur für den User *root*.)
 
 ### Schema-Job ausführen
 ```
-docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
-  gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
+docker compose exec -u $UID --workdir //home/gradle/schema-jobs/shared/schema gretl-service \
+  gretl --rerun-tasks -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
 ```
-bzw.
+bzw. wenn man sich im Verzeichnis _schema-jobs_ befindet:
 ```
-COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
-  gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
+docker compose -f ../gretljobs/compose.yaml exec -u $UID --workdir //home/gradle/schema-jobs/shared/schema gretl-service \
+  gretl --rerun-tasks -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
 ```
 Dieser Befehl startet den Schema-Job im Ordner `MY_TOPIC_NAME\MY_SCHEMA_DIRECTORY_NAME`.
 
@@ -552,42 +539,24 @@ im gleichen übergeordneten Ordner befinden.
 
 Beispiel:
 ```
-docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
-  gretl -PtopicName=agi_mopublic -PschemaDirName=schema_pub createSchema configureSchema
+docker compose exec -u $UID --workdir //home/gradle/schema-jobs/shared/schema gretl-service \
+  gretl --rerun-tasks -PtopicName=agi_mopublic -PschemaDirName=schema_pub createSchema configureSchema
 ```
-Beispiel für Start desselben Schema-Jobs aus dem _schema-jobs_-Verzeichnis heraus:
+bzw. wenn man sich im Verzeichnis _schema-jobs_ befindet:
 ```
-COMPOSE_FILE=../gretljobs/docker-compose.yml docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
-  gretl -PtopicName=agi_mopublic -PschemaDirName=schema_pub createSchema configureSchema
+docker compose -f ../gretljobs/compose.yaml exec -u $UID --workdir //home/gradle/schema-jobs/shared/schema gretl-service \
+  gretl --rerun-tasks -PtopicName=agi_mopublic -PschemaDirName=schema_pub createSchema configureSchema
 ```
 
 
 Erläuterungen:
-* `MY_TOPIC_NAME` muss durch den Namen des Topics (den Ordnernamen)
-  und `MY_SCHEMA_DIRECTORY_NAME` durch den Namen des Unterordners,
-  in welchem die Schema-Eigenschaften definiert sind,
-  ersetzt werden.
-* Die Option `-PdbName=MY_DB_NAME` (optional) ist nur in Ausnahmefällen nötig,
-  z.B. wenn das Schema in einer anderen DB angelegt werden soll,
-  als in der Datei `schema.properties` definiert ist.
-* Mit `OPTION...` (optional) können beliebige Gradle-Optionen übergeben werden,
-  z.B.: `--console=rich`, `-Pmyprop=myvalue`, `-Dmyprop=myvalue`.
-* Mit `TASK...` muss angegeben werden, welcher Task bzw. welche Tasks
-  von GRETL ausgeführt werden sollen,
+* `MY_TOPIC_NAME` muss durch den Namen des Topics (den Ordnernamen) und `MY_SCHEMA_DIRECTORY_NAME` durch den Namen des Unterordners, in welchem die Schema-Eigenschaften definiert sind, ersetzt werden.
+* Die Option `-PdbName=MY_DB_NAME` (optional) ist nur in Ausnahmefällen nötig, z.B. wenn das Schema in einer anderen DB angelegt werden soll, als in der Datei `schema.properties` definiert ist.
+* Mit `OPTION...` (optional) können beliebige Gradle-Optionen übergeben werden, z.B.: `--console=rich`, `-Pmyprop=myvalue`, `-Dmyprop=myvalue`.
+* Mit `TASK...` muss angegeben werden, welcher Task bzw. welche Tasks von GRETL ausgeführt werden sollen,
   z.B. `dropSchema` oder `createSchema configureSchema`.
-* Der Task `configureSchema` setzt, wenn er lokal,
-  d.h. in einer Development-Umgebung ausgeführt wird,
-  gleichzeitig auch die Berechtigungen auf den DB-Schemen und Tabellen so,
-  dass GRETL-Jobs auf diese Schemen zugreifen können (Lese- und Schreibrechte).
-  Das heisst, dass lokal der Task `grantPrivileges`
-  im Normalfall nicht ausgeführt werden muss.
-* Falls man einen Schema-Job mit einem ganz bestimmten GRETL-Image-Tag (z.B. `latest`)
-  ausführen möchte, stellt man dem Compose-Befehl
-  die Variablendefinition `GRETL_IMAGE_TAG=MYTAG` voran, z.B.:
-  ```
-  GRETL_IMAGE_TAG=latest docker compose run --rm -u $UID --workdir //home/gradle/schema-jobs/shared/schema \
-    gretl -PtopicName=MY_TOPIC_NAME -PschemaDirName=MY_SCHEMA_DIRECTORY_NAME [-PdbName=MY_DB_NAME] [OPTION...] TASK...
-  ```
+* Der Task `configureSchema` setzt, wenn er lokal, d.h. in einer Development-Umgebung ausgeführt wird, gleichzeitig auch die Berechtigungen auf den DB-Schemen und Tabellen so, dass GRETL-Jobs auf diese Schemen zugreifen können (Lese- und Schreibrechte).
+  Das heisst, dass lokal der Task `grantPrivileges` im Normalfall nicht ausgeführt werden muss.
 
 ### Daten in die Entwicklungs-DBs importieren
 

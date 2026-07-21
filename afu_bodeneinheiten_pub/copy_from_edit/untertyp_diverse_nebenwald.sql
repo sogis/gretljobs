@@ -1,0 +1,9 @@
+SELECT 
+    t_id,
+    t_basket, 
+    t_datasetname, 
+    acode, 
+    nebenauspraegungwaldassociation_diverse
+FROM 
+    afu_bodeneinheiten_v1.untertyp_diverse_nebenwald
+;

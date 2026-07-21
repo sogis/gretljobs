@@ -1,0 +1,14 @@
+services:
+  processing-db:
+    image: postgis/postgis:18-3.6-alpine
+    environment:
+      POSTGRES_USER: processing
+      POSTGRES_PASSWORD: processing
+    ports:
+      - "54324:5432"
+    volumes:
+      - type: volume
+        source: pgdata_processing
+        target: /var/lib/postgresql
+volumes:
+  pgdata_processing:

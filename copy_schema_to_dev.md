@@ -45,29 +45,17 @@ Dazu in der ersten Zeile des folgenden Skripts "mySchema" mit dem Schemanamen er
 
 ## Heruntgergeladenen Dump lokal restoren
 
-### Bash in Entwicklungs-DB Container öffnen
+Im lokalen Ordner `gretljobs` einen der folgenden Befehle ausführen, nachdem die Entwicklungs-DBs gestartet sind:
+* Für Restore in die Edit-DB:
+  ```
+  docker compose run --rm -v /tmp:/tmp edit-db pg_restore -h edit-db -d edit -U ddluser -O -n my_schema /tmp/my_schema.dump
+  ```
+* Für Restore in die Pub-DB:
+  ```
+  docker compose run --rm -v /tmp:/tmp pub-db pg_restore -h pub-db -d pub -U ddluser -O -n my_schema /tmp/my_schema.dump
+  ```
 
-In lokalem Ordner gretljobs/ ausführen, nachdem die Entwicklungs-DBs gestartet sind:
-
-    docker compose run --rm db-tools bash
-
-Dies öffnet ein Bash-Terminal im Container "db-tools". Im Image des Containers sind die PG-Tools in der richtigen Version enthalten.
-
-### In der Container-Bash ausführen
-
-Template für Restore in die Edit-DB:
-
-    pg_restore -O -h edit-db -d edit -U ddluser -n mySchema /tmp/schema.dump
-
-Template für Restore in die Oereb-Edit-DB:
-
-    pg_restore -O -h [IP-ADRESSE] -p 54321 -d edit -U ddluser -n mySchema /tmp/schema.dump
-
-Template für Restore in die Pub-DB:
-
-    pg_restore -O -h pub-db -d pub -U ddluser -n mySchema /tmp/schema.dump
-
-"mySchema" jeweils mit dem effektiven Schemanamen ersetzen
+(`mySchema` jeweils mit dem effektiven Schemanamen ersetzen.)
 
 Dumps von nicht mittels Schemajob erstellten Schemen enthalten direkte Grants von Benutzer(gruppen) auf Tabellen, ... des Schemas.
 Dies führt zu Fehlermeldungen im Stil von:
@@ -76,4 +64,4 @@ Dies führt zu Fehlermeldungen im Stil von:
     Command was: GRANT SELECT ON TABLE agi_av_gb_abgleich_import.gb_daten TO bjsvw;
     GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE agi_av_gb_abgleich_import.gb_daten TO gretl;
 
-Die Fehlermeldungen stören die lokale Nutzung des Schemas nicht (Daten werden trotzdem importiert)
+Die Fehlermeldungen stören die lokale Nutzung des Schemas nicht (Daten werden trotzdem importiert).

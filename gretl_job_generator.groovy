@@ -88,7 +88,7 @@ for (jobFile in jobFiles) {
       def roles = jobProperties.getProperty('authorization.permissions').split(',')
       for ( r in roles ) {
         authorization {
-          permissions(r.trim().replaceAll('gretl-users-','GA_Gretl_'), ['hudson.model.Item.Build', 'hudson.model.Item.Read'])
+          permissions(r.trim(), ['hudson.model.Item.Build', 'hudson.model.Item.Read'])
         }
       }
     }
@@ -130,6 +130,8 @@ for (jobFile in jobFiles) {
       if (jobProperties.getProperty('nodeLabel') != null) {
         env('NODE_LABEL', jobProperties.getProperty('nodeLabel'))
       }
+      // set the PostGIS image tag for those jobs that need a processing DB
+      env('POSTGIS_IMAGE_TAG', '18-3.6-alpine')
     }
 
     definition {

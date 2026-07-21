@@ -1,0 +1,108 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'transferData'
+
+def schemaNameEdit = "gesa_tigermueckenfundstellen_v1"
+ext {
+    importYear = ""
+}
+
+// Uploadfile umbenennen
+tasks.register("copyCSVFile", Copy) {
+    from "upload/"
+    into "upload/"
+    include("uploadFile")
+    rename("uploadFile", "uploadFile.csv")
+}
+
+tasks.register('validateCSVFile', CsvValidator) {
+    dependsOn "copyCSVFile"
+    models = "SO_GESA_Tigermueckenfundstellen_20260401"
+    firstLineIsHeader = true
+    dataFiles = files("upload/uploadFile.csv")
+    valueSeparator = ';'
+}
+
+// Jahr aus CSV-Datei rauslesen
+tasks.register('readCsvYear') {
+    dependsOn "validateCSVFile"
+
+    doLast {
+        def file = file("upload/uploadFile.csv")
+        def lines = file.readLines('UTF-8')
+
+        def header = lines[0].split(';')
+        def firstData = lines[1].split(';')
+
+        def jahrIndex = header.findIndexOf { it.trim() == 'Jahr' }
+
+        if (jahrIndex == -1) {
+            throw new GradleException("Spalte 'Jahr' nicht gefunden")
+        }
+
+        importYear = firstData[jahrIndex].trim()
+
+        println "Import-Jahr: ${importYear}"
+    }
+}
+
+// SQL-Datei zur Laufzeit generieren
+tasks.register('generateDeleteSql') {
+    dependsOn "readCsvYear"
+
+    doLast {
+        def sqlContent = """
+            DELETE FROM ${schemaNameEdit}.csv_import
+            WHERE jahr = '${importYear}'
+            OR jahr is NULL;
+        """
+        def tmpFile = file("${buildDir}/tmp/delete_csv_generated.sql")
+        tmpFile.parentFile.mkdirs()
+        tmpFile.text = sqlContent
+        println "SQL generiert: ${tmpFile}"
+    }
+}
+
+// bisherige Daten löschen
+tasks.register('deleteCsvTableRows', SqlExecutor) {
+    dependsOn "generateDeleteSql"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+
+    // Pfad ist fix – Inhalt wird von generateDeleteSql zur Laufzeit geschrieben
+    sqlFiles = files("${buildDir}/tmp/delete_csv_generated.sql")
+}
+
+// UID-Spalte in auid-Spalte umbenennen
+tasks.register('fixCsvHeader') {
+    dependsOn "deleteCsvTableRows"
+    doLast {
+        def file = file("upload/uploadFile.csv")
+        def lines = file.readLines('UTF-8')
+        lines[0] = lines[0].replace('UID', 'auid')
+        file.write(lines.join('\n'), 'UTF-8')
+    }
+}
+
+// Import CSV-Datei
+tasks.register('csvimport',  CsvImport) {
+    dependsOn "fixCsvHeader"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = schemaNameEdit
+    tableName = "csv_import"
+    firstLineIsHeader = true
+    valueSeparator = ';'
+    dataFile = file("upload/uploadFile.csv")
+}
+
+tasks.register('transferData', Db2Db) {
+    dependsOn "csvimport"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('gesa_tigermueckenfundstellen_punkt.sql', 'gesa_tigermueckenfundstellen_pub_v1.fundstelle', true),
+            new TransferSet('gesa_tigermueckenfundstellen_polygon.sql', 'gesa_tigermueckenfundstellen_pub_v1.ausbreitung', true)
+    ];
+}

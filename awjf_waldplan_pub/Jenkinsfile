@@ -1,16 +1,16 @@
 pipeline {
     options {
-        timeout(time: 1, unit: 'HOURS')
+        timeout(time: 6, unit: 'HOURS')
     }
     agent {
         kubernetes {
             inheritFrom env.NODE_LABEL ?: 'gretl'
             yamlMergeStrategy merge()
-            yaml '''
+            yaml """
             spec:
               containers:
                 - name: processing-db
-                  image: postgis/postgis:17-3.5-alpine
+                  image: postgis/postgis:${env.POSTGIS_IMAGE_TAG}
                   resources:
                     requests:
                       cpu: 300m
@@ -23,15 +23,13 @@ pipeline {
                       value: processing
                     - name: POSTGRES_PASSWORD
                       value: processing
-                    - name: PGDATA
-                      value: /var/lib/postgresql/data/pgdata
                   volumeMounts:
                     - name: postgresql-data-volume
-                      mountPath: /var/lib/postgresql/data
+                      mountPath: /var/lib/postgresql
               volumes:
                 - name: postgresql-data-volume
                   emptyDir: {}
-'''
+"""
         }
     }
     stages {

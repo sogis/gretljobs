@@ -1,40 +1,32 @@
-# awjf_holznutzungsbewilligung_pub
+# AWJF_Holznutzungsbewilligung_Pub
 
-Import und Publikation der Holznutzungsbewilligungen (MGDM) aus dem Waldportal (vgl. [Roter Faden](https://github.com/sogis/dok/blob/dok/dok_rote_faeden/Documents/AWJF/Waldmassnahmen_Waldportal/Waldmassnahmen_Waldportal.md)).
+Import, Erfassung und Publikation von Holznutzungsbewilligungen gemäss MGDM.
 
-## Funktionsweise
+## Aufbau des Jobs
 
-Der Job lädt ein gezipptes XTF vom SFTP-Server des Waldportals herunter (Task-Gruppe *shared*) und führt zwei Workflows aus:
+Die Holznutzungsbewilligungen stammen aus zwei Quellen: vom SFTP-Server des Waldportals (private Flächen) sowie aus dem Erfassungsschema (öffentliche Flächen). Beide Datensätze werden in einem Staging-Schema zusammengeführt. Aus diesem zusammengeführten Bestand werden anschliessend sowohl das Publikationsschema als auch ein Export nach geodienste.ch gespiesen.
 
-### Import vom Waldportal in die KGDI (Task-Gruppe *updateDatabases*)
-1. *unzipXtf*: XTF-Datei aus dem ZIP-Archiv extrahieren
-2. *importCatalog*: Holznutzungsbewilligung_Codelisten_V1_0.xml (in diesem Repo) in die Erfassungs-DB importieren
-3. *importXtf*: Holznutzungsbewilligungen in die Erfassungs-DB importieren
-4. *copyToPub*: Daten in das Publikationsschema überführen
-5. *updateDispnames*: Für die Darstellung im WGC den `<dispname>` von Enumerationen nach `<attribut>_txt` schreiben
+Ablauf bis zum Import in das Staging-Schema:
+```
+               exportEdit ─┐
+                           ├─> importEditToStaging ─┐
+        deleteFromStaging ─┘                        ├─> importWaldportalToStaging
+downloadWaldportalZip ─> unzipWaldportalXtf ────────┘
+```
+(Fortsetzung) Ablauf vom Import bis zu Publikation und Export: 
+```
+importWaldportalToStaging ─┬─> copyStagingToPub ─> updateDispnamesInPub -> validatePub
+                           └─> exportStaging ─> zipXtf ─> uploadZip
+```
 
-### Export nach geodienste.ch (Task-Gruppe *uploadZip*)
+## Besonderes
 
-1. *uploadZip*: ZIP-Datei nach geodienste.ch übertragen und publizieren
+### Exerne Abhängigkeiten
 
-## Abhängigkeiten
-
-### Extern
-
-- Waldportal SFTP-Server: Quelle der Holznutzungsbewilligungen (ZIP/XTF)
+- Waldportal SFTP-Server: Quelle der Holznutzungsbewilligungen auf privaten Flächen (ZIP/XTF)
 - geodienste.ch: Zielserver für die Publikation
 
-### Umgebungsvariablen
+### Katalog
 
-- `dbUriEdit`, `dbUserEdit`, `dbPwdEdit`: Zugangsdaten Erfassungs-DB
-- `dbUriPub`, `dbUserPub`, `dbPwdPub`: Zugangsdaten Publikations-DB
-- `sftpServerWaldportal`, `sftpUserWaldportal`, `sftpPwdWaldportal`: Zugangsdaten Waldportal SFTP-Server
-- `aiServer`, `aiUser`, `aiPwd`: Zugangsdaten geodienste.ch
-
-## Datenmodelle
-- MGDM: `Holznutzungsbewilligung_V1_0`
-- Publikationsmodell: `SO_AWJF_Holznutzungsbewilligung_Publikation_20251222`
-
-## Periodizität
-
-Ausführung jeden Donnerstag zwischen 1:00 und 3:00 UTC.
+Der Schema-Job 
+[schema_awjf_holznutzungsbewilligung](https://github.com/sogis/schema-jobs/tree/main/topics/awjf_holznutzungsbewilligung/schema) importiert den Katalog mit Baumarten in das Erfassungsschema. Der vorliegende Job kopiert diesen zusammen mit den erfassten Holznutzungsbewilligungen in das Staging-Schema.

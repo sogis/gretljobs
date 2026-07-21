@@ -4,7 +4,7 @@ SELECT
     fliessgesch_typ.dispname as fliessgeschwindigkeit_txt,
     prozessquelle, 
     bemerkung, 
-    geometrie, 
+    st_makevalid(geometrie) AS geometrie, --workaround weil immer wieder komische Shell-Fehler auftraten
     datenherkunft, 
     auftrag_neudaten
 FROM 

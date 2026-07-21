@@ -19,7 +19,7 @@ def pathToTempFolder = System.getProperty("java.io.tmpdir")
 //def dataSets = ['2476_was', '2476_whl_was']
 //def dataSets = ['2473_was']
 //def dataSets = ['2481_was']
-def dataSets = ['2613_was']
+def dataSets = ['2472_was', '2480_was', '2613_was']
 
 def DB_SCHEMA_EDIT = "agi_lkmap_v1"
 def DB_SCHEMA_PUB = "agi_lkmap_pub_v1"

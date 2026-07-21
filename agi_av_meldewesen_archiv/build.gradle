@@ -1,0 +1,15 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+description = "GRETL-Job für den Datentransfer der Meldungen aelter 1 Jahr ins Archiv edit-DB, edit-DB"
+
+defaultTasks 'moveData'
+
+task moveData(type: SqlExecutor){
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = [
+            'agi_av_meldewesen_transfer_data.sql'
+    ]
+}

@@ -3,7 +3,7 @@
 ## Was macht der Job?
 
 Dieser Job verschneidet Daten der Nutzungsplanung und Amtlichen Vermessung sowie Gebäude-, Bevölkerungs- und 
-Unternehmensdaten und bereitet die vier Datenebenen Parzelle, Zonentyp, Zonenschild und Gemeinde auf. Diese 
+Unternehmensdaten und bereitet die vier Datenebenen Liegenschaft, Zonentyp, Zonenschild und Gemeinde auf. Diese 
 werden der Applikation "Siedlungsentwicklung nach innen" (SEin) in Form einer XTF-Datei bereitgestellt.
 Dieselbe Datei kann von Berechtigten via [GRETL](https://gretl.so.ch/) heruntergeladen werden.
 
