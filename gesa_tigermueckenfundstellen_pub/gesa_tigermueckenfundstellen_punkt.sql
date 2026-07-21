@@ -58,9 +58,9 @@ ovitraps AS (
 			lv95_n,
 			jahr,
 			woche,
-			TO_DATE(datumsetfirst, 'MM.DD.YYYY') AS datumsetfirst,
-			TO_DATE(datumsetlast, 'MM.DD.YYYY') AS datumsetlast,
-			TO_DATE(datumsam, 'MM.DD.YYYY') AS sammeldatum,
+			TO_DATE(datumsetfirst, 'DD.MM.YYYY') AS datumsetfirst,
+			TO_DATE(datumsetlast, 'DD.MM.YYYY') AS datumsetlast,
+			TO_DATE(datumsam, 'DD.MM.YYYY') AS sammeldatum,
 			ZeitraumSam AS Sammelzeitraum,
 			SamMethode AS SamMethode,
 			CASE
@@ -77,7 +77,7 @@ ovitraps AS (
 			n_MALDI_TOF_MS,
 			fallenzustand,
 			'-' AS einsender, -- nur bei Privatmeldungen relevant
-			TO_DATE(meldedatum, 'MM.DD.YYYY') AS meldedatum,
+			TO_DATE(meldedatum, 'DD.MM.YYYY') AS meldedatum,
 			kommentar,
 			-- Anzahl positive und negative Funde
 			COUNT(*) FILTER (WHERE positiv = 'Ja') OVER (PARTITION BY trapid) AS positiv_anzahl,
@@ -86,7 +86,7 @@ ovitraps AS (
 			MAX(
 				CASE 
 					WHEN LOWER(TRIM(positiv)) = 'ja' 
-					THEN TO_DATE(datumsam, 'MM.DD.YYYY')
+					THEN TO_DATE(datumsam, 'DD.MM.YYYY')
 				END
 			) OVER (PARTITION BY trapid) AS sammeldatum_positiv,
 			ST_SetSRID(ST_MakePoint(lv95_e, lv95_n), 2056) AS geometrie,
@@ -116,9 +116,9 @@ privatmeldungen AS (
 			lv95_n,
 			jahr,
 			woche,
-			TO_DATE(datumsetfirst, 'MM.DD.YYYY') AS datumsetfirst,
-			TO_DATE(datumsetlast, 'MM.DD.YYYY') AS datumsetlast,
-			TO_DATE(datumsam, 'MM.DD.YYYY') AS sammeldatum,
+			TO_DATE(datumsetfirst, 'DD.MM.YYYY') AS datumsetfirst,
+			TO_DATE(datumsetlast, 'DD.MM.YYYY') AS datumsetlast,
+			TO_DATE(datumsam, 'DD.MM.YYYY') AS sammeldatum,
 			ZeitraumSam AS Sammelzeitraum,
 			'Privat' AS SamMethode,
 			positiv,
@@ -129,7 +129,7 @@ privatmeldungen AS (
 			n_MALDI_TOF_MS,
 			'-' AS fallenzustand, -- nur bei Fallen
 			einsender,
-			TO_DATE(meldedatum, 'MM.DD.YYYY') AS meldedatum,
+			TO_DATE(meldedatum, 'DD.MM.YYYY') AS meldedatum,
 			kommentar,
 			-- Anzahl positive und negative Funde
 			COUNT(*) FILTER (WHERE positiv = 'Ja') OVER (PARTITION BY ST_SetSRID(ST_MakePoint(lv95_e, lv95_n), 2056)) AS positiv_anzahl,
@@ -138,7 +138,7 @@ privatmeldungen AS (
 			MAX(
 				CASE 
 					WHEN LOWER(TRIM(positiv)) = 'ja' 
-					THEN TO_DATE(datumsam, 'MM.DD.YYYY')
+					THEN TO_DATE(datumsam, 'DD.MM.YYYY')
 				END
 			) OVER (PARTITION BY (ST_MakePoint(lv95_e, lv95_n), 2056)) AS sammeldatum_positiv,
 			ST_SetSRID(ST_MakePoint(lv95_e, lv95_n), 2056) AS geometrie
