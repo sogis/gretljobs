@@ -1,0 +1,32 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'csvImport'
+
+def csvFile = file("${buildDir}/in/uploadFile.csv")
+
+tasks.register('validateCSVFile', CsvValidator) {
+    models = "SO_HBA_Immobilienportfolio_Gebaeude_20260713"
+    firstLineIsHeader = true
+    dataFiles = files(csvFile)
+    valueSeparator = ';'
+}
+
+tasks.register('deleteData', SqlExecutor) {
+    description = 'Bisherige Daten löschen'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = files("delete_csv.sql")
+}
+
+// Import CSV-Datei
+tasks.register('csvImport',  CsvImport) {
+    dependsOn "deleteData"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    schemaName = "hba_immobilienportfolio_gebaeude_v2"
+    tableName = "import_csv_gebaeude"
+    firstLineIsHeader = true
+    valueSeparator = ';'
+    dataFile = csvFile
+}
