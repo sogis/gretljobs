@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'csvImport'
+defaultTasks 'transferData'
 
 def csvFile = file("${buildDir}/in/uploadFile.csv")
 
@@ -29,4 +29,13 @@ tasks.register('csvImport',  CsvImport) {
     firstLineIsHeader = true
     valueSeparator = ';'
     dataFile = csvFile
+}
+
+tasks.register('transferData', Db2Db) {
+    dependsOn "csvimport"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('hba_immobilienportfolio_gebaeude_pub.sql', 'hba_immobilienportfolio_pub_v2.immobilienprtflio_gebaeude', true)
+    ];
 }
