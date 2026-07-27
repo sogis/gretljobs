@@ -60,7 +60,7 @@ gewaesser AS (
             ST_Area(
                 ST_Intersection(g.geometrie, bb.geometrie)
             )
-        ) / ST_Area(g.geometrie) >= 0.04
+        ) / ST_Area(g.geometrie) >= 0.10
 ),
 
 kantonsstrassen AS (
