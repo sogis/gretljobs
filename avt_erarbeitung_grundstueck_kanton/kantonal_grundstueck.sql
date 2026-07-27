@@ -71,10 +71,12 @@ kantonsstrassen AS (
         ON g.geometrie && a.geometrie
             AND ST_Intersects(g.geometrie, a.geometrie)
     WHERE ST_Length(
-              ST_Intersection(g.geometrie, a.geometrie)
-          ) >= 20
+          ST_Intersection(g.geometrie, a.geometrie)
+          ) >= 15
+    AND ST_Length(
+          ST_Intersection(g.geometrie, a.geometrie)
+          ) / ST_Perimeter(g.geometrie) >= 0.15
 )
-
 SELECT DISTINCT
     egrid,
     bfs_nr,
