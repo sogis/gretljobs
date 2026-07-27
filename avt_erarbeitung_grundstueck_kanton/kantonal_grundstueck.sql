@@ -60,7 +60,7 @@ gewaesser AS (
             ST_Area(
                 ST_Intersection(g.geometrie, bb.geometrie)
             )
-        ) / ST_Area(g.geometrie) >= 0.12
+        ) / ST_Area(g.geometrie) >= 0.04
 ),
 
 kantonsstrassen AS (
@@ -75,7 +75,7 @@ kantonsstrassen AS (
           ) >= 15
     AND ST_Length(
           ST_Intersection(g.geometrie, a.geometrie)
-          ) / ST_Perimeter(g.geometrie) >= 0.15
+          ) / ST_Perimeter(g.geometrie) >= 0.16
 )
 SELECT DISTINCT
     egrid,
