@@ -44,6 +44,6 @@ tasks.register("updateTxtValues", SqlExecutor) {
     dependsOn "transferData"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = files(
-        'hba_immobilienportfolio_gebaeude_update.sql',
+        'hba_immobilienportfolio_grundstuecke_update.sql',
     )
 }

@@ -13,7 +13,7 @@ SET
 FROM 
 	hba_immobilienportfolio_pub_v2.prioritaetsstufe AS prio
 WHERE 
-	ig.prioritaet = prio.ilicode
+	ig.prioritaet = prio.ilicode 
 ;
 
 UPDATE hba_immobilienportfolio_pub_v2.immobilienprtflio_grundsteucke AS ig
