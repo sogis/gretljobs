@@ -29,40 +29,13 @@ WITH grundstuecke AS (
 ),
 
 gewaesser AS (
-    SELECT
-        g.*,
-        SUM(
-            ST_Area(
-                ST_Intersection(g.geometrie, bb.geometrie)
-            )
-        ) AS gewaesserflaeche
+    SELECT DISTINCT
+        g.*
     FROM grundstuecke g
     JOIN agi_mopublic_pub.mopublic_bodenbedeckung bb
-        ON g.geometrie && bb.geometrie
-            AND ST_Intersects(g.geometrie, bb.geometrie)
+      ON ST_Intersects(g.geometrie, bb.geometrie)
     WHERE bb.art_txt = 'fliessendes Gewaesser'
-    GROUP BY
-        g.egrid,
-        g.bfs_nr,
-        g.gemeinde,
-        g.grundbuch,
-        g.nummer,
-        g.nbident,
-        g.flaechenmass,
-        g.art_txt,
-        g.geometrie
-    HAVING
-        SUM(
-            ST_Area(
-                ST_Intersection(g.geometrie, bb.geometrie)
-            )
-        ) >= 5
-    AND
-        SUM(
-            ST_Area(
-                ST_Intersection(g.geometrie, bb.geometrie)
-            )
-        ) / ST_Area(g.geometrie) >= 0.10
+      AND ST_Area(ST_Intersection(g.geometrie, bb.geometrie)) >= 5
 ),
 
 kantonsstrassen AS (
