@@ -10,6 +10,7 @@ WITH grundstuecke AS (
         art_txt,
         geometrie
     FROM agi_mopublic_pub.mopublic_grundstueck
+    WHERE nummer::integer > 90000
 
     UNION ALL
 
@@ -24,6 +25,7 @@ WITH grundstuecke AS (
         art_txt,
         geometrie
     FROM agi_mopublic_pub.mopublic_grundstueck_proj
+    WHERE nummer::integer > 90000
 ),
 
 gewaesser AS (
