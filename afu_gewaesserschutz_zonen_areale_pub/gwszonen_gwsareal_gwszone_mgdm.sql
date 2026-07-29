@@ -24,7 +24,7 @@ SELECT
     gzone.astatus
 FROM 
     afu_gewaesserschutz_zonen_areale_v1.gwszonen_gwszone AS gzone
-        LEFT JOIN afu_gewaesserschutz_zonen_areale_mgdm_v1.gwszonen_status AS status ON status.t_id = gzone.astatus
+        LEFT JOIN afu_gewaesserschutz_zonen_areale_v1.gwszonen_status AS status ON status.t_id = gzone.astatus
 WHERE 
     status.kantonalerstatus IS NULL 
         OR status.kantonalerstatus  = 'RichtplanFestsetzung'
@@ -54,7 +54,7 @@ SELECT
     areal.astatus
 FROM 
     afu_gewaesserschutz_zonen_areale_v1.gwszonen_gwsareal AS areal
-        LEFT JOIN afu_gewaesserschutz_zonen_areale_mgdm_v1.gwszonen_status AS status ON status.t_id = areal.astatus
+        LEFT JOIN afu_gewaesserschutz_zonen_areale_v1.gwszonen_status AS status ON status.t_id = areal.astatus
 WHERE 
     status.kantonalerstatus IS NULL 
         OR status.kantonalerstatus  = 'RichtplanFestsetzung'
