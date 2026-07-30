@@ -9,7 +9,7 @@ av_grundstueckgeometrie AS (
 	FROM 
 		agi_dm01avso24.liegenschaften_liegenschaft AS liegenschaft
 	LEFT JOIN agi_dm01avso24.liegenschaften_grundstueck AS grundstueck 
-		ON liegenschaft.liegenschaft_von = grundstueck.t_id  
+		ON liegenschaft.liegenschaft_von = grundstueck.t_id 
 ),
 
 grundstuecke_csv AS (
