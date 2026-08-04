@@ -56,9 +56,9 @@ SELECT
 	END AS versicherkung_gewaesser,
 	CASE
 		WHEN gewaesser_versickerung = 'WAHR'
-			THEN TRUE
+			THEN 'Ja'
 		WHEN gewaesser_versickerung = 'FALSCH'
-			THEN FALSE
+			THEN 'Nein'
 		ELSE null
 	END AS versicherkung_gewaesser_txt,
 	CASE
