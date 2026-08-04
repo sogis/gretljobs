@@ -15,12 +15,3 @@ FROM
 WHERE 
 	ig.prioritaet = prio.ilicode 
 ;
-
-UPDATE hba_immobilienportfolio_pub_v2.immobilienprtflio_grundsteucke AS ig
-SET
-	nutzung_txt = nutzung.dispname
-FROM 
-	hba_immobilienportfolio_pub_v2.nutzungsart AS nutzung
-WHERE 
-	ig.nutzung = nutzung.ilicode
-;

@@ -53,7 +53,8 @@ gebaeude_csv AS (
 			WHEN vermietet = 'vermietet'
 				THEN 'Ja'
 			ELSE 'Nein'
-		END AS vermietet_txt
+		END AS vermietet_txt,
+		link
 	FROM 
 		hba_immobilienportfolio_gebaeude_v2.csv_import_gebaeude
 )
@@ -72,6 +73,7 @@ SELECT
 	eigenbedarf_txt,
 	vermietet,
 	vermietet_txt,
+	link,
 	gebgeo.geometrie
 FROM 
 	gebaeude_csv AS gebcsv

@@ -4,7 +4,9 @@ WITH
 av_grundstueckgeometrie AS (
 	SELECT
 		liegenschaft.t_id,
-		grundstueck.egris_egrid,				
+		grundstueck.egris_egrid,
+		grundstueck.nummer,
+		liegenschaft.flaechenmass,
 		liegenschaft.geometrie 
 	FROM 
 		agi_dm01avso24.liegenschaften_liegenschaft AS liegenschaft
@@ -56,6 +58,8 @@ grundstuecke_csv AS (
 
 SELECT 
 	egrid,
+	grugeo.nummer AS grundstuecknummer,
+	grugeo.flaechenmass,
 	wirtschaftseinheit,
 	prioritaet,
 	vermoegensart,
