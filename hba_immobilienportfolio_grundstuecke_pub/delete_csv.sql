@@ -1,0 +1,3 @@
+DELETE FROM
+	hba_immobilienportfolio_grundstuecke_v2.csv_import_grundstuecke
+;
