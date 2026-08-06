@@ -48,16 +48,16 @@ tasks.register('importFile', CsvImport) {
     encoding = 'UTF-8'
 }
 
-tasks.register('createGeometry', SqlExecutor) {
+tasks.register('createGeometryAndTotal', SqlExecutor) {
     dependsOn 'importFile'
     description = 'Erstelle die Punktgeometrie'
 
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = files('3_create_geometry.sql')
+    sqlFiles = files('3_create_geometry_and_total.sql')
 }
 
 tasks.register('copyToPub', Db2Db) {
-    dependsOn 'createGeometry'
+    dependsOn 'createGeometryAndTotal'
     description = 'Daten in das Publikationsschema überführen'
 
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
