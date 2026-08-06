@@ -15,7 +15,7 @@ def datasetName = "importdata" // for naming tables in sql
 def downloadSrc = 'https://data.geo.admin.ch/ch.bak.bundesinventar-schuetzenswerte-ortsbilder/bundesinventar-schuetzenswerte-ortsbilder/bundesinventar-schuetzenswerte-ortsbilder_2056.xtf.zip'
 def downloadFile = file("$buildDir/${datasetName}.zip")
 def unzipTargetDir = file("$buildDir/${datasetName}")
-def xtfPath = new File("$unzipTargetDir/ISOS_V2_20250304.xtf")
+def xtfPath = new File("$unzipTargetDir/ISOS_V2_20260519.xtf")
 def CataloguePath = new File("$unzipTargetDir/ISOS_Catalogues_V2_20220426.xml")
 
 // first task
