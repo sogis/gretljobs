@@ -1,0 +1,24 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+description = "GRETL-Job für die Vorselektion der kantonalen Grundstücke"
+
+defaultTasks 'validateDataEdit'
+
+task transKantonalGrundstueck(type: Db2Db) {
+    sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('kantonal_grundstueck.sql',
+                    'avt_erarbeitung_grundstueck_kanton_v1.grundstueck_knton_grundstueck', true)
+    ]
+}
+
+task validateDataEdit(type: Ili2pgValidate) {
+    dependsOn transKantonalGrundstueck
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    models = "SO_AVT_Erarbeitung_Grundstueck_Kanton_20260713"
+    dbschema = "avt_erarbeitung_grundstueck_kanton_v1"
+}
