@@ -52,7 +52,7 @@ SELECT
         (
             SELECT jsonb_agg(
                 jsonb_build_object(
-                    '@type', 'SO_ARP_FFF_Kompensation_Publikation_20260624.Bodenprofilstandorte.Teilflaechen',
+                    '@type', 'SO_ARP_FFF_Kompensation_Publikation_20260624.Teilflaechen',
                     'Flaechenart',          andere.flaeche_art,
                     'Bezeichnung',          andere.bezeichnung,
                     'Flaeche_anrechenbar',  andere.flaeche_anrechenbar,
