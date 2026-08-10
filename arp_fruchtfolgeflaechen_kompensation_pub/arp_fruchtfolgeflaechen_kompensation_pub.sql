@@ -12,7 +12,7 @@ WITH alle_flaechen AS (
         round(ST_Area(bf.geometrie))::integer        AS flaeche_berechnet,
         bf.beanspruchungsflaeche_bemerkungen         AS flaeche_bemerkungen,
         bf.geometrie,
-        'beanspruchung/' || bf.t_id::text            AS link
+        'https://geo-i.so.ch/map/?l=ch.so.arp.fruchtfolgeflaechen_kompensation&bl=hintergrundkarte_sw&t=default&c='||st_x(st_centroid(bf.geometrie))||'%2C'||st_y(st_centroid(bf.geometrie))||'&s=3780&hc=1'          AS link
     FROM
         arp_fruchtfolgeflaechen_kompensation_v1.kompensation_beanspruchungsflaeche bf
 
@@ -27,7 +27,7 @@ WITH alle_flaechen AS (
         round(ST_Area(kf.geometrie))::integer        AS flaeche_berechnet,
         kf.kompensation_bemerkungen                  AS flaeche_bemerkungen,
         kf.geometrie,
-        'kompensation/' || kf.t_id::text             AS link
+        'https://geo-i.so.ch/map/?l=ch.so.arp.fruchtfolgeflaechen_kompensation&bl=hintergrundkarte_sw&t=default&c='||st_x(st_centroid(kf.geometrie))||'%2C'||st_y(st_centroid(kf.geometrie))||'&s=3780&hc=1'           AS link
     FROM
         arp_fruchtfolgeflaechen_kompensation_v1.kompensation_kompensationsflaeche kf
 )
