@@ -4,6 +4,7 @@ SELECT
     y_koordinate,
     aname,
     typ,
+    gtyp.dispname AS typ_txt,
     telefon_allgemein,
     email_allgemein,
     email_leitung,
@@ -19,4 +20,6 @@ SELECT
     total,
     kommentare
 FROM 
-    gesa_gesundheitseinrichtungen_staging_v1.gesundheitseinrichtung;
+    gesa_gesundheitseinrichtungen_staging_v1.gesundheitseinrichtung g
+JOIN
+    gesa_gesundheitseinrichtungen_staging_v1.gesundheitseinrichtung_typ gtyp ON g.typ = gtyp.ilicode;
