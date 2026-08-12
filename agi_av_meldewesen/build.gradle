@@ -5,7 +5,7 @@ import java.nio.file.Paths
 apply plugin: 'ch.so.agi.gretl'
 apply plugin: "org.hidetake.ssh"
 
-defaultTasks 'update_manual_records'
+defaultTasks 'deleteDataOnFtp'
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def downloadFolder = Paths.get(pathToTempFolder, "download").toFile()
@@ -148,8 +148,8 @@ tasks.register('deleteDataOnFtp') {
                 }.each {
                     def fileName = remoteDirectory + it.getName()
                     println "Deleting: " + fileName
-                    // ************ TODO !!!!!!!!!! -> det ret = remove fileName
-                    def ret = remove '/remote/file'
+                    det ret = remove fileName
+                    //def ret = remove '/remote/file'
                     if (!ret) {
                         throw new GradleException("could not delete: " + fileName)
                     }
