@@ -147,7 +147,7 @@ tasks.register('deleteDataOnFtp') {
                 fileTree(downloadFolder).matching {
                     include "**/*.xml"
                 }.each {
-                    def fileName = remoteDirectory + it.getName()
+                    def fileName = remoteDirectory.dropRight(1) + it.getName()
                     println "Deleting: " + fileName
                     def ret = remove fileName
                     //def ret = remove '/remote/file'
