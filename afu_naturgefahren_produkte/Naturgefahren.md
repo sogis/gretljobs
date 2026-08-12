@@ -2,7 +2,6 @@
 
 ## Verantwortliche:
 AfU: Nicole Bieber (Nicole.Bieber@bd.so.ch), Doris Vath (Doris.Vath@bd.so.ch)<br>
-AGI: Oliver Jeker, Martin Schweizer 
 
 ## Beschreibung
 Die Nachführung der Naturgefahren besteht aus verschiedenen Teilbereichen: <br> 
