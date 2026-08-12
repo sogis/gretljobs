@@ -149,7 +149,7 @@ tasks.register('deleteDataOnFtp') {
                 }.each {
                     def fileName = remoteDirectory + it.getName()
                     println "Deleting: " + fileName
-                    det ret = remove fileName
+                    def ret = remove fileName
                     //def ret = remove '/remote/file'
                     if (!ret) {
                         throw new GradleException("could not delete: " + fileName)
