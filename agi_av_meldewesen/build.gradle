@@ -139,6 +139,7 @@ tasks.register('update_manual_records', SqlExecutor) {
 // Löschen der Daten auf dem FTP-Server.
 // Lokales Löschen nicht notwendig, da im Container.
 tasks.register('deleteDataOnFtp') {
+    dependsOn 'update_manual_records'
     description = "Delete files on SFTP server"
     doLast {
         ssh.run {
