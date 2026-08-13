@@ -75,20 +75,6 @@ hit_kgs AS (
      AND NOT ST_Touches(b.geometrie, ST_GeomFromWKB(o.geometrie))
 ),
 
-hit_bln AS (
-    SELECT
-        b.src_t_id,
-        CAST(bln.nummer AS VARCHAR) AS ref_objekt_id,
-        bln.Nummer,
-        bln.Objektname,
-        bln.Objektblatt,
-        bln.geom
-    FROM gebaeude_src b
-    JOIN bln_swisstopo AS bln
-      ON ST_Intersects(b.geometrie, bln.geom)
-     AND NOT ST_Touches(b.geometrie, bln.geom)
-),
-
 hit_nutz_kommunal AS (
     SELECT
         b.src_t_id,
@@ -158,21 +144,27 @@ flags AS (
         CASE WHEN dk.src_t_id IS NOT NULL THEN TRUE ELSE FALSE END AS hit_denk_punkt,
         CASE WHEN i.src_t_id  IS NOT NULL THEN TRUE ELSE FALSE END AS hit_isos_a,
         CASE WHEN k.src_t_id  IS NOT NULL THEN TRUE ELSE FALSE END AS hit_kgs,
-        CASE WHEN bn.src_t_id IS NOT NULL THEN TRUE ELSE FALSE END AS hit_bln,
         CASE WHEN nkomm.src_t_id IS NOT NULL THEN TRUE ELSE FALSE END AS hit_nutz_kommunal,
         CASE WHEN n7.src_t_id IS NOT NULL THEN TRUE ELSE FALSE END AS hit_nutz_7,
         CASE WHEN nm.src_t_id IS NOT NULL THEN TRUE ELSE FALSE END AS hit_nutz_melde,
         CASE WHEN n821.src_t_id IS NOT NULL THEN TRUE ELSE FALSE END AS hit_nutz_821
     FROM gebaeude_src b
-    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_denk_poly)     dp    ON dp.src_t_id = b.src_t_id
-    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_denk_punkt)    dk    ON dk.src_t_id = b.src_t_id
-    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_isos)          i     ON i.src_t_id  = b.src_t_id
-    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_kgs)           k     ON k.src_t_id  = b.src_t_id
-    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_bln)           bn    ON bn.src_t_id = b.src_t_id
-    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_nutz_kommunal) nkomm ON nkomm.src_t_id = b.src_t_id
-    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_nutz_7)        n7    ON n7.src_t_id = b.src_t_id
-    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_nutz_melde)    nm    ON nm.src_t_id = b.src_t_id
-    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_nutz_821)      n821  ON n821.src_t_id = b.src_t_id
+    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_denk_poly)     dp
+      ON dp.src_t_id = b.src_t_id
+    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_denk_punkt)    dk
+      ON dk.src_t_id = b.src_t_id
+    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_isos)          i
+      ON i.src_t_id = b.src_t_id
+    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_kgs)           k
+      ON k.src_t_id = b.src_t_id
+    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_nutz_kommunal) nkomm
+      ON nkomm.src_t_id = b.src_t_id
+    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_nutz_7)        n7
+      ON n7.src_t_id = b.src_t_id
+    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_nutz_melde)    nm
+      ON nm.src_t_id = b.src_t_id
+    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_nutz_821)      n821
+      ON n821.src_t_id = b.src_t_id
 ),
 
 objektinfo AS (
@@ -310,27 +302,6 @@ objektinfo AS (
             'Dokumente',    CAST(NULL AS JSON)
         ) AS obj
     FROM hit_kgs h
-
-    UNION ALL
-
-    -- BLN
-    SELECT
-        h.src_t_id,
-        json_object(
-            '@type',        'SO_ARP_Solaranlagen_Bewilligungsverfahren_20260313.Objektinformation',
-            'Thema',        'BLN',
-            'Quelle',       'bln',
-            'ObjektId',     h.ref_objekt_id,
-            'Objektname',   h.objektname,
-            'Schutzstatus', NULL,
-            'Objektblatt',  h.objektblatt,
-            'Nummer',       h.nummer,
-            'Kategorie',    NULL,
-            'Typ',          NULL,
-            'Bezeichnung',  NULL,
-            'Dokumente',    CAST(NULL AS JSON)
-        ) AS obj
-    FROM hit_bln h
 
     UNION ALL
 
@@ -530,7 +501,15 @@ objektinfo_agg AS (
 )
 
 INSERT INTO pubdb.arp_solaranlagen_bewilligungsverfahren_pub_v1.bauten_baute
-    (bfsnr, art, art_txt, geometrie, bewilligungsverfahren, bewilligungsverfahren_txt, objektinformation)
+    (
+        bfsnr,
+        art,
+        art_txt,
+        geometrie,
+        bewilligungsverfahren,
+        bewilligungsverfahren_txt,
+        objektinformation
+    )
 SELECT
     ${bfsnr},
     f.art_txt AS art,
@@ -539,87 +518,67 @@ SELECT
         ELSE 'Gebäude'
     END AS art_txt,
     'SRID=2056;' || ST_AsText(f.geometrie) AS geometrie,
+
+    -- Priorität 1:
+    -- Schutzobjekte bzw. Schutzgebiete, die direkt ein
+    -- Baubewilligungsverfahren auslösen.
     CASE
         WHEN (
             f.hit_denk_poly
             OR f.hit_denk_punkt
             OR f.hit_isos_a
             OR f.hit_kgs
-            OR f.hit_bln
             OR f.hit_nutz_7
         )
             THEN 'Baubewilligungsverfahren'
-        WHEN (
-            f.hit_nutz_kommunal
-            AND NOT (
-                f.hit_denk_poly
-                OR f.hit_denk_punkt
-                OR f.hit_isos_a
-                OR f.hit_kgs
-                OR f.hit_bln
-                OR f.hit_nutz_7
-            )
-        )
+
+        -- Priorität 2:
+        -- Kernzone / Erhaltungszone:
+        -- Verfahren auf kommunaler Ebene zu klären.
+        WHEN f.hit_nutz_kommunal
             THEN 'Bewilligungsverfahren_auf_kommunaler_Ebene_zu_klaeren'
+
+        -- Priorität 3:
+        -- Kommunal geschütztes Kulturobjekt.
+        -- Die Zentrumszone (N141) hat hier weiterhin die
+        -- bisherige Wirkung: Meldeverfahren.
         WHEN (
             f.hit_nutz_821
-            AND NOT (
-                f.hit_denk_poly
-                OR f.hit_denk_punkt
-                OR f.hit_isos_a
-                OR f.hit_kgs
-                OR f.hit_bln
-                OR f.hit_nutz_7
-                OR f.hit_nutz_kommunal
-                OR f.hit_nutz_melde
-            )
+            AND NOT f.hit_nutz_melde
         )
             THEN 'Baubewilligungspflicht_fuer_Indachanlagen__Meldepflicht_fuer_Aufdachanlagen'
+
         ELSE 'Meldeverfahren'
     END AS bewilligungsverfahren,
+
     CASE
         WHEN (
             f.hit_denk_poly
             OR f.hit_denk_punkt
             OR f.hit_isos_a
             OR f.hit_kgs
-            OR f.hit_bln
             OR f.hit_nutz_7
         )
             THEN 'Baubewilligungsverfahren'
-        WHEN (
-            f.hit_nutz_kommunal
-            AND NOT (
-                f.hit_denk_poly
-                OR f.hit_denk_punkt
-                OR f.hit_isos_a
-                OR f.hit_kgs
-                OR f.hit_bln
-                OR f.hit_nutz_7
-            )
-        )
+
+        WHEN f.hit_nutz_kommunal
             THEN 'Bewilligungsverfahren auf kommunaler Ebene zu klären'
+
         WHEN (
             f.hit_nutz_821
-            AND NOT (
-                f.hit_denk_poly
-                OR f.hit_denk_punkt
-                OR f.hit_isos_a
-                OR f.hit_kgs
-                OR f.hit_bln
-                OR f.hit_nutz_7
-                OR f.hit_nutz_kommunal
-                OR f.hit_nutz_melde
-            )
+            AND NOT f.hit_nutz_melde
         )
             THEN 'Baubewilligungspflicht für Indachanlagen, Meldepflicht für Aufdachanlagen'
+
         ELSE 'Meldeverfahren'
     END AS bewilligungsverfahren_txt,
+
     CASE
         WHEN o.objektinformation IS NULL THEN CAST(NULL AS JSON)
         WHEN json_array_length(o.objektinformation) = 0 THEN CAST(NULL AS JSON)
         ELSE o.objektinformation
     END AS objektinformation
+
 FROM flags f
 LEFT JOIN objektinfo_agg o
   ON o.src_t_id = f.src_t_id
