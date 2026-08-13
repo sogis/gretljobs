@@ -5,7 +5,14 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferMassnahmen'
 
+task validateData(type: Ili2pgValidate) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = "SO_ALW_Tiergesundheit_Eindaemmungsbarrieren_20260716"
+    dbschema = "alw_tiergesundheit_eindaemmungsbarrieren_v1"
+}
+
 task transferMassnahmen(type: Db2Db) {
+    dependsOn validateData
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
