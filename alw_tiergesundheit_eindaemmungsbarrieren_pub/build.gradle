@@ -5,10 +5,21 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferMassnahmen'
 
-task validateData(type: Ili2pgValidate) {
+task exportDataEdit (type: Ili2pgExport) {
+    description = "Exportiert die Daten aus dem Schema alw_tiergesundheit_eindaemmungsbarrieren_v1 in eine INTERLIS-Datei."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    models = "SO_ALW_Tiergesundheit_Eindaemmungsbarrieren_20260716"
-    dbschema = "alw_tiergesundheit_eindaemmungsbarrieren_v1"
+    dbschema = 'alw_tiergesundheit_eindaemmungsbarrieren_v1'
+    models = 'SO_ALW_Tiergesundheit_Eindaemmungsbarrieren_20260716'
+    dataFile= file(fileName)
+    disableValidation = true
+}
+
+task validateDataEdit(type: IliValidator) {
+    dependsOn exportDataEdit
+    description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
+    dataFiles = file(fileName)
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    failOnError = true
 }
 
 task transferMassnahmen(type: Db2Db) {
