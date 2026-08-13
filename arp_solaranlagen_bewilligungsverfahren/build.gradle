@@ -46,7 +46,7 @@ def gemeinden = [2401,2402,2403,2404,2405,2406,2407,2408,2421,2422,2424,2425,242
 
 gemeinden.each { gemeinde ->
     task "calculate_$gemeinde"(type: SqlExecutor) {
-        dependsOn "preprocess"
+        //dependsOn "preprocess"
         database = [dbUriDuckDB]
         sqlFiles = files(
             'load_extensions.sql',
