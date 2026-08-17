@@ -10,8 +10,8 @@ pipeline {
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
                         unstash name: 'uploadFile'
-                        sh 'mv uploadFile $uploadFile_FILENAME'
-                        sh "gretl -PcsvFilename='${uploadFile_FILENAME}'"
+                        sh 'mv uploadFile "$uploadFile_FILENAME"'
+                        sh 'gretl -PcsvFilename="$uploadFile_FILENAME"'
                     }
                 }
             }
