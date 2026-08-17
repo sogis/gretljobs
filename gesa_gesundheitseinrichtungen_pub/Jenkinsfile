@@ -10,8 +10,10 @@ pipeline {
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
                         unstash name: 'uploadFile'
-                        sh 'mv uploadFile "$uploadFile_FILENAME"'
-                        sh 'gretl -PcsvFilename="$uploadFile_FILENAME"'
+                        withEnv(["ORG_GRADLE_PROJECT_csvFilename=${uploadFile_FILENAME}"]) {
+                            sh 'mv uploadFile "$ORG_GRADLE_PROJECT_csvFilename"'
+                            sh 'gretl'
+                        }
                     }
                 }
             }
