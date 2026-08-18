@@ -36,6 +36,7 @@ SELECT
 	requiredmaterialg2,
 	requiredmaterialg3,
 	requiredmaterialg4,
+	modinfo,
 	comments,
 	closurepriority,
 	astra_tba_nummer,
