@@ -7,7 +7,7 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferMassnahmen'
 
 def tmpDir = buildDir.toString()
-def xtfPath = tmpDir + "/alw_tiergesundheit_eindaemmungsbarrieren_v1.xtf"
+def xtfPath = tmpDir + "/data.xtf"
 
 task exportXtf(type: Ili2pgExport){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
