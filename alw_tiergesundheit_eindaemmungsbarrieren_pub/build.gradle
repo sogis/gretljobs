@@ -6,21 +6,21 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferMassnahmen'
 
-def tmpDir = buildDir.toString()
-def xtfPath = tmpDir + "/data.xtf"
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def xtfFileName = "alw_tiergesundheit_eindaemmungsbarrieren_v1.xtf"
 
 task exportXtf(type: Ili2pgExport){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = "alw_tiergesundheit_eindaemmungsbarrieren_v1"
-    disableValidation = true
-    dataFile = xtfPath
     models = "SO_ALW_Tiergesundheit_Eindaemmungsbarrieren_20260716"
+    dbschema = "alw_tiergesundheit_eindaemmungsbarrieren_v1"
+    dataFile = file(xtfFileName)
+    disableValidation = false
 }
 
 task validate(type: IliValidator) {
     dependsOn exportXtf
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
-    dataFiles = [xtfPath]
+    dataFiles = [xtfFileName]
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
 
