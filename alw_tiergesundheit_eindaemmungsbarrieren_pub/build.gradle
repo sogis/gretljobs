@@ -18,7 +18,7 @@ task exportXtf(type: Ili2pgExport){
 }
 
 task validate(type: IliValidator) {
-    dependsOn exportDataEdit
+    dependsOn exportXtf
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
     dataFiles = [xtfPath]
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
