@@ -25,6 +25,7 @@ task validateDataEdit(type: IliValidator) {
 }
 
 task transferMassnahmen(type: Db2Db) {
+    dependsOn validateDataEdit
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
