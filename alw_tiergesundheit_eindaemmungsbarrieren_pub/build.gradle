@@ -7,25 +7,26 @@ defaultTasks 'transferMassnahmen'
 
 def fileName = "alw_tiergesundheit_eindaemmungsbarrieren_v1.xtf"
 
-task exportDataEdit (type: Ili2pgExport) {
-    description = "Exportiert die Daten aus dem Schema alw_tiergesundheit_eindaemmungsbarrieren_v1 in eine INTERLIS-Datei."
+def tmpDir = buildDir.toString()
+def xtfPath = tmpDir + "/alw_tiergesundheit_eindaemmungsbarrieren_v1.xtf"
+
+task exportXtf(type: Ili2pgExport){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    dbschema = 'alw_tiergesundheit_eindaemmungsbarrieren_v1'
-    models = 'SO_ALW_Tiergesundheit_Eindaemmungsbarrieren_20260716'
-    dataFile= file(fileName)
+    dbschema = "alw_tiergesundheit_eindaemmungsbarrieren_v1"
     disableValidation = true
+    dataFile = xtfPath
+    models = "SO_ALW_Tiergesundheit_Eindaemmungsbarrieren_20260716"
 }
 
-task validateDataEdit(type: IliValidator) {
+task validate(type: IliValidator) {
     dependsOn exportDataEdit
     description = "Validiert die exportierten INTERLIS-Datei gegen das Modell."
-    dataFiles = file(fileName)
+    dataFiles = [xtfPath]
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-    failOnError = true
 }
 
 task transferMassnahmen(type: Db2Db) {
-    dependsOn validateDataEdit
+    dependsOn validate
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
