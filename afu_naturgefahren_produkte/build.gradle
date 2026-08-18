@@ -676,6 +676,7 @@ task erhebungsgebiet(type: SqlExecutor, dependsOn: abklaerungsperimeter) {
 
 // Dokumente pro Gemeinden 
 
+/* jek 2026-07-06 disabled by replacing with empty task as workaround
 task copy_alte_dokumente(type: Db2Db, dependsOn: erhebungsgebiet) {
     description = "Kopiert die alten Dokumente von der Pub-DB in die Edit-DB"
     sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
@@ -684,6 +685,8 @@ task copy_alte_dokumente(type: Db2Db, dependsOn: erhebungsgebiet) {
             new TransferSet('vorbereitung/alte_dokumente_copy.sql','afu_naturgefahren_alte_dokumente_v1.alte_dokumente', true)
     ];
 }
+*/
+task copy_alte_dokumente(dependsOn: erhebungsgebiet) {}
 
 task dokumente_pro_gemeinde(type: SqlExecutor, dependsOn: copy_alte_dokumente) {
     description = "Teilt jedes Dokument einer Gemeinde mit entsprechendem Gemeindepolygon zu."
