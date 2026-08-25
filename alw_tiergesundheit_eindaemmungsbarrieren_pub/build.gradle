@@ -7,7 +7,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferMassnahmen'
 
-def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def pathToTempFolder = buildDir.toString()
 def xtfFileName = pathToTempFolder + "/alw_tiergesundheit_eindaemmungsbarrieren_v1.xtf"
 
 task exportXtf(type: Ili2pgExport){
