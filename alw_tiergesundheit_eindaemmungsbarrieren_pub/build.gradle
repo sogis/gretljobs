@@ -14,7 +14,7 @@ task exportXtf(type: Ili2pgExport){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = "SO_ALW_Tiergesundheit_Eindaemmungsbarrieren_20260716"
     dbschema = "alw_tiergesundheit_eindaemmungsbarrieren_v1"
-    dataFile = file(xtfFileName)
+    dataFile = xtfFileName
     disableValidation = false
 }
 
