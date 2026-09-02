@@ -75,7 +75,7 @@ tasks.register("postprocess", SqlExecutor) {
 }
 
 task register('publishPub', Publisher){
-    dependsOn "register"
+    dependsOn "postprocess"
     database = [dbUriPub,dbUserPub,dbPwdPub]
     dataIdent = "ch.so.arp.solaranlagen_bewilligungsverfahren"
     dbSchema = "arp_solaranlagen_bewilligungsverfahren_pub_v1"
