@@ -74,7 +74,7 @@ tasks.register("postprocess", SqlExecutor) {
     sqlParameters = [connectionStringPub : dbConnectionStringPub as String]
 }
 
-task.register('publishPub', Publisher){
+task.register("publishPub", Publisher){
     dependsOn "postprocess"
     database = [dbUriPub,dbUserPub,dbPwdPub]
     dataIdent = "ch.so.arp.solaranlagen_bewilligungsverfahren"
