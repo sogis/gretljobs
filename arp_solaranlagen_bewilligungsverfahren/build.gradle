@@ -6,7 +6,7 @@ import ch.so.agi.gretl.api.*
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'postprocess'
+defaultTasks 'publishPub'
 
 
 def dbHostPub = dbUriPub.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastIndexOf("/"))
