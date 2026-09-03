@@ -6,7 +6,7 @@ import ch.so.agi.gretl.api.*
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'postprocess'
+defaultTasks 'publishPub'
 
 
 def dbHostPub = dbUriPub.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastIndexOf("/"))
@@ -65,11 +65,26 @@ tasks.register('calculate') {
     }
 }
 
-tasks.register("postprocess", SqlExecutor) {
-    dependsOn "calculate"
+tasks.register('postprocess', SqlExecutor) {
+    dependsOn 'calculate'
     database = [dbUriDuckDB]
     sqlFiles = files(
         'detach_pubdb.sql'
     )
     sqlParameters = [connectionStringPub : dbConnectionStringPub as String]
 }
+
+tasks.register('publishPub', Publisher){
+    dependsOn 'postprocess'
+    dataIdent = "ch.so.arp.solaranlagen_bewilligungsverfahren"
+    database = [dbUriPub,dbUserPub,dbPwdPub]
+    dbSchema = "arp_solaranlagen_bewilligungsverfahren_pub_v1"
+    modelsToPublish = "SO_ARP_Solaranlagen_Bewilligungsverfahren_20260313"
+    userFormats = true
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+
