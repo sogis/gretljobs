@@ -65,8 +65,8 @@ tasks.register('calculate') {
     }
 }
 
-tasks.register("postprocess", SqlExecutor) {
-    dependsOn "calculate"
+tasks.register('postprocess', SqlExecutor) {
+    dependsOn 'calculate'
     database = [dbUriDuckDB]
     sqlFiles = files(
         'detach_pubdb.sql'
@@ -74,10 +74,10 @@ tasks.register("postprocess", SqlExecutor) {
     sqlParameters = [connectionStringPub : dbConnectionStringPub as String]
 }
 
-task.register("publishPub", Publisher){
-    dependsOn "postprocess"
-    database = [dbUriPub,dbUserPub,dbPwdPub]
+tasks.register('publishPub', Publisher){
+    dependsOn 'postprocess'
     dataIdent = "ch.so.arp.solaranlagen_bewilligungsverfahren"
+    database = [dbUriPub,dbUserPub,dbPwdPub]
     dbSchema = "arp_solaranlagen_bewilligungsverfahren_pub_v1"
     modelsToPublish = "SO_ARP_Solaranlagen_Bewilligungsverfahren_20260313"
     userFormats = true
@@ -87,3 +87,4 @@ task.register("publishPub", Publisher){
     grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
+
