@@ -22,7 +22,7 @@ WITH grundstuecke AS (
         nummer,
         nbident,
         flaechenmass,
-        art_txt,
+        'Projektiert ' || art_txt AS art_txt,
         geometrie
     FROM agi_mopublic_pub.mopublic_grundstueck_proj
     WHERE nummer::integer >= 90000
