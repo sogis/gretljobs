@@ -14,7 +14,6 @@ av_gebaeudegeometrien AS (
 		art = 'Gebaeude'
 ),
 
-
 gebaeude_csv AS (
 	SELECT
 		egid,
@@ -54,7 +53,9 @@ gebaeude_csv AS (
 				THEN 'Ja'
 			ELSE 'Nein'
 		END AS vermietet_txt,
-		link
+		link,
+		verantwortung_geb AS gebaeudeverantwortung,
+		verantwortung_hw AS hauswartung
 	FROM 
 		hba_immobilienportfolio_gebaeude_v2.csv_import_gebaeude
 )
@@ -74,6 +75,8 @@ SELECT
 	vermietet,
 	vermietet_txt,
 	link,
+	gebaeudeverantwortung,
+	hauswartung,
 	gebgeo.geometrie
 FROM 
 	gebaeude_csv AS gebcsv
