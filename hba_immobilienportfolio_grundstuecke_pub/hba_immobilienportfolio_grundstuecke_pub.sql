@@ -14,6 +14,41 @@ av_grundstueckgeometrie AS (
 		ON liegenschaft.liegenschaft_von = grundstueck.t_id 
 ),
 
+av_baurecht AS (
+	SELECT DISTINCT ON (grundstueck.egris_egrid)
+		selbstrecht.t_id,
+		grundstueck.egris_egrid,
+		grundstueck.nummer,
+		selbstrecht.flaechenmass,
+		selbstrecht.geometrie
+	FROM 
+		agi_dm01avso24.liegenschaften_selbstrecht AS selbstrecht
+		LEFT JOIN agi_dm01avso24.liegenschaften_grundstueck AS grundstueck 
+		ON selbstrecht.selbstrecht_von = grundstueck.t_id 
+	WHERE 
+		grundstueck.art = 'SelbstRecht.Baurecht'
+),
+
+av_vereint AS (
+	SELECT 
+		egris_egrid,
+		nummer,
+		flaechenmass,
+		geometrie
+	FROM 
+		av_grundstueckgeometrie
+		
+	UNION ALL
+	
+	SELECT 
+		egris_egrid,
+		nummer,
+		flaechenmass,
+		geometrie
+	FROM 
+		av_baurecht
+),
+
 grundstuecke_csv AS (
 	SELECT
 		egrid,
@@ -40,7 +75,7 @@ grundstuecke_csv AS (
 				THEN 'Ja'
 			ELSE 'Nein'
 		END AS baurecht_txt,
-		fach_verantw_bez AS fachverantwortung,
+		fach_verantwortung AS fachverantwortung,
 		jahr_veraeussert AS veraeusserungsjahr,
 		CASE
 			WHEN jahr_veraeussert IS NOT NULL
@@ -58,8 +93,8 @@ grundstuecke_csv AS (
 
 SELECT 
 	egrid,
-	grugeo.nummer AS grundstuecknummer,
-	grugeo.flaechenmass,
+	av.nummer AS grundstuecknummer,
+	av.flaechenmass,
 	wirtschaftseinheit,
 	prioritaet,
 	vermoegensart,
@@ -71,11 +106,11 @@ SELECT
 	veraeusserungsjahr,
 	veraeusserung,
 	veraeusserung_txt,
-	grugeo.geometrie
+	av.geometrie
 FROM 
-	grundstuecke_csv AS grucsv
-LEFT JOIN av_grundstueckgeometrie AS grugeo
-	ON grucsv.egrid = grugeo.egris_egrid
+	grundstuecke_csv AS csv
+LEFT JOIN av_vereint AS av
+	ON csv.egrid = av.egris_egrid
 WHERE
-	grugeo.geometrie IS NOT NULL
+	av.geometrie IS NOT NULL
 ;
