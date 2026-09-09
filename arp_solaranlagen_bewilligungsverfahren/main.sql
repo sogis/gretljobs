@@ -87,14 +87,18 @@ hit_nutz_grundnutzung AS (
         n.typ_bezeichnung,
         n.dokumente,
         CASE
+            -- Die drei kommunalen Sonderfaelle bleiben unveraendert und
+            -- loesen weiterhin direkt ein Baubewilligungsverfahren aus.
             WHEN (
-                n.typ_kt = 'N142_Erhaltungszone'
-                OR (n.bfs_nr = 2601 AND n.typ_bezeichnung = 'Altstadtzone')
+                (n.bfs_nr = 2601 AND n.typ_bezeichnung = 'Altstadtzone')
                 OR (n.bfs_nr = 2581 AND n.typ_bezeichnung = 'Altstadtzone')
                 OR (n.bfs_nr = 2422 AND n.typ_bezeichnung = 'Engere Kernzone')
             )
                 THEN 'Baubewilligungsverfahren'
-            WHEN n.typ_kt = 'N140_Kernzone'
+
+            -- N140 und N142 werden gleich behandelt: gelb, sofern keine
+            -- Bedingung mit hoeherer Prioritaet greift.
+            WHEN n.typ_kt IN ('N140_Kernzone', 'N142_Erhaltungszone')
                 THEN 'Bewilligungsverfahren_auf_kommunaler_Ebene_zu_klaeren'
         END AS verfahrensklasse
     FROM gebaeude_src b
@@ -214,7 +218,7 @@ klassifikation AS (
             )
                 THEN 'Baubewilligungsverfahren'
 
-            -- Prioritaet 2: uebrige Kernzonen (N140).
+            -- Prioritaet 2: Kern- und Erhaltungszonen (N140 / N142).
             WHEN f.hit_nutz_kommunal
                 THEN 'Bewilligungsverfahren_auf_kommunaler_Ebene_zu_klaeren'
 
