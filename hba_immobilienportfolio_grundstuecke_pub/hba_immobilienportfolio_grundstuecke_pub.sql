@@ -14,9 +14,11 @@ av_grundstueckgeometrie AS (
 		ON liegenschaft.liegenschaft_von = grundstueck.t_id
 ),
 
-av_baurecht AS (
+av_baurechtgeometrie AS (
 	SELECT
 		grundstueck.egris_egrid,
+		grundstueck.nummer,
+		selbstrecht.flaechenmass,
 		selbstrecht.geometrie
 	FROM
 		agi_dm01avso24.liegenschaften_selbstrecht AS selbstrecht
@@ -25,6 +27,7 @@ av_baurecht AS (
 	WHERE
 		grundstueck.art = 'SelbstRecht.Baurecht'
 ),
+
 
 grundstuecke_csv AS (
 	SELECT
@@ -66,9 +69,34 @@ grundstuecke_csv AS (
 		END AS veraeusserung_txt
 	FROM
 		hba_immobilienportfolio_grundstuecke_v2.csv_import_grundstuecke
+),
+
+csv_baurechtgeometrie AS (
+	SELECT
+		baurecht.egris_egrid AS egrid,
+		baurecht.nummer AS grundstuecknummer,
+		baurecht.flaechenmass,
+		csv.wirtschaftseinheit,
+		csv.prioritaet,
+		csv.vermoegensart,
+		csv.eigenbedarf,
+		csv.eigenbedarf_txt,
+		csv.baurecht,
+		csv.baurecht_txt,
+		csv.fachverantwortung,
+		csv.veraeusserungsjahr,
+		csv.veraeusserung,
+		csv.veraeusserung_txt,
+		baurecht.geometrie
+	FROM
+		grundstuecke_csv AS csv
+	LEFT JOIN av_baurechtgeometrie AS baurecht
+		ON csv.egrid = baurecht.egris_egrid
+	WHERE
+		baurecht.geometrie IS NOT NULL
 )
 
-SELECT DISTINCT ON (av.egris_egrid)
+SELECT
 	av.egris_egrid AS egrid,
 	av.nummer AS grundstuecknummer,
 	av.flaechenmass,
@@ -78,14 +106,40 @@ SELECT DISTINCT ON (av.egris_egrid)
 	csv.eigenbedarf,
 	csv.eigenbedarf_txt,
 	CASE
-		WHEN br.egris_egrid IS NOT NULL
-			THEN TRUE
-		ELSE csv.baurecht
+		WHEN EXISTS (
+			SELECT 1
+			FROM csv_baurechtgeometrie AS baurecht
+			WHERE ST_Intersects(
+				av.geometrie,
+				baurecht.geometrie
+			)
+			AND ST_Area(
+				ST_Intersection(
+					av.geometrie,
+					baurecht.geometrie
+				)
+			) > 1
+		)
+		THEN TRUE
+		ELSE FALSE
 	END AS baurecht,
 	CASE
-		WHEN br.egris_egrid IS NOT NULL
-			THEN 'Ja'
-		ELSE csv.baurecht_txt
+		WHEN EXISTS (
+			SELECT 1
+			FROM csv_baurechtgeometrie AS baurecht
+			WHERE ST_Intersects(
+				av.geometrie,
+				baurecht.geometrie
+			)
+			AND ST_Area(
+				ST_Intersection(
+					av.geometrie,
+					baurecht.geometrie
+				)
+			) > 1
+		)
+		THEN 'Ja'
+		ELSE 'Nein'
 	END AS baurecht_txt,
 	csv.fachverantwortung,
 	csv.veraeusserungsjahr,
@@ -96,9 +150,6 @@ FROM
 	grundstuecke_csv AS csv
 LEFT JOIN av_grundstueckgeometrie AS av
 	ON csv.egrid = av.egris_egrid
-LEFT JOIN av_baurecht AS br
-	ON ST_Intersects(av.point, br.geometrie)
 WHERE
-	av.geometrie IS NOT NULL
-ORDER BY
-	av.egris_egrid;
+	av.geometrie IS NOT NULL;
+;
