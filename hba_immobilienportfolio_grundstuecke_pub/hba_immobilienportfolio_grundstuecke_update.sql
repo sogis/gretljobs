@@ -1,4 +1,4 @@
-UPDATE hba_immobilienportfolio_pub_v2.immobilienprtflio_grundsteucke AS ig
+UPDATE hba_immobilienportfolio_pub_v2.immobilienprtflio_grundstuecke AS ig
 SET
 	vermoegensart_txt = ver.dispname
 FROM 
@@ -7,7 +7,7 @@ WHERE
 	ig.vermoegensart = ver.ilicode
 ;
 	
-UPDATE hba_immobilienportfolio_pub_v2.immobilienprtflio_grundsteucke AS ig
+UPDATE hba_immobilienportfolio_pub_v2.immobilienprtflio_grundstuecke AS ig
 SET
 	prioritaet_txt = prio.dispname
 FROM 
