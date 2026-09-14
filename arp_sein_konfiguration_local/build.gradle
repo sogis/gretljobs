@@ -24,7 +24,7 @@ ext {
     import_data_dir = "${rootProject.projectDir}/02_import_data/"
 
     // Create DB-variables for sql-files
-    // host, user und password beziehen sich auf die lokalen persönlichn gretljobs.properties. Funktioniert daher nur lokal.
+    // host, user und password beziehen sich auf die lokalen gretljobs.properties. Funktioniert daher nur lokal.
     dbHostEdit = dbUriEdit.substring(dbUriEdit.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
     dbDatabaseEdit = 'edit'
     dbConnectionStringEdit = "'dbname=$dbDatabaseEdit user=$dbUserEditS password=$dbPwdEditS host=$dbHostS'"

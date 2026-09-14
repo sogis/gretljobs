@@ -71,40 +71,50 @@ hit_kgs AS (
         o.bezeichnung
     FROM gebaeude_src b
     JOIN pubdb.arp_kulturgueterschutzobjekte_pub_v1.objekte o
-      ON ST_Intersects(b.geometrie, ST_GeomFromWKB(o.geometrie))
+      ON o.kategorie_txt IN (
+            'A - Kulturgut von nationaler Bedeutung',
+            'B - Kulturgut von regionaler Bedeutung'
+         )
+     AND ST_Intersects(b.geometrie, ST_GeomFromWKB(o.geometrie))
      AND NOT ST_Touches(b.geometrie, ST_GeomFromWKB(o.geometrie))
 ),
 
-hit_bln AS (
-    SELECT
-        b.src_t_id,
-        CAST(bln.nummer AS VARCHAR) AS ref_objekt_id,
-        bln.Nummer,
-        bln.Objektname,
-        bln.Objektblatt,
-        bln.geom
-    FROM gebaeude_src b
-    JOIN bln_swisstopo AS bln
-      ON ST_Intersects(b.geometrie, bln.geom)
-     AND NOT ST_Touches(b.geometrie, bln.geom)
-),
-
-hit_nutz_kommunal AS (
+hit_nutz_grundnutzung AS (
     SELECT
         b.src_t_id,
         CAST(n.t_id AS VARCHAR) AS ref_objekt_id,
         n.typ_kt,
         n.typ_bezeichnung,
-        n.dokumente
+        n.dokumente,
+        CASE
+            -- Die drei kommunalen Sonderfaelle bleiben unveraendert und
+            -- loesen weiterhin direkt ein Baubewilligungsverfahren aus.
+            WHEN (
+                (n.bfs_nr = 2601 AND n.typ_bezeichnung = 'Altstadtzone')
+                OR (n.bfs_nr = 2581 AND n.typ_bezeichnung = 'Altstadtzone')
+                OR (n.bfs_nr = 2422 AND n.typ_bezeichnung = 'Engere Kernzone')
+            )
+                THEN 'Baubewilligungsverfahren'
+
+            -- N140 und N142 werden gleich behandelt: gelb, sofern keine
+            -- Bedingung mit hoeherer Prioritaet greift.
+            WHEN n.typ_kt IN ('N140_Kernzone', 'N142_Erhaltungszone')
+                THEN 'Bewilligungsverfahren_auf_kommunaler_Ebene_zu_klaeren'
+        END AS verfahrensklasse
     FROM gebaeude_src b
     JOIN pubdb.arp_nutzungsplanung_pub_v1.nutzungsplanung_grundnutzung n
-      ON n.typ_kt IN ('N140_Kernzone', 'N142_Erhaltungszone')
+      ON (
+            n.typ_kt IN ('N140_Kernzone', 'N142_Erhaltungszone')
+            OR (n.bfs_nr = 2601 AND n.typ_bezeichnung = 'Altstadtzone')
+            OR (n.bfs_nr = 2581 AND n.typ_bezeichnung = 'Altstadtzone')
+            OR (n.bfs_nr = 2422 AND n.typ_bezeichnung = 'Engere Kernzone')
+         )
      AND ST_Intersects(b.geometrie, ST_GeomFromWKB(n.geometrie))
      AND NOT ST_Touches(b.geometrie, ST_GeomFromWKB(n.geometrie))
    WHERE n.bfs_nr = ${bfsnr}
 ),
 
-hit_nutz_7 AS (
+hit_nutz_ortsbild AS (
     SELECT
         b.src_t_id,
         CAST(u.t_id AS VARCHAR) AS ref_objekt_id,
@@ -119,7 +129,7 @@ hit_nutz_7 AS (
    WHERE u.bfs_nr = ${bfsnr}
 ),
 
-hit_nutz_melde AS (
+hit_nutz_n141 AS (
     SELECT
         b.src_t_id,
         CAST(n.t_id AS VARCHAR) AS ref_objekt_id,
@@ -158,21 +168,71 @@ flags AS (
         CASE WHEN dk.src_t_id IS NOT NULL THEN TRUE ELSE FALSE END AS hit_denk_punkt,
         CASE WHEN i.src_t_id  IS NOT NULL THEN TRUE ELSE FALSE END AS hit_isos_a,
         CASE WHEN k.src_t_id  IS NOT NULL THEN TRUE ELSE FALSE END AS hit_kgs,
-        CASE WHEN bn.src_t_id IS NOT NULL THEN TRUE ELSE FALSE END AS hit_bln,
+        CASE WHEN nbaub.src_t_id IS NOT NULL THEN TRUE ELSE FALSE END AS hit_nutz_baubewilligung,
         CASE WHEN nkomm.src_t_id IS NOT NULL THEN TRUE ELSE FALSE END AS hit_nutz_kommunal,
-        CASE WHEN n7.src_t_id IS NOT NULL THEN TRUE ELSE FALSE END AS hit_nutz_7,
-        CASE WHEN nm.src_t_id IS NOT NULL THEN TRUE ELSE FALSE END AS hit_nutz_melde,
+        CASE WHEN nort.src_t_id IS NOT NULL THEN TRUE ELSE FALSE END AS hit_nutz_ortsbild,
+        CASE WHEN n141.src_t_id IS NOT NULL THEN TRUE ELSE FALSE END AS hit_nutz_n141,
         CASE WHEN n821.src_t_id IS NOT NULL THEN TRUE ELSE FALSE END AS hit_nutz_821
     FROM gebaeude_src b
-    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_denk_poly)     dp    ON dp.src_t_id = b.src_t_id
-    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_denk_punkt)    dk    ON dk.src_t_id = b.src_t_id
-    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_isos)          i     ON i.src_t_id  = b.src_t_id
-    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_kgs)           k     ON k.src_t_id  = b.src_t_id
-    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_bln)           bn    ON bn.src_t_id = b.src_t_id
-    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_nutz_kommunal) nkomm ON nkomm.src_t_id = b.src_t_id
-    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_nutz_7)        n7    ON n7.src_t_id = b.src_t_id
-    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_nutz_melde)    nm    ON nm.src_t_id = b.src_t_id
-    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_nutz_821)      n821  ON n821.src_t_id = b.src_t_id
+    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_denk_poly)     dp
+      ON dp.src_t_id = b.src_t_id
+    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_denk_punkt)    dk
+      ON dk.src_t_id = b.src_t_id
+    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_isos)          i
+      ON i.src_t_id = b.src_t_id
+    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_kgs)           k
+      ON k.src_t_id = b.src_t_id
+    LEFT JOIN (
+        SELECT DISTINCT src_t_id
+        FROM hit_nutz_grundnutzung
+        WHERE verfahrensklasse = 'Baubewilligungsverfahren'
+    ) nbaub
+      ON nbaub.src_t_id = b.src_t_id
+    LEFT JOIN (
+        SELECT DISTINCT src_t_id
+        FROM hit_nutz_grundnutzung
+        WHERE verfahrensklasse = 'Bewilligungsverfahren_auf_kommunaler_Ebene_zu_klaeren'
+    ) nkomm
+      ON nkomm.src_t_id = b.src_t_id
+    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_nutz_ortsbild) nort
+      ON nort.src_t_id = b.src_t_id
+    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_nutz_n141)     n141
+      ON n141.src_t_id = b.src_t_id
+    LEFT JOIN (SELECT DISTINCT src_t_id FROM hit_nutz_821)      n821
+      ON n821.src_t_id = b.src_t_id
+),
+
+klassifikation AS (
+    SELECT
+        f.*,
+        CASE
+            -- Prioritaet 1: Schutzobjekte und Schutzgebiete, die direkt
+            -- ein Baubewilligungsverfahren ausloesen.
+            WHEN (
+                f.hit_denk_poly
+                OR f.hit_denk_punkt
+                OR f.hit_isos_a
+                OR f.hit_kgs
+                OR f.hit_nutz_ortsbild
+                OR f.hit_nutz_baubewilligung
+            )
+                THEN 'Baubewilligungsverfahren'
+
+            -- Prioritaet 2: Kern- und Erhaltungszonen (N140 / N142).
+            WHEN f.hit_nutz_kommunal
+                THEN 'Bewilligungsverfahren_auf_kommunaler_Ebene_zu_klaeren'
+
+            -- Prioritaet 3: kommunal geschuetztes Kulturobjekt. Eine
+            -- Zentrumszone (N141) unterdrueckt dieses Mischverfahren.
+            WHEN (
+                f.hit_nutz_821
+                AND NOT f.hit_nutz_n141
+            )
+                THEN 'Baubewilligungspflicht_fuer_Indachanlagen__Meldepflicht_fuer_Aufdachanlagen'
+
+            ELSE 'Meldeverfahren'
+        END AS bewilligungsverfahren
+    FROM flags f
 ),
 
 objektinfo AS (
@@ -313,28 +373,7 @@ objektinfo AS (
 
     UNION ALL
 
-    -- BLN
-    SELECT
-        h.src_t_id,
-        json_object(
-            '@type',        'SO_ARP_Solaranlagen_Bewilligungsverfahren_20260313.Objektinformation',
-            'Thema',        'BLN',
-            'Quelle',       'bln',
-            'ObjektId',     h.ref_objekt_id,
-            'Objektname',   h.objektname,
-            'Schutzstatus', NULL,
-            'Objektblatt',  h.objektblatt,
-            'Nummer',       h.nummer,
-            'Kategorie',    NULL,
-            'Typ',          NULL,
-            'Bezeichnung',  NULL,
-            'Dokumente',    CAST(NULL AS JSON)
-        ) AS obj
-    FROM hit_bln h
-
-    UNION ALL
-
-    -- Nutzungsplanung kommunal zu klären (N140 / N142)
+    -- Nutzungsplanung Grundnutzung (N140 / N142 / Spezialgebiete)
     SELECT
         h.src_t_id,
         json_object(
@@ -377,11 +416,11 @@ objektinfo AS (
                 ELSE CAST(NULL AS JSON)
             END
         ) AS obj
-    FROM hit_nutz_kommunal h
+    FROM hit_nutz_grundnutzung h
 
     UNION ALL
 
-    -- Nutzungsplanung 7
+    -- Nutzungsplanung Ortsbildschutz (N510)
     SELECT
         h.src_t_id,
         json_object(
@@ -424,11 +463,11 @@ objektinfo AS (
                 ELSE CAST(NULL AS JSON)
             END
         ) AS obj
-    FROM hit_nutz_7 h
+    FROM hit_nutz_ortsbild h
 
     UNION ALL
 
-    -- Nutzungsplanung Meldeverfahren (N141)
+    -- Nutzungsplanung Zentrumszone (N141)
     SELECT
         h.src_t_id,
         json_object(
@@ -471,7 +510,7 @@ objektinfo AS (
                 ELSE CAST(NULL AS JSON)
             END
         ) AS obj
-    FROM hit_nutz_melde h
+    FROM hit_nutz_n141 h
 
     UNION ALL
 
@@ -530,97 +569,44 @@ objektinfo_agg AS (
 )
 
 INSERT INTO pubdb.arp_solaranlagen_bewilligungsverfahren_pub_v1.bauten_baute
-    (bfsnr, art, art_txt, geometrie, bewilligungsverfahren, bewilligungsverfahren_txt, objektinformation)
+    (
+        bfsnr,
+        art,
+        art_txt,
+        geometrie,
+        bewilligungsverfahren,
+        bewilligungsverfahren_txt,
+        objektinformation
+    )
 SELECT
     ${bfsnr},
-    f.art_txt AS art,
+    k.art_txt AS art,
     CASE
-        WHEN f.art_txt = 'Unterstand' THEN 'Unterstand'
+        WHEN k.art_txt = 'Unterstand' THEN 'Unterstand'
         ELSE 'Gebäude'
     END AS art_txt,
-    'SRID=2056;' || ST_AsText(f.geometrie) AS geometrie,
-    CASE
-        WHEN (
-            f.hit_denk_poly
-            OR f.hit_denk_punkt
-            OR f.hit_isos_a
-            OR f.hit_kgs
-            OR f.hit_bln
-            OR f.hit_nutz_7
-        )
+    'SRID=2056;' || ST_AsText(k.geometrie) AS geometrie,
+
+    k.bewilligungsverfahren,
+
+    CASE k.bewilligungsverfahren
+        WHEN 'Baubewilligungsverfahren'
             THEN 'Baubewilligungsverfahren'
-        WHEN (
-            f.hit_nutz_kommunal
-            AND NOT (
-                f.hit_denk_poly
-                OR f.hit_denk_punkt
-                OR f.hit_isos_a
-                OR f.hit_kgs
-                OR f.hit_bln
-                OR f.hit_nutz_7
-            )
-        )
-            THEN 'Bewilligungsverfahren_auf_kommunaler_Ebene_zu_klaeren'
-        WHEN (
-            f.hit_nutz_821
-            AND NOT (
-                f.hit_denk_poly
-                OR f.hit_denk_punkt
-                OR f.hit_isos_a
-                OR f.hit_kgs
-                OR f.hit_bln
-                OR f.hit_nutz_7
-                OR f.hit_nutz_kommunal
-                OR f.hit_nutz_melde
-            )
-        )
-            THEN 'Baubewilligungspflicht_fuer_Indachanlagen__Meldepflicht_fuer_Aufdachanlagen'
-        ELSE 'Meldeverfahren'
-    END AS bewilligungsverfahren,
-    CASE
-        WHEN (
-            f.hit_denk_poly
-            OR f.hit_denk_punkt
-            OR f.hit_isos_a
-            OR f.hit_kgs
-            OR f.hit_bln
-            OR f.hit_nutz_7
-        )
-            THEN 'Baubewilligungsverfahren'
-        WHEN (
-            f.hit_nutz_kommunal
-            AND NOT (
-                f.hit_denk_poly
-                OR f.hit_denk_punkt
-                OR f.hit_isos_a
-                OR f.hit_kgs
-                OR f.hit_bln
-                OR f.hit_nutz_7
-            )
-        )
+        WHEN 'Bewilligungsverfahren_auf_kommunaler_Ebene_zu_klaeren'
             THEN 'Bewilligungsverfahren auf kommunaler Ebene zu klären'
-        WHEN (
-            f.hit_nutz_821
-            AND NOT (
-                f.hit_denk_poly
-                OR f.hit_denk_punkt
-                OR f.hit_isos_a
-                OR f.hit_kgs
-                OR f.hit_bln
-                OR f.hit_nutz_7
-                OR f.hit_nutz_kommunal
-                OR f.hit_nutz_melde
-            )
-        )
+        WHEN 'Baubewilligungspflicht_fuer_Indachanlagen__Meldepflicht_fuer_Aufdachanlagen'
             THEN 'Baubewilligungspflicht für Indachanlagen, Meldepflicht für Aufdachanlagen'
-        ELSE 'Meldeverfahren'
+        WHEN 'Meldeverfahren'
+            THEN 'Meldeverfahren'
     END AS bewilligungsverfahren_txt,
+
     CASE
         WHEN o.objektinformation IS NULL THEN CAST(NULL AS JSON)
         WHEN json_array_length(o.objektinformation) = 0 THEN CAST(NULL AS JSON)
         ELSE o.objektinformation
     END AS objektinformation
-FROM flags f
+
+FROM klassifikation k
 LEFT JOIN objektinfo_agg o
-  ON o.src_t_id = f.src_t_id
+  ON o.src_t_id = k.src_t_id
 ;
