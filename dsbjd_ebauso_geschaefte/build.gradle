@@ -1,0 +1,127 @@
+import java.nio.file.Files
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
+
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.tasks.Curl.MethodType
+import ch.so.agi.gretl.api.*
+
+import groovy.json.JsonSlurper
+import java.text.SimpleDateFormat
+import java.util.zip.GZIPInputStream
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'validateXtf'
+
+def ebauHost = ebausoClientServiceUrl
+def tokenUrl = "${ebauHost}/auth/realms/ebau/protocol/openid-connect/token"
+def exportUrl = "${ebauHost}/api/v1/gis-export/so/"
+
+def clientId = ebausoClientId
+def clientSecret = ebausoClientSecret
+
+def token = ''
+
+tasks.register('removeBuildDir', Delete) {
+    description 'Löscht das Build-Verzeichnis mit allen Inhalten'
+    delete "$buildDir"
+}
+
+tasks.register('getToken', Curl) {
+    description 'Bezieht ein OIDC Access Token vom eBauSO-Keycloak'
+    dependsOn 'removeBuildDir'
+
+    serverUrl tokenUrl
+    method MethodType.POST
+    outputFile file("$buildDir/token.json")
+    expectedStatusCode 200
+
+    data "grant_type=client_credentials" +
+         "&scope=openid" +
+         "&client_id=$clientId" +
+         "&client_secret=$clientSecret"
+
+    headers = [
+        'Content-Type': 'application/x-www-form-urlencoded'
+    ]
+
+    doLast {
+        def slurper = new JsonSlurper()
+        def response = slurper.parseText(outputFile.text)
+
+        if (response.access_token != null) {
+            token = response.access_token
+        }
+
+        if (token.length() == 0) {
+            throw new GradleException('Failed to retrieve access token')
+        }
+
+        logger.info("Length of access token is: ${token.length()}")
+    }
+}
+
+/* Das ist leider notwendig, weil mein curl-Task nur genau ein 
+expectedStatusCode erwartet. Das muss ich noch erweitern */
+tasks.register('downloadXtf') {
+    description 'Lädt den GIS-Export von eBauSO herunter'
+    dependsOn 'getToken'
+
+    doLast {
+        def outputFile = file("$buildDir/so_gis_export.xtf")
+
+        def request = HttpRequest.newBuilder()
+            .uri(URI.create(exportUrl))
+            .header('Authorization', "Bearer $token")
+            .GET()
+            .build()
+
+        def client = HttpClient.newHttpClient()
+        def response = client.send(
+            request,
+            HttpResponse.BodyHandlers.ofByteArray()
+        )
+
+        switch (response.statusCode()) {
+            case 200:
+                Files.write(outputFile.toPath(), response.body())
+                logger.lifecycle("GIS-Export heruntergeladen: $outputFile")
+                break
+
+            case 204:
+                Files.deleteIfExists(outputFile.toPath())
+                logger.lifecycle('Keine Änderungen seit dem letzten Export.')
+                break
+
+            case 401:
+            case 403:
+                throw new GradleException(
+                    "GIS-Export nicht autorisiert (HTTP ${response.statusCode()})."
+                )
+
+            case 404:
+                throw new GradleException(
+                    'GIS-Export ist auf diesem System nicht aktiviert (HTTP 404).'
+                )
+
+            default:
+                throw new GradleException(
+                    "GIS-Export fehlgeschlagen (HTTP ${response.statusCode()})."
+                )
+        }
+    }
+}
+
+tasks.register('validateXtf', IliValidator) {
+    description 'Validiert den heruntergeladenen eBauSO GIS-Export'
+    dependsOn 'downloadXtf'
+
+    dataFiles = files("$buildDir/so_gis_export.xtf")
+
+    if (findProperty('ilivalidatorModeldir')) {
+        modeldir = ilivalidatorModeldir
+    }
+}
