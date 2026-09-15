@@ -1,0 +1,19 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'ch.so.agi.gretl'
+
+
+defaultTasks 'copyDataPub'
+
+task copyDataPub(type: Db2Db,){
+    description = "Copy agi_qgis_schulung_erfassung Pub Schema"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+        new TransferSet('insert_bodenbedeckung.sql', 'agi_qgis_schulung_erfassung_pub_v1.bodenbedeckung', true),
+        new TransferSet('insert_eingang.sql', 'agi_qgis_schulung_erfassung_pub_v1.eingang', true)
+    ];
+}
