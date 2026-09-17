@@ -3,9 +3,19 @@ SELECT
 	ara.organisation,
 	ara.link,
 	ara.dim_ew_csb,
-	ara.betriebsstatus,
-	ara.nummer,
+	ara.in_betrieb,
+	CASE
+		WHEN ara.in_betrieb IS TRUE
+			THEN 'Ja'
+		WHEN ara.in_betrieb IS FALSE
+			THEN 'Nein'
+		ELSE NULL
+	END AS in_betrieb_txt,
+	ara.anlagenummer,
 	gemeinde.gemeindename AS gemeindename,
+	ara.gewaesser,
+	ara.x_einleitstelle,
+	ara.y_einleitstelle,
 	ara.geometrie
 FROM
 	afu_klaeranlagen_v1.klaeranlagen_ara AS ara
