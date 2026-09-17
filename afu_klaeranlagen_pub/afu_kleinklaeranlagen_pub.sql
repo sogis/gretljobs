@@ -1,9 +1,4 @@
 SELECT
-	anlagename AS nachname_anlagebesitzer,
-	anlagevorname AS vorname_anlagebesitzer,
-	betreuername AS name_betreuer,
-	betreuervorname AS vorname_betreuer,
-	gewaesser AS vorfluter,
 	CASE
 		WHEN anlagetyp = 'MBR'
 			THEN 'Membranbioreaktor'
@@ -18,21 +13,20 @@ SELECT
 		ELSE anlagetyp
 	END AS anlagentyp,
 	groesseeg AS groesse_eg,
-	angeinwohner AS anz_angeschlossene_einwohner,
 	CASE
 		WHEN aufgehoben = 'WAHR'
-			THEN TRUE
-		WHEN aufgehoben = 'FALSCH'
 			THEN FALSE
+		WHEN aufgehoben = 'FALSCH'
+			THEN TRUE
 		ELSE NULL 
-	END AS aufgehoben,
+	END AS in_betrieb,
 	CASE
 		WHEN aufgehoben = 'WAHR'
-			THEN 'Ja'
-		WHEN aufgehoben = 'FALSCH'
 			THEN 'Nein'
+		WHEN aufgehoben = 'FALSCH'
+			THEN 'Ja'
 		ELSE NULL
-	END AS aufgehoben_txt,
+	END AS in_betrieb_txt,
 	CASE
 		WHEN gewaesser_drainagen = 'WAHR'
 			THEN TRUE
@@ -53,14 +47,14 @@ SELECT
 		WHEN gewaesser_versickerung = 'FALSCH'
 			THEN FALSE
 		ELSE null
-	END AS versicherkung_gewaesser,
+	END AS versickerung_gewaesser,
 	CASE
 		WHEN gewaesser_versickerung = 'WAHR'
 			THEN 'Ja'
 		WHEN gewaesser_versickerung = 'FALSCH'
 			THEN 'Nein'
 		ELSE null
-	END AS versicherkung_gewaesser_txt,
+	END AS versickerung_gewaesser_txt,
 	CASE
 		WHEN gewaesser IS NOT NULL
 			THEN TRUE
@@ -71,8 +65,11 @@ SELECT
 			THEN 'Ja'
 		ELSE 'Nein' 
 	END AS ableitung_gewaesser_txt,
-	anlagenummer AS nummer,
+	anlagenummer,
 	anlagestandort AS gemeindename,
+	gewaesser,
+	x_einleitstelle,
+	y_einleitstelle,
 	ST_SetSRID(ST_MakePoint(x_koordinate, y_koordinate), 2056) AS geometrie
 FROM
 	afu_klaeranlagen_v1.klaeranlagen_kleinklaeranlage_import
