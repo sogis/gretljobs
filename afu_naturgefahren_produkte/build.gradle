@@ -74,7 +74,7 @@ task make_naturgefahren_schema(type: Ili2pgImportSchema, dependsOn: make_staging
 
 task make_alte_dokumente_schema(type: Ili2pgImportSchema, dependsOn: make_naturgefahren_schema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    models = "SO_AFU_Naturgefahren_alte_Dokumente_20240119"
+    models = "SO_AFU_Naturgefahren_alte_Dokumente_Job_20240119"
     dbschema = "afu_naturgefahren_alte_dokumente_v1"
     beautifyEnumDispName = true
     strokeArcs = true
@@ -674,19 +674,15 @@ task erhebungsgebiet(type: SqlExecutor, dependsOn: abklaerungsperimeter) {
     sqlFiles = files('erhebungsgebiet.sql')
 }
 
-// Dokumente pro Gemeinden 
-
-/* jek 2026-07-06 disabled by replacing with empty task as workaround
+// Gemeinde mit Dokumenten
 task copy_alte_dokumente(type: Db2Db, dependsOn: erhebungsgebiet) {
-    description = "Kopiert die alten Dokumente von der Pub-DB in die Edit-DB"
-    sourceDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
+    description = "Ordnet die alten Dokumente der entsprechenden Gemeinde zu und kopiert diese in die Processing-DB"
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
     transferSets = [
-            new TransferSet('vorbereitung/alte_dokumente_copy.sql','afu_naturgefahren_alte_dokumente_v1.alte_dokumente', true)
+            new TransferSet('vorbereitung/alte_dokumente.sql','afu_naturgefahren_alte_dokumente_v1.alte_dokumente', true)
     ];
 }
-*/
-task copy_alte_dokumente(dependsOn: erhebungsgebiet) {}
 
 task dokumente_pro_gemeinde(type: SqlExecutor, dependsOn: copy_alte_dokumente) {
     description = "Teilt jedes Dokument einer Gemeinde mit entsprechendem Gemeindepolygon zu."
