@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferData'
+defaultTasks 'publishPub'
 
 tasks.register('transferData', Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -13,4 +13,18 @@ tasks.register('transferData', Db2Db) {
         new TransferSet('afu_ara_pub.sql', 'afu_klaeranlagen_pub_v1.klaeranlagen_ara', true)
 
     ];
+}
+
+tasks.register('publishPub', Publisher){
+    dependsOn 'transferData'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dataIdent = 'ch.so.afu.klaeranlagen'
+    dbSchema = "afu_klaeranlagen_pub_v1"
+    modelsToPublish = 'SO_AFU_Klaeranlagen_Publikation_20260708'
+    userFormats = true
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }
