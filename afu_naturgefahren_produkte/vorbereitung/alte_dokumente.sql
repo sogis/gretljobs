@@ -14,27 +14,21 @@ dokument_poly AS (
         agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze g ON ST_Intersects(d.geometrie, g.geometrie)
 ),
 
-poly_dokumente AS ( 
+poly_dokument_json AS ( 
     SELECT
-        json_agg(
-            json_build_object(
+        json_build_object(
                 '@type', 'SO_AFU_Naturgefahren_Publikation_20241025.Naturgefahren.Dokument',
                 'Titel', titel, 
                 'Dateiname', dateiname, 
                 'Link', concat('https://geo.so.ch/docs/ch.so.afu.naturgefahren/', dateiname),
                 'Hauptprozesse', 'obsolet',
                 'Jahr', jahr
-            )
         ) AS dokument,
         gemeindename AS gemeinde_name,
         bfs_gemeindenummer AS gemeinde_bfsnr,
         geometrie 
     FROM 
-        dokument_poly
-    GROUP BY 
-        gemeindename,
-        bfs_gemeindenummer,
-        geometrie        
+        dokument_poly  
 )
 
-SELECT * FROM poly_dokumente
+SELECT * FROM poly_dokument_json
