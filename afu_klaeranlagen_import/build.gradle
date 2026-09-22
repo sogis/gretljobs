@@ -9,7 +9,7 @@ def csvFile = file("${buildDir}/in/uploadFile.csv")
 
 /*
 tasks.register('validateCSVFile', CsvValidator) {
-    models = "SO_HBA_Immobilienportfolio_Gebaeude_20260713"
+    models = "SO_AFU_Klaeranlagen_20260708"
     firstLineIsHeader = true
     dataFiles = files(csvFile)
     valueSeparator = ';'
@@ -17,6 +17,7 @@ tasks.register('validateCSVFile', CsvValidator) {
 */
 
 tasks.register('deleteData', SqlExecutor) {
+    dependsOn "validateCSVFile"
     description = 'Bisherige Daten löschen'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = files("delete_csv.sql")
