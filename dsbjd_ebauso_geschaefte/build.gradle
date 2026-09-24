@@ -14,7 +14,7 @@ import java.util.zip.GZIPInputStream
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'validateXtf'
+defaultTasks 'transferData'
 
 def ebauHost = ebausoClientServiceUrl
 def tokenUrl = "${ebauHost}/auth/realms/ebau/protocol/openid-connect/token"
@@ -24,6 +24,7 @@ def clientId = ebausoClientId
 def clientSecret = ebausoClientSecret
 
 def token = ''
+def xtfFile = file("$buildDir/so_gis_export.cleaned.xtf")
 
 tasks.register('removeBuildDir', Delete) {
     description 'Löscht das Build-Verzeichnis mit allen Inhalten'
@@ -117,11 +118,29 @@ tasks.register('downloadXtf') {
 
 tasks.register('validateXtf', IliValidator) {
     description 'Validiert den heruntergeladenen eBauSO GIS-Export'
-    dependsOn 'downloadXtf'
+    //dependsOn 'downloadXtf'
 
-    dataFiles = files("$buildDir/so_gis_export.xtf")
+    dataFiles = files("$buildDir/so_gis_export.cleaned.xtf")
 
     if (findProperty('ilivalidatorModeldir')) {
         modeldir = ilivalidatorModeldir
     }
+}
+
+tasks.register('importData', Ili2pgImport) {
+    description 'Ersetzt die Fachdaten im Import-Schema mit dem aktuellen eBauSO GIS-Delta'
+    dependsOn 'validateXtf'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'dsbjd_ebauso_geschaefte_import_v1'
+    models = 'SO_DSBJD_eBauSO_Geschaefte_20250422'
+    dataFile = files(xtfFile)
+    disableValidation = true
+    deleteData = true
+}
+
+tasks.register('transferData', SqlExecutor) {
+    description 'Übernimmt das aktuelle eBauSO-Delta in den kumulativen Datenbestand'
+    dependsOn 'importData'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = files('transfer_to_work.sql')
 }

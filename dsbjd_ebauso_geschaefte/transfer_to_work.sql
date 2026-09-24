@@ -1,0 +1,82 @@
+WITH current_delta AS (
+    SELECT
+        geschaeft.identifikator,
+        geschaeft.bfsnr,
+        geschaeft.verfahrensart,
+        geschaeft.geometrie_punkt,
+        geschaeft.geometrie_linie,
+        geschaeft.geometrie_flaeche,
+        geschaeft.lokalisation,
+        geschaeft.astatus,
+        geschaeft.gesuchsteller,
+        geschaeft.projektverfasser,
+        geschaeft.rechnungsempfaenger,
+        geschaeft.grundeigentuemer,
+        geschaeft.ausserhalb_bauzone,
+        geschaeft.bauprojekt,
+        geschaeft.grundstuecke,
+        geschaeft.entscheid_leitbehoerde,
+        geschaeft.auflage,
+        geschaeft.ebau_link
+    FROM
+        dsbjd_ebauso_geschaefte_import_v1.geschaefte_geschaeft AS geschaeft
+)
+INSERT INTO dsbjd_ebauso_geschaefte_v1.geschaefte_geschaeft (
+    identifikator,
+    bfsnr,
+    verfahrensart,
+    geometrie_punkt,
+    geometrie_linie,
+    geometrie_flaeche,
+    lokalisation,
+    astatus,
+    gesuchsteller,
+    projektverfasser,
+    rechnungsempfaenger,
+    grundeigentuemer,
+    ausserhalb_bauzone,
+    bauprojekt,
+    grundstuecke,
+    entscheid_leitbehoerde,
+    auflage,
+    ebau_link
+)
+SELECT
+    identifikator,
+    bfsnr,
+    verfahrensart,
+    geometrie_punkt,
+    geometrie_linie,
+    geometrie_flaeche,
+    lokalisation,
+    astatus,
+    gesuchsteller,
+    projektverfasser,
+    rechnungsempfaenger,
+    grundeigentuemer,
+    ausserhalb_bauzone,
+    bauprojekt,
+    grundstuecke,
+    entscheid_leitbehoerde,
+    auflage,
+    ebau_link
+FROM current_delta
+ON CONFLICT (identifikator) DO UPDATE SET
+    bfsnr = EXCLUDED.bfsnr,
+    verfahrensart = EXCLUDED.verfahrensart,
+    geometrie_punkt = EXCLUDED.geometrie_punkt,
+    geometrie_linie = EXCLUDED.geometrie_linie,
+    geometrie_flaeche = EXCLUDED.geometrie_flaeche,
+    lokalisation = EXCLUDED.lokalisation,
+    astatus = EXCLUDED.astatus,
+    gesuchsteller = EXCLUDED.gesuchsteller,
+    projektverfasser = EXCLUDED.projektverfasser,
+    rechnungsempfaenger = EXCLUDED.rechnungsempfaenger,
+    grundeigentuemer = EXCLUDED.grundeigentuemer,
+    ausserhalb_bauzone = EXCLUDED.ausserhalb_bauzone,
+    bauprojekt = EXCLUDED.bauprojekt,
+    grundstuecke = EXCLUDED.grundstuecke,
+    entscheid_leitbehoerde = EXCLUDED.entscheid_leitbehoerde,
+    auflage = EXCLUDED.auflage,
+    ebau_link = EXCLUDED.ebau_link
+;
