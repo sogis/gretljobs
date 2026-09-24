@@ -32,7 +32,7 @@ tasks.register('removeBuildDir', Delete) {
 
 tasks.register('getToken', Curl) {
     description 'Bezieht ein OIDC Access Token vom eBauSO-Keycloak'
-    dependsOn 'removeBuildDir'
+    //dependsOn 'removeBuildDir'
 
     serverUrl tokenUrl
     method MethodType.POST
