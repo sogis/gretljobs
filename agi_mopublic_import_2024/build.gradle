@@ -1,0 +1,17 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'downloadXTF'
+
+def xtfFolderPath = "${buildDir}/Downloads/"
+
+tasks.register('downloadXTF', Download){
+    description = "Download historic XTF-File"
+    src 'https://files.geo.so.ch/ch.so.agi.av.mopublic/hist/2024-01-01/2401.ch.so.agi.av.mopublic.xtf.zip'
+    /*dest "build/"*/
+    dest xtfFolderPath
+    overwrite true
+}
