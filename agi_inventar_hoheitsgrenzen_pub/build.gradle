@@ -6,8 +6,8 @@ defaultTasks 'publipub'
 task publiedit(type: Publisher){
   dataIdent = "ch.so.agi.av.inventar_kantonsgrenzzeichen.relational"
   database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-  dbSchema = "agi_inventar_hoheitsgrenzen"
-  modelsToPublish = "SO_AGI_Inventar_Hoheitsgrenzen_20191129"
+  dbSchema = "agi_inventar_hoheitsgrenzen_v1"
+  modelsToPublish = "SO_AGI_Inventar_Hoheitsgrenzen_20260925"
 
   target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
@@ -21,7 +21,7 @@ task transferAgiKantonsgrenzsteine(type: Db2Db, dependsOn:'publiedit'){
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
             new TransferSet('agi_inventar_hoheitsgrenzen_pub_kantonsgrenzstein.sql',
-                            'agi_inventar_hoheitsgrenzen_pub.invntr_hhtsgrnzen_kantonsgrenzstein', true)
+                            'agi_inventar_hoheitsgrenzen_pub_v1.invntr_hhtsgrnzen_kantonsgrenzstein', true)
     ];
 }
 
@@ -30,7 +30,7 @@ task publipub(type: Publisher, dependsOn:'transferAgiKantonsgrenzsteine'){
   userFormats = true
   database = [dbUriPub,dbUserPub,dbPwdPub]
   dbSchema = "agi_inventar_hoheitsgrenzen_pub"
-  modelsToPublish = "SO_AGI_Inventar_Hoheitsgrenzen_Publikation_20191129"
+  modelsToPublish = "SO_AGI_Inventar_Hoheitsgrenzen_Publikation_20260925"
 
   target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
   kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
