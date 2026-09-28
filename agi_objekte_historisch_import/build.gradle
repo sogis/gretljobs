@@ -1,0 +1,99 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: 'ch.so.agi.gretl'
+
+import ch.so.agi.gretl.tasks.*
+
+defaultTasks 'importXTF'
+
+def xtfFolderPath = "${buildDir}/Downloads"
+def unzipFolderPath = "${buildDir}/UnzipFolder"
+def baseUrl = 'https://files.geo.so.ch/ch.so.agi.av.mopublic/hist/2024-01-01/'
+
+// ------------------------------------------------------------
+// Directory Listing
+// ------------------------------------------------------------
+
+def directoryListing = new URL(baseUrl).text
+def zipFiles = directoryListing.findAll(/href="([^"]+\.zip)"/) { match, fileName ->
+    fileName
+def dbPath = "$buildDir/objekte_hist.duckdb"
+def dbUriDuckDB = "jdbc:duckdb:$dbPath"
+def dbFile = new File(dbPath)
+def xtfPath = "buildDir/UnzipFolder/2401.ch.so.agi.av.mopublic.xtf"
+}
+
+// delete build-directory if it exists
+if (buildDir.exists()) {
+    buildDir.deleteDir()
+}
+
+// create build-directory
+buildDir.mkdirs()
+
+println "Gefundene ZIP-Dateien: ${zipFiles.size()}"
+
+/**
+// ------------------------------------------------------------
+// Tasks pro ZIP/XTF
+// ------------------------------------------------------------
+
+zipFiles.each { zipFileName ->
+
+    // Dateiname ohne .zip
+    def fileName = zipFileName.replaceFirst(/\.zip$/, '')
+    // Eindeutige Task-Namen
+    def taskSuffix = fileName.replaceAll('[^a-zA-Z0-9]', '_')
+    // Dateien
+    def zipFile = file("${xtfFolderPath}/${zipFileName}")
+    def xtfFile = files("${unzipFolderPath}/${fileName}")
+
+    // --------------------------------------------------------
+    // Download
+    // --------------------------------------------------------
+    tasks.register("download_${taskSuffix}", Download) {
+        description = "Download ${zipFileName}"
+        src "${baseUrl}${zipFileName}"
+        dest zipFile
+        overwrite true
+    }
+
+    // --------------------------------------------------------
+    // Entpacken
+    // --------------------------------------------------------
+    tasks.register("unzip_${taskSuffix}", Copy) {
+        description = "Unzip ${zipFileName}"
+        dependsOn "download_${taskSuffix}"
+        from zipTree(zipFile)
+        into unzipFolderPath
+    }
+
+    // --------------------------------------------------------
+    // Import
+    // --------------------------------------------------------
+    tasks.register("import_${taskSuffix}", Ili2pgImport) {
+        description = "Import ${fileName}"
+        dependsOn "unzip_${taskSuffix}"
+        database = [dbUriPub, dbUserPub, dbPwdPub]
+        dbschema = 'agi_mopublic_pub_2024'
+        models = 'SO_AGI_MOpublic_20190424'
+        disableValidation = true
+        deleteData = false
+        dataFile = xtfFile
+    }
+}
+
+// ------------------------------------------------------------
+// Gesamter Import
+// ------------------------------------------------------------
+tasks.register('importXTF') {
+    dependsOn zipFiles.collect { zipFileName ->
+        def fileName = zipFileName.replaceFirst(/\.zip$/, '')
+        def taskSuffix = fileName.replaceAll('[^a-zA-Z0-9]', '_')
+        "import_${taskSuffix}"
+    }
+}
+*/
+
