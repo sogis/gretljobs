@@ -29,7 +29,7 @@ task publipub(type: Publisher, dependsOn:'transferAgiKantonsgrenzsteine'){
   dataIdent = "ch.so.agi.av.inventar_kantonsgrenzzeichen"
   userFormats = true
   database = [dbUriPub,dbUserPub,dbPwdPub]
-  dbSchema = "agi_inventar_hoheitsgrenzen_pub"
+  dbSchema = "agi_inventar_hoheitsgrenzen_pub_v1"
   modelsToPublish = "SO_AGI_Inventar_Hoheitsgrenzen_Publikation_20260925"
 
   target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
