@@ -26,14 +26,23 @@ println "Gefundene ZIP-Dateien: ${zipFiles.size()}"
 
 
 /// ------------------------------------------------------------
-// DuckDB Schema einmalig erstellen
+// DuckDB Schemas einmalig erstellen
 // ------------------------------------------------------------
-tasks.register("createSchema", Ili2duckdbImportSchema) {
+tasks.register("createSchema_objekte_historisch", Ili2duckdbImportSchema) {
+    dbfile = duckDbFile
+    models = "SO_AGI_Objekte_Historisch_Publikation_20260928"
+    modeldir = file("$buildDir/ili").absolutePath +
+               ";https://models.geo.admin.ch/"
+    dbschema = "schema_objekte_historisch"
+}
+
+tasks.register("createSchema_mopublic_hist", Ili2duckdbImportSchema) {
+    dependsOn "createSchema_objekte_historisch"
     dbfile = duckDbFile
     models = "SO_AGI_MOpublic_20190424"
     modeldir = file("$buildDir/ili").absolutePath +
                ";https://models.geo.admin.ch/"
-    dbschema = "importschema_xtf"
+    dbschema = "schema_mopublic_2024"
 }
 
 // ------------------------------------------------------------
@@ -73,10 +82,10 @@ zipFiles.each { zipFileName ->
     // --------------------------------------------------------
     tasks.register("import_${taskSuffix}", Ili2duckdbImport) {
         description = "Import ${fileName} into DuckDB"
-        dependsOn "createSchema"
+        dependsOn "createSchema_mopublic_2019"
         dependsOn "unzip_${taskSuffix}"
         models = "SO_AGI_MOpublic_20190424"
-        dbschema = "importschema_xtf"
+        dbschema = "createSchema_mopublic_hist"
         dataFile = files(xtfFile)
         dbfile = duckDbFile
         skipGeometryErrors = true
@@ -95,4 +104,14 @@ tasks.register('importXTF') {
         def taskSuffix = fileName.replaceAll('[^a-zA-Z0-9]', '_')
         "import_${taskSuffix}"
     }
+}
+
+tasks.register("copy_data",SqlExecutor){
+    dependsOn "importXTF"
+    database = [dbUriDuckDB]
+    sqlFiles = files(
+        load_extension_spatial,
+        load_extension_postgres,
+        'import_ivs_regional_lokal.sql'
+    )
 }
