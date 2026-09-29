@@ -17,10 +17,10 @@ SELECT
     string_agg(gemeinde.kanton, ', ' order by kanton) AS kantone,
     string_agg(gemeinde.gemeindename, ', ' order by kanton) AS gemeinden
 FROM 
-    agi_inventar_hoheitsgrenzen.invntr_hhtsgrnzen_kantonsgrenzstein AS grenzstein
-    Left JOIN agi_inventar_hoheitsgrenzen.invntr_hhtsgrnzen_gemeinde_hoheitsgrenzstein AS grenzstein_gemeinde
+    agi_inventar_hoheitsgrenzen_v1.invntr_hhtsgrnzen_kantonsgrenzstein AS grenzstein
+    Left JOIN agi_inventar_hoheitsgrenzen_v1.invntr_hhtsgrnzen_gemeinde_hoheitsgrenzstein AS grenzstein_gemeinde
         ON grenzstein.t_id = grenzstein_gemeinde.stein
-    Left JOIN agi_inventar_hoheitsgrenzen.invntr_hhtsgrnzen_gemeinde AS gemeinde
+    Left JOIN agi_inventar_hoheitsgrenzen_v1.invntr_hhtsgrnzen_gemeinde AS gemeinde
         ON grenzstein_gemeinde.gemeinde = gemeinde.t_id
 WHERE
     schoener_stein IS TRUE 
