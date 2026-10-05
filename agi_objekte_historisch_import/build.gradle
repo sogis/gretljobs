@@ -4,7 +4,7 @@ import de.undercouch.gradle.tasks.download.Download
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'importXTF'
+defaultTasks 'createSchema_mopublic_hist'
 
 // ------------------------------------------------------------
 // Directory Listing
@@ -21,6 +21,7 @@ def zipFiles = directoryListing.findAll(/href="([^"]+\.zip)"/) { match, fileName
 def duckDbPath = "${buildDir}/temp.duckdb"
 def duckDbUri = "jdbc:duckdb:${duckDbPath}"
 def duckDbFile = file(duckDbPath)
+def model_hist = "SO_AGI_MOpublic_20190424"
 
 println "Gefundene ZIP-Dateien: ${zipFiles.size()}"
 
@@ -39,7 +40,7 @@ tasks.register("createSchema_objekte_historisch", Ili2duckdbImportSchema) {
 tasks.register("createSchema_mopublic_hist", Ili2duckdbImportSchema) {
     dependsOn "createSchema_objekte_historisch"
     dbfile = duckDbFile
-    models = "SO_AGI_MOpublic_20190424"
+    models = model_hist
     modeldir = file("$buildDir/ili").absolutePath +
                ";https://models.geo.admin.ch/"
     dbschema = "schema_mopublic_2024"
@@ -82,10 +83,10 @@ zipFiles.each { zipFileName ->
     // --------------------------------------------------------
     tasks.register("import_${taskSuffix}", Ili2duckdbImport) {
         description = "Import ${fileName} into DuckDB"
-        dependsOn "createSchema_mopublic_2019"
+        dependsOn "createSchema_mopublic_HIST"
         dependsOn "unzip_${taskSuffix}"
-        models = "SO_AGI_MOpublic_20190424"
-        dbschema = "createSchema_mopublic_hist"
+        models = model_hist
+        dbschema = "schema_mopublic_2024"
         dataFile = files(xtfFile)
         dbfile = duckDbFile
         skipGeometryErrors = true
@@ -110,8 +111,19 @@ tasks.register("copy_data",SqlExecutor){
     dependsOn "importXTF"
     database = [dbUriDuckDB]
     sqlFiles = files(
-        load_extension_spatial,
-        load_extension_postgres,
-        'import_ivs_regional_lokal.sql'
+        'load_extension_spatial.sql',
+        'load_extension_postgres.sql',
+        'agi_objekte_hist_bodenbedeckung.sql',
+        'agi_objekte_hist_einzelobjekt.sql'
     )
+}
+
+tasks.register('transferData', Db2Db) {
+    sourceDb = [dbUriDuckDB]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+        new TransferSet('afu_kleinklaeranlagen_pub.sql', 'afu_klaeranlagen_pub_v1.klaeranlagen_kleinklaeranlage', true),
+        new TransferSet('afu_ara_pub.sql', 'afu_klaeranlagen_pub_v1.klaeranlagen_ara', true)
+
+    ];
 }
