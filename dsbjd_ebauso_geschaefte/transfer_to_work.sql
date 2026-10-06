@@ -17,6 +17,8 @@ WITH current_delta AS (
         geschaeft.grundstuecke,
         geschaeft.entscheid_leitbehoerde,
         geschaeft.auflage,
+        geschaeft.zirkulation,
+        geschaeft.zustaendige_personen,
         geschaeft.ebau_link
     FROM
         dsbjd_ebauso_geschaefte_import_v1.geschaefte_geschaeft AS geschaeft
@@ -39,6 +41,8 @@ INSERT INTO dsbjd_ebauso_geschaefte_v1.geschaefte_geschaeft (
     grundstuecke,
     entscheid_leitbehoerde,
     auflage,
+    zirkulation,
+    zustaendige_personen,
     ebau_link
 )
 SELECT
@@ -59,6 +63,8 @@ SELECT
     grundstuecke,
     entscheid_leitbehoerde,
     auflage,
+    zirkulation,
+    zustaendige_personen,
     ebau_link
 FROM current_delta
 ON CONFLICT (identifikator) DO UPDATE SET
@@ -78,5 +84,7 @@ ON CONFLICT (identifikator) DO UPDATE SET
     grundstuecke = EXCLUDED.grundstuecke,
     entscheid_leitbehoerde = EXCLUDED.entscheid_leitbehoerde,
     auflage = EXCLUDED.auflage,
+    zirkulation = EXCLUDED.zirkulation,
+    zustaendige_personen = EXCLUDED.zustaendige_personen,
     ebau_link = EXCLUDED.ebau_link
 ;

@@ -18,13 +18,13 @@ defaultTasks 'transferData'
 
 def ebauHost = ebausoClientServiceUrl
 def tokenUrl = "${ebauHost}/auth/realms/ebau/protocol/openid-connect/token"
-def exportUrl = "${ebauHost}/api/v1/gis-export/so/"
+def exportUrl = "${ebauHost}/api/v1/gis-export/so?full_export=true"
 
 def clientId = ebausoClientId
 def clientSecret = ebausoClientSecret
 
 def token = ''
-def xtfFile = file("$buildDir/so_gis_export.cleaned.xtf")
+def xtfFile = file("$buildDir/so_gis_export_full.xtf")
 
 tasks.register('removeBuildDir', Delete) {
     description 'Löscht das Build-Verzeichnis mit allen Inhalten'
@@ -66,13 +66,14 @@ tasks.register('getToken', Curl) {
 }
 
 /* Das ist leider notwendig, weil mein curl-Task nur genau ein 
-expectedStatusCode erwartet. Das muss ich noch erweitern */
+expectedStatusCode erwartet. Das muss ich noch erweitern.
+Es sind hier 200 und 204 korrekte Antworten. */
 tasks.register('downloadXtf') {
     description 'Lädt den GIS-Export von eBauSO herunter'
     dependsOn 'getToken'
 
     doLast {
-        def outputFile = file("$buildDir/so_gis_export.xtf")
+        def outputFile = xtfFile
 
         def request = HttpRequest.newBuilder()
             .uri(URI.create(exportUrl))
@@ -85,6 +86,49 @@ tasks.register('downloadXtf') {
             request,
             HttpResponse.BodyHandlers.ofByteArray()
         )
+
+        def sanitizeDiagnostic = { String value ->
+            def sanitized = value ?: ''
+            if (token) {
+                sanitized = sanitized.replace(token, '[REDACTED]')
+            }
+            if (clientSecret) {
+                sanitized = sanitized.replace(clientSecret, '[REDACTED]')
+            }
+            sanitized = sanitized.replaceAll(/\s+/, ' ').trim()
+            if (sanitized.length() > 2000) {
+                sanitized = sanitized.substring(0, 2000) + ' … [gekürzt]'
+            }
+            sanitized
+        }
+
+        def logExportError = {
+            logger.error("GIS-Export-Antwort: HTTP ${response.statusCode()}")
+
+            def contentType = response.headers().firstValue('Content-Type').orElse('')
+            if (contentType) {
+                logger.error("Content-Type: ${sanitizeDiagnostic(contentType)}")
+            }
+
+            def authenticate = response.headers().firstValue('WWW-Authenticate').orElse('')
+            if (authenticate) {
+                logger.error("WWW-Authenticate: ${sanitizeDiagnostic(authenticate)}")
+            }
+
+            def requestId = response.headers().firstValue('X-Request-ID').orElse('')
+            if (!requestId) {
+                requestId = response.headers().firstValue('X-Correlation-ID').orElse('')
+            }
+            if (requestId) {
+                logger.error("Request-ID: ${sanitizeDiagnostic(requestId)}")
+            }
+
+            def responseText = new String(response.body(), java.nio.charset.StandardCharsets.UTF_8)
+            responseText = sanitizeDiagnostic(responseText)
+            if (responseText) {
+                logger.error("GIS-Export-Antworttext: ${responseText}")
+            }
+        }
 
         switch (response.statusCode()) {
             case 200:
@@ -99,16 +143,19 @@ tasks.register('downloadXtf') {
 
             case 401:
             case 403:
+                logExportError()
                 throw new GradleException(
                     "GIS-Export nicht autorisiert (HTTP ${response.statusCode()})."
                 )
 
             case 404:
+                logExportError()
                 throw new GradleException(
                     'GIS-Export ist auf diesem System nicht aktiviert (HTTP 404).'
                 )
 
             default:
+                logExportError()
                 throw new GradleException(
                     "GIS-Export fehlgeschlagen (HTTP ${response.statusCode()})."
                 )
@@ -120,7 +167,7 @@ tasks.register('validateXtf', IliValidator) {
     description 'Validiert den heruntergeladenen eBauSO GIS-Export'
     //dependsOn 'downloadXtf'
 
-    dataFiles = files("$buildDir/so_gis_export.cleaned.xtf")
+    dataFiles = files(xtfFile)
 
     if (findProperty('ilivalidatorModeldir')) {
         modeldir = ilivalidatorModeldir
