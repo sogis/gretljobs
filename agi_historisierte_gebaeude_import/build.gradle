@@ -4,7 +4,7 @@ import de.undercouch.gradle.tasks.download.Download
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'createSchema_mopublic_hist'
+defaultTasks 'transferData'
 
 // ------------------------------------------------------------
 // Directory Listing
@@ -12,6 +12,7 @@ defaultTasks 'createSchema_mopublic_hist'
 
 def xtfFolderPath = "${buildDir}/Downloads"
 def unzipFolderPath = "${buildDir}/UnzipFolder"
+// Link zu den historisierten Daten //
 def baseUrl = 'https://files.geo.so.ch/ch.so.agi.av.mopublic/hist/2024-01-01/'
 
 def directoryListing = new URL(baseUrl).text
@@ -21,6 +22,7 @@ def zipFiles = directoryListing.findAll(/href="([^"]+\.zip)"/) { match, fileName
 def duckDbPath = "${buildDir}/temp.duckdb"
 def duckDbUri = "jdbc:duckdb:${duckDbPath}"
 def duckDbFile = file(duckDbPath)
+// MOpublic-Modell für die historisierten Daten //
 def model_hist = "SO_AGI_MOpublic_20190424"
 
 println "Gefundene ZIP-Dateien: ${zipFiles.size()}"
@@ -29,7 +31,8 @@ println "Gefundene ZIP-Dateien: ${zipFiles.size()}"
 /// ------------------------------------------------------------
 // DuckDB Schemas einmalig erstellen
 // ------------------------------------------------------------
-tasks.register("createSchema_objekte_historisch", Ili2duckdbImportSchema) {
+tasks.register("createSchema_historisierte_objekte", Ili2duckdbImportSchema) {
+    description = 'Schema für die historisierten Gebäude und Strassen'
     dbfile = duckDbFile
     models = "SO_AGI_Objekte_Historisch_Publikation_20260928"
     modeldir = file("$buildDir/ili").absolutePath +
@@ -37,8 +40,18 @@ tasks.register("createSchema_objekte_historisch", Ili2duckdbImportSchema) {
     dbschema = "schema_objekte_historisch"
 }
 
+tasks.register("add_column",SqlExecutor){
+    description = 'Zusätzliche Spalte um Geometriedaten als Text abspeichern zu können. Ist für den DB2DB-Task notwendig'
+    dependsOn "createSchema_historisierte_objekte"
+    database = [duckDbUri]
+    sqlFiles = files(
+        'duckdb_add_column.sql'
+    )
+}
+
 tasks.register("createSchema_mopublic_hist", Ili2duckdbImportSchema) {
-    dependsOn "createSchema_objekte_historisch"
+    description = 'Schema für die historisierten MOpublic-Daten'
+    dependsOn "add_column"
     dbfile = duckDbFile
     models = model_hist
     modeldir = file("$buildDir/ili").absolutePath +
@@ -83,7 +96,7 @@ zipFiles.each { zipFileName ->
     // --------------------------------------------------------
     tasks.register("import_${taskSuffix}", Ili2duckdbImport) {
         description = "Import ${fileName} into DuckDB"
-        dependsOn "createSchema_mopublic_HIST"
+        dependsOn "createSchema_mopublic_hist"
         dependsOn "unzip_${taskSuffix}"
         models = model_hist
         dbschema = "schema_mopublic_2024"
@@ -98,8 +111,8 @@ zipFiles.each { zipFileName ->
 // ------------------------------------------------------------
 // Gesamter Import
 // ------------------------------------------------------------
-
 tasks.register('importXTF') {
+    description = 'Import aller XTF in das historisierte Schema in DuckDB'
     dependsOn zipFiles.collect { zipFileName ->
         def fileName = zipFileName.replaceFirst(/\.zip$/, '')
         def taskSuffix = fileName.replaceAll('[^a-zA-Z0-9]', '_')
@@ -108,8 +121,9 @@ tasks.register('importXTF') {
 }
 
 tasks.register("copy_data",SqlExecutor){
+    description = 'In DuckDB Daten aus dem historisierten Schema in das Zielschema kopieren'
     dependsOn "importXTF"
-    database = [dbUriDuckDB]
+    database = [duckDbUri]
     sqlFiles = files(
         'load_extension_spatial.sql',
         'load_extension_postgres.sql',
@@ -119,11 +133,12 @@ tasks.register("copy_data",SqlExecutor){
 }
 
 tasks.register('transferData', Db2Db) {
-    sourceDb = [dbUriDuckDB]
+    description = 'Daten aus DuckDB nach Postgis transferieren'
+    dependsOn "copy_data"
+    sourceDb = [duckDbUri]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-        new TransferSet('afu_kleinklaeranlagen_pub.sql', 'afu_klaeranlagen_pub_v1.klaeranlagen_kleinklaeranlage', true),
-        new TransferSet('afu_ara_pub.sql', 'afu_klaeranlagen_pub_v1.klaeranlagen_ara', true)
-
+        new TransferSet('agi_objekte_hist_bodenbedeckung_pub.sql', 'agi_objekte_historisch_pub_v1.objekte_bodenbedeckung', true, (String[])['geometrie:wkt:2056']),
+        new TransferSet('agi_objekte_hist_einzelobjekt_pub.sql', 'agi_objekte_historisch_pub_v1.objekte_einzelobjekt_flaeche', true, (String[])['geometrie:wkt:2056'])
     ];
 }

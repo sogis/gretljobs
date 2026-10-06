@@ -4,7 +4,7 @@ SELECT
 	egid,
 	datenexport,
 	nachfuehrung,
-	geometrie
+	geometrie_wkt AS geometrie
 FROM
 	temp_db.schema_objekte_historisch.einzelobjekt_flaeche
 ;

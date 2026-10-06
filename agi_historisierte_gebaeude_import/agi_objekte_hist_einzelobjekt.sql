@@ -8,7 +8,8 @@ INSERT INTO temp_db.schema_objekte_historisch.einzelobjekt_flaeche (
 	egid,
 	datenexport,
 	nachfuehrung,
-	geometrie
+	geometrie,
+	geometrie_wkt
 )
 
 SELECT 
@@ -17,7 +18,8 @@ SELECT
 	egid,
 	'2024-01-01' AS datenexport,
 	nachfuehrung,
-	geometrie
+	geometrie,
+	ST_AsText(geometrie) AS geometrie_wkt
 FROM
 	temp_db.importschema_xtf.einzelobjekt_flaeche
 WHERE
