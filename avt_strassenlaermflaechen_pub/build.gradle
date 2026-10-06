@@ -1,0 +1,17 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'importXTF'
+
+def xtfFile = files("${buildDir}/in/uploadFile.xtf")
+
+tasks.register('importXTF', Ili2pgImport) {
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = 'avt_strassenlaermflaechen_pub_v1'
+    models = 'SO_AVT_Strassenlaermflaechen_Publikation_20260421'
+    disableValidation = true
+    deleteData = true
+    dataFile = xtfFile
+}
