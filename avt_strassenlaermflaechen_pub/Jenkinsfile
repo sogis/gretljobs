@@ -10,7 +10,7 @@ pipeline {
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
                         // Job with file upload (file will be available in GRETL in directory $buildDir/in/)
-                        script { env.UPLOAD_FILE_NAME = 'uploadFile.xtf'} // File name must match the value of parameters.stashedFile in job.properties file
+                        script { env.UPLOAD_FILE_NAME = 'uploadFile.zip'} // File name must match the value of parameters.stashedFile in job.properties file
                         dir('build/in') {
                             unstash name: env.UPLOAD_FILE_NAME
                             sh "[ -s ${env.UPLOAD_FILE_NAME} ] || rm -f ${env.UPLOAD_FILE_NAME}" // Remove file if it's empty (i.e. if none has been uploaded)

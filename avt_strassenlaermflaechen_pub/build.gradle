@@ -5,9 +5,17 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'importXTF'
 
+def zipFile = file("${buildDir}/in/uploadFile.zip")
 def xtfFile = files("${buildDir}/in/uploadFile.xtf")
 
+tasks.register("unzipFile", Copy) {
+    description = "Unzip Upload-File"
+    from zipTree(zipFile)
+    into "${buildDir}/in/"
+}
+
 tasks.register('importXTF', Ili2pgImport) {
+    dependsOn "unzipFile"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'avt_strassenlaermflaechen_pub_v1'
     models = 'SO_AVT_Strassenlaermflaechen_Publikation_20260421'
