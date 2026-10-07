@@ -29,7 +29,7 @@ tasks.register('importXTF', Ili2pgImport) {
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'avt_strassenlaermflaechen_pub_v1'
     models = 'SO_AVT_Strassenlaermflaechen_Publikation_20260421'
-    disableValidation = true
+    disableValidation = false
     deleteData = true
     dataFile = xtfFile
 }
