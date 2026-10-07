@@ -15,13 +15,21 @@ tasks.register("unzipFile", Copy) {
     into "${buildDir}/in/"
 }
 
+tasks.register("renameFile", Copy) {
+    dependsOn "unzipFile"
+    from "${buildDir}/in/"
+    into "${buildDir}/in/"
+    include("*.xtf")
+    rename(fileName -> "uploadFile.xtf")
+}
+
 tasks.register('importXTF', Ili2pgImport) {
     description = "Import unzipped XTF-File into database"
-    dependsOn "unzipFile"
+    dependsOn "renameFile"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     dbschema = 'avt_strassenlaermflaechen_pub_v1'
     models = 'SO_AVT_Strassenlaermflaechen_Publikation_20260421'
-    disableValidation = false
+    disableValidation = true
     deleteData = true
     dataFile = xtfFile
 }
