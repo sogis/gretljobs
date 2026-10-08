@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'importXTF'
+defaultTasks 'updateTxtValues'
 
 def zipFile = file("${buildDir}/in/uploadFile.zip")
 def xtfFile = files("${buildDir}/in/uploadFile.xtf")
@@ -32,4 +32,13 @@ tasks.register('importXTF', Ili2pgImport) {
     disableValidation = true //Dateien sind so gross, dass der Validator "Out of Memory" läuft
     deleteData = true
     dataFile = xtfFile
+}
+
+tasks.register('updateTxtValues', SqlExecutor) {
+    description = "Update Txt-Values for Strassenlärm"
+    dependsOn "importXTF"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = files(
+            'update_txt_pub.sql'
+        )
 }
