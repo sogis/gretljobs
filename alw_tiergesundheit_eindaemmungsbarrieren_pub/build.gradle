@@ -9,9 +9,19 @@ defaultTasks 'transferMassnahmen'
 
 def xtfFile = file("$buildDir/alw_tiergesundheit_eindaemmung_v1.xtf")
 
+task UpdateModInfo(type: Db2Db) {
+    dependsOn validate
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('update_alw_tiergesundheit_eindaemmungsbarrieren_modinfo.sql', 'alw_tiergesundheit_eindaemmungsbarrieren_v1.modinfo', false)
+    ];
+}
+
 task exportXtf(type: Ili2pgExport){
+    dependsOn UpdateModInfo
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    models = "SO_ALW_Tiergesundheit_Eindaemmungsbarrieren_20260716"
+    models = "SO_ALW_Tiergesundheit_Eindaemmungsbarrieren_20261002"
     dbschema = "alw_tiergesundheit_eindaemmungsbarrieren_v1"
     dataFile = files(xtfFile)
     disableValidation = false
@@ -29,6 +39,7 @@ task transferMassnahmen(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('alw_eindaemmungsbarrieren.sql', 'alw_tiergesundheit_eindaemmungsbarrieren_pub_v1.tiergesundheit_eindaemmungsbarrieren', true)
+            new TransferSet('alw_eindaemmungsbarrieren.sql', 'alw_tiergesundheit_eindaemmungsbarrieren_pub_v1.tiergesundheit_eindaemmungsbarrieren', true),
+            new TransferSet('alw_eindaemmungsbarrieren_modinfo.sql', 'alw_tiergesundheit_eindaemmungsbarrieren_pub_v1.modinfo', true)
     ];
 }
