@@ -9,7 +9,17 @@ defaultTasks 'transferMassnahmen'
 
 def xtfFile = file("$buildDir/alw_tiergesundheit_eindaemmung_v1.xtf")
 
+task UpdateModInfo(type: Db2Db) {
+    dependsOn validate
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    transferSets = [
+            new TransferSet('update_alw_tiergesundheit_eindaemmungsbarrieren_modinfo.sql', 'alw_tiergesundheit_eindaemmungsbarrieren_v1.modinfo', false)
+    ];
+}
+
 task exportXtf(type: Ili2pgExport){
+    dependsOn UpdateModInfo
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = "SO_ALW_Tiergesundheit_Eindaemmungsbarrieren_20261002"
     dbschema = "alw_tiergesundheit_eindaemmungsbarrieren_v1"
