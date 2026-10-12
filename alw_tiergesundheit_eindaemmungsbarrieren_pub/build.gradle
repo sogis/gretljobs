@@ -9,13 +9,10 @@ defaultTasks 'transferMassnahmen'
 
 def xtfFile = file("$buildDir/alw_tiergesundheit_eindaemmung_v1.xtf")
 
-task UpdateModInfo(type: Db2Db) {
-    dependsOn validate
-    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    targetDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    transferSets = [
-            new TransferSet('update_alw_tiergesundheit_eindaemmungsbarrieren_modinfo.sql', 'alw_tiergesundheit_eindaemmungsbarrieren_v1.modinfo', false)
-    ];
+task UpdateModInfo(type: SqlExecutor){
+    description = 'Erstellt die Einträge in der Struktur ModInfo. Diese können beim Erfassen via Web GIS Client nicht miterfasst werden.'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = files('update_alw_tiergesundheit_eindaemmungsbarrieren_modinfo.sql')
 }
 
 task exportXtf(type: Ili2pgExport){
