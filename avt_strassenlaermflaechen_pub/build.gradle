@@ -42,3 +42,20 @@ tasks.register('updateTxtValues', SqlExecutor) {
             'update_txt_pub.sql'
         )
 }
+
+/** Publisher funktioniert vermutlich nicht, weil die Datenmenge zu gross ist.
+**  Muss noch abgeklärt werden.
+tasks.register('publishStrassenlaermflaechen', Publisher){
+    dependsOn 'updateTxtValues'
+    dataIdent = 'ch.so.avt.strassenlaerm'
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbSchema = "avt_strassenlaermflaechen_pub_v1"
+    modelsToPublish = 'SO_AVT_Strassenlaermflaechen_Publikation_20260421'
+    userFormats = true
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+}
+*/
