@@ -9,7 +9,7 @@ SELECT
     CURRENT_TIMESTAMP,
     SESSION_USER,
     h.t_id
-FROM alw_tiergesundheit_eindaemmungsbarrieren_v1.tiergesundheit_eindaemmungsbarrieren h
+FROM alw_tiergesundheit_eindaemmungsbarrieren_v2.tiergesundheit_eindaemmungsbarrieren h
 WHERE NOT EXISTS (
     SELECT 1
     FROM alw_tiergesundheit_eindaemmungsbarrieren_v1.modinfo m
