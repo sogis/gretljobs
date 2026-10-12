@@ -1,4 +1,4 @@
-INSERT INTO alw_tiergesundheit_eindaemmungsbarrieren_v1.modinfo (
+INSERT INTO alw_tiergesundheit_eindaemmungsbarrieren_v2.modinfo (
     t_lastchange,
     t_createdate,
     t_user,
@@ -12,6 +12,6 @@ SELECT
 FROM alw_tiergesundheit_eindaemmungsbarrieren_v2.tiergesundheit_eindaemmungsbarrieren h
 WHERE NOT EXISTS (
     SELECT 1
-    FROM alw_tiergesundheit_eindaemmungsbarrieren_v1.modinfo m
+    FROM alw_tiergesundheit_eindaemmungsbarrieren_v2.modinfo m
     WHERE m.tiergsndht_mmngsbrrren_modinfo = h.t_id
 );
