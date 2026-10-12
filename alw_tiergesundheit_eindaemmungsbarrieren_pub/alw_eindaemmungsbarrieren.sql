@@ -52,5 +52,5 @@ SELECT
 	faktor_eintretenswahrscheinlichkeit,
 	faktor_aufwand
 FROM
-    alw_tiergesundheit_eindaemmungsbarrieren_v1.tiergesundheit_eindaemmungsbarrieren
+    alw_tiergesundheit_eindaemmungsbarrieren_v2.tiergesundheit_eindaemmungsbarrieren
 ;
