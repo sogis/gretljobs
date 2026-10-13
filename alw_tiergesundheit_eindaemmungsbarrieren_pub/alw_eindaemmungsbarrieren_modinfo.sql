@@ -1,4 +1,4 @@
-INSERT INTO alw_tiergesundheit_eindaemmungsbarrieren_v2.modinfo (
+INSERT INTO alw_tiergesundheit_eindaemmungsbarrieren_pub_v2.modinfo (
     tiergsndht_mmngsbrrren_modinfo
 )
 SELECT
