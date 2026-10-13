@@ -73,7 +73,7 @@ Die Vorbereitung umfasst folgende Schritte
 2. Die Extension "uuid-ossip" wird auf der neu hochgefahrenen DB erstellt. *Wird wohl im produktiven Betrieb nicht mehr benötigt.*
 3. Es werden die folgenden Schemata erstellt:
    - afu_naturgefahren_v1 -> Enthält die 1:1 Kopie des angeforderten Datasets aus der Edit-DB Die Daten werden dabei als XTF exportiert und in die temporäre DB importiert.
-   - afu_naturgefahren_alte_dokumente_v1 -> Enthält die alten Dokumente. Diese werden aus der Pub-DB aus dem View afu_gefahrenkartierung_pub.gefahrenkartirung_perimeter_gefahrenkartierung_v ausgelesen und schon in die neue Form umgebaut. 
+   - afu_naturgefahren_alte_dokumente_v1 -> Enthält die alten Dokumente. Diese werden aus der Edit-DB aus Schema afu_naturgefahren_alte_dokumente_vX eingelesen. 
    - afu_gefahrenkartierung -> Enthält die alten NatGef-Daten als 1:1 Kopie. Da ein Export als XTF aber zu lange dauern würde, werden die Daten mit einem Db2Db-Step in die Temporäre DB geschrieben. 
    - afu_naturgefahren_beurteilungsgebiet_v1 -> Enthält die Beurteilungsgebiete als 1:1 Kopie aus der Edit-DB. Diese werden als XTF transferiert.
    - agi_hoheitsgrenzen_pub -> 1:1 Kopie der Gemeindegrenzen aus der Pub-DB. Werden als XTF transferiert.
@@ -101,8 +101,9 @@ Hier werden alle Beurteilungsgebiete vereint. Es ist quasi ein "Union all" auf a
 Die Erhebungsgebiete werden so aufbereitet: Zuerst werden mit "Paul Ramsey" die Abklärungsperimeter verschnitten. Diese können sich ja überlagern. Danach wird nachgeschaut, unter welchen Flächen sich jetzt welche Abklärungs-stati befinden. Diese werden dann ensprechend in die Spalten eingetragen. 
 
 #### Dokumente pro Gemeinde 
-  - Die alten Dokumente: Im File vorbereitung/alte_dokumente_copy.sql ist zuerst der View eingebaut, mit hilfe dessen die Dokumente bis anhin bereit gestellt wurden. Die Dokumente sind hier Hart-Codiert drin. Dann werden alle Geometrien, auf die ein bestimmtes Dokument referenziert zusammengefasst in einem Multipolygon. Mit bool_or wird dann ermittelt, welche Prozesse in einem Dokument beschrieben werden. Dann wird geschaut, welche dieser Multi-Flächen welche Gemeinde berührt (mit einem -10m Buffer). Diesen Gemeinden werden die Dokumente dann zugewordnet. 
-  - Bei den neuen Dokumenten ist es so: Die Berichte sind mit dem Auftrag verknüpft. Dieser wiederum hat Teilaufträge. Die Teilaufträge wiederum haben Befunde zugeordnet und in diesen befindet sich die Geometrie. Die Berichte sind mit dem Teilauftrag über die Prozessquelle verbunden (Ist etwas kompliziert). 
+  - Altdaten-Dokumente: Diese werden in einer Hilfsebene im Edit-Schema afu_naturgefahren_alte_dokumente_vX gepflegt. 
+  Ein Dokument (Bericht) wird dabei als Multipoint-Geometrie mittels Spatial Query den entsprechenden Gemeinden zugeordnet.
+  - Bei den Dokumenten der Neudaten ist es so: Die Berichte sind mit dem Auftrag verknüpft. Dieser wiederum hat Teilaufträge. Die Teilaufträge wiederum haben Befunde zugeordnet und in diesen befindet sich die Geometrie. Die Berichte sind mit dem Teilauftrag über die Prozessquelle verbunden (Ist etwas kompliziert). 
 
 #### Teilprozesse 
 Die Teilprozesse werden mit der "Prio-Verschnitt" Methode verschnitten. Die Prioritäten werden hier aus dem IWCode ermittelt. Dabei gibt es zwei Unterschiedliche Ansätze: 

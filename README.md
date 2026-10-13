@@ -313,6 +313,7 @@ Folgende GRETL-spezifischen Benutzergruppen stehen im Moment zur Verfügung:
 * GA_Gretl_bdhba (HBA)
 * GA_Gretl_bvtaa (AVT)
 * GA_Gretl_edden (ADA)
+* GA_Gretl_ighaa (Gesundheitsamt)
 * GA_Gretl_skkan (Staatskanzlei)
 * GA_Gretl_vkfaa (AWJF)
 * GA_Gretl_vlwaa (ALW)
