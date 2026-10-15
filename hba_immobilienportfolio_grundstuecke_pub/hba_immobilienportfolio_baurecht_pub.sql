@@ -17,7 +17,8 @@ av_baurechtgeometrie AS (
 grundstuecke_csv AS (
 	SELECT
 		egrid,
-		id_gr AS wirtschaftseinheit,
+		id_gr AS schluessel_wirtschaftseinheit,
+		we AS immobilienschluessel,
 		prio AS prioritaet,
 		vermoegensart,
 		CASE
@@ -53,14 +54,15 @@ grundstuecke_csv AS (
 			ELSE 'Nein'
 		END AS veraeusserung_txt
 	FROM
-		hba_immobilienportfolio_grundstuecke_v2.csv_import_grundstuecke
+		hba_immobilienportfolio_v2.grundstuecke_csv_import
 )
 
 SELECT
 	baurecht.egris_egrid AS egrid,
 	baurecht.nummer AS grundstuecknummer,
 	baurecht.flaechenmass,
-	csv.wirtschaftseinheit,
+	csv.schluessel_wirtschaftseinheit,
+	csv.immobilienschluessel,
 	csv.vermoegensart,
 	baurecht.geometrie
 FROM

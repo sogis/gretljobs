@@ -8,13 +8,14 @@ defaultTasks 'updateTxtValues'
 def csvFile = file("${buildDir}/in/uploadFile.csv")
 
 tasks.register('validateCSVFile', CsvValidator) {
-    models = "SO_HBA_Immobilienportfolio_Gebaeude_20260713"
+    models = "SO_HBA_Immobilienportfolio_20260713"
     firstLineIsHeader = true
     dataFiles = files(csvFile)
     valueSeparator = ';'
 }
 
 tasks.register('deleteData', SqlExecutor) {
+    //dependsOn "validateCSVFile"
     description = 'Bisherige Daten löschen'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = files("delete_csv.sql")
@@ -24,7 +25,7 @@ tasks.register('deleteData', SqlExecutor) {
 tasks.register('csvImport',  CsvImport) {
     dependsOn "deleteData"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    schemaName = "hba_immobilienportfolio_gebaeude_v2"
+    schemaName = "hba_immobilienportfolio_v2"
     tableName = "gebaeude_csv_import"
     firstLineIsHeader = true
     valueSeparator = ';'
@@ -35,7 +36,7 @@ tasks.register("checkImportdata", SqlExecutor) {
     dependsOn "csvImport"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = files(
-        'hba_immobilienportfolio_check_gebeaude_mandatory.sql',
+        'hba_immobilienportfolio_gebeaude_mandatory_check.sql',
     )
 }
 

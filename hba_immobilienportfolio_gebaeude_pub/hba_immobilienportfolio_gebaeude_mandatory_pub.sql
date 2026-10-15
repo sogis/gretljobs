@@ -16,7 +16,7 @@ av_gebaeudegeometrien AS (
 
 email_geb AS (
 	SELECT 
-		id_ge AS schluessel_wirtschaftseinheit,
+		egid,
     	'<a href="mailto:' || email_geb ||
     	'?subject=' ||
     	replace(
@@ -67,14 +67,14 @@ email_geb AS (
         	),
         	'ß', '%C3%9F'
     	) ||
-    	'">' || verantwortung_geb || '</a>' AS gebaeudeverantwortung
+    	'">' || name_geb || '</a>' AS gebaeudeverantwortung
 	FROM
-		hba_immobilienportfolio_gebaeude_v2.gebaeude_gebaeudemandatory	
+		hba_immobilienportfolio_v2.gebaeude_gebaeudemandatory	
 ),
 
 email_hw AS (
 	SELECT 
-		id_ge AS schluessel_wirtschaftseinheit,
+		egid,
     	'<a href="mailto:' || email_hw ||
     	'?subject=' ||
     	replace(
@@ -125,9 +125,9 @@ email_hw AS (
         	),
         	'ß', '%C3%9F'
     	) ||
-    	'">' || verantwortung_geb || '</a>' AS hauswartung
+    	'">' || name_hw || '</a>' AS hauswartung
 	FROM
-		hba_immobilienportfolio_gebaeude_v2.gebaeude_gebaeudemandatory	
+		hba_immobilienportfolio_v2.gebaeude_gebaeudemandatory	
 ),
 
 gebaeude_csv AS (
@@ -174,11 +174,11 @@ gebaeude_csv AS (
 		NULL AS gebaeudeverantwortung,
 		NULL AS hauswartung
 	FROM 
-		hba_immobilienportfolio_gebaeude_v2.gebaeude_gebaeudemandatory
+		hba_immobilienportfolio_v2.gebaeude_gebaeudemandatory
 )
 
 SELECT 
-	egid,
+	gebcsv.egid,
 	immobilienschluessel
 	schluessel_wirtschaftseinheit,
 	bezeichnung,
@@ -199,9 +199,9 @@ SELECT
 FROM 
 	gebaeude_csv AS gebcsv
 LEFT JOIN email_geb AS email_geb
-	ON gebcsv.schluessel_wirtschaftseinheit = email_geb.schluessel_wirtschaftseinheit
+	ON gebcsv.egid = email_geb.egid
 LEFT JOIN email_hw AS email_hw
-	ON gebcsv.schluessel_wirtschaftseinheit = email_hw.schluessel_wirtschaftseinheit
+	ON gebcsv.egid = email_hw.egid
 LEFT JOIN av_gebaeudegeometrien AS gebgeo
 	ON gebcsv.egid = gebgeo.gwr_egid
 ;

@@ -1,8 +1,8 @@
 DELETE FROM
-	hba_immobilienportfolio_gebaeude_v2.gebaeude_gebaeudemandatory
+	hba_immobilienportfolio_v2.gebaeude_gebaeudemandatory
 ;
 
-INSERT INTO hba_immobilienportfolio_gebaeude_v2.gebaeude_gebaeudemandatory (
+INSERT INTO hba_immobilienportfolio_v2.gebaeude_gebaeudemandatory (
 	vermoegensart,
 	prio,
 	baujahr_gruppe,
@@ -15,9 +15,9 @@ INSERT INTO hba_immobilienportfolio_gebaeude_v2.gebaeude_gebaeudemandatory (
 	anmiete,
 	vermietet,
 	link,
-	verantwortung_geb,
+	name_geb,
 	email_geb,
-	verantwortung_hw,
+	name_hw,
 	email_hw
 )
 
@@ -34,12 +34,12 @@ SELECT
 	anmiete,
 	vermietet,
 	link,
-	verantwortung_geb,
+	name_geb,
 	email_geb,
-	verantwortung_hw,
+	name_hw,
 	email_hw
-FROM
-	hba_immobilienportfolio_gebaeude_v2.gebaeude_csv_import
+FROM 
+	hba_immobilienportfolio_v2.gebaeude_csv_import
 WHERE
 	anmiete IS NULL
 AND
