@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'updateTxtValues'
+defaultTasks 'publishStrassenlaermflaechen'
 
 def zipFile = file("${buildDir}/in/uploadFile.zip")
 def xtfFile = files("${buildDir}/in/uploadFile.xtf")
@@ -41,6 +41,19 @@ tasks.register('updateTxtValues', SqlExecutor) {
     sqlFiles = files(
             'update_txt_pub.sql'
         )
+}
+
+tasks.register('publishStrassenlaermflaechen', Publisher){
+    //dependsOn 'updateTxtValues'
+    dataIdent = 'ch.so.avt.strassenlaerm'
+    userFormats = true
+    modelsToPublish = 'SO_AVT_Strassenlaermflaechen_Publikation_20260421'
+    sourcePath = file("${buildDir}/in/uploadFile.xtf")
+    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
+    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
+    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
+    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
+    grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
 
 /** Publisher funktioniert vermutlich nicht, weil die Datenmenge zu gross ist.
