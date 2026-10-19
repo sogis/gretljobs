@@ -6,7 +6,6 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks 'transferverkehrsfuehrungPub'
 
 task exportXtf(type: Ili2pgExport){
-    dependsOn UpdateModInfo
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = "SO_AMB_Verkehrsfuehrung_Unfall_KKW_20261015"
     dbschema = "amb_verkehrsfuehrung_unfall_kkw_v1"
