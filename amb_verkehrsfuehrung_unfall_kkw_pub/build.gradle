@@ -27,8 +27,8 @@ task transferverkehrsfuehrungPub(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('amb_verkehrsfuehrung_unfall_kkw_freihaltung.sql', 'amb_verkehrsfuehrung_unfall_kkw_v1_pub.verkhrsf_nfll_kkw_vp_freihaltung_ra', true),
-            new TransferSet('amb_verkehrsfuehrung_unfall_kkw_sperrstellen.sql', 'amb_verkehrsfuehrung_unfall_kkw_v1_pub.verkhrsf_nfll_kkw_sperrstellen', true),
-            new TransferSet('amb_verkehrsfuehrung_unfall_kkw_hauptrettungsachse.sql', 'amb_verkehrsfuehrung_unfall_kkw_v1_pub.verkhrsf_nfll_kkw_hauptrettungsachse', true)
+            new TransferSet('amb_verkehrsfuehrung_unfall_kkw_freihaltung.sql', 'amb_verkehrsfuehrung_unfall_kkw_pub_v1.verkhrsf_nfll_kkw_vp_freihaltung_ra', true),
+            new TransferSet('amb_verkehrsfuehrung_unfall_kkw_sperrstellen.sql', 'amb_verkehrsfuehrung_unfall_kkw_pub_v1.verkhrsf_nfll_kkw_sperrstellen', true),
+            new TransferSet('amb_verkehrsfuehrung_unfall_kkw_hauptrettungsachse.sql', 'amb_verkehrsfuehrung_unfall_kkw_pub_v1.verkhrsf_nfll_kkw_hauptrettungsachse', true)
     ];
 }
