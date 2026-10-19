@@ -18,7 +18,7 @@ WITH alle_flaechen AS (
         NULL										 AS abnahme_Folgebewirtschaftung,
         NULL										 AS abnahme_folgebewirtschaftung_datum,
         bf.geometrie,
-        'https://geo-i.so.ch/map/?l=ch.so.arp.fruchtfolgeflaechen_kompensation&bl=hintergrundkarte_sw&t=default&c='||st_x(st_centroid(bf.geometrie))||'%2C'||st_y(st_centroid(bf.geometrie))||'&s=3780&hc=1'          AS link
+        'https://geo.so.ch/map/?l=ch.so.arp.fruchtfolgeflaechen_kompensation&bl=hintergrundkarte_sw&t=default&c='||st_x(st_centroid(bf.geometrie))||'%2C'||st_y(st_centroid(bf.geometrie))||'&s=3780&hc=1'          AS link
     FROM
         arp_fruchtfolgeflaechen_kompensation_v1.kompensation_beanspruchungsflaeche bf
 
@@ -39,7 +39,7 @@ WITH alle_flaechen AS (
         kf.abnahme_folgebewirtschaftung     		 AS abnahme_Folgebewirtschaftung,
         kf.abnahme_folgebewirtschaftung_datum    	 AS abnahme_folgebewirtschaftung_datum,
         kf.geometrie,
-        'https://geo-i.so.ch/map/?l=ch.so.arp.fruchtfolgeflaechen_kompensation&bl=hintergrundkarte_sw&t=default&c='||st_x(st_centroid(kf.geometrie))||'%2C'||st_y(st_centroid(kf.geometrie))||'&s=3780&hc=1'           AS link
+        'https://geo.so.ch/map/?l=ch.so.arp.fruchtfolgeflaechen_kompensation&bl=hintergrundkarte_sw&t=default&c='||st_x(st_centroid(kf.geometrie))||'%2C'||st_y(st_centroid(kf.geometrie))||'&s=3780&hc=1'           AS link
     FROM
         arp_fruchtfolgeflaechen_kompensation_v1.kompensation_kompensationsflaeche kf
 )
