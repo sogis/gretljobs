@@ -165,7 +165,7 @@ tasks.register('downloadXtf') {
 
 tasks.register('validateXtf', IliValidator) {
     description 'Validiert den heruntergeladenen eBauSO GIS-Export'
-    //dependsOn 'downloadXtf'
+    dependsOn 'downloadXtf'
 
     dataFiles = files(xtfFile)
 
