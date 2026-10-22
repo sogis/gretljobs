@@ -16,7 +16,7 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferData'
 
-def ebauHost = ebausoClientServiceUrl
+def ebauHost = ebausoClientUrl
 def tokenUrl = "${ebauHost}/auth/realms/ebau/protocol/openid-connect/token"
 def exportUrl = "${ebauHost}/api/v1/gis-export/so?full_export=true"
 
