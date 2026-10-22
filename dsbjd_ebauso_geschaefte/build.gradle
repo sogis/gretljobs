@@ -14,7 +14,7 @@ import java.util.zip.GZIPInputStream
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'transferData'
+defaultTasks 'transferToPub'
 
 def ebauHost = ebausoServiceUrl
 def tokenUrl = "${ebauHost}/auth/realms/ebau/protocol/openid-connect/token"
@@ -185,9 +185,19 @@ tasks.register('importData', Ili2pgImport) {
     deleteData = true
 }
 
-tasks.register('transferData', SqlExecutor) {
+tasks.register('transferToWork', SqlExecutor) {
     description 'Übernimmt das aktuelle eBauSO-Delta in den kumulativen Datenbestand'
     dependsOn 'importData'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = files('transfer_to_work.sql')
+}
+
+
+tasks.register('transferToPub', Db2Db) {
+    dependsOn 'transferToWork'
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+            new TransferSet('transfer_to_pub_punkt.sql', 'afu_ebauso_geschaefte_pub_v1.geschaefte_geschaeft_punkt', true)
+    ];
 }
