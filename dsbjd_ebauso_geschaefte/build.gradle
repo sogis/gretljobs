@@ -16,7 +16,8 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferToPub'
 
-def ebauHost = ebausoServiceUrl
+//def ebauHost = ebausoServiceUrl
+def ebauHost = "https://ebau-t.so.sycloud.ch/"
 def tokenUrl = "${ebauHost}/auth/realms/ebau/protocol/openid-connect/token"
 def exportUrl = "${ebauHost}/api/v1/gis-export/so?full_export=true"
 
