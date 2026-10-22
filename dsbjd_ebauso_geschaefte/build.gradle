@@ -198,6 +198,8 @@ tasks.register('transferToPub', Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('transfer_to_pub_punkt.sql', 'afu_ebauso_geschaefte_pub_v1.geschaefte_geschaeft_punkt', true)
+            new TransferSet('transfer_to_pub_punkt.sql', 'afu_ebauso_geschaefte_pub_v1.geschaefte_geschaeft_punkt', true),
+            new TransferSet('transfer_to_pub_linie.sql', 'afu_ebauso_geschaefte_pub_v1.geschaefte_geschaeft_flaeche', true),
+            new TransferSet('transfer_to_pub_flaeche.sql', 'afu_ebauso_geschaefte_pub_v1.geschaefte_geschaeft_flaeche', true)                        
     ];
 }
