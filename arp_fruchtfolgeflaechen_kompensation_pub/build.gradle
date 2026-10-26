@@ -15,6 +15,7 @@ tasks.register('transferData', Db2Db) {
     dependsOn "validateData"
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlParameters = [hostname:"'"+geoservicesHostName+"'"]
     transferSets = [
             new TransferSet('arp_fruchtfolgeflaechen_kompensation_pub.sql', 'arp_fruchtfolgeflaechen_kompensation_pub_v1.kompensation_flaechen', true),
     ];
