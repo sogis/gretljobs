@@ -5,12 +5,12 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferverkehrsfuehrungPub'
 
-def xtfFile = file("$buildDir/amb_verkehrsfuehrung_unfall_kkw_v1.xtf")
+def xtfFile = file("$buildDir/amb_verkehrskonzept_kkw_goesgen_v1.xtf")
 
 task exportXtf(type: Ili2pgExport){
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    models = "SO_AMB_Verkehrsfuehrung_Unfall_KKW_20261015"
-    dbschema = "amb_verkehrsfuehrung_unfall_kkw_v1"
+    models = "SO_AMB_Verkehrskonzept_KKW_Goesgen_20261015"
+    dbschema = "amb_verkehrskonzept_kkw_goesgen_v1"
     dataFile = files(xtfFile)
     disableValidation = false
 }
@@ -27,8 +27,8 @@ task transferverkehrsfuehrungPub(type: Db2Db) {
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
-            new TransferSet('amb_verkehrsfuehrung_unfall_kkw_freihaltung.sql', 'amb_verkehrsfuehrung_unfall_kkw_pub_v1.verkhrsf_nfll_kkw_vp_freihaltung_ra', true),
-            new TransferSet('amb_verkehrsfuehrung_unfall_kkw_sperrstellen.sql', 'amb_verkehrsfuehrung_unfall_kkw_pub_v1.verkhrsf_nfll_kkw_sperrstellen', true),
-            new TransferSet('amb_verkehrsfuehrung_unfall_kkw_hauptrettungsachse.sql', 'amb_verkehrsfuehrung_unfall_kkw_pub_v1.verkhrsf_nfll_kkw_hauptrettungsachse', true)
+            new TransferSet('amb_verkehrsfuehrung_unfall_kkw_freihaltung.sql', 'amb_verkehrskonzept_kkw_goesgen_pub_v1.verkhrsf_nfll_kkw_vp_freihaltung_ra', true),
+            new TransferSet('amb_verkehrsfuehrung_unfall_kkw_sperrstellen.sql', 'amb_verkehrskonzept_kkw_goesgen_pub_v1.verkhrsf_nfll_kkw_sperrstellen', true),
+            new TransferSet('amb_verkehrsfuehrung_unfall_kkw_hauptrettungsachse.sql', 'amb_verkehrskonzept_kkw_goesgen_pub_v1.verkhrsf_nfll_kkw_hauptrettungsachse', true)
     ];
 }
