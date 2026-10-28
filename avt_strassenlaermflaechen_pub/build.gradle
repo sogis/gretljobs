@@ -16,6 +16,7 @@ tasks.register("unzipFile", Copy) {
 }
 
 tasks.register("renameFile", Copy) {
+    description = "Rename unzipped XTF-File"
     dependsOn "unzipFile"
     from "${buildDir}/in/"
     into "${buildDir}/in/"
@@ -44,7 +45,7 @@ tasks.register('updateTxtValues', SqlExecutor) {
 }
 
 tasks.register('publishStrassenlaermflaechen', Publisher){
-    //dependsOn 'updateTxtValues'
+    dependsOn 'updateTxtValues'
     dataIdent = 'ch.so.avt.strassenlaerm'
     userFormats = true
     modelsToPublish = 'SO_AVT_Strassenlaermflaechen_Publikation_20260421'
@@ -55,20 +56,3 @@ tasks.register('publishStrassenlaermflaechen', Publisher){
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
-
-/** Publisher funktioniert vermutlich nicht, weil die Datenmenge zu gross ist.
-**  Muss noch abgeklärt werden.
-tasks.register('publishStrassenlaermflaechen', Publisher){
-    dependsOn 'updateTxtValues'
-    dataIdent = 'ch.so.avt.strassenlaerm'
-    target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    dbSchema = "avt_strassenlaermflaechen_pub_v1"
-    modelsToPublish = 'SO_AVT_Strassenlaermflaechen_Publikation_20260421'
-    userFormats = true
-    kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
-    kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
-    if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
-}
-*/
