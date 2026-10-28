@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'publishStrassenlaermflaechen'
+defaultTasks 'updateTxtValues'
 
 def zipFile = file("${buildDir}/in/uploadFile.zip")
 def xtfFile = files("${buildDir}/in/uploadFile.xtf")
@@ -44,6 +44,8 @@ tasks.register('updateTxtValues', SqlExecutor) {
         )
 }
 
+/**
+ ** Validierung funktioniert nicht (Datei zu gross?)
 tasks.register('publishStrassenlaermflaechen', Publisher){
     dependsOn 'updateTxtValues'
     dataIdent = 'ch.so.avt.strassenlaerm'
@@ -56,3 +58,4 @@ tasks.register('publishStrassenlaermflaechen', Publisher){
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
     grooming = new File(file(rootDir).getParentFile(), "publisher_grooming.json")
 }
+*/
