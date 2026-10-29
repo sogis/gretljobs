@@ -183,7 +183,7 @@ gebaeude_csv AS (
 
 SELECT 
 	gebcsv.egid,
-	immobilienschluessel
+	immobilienschluessel,
 	schluessel_wirtschaftseinheit,
 	bezeichnung,
 	vermoegensart,
@@ -197,8 +197,8 @@ SELECT
 	vermietet,
 	vermietet_txt,
 	link,
-	--email_geb.gebaeudeverantwortung,
-	--email_hw.hauswartung,
+	email_geb.gebaeudeverantwortung,
+	email_hw.hauswartung,
 	gebgeo.geometrie
 FROM 
 	gebaeude_csv AS gebcsv
