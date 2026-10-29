@@ -179,7 +179,7 @@ gebaeude_csv AS (
 
 SELECT 
 	gebcsv.egid,
-	immobilienschluessel
+	immobilienschluessel,
 	schluessel_wirtschaftseinheit,
 	bezeichnung,
 	vermoegensart,
