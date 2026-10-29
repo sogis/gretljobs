@@ -1,0 +1,3 @@
+DELETE from alw_tiergesundheit_eindaemmungsbarrieren_pub_v2.modinfo;
+
+DELETE from alw_tiergesundheit_eindaemmungsbarrieren_pub_v2.tiergesundheit_eindaemmungsbarrieren;
