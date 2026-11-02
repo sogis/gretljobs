@@ -15,119 +15,47 @@ av_gebaeudegeometrien AS (
 
 
 email_geb AS (
-	SELECT 
+	SELECT
 		egid,
-    	'<a href="mailto:' || email_geb ||
-    	'?subject=' ||
-    	replace(
-        	replace(
-            	replace(
-                	replace(
-                    	replace(
-                        	replace(
-                            	replace(
-                                	'Kontaktanfrage Gebäude: ' || "gebaeude_bez",
-                                	'%', '%25'
-                            	),
-                            	' ', '%20'
-                        	),
-                        	'ä', '%C3%A4'
-                    	),
-                    	'ö', '%C3%B6'
-                	),
-                	'ü', '%C3%BC'
-            	),
-            	'Ä', '%C3%84'
-        	),
-        	'Ü', '%C3%9C'
-    	) ||
-    	'&amp;body=' ||
-    	replace(
-        	replace(
-            	replace(
-                	replace(
-                    	replace(
-                        	replace(
-                            	replace(
-                                	'Guten Tag,' || E'\n\n' ||
-                                	'Ich habe eine Anfrage zum Gebäude "' ||
-                                	"gebaeude_bez" || '"' || E'\n\n' ||
-                                	'Freundliche Grüsse',
-                                	'%', '%25'
-                            	),
-                            	' ', '%20'
-                        	),
-                        	E'\n', '%0A'
-                    	),
-                    	'ä', '%C3%A4'
-                	),
-                	'ö', '%C3%B6'
-            	),
-            	'ü', '%C3%BC'
-        	),
-        	'ß', '%C3%9F'
-    	) ||
-    	'">' || name_geb || '</a>' AS gebaeudeverantwortung
+		'<a href="mailto:' || email_geb ||
+		'?subject=' ||
+		regexp_replace(
+			encode(convert_to('Kontaktanfrage Gebäude: ' || gebaeude_bez, 'UTF8'), 'hex'),
+			'(..)', '%\1', 'g'
+		) ||
+		'&amp;body=' ||
+		regexp_replace(
+			encode(convert_to(
+				E'Guten Tag,\n\nIch habe eine Anfrage zum Gebäude "' || gebaeude_bez || E'"\n\nFreundliche Grüsse',
+				'UTF8'
+			), 'hex'),
+			'(..)', '%\1', 'g'
+		) ||
+		'">' || name_geb || '</a>' AS gebaeudeverantwortung
 	FROM
-		hba_immobilienportfolio_v2.gebaeude_csv_import		
+		hba_immobilienportfolio_v2.gebaeude_csv_import
 ),
 
 email_hw AS (
-	SELECT 
+	SELECT
 		egid,
-    	'<a href="mailto:' || email_hw ||
-    	'?subject=' ||
-    	replace(
-        	replace(
-            	replace(
-                	replace(
-                    	replace(
-                        	replace(
-                            	replace(
-                                	'Kontaktanfrage Gebäude: ' || "gebaeude_bez",
-                                	'%', '%25'
-                            	),
-                            	' ', '%20'
-                        	),
-                        	'ä', '%C3%A4'
-                    	),
-                    	'ö', '%C3%B6'
-                	),
-                	'ü', '%C3%BC'
-            	),
-            	'Ä', '%C3%84'
-        	),
-        	'Ü', '%C3%9C'
-    	) ||
-    	'&amp;body=' ||
-    	replace(
-        	replace(
-            	replace(
-                	replace(
-                    	replace(
-                        	replace(
-                            	replace(
-                                	'Guten Tag,' || E'\n\n' ||
-                                	'Ich habe eine Anfrage zum Gebäude "' ||
-                                	"gebaeude_bez" || '"' || E'\n\n' ||
-                                	'Freundliche Grüsse',
-                                	'%', '%25'
-                            	),
-                            	' ', '%20'
-                        	),
-                        	E'\n', '%0A'
-                    	),
-                    	'ä', '%C3%A4'
-                	),
-                	'ö', '%C3%B6'
-            	),
-            	'ü', '%C3%BC'
-        	),
-        	'ß', '%C3%9F'
-    	) ||
-    	'">' || name_hw || '</a>' AS hauswartung
+		'<a href="mailto:' || email_hw ||
+		'?subject=' ||
+		regexp_replace(
+			encode(convert_to('Kontaktanfrage Gebäude: ' || gebaeude_bez, 'UTF8'), 'hex'),
+			'(..)', '%\1', 'g'
+		) ||
+		'&amp;body=' ||
+		regexp_replace(
+			encode(convert_to(
+				E'Guten Tag,\n\nIch habe eine Anfrage zum Gebäude "' || gebaeude_bez || E'"\n\nFreundliche Grüsse',
+				'UTF8'
+			), 'hex'),
+			'(..)', '%\1', 'g'
+		) ||
+		'">' || name_hw || '</a>' AS hauswartung
 	FROM
-		hba_immobilienportfolio_v2.gebaeude_csv_import		
+		hba_immobilienportfolio_v2.gebaeude_csv_import
 ),
 
 gebaeude_csv AS (
