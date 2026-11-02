@@ -55,6 +55,8 @@ grundstuecke_csv AS (
 		END AS veraeusserung_txt
 	FROM
 		hba_immobilienportfolio_v2.grundstuecke_csv_import
+	WHERE
+		baurecht = 'Baurecht'
 )
 
 SELECT
