@@ -113,13 +113,16 @@ WHERE
 --Beziehung Dokument Grundnutzung
 INSERT INTO arp_nutzungsplanung_export_v1.nutzungsplanung_typ_grundnutzung_dokument
 SELECT
-    t_id,
-    typ_grundnutzung,
-    dokument
+    typ_dok.t_id,
+    typ_dok.typ_grundnutzung,
+    typ_dok.dokument
 FROM
-    arp_nutzungsplanung_v1.nutzungsplanung_typ_grundnutzung_dokument
+    arp_nutzungsplanung_v1.nutzungsplanung_typ_grundnutzung_dokument AS typ_dok
+    LEFT JOIN 
+    arp_nutzungsplanung_v1.rechtsvorschrften_dokument AS dok ON typ_dok.dokument = dok.t_id
 WHERE
-   t_datasetname::int4 = ${bfsnr_param}
+   typ_dok.t_datasetname::int4 = ${bfsnr_param} AND dok.rechtsstatus = 'inKraft' -- nur die inKraft sind, weil es aufgehobene Pläne gibt ohne Datum und bei Modell 2017 ist das Attribut "publiziertab" MANDATORY!
+   
 ;
 
 --überlagernde Fläche
@@ -170,13 +173,15 @@ WHERE
 --Beziehung Dokument überlagernde Fläche
 INSERT INTO arp_nutzungsplanung_export_v1.nutzungsplanung_typ_ueberlagernd_flaeche_dokument
 SELECT
-    t_id,
-    typ_ueberlagernd_flaeche,
-    dokument
+    typ_dok.t_id,
+    typ_dok.typ_ueberlagernd_flaeche,
+    typ_dok.dokument
 FROM
-    arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_flaeche_dokument
+    arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS typ_dok
+    LEFT JOIN 
+    arp_nutzungsplanung_v1.rechtsvorschrften_dokument AS dok ON typ_dok.dokument = dok.t_id
 WHERE
-   t_datasetname::int4 = ${bfsnr_param}
+   typ_dok.t_datasetname::int4 = ${bfsnr_param} AND dok.rechtsstatus = 'inKraft' -- nur die inKraft sind, weil es aufgehobene Pläne gibt ohne Datum und bei Modell 2017 ist das Attribut "publiziertab" MANDATORY!
 ;
 
 --überlagernde Linie
@@ -227,13 +232,15 @@ WHERE
 --Beziehung Dokument überlagernde Linie
 INSERT INTO arp_nutzungsplanung_export_v1.nutzungsplanung_typ_ueberlagernd_linie_dokument
 SELECT
-    t_id,
-    typ_ueberlagernd_linie,
-    dokument
+    typ_dok.t_id,
+    typ_dok.typ_ueberlagernd_linie,
+    typ_dok.dokument
 FROM
-   arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_linie_dokument
+   arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_linie_dokument AS typ_dok
+    LEFT JOIN 
+    arp_nutzungsplanung_v1.rechtsvorschrften_dokument AS dok ON typ_dok.dokument = dok.t_id
 WHERE
-    t_datasetname::int4 = ${bfsnr_param}
+   typ_dok.t_datasetname::int4 = ${bfsnr_param} AND dok.rechtsstatus = 'inKraft' -- nur die inKraft sind, weil es aufgehobene Pläne gibt ohne Datum und bei Modell 2017 ist das Attribut "publiziertab" MANDATORY!
 ;
 
 --überlagernde Punkt
@@ -284,13 +291,15 @@ WHERE
 --Beziehung Dokument überlagernde Punkt
 INSERT INTO arp_nutzungsplanung_export_v1.nutzungsplanung_typ_ueberlagernd_punkt_dokument
 SELECT
-    t_id,
-    typ_ueberlagernd_punkt,
-    dokument
+    typ_dok.t_id,
+    typ_dok.typ_ueberlagernd_punkt,
+    typ_dok.dokument
 FROM
-    arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_punkt_dokument
+    arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_punkt_dokument AS typ_dok
+    LEFT JOIN 
+    arp_nutzungsplanung_v1.rechtsvorschrften_dokument AS dok ON typ_dok.dokument = dok.t_id
 WHERE
-    t_datasetname::int4 = ${bfsnr_param}
+   typ_dok.t_datasetname::int4 = ${bfsnr_param} AND dok.rechtsstatus = 'inKraft' -- nur die inKraft sind, weil es aufgehobene Pläne gibt ohne Datum und bei Modell 2017 ist das Attribut "publiziertab" MANDATORY!
 ;
 
 -- Erschliessung Fläche
@@ -341,13 +350,15 @@ WHERE
 
 INSERT INTO arp_nutzungsplanung_export_v1.erschlssngsplnung_typ_erschliessung_flaechenobjekt_dokument
 SELECT
-    t_id,
-    typ_erschliessung_flaechenobjekt,
-    dokument
+    typ_dok.t_id,
+    typ_dok.typ_erschliessung_flaechenobjekt,
+    typ_dok.dokument
 FROM
-    arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_flaechenobjekt_dokument
+    arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_flaechenobjekt_dokument AS typ_dok
+    LEFT JOIN 
+    arp_nutzungsplanung_v1.rechtsvorschrften_dokument AS dok ON typ_dok.dokument = dok.t_id
 WHERE
-    t_datasetname::int4 = ${bfsnr_param}
+   typ_dok.t_datasetname::int4 = ${bfsnr_param} AND dok.rechtsstatus = 'inKraft' -- nur die inKraft sind, weil es aufgehobene Pläne gibt ohne Datum und bei Modell 2017 ist das Attribut "publiziertab" MANDATORY!
 ;
 
 -- Erschliessung Linie
@@ -397,13 +408,15 @@ WHERE
 
 INSERT INTO arp_nutzungsplanung_export_v1.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument
 SELECT
-    t_id,
-    typ_erschliessung_linienobjekt,
-    dokument
+    typ_dok.t_id,
+    typ_dok.typ_erschliessung_linienobjekt,
+    typ_dok.dokument
 FROM
-    arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument
+    arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument AS typ_dok
+    LEFT JOIN 
+    arp_nutzungsplanung_v1.rechtsvorschrften_dokument AS dok ON typ_dok.dokument = dok.t_id
 WHERE
-    t_datasetname::int4 = ${bfsnr_param}
+   typ_dok.t_datasetname::int4 = ${bfsnr_param} AND dok.rechtsstatus = 'inKraft' -- nur die inKraft sind, weil es aufgehobene Pläne gibt ohne Datum und bei Modell 2017 ist das Attribut "publiziertab" MANDATORY!
 ;
 
 -- Erschliessung Punkt
@@ -453,13 +466,15 @@ WHERE
 
 INSERT INTO arp_nutzungsplanung_export_v1.erschlssngsplnung_typ_erschliessung_punktobjekt_dokument
 SELECT
-    t_id,
-    typ_erschliessung_punktobjekt,
-    dokument
+    typ_dok.t_id,
+    typ_dok.typ_erschliessung_punktobjekt,
+    typ_dok.dokument
 FROM
-    arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_punktobjekt_dokument
+    arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_punktobjekt_dokument AS typ_dok
+    LEFT JOIN 
+    arp_nutzungsplanung_v1.rechtsvorschrften_dokument AS dok ON typ_dok.dokument = dok.t_id
 WHERE
-    t_datasetname::int4 = ${bfsnr_param}
+   typ_dok.t_datasetname::int4 = ${bfsnr_param} AND dok.rechtsstatus = 'inKraft' -- nur die inKraft sind, weil es aufgehobene Pläne gibt ohne Datum und bei Modell 2017 ist das Attribut "publiziertab" MANDATORY!
 ;
 
 -- Lärmempfindlichkeitsstufen
@@ -509,11 +524,13 @@ WHERE
 
 INSERT INTO arp_nutzungsplanung_export_v1.nutzungsplanung_typ_ueberlagernd_flaeche_dokument
 SELECT
-    t_id,
-    typ_empfindlichkeitsstufen AS typ_ueberlagernd_flaeche ,
-    dokument
+    typ_dok.t_id,
+    typ_dok.typ_empfindlichkeitsstufen AS typ_ueberlagernd_flaeche ,
+    typ_dok.dokument
 FROM
-    arp_nutzungsplanung_v1.laermmpfhktsstfen_typ_empfindlichkeitsstufe_dokument
+    arp_nutzungsplanung_v1.laermmpfhktsstfen_typ_empfindlichkeitsstufe_dokument AS typ_dok
+    LEFT JOIN 
+    arp_nutzungsplanung_v1.rechtsvorschrften_dokument AS dok ON typ_dok.dokument = dok.t_id
 WHERE
-    t_datasetname::int4 = ${bfsnr_param}
+   typ_dok.t_datasetname::int4 = ${bfsnr_param} AND dok.rechtsstatus = 'inKraft' -- nur die inKraft sind, weil es aufgehobene Pläne gibt ohne Datum und bei Modell 2017 ist das Attribut "publiziertab" MANDATORY!
 ;

@@ -121,11 +121,15 @@ FROM
 --Beziehung Dokument überlagernde Fläche
 INSERT INTO arp_nutzungsplanung_export_v1.nutzungsplanung_typ_ueberlagernd_flaeche_dokument
 SELECT
-    t_id,
-    typ_ueberlagernd_flaeche,
-    dokument
+    typ_dok.t_id,
+    typ_dok.typ_ueberlagernd_flaeche,
+    typ_dok.dokument
 FROM
-    arp_nutzungsplanung_kanton_v1.nutzungsplanung_typ_ueberlagernd_flaeche_dokument
+    arp_nutzungsplanung_kanton_v1.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS typ_dok
+    LEFT JOIN 
+    arp_nutzungsplanung_kanton_v1.rechtsvorschrften_dokument AS dok ON typ_dok.dokument = dok.t_id
+WHERE
+    dok.rechtsstatus = 'inKraft' -- nur die inKraft sind, weil es aufgehobene Pläne gibt ohne Datum und bei Modell 2017 ist das Attribut "publiziertab" MANDATORY!
 ;
 
 -- Erschliessung Fläche
@@ -168,11 +172,15 @@ FROM
 
 INSERT INTO arp_nutzungsplanung_export_v1.erschlssngsplnung_typ_erschliessung_flaechenobjekt_dokument
 SELECT
-    t_id,
-    typ_erschliessung_flaechenobjekt,
-    dokument
+    typ_dok.t_id,
+    typ_dok.typ_erschliessung_flaechenobjekt,
+    typ_dok.dokument
 FROM
-    arp_nutzungsplanung_kanton_v1.erschlssngsplnung_typ_erschliessung_flaechenobjekt_dokument
+    arp_nutzungsplanung_kanton_v1.erschlssngsplnung_typ_erschliessung_flaechenobjekt_dokument AS typ_dok
+    LEFT JOIN 
+    arp_nutzungsplanung_kanton_v1.rechtsvorschrften_dokument AS dok ON typ_dok.dokument = dok.t_id
+WHERE
+    dok.rechtsstatus = 'inKraft' -- nur die inKraft sind, weil es aufgehobene Pläne gibt ohne Datum und bei Modell 2017 ist das Attribut "publiziertab" MANDATORY!
 ;
 
 -- Erschliessung Linie
@@ -214,9 +222,13 @@ FROM
 
 INSERT INTO arp_nutzungsplanung_export_v1.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument
 SELECT
-    t_id,
-    typ_erschliessung_linienobjekt,
-    dokument
+    typ_dok.t_id,
+    typ_dok.typ_erschliessung_linienobjekt,
+    typ_dok.dokument
 FROM
-    arp_nutzungsplanung_kanton_v1.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument
+    arp_nutzungsplanung_kanton_v1.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument  AS typ_dok
+    LEFT JOIN 
+    arp_nutzungsplanung_kanton_v1.rechtsvorschrften_dokument AS dok ON typ_dok.dokument = dok.t_id
+WHERE
+    dok.rechtsstatus = 'inKraft' -- nur die inKraft sind, weil es aufgehobene Pläne gibt ohne Datum und bei Modell 2017 ist das Attribut "publiziertab" MANDATORY!
 ;

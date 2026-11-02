@@ -36,7 +36,6 @@ SELECT
 	requiredmaterialg2,
 	requiredmaterialg3,
 	requiredmaterialg4,
-	modinfo,
 	comments,
 	closurepriority,
 	astra_tba_nummer,
@@ -53,5 +52,5 @@ SELECT
 	faktor_eintretenswahrscheinlichkeit,
 	faktor_aufwand
 FROM
-    alw_tiergesundheit_eindaemmungsbarrieren_v1.tiergesundheit_eindaemmungsbarrieren
+    alw_tiergesundheit_eindaemmungsbarrieren_v2.tiergesundheit_eindaemmungsbarrieren
 ;

@@ -7,12 +7,18 @@ WITH alle_flaechen AS (
         bf.t_id                                      AS quelle_id,
         bf.projekt_r,
         'Beanspruchung'::varchar                     AS flaeche_art,
-        bf.bezeichnung,
-        bf.flaeche                                   AS flaeche_anrechenbar,
+        bf.bezeichnung								 AS flaeche_bezeichnung,
+        bf.sobau_nummer                              AS flaeche_sobau_nummer,
+        bf.genehmigungsdatum 						 AS flaeche_genehmigungsdatum,
+        bf.flaeche_manuell                           AS flaeche_anrechenbar,
         round(ST_Area(bf.geometrie))::integer        AS flaeche_berechnet,
         bf.beanspruchungsflaeche_bemerkungen         AS flaeche_bemerkungen,
+        NULL 										 AS abnahme_kompensation, 
+        NULL										 AS abnahme_kompensation_datum,
+        NULL										 AS abnahme_Folgebewirtschaftung,
+        NULL										 AS abnahme_folgebewirtschaftung_datum,
         bf.geometrie,
-        'https://geo-i.so.ch/map/?l=ch.so.arp.fruchtfolgeflaechen_kompensation&bl=hintergrundkarte_sw&t=default&c='||st_x(st_centroid(bf.geometrie))||'%2C'||st_y(st_centroid(bf.geometrie))||'&s=3780&hc=1'          AS link
+        'https://geo.so.ch/map/?l=ch.so.arp.fruchtfolgeflaechen_kompensation&bl=hintergrundkarte_sw&t=default&c='||st_x(st_centroid(bf.geometrie))||'%2C'||st_y(st_centroid(bf.geometrie))||'&s=3780&hc=1'          AS link
     FROM
         arp_fruchtfolgeflaechen_kompensation_v1.kompensation_beanspruchungsflaeche bf
 
@@ -22,12 +28,18 @@ WITH alle_flaechen AS (
         kf.t_id                                      AS quelle_id,
         kf.projekt_r,
         kf.kompensationsmassnahme::varchar           AS flaeche_art,
-        kf.bezeichnung,
-        kf.flaeche                                   AS flaeche_anrechenbar,
+        kf.bezeichnung								 AS flaeche_bezeichnung,
+        kf.sobau_nummer 						     AS flaeche_sobau_nummer,
+        kf.genehmigungsdatum 						 AS flaeche_genehmigungsdatum,
+        kf.flaeche_manuell                           AS flaeche_anrechenbar,
         round(ST_Area(kf.geometrie))::integer        AS flaeche_berechnet,
         kf.kompensation_bemerkungen                  AS flaeche_bemerkungen,
+        kf.abnahme_kompensation 					 AS abnahme_kompensation, 
+        kf.abnahme_kompensation_datum 				 AS abnahme_kompensation_datum,
+        kf.abnahme_folgebewirtschaftung     		 AS abnahme_Folgebewirtschaftung,
+        kf.abnahme_folgebewirtschaftung_datum    	 AS abnahme_folgebewirtschaftung_datum,
         kf.geometrie,
-        'https://geo-i.so.ch/map/?l=ch.so.arp.fruchtfolgeflaechen_kompensation&bl=hintergrundkarte_sw&t=default&c='||st_x(st_centroid(kf.geometrie))||'%2C'||st_y(st_centroid(kf.geometrie))||'&s=3780&hc=1'           AS link
+        'https://geo.so.ch/map/?l=ch.so.arp.fruchtfolgeflaechen_kompensation&bl=hintergrundkarte_sw&t=default&c='||st_x(st_centroid(kf.geometrie))||'%2C'||st_y(st_centroid(kf.geometrie))||'&s=3780&hc=1'           AS link
     FROM
         arp_fruchtfolgeflaechen_kompensation_v1.kompensation_kompensationsflaeche kf
 )
@@ -44,9 +56,16 @@ SELECT
     p.eingangsdatum                                  AS projekt_eingangsdatum,
     p.projektstatus                                  AS projekt_status,
     p.projekt_bemerkungen,
+    f.flaeche_bezeichnung,
     f.flaeche_anrechenbar,
     f.flaeche_berechnet,
+    f.flaeche_sobau_nummer,
+    f.flaeche_genehmigungsdatum,
     f.flaeche_bemerkungen,
+    f.abnahme_kompensation, 
+    f.abnahme_kompensation_datum, 
+    f.abnahme_folgebewirtschaftung, 
+    f.abnahme_folgebewirtschaftung_datum,
     f.geometrie,
     COALESCE(
         (
@@ -54,13 +73,13 @@ SELECT
                 jsonb_build_object(
                     '@type', 'SO_ARP_FFF_Kompensation_Publikation_20260624.Kompensation.Teilflaechen',
                     'Flaechenart',          andere.flaeche_art,
-                    'Bezeichnung',          andere.bezeichnung,
+                    'Bezeichnung',          andere.flaeche_bezeichnung,
                     'Flaeche_anrechenbar',  andere.flaeche_anrechenbar,
                     'Link',                 andere.link
                 )
                 ORDER BY
                     andere.flaeche_art,
-                    andere.bezeichnung,
+                    andere.flaeche_bezeichnung,
                     andere.quelle_id
             )
             FROM 
@@ -84,3 +103,4 @@ JOIN
     ON 
     g.t_id = p.gesuchsteller_r
 ;
+
