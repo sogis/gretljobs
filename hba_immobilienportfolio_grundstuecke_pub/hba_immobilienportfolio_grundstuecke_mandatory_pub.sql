@@ -14,21 +14,6 @@ av_grundstueckgeometrie AS (
 		ON liegenschaft.liegenschaft_von = grundstueck.t_id
 ),
 
-av_baurechtgeometrie AS (
-	SELECT
-		grundstueck.egris_egrid,
-		grundstueck.nummer,
-		selbstrecht.flaechenmass,
-		selbstrecht.geometrie
-	FROM
-		agi_dm01avso24.liegenschaften_selbstrecht AS selbstrecht
-	LEFT JOIN agi_dm01avso24.liegenschaften_grundstueck AS grundstueck
-		ON selbstrecht.selbstrecht_von = grundstueck.t_id
-	WHERE
-		grundstueck.art = 'SelbstRecht.Baurecht'
-),
-
-
 grundstuecke_csv AS (
 	SELECT
 		egrid,
@@ -70,32 +55,6 @@ grundstuecke_csv AS (
 		END AS veraeusserung_txt
 	FROM
 		hba_immobilienportfolio_v2.grundstuecke_grundstueckemandatory
-),
-
-csv_baurechtgeometrie AS (
-	SELECT
-		baurecht.egris_egrid AS egrid,
-		baurecht.nummer AS grundstuecknummer,
-		baurecht.flaechenmass,
-		csv.schluessel_wirtschaftseinheit,
-		csv.immobilienschluessel,
-		csv.prioritaet,
-		csv.vermoegensart,
-		csv.eigenbedarf,
-		csv.eigenbedarf_txt,
-		csv.baurecht,
-		csv.baurecht_txt,
-		csv.fachverantwortung,
-		csv.veraeusserungsjahr,
-		csv.veraeusserung,
-		csv.veraeusserung_txt,
-		baurecht.geometrie
-	FROM
-		grundstuecke_csv AS csv
-	LEFT JOIN av_baurechtgeometrie AS baurecht
-		ON csv.egrid = baurecht.egris_egrid
-	WHERE
-		baurecht.geometrie IS NOT NULL
 )
 
 SELECT
@@ -108,42 +67,8 @@ SELECT
 	csv.vermoegensart,
 	csv.eigenbedarf,
 	csv.eigenbedarf_txt,
-	CASE
-		WHEN EXISTS (
-			SELECT 1
-			FROM csv_baurechtgeometrie AS baurecht
-			WHERE ST_Intersects(
-				av.geometrie,
-				baurecht.geometrie
-			)
-			AND ST_Area(
-				ST_Intersection(
-					av.geometrie,
-					baurecht.geometrie
-				)
-			) > 1
-		)
-		THEN TRUE
-		ELSE FALSE
-	END AS baurecht,
-	CASE
-		WHEN EXISTS (
-			SELECT 1
-			FROM csv_baurechtgeometrie AS baurecht
-			WHERE ST_Intersects(
-				av.geometrie,
-				baurecht.geometrie
-			)
-			AND ST_Area(
-				ST_Intersection(
-					av.geometrie,
-					baurecht.geometrie
-				)
-			) > 1
-		)
-		THEN 'Ja'
-		ELSE 'Nein'
-	END AS baurecht_txt,
+	csv.baurecht,
+	csv.baurecht_txt,
 	csv.fachverantwortung,
 	csv.veraeusserungsjahr,
 	csv.veraeusserung,
