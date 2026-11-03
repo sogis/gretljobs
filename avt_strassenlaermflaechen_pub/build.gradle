@@ -36,7 +36,7 @@ tasks.register('importXTF', Ili2pgImport) {
 }
 
 tasks.register('updateTxtValues', SqlExecutor) {
-    description = "Update Txt-Values for Strassenlärm"
+    description = "Update Txt-Values for Strassenlärmflächen"
     dependsOn "importXTF"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = files(
