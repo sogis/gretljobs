@@ -46,7 +46,7 @@ tasks.register('updateTxtValues', SqlExecutor) {
 
 tasks.register('publishStrassenlaermflaechen', Publisher){
     dependsOn 'updateTxtValues'
-    dataIdent = 'ch.so.avt.strassenlaerm'
+    dataIdent = 'ch.so.avt.strassenlaerm.flaechen'
     userFormats = true
     modelsToPublish = 'SO_AVT_Strassenlaermflaechen_Publikation_20260421'
     sourcePath = file("${buildDir}/in/uploadFile.xtf")
