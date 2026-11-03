@@ -1,6 +1,9 @@
 WITH
 
-av_gebaeudegeometrien AS (
+-- =========================================================
+-- Gebäudegeometrien
+-- =========================================================
+av_gebaeudegeometrie AS (
 	SELECT
 		bofla.t_id,
 		gebnr.gwr_egid,				
@@ -13,7 +16,9 @@ av_gebaeudegeometrien AS (
 		art = 'Gebaeude'
 ),
 
-
+-- ================================================================================
+-- Zusammensetzung des mailto-Links für die verantwortliche Person für das Gebäude
+-- ================================================================================
 email_geb AS (
 	SELECT
 		egid,
@@ -36,6 +41,9 @@ email_geb AS (
 		hba_immobilienportfolio_v2.gebaeude_gebaeudemandatory
 ),
 
+-- ================================================================================
+-- Zusammensetzung des mailto-Links für die Person verantwortlich für die Hauswartung
+-- ================================================================================
 email_hw AS (
 	SELECT
 		egid,
@@ -58,11 +66,14 @@ email_hw AS (
 		hba_immobilienportfolio_v2.gebaeude_gebaeudemandatory
 ),
 
+-- =============================================================
+-- Importierte "mandatory" Gebäudedaten
+-- =============================================================
 gebaeude_csv AS (
 	SELECT
 		egid,
-		we AS immobilienschluessel,
-		id_ge AS schluessel_wirtschaftseinheit,
+		we AS wirtschaftseinheit,
+		id_ge AS immobilienschluessel,
 		gebaeude_bez AS bezeichnung,
 		vermoegensart,
 		prio AS prioritaet,
@@ -107,8 +118,8 @@ gebaeude_csv AS (
 
 SELECT 
 	gebcsv.egid,
+	wirtschaftseinheit,
 	immobilienschluessel,
-	schluessel_wirtschaftseinheit,
 	bezeichnung,
 	vermoegensart,
 	prioritaet,
@@ -130,6 +141,6 @@ LEFT JOIN email_geb AS email_geb
 	ON gebcsv.egid = email_geb.egid
 LEFT JOIN email_hw AS email_hw
 	ON gebcsv.egid = email_hw.egid
-LEFT JOIN av_gebaeudegeometrien AS gebgeo
+LEFT JOIN av_gebaeudegeometrie AS gebgeo
 	ON gebcsv.egid = gebgeo.gwr_egid
 ;
