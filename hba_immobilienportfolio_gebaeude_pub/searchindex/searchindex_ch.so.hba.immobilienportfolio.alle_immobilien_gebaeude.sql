@@ -1,0 +1,36 @@
+SET search_path to hba_immobilienportfolio_pub_v2, public;
+
+
+INSERT INTO ${db_schema}.feature (
+    anzeige,            -- Anzeigetext
+    suchbegriffe,       -- Suchbegriffe für den Index
+    layer_ident,        -- Layer-Identifikation
+    ausdehnung,         -- Geometrische Ausdehnung als Text
+    id_feature,         -- ID des Features
+    id_spalten_name,    -- Spaltenname, z. B. 't_id'
+    id_in_hochkomma     -- Wahrheitswert für ID-In-Hochkomma
+)
+
+WITH
+index_base AS (
+    SELECT
+    	'ch.so.hba.immobilienportfolio.alle_immobilien_gebaeude'::text AS subclass,
+        t_id AS id_in_class,
+        concat(wirtschaftseinheit,' (Wirtschaftseinheit)') AS displaytext,
+        wirtschaftseinheit AS part_1,
+        'Wirtschaftseinheit'::text AS part_3,
+        (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
+    FROM
+       hba_immobilienportfolio_pub_v2.immobilienprtflio_gebaeude
+)
+SELECT
+    displaytext AS anzeige,
+    lower((part_1 || ' '::text) || index_base.part_3) AS suchbegriffe,
+    subclass AS layer_ident,
+    bbox as ausdehnung,
+    id_in_class::text AS id_feature,
+    't_id'::text as id_spalten_name,
+    false as id_in_hochkomma
+FROM
+    index_base
+;
