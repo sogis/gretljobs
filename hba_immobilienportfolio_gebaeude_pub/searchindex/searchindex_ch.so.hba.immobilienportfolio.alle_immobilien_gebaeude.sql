@@ -14,14 +14,14 @@ INSERT INTO ${db_schema}.feature (
 WITH
 index_base AS (
     SELECT
-    	'ch.so.hba.immobilienportfolio.alle_immobilien_gebaeude'::text AS subclass,
+        ${layername}::text AS subclass,
         t_id AS id_in_class,
-        concat(wirtschaftseinheit,' (Wirtschaftseinheit)') AS displaytext,
+        concat(wirtschaftseinheit, ' (Wirtschaftseinheit)') AS displaytext,
         wirtschaftseinheit AS part_1,
         'Wirtschaftseinheit'::text AS part_3,
         (st_asgeojson(st_envelope(geometrie), 0, 1)::json -> 'bbox'::text)::text AS bbox
     FROM
-       hba_immobilienportfolio_pub_v2.immobilienprtflio_gebaeude
+        immobilienprtflio_gebaeude
 )
 SELECT
     displaytext AS anzeige,
