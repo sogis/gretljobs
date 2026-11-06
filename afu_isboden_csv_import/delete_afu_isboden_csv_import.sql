@@ -1,2 +1,0 @@
-delete from afu_isboden_csv_import_v1.csv_import_csv_import_t
-;
