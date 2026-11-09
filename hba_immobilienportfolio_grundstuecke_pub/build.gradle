@@ -3,7 +3,7 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'updateTxtValues', 'updateSearchIndex_1'
+defaultTasks 'updateTxtValues'
 
 def csvFile = file("${buildDir}/in/uploadFile.csv")
 
@@ -57,23 +57,4 @@ tasks.register("updateTxtValues", SqlExecutor) {
     sqlFiles = files(
         'hba_immobilienportfolio_grundstuecke_update.sql'
     )
-}
-tasks.register('updateSearchIndex_1', SqlExecutor){
-    mustRunAfter 'updateTxtValues'
-    def layerName = 'ch.so.hba.immobilienportfolio.alle_immobilien_grundstuecke'
-
-    database = [dbUriPub, dbUserPub, dbPwdPub]
-    def dbSearchSchema = dbSearchSchemaPub
-
-    String layerNameString = "'${layerName}'"
-    sqlParameters = [
-            [layername: layerNameString, db_schema: dbSearchSchema]
-    ]
-    sqlFiles = files(
-            '../searchindex_deleteFeatures.sql',
-            'searchindex/' + 'searchindex_' + layerName + '.sql'
-    )
-    doFirst {
-        println 'layer name: ' + layerName
-    }
 }
