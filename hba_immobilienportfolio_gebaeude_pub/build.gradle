@@ -118,7 +118,7 @@ tasks.register('updateSearchIndex_3', SqlExecutor){
 
 tasks.register('updateSearchIndex_4', SqlExecutor){
     mustRunAfter 'updateTxtValues'
-    def layerName = 'so.hba.immobilienportfolio.eigenbedarf_gebaeude_geschuetzt'
+    def layerName = 'ch.so.hba.immobilienportfolio.eigenbedarf_gebaeude_geschuetzt'
 
     database = [dbUriPub, dbUserPub, dbPwdPub]
     def dbSearchSchema = dbSearchSchemaPub
