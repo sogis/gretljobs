@@ -21,6 +21,9 @@ INSERT INTO hba_immobilienportfolio_v2.gebaeude_gebaeudemandatory (
 	email_hw
 )
 
+-- ==================================================================================================================
+-- Ist ein Gebäude weder an- bzw. vermietet, sollten mehr Informationen/Attribute zum bestehenden Gebäude vorhanden sein
+-- ==================================================================================================================
 SELECT
 	vermoegensart,
 	prio,

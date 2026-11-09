@@ -1,5 +1,8 @@
 WITH
 
+-- =========================================================
+-- Grundstückgeometrie mit Baurecht
+-- =========================================================
 av_baurechtgeometrie AS (
 	SELECT
 		grundstueck.egris_egrid,
@@ -17,8 +20,8 @@ av_baurechtgeometrie AS (
 grundstuecke_csv AS (
 	SELECT
 		egrid,
-		id_gr AS schluessel_wirtschaftseinheit,
-		we AS immobilienschluessel,
+		we AS wirtschaftseinheit,
+		id_gr AS immobilienschluessel,
 		prio AS prioritaet,
 		vermoegensart,
 		CASE
@@ -63,9 +66,8 @@ SELECT
 	baurecht.egris_egrid AS egrid,
 	baurecht.nummer AS grundstuecknummer,
 	baurecht.flaechenmass,
-	csv.schluessel_wirtschaftseinheit,
+	csv.wirtschaftseinheit,
 	csv.immobilienschluessel,
-	csv.vermoegensart,
 	baurecht.geometrie
 FROM
 	grundstuecke_csv AS csv

@@ -14,6 +14,9 @@ INSERT INTO hba_immobilienportfolio_v2.grundstuecke_grundstueckemandatory (
 	jahr_veraeussert
 )
 
+-- ==================================================================================================================
+-- Ist Grundstück weder veräussert, noch mit einem Drittbaurecht versehen, sollten mehr Informationen/Attribute vorhanden sein
+-- ==================================================================================================================
 SELECT
 	id_gr,
 	we,

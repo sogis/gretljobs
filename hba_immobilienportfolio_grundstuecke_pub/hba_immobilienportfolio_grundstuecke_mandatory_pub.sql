@@ -1,5 +1,8 @@
 WITH
 
+-- =========================================================
+-- Grundstückgeometrie (ohne Baurecht)
+-- =========================================================
 av_grundstueckgeometrie AS (
 	SELECT
 		liegenschaft.t_id,
@@ -14,11 +17,14 @@ av_grundstueckgeometrie AS (
 		ON liegenschaft.liegenschaft_von = grundstueck.t_id
 ),
 
+-- =============================================================
+-- Importierte "mandatory" Grundstückdaten
+-- =============================================================
 grundstuecke_csv AS (
 	SELECT
 		egrid,
-		id_gr AS schluessel_wirtschaftseinheit,
-		we AS immobilienschluessel,
+		we AS wirtschaftseinheit,
+		id_gr AS immobilienschluessel,
 		prio AS prioritaet,
 		vermoegensart,
 		CASE
@@ -61,7 +67,7 @@ SELECT
 	av.egris_egrid AS egrid,
 	av.nummer AS grundstuecknummer,
 	av.flaechenmass,
-	csv.schluessel_wirtschaftseinheit,
+	csv.wirtschaftseinheit,
 	csv.immobilienschluessel,
 	csv.prioritaet,
 	csv.vermoegensart,

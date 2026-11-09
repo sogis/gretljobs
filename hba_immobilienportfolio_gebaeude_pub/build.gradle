@@ -3,26 +3,18 @@ import ch.so.agi.gretl.api.TransferSet
 
 apply plugin: 'ch.so.agi.gretl'
 
-defaultTasks 'updateTxtValues'
+defaultTasks 'updateTxtValues', 'updateSearchIndex_1', 'updateSearchIndex_2', 'updateSearchIndex_3', 'updateSearchIndex_4', 'updateSearchIndex_5', 'updateSearchIndex_6', 'updateSearchIndex_7'
 
 def csvFile = file("${buildDir}/in/uploadFile.csv")
 
-tasks.register('validateCSVFile', CsvValidator) {
-    models = "SO_HBA_Immobilienportfolio_20260713"
-    firstLineIsHeader = true
-    dataFiles = files(csvFile)
-    valueSeparator = ';'
-}
-
 tasks.register('deleteData', SqlExecutor) {
-    //dependsOn "validateCSVFile"
     description = 'Bisherige Daten löschen'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = files("delete_csv.sql")
 }
 
-// Import CSV-Datei
 tasks.register('csvImport',  CsvImport) {
+    description = 'Importiere CSV-Datei mit Gebäudedaten'
     dependsOn "deleteData"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     schemaName = "hba_immobilienportfolio_v2"
@@ -33,6 +25,7 @@ tasks.register('csvImport',  CsvImport) {
 }
 
 tasks.register("checkImportdata", SqlExecutor) {
+    description = 'Umverteilung der Importdaten zur Prüfung derer Vollständigkeit'
     dependsOn "csvImport"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = files(
@@ -51,9 +44,154 @@ tasks.register('transferData', Db2Db) {
 }
 
 tasks.register("updateTxtValues", SqlExecutor) {
+    description = 'Update der Text-Werte'
     dependsOn "transferData"
     database = [dbUriPub, dbUserPub, dbPwdPub]
     sqlFiles = files(
         'hba_immobilienportfolio_gebaeude_update.sql',
     )
+}
+
+// ---------------------------------------------------------------------------------
+// Suchindexe Web GIS
+// ---------------------------------------------------------------------------------
+
+tasks.register('updateSearchIndex_1', SqlExecutor){
+    mustRunAfter 'updateTxtValues'
+    def layerName = 'ch.so.hba.immobilienportfolio.alle_immobilien_gebaeude'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = files(
+            '../searchindex_deleteFeatures.sql',
+            'searchindex/' + 'searchindex_' + layerName + '.sql'
+    )
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+tasks.register('updateSearchIndex_2', SqlExecutor){
+    mustRunAfter 'updateTxtValues'
+    def layerName = 'ch.so.hba.immobilienportfolio.prioritaeten_gebaeude_geschuetzt'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = files(
+            '../searchindex_deleteFeatures.sql',
+            'searchindex/' + 'searchindex_' + layerName + '.sql'
+    )
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+tasks.register('updateSearchIndex_3', SqlExecutor){
+    mustRunAfter 'updateTxtValues'
+    def layerName = 'ch.so.hba.immobilienportfolio.mietliegenschaften_gebaeude_geschuetzt'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = files(
+            '../searchindex_deleteFeatures.sql',
+            'searchindex/' + 'searchindex_' + layerName + '.sql'
+    )
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+tasks.register('updateSearchIndex_4', SqlExecutor){
+    mustRunAfter 'updateTxtValues'
+    def layerName = 'ch.so.hba.immobilienportfolio.eigenbedarf_gebaeude_geschuetzt'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = files(
+            '../searchindex_deleteFeatures.sql',
+            'searchindex/' + 'searchindex_' + layerName + '.sql'
+    )
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+tasks.register('updateSearchIndex_5', SqlExecutor){
+    mustRunAfter 'updateTxtValues'
+    def layerName = 'ch.so.hba.immobilienportfolio.vermietet_gebaeude_geschuetzt'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = files(
+            '../searchindex_deleteFeatures.sql',
+            'searchindex/' + 'searchindex_' + layerName + '.sql'
+    )
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+tasks.register('updateSearchIndex_6', SqlExecutor){
+    mustRunAfter 'updateTxtValues'
+    def layerName = 'ch.so.hba.immobilienportfolio.gebaeudebaujahr_geschuetzt'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = files(
+            '../searchindex_deleteFeatures.sql',
+            'searchindex/' + 'searchindex_' + layerName + '.sql'
+    )
+    doFirst {
+        println 'layer name: ' + layerName
+    }
+}
+
+tasks.register('updateSearchIndex_7', SqlExecutor){
+    mustRunAfter 'updateTxtValues'
+    def layerName = 'ch.so.hba.immobilienportfolio.vermoegensart_gebaeude_geschuetzt'
+
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    def dbSearchSchema = dbSearchSchemaPub
+
+    String layerNameString = "'${layerName}'"
+    sqlParameters = [
+            [layername: layerNameString, db_schema: dbSearchSchema]
+    ]
+    sqlFiles = files(
+            '../searchindex_deleteFeatures.sql',
+            'searchindex/' + 'searchindex_' + layerName + '.sql'
+    )
+    doFirst {
+        println 'layer name: ' + layerName
+    }
 }
