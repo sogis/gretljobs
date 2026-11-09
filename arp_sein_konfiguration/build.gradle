@@ -12,6 +12,9 @@ defaultTasks ':04_processing_data:last'
 
 // global variables
 ext {
+    // Local execution reads the live databases and skips the SFTP upload.
+    seinLocal = (project.findProperty('seinLocal') ?: 'false').toString().toBoolean()
+
     load_extension_spatial = "${rootProject.projectDir}/load_extension_spatial.sql"
     load_extension_httpfs = "${rootProject.projectDir}/load_extension_httpfs.sql"
     load_extension_postgres = "${rootProject.projectDir}/load_extension_postgres.sql"
@@ -26,11 +29,15 @@ ext {
     // Create DB-variables for sql-files
     dbHostEdit = dbUriEdit.substring(dbUriEdit.indexOf("//") + 2, dbUriEdit.lastIndexOf("/"))
     dbDatabaseEdit = 'edit'
-    dbConnectionStringEdit = "'dbname=$dbDatabaseEdit user=$dbUserEdit password=$dbPwdEdit host=$dbHostEdit'"
+    dbConnectionStringEdit = seinLocal ?
+        "'dbname=$dbDatabaseEdit user=$dbUserEditS password=$dbPwdEditS host=$dbHostS'" :
+        "'dbname=$dbDatabaseEdit user=$dbUserEdit password=$dbPwdEdit host=$dbHostEdit'"
 
     dbHostPub = dbUriPub.substring(dbUriPub.indexOf("//") + 2, dbUriPub.lastIndexOf("/"))
     dbDatabasePub = 'pub'
-    dbConnectionStringPub = "'dbname=$dbDatabasePub user=$dbUserPub password=$dbPwdPub host=$dbHostPub'"
+    dbConnectionStringPub = seinLocal ?
+        "'dbname=$dbDatabasePub user=$dbUserPubS password=$dbPWdPubS host=$dbHostS'" :
+        "'dbname=$dbDatabasePub user=$dbUserPub password=$dbPwdPub host=$dbHostPub'"
 }
 
 ssh.settings {
