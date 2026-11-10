@@ -1,7 +1,12 @@
 # Beschreibung GRETL-Job arp_sein_konfiguration
 
 ## Ziel GRETL-Job
-Mit dem GRETL-Job sollen für die SEIn-App aus diversen Datenquellen (eigene PostGIS-Tabellen, xtf- und Shapefile-Dateien vom Bund) Daten zu bestimmten Themen (siehe arp_sein_konfiguration_grundlagen_v2.grundlagen_thema) zusammengetragen werden und so umgewandelt werden, damit die Aussage getätigt werden kann, ob eine Gemeinde von einem bestimmten Thema betroffen ist oder nicht und welche Objekte, bei Betroffenheit, vorhanden sind. Dazu werden die Geometrien der einzelnen Themen mit den Gemeindegeometrien verschnitten. Die Aussagen zu den einzelnen Themen werden in einem verschachtelten JSON-Attribut gespeichert. Zum Schluss wird auf Basis von arp_sein_konfiguration_grundlagen_v2.auswertung_thema ein xtf generiert, welches von geocloud in die SEIn-App eingelesen werden kann.
+Mit dem GRETL-Job wird für die SEIn-App aus diversen Quellen (eigene PostGIS-Tabellen, XTF- und Shapefile-Dateien vom Bund) Daten zu bestimmten Themen zusammengetragen.  
+Eine Übersicht zu den Themen erhält man im Schema arp_sein_konfiguration_grundlagen_v2.grundlagen_thema .
+
+Wenn eine Gemeinde von einem Thema betroffen ist, soll ebenfalls angegeben werden welche Objekte vorhanden sind. Dazu werden die Geometrien der einzelnen Themen mit den Gemeindegeometrien verschnitten.  
+Die Aussagen zu den einzelnen Themen werden in einem verschachtelten JSON-Attribut gespeichert.  
+Zum Schluss wird auf Basis von arp_sein_konfiguration_grundlagen_v2.auswertung_thema eine XTF-Datei generiert, welche auf einen FTP-Server von Geocloud hochgeladen wird und in die SEIn-App eingelesen werden kann.
 
 ## Struktur GRETL-Job
 Bei diesem GRETL-Job handelt es sich um ein Multi-Project-Build. Das heisst der Job besteht aus einem "Hauptprojekt" (root project) und mehreren Subprojekten. Konkret bedeutet dies, dass jedes Subprojekt ein eigenes build.gradle besitzt.
@@ -56,10 +61,11 @@ Der Ablauf des GRETL-Jobs sieht folgendermassen aus:
             ▼
     export & upload xtf
 ```
-Neben der parallelen Abwicklung verschiedener Subjobs, bietet ein Multi-Project-Build auch eine bessere Übersicht (hier für jedes Thema ein Subjob, anstatt alle Themen in einem build.gradle) und erlaubt es wärend der Entwicklung einzelne Subjobs bzw. -Tasks auszuführen, ohne, dass jedes mal in das build.gradle eingegriffen werden muss. <br>
-Ein Beispiel. Es soll nur der letzte Task für das Thema amphbiengebiete_ortsfest_shp2 ausgeführt werden:
+Neben der parallelen Abwicklung verschiedener Subjobs, bietet ein Multi-Project-Build auch eine bessere Übersicht (hier für jedes Thema ein Subjob, anstatt alle Themen in einem build.gradle) und erlaubt es wärend der Entwicklung einzelne Subjobs bzw. -Tasks auszuführen, ohne, dass jedes mal in das build.gradle eingegriffen werden muss.
+
+Beispiel: Es soll nur der letzte Task für das Thema amphbiengebiete_ortsfest_shp2 ausgeführt werden:
 ```
-GRETL_IMAGE_TAG=3.1 docker compose run --rm -u $UID gretl --project-dir=arp_sein_konfiguration_local :02_import_data:amphibiengebiete_ortsfest_shp2:last
+GRETL_IMAGE_TAG=3.1 docker compose run --rm -u $UID gretl --project-dir=arp_sein_konfiguration :02_import_data:amphibiengebiete_ortsfest_shp2:last
 ```
 
 <b>Kurze Erklärung der Subprojekte:<br></b>
@@ -110,10 +116,35 @@ In diese zweite Sammeltabelle werden nun auch die Daten importiert, welche auf d
 
 Zur Kontrolle der Themenbezeichnungen werden nun die aktualisierten Themen mit thema_sql verglichen. Sollten hier Unregelmässigkeiten auftreten, bricht der Job ab. Unregelmässigkeiten deuten darauf hin, dass ein Thema entweder geändert oder gelöscht wurde.
 
+<b>Themen überspringen </b>  
+Zu Testzwecken kann es teilweise sinnvoll sein gewisse Themen zu überspringen (siehe auch [Lokale Ausführung / Testen](#lokale-ausführung-gretljob--testen)). Die beste Möglichkeit dazu befindet sich innerhalb dieses Subprojektes und zwar, wenn im Task `ImportAllParquet` die zu überspringenden Subtasks auskommentiert werden. Es sollte am Schluss aber wieder daran gedacht werden, auskommentierten Tasks wieder aktiv zu stellen.
+
 ### 04_processing_data
 Hier wird die Datenbank aus 03_collect_data kopiert. Anschliessend werden die Daten so prozessiert, dass sie in arp_sein_konfiguration_grundlagen.auswertung_gemeinde eingefügt werden können. Die Themen werden dabei in ein verschachteltes JSON-Format gebracht.
 
 Anschliessend wird aus dem Schema ein xtf exportiert und dieses auf den ftp-Server hochgeladen.
 
 ## Dauer GRETL-Job
-Der ganze GRETL-Job hat eine Laufzeit von ca. 15 Minuten. Den Grossteil der Zeit beansprucht der Import der xtf-Daten, insbesondere der IVS-Daten (rund 12 Minuten).
+Der ganze GRETL-Job hat eine Laufzeit von ca. 18 Minuten. Den Grossteil der Zeit beansprucht der Import der xtf-Daten, insbesondere der IVS-Daten (rund 12 Minuten).
+
+## Lokale Ausführung Gretljob / Testen
+Um den Gretljob lokal ausführen bzw. testen zu können müssten zahlreiche Schemas lokal angelegt werden. Damit dies nicht notwendig ist, liest DuckDB direkt von den produktiven Schemas. Dafür müssen in der `gretljobs.properties`-Datei ein paar Zeilen eingefügt werden (Die Datei kann im persönlichen Ordner in WSL (unter Home/`username`) gefunden werden): 
+
+```
+dbUserPubS= eigner Benutzername
+dbPWdPubS= eigenes Passwort
+dbUserEditS= eigener Benutzername
+dbPwdEditS= eigenes Passwort
+dbHostS=geodb.rootso.org
+```
+
+Mit Benutzername ist der Name gemeint, den man selbst z.B. auch für Jenkins verwendet. Das gleiche gilt auch für das Passwort.
+
+<b>Ausführung Gretljob</b>
+
+Bei der lokalen Ausführung des Gretljobs, muss im Terminal der Parameter `PSeinLocal=true` mitgeeben werden. Dadurch weiss der Job, dass die Ausführung lokal erfolgt und er verwendet die persönlichen Zugangsdaten, welche in der `gretljobs.properties`-Datei hinterlegt wurden.
+
+Beispiel:
+```
+docker compose exec -u "$UID" gretl-service gretl --project-dir=arp_sein_konfiguration -PseinLocal=true
+```
