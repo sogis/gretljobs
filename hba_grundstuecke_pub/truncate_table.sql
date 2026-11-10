@@ -1,1 +1,0 @@
-DELETE FROM hba_grundstuecke_v2.grundstuecke_grundstueck; 
