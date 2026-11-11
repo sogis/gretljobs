@@ -5,7 +5,14 @@ apply plugin: 'ch.so.agi.gretl'
 
 defaultTasks 'transferData'
 
+tasks.register('validateEdit', Ili2pgValidate) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = "SO_AFU_Klaeranlagen_20260708"
+    dbschema = "afu_klaeranlagen_v1"
+}
+
 tasks.register('transferData', Db2Db) {
+    dependsOn 'validateEdit'
     sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
     targetDb = [dbUriPub, dbUserPub, dbPwdPub]
     transferSets = [
