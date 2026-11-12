@@ -19,13 +19,14 @@ defaultTasks 'transferToPub'
 //def ebauHost = ebausoServiceUrl
 def ebauHost = "https://ebau-t.so.sycloud.ch"
 def tokenUrl = "${ebauHost}/auth/realms/ebau/protocol/openid-connect/token"
-def exportUrl = "${ebauHost}/api/v1/gis-export/so?full_export=true"
+def exportUrl = "${ebauHost}/api/v1/gis-export/so?full_export=false"
 
 def clientId = ebausoClientId
 def clientSecret = ebausoClientSecret
 
 def token = ''
-def xtfFile = file("$buildDir/so_gis_export_full.xtf")
+//def xtfFile = file("$buildDir/so_gis_export_full.xtf")
+def xtfFile = file("$buildDir/so_gis_export.xtf")
 
 tasks.register('removeBuildDir', Delete) {
     description 'Löscht das Build-Verzeichnis mit allen Inhalten'
@@ -187,7 +188,7 @@ tasks.register('importData', Ili2pgImport) {
 }
 
 tasks.register('transferToWork', SqlExecutor) {
-    description 'Übernimmt das aktuelle eBauSO-Delta in den kumulativen Datenbestand'
+    description 'Übernimmt das aktuelle eBauSO-Delta in den kumulativen Datenbestand (UPSERT)'
     dependsOn 'importData'
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = files('transfer_to_work.sql')
