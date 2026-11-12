@@ -1,0 +1,23 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+defaultTasks 'updateTxtValues'
+
+tasks.register('transferData', Db2Db) {
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+        new TransferSet('awjf_nais_schutzwald_pub_dokument.sql', 'awjf_nais_schutzwald_pub_v1.nais_dokument', true)
+    ];
+}
+
+tasks.register("updateTxtValues", SqlExecutor) {
+    description = 'Update der Text-Werte'
+    dependsOn 'transferData'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = files(
+        'updateTxtColsNaisSchutzwald.sql',
+    )
+}
