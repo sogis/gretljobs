@@ -205,7 +205,7 @@ tasks.register('uploadXtfToS3', S3Upload) {
     sourceFile = xtfFile
     endPoint = 'https://s3.eu-central-1.amazonaws.com'
     region = 'eu-central-1'
-    bucketName = s3EbausoTargetBucket
+    bucketName = 'ch.so.dsbjd.ebauso-geschaefte'
     acl = 'private'
 }
 
