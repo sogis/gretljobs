@@ -257,7 +257,7 @@ tasks.register('transferToPub', Db2Db) {
         ),
         new TransferSet(
             'transfer_to_pub_linie.sql',
-            'afu_ebauso_geschaefte_pub_v1.geschaefte_geschaeft_flaeche',
+            'afu_ebauso_geschaefte_pub_v1.geschaefte_geschaeft_linie',
             true
         ),
         new TransferSet(
