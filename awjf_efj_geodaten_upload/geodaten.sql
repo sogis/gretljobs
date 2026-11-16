@@ -9,7 +9,7 @@ INSERT INTO
     )
 SELECT 
     nummer AS identifikator, 
-    geometrie AS geometrie_flaeche, 
+    ST_RemoveRepeatedPoints(geometrie) AS geometrie_flaeche, 
     'Jagdrevier' AS typ
 FROM 
     awjf_jagdreviere_jagdbanngebiete_v1.jagdreviere_jagdreviere
@@ -23,7 +23,7 @@ INSERT INTO
     )
 SELECT 
     100000 AS identifikator, 
-    geometrie AS geometrie_flaeche, 
+    ST_RemoveRepeatedPoints(geometrie) AS geometrie_flaeche, 
     'Kanton' AS typ
 FROM 
     agi_hoheitsgrenzen_pub.hoheitsgrenzen_kantonsgrenze
@@ -55,7 +55,7 @@ SELECT
     	WHEN revierid = 'S3' THEN 903::TEXT
     	ELSE revierid
     END AS identifikator, 
-    ST_Multi(ST_RemoveRepeatedPoints(ST_Union(geometrie), 0.001)) AS geometrie_linie, 
+    ST_RemoveRepeatedPoints(ST_Multi(ST_RemoveRepeatedPoints(ST_Union(geometrie), 0.001))) AS geometrie_linie, 
     'Fischereirevier' AS typ
 FROM 
     afu_gewaesser_v1.fischrevierabschnitt_v 
