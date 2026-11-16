@@ -1,48 +1,46 @@
 /*
-Import der ÖV-Güteklassen in die Edit-DB
+Import der ÖV-Güteklassen in die Edit-DB (Staging) und in die Pub-DB inkl. Publikation
 */
 import ch.so.agi.gretl.tasks.*
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.io.File
 
-defaultTasks ''
+apply plugin: 'ch.so.agi.gretl'
 
-task rename(type: Copy) {
-    from 'upload'
-    into 'upload'
-    rename 'uploadFile','uploadFile.xtf'
+defaultTasks 'import_to_stage'
+
+def xtfFile = file("${buildDir}/in/uploadFile.xtf")
+def modelName = 'SO_AVT_Oev_Gueteklassen_20220120'
+
+tasks.register('import_to_stage', Ili2pgImport) {
+    description = 'Import der ÖV-Güteklassen-Daten in das Staging-Schema der Edit-DB'
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = 'avt_oev_gueteklassen_staging_v1'
+    models = modelName
+    dataFile = files(xtfFile)
+    deleteData = true
 }
 
-task import_to_stage(type: Ili2pgImport, dependsOn: rename){
-     description = 'Import der ÖV-Güteklassen-Daten in das Staging-Schema der Edit-DB'
-     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-     dbschema = 'avt_oev_gueteklassen_staging_v1'
-     models = 'SO_AVT_Oev_Gueteklassen_20220120'
-     dataFile = 'upload/uploadFile.xtf'
-     deleteData = true
+tasks.register('import_to_pub', Ili2pgImport) {
+    description = 'Import der ÖV-Güteklassen-Daten in die Publikations-DB'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbschema = 'avt_oev_gueteklassen_pub_v1'
+    models = modelName
+    dataFile = files(xtfFile)
+    deleteData = true
 }
 
-task import_to_pub(type: Ili2pgImport){
-     description = 'Import der ÖV-Güteklassen-Daten in die Publikations DB'
-     database = [dbUriPub, dbUserPub, dbPwdPub]
-     dbschema = 'avt_oev_gueteklassen_pub_v1'
-     models = 'SO_AVT_Oev_Gueteklassen_20220120'
-     dataFile = 'upload/uploadFile.xtf'
-     deleteData = true
-}
-
-task publipub(type: Publisher, dependsOn: import_to_pub){
-    dataIdent = "ch.so.avt.oev_gueteklasse"
+tasks.register('publipub', Publisher) {
+    description = 'Publikation der ÖV-Güteklassen für den Datenbezug'
+    dependsOn 'import_to_pub'
+    dataIdent = 'ch.so.avt.oev_gueteklasse'
     userFormats = true
 
-    database = [dbUriPub,dbUserPub,dbPwdPub]
-    dbSchema = "avt_oev_gueteklassen_pub_v1"
-    modelsToPublish = "SO_AVT_Oev_Gueteklassen_20220120"
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    dbSchema = 'avt_oev_gueteklassen_pub_v1'
+    modelsToPublish = modelName
 
     target = [sftpUrlSogis, sftpUserSogis, sftpPwdSogis]
     kgdiService = [simiMetadataServiceUrl, simiMetadataServiceUser, simiMetadataServicePwd]
     kgdiTokenService = [simiTokenServiceUrl, simiTokenServiceUser, simiTokenServicePwd]
-    grooming = new File(file(projectDir).getParentFile(), "publisher_grooming.json")
+    grooming = new File(file(rootDir).getParentFile(), 'publisher_grooming.json')
     if (findProperty('ilivalidatorModeldir')) modeldir = ilivalidatorModeldir
 }

@@ -26,8 +26,10 @@ pipeline {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
-                        dir('upload') {
-                            unstash name: 'uploadFile'
+                        // Job with file upload (file will be available in GRETL in directory $buildDir/in/)
+                        script { env.UPLOAD_FILE_NAME = 'uploadFile.xtf'} // File name must match the value of parameters.stashedFile in job.properties file
+                        dir('build/in') {
+                            unstash name: env.UPLOAD_FILE_NAME
                         }
                         sh 'gretl import_to_stage'
                         input message: "Fortfahren und die Daten publizieren?", ok: "OK"
