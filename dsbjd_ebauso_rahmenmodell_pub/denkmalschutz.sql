@@ -17,6 +17,8 @@ SELECT
     NULL::TEXT AS rechtsstatus_txt
 FROM 
     ada_denkmalschutz_pub_v1.denkmal_polygon 
+WHERE
+    schutzstufe_code = 'geschuetzt'
 ;
 
 INSERT INTO 
@@ -38,4 +40,6 @@ SELECT
     NULL::TEXT AS rechtsstatus_txt
 FROM 
     ada_denkmalschutz_pub_v1.denkmal_punkt 
+WHERE
+    schutzstufe_code = 'geschuetzt'
 ;
