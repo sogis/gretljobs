@@ -12,6 +12,7 @@ tasks.register('validateCSVFile', CsvValidator) {
     firstLineIsHeader = true
     dataFiles = files(csvFile)
     valueSeparator = ';'
+    encoding = 'UTF-8'
 }
 
 tasks.register('deleteData', SqlExecutor) {
@@ -30,4 +31,5 @@ tasks.register('csvImport',  CsvImport) {
     firstLineIsHeader = true
     valueSeparator = ';'
     dataFile = csvFile
+    encoding = 'UTF-8'
 }
