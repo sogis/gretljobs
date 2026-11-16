@@ -33,9 +33,11 @@ task validateData(type: IliValidator, dependsOn: 'exportData') {
 }
 
 
+/*
 task copyData(type: Curl, dependsOn: 'validateData') {
     serverUrl = efjServicesUrl
     method = MethodType.POST
     formData = ["valid_from": formattedDate, "file": file(xtfFile)]
     expectedStatusCode = 200
 }
+*/
