@@ -1,22 +1,5 @@
 pipeline {
-    agent {
-        kubernetes {
-            inheritFrom env.NODE_LABEL ?: 'gretl'
-            yamlMergeStrategy merge()
-            yaml '''
-            spec:
-              containers:
-                - name: gretl
-                  resources:
-                    requests:
-                      memory: 6.5Gi
-                      cpu: "1"
-                    limits:
-                      memory: 6.5Gi
-                      cpu: "8"
-'''
-        }
-    }
+    agent { label env.NODE_LABEL ?: 'gretl' }
     options {
         timeout(time: 1, unit: 'DAYS')
     }
