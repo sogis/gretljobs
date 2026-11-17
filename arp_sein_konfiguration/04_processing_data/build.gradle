@@ -14,14 +14,16 @@ def dbUriDuckDB = "jdbc:duckdb:$dbPath"
 def xtfPath = "$buildDir" + "/arp_sein_konfigurationsdaten.xtf"
 
 // Definition des SFTP-Servers für den Datenupload
-remotes {
-    sftpServer {
-        host = sftpServerSEinApp
-        user = sftpUserSEinApp
-        identity = file('/home/gradle/.ssh/id_rsa')
-        // Skip host key checking outside the following environments:
-        if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) {  // uses the Groovy membership operator
-            knownHosts = allowAnyHosts
+if (!rootProject.ext.seinLocal) {
+    remotes {
+        sftpServer {
+            host = sftpServerSEinApp
+            user = sftpUserSEinApp
+            identity = file('/home/gradle/.ssh/id_rsa')
+            // Skip host key checking outside the following environments:
+            if ( !(gretlEnvironment in ['test', 'integration', 'production']) ) {  // uses the Groovy membership operator
+                knownHosts = allowAnyHosts
+            }
         }
     }
 }
@@ -78,20 +80,22 @@ tasks.register("ili2duckdbexport", Ili2duckdbExport){
 }
 
 // XTF-Datei auf den SFTP-Server hochladen
-tasks.register('upload') {
-    dependsOn 'ili2duckdbexport'
-    description = 'XTF-Datei auf den SFTP-Server hochladen.'
-    doLast {
-        ssh.run {
-            session(remotes.sftpServer) {
-                put from: xtfPath, into: sftpPathSEinApp
+if (!rootProject.ext.seinLocal) {
+    tasks.register('upload') {
+        dependsOn 'ili2duckdbexport'
+        description = 'XTF-Datei auf den SFTP-Server hochladen.'
+        doLast {
+            ssh.run {
+                session(remotes.sftpServer) {
+                    put from: xtfPath, into: sftpPathSEinApp
+                }
             }
+            println "File uploaded to FTP server"
         }
-        println "File uploaded to FTP server"
     }
 }
 
 // last task
 tasks.register("last"){
-    dependsOn "upload"
+    dependsOn(rootProject.ext.seinLocal ? "ili2duckdbexport" : "upload")
 }
