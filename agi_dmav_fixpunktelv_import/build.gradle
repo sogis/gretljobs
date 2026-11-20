@@ -13,8 +13,8 @@ def pathToUnzipFolderHFP1 = Paths.get(pathToTempFolder, 'unzip_data_hfp')
 def pathToUnzipFolderLFP1 = Paths.get(pathToTempFolder, 'unzip_data_lfp')
 def DataZipHFP1 = Paths.get(pathToTempFolder, "fixpunkte-hfp1_2056_5728.xtf.zip")
 def DataZipLFP1 = Paths.get(pathToTempFolder, "fixpunkte-lfp1_2056_5728.xtf.zip")
-def xtfFilePathHFP1 = Paths.get(pathToUnzipFolderHFP1.toString(), 'FixpunkteLV_V1_0.xtf')
-def xtfFilePathLFP1 = Paths.get(pathToUnzipFolderLFP1.toString(), 'FixpunkteLV_V1_0.xtf')
+def xtfFilePathHFP1 = Paths.get(pathToUnzipFolderHFP1.toString(), 'FixpunkteLV_V2_0.xtf')
+def xtfFilePathLFP1 = Paths.get(pathToUnzipFolderLFP1.toString(), 'FixpunkteLV_V2_0.xtf')
 
 
 task downloadHFP1(type: Download){
@@ -64,7 +64,7 @@ task importDataHFP1(type: Ili2pgImport, dependsOn: 'unzipDataLFP1'){
     }
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "agi_dmav_fixpunktelv_v1"
-    models = "FixpunkteLV_V1_0"
+    models = "FixpunkteLV_V2_0"
     dataFile = file(xtfFilePathHFP1)
     deleteData = true
     strokeArcs = true
@@ -77,7 +77,7 @@ task importDataLFP1(type: Ili2pgImport, dependsOn: 'importDataHFP1'){
     }
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     dbschema = "agi_dmav_fixpunktelv_v1"
-    models = "FixpunkteLV_V1_0"
+    models = "FixpunkteLV_V2_0"
     dataFile = file(xtfFilePathLFP1)
     strokeArcs = true
 }
