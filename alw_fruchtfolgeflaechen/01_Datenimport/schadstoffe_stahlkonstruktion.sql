@@ -21,7 +21,7 @@ SELECT
     grundbuchnummern, 
     flurnamen, 
     nutzungsverbot, 
-    astatus_txt, 
+    astatus_txt AS status_txt, 
     begruendung_aus_vsb_entlassen_txt
 FROM 
     afu_schadstoffbelastete_boeden_pub_v1.schdstfflstt_bden_stahlkonstruktion
