@@ -375,7 +375,7 @@ task importTww2(type: ShpImport, dependsOn: unpackFilesTww2){
 
 task makeSchemaSchadstoffbelasteteBoeden(type: Ili2pgImportSchema){
     database = [dbUriProcessing, dbUserProcessing, dbPwdProcessing]
-    models = "SO_AFU_Verzeichnis_schadstoffbelastete_Boeden_Publikation_20200701"
+    models = "SO_AFU_Verzeichnis_schadstoffbelastete_Boeden_Publikation_20260505"
     dbschema = "afu_schadstoffbelastete_boeden_pub"
     strokeArcs = true
     beautifyEnumDispName = true
