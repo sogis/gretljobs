@@ -40,7 +40,7 @@ WITH
             AND
             skelett_ob IN (0, 1, 2, 3, 4, 5)
             AND
-            wasserhhgr IN ('d', 'w')
+            wasserhhgr IN ('d','h','m','w')
             AND
             (
                 (pflngr >=40 AND pflngr <50)
