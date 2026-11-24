@@ -388,6 +388,7 @@ task makeSchemaSchadstoffbelasteteBoeden(type: Ili2pgImportSchema){
     createGeomIdx = true
     defaultSrsCode = 2056
     createNumChecks = true
+    createEnumTxtCol = true
 }
 
 task importSchadstoffbelasteteBoeden(type: Db2Db, dependsOn: makeSchemaSchadstoffbelasteteBoeden){
