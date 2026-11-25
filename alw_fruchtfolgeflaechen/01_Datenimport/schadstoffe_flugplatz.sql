@@ -17,8 +17,13 @@ SELECT
     grundbuchnummern, 
     flurnamen, 
     nutzungsverbot, 
-    status_txt, 
-    begruendung_aus_vsb_entlassen_txt
+    astatus_txt, 
+    begruendung_aus_vsb_entlassen_txt,
+    flaeche,
+    umfang,
+    aktiv_txt,
+    nutzungseinschraenkung_txt,
+    nutzungsverbot_txt
 FROM 
-    afu_schadstoffbelastete_boeden_pub.schdstfflstt_bden_flugplatz
+    afu_schadstoffbelastete_boeden_pub_v1.schdstfflstt_bden_flugplatz
 ;
