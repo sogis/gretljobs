@@ -1,5 +1,5 @@
 /* Publikation Grundwasser. Technische t_id wird im Ziel erzeugt.
- * Annahme: Grenzwerte bezeichnen die Schwelle zur genannten Klasse;
+ * Annahme: Grenzwerte bezeichnen die Schwelle zur genannten Klasse
  * Ueberschreitung (nach Rundung) fuehrt zu dieser Klasse.
  * Nachweisgrenzen werden konservativ als obere Schranke beurteilt.
  */
