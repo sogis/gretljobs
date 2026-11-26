@@ -1,6 +1,6 @@
 SELECT
     geometrie,
-    'https://geo.so.ch/docs/ch.so.awjf.schutzwald/'||dokument dokument, --Pfad muss noch auf den neuen umbenannten Ordner geändert werden
+    'https://geo.so.ch/docs/ch.so.awjf.nais_schutzwald/'||dokument dokument, --Pfad muss noch auf den neuen umbenannten Ordner geändert werden
     jahr,
     nais_code,
     beschreibung
