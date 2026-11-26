@@ -3,7 +3,7 @@ SELECT
     g.bauprojekt ->> 'Beschreibung'             AS titel,
     g.bfsnr,
     --g.verfahrensart,
-    'kalbjdafu://4a7e78acc1de478b89e587eab419ea9d/?tenant=BJDAFU' as verfahrensart,
+    '<a href="kalbjdafu://4a7e78acc1de478b89e587eab419ea9d/?tenant=BJDAFU" target="_self">BauGK öffnen</a>' as verfahrensart,
     g.astatus                                  AS status_geschaeft,
     g.entscheid_leitbehoerde ->> 'Entscheid'     AS entscheid,
     (g.entscheid_leitbehoerde ->> 'Datum')::date AS entscheid_datum,
