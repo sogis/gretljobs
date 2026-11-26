@@ -1,0 +1,39 @@
+import ch.so.agi.gretl.tasks.*
+import ch.so.agi.gretl.api.TransferSet
+
+apply plugin: 'ch.so.agi.gretl'
+
+def xtfFile = files("${buildDir}/exportData.xtf")
+
+defaultTasks 'updateTxtValues'
+/*
+tasks.register('exportData', Ili2pgExport) {
+    description = ""
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    dbschema = "awjf_nais_schutzwald_v1"
+    models = "SO_AWJF_NaiS_Schutzwald_20261116"
+    dataFile = xtfFile
+}
+
+tasks.register('validateXTF', IliValidator) {
+    dependsOn 'exportData'
+    models = 'SO_AWJF_NaiS_Schutzwald_20261116'
+    dataFiles = xtfFile
+}
+*/
+tasks.register('transferData', Db2Db) {
+    /*dependsOn 'validateXTF'*/
+    sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    targetDb = [dbUriPub, dbUserPub, dbPwdPub]
+    transferSets = [
+        new TransferSet('awjf_nais_schutzwald_pub_dokument.sql', 'awjf_nais_schutzwald_pub_v1.nais_dokument', true)
+    ];
+}
+
+tasks.register("updateTxtValues", SqlExecutor) {
+    dependsOn 'transferData'
+    database = [dbUriPub, dbUserPub, dbPwdPub]
+    sqlFiles = files(
+        'updateTxtColsNaisSchutzwald.sql',
+    )
+}
