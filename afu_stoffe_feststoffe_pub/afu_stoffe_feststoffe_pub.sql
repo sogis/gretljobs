@@ -1,12 +1,3 @@
-/*
- * Erfassung -> Publikation: lesende SQL-Transformation.
- * Formatierung nach SQL-Richtlinien AGI Kanton Solothurn (Version 1.0).
- *
- * Klassierung: MIN (pro Einzelwert), MAX (pro Feldprobe).
- * Fachliche Vorbehalte aus dem ursprünglichen Entwurf bleiben bestehen:
- * - VVEA-Klassierung (Nachweisgrenzen, Grenzwertüberschreitungen) prüfen.
- * - JSON-Mapping und Pflichtfelder gegen ili2db/Publikationsmodell prüfen.
- */
 WITH
 abfallklassen AS (
     SELECT
@@ -95,8 +86,8 @@ alle_werte AS (
         berechnete_werte
 ),
 -- Zuerst je Wert die kleinste Klasse bestimmen, deren Grenzwert eingehalten wird.
--- Fehlen Grenzwerte, gilt 'kein_Grenzwert'. Werden alle ueberschritten,
--- gilt vorlaeufig 'Sonderabfaelle' (fachlich noch zu bestaetigen).
+-- Fehlen Grenzwerte, gilt 'kein_Grenzwert'. Werden alle überschritten,
+-- gilt vorläufig 'Sonderabfaelle' (fachlich noch zu bestätigen).
 grenzwerte_je_wert AS (
     SELECT
         alle_werte.art,
@@ -214,7 +205,7 @@ labore AS (
     GROUP BY
         feldprobe_r
 ),
--- Fuer die Feldprobe zaehlt die gravierendste Klasse aller Einzelwerte.
+-- Fuer die Feldprobe zählt die gravierendste Klasse aller Einzelwerte.
 -- Rang 0 ('kein_Grenzwert') beeinflusst vorhandene Klassierungen nicht.
 proben_klassierung AS (
     SELECT
